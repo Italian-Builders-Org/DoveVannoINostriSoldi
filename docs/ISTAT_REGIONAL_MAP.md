@@ -28,4 +28,4 @@ Il colore rappresenta i **pagamenti di cassa dei Comuni per abitante della popol
 
 Attribuzione mostrata nell'interfaccia:
 
-> Confini amministrativi a fini statistici: ISTAT, 1 gennaio 2026, CC BY 4.0; geometria semplificata da Trasparenza Italia.
+> Confini amministrativi a fini statistici: ISTAT, 1 gennaio 2026, CC BY 4.0; geometria semplificata da DoveVannoINostriSoldi.

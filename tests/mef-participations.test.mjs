@@ -19,7 +19,7 @@ const requiredHeaders = [
 ];
 
 function runFixture(values, headers = requiredHeaders) {
-  const directory = mkdtempSync(join(tmpdir(), "trasparenzaitalia-mef-"));
+  const directory = mkdtempSync(join(tmpdir(), "dovevanno-mef-"));
   const input = join(directory, "input.csv");
   const output = join(directory, "output.json");
   writeFileSync(input, `${headers.join(";")}\n${headers.map((header) => values[header] ?? "").join(";")}\n`);

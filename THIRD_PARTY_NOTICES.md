@@ -10,6 +10,6 @@ The MIT license in `LICENSE` applies to the project code. Embedded or linked dat
 - **Publisher:** Istituto Nazionale di Statistica (ISTAT);
 - **Source:** https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip;
 - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/;
-- **Changes:** regional geometries were simplified and projected to static SVG paths by Trasparenza Italia; names and ISTAT region codes were preserved.
+- **Changes:** regional geometries were simplified and projected to static SVG paths by DoveVannoINostriSoldi; names and ISTAT region codes were preserved.
 
-Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2026 — CC BY 4.0. Adapted by Trasparenza Italia.`
+Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2026 — CC BY 4.0. Adapted by DoveVannoINostriSoldi.`

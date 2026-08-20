@@ -1,28 +1,28 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Metodologia",
-  description: "Principi di provenienza, confronto e indicatori di Trasparenza Italia.",
+  title: "Come leggiamo i dati",
+  description: "Sei regole semplici per capire i numeri di DoveVannoINostriSoldi.",
 };
 
 const rules = [
-  ["01", "Nessun numero senza provenienza", "Ogni record conserva fonte ufficiale, URL, identificativo originario, timestamp di pubblicazione e di ingestione."],
-  ["02", "Contabilità comparabile", "Competenza, cassa, impegni, pagamenti e stanziamenti non vengono sommati o confrontati come se fossero la stessa grandezza."],
-  ["03", "Freschezza esplicita", "Il dato è “live” solo quanto lo è la fonte. La dashboard mostra ritardo e frequenza di aggiornamento."],
-  ["04", "Alert non significa colpa", "Gli indicatori di anomalia servono a prioritizzare verifiche. Non sono giudizi su persone, enti o fornitori."],
-  ["05", "Confronti tra pari", "Prezzi e spese vengono confrontati tra enti, territori e servizi realmente omogenei, con normalizzazioni dichiarate."],
-  ["06", "Correzioni tracciabili", "Una rettifica non cancella la storia: la pipeline conserva versione, hash e trasformazioni applicate al dato."],
+  ["01", "Mostriamo sempre la fonte", "Ogni numero porta al documento o al dataset ufficiale da cui arriva."],
+  ["02", "Non sommiamo cose diverse", "Pagamenti, costi previsti, debiti e scenari hanno significati diversi e restano separati."],
+  ["03", "Diciamo quanto è recente", "Mostriamo la data del dato, quando lo abbiamo controllato e quanto spesso cambia la fonte."],
+  ["04", "Un segnale non è una colpa", "Un valore insolito indica dove guardare meglio. Da solo non prova errori, sprechi o illeciti."],
+  ["05", "Confrontiamo casi simili", "Mettiamo a confronto enti e servizi solo quando le grandezze sono davvero confrontabili."],
+  ["06", "Le correzioni restano visibili", "Se un dato cambia, conserviamo la versione precedente e spieghiamo che cosa è stato corretto."],
 ];
 
 export default function MethodPage() {
   return (
     <main className="subpage">
       <header className="page-intro">
-        <span className="eyebrow"><span /> METODOLOGIA</span>
-        <h1>Trasparenza senza<br /><em>scorciatoie.</em></h1>
+        <span className="eyebrow"><span /> COME LEGGIAMO I DATI</span>
+        <h1>Prima capire.<br /><em>Poi confrontare.</em></h1>
         <p>
-          Rendere pubblici più dati è utile solo se si evita di produrre classifiche fuorvianti.
-          La piattaforma separa fatti, trasformazioni, indicatori e interpretazioni.
+          Un numero senza contesto può confondere. Per questo mostriamo sempre la fonte,
+          la data, il significato e ciò che quel numero non può dimostrare.
         </p>
       </header>
 
@@ -37,11 +37,11 @@ export default function MethodPage() {
       </section>
 
       <section className="notice warning-notice">
-        <strong>Persone e responsabilità.</strong>
+        <strong>Un controllo non è una condanna.</strong>
         <p>
-          Trasparenza Italia può mostrare dati già pubblici e indicatori documentabili, ma
-          non sostituisce autorità giudiziarie, ANAC, Corte dei conti o procedimenti disciplinari.
-          Nessun algoritmo attribuirà automaticamente illeciti o responsabilità personali.
+          DoveVannoINostriSoldi aiuta a trovare dati e segnali da approfondire. Non sostituisce
+          ANAC, Corte dei conti, magistratura o verifiche dell&apos;amministrazione. Nessun algoritmo
+          attribuisce automaticamente illeciti o responsabilità personali.
         </p>
       </section>
     </main>

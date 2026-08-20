@@ -164,7 +164,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
       </nav>
 
       <section className={styles.searchSection} aria-labelledby="ricerca-enti">
-        <span className={styles.kicker}>CERCA NEL DATASTORE UFFICIALE</span>
+          <span className={styles.kicker}>CERCA NEL REGISTRO UFFICIALE</span>
         <form className={styles.searchForm} action="/enti" method="get">
           <label className={styles.visuallyHidden} htmlFor="q">Cerca un ente</label>
           <input
@@ -179,21 +179,21 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <button className={styles.searchButton} type="submit">Cerca ente</button>
         </form>
         <p className={styles.searchHelp} id="ricerca-enti">
-          Ricerca full-text direttamente sul datastore IPA. I risultati non sono una copia dimostrativa:
-          vengono letti dalla Data API AgID e normalizzati dal server.
+          La ricerca legge direttamente il registro IPA di AgID. Non usiamo nomi dimostrativi
+          o un elenco scritto a mano.
         </p>
       </section>
 
       <section className={styles.registrySnapshot} aria-labelledby="snapshot-registro">
         <div className={styles.snapshotSummary}>
-          <span className={styles.kicker}>SNAPSHOT DEL REGISTRO</span>
+            <span className={styles.kicker}>REGISTRO IN NUMERI</span>
           <div className={styles.snapshotNumber}>
             <strong>{stats ? numberFormatter.format(stats.total) : "—"}</strong>
             <span>record presenti nel dataset Enti</span>
           </div>
           <p>
-            È il perimetro anagrafico da cui partiremo per collegare le fonti economiche. Il numero
-            descrive i record IPA, non il numero di sole amministrazioni centrali né la spesa pubblica.
+            Questo è il numero di record presenti nel registro IPA. Non indica il numero dei soli
+            ministeri e non misura la spesa pubblica.
           </p>
           <dl className={styles.snapshotMeta}>
             <div>
@@ -201,7 +201,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
               <dd>{formatObservedAt(stats?.observedAt ?? distributionObservedAt)}</dd>
             </div>
             <div>
-              <dt>Dati economici simulati</dt>
+              <dt>Valori dimostrativi</dt>
               <dd>nessuno</dd>
             </div>
           </dl>

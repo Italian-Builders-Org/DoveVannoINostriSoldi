@@ -1,6 +1,6 @@
 # Principi legali ed etici
 
-Trasparenza Italia nasce per aumentare l'accessibilità di dati già pubblici, non per trasformare un database in un tribunale automatico.
+DoveVannoINostriSoldi nasce per aumentare l'accessibilità di dati già pubblici, non per trasformare un database in un tribunale automatico.
 
 ## Dati pubblici non significa “qualsiasi riuso senza contesto”
 
@@ -62,4 +62,4 @@ Il primo è una misura verificabile; il secondo attribuisce un comportamento che
 
 ## Enforcement
 
-Revoche, sanzioni, responsabilità disciplinari, erariali o penali competono alle autorità e ai procedimenti previsti dalla legge. Trasparenza Italia può rendere più semplice trovare e verificare i fatti pubblici, non sostituire il due process.
+Revoche, sanzioni, responsabilità disciplinari, erariali o penali competono alle autorità e ai procedimenti previsti dalla legge. DoveVannoINostriSoldi può rendere più semplice trovare e verificare i fatti pubblici, non sostituire il due process.

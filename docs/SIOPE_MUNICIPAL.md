@@ -1,6 +1,6 @@
 # SIOPE · pagamenti di cassa dei Comuni
 
-Trasparenza Italia usa la fonte primaria `siope.it` per il primo dataset territoriale operativo. OpenBDAP resta una fonte RGS importante per altri domini, ma non è il trasporto usato da questa pipeline.
+DoveVannoINostriSoldi usa la fonte primaria `siope.it` per il primo dataset territoriale operativo. OpenBDAP resta una fonte RGS importante per altri domini, ma non è il trasporto usato da questa pipeline.
 
 ## Perimetro del primo adapter
 
@@ -24,7 +24,7 @@ La pipeline usa tre file ufficiali:
 2. `SIOPE_ANAGRAFICHE.zip` — anagrafiche degli enti SIOPE;
 3. `amministrazioni.txt` di Indice PA — join del codice fiscale dell'ente alla regione della sede amministrativa.
 
-Il file annuale SIOPE contiene movimenti mensili puri. Non è una successione di snapshot cumulativi: per questo il grafico mensile non calcola differenze tra rilasci. Il cumulato visualizzato da Trasparenza Italia è semplicemente la somma progressiva dei flussi mensili.
+Il file annuale SIOPE contiene movimenti mensili puri. Non è una successione di snapshot cumulativi: per questo il grafico mensile non calcola differenze tra rilasci. Il cumulato visualizzato da DoveVannoINostriSoldi è semplicemente la somma progressiva dei flussi mensili.
 
 Gli importi SIOPE sono elaborati come interi in centesimi e convertiti in euro soltanto nello snapshot finale. In questo modo l'ETL evita errori di somma dovuti a floating point durante le aggregazioni.
 

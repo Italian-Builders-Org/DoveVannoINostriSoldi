@@ -1,9 +1,9 @@
 {
-  "name": "trasparenzaitalia",
+  "name": "dove-vanno-i-nostri-soldi",
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Dashboard civica open source sui dati della spesa pubblica italiana.",
+  "description": "Dati pubblici italiani spiegati in modo semplice, verificabile e open source.",
   "engines": {
     "node": ">=22.13.0"
   },

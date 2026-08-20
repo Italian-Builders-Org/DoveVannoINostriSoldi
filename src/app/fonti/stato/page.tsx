@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Stato delle fonti",
   description:
-    "Stato operativo, freschezza e policy di aggiornamento delle fonti ufficiali integrate in Trasparenza Italia.",
+    "Disponibilità e aggiornamento delle fonti ufficiali collegate a DoveVannoINostriSoldi.",
 };
 
 const numberFormatter = new Intl.NumberFormat("it-IT");
@@ -41,7 +41,7 @@ function sourceDate(value: string | null): string {
 function reachabilityLabel(source: SourceHealth): string {
   if (source.reachability === "up") return "Raggiungibile";
   if (source.reachability === "down") return "Non raggiungibile";
-  return "Non ancora sondato";
+  return "Non ancora controllato";
 }
 
 function reachabilityClass(source: SourceHealth): string {
@@ -51,9 +51,9 @@ function reachabilityClass(source: SourceHealth): string {
 }
 
 function freshnessLabel(source: SourceHealth): string {
-  if (source.freshness.state === "fresh") return "Dato fresco";
-  if (source.freshness.state === "stale") return "Dato oltre soglia";
-  return "Freschezza non classificata";
+  if (source.freshness.state === "fresh") return "Nei tempi attesi";
+  if (source.freshness.state === "stale") return "Aggiornamento atteso";
+  return "Data non valutabile";
 }
 
 function freshnessClass(source: SourceHealth): string {
@@ -80,50 +80,50 @@ export default async function SourceStatusPage() {
 
       <header className={styles.header}>
         <div>
-          <span className={styles.kicker}>OSSERVABILITÀ DELLE SORGENTI</span>
-          <h1 className={styles.title}>Quanto sono vivi i dati che stai guardando.</h1>
+          <span className={styles.kicker}>STATO DELLE FONTI</span>
+          <h1 className={styles.title}>Quando sono stati aggiornati i dati.</h1>
           <p className={styles.lead}>
-            Separiamo lo stato del nostro adapter dalla disponibilità dell&apos;upstream e dalla
-            freschezza del dato pubblicato. Una fonte raggiungibile non è necessariamente fresca;
-            una fonte temporaneamente offline non rende falso l&apos;ultimo dato già acquisito.
+            Mostriamo tre cose diverse: se abbiamo collegato la fonte, se risponde in questo
+            momento e a quando risale il dato. Un sito temporaneamente irraggiungibile non rende
+            falso l&apos;ultimo dato già acquisito.
           </p>
         </div>
 
         <div className={styles.summary} aria-label="Riepilogo stato fonti">
           <div>
             <strong>{sources.length}</strong>
-            <span>fonti con policy</span>
+            <span>fonti controllate</span>
           </div>
           <div>
             <strong>{active.length}</strong>
-            <span>adapter attivi</span>
+            <span>fonti collegate</span>
           </div>
           <div>
             <strong>{reachable.length}</strong>
-            <span>upstream raggiungibili ora</span>
+            <span>fonti raggiungibili ora</span>
           </div>
           <div>
             <strong>{unreachable.length}</strong>
-            <span>probe falliti</span>
+            <span>controlli non riusciti</span>
           </div>
         </div>
       </header>
 
       <section className={styles.explainer}>
         <div>
-          <h2>Controlliamo più spesso di quanto la fonte pubblichi.</h2>
+          <h2>Controllare spesso non rende il dato in tempo reale.</h2>
           <p>
             Se IPA aggiorna ogni giorno, possiamo ricontrollarlo ogni ora. Se un dataset è mensile,
-            ricontrollarlo più volte al giorno ci permette di rilevare rapidamente il nuovo rilascio,
-            senza chiamare “tempo reale” un dato che resta mensile.
+            controllarlo più volte al giorno ci aiuta a trovare presto il nuovo rilascio,
+            ma il dato resta mensile.
           </p>
         </div>
         <div>
-          <h2>Reachability e freshness sono due misure diverse.</h2>
+          <h2>Disponibilità e aggiornamento sono cose diverse.</h2>
           <p>
-            Il primo stato misura se l&apos;adapter riesce a interrogare la fonte. Il secondo usa,
-            quando disponibile, un timestamp pubblicato dalla fonte e lo confronta con una soglia
-            coerente con la sua cadenza. Se non abbiamo abbastanza informazioni, mostriamo “unknown”.
+            Una fonte può rispondere ma avere dati vecchi, oppure essere momentaneamente offline
+            mentre l&apos;ultimo dato acquisito è ancora valido. Se non abbiamo abbastanza informazioni,
+            lo diciamo senza inventare un semaforo.
           </p>
         </div>
       </section>
@@ -131,9 +131,9 @@ export default async function SourceStatusPage() {
       <section className={styles.table} aria-label="Stato delle fonti ufficiali">
         <div className={styles.tableHeader}>
           <span>Fonte</span>
-          <span>Integrazione</span>
-          <span>Stato upstream</span>
-          <span>Freschezza</span>
+          <span>Collegamento</span>
+          <span>Risponde ora?</span>
+          <span>Data del dato</span>
         </div>
 
         {sources.map((source) => (
@@ -147,9 +147,9 @@ export default async function SourceStatusPage() {
             </div>
 
             <div className={styles.meta}>
-              <strong>{source.integration === "active" ? "Adapter attivo" : "Mappata"}</strong>
+              <strong>{source.integration === "active" ? "Collegata" : "Individuata"}</strong>
               <span>Cadenza: {source.policy.cadence}</span>
-              <span>Discovery: {duration(source.policy.discoveryRevalidateSeconds)}</span>
+              <span>Cerchiamo nuovi dati ogni {duration(source.policy.discoveryRevalidateSeconds)}</span>
             </div>
 
             <div className={styles.health}>
@@ -161,7 +161,7 @@ export default async function SourceStatusPage() {
               </strong>
               <span>{source.detail ?? "Nessun dettaglio disponibile"}</span>
               {source.recordCount !== null && (
-                <span>{numberFormatter.format(source.recordCount)} elementi rilevati dal probe</span>
+                <span>{numberFormatter.format(source.recordCount)} elementi rilevati dal controllo</span>
               )}
             </div>
 
@@ -179,10 +179,9 @@ export default async function SourceStatusPage() {
       </section>
 
       <p className={styles.footerNote}>
-        “Non ancora sondato” non significa che il sito ufficiale sia offline. “Freschezza non classificata”
-        non significa che il dato sia vecchio. In entrambi i casi significa che Trasparenza Italia non ha
-        ancora evidenza sufficiente per attribuire automaticamente quello stato. Preferiamo un&apos;assenza di
-        misura a un semaforo inventato.
+        “Non ancora controllato” non significa che il sito ufficiale sia offline. “Data non valutabile”
+        non significa che il dato sia vecchio. Significa che non abbiamo abbastanza informazioni.
+        Preferiamo lasciare un dubbio visibile invece di inventare una certezza.
       </p>
     </main>
   );

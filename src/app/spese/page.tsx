@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Spese dello Stato",
   description:
-    "Pagamenti del Bilancio dello Stato aggregati da fonti ufficiali RGS/OpenBDAP, con andamento nel tempo, missioni, amministrazioni, classificazione economica e provenienza.",
+    "Pagamenti del Bilancio dello Stato da RGS/OpenBDAP, spiegati con grafici, date e fonti.",
 };
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
@@ -100,8 +100,8 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           <span className={styles.kicker}>RGS / OPENBDAP · PAGAMENTI DEL BILANCIO DELLO STATO</span>
           <h1 className={styles.title}>Dove va la spesa dello Stato.</h1>
           <p className={styles.lead}>
-            Uniamo i dataset ufficiali della Ragioneria Generale dello Stato per leggere lo stesso
-            dato per andamento nel tempo, missione, amministrazione e natura economica. Nessuna stima e nessun dato dimostrativo.
+            Leggiamo i dati ufficiali della Ragioneria Generale dello Stato per mostrare come cambia
+            la spesa, chi la gestisce e per quale funzione. Non usiamo stime o valori dimostrativi.
           </p>
         </div>
 
@@ -191,7 +191,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             height={500}
           />
           <p className={styles.chartCaption}>
-            Valori cumulati in euro. Ordinamento calcolato da Trasparenza Italia sul campo “Totale Pagato” del dataset RGS per Missione.
+            Valori cumulati in euro. Ordinamento calcolato da DoveVannoINostriSoldi sul campo “Totale Pagato” del dataset RGS per Missione.
           </p>
         </div>
       </section>

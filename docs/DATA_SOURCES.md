@@ -68,7 +68,7 @@ Strategia:
 8. non fare OCR di PDF se esiste un formato strutturato;
 9. pubblicare un indice di copertura separato dalla spesa.
 
-ANAC TrasparenzAI dimostra che il monitoraggio automatico della struttura di Amministrazione Trasparente è tecnicamente applicabile su scala IPA. Trasparenza Italia non deve duplicare il giudizio di conformità ANAC: deve usare la stessa idea di discovery per aggregare i dati effettivamente pubblicati.
+ANAC TrasparenzAI dimostra che il monitoraggio automatico della struttura di Amministrazione Trasparente è tecnicamente applicabile su scala IPA. DoveVannoINostriSoldi non deve duplicare il giudizio di conformità ANAC: deve usare la stessa idea di discovery per aggregare i dati effettivamente pubblicati.
 
 ## Tier 3 — investimenti
 

@@ -1,22 +1,22 @@
-# Trasparenza Italia
+# DoveVannoINostriSoldi
 
 > **Dove vanno i soldi pubblici, fonte per fonte.**
 
-Trasparenza Italia è un progetto civico open source per aggregare, normalizzare e rendere comprensibili i dati pubblici sulla spesa e sulla gestione delle risorse della Pubblica Amministrazione italiana.
+DoveVannoINostriSoldi è un progetto civico open source per capire come vengono usati i soldi pubblici italiani.
 
-L'obiettivo non è creare una classifica dello scandalo. È costruire una **infrastruttura di verifica**: un cittadino dovrebbe poter partire da un grafico, un ente, un contratto o un progetto, arrivare al record originale, capire quando il dato è stato aggiornato e ricostruire come è stato trasformato.
+Riunisce dati ufficiali oggi dispersi tra portali diversi. Da un grafico, un ente o un progetto si può arrivare alla fonte originale, vedere la data del dato e capire i suoi limiti. Non crea classifiche dello scandalo e non trasforma un segnale in un'accusa.
 
 ## Principio fondamentale
 
-**Nessun numero senza fonte, data e percorso di verifica.**
+**Nessun numero senza fonte, data e spiegazione.**
 
-“Live” non significa inventare un tempo reale che non esiste. Trasparenza Italia controlla le sorgenti più spesso della loro cadenza di pubblicazione quando è utile, rileva rapidamente i nuovi rilasci ufficiali e mostra separatamente:
+“Aggiornato” significa aggiornato quanto la fonte. DoveVannoINostriSoldi controlla quando arrivano nuovi dati ufficiali e mostra separatamente:
 
-- timestamp del dato sorgente;
-- momento di acquisizione;
-- disponibilità dell'upstream;
-- freshness rispetto alla cadenza dichiarata;
-- trasformazioni applicate.
+- la data a cui si riferisce il dato;
+- quando la piattaforma lo ha acquisito;
+- se la fonte risponde;
+- quanto spesso la fonte pubblica nuovi dati;
+- i calcoli applicati.
 
 ## Cosa vogliamo unire
 
@@ -40,7 +40,8 @@ La route `/` è direttamente il prodotto: non contiene una landing promozionale 
 
 - ricerca reale degli enti sul datastore IPA;
 - quadro SIOPE dei pagamenti di cassa dei Comuni e flusso mensile ufficiale;
-- coropleta delle 20 regioni alimentata dai valori SIOPE pro capite e dai confini ISTAT 2026;
+- mappa delle 20 regioni alimentata dai valori SIOPE pro capite e dai confini ISTAT 2026;
+- pagina `/controlli` con i numeri del dossier 2026, colori semantici e limiti di lettura espliciti;
 - riepilogo OpenCoesione con rapporto finanziario distinto dall'avanzamento fisico;
 - data di riferimento, pubblicazione della fonte, acquisizione e frequenza di controllo visibili;
 - percorsi diretti verso dashboard di dettaglio, metodologia e fonti originali.
@@ -131,7 +132,7 @@ API e aggiornamento:
 
 `/fonti/stato` separa tre concetti che spesso vengono confusi:
 
-1. **integrazione**: esiste un adapter di Trasparenza Italia?
+1. **integrazione**: esiste un adapter di DoveVannoINostriSoldi?
 2. **reachability**: l'upstream risponde?
 3. **freshness**: quanto è vecchio il dato secondo un timestamp ufficiale e una soglia coerente con la fonte?
 
@@ -271,7 +272,7 @@ Leggi [`docs/LEGAL_AND_ETHICS.md`](docs/LEGAL_AND_ETHICS.md).
 
 ## Indipendenza
 
-Trasparenza Italia è un progetto civico indipendente. Non è un sito ufficiale dello Stato italiano, di ANAC, RGS, Banca d'Italia, AgID, Camera o Senato.
+DoveVannoINostriSoldi è un progetto civico indipendente. Non è un sito ufficiale dello Stato italiano, di ANAC, RGS, Banca d'Italia, AgID, Camera o Senato.
 
 I dati restano attribuiti alle rispettive fonti e vengono riutilizzati nel rispetto delle licenze, delle condizioni applicabili e della normativa sulla protezione dei dati personali.
 

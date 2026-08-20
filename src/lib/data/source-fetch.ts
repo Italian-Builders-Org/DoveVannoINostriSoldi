@@ -50,7 +50,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 const RETRY_DELAY_MS = 300;
 const USER_AGENT =
-  "TrasparenzaItalia/0.5 (+https://github.com/metaforismo/trasparenzaitalia)";
+  "DoveVannoINostriSoldi/0.5 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)";
 
 export class SourceFetchError extends Error {
   constructor(

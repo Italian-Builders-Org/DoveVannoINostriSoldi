@@ -1,6 +1,6 @@
 # Freshness, refresh e observability delle fonti
 
-Trasparenza Italia non usa la parola **live** come sinonimo di polling continuo. Il dato può essere aggiornato soltanto quando la fonte ufficiale pubblica nuova informazione.
+DoveVannoINostriSoldi non usa la parola **live** come sinonimo di polling continuo. Il dato può essere aggiornato soltanto quando la fonte ufficiale pubblica nuova informazione.
 
 L'obiettivo operativo è diverso: **rilevare ogni nuovo rilascio ufficiale il prima possibile, conservarne la provenienza e non servire dati inventati quando l'upstream ha problemi**.
 
@@ -90,7 +90,7 @@ La cadenza dichiarata dalla fonte resta bimestrale prevista. `/api/fonti/stato` 
 
 ## Policy iniziali
 
-| Fonte | Cadenza sorgente | Discovery Trasparenza Italia | Dati |
+| Fonte | Cadenza sorgente | Discovery DoveVannoINostriSoldi | Dati |
 | --- | --- | ---: | ---: |
 | IPA Enti | giornaliera | 1 h | 1 h |
 | OpenBDAP · Pagamenti Stato | mensile per mese contabile | 2 h | 6 h |

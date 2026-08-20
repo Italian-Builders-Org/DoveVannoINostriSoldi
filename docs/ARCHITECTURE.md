@@ -2,7 +2,7 @@
 
 ## Obiettivo
 
-Trasparenza Italia deve poter rispondere a una domanda semplice — “dove sono andati questi soldi?” — senza perdere la complessità contabile necessaria a dare una risposta corretta.
+DoveVannoINostriSoldi deve poter rispondere a una domanda semplice — “dove sono andati questi soldi?” — senza perdere la complessità contabile necessaria a dare una risposta corretta.
 
 Per questo l'architettura è pensata in livelli separati.
 

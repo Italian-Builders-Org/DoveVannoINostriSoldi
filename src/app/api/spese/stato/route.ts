@@ -14,7 +14,7 @@ export async function GET() {
           owner: "Ragioneria Generale dello Stato",
           platform: "OpenBDAP",
           cadence: "rilasci periodici per mese contabile",
-          normalization: "Trasparenza Italia",
+          normalization: "DoveVannoINostriSoldi",
         },
         ...snapshot,
       },

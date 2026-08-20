@@ -11,6 +11,7 @@
   --blue-2: #168bc7;
   --green: #6ee7a8;
   --amber: #f0c56c;
+  --violet: #a78bda;
   --red: #ff7a7a;
   --max: 1420px;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", ui-sans-serif, sans-serif;
@@ -52,8 +53,8 @@ button, input { font: inherit; caret-color: var(--blue); }
 }
 .brand { display: inline-flex; align-items: center; gap: 12px; justify-self: start; }
 .brand > span:last-child { display: grid; gap: 3px; }
-.brand strong { font-size: 13px; letter-spacing: .16em; }
-.brand small { color: var(--muted); font-size: 10px; letter-spacing: .05em; }
+.brand strong { font-size: 14px; letter-spacing: -.01em; }
+.brand small { color: var(--muted); font-size: 10px; letter-spacing: .01em; }
 .brand-mark {
   width: 33px;
   height: 38px;
@@ -319,7 +320,8 @@ main { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
   color: #668294;
 }
 .site-footer strong { color: #a7bdca; font-size: 11px; }
-.site-footer p, .footer-rule { font-size: 9px; max-width: 470px; line-height: 1.5; }
+.site-footer p, .footer-rule { font-size: 10px; max-width: 520px; line-height: 1.5; }
+.footer-rule a { color: #86bed8; text-decoration: underline; text-underline-offset: 3px; }
 .site-footer p { margin: 5px 0 0; }
 
 .subpage { padding-bottom: 100px; }
@@ -403,6 +405,7 @@ main { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
   }
   .header-search { grid-column: 1 / -1; grid-row: 2; }
   .brand small { display: none; }
+  .brand strong { font-size: 12px; }
   .nav-row { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
   .nav-row::-webkit-scrollbar { display: none; }
   .primary-nav { flex: 0 0 auto; }

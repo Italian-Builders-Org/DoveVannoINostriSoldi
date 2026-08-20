@@ -12,7 +12,7 @@ export async function GET() {
     const response = await fetch(BDAP_PACKAGE_LIST, {
       headers: {
         Accept: "application/json",
-        "User-Agent": "TrasparenzaItalia/0.1 (+https://github.com/metaforismo/trasparenzaitalia)",
+        "User-Agent": "DoveVannoINostriSoldi/0.1 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)",
       },
       next: { revalidate: 3600 },
       signal: AbortSignal.timeout(8000),

@@ -56,7 +56,7 @@ def tax_code(value: str | None) -> str:
 def fetch_bytes(url: str) -> bytes:
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "TrasparenzaItalia/0.6 (+https://github.com/metaforismo/trasparenzaitalia)"},
+        headers={"User-Agent": "DoveVannoINostriSoldi/0.6 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"},
     )
     with urllib.request.urlopen(request, timeout=60) as response:
         return response.read()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the small SIOPE snapshot consumed by Trasparenza Italia.
+"""Build the small SIOPE snapshot consumed by DoveVannoINostriSoldi.
 
 The public SIOPE source publishes one national ZIP per year with *pure monthly*
 cash movements. Downloading and parsing that file during a web request would be
@@ -39,7 +39,7 @@ IPA_ADMINISTRATIONS_URL = (
     "resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt"
 )
 DEFAULT_OUTPUT = Path("src/data/generated/siope-municipal.json")
-USER_AGENT = "TrasparenzaItalia-ETL/1.0 (+https://github.com/metaforismo/trasparenzaitalia)"
+USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 CHUNK_SIZE = 1 << 20
 MAX_ATTEMPTS = 3
 

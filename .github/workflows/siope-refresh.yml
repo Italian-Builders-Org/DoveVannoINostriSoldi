@@ -99,7 +99,7 @@ jobs:
             exit 0
           fi
 
-          git config user.name "trasparenza-italia-bot"
+          git config user.name "dove-vanno-i-nostri-soldi-bot"
           git config user.email "actions@users.noreply.github.com"
           git add src/data/generated/siope-municipal.json
           git commit -m "chore(data): refresh SIOPE municipal snapshot"

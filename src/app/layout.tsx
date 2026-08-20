@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Navigation } from "@/components/navigation";
 import "./globals.css";
 import "./design-system.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Trasparenza Italia",
-    template: "%s · Trasparenza Italia",
+    default: "DoveVannoINostriSoldi",
+    template: "%s · DoveVannoINostriSoldi",
   },
   description:
-    "Dashboard civica open source che aggrega fonti ufficiali sulla spesa e sulla gestione delle risorse pubbliche italiane.",
+    "Dati pubblici italiani spiegati in modo semplice, con la fonte sempre a portata di mano.",
 };
 
 export const viewport: Viewport = {
@@ -31,11 +32,11 @@ export default function RootLayout({
         {children}
         <footer className="site-footer">
           <div>
-            <strong>Trasparenza Italia</strong>
-            <p>Progetto civico indipendente e open source. Non è un sito della Pubblica Amministrazione.</p>
+            <strong>DoveVannoINostriSoldi</strong>
+            <p>Progetto indipendente e open source. Non è un sito della Pubblica Amministrazione.</p>
           </div>
           <div className="footer-rule">
-            Ogni numero deve avere una fonte, una data e un percorso di verifica.
+            <Link href="/metodologia">Come leggiamo i dati</Link> · Ogni numero ha una fonte, una data e un limite dichiarato.
           </div>
         </footer>
       </body>

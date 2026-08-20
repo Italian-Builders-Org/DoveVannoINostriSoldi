@@ -8,7 +8,7 @@ import {
 import styles from "./territori.module.css";
 
 export const metadata = {
-  title: "Territori · Trasparenza Italia",
+  title: "Territori",
   description:
     "Pagamenti di cassa SIOPE dei Comuni italiani: flussi mensili, regioni, categorie e principali amministrazioni.",
 };
@@ -77,9 +77,8 @@ export default function TerritoriesPage() {
           </div>
           <h1>Dove spendono i Comuni italiani.</h1>
           <p>
-            Movimenti di cassa pubblicati dalla fonte primaria SIOPE, aggregati senza
-            trasformare il significato del dato. La vista regionale raggruppa i Comuni
-            per sede dell&apos;ente; non attribuisce la spesa al luogo fisico in cui è avvenuta.
+            Pagamenti pubblicati da SIOPE e riuniti per territorio. La vista regionale raggruppa
+            i Comuni in base alla sede dell&apos;ente: non dice necessariamente dove è avvenuta la spesa.
           </p>
         </div>
 
@@ -120,8 +119,8 @@ export default function TerritoriesPage() {
             <h2>Il ritmo dei pagamenti durante l&apos;anno</h2>
           </div>
           <p>
-            A differenza degli snapshot cumulativi del Bilancio dello Stato, questi sono
-            flussi mensili SIOPE diretti. Il cumulato è soltanto la loro somma progressiva.
+            Qui ogni barra mostra i pagamenti registrati nel singolo mese. Il totale da gennaio
+            è la somma dei mesi già disponibili.
           </p>
         </div>
         <MunicipalSpendingTrendChart data={data.monthly} />
@@ -134,8 +133,8 @@ export default function TerritoriesPage() {
             <h2>Confrontare volume e intensità</h2>
           </div>
           <p>
-            Il totale premia inevitabilmente le regioni con più abitanti e più Comuni; la
-            seconda vista normalizza sui residenti coperti per rendere il confronto più leggibile.
+            Le regioni più grandi tendono ad avere totali maggiori. Per questo mostriamo anche
+            gli euro per abitante della popolazione coperta.
           </p>
         </div>
 

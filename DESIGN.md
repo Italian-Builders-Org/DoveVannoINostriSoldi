@@ -1,12 +1,12 @@
-# Trasparenza Italia — Design System
+# DoveVannoINostriSoldi — Design System
 
 ## 01 Overview
 
-**Creative North Star: “The Civic Ledger.”**
+**Direzione: “Il conto pubblico.”**
 
-Trasparenza Italia è un prodotto operativo di consultazione e verifica. Deve sembrare un'infrastruttura civica contemporanea: autorevole, leggibile e densa quanto serve, senza sembrare né un portale ministeriale legacy né una dashboard cyber.
+DoveVannoINostriSoldi è un prodotto operativo di consultazione e verifica. Deve sembrare un'infrastruttura civica contemporanea: autorevole, leggibile e densa quanto serve, senza sembrare né un portale ministeriale legacy né una dashboard cyber.
 
-La direzione è **data-first, provenance-first, flat by default**.
+La direzione è **dati subito, fonte vicina, superfici semplici**.
 
 La schermata deve far capire rapidamente:
 
@@ -36,6 +36,7 @@ La palette è blu-notte istituzionale con accenti freddi desaturati. Evitare ner
 - `--blue: #55b8ef` — azione e informazione primaria;
 - `--green: #6ee7a8` — fonte verificata / stato positivo;
 - `--amber: #f0c56c` — attenzione / integrazione incompleta;
+- `--violet: #a78bda` — scenario o scelta di policy;
 - `--red: #ff7a7a` — errore o variazione negativa, non “colpevolezza”.
 
 ### Data visualization tokens
@@ -43,7 +44,12 @@ La palette è blu-notte istituzionale con accenti freddi desaturati. Evitare ner
 - `--chart-primary: #72aeca`;
 - `--chart-secondary: #78ad8d`;
 - `--chart-tertiary: #c3a66c`;
+- `--chart-policy: #a78bda`;
 - `--chart-negative: #ca7d7d`.
+
+Nelle pagine di audit i colori hanno un significato stabile: blu per dati osservati,
+ambra per aree da approfondire, viola per scenari di policy e rosso attenuato per stock
+o passività. Testo e spiegazione accompagnano sempre il colore.
 
 Le serie devono avere luminosità comparabile e il colore deve significare qualcosa. Non usare automaticamente rosso/verde per giudicare enti o persone. Il colore non può essere l'unico mezzo per comunicare uno stato.
 

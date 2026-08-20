@@ -10,6 +10,7 @@ import {
 } from "@/lib/opencoesione-snapshot";
 import { siopeMunicipalSnapshot as siope } from "@/lib/siope-snapshot";
 import { publicSources, sourceCounts } from "@/lib/sources";
+import { auditScenarios, procurementComparison } from "@/lib/audit-data";
 import styles from "./home.module.css";
 
 const integer = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 0 });
@@ -72,12 +73,12 @@ const sourceRows = ["siope", "openbdap", "ipa", "opencoesione", "partecipazioni-
   .filter((source): source is NonNullable<typeof source> => Boolean(source));
 
 const analysisPaths = [
-  { href: "/spese", area: "Spesa dello Stato", detail: "Pagamenti, missioni e serie mensile", source: "RGS · OpenBDAP", status: "Dashboard attiva" },
-  { href: "/territori", area: "Territori", detail: "Pagamenti di cassa di Comuni e regioni", source: "SIOPE · IPA", status: "Dashboard attiva" },
-  { href: "/coesione", area: "Politiche di coesione", detail: "Costo, pagamenti e progetti monitorati", source: "OpenCoesione", status: "Dashboard attiva" },
-  { href: "/enti", area: "Enti pubblici", detail: "Ricerca nel registro nazionale", source: "IPA · AgID", status: "Ricerca attiva" },
-  { href: "/partecipazioni", area: "Partecipazioni pubbliche", detail: "Relazioni amministrazioni–partecipate", source: "MEF · rilevazione 2023", status: "Snapshot attivo" },
-  { href: "/fonti", area: "Contratti pubblici", detail: "CIG, procedure e aggiudicazioni", source: "ANAC · BDNCP", status: "In integrazione" },
+  { href: "/spese", area: "Stato", detail: "Quanto paga e per quali funzioni", source: "RGS · OpenBDAP", status: "Disponibile" },
+  { href: "/territori", area: "Comuni e regioni", detail: "Pagamenti e confronti tra territori", source: "SIOPE · IPA", status: "Disponibile" },
+  { href: "/coesione", area: "Fondi e progetti", detail: "Costo, pagamenti e progetti seguiti", source: "OpenCoesione", status: "Disponibile" },
+  { href: "/enti", area: "Enti pubblici", detail: "Cerca un ente nel registro nazionale", source: "IPA · AgID", status: "Disponibile" },
+  { href: "/partecipazioni", area: "Società partecipate", detail: "Chi partecipa in quali società", source: "MEF · dati 2023", status: "Disponibile" },
+  { href: "/fonti", area: "Contratti pubblici", detail: "Gare, affidamenti e aggiudicazioni", source: "ANAC · BDNCP", status: "In lavorazione" },
 ];
 
 export default function HomePage() {
@@ -85,31 +86,57 @@ export default function HomePage() {
     <main className={styles.dashboard}>
       <header className={styles.overviewHeader}>
         <div>
-          <h1>Quadro nazionale</h1>
-          <p>Dati ufficiali disponibili oggi su spesa, enti e progetti pubblici.</p>
+          <h1>Dove vanno i nostri soldi?</h1>
+          <p>Una dashboard per capire i dati pubblici italiani e risalire sempre alla fonte.</p>
         </div>
-        <Link href="/fonti/stato">Stato e frequenza delle fonti <span>→</span></Link>
+        <Link href="/fonti/stato">Quando sono aggiornati i dati <span>→</span></Link>
       </header>
 
       <section className={styles.pulse} aria-label="Copertura attuale della piattaforma">
-        <div><strong>{sourceCounts.active}</strong><span>fonti con adapter attivo</span></div>
-        <div><strong>{integer.format(siope.coverage.includedMovementRows)}</strong><span>movimenti SIOPE inclusi</span></div>
-        <div><strong>{integer.format(siope.coverage.withMovements)}</strong><span>Comuni con movimenti</span></div>
-        <div><strong>{siope.regions.length}</strong><span>regioni aggregate</span></div>
-        <div><strong>{integer.format(cohesion.totals.projects)}</strong><span>progetti OpenCoesione</span></div>
+        <div><strong>{sourceCounts.active}</strong><span>fonti collegate</span></div>
+        <div><strong>{integer.format(siope.coverage.includedMovementRows)}</strong><span>pagamenti comunali letti</span></div>
+        <div><strong>{integer.format(siope.coverage.withMovements)}</strong><span>Comuni presenti</span></div>
+        <div><strong>{siope.regions.length}</strong><span>regioni confrontabili</span></div>
+        <div><strong>{integer.format(cohesion.totals.projects)}</strong><span>progetti seguiti</span></div>
+      </section>
+
+      <section className={styles.auditCallout} aria-labelledby="audit-title">
+        <header>
+          <span className={styles.sectionLabelText}>LEGGERE BENE I NUMERI</span>
+          <h2 id="audit-title">Tre dati che raccontano cose diverse</h2>
+          <p>Una cifra grande non è automaticamente uno spreco. Il contesto cambia il significato.</p>
+        </header>
+        <div>
+          <article data-tone="attention">
+            <strong>{procurementComparison.byNumber.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%</strong>
+            <h3>Procedure con meno confronto</h3>
+            <p>Quota per numero di procedure sopra 40.000 €, non stima di corruzione.</p>
+          </article>
+          <article data-tone="observed">
+            <strong>{procurementComparison.byValue.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%</strong>
+            <h3>Quota sul valore dei contratti</h3>
+            <p>Lo stesso fenomeno pesa molto meno se misurato in euro.</p>
+          </article>
+          <article data-tone="policy">
+            <strong>{auditScenarios[1].annualBillion.toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €</strong>
+            <h3>Scenario centrale</h3>
+            <p>È un esercizio di policy con ipotesi dichiarate, non denaro già disponibile.</p>
+          </article>
+        </div>
+        <Link href="/controlli">Capire i numeri dell&apos;audit <span>→</span></Link>
       </section>
 
       <section className={styles.siopeGrid} aria-labelledby="siope-title">
         <article className={styles.primaryMetric}>
           <div className={styles.sectionLabel}>
-            <span>SIOPE · COMUNI</span>
+              <span>PAGAMENTI DEI COMUNI · SIOPE</span>
             <InfoTooltip id="cash-payments-tip" label="Che cosa sono i pagamenti di cassa?">
               Uscite effettivamente registrate in SIOPE dai Comuni. Non rappresentano tutta la spesa pubblica italiana.
             </InfoTooltip>
           </div>
-          <h2 id="siope-title">Pagamenti di cassa</h2>
+          <h2 id="siope-title">Quanto hanno pagato i Comuni</h2>
           <strong>{compactEuro(siope.totalPaid)}</strong>
-          <p>Cumulato {period}</p>
+          <p>Totale da {period}</p>
           <dl>
             <div><dt>Comuni inclusi</dt><dd>{integer.format(siope.coverage.withMovements)}</dd></div>
             <div>
@@ -121,7 +148,7 @@ export default function HomePage() {
               </dt>
               <dd>{coverageRatio.toLocaleString("it-IT", { maximumFractionDigits: 2 })}%</dd>
             </div>
-            <div><dt>File SIOPE · ultima modifica</dt><dd>{date(siope.source.siopeMovementsLastModified)}</dd></div>
+            <div><dt>Fonte aggiornata il</dt><dd>{date(siope.source.siopeMovementsLastModified)}</dd></div>
           </dl>
           <Link href="/territori">Apri il dettaglio territoriale <span>→</span></Link>
         </article>
@@ -129,22 +156,22 @@ export default function HomePage() {
         <figure className={styles.monthlyPanel}>
           <header>
             <div>
-              <span className={styles.sectionLabelText}>FLUSSO MENSILE · EURO</span>
-              <h2>Quando vengono registrati i pagamenti</h2>
+              <span className={styles.sectionLabelText}>MESE PER MESE · EURO</span>
+              <h2>Come cambia la spesa durante l&apos;anno</h2>
             </div>
             <b>SIOPE diretto</b>
           </header>
           <HomeMonthlyChart data={siope.monthly} />
-          <figcaption>Movimenti mensili, non differenze stimate. Fonte SIOPE · {period} · valore esatto nel tooltip.</figcaption>
+          <figcaption>Pagamenti registrati ogni mese. Fonte SIOPE · {period}. Passa sul grafico per il valore esatto.</figcaption>
         </figure>
       </section>
 
       <section className={styles.mapPanel} aria-labelledby="map-title">
         <header className={styles.panelHeader}>
           <div>
-            <span className={styles.sectionLabelText}>CONFRONTO TERRITORIALE · SIOPE</span>
-            <h2 id="map-title">Pagamenti comunali per regione</h2>
-            <p>Euro per abitante della popolazione coperta; seleziona una regione per il dettaglio.</p>
+            <span className={styles.sectionLabelText}>TERRITORI · SIOPE</span>
+            <h2 id="map-title">Quanto spendono i Comuni in ogni regione</h2>
+            <p>Euro per abitante. Seleziona una regione per vedere il dettaglio.</p>
           </div>
           <Link href="/territori">Tabelle e classificazioni <span>→</span></Link>
         </header>
@@ -161,22 +188,22 @@ export default function HomePage() {
         <article className={styles.cohesionPanel}>
           <header className={styles.panelHeader}>
             <div>
-              <span className={styles.sectionLabelText}>OPENCOESIONE · AGGREGATO NAZIONALE</span>
-              <h2>Investimenti e politiche di coesione</h2>
+              <span className={styles.sectionLabelText}>FONDI E PROGETTI · OPENCOESIONE</span>
+              <h2>Quanto costano e quanto è stato pagato</h2>
             </div>
             <span className={cohesionFreshnessClass}>{cohesionFreshnessLabel}</span>
           </header>
 
           <div className={styles.cohesionStats}>
-            <div><span>Costo pubblico</span><strong>{compactEuro(cohesion.totals.publicCostCents / 100)}</strong></div>
-            <div><span>Pagamenti registrati</span><strong>{compactEuro(cohesion.totals.paymentsCents / 100)}</strong></div>
-            <div><span>Progetti monitorati</span><strong>{integer.format(cohesion.totals.projects)}</strong></div>
+            <div><span>Costo previsto</span><strong>{compactEuro(cohesion.totals.publicCostCents / 100)}</strong></div>
+            <div><span>Già pagato</span><strong>{compactEuro(cohesion.totals.paymentsCents / 100)}</strong></div>
+            <div><span>Progetti seguiti</span><strong>{integer.format(cohesion.totals.projects)}</strong></div>
           </div>
 
           <div className={styles.ratioBlock}>
             <div>
               <span className={styles.inlineTerm}>
-                Pagamenti / costo pubblico
+                Pagato sul costo previsto
                 <InfoTooltip id="cohesion-ratio-tip" label="Che cosa significa questo rapporto?">
                   Rapporto finanziario aggregato. Non indica avanzamento fisico, qualità o completamento dei progetti.
                 </InfoTooltip>
@@ -184,7 +211,7 @@ export default function HomePage() {
               <strong>{cohesionRatioPercent.toLocaleString("it-IT", { maximumFractionDigits: 2 })}%</strong>
             </div>
             <div className={styles.ratioTrack} aria-hidden="true"><i style={{ width: `${Math.min(cohesionRatioPercent, 100)}%` }} /></div>
-            <p>Indicatore finanziario aggregato, non avanzamento fisico dei progetti.</p>
+            <p>Confronta euro pagati e costo previsto. Non dice quante opere sono finite.</p>
           </div>
 
           <footer>
@@ -195,9 +222,9 @@ export default function HomePage() {
 
         <aside className={styles.freshnessPanel}>
           <header>
-            <span className={styles.sectionLabelText}>FRESCHEZZA</span>
-            <h2>Quando cambia il dato</h2>
-            <p>Pubblicazione della fonte e controllo della piattaforma restano distinti.</p>
+            <span className={styles.sectionLabelText}>AGGIORNAMENTI</span>
+            <h2>Quanto sono recenti i dati</h2>
+            <p>Mostriamo sia la data della fonte sia quando l&apos;abbiamo controllata.</p>
           </header>
           <div className={styles.freshnessRows}>
             <article>
@@ -226,17 +253,17 @@ export default function HomePage() {
       <section className={styles.pathsPanel} aria-labelledby="paths-title">
         <header className={styles.panelHeader}>
           <div>
-            <span className={styles.sectionLabelText}>PERCORSI DI ANALISI</span>
-            <h2 id="paths-title">Dal quadro generale alla fonte</h2>
+              <span className={styles.sectionLabelText}>ESPLORA</span>
+              <h2 id="paths-title">Scegli da dove iniziare</h2>
           </div>
-          <Link href="/metodologia">Come normalizziamo i dati <span>→</span></Link>
+          <Link href="/metodologia">Come leggiamo i dati <span>→</span></Link>
         </header>
         <div className={styles.pathTable}>
           <div className={styles.pathHead} aria-hidden="true"><span>Area</span><span>Contenuto</span><span>Fonte</span><span>Stato</span><span /></div>
           {analysisPaths.map((item) => (
             <Link href={item.href} className={styles.pathRow} key={item.area}>
               <strong>{item.area}</strong><span>{item.detail}</span><span>{item.source}</span>
-              <b className={item.status === "In integrazione" ? styles.integrating : ""}>{item.status}</b>
+              <b className={item.status === "In lavorazione" ? styles.integrating : ""}>{item.status}</b>
               <i aria-hidden="true">→</i>
             </Link>
           ))}
@@ -245,8 +272,8 @@ export default function HomePage() {
 
       <section className={styles.sourceRegister} aria-labelledby="sources-title">
         <div>
-          <h2 id="sources-title">Fonti ufficiali, collegate all&apos;originale.</h2>
-          <p>Ogni vista espone perimetro, data e collegamento all&apos;originale.</p>
+          <h2 id="sources-title">Da dove arrivano questi numeri</h2>
+          <p>Ogni dato mostra la fonte ufficiale, la data e ciò che non può spiegare.</p>
         </div>
         <div className={styles.sourceLinks}>
           {sourceRows.map((source) => (

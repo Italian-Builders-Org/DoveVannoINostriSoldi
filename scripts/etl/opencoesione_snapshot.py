@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 ENDPOINT = "https://opencoesione.gov.it/it/api/aggregati/"
 DEFAULT_OUTPUT = Path("src/data/generated/opencoesione-overview.json")
 OFFICIAL_HOSTS = {"opencoesione.gov.it", "www.opencoesione.gov.it"}
-USER_AGENT = "TrasparenzaItalia-ETL/1.0 (+https://github.com/metaforismo/trasparenzaitalia)"
+USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 TRANSIENT_HTTP = {403, 408, 425, 429, 500, 502, 503, 504}
 MONEY_TOLERANCE_CENTS = 200
 MAX_SAFE_INTEGER = 9_007_199_254_740_991

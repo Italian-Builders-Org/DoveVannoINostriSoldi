@@ -41,14 +41,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     const entity = await getIpaEntityByCode(decodeURIComponent(codice));
-    if (!entity) return { title: "Ente non trovato · Trasparenza Italia" };
+    if (!entity) return { title: "Ente non trovato" };
 
     return {
-      title: `${entity.denominazione} · Trasparenza Italia`,
+      title: entity.denominazione,
       description: `Scheda pubblica dell'ente ${entity.denominazione}, Codice IPA ${entity.codiceIpa}.`,
     };
   } catch {
-    return { title: "Ente · Trasparenza Italia" };
+    return { title: "Ente" };
   }
 }
 
@@ -320,7 +320,7 @@ export default async function EntityPage({ params }: PageProps) {
 
           <section className={styles.section}>
             <div className={styles.sectionHeading}>
-              <h2>API Trasparenza Italia</h2>
+              <h2>API DoveVannoINostriSoldi</h2>
               <span>json</span>
             </div>
             <div className={styles.provenanceRow}>

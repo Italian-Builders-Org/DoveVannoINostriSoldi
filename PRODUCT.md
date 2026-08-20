@@ -1,4 +1,4 @@
-# Trasparenza Italia — Product Context
+# DoveVannoINostriSoldi — Product Context
 
 ## Platform
 
@@ -19,15 +19,15 @@ La situazione d'uso tipica è esplorativa e investigativa: una persona parte da 
 
 ## Product purpose
 
-Trasparenza Italia aggrega e normalizza fonti pubbliche ufficiali italiane per rendere la gestione delle risorse pubbliche leggibile, ricercabile, confrontabile e verificabile da un unico punto di accesso.
+DoveVannoINostriSoldi aggrega e normalizza fonti pubbliche ufficiali italiane per rendere la gestione delle risorse pubbliche leggibile, ricercabile, confrontabile e verificabile da un unico punto di accesso.
 
 Il prodotto non sostituisce le fonti ufficiali. Le collega, conserva la provenienza e riduce il costo cognitivo necessario per capire dati oggi dispersi tra portali, API, dataset e documenti.
 
 ## Positioning
 
-**Un unico grafo verificabile della spesa pubblica italiana, dal bilancio nazionale al singolo ente, contratto, progetto e pagamento quando la fonte lo consente.**
+**Un unico posto per capire la spesa pubblica italiana e controllare i numeri alla fonte.**
 
-Un normale portale open data può pubblicare dataset. Trasparenza Italia deve poter mostrare come record provenienti da sistemi diversi sono collegati tra loro e permettere all'utente di tornare sempre all'originale.
+Un normale portale open data pubblica file. DoveVannoINostriSoldi li trasforma in percorsi comprensibili: dal quadro nazionale al territorio, all'ente e infine al dato originale.
 
 ## Operating context
 
@@ -59,7 +59,7 @@ La UI deve rendere visibile la freschezza effettiva del dato.
 - consulenze e incarichi pubblici;
 - Camera, Senato e altre istituzioni;
 - viste per territorio, settore, ente, fornitore e progetto;
-- API pubblica con provenance;
+- API pubblica con fonte e date;
 - indicatori di anomalia e confronti tra enti omogenei.
 
 ### Vincoli permanenti
@@ -93,11 +93,11 @@ OpenBDAP espone un catalogo CKAN interrogabile via API. ANAC e altri sistemi pub
 
 ## Design principles
 
-- Operate first: la dashboard è uno strumento di lavoro e consultazione, non una landing page promozionale.
-- Overview → drill-down → source: ogni percorso deve partire da un quadro leggibile, permettere l'approfondimento e terminare su un'origine verificabile.
-- Comparison over spectacle: grafici e mappe esistono per rendere confronti più rapidi, non per decorare.
-- Progressive disclosure: la prima vista mostra ciò che serve a orientarsi; metodologia, metadati e dettagli tecnici restano sempre raggiungibili.
-- Honest empty states: se una fonte manca o è in ritardo, la UI lo dice esplicitamente.
+- Dashboard subito: la home mostra i dati, non una presentazione promozionale.
+- Dal quadro alla fonte: ogni percorso parte semplice, permette di approfondire e arriva all'originale.
+- Confronti, non spettacolo: grafici e mappe servono a capire più in fretta.
+- Dettagli quando servono: la prima vista orienta; metodo e dati tecnici restano raggiungibili.
+- Vuoti onesti: se una fonte manca o è in ritardo, lo diciamo chiaramente.
 
 ## Accessibility
 

@@ -4,38 +4,37 @@ import { publicSources, sourceCounts } from "@/lib/sources";
 
 export const metadata: Metadata = {
   title: "Fonti",
-  description: "Registro delle fonti ufficiali mappate da Trasparenza Italia.",
+  description: "Da dove arrivano i dati, quanto spesso cambiano e quali fonti sono già collegate.",
 };
 
 const statusLabel = {
-  attiva: "Connettore attivo",
-  integrazione: "In integrazione",
-  mappata: "Mappata",
+  attiva: "Collegata",
+  integrazione: "Ci stiamo lavorando",
+  mappata: "Individuata",
 };
 
 export default function SourcesPage() {
   return (
     <main className="subpage">
       <header className="page-intro">
-        <h1>Registro delle fonti</h1>
+        <h1>Da dove arrivano i dati</h1>
         <p>
-          Questa pagina è il contratto di Trasparenza Italia con chi consulta i dati:
-          per ogni sorgente dichiariamo proprietario, copertura, formato, frequenza e stato
-          dell&apos;integrazione.
+          Qui trovi chi pubblica ogni dato, che cosa contiene, quanto spesso cambia
+          e se è già collegato alla dashboard.
         </p>
         <div className="hero-actions" style={{ justifyContent: "flex-start" }}>
           <Link href="/fonti/stato" className="button button-primary">
-            Stato live delle fonti
+            Le fonti funzionano?
           </Link>
           <Link href="/metodologia" className="button button-secondary">
-            Metodologia
+            Come leggiamo i dati
           </Link>
         </div>
         <dl className="source-counts" aria-label="Copertura del registro">
           <div><dt>Totale</dt><dd>{sourceCounts.total}</dd></div>
-          <div><dt>Connettori attivi</dt><dd>{sourceCounts.active}</dd></div>
-          <div><dt>In integrazione</dt><dd>{sourceCounts.integrating}</dd></div>
-          <div><dt>Censite</dt><dd>{sourceCounts.mapped}</dd></div>
+          <div><dt>Fonti collegate</dt><dd>{sourceCounts.active}</dd></div>
+          <div><dt>In lavorazione</dt><dd>{sourceCounts.integrating}</dd></div>
+          <div><dt>Da collegare</dt><dd>{sourceCounts.mapped}</dd></div>
         </dl>
       </header>
 
@@ -61,11 +60,11 @@ export default function SourcesPage() {
       </section>
 
       <section className="notice">
-        <strong>“Live” significa aggiornato alla fonte.</strong>
+        <strong>“Aggiornato” significa: aggiornato quanto la fonte.</strong>
         <p>
-          Se una fonte ufficiale pubblica dati mensilmente, la dashboard non li presenterà
-          come dati del minuto. Mostrerà invece l&apos;ultima osservazione disponibile, quando è
-          stata acquisita e quando ci si aspetta il prossimo aggiornamento.
+          Se una fonte pubblica nuovi dati una volta al mese, non li chiamiamo dati in tempo reale.
+          Mostriamo l&apos;ultimo periodo disponibile, quando lo abbiamo controllato e quando è atteso
+          il prossimo aggiornamento.
         </p>
       </section>
     </main>

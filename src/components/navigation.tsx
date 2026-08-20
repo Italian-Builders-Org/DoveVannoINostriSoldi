@@ -15,13 +15,13 @@ import {
 } from "@hugeicons/core-free-icons";
 
 const primary = [
-  { href: "/", label: "Quadro", icon: Home04Icon },
-  { href: "/spese", label: "Spese", icon: ChartLineIcon },
-  { href: "/coesione", label: "Coesione", icon: Globe02Icon },
-  { href: "/enti", label: "Organizzazioni", icon: BankIcon, aliases: ["/partecipazioni"] },
+  { href: "/", label: "Home", icon: Home04Icon },
+  { href: "/spese", label: "Soldi", icon: ChartLineIcon },
   { href: "/territori", label: "Territori", icon: MapsIcon },
+  { href: "/coesione", label: "Fondi e progetti", icon: Globe02Icon },
+  { href: "/enti", label: "Enti", icon: BankIcon, aliases: ["/partecipazioni"] },
+  { href: "/controlli", label: "Cosa controllare", icon: LegalDocument01Icon },
   { href: "/fonti", label: "Fonti", icon: Database02Icon },
-  { href: "/metodologia", label: "Metodo", icon: LegalDocument01Icon },
 ];
 
 export function Navigation() {
@@ -30,15 +30,15 @@ export function Navigation() {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <Link href="/" className="brand" aria-label="Trasparenza Italia, home">
+        <Link href="/" className="brand" aria-label="DoveVannoINostriSoldi, home">
           <span className="brand-mark" aria-hidden="true">
             <i />
             <i />
             <i />
           </span>
           <span>
-            <strong>TRASPARENZA ITALIA</strong>
-            <small>I dati pubblici, finalmente insieme</small>
+            <strong>DoveVannoINostriSoldi</strong>
+            <small>Dati pubblici, spiegati semplice</small>
           </span>
         </Link>
 
@@ -71,7 +71,7 @@ export function Navigation() {
             );
           })}
         </nav>
-        <span>Solo fonti ufficiali · ogni dato verificabile</span>
+        <span>Fonti, date e limiti sempre visibili</span>
       </div>
     </header>
   );

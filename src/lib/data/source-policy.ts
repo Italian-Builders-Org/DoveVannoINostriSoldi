@@ -45,7 +45,7 @@ const HOUR = 60 * 60;
 const DAY = 24 * HOUR;
 
 /**
- * Operational freshness policies for Trasparenza Italia.
+ * Operational freshness policies for DoveVannoINostriSoldi.
  *
  * `cadence` describes the publication cadence declared by the source when it
  * is known. Revalidation is intentionally more frequent than publication: it

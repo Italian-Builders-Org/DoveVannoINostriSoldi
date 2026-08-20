@@ -69,21 +69,54 @@ jobs:
           if not path.exists():
               raise SystemExit("Generated SIOPE snapshot is missing")
           data = json.loads(path.read_text(encoding="utf-8"))
-          assert data["schemaVersion"] == 1
+          assert data["schemaVersion"] == 2
           assert data["scope"] == "municipalities"
           assert 1 <= data["latestMonth"] <= 12
           assert data["totalPaid"] >= 0
+          assert 0 <= data["paymentsWithPopulation"] <= data["totalPaid"]
+          assert data["populationCovered"] > 0
+          assert abs(
+              data["nationalPerCapita"]
+              - data["paymentsWithPopulation"] / data["populationCovered"]
+          ) < 0.01
           assert len(data["regions"]) >= 18
           assert data["coverage"]["withMovements"] > 7000
           assert data["coverage"]["includedMovementRows"] > 0
+          assert (
+              data["coverage"]["withPopulation"]
+              + data["coverage"]["withoutPopulation"]
+              == data["coverage"]["withMovements"]
+          )
+          assert len(data["topMunicipalitiesByValue"]) == 100
+          assert len(data["topMunicipalitiesByPerCapita"]) == 100
+          assert data["topMunicipalities"] == data["topMunicipalitiesByValue"]
+          assert all(
+              left["value"] >= right["value"]
+              for left, right in zip(
+                  data["topMunicipalitiesByValue"],
+                  data["topMunicipalitiesByValue"][1:],
+              )
+          )
+          assert all(
+              left["perCapita"] >= right["perCapita"]
+              for left, right in zip(
+                  data["topMunicipalitiesByPerCapita"],
+                  data["topMunicipalitiesByPerCapita"][1:],
+              )
+          )
           assert data["source"]["siopeMovementsLastModified"]
           assert data["source"]["siopeRegistryLastModified"]
+          assert (
+              data["methodology"]["populationSourceLastModified"]
+              == data["source"]["siopeRegistryLastModified"]
+          )
           print(json.dumps({
               "year": data["year"],
               "latestMonth": data["latestMonthLabel"],
               "totalPaid": data["totalPaid"],
               "regions": len(data["regions"]),
               "municipalities": data["coverage"]["withMovements"],
+              "municipalitiesWithPopulation": data["coverage"]["withPopulation"],
               "matched": data["coverage"]["matchedToIpaRegion"],
               "unmatched": data["coverage"]["unmatchedToIpaRegion"],
               "movementRows": data["coverage"]["movementRows"],

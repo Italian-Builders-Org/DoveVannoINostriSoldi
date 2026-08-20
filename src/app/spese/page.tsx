@@ -15,6 +15,8 @@ import styles from "./spese.module.css";
 
 export const dynamic = "force-dynamic";
 
+const PAGE_DATA_BUDGET_MS = 8_000;
+
 export const metadata: Metadata = {
   title: "Spese dello Stato",
   description:
@@ -325,7 +327,9 @@ export default async function StateSpendingPage() {
   let errorMessage: string | null = null;
 
   try {
-    snapshot = await getStateSpendingSnapshot();
+    snapshot = await getStateSpendingSnapshot({
+      signal: AbortSignal.timeout(PAGE_DATA_BUDGET_MS),
+    });
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
   }

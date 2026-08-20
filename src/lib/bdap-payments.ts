@@ -204,6 +204,7 @@ function normalizePackage(
 async function searchProduct(
   code: string,
   dimension: StatePaymentDimension,
+  signal?: AbortSignal,
 ): Promise<BdapDataset[]> {
   const url = `${BDAP_ACTION}/package_search?${new URLSearchParams({
     q: code,
@@ -211,6 +212,7 @@ async function searchProduct(
   }).toString()}`;
   const response = await fetchOfficialSource("openbdap", url, {
     kind: "discovery",
+    signal,
     headers: { Accept: "application/json" },
     tags: [`product:${code}`, `dimension:${dimension}`],
   });
@@ -236,7 +238,7 @@ function periodAtOffset(now: Date, offset: number): { year: number; month: numbe
 
 export async function discoverLatestStatePaymentDataset(
   dimension: StatePaymentDimension,
-  options: { now?: Date; maxMonthsBack?: number } = {},
+  options: { now?: Date; maxMonthsBack?: number; signal?: AbortSignal } = {},
 ): Promise<BdapDataset> {
   const now = options.now ?? new Date();
   const maxMonthsBack = Math.min(Math.max(options.maxMonthsBack ?? 16, 1), 36);
@@ -247,6 +249,7 @@ export async function discoverLatestStatePaymentDataset(
       dimension,
       target.year,
       target.month,
+      { signal: options.signal },
     );
     if (dataset) return dataset;
   }
@@ -258,6 +261,7 @@ export async function getStatePaymentDatasetForPeriod(
   dimension: StatePaymentDimension,
   year: number,
   month: number,
+  options: { signal?: AbortSignal } = {},
 ): Promise<BdapDataset | null> {
   if (!Number.isInteger(year) || year < 2000 || year > 2200) {
     throw new Error(`Anno OpenBDAP non valido: ${year}`);
@@ -267,7 +271,7 @@ export async function getStatePaymentDatasetForPeriod(
   }
 
   const code = productCode(month, dimension);
-  const datasets = await searchProduct(code, dimension);
+  const datasets = await searchProduct(code, dimension, options.signal);
   return (
     datasets.find(
       (dataset) => dataset.referenceYear === year && dataset.referenceMonth === month,
@@ -275,9 +279,13 @@ export async function getStatePaymentDatasetForPeriod(
   );
 }
 
-async function fetchDatasetRows(dataset: BdapDataset): Promise<DelimitedRecord[]> {
+async function fetchDatasetRows(
+  dataset: BdapDataset,
+  signal?: AbortSignal,
+): Promise<DelimitedRecord[]> {
   const response = await fetchOfficialSource("openbdap", dataset.csvUrl, {
     kind: "data",
+    signal,
     headers: { Accept: "text/csv" },
     tags: [`dataset:${dataset.packageId}`, `dimension:${dataset.dimension}`],
   });
@@ -296,8 +304,11 @@ async function fetchDatasetRows(dataset: BdapDataset): Promise<DelimitedRecord[]
   return rows;
 }
 
-export async function getStatePaymentDatasetTotal(dataset: BdapDataset): Promise<number> {
-  const rows = await fetchDatasetRows(dataset);
+export async function getStatePaymentDatasetTotal(
+  dataset: BdapDataset,
+  options: { signal?: AbortSignal } = {},
+): Promise<number> {
+  const rows = await fetchDatasetRows(dataset, options.signal);
   return rows.reduce(
     (total, record) => total + parsePublicNumber(record["Totale Pagato"]),
     0,
@@ -411,13 +422,17 @@ function monthName(month: number): string {
   return MONTH_NAMES[month - 1] ?? `MESE ${month}`;
 }
 
-export async function getStateSpendingSnapshot(): Promise<StateSpendingSnapshot> {
-  const missionDataset = await discoverLatestStatePaymentDataset("mission");
+export async function getStateSpendingSnapshot(
+  options: { signal?: AbortSignal } = {},
+): Promise<StateSpendingSnapshot> {
+  const missionDataset = await discoverLatestStatePaymentDataset("mission", {
+    signal: options.signal,
+  });
   const { referenceYear: year, referenceMonth: month } = missionDataset;
 
   const [administrationDatasetResult, economicDatasetResult] = await Promise.allSettled([
-    getStatePaymentDatasetForPeriod("missionAdministration", year, month),
-    getStatePaymentDatasetForPeriod("administrationEconomic", year, month),
+    getStatePaymentDatasetForPeriod("missionAdministration", year, month, options),
+    getStatePaymentDatasetForPeriod("administrationEconomic", year, month, options),
   ]);
 
   const administrationDataset =
@@ -428,9 +443,11 @@ export async function getStateSpendingSnapshot(): Promise<StateSpendingSnapshot>
     economicDatasetResult.status === "fulfilled" ? economicDatasetResult.value : null;
 
   const [missionRowsResult, administrationRowsResult, economicRowsResult] = await Promise.allSettled([
-    fetchDatasetRows(missionDataset),
-    administrationDataset ? fetchDatasetRows(administrationDataset) : Promise.resolve([]),
-    economicDataset ? fetchDatasetRows(economicDataset) : Promise.resolve([]),
+    fetchDatasetRows(missionDataset, options.signal),
+    administrationDataset
+      ? fetchDatasetRows(administrationDataset, options.signal)
+      : Promise.resolve([]),
+    economicDataset ? fetchDatasetRows(economicDataset, options.signal) : Promise.resolve([]),
   ]);
 
   if (missionRowsResult.status !== "fulfilled") {

@@ -13,9 +13,11 @@ export type SiopeMunicipalMonthlyPoint = {
 export type SiopeRegionPoint = {
   region: string;
   value: number;
+  perCapitaValue: number;
   population: number | null;
   perCapita: number | null;
   municipalities: number;
+  municipalitiesWithPopulation: number;
 };
 
 export type SiopeSpendingTitle = {
@@ -34,13 +36,14 @@ export type SiopeMunicipalityPoint = {
 };
 
 export type SiopeMunicipalSnapshot = {
-  schemaVersion: number;
+  schemaVersion: 2;
   generatedAt: string;
   scope: "municipalities";
   year: number;
   latestMonth: number;
   latestMonthLabel: string;
   totalPaid: number;
+  paymentsWithPopulation: number;
   populationCovered: number;
   nationalPerCapita: number | null;
   coverage: {
@@ -51,11 +54,15 @@ export type SiopeMunicipalSnapshot = {
     movementRows: number;
     includedMovementRows: number;
     malformedRows: number;
+    withPopulation: number;
+    withoutPopulation: number;
   };
   monthly: SiopeMunicipalMonthlyPoint[];
   regions: SiopeRegionPoint[];
   titles: SiopeSpendingTitle[];
   topMunicipalities: SiopeMunicipalityPoint[];
+  topMunicipalitiesByValue: SiopeMunicipalityPoint[];
+  topMunicipalitiesByPerCapita: SiopeMunicipalityPoint[];
   source: {
     siopeOwner: string;
     siopeMovementsUrl: string;
@@ -70,6 +77,10 @@ export type SiopeMunicipalSnapshot = {
     measure: string;
     periodicity: string;
     territorialJoin: string;
+    populationSource: string;
+    populationReference: string;
+    populationSourceLastModified: string | null;
+    perCapitaCoverage: string;
     warning: string;
   };
 };
@@ -117,6 +128,18 @@ export function regionsByPerCapita(
   data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,
 ): SiopeRegionPoint[] {
   return [...data.regions]
-    .filter((region) => region.perCapita !== null)
-    .sort((left, right) => (right.perCapita ?? 0) - (left.perCapita ?? 0));
+    .sort((left, right) => {
+      if (left.perCapita === null && right.perCapita === null) {
+        return left.region.localeCompare(right.region, "it-IT");
+      }
+      if (left.perCapita === null) return 1;
+      if (right.perCapita === null) return -1;
+      return right.perCapita - left.perCapita || left.region.localeCompare(right.region, "it-IT");
+    });
+}
+
+export function municipalitiesByPerCapita(
+  data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,
+): SiopeMunicipalityPoint[] {
+  return data.topMunicipalitiesByPerCapita;
 }

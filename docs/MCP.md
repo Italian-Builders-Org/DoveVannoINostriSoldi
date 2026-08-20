@@ -14,6 +14,8 @@ L'endpoint Streamable HTTP è `/api/mcp`. L'implementazione usa l'SDK TypeScript
 
 I dataset live interrogano soltanto adapter ufficiali già usati dalle API del sito. I dataset snapshot leggono gli artefatti versionati e validati dagli ETL.
 
+`anac_cig_snapshot` espone la replica aggregata e verificata dei dodici file CIG 2025: copertura, hash, conteggi, procedure, fasce di importo e limiti interpretativi. Non simula una ricerca live per CIG o fornitore. `opencoesione_progetti` espone anche indicatori derivati ricostruibili per tema, natura e stato; media per progetto e rapporto pagamenti/costo conservano sempre le relative cautele.
+
 ## Aggiungere una fonte
 
 1. Integrare e validare la fonte secondo `docs/ARCHITECTURE.md`.

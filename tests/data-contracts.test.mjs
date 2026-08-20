@@ -39,7 +39,7 @@ test("public number parser handles whitespace, decimal comma and empty values", 
 
 test("every registered source has a complete operational policy", () => {
   assert.equal(new Set(SOURCE_IDS).size, SOURCE_IDS.length);
-  assert.equal(SOURCE_IDS.length, 9);
+  assert.equal(SOURCE_IDS.length, 10);
   assert.deepEqual(
     [...publicSources.map((source) => source.slug)].sort(),
     [...SOURCE_IDS].sort(),

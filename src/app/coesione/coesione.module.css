@@ -90,4 +90,9 @@
   .shareList li { grid-template-columns: minmax(0, 1fr) 62px; }
   .statusList li > i,
   .shareList li > i { display: none; }
+  .statusList li > b {
+    grid-column: 1 / -1;
+    white-space: normal;
+    text-align: left;
+  }
 }

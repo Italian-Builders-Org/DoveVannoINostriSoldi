@@ -15,6 +15,7 @@ import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
 import { consulentiSnapshot } from "@/lib/consulenti-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
+import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 
 export type SourceIntegrationState = "active";
 export type SourceReachability = "up" | "down" | "not-probed";
@@ -327,6 +328,17 @@ function snapshotManagedOpenCoesione(): SourceHealth {
   };
 }
 
+function snapshotManagedAnac(): SourceHealth {
+  return {
+    ...baseHealth("anac"),
+    reachability: "not-probed",
+    freshness: freshnessFor("anac", anacCigSnapshot.observedAt),
+    latencyMs: null,
+    detail: `Snapshot verificato · CIG ${anacCigSnapshot.referenceYear} · 12 distribuzioni mensili`,
+    recordCount: anacCigSnapshot.population.records,
+  };
+}
+
 function snapshotManagedMefParticipations(): SourceHealth {
   return {
     ...baseHealth("partecipazioni-pubbliche"),
@@ -373,6 +385,27 @@ function snapshotManagedCamera(): SourceHealth {
   };
 }
 
+export function getSnapshotManagedSourceHealth(): SourceHealth[] {
+  return [
+    snapshotManagedAnac(),
+    snapshotManagedOpenCoesione(),
+    snapshotManagedOpenCivitas(),
+    snapshotManagedMefParticipations(),
+    snapshotManagedConsulenti(),
+    snapshotManagedCamera(),
+  ];
+}
+
+/** Orders every adapter by the public registry and fails closed on omissions. */
+export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealth[] {
+  const bySource = new Map(entries.map((entry) => [entry.sourceId, entry]));
+  return SOURCE_IDS.map((sourceId) => {
+    const health = bySource.get(sourceId);
+    if (!health) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
+    return health;
+  });
+}
+
 export async function getSourceHealthOverview(): Promise<SourceHealth[]> {
   const [ipa, ipaStructure, openbdap, siope] = await Promise.all([
     probeIpa(),
@@ -380,21 +413,11 @@ export async function getSourceHealthOverview(): Promise<SourceHealth[]> {
     probeOpenBdap(),
     probeSiope(),
   ]);
-  const live = new Map<SourceId, SourceHealth>([
-    ["ipa", ipa],
-    ["ipa-struttura", ipaStructure],
-    ["openbdap", openbdap],
-    ["siope", siope],
-    ["opencoesione", snapshotManagedOpenCoesione()],
-    ["opencivitas", snapshotManagedOpenCivitas()],
-    ["partecipazioni-pubbliche", snapshotManagedMefParticipations()],
-    ["consulenti", snapshotManagedConsulenti()],
-    ["camera", snapshotManagedCamera()],
+  return orderSourceHealth([
+    ipa,
+    ipaStructure,
+    openbdap,
+    siope,
+    ...getSnapshotManagedSourceHealth(),
   ]);
-
-  return SOURCE_IDS.map((sourceId) => {
-    const health = live.get(sourceId);
-    if (!health) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
-    return health;
-  });
 }

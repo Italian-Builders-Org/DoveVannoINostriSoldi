@@ -3,8 +3,10 @@ import Link from "next/link";
 import { CohesionHistoryChart } from "@/components/charts/cohesion-history-chart";
 import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
 import {
+  deriveOpenCoesioneDimension,
   openCoesionePaymentCostRatio,
   openCoesioneSnapshot as snapshot,
+  type OpenCoesioneDimensionMetrics,
 } from "@/lib/opencoesione-snapshot";
 import styles from "./coesione.module.css";
 
@@ -23,6 +25,70 @@ function share(paid: number, cost: number): number {
   return cost > 0 ? (paid / cost) * 100 : 0;
 }
 
+function DimensionTable({
+  items,
+  label,
+}: {
+  items: OpenCoesioneDimensionMetrics[];
+  label: "tema" | "natura";
+}) {
+  const heading = label === "tema" ? "Tema" : "Natura della spesa";
+  return (
+    <div
+      className="table-scroll"
+      role="region"
+      aria-label={`Costo pubblico dei progetti OpenCoesione per ${label}`}
+      tabIndex={0}
+    >
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">{heading}</th>
+            <th scope="col" className="num">Costo pubblico</th>
+            <th scope="col" className="num">Quota totale</th>
+            <th scope="col" className="num">Pagamenti</th>
+            <th scope="col" className="num">Pagato/costo</th>
+            <th scope="col" className="num">Media/progetto</th>
+            <th scope="col" className="num">Progetti</th>
+            <th scope="col">Fonte</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr key={item.slug}>
+              <th scope="row">{item.label}</th>
+              <td className="num">{compactEuro(euros(item.publicCostCents))}</td>
+              <td className="num">{percent(item.publicCostShare * 100)}</td>
+              <td className="num">{compactEuro(euros(item.paymentsCents))}</td>
+              <td className="num">{percent(item.paymentCostRatio * 100)}</td>
+              <td className="num">
+                {item.averagePublicCostCents === null
+                  ? "n.d."
+                  : compactEuro(euros(item.averagePublicCostCents))}
+              </td>
+              <td className="num">{integer(item.projects)}</td>
+              <td>
+                {item.sourceUrl ? (
+                  <a
+                    href={item.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Dettaglio OpenCoesione per ${item.label}, si apre in una nuova scheda`}
+                  >
+                    Dettaglio ↗
+                  </a>
+                ) : (
+                  "n.d."
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 /** A signed euro delta, so "we reconciled and it matched" is visible as 0 €. */
 function reconciliationLabel(cents: number): string {
   if (cents === 0) return "0 €";
@@ -32,13 +98,15 @@ function reconciliationLabel(cents: number): string {
 export default function CohesionPage() {
   const ratio = openCoesionePaymentCostRatio * 100;
 
-  const themes = [...snapshot.themes].sort(
-    (left, right) => right.publicCostCents - left.publicCostCents,
-  );
-  const natures = [...snapshot.natures].sort(
-    (left, right) => right.publicCostCents - left.publicCostCents,
-  );
-  const statuses = [...snapshot.statuses].sort((left, right) => right.projects - left.projects);
+  const themes = snapshot.themes
+    .map((item) => deriveOpenCoesioneDimension(item, snapshot.totals.publicCostCents))
+    .sort((left, right) => right.publicCostCents - left.publicCostCents);
+  const natures = snapshot.natures
+    .map((item) => deriveOpenCoesioneDimension(item, snapshot.totals.publicCostCents))
+    .sort((left, right) => right.publicCostCents - left.publicCostCents);
+  const statuses = snapshot.statuses
+    .map((item) => deriveOpenCoesioneDimension(item, snapshot.totals.publicCostCents))
+    .sort((left, right) => right.projects - left.projects);
   const maxStatusProjects = Math.max(...statuses.map((status) => status.projects), 0);
 
   const themesByShare = [...themes]
@@ -91,57 +159,24 @@ export default function CohesionPage() {
         </div>
       </div>
 
+      <div className="notice">
+        <strong>Come leggere i nuovi dettagli</strong>
+        <p>
+          La quota confronta ogni categoria con il costo pubblico nazionale; pagato/costo è un
+          rapporto finanziario. La media per progetto è un rapporto contabile fra record molto
+          diversi: non misura qualità, beneficio ricevuto, completamento o irregolarità.
+        </p>
+      </div>
+
       <div className={styles.tables}>
         <section className="panel">
           <h2 className="panel-title">Dove vanno questi soldi · per tema</h2>
-          <div className="table-scroll" role="region" aria-label="Spesa di coesione per tema" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Tema</th>
-                  <th scope="col" className="num">Costo previsto</th>
-                  <th scope="col" className="num">Già pagato</th>
-                  <th scope="col" className="num">Progetti</th>
-                </tr>
-              </thead>
-              <tbody>
-                {themes.map((theme) => (
-                  <tr key={theme.slug}>
-                    <th scope="row">{theme.label}</th>
-                    <td className="num">{compactEuro(euros(theme.publicCostCents))}</td>
-                    <td className="num">{compactEuro(euros(theme.paymentsCents))}</td>
-                    <td className="num">{integer(theme.projects)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DimensionTable items={themes} label="tema" />
         </section>
 
         <section className="panel">
           <h2 className="panel-title">Come vengono spesi · per natura</h2>
-          <div className="table-scroll" role="region" aria-label="Spesa di coesione per natura" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Natura della spesa</th>
-                  <th scope="col" className="num">Costo previsto</th>
-                  <th scope="col" className="num">Già pagato</th>
-                  <th scope="col" className="num">Progetti</th>
-                </tr>
-              </thead>
-              <tbody>
-                {natures.map((nature) => (
-                  <tr key={nature.slug}>
-                    <th scope="row">{nature.label}</th>
-                    <td className="num">{compactEuro(euros(nature.publicCostCents))}</td>
-                    <td className="num">{compactEuro(euros(nature.paymentsCents))}</td>
-                    <td className="num">{integer(nature.projects)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DimensionTable items={natures} label="natura" />
         </section>
       </div>
 
@@ -162,7 +197,8 @@ export default function CohesionPage() {
                 />
               </i>
               <b>
-                {integer(status.projects)} · {compactEuro(euros(status.publicCostCents))}
+                {integer(status.projects)} · {compactEuro(euros(status.publicCostCents))} ·{" "}
+                {percent(status.paymentCostRatio * 100)} pagato/costo
               </b>
             </li>
           ))}
@@ -219,8 +255,7 @@ export default function CohesionPage() {
             ))}
           </ul>
           <p className={styles.note}>
-            I lavori pubblici (trasporti, ambiente) pagano più lentamente: durano anni. I contributi
-            a persone e imprese escono più in fretta.
+            I rapporti finanziari differiscono fra categorie e richiedono contesto progettuale.
           </p>
         </section>
       </div>
@@ -229,6 +264,7 @@ export default function CohesionPage() {
         <strong>Cosa non dice questo dato</strong>
         <p>
           “Pagato” vuol dire che i soldi sono usciti, non che l&apos;opera è finita.{" "}
+          Le categorie contengono progetti eterogenei e non sono classifiche di efficienza.{" "}
           {snapshot.methodology.territorialWarning}
         </p>
       </div>

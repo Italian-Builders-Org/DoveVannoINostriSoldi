@@ -41,6 +41,49 @@ LOWER_THRESHOLD = Decimal("135000")
 UPPER_THRESHOLD = Decimal("140000")
 ANAC_SCOPE_MIN = Decimal("5000")
 ANAC_SCOPE_MAX = Decimal("25000000")
+ANAC_DATASET_URL = "https://dati.anticorruzione.it/opendata/dataset/cig-2025"
+ANAC_RESOURCE_IDS = {
+    1: "a1a4be23-11f5-4a95-93d0-5e3267ec6c3f",
+    2: "a87a23dd-44a3-4b49-a7ad-b96566476979",
+    3: "dab282d9-f5c5-4595-9a9b-e17cdae7c98f",
+    4: "a047f20f-84e4-48ac-8c54-f69127075d67",
+    5: "28288080-14c7-45d1-8ff5-26e25fb4159a",
+    6: "039b8d17-756e-454b-a1a2-dda46237c6ea",
+    7: "f99292f4-87a0-4e78-bf57-1c54bc4ba5ba",
+    8: "fffb1c60-ff4e-43d4-b36f-1596eef7f079",
+    9: "bd56cf08-e8a1-4b96-8c41-bfcdf05d3c9c",
+    10: "12b9c75f-cc6c-43c7-aeb9-f73f262b3a23",
+    11: "8bc58a13-f600-4198-ad10-38738d4b4cc0",
+    12: "ebf0b0df-0ce0-4242-b297-a0b9c5cecac7",
+}
+ANAC_RESOURCE_LAST_MODIFIED = "2026-01-16"
+ANAC_VERIFIED_INPUT_SHA256 = {
+    1: "8133cd5ea2b592b4e48afa1eb0ec2db1a831f00a254de077518f8263818a371c",
+    2: "ddeb33a5c46fd3f1c4f2988c73e28ca148628670848b8a2a86fd12bffd02045f",
+    3: "231c2f7713af92c1aef4314a42ccafddb2914d5a6730d8159d13bd54590f3a1f",
+    4: "2b8651f49312bca7e356a63b29dc47da5945dfbf7b78bed57ce9aaff54ba1055",
+    5: "8f4ef20c3d7a3bf43ff2181341b063e86abc10e0e09232cffd11d3e193aac7b4",
+    6: "9006c457b0604f7040a2826ba0294da55379f75cd2756dcf1ad93a90276ebf34",
+    7: "ad0c6265c81e78749d703e6a474e387e043ec69f2e5400264fcd4f91599315e8",
+    8: "c16e7aa06d6fb0e0880cf797e6d04fdedf37e076c2fd83563dc4f4973e6b539f",
+    9: "1b7d009a7120b92444f9ffc8d986a75bdd008cf86623721692e7f74bbf9ff154",
+    10: "6e7e467cbb008cc846ee096d3b8e1955fe338d3426a913f0750218bca52901d5",
+    11: "cb40213cb6b294650099bf6a6ccd656d9139c374796c903302d17359accc2e60",
+    12: "6f696155e0b2ab4b2d608fe403e1bdc88a8a2c0d08812de325dd97ddedc6013a",
+}
+
+
+def official_resource_metadata(month: int) -> dict[str, str | None]:
+    resource_id = ANAC_RESOURCE_IDS[month]
+    return {
+        "resourcePageUrl": f"{ANAC_DATASET_URL}/resource/{resource_id}",
+        "resourceUrl": (
+            "https://dati.anticorruzione.it/opendata/download/dataset/"
+            f"cig-2025/filesystem/cig_csv_2025_{month:02d}.zip"
+        ),
+        "sourcePublishedAt": None,
+        "sourceLastModified": ANAC_RESOURCE_LAST_MODIFIED,
+    }
 
 
 class AuditInputError(ValueError):
@@ -109,6 +152,7 @@ def audit(
     reference_year: int,
     *,
     require_complete_year: bool = False,
+    attach_official_provenance: bool = False,
 ) -> dict[str, object]:
     if reference_year != 2025:
         raise AuditInputError(
@@ -127,7 +171,12 @@ def audit(
     for path in sorted(paths):
         if not path.is_file():
             raise AuditInputError(f"File non trovato: {path}")
-        inputs.append({"name": path.name, "bytes": path.stat().st_size, "sha256": sha256(path)})
+        input_metadata: dict[str, object] = {
+            "name": path.name,
+            "bytes": path.stat().st_size,
+            "sha256": sha256(path),
+        }
+        input_months: set[int] = set()
         stream, archive = csv_stream(path)
         try:
             reader = csv.DictReader(stream, delimiter=";")
@@ -161,6 +210,7 @@ def audit(
                 if month not in range(1, 13):
                     raise AuditInputError(f"{path.name}: mese non valido per il CIG {cig}")
                 observed_months.add(month)
+                input_months.add(month)
 
                 state = (row["stato"] or "").strip()
                 if state != "ATTIVO":
@@ -220,6 +270,20 @@ def audit(
             stream.close()
             if archive is not None:
                 archive.close()
+
+        input_metadata["observedMonths"] = sorted(input_months)
+        if attach_official_provenance:
+            if len(input_months) != 1:
+                raise AuditInputError(
+                    f"{path.name}: una distribuzione ufficiale deve contenere un solo mese"
+                )
+            input_month = next(iter(input_months))
+            if input_metadata["sha256"] != ANAC_VERIFIED_INPUT_SHA256[input_month]:
+                raise AuditInputError(
+                    f"{path.name}: hash diverso dalla distribuzione ANAC verificata per il mese {input_month}"
+                )
+            input_metadata.update(official_resource_metadata(input_month))
+        inputs.append(input_metadata)
 
     expected_months = set(range(1, 13))
     missing_months = sorted(expected_months - observed_months)
@@ -321,13 +385,23 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--input", action="append", required=True, type=Path)
     parser.add_argument("--reference-year", required=True, type=int)
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--official-anac-resources",
+        action="store_true",
+        help="allega URL e date ufficiali solo dopo la verifica degli hash noti",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     try:
-        result = audit(args.input, args.reference_year, require_complete_year=True)
+        result = audit(
+            args.input,
+            args.reference_year,
+            require_complete_year=True,
+            attach_official_provenance=args.official_anac_resources,
+        )
     except (AuditInputError, OSError, zipfile.BadZipFile) as exc:
         print(f"Errore: {exc}", file=sys.stderr)
         return 2

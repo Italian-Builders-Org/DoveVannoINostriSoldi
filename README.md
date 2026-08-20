@@ -12,7 +12,7 @@ L'AI serve a confrontare dati omogenei, trovare scostamenti e ordinare i casi da
 | --- | --- | --- |
 | Home | Pagamenti dei Comuni, mappa regionale, andamento mensile e dati OpenCoesione | SIOPE, IPA, OpenCoesione |
 | Soldi | Per cosa pagano i Comuni: le voci di uscita e il flusso mese per mese | SIOPE |
-| Territori | Confronti tra regioni e Comuni per il 2024, 2025 e 2026 | SIOPE, IPA |
+| Territori | Confronti pro capite di default tra regioni e Comuni per il 2024, 2025 e 2026 | SIOPE, IPA |
 | Fondi e progetti | Costo previsto, pagamenti e stato dei progetti di coesione | OpenCoesione |
 | Enti e società | Ministeri, enti pubblici, uffici, contatti e società partecipate | IPA, AgID, MEF |
 | Spese dello Stato | Pagamenti per funzione, amministrazione e tipo di spesa | RGS, OpenBDAP |
@@ -22,7 +22,7 @@ L'AI serve a confrontare dati omogenei, trovare scostamenti e ordinare i casi da
 | Controlli | Dati che meritano verifiche più approfondite, con spiegazioni e fonti | ANAC, MEF, Corte dei conti e altre fonti ufficiali |
 | Fonti | Stato dei collegamenti e date di aggiornamento | Registro interno delle fonti |
 
-Gli appalti ANAC, il PNRR ReGiS e altre fonti già censite non sono ancora presentati come dati correnti. Il sito lo indica chiaramente e non usa numeri dimostrativi per riempire gli spazi mancanti.
+Per ANAC è disponibile uno snapshot verificato sui dodici file mensili CIG 2025; non è ancora una ricerca live per singolo CIG o fornitore. Il PNRR ReGiS e altre fonti già censite non sono ancora presentati come dati correnti. Il sito dichiara questi limiti e non usa numeri dimostrativi per riempire gli spazi mancanti.
 
 Il backend espone inoltre:
 
@@ -51,6 +51,8 @@ Il server espone:
 - `list_datasets`, per elencare dataset, filtri, freschezza e cautele interpretative;
 - `query_dataset`, per interrogare snapshot verificati e fonti ufficiali live con filtri e paginazione;
 - la risorsa `dvns://datasets`, che contiene il catalogo machine-readable.
+
+Tra i dataset c'è `anac_cig_snapshot`: espone copertura annuale, conteggi, procedure, fasce di importo, hash degli input e cautele della replica CIG 2025. `opencoesione_progetti` include anche quota del costo pubblico, rapporto pagamenti/costo e costo medio per progetto per tema, natura e stato.
 
 Esempio di configurazione per un client che accetta server HTTP remoti:
 
@@ -99,6 +101,8 @@ La home e le pagine Soldi e Territori permettono di scegliere il 2024, 2025 o 20
 ```
 
 I dati SIOPE, OpenBDAP e la serie annuale OpenCoesione cambiano con l'anno scelto. Se un indicatore non esiste per quel periodo, viene mostrato come non disponibile. Non riutilizziamo un dato di un altro anno.
+
+Le classifiche territoriali usano il valore per abitante come default e conservano il totale come confronto. Le due graduatorie comunali sono calcolate separatamente sull'intero insieme osservato, non riordinando una lista già tagliata per volume.
 
 ## Regole del progetto
 

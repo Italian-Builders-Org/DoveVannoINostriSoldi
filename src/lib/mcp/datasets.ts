@@ -68,6 +68,8 @@ export async function queryPublicDataset(query: DatasetQuery): Promise<unknown> 
         ...snapshot,
         regions: snapshot.regions.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
         topMunicipalities: snapshot.topMunicipalities.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
+        topMunicipalitiesByValue: snapshot.topMunicipalitiesByValue.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
+        topMunicipalitiesByPerCapita: snapshot.topMunicipalitiesByPerCapita.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
       });
     }
     case "openbdap_spesa_stato": {
@@ -106,8 +108,34 @@ export async function queryPublicDataset(query: DatasetQuery): Promise<unknown> 
       });
     }
     case "opencoesione_progetti": {
-      const { openCoesionePaymentCostRatio, openCoesioneSnapshot } = await import("@/lib/opencoesione-snapshot");
-      return jsonSafe({ ...openCoesioneSnapshot, derived: { paymentCostRatio: openCoesionePaymentCostRatio } });
+      const {
+        deriveOpenCoesioneDimension,
+        openCoesionePaymentCostRatio,
+        openCoesioneSnapshot,
+      } = await import("@/lib/opencoesione-snapshot");
+      const derive = (items: typeof openCoesioneSnapshot.themes) =>
+        items.map((item) =>
+          deriveOpenCoesioneDimension(item, openCoesioneSnapshot.totals.publicCostCents),
+        );
+      return jsonSafe({
+        ...openCoesioneSnapshot,
+        derived: {
+          paymentCostRatio: openCoesionePaymentCostRatio,
+          themes: derive(openCoesioneSnapshot.themes),
+          natures: derive(openCoesioneSnapshot.natures),
+          statuses: derive(openCoesioneSnapshot.statuses),
+          definitions: {
+            costPaymentDifferenceCents:
+              "Differenza contabile fra costo pubblico e pagamenti: non è debito né arretrato e può essere negativa.",
+          },
+          caveat:
+            "Le medie per progetto sono rapporti contabili fra record eterogenei; non misurano qualità, risultato, completamento o irregolarità.",
+        },
+      });
+    }
+    case "anac_cig_snapshot": {
+      const { getAnacCigSnapshot } = await import("@/lib/anac-cig-snapshot");
+      return jsonSafe(getAnacCigSnapshot(query.year));
     }
     case "ipa_enti": {
       const { getIpaEntityByCode, searchIpaEntities } = await import("@/lib/ipa");

@@ -12,7 +12,6 @@ export default function McpPage() {
   return (
     <main className="shell page">
       <header className="page-intro">
-        <span className="eyebrow">Dati per assistenti AI</span>
         <h1>Interroga il portale con MCP</h1>
         <p>
           Il server MCP pubblico espone gli stessi dati e le stesse cautele del sito. È in sola
@@ -21,7 +20,6 @@ export default function McpPage() {
       </header>
 
       <section className={`panel ${styles.endpointPanel}`} aria-labelledby="endpoint-title">
-        <span className={styles.index}>01</span>
         <h2 id="endpoint-title">Endpoint Streamable HTTP</h2>
         <McpEndpoint />
         <p>
@@ -32,7 +30,6 @@ export default function McpPage() {
 
       <section className={styles.columns} aria-label="Come funziona">
         <article className="panel">
-          <span className={styles.index}>02</span>
           <h2>Strumenti</h2>
           <dl className={styles.toolList}>
             <div><dt><code>list_datasets</code></dt><dd>Scopre fonti, filtri e limiti.</dd></div>
@@ -40,7 +37,6 @@ export default function McpPage() {
           </dl>
         </article>
         <article className="panel">
-          <span className={styles.index}>03</span>
           <h2>Uso responsabile</h2>
           <p>
             Pagamenti, costi, scostamenti e segnali non diventano automaticamente completamento,
@@ -50,17 +46,17 @@ export default function McpPage() {
       </section>
 
       <section className="panel" aria-labelledby="datasets-title">
-        <span className={styles.index}>04</span>
         <h2 id="datasets-title">{datasetCatalog.length} dataset interrogabili</h2>
         <div className="table-scroll" role="region" aria-label="Catalogo dei dataset MCP" tabIndex={0}>
           <table className={styles.datasetTable}>
-            <thead><tr><th>Dataset</th><th>Aggiornamento</th><th>Filtri</th></tr></thead>
+            <thead><tr><th>Dataset</th><th>Aggiornamento</th><th>Filtri</th><th>Limiti</th></tr></thead>
             <tbody>
               {datasetCatalog.map((dataset) => (
                 <tr key={dataset.id}>
                   <td><strong>{dataset.title}</strong><small>{dataset.summary}</small></td>
                   <td>{dataset.freshness === "live" ? "Fonte live" : "Snapshot verificato"}</td>
                   <td>{dataset.filters.length > 0 ? dataset.filters.join(", ") : "nessuno"}</td>
+                  <td>{dataset.caveat ?? "Consulta fonte e metodologia nella risposta."}</td>
                 </tr>
               ))}
             </tbody>

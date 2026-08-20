@@ -109,6 +109,31 @@ class AnacCigAuditTest(unittest.TestCase):
         self.assertEqual(result["anacPublishedScopeProxy"]["denominatorRecords"], 2)
         self.assertEqual(result["anacPublishedScopeProxy"]["directAwardSharePercent"], 50.0)
         self.assertTrue(any("prezzo unitario" in item for item in result["interpretationLimits"]))
+        self.assertNotIn("resourceUrl", result["inputs"][0])
+        self.assertNotIn("sourceLastModified", result["inputs"][0])
+
+    def test_synthetic_input_cannot_inherit_official_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "cig.zip"
+            self.write_zip(
+                path,
+                [
+                    {
+                        "cig": "SYNTHETIC",
+                        "importo_lotto": "10000",
+                        "oggetto_principale_contratto": "SERVIZI",
+                        "tipo_scelta_contraente": "AFFIDAMENTO DIRETTO",
+                        "modalita_realizzazione": "CONTRATTO D'APPALTO",
+                        "anno_pubblicazione": "2025",
+                        "mese_pubblicazione": "1",
+                        "flag_prevalente": "1",
+                        "stato": "ATTIVO",
+                    }
+                ],
+            )
+
+            with self.assertRaisesRegex(MODULE.AuditInputError, "hash diverso"):
+                MODULE.audit([path], 2025, attach_official_provenance=True)
 
     def test_annual_replica_requires_all_twelve_months(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -148,9 +173,34 @@ class AnacCigAuditTest(unittest.TestCase):
         self.assertEqual(len({entry["name"] for entry in inputs}), 12)
         self.assertTrue(all(len(entry["sha256"]) == 64 for entry in inputs))
         self.assertEqual(
+            [entry["observedMonths"] for entry in inputs],
+            [[month] for month in range(1, 13)],
+        )
+        self.assertTrue(
+            all(
+                entry["resourceUrl"].startswith(
+                    "https://dati.anticorruzione.it/opendata/download/"
+                )
+                and entry["resourcePageUrl"].startswith(
+                    "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/"
+                )
+                and entry["sourceLastModified"] == "2026-01-16"
+                and entry["sourcePublishedAt"] is None
+                for entry in inputs
+            )
+        )
+        self.assertEqual(
             proxy["denominatorRecords"],
             proxy["directBelowThresholdRecords"] + proxy["nonDirectAboveThresholdRecords"],
         )
+
+    def test_official_resource_metadata_is_month_specific(self) -> None:
+        january = MODULE.official_resource_metadata(1)
+        december = MODULE.official_resource_metadata(12)
+
+        self.assertTrue(january["resourceUrl"].endswith("cig_csv_2025_01.zip"))
+        self.assertTrue(december["resourceUrl"].endswith("cig_csv_2025_12.zip"))
+        self.assertNotEqual(january["resourcePageUrl"], december["resourcePageUrl"])
 
     def test_proxy_excludes_every_direct_award_family_above_threshold(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

@@ -201,7 +201,10 @@ def parse_population(raw: str) -> int | None:
         value = float(cleaned.replace(",", "."))
     except ValueError:
         return None
-    if value < 0:
+    # The official registry currently uses 00000001 for several municipalities
+    # with thousands of residents. Treat that sentinel as missing instead of
+    # creating multi-million-euro per-capita outliers.
+    if value <= 1:
         return None
     return round(value)
 
@@ -258,6 +261,26 @@ def per_capita(cents: int, population: int | None) -> float | None:
     if not population:
         return None
     return round((cents / 100.0) / population, 2)
+
+
+def municipality_rankings(
+    items: list[dict],
+    limit: int = 100,
+) -> tuple[list[dict], list[dict]]:
+    """Build independent, deterministic absolute and per-capita rankings."""
+    by_value = sorted(
+        items,
+        key=lambda item: (-item["value"], item["codiceFiscale"]),
+    )[:limit]
+    by_per_capita = sorted(
+        (item for item in items if item["perCapita"] is not None),
+        key=lambda item: (
+            -item["perCapita"],
+            -item["value"],
+            item["codiceFiscale"],
+        ),
+    )[:limit]
+    return by_value, by_per_capita
 
 
 def build_snapshot(
@@ -330,28 +353,30 @@ def build_snapshot(
             for key in observed_keys
             if municipalities[key]["region"] == region
         }
-        population_values = [
-            municipalities[key]["population"]
-            for key in keys
-            if municipalities[key]["population"] is not None
-        ]
+        population_keys = {
+            key for key in keys if municipalities[key]["population"] is not None
+        }
+        population_values = [municipalities[key]["population"] for key in population_keys]
         population = sum(population_values) if population_values else None
+        per_capita_cents = sum(municipality_cents[key] for key in population_keys)
         regions.append(
             {
                 "region": region,
                 "value": euro(cents),
+                "perCapitaValue": euro(per_capita_cents),
                 "population": population,
-                "perCapita": per_capita(cents, population),
+                "perCapita": per_capita(per_capita_cents, population),
                 "municipalities": len(keys),
+                "municipalitiesWithPopulation": len(population_keys),
             }
         )
     regions.sort(key=lambda item: item["value"], reverse=True)
 
-    top_municipalities: list[dict] = []
+    municipalities_with_movements: list[dict] = []
     for key, cents in municipality_cents.items():
         municipality = municipalities[key]
         population = municipality["population"]
-        top_municipalities.append(
+        municipalities_with_movements.append(
             {
                 "name": municipality["name"],
                 "region": municipality["region"],
@@ -361,8 +386,9 @@ def build_snapshot(
                 "perCapita": per_capita(cents, population),
             }
         )
-    top_municipalities.sort(key=lambda item: item["value"], reverse=True)
-    top_municipalities = top_municipalities[:100]
+    top_municipalities_by_value, top_municipalities_by_per_capita = (
+        municipality_rankings(municipalities_with_movements)
+    )
 
     titles = [
         {
@@ -394,18 +420,30 @@ def build_snapshot(
     observed_population = sum(
         municipalities[key]["population"] or 0 for key in observed_keys
     )
+    payments_with_population_cents = sum(
+        municipality_cents[key]
+        for key in observed_keys
+        if municipalities[key]["population"] is not None
+    )
+    municipalities_with_population = sum(
+        municipalities[key]["population"] is not None for key in observed_keys
+    )
     latest_total_cents = sum(national_monthly)
 
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "generatedAt": utc_now(),
         "scope": "municipalities",
         "year": year,
         "latestMonth": latest_month,
         "latestMonthLabel": MONTH_NAMES[latest_month - 1],
         "totalPaid": euro(latest_total_cents),
+        "paymentsWithPopulation": euro(payments_with_population_cents),
         "populationCovered": observed_population,
-        "nationalPerCapita": per_capita(latest_total_cents, observed_population),
+        "nationalPerCapita": per_capita(
+            payments_with_population_cents,
+            observed_population,
+        ),
         "coverage": {
             "activeSiopeMunicipalities": active_siope_count,
             "matchedToIpaRegion": len(municipalities),
@@ -414,11 +452,16 @@ def build_snapshot(
             "movementRows": rows_total,
             "includedMovementRows": rows_included,
             "malformedRows": malformed,
+            "withPopulation": municipalities_with_population,
+            "withoutPopulation": len(observed_keys) - municipalities_with_population,
         },
         "monthly": monthly,
         "regions": regions,
         "titles": titles,
-        "topMunicipalities": top_municipalities,
+        # Kept as a backwards-compatible alias for existing API/MCP clients.
+        "topMunicipalities": top_municipalities_by_value,
+        "topMunicipalitiesByValue": top_municipalities_by_value,
+        "topMunicipalitiesByPerCapita": top_municipalities_by_per_capita,
         "source": {
             "siopeOwner": "Ragioneria Generale dello Stato · banca dati gestita da Banca d'Italia",
             "siopeMovementsUrl": f"{SIOPE_BASE}/SIOPE_USCITE.{year}.zip",
@@ -433,9 +476,17 @@ def build_snapshot(
             "measure": "pagamenti di cassa SIOPE dei Comuni",
             "periodicity": "movimenti mensili puri, sommati da gennaio all'ultimo mese disponibile",
             "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA",
+            "populationSource": "popolazione riportata nell'anagrafica enti SIOPE",
+            "populationReference": "data di riferimento non dichiarata dalla fonte",
+            "populationSourceLastModified": validators["registry"].get("lastModified"),
+            "perCapitaCoverage": (
+                "numeratore e denominatore includono soltanto i Comuni con popolazione valida"
+            ),
             "warning": (
                 "Il totale regionale rappresenta i pagamenti dei Comuni con sede nella regione; "
-                "non misura tutta la spesa pubblica effettuata fisicamente nel territorio."
+                "non misura tutta la spesa pubblica effettuata fisicamente nel territorio. "
+                "Il valore pro capite usa la popolazione dell'anagrafica SIOPE: turismo, "
+                "pendolarismo, ricostruzioni e servizi sovracomunali possono alterare il confronto."
             ),
         },
     }
@@ -458,7 +509,8 @@ def is_unchanged(output: Path, year: int, validators: dict) -> bool:
         return False
     source = current.get("source", {})
     return (
-        current.get("year") == year
+        current.get("schemaVersion") == 2
+        and current.get("year") == year
         and source.get("siopeMovementsLastModified")
         == validators["movements"].get("lastModified")
         and source.get("siopeRegistryLastModified")

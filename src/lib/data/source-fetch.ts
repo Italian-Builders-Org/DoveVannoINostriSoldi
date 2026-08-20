@@ -21,6 +21,12 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   ipa: ["indicepa.gov.it", "www.indicepa.gov.it"],
   "ipa-struttura": ["indicepa.gov.it", "www.indicepa.gov.it"],
   openbdap: ["bdap-opendata.rgs.mef.gov.it", "openbdap.rgs.mef.gov.it"],
+  anac: [
+    "dati.anticorruzione.it",
+    "api.anticorruzione.it",
+    "www.anticorruzione.it",
+    "anticorruzione.it",
+  ],
   siope: [
     "www.siope.it",
     "siope.it",
@@ -45,13 +51,18 @@ const USER_AGENT =
   "DoveVannoINostriSoldi/0.5 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)";
 
 export class SourceFetchError extends Error {
+  readonly sourceId: SourceId;
+  readonly cause?: unknown;
+
   constructor(
     message: string,
-    readonly sourceId: SourceId,
-    readonly cause?: unknown,
+    sourceId: SourceId,
+    cause?: unknown,
   ) {
     super(message);
     this.name = "SourceFetchError";
+    this.sourceId = sourceId;
+    this.cause = cause;
   }
 }
 

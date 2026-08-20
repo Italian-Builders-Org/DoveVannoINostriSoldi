@@ -33,7 +33,12 @@ Gli avvisi su tempi, costi o copertura finanziaria hanno uso di screening. Indic
 ### BDNCP / ANAC
 **Titolare:** ANAC.  
 **Uso:** contratti pubblici, CIG, stazioni appaltanti, aggiudicazioni e ciclo di vita.  
-**Freschezza:** il cruscotto Analytics ANAC dichiara aggiornamento settimanale. Le pubblicazioni open data hanno una propria periodicità.
+**Accesso ufficiale:** [catalogo open data](https://dati.anticorruzione.it/opendata/dataset), [Analytics appalti](https://dati.anticorruzione.it/superset/dashboard/appalti/), [documentazione OCDS](https://dati.anticorruzione.it/opendata/ocds_it) e [Swagger OCDS](https://dati.anticorruzione.it/opendata/ocds/api/ui).
+**Freschezza:** gli open data sono pubblicati mensilmente, dal 2023 anche tramite file delta; il cruscotto Analytics dichiara aggiornamento settimanale e ANAC documenta endpoint API OCDS. Il portale non garantisce qui la disponibilità runtime di tali endpoint.
+**Licenza della distribuzione CIG 2025 usata nella replica:** CC BY-SA 4.0, come dichiarato nelle pagine delle singole risorse CSV.
+**Stato:** il MCP espone uno snapshot aggregato verificato sui dodici file CIG 2025. Conserva copertura, hash, criteri di replica e limiti; non offre ancora ricerca live per singolo CIG, aggiudicatario o fornitore.
+
+I file CIG, aggiudicazioni, aggiudicatari ed esecuzione restano dataset distinti. Verranno collegati solo tramite identificativi ufficiali, in particolare `CIG` e `id_aggiudicazione`: il nome testuale di un fornitore non è una chiave affidabile. In caso di RTI o più aggiudicatari, l'importo di aggiudicazione non deve essere contato una volta per ogni componente.
 
 ### IPA
 **Titolare:** AgID.  

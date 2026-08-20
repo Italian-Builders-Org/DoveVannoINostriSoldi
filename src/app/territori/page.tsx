@@ -1,15 +1,19 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
-import { compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
+import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
-import { availableSiopeYears, getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import {
+  availableSiopeYears,
+  getSiopeMunicipalSnapshot,
+  regionsByPerCapita,
+} from "@/lib/siope-snapshot";
 import styles from "./territori.module.css";
 
 export const metadata: Metadata = {
   title: "Territori",
   description:
-    "Quanto pagano i Comuni regione per regione: totali, euro per abitante e le amministrazioni con i volumi più alti.",
+    "Quanto pagano i Comuni regione per regione: classifiche pro capite, totali e copertura della popolazione.",
 };
 
 function selectedYear(value: string | string[] | undefined): number {
@@ -26,14 +30,11 @@ export default async function TerritoriesPage({
   const data = getSiopeMunicipalSnapshot(year);
   const monthLabel = data.latestMonthLabel.toLocaleLowerCase("it-IT");
 
-  const regions = [...data.regions].sort((left, right) => right.value - left.value);
-  const topByVolume = data.topMunicipalities.slice(0, 20);
-  const regionScale = regions[0]?.value ?? 0;
+  const regions = regionsByPerCapita(data);
+  const topByPerCapita = data.topMunicipalitiesByPerCapita.slice(0, 20);
+  const topByVolume = data.topMunicipalitiesByValue.slice(0, 10);
+  const regionScale = Math.max(...regions.map((region) => region.value), 0);
   const municipalityScale = topByVolume[0]?.value ?? 0;
-  const topByPerCapita = [...data.topMunicipalities]
-    .filter((municipality) => municipality.perCapita !== null)
-    .sort((left, right) => (right.perCapita ?? 0) - (left.perCapita ?? 0))
-    .slice(0, 10);
 
   return (
     <main className="shell page">
@@ -60,36 +61,74 @@ export default async function TerritoriesPage({
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
-                  <th scope="col" className="num">Totale</th>
                   <th scope="col" className="num">Per abitante</th>
+                  <th scope="col" className="num">Totale</th>
                   <th scope="col" className="num">Abitanti</th>
-                  <th scope="col" className="num">Comuni</th>
+                  <th scope="col" className="num">Comuni nel rapporto</th>
                 </tr>
               </thead>
               <tbody>
                 {regions.map((region) => (
                   <tr key={region.region}>
                     <th scope="row">{region.region}</th>
-                    <td className="num">{compactEuroLike(region.value, regionScale)}</td>
                     <td className="num">
                       {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
                     </td>
+                    <td className="num">{compactEuroLike(region.value, regionScale)}</td>
                     <td className="num">
                       {region.population === null ? "n.d." : integer(region.population)}
                     </td>
-                    <td className="num">{integer(region.municipalities)}</td>
+                    <td className="num">
+                      {integer(region.municipalitiesWithPopulation)} / {integer(region.municipalities)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
+          <p className={styles.note}>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
         </section>
 
         <div className={styles.aside}>
           <section className="panel">
-            <h2 className="panel-title">I {topByVolume.length} Comuni che pagano di più</h2>
-            <div className="table-scroll" role="region" aria-label="Comuni con i pagamenti più alti" tabIndex={0}>
+            <h2 className="panel-title">I {topByPerCapita.length} Comuni con più pagamenti per abitante</h2>
+            <div className="table-scroll" role="region" aria-label="Comuni ordinati per pagamenti pro capite" tabIndex={0}>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Comune</th>
+                    <th scope="col" className="num">Per abitante</th>
+                    <th scope="col" className="num">Totale</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topByPerCapita.map((municipality) => (
+                    <tr key={municipality.codiceFiscale}>
+                      <th scope="row">
+                        {municipalityName(municipality.name)}
+                        <small>
+                          {municipality.population === null
+                            ? "abitanti non disponibili"
+                            : `${integer(municipality.population)} abitanti`}
+                        </small>
+                      </th>
+                      <td className="num">
+                        {municipality.perCapita === null
+                          ? "n.d."
+                          : exactEuro(municipality.perCapita)}
+                      </td>
+                      <td className="num">{compactEuro(municipality.value)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="panel">
+            <h2 className="panel-title">Confronto · {topByVolume.length} maggiori volumi totali</h2>
+            <div className="table-scroll" role="region" aria-label="Comuni ordinati per volume totale dei pagamenti" tabIndex={0}>
               <table className="table">
                 <thead>
                   <tr>
@@ -101,14 +140,7 @@ export default async function TerritoriesPage({
                 <tbody>
                   {topByVolume.map((municipality) => (
                     <tr key={municipality.codiceFiscale}>
-                      <th scope="row">
-                        {municipalityName(municipality.name)}
-                        <small>
-                          {municipality.population === null
-                            ? "abitanti non disponibili"
-                            : `${integer(municipality.population)} abitanti`}
-                        </small>
-                      </th>
+                      <th scope="row">{municipalityName(municipality.name)}</th>
                       <td className="num">
                         {compactEuroLike(municipality.value, municipalityScale)}
                       </td>
@@ -122,36 +154,8 @@ export default async function TerritoriesPage({
                 </tbody>
               </table>
             </div>
-          </section>
-
-          <section className="panel">
-            <h2 className="panel-title">Top {topByPerCapita.length} per abitante</h2>
-            <div className="table-scroll" role="region" aria-label="Comuni con i pagamenti pro capite più alti" tabIndex={0}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Comune</th>
-                    <th scope="col">Regione</th>
-                    <th scope="col" className="num">Per abitante</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topByPerCapita.map((municipality) => (
-                    <tr key={municipality.codiceFiscale}>
-                      <th scope="row">{municipalityName(municipality.name)}</th>
-                      <td>{municipality.region}</td>
-                      <td className="num">
-                        {municipality.perCapita === null
-                          ? "n.d."
-                          : exactEuro(municipality.perCapita)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
             <p className={styles.note}>
-              Valori alti spesso legati a turismo, ricostruzioni o servizi per non residenti.
+              La vista assoluta resta disponibile come confronto, ma non è il default.
             </p>
           </section>
 
@@ -196,10 +200,23 @@ export default async function TerritoriesPage({
               <dt>Righe malformate</dt>
               <dd>{integer(data.coverage.malformedRows)}</dd>
             </div>
+            <div>
+              <dt>Comuni con popolazione</dt>
+              <dd>{integer(data.coverage.withPopulation)}</dd>
+            </div>
+            <div>
+              <dt>Senza popolazione</dt>
+              <dd>{integer(data.coverage.withoutPopulation)}</dd>
+            </div>
           </dl>
           <p>
             Gli enti non abbinati restano fuori dai totali regionali: non assegniamo una regione
-            senza una corrispondenza ufficiale. Fonte SIOPE · {data.source.siopeOwner}, scaricata il{" "}
+            senza una corrispondenza ufficiale. Il denominatore è la {data.methodology.populationSource};
+            {data.methodology.populationReference}; anagrafica aggiornata il{" "}
+            {data.methodology.populationSourceLastModified
+              ? longDate(data.methodology.populationSourceLastModified)
+              : "data non disponibile"}. Fonte SIOPE · {data.source.siopeOwner},
+            scaricata il{" "}
             {longDate(data.source.observedAt)}.{" "}
             <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
           </p>

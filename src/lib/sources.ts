@@ -36,6 +36,18 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["CUP", "codice fiscale titolare", "codice ente RGS"],
   },
   {
+    slug: "anac",
+    name: "BDNCP / dati aperti ANAC",
+    owner: "Autorità Nazionale Anticorruzione",
+    area: "Contratti pubblici e ciclo di vita degli appalti",
+    cadence: "Mensile per gli open data; endpoint OCDS documentati; Analytics settimanale",
+    coverage: "Snapshot CIG 2025 verificato e catalogo ufficiale collegato",
+    format: "CSV · JSON · OCDS · API",
+    url: "https://dati.anticorruzione.it/opendata/dataset",
+    note: "Il MCP espone aggregati verificati della replica CIG 2025 con copertura, hash e limiti. La ricerca live per singolo CIG richiede ancora un indice persistente dedicato.",
+    joinKeys: ["CIG", "OCID", "codice fiscale stazione appaltante", "CUP"],
+  },
+  {
     slug: "ipa",
     name: "Indice PA (IPA)",
     owner: "AgID",

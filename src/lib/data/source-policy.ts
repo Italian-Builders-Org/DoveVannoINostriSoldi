@@ -2,6 +2,7 @@ export type SourceId =
   | "ipa"
   | "ipa-struttura"
   | "openbdap"
+  | "anac"
   | "siope"
   | "opencoesione"
   | "opencivitas"
@@ -92,6 +93,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 15_000,
     maxRetries: 1,
     tags: ["source:openbdap", "domain:state-spending"],
+  },
+  anac: {
+    id: "anac",
+    label: "BDNCP / dati aperti ANAC",
+    owner: "Autorità Nazionale Anticorruzione",
+    sourceUrl: "https://dati.anticorruzione.it/opendata/dataset",
+    cadence: "mensile",
+    cadenceNote:
+      "Gli open data BDNCP sono aggiornati con rilasci mensili e file delta; Analytics dichiara aggiornamento settimanale e ANAC documenta endpoint API OCDS.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 45 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:anac", "domain:public-procurement"],
   },
   siope: {
     id: "siope",

@@ -27,6 +27,8 @@ test("SIOPE query validates years and can filter a region", async () => {
   assert.ok(result.regions.length <= 1);
   assert.ok(result.regions.every((item) => item.region === "Lazio"));
   assert.ok(result.topMunicipalities.every((item) => item.region === "Lazio"));
+  assert.ok(result.topMunicipalitiesByValue.every((item) => item.region === "Lazio"));
+  assert.ok(result.topMunicipalitiesByPerCapita.every((item) => item.region === "Lazio"));
 });
 
 test("OpenCivitas query bounds pagination and rejects unavailable years", async () => {
@@ -81,8 +83,9 @@ test("IPA entity lookup does not silently ignore an ambiguous search filter", as
 });
 
 test("every snapshot-backed MCP adapter returns real structured data", async () => {
-  const [cohesion, participations, appointments, parliament, controls, sources] = await Promise.all([
+  const [cohesion, anac, participations, appointments, parliament, controls, sources] = await Promise.all([
     queryPublicDataset({ dataset: "opencoesione_progetti" }),
+    queryPublicDataset({ dataset: "anac_cig_snapshot", year: 2025 }),
     queryPublicDataset({ dataset: "mef_partecipazioni" }),
     queryPublicDataset({ dataset: "consulenti_incarichi" }),
     queryPublicDataset({ dataset: "parlamento_bilanci" }),
@@ -91,9 +94,23 @@ test("every snapshot-backed MCP adapter returns real structured data", async () 
   ]);
 
   assert.ok(cohesion.totals.publicCostCents > 0);
+  assert.equal(cohesion.derived.themes.length, cohesion.themes.length);
+  assert.match(
+    cohesion.derived.definitions.costPaymentDifferenceCents,
+    /non è debito né arretrato/i,
+  );
+  assert.equal(anac.coverage.completeYear, true);
+  assert.equal(anac.inputs.length, 12);
   assert.ok(participations.totals.participationRecords > 0);
   assert.ok(appointments.externalAppointments.length > 0);
   assert.ok(parliament.chambers.length > 0);
   assert.ok(controls.signals.length > 0);
   assert.ok(sources.length > 0);
+});
+
+test("ANAC snapshot rejects unavailable years instead of returning stale data", async () => {
+  await assert.rejects(
+    queryPublicDataset({ dataset: "anac_cig_snapshot", year: 2024 }),
+    /disponibile solo per il 2025/,
+  );
 });

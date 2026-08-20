@@ -22,6 +22,8 @@ import {
   availableSiopeYears,
   completedMonths,
   getSiopeMunicipalSnapshot,
+  municipalitiesByPerCapita,
+  regionsByPerCapita,
   partialMonth,
 } from "@/lib/siope-snapshot";
 import styles from "./home.module.css";
@@ -89,12 +91,9 @@ export default async function HomePage({
 
   const donutStops = donutGradientStops(buckets);
 
-  const topRegions = [...siope.regions]
-    .sort((left, right) => right.value - left.value)
-    .slice(0, 6);
-  const topMunicipalities = siope.topMunicipalities.slice(0, 5);
-  /* One unit per ranking, taken from the biggest figure in it. */
-  const topMunicipalityScale = topMunicipalities[0]?.value ?? 0;
+  const topRegions = regionsByPerCapita(siope).slice(0, 6);
+  const topMunicipalities = municipalitiesByPerCapita(siope).slice(0, 5);
+  /* One unit for the absolute-value comparison column. */
   const topRegionScale = topRegions[0]?.value ?? 0;
   const maxFlow = Math.max(...siope.monthly.map((point) => point.flow), 0);
 
@@ -188,16 +187,28 @@ export default async function HomePage({
         </section>
 
         <section className="panel">
-          <h2 className="panel-title">I {topMunicipalities.length} Comuni che pagano di più</h2>
+          <h2 className="panel-title">
+            I {topMunicipalities.length} Comuni con più pagamenti per abitante
+          </h2>
           <ol className={styles.rankList}>
             {topMunicipalities.map((municipality, index) => (
               <li key={municipality.codiceFiscale}>
                 <span>{index + 1}</span>
-                <strong>{municipalityName(municipality.name)}</strong>
-                <b>{compactEuroLike(municipality.value, topMunicipalityScale)}</b>
+                <strong>
+                  {municipalityName(municipality.name)}
+                  <small>
+                    {municipality.population === null
+                      ? "popolazione non disponibile"
+                      : `${integer(municipality.population)} abitanti`}
+                  </small>
+                </strong>
+                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
               </li>
             ))}
           </ol>
+          <p className={styles.note}>
+            Default pro capite. Il totale resta disponibile nel dettaglio territoriale.
+          </p>
           <Link className="btn btn-block" href={`/territori?anno=${year}`}>
             Vedi tutti i Comuni
           </Link>
@@ -267,26 +278,26 @@ export default async function HomePage({
 
         <section className="panel">
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Le regioni che pagano di più</h2>
+            <h2 className="panel-title">Le regioni con più pagamenti per abitante</h2>
             <span className={styles.headNote}>Comuni con sede nella regione</span>
           </div>
-          <div className="table-scroll" role="region" aria-label="Spese dei principali Comuni" tabIndex={0}>
+          <div className="table-scroll" role="region" aria-label="Regioni ordinate per pagamenti pro capite" tabIndex={0}>
             <table className="table">
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
-                  <th scope="col" className="num">Totale pagato</th>
                   <th scope="col" className="num">Per abitante</th>
+                  <th scope="col" className="num">Totale pagato</th>
                 </tr>
               </thead>
               <tbody>
                 {topRegions.map((region) => (
                   <tr key={region.region}>
                     <th scope="row">{region.region}</th>
-                    <td className="num">{compactEuroLike(region.value, topRegionScale)}</td>
                     <td className="num">
                       {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
                     </td>
+                    <td className="num">{compactEuroLike(region.value, topRegionScale)}</td>
                   </tr>
                 ))}
               </tbody>

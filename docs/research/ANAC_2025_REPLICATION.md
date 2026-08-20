@@ -15,7 +15,7 @@ Nel 2025 l'articolo 50 consente l'affidamento diretto sotto 140.000 euro per ser
 
 ## Metodo riproducibile
 
-Lo script [`scripts/research/anac_cig_audit.py`](../../scripts/research/anac_cig_audit.py) legge i dodici ZIP senza estrarli, verifica lo schema, richiede la copertura di tutti i mesi, rifiuta CIG duplicati e registra SHA-256 e dimensione di ogni input. La replica è limitata al 2025 perché soglie e regole cambiano nel tempo.
+Lo script [`scripts/research/anac_cig_audit.py`](../../scripts/research/anac_cig_audit.py) legge i dodici ZIP senza estrarli, verifica lo schema, richiede la copertura di tutti i mesi, rifiuta CIG duplicati e registra SHA-256 e dimensione di ogni input. La modalità `--official-anac-resources` allega la provenienza delle distribuzioni soltanto se ogni hash coincide con quello verificato: fixture o file diversi non possono ereditare URL ufficiali. La replica è limitata al 2025 perché soglie e regole cambiano nel tempo.
 
 Esempio:
 
@@ -34,6 +34,7 @@ python3 scripts/research/anac_cig_audit.py \
   --input /percorso/cig_csv_2025_10.zip \
   --input /percorso/cig_csv_2025_11.zip \
   --input /percorso/cig_csv_2025_12.zip \
+  --official-anac-resources \
   --output anac-cigs-2025.json
 ```
 

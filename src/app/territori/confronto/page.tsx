@@ -69,7 +69,7 @@ function nullableDescending(left: number | null, right: number | null): number {
 }
 
 function selectedSort(value: string): SortKey {
-  return value in SORT_OPTIONS ? (value as SortKey) : "comune";
+  return value in SORT_OPTIONS ? (value as SortKey) : "per-abitante";
 }
 
 function selectedPage(value: string): number {
@@ -105,7 +105,7 @@ function pageUrl({
   const params = new URLSearchParams();
   if (query) params.set("comune", query);
   if (region) params.set("regione", region);
-  if (sort !== "comune") params.set("ordine", sort);
+  if (sort !== "per-abitante") params.set("ordine", sort);
   if (page > 1) params.set("pagina", String(page));
   const search = params.toString();
   return search ? `/territori/confronto?${search}` : "/territori/confronto";

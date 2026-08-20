@@ -1,13 +1,5 @@
 .endpointPanel { margin-bottom: var(--space-4); }
 
-.index {
-  display: block;
-  margin-bottom: var(--space-2);
-  font: 600 11px var(--font-mono);
-  letter-spacing: .08em;
-  color: var(--color-accent-700);
-}
-
 .endpointPanel h2,
 .columns h2 { margin: 0 0 var(--space-3); font-size: 18px; }
 .endpointPanel p,

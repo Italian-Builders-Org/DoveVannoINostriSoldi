@@ -4,6 +4,7 @@ import {
   getStatePaymentDatasetTotal,
   type BdapDataset,
 } from "@/lib/bdap-payments";
+import { deriveStateSpendingHistoryPoints } from "@/lib/data/bdap-history-points";
 
 const MONTH_NAMES = [
   "GENNAIO",
@@ -26,7 +27,7 @@ export type StateSpendingHistoryPoint = {
   monthName: string;
   label: string;
   cumulativePaid: number;
-  monthlyPaid: number;
+  monthlyPaid: number | null;
   source: {
     productCode: string;
     packageId: string;
@@ -41,6 +42,12 @@ export type StateSpendingHistory = {
   latestMonthName: string;
   points: StateSpendingHistoryPoint[];
   observedAt: string;
+  coverage: {
+    requestedMonths: number;
+    availableMonths: number;
+    monthlyValues: number;
+    missingMonths: string[];
+  };
   methodology: {
     cumulative: true;
     monthlyDerivation: "difference-between-consecutive-cumulative-snapshots";
@@ -48,53 +55,43 @@ export type StateSpendingHistory = {
   };
 };
 
-async function requireMissionDataset(year: number, month: number): Promise<BdapDataset> {
-  const dataset = await getStatePaymentDatasetForPeriod("mission", year, month);
-  if (!dataset) {
-    throw new Error(
-      `Dataset Missione ${year}/${String(month).padStart(2, "0")} non trovato`,
-    );
-  }
-  return dataset;
-}
+type DatasetWithTotal = { dataset: BdapDataset; cumulativePaid: number };
 
 export async function getStateSpendingHistory(): Promise<StateSpendingHistory> {
   const latest = await discoverLatestStatePaymentDataset("mission");
   const year = latest.referenceYear;
   const latestMonth = latest.referenceMonth;
 
-  const datasets = await Promise.all(
+  const datasetResults = await Promise.allSettled(
     Array.from({ length: latestMonth }, (_, index) => {
       const month = index + 1;
-      return month === latestMonth ? Promise.resolve(latest) : requireMissionDataset(year, month);
+      return month === latestMonth
+        ? Promise.resolve(latest)
+        : getStatePaymentDatasetForPeriod("mission", year, month);
     }),
   );
 
-  const cumulativeTotals = await Promise.all(
-    datasets.map((dataset) => getStatePaymentDatasetTotal(dataset)),
+  const datasets = datasetResults
+    .map((result) => (result.status === "fulfilled" ? result.value : null))
+    .filter((dataset): dataset is BdapDataset => dataset !== null);
+
+  const totalResults = await Promise.allSettled(
+    datasets.map(async (dataset) => ({
+      dataset,
+      cumulativePaid: await getStatePaymentDatasetTotal(dataset),
+    })),
   );
 
-  const points = datasets.map((dataset, index): StateSpendingHistoryPoint => {
-    const cumulativePaid = cumulativeTotals[index] ?? 0;
-    const previous = index === 0 ? 0 : cumulativeTotals[index - 1] ?? 0;
-    const monthName =
-      MONTH_NAMES[dataset.referenceMonth - 1] ?? `MESE ${dataset.referenceMonth}`;
-
-    return {
-      year,
-      month: dataset.referenceMonth,
-      monthName,
-      label: monthName.slice(0, 3),
-      cumulativePaid,
-      monthlyPaid: cumulativePaid - previous,
-      source: {
-        productCode: dataset.productCode,
-        packageId: dataset.packageId,
-        csvUrl: dataset.csvUrl,
-        metadataModified: dataset.metadataModified,
-      },
-    };
-  });
+  const values = totalResults
+    .filter((result): result is PromiseFulfilledResult<DatasetWithTotal> =>
+      result.status === "fulfilled",
+    )
+    .map((result) => result.value);
+  const points = deriveStateSpendingHistoryPoints(year, values);
+  const available = new Set(points.map((point) => point.month));
+  const missingMonths = Array.from({ length: latestMonth }, (_, index) => index + 1)
+    .filter((month) => !available.has(month))
+    .map((month) => MONTH_NAMES[month - 1] ?? `MESE ${month}`);
 
   return {
     year,
@@ -102,6 +99,12 @@ export async function getStateSpendingHistory(): Promise<StateSpendingHistory> {
     latestMonthName: MONTH_NAMES[latestMonth - 1] ?? `MESE ${latestMonth}`,
     points,
     observedAt: new Date().toISOString(),
+    coverage: {
+      requestedMonths: latestMonth,
+      availableMonths: points.length,
+      monthlyValues: points.filter((point) => point.monthlyPaid !== null).length,
+      missingMonths,
+    },
     methodology: {
       cumulative: true,
       monthlyDerivation: "difference-between-consecutive-cumulative-snapshots",

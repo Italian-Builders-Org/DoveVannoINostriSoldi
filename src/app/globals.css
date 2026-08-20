@@ -320,8 +320,10 @@ main { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
   color: #668294;
 }
 .site-footer strong { color: #a7bdca; font-size: 11px; }
-.site-footer p, .footer-rule { font-size: 10px; max-width: 520px; line-height: 1.5; }
-.footer-rule a { color: #86bed8; text-decoration: underline; text-underline-offset: 3px; }
+.site-footer p, .footer-rule, .footer-contributors { font-size: 10px; max-width: 520px; line-height: 1.5; }
+.footer-rule, .footer-contributors { display: flex; flex-wrap: wrap; gap: 5px 12px; align-items: center; }
+.footer-rule a, .footer-contributors a { color: #86bed8; text-decoration: underline; text-underline-offset: 3px; }
+.footer-contributors > span { color: #8ea4b1; }
 .site-footer p { margin: 5px 0 0; }
 
 .subpage { padding-bottom: 100px; }

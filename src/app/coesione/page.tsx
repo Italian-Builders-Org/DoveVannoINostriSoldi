@@ -73,17 +73,17 @@ export default function CohesionPage() {
           <h1>Dove si concentrano gli investimenti per la coesione.</h1>
           <p>
             Un quadro nazionale dei progetti monitorati da OpenCoesione: costo pubblico, pagamenti,
-            temi, natura e stato. I valori arrivano dall’API ufficiale e restano disponibili come
-            ultimo snapshot verificato anche durante un disservizio della fonte.
+            temi, natura e stato. I valori arrivano dal servizio ufficiale e conserviamo l&apos;ultimo
+            dato controllato anche se la fonte è temporaneamente irraggiungibile.
           </p>
         </div>
         <aside className={styles.freshness} aria-label="Freschezza e provenienza del dato">
           <div><span>Fonte</span><strong>OpenCoesione</strong></div>
           <div><span>Dato aggiornato dalla fonte</span><strong>{formatDate(snapshot.referenceDate)}</strong></div>
-          <div><span>Acquisito dalla piattaforma</span><strong>{formatDateTime(snapshot.generatedAt)}</strong></div>
-          <div><span>Cadenza dichiarata</span><strong>{snapshot.source.declaredCadence}</strong></div>
+          <div><span>Scaricato da noi</span><strong>{formatDateTime(snapshot.generatedAt)}</strong></div>
+          <div><span>Quanto spesso cambia</span><strong>{snapshot.source.declaredCadence}</strong></div>
           <div><span>Controllo automatico</span><strong>{snapshot.source.platformCheckCadence}</strong></div>
-          <div><span>Consegna</span><strong>API ufficiale · snapshot verificato</strong></div>
+          <div><span>Come lo leggiamo</span><strong>Servizio ufficiale e copia controllata</strong></div>
           <div><span>Licenza</span><strong>{snapshot.source.license}</strong></div>
           <a href={snapshot.source.endpoint} target="_blank" rel="noreferrer">Apri l’aggregato originale ↗</a>
         </aside>
@@ -109,8 +109,8 @@ export default function CohesionPage() {
         <div>
           <h2 id="ratio-title">Quanto è stato pagato rispetto al costo monitorato</h2>
           <p>
-            Il rapporto è finanziario: confronta i pagamenti pubblicati con il costo pubblico
-            aggregato. Non misura l’avanzamento fisico, la qualità o il completamento dei progetti.
+            Il rapporto confronta i pagamenti pubblicati con il costo pubblico totale. Non dice
+            quante opere sono finite né se sono state realizzate bene.
           </p>
         </div>
         <div className={styles.ratioVisual}>
@@ -139,8 +139,8 @@ export default function CohesionPage() {
       <section className={styles.section} aria-labelledby="history-title">
         <div className={styles.sectionHeader}>
           <div>
-            <h2 id="history-title">Come si è formato il cumulato</h2>
-            <p>Impegni e pagamenti attribuiti dalla fonte all’anno di riferimento, mostrati come serie cumulativa.</p>
+            <h2 id="history-title">Come sono cresciuti i totali nel tempo</h2>
+            <p>Ogni punto mostra il totale registrato dalla fonte fino all&apos;anno indicato.</p>
           </div>
           {latestAnnual && <span>Serie fino al {latestAnnual.year}</span>}
         </div>
@@ -151,9 +151,9 @@ export default function CohesionPage() {
         <div>
           <h2 id="method-title">Come leggere e verificare questi numeri</h2>
           <p>
-            Lo snapshot conserva i centesimi come interi, valida schema e dominio della fonte e
-            riconcilia ogni classificazione con il totale nazionale. La fonte arrotonda alcuni
-            aggregati all’euro: accettiamo al massimo due euro di scarto e nessuno scarto nei progetti.
+            Conserviamo gli importi al centesimo e confrontiamo ogni gruppo con il totale nazionale.
+            La fonte arrotonda alcuni valori all&apos;euro: accettiamo al massimo due euro di differenza
+            e nessuna differenza nel numero dei progetti.
           </p>
         </div>
         <dl>
@@ -167,7 +167,7 @@ export default function CohesionPage() {
         </div>
         <div className={styles.actions}>
           <a href={snapshot.source.endpoint} target="_blank" rel="noreferrer">API OpenCoesione ↗</a>
-          <Link href="/api/coesione">API normalizzata</Link>
+          <Link href="/api/coesione">Dati pronti per altre applicazioni</Link>
           <Link href="/fonti">Registro delle fonti</Link>
           <Link href="/metodologia">Metodologia</Link>
         </div>

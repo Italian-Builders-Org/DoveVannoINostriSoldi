@@ -51,12 +51,12 @@ export default function ControlsPage() {
 
       <section className={styles.readingRule} aria-label="Come leggere questa pagina">
         <strong>La regola più importante</strong>
-        <p>Flussi, stock, costi di una misura e scenari non si sommano. Colori e parole li tengono separati.</p>
+        <p>Pagamenti, debiti, costi e ipotesi sono numeri diversi. Non vanno sommati.</p>
         <div>
           <span data-tone="observed">Dato osservato</span>
           <span data-tone="attention">Da controllare</span>
-          <span data-tone="policy">Scelta di policy</span>
-          <span data-tone="stock">Stock accumulato</span>
+          <span data-tone="policy">Scelta pubblica</span>
+          <span data-tone="stock">Totale accumulato</span>
         </div>
       </section>
 
@@ -85,8 +85,8 @@ export default function ControlsPage() {
 
       <section className={styles.signals} aria-labelledby="signals-title">
         <header>
-          <h2 id="signals-title">Sei numeri, sei significati diversi</h2>
-          <p>Apri la fonte per controllare il perimetro originale.</p>
+          <h2 id="signals-title">Numeri da leggere con attenzione</h2>
+          <p>Ogni dato ha una data, una spiegazione e un collegamento alla fonte.</p>
         </header>
         <div>
           {auditSignals.map((signal) => (
@@ -108,7 +108,7 @@ export default function ControlsPage() {
         <header>
           <div>
             <h2 id="scenarios-title">Tre ipotesi di miglioramento annuale</h2>
-            <p>Sono esercizi di policy basati su percentuali dichiarate. Non sono soldi già recuperati né previsioni.</p>
+            <p>Sono ipotesi basate su percentuali dichiarate. Non sono soldi già recuperati e non sono previsioni.</p>
           </div>
           <Link href="/metodologia">Come leggiamo gli scenari <span>→</span></Link>
         </header>

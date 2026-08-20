@@ -2,10 +2,10 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 
-  --chart-primary: #72aeca;
-  --chart-secondary: #78ad8d;
-  --chart-tertiary: #c3a66c;
-  --chart-negative: #ca7d7d;
+  --chart-primary: #43b69a;
+  --chart-secondary: #e3b65a;
+  --chart-tertiary: #9c83d3;
+  --chart-negative: #d97979;
 
   --focus-ring: rgba(117, 178, 210, .68);
 }

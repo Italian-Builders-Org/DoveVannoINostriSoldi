@@ -66,8 +66,8 @@ function differenceLabel(value: number | null): string {
 
 function datasetLabel(dataset: BdapDataset): string {
   if (dataset.dimension === "mission") return "Missione";
-  if (dataset.dimension === "missionAdministration") return "Missione × amministrazione";
-  return "Amministrazione × classificazione economica II livello";
+  if (dataset.dimension === "missionAdministration") return "Missione e amministrazione";
+  return "Amministrazione e tipo di spesa";
 }
 
 function SourceRow({ dataset }: { dataset: BdapDataset }) {
@@ -79,7 +79,7 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
       </div>
       <div>
         <span>{dataset.title}</span>
-        <small>package · {dataset.packageId}</small>
+        <small>Identificativo {dataset.packageId}</small>
       </div>
       <div className={styles.provenanceActions}>
         <a href={dataset.csvUrl} target="_blank" rel="noreferrer">CSV RGS ↗</a>
@@ -123,7 +123,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             <strong>{formatDateTime(snapshot.observedAt)}</strong>
           </div>
           <div className={styles.sourceSummaryRow}>
-            <span>Dataset raw</span>
+            <span>File originale</span>
             <a href={snapshot.sources.mission.csvUrl} target="_blank" rel="noreferrer">apri CSV ufficiale ↗</a>
           </div>
         </aside>
@@ -133,13 +133,13 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
         <div className={styles.primaryMetric}>
           <div className={styles.metricLabel}>
             <i aria-hidden="true" />
-            Pagamenti cumulati da inizio anno
+            Pagamenti da inizio anno
           </div>
           <strong>{compactEuro(snapshot.totalPaid)}</strong>
           <span>Somma del campo ufficiale “Totale Pagato” per tutte le missioni.</span>
           <p>
             RGS descrive il rilascio come pagamenti effettuati <b>dal 1° gennaio fino al mese contabile di riferimento</b>.
-            Il valore è quindi cumulativo; nella serie temporale il singolo mese viene derivato sottraendo due snapshot consecutivi.
+            Il valore è il totale da gennaio. Nel grafico mensile sottraiamo il totale del mese precedente.
           </p>
         </div>
 
@@ -150,11 +150,11 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           </div>
           <div className={styles.fact}>
             <span>Amministrazioni centrali</span>
-            <strong>{snapshot.counts.administrations > 0 ? snapshot.counts.administrations.toLocaleString("it-IT") : "—"}</strong>
+            <strong>{snapshot.counts.administrations > 0 ? snapshot.counts.administrations.toLocaleString("it-IT") : "Non disponibile"}</strong>
           </div>
           <div className={styles.fact}>
             <span>Categorie economiche</span>
-            <strong>{snapshot.counts.economicCategories > 0 ? snapshot.counts.economicCategories.toLocaleString("it-IT") : "—"}</strong>
+            <strong>{snapshot.counts.economicCategories > 0 ? snapshot.counts.economicCategories.toLocaleString("it-IT") : "Non disponibile"}</strong>
           </div>
           <div className={styles.fact}>
             <span>Frequenza di controllo</span>
@@ -175,13 +175,13 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           </div>
           <p>
             Le missioni rappresentano le principali funzioni e finalità perseguite attraverso la spesa pubblica.
-            Qui mostriamo le prime dodici nel cumulato disponibile.
+            Qui mostriamo le dodici con il totale più alto nel periodo disponibile.
           </p>
         </div>
 
         <div className={styles.chartBlock}>
           <div className={styles.chartTitle}>
-            <h3>Top missioni · {snapshot.period.label}</h3>
+            <h3>Missioni principali, {snapshot.period.label}</h3>
             <a href={snapshot.sources.mission.csvUrl} target="_blank" rel="noreferrer">fonte CSV ↗</a>
           </div>
           <SpendingBarChart
@@ -191,7 +191,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             height={500}
           />
           <p className={styles.chartCaption}>
-            Valori cumulati in euro. Ordinamento calcolato da DoveVannoINostriSoldi sul campo “Totale Pagato” del dataset RGS per Missione.
+            Totali in euro da gennaio. L&apos;ordine usa il campo “Totale Pagato” del file RGS per Missione.
           </p>
         </div>
       </section>
@@ -203,8 +203,8 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             <h2>Amministrazioni e natura economica</h2>
           </div>
           <p>
-            Due letture indipendenti dello stesso cumulato: amministrazioni centrali e categorie economiche.
-            Se una fonte secondaria del periodo non è disponibile, la relativa visualizzazione resta vuota.
+            Lo stesso totale viene diviso prima per amministrazione e poi per tipo di spesa.
+            Se manca uno dei file ufficiali, il relativo grafico resta vuoto.
           </p>
         </div>
 
@@ -249,7 +249,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           </div>
           <p>
             Composizione delle modalità incluse da RGS nel “Totale Pagato”. La barra più lunga corrisponde
-            al canale con valore maggiore nel cumulato, non a una soglia normativa.
+            al canale con il totale maggiore. Non indica una soglia prevista dalla legge.
           </p>
         </div>
 
@@ -276,8 +276,8 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             <h2>Tre viste, un totale da verificare</h2>
           </div>
           <p>
-            Confrontiamo automaticamente i totali ottenuti da dataset RGS distinti. Una differenza non viene
-            corretta o nascosta: rimane visibile come segnale di qualità del dato o del perimetro.
+            Confrontiamo i totali ottenuti da file RGS diversi. Se non coincidono, mostriamo la
+            differenza senza correggerla o nasconderla.
           </p>
         </div>
 
@@ -303,12 +303,10 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <div>
-            <span className={styles.kicker}>PROVENIENZA</span>
-            <h2>Arriva sempre al dato originale</h2>
+            <h2>Apri sempre il dato originale</h2>
           </div>
           <p>
-            Il package UUID è conservato separatamente dagli eventuali resource UUID OData. I link sotto
-            puntano direttamente ai file e alle API ufficiali RGS usati per questa pagina.
+            I link portano ai file e ai servizi ufficiali RGS usati per costruire questa pagina.
           </p>
         </div>
 
@@ -349,15 +347,15 @@ export default async function StateSpendingPage() {
               <span className={styles.kicker}>RGS / OPENBDAP</span>
               <h1 className={styles.title}>Spese dello Stato.</h1>
               <p className={styles.lead}>
-                Questa pagina usa esclusivamente i dataset ufficiali OpenBDAP. Se la fonte non risponde,
-                non sostituiamo i valori con cache inventate o numeri dimostrativi.
+                Questa pagina usa solo dati ufficiali OpenBDAP. Se la fonte non risponde, non
+                sostituiamo i valori con numeri inventati.
               </p>
             </div>
           </header>
           <div className={styles.errorState}>
             <strong>Dati temporaneamente non disponibili.</strong>
             <p>
-              Il server non è riuscito a completare l&apos;acquisizione da OpenBDAP. Dettaglio tecnico: {errorMessage ?? "non disponibile"}.
+              Non siamo riusciti a leggere OpenBDAP. Puoi riprovare più tardi. Dettaglio: {errorMessage ?? "non disponibile"}.
             </p>
           </div>
         </>

@@ -5,6 +5,7 @@ import {
   AreaChart,
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -12,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import type { SiopeMunicipalMonthlyPoint } from "@/lib/siope-snapshot";
+import { chartColor } from "@/lib/chart-colors";
 import styles from "./municipal-spending-trend-chart.module.css";
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
@@ -41,7 +43,7 @@ function TooltipCard({
   return (
     <div className={styles.tooltip}>
       <span>{point.label}</span>
-      <strong>{mode === "flow" ? "Pagamenti del mese" : "Cumulato da gennaio"}</strong>
+      <strong>{mode === "flow" ? "Pagamenti del mese" : "Totale da gennaio"}</strong>
       <b>{exactEuro.format(mode === "flow" ? point.flow : point.cumulative)}</b>
     </div>
   );
@@ -102,15 +104,18 @@ export function MunicipalSpendingTrendChart({
               />
               <Bar
                 dataKey="flow"
-                fill="var(--chart-secondary)"
                 radius={[3, 3, 0, 0]}
                 isAnimationActive={false}
-              />
+              >
+                {data.map((point, index) => (
+                  <Cell key={point.month} fill={chartColor(index)} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
         <figcaption>
-          SIOPE pubblica movimenti mensili puri: qui non ricaviamo il mese per differenza tra snapshot.
+          SIOPE pubblica direttamente i movimenti di ogni mese. Non dobbiamo stimarli.
         </figcaption>
       </figure>
 
@@ -118,7 +123,7 @@ export function MunicipalSpendingTrendChart({
         <div className={styles.figureHeader}>
           <div>
             <span>PROGRESSIONE ANNUALE</span>
-            <h3>Pagamenti cumulati da gennaio</h3>
+            <h3>Totale dei pagamenti da gennaio</h3>
           </div>
           <b>somma dei flussi</b>
         </div>
@@ -175,7 +180,7 @@ export function MunicipalSpendingTrendChart({
           </ResponsiveContainer>
         </div>
         <figcaption>
-          Il cumulato è una trasformazione trasparente: somma progressiva dei movimenti mensili ufficiali.
+          Il totale cresce sommando, mese dopo mese, i movimenti ufficiali.
         </figcaption>
       </figure>
     </div>

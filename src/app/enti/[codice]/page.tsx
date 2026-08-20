@@ -33,7 +33,7 @@ function responsibleLabel(
   cognome: string | null,
 ): string {
   const identity = [nome, cognome].filter(Boolean).join(" ");
-  return [titolo, identity].filter(Boolean).join(" · ") || "Non indicato nel record IPA";
+  return [titolo, identity].filter(Boolean).join(", ") || "Non indicato da IPA";
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -94,8 +94,8 @@ export default async function EntityPage({ params }: PageProps) {
           <h1 className={styles.detailTitle}>{entity.denominazione}</h1>
           <p className={styles.detailSubtitle}>
             Codice IPA <strong>{entity.codiceIpa}</strong>
-            {entity.acronimo ? ` · ${entity.acronimo}` : ""}
-            {entity.dataAggiornamento ? ` · record aggiornato ${entity.dataAggiornamento}` : ""}
+            {entity.acronimo ? `, ${entity.acronimo}` : ""}
+            {entity.dataAggiornamento ? `, aggiornato ${entity.dataAggiornamento}` : ""}
           </p>
           <div className={styles.badges}>
             {entity.tipologia && <i className={styles.badge}>{entity.tipologia}</i>}
@@ -278,8 +278,8 @@ export default async function EntityPage({ params }: PageProps) {
               </div>
             </div>
             <p className={styles.disclaimer}>
-              Non mostriamo grafici economici finché il relativo record non è collegato a una fonte
-              ufficiale verificabile. La pagina è già il punto canonico su cui verranno innestati i dataset finanziari.
+              Mostreremo un grafico economico solo quando riusciremo a collegare questo ente a una
+              fonte ufficiale. Non usiamo valori stimati o abbinamenti basati solo sul nome.
             </p>
           </section>
         </div>
@@ -287,12 +287,12 @@ export default async function EntityPage({ params }: PageProps) {
         <aside className={styles.detailSide}>
           <section className={styles.section}>
             <div className={styles.sectionHeading}>
-              <h2>Provenienza</h2>
-              <span>record sorgente</span>
+              <h2>Da dove arrivano i dati</h2>
+              <span>fonte originale</span>
             </div>
             <div className={styles.provenance}>
               <div className={styles.provenanceRow}>
-                <span>Dataset</span>
+                <span>Fonte</span>
                 <a href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">Indice PA · Enti ↗</a>
               </div>
               <div className={styles.provenanceRow}>
@@ -300,7 +300,7 @@ export default async function EntityPage({ params }: PageProps) {
                 <b>Agenzia per l&apos;Italia Digitale</b>
               </div>
               <div className={styles.provenanceRow}>
-                <span>Resource ID</span>
+                <span>Identificativo del file</span>
                 <b>{IPA_ENTI_RESOURCE_ID}</b>
               </div>
               <div className={styles.provenanceRow}>
@@ -312,7 +312,7 @@ export default async function EntityPage({ params }: PageProps) {
                 <b>giornaliera</b>
               </div>
               <div className={styles.provenanceRow}>
-                <span>Data record</span>
+                <span>Data del dato</span>
                 <b>{show(entity.dataAggiornamento)}</b>
               </div>
             </div>
@@ -320,17 +320,17 @@ export default async function EntityPage({ params }: PageProps) {
 
           <section className={styles.section}>
             <div className={styles.sectionHeading}>
-              <h2>API DoveVannoINostriSoldi</h2>
-              <span>json</span>
+              <h2>Usa questi dati</h2>
+              <span>formato JSON</span>
             </div>
             <div className={styles.provenanceRow}>
-              <span>Endpoint normalizzato</span>
+              <span>Indirizzo per altre applicazioni</span>
               <Link href={`/api/enti/${encodeURIComponent(entity.codiceIpa)}`}>
                 /api/enti/{entity.codiceIpa} →
               </Link>
             </div>
             <p className={styles.disclaimer}>
-              L&apos;endpoint aggiunge metadati di provenienza e normalizza i campi, ma non modifica il significato del record IPA.
+              Il servizio rende i campi più facili da usare, ma non cambia ciò che IPA ha pubblicato.
             </p>
           </section>
         </aside>

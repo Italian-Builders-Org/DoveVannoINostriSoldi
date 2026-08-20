@@ -113,7 +113,7 @@ export default async function SourceStatusPage() {
         <div>
           <h2>Controllare spesso non rende il dato in tempo reale.</h2>
           <p>
-            Se IPA aggiorna ogni giorno, possiamo ricontrollarlo ogni ora. Se un dataset è mensile,
+            Se IPA aggiorna ogni giorno, possiamo ricontrollarlo ogni ora. Se una fonte è mensile,
             controllarlo più volte al giorno ci aiuta a trovare presto il nuovo rilascio,
             ma il dato resta mensile.
           </p>
@@ -157,7 +157,7 @@ export default async function SourceStatusPage() {
                 {reachabilityLabel(source)}
               </span>
               <strong>
-                {source.latencyMs !== null ? `${numberFormatter.format(source.latencyMs)} ms` : "—"}
+                {source.latencyMs !== null ? `${numberFormatter.format(source.latencyMs)} ms` : "Non disponibile"}
               </strong>
               <span>{source.detail ?? "Nessun dettaglio disponibile"}</span>
               {source.recordCount !== null && (

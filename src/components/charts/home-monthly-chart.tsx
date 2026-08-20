@@ -3,6 +3,7 @@
 import {
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -10,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { SiopeMunicipalMonthlyPoint } from "@/lib/siope-snapshot";
+import { chartColor } from "@/lib/chart-colors";
 import styles from "./home-monthly-chart.module.css";
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
@@ -79,10 +81,13 @@ export function HomeMonthlyChart({ data }: { data: SiopeMunicipalMonthlyPoint[] 
             />
             <Bar
               dataKey="flow"
-              fill="var(--chart-secondary)"
               radius={[3, 3, 0, 0]}
               isAnimationActive={false}
-            />
+            >
+              {data.map((point, index) => (
+                <Cell key={point.month} fill={chartColor(index)} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

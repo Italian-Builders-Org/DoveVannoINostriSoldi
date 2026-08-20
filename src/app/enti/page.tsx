@@ -127,15 +127,15 @@ export default async function EntiPage({ searchParams }: PageProps) {
             </div>
             <div>
               <b>Accesso</b>
-              <span>CKAN Data API + SQL</span>
+              <span>Servizio dati AgID</span>
             </div>
             <div>
-              <b>Resource ID</b>
+              <b>Identificativo del file</b>
               <span>{IPA_ENTI_RESOURCE_ID}</span>
             </div>
           </div>
           <a className={styles.sourceLink} href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">
-            Verifica sul dataset AgID <span>↗</span>
+            Apri i dati AgID <span>↗</span>
           </a>
         </aside>
       </section>
@@ -188,16 +188,16 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <div className={styles.snapshotSummary}>
             <span className={styles.kicker}>REGISTRO IN NUMERI</span>
           <div className={styles.snapshotNumber}>
-            <strong>{stats ? numberFormatter.format(stats.total) : "—"}</strong>
-            <span>record presenti nel dataset Enti</span>
+            <strong>{stats ? numberFormatter.format(stats.total) : "Non disponibile"}</strong>
+            <span>enti presenti nel registro</span>
           </div>
           <p>
-            Questo è il numero di record presenti nel registro IPA. Non indica il numero dei soli
+            Questo è il numero di enti presenti nel registro IPA. Non indica il numero dei soli
             ministeri e non misura la spesa pubblica.
           </p>
           <dl className={styles.snapshotMeta}>
             <div>
-              <dt>Interrogazione</dt>
+              <dt>Controllato</dt>
               <dd>{formatObservedAt(stats?.observedAt ?? distributionObservedAt)}</dd>
             </div>
             <div>
@@ -213,7 +213,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
               <span className={styles.kicker}>COMPOSIZIONE</span>
               <h2 id="snapshot-registro">Tipologie più presenti</h2>
             </div>
-            <span className={styles.chartSource}>query SQL · IPA</span>
+            <span className={styles.chartSource}>dati IPA</span>
           </div>
           <RegistryTypeChart data={distribution} />
         </div>
@@ -224,7 +224,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <div className={styles.resultsHeader}>
             <div>
               <h2 id="amministrazioni-centrali">Ministeri, Presidenza e Avvocatura</h2>
-              <p>Perimetro strutturale IPA: Codice Categoria C1. La natura dell&apos;ente distingue i ministeri dalla PCM.</p>
+              <p>IPA raccoglie questi enti nella categoria C1 e distingue i ministeri dalla Presidenza del Consiglio.</p>
             </div>
             <span>{numberFormatter.format(centralAdministrations.total)} enti · aggiornamento giornaliero</span>
           </div>
@@ -252,7 +252,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
       {!query && !centralAdministrations && (
         <div className={styles.empty}>
-          <strong>Il perimetro delle amministrazioni centrali non è disponibile ora.</strong>
+          <strong>L&apos;elenco delle amministrazioni centrali non è disponibile ora.</strong>
           <p>La ricerca IPA resta utilizzabile; non sostituiamo l&apos;elenco ufficiale con una lista statica.</p>
         </div>
       )}
@@ -260,7 +260,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
       {query && !canSearch && (
         <div className={styles.empty}>
           <strong>Scrivi almeno due caratteri.</strong>
-          <p>La ricerca parte dopo due caratteri per evitare interrogazioni troppo ampie sul datastore pubblico.</p>
+          <p>La ricerca parte dopo due caratteri per non sovraccaricare il servizio pubblico.</p>
         </div>
       )}
 
@@ -268,7 +268,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <div className={styles.error}>
           <strong>La fonte IPA non risponde in questo momento.</strong>
           <p>
-            Non sostituiamo il dato ufficiale con valori di fallback. Riprova più tardi oppure apri direttamente il dataset AgID.
+            Non sostituiamo il dato ufficiale con un elenco inventato. Riprova più tardi oppure apri i dati AgID.
           </p>
         </div>
       )}
@@ -318,7 +318,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           ) : (
             <div className={styles.empty}>
               <strong>Nessun ente trovato.</strong>
-              <p>La query non ha prodotto corrispondenze nel dataset IPA corrente.</p>
+              <p>La ricerca non ha trovato corrispondenze nel registro IPA.</p>
             </div>
           )}
         </>

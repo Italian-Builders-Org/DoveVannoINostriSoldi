@@ -35,8 +35,14 @@ export default function RootLayout({
             <strong>DoveVannoINostriSoldi</strong>
             <p>Progetto indipendente e open source. Non è un sito della Pubblica Amministrazione.</p>
           </div>
+          <div className="footer-contributors">
+            <span>Contributori</span>
+            <a href="https://x.com/fragiannicola" target="_blank" rel="noreferrer">@fragiannicola</a>
+            <a href="https://x.com/dom_gag_96" target="_blank" rel="noreferrer">@dom_gag_96</a>
+          </div>
           <div className="footer-rule">
-            <Link href="/metodologia">Come leggiamo i dati</Link> · Ogni numero ha una fonte, una data e un limite dichiarato.
+            <Link href="/metodologia">Come leggiamo i dati</Link>
+            <span>Ogni numero ha una fonte e una data.</span>
           </div>
         </footer>
       </body>

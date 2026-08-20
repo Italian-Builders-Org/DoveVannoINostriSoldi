@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -11,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import type { OpenCoesioneDimension } from "@/lib/data/opencoesione-contract";
+import { chartColor } from "@/lib/chart-colors";
 import styles from "./cohesion-explorer-chart.module.css";
 
 type View = "themes" | "natures" | "statuses";
@@ -129,10 +131,13 @@ export function CohesionExplorerChart({
             />
             <Bar
               dataKey="publicCostEuro"
-              fill="var(--chart-primary)"
               radius={[0, 3, 3, 0]}
               isAnimationActive={false}
-            />
+            >
+              {data.map((point, index) => (
+                <Cell key={point.slug} fill={chartColor(index)} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -31,7 +31,7 @@
   overflow-wrap: anywhere;
 }
 
-.overviewHeader > a,
+.headerActions > a,
 .panelHeader > a,
 .primaryMetric > a,
 .freshnessPanel > a,
@@ -47,11 +47,17 @@
   transition: color 140ms ease;
 }
 
-.overviewHeader > a:hover,
+.headerActions > a:hover,
 .panelHeader > a:hover,
 .primaryMetric > a:hover,
 .freshnessPanel > a:hover,
 .cohesionPanel footer a:hover { color: #c7e8f5; }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 
 .pulse {
   display: grid;
@@ -157,6 +163,23 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.yearNotice {
+  display: grid;
+  grid-template-columns: minmax(170px, .55fr) minmax(260px, 1.2fr) auto;
+  gap: 24px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 20px 22px;
+  border: 1px solid rgba(240, 197, 108, .2);
+  border-radius: 12px;
+  background: rgba(64, 48, 21, .12);
+}
+
+.yearNotice strong { color: #ebd5a1; font-size: 14px; }
+.yearNotice p { margin: 0; color: #9caab2; font-size: 12px; line-height: 1.55; }
+.yearNotice a { color: #e1bd6e; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.yearNotice a:active { transform: scale(.97); }
 
 .siopeGrid {
   width: 100%;
@@ -438,11 +461,12 @@
   .auditCallout > div { grid-template-columns: 1fr; }
   .auditCallout article { border-right: 0; border-bottom: 1px solid rgba(137, 171, 190, 0.14); }
   .auditCallout article:last-child { border-bottom: 0; }
+  .yearNotice { grid-template-columns: 1fr; gap: 9px; }
 }
 
 @media (max-width: 760px) {
   .dashboard { width: min(100% - 24px, 1440px); padding-top: 18px; }
-  .overviewHeader, .panelHeader, .monthlyPanel > header, .cohesionPanel > header, .cohesionPanel footer {
+  .overviewHeader, .headerActions, .panelHeader, .monthlyPanel > header, .cohesionPanel > header, .cohesionPanel footer {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;

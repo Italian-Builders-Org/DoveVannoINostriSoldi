@@ -3,6 +3,7 @@
 import {
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -10,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import styles from "./spending-bar-chart.module.css";
+import { chartColor } from "@/lib/chart-colors";
 
 export type SpendingChartPoint = {
   label: string;
@@ -106,10 +108,13 @@ export function SpendingBarChart({
             />
             <Bar
               dataKey="value"
-              fill="var(--chart-primary)"
               radius={[0, 3, 3, 0]}
               isAnimationActive={false}
-            />
+            >
+              {chartData.map((point, index) => (
+                <Cell key={`${point.code ?? point.label}-${index}`} fill={chartColor(index)} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

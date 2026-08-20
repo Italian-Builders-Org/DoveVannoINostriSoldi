@@ -68,8 +68,8 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
                 return (
                   <div className={styles.tooltip}>
                     <strong>{point.year}</strong>
-                    <span>Impegni cumulati <b>{exactEuro.format(point.commitmentsEuro)}</b></span>
-                    <span>Pagamenti cumulati <b>{exactEuro.format(point.paymentsEuro)}</b></span>
+                    <span>Impegni fino all&apos;anno <b>{exactEuro.format(point.commitmentsEuro)}</b></span>
+                    <span>Pagamenti fino all&apos;anno <b>{exactEuro.format(point.paymentsEuro)}</b></span>
                   </div>
                 );
               }}
@@ -98,20 +98,20 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
         </ResponsiveContainer>
       </div>
       <div className={styles.legend} aria-hidden="true">
-        <span><i className={styles.commitments} /> Impegni cumulati</span>
-        <span><i className={styles.payments} /> Pagamenti cumulati</span>
+        <span><i className={styles.commitments} /> Impegni fino all&apos;anno</span>
+        <span><i className={styles.payments} /> Pagamenti fino all&apos;anno</span>
       </div>
       <figcaption>
-        Serie cumulativa per anno pubblicata dall’API aggregata; non rappresenta il flusso del solo anno indicato.
+        Ogni punto contiene il totale registrato fino a quell&apos;anno, non il valore del solo anno indicato.
       </figcaption>
       <div className={styles.tableWrap}>
         <table>
-          <caption>Valori annuali della serie cumulativa OpenCoesione</caption>
+          <caption>Totali annuali pubblicati da OpenCoesione</caption>
           <thead>
             <tr>
               <th scope="col">Anno</th>
-              <th scope="col">Impegni cumulati</th>
-              <th scope="col">Pagamenti cumulati</th>
+              <th scope="col">Impegni fino all&apos;anno</th>
+              <th scope="col">Pagamenti fino all&apos;anno</th>
             </tr>
           </thead>
           <tbody>

@@ -2,13 +2,16 @@ import Link from "next/link";
 import { HomeMonthlyChart } from "@/components/charts/home-monthly-chart";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
+import { PeriodSelector } from "@/components/period-selector";
 import { classifyFreshness } from "@/lib/data/freshness";
 import { SOURCE_POLICIES } from "@/lib/data/source-policy";
 import {
-  openCoesionePaymentCostRatio,
   openCoesioneSnapshot as cohesion,
 } from "@/lib/opencoesione-snapshot";
-import { siopeMunicipalSnapshot as siope } from "@/lib/siope-snapshot";
+import {
+  availableSiopeYears,
+  getSiopeMunicipalSnapshot,
+} from "@/lib/siope-snapshot";
 import { publicSources, sourceCounts } from "@/lib/sources";
 import { auditScenarios, procurementComparison } from "@/lib/audit-data";
 import styles from "./home.module.css";
@@ -43,12 +46,6 @@ function date(value: string | null): string {
   }).format(parsed);
 }
 
-const period = `gennaio–${siope.latestMonthLabel.toLocaleLowerCase("it-IT")} ${siope.year}`;
-const coverageRatio =
-  siope.coverage.activeSiopeMunicipalities > 0
-    ? (siope.coverage.withMovements / siope.coverage.activeSiopeMunicipalities) * 100
-    : 0;
-const cohesionRatioPercent = openCoesionePaymentCostRatio * 100;
 const cohesionFreshness = classifyFreshness(
   SOURCE_POLICIES.opencoesione.staleAfterSeconds,
   cohesion.referenceDate,
@@ -81,15 +78,38 @@ const analysisPaths = [
   { href: "/fonti", area: "Contratti pubblici", detail: "Gare, affidamenti e aggiudicazioni", source: "ANAC · BDNCP", status: "In lavorazione" },
 ];
 
-export default function HomePage() {
+function selectedYear(value: string | string[] | undefined): number {
+  const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
+  return availableSiopeYears.includes(parsed) ? parsed : availableSiopeYears[0];
+}
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ anno?: string | string[] }>;
+}) {
+  const year = selectedYear((await searchParams).anno);
+  const siope = getSiopeMunicipalSnapshot(year);
+  const period = `gennaio a ${siope.latestMonthLabel.toLocaleLowerCase("it-IT")} ${siope.year}`;
+  const coverageRatio = siope.coverage.activeSiopeMunicipalities > 0
+    ? (siope.coverage.withMovements / siope.coverage.activeSiopeMunicipalities) * 100
+    : 0;
+  const cohesionPoint = cohesion.annualSeries.find((point) => point.year === year) ?? null;
+  const cohesionRatioPercent = cohesionPoint && cohesionPoint.commitmentsCents > 0
+    ? (cohesionPoint.paymentsCents / cohesionPoint.commitmentsCents) * 100
+    : null;
+
   return (
     <main className={styles.dashboard}>
       <header className={styles.overviewHeader}>
         <div>
           <h1>Dove vanno i nostri soldi?</h1>
-          <p>Una dashboard per capire i dati pubblici italiani e risalire sempre alla fonte.</p>
+          <p>Scopri quanto spendono Stato e Comuni, da quali fonti arrivano i dati e a quale periodo si riferiscono.</p>
         </div>
-        <Link href="/fonti/stato">Quando sono aggiornati i dati <span>→</span></Link>
+        <div className={styles.headerActions}>
+          <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/" />
+          <Link href="/fonti/stato">Quando sono aggiornati i dati <span>→</span></Link>
+        </div>
       </header>
 
       <section className={styles.pulse} aria-label="Copertura attuale della piattaforma">
@@ -97,10 +117,10 @@ export default function HomePage() {
         <div><strong>{integer.format(siope.coverage.includedMovementRows)}</strong><span>pagamenti comunali letti</span></div>
         <div><strong>{integer.format(siope.coverage.withMovements)}</strong><span>Comuni presenti</span></div>
         <div><strong>{siope.regions.length}</strong><span>regioni confrontabili</span></div>
-        <div><strong>{integer.format(cohesion.totals.projects)}</strong><span>progetti seguiti</span></div>
+        <div><strong>{integer.format(siope.populationCovered)}</strong><span>abitanti coperti</span></div>
       </section>
 
-      <section className={styles.auditCallout} aria-labelledby="audit-title">
+      {year === 2025 ? <section className={styles.auditCallout} aria-labelledby="audit-title">
         <header>
           <span className={styles.sectionLabelText}>LEGGERE BENE I NUMERI</span>
           <h2 id="audit-title">Tre dati che raccontano cose diverse</h2>
@@ -119,12 +139,21 @@ export default function HomePage() {
           </article>
           <article data-tone="policy">
             <strong>{auditScenarios[1].annualBillion.toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €</strong>
-            <h3>Scenario centrale</h3>
-            <p>È un esercizio di policy con ipotesi dichiarate, non denaro già disponibile.</p>
+            <h3>Ipotesi centrale</h3>
+            <p>È una stima costruita su ipotesi dichiarate. Non è denaro già disponibile.</p>
           </article>
         </div>
-        <Link href="/controlli">Capire i numeri dell&apos;audit <span>→</span></Link>
-      </section>
+        <Link href="/controlli">Capire i numeri da controllare <span>→</span></Link>
+      </section> : (
+        <section className={styles.yearNotice} aria-label={`Controlli disponibili per il ${year}`}>
+          <strong>Controlli approfonditi per il {year}</strong>
+          <p>
+            Non abbiamo ancora un insieme completo di indicatori confrontabili per questo anno.
+            I dati SIOPE e OpenCoesione qui sotto cambiano davvero con il periodo scelto.
+          </p>
+          <Link href="/controlli">Vedi tutti i controlli con la loro data <span>→</span></Link>
+        </section>
+      )}
 
       <section className={styles.siopeGrid} aria-labelledby="siope-title">
         <article className={styles.primaryMetric}>
@@ -150,7 +179,7 @@ export default function HomePage() {
             </div>
             <div><dt>Fonte aggiornata il</dt><dd>{date(siope.source.siopeMovementsLastModified)}</dd></div>
           </dl>
-          <Link href="/territori">Apri il dettaglio territoriale <span>→</span></Link>
+          <Link href={`/territori?anno=${year}`}>Apri il dettaglio territoriale <span>→</span></Link>
         </article>
 
         <figure className={styles.monthlyPanel}>
@@ -173,14 +202,14 @@ export default function HomePage() {
             <h2 id="map-title">Quanto spendono i Comuni in ogni regione</h2>
             <p>Euro per abitante. Seleziona una regione per vedere il dettaglio.</p>
           </div>
-          <Link href="/territori">Tabelle e classificazioni <span>→</span></Link>
+          <Link href={`/territori?anno=${year}`}>Tabelle e classificazioni <span>→</span></Link>
         </header>
         <ItalyRegionsMap regions={siope.regions} period={period} />
         <footer className={styles.mapAttribution}>
           Confini amministrativi a fini statistici: {" "}
           <a href="https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip" target="_blank" rel="noreferrer">ISTAT, 1 gennaio 2026</a>
-          {" · "}<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>
-          {" · "}geometria semplificata.
+          {", "}<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>
+          {", "}geometria semplificata.
         </footer>
       </section>
 
@@ -189,33 +218,33 @@ export default function HomePage() {
           <header className={styles.panelHeader}>
             <div>
               <span className={styles.sectionLabelText}>FONDI E PROGETTI · OPENCOESIONE</span>
-              <h2>Quanto costano e quanto è stato pagato</h2>
+              <h2>Impegni e pagamenti fino al {year}</h2>
             </div>
             <span className={cohesionFreshnessClass}>{cohesionFreshnessLabel}</span>
           </header>
 
           <div className={styles.cohesionStats}>
-            <div><span>Costo previsto</span><strong>{compactEuro(cohesion.totals.publicCostCents / 100)}</strong></div>
-            <div><span>Già pagato</span><strong>{compactEuro(cohesion.totals.paymentsCents / 100)}</strong></div>
-            <div><span>Progetti seguiti</span><strong>{integer.format(cohesion.totals.projects)}</strong></div>
+            <div><span>Impegni fino al {year}</span><strong>{cohesionPoint ? compactEuro(cohesionPoint.commitmentsCents / 100) : "Non disponibile"}</strong></div>
+            <div><span>Pagamenti fino al {year}</span><strong>{cohesionPoint ? compactEuro(cohesionPoint.paymentsCents / 100) : "Non disponibile"}</strong></div>
+            <div><span>Pagato sugli impegni</span><strong>{cohesionRatioPercent === null ? "Non disponibile" : `${cohesionRatioPercent.toLocaleString("it-IT", { maximumFractionDigits: 2 })}%`}</strong></div>
           </div>
 
           <div className={styles.ratioBlock}>
             <div>
               <span className={styles.inlineTerm}>
-                Pagato sul costo previsto
+                Pagato sugli impegni
                 <InfoTooltip id="cohesion-ratio-tip" label="Che cosa significa questo rapporto?">
-                  Rapporto finanziario aggregato. Non indica avanzamento fisico, qualità o completamento dei progetti.
+                  Confronta i pagamenti e gli impegni registrati fino all&apos;anno scelto. Non dice quante opere sono finite.
                 </InfoTooltip>
               </span>
-              <strong>{cohesionRatioPercent.toLocaleString("it-IT", { maximumFractionDigits: 2 })}%</strong>
+              <strong>{cohesionRatioPercent === null ? "Non disponibile" : `${cohesionRatioPercent.toLocaleString("it-IT", { maximumFractionDigits: 2 })}%`}</strong>
             </div>
-            <div className={styles.ratioTrack} aria-hidden="true"><i style={{ width: `${Math.min(cohesionRatioPercent, 100)}%` }} /></div>
-            <p>Confronta euro pagati e costo previsto. Non dice quante opere sono finite.</p>
+            <div className={styles.ratioTrack} aria-hidden="true"><i style={{ width: `${Math.min(cohesionRatioPercent ?? 0, 100)}%` }} /></div>
+            <p>La serie è pubblicata da OpenCoesione e cresce nel tempo. Non è la spesa del solo {year}.</p>
           </div>
 
           <footer>
-            <span>Dati riferiti al {date(cohesion.referenceDate)} · fonte controllata il {date(cohesion.source.observedAt)}</span>
+            <span>Serie annuale fino al {year}. Fonte controllata il {date(cohesion.source.observedAt)}.</span>
             <Link href="/coesione">Apri OpenCoesione <span>→</span></Link>
           </footer>
         </article>
@@ -231,8 +260,8 @@ export default function HomePage() {
               <div><strong>SIOPE</strong><span>Pagamenti dei Comuni</span></div>
               <dl>
                 <div><dt>Dati fino a</dt><dd>{siope.latestMonthLabel} {siope.year}</dd></div>
-                <div><dt>File · ultima modifica</dt><dd>{date(siope.source.siopeMovementsLastModified)}</dd></div>
-                <div><dt>Acquisizione</dt><dd>{date(siope.generatedAt)}</dd></div>
+                <div><dt>File aggiornato</dt><dd>{date(siope.source.siopeMovementsLastModified)}</dd></div>
+                <div><dt>Scaricato da noi</dt><dd>{date(siope.generatedAt)}</dd></div>
                 <div><dt>Controllo</dt><dd>ogni ora</dd></div>
               </dl>
             </article>

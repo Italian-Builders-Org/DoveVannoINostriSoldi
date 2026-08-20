@@ -1,4 +1,6 @@
-import snapshot from "@/data/generated/siope-municipal.json";
+import snapshot2024 from "@/data/generated/siope-municipal-2024.json";
+import snapshot2025 from "@/data/generated/siope-municipal-2025.json";
+import snapshot2026 from "@/data/generated/siope-municipal.json";
 
 export type SiopeMunicipalMonthlyPoint = {
   month: number;
@@ -76,7 +78,24 @@ export type SiopeMunicipalSnapshot = {
  * committed. Keeping it as a versioned build input makes web requests cheap,
  * deterministic and independent from a 50+ MB upstream download.
  */
-export const siopeMunicipalSnapshot = snapshot as SiopeMunicipalSnapshot;
+const snapshots = {
+  2024: snapshot2024,
+  2025: snapshot2025,
+  2026: snapshot2026,
+} as const;
+
+export const availableSiopeYears = Object.keys(snapshots)
+  .map(Number)
+  .sort((left, right) => right - left);
+
+export function getSiopeMunicipalSnapshot(year?: number): SiopeMunicipalSnapshot {
+  if (year && year in snapshots) {
+    return snapshots[year as keyof typeof snapshots] as SiopeMunicipalSnapshot;
+  }
+  return snapshot2026 as SiopeMunicipalSnapshot;
+}
+
+export const siopeMunicipalSnapshot = getSiopeMunicipalSnapshot();
 
 export function regionsByPerCapita(
   data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,

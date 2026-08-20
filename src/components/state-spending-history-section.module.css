@@ -94,6 +94,16 @@
   border-top: 1px solid var(--line);
 }
 
+.coverageNote {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--amber);
+  color: #aebfca;
+  background: rgba(240, 197, 108, .05);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .methodology div {
   min-width: 0;
 }

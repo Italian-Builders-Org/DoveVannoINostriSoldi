@@ -125,20 +125,20 @@ export function ItalyRegionsMap({
                 ? `fino a ${integer.format(thresholds[0])} €`
                 : index === 4
                   ? `oltre ${integer.format(thresholds[3])} €`
-                  : `${integer.format(thresholds[index - 1])}–${integer.format(thresholds[index])} €`}
+                  : `da ${integer.format(thresholds[index - 1])} a ${integer.format(thresholds[index])} €`}
             </span>
           ))}
         </div>
       </div>
 
       <aside className={styles.detail} aria-live="polite">
-        <span>REGIONE SELEZIONATA</span>
+        <span>Regione selezionata</span>
         <h3>{selected?.region ?? "Dato non disponibile"}</h3>
-        <strong>{selected?.perCapita === null || !selected ? "—" : euro.format(selected.perCapita)}</strong>
+        <strong>{selected?.perCapita === null || !selected ? "Non disponibile" : euro.format(selected.perCapita)}</strong>
         <small>per abitante della popolazione coperta</small>
         <dl>
-          <div><dt>Totale pagato</dt><dd>{selected ? compactEuro(selected.value) : "—"}</dd></div>
-          <div><dt>Comuni inclusi</dt><dd>{selected ? integer.format(selected.municipalities) : "—"}</dd></div>
+          <div><dt>Totale pagato</dt><dd>{selected ? compactEuro(selected.value) : "Non disponibile"}</dd></div>
+          <div><dt>Comuni inclusi</dt><dd>{selected ? integer.format(selected.municipalities) : "Non disponibile"}</dd></div>
           <div><dt>Periodo</dt><dd>{period}</dd></div>
         </dl>
         <p>

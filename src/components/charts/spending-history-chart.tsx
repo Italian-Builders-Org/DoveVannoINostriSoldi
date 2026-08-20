@@ -43,8 +43,8 @@ function TooltipCard({
   return (
     <div className={styles.tooltip}>
       <span>{point.monthName} {point.year}</span>
-      <strong>{mode === "cumulative" ? "Cumulato da gennaio" : "Pagamento del mese derivato"}</strong>
-      <b>{exactEuro.format(value)}</b>
+      <strong>{mode === "cumulative" ? "Totale da gennaio" : "Pagamento del mese calcolato"}</strong>
+      <b>{value === null ? "Non calcolabile" : exactEuro.format(value)}</b>
     </div>
   );
 }
@@ -63,10 +63,10 @@ export function SpendingHistoryChart({
       <figure className={styles.figure}>
         <div className={styles.figureHeader}>
           <div>
-            <span>ANDAMENTO CUMULATIVO</span>
+            <span>TOTALE DA GENNAIO</span>
             <h3>Pagamenti da inizio anno</h3>
           </div>
-          <b>{data.length} snapshot</b>
+          <b>{data.length} mesi disponibili</b>
         </div>
         <div className={styles.chart} role="img" aria-label="Pagamenti cumulati del Bilancio dello Stato da gennaio">
           <ResponsiveContainer width="100%" height="100%">
@@ -108,17 +108,17 @@ export function SpendingHistoryChart({
           </ResponsiveContainer>
         </div>
         <figcaption>
-          Ogni punto è il totale ufficiale cumulato dal 1° gennaio fino alla fine del mese contabile indicato.
+          Ogni punto è il totale ufficiale dal 1° gennaio fino alla fine del mese indicato.
         </figcaption>
       </figure>
 
       <figure className={styles.figure}>
         <div className={styles.figureHeader}>
           <div>
-            <span>FLUSSO DERIVATO</span>
-            <h3>Pagamenti attribuiti al singolo mese</h3>
+            <span>MESE PER MESE</span>
+            <h3>Pagamenti calcolati per ogni mese</h3>
           </div>
-          <b>Δ snapshot</b>
+          <b>Differenza tra due mesi</b>
         </div>
         <div className={styles.chart} role="img" aria-label="Pagamenti mensili derivati dalla differenza tra snapshot cumulativi RGS">
           <ResponsiveContainer width="100%" height="100%">
@@ -156,7 +156,7 @@ export function SpendingHistoryChart({
           </ResponsiveContainer>
         </div>
         <figcaption>
-          Gennaio coincide con il primo snapshot; da febbraio il valore è calcolato come differenza tra due cumulati consecutivi.
+          Da febbraio sottraiamo il totale del mese precedente. Se manca uno dei due mesi, non calcoliamo il valore.
         </figcaption>
       </figure>
     </div>

@@ -31,11 +31,11 @@
   outline: none;
 }
 
-.level0 { fill: #18384b; background: #18384b; }
-.level1 { fill: #26516a; background: #26516a; }
-.level2 { fill: #386d88; background: #386d88; }
-.level3 { fill: #528aa4; background: #528aa4; }
-.level4 { fill: #76a8bd; background: #76a8bd; }
+.level0 { fill: #56468f; background: #56468f; }
+.level1 { fill: #346ea1; background: #346ea1; }
+.level2 { fill: #2d8d8a; background: #2d8d8a; }
+.level3 { fill: #65a66f; background: #65a66f; }
+.level4 { fill: #d2a84f; background: #d2a84f; }
 .noData { fill: #29343b; }
 
 .legend {

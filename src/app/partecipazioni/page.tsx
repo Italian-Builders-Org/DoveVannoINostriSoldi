@@ -39,7 +39,7 @@ export default function ParticipationsPage() {
           <h1>Partecipazioni pubbliche</h1>
           <p>
             Relazioni dichiarate dalle amministrazioni nel censimento MEF, riferite al 31 dicembre {snapshot.referenceYear}.
-            Una relazione di partecipazione non equivale automaticamente a controllo pubblico né a status in-house corrente.
+            Una partecipazione non significa automaticamente che la società sia oggi controllata dalla PA o operi per essa.
           </p>
         </div>
         <a href={snapshot.source.landingUrl} target="_blank" rel="noreferrer">
@@ -49,9 +49,9 @@ export default function ParticipationsPage() {
 
       <section className={styles.metrics} aria-label="Dimensione del censimento MEF">
         <article className={styles.primaryMetric}>
-          <span><HugeiconsIcon icon={HierarchyIcon} size={19} strokeWidth={1.5} aria-hidden="true" /> Relazioni censite</span>
+          <span><HugeiconsIcon icon={HierarchyIcon} size={19} strokeWidth={1.5} aria-hidden="true" /> Partecipazioni dichiarate</span>
           <strong>{number.format(snapshot.totals.participationRecords)}</strong>
-          <p>Ogni riga collega un&apos;amministrazione dichiarante a un&apos;organizzazione partecipata per l&apos;anno di riferimento.</p>
+          <p>Ogni riga collega un&apos;amministrazione a una società o organizzazione partecipata per l&apos;anno indicato.</p>
         </article>
         <dl>
           <div><dt>Amministrazioni dichiaranti</dt><dd>{number.format(snapshot.totals.declaringAdministrations)}</dd></div>
@@ -77,7 +77,7 @@ export default function ParticipationsPage() {
         <aside className={styles.evidence}>
           <HugeiconsIcon icon={LegalDocument01Icon} size={24} strokeWidth={1.5} aria-hidden="true" />
           <div>
-            <h2>Evidence, non verdetti</h2>
+            <h2>Indicazioni dichiarate, non sentenze</h2>
             <p>{snapshot.declaredEvidence.legalMeaning}</p>
             <dl>
               <div><dt>Controllo analogo dichiarato</dt><dd>{number.format(snapshot.declaredEvidence.analogControlRecords)}</dd></div>
@@ -110,12 +110,12 @@ export default function ParticipationsPage() {
       <section className={styles.provenance}>
         <HugeiconsIcon icon={Database02Icon} size={23} strokeWidth={1.5} aria-hidden="true" />
         <div>
-          <h2>Provenienza dello snapshot</h2>
+          <h2>Da dove arrivano i dati</h2>
           <dl>
             <div><dt>Data del dato</dt><dd>{formatDate(snapshot.referenceDate)}</dd></div>
             <div><dt>Pubblicato dal MEF</dt><dd>{formatDate(snapshot.publishedAt)}</dd></div>
-            <div><dt>Acquisito</dt><dd>{formatDate(snapshot.generatedAt)}</dd></div>
-            <div><dt>Codifica rilevata</dt><dd>{snapshot.source.detectedEncoding}</dd></div>
+            <div><dt>Scaricato da noi</dt><dd>{formatDate(snapshot.generatedAt)}</dd></div>
+            <div><dt>Formato del testo</dt><dd>{snapshot.source.detectedEncoding}</dd></div>
             <div><dt>Licenza</dt><dd>{snapshot.source.license}</dd></div>
             <div><dt>SHA-256 originale</dt><dd><code>{snapshot.source.rawSha256}</code></dd></div>
           </dl>

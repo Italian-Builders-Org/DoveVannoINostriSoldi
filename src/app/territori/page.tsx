@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { MunicipalSpendingTrendChart } from "@/components/charts/municipal-spending-trend-chart";
+import { PeriodSelector } from "@/components/period-selector";
 import { SpendingBarChart } from "@/components/charts/spending-bar-chart";
 import {
+  availableSiopeYears,
+  getSiopeMunicipalSnapshot,
   regionsByPerCapita,
-  siopeMunicipalSnapshot as data,
 } from "@/lib/siope-snapshot";
 import styles from "./territori.module.css";
 
@@ -45,29 +47,37 @@ function dateTime(value: string | null): string {
   }).format(date);
 }
 
-const regionTotalData = data.regions.map((region) => ({
-  label: region.region,
-  value: region.value,
-  code: `${integer.format(region.municipalities)} Comuni`,
-}));
+function selectedYear(value: string | string[] | undefined): number {
+  const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
+  return availableSiopeYears.includes(parsed) ? parsed : availableSiopeYears[0];
+}
 
-const regionPerCapitaData = regionsByPerCapita(data).map((region) => ({
-  label: region.region,
-  value: region.perCapita ?? 0,
-  code: `${integer.format(region.municipalities)} Comuni`,
-}));
+export default async function TerritoriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ anno?: string | string[] }>;
+}) {
+  const year = selectedYear((await searchParams).anno);
+  const data = getSiopeMunicipalSnapshot(year);
+  const regionTotalData = data.regions.map((region) => ({
+    label: region.region,
+    value: region.value,
+    code: `${integer.format(region.municipalities)} Comuni`,
+  }));
+  const regionPerCapitaData = regionsByPerCapita(data).map((region) => ({
+    label: region.region,
+    value: region.perCapita ?? 0,
+    code: `${integer.format(region.municipalities)} Comuni`,
+  }));
+  const titleData = data.titles.map((title) => ({
+    label: title.label,
+    value: title.value,
+    code: `Titolo ${title.code}`,
+  }));
+  const coverageRatio = data.coverage.activeSiopeMunicipalities > 0
+    ? (data.coverage.withMovements / data.coverage.activeSiopeMunicipalities) * 100
+    : 0;
 
-const titleData = data.titles.map((title) => ({
-  label: title.label,
-  value: title.value,
-  code: `Titolo ${title.code}`,
-}));
-
-const coverageRatio = data.coverage.activeSiopeMunicipalities > 0
-  ? (data.coverage.withMovements / data.coverage.activeSiopeMunicipalities) * 100
-  : 0;
-
-export default function TerritoriesPage() {
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
@@ -83,9 +93,10 @@ export default function TerritoriesPage() {
         </div>
 
         <div className={styles.heroMeta}>
-          <span>ULTIMO MESE DISPONIBILE</span>
+          <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/territori" />
+          <span>Ultimo mese disponibile</span>
           <strong>{data.latestMonthLabel} {data.year}</strong>
-          <small>Snapshot generato {dateTime(data.generatedAt)}</small>
+          <small>Dati preparati il {dateTime(data.generatedAt)}</small>
         </div>
       </section>
 
@@ -97,7 +108,7 @@ export default function TerritoriesPage() {
         </article>
         <article>
           <span>PER ABITANTE COPERTO</span>
-          <strong>{data.nationalPerCapita === null ? "—" : euro.format(data.nationalPerCapita)}</strong>
+          <strong>{data.nationalPerCapita === null ? "Non disponibile" : euro.format(data.nationalPerCapita)}</strong>
           <small>rapporto descrittivo, non costo individuale</small>
         </article>
         <article>
@@ -115,7 +126,6 @@ export default function TerritoriesPage() {
       <section className={styles.section}>
         <div className={styles.sectionHeading}>
           <div>
-            <span className={styles.sectionIndex}>01 · ANDAMENTO</span>
             <h2>Il ritmo dei pagamenti durante l&apos;anno</h2>
           </div>
           <p>
@@ -129,7 +139,6 @@ export default function TerritoriesPage() {
       <section className={styles.section}>
         <div className={styles.sectionHeading}>
           <div>
-            <span className={styles.sectionIndex}>02 · REGIONI</span>
             <h2>Confrontare volume e intensità</h2>
           </div>
           <p>
@@ -153,13 +162,13 @@ export default function TerritoriesPage() {
               maxItems={10}
               height={430}
             />
-            <p className={styles.chartNote}>Prime 10 per volume cumulato da gennaio.</p>
+            <p className={styles.chartNote}>Prime 10 per totale da gennaio.</p>
           </article>
 
           <article className={styles.chartPanel}>
             <header>
               <div>
-                <span>NORMALIZZATO</span>
+              <span>CONFRONTO PER ABITANTE</span>
                 <h3>Euro per abitante coperto</h3>
               </div>
               <b>€/abitante</b>
@@ -181,7 +190,6 @@ export default function TerritoriesPage() {
         <div className={styles.categoryPanel}>
           <div className={styles.panelHeading}>
             <div>
-              <span className={styles.sectionIndex}>03 · NATURA ECONOMICA</span>
               <h2>Che tipo di uscita è</h2>
             </div>
           </div>
@@ -192,7 +200,7 @@ export default function TerritoriesPage() {
             height={365}
           />
           <p className={styles.chartNote}>
-            Raggruppamento per titolo ricavato dalla codifica gestionale SIOPE; il dettaglio delle singole voci arriverà nel drill-down dell&apos;ente.
+            Raggruppamento secondo i titoli usati da SIOPE. Il dettaglio delle singole voci sarà aggiunto alle pagine degli enti.
           </p>
         </div>
 
@@ -225,7 +233,7 @@ export default function TerritoriesPage() {
             </div>
           </dl>
           <p>
-            Gli enti non abbinati restano fuori dalle aggregazioni regionali: preferiamo una lacuna dichiarata a un join geografico indovinato.
+            Gli enti non abbinati restano fuori dai totali regionali. Non assegniamo una regione senza una corrispondenza ufficiale.
           </p>
         </aside>
       </section>
@@ -233,7 +241,6 @@ export default function TerritoriesPage() {
       <section className={styles.section}>
         <div className={styles.sectionHeading}>
           <div>
-            <span className={styles.sectionIndex}>04 · AMMINISTRAZIONI</span>
             <h2>I maggiori volumi comunali</h2>
           </div>
           <p>
@@ -249,7 +256,7 @@ export default function TerritoriesPage() {
                 <th scope="col">#</th>
                 <th scope="col">Comune</th>
                 <th scope="col">Regione</th>
-                <th scope="col">Pagamenti YTD</th>
+                <th scope="col">Pagamenti da gennaio</th>
                 <th scope="col">€/abitante</th>
               </tr>
             </thead>
@@ -263,7 +270,7 @@ export default function TerritoriesPage() {
                   </th>
                   <td>{municipality.region}</td>
                   <td>{euro.format(municipality.value)}</td>
-                  <td>{municipality.perCapita === null ? "—" : euro.format(municipality.perCapita)}</td>
+                  <td>{municipality.perCapita === null ? "Non disponibile" : euro.format(municipality.perCapita)}</td>
                 </tr>
               ))}
             </tbody>
@@ -273,11 +280,10 @@ export default function TerritoriesPage() {
 
       <section className={styles.provenance}>
         <div className={styles.provenanceIntro}>
-          <span className={styles.sectionIndex}>05 · PROVENIENZA</span>
-          <h2>Il grafico non è la fonte.</h2>
+          <h2>Controlla i dati originali</h2>
           <p>
-            Lo snapshot conserva gli URL upstream e i loro validator. Il controllo gira
-            frequentemente, ma il dato cambia soltanto quando cambia la pubblicazione ufficiale.
+            Conserviamo i collegamenti ai file usati. Il controllo gira spesso, ma i numeri
+            cambiano solo quando SIOPE pubblica un aggiornamento.
           </p>
           <Link href="/fonti/stato" className={styles.inlineLink}>
             Stato di tutte le fonti <span aria-hidden="true">→</span>
@@ -289,7 +295,7 @@ export default function TerritoriesPage() {
             <span>01</span>
             <div>
               <strong>SIOPE · movimenti di uscita {data.year}</strong>
-              <small>Fonte primaria · modificata {dateTime(data.source.siopeMovementsLastModified)}</small>
+              <small>Fonte principale. Aggiornata {dateTime(data.source.siopeMovementsLastModified)}</small>
             </div>
             <i aria-hidden="true">↗</i>
           </a>
@@ -297,7 +303,7 @@ export default function TerritoriesPage() {
             <span>02</span>
             <div>
               <strong>SIOPE · anagrafiche</strong>
-              <small>Ente, codice fiscale e popolazione · modificata {dateTime(data.source.siopeRegistryLastModified)}</small>
+              <small>Ente, codice fiscale e popolazione. Aggiornata {dateTime(data.source.siopeRegistryLastModified)}</small>
             </div>
             <i aria-hidden="true">↗</i>
           </a>
@@ -305,7 +311,7 @@ export default function TerritoriesPage() {
             <span>03</span>
             <div>
               <strong>Indice PA · amministrazioni</strong>
-              <small>Join codice fiscale → regione · modificata {dateTime(data.source.ipaLastModified)}</small>
+              <small>Il codice fiscale collega ogni ente alla regione. Aggiornata {dateTime(data.source.ipaLastModified)}</small>
             </div>
             <i aria-hidden="true">↗</i>
           </a>

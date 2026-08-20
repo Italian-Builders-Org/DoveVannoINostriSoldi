@@ -20,7 +20,7 @@ export default function SourcesPage() {
         <h1>Da dove arrivano i dati</h1>
         <p>
           Qui trovi chi pubblica ogni dato, che cosa contiene, quanto spesso cambia
-          e se è già collegato alla dashboard.
+          e se è già collegato al sito.
         </p>
         <div className="hero-actions" style={{ justifyContent: "flex-start" }}>
           <Link href="/fonti/stato" className="button button-primary">
@@ -51,7 +51,7 @@ export default function SourcesPage() {
             </div>
             <div>
               <strong>{source.coverage}</strong><small>{source.format}</small>
-              {source.joinKeys && <small>Chiavi: {source.joinKeys.join(" · ")}</small>}
+              {source.joinKeys && <small>Campi usati per collegare i dati: {source.joinKeys.join(", ")}</small>}
             </div>
             <div><strong>{source.cadence}</strong></div>
             <div><span className={`status status-${source.status}`}>{statusLabel[source.status]}</span></div>

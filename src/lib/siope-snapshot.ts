@@ -28,6 +28,7 @@ export type SiopeSpendingTitle = {
 
 export type SiopeMunicipalityPoint = {
   name: string;
+  province: string;
   region: string;
   codiceFiscale: string;
   population: number | null;
@@ -36,7 +37,7 @@ export type SiopeMunicipalityPoint = {
 };
 
 export type SiopeMunicipalSnapshot = {
-  schemaVersion: 2;
+  schemaVersion: 3;
   generatedAt: string;
   scope: "municipalities";
   year: number;

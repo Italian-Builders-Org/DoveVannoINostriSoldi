@@ -43,7 +43,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -69,7 +69,7 @@ jobs:
           if not path.exists():
               raise SystemExit("Generated SIOPE snapshot is missing")
           data = json.loads(path.read_text(encoding="utf-8"))
-          assert data["schemaVersion"] == 2
+          assert data["schemaVersion"] == 3
           assert data["scope"] == "municipalities"
           assert 1 <= data["latestMonth"] <= 12
           assert data["totalPaid"] >= 0
@@ -90,6 +90,14 @@ jobs:
           assert len(data["topMunicipalitiesByValue"]) == 100
           assert len(data["topMunicipalitiesByPerCapita"]) == 100
           assert data["topMunicipalities"] == data["topMunicipalitiesByValue"]
+          assert all(
+              item["province"].strip() and item["region"].strip()
+              for ranking in (
+                  data["topMunicipalitiesByValue"],
+                  data["topMunicipalitiesByPerCapita"],
+              )
+              for item in ranking
+          )
           assert all(
               left["value"] >= right["value"]
               for left, right in zip(

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "transformVersion": 1,
+  "transformVersion": 2,
   "observedAt": "2026-08-20T14:00:00.000Z",
   "unit": "million-euro",
-  "rounding": "Gli importi sono espressi in milioni di euro e mantengono l'arrotondamento usato nei documenti ufficiali.",
+  "rounding": "Gli importi sono espressi in milioni di euro. Conserviamo la precisione verificata disponibile; le altre categorie restano al decimo di milione e la UI mostra un decimale.",
   "chambers": [
     {
       "id": "camera",
@@ -19,20 +19,37 @@
           "values": {
             "totalCommitments": 1261.6,
             "effectiveCommitments": 960.5,
-            "effectivePayments": 861.9,
+            "effectivePayments": 861.96876895,
             "finalAdministrationSurplus": 496.7,
             "annualStateContribution": 943.16
           },
           "categories": [
             { "id": "deputies", "label": "Deputati", "paid": 87.0 },
-            { "id": "employees", "label": "Personale dipendente", "paid": 204.1 },
+            { "id": "employees", "label": "Personale dipendente", "paid": 204.11385629 },
             { "id": "other-staff", "label": "Altro personale", "paid": 25.5 },
             { "id": "goods-services", "label": "Beni e servizi", "paid": 61.4 },
             { "id": "transfers", "label": "Trasferimenti", "paid": 31.2 },
             { "id": "parliamentary-bodies", "label": "Attività degli organi parlamentari", "paid": 2.7 },
             { "id": "common-costs", "label": "Oneri comuni", "paid": 24.7 },
             { "id": "capital", "label": "Investimenti", "paid": 6.9 },
-            { "id": "pensions", "label": "Spese previdenziali", "paid": 418.2 }
+            {
+              "id": "pensions",
+              "label": "Spese previdenziali",
+              "paid": 418.22631632,
+              "components": [
+                {
+                  "id": "former-deputies",
+                  "label": "Deputati cessati dal mandato",
+                  "paid": 96.48449618
+                },
+                {
+                  "id": "retired-staff",
+                  "label": "Personale in quiescenza",
+                  "paid": 321.74182014
+                }
+              ],
+              "caveat": "Il Titolo III non equivale ai soli vitalizi. Il conto consuntivo non separa i pagamenti effettivi delle singole sottovoci interne alle due categorie."
+            }
           ],
           "categoryReconciliationTolerance": 0.5,
           "meaning": "Il totale degli impegni comprende anche le partite di giro. Pagamenti e categorie si riferiscono alla spesa effettiva dei titoli I, II e III."

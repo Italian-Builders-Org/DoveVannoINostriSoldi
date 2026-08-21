@@ -8,6 +8,12 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Keep only the newest run for a PR, but verify every commit pushed to main.
+  # A rerun of an older main commit must never cancel validation of a newer one.
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
 env:
   NEXT_TELEMETRY_DISABLED: "1"
 
@@ -18,20 +24,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check changed whitespace
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            comparison_base="$PR_BASE_SHA"
+          else
+            comparison_base="$PUSH_BEFORE_SHA"
+          fi
+
+          if [[ "$comparison_base" =~ ^[0-9a-f]{40}$ ]] \
+            && [[ "$comparison_base" != "0000000000000000000000000000000000000000" ]] \
+            && git cat-file -e "${comparison_base}^{commit}"; then
+            git diff --check "$comparison_base" HEAD
+          else
+            git diff --check HEAD^ HEAD
+          fi
 
       - name: Lint
         run: npm run lint
@@ -47,6 +75,9 @@ jobs:
 
       - name: Impeccable design detector
         run: npm run design:check
+
+      - name: Verify generated brand assets
+        run: npm run brand:check
 
       - name: Build
         run: npm run build
@@ -67,9 +98,18 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-irpef
           path: .lighthouseci/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Upload production server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-server-log
+          path: /tmp/dvns-next.log
+          if-no-files-found: ignore
+          retention-days: 7

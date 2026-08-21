@@ -45,6 +45,43 @@ class ParliamentSourceParserTests(unittest.TestCase):
         self.assertTrue(all(item.document_url.startswith("https://www.senato.it/") for item in documents))
         self.assertTrue(all(item.record_url.startswith("https://dati.senato.it/") for item in documents))
 
+    def test_senate_preserves_four_doc_one_variants_and_suffix(self) -> None:
+        documents = MODULE.parse_senate_documents(
+            (FIXTURES / "senato-variants.csv").read_text(encoding="utf-8")
+        )
+        doc_one = [item for item in documents if item.document_number == 1]
+        self.assertEqual(len(doc_one), 4)
+        self.assertEqual(
+            {(item.document_suffix, item.presented_at, item.document_url) for item in doc_one},
+            {
+                (None, "2023-10-25", "https://www.senato.it/service/PDF/PDFServer/BGT/1391468.pdf"),
+                (None, "2023-10-25", "https://www.senato.it/service/PDF/PDFServer/BGT/1393041.pdf"),
+                ("bis", "2023-10-25", "https://www.senato.it/service/PDF/PDFServer/BGT/1391468.pdf"),
+                (None, "2023-10-26", "https://www.senato.it/service/PDF/PDFServer/BGT/1393041.pdf"),
+            },
+        )
+
+    def test_senate_fails_closed_when_latest_doc_five_has_a_variant(self) -> None:
+        snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        manifest = MODULE.load_json(MODULE.MANIFEST_PATH)
+        camera, senate, known_max = MODULE.validate_manifest(manifest, snapshot)
+        actual_senate = MODULE.parse_senate_documents(
+            (FIXTURES / "senato-variants.csv").read_text(encoding="utf-8")
+        )
+        with (
+            patch.object(MODULE, "download_camera", return_value=camera),
+            patch.object(MODULE, "verify_camera_asset"),
+            patch.object(MODULE, "download_senate", return_value=actual_senate),
+            self.assertRaisesRegex(MODULE.StructuralError, "registro ufficiale è cambiato"),
+        ):
+            MODULE.online_check(manifest, camera, senate, known_max, 1)
+
+    def test_senate_rejects_a_non_printable_suffix(self) -> None:
+        payload = (FIXTURES / "senato.csv").read_text(encoding="utf-8")
+        payload = payload.replace(",6,,VIII,", ",6,\x1b,VIII,")
+        with self.assertRaisesRegex(MODULE.StructuralError, "suffisso non valido"):
+            MODULE.parse_senate_documents(payload)
+
     def test_senate_fails_closed_on_unknown_doc_viii_title(self) -> None:
         payload = (FIXTURES / "senato.csv").read_text(encoding="utf-8")
         payload += (
@@ -82,10 +119,48 @@ class ParliamentSourceParserTests(unittest.TestCase):
         camera, senate, known_max = MODULE.validate_manifest(manifest, snapshot)
         with (
             patch.object(MODULE, "download_camera", return_value=camera),
+            patch.object(MODULE, "verify_camera_asset"),
             patch.object(MODULE, "download_senate", return_value=senate[1:]),
             self.assertRaisesRegex(MODULE.StructuralError, "mancanti_o_modificati"),
         ):
             MODULE.online_check(manifest, camera, senate, known_max, 1)
+
+    def test_manifest_rejects_an_unbound_camera_pdf(self) -> None:
+        snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        manifest = MODULE.load_json(MODULE.MANIFEST_PATH)
+        manifest["camera"]["documents"][0]["asset"]["sha256"] = "not-a-digest"
+        with self.assertRaisesRegex(MODULE.StructuralError, "SHA-256"):
+            MODULE.validate_manifest(manifest, snapshot)
+
+    def test_manifest_rejects_an_unbound_public_snapshot(self) -> None:
+        snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        manifest = MODULE.load_json(MODULE.MANIFEST_PATH)
+        manifest["snapshotArtifact"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(MODULE.StructuralError, "snapshot pubblico non riconciliato"):
+            MODULE.validate_manifest(manifest, snapshot)
+
+    def test_snapshot_rejects_calling_the_whole_pension_title_vitalizi(self) -> None:
+        snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        pensions = next(
+            category
+            for category in snapshot["chambers"][0]["statements"][0]["categories"]
+            if category["id"] == "pensions"
+        )
+        pensions["label"] = "Vitalizi"
+        with self.assertRaisesRegex(MODULE.StructuralError, "non è la sola voce vitalizi"):
+            MODULE.validate_public_snapshot(snapshot)
+
+    def test_online_check_verifies_every_locked_camera_pdf(self) -> None:
+        snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        manifest = MODULE.load_json(MODULE.MANIFEST_PATH)
+        camera, senate, known_max = MODULE.validate_manifest(manifest, snapshot)
+        with (
+            patch.object(MODULE, "download_camera", return_value=camera),
+            patch.object(MODULE, "verify_camera_asset") as verify_camera_asset,
+            patch.object(MODULE, "download_senate", return_value=senate),
+        ):
+            MODULE.online_check(manifest, camera, senate, known_max, 1)
+        self.assertEqual(verify_camera_asset.call_count, len(camera))
 
     def test_main_marks_http_503_as_temporarily_unavailable(self) -> None:
         error = urllib.error.HTTPError(

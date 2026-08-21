@@ -91,7 +91,7 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     sourceUrl: "https://bdap-opendata.rgs.mef.gov.it/",
     cadence: "mensile",
     cadenceNote:
-      "I pagamenti dello Stato sono rilasciati per mese contabile. Il dataset MOP espone una propria data di aggiornamento e viene ricontrollato insieme allo schema.",
+      "I pagamenti dello Stato sono rilasciati per mese contabile e, a chiusura dell'esercizio, come consuntivo annuale. Il dataset MOP espone una propria data di aggiornamento e viene ricontrollato insieme allo schema.",
     discoveryRevalidateSeconds: 2 * HOUR,
     dataRevalidateSeconds: 6 * HOUR,
     staleAfterSeconds: 45 * DAY,

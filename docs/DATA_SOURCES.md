@@ -10,11 +10,15 @@ Questa è la mappa iniziale delle fonti. Il criterio è semplice: prima fonti is
 **Join:** ente, periodo, codifica gestionale/contabile.  
 **Nota:** SIOPE contiene dati per oltre 10.000 enti. SIOPE+ è l'infrastruttura degli ordinativi di pagamento e incasso; non va confusa la frequenza del flusso operativo con la frequenza del dato pubblico esposto dalla dashboard.
 
+Nelle graduatorie comunali, la Provincia viene dall'associazione tra `ANAG_ENTI_SIOPE` e `ANAG_REG_PROV` del registro ufficiale SIOPE. La Regione è quella della sede legale ottenuta tramite codice fiscale da IPA: non indica necessariamente il luogo fisico in cui ogni pagamento produce effetti.
+
 ### OpenBDAP
 **Titolare:** Ragioneria Generale dello Stato.  
 **Uso:** bilancio dello Stato, spesa, SIOPE, opere pubbliche, PNRR e altri domini.  
 **Accesso:** catalogo e API OData ufficiali.
 **Endpoint implementati:** pagamenti dello Stato e `GET /api/opere?cup=...` per le opere pubbliche MOP.
+
+Per i pagamenti dello Stato, i rilasci `PBS_SPE_Mxx_*` sono mensili e cumulati dal 1° gennaio al mese contabile indicato. I rilasci `PBS_SPE_RND_*` sono consuntivi annuali: per una query con il solo anno vengono preferiti quando disponibili, mentre query mensili e storico restano esclusivamente sulla serie mensile. Le serie non vengono sommate o mescolate.
 
 Il connettore MOP legge prima i metadati e lo schema ufficiale. Gli alias tecnici delle colonne vengono scoperti a ogni controllo e accettati soltanto se nome, significato e tipo restano quelli previsti dal contratto. Questo evita di pubblicare valori nella colonna sbagliata dopo una modifica della fonte.
 
@@ -206,7 +210,19 @@ Gli importi vengono convertiti in centesimi interi. Per gli incarichi ai dipende
 ### Camera dei deputati
 Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone il conto consuntivo 2025 e il bilancio 2026 come documenti distinti.
 
-Per il consuntivo sono disponibili pagamenti e categorie arrotondati come nel documento ufficiale. Il totale degli impegni comprende anche le partite di giro, mentre le categorie pubblicate riguardano la spesa effettiva. Per il bilancio 2026 gli importi sono previsioni, non pagamenti già effettuati.
+Per il consuntivo conserviamo gli importi effettivi estratti e li arrotondiamo
+soltanto nella presentazione. Il PDF è bloccato nel manifesto con dimensione,
+SHA-256 e riferimenti alle pagine usate. Il totale degli impegni comprende anche
+le partite di giro, mentre le categorie pubblicate riguardano la spesa
+effettiva. Per il bilancio 2026 gli importi sono previsioni, non pagamenti già
+effettuati.
+
+Il Titolo III “Spese previdenziali” del consuntivo 2025 è composto dalla
+Categoria XII “Deputati cessati dal mandato” e dalla Categoria XIII “Personale
+in quiescenza”. Non equivale ai soli vitalizi: il documento include anche
+pensioni dirette e di reversibilità, rimborsi, accantonamenti e oneri del
+personale in quiescenza. Le sottovoci non espongono una colonna separata di
+pagamenti effettivi, quindi non ne stimiamo l'importo.
 
 ### Senato della Repubblica
 La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazioni sul trattamento economico dei senatori. Il monitor interno controlla i metadati dei nuovi documenti ufficiali e li registra nel manifesto della pipeline.

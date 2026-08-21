@@ -131,7 +131,7 @@ export default function RegionalFiscalPage() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.regionCode}>
+                <tr key={row.regionCode} id={`regione-${row.regionCode}`}>
                   <th scope="row">{row.region}</th>
                   <td className="num">{exactFromCents(row.revenuePerCapitaCents ?? 0)}</td>
                   <td className="num">{exactFromCents(row.expenditurePerCapitaCents ?? 0)}</td>

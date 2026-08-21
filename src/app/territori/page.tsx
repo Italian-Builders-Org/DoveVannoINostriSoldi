@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
-import { groupRegionsByMacroArea } from "@/lib/italy-regions";
+import { groupRegionsByMacroArea, istatCodeOfRegion } from "@/lib/italy-regions";
 import {
   availableSiopeYears,
   getSiopeMunicipalSnapshot,
@@ -93,22 +93,33 @@ export default async function TerritoriesPage({
                         {integer(summary.municipalities)}
                       </td>
                     </tr>
-                    {areaRegions.map((region) => (
-                      <tr key={region.region}>
-                        <th scope="row">{region.region}</th>
-                        <td className="num">
-                          {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
-                        </td>
-                        <td className="num">{compactEuroLike(region.value, regionScale)}</td>
-                        <td className="num">
-                          {region.population === null ? "n.d." : integer(region.population)}
-                        </td>
-                        <td className="num">
-                          {integer(region.municipalitiesWithPopulation)} /{" "}
-                          {integer(region.municipalities)}
-                        </td>
-                      </tr>
-                    ))}
+                    {areaRegions.map((region) => {
+                      const istatCode = istatCodeOfRegion(region.region);
+                      return (
+                        <tr key={region.region}>
+                          <th scope="row">
+                            {istatCode ? (
+                              <Link href={`/territori/fisco#regione-${istatCode}`}>
+                                {region.region}
+                              </Link>
+                            ) : (
+                              region.region
+                            )}
+                          </th>
+                          <td className="num">
+                            {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
+                          </td>
+                          <td className="num">{compactEuroLike(region.value, regionScale)}</td>
+                          <td className="num">
+                            {region.population === null ? "n.d." : integer(region.population)}
+                          </td>
+                          <td className="num">
+                            {integer(region.municipalitiesWithPopulation)} /{" "}
+                            {integer(region.municipalities)}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </Fragment>
                 ))}
               </tbody>

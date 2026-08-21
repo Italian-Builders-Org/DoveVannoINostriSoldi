@@ -38,8 +38,6 @@ export function HeaderSearch() {
   useEffect(() => {
     const trimmed = query.trim();
     if (trimmed.length < MIN_QUERY_LENGTH) {
-      setSuggestions([]);
-      setLoading(false);
       abortRef.current?.abort();
       return;
     }
@@ -75,7 +73,10 @@ export function HeaderSearch() {
         .finally(() => setLoading(false));
     }, DEBOUNCE_MS);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      abortRef.current?.abort();
+    };
   }, [query]);
 
   useEffect(() => {

@@ -30,32 +30,53 @@ export function regionDataByIstatCode(regions: SiopeRegionPoint[]) {
   );
 }
 
+/** Reverse of REGION_NAME_BY_ISTAT_CODE, for linking from a region name back to its ISTAT code. */
+export const ISTAT_CODE_BY_REGION_NAME: Record<string, string> = Object.fromEntries(
+  Object.entries(REGION_NAME_BY_ISTAT_CODE).map(([code, name]) => [name, code]),
+);
+
+export function istatCodeOfRegion(regionName: string): string | null {
+  return ISTAT_CODE_BY_REGION_NAME[regionName] ?? null;
+}
+
 export const ITALY_MACRO_AREAS = ["Nord", "Centro", "Sud e Isole"] as const;
 
 export type ItalyMacroArea = (typeof ITALY_MACRO_AREAS)[number];
 
-const MACRO_AREA_BY_REGION_NAME: Record<string, ItalyMacroArea> = {
-  Piemonte: "Nord",
-  "Valle d'Aosta/Vallée d'Aoste": "Nord",
-  Lombardia: "Nord",
-  "Trentino-Alto Adige/Südtirol": "Nord",
-  Veneto: "Nord",
-  "Friuli-Venezia Giulia": "Nord",
-  Liguria: "Nord",
-  "Emilia-Romagna": "Nord",
-  Toscana: "Centro",
-  Umbria: "Centro",
-  Marche: "Centro",
-  Lazio: "Centro",
-  Abruzzo: "Sud e Isole",
-  Molise: "Sud e Isole",
-  Campania: "Sud e Isole",
-  Puglia: "Sud e Isole",
-  Basilicata: "Sud e Isole",
-  Calabria: "Sud e Isole",
-  Sicilia: "Sud e Isole",
-  Sardegna: "Sud e Isole",
+/**
+ * ISTAT ripartizione geografica per region code; Nord merges nord-ovest and
+ * nord-est. Keyed on the same ISTAT codes as REGION_NAME_BY_ISTAT_CODE so the
+ * two maps cannot drift apart on region naming.
+ */
+const MACRO_AREA_BY_ISTAT_CODE: Record<keyof typeof REGION_NAME_BY_ISTAT_CODE, ItalyMacroArea> = {
+  "01": "Nord",
+  "02": "Nord",
+  "03": "Nord",
+  "04": "Nord",
+  "05": "Nord",
+  "06": "Nord",
+  "07": "Nord",
+  "08": "Nord",
+  "09": "Centro",
+  "10": "Centro",
+  "11": "Centro",
+  "12": "Centro",
+  "13": "Sud e Isole",
+  "14": "Sud e Isole",
+  "15": "Sud e Isole",
+  "16": "Sud e Isole",
+  "17": "Sud e Isole",
+  "18": "Sud e Isole",
+  "19": "Sud e Isole",
+  "20": "Sud e Isole",
 };
+
+const MACRO_AREA_BY_REGION_NAME: Record<string, ItalyMacroArea> = Object.fromEntries(
+  Object.entries(REGION_NAME_BY_ISTAT_CODE).map(([code, name]) => [
+    name,
+    MACRO_AREA_BY_ISTAT_CODE[code as keyof typeof REGION_NAME_BY_ISTAT_CODE],
+  ]),
+);
 
 /** ISTAT ripartizione geografica for a region name; Nord merges nord-ovest and nord-est. */
 export function macroAreaOf(regionName: string): ItalyMacroArea | null {

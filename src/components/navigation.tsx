@@ -4,8 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon } from "@hugeicons/core-free-icons";
+import { HeaderSearch } from "@/components/header-search";
 
 const primary = [
   { href: "/", label: "Home" },
@@ -54,20 +53,7 @@ export function Navigation() {
 
         <span className="header-spacer" />
 
-        <form className="header-search" action="/enti" method="get" role="search">
-          <label htmlFor="global-entity-search">Cerca nel registro degli enti</label>
-          <input
-            className="input"
-            id="global-entity-search"
-            name="q"
-            type="search"
-            placeholder="Cerca un Comune, un ente o un ministero"
-            autoComplete="off"
-          />
-          <button type="submit" aria-label="Cerca">
-            <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.7} aria-hidden="true" />
-          </button>
-        </form>
+        <HeaderSearch />
 
         <div className="header-actions">
           <Link className="header-action" href="/fonti">

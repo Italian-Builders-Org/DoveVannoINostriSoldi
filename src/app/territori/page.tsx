@@ -1,8 +1,10 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
+import { groupRegionsByMacroArea } from "@/lib/italy-regions";
 import {
   availableSiopeYears,
   getSiopeMunicipalSnapshot,
@@ -32,9 +34,14 @@ export default async function TerritoriesPage({
   const monthLabel = data.latestMonthLabel.toLocaleLowerCase("it-IT");
 
   const regions = regionsByPerCapita(data);
+  const regionsByArea = groupRegionsByMacroArea(regions);
   const topByPerCapita = data.topMunicipalitiesByPerCapita.slice(0, 20);
   const topByVolume = data.topMunicipalitiesByValue.slice(0, 10);
-  const regionScale = Math.max(...regions.map((region) => region.value), 0);
+  const regionScale = Math.max(
+    ...regions.map((region) => region.value),
+    ...regionsByArea.map(({ summary }) => summary.value),
+    0,
+  );
   const municipalityScale = topByVolume[0]?.value ?? 0;
 
   return (
@@ -70,20 +77,39 @@ export default async function TerritoriesPage({
                 </tr>
               </thead>
               <tbody>
-                {regions.map((region) => (
-                  <tr key={region.region}>
-                    <th scope="row">{region.region}</th>
-                    <td className="num">
-                      {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
-                    </td>
-                    <td className="num">{compactEuroLike(region.value, regionScale)}</td>
-                    <td className="num">
-                      {region.population === null ? "n.d." : integer(region.population)}
-                    </td>
-                    <td className="num">
-                      {integer(region.municipalitiesWithPopulation)} / {integer(region.municipalities)}
-                    </td>
-                  </tr>
+                {regionsByArea.map(({ area, regions: areaRegions, summary }) => (
+                  <Fragment key={area}>
+                    <tr className={styles.areaRow}>
+                      <th scope="rowgroup">{area}</th>
+                      <td className="num">
+                        {summary.perCapita === null ? "n.d." : exactEuro(summary.perCapita)}
+                      </td>
+                      <td className="num">{compactEuroLike(summary.value, regionScale)}</td>
+                      <td className="num">
+                        {summary.population === null ? "n.d." : integer(summary.population)}
+                      </td>
+                      <td className="num">
+                        {integer(summary.municipalitiesWithPopulation)} /{" "}
+                        {integer(summary.municipalities)}
+                      </td>
+                    </tr>
+                    {areaRegions.map((region) => (
+                      <tr key={region.region}>
+                        <th scope="row">{region.region}</th>
+                        <td className="num">
+                          {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
+                        </td>
+                        <td className="num">{compactEuroLike(region.value, regionScale)}</td>
+                        <td className="num">
+                          {region.population === null ? "n.d." : integer(region.population)}
+                        </td>
+                        <td className="num">
+                          {integer(region.municipalitiesWithPopulation)} /{" "}
+                          {integer(region.municipalities)}
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

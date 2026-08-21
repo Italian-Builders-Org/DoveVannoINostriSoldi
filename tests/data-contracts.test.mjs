@@ -1,15 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  parseDelimitedRecords,
-  parsePublicNumber,
-} from "../src/lib/data/delimited.ts";
-import { classifyFreshness } from "../src/lib/data/freshness.ts";
-import {
-  SOURCE_IDS,
-  SOURCE_POLICIES,
-} from "../src/lib/data/source-policy.ts";
-import { publicSources } from "../src/lib/sources.ts";
+import "./helpers/register-ts-alias.mjs";
+
+const { parseDelimitedRecords, parsePublicNumber } = await import(
+  "../src/lib/data/delimited.ts"
+);
+const { classifyFreshness } = await import("../src/lib/data/freshness.ts");
+const { SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
+const { publicSources } = await import("../src/lib/sources.ts");
 
 test("semicolon parser preserves quoted delimiters and escaped quotes", () => {
   const csv = [
@@ -39,7 +37,7 @@ test("public number parser handles whitespace, decimal comma and empty values", 
 
 test("every registered source has a complete operational policy", () => {
   assert.equal(new Set(SOURCE_IDS).size, SOURCE_IDS.length);
-  assert.equal(SOURCE_IDS.length, 12);
+  assert.equal(SOURCE_IDS.length, 13);
   assert.deepEqual(
     [...publicSources.map((source) => source.slug)].sort(),
     [...SOURCE_IDS].sort(),

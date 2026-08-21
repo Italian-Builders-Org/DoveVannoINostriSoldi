@@ -1,0 +1,181 @@
+name: MEF municipal IRPEF snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/etl/specs/mef-irpef-2024.source.json
+      - scripts/etl/mef_irpef_municipal_snapshot.py
+      - tests/etl/test_mef_irpef_municipal.py
+      - src/data/generated/mef-irpef-2024.meta.json
+      - src/data/generated/mef-irpef-2024.data.json
+      - .github/workflows/mef-irpef-refresh.yml
+  pull_request:
+    paths:
+      - scripts/etl/specs/mef-irpef-2024.source.json
+      - scripts/etl/mef_irpef_municipal_snapshot.py
+      - tests/etl/test_mef_irpef_municipal.py
+      - src/data/generated/mef-irpef-2024.meta.json
+      - src/data/generated/mef-irpef-2024.data.json
+      - .github/workflows/mef-irpef-refresh.yml
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      observed_at:
+        description: "UTC observation time, for example 2026-08-21T00:00:00Z"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mef-irpef-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-contract:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run fail-closed ETL tests
+        run: python -m unittest -v tests/etl/test_mef_irpef_municipal.py
+      - name: Validate committed artifacts without network
+        run: python scripts/etl/mef_irpef_municipal_snapshot.py --check
+
+  verify-upstream:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Verify the locked release and discover newer years
+        shell: python
+        run: |
+          import hashlib
+          import json
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          spec = json.loads(
+              Path("scripts/etl/specs/mef-irpef-2024.source.json").read_text(encoding="utf-8")
+          )
+          headers = {
+              "User-Agent": (
+                  "DoveVannoINostriSoldi/MEF-source-monitor "
+                  "(+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
+              )
+          }
+
+          def fetch(url):
+              request = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  return response.read()
+
+          catalog = fetch(spec["source"]["catalogUrl"]).decode("utf-8", errors="strict")
+          years = {
+              int(year)
+              for year in re.findall(
+                  r"Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_(\d{4})\.zip",
+                  catalog,
+              )
+          }
+          if not years:
+              raise SystemExit("No municipal IRPEF release found in the official MEF catalog")
+
+          source = fetch(spec["source"]["assetUrl"])
+          observed_hash = hashlib.sha256(source).hexdigest()
+          observed_bytes = len(source)
+          expected = spec["source"]["zip"]
+          failures = []
+          if max(years) > spec["taxYear"]:
+              failures.append(f"new tax year discovered: {max(years)}")
+          if observed_hash != expected["sha256"] or observed_bytes != expected["bytes"]:
+              failures.append(
+                  f"pinned asset drifted: bytes={observed_bytes}, sha256={observed_hash}"
+              )
+          documents = (
+              ("methodology", "methodologyUrl", "methodologyDocument"),
+              ("definitions", "definitionsUrl", "definitionsDocument"),
+          )
+          for label, url_key, contract_key in documents:
+              payload = fetch(spec["source"][url_key])
+              contract = spec["source"][contract_key]
+              payload_hash = hashlib.sha256(payload).hexdigest()
+              payload_bytes = len(payload)
+              if payload_hash != contract["sha256"] or payload_bytes != contract["bytes"]:
+                  failures.append(
+                      f"pinned {label} document drifted: "
+                      f"bytes={payload_bytes}, sha256={payload_hash}"
+                  )
+          if failures:
+              for failure in failures:
+                  print(f"::warning title=MEF IRPEF source update::{failure}")
+              raise SystemExit("MEF source discovery requires a reviewed lock update")
+          print(
+              f"Pinned MEF release unchanged: taxYear={spec['taxYear']}, "
+              f"bytes={observed_bytes}, sha256={observed_hash}"
+          )
+
+  regenerate-manually:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verify-upstream
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OBSERVED_AT: ${{ inputs.observed_at }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Download the locked official asset
+        shell: python
+        run: |
+          import json
+          import os
+          import urllib.request
+          from pathlib import Path
+
+          spec = json.loads(
+              Path("scripts/etl/specs/mef-irpef-2024.source.json").read_text(encoding="utf-8")
+          )
+          request = urllib.request.Request(
+              spec["source"]["assetUrl"],
+              headers={
+                  "User-Agent": (
+                      "DoveVannoINostriSoldi/MEF-manual-refresh "
+                      "(+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
+                  )
+              },
+          )
+          with urllib.request.urlopen(request, timeout=60) as response:
+              Path(os.environ["RUNNER_TEMP"], "mef-irpef-2024.zip").write_bytes(response.read())
+      - name: Regenerate both hash-bound artifacts
+        run: >-
+          python scripts/etl/mef_irpef_municipal_snapshot.py
+          --input "${RUNNER_TEMP}/mef-irpef-2024.zip"
+          --observed-at "${OBSERVED_AT}"
+      - name: Verify generated artifacts offline
+        run: |
+          python -m unittest -v tests/etl/test_mef_irpef_municipal.py
+          python scripts/etl/mef_irpef_municipal_snapshot.py --check
+      - name: Upload reviewed regeneration candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: mef-irpef-2024-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            src/data/generated/mef-irpef-2024.data.json
+            src/data/generated/mef-irpef-2024.meta.json

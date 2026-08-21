@@ -33,6 +33,10 @@
 - [ ] geometrie ISTAT
 - [ ] confronti regionali, provinciali e comunali
 - [ ] normalizzazione pro capite con popolazione ufficiale
+- [x] redditi, contribuenti, imposta netta dichiarata e addizionali MEF 2024, con segreto statistico e riga non attribuita preservati
+- [ ] popolazione comunale ISTAT per denominatori annuali coerenti, senza confondere residenti e contribuenti
+- [ ] indice compatto ANAC CIG↔CUP con link di provenienza, senza replicare la BDNCP
+- [ ] arricchimento OpenCUP mensile indicizzato offline per CUP
 
 ## Fase 4: Parlamento e incarichi
 - [x] Consulenti Pubblici

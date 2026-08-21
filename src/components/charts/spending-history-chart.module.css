@@ -9,7 +9,7 @@
   margin: 0;
   padding: 22px;
   border: 1px solid var(--color-neutral-200);
-    background: var(--color-neutral-100);
+  background: var(--color-neutral-100);
 }
 
 .figureHeader {
@@ -34,7 +34,7 @@
 
 .figureHeader h3 {
   margin: 5px 0 0;
-  color: var(--color-neutral-100);
+  color: var(--color-text);
   font-size: 17px;
   font-weight: 610;
   letter-spacing: -.018em;
@@ -81,14 +81,14 @@
 
 .tooltip strong {
   margin-top: 4px;
-  color: #ffffff;
+  color: var(--color-raised);
   font-size: 12px;
   font-weight: 560;
 }
 
 .tooltip b {
   margin-top: 6px;
-  color: #ffffff;
+  color: var(--color-raised);
   font-size: 14px;
   font-weight: 680;
 }

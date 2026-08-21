@@ -43,7 +43,7 @@ export const relatedMcpServices = [
       "I tool sono orientati al singolo Comune, non a classifiche nazionali o regionali in una sola chiamata.",
       "Il catalogo e la versione del protocollo possono cambiare: il client deve scoprirli al momento della connessione.",
     ],
-    lastVerifiedAt: "2026-08-20T21:32:26Z",
+    lastVerifiedAt: "2026-08-21T00:00:00Z",
     status: "external",
     proxiedByDvns: false,
   },

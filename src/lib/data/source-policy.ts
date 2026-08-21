@@ -1,3 +1,5 @@
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+
 export type SourceId =
   | "ipa"
   | "ipa-struttura"
@@ -5,6 +7,7 @@ export type SourceId =
   | "anac"
   | "inps"
   | "cpt"
+  | "mef-irpef"
   | "siope"
   | "opencoesione"
   | "opencivitas"
@@ -139,6 +142,13 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:cpt", "domain:regional-public-finance"],
+  },
+  "mef-irpef": {
+    id: MEF_IRPEF_SOURCE.id,
+    label: MEF_IRPEF_SOURCE.label,
+    owner: MEF_IRPEF_SOURCE.owner,
+    sourceUrl: MEF_IRPEF_SOURCE.sourceUrl,
+    ...MEF_IRPEF_SOURCE.policy,
   },
   siope: {
     id: "siope",

@@ -220,6 +220,15 @@ export default async function TerritoriesPage({
       </div>
 
       <div className="notice">
+        <strong>Redditi e imposta netta dichiarata</strong>
+        <p>
+          Il MEF pubblica contribuenti, redditi, imposta netta dichiarata e addizionali per Comune.
+          Sono dati dichiarativi, non gettito totale, e restano separati dal saldo CPT.{" "}
+          <Link href="/territori/irpef">Apri i dati IRPEF per Regione, Provincia e Comune →</Link>
+        </p>
+      </div>
+
+      <div className="notice">
         <strong>Confronta spesa e fabbisogno standard</strong>
         <p>
           Per i Comuni delle Regioni a statuto ordinario puoi confrontare la spesa storica con il

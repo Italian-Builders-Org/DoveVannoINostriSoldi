@@ -60,6 +60,19 @@ Esempio scorretto:
 
 Il primo è una misura verificabile; il secondo attribuisce un comportamento che il dato da solo non dimostra.
 
+## Redditi e IRPEF territoriali
+
+Le variabili comunali MEF sono aggregati dichiarativi protetti da segreto
+statistico. Una cella oscurata resta sconosciuta e non viene convertita in zero,
+stimata o ricostruita. La riga `Mancante/errata` resta nel totale nazionale ma
+non viene attribuita a un territorio.
+
+L'**imposta netta dichiarata** non viene chiamata gettito totale e non viene
+combinata con spese o saldo CPT. Differenze territoriali non dimostrano
+evasione, frode, merito amministrativo o responsabilità individuali. Non sono
+pubblicate classifiche pro capite senza un denominatore ISTAT dello stesso anno
+e una spiegazione esplicita della differenza fra residenti e contribuenti.
+
 ## Enforcement
 
 Revoche, sanzioni, responsabilità disciplinari, erariali o penali competono alle autorità e ai procedimenti previsti dalla legge. DoveVannoINostriSoldi può rendere più semplice trovare e verificare i fatti pubblici, non sostituire il due process.

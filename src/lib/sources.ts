@@ -1,3 +1,5 @@
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+
 export type PublicSource = {
   slug: string;
   name: string;
@@ -70,6 +72,18 @@ export const publicSources: PublicSource[] = [
     url: "https://politichecoesione.governo.it/it/politica-di-coesione/misurazione-valutazione-e-trasparenza/la-misurazione-delle-politiche-di-coesione/conti-pubblici-territoriali-cpt/i-dati/catalogo-open-cpt/",
     note: "Entrate e spese derivano dalla stessa release e base di cassa. Il saldo è una differenza contabile territorializzata, non una misura di merito né il residuo fiscale di Banca d'Italia.",
     joinKeys: ["codice territorio CPT", "anno"],
+  },
+  {
+    slug: MEF_IRPEF_SOURCE.id,
+    name: MEF_IRPEF_SOURCE.public.name,
+    owner: MEF_IRPEF_SOURCE.owner,
+    area: MEF_IRPEF_SOURCE.public.area,
+    cadence: MEF_IRPEF_SOURCE.public.cadence,
+    coverage: MEF_IRPEF_SOURCE.public.coverage,
+    format: MEF_IRPEF_SOURCE.public.format,
+    url: MEF_IRPEF_SOURCE.sourceUrl,
+    note: MEF_IRPEF_SOURCE.public.note,
+    joinKeys: [...MEF_IRPEF_SOURCE.public.joinKeys],
   },
   {
     slug: "ipa",

@@ -1,4 +1,5 @@
 import type { SourceId } from "@/lib/data/source-policy";
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { publicSources } from "@/lib/sources";
 
 export const DATASET_IDS = [
@@ -11,6 +12,7 @@ export const DATASET_IDS = [
   "anac_cig_snapshot",
   "inps_invalidita_civile",
   "cpt_finanza_regionale",
+  "mef_irpef_comunale",
   "ipa_enti",
   "ipa_struttura",
   "mef_partecipazioni",
@@ -28,6 +30,8 @@ export type DatasetQuery = {
   month?: number;
   query?: string;
   region?: string;
+  province?: string;
+  level?: "region" | "province" | "municipality";
   code?: string;
   cup?: string;
   area?: string;
@@ -68,6 +72,13 @@ const exampleQueries = {
   anac_cig_snapshot: { dataset: "anac_cig_snapshot", year: 2025 },
   inps_invalidita_civile: { dataset: "inps_invalidita_civile", year: 2023, region: "Calabria" },
   cpt_finanza_regionale: { dataset: "cpt_finanza_regionale", year: 2023, region: "Calabria" },
+  mef_irpef_comunale: {
+    dataset: "mef_irpef_comunale",
+    year: 2024,
+    level: "municipality",
+    query: "Abano",
+    limit: 20,
+  },
   ipa_enti: { dataset: "ipa_enti", query: "Agenzia per l'Italia Digitale", limit: 10 },
   ipa_struttura: { dataset: "ipa_struttura", code: "agid", limit: 20 },
   mef_partecipazioni: { dataset: "mef_partecipazioni" },
@@ -87,6 +98,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "anac_cig_snapshot", title: "Contratti pubblici ANAC · CIG 2025", summary: "Aggregati verificati sui dodici file mensili CIG 2025, con copertura, hash, procedure e fasce di importo.", sourceIds: ["anac"], freshness: "snapshot", filters: ["year"], caveat: "È uno strumento di screening aggregato: non prova spreco, illecito, corruzione o frazionamento e non consente ancora la ricerca live per CIG." },
   { id: "inps_invalidita_civile", title: "Prestazioni INPS di invalidità civile", summary: "Spesa nazionale, stock di prestazioni e nuove pensioni di invalidità civile per regione.", sourceIds: ["inps"], freshness: "snapshot", filters: ["year", "region"], caveat: "Prestazioni, pensioni, spesa e nuove decorrenze sono misure diverse. I dati aggregati non provano frode e non consentono attribuzioni individuali." },
   { id: "cpt_finanza_regionale", title: "Entrate e spese pubbliche per territorio", summary: "Entrate, spese e saldo contabile territorializzato della PA consolidata CPT, con valori pro capite 2023.", sourceIds: ["cpt"], freshness: "snapshot", filters: ["year", "region"], caveat: "Il saldo è entrate meno spese nello stesso perimetro CPT PA. Non misura pressione fiscale, qualità dei servizi, merito politico o trasferimenti netti fra regioni e non è il residuo fiscale di Banca d'Italia." },
+  { id: "mef_irpef_comunale", title: MEF_IRPEF_SOURCE.mcp.title, summary: MEF_IRPEF_SOURCE.mcp.summary, sourceIds: [MEF_IRPEF_SOURCE.id], freshness: "snapshot", filters: ["year", "level", "region", "province", "code", "query", "limit", "offset"], caveat: MEF_IRPEF_SOURCE.mcp.caveat },
   { id: "ipa_enti", title: "Enti pubblici IPA", summary: "Ricerca e scheda degli enti nell’Indice PA.", sourceIds: ["ipa"], freshness: "live", filters: ["query", "code", "limit", "offset"] },
   { id: "ipa_struttura", title: "Struttura organizzativa IPA", summary: "Unità organizzative e aree organizzative omogenee di un ente.", sourceIds: ["ipa-struttura"], freshness: "live", filters: ["code", "limit", "offset"] },
   { id: "mef_partecipazioni", title: "Partecipazioni pubbliche", summary: "Aggregati della rilevazione annuale MEF sulle partecipazioni pubbliche.", sourceIds: ["partecipazioni-pubbliche"], freshness: "snapshot", filters: [] },

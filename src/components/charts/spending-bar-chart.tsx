@@ -110,7 +110,7 @@ export function SpendingBarChart({
             />
             <Bar
               dataKey="value"
-              radius={[0, 3, 3, 0]}
+              radius={0}
               isAnimationActive={false}
             >
               {chartData.map((point, index) => (

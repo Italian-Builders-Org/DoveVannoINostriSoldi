@@ -106,6 +106,18 @@ La ricerca delle opere pubbliche non dipende da alias OData scritti a mano. Il c
 
 Il refresh orario invalida il tag OpenBDAP e la route `/api/opere`. Al primo accesso successivo vengono ricontrollati metadati e schema; i dati di una singola ricerca CUP hanno cache di 6 ore e possono essere serviti per altre 24 ore mentre avviene la riconvalida. La risposta espone separatamente data della fonte e momento del controllo della piattaforma.
 
+### MEF IRPEF comunale
+
+Il dataset è annuale e snapshot-managed. La pubblicazione della fonte, l'anno
+d'imposta, l'anno delle dichiarazioni e il momento di osservazione restano
+campi distinti. Il workflow dedicato può rilevare una nuova risorsa, ma non
+aggiorna automaticamente URL, hash, schema o licenza nel source lock.
+
+La CI ordinaria esegue soltanto il controllo offline sugli artefatti versionati.
+Una nuova release viene rigenerata manualmente dopo la revisione del manifest;
+se download, member ZIP, header, copertura o riconciliazioni divergono, i due
+output precedenti restano invariati.
+
 ### Parlamento
 
 Il monitor controlla ogni 6 ore i registri ufficiali di Camera e Senato. La validazione offline dello snapshot e del manifesto resta sempre obbligatoria. Un nuovo documento, un formato cambiato o un errore HTTP permanente interrompono il workflow e richiedono una revisione.
@@ -121,6 +133,7 @@ Timeout, errori di rete, risposte `408`, `425`, `429` e alcuni errori `5xx` veng
 | ANAC open dataset | mensile | 3 h | 12 h |
 | OpenCoesione | bimestrale prevista | 6 h · workflow snapshot | 6 h · cache API |
 | OpenCivitas | irregolare | 24 h · workflow snapshot | 24 h · cache API |
+| MEF IRPEF comunale | annuale | 24 h · discovery snapshot | snapshot versionato |
 | ReGiS | periodica | 6 h | 12 h |
 | Art. 4-bis | dipende dall'ente | 3 h | 6 h |
 | Consulenti Pubblici | dipende dall'ente | 6 h | 6 h |
@@ -134,10 +147,13 @@ Camera ha un riepilogo strutturato con data del documento. Senato resta document
 La CI ordinaria verifica esclusivamente proprietà del repository:
 
 ```text
-install → lint → typecheck → Impeccable → build
+install → lint/test/ETL → typecheck → Impeccable → build
+        → HTTP/MCP smoke + load → Browser responsive → Lighthouse lab (proxy CWV)
 ```
 
-Non deve fallire perché RGS, AgID o ANAC sono momentaneamente offline.
+Browser e Lighthouse interrogano esclusivamente il build locale prodotto dal job; il report
+Lighthouse resta un artefatto della CI e non sostituisce dati real-user. La pipeline non deve
+fallire perché MEF, RGS, AgID o ANAC sono momentaneamente offline.
 
 Le verifiche live appartengono invece a:
 

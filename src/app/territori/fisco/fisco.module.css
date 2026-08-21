@@ -19,7 +19,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .sectionHeading p {
@@ -105,9 +105,9 @@
 .methodology dl > div { border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-3); }
 .methodology dt { color: var(--color-neutral-600); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 .methodology dd { margin: 5px 0 0; color: var(--color-neutral-900); }
-.methodology > p { margin: var(--space-5) 0 0; color: var(--color-neutral-700); font-size: 13px; }
+.methodology > p { margin: var(--space-6) 0 0; color: var(--color-neutral-700); font-size: 13px; }
 
-.sources { margin-top: var(--space-5); }
+.sources { margin-top: var(--space-6); }
 .sources h3 { margin: 0 0 var(--space-3); font-size: 15px; }
 .sources ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-2); }
 .sources li { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-2); }

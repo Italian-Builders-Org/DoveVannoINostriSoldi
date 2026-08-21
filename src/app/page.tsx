@@ -106,6 +106,7 @@ export default async function HomePage({
 
   return (
     <main className={`shell ${styles.dashboard}`}>
+      <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
       <div className={styles.column}>
         <section className="panel">
           <div className={styles.panelHead}>

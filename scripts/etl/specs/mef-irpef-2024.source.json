@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef_irpef_comunale",
+  "taxYear": 2024,
+  "declarationYear": 2025,
+  "publishedAt": "2026-04-23",
+  "source": {
+    "owner": "MEF – Dipartimento delle Finanze",
+    "landingUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025",
+    "catalogUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+    "assetUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.zip",
+    "methodologyUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/nota_metodologica_2024.pdf",
+    "definitionsUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/definizione_variabili_2024_irpef.pdf",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "attribution": "MEF – Dipartimento delle Finanze",
+    "zip": {
+      "bytes": 1028668,
+      "sha256": "75cecc95d72b76cda545666154e95ab414df1983f8a0eeef72915862ef4e8cb7",
+      "lastModified": "2026-04-23T14:52:16Z"
+    },
+    "csvMember": {
+      "name": "Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.csv",
+      "bytes": 2313404,
+      "sha256": "c521886138d24e19df8a09b46b09fcb9b6f86966868783ea416295561930041c",
+      "crc32": "af436b72",
+      "timestamp": "2026-04-14T13:31:00"
+    },
+    "methodologyDocument": {
+      "bytes": 486950,
+      "sha256": "f519aaecc165009edee03320273de1ea4b332ebd7ab76c23d2de9f3f554778b8",
+      "lastModified": "2026-04-23T14:52:16Z"
+    },
+    "definitionsDocument": {
+      "bytes": 870768,
+      "sha256": "72618f9bcdb5fd96bd208996b6fdc15ab6362d691a13bcd81d10f7cb9ba0aced",
+      "lastModified": "2026-05-26T14:17:50Z"
+    }
+  },
+  "csv": {
+    "encoding": "ascii",
+    "delimiter": ";",
+    "lineEnding": "CRLF",
+    "trailingHeaderField": " ",
+    "rawHeaderSha256": "f21a9995c2c335cd62b5aa4538ba7b8685c6257109f3c24ab542fb1d29b799f6",
+    "normalizedHeaderSha256": "ec2a06a827321f8e11ae05c6bcf5cae5e9ac778808ad9e8e56b088f5dba0a192",
+    "allowedNegativeAmountHeaders": [
+      "Reddito complessivo minore o uguale a zero euro - Ammontare in euro"
+    ],
+    "headers": [
+      "Anno di imposta",
+      "Codice catastale",
+      "Codice Istat Comune",
+      "Denominazione Comune",
+      "Sigla Provincia",
+      "Regione",
+      "Codice Istat Regione",
+      "Numero contribuenti",
+      "Reddito da fabbricati - Frequenza",
+      "Reddito da fabbricati - Ammontare in euro",
+      "Reddito da lavoro dipendente e assimilati - Frequenza",
+      "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+      "Reddito da pensione - Frequenza",
+      "Reddito da pensione - Ammontare in euro",
+      "Reddito da lavoro autonomo (comprensivo dei valori nulli) - Frequenza",
+      "Reddito da lavoro autonomo (comprensivo dei valori nulli) - Ammontare in euro",
+      "Reddito di spettanza dell'imprenditore in contabilita' ordinaria  (comprensivo dei valori nulli) - Frequenza",
+      "Reddito di spettanza dell'imprenditore in contabilita' ordinaria  (comprensivo dei valori nulli) - Ammontare in euro",
+      "Reddito di spettanza dell'imprenditore in contabilita' semplificata (comprensivo dei valori nulli) - Frequenza",
+      "Reddito di spettanza dell'imprenditore in contabilita' semplificata (comprensivo dei valori nulli) - Ammontare in euro",
+      "Reddito da partecipazione  (comprensivo dei valori nulli) - Frequenza",
+      "Reddito da partecipazione  (comprensivo dei valori nulli) - Ammontare in euro",
+      "Reddito imponibile - Frequenza",
+      "Reddito imponibile - Ammontare in euro",
+      "Imposta netta - Frequenza",
+      "Imposta netta - Ammontare in euro",
+      "Trattamento spettante - Frequenza",
+      "Trattamento spettante - Ammontare in euro",
+      "Reddito imponibile addizionale - Frequenza",
+      "Reddito imponibile addizionale - Ammontare in euro",
+      "Addizionale regionale dovuta - Frequenza",
+      "Addizionale regionale dovuta - Ammontare in euro",
+      "Addizionale comunale dovuta - Frequenza",
+      "Addizionale comunale dovuta - Ammontare in euro",
+      "Reddito complessivo - Frequenza",
+      "Reddito complessivo - Ammontare in euro",
+      "Reddito complessivo minore o uguale a zero euro - Frequenza",
+      "Reddito complessivo minore o uguale a zero euro - Ammontare in euro",
+      "Reddito complessivo da 0 a 10000 euro - Frequenza",
+      "Reddito complessivo da 0 a 10000 euro - Ammontare in euro",
+      "Reddito complessivo da 10000 a 15000 euro - Frequenza",
+      "Reddito complessivo da 10000 a 15000 euro - Ammontare in euro",
+      "Reddito complessivo da 15000 a 26000 euro - Frequenza",
+      "Reddito complessivo da 15000 a 26000 euro - Ammontare in euro",
+      "Reddito complessivo da 26000 a 55000 euro - Frequenza",
+      "Reddito complessivo da 26000 a 55000 euro - Ammontare in euro",
+      "Reddito complessivo da 55000 a 75000 euro - Frequenza",
+      "Reddito complessivo da 55000 a 75000 euro - Ammontare in euro",
+      "Reddito complessivo da 75000 a 120000 euro - Frequenza",
+      "Reddito complessivo da 75000 a 120000 euro - Ammontare in euro",
+      "Reddito complessivo oltre 120000 euro - Frequenza",
+      "Reddito complessivo oltre 120000 euro - Ammontare in euro"
+    ]
+  },
+  "measureOrder": [
+    "comprehensiveIncome",
+    "taxableIncome",
+    "netTaxDeclared",
+    "regionalSurtaxDue",
+    "municipalSurtaxDue"
+  ],
+  "measures": {
+    "comprehensiveIncome": {
+      "frequencyHeader": "Reddito complessivo - Frequenza",
+      "amountHeader": "Reddito complessivo - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "taxableIncome": {
+      "frequencyHeader": "Reddito imponibile - Frequenza",
+      "amountHeader": "Reddito imponibile - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "netTaxDeclared": {
+      "frequencyHeader": "Imposta netta - Frequenza",
+      "amountHeader": "Imposta netta - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "regionalSurtaxDue": {
+      "frequencyHeader": "Addizionale regionale dovuta - Frequenza",
+      "amountHeader": "Addizionale regionale dovuta - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "municipalSurtaxDue": {
+      "frequencyHeader": "Addizionale comunale dovuta - Frequenza",
+      "amountHeader": "Addizionale comunale dovuta - Ammontare in euro",
+      "allowNegativeAmount": false
+    }
+  },
+  "expected": {
+    "sourceRows": 7897,
+    "municipalities": 7896,
+    "provinces": 107,
+    "regions": 20,
+    "unassignedRows": 1,
+    "unassignedIdentity": [
+      "2024",
+      "0",
+      "0",
+      "0",
+      "0",
+      "Mancante/errata",
+      "0"
+    ]
+  },
+  "regions": [
+    {"code": "01", "canonicalName": "Piemonte", "sourceNames": ["Piemonte"]},
+    {"code": "02", "canonicalName": "Valle d'Aosta/Vallée d'Aoste", "sourceNames": ["Valle d'Aosta"]},
+    {"code": "03", "canonicalName": "Lombardia", "sourceNames": ["Lombardia"]},
+    {"code": "04", "canonicalName": "Trentino-Alto Adige/Südtirol", "sourceNames": ["Trentino Alto Adige(P.A.Bolzano)", "Trentino Alto Adige(P.A.Trento)"]},
+    {"code": "05", "canonicalName": "Veneto", "sourceNames": ["Veneto"]},
+    {"code": "06", "canonicalName": "Friuli-Venezia Giulia", "sourceNames": ["Friuli Venezia Giulia"]},
+    {"code": "07", "canonicalName": "Liguria", "sourceNames": ["Liguria"]},
+    {"code": "08", "canonicalName": "Emilia-Romagna", "sourceNames": ["Emilia Romagna"]},
+    {"code": "09", "canonicalName": "Toscana", "sourceNames": ["Toscana"]},
+    {"code": "10", "canonicalName": "Umbria", "sourceNames": ["Umbria"]},
+    {"code": "11", "canonicalName": "Marche", "sourceNames": ["Marche"]},
+    {"code": "12", "canonicalName": "Lazio", "sourceNames": ["Lazio"]},
+    {"code": "13", "canonicalName": "Abruzzo", "sourceNames": ["Abruzzo"]},
+    {"code": "14", "canonicalName": "Molise", "sourceNames": ["Molise"]},
+    {"code": "15", "canonicalName": "Campania", "sourceNames": ["Campania"]},
+    {"code": "16", "canonicalName": "Puglia", "sourceNames": ["Puglia"]},
+    {"code": "17", "canonicalName": "Basilicata", "sourceNames": ["Basilicata"]},
+    {"code": "18", "canonicalName": "Calabria", "sourceNames": ["Calabria"]},
+    {"code": "19", "canonicalName": "Sicilia", "sourceNames": ["Sicilia"]},
+    {"code": "20", "canonicalName": "Sardegna", "sourceNames": ["Sardegna"]}
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, sorted keys, compact separators, excluding integrity.lockSha256",
+    "dataArtifact": {
+      "bytes": 1026780,
+      "sha256": "772613d3c32ff0bb33899bcaa206fe9c6db5e36d559a058d9541d8843c3c7ebd"
+    },
+    "lockSha256": "0652bf0f7b548e9956fcdd791ec52846c733738a22562e713a15d2407952c342"
+  }
+}

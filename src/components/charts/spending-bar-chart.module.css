@@ -29,7 +29,7 @@
 }
 
 .tooltip strong {
-  color: #ffffff;
+  color: var(--color-raised);
   font-size: 12px;
   font-weight: 560;
   line-height: 1.45;
@@ -37,7 +37,7 @@
 
 .tooltip b {
   margin-top: 6px;
-  color: #ffffff;
+  color: var(--color-raised);
   font-size: 14px;
   font-weight: 680;
 }

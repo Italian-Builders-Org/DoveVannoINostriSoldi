@@ -1,0 +1,57 @@
+name: MCP staging load
+
+on:
+  workflow_dispatch:
+    inputs:
+      requests:
+        description: Numero totale di richieste (massimo 500)
+        required: true
+        default: "100"
+      concurrency:
+        description: Concorrenza (massimo 25)
+        required: true
+        default: "10"
+      p95_ms:
+        description: Budget p95 in millisecondi
+        required: true
+        default: "3000"
+
+permissions:
+  contents: read
+
+jobs:
+  staging-load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: staging
+    env:
+      MCP_STAGING_URL: ${{ secrets.MCP_STAGING_URL }}
+      MCP_LOAD_ALLOW_REMOTE: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Require an explicit staging endpoint
+        run: test -n "$MCP_STAGING_URL"
+
+      - name: Run bounded MCP load test
+        env:
+          LOAD_REQUESTS: ${{ inputs.requests }}
+          LOAD_CONCURRENCY: ${{ inputs.concurrency }}
+          LOAD_P95_MS: ${{ inputs.p95_ms }}
+        run: >-
+          node scripts/mcp_load.mjs
+          --url "${MCP_STAGING_URL%/}/api/mcp"
+          --requests "$LOAD_REQUESTS"
+          --concurrency "$LOAD_CONCURRENCY"
+          --p95-ms "$LOAD_P95_MS"
+          --allow-remote

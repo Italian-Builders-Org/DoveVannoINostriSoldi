@@ -7,6 +7,8 @@ import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import type { SourceId } from "@/lib/data/source-policy";
 
 export type SourceLatestData =
   | { kind: "date"; value: string }
@@ -20,9 +22,11 @@ function dated(value: string | null): SourceLatestData {
 /* A null value means that the adapter discovers the latest release at request
    time. Annual periods remain periods: they must not be converted into an
    invented day just to reuse date formatting. */
-export const latestDataBySlug: Readonly<Record<string, SourceLatestData>> = {
+const exhaustiveLatestDataBySlug = {
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),
+  "ipa-struttura": null,
+  openbdap: null,
   opencoesione: { kind: "date", value: openCoesioneSnapshot.referenceDate },
   opencivitas: { kind: "date", value: openCivitasSnapshot.publishedAt },
   "partecipazioni-pubbliche": { kind: "date", value: mefParticipationsSnapshot.publishedAt },
@@ -39,4 +43,10 @@ export const latestDataBySlug: Readonly<Record<string, SourceLatestData>> = {
     label: `spesa ${inpsCivilInvaliditySnapshot.spending.series.at(-1)!.year} · territori ${inpsCivilInvaliditySnapshot.regionalNewPensions.years.at(-1)}`,
   },
   cpt: { kind: "period", label: String(cptRegionalFiscalSnapshot.defaultYear) },
-};
+  [MEF_IRPEF_SOURCE.id]: MEF_IRPEF_SOURCE.latestData,
+} satisfies Readonly<Record<SourceId, SourceLatestData>>;
+
+// Public source slugs come from content data and are intentionally typed as
+// strings. Keep the construction exhaustive while exposing a safe lookup map.
+export const latestDataBySlug: Readonly<Record<string, SourceLatestData>> =
+  exhaustiveLatestDataBySlug;

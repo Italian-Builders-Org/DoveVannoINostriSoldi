@@ -44,12 +44,3 @@ export function italianRegionFromVercelHeaders(headers: Headers): ItalianIpRegio
   const typedCode = istatCode as keyof typeof REGION_NAME_BY_ISTAT_CODE;
   return { istatCode: typedCode, name: REGION_NAME_BY_ISTAT_CODE[typedCode] };
 }
-
-export function randomRegionCode(
-  availableCodes: readonly string[],
-  random: () => number = Math.random,
-): string | null {
-  if (availableCodes.length === 0) return null;
-  const index = Math.min(availableCodes.length - 1, Math.floor(random() * availableCodes.length));
-  return availableCodes[index] ?? null;
-}

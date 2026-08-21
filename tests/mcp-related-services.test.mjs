@@ -17,5 +17,8 @@ test("related MCP services are official, external and never implicit proxies", (
   assert.match(cruscotto.aboutUrl, /^https:\/\/cruscotto-italia\.dati\.gov\.it\//);
   assert.match(cruscotto.repositoryUrl, /^https:\/\/github\.com\/AgID\/cruscotto-italia/);
   assert.ok(cruscotto.preferredWorkflow.some((step) => step.includes("comune_kpi")));
-  assert.ok(!Number.isNaN(Date.parse(cruscotto.lastVerifiedAt)));
+  assert.equal(cruscotto.lastVerifiedAt, "2026-08-21T00:00:00Z");
+  const reviewedAt = Date.parse(cruscotto.lastVerifiedAt);
+  assert.ok(!Number.isNaN(reviewedAt));
+  assert.ok(Date.parse("2026-08-21T23:59:59Z") - reviewedAt < 86_400_000);
 });

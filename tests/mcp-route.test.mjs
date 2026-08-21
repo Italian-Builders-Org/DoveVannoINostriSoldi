@@ -282,6 +282,64 @@ test("MCP endpoint rejects filters unsupported by the selected dataset", async (
   assert.match(body, /year/);
 });
 
+test("MCP legacy tool call exposes bounded MEF IRPEF records and suppression", async () => {
+  const response = await POST(request({}, JSON.stringify({
+    jsonrpc: "2.0",
+    id: 11,
+    method: "tools/call",
+    params: {
+      name: "query_dataset",
+      arguments: {
+        dataset: "mef_irpef_comunale",
+        year: 2024,
+        level: "municipality",
+        code: "001019",
+      },
+    },
+  })));
+  const body = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(body, /mef_irpef_comunale/);
+  assert.match(body, /BALME/);
+  assert.match(body, /partial/);
+  assert.match(body, /suppressedRows/);
+});
+
+test("MCP modern 2026 tool call exposes the same MEF domain result", async () => {
+  const meta = {
+    "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+    "io.modelcontextprotocol/clientCapabilities": {},
+  };
+  const response = await POST(request(
+    {
+      "MCP-Protocol-Version": "2026-07-28",
+      "MCP-Method": "tools/call",
+      "MCP-Name": "query_dataset",
+    },
+    JSON.stringify({
+      jsonrpc: "2.0",
+      id: 12,
+      method: "tools/call",
+      params: {
+        _meta: meta,
+        name: "query_dataset",
+        arguments: {
+          dataset: "mef_irpef_comunale",
+          year: 2024,
+          level: "municipality",
+          code: "028001",
+        },
+      },
+    }),
+  ));
+  const body = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(body, /"resultType":"complete"/);
+  assert.match(body, /mef_irpef_comunale/);
+  assert.match(body, /ABANO TERME/);
+  assert.match(body, /netTaxDeclared/);
+});
+
 test("MCP endpoint reads the catalog resource with the modern protocol", async () => {
   const meta = {
     "io.modelcontextprotocol/protocolVersion": "2026-07-28",

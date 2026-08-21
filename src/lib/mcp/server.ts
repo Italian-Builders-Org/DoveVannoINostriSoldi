@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
+import { APP_VERSION } from "@/lib/app-version";
 import { DATASET_IDS, datasetCatalog } from "@/lib/mcp/catalog";
 import { queryPublicDataset } from "@/lib/mcp/datasets";
 import { relatedMcpServices } from "@/lib/mcp/related-services";
@@ -10,6 +11,8 @@ const querySchema = z.object({
   month: z.number().int().min(1).max(12).optional(),
   query: z.string().max(200).optional(),
   region: z.string().max(100).optional(),
+  province: z.string().max(3).optional(),
+  level: z.enum(["region", "province", "municipality"]).optional(),
   code: z.string().max(100).optional(),
   cup: z.string().max(15).optional(),
   area: z.string().max(100).optional(),
@@ -28,7 +31,7 @@ function toolResult(value: unknown) {
 export function createDvnsMcpServer() {
   const server = new McpServer({
     name: "dove-vanno-i-nostri-soldi",
-    version: "1.0.0",
+    version: APP_VERSION,
   }, {
     instructions:
       "Usa list_datasets prima di query_dataset. Mantieni unità, periodo, provenienza e caveat nelle risposte. I servizi MCP correlati sono esterni e non vengono proxyati da DVNS.",

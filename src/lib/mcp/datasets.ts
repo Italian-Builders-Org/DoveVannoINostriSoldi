@@ -150,6 +150,19 @@ export async function queryPublicDataset(query: DatasetQuery): Promise<unknown> 
       const { queryCptRegionalFiscal } = await import("@/lib/cpt-regional-fiscal-snapshot");
       return jsonSafe(queryCptRegionalFiscal({ year: query.year, region: query.region }));
     }
+    case "mef_irpef_comunale": {
+      const { queryMefMunicipalIrpef } = await import("@/lib/mef-irpef-snapshot");
+      return jsonSafe(queryMefMunicipalIrpef({
+        year: query.year,
+        level: query.level,
+        region: query.region,
+        province: query.province,
+        code: query.code,
+        query: query.query,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "ipa_enti": {
       const { getIpaEntityByCode, searchIpaEntities } = await import("@/lib/ipa");
       if (query.code?.trim()) {

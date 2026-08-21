@@ -1,4 +1,6 @@
 import { setTimeout as delay } from "node:timers/promises";
+import { APP_USER_AGENT } from "@/lib/app-version";
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { getSourcePolicy, type SourceId } from "@/lib/data/source-policy";
 
 export type SourceFetchKind = "discovery" | "data";
@@ -29,6 +31,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   ],
   inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it"],
   cpt: ["politichecoesione.governo.it", "www.politichecoesione.governo.it"],
+  "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,
   siope: [
     "www.siope.it",
     "siope.it",
@@ -49,8 +52,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
 
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 const RETRY_DELAY_MS = 300;
-const USER_AGENT =
-  "DoveVannoINostriSoldi/0.5 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)";
+const USER_AGENT = APP_USER_AGENT;
 
 export class SourceFetchError extends Error {
   readonly sourceId: SourceId;

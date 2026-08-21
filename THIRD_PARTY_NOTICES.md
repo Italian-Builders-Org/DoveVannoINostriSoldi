@@ -2,6 +2,16 @@
 
 The MIT license in `LICENSE` applies to the project code. Embedded or linked datasets keep their original licenses and attribution requirements.
 
+## MEF municipal IRPEF data 2024
+
+- **Work:** `Redditi e principali variabili IRPEF su base comunale`, anno d'imposta 2024, dichiarazioni 2025;
+- **Publisher:** Ministero dell'Economia e delle Finanze, Dipartimento delle Finanze;
+- **Source:** https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes;
+- **License:** Creative Commons Attribution 3.0 (CC BY 3.0), as stated in the official methodology;
+- **Changes:** selected declaration variables were converted from integer euro to integer cents; privacy-suppressed cells remain null; municipality values were aggregated to provinces and regions with the unassigned source row kept separate.
+
+Attribution: `MEF – Dipartimento delle Finanze. Redditi e principali variabili IRPEF su base comunale, anno d'imposta 2024. CC BY 3.0. Adapted by DoveVannoINostriSoldi.`
+
 ## ISTAT administrative boundaries
 
 `src/data/generated/italy-regions.ts` is an adapted, simplified representation of:

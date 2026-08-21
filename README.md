@@ -13,7 +13,7 @@ L'AI serve a confrontare dati omogenei, trovare scostamenti e ordinare i casi da
 | Home | Pagamenti dei Comuni, mappa regionale, andamento mensile e dati OpenCoesione | SIOPE, IPA, OpenCoesione |
 | Soldi | Pagamenti effettuati dai Comuni: voci di uscita e flusso mese per mese, distinti dalle tasse dei residenti | SIOPE |
 | Invalidità civile | Spesa nazionale, prestazioni vigenti e nuove pensioni per regione | INPS |
-| Territori | Confronti pro capite di default tra regioni e Comuni per il 2024, 2025 e 2026 | SIOPE, IPA |
+| Territori | Pagamenti comunali, conti territoriali e redditi/IRPEF dichiarati, con perimetri separati | SIOPE, IPA, CPT, MEF |
 | Fondi e progetti | Costo previsto, pagamenti e stato dei progetti di coesione | OpenCoesione |
 | Enti e società | Ministeri, enti pubblici, uffici, contatti e società partecipate | IPA, AgID, MEF |
 | Spese dello Stato | Pagamenti per funzione, amministrazione e tipo di spesa | RGS, OpenBDAP |
@@ -36,6 +36,7 @@ Il backend espone inoltre:
 - `GET /api/controlli`, con indicatori classificati, scenari separati e regole per il loro uso.
 - `GET /api/spese/invalidita?anno=2024&regione=Calabria`, con spesa nazionale e nuove pensioni di invalidità civile per la granularità pubblica verificata.
 - `GET /api/territori/fisco?anno=2023&regione=Calabria`, con entrate, spese e saldo contabile CPT nello stesso perimetro PA consolidato.
+- `GET /api/territori/irpef?anno=2024&livello=regione`, con contribuenti, redditi, imposta netta dichiarata e addizionali MEF; Province e Comuni sono filtrati e paginati.
 
 ## MCP per assistenti AI
 
@@ -57,7 +58,7 @@ Il server espone:
 - la risorsa `dvns://related-mcp-services`, che segnala servizi pubblici complementari senza
   confonderli con gli adapter gestiti dal portale.
 
-Tra i dataset c'è `anac_cig_snapshot`: espone copertura annuale, conteggi, procedure, fasce di importo, hash degli input e cautele della replica CIG 2025. `inps_invalidita_civile` tiene separate spesa nazionale, stock di prestazioni e nuove decorrenze regionali, senza inferire dati comunali o responsabilità individuali. `cpt_finanza_regionale` espone entrate, spese e saldo territoriale 2000-2023, con valori pro capite solo dove il denominatore ISTAT è coerente. `opencoesione_progetti` include anche quota del costo pubblico, rapporto pagamenti/costo e costo medio per progetto per tema, natura e stato.
+Tra i dataset c'è `anac_cig_snapshot`: espone copertura annuale, conteggi, procedure, fasce di importo, hash degli input e cautele della replica CIG 2025. `inps_invalidita_civile` tiene separate spesa nazionale, stock di prestazioni e nuove decorrenze regionali, senza inferire dati comunali o responsabilità individuali. `cpt_finanza_regionale` espone entrate, spese e saldo territoriale 2000-2023, con valori pro capite solo dove il denominatore ISTAT è coerente. `mef_irpef_comunale` espone il rilascio comunale 2024 come dato dichiarativo, conserva celle soppresse e riga non attribuita e non lo tratta come gettito o saldo di cassa. `opencoesione_progetti` include anche quota del costo pubblico, rapporto pagamenti/costo e costo medio per progetto per tema, natura e stato.
 
 Per il dettaglio civico per singolo Comune segnaliamo anche il MCP pubblico di
 [Cruscotto Italia](https://cruscotto-italia.dati.gov.it/about.html#accesso-mcp), gestito da AgID:
@@ -142,7 +143,7 @@ Le regole complete sono in [docs/LEGAL_AND_ETHICS.md](docs/LEGAL_AND_ETHICS.md) 
 
 ## Avvio locale
 
-Richiede Node.js 22 o successivo.
+Richiede Node.js 22.19 o successivo.
 
 ```bash
 npm ci
@@ -159,9 +160,15 @@ npm test
 npm run typecheck
 npm run design:check
 npm run build
+npm run test:browser:e2e
+npm run test:lighthouse
 ```
 
-La verifica automatica deve terminare senza avvisi ESLint, errori TypeScript o test falliti.
+Gli ultimi due comandi richiedono il build di produzione in esecuzione su
+`http://127.0.0.1:3000`. La CI li esegue su quattro viewport responsive e conserva il report
+Lighthouse come artefatto privato del job. Le metriche Lighthouse sono misure di laboratorio e
+proxy dei Core Web Vitals, non dati real-user. La verifica automatica deve terminare senza avvisi
+ESLint, errori TypeScript, regressioni Browser o budget Lighthouse falliti.
 
 ## Aggiornamento dei dati
 
@@ -175,6 +182,10 @@ python3 scripts/etl/mef_participations_snapshot.py --check
 python3 scripts/etl/consulenti_snapshot.py --check
 python3 scripts/etl/opencivitas_snapshot.py --check
 python3 scripts/etl/parliament_sources.py --check
+python3 scripts/etl/mef_irpef_municipal_snapshot.py --check \
+  --spec scripts/etl/specs/mef-irpef-2024.source.json \
+  --meta-output src/data/generated/mef-irpef-2024.meta.json \
+  --data-output src/data/generated/mef-irpef-2024.data.json
 ```
 
 Le attività automatiche controllano periodicamente la presenza di nuovi dati. Un'interruzione di una fonte esterna non viene confusa con un errore del codice.

@@ -98,7 +98,7 @@ export function RegistryTypeChart({ data }: { data: IpaTypeStat[] }) {
             <Bar
               dataKey="value"
               fill="var(--chart-primary)"
-              radius={[0, 3, 3, 0]}
+              radius={0}
               isAnimationActive={false}
             />
           </BarChart>

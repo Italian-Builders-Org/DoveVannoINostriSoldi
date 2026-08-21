@@ -159,7 +159,7 @@ export function SpendingHistoryChart({
               <Bar
                 dataKey="monthlyPaid"
                 fill="var(--chart-secondary)"
-                radius={[3, 3, 0, 0]}
+                radius={0}
                 isAnimationActive={false}
               />
             </BarChart>

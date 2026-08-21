@@ -80,6 +80,28 @@ python3 scripts/etl/cpt_regional_fiscal_snapshot.py \
 
 `--observed-at` indica quando gli input sono stati verificati, non l'anno di aggiornamento dei dati. Se URL, hash, dimensione, schema o copertura cambiano, l'ETL deve fallire: prima di aggiornare le costanti occorre ricontrollare la nuova release e rieseguire l'intera suite.
 
+### Redditi e variabili IRPEF comunali MEF
+
+**Titolare:** MEF – Dipartimento delle Finanze.
+
+**Uso:** contribuenti, reddito complessivo e imponibile, imposta netta dichiarata e addizionali dovute su base comunale.
+
+**Release integrata:** anno d'imposta 2024, dichiarazioni 2025, pubblicata il 23 aprile 2026.
+
+**Licenza:** CC BY 3.0.
+
+Il CSV ufficiale contiene 7.896 Comuni e una riga residuale `Mancante/errata`.
+Quest'ultima partecipa soltanto alla riconciliazione nazionale e non viene
+distribuita artificialmente. Le celle oscurate dal MEF per segreto statistico
+restano `null`: gli aggregati interessati espongono un subtotale noto e lo
+stato parziale, non un totale stimato.
+
+L'imposta netta è un valore dichiarato/calcolato, non gettito totale o cassa
+riscossa. Non viene sottratta alle spese o al saldo CPT e non consente inferenze
+su evasione, frode, responsabilità individuali o qualità amministrativa.
+Manifest, hash, schema, definizioni e procedura di refresh sono documentati in
+[MEF_IRPEF_COMUNALE.md](MEF_IRPEF_COMUNALE.md).
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

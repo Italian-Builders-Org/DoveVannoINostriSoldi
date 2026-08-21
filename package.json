@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Dati pubblici italiani spiegati in modo semplice, verificabile e open source.",
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "brand:generate": "node scripts/brand/generate-icons.mjs",
@@ -15,6 +15,10 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:browser:e2e": "node scripts/browser_e2e.mjs",
+    "test:lighthouse": "node scripts/lighthouse_budget.mjs",
+    "test:mcp:http": "node scripts/mcp_http_smoke.mjs",
+    "test:mcp:load": "node scripts/mcp_load.mjs",
     "typecheck": "tsc --noEmit",
     "design:check": "impeccable detect src/"
   },
@@ -36,6 +40,8 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "16.3.0",
     "impeccable": "3.5.0",
+    "lighthouse": "^13.4.1",
+    "puppeteer": "^25.8.0",
     "typescript": "^5.9.0"
   }
 }

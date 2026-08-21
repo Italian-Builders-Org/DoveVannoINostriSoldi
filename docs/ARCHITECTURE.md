@@ -109,6 +109,13 @@ Next.js serve UI e API BFF. Con la prima vera ingestione persistente introdurrem
 
 Il route handler `/api/mcp` espone gli stessi moduli di dominio tramite MCP Streamable HTTP. Il catalogo e gli adapter vivono in `src/lib/mcp/`: una nuova fonte viene registrata una volta e diventa interrogabile senza creare tool ad hoc o duplicare la normalizzazione. Tutti i tool pubblici sono read-only, con input limitati e paginazione.
 
+Per lo snapshot MEF IRPEF comunale, un source lock versionato governa il
+boundary Python. L'ETL produce un sidecar di metadati e un artefatto dati
+compattato, legati dall'hash dei byte canonici. Il contratto TypeScript valida
+entrambi e ricostruisce indipendentemente le somme Comune → Provincia → Regione
+prima di servire una query bounded. UI, API e MCP usano la stessa funzione di
+dominio; nessuno importa lo snapshot completo in un Client Component.
+
 Nessuna credenziale di ingestione deve essere esposta al browser.
 
 ## 7. Freshness

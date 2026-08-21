@@ -69,6 +69,12 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.equal(camera?.freshness.sourceTimestamp, null);
   assert.match(consulenti?.detail ?? "", /Snapshot estratto il/);
   assert.match(camera?.detail ?? "", /Snapshot verificato il/);
+  const mefIrpef = overview.find((entry) => entry.sourceId === "mef-irpef");
+  assert.equal(mefIrpef?.reachability, "not-probed");
+  assert.equal(mefIrpef?.recordCount, 7_896);
+  assert.equal(mefIrpef?.freshness.sourceTimestamp, "2026-04-23");
+  assert.match(mefIrpef?.detail ?? "", /7\.897 righe fonte/);
+  assert.match(mefIrpef?.detail ?? "", /Mancante\/errata separata/);
 });
 
 test("source health registry fails closed when an adapter is omitted", () => {

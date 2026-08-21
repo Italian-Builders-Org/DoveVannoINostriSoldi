@@ -94,11 +94,12 @@ test("IPA entity lookup does not silently ignore an ambiguous search filter", as
 });
 
 test("every snapshot-backed MCP adapter returns real structured data", async () => {
-  const [cohesion, anac, inps, cpt, participations, appointments, parliament, controls, sources] = await Promise.all([
+  const [cohesion, anac, inps, cpt, irpef, participations, appointments, parliament, controls, sources] = await Promise.all([
     queryPublicDataset({ dataset: "opencoesione_progetti" }),
     queryPublicDataset({ dataset: "anac_cig_snapshot", year: 2025 }),
     queryPublicDataset({ dataset: "inps_invalidita_civile", year: 2023, region: "Calabria" }),
     queryPublicDataset({ dataset: "cpt_finanza_regionale", year: 2023, region: "Calabria" }),
+    queryPublicDataset({ dataset: "mef_irpef_comunale", year: 2024 }),
     queryPublicDataset({ dataset: "mef_partecipazioni" }),
     queryPublicDataset({ dataset: "consulenti_incarichi" }),
     queryPublicDataset({ dataset: "parlamento_bilanci" }),
@@ -132,10 +133,44 @@ test("every snapshot-backed MCP adapter returns real structured data", async () 
   assert.equal(cpt.rows[0].region, "Calabria");
   assert.equal(cpt.rows[0].balanceCents, cpt.rows[0].revenueCents - cpt.rows[0].expenditureCents);
   assert.match(cpt.methodology.notFiscalResidual, /non è il residuo fiscale/i);
+  assert.equal(irpef.dataset, "mef_irpef_comunale");
+  assert.equal(irpef.pagination.returned, 20);
+  assert.ok(irpef.data.every((item) => item.territory.level === "region"));
+  assert.equal(
+    irpef.national.assigned.taxpayers + irpef.national.unassigned.taxpayers,
+    irpef.national.allSource.taxpayers,
+  );
   assert.ok(appointments.externalAppointments.length > 0);
   assert.ok(parliament.chambers.length > 0);
   assert.ok(controls.signals.length > 0);
   assert.ok(sources.length > 0);
+});
+
+test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => {
+  const result = await queryPublicDataset({
+    dataset: "mef_irpef_comunale",
+    year: 2024,
+    level: "municipality",
+    code: "001019",
+  });
+  assert.equal(result.data.length, 1);
+  assert.equal(result.data[0].territory.name, "BALME");
+  assert.deepEqual(result.data[0].measures.municipalSurtaxDue, {
+    coverage: "partial",
+    knownFrequency: 0,
+    knownAmountCents: 0,
+    suppressedRows: 1,
+  });
+  assert.match(result.caveats.join(" "), /non è il gettito fiscale totale/i);
+  await assert.rejects(
+    queryPublicDataset({
+      dataset: "mef_irpef_comunale",
+      level: "municipality",
+      query: "Roma",
+      limit: 101,
+    }),
+    /limit/,
+  );
 });
 
 test("every snapshot catalog example is executable offline", async () => {

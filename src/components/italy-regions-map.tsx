@@ -10,7 +10,6 @@ import {
   REGION_NAME_BY_ISTAT_CODE,
   regionDataByIstatCode,
 } from "@/lib/italy-regions";
-import { randomRegionCode } from "@/lib/ip-region";
 import { compactEuro, exactEuro, integer } from "@/lib/format";
 import styles from "./italy-regions-map.module.css";
 
@@ -30,8 +29,9 @@ export function ItalyRegionsMap({
   aside?: React.ReactNode;
 }) {
   const [selectedCode, setSelectedCode] = useState("03");
-  const [automaticSelection, setAutomaticSelection] = useState<"ip" | "random" | null>(null);
+  const [automaticSelection, setAutomaticSelection] = useState<"ip" | null>(null);
   const userSelected = useRef(false);
+  const regionPathRefs = useRef(new Map<string, SVGPathElement>());
   const { byCode, thresholds } = useMemo(() => {
     const mapped = regionDataByIstatCode(regions);
     const values = regions
@@ -46,7 +46,6 @@ export function ItalyRegionsMap({
 
   useEffect(() => {
     const controller = new AbortController();
-    const availableCodes = Object.keys(REGION_NAME_BY_ISTAT_CODE).filter((code) => byCode.has(code));
 
     async function chooseInitialRegion() {
       try {
@@ -58,19 +57,12 @@ export function ItalyRegionsMap({
         if (!response.ok) throw new Error(`Location HTTP ${response.status}`);
         const payload = (await response.json()) as { region?: { code?: string } | null };
         const code = payload.region?.code;
-        if (!userSelected.current && code && byCode.has(code)) {
+        if (!userSelected.current && code && byCode.get(code)) {
           setSelectedCode(code);
           setAutomaticSelection("ip");
-          return;
         }
       } catch {
         if (controller.signal.aborted) return;
-      }
-
-      const fallback = randomRegionCode(availableCodes);
-      if (!userSelected.current && fallback) {
-        setSelectedCode(fallback);
-        setAutomaticSelection("random");
       }
     }
 
@@ -84,7 +76,34 @@ export function ItalyRegionsMap({
     setSelectedCode(code);
   }
 
-  const selected = byCode.get(selectedCode) ?? regions[0];
+  const selected = byCode.get(selectedCode);
+  const navigableCodes: string[] = italyRegionGeometry.map(({ code }) => code);
+
+  function handleRegionKeyDown(event: React.KeyboardEvent<SVGPathElement>, code: string) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectRegion(code);
+      return;
+    }
+
+    const currentIndex = navigableCodes.indexOf(code);
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % navigableCodes.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + navigableCodes.length) % navigableCodes.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = navigableCodes.length - 1;
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const nextCode = navigableCodes[nextIndex];
+    selectRegion(nextCode);
+    regionPathRefs.current.get(nextCode)?.focus();
+  }
 
   function level(value: number | null): number | null {
     if (value === null) return null;
@@ -105,7 +124,8 @@ export function ItalyRegionsMap({
           <title id="regional-map-title">Pagamenti comunali per abitante coperto, per regione</title>
           <desc id="regional-map-description">
             Mappa regionale colorata in base ai pagamenti di cassa SIOPE dei Comuni. Usa Tab per
-            selezionare una regione e leggere il valore esatto nel pannello accanto.
+            entrare nella mappa e i tasti freccia per cambiare regione; il valore esatto appare nel
+            pannello accanto.
           </desc>
           {italyRegionGeometry.map((geometry) => {
             const region = byCode.get(geometry.code);
@@ -113,12 +133,16 @@ export function ItalyRegionsMap({
             const active = selectedCode === geometry.code;
             return (
               <path
+                ref={(node) => {
+                  if (node) regionPathRefs.current.set(geometry.code, node);
+                  else regionPathRefs.current.delete(geometry.code);
+                }}
                 key={geometry.code}
                 d={geometry.path}
                 className={`${styles.region} ${
                   colorLevel === null ? styles.noData : styles[`level${colorLevel}`]
                 } ${active ? styles.active : ""}`}
-                tabIndex={0}
+                tabIndex={active ? 0 : -1}
                 role="button"
                 aria-pressed={active}
                 aria-label={`${REGION_NAME_BY_ISTAT_CODE[geometry.code]}: ${
@@ -129,12 +153,7 @@ export function ItalyRegionsMap({
                 onPointerEnter={() => selectRegion(geometry.code)}
                 onFocus={() => selectRegion(geometry.code)}
                 onClick={() => selectRegion(geometry.code)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    selectRegion(geometry.code);
-                  }
-                }}
+                onKeyDown={(event) => handleRegionKeyDown(event, geometry.code)}
               />
             );
           })}
@@ -151,9 +170,8 @@ export function ItalyRegionsMap({
 
         {automaticSelection ? (
           <p className={styles.geoNote}>
-            {automaticSelection === "ip"
-              ? "Regione proposta dalla posizione approssimativa dell’IP; l’indirizzo non viene mostrato né salvato."
-              : "Posizione non disponibile: regione iniziale scelta casualmente."}
+            Regione proposta dalla posizione approssimativa dell’IP; l’indirizzo non viene mostrato
+            né salvato.
           </p>
         ) : null}
 

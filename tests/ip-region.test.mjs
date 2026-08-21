@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { italianRegionFromVercelHeaders, randomRegionCode } = await import("../src/lib/ip-region.ts");
+const { italianRegionFromVercelHeaders } = await import("../src/lib/ip-region.ts");
 
 test("maps every Italian ISO 3166-2 subdivision used by Vercel", () => {
   const cases = [
@@ -42,11 +42,4 @@ test("accepts a prefixed subdivision and rejects foreign or malformed headers", 
     "x-vercel-ip-country": "IT",
     "x-vercel-ip-country-region": "invalid",
   })), null);
-});
-
-test("random fallback is bounded and handles an empty list", () => {
-  assert.equal(randomRegionCode([], () => 0.5), null);
-  assert.equal(randomRegionCode(["01", "02", "03"], () => 0), "01");
-  assert.equal(randomRegionCode(["01", "02", "03"], () => 0.999999), "03");
-  assert.equal(randomRegionCode(["01", "02", "03"], () => 1), "03");
 });

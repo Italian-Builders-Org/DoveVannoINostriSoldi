@@ -23,7 +23,7 @@
 
 .tooltip strong {
   margin-bottom: 7px;
-  color: #ffffff;
+  color: var(--color-raised);
   font-size: 13px;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .tooltip b {
-  color: #ffffff;
+  color: var(--color-raised);
   font-weight: 650;
   text-align: right;
 }

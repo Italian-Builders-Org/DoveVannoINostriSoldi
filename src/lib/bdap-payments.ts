@@ -22,7 +22,7 @@ export type StatePaymentDimension =
   | "missionAdministration"
   | "administrationEconomic";
 
-type CkanPackage = {
+export type CkanPackage = {
   id?: unknown;
   name?: unknown;
   title?: unknown;
@@ -38,19 +38,32 @@ type PackageSearchResponse = {
   };
 };
 
-export type BdapDataset = {
+export type BdapReleaseKind = "monthly" | "consuntivo";
+
+type BdapDatasetBase = {
   dimension: StatePaymentDimension;
   productCode: string;
   packageId: string;
   name: string;
   title: string;
-  notes: string | null;
+  notes: string;
   referenceYear: number;
-  referenceMonth: number;
   metadataModified: string | null;
   csvUrl: string;
   apiUrl: string;
 };
+
+export type MonthlyBdapDataset = BdapDatasetBase & {
+  releaseKind: "monthly";
+  referenceMonth: number;
+};
+
+export type ConsuntivoBdapDataset = BdapDatasetBase & {
+  releaseKind: "consuntivo";
+  referenceMonth: null;
+};
+
+export type BdapDataset = MonthlyBdapDataset | ConsuntivoBdapDataset;
 
 type PaymentComponents = {
   opErario: number;
@@ -66,7 +79,7 @@ type PaymentComponents = {
 
 export type StateMissionPayment = PaymentComponents & {
   year: number;
-  month: string;
+  month: string | null;
   missionCode: string;
   mission: string;
 };
@@ -78,7 +91,7 @@ export type StateAdministrationMissionPayment = StateMissionPayment & {
 
 export type StateAdministrationEconomicPayment = PaymentComponents & {
   year: number;
-  month: string;
+  month: string | null;
   administrationCode: string;
   administration: string;
   categoryCode: string;
@@ -100,9 +113,10 @@ export type StateAdministrationAggregate = SpendingAggregate & {
 export type StateSpendingSnapshot = {
   period: {
     year: number;
-    month: number;
+    month: number | null;
     monthName: string;
     label: string;
+    releaseKind: BdapReleaseKind;
   };
   totalPaid: number;
   counts: {
@@ -181,9 +195,11 @@ export class StatePaymentPeriodUnavailableError extends Error {
 }
 
 export class StateAdministrationNotFoundError extends Error {
-  constructor(code: string, year: number, month: number) {
+  constructor(code: string, year: number, month: number | null) {
     super(
-      `L'amministrazione ${code} non è presente nel rilascio OpenBDAP ${String(month).padStart(2, "0")}/${year}`,
+      `L'amministrazione ${code} non è presente nel rilascio OpenBDAP ${
+        month === null ? `consuntivo ${year}` : `${String(month).padStart(2, "0")}/${year}`
+      }`,
     );
     this.name = "StateAdministrationNotFoundError";
   }
@@ -210,6 +226,13 @@ const DIMENSION_SUFFIX: Record<StatePaymentDimension, string> = {
   administrationEconomic: "AMCE2",
 };
 
+const DIMENSION_TITLE: Record<StatePaymentDimension, string> = {
+  mission: "Pagamenti Bilancio dello Stato per Missione",
+  missionAdministration: "Pagamenti Bilancio dello Stato per Missione Amministrazione",
+  administrationEconomic:
+    "Pagamenti Bilancio dello Stato per Amministrazione Classificazione Economica II livello",
+};
+
 function text(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const cleaned = value.trim();
@@ -231,19 +254,43 @@ function productCode(month: number, dimension: StatePaymentDimension): string {
   return `PBS_SPE_M${String(month).padStart(2, "0")}_${DIMENSION_SUFFIX[dimension]}_001`;
 }
 
-function parsePeriod(title: string): { year: number; month: number } | null {
-  const match = title.match(/\b(20\d{2})\/(0[1-9]|1[0-2])\b/);
-  if (!match) return null;
+function consuntivoProductCode(dimension: StatePaymentDimension): string {
+  return `PBS_SPE_RND_${DIMENSION_SUFFIX[dimension]}_001`;
+}
 
-  return {
-    year: Number.parseInt(match[1], 10),
-    month: Number.parseInt(match[2], 10),
-  };
+function productCodeForRelease(
+  dimension: StatePaymentDimension,
+  releaseKind: BdapReleaseKind,
+  month: number | null,
+): string | null {
+  if (releaseKind === "consuntivo") return consuntivoProductCode(dimension);
+  return month === null ? null : productCode(month, dimension);
+}
+
+function parsePackagePeriod(
+  title: string,
+  dimension: StatePaymentDimension,
+  releaseKind: BdapReleaseKind,
+): { year: number; month: number | null } | null {
+  const titlePrefix = DIMENSION_TITLE[dimension];
+  if (releaseKind === "consuntivo") {
+    const match = title.match(new RegExp(`^(20\\d{2}) - ${titlePrefix} Consuntivo$`));
+    return match ? { year: Number.parseInt(match[1], 10), month: null } : null;
+  }
+
+  const match = title.match(new RegExp(`^(20\\d{2})/(0[1-9]|1[0-2]) - ${titlePrefix}$`));
+  return match
+    ? {
+        year: Number.parseInt(match[1], 10),
+        month: Number.parseInt(match[2], 10),
+      }
+    : null;
 }
 
 function normalizePackage(
   pkg: CkanPackage,
   dimension: StatePaymentDimension,
+  releaseKind: BdapReleaseKind,
   expectedCode: string,
 ): BdapDataset | null {
   const packageId = uuid(pkg.id);
@@ -251,13 +298,25 @@ function normalizePackage(
   const title = text(pkg.title);
   if (!packageId || !name || !title) return null;
 
-  const period = parsePeriod(title);
+  const period = parsePackagePeriod(title, dimension, releaseKind);
   if (!period) return null;
 
   const notes = text(pkg.notes);
-  if (!(notes?.includes(`[${expectedCode}]`) ?? false)) return null;
+  if (!notes) return null;
+  const expectedCodeFromTitle = productCodeForRelease(dimension, releaseKind, period.month);
+  if (expectedCodeFromTitle !== expectedCode) return null;
+  const escapedCode = expectedCode.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if ((notes.match(new RegExp(`\\[${escapedCode}\\]`, "g"))?.length ?? 0) !== 1) {
+    return null;
+  }
 
-  return {
+  const notesLower = notes.toLocaleLowerCase("it-IT");
+  const expectedScope = releaseKind === "monthly"
+    ? "mese contabile di riferimento"
+    : "esercizio finanziario di riferimento";
+  if (!notesLower.includes(expectedScope)) return null;
+
+  const common = {
     dimension,
     productCode: expectedCode,
     packageId,
@@ -265,16 +324,43 @@ function normalizePackage(
     title,
     notes,
     referenceYear: period.year,
-    referenceMonth: period.month,
     metadataModified: text(pkg.metadata_modified),
     csvUrl: `${BDAP_DUMP}/${packageId}.csv`,
     apiUrl: `${BDAP_ACTION}/package_show?id=${encodeURIComponent(packageId)}`,
   };
+
+  if (releaseKind === "monthly") {
+    return period.month === null
+      ? null
+      : { ...common, releaseKind: "monthly", referenceMonth: period.month };
+  }
+  return period.month !== null
+    ? null
+    : { ...common, releaseKind: "consuntivo", referenceMonth: null };
+}
+
+/**
+ * Validates one CKAN package against the exact OpenBDAP release contract.
+ * This export is intentionally pure so the title/code/perimeter guard can be
+ * tested without depending on the live catalog.
+ */
+export function normalizeBdapPackage(
+  pkg: CkanPackage,
+  dimension: StatePaymentDimension,
+  releaseKind: BdapReleaseKind,
+): BdapDataset | null {
+  const title = text(pkg.title);
+  if (!title) return null;
+  const period = parsePackagePeriod(title, dimension, releaseKind);
+  if (!period) return null;
+  const expectedCode = productCodeForRelease(dimension, releaseKind, period.month);
+  return expectedCode === null ? null : normalizePackage(pkg, dimension, releaseKind, expectedCode);
 }
 
 async function searchProduct(
   code: string,
   dimension: StatePaymentDimension,
+  releaseKind: BdapReleaseKind,
   signal?: AbortSignal,
 ): Promise<BdapDataset[]> {
   const url = `${BDAP_ACTION}/package_search?${new URLSearchParams({
@@ -298,7 +384,7 @@ async function searchProduct(
   }
 
   return payload.result.results
-    .map((pkg) => normalizePackage(pkg, dimension, code))
+    .map((pkg) => normalizePackage(pkg, dimension, releaseKind, code))
     .filter((dataset): dataset is BdapDataset => dataset !== null);
 }
 
@@ -310,7 +396,7 @@ function periodAtOffset(now: Date, offset: number): { year: number; month: numbe
 export async function discoverLatestStatePaymentDataset(
   dimension: StatePaymentDimension,
   options: { now?: Date; maxMonthsBack?: number; signal?: AbortSignal } = {},
-): Promise<BdapDataset> {
+): Promise<MonthlyBdapDataset> {
   const now = options.now ?? new Date();
   const maxMonthsBack = Math.min(Math.max(options.maxMonthsBack ?? 16, 1), 36);
 
@@ -333,7 +419,7 @@ export async function getStatePaymentDatasetForPeriod(
   year: number,
   month: number,
   options: { signal?: AbortSignal } = {},
-): Promise<BdapDataset | null> {
+): Promise<MonthlyBdapDataset | null> {
   if (!Number.isInteger(year) || year < 2000 || year > 2200) {
     throw new Error(`Anno OpenBDAP non valido: ${year}`);
   }
@@ -342,12 +428,38 @@ export async function getStatePaymentDatasetForPeriod(
   }
 
   const code = productCode(month, dimension);
-  const datasets = await searchProduct(code, dimension, options.signal);
-  return (
-    datasets.find(
-      (dataset) => dataset.referenceYear === year && dataset.referenceMonth === month,
-    ) ?? null
+  const datasets = await searchProduct(code, dimension, "monthly", options.signal);
+  const matches = datasets.filter(
+    (dataset): dataset is MonthlyBdapDataset =>
+      dataset.releaseKind === "monthly" &&
+      dataset.referenceYear === year &&
+      dataset.referenceMonth === month,
   );
+  if (matches.length > 1) {
+    throw new Error(`OpenBDAP ha restituito più rilasci mensili per ${code} ${year}/${month}`);
+  }
+  return matches[0] ?? null;
+}
+
+export async function getStatePaymentDatasetForYear(
+  dimension: StatePaymentDimension,
+  year: number,
+  options: { signal?: AbortSignal } = {},
+): Promise<ConsuntivoBdapDataset | null> {
+  if (!Number.isInteger(year) || year < 2000 || year > 2200) {
+    throw new Error(`Anno OpenBDAP non valido: ${year}`);
+  }
+
+  const code = consuntivoProductCode(dimension);
+  const datasets = await searchProduct(code, dimension, "consuntivo", options.signal);
+  const matches = datasets.filter(
+    (dataset): dataset is ConsuntivoBdapDataset =>
+      dataset.releaseKind === "consuntivo" && dataset.referenceYear === year,
+  );
+  if (matches.length > 1) {
+    throw new Error(`OpenBDAP ha restituito più consuntivi per ${code} ${year}`);
+  }
+  return matches[0] ?? null;
 }
 
 async function resolveStatePaymentDataset(
@@ -370,6 +482,9 @@ async function resolveStatePaymentDataset(
     return dataset;
   }
 
+  const consuntivo = await getStatePaymentDatasetForYear(dimension, year, { signal });
+  if (consuntivo) return consuntivo;
+
   for (let candidateMonth = 12; candidateMonth >= 1; candidateMonth -= 1) {
     const dataset = await getStatePaymentDatasetForPeriod(
       dimension,
@@ -391,7 +506,11 @@ async function fetchDatasetRows(
     kind: "data",
     signal,
     headers: { Accept: "text/csv" },
-    tags: [`dataset:${dataset.packageId}`, `dimension:${dataset.dimension}`],
+    tags: [
+      `dataset:${dataset.packageId}`,
+      `dimension:${dataset.dimension}`,
+      `release:${dataset.releaseKind}`,
+    ],
   });
 
   if (!response.ok) {
@@ -413,7 +532,7 @@ export async function getStatePaymentDatasetTotal(
   options: { signal?: AbortSignal } = {},
 ): Promise<number> {
   const rows = await fetchDatasetRows(dataset, options.signal);
-  return rows.reduce((total, record) => total + amount(record, "Totale Pagato"), 0);
+  return rows.reduce((total, record) => total + amount(record, totalPaidField(dataset)), 0);
 }
 
 function amount(record: DelimitedRecord, key: string): number {
@@ -438,7 +557,33 @@ function required(record: DelimitedRecord, key: string): string {
   return value;
 }
 
-function components(record: DelimitedRecord): PaymentComponents {
+function totalPaidField(dataset: BdapDataset): string {
+  return dataset.releaseKind === "consuntivo" ? "Totale pagato" : "Totale Pagato";
+}
+
+function rowYear(record: DelimitedRecord, dataset: BdapDataset): number {
+  const year = integer(record, "Esercizio finanziario");
+  if (year !== dataset.referenceYear) {
+    throw new Error(
+      `OpenBDAP: l'anno della riga ${year} non coincide con il rilascio ${dataset.referenceYear}`,
+    );
+  }
+  return year;
+}
+
+function rowMonth(record: DelimitedRecord, dataset: BdapDataset): string | null {
+  if (dataset.releaseKind === "consuntivo") return null;
+  const observed = required(record, "Mese contabile");
+  const expected = monthName(dataset.referenceMonth);
+  if (observed.toLocaleUpperCase("it-IT") !== expected) {
+    throw new Error(
+      `OpenBDAP: il mese della riga ${observed} non coincide con il rilascio ${expected}`,
+    );
+  }
+  return observed;
+}
+
+function components(record: DelimitedRecord, dataset: BdapDataset): PaymentComponents {
   const result = {
     opErario: amount(record, "OP Erario"),
     opTesoreria: amount(record, "OP Tesoreria"),
@@ -448,49 +593,54 @@ function components(record: DelimitedRecord): PaymentComponents {
     rsfStipendi: amount(record, "RSF Stipendi"),
     rsfAltro: amount(record, "RSF Altro"),
     noteImputazione: amount(record, "Note Imputazione"),
-    totalPaid: amount(record, "Totale Pagato"),
+    totalPaid: amount(record, totalPaidField(dataset)),
   };
   assertOpenBdapComponentTotal(result);
   return result;
 }
 
-function normalizeMissionRows(rows: DelimitedRecord[]): StateMissionPayment[] {
+function normalizeMissionRows(
+  rows: DelimitedRecord[],
+  dataset: BdapDataset,
+): StateMissionPayment[] {
   return rows.map((record) => ({
-    year: integer(record, "Esercizio finanziario"),
-    month: required(record, "Mese contabile"),
+    year: rowYear(record, dataset),
+    month: rowMonth(record, dataset),
     missionCode: required(record, "Codice Missione"),
     mission: required(record, "Missione"),
-    ...components(record),
+    ...components(record, dataset),
   }));
 }
 
 function normalizeAdministrationRows(
   rows: DelimitedRecord[],
+  dataset: BdapDataset,
 ): StateAdministrationMissionPayment[] {
   return rows.map((record) => ({
-    year: integer(record, "Esercizio finanziario"),
-    month: required(record, "Mese contabile"),
+    year: rowYear(record, dataset),
+    month: rowMonth(record, dataset),
     missionCode: required(record, "Codice Missione"),
     mission: required(record, "Missione"),
     administrationCode: required(record, "Codice STP"),
     administration: required(record, "Amministrazione"),
-    ...components(record),
+    ...components(record, dataset),
   }));
 }
 
 function normalizeEconomicRows(
   rows: DelimitedRecord[],
+  dataset: BdapDataset,
 ): StateAdministrationEconomicPayment[] {
   return rows.map((record) => ({
-    year: integer(record, "Esercizio finanziario"),
-    month: required(record, "Mese contabile"),
+    year: rowYear(record, dataset),
+    month: rowMonth(record, dataset),
     administrationCode: required(record, "Codice STP"),
     administration: required(record, "Amministrazione"),
     categoryCode: required(record, "Codice Categoria"),
     category: required(record, "Categoria"),
     economicLevel2Code: required(record, "Codice CE2"),
     economicLevel2: required(record, "CE2"),
-    ...components(record),
+    ...components(record, dataset),
   }));
 }
 
@@ -534,13 +684,40 @@ function monthName(month: number): string {
   return MONTH_NAMES[month - 1] ?? `MESE ${month}`;
 }
 
-function period(year: number, month: number): StateSpendingSnapshot["period"] {
+function period(dataset: BdapDataset): StateSpendingSnapshot["period"] {
+  const { referenceYear: year, referenceMonth: month, releaseKind } = dataset;
+  const monthLabel = month === null ? "CONSUNTIVO" : monthName(month);
   return {
     year,
     month,
-    monthName: monthName(month),
-    label: `${monthName(month)} ${year}`,
+    monthName: monthLabel,
+    label: `${monthLabel} ${year}`,
+    releaseKind,
   };
+}
+
+async function getCompanionDataset(
+  dimension: StatePaymentDimension,
+  primary: BdapDataset,
+  signal?: AbortSignal,
+): Promise<BdapDataset | null> {
+  const candidate = primary.releaseKind === "consuntivo"
+    ? await getStatePaymentDatasetForYear(dimension, primary.referenceYear, { signal })
+    : await getStatePaymentDatasetForPeriod(
+        dimension,
+        primary.referenceYear,
+        primary.referenceMonth,
+        { signal },
+      );
+  if (!candidate) return null;
+  if (
+    candidate.releaseKind !== primary.releaseKind ||
+    candidate.referenceYear !== primary.referenceYear ||
+    candidate.referenceMonth !== primary.referenceMonth
+  ) {
+    throw new Error("OpenBDAP ha restituito dettagli di una serie diversa dal rilascio principale");
+  }
+  return candidate;
 }
 
 function paymentMethodsForRows<T extends PaymentComponents>(rows: T[]): SpendingAggregate[] {
@@ -594,11 +771,10 @@ export async function getStateSpendingSnapshot(
   options: { year?: number; month?: number; signal?: AbortSignal } = {},
 ): Promise<StateSpendingSnapshot> {
   const missionDataset = await resolveStatePaymentDataset("mission", options);
-  const { referenceYear: year, referenceMonth: month } = missionDataset;
 
   const [administrationDatasetResult, economicDatasetResult] = await Promise.allSettled([
-    getStatePaymentDatasetForPeriod("missionAdministration", year, month, options),
-    getStatePaymentDatasetForPeriod("administrationEconomic", year, month, options),
+    getCompanionDataset("missionAdministration", missionDataset, options.signal),
+    getCompanionDataset("administrationEconomic", missionDataset, options.signal),
   ]);
 
   const administrationDataset =
@@ -622,14 +798,14 @@ export async function getStateSpendingSnapshot(
       : new Error("Impossibile leggere il dataset per missione");
   }
 
-  const missionRows = normalizeMissionRows(missionRowsResult.value);
+  const missionRows = normalizeMissionRows(missionRowsResult.value, missionDataset);
   const administrationRows =
-    administrationRowsResult.status === "fulfilled"
-      ? normalizeAdministrationRows(administrationRowsResult.value)
+    administrationDataset && administrationRowsResult.status === "fulfilled"
+      ? normalizeAdministrationRows(administrationRowsResult.value, administrationDataset)
       : [];
   const economicRows =
-    economicRowsResult.status === "fulfilled"
-      ? normalizeEconomicRows(economicRowsResult.value)
+    economicDataset && economicRowsResult.status === "fulfilled"
+      ? normalizeEconomicRows(economicRowsResult.value, economicDataset)
       : [];
   const warnings: string[] = [];
   if (!administrationDataset) {
@@ -680,7 +856,7 @@ export async function getStateSpendingSnapshot(
   const paymentMethods = paymentMethodsForRows(missionRows);
 
   return {
-    period: period(year, month),
+    period: period(missionDataset),
     totalPaid: missionTotal,
     counts: {
       missions: missions.length,
@@ -732,12 +908,10 @@ export async function getStateAdministrationSpending(
     "missionAdministration",
     options,
   );
-  const { referenceYear: year, referenceMonth: month } = administrationDataset;
-  const economicDataset = await getStatePaymentDatasetForPeriod(
+  const economicDataset = await getCompanionDataset(
     "administrationEconomic",
-    year,
-    month,
-    { signal: options.signal },
+    administrationDataset,
+    options.signal,
   );
 
   const [administrationRecords, economicRecordsResult] = await Promise.all([
@@ -749,15 +923,19 @@ export async function getStateAdministrationSpending(
       : Promise.resolve({ ok: false as const, records: null }),
   ]);
 
-  const administrationRows = normalizeAdministrationRows(administrationRecords).filter(
+  const administrationRows = normalizeAdministrationRows(administrationRecords, administrationDataset).filter(
     (row) => row.administrationCode === requestedCode,
   );
   if (administrationRows.length === 0) {
-    throw new StateAdministrationNotFoundError(requestedCode, year, month);
+    throw new StateAdministrationNotFoundError(
+      requestedCode,
+      administrationDataset.referenceYear,
+      administrationDataset.referenceMonth,
+    );
   }
 
   const economicRows = economicRecordsResult.records
-    ? normalizeEconomicRows(economicRecordsResult.records).filter(
+    ? normalizeEconomicRows(economicRecordsResult.records, economicDataset!).filter(
         (row) => row.administrationCode === requestedCode,
       )
     : [];
@@ -792,7 +970,7 @@ export async function getStateAdministrationSpending(
   );
 
   return {
-    period: period(year, month),
+    period: period(administrationDataset),
     administration: {
       code: requestedCode,
       name: administrationRows[0].administration,

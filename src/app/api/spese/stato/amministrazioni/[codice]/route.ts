@@ -33,10 +33,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
         source: {
           owner: "Ragioneria Generale dello Stato",
           platform: "OpenBDAP",
-          cadence: "rilasci periodici per mese contabile",
+          cadence: "rilasci mensili e consuntivi annuali",
           normalization: "DoveVannoINostriSoldi",
         },
-        scope: "Pagamenti cumulati dall'inizio dell'anno al mese indicato.",
+        scope:
+          spending.period.releaseKind === "consuntivo"
+            ? "Pagamenti del consuntivo annuale dell'esercizio indicato."
+            : "Pagamenti cumulati dall'inizio dell'anno al mese indicato.",
         ...spending,
       },
       {

@@ -67,3 +67,6 @@
 .tooltip[data-open="true"] {
   display: block;
 }
+.tooltip[data-open="true"][data-positioned="false"] {
+  visibility: hidden;
+}

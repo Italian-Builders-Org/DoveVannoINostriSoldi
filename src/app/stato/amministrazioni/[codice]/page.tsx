@@ -35,11 +35,14 @@ function datasetLabel(dataset: BdapDataset): string {
 }
 
 function SourceRow({ dataset }: { dataset: BdapDataset }) {
+  const releaseLabel = dataset.releaseKind === "consuntivo"
+    ? "Consuntivo annuale"
+    : "Rilascio mensile";
   return (
     <div className={styles.provenanceRow}>
       <div>
         <strong>{datasetLabel(dataset)}</strong>
-        <small>{dataset.productCode}</small>
+        <small>{releaseLabel} · {dataset.productCode}</small>
       </div>
       <div>
         <span>{dataset.title}</span>
@@ -56,6 +59,8 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
 function AdministrationDashboard({ data }: { data: StateAdministrationSpending }) {
   const maxPaymentMethod = data.paymentMethods[0]?.value ?? 0;
   const identity = data.administration.identity;
+  const isConsuntivo = data.period.releaseKind === "consuntivo";
+  const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
 
   return (
     <>
@@ -64,7 +69,9 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
           <span className={styles.kicker}>RGS / OPENBDAP · AMMINISTRAZIONE CENTRALE</span>
           <h1 className={styles.title}>{data.administration.name}</h1>
           <p className={styles.lead}>
-            Pagamenti registrati da inizio anno, divisi per funzione e tipo di spesa. Il nome e il
+            {isConsuntivo
+              ? "Pagamenti registrati nel consuntivo annuale, divisi per funzione e tipo di spesa."
+              : "Pagamenti registrati da inizio anno, divisi per funzione e tipo di spesa."} Il nome e il
             codice vengono dal rilascio ufficiale OpenBDAP.
           </p>
         </div>
@@ -97,13 +104,17 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
         <div className={styles.primaryMetric}>
           <div className={styles.metricLabel}>
             <i aria-hidden="true" />
-            Pagamenti da gennaio a {data.period.monthName.toLocaleLowerCase("it-IT")}
+            {isConsuntivo
+              ? "Pagamenti del consuntivo annuale"
+              : `Pagamenti da gennaio a ${data.period.monthName.toLocaleLowerCase("it-IT")}`}
           </div>
           <strong>{compactEuro(data.administration.totalPaid)}</strong>
           <span>{exactEuro(data.administration.totalPaid)} esatti</span>
           <p>
-            Somma del campo ufficiale “Totale Pagato” per le missioni attribuite a questa
-            amministrazione nel rilascio {data.period.label}.
+            Somma del campo ufficiale “{totalPaidField}” per le missioni attribuite a questa
+            amministrazione nel rilascio {data.period.label}. {isConsuntivo
+              ? "Il consuntivo annuale non viene mescolato con i rilasci mensili."
+              : "Il dato mensile è cumulato dal 1° gennaio al mese indicato."}
           </p>
         </div>
         <div className={styles.facts}>

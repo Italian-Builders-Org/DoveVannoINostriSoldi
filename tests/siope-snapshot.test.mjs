@@ -27,7 +27,7 @@ function assertMoneyClose(actual, expected, tolerance = 0.25) {
 test("SIOPE snapshot exposes a complete national municipal aggregation", async () => {
   const data = await loadSnapshot();
 
-  assert.equal(data.schemaVersion, 2);
+  assert.equal(data.schemaVersion, 3);
   assert.equal(data.scope, "municipalities");
   assert.equal(data.regions.length, 20);
   assert.ok(data.coverage.activeSiopeMunicipalities > 7_000);
@@ -85,6 +85,10 @@ test("regional and independent municipal rankings are sorted and numerically san
         data.topMunicipalitiesByPerCapita[index].perCapita,
     );
   }
+  for (const municipality of data.topMunicipalitiesByPerCapita) {
+    assert.match(municipality.province, /\S/);
+    assert.match(municipality.region, /\S/);
+  }
   assert.ok(
     data.topMunicipalitiesByPerCapita.some(
       (item) => !data.topMunicipalitiesByValue.some(
@@ -113,7 +117,7 @@ test("the period selector is backed by three reconciled SIOPE years", async () =
   assert.deepEqual(snapshots.map((data) => data.year), [2024, 2025, 2026]);
   for (const data of snapshots) {
     assert.equal(data.regions.length, 20);
-    assert.equal(data.schemaVersion, 2);
+    assert.equal(data.schemaVersion, 3);
     assert.equal(data.topMunicipalitiesByValue.length, 100);
     assert.equal(data.topMunicipalitiesByPerCapita.length, 100);
     assert.ok(data.monthly.length > 0);

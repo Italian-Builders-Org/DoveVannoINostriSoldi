@@ -74,11 +74,14 @@ function datasetLabel(dataset: BdapDataset): string {
 }
 
 function SourceRow({ dataset }: { dataset: BdapDataset }) {
+  const releaseLabel = dataset.releaseKind === "consuntivo"
+    ? "Consuntivo annuale"
+    : "Rilascio mensile";
   return (
     <div className={styles.provenanceRow}>
       <div>
         <strong>{datasetLabel(dataset)}</strong>
-        <small>{dataset.productCode}</small>
+        <small>{releaseLabel} · {dataset.productCode}</small>
       </div>
       <div>
         <span>{dataset.title}</span>
@@ -95,6 +98,11 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
 function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
   const maxPaymentMethod = snapshot.paymentMethods[0]?.value ?? 0;
   const sourceUpdatedAt = snapshot.sources.mission.metadataModified;
+  const isConsuntivo = snapshot.period.releaseKind === "consuntivo";
+  const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
+  const administrationQuery = snapshot.period.month === null
+    ? `anno=${snapshot.period.year}`
+    : `anno=${snapshot.period.year}&mese=${snapshot.period.month}`;
 
   return (
     <>
@@ -136,14 +144,23 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
         <div className={styles.primaryMetric}>
           <div className={styles.metricLabel}>
             <i aria-hidden="true" />
-            Pagamenti da inizio anno
+            {isConsuntivo ? "Pagamenti del consuntivo" : "Pagamenti da inizio anno"}
           </div>
           <strong>{compactEuro(snapshot.totalPaid)}</strong>
-          <span>Somma del campo ufficiale “Totale Pagato” per tutte le missioni.</span>
-          <p>
-            RGS descrive il rilascio come pagamenti effettuati <b>dal 1° gennaio fino al mese contabile di riferimento</b>.
-            Il valore è il totale da gennaio. Nel grafico mensile sottraiamo il totale del mese precedente.
-          </p>
+          <span>
+            Somma del campo ufficiale “{totalPaidField}” per tutte le missioni nel {isConsuntivo ? "rilascio annuale" : "rilascio mensile"}.
+          </span>
+          {isConsuntivo ? (
+            <p>
+              Questo è il consuntivo annuale RGS dell&apos;esercizio {snapshot.period.year}. Non viene
+              sommato né sottratto alla serie mensile: i due rilasci hanno significato distinto.
+            </p>
+          ) : (
+            <p>
+              RGS descrive il rilascio come pagamenti effettuati <b>dal 1° gennaio fino al mese contabile di riferimento</b>.
+              Il valore è il totale da gennaio. Nel grafico mensile sottraiamo il totale del mese precedente.
+            </p>
+          )}
         </div>
 
         <div className={styles.facts}>
@@ -194,7 +211,9 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             height={500}
           />
           <p className={styles.chartCaption}>
-            Totali in euro da gennaio. L&apos;ordine usa il campo “Totale Pagato” del file RGS per Missione.
+            {isConsuntivo
+              ? `Totali in euro nel consuntivo annuale. L'ordine usa il campo “${totalPaidField}” del file RGS per Missione.`
+              : `Totali in euro da gennaio. L'ordine usa il campo “${totalPaidField}” del file RGS per Missione.`}
           </p>
         </div>
       </section>
@@ -248,7 +267,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
                         <td>
                           {administration.code ? (
                             <Link
-                              href={`/stato/amministrazioni/${encodeURIComponent(administration.code)}?anno=${snapshot.period.year}&mese=${snapshot.period.month}`}
+                              href={`/stato/amministrazioni/${encodeURIComponent(administration.code)}?${administrationQuery}`}
                             >
                               {content}
                             </Link>

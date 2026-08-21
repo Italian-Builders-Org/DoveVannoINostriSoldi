@@ -209,6 +209,24 @@ def parse_population(raw: str) -> int | None:
     return round(value)
 
 
+def parse_siope_provinces(registry_zip: Path) -> dict[str, str]:
+    provinces: dict[str, str] = {}
+    for row in zip_rows(registry_zip, "ANAG_REG_PROV"):
+        if len(row) != 5:
+            raise RuntimeError("ANAG_REG_PROV: schema inatteso")
+        province_code = row[3].strip()
+        province_name = row[4].strip()
+        if not re.fullmatch(r"\d{3}", province_code) or not province_name:
+            raise RuntimeError("ANAG_REG_PROV: provincia non valida")
+        previous = provinces.get(province_code)
+        if previous is not None and previous != province_name:
+            raise RuntimeError(f"ANAG_REG_PROV: codice provincia duplicato {province_code}")
+        provinces[province_code] = province_name
+    if not provinces:
+        raise RuntimeError("ANAG_REG_PROV: nessuna provincia trovata")
+    return provinces
+
+
 def load_municipalities(
     registry_zip: Path,
     ipa_regions: dict[str, str],
@@ -216,11 +234,12 @@ def load_municipalities(
     """Return mappings by SIOPE code and canonical municipality key (CF)."""
     active: dict[str, dict] = {}
     active_municipalities = 0
+    provinces = parse_siope_provinces(registry_zip)
 
     for row in zip_rows(registry_zip, "ANAG_ENTI_SIOPE"):
         if len(row) != 9:
             continue
-        code, valid_from, valid_to, cf, name, _municipality, _province, population, entity_type = (
+        code, valid_from, valid_to, cf, name, _municipality, province_code, population, entity_type = (
             value.strip() for value in row
         )
         if valid_to != "9999-12-31" or entity_type.upper() != "COMUNE":
@@ -229,12 +248,16 @@ def load_municipalities(
         region = ipa_regions.get(cf)
         if not code or not cf or not region:
             continue
+        province = provinces.get(province_code)
+        if province is None:
+            raise RuntimeError(f"Provincia SIOPE sconosciuta per il Comune {cf}: {province_code}")
         active[code] = {
             "key": cf,
             "code": code,
             "name": name or "Comune non indicato",
             "cf": cf,
             "region": region,
+            "province": province,
             "population": parse_population(population),
             "validFrom": valid_from,
         }
@@ -380,6 +403,7 @@ def build_snapshot(
             {
                 "name": municipality["name"],
                 "region": municipality["region"],
+                "province": municipality["province"],
                 "codiceFiscale": municipality["cf"],
                 "population": population,
                 "value": euro(cents),
@@ -431,7 +455,7 @@ def build_snapshot(
     latest_total_cents = sum(national_monthly)
 
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "generatedAt": utc_now(),
         "scope": "municipalities",
         "year": year,
@@ -475,7 +499,10 @@ def build_snapshot(
         "methodology": {
             "measure": "pagamenti di cassa SIOPE dei Comuni",
             "periodicity": "movimenti mensili puri, sommati da gennaio all'ultimo mese disponibile",
-            "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA",
+            "territorialJoin": (
+                "codice fiscale SIOPE → Regione della sede legale in IPA; "
+                "Provincia pubblicata nell'anagrafica enti SIOPE"
+            ),
             "populationSource": "popolazione riportata nell'anagrafica enti SIOPE",
             "populationReference": "data di riferimento non dichiarata dalla fonte",
             "populationSourceLastModified": validators["registry"].get("lastModified"),
@@ -509,7 +536,7 @@ def is_unchanged(output: Path, year: int, validators: dict) -> bool:
         return False
     source = current.get("source", {})
     return (
-        current.get("schemaVersion") == 2
+        current.get("schemaVersion") == 3
         and current.get("year") == year
         and source.get("siopeMovementsLastModified")
         == validators["movements"].get("lastModified")

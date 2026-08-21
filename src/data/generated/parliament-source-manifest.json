@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "discoveryVersion": 1,
   "verifiedAt": "2026-08-20T14:14:16Z",
+  "snapshotArtifact": {
+    "path": "src/data/generated/parliament-overview.json",
+    "bytes": 4109,
+    "sha256": "6d76c488fc6ec915ea5384d4a61b7fb559354492332fde0b73636e5fb2e48afc"
+  },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
     "documents": [
@@ -9,13 +14,31 @@
         "kind": "account",
         "year": 2025,
         "title": "Conto consuntivo 2025",
-        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf"
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+        "asset": {
+          "bytes": 645242,
+          "sha256": "b35c7b6bb718ca83e1b1af47c3b5d3e0ffb4b2e124eee45e1c16aa929a66c0bd"
+        },
+        "evidence": [
+          {
+            "pages": "7-8",
+            "scope": "riepilogo dei pagamenti per categoria e totale dei Titoli I-III"
+          },
+          {
+            "pages": "49-51",
+            "scope": "composizione del Titolo III nelle Categorie XII e XIII"
+          }
+        ]
       },
       {
         "kind": "budget",
         "year": 2026,
         "title": "Bilancio 2026 e bilancio pluriennale 2026-2028",
-        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/008/INTERO.pdf"
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/008/INTERO.pdf",
+        "asset": {
+          "bytes": 757018,
+          "sha256": "51e55fc787fd65efa25899ce81140a5b78151cd8e2bfa561ac3dfcfa197b37e5"
+        }
       }
     ]
   },

@@ -27,3 +27,34 @@ test("SIOPE ETL ranks a low-volume municipality first per capita", async () => {
   assert.equal(result.sentinel, null);
   assert.equal(result.valid, 125);
 });
+
+test("SIOPE ETL resolves official provinces and rejects unknown province codes", async () => {
+  const code = [
+    "import json, tempfile, zipfile",
+    "from pathlib import Path",
+    "from scripts.etl.siope_municipal_snapshot import load_municipalities",
+    "with tempfile.TemporaryDirectory() as directory:",
+    "    archive = Path(directory) / 'registry.zip'",
+    "    with zipfile.ZipFile(archive, 'w') as target:",
+    "        target.writestr('ANAG_REG_PROV.csv', 'ITALIA NORD-OCCIDENTALE,01,PIEMONTE,004,Cuneo\\n')",
+    "        target.writestr('ANAG_ENTI_SIOPE.csv', '1,2020-01-01,9999-12-31,CF1,COMUNE DI TEST,001,004,100,COMUNE\\n')",
+    "    active, _, count = load_municipalities(archive, {'CF1': 'Piemonte'})",
+    "    province = active['1']['province']",
+    "    with zipfile.ZipFile(archive, 'w') as target:",
+    "        target.writestr('ANAG_REG_PROV.csv', 'ITALIA NORD-OCCIDENTALE,01,PIEMONTE,004,Cuneo\\n')",
+    "        target.writestr('ANAG_ENTI_SIOPE.csv', '1,2020-01-01,9999-12-31,CF1,COMUNE DI TEST,001,999,100,COMUNE\\n')",
+    "    try:",
+    "        load_municipalities(archive, {'CF1': 'Piemonte'})",
+    "    except RuntimeError as error:",
+    "        rejected = 'Provincia SIOPE sconosciuta' in str(error)",
+    "    else:",
+    "        rejected = False",
+    "    print(json.dumps({'province': province, 'count': count, 'rejected': rejected}))",
+  ].join("\n");
+  const { stdout } = await execFileAsync("python3", ["-c", code], {
+    cwd: new URL("..", import.meta.url),
+  });
+  const result = JSON.parse(stdout);
+
+  assert.deepEqual(result, { province: "Cuneo", count: 1, rejected: true });
+});

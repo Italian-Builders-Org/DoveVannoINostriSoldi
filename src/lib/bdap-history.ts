@@ -2,7 +2,7 @@ import {
   discoverLatestStatePaymentDataset,
   getStatePaymentDatasetForPeriod,
   getStatePaymentDatasetTotal,
-  type BdapDataset,
+  type MonthlyBdapDataset,
 } from "@/lib/bdap-payments";
 import { deriveStateSpendingHistoryPoints } from "@/lib/data/bdap-history-points";
 
@@ -29,6 +29,7 @@ export type StateSpendingHistoryPoint = {
   cumulativePaid: number;
   monthlyPaid: number | null;
   source: {
+    releaseKind: "monthly";
     productCode: string;
     packageId: string;
     csvUrl: string;
@@ -55,7 +56,7 @@ export type StateSpendingHistory = {
   };
 };
 
-type DatasetWithTotal = { dataset: BdapDataset; cumulativePaid: number };
+type DatasetWithTotal = { dataset: MonthlyBdapDataset; cumulativePaid: number };
 
 export async function getStateSpendingHistory(): Promise<StateSpendingHistory> {
   const latest = await discoverLatestStatePaymentDataset("mission");
@@ -73,7 +74,7 @@ export async function getStateSpendingHistory(): Promise<StateSpendingHistory> {
 
   const datasets = datasetResults
     .map((result) => (result.status === "fulfilled" ? result.value : null))
-    .filter((dataset): dataset is BdapDataset => dataset !== null);
+    .filter((dataset): dataset is MonthlyBdapDataset => dataset !== null);
 
   const totalResults = await Promise.allSettled(
     datasets.map(async (dataset) => ({

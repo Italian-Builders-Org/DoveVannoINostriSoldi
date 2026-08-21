@@ -39,7 +39,11 @@
   flex-wrap: wrap;
 }
 .panelHead :global(.panel-title),
-.panelHead > h2 { margin-bottom: 0; }
+.panelHead > h2 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+}
 
 .headNote {
   font-size: 12px;

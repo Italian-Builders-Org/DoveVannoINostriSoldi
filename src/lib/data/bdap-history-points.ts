@@ -5,6 +5,7 @@ const MONTH_NAMES = [
 
 export type HistoryDatasetWithTotal = {
   dataset: {
+    releaseKind: "monthly";
     referenceMonth: number;
     productCode: string;
     packageId: string;
@@ -18,6 +19,10 @@ export function deriveStateSpendingHistoryPoints(
   year: number,
   values: HistoryDatasetWithTotal[],
 ) {
+  if (values.some(({ dataset }) => dataset.releaseKind !== "monthly")) {
+    throw new Error("Lo storico OpenBDAP accetta soltanto rilasci mensili");
+  }
+
   const ordered = [...values].sort(
     (left, right) => left.dataset.referenceMonth - right.dataset.referenceMonth,
   );
@@ -43,6 +48,7 @@ export function deriveStateSpendingHistoryPoints(
       cumulativePaid,
       monthlyPaid,
       source: {
+        releaseKind: "monthly" as const,
         productCode: dataset.productCode,
         packageId: dataset.packageId,
         csvUrl: dataset.csvUrl,

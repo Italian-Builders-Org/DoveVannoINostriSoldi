@@ -29,7 +29,7 @@ Il backend espone inoltre:
 
 - `GET /api/incarichi`, con statistiche nazionali ufficiali di Consulenti Pubblici dal 2023;
 - `GET /api/spese/comuni/fabbisogni?anno=2022`, con il confronto OpenCivitas per 6.557 Comuni delle Regioni a statuto ordinario;
-- `GET /api/spese/stato?anno=2024`, con l'ultimo mese OpenBDAP disponibile nell'anno richiesto;
+- `GET /api/spese/stato?anno=2024`, con il consuntivo annuale OpenBDAP quando disponibile; in sua assenza, l'ultimo rilascio mensile dell'anno;
 - `GET /api/spese/stato/amministrazioni/2?anno=2024`, con missioni e categorie di una singola amministrazione;
 - `GET /api/opere?cup=I39B05000060005`, con stato, date, costi e finanziamenti di un'opera pubblica OpenBDAP;
 - `GET /api/parlamento`, con i dati strutturati verificati della Camera; il monitor segue anche i nuovi documenti del Senato senza pubblicare valori non ancora estraibili in modo affidabile;
@@ -126,9 +126,9 @@ La home e le pagine Soldi e Territori permettono di scegliere il 2024, 2025 o 20
 /territori?anno=2025
 ```
 
-I dati SIOPE, OpenBDAP e la serie annuale OpenCoesione cambiano con l'anno scelto. Se un indicatore non esiste per quel periodo, viene mostrato come non disponibile. Non riutilizziamo un dato di un altro anno.
+I dati SIOPE, OpenBDAP e la serie annuale OpenCoesione cambiano con l'anno scelto. Per OpenBDAP una query annuale senza mese preferisce il consuntivo ufficiale `PBS_SPE_RND_*`; una query con mese e lo storico usano esclusivamente i rilasci mensili `PBS_SPE_Mxx_*`. Se un indicatore non esiste per quel periodo, viene mostrato come non disponibile. Non riutilizziamo un dato di un altro anno o di un'altra serie contabile.
 
-Le classifiche territoriali usano il valore per abitante come default e conservano il totale come confronto. Le due graduatorie comunali sono calcolate separatamente sull'intero insieme osservato, non riordinando una lista già tagliata per volume.
+Le classifiche territoriali usano il valore per abitante come default e conservano il totale come confronto. Le due graduatorie comunali sono calcolate separatamente sull'intero insieme osservato, non riordinando una lista già tagliata per volume. Provincia e Regione mostrate accanto al Comune provengono rispettivamente dall'anagrafica SIOPE e dalla sede legale pubblicata in IPA.
 
 ## Regole del progetto
 

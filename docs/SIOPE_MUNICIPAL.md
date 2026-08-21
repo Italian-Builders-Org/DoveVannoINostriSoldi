@@ -21,7 +21,7 @@ Questa distinzione è parte del contratto del dato e deve restare visibile nella
 La pipeline usa tre file ufficiali:
 
 1. `SIOPE_USCITE.<anno>.zip`: movimenti nazionali di uscita;
-2. `SIOPE_ANAGRAFICHE.zip`: anagrafiche degli enti SIOPE;
+2. `SIOPE_ANAGRAFICHE.zip`: anagrafiche degli enti e delle Province SIOPE;
 3. `amministrazioni.txt` di Indice PA: join del codice fiscale dell'ente alla regione della sede amministrativa.
 
 Il file annuale SIOPE contiene movimenti mensili puri. Non è una successione di snapshot cumulativi: per questo il grafico mensile non calcola differenze tra rilasci. Il cumulato visualizzato da DoveVannoINostriSoldi è semplicemente la somma progressiva dei flussi mensili.
@@ -30,11 +30,17 @@ Gli importi SIOPE sono elaborati come interi in centesimi e convertiti in euro s
 
 ## Join territoriale
 
-Il join usa:
+Il join regionale usa:
 
 `codice ente SIOPE → codice fiscale SIOPE → codice fiscale IPA → Regione IPA`
 
 Non vengono usati matching fuzzy sul nome dell'ente. Se un codice fiscale non produce una regione univoca, l'ente resta fuori dall'aggregazione geografica e viene contabilizzato nella metrica `unmatchedToIpaRegion`.
+
+Il contesto provinciale delle graduatorie usa invece una relazione interna allo stesso registro ufficiale:
+
+`ANAG_ENTI_SIOPE.codice provincia → ANAG_REG_PROV → Provincia`
+
+L'ETL rifiuta un codice provinciale sconosciuto: non deduce la Provincia dal nome del Comune e non distribuisce dati su territori non pubblicati dalla fonte.
 
 ## Aggiornamento
 
@@ -59,7 +65,7 @@ Lo snapshot contiene:
 - aggregazioni per regione;
 - importi per abitante coperto;
 - titoli di spesa;
-- principali Comuni per volume di pagamenti;
+- principali Comuni per volume e per abitante, con Provincia SIOPE e Regione della sede IPA;
 - copertura del join;
 - URL e `Last-Modified` upstream;
 - warning metodologico mostrato anche nella dashboard.
@@ -76,6 +82,7 @@ La CI ordinaria non dipende dalla disponibilità della rete SIOPE. Testa invece 
 - la somma delle regioni ricomponga il totale entro la tolleranza di arrotondamento;
 - il cumulato finale coincida con il totale headline;
 - i ranking restino ordinati;
+- Provincia e Regione siano presenti in ogni riga dei ranking;
 - non risultino righe malformate nello snapshot pubblicato.
 
 Il download live e la validazione dell'ETL hanno un workflow separato, così un outage dell'upstream non trasforma un cambiamento di UI innocuo in una build rossa.

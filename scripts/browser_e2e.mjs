@@ -9,6 +9,7 @@ const SERVER_TIMEOUT_MS = 60_000;
 const NAVIGATION_TIMEOUT_MS = 45_000;
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
+const INFO_TOOLTIP_IDS = ["cash-payments-tip", "spending-glossary-tip"];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");
@@ -82,7 +83,13 @@ function relevantRequestFailure(request) {
     failure.errorText === "net::ERR_ABORTED" &&
     (resourceType === "fetch" || resourceType === "other") &&
     new URL(requestUrl).searchParams.has("_rsc");
-  if (cancelledNextPrefetch) return null;
+  const cancelledLocationLookup =
+    failure.errorText === "net::ERR_ABORTED" &&
+    resourceType === "fetch" &&
+    new URL(requestUrl).pathname === "/api/location";
+  // Location is an optional client hint and can be cancelled when a scenario
+  // closes its page; neither cancellation affects the rendered route.
+  if (cancelledNextPrefetch || cancelledLocationLookup) return null;
 
   return `${resourceType} ${requestUrl}: ${failure.errorText}`;
 }
@@ -170,6 +177,170 @@ async function assertResponsiveShell(page, label, width) {
   );
 }
 
+async function assertInfoTooltips(page, label) {
+  for (const tooltipId of INFO_TOOLTIP_IDS) {
+    const selector = `button[aria-controls="${tooltipId}"]`;
+    const button = await page.$(selector);
+    assert.ok(button, `${label}: trigger ${tooltipId} assente`);
+
+    await button.focus();
+    await page.waitForFunction(
+      (id) => {
+        const tooltip = document.getElementById(id);
+        if (
+          tooltip?.getAttribute("data-open") !== "true" ||
+          tooltip.getAttribute("data-positioned") !== "true" ||
+          getComputedStyle(tooltip).display === "none"
+        ) {
+          return false;
+        }
+        const rect = tooltip.getBoundingClientRect();
+        return rect.left >= -1 && rect.right <= window.innerWidth + 1;
+      },
+      { timeout: 2_000 },
+      tooltipId,
+    );
+
+    const openState = await page.$eval(selector, (trigger, id) => {
+      const tooltip = document.getElementById(id);
+      const triggerRect = trigger.getBoundingClientRect();
+      const tooltipRect = tooltip?.getBoundingClientRect();
+      return {
+        describedBy: trigger.getAttribute("aria-describedby"),
+        expanded: trigger.getAttribute("aria-expanded"),
+        bodyScrollWidth: document.body.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        innerWidth: window.innerWidth,
+        triggerRect: {
+          left: triggerRect.left,
+          right: triggerRect.right,
+        },
+        tooltipDisplay: tooltip ? getComputedStyle(tooltip).display : "missing",
+        tooltipVisibility: tooltip ? getComputedStyle(tooltip).visibility : "missing",
+        tooltipRect: tooltipRect
+          ? {
+              left: tooltipRect.left,
+              right: tooltipRect.right,
+              width: tooltipRect.width,
+            }
+          : null,
+      };
+    }, tooltipId);
+
+    assert.equal(openState.expanded, "true", `${label}: ${tooltipId} non risulta aperto`);
+    assert.equal(openState.describedBy, tooltipId, `${label}: descrizione ARIA assente`);
+    assert.equal(openState.tooltipDisplay, "block", `${label}: tooltip non visibile`);
+    assert.equal(openState.tooltipVisibility, "visible", `${label}: tooltip invisibile`);
+    assert.ok(openState.tooltipRect, `${label}: rettangolo tooltip assente`);
+    assert.ok(openState.tooltipRect.width > 0, `${label}: tooltip senza larghezza`);
+    assert.ok(openState.tooltipRect.left >= -1, `${label}: tooltip ${tooltipId} esce a sinistra`);
+    assert.ok(
+      openState.tooltipRect.right <= openState.innerWidth + 1,
+      `${label}: tooltip ${tooltipId} esce a destra`,
+    );
+    assert.ok(openState.triggerRect.left >= -1, `${label}: trigger ${tooltipId} esce a sinistra`);
+    assert.ok(
+      openState.triggerRect.right <= openState.innerWidth + 1,
+      `${label}: trigger ${tooltipId} esce a destra`,
+    );
+    assert.ok(
+      openState.bodyScrollWidth <= openState.clientWidth + 1,
+      `${label}: overflow mentre ${tooltipId} è aperto`,
+    );
+
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(
+      (id) => document.getElementById(id)?.getAttribute("data-open") === "false",
+      { timeout: 2_000 },
+      tooltipId,
+    );
+    const closedState = await page.$eval(selector, (trigger) => ({
+      describedBy: trigger.getAttribute("aria-describedby"),
+      expanded: trigger.getAttribute("aria-expanded"),
+    }));
+    assert.equal(closedState.expanded, "false", `${label}: Escape non chiude ${tooltipId}`);
+    assert.equal(closedState.describedBy, null, `${label}: descrizione chiusa ancora esposta`);
+    await button.dispose();
+  }
+}
+
+async function assertRegionalMapSelection(page, label) {
+  const mapSelector = '[data-region-map="true"]';
+  const detailSelector = '[data-region-detail="true"] b';
+  await page.waitForSelector(mapSelector, { visible: true });
+  const regionPaths = await page.$$(
+    `${mapSelector} path[role="button"][aria-label]`,
+  );
+  assert.equal(regionPaths.length, 20, `${label}: la mappa deve esporre 20 regioni`);
+
+  const lombardia = await page.$(`${mapSelector} path[aria-label^="Lombardia:"]`);
+  const veneto = await page.$(`${mapSelector} path[aria-label^="Veneto:"]`);
+  assert.ok(lombardia, `${label}: percorso Lombardia assente`);
+  assert.ok(veneto, `${label}: percorso Veneto assente`);
+
+  await lombardia.hover();
+  await page.waitForFunction(
+    (selector) => Boolean(document.querySelector(`${selector} path[data-hovered="true"]`)),
+    { timeout: 2_000 },
+    mapSelector,
+  );
+  const previewName = await page.$eval(detailSelector, (element) => element.textContent?.trim());
+  assert.equal(previewName, "Lombardia", `${label}: hover non aggiorna l’anteprima`);
+
+  const hoveredOutline = await page.$eval(mapSelector, (map) => {
+    const outlines = [...map.querySelectorAll('path[aria-hidden="true"]')];
+    return {
+      outlineCount: outlines.length,
+      overlayStroke: outlines.map((outline) => getComputedStyle(outline).stroke),
+      overlayPointerEvents: outlines.map((outline) => getComputedStyle(outline).pointerEvents),
+    };
+  });
+  assert.ok(
+    hoveredOutline.outlineCount >= 1 && hoveredOutline.outlineCount <= 2,
+    `${label}: numero inatteso di layer di contorno (${hoveredOutline.outlineCount})`,
+  );
+  assert.ok(
+    hoveredOutline.overlayStroke.every((stroke) => stroke !== "none"),
+    `${label}: contorno overlay non visibile`,
+  );
+  assert.ok(
+    hoveredOutline.overlayPointerEvents.every((value) => value === "none"),
+    `${label}: il contorno overlay intercetta il puntatore`,
+  );
+
+  await lombardia.click();
+  await page.waitForFunction(
+    () => document.querySelector('[data-region-detail="true"] b')?.textContent?.trim() === "Lombardia",
+    { timeout: 2_000 },
+  );
+  const fixedName = await page.$eval(detailSelector, (element) => element.textContent?.trim());
+
+  await veneto.hover();
+  await page.waitForFunction(
+    (selector) => Boolean(document.querySelector(`${selector} path[data-hovered="true"]`)),
+    { timeout: 2_000 },
+    mapSelector,
+  );
+  const afterHoverName = await page.$eval(detailSelector, (element) => element.textContent?.trim());
+  assert.equal(
+    afterHoverName,
+    fixedName,
+    `${label}: l’hover sovrascrive la regione fissata con un clic`,
+  );
+
+  await veneto.click();
+  await page.waitForFunction(
+    () => document.querySelector('[data-region-detail="true"] b')?.textContent?.trim() === "Veneto",
+    { timeout: 2_000 },
+  );
+  const switchedName = await page.$eval(detailSelector, (element) => element.textContent?.trim());
+  assert.equal(switchedName, "Veneto", `${label}: il clic non cambia la selezione fissata`);
+
+  await lombardia.dispose();
+  await veneto.dispose();
+  for (const path of regionPaths) await path.dispose();
+}
+
 async function assertTableKeyboardScroll(page, label) {
   await page.waitForSelector(TABLE_REGION, { visible: true });
   const tableState = await page.$eval(TABLE_REGION, (region) => ({
@@ -243,6 +414,7 @@ async function runScenario(browser, { label, pathname, validate, width }) {
   try {
     page.setDefaultTimeout(10_000);
     page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT_MS);
+    await page.setCacheEnabled(false);
     await page.setViewport({
       width,
       height: width <= 460 ? 844 : 900,
@@ -381,6 +553,77 @@ try {
     },
   });
   completed.push("Recovery offset");
+
+  for (const width of [390, 1280]) {
+    const label = `Geografia Comuni ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/territori?anno=2025",
+      width,
+      validate: async (page) => {
+        const text = await bodyText(page);
+        assertTextMatches(text, /I 20 Comuni con più pagamenti per abitante/i, label);
+        const firstMunicipality = await page.$eval(
+          '[data-municipality-ranking="per-capita"] tbody tr:first-child th',
+          (heading) => ({
+            name: [...heading.childNodes]
+              .find((node) => node.nodeType === Node.TEXT_NODE)
+              ?.textContent?.trim(),
+            context: [...heading.querySelectorAll("small")].map((item) => item.textContent?.trim()),
+          }),
+        );
+        assert.match(firstMunicipality.name ?? "", /\S/);
+        assert.match(firstMunicipality.context[0] ?? "", /^\S.* · \S.*$/);
+        assert.match(firstMunicipality.context[1] ?? "", /abitanti$/);
+        await assertResponsiveShell(page, label, width);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Parlamento previdenza ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/parlamento",
+      width,
+      validate: async (page) => {
+        const text = await bodyText(page);
+        assertTextMatches(text, /Spese previdenziali/, label);
+        assertTextMatches(text, /Deputati cessati dal mandato/, label);
+        assertTextMatches(text, /Personale in quiescenza/, label);
+        assertTextMatches(text, /non equivale ai soli vitalizi/i, label);
+        await assertResponsiveShell(page, label, width);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 901, 1024, 1280]) {
+    const label = `Tooltip home ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/",
+      width,
+      validate: async (page) => {
+        await assertInfoTooltips(page, label);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Mappa regioni hover/selezione ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/",
+      width,
+      validate: async (page) => {
+        await assertRegionalMapSelection(page, label);
+      },
+    });
+    completed.push(label);
+  }
 
   for (const pathname of ["/", "/enti", "/partecipazioni", "/controlli", "/metodologia"]) {
     const label = `Shell 320px ${pathname}`;

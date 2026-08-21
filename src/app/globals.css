@@ -401,6 +401,22 @@ main { display: block; }
   .header-search { width: 260px; }
 }
 
+/* Keep the header's fixed actions inside the viewport before the full
+   mobile layout takes over at 900px. */
+@media (min-width: 901px) and (max-width: 980px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding-block: 14px 12px;
+  }
+  .header-spacer { display: none; }
+  .brand { flex: 1; min-width: 0; }
+  .brand-text strong { font-size: 19px; }
+  .brand-text small { display: none; }
+  .header-search { order: 3; width: 100%; }
+  .nav-note { display: none; }
+}
+
 @media (max-width: 900px) {
   .header-inner {
     flex-wrap: wrap;

@@ -152,6 +152,19 @@ export default function ParliamentPage() {
                                   <strong>{millionEuro(value)}</strong>
                                 </div>
                                 <i style={{ width: `${Math.max(2, (value / maximum) * 100)}%` }} />
+                                {"components" in item && item.components ? (
+                                  <dl className={styles.categoryComponents}>
+                                    {item.components.map((component) => (
+                                      <div key={component.id}>
+                                        <dt>{component.label}</dt>
+                                        <dd>{millionEuro(component.paid)}</dd>
+                                      </div>
+                                    ))}
+                                  </dl>
+                                ) : null}
+                                {"caveat" in item && item.caveat ? (
+                                  <p className={styles.categoryCaveat}>{item.caveat}</p>
+                                ) : null}
                               </li>
                             );
                           })}

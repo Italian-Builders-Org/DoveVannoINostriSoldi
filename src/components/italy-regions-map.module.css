@@ -26,12 +26,27 @@
 }
 
 .region:hover,
-.region:focus,
-.active {
+.region:focus-visible,
+.region[data-hovered="true"] {
   stroke: var(--color-text);
   stroke-width: 2;
   outline: none;
 }
+
+/* SVG paints sibling paths in document order. Draw the active outlines again
+   after all fills so a later region can never cover a hovered border. */
+.outline {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.hoverOutline { stroke-width: 2; }
+.selectedOutline { stroke-width: 2.5; }
+.selectedOutline.hoverOutline { stroke-width: 3; }
 
 /* One sequential ramp, read as intensity rather than as five categories. It
    starts at accent-200 rather than accent-100: the first step has to be
@@ -69,8 +84,8 @@
   color: var(--color-neutral-600);
 }
 
-/* The reading row under the map: whichever region is hovered, focused or
-   picked from the select shows its exact figures here. */
+/* The reading row under the map: hover/focus previews until a click or an
+   explicit keyboard selection fixes the region. */
 .detail {
   grid-column: 1 / -1;
   display: grid;
@@ -151,7 +166,7 @@
 
 @media (hover: none) {
   .region:hover { stroke: var(--color-neutral-500); stroke-width: 1; }
-  .active { stroke: var(--color-text); stroke-width: 2; }
+  .region[data-hovered="true"] { stroke: var(--color-text); stroke-width: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {

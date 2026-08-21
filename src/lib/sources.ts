@@ -30,7 +30,7 @@ export const publicSources: PublicSource[] = [
     name: "OpenBDAP",
     owner: "Ragioneria Generale dello Stato",
     area: "Bilancio, spesa, SIOPE, opere, PNRR",
-    cadence: "Variabile per dataset; pagamenti Stato per mese contabile",
+    cadence: "Variabile per dataset; pagamenti Stato mensili e consuntivi annuali",
     coverage: "Pagamenti dello Stato e ricerca opere pubbliche per CUP",
     format: "CKAN API · OData · CSV · open data",
     url: "https://bdap-opendata.rgs.mef.gov.it/content/api",
@@ -164,7 +164,7 @@ export const publicSources: PublicSource[] = [
     coverage: "Bilancio e amministrazione della Camera",
     format: "Web · documenti",
     url: "https://trasparenza.camera.it/bilancio-della-camera",
-    note: "Conto consuntivo 2025 e bilancio 2026 collegati ai documenti ufficiali. Gli importi strutturati mantengono arrotondamenti e significato contabile della Camera.",
+    note: "Conto consuntivo 2025 e bilancio 2026 collegati ai documenti ufficiali. Gli importi strutturati conservano la precisione verificata disponibile e il significato contabile della Camera; la UI arrotonda soltanto la presentazione.",
   },
 ];
 

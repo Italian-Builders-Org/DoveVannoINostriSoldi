@@ -160,6 +160,11 @@
 .input::placeholder { color: var(--color-neutral-600); opacity: 1; }
 .input:hover { border-color: var(--color-neutral-500); }
 .input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+textarea.input {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.5;
+}
 
 /* — surfaces — */
 .panel {

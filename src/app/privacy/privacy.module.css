@@ -1,0 +1,6 @@
+.page :global(.panel) p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-neutral-800);
+  max-width: 78ch;
+}

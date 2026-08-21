@@ -12,6 +12,7 @@ test("narrow responsive grids cannot exceed their container", async () => {
     ["../src/app/partecipazioni/partecipazioni.module.css", "340px"],
     ["../src/app/controlli/controlli.module.css", "300px"],
     ["../src/app/metodologia/metodologia.module.css", "300px"],
+    ["../src/app/consulenza/consulenza.module.css", "300px"],
   ];
 
   for (const [path, minimum] of cases) {

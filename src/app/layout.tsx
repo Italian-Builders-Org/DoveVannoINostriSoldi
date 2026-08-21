@@ -57,6 +57,8 @@ export default function RootLayout({
             <span>Ultimo controllo SIOPE o IRPEF: {latestTerritorialCheckLabel}</span>
             <span>Dati pubblici, liberi da riusare</span>
             <span className="footer-spacer" />
+            <a className="footer-link" href="/consulenza">Consulenza</a>
+            <a className="footer-link" href="/privacy">Privacy</a>
             <a className="footer-link" href={REPO_URL} target="_blank" rel="noreferrer">
               Codice su GitHub ↗
             </a>

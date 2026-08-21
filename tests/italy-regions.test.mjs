@@ -6,11 +6,18 @@ import {
   ISTAT_CODE_BY_REGION_NAME,
   ITALY_MACRO_AREAS,
   REGION_NAME_BY_ISTAT_CODE,
+  cptRegionAnchorOf,
+  groupRegionsByMacroArea,
   istatCodeOfRegion,
   macroAreaOf,
 } from "../src/lib/italy-regions.ts";
 
 const snapshotUrl = new URL("../src/data/generated/siope-municipal.json", import.meta.url);
+const annualSnapshotUrls = [
+  new URL("../src/data/generated/siope-municipal-2024.json", import.meta.url),
+  new URL("../src/data/generated/siope-municipal-2025.json", import.meta.url),
+  snapshotUrl,
+];
 
 test("ISTAT geometry and SIOPE data cover the same 20 regions", async () => {
   const snapshot = JSON.parse(await readFile(snapshotUrl, "utf8"));
@@ -47,4 +54,60 @@ test("ISTAT_CODE_BY_REGION_NAME is the exact reverse of REGION_NAME_BY_ISTAT_COD
     assert.equal(istatCodeOfRegion(name), code);
   }
   assert.equal(istatCodeOfRegion("Regione inesistente"), null);
+});
+
+test("CPT anchors fail closed for the one-to-many Trentino mapping", () => {
+  assert.equal(cptRegionAnchorOf("Piemonte"), "regione-01");
+  assert.equal(cptRegionAnchorOf("Trentino-Alto Adige/Südtirol"), null);
+  assert.equal(cptRegionAnchorOf("Regione inesistente"), null);
+});
+
+test("macro-area per-capita values use only payments with a population denominator", () => {
+  const regions = [
+    {
+      region: "Piemonte",
+      value: 1_000,
+      perCapitaValue: 800,
+      population: 100,
+      perCapita: 8,
+      municipalities: 2,
+      municipalitiesWithPopulation: 1,
+    },
+    {
+      region: "Lombardia",
+      value: 1_000,
+      perCapitaValue: 900,
+      population: 100,
+      perCapita: 9,
+      municipalities: 1,
+      municipalitiesWithPopulation: 1,
+    },
+  ];
+
+  const north = groupRegionsByMacroArea(regions).find(({ area }) => area === "Nord");
+  assert.ok(north);
+  assert.equal(north.summary.value, 2_000);
+  assert.equal(north.summary.perCapitaValue, 1_700);
+  assert.equal(north.summary.population, 200);
+  assert.equal(north.summary.perCapita, 8.5);
+});
+
+test("macro-area totals reconcile for every committed SIOPE year", async () => {
+  const cents = (value) => Math.round(value * 100);
+
+  for (const url of annualSnapshotUrls) {
+    const snapshot = JSON.parse(await readFile(url, "utf8"));
+    const groups = groupRegionsByMacroArea(snapshot.regions);
+
+    assert.equal(
+      cents(groups.reduce((total, group) => total + group.summary.value, 0)),
+      cents(snapshot.regions.reduce((total, region) => total + region.value, 0)),
+      `all payments for ${snapshot.year}`,
+    );
+    assert.equal(
+      cents(groups.reduce((total, group) => total + group.summary.perCapitaValue, 0)),
+      cents(snapshot.regions.reduce((total, region) => total + region.perCapitaValue, 0)),
+      `payments with a population denominator for ${snapshot.year}`,
+    );
+  }
 });

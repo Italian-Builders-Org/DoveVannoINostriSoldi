@@ -39,6 +39,15 @@ export function istatCodeOfRegion(regionName: string): string | null {
   return ISTAT_CODE_BY_REGION_NAME[regionName] ?? null;
 }
 
+/**
+ * CPT represents Trento and Bolzano as two autonomous territories (codes 21
+ * and 22), so the single SIOPE regional row cannot link to one CPT anchor.
+ */
+export function cptRegionAnchorOf(regionName: string): string | null {
+  const code = istatCodeOfRegion(regionName);
+  return code && code !== "04" ? `regione-${code}` : null;
+}
+
 export const ITALY_MACRO_AREAS = ["Nord", "Centro", "Sud e Isole"] as const;
 
 export type ItalyMacroArea = (typeof ITALY_MACRO_AREAS)[number];
@@ -86,6 +95,7 @@ export function macroAreaOf(regionName: string): ItalyMacroArea | null {
 export type ItalyMacroAreaSummary = {
   area: ItalyMacroArea;
   value: number;
+  perCapitaValue: number;
   population: number | null;
   perCapita: number | null;
   municipalities: number;
@@ -98,11 +108,15 @@ function summarizeRegionGroup(
   regions: SiopeRegionPoint[],
 ): ItalyMacroAreaSummary {
   const value = regions.reduce((total, region) => total + region.value, 0);
-  const population = regions.reduce<number | null>(
-    (total, region) =>
-      region.population === null ? total : (total ?? 0) + region.population,
-    null,
+  const perCapitaValue = regions.reduce(
+    (total, region) => total + region.perCapitaValue,
+    0,
   );
+  const coveredPopulation = regions.reduce(
+    (total, region) => total + (region.population ?? 0),
+    0,
+  );
+  const population = coveredPopulation > 0 ? coveredPopulation : null;
   const municipalities = regions.reduce((total, region) => total + region.municipalities, 0);
   const municipalitiesWithPopulation = regions.reduce(
     (total, region) => total + region.municipalitiesWithPopulation,
@@ -111,8 +125,9 @@ function summarizeRegionGroup(
   return {
     area,
     value,
+    perCapitaValue,
     population,
-    perCapita: population ? value / population : null,
+    perCapita: population ? perCapitaValue / population : null,
     municipalities,
     municipalitiesWithPopulation,
   };

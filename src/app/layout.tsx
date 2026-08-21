@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
 import { Navigation } from "@/components/navigation";
+import { REPO_URL } from "@/lib/site";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import "./design-system.css";
 import "./globals.css";
@@ -51,12 +52,7 @@ export default function RootLayout({
             <span>Ultimo controllo dei dati: {lastCheckedLabel}</span>
             <span>Dati pubblici, liberi da riusare</span>
             <span className="footer-spacer" />
-            <a
-              className="footer-link"
-              href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className="footer-link" href={REPO_URL} target="_blank" rel="noreferrer">
               Codice su GitHub ↗
             </a>
             <a className="footer-link" href="/mcp">MCP</a>
@@ -66,8 +62,6 @@ export default function RootLayout({
             <a href="https://x.com/fragiannicola" target="_blank" rel="noreferrer">@fragiannicola</a>
             <span aria-hidden="true">·</span>
             <a href="https://x.com/dom_gag_96" target="_blank" rel="noreferrer">@dom_gag_96</a>
-            <span className="footer-spacer" />
-            <span>Progetto civico indipendente, open source</span>
           </div>
         </footer>
       </body>

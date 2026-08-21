@@ -1,10 +1,9 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
-import { groupRegionsByMacroArea, istatCodeOfRegion } from "@/lib/italy-regions";
+import { cptRegionAnchorOf, groupRegionsByMacroArea } from "@/lib/italy-regions";
 import {
   availableSiopeYears,
   getSiopeMunicipalSnapshot,
@@ -76,57 +75,59 @@ export default async function TerritoriesPage({
                   <th scope="col" className="num">Comuni nel rapporto</th>
                 </tr>
               </thead>
-              <tbody>
-                {regionsByArea.map(({ area, regions: areaRegions, summary }) => (
-                  <Fragment key={area}>
-                    <tr className={styles.areaRow}>
-                      <th scope="rowgroup">{area}</th>
-                      <td className="num">
-                        {summary.perCapita === null ? "n.d." : exactEuro(summary.perCapita)}
-                      </td>
-                      <td className="num">{compactEuroLike(summary.value, regionScale)}</td>
-                      <td className="num">
-                        {summary.population === null ? "n.d." : integer(summary.population)}
-                      </td>
-                      <td className="num">
-                        {integer(summary.municipalitiesWithPopulation)} /{" "}
-                        {integer(summary.municipalities)}
-                      </td>
-                    </tr>
-                    {areaRegions.map((region) => {
-                      const istatCode = istatCodeOfRegion(region.region);
-                      return (
-                        <tr key={region.region}>
-                          <th scope="row">
-                            {istatCode ? (
-                              <Link href={`/territori/fisco#regione-${istatCode}`}>
-                                {region.region}
-                              </Link>
-                            ) : (
-                              region.region
-                            )}
-                          </th>
-                          <td className="num">
-                            {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
-                          </td>
-                          <td className="num">{compactEuroLike(region.value, regionScale)}</td>
-                          <td className="num">
-                            {region.population === null ? "n.d." : integer(region.population)}
-                          </td>
-                          <td className="num">
-                            {integer(region.municipalitiesWithPopulation)} /{" "}
-                            {integer(region.municipalities)}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </Fragment>
-                ))}
-              </tbody>
+              {regionsByArea.map(({ area, regions: areaRegions, summary }) => (
+                <tbody key={area}>
+                  <tr className={styles.areaRow}>
+                    <th scope="rowgroup">{area}</th>
+                    <td className="num">
+                      {summary.perCapita === null ? "n.d." : exactEuro(summary.perCapita)}
+                    </td>
+                    <td className="num">{compactEuroLike(summary.value, regionScale)}</td>
+                    <td className="num">
+                      {summary.population === null ? "n.d." : integer(summary.population)}
+                    </td>
+                    <td className="num">
+                      {integer(summary.municipalitiesWithPopulation)} /{" "}
+                      {integer(summary.municipalities)}
+                    </td>
+                  </tr>
+                  {areaRegions.map((region) => {
+                    const cptAnchor = cptRegionAnchorOf(region.region);
+                    return (
+                      <tr key={region.region}>
+                        <th scope="row">
+                          {cptAnchor ? (
+                            <Link href={`/territori/fisco#${cptAnchor}`}>
+                              {region.region}
+                            </Link>
+                          ) : (
+                            region.region
+                          )}
+                        </th>
+                        <td className="num">
+                          {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
+                        </td>
+                        <td className="num">{compactEuroLike(region.value, regionScale)}</td>
+                        <td className="num">
+                          {region.population === null ? "n.d." : integer(region.population)}
+                        </td>
+                        <td className="num">
+                          {integer(region.municipalitiesWithPopulation)} /{" "}
+                          {integer(region.municipalities)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              ))}
             </table>
           </div>
           <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
           <p className={styles.note}>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
+          <p className={styles.note}>
+            Nei CPT, Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE
+            aggregato del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
+          </p>
         </section>
 
         <div className={styles.aside}>

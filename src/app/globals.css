@@ -228,6 +228,14 @@ main td a:not(.btn) {
   border-color: var(--color-accent);
   color: var(--color-accent-700);
 }
+/* Icon-only action: a square the same height as its lettered siblings. */
+.header-action-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  padding-inline: 0;
+}
+.header-action-icon:hover { color: var(--color-accent-700); }
 
 /* ── primary navigation ─────────────────────────────────────────────────── */
 

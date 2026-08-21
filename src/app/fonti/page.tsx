@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { shortDate } from "@/lib/format";
+import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
 import { publicSources, sourceCounts } from "@/lib/sources";
 import styles from "./fonti.module.css";
@@ -96,11 +97,7 @@ export default function SourcesPage() {
           <p>
             Ogni dato mantiene le condizioni di riuso indicate dalla fonte che lo pubblica. Il
             codice di questa piattaforma è open source su{" "}
-            <a
-              href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={REPO_URL} target="_blank" rel="noreferrer">
               GitHub
             </a>
             .

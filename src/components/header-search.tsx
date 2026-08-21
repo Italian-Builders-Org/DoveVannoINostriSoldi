@@ -31,19 +31,22 @@ export function HeaderSearch() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const rootRef = useRef<HTMLFormElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     const trimmed = query.trim();
+    const requestId = ++requestIdRef.current;
+    abortRef.current?.abort();
+
     if (trimmed.length < MIN_QUERY_LENGTH) {
-      abortRef.current?.abort();
       return;
     }
 
     const timer = setTimeout(() => {
-      abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
       setLoading(true);
@@ -51,11 +54,14 @@ export function HeaderSearch() {
       fetch(`/api/enti?q=${encodeURIComponent(trimmed)}&limit=7`, {
         signal: controller.signal,
       })
-        .then((response) => response.json() as Promise<EntiSearchResponse>)
+        .then((response) => {
+          if (!response.ok) throw new Error(`Ricerca IPA HTTP ${response.status}`);
+          return response.json() as Promise<EntiSearchResponse>;
+        })
         .then((payload) => {
+          if (requestId !== requestIdRef.current) return;
           if (!payload.ok || !payload.records) {
-            setSuggestions([]);
-            return;
+            throw new Error("Risposta della ricerca IPA non valida");
           }
           setSuggestions(
             payload.records.map((record) => ({
@@ -65,26 +71,33 @@ export function HeaderSearch() {
             })),
           );
           setActiveIndex(-1);
+          setSearchError(false);
         })
         .catch((error: unknown) => {
           if (error instanceof DOMException && error.name === "AbortError") return;
+          if (requestId !== requestIdRef.current) return;
           setSuggestions([]);
+          setActiveIndex(-1);
+          setSearchError(true);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          if (requestId === requestIdRef.current) setLoading(false);
+        });
     }, DEBOUNCE_MS);
 
     return () => {
       clearTimeout(timer);
       abortRef.current?.abort();
+      if (requestId === requestIdRef.current) requestIdRef.current += 1;
     };
   }, [query]);
 
   useEffect(() => {
-    function handlePointerDown(event: MouseEvent) {
+    function handlePointerDown(event: PointerEvent) {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     }
-    document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
   const showDropdown = open && query.trim().length >= MIN_QUERY_LENGTH;
@@ -95,6 +108,12 @@ export function HeaderSearch() {
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Escape") {
+      setOpen(false);
+      setActiveIndex(-1);
+      return;
+    }
+
     if (!showDropdown || suggestions.length === 0) return;
 
     if (event.key === "ArrowDown") {
@@ -108,8 +127,6 @@ export function HeaderSearch() {
         event.preventDefault();
         goToSuggestion(suggestions[activeIndex]);
       }
-    } else if (event.key === "Escape") {
-      setOpen(false);
     }
   }
 
@@ -133,34 +150,52 @@ export function HeaderSearch() {
         autoComplete="off"
         value={query}
         onChange={(event) => {
-          setQuery(event.target.value);
+          const nextQuery = event.target.value;
+          abortRef.current?.abort();
+          setQuery(nextQuery);
+          setSuggestions([]);
+          setActiveIndex(-1);
+          setSearchError(false);
+          setLoading(nextQuery.trim().length >= MIN_QUERY_LENGTH);
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
         role="combobox"
         aria-expanded={showDropdown}
-        aria-controls={listboxId}
+        aria-controls={showDropdown ? listboxId : undefined}
         aria-autocomplete="list"
-        aria-activedescendant={activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
+        aria-activedescendant={
+          showDropdown && activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined
+        }
       />
       <button type="submit" aria-label="Cerca">
         <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.7} aria-hidden="true" />
       </button>
 
       {showDropdown ? (
-        <div className="header-search-dropdown" id={listboxId} role="listbox">
-          {loading && suggestions.length === 0 ? (
-            <p className="header-search-empty">Cerco…</p>
+        <div className="header-search-dropdown">
+          {loading ? (
+            <p className="header-search-empty" role="status" aria-live="polite">
+              Cerco…
+            </p>
+          ) : searchError ? (
+            <p className="header-search-empty" role="status" aria-live="polite">
+              La ricerca rapida non è disponibile. Premi Invio per cercare nella pagina Enti.
+            </p>
           ) : suggestions.length === 0 ? (
-            <p className="header-search-empty">Nessun risultato in IPA per &ldquo;{query.trim()}&rdquo;</p>
-          ) : (
-            suggestions.map((suggestion, index) => (
+            <p className="header-search-empty" role="status" aria-live="polite">
+              Nessun risultato in IPA per &ldquo;{query.trim()}&rdquo;
+            </p>
+          ) : null}
+          <div id={listboxId} role="listbox" aria-label="Enti suggeriti" aria-busy={loading}>
+            {suggestions.map((suggestion, index) => (
               <Link
                 key={suggestion.codiceIpa}
                 href={`/enti/${encodeURIComponent(suggestion.codiceIpa)}`}
                 id={`${listboxId}-${index}`}
                 role="option"
+                tabIndex={-1}
                 aria-selected={index === activeIndex}
                 className="header-search-option"
                 data-active={index === activeIndex ? "true" : undefined}
@@ -172,8 +207,8 @@ export function HeaderSearch() {
                   <span className="header-search-option-type">{suggestion.tipologia}</span>
                 ) : null}
               </Link>
-            ))
-          )}
+            ))}
+          </div>
           <Link
             href={`/enti?q=${encodeURIComponent(query.trim())}`}
             className="header-search-all"

@@ -93,7 +93,7 @@ export default async function TerritoriesPage({
         </section>
 
         <div className={styles.aside}>
-          <section className="panel">
+          <section className="panel" data-municipality-ranking="per-capita">
             <h2 className="panel-title">I {topByPerCapita.length} Comuni con più pagamenti per abitante</h2>
             <div className="table-scroll" role="region" aria-label="Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
               <table className="table">
@@ -109,6 +109,9 @@ export default async function TerritoriesPage({
                     <tr key={municipality.codiceFiscale}>
                       <th scope="row">
                         {municipalityName(municipality.name)}
+                        <small>
+                          {municipality.province} · {municipality.region}
+                        </small>
                         <small>
                           {municipality.population === null
                             ? "abitanti non disponibili"

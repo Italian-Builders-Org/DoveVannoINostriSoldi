@@ -29,6 +29,9 @@ export function ItalyRegionsMap({
   aside?: React.ReactNode;
 }) {
   const [selectedCode, setSelectedCode] = useState("03");
+  const [hoveredCode, setHoveredCode] = useState<string | null>(null);
+  const [focusedCode, setFocusedCode] = useState<string | null>(null);
+  const [selectionLocked, setSelectionLocked] = useState(false);
   const [automaticSelection, setAutomaticSelection] = useState<"ip" | null>(null);
   const userSelected = useRef(false);
   const regionPathRefs = useRef(new Map<string, SVGPathElement>());
@@ -72,12 +75,27 @@ export function ItalyRegionsMap({
 
   function selectRegion(code: string) {
     userSelected.current = true;
+    setSelectionLocked(true);
     setAutomaticSelection(null);
+    setFocusedCode(code);
+    setHoveredCode(null);
     setSelectedCode(code);
   }
 
-  const selected = byCode.get(selectedCode);
+  function previewRegion(code: string) {
+    setHoveredCode(code);
+  }
+
+  function clearPreview(code: string) {
+    setHoveredCode((current) => (current === code ? null : current));
+  }
+
+  const displayedCode = selectionLocked ? selectedCode : hoveredCode ?? selectedCode;
+  const selected = byCode.get(displayedCode);
   const navigableCodes: string[] = italyRegionGeometry.map(({ code }) => code);
+  const outlinedCodes = [selectedCode, hoveredCode].filter(
+    (code, index, codes): code is string => code !== null && codes.indexOf(code) === index,
+  );
 
   function handleRegionKeyDown(event: React.KeyboardEvent<SVGPathElement>, code: string) {
     if (event.key === "Enter" || event.key === " ") {
@@ -101,7 +119,8 @@ export function ItalyRegionsMap({
     if (nextIndex === null) return;
     event.preventDefault();
     const nextCode = navigableCodes[nextIndex];
-    selectRegion(nextCode);
+    setFocusedCode(nextCode);
+    previewRegion(nextCode);
     regionPathRefs.current.get(nextCode)?.focus();
   }
 
@@ -119,18 +138,21 @@ export function ItalyRegionsMap({
           className={styles.map}
           viewBox={ITALY_REGIONS_VIEWBOX}
           role="group"
+          data-region-map="true"
           aria-labelledby="regional-map-title regional-map-description"
         >
           <title id="regional-map-title">Pagamenti comunali per abitante coperto, per regione</title>
           <desc id="regional-map-description">
             Mappa regionale colorata in base ai pagamenti di cassa SIOPE dei Comuni. Usa Tab per
-            entrare nella mappa e i tasti freccia per cambiare regione; il valore esatto appare nel
-            pannello accanto.
+            entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione
+            per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
           </desc>
           {italyRegionGeometry.map((geometry) => {
             const region = byCode.get(geometry.code);
             const colorLevel = level(region?.perCapita ?? null);
-            const active = selectedCode === geometry.code;
+            const selected = selectedCode === geometry.code;
+            const focusable = (focusedCode ?? selectedCode) === geometry.code;
+            const hovered = hoveredCode === geometry.code;
             return (
               <path
                 ref={(node) => {
@@ -141,19 +163,44 @@ export function ItalyRegionsMap({
                 d={geometry.path}
                 className={`${styles.region} ${
                   colorLevel === null ? styles.noData : styles[`level${colorLevel}`]
-                } ${active ? styles.active : ""}`}
-                tabIndex={active ? 0 : -1}
+                }`}
+                tabIndex={focusable ? 0 : -1}
                 role="button"
-                aria-pressed={active}
+                aria-pressed={selected}
                 aria-label={`${REGION_NAME_BY_ISTAT_CODE[geometry.code]}: ${
                   region?.perCapita === null || region?.perCapita === undefined
                     ? "dato non disponibile"
                     : `${exactEuro(region.perCapita)} per abitante coperto`
                 }`}
-                onPointerEnter={() => selectRegion(geometry.code)}
-                onFocus={() => selectRegion(geometry.code)}
+                data-hovered={hovered ? "true" : undefined}
+                data-selected={selected ? "true" : undefined}
+                onPointerEnter={() => previewRegion(geometry.code)}
+                onPointerLeave={() => clearPreview(geometry.code)}
+                onFocus={() => {
+                  setFocusedCode(geometry.code);
+                  previewRegion(geometry.code);
+                }}
+                onBlur={() => clearPreview(geometry.code)}
                 onClick={() => selectRegion(geometry.code)}
                 onKeyDown={(event) => handleRegionKeyDown(event, geometry.code)}
+              />
+            );
+          })}
+          {outlinedCodes.map((code) => {
+            const geometry = italyRegionGeometry.find((item) => item.code === code);
+            if (!geometry) return null;
+            const isSelected = code === selectedCode;
+            const isHovered = code === hoveredCode;
+            return (
+              <path
+                key={`outline-${code}`}
+                d={geometry.path}
+                className={`${styles.outline} ${isSelected ? styles.selectedOutline : ""} ${
+                  isHovered ? styles.hoverOutline : ""
+                }`}
+                aria-hidden="true"
+                focusable="false"
+                pointerEvents="none"
               />
             );
           })}
@@ -196,7 +243,7 @@ export function ItalyRegionsMap({
 
       {aside ? <div className={styles.asideColumn}>{aside}</div> : null}
 
-      <div className={styles.detail} aria-live="polite">
+      <div className={styles.detail} data-region-detail="true" aria-live="polite">
         <b>{selected?.region ?? "Dato non disponibile"}</b>
         <span>
           <small>Totale</small>

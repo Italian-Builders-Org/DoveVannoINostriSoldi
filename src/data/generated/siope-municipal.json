@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "generatedAt": "2026-08-21T03:31:16+00:00",
+  "schemaVersion": 3,
+  "generatedAt": "2026-08-21T11:34:54+00:00",
   "scope": "municipalities",
   "year": 2026,
   "latestMonth": 8,
@@ -293,6 +293,7 @@
     {
       "name": "ROMA CAPITALE",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "02438750586",
       "population": 2751747,
       "value": 4868753534.45,
@@ -301,6 +302,7 @@
     {
       "name": "COMUNE DI MILANO",
       "region": "Lombardia",
+      "province": "Milano",
       "codiceFiscale": "01199250158",
       "population": 1371499,
       "value": 3139192280.58,
@@ -309,6 +311,7 @@
     {
       "name": "COMUNE DI NAPOLI",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "80014890638",
       "population": 913704,
       "value": 1246016360.89,
@@ -317,6 +320,7 @@
     {
       "name": "COMUNE DI TORINO",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "00514490010",
       "population": 851199,
       "value": 1145435497.51,
@@ -325,6 +329,7 @@
     {
       "name": "COMUNE DI GENOVA",
       "region": "Liguria",
+      "province": "Genova",
       "codiceFiscale": "00856930102",
       "population": 562422,
       "value": 979007371.18,
@@ -333,6 +338,7 @@
     {
       "name": "COMUNE DI VENEZIA",
       "region": "Veneto",
+      "province": "Venezia",
       "codiceFiscale": "00339370272",
       "population": 250290,
       "value": 848000169.35,
@@ -341,6 +347,7 @@
     {
       "name": "COMUNE DI BOLOGNA",
       "region": "Emilia-Romagna",
+      "province": "Bologna",
       "codiceFiscale": "01232710374",
       "population": 390098,
       "value": 775249659.99,
@@ -349,6 +356,7 @@
     {
       "name": "COMUNE DI FIRENZE",
       "region": "Toscana",
+      "province": "Firenze",
       "codiceFiscale": "01307110484",
       "population": 362613,
       "value": 728294504.97,
@@ -357,6 +365,7 @@
     {
       "name": "COMUNE DI MESSINA",
       "region": "Sicilia",
+      "province": "Messina",
       "codiceFiscale": "00080270838",
       "population": 217959,
       "value": 607220140.01,
@@ -365,6 +374,7 @@
     {
       "name": "COMUNE DI PALERMO",
       "region": "Sicilia",
+      "province": "Palermo",
       "codiceFiscale": "80016350821",
       "population": 630427,
       "value": 551685282.84,
@@ -373,6 +383,7 @@
     {
       "name": "COMUNE DI BARI",
       "region": "Puglia",
+      "province": "Bari",
       "codiceFiscale": "80015010723",
       "population": 316226,
       "value": 501924463.74,
@@ -381,6 +392,7 @@
     {
       "name": "COMUNE DI CATANIA",
       "region": "Sicilia",
+      "province": "Catania",
       "codiceFiscale": "00137020871",
       "population": 298680,
       "value": 393892253.52,
@@ -389,6 +401,7 @@
     {
       "name": "COMUNE DI PADOVA",
       "region": "Veneto",
+      "province": "Padova",
       "codiceFiscale": "00644060287",
       "population": 207502,
       "value": 367888998.81,
@@ -397,6 +410,7 @@
     {
       "name": "COMUNE DI TARANTO",
       "region": "Puglia",
+      "province": "Taranto",
       "codiceFiscale": "80008750731",
       "population": 187025,
       "value": 354017329.58,
@@ -405,6 +419,7 @@
     {
       "name": "COMUNE DI BRESCIA",
       "region": "Lombardia",
+      "province": "Brescia",
       "codiceFiscale": "00761890177",
       "population": 198259,
       "value": 324459688.16,
@@ -413,6 +428,7 @@
     {
       "name": "COMUNE DI VERONA",
       "region": "Veneto",
+      "province": "Verona",
       "codiceFiscale": "00215150236",
       "population": 255298,
       "value": 318529220.51,
@@ -421,6 +437,7 @@
     {
       "name": "COMUNE DI BOLZANO",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Bolzano - Bozen",
       "codiceFiscale": "00389240219",
       "population": 106357,
       "value": 306730503.03,
@@ -429,6 +446,7 @@
     {
       "name": "COMUNE DI TRIESTE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Trieste",
       "codiceFiscale": "00210240321",
       "population": 198843,
       "value": 285757192.6,
@@ -437,6 +455,7 @@
     {
       "name": "COMUNE DI CAGLIARI",
       "region": "Sardegna",
+      "province": "Cagliari",
       "codiceFiscale": "00147990923",
       "population": 147411,
       "value": 243088910.3,
@@ -445,6 +464,7 @@
     {
       "name": "COMUNE DI PARMA",
       "region": "Emilia-Romagna",
+      "province": "Parma",
       "codiceFiscale": "00162210348",
       "population": 198121,
       "value": 228311495.31,
@@ -453,6 +473,7 @@
     {
       "name": "COMUNE DI L'AQUILA",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "80002270660",
       "population": 69717,
       "value": 225877862.5,
@@ -461,6 +482,7 @@
     {
       "name": "COMUNE DI MODENA",
       "region": "Emilia-Romagna",
+      "province": "Modena",
       "codiceFiscale": "00221940364",
       "population": 184597,
       "value": 207321360.36,
@@ -469,6 +491,7 @@
     {
       "name": "COMUNE DI RIMINI",
       "region": "Emilia-Romagna",
+      "province": "Rimini",
       "codiceFiscale": "00304260409",
       "population": 150046,
       "value": 204041303.29,
@@ -477,6 +500,7 @@
     {
       "name": "COMUNE DI CORIGLIANO-ROSSANO",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "03557570789",
       "population": 74268,
       "value": 199457280.53,
@@ -485,6 +509,7 @@
     {
       "name": "COMUNE DI ANCONA",
       "region": "Marche",
+      "province": "Ancona",
       "codiceFiscale": "00351040423",
       "population": 99377,
       "value": 196879670.6,
@@ -493,6 +518,7 @@
     {
       "name": "COMUNE DI BERGAMO",
       "region": "Lombardia",
+      "province": "Bergamo",
       "codiceFiscale": "80034840167",
       "population": 120157,
       "value": 196357433.94,
@@ -501,6 +527,7 @@
     {
       "name": "COMUNE DI TRENTO",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Trento",
       "codiceFiscale": "00355870221",
       "population": 118504,
       "value": 193611779.62,
@@ -509,6 +536,7 @@
     {
       "name": "COMUNE DI ALESSANDRIA",
       "region": "Piemonte",
+      "province": "Alessandria",
       "codiceFiscale": "00429440068",
       "population": 91854,
       "value": 188799903.87,
@@ -517,6 +545,7 @@
     {
       "name": "COMUNE DI REGGIO DI CALABRIA",
       "region": "Calabria",
+      "province": "Reggio di Calabria",
       "codiceFiscale": "00136380805",
       "population": 169679,
       "value": 185301503.79,
@@ -525,6 +554,7 @@
     {
       "name": "COMUNE DI PERUGIA",
       "region": "Umbria",
+      "province": "Perugia",
       "codiceFiscale": "00163570542",
       "population": 162099,
       "value": 183024820.59,
@@ -533,6 +563,7 @@
     {
       "name": "COMUNE DI PRATO",
       "region": "Toscana",
+      "province": "Prato",
       "codiceFiscale": "84006890481",
       "population": 197088,
       "value": 182494323.01,
@@ -541,6 +572,7 @@
     {
       "name": "COMUNE DI SALERNO",
       "region": "Campania",
+      "province": "Salerno",
       "codiceFiscale": "80000330656",
       "population": 126715,
       "value": 181409754.16,
@@ -549,6 +581,7 @@
     {
       "name": "COMUNE DI REGGIO NELL'EMILIA",
       "region": "Emilia-Romagna",
+      "province": "Reggio nell'Emilia",
       "codiceFiscale": "00145920351",
       "population": 171207,
       "value": 180647741.41,
@@ -557,6 +590,7 @@
     {
       "name": "COMUNE DI LIVORNO",
       "region": "Toscana",
+      "province": "Livorno",
       "codiceFiscale": "00104330493",
       "population": 153418,
       "value": 175375570.05,
@@ -565,6 +599,7 @@
     {
       "name": "COMUNE DI RAVENNA",
       "region": "Emilia-Romagna",
+      "province": "Ravenna",
       "codiceFiscale": "00354730392",
       "population": 156304,
       "value": 174398740.46,
@@ -573,6 +608,7 @@
     {
       "name": "COMUNE DI UDINE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Udine",
       "codiceFiscale": "00168650307",
       "population": 98304,
       "value": 169928730.38,
@@ -581,6 +617,7 @@
     {
       "name": "COMUNE DI FERRARA",
       "region": "Emilia-Romagna",
+      "province": "Ferrara",
       "codiceFiscale": "00297110389",
       "population": 129391,
       "value": 166472637.51,
@@ -589,6 +626,7 @@
     {
       "name": "COMUNE DI CATANZARO",
       "region": "Calabria",
+      "province": "Catanzaro",
       "codiceFiscale": "00129520797",
       "population": 84109,
       "value": 162851957.33,
@@ -597,6 +635,7 @@
     {
       "name": "COMUNE DI COSENZA",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "00347720781",
       "population": 63701,
       "value": 156231516.63,
@@ -605,6 +644,7 @@
     {
       "name": "COMUNE DI SASSARI",
       "region": "Sardegna",
+      "province": "Sassari",
       "codiceFiscale": "00239740905",
       "population": 121085,
       "value": 151583109.01,
@@ -613,6 +653,7 @@
     {
       "name": "COMUNE DI LECCE",
       "region": "Puglia",
+      "province": "Lecce",
       "codiceFiscale": "80008510754",
       "population": 94250,
       "value": 149928503.29,
@@ -621,6 +662,7 @@
     {
       "name": "COMUNE DI PISA",
       "region": "Toscana",
+      "province": "Pisa",
       "codiceFiscale": "00341620508",
       "population": 89117,
       "value": 146758258.73,
@@ -629,6 +671,7 @@
     {
       "name": "COMUNE DI FIUMICINO",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "97086740582",
       "population": 82481,
       "value": 142202249.31,
@@ -637,6 +680,7 @@
     {
       "name": "COMUNE DI FOGGIA",
       "region": "Puglia",
+      "province": "Foggia",
       "codiceFiscale": "00363460718",
       "population": 145652,
       "value": 137837524.22,
@@ -645,6 +689,7 @@
     {
       "name": "COMUNE DI VICENZA",
       "region": "Veneto",
+      "province": "Vicenza",
       "codiceFiscale": "00516890241",
       "population": 110299,
       "value": 134975436.76,
@@ -653,6 +698,7 @@
     {
       "name": "COMUNE DI RICCIONE",
       "region": "Emilia-Romagna",
+      "province": "Rimini",
       "codiceFiscale": "00324360403",
       "population": 34465,
       "value": 134164250.96,
@@ -661,6 +707,7 @@
     {
       "name": "COMUNE DI PIACENZA",
       "region": "Emilia-Romagna",
+      "province": "Piacenza",
       "codiceFiscale": "00229080338",
       "population": 102887,
       "value": 130796224.95,
@@ -669,6 +716,7 @@
     {
       "name": "COMUNE DI MONZA",
       "region": "Lombardia",
+      "province": "MONZA - BRIANZA",
       "codiceFiscale": "02030880153",
       "population": 122883,
       "value": 130769279.22,
@@ -677,6 +725,7 @@
     {
       "name": "COMUNE DI NOVARA",
       "region": "Piemonte",
+      "province": "Novara",
       "codiceFiscale": "00125680033",
       "population": 102187,
       "value": 123261211.46,
@@ -685,6 +734,7 @@
     {
       "name": "COMUNE DI MACERATA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "80001650433",
       "population": 40538,
       "value": 121895723.24,
@@ -693,6 +743,7 @@
     {
       "name": "COMUNE DI LECCO",
       "region": "Lombardia",
+      "province": "Lecco",
       "codiceFiscale": "00623530136",
       "population": 47125,
       "value": 117142168.45,
@@ -701,6 +752,7 @@
     {
       "name": "COMUNE DI FORLI'",
       "region": "Emilia-Romagna",
+      "province": "Forli'-Cesena",
       "codiceFiscale": "00606620409",
       "population": 117050,
       "value": 116795115.45,
@@ -709,6 +761,7 @@
     {
       "name": "COMUNE DI PESCARA",
       "region": "Abruzzo",
+      "province": "Pescara",
       "codiceFiscale": "00124600685",
       "population": 118461,
       "value": 115551479.08,
@@ -717,6 +770,7 @@
     {
       "name": "COMUNE DI LATINA",
       "region": "Lazio",
+      "province": "Latina",
       "codiceFiscale": "00097020598",
       "population": 127859,
       "value": 113172920.52,
@@ -725,6 +779,7 @@
     {
       "name": "COMUNE DI PESARO",
       "region": "Marche",
+      "province": "Pesaro Urbino",
       "codiceFiscale": "00272430414",
       "population": 95392,
       "value": 112953245.34,
@@ -733,6 +788,7 @@
     {
       "name": "COMUNE DI POZZUOLI",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "00508900636",
       "population": 76255,
       "value": 110458983.13,
@@ -741,6 +797,7 @@
     {
       "name": "COMUNE DI SIRACUSA",
       "region": "Sicilia",
+      "province": "Siracusa",
       "codiceFiscale": "80001010893",
       "population": 116247,
       "value": 106296502.55,
@@ -749,6 +806,7 @@
     {
       "name": "COMUNE DI POMEZIA",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "02298490588",
       "population": 64451,
       "value": 105061996.57,
@@ -757,6 +815,7 @@
     {
       "name": "COMUNE DI ASCOLI PICENO",
       "region": "Marche",
+      "province": "Ascoli Piceno",
       "codiceFiscale": "00229010442",
       "population": 45448,
       "value": 101510391.35,
@@ -765,6 +824,7 @@
     {
       "name": "COMUNE DI LUCCA",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00378210462",
       "population": 89234,
       "value": 98961765.65,
@@ -773,6 +833,7 @@
     {
       "name": "COMUNE DI PORDENONE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Pordenone",
       "codiceFiscale": "80002150938",
       "population": 52147,
       "value": 97630657.69,
@@ -781,6 +842,7 @@
     {
       "name": "COMUNE DI TREVISO",
       "region": "Veneto",
+      "province": "Treviso",
       "codiceFiscale": "80007310263",
       "population": 85322,
       "value": 96667741.6,
@@ -789,6 +851,7 @@
     {
       "name": "COMUNE DI AREZZO",
       "region": "Toscana",
+      "province": "Arezzo",
       "codiceFiscale": "00176820512",
       "population": 96330,
       "value": 96608904.66,
@@ -797,6 +860,7 @@
     {
       "name": "COMUNE DI CESENA",
       "region": "Emilia-Romagna",
+      "province": "Forli'-Cesena",
       "codiceFiscale": "00143280402",
       "population": 96066,
       "value": 95055799.65,
@@ -805,6 +869,7 @@
     {
       "name": "COMUNE DI SANREMO",
       "region": "Liguria",
+      "province": "Imperia",
       "codiceFiscale": "00253750087",
       "population": 52992,
       "value": 94842898.65,
@@ -813,6 +878,7 @@
     {
       "name": "COMUNE DI BRINDISI",
       "region": "Puglia",
+      "province": "Brindisi",
       "codiceFiscale": "80000250748",
       "population": 82298,
       "value": 94685192.24,
@@ -821,6 +887,7 @@
     {
       "name": "COMUNE DI PISTOIA",
       "region": "Toscana",
+      "province": "Pistoia",
       "codiceFiscale": "00108690470",
       "population": 89054,
       "value": 94039283.04,
@@ -829,6 +896,7 @@
     {
       "name": "COMUNE DI OLBIA",
       "region": "Sardegna",
+      "province": "Gallura Nord-Est Sardegna",
       "codiceFiscale": "91008330903",
       "population": 61481,
       "value": 93065110.94,
@@ -837,6 +905,7 @@
     {
       "name": "COMUNE DI LA SPEZIA",
       "region": "Liguria",
+      "province": "La Spezia",
       "codiceFiscale": "00211160114",
       "population": 92696,
       "value": 92588450.49,
@@ -845,6 +914,7 @@
     {
       "name": "COMUNE DI GROSSETO",
       "region": "Toscana",
+      "province": "Grosseto",
       "codiceFiscale": "00082520537",
       "population": 81482,
       "value": 92225027.48,
@@ -853,6 +923,7 @@
     {
       "name": "COMUNE DI SIENA",
       "region": "Toscana",
+      "province": "Siena",
       "codiceFiscale": "00050800523",
       "population": 52833,
       "value": 91429257.38,
@@ -861,6 +932,7 @@
     {
       "name": "COMUNE DI MASSA",
       "region": "Toscana",
+      "province": "Massa-Carrara",
       "codiceFiscale": "00181760455",
       "population": 65992,
       "value": 89953062.4,
@@ -869,6 +941,7 @@
     {
       "name": "COMUNE DI TERNI",
       "region": "Umbria",
+      "province": "Terni",
       "codiceFiscale": "00175660554",
       "population": 106436,
       "value": 89535999.34,
@@ -877,6 +950,7 @@
     {
       "name": "COMUNE DI MANTOVA",
       "region": "Lombardia",
+      "province": "Mantova",
       "codiceFiscale": "00189800204",
       "population": 49044,
       "value": 87388340.03,
@@ -885,6 +959,7 @@
     {
       "name": "COMUNE DI FERMO",
       "region": "Marche",
+      "province": "FERMO",
       "codiceFiscale": "00334990447",
       "population": 35842,
       "value": 87069786.5,
@@ -893,6 +968,7 @@
     {
       "name": "COMUNE DI VARESE",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00441340122",
       "population": 78818,
       "value": 86573158.48,
@@ -901,6 +977,7 @@
     {
       "name": "COMUNE DI LAMEZIA TERME",
       "region": "Calabria",
+      "province": "Catanzaro",
       "codiceFiscale": "00301390795",
       "population": 67246,
       "value": 86506727.46,
@@ -909,6 +986,7 @@
     {
       "name": "COMUNE DI COMO",
       "region": "Lombardia",
+      "province": "Como",
       "codiceFiscale": "80005370137",
       "population": 83586,
       "value": 84341258.66,
@@ -917,6 +995,7 @@
     {
       "name": "COMUNE DI VIAREGGIO",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00274950468",
       "population": 60755,
       "value": 82900113.98,
@@ -925,6 +1004,7 @@
     {
       "name": "COMUNE DI GALLARATE",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00560180127",
       "population": 52963,
       "value": 82779847.18,
@@ -933,6 +1013,7 @@
     {
       "name": "COMUNE DI GIUGLIANO IN CAMPANIA",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "80049220637",
       "population": 124209,
       "value": 81772539.33,
@@ -941,6 +1022,7 @@
     {
       "name": "COMUNE DI SANTA MARIA CAPUA VETERE",
       "region": "Campania",
+      "province": "Caserta",
       "codiceFiscale": "00136270618",
       "population": 32122,
       "value": 81094495.92,
@@ -949,6 +1031,7 @@
     {
       "name": "COMUNE DI CREMONA",
       "region": "Lombardia",
+      "province": "Cremona",
       "codiceFiscale": "00297960197",
       "population": 70675,
       "value": 80955785.2,
@@ -957,6 +1040,7 @@
     {
       "name": "COMUNE DI MAZARA DEL VALLO",
       "region": "Sicilia",
+      "province": "Trapani",
       "codiceFiscale": "82001410818",
       "population": 50029,
       "value": 80145968.42,
@@ -965,6 +1049,7 @@
     {
       "name": "COMUNE DI ANDRIA",
       "region": "Puglia",
+      "province": "Barletta Andria e Trani",
       "codiceFiscale": "81001210723",
       "population": 96941,
       "value": 80129601.7,
@@ -973,6 +1058,7 @@
     {
       "name": "COMUNE DI PAVIA",
       "region": "Lombardia",
+      "province": "Pavia",
       "codiceFiscale": "00296180185",
       "population": 71297,
       "value": 79201232.3,
@@ -981,6 +1067,7 @@
     {
       "name": "COMUNE DI BENEVENTO",
       "region": "Campania",
+      "province": "Benevento",
       "codiceFiscale": "00074270620",
       "population": 56048,
       "value": 78578865.66,
@@ -989,6 +1076,7 @@
     {
       "name": "COMUNE DI CUNEO",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00480530047",
       "population": 55914,
       "value": 78266510.59,
@@ -997,6 +1085,7 @@
     {
       "name": "COMUNE DI RAGUSA",
       "region": "Sicilia",
+      "province": "Ragusa",
       "codiceFiscale": "00180270886",
       "population": 73736,
       "value": 77520401.72,
@@ -1005,6 +1094,7 @@
     {
       "name": "COMUNE DI VITERBO",
       "region": "Lazio",
+      "province": "Viterbo",
       "codiceFiscale": "80008850564",
       "population": 66188,
       "value": 76332994.75,
@@ -1013,6 +1103,7 @@
     {
       "name": "COMUNE DI BAGHERIA",
       "region": "Sicilia",
+      "province": "Palermo",
       "codiceFiscale": "81000170829",
       "population": 53010,
       "value": 75696849.79,
@@ -1021,6 +1112,7 @@
     {
       "name": "COMUNE DI SESTO SAN GIOVANNI",
       "region": "Lombardia",
+      "province": "Milano",
       "codiceFiscale": "02253930156",
       "population": 78495,
       "value": 75428795.24,
@@ -1029,6 +1121,7 @@
     {
       "name": "COMUNE DI CARRARA",
       "region": "Toscana",
+      "province": "Massa-Carrara",
       "codiceFiscale": "00079450458",
       "population": 59757,
       "value": 74863378.75,
@@ -1037,6 +1130,7 @@
     {
       "name": "COMUNE DI QUARTU SANT'ELENA",
       "region": "Sardegna",
+      "province": "Cagliari",
       "codiceFiscale": "00288630924",
       "population": 68509,
       "value": 74692666.24,
@@ -1045,6 +1139,7 @@
     {
       "name": "COMUNE DI BUSTO ARSIZIO",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00224000125",
       "population": 83372,
       "value": 73971898.22,
@@ -1053,6 +1148,7 @@
     {
       "name": "COMUNE DI IMOLA",
       "region": "Emilia-Romagna",
+      "province": "Bologna",
       "codiceFiscale": "00794470377",
       "population": 69332,
       "value": 72198429.28,
@@ -1061,6 +1157,7 @@
     {
       "name": "COMUNE DI MARSALA",
       "region": "Sicilia",
+      "province": "Trapani",
       "codiceFiscale": "00139550818",
       "population": 79835,
       "value": 71073992.65,
@@ -1069,6 +1166,7 @@
     {
       "name": "COMUNE DI CAMAIORE",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00190560466",
       "population": 31864,
       "value": 68544112.67,
@@ -1077,6 +1175,7 @@
     {
       "name": "COMUNE DI LODI",
       "region": "Lombardia",
+      "province": "Lodi",
       "codiceFiscale": "84507570152",
       "population": 45158,
       "value": 68353290.88,
@@ -1085,6 +1184,7 @@
     {
       "name": "COMUNE DI SAN GIORGIO A CREMANO",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "01435550635",
       "population": 42096,
       "value": 68249049.56,
@@ -1095,6 +1195,7 @@
     {
       "name": "ROMA CAPITALE",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "02438750586",
       "population": 2751747,
       "value": 4868753534.45,
@@ -1103,6 +1204,7 @@
     {
       "name": "COMUNE DI MILANO",
       "region": "Lombardia",
+      "province": "Milano",
       "codiceFiscale": "01199250158",
       "population": 1371499,
       "value": 3139192280.58,
@@ -1111,6 +1213,7 @@
     {
       "name": "COMUNE DI NAPOLI",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "80014890638",
       "population": 913704,
       "value": 1246016360.89,
@@ -1119,6 +1222,7 @@
     {
       "name": "COMUNE DI TORINO",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "00514490010",
       "population": 851199,
       "value": 1145435497.51,
@@ -1127,6 +1231,7 @@
     {
       "name": "COMUNE DI GENOVA",
       "region": "Liguria",
+      "province": "Genova",
       "codiceFiscale": "00856930102",
       "population": 562422,
       "value": 979007371.18,
@@ -1135,6 +1240,7 @@
     {
       "name": "COMUNE DI VENEZIA",
       "region": "Veneto",
+      "province": "Venezia",
       "codiceFiscale": "00339370272",
       "population": 250290,
       "value": 848000169.35,
@@ -1143,6 +1249,7 @@
     {
       "name": "COMUNE DI BOLOGNA",
       "region": "Emilia-Romagna",
+      "province": "Bologna",
       "codiceFiscale": "01232710374",
       "population": 390098,
       "value": 775249659.99,
@@ -1151,6 +1258,7 @@
     {
       "name": "COMUNE DI FIRENZE",
       "region": "Toscana",
+      "province": "Firenze",
       "codiceFiscale": "01307110484",
       "population": 362613,
       "value": 728294504.97,
@@ -1159,6 +1267,7 @@
     {
       "name": "COMUNE DI MESSINA",
       "region": "Sicilia",
+      "province": "Messina",
       "codiceFiscale": "00080270838",
       "population": 217959,
       "value": 607220140.01,
@@ -1167,6 +1276,7 @@
     {
       "name": "COMUNE DI PALERMO",
       "region": "Sicilia",
+      "province": "Palermo",
       "codiceFiscale": "80016350821",
       "population": 630427,
       "value": 551685282.84,
@@ -1175,6 +1285,7 @@
     {
       "name": "COMUNE DI BARI",
       "region": "Puglia",
+      "province": "Bari",
       "codiceFiscale": "80015010723",
       "population": 316226,
       "value": 501924463.74,
@@ -1183,6 +1294,7 @@
     {
       "name": "COMUNE DI CATANIA",
       "region": "Sicilia",
+      "province": "Catania",
       "codiceFiscale": "00137020871",
       "population": 298680,
       "value": 393892253.52,
@@ -1191,6 +1303,7 @@
     {
       "name": "COMUNE DI PADOVA",
       "region": "Veneto",
+      "province": "Padova",
       "codiceFiscale": "00644060287",
       "population": 207502,
       "value": 367888998.81,
@@ -1199,6 +1312,7 @@
     {
       "name": "COMUNE DI TARANTO",
       "region": "Puglia",
+      "province": "Taranto",
       "codiceFiscale": "80008750731",
       "population": 187025,
       "value": 354017329.58,
@@ -1207,6 +1321,7 @@
     {
       "name": "COMUNE DI BRESCIA",
       "region": "Lombardia",
+      "province": "Brescia",
       "codiceFiscale": "00761890177",
       "population": 198259,
       "value": 324459688.16,
@@ -1215,6 +1330,7 @@
     {
       "name": "COMUNE DI VERONA",
       "region": "Veneto",
+      "province": "Verona",
       "codiceFiscale": "00215150236",
       "population": 255298,
       "value": 318529220.51,
@@ -1223,6 +1339,7 @@
     {
       "name": "COMUNE DI BOLZANO",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Bolzano - Bozen",
       "codiceFiscale": "00389240219",
       "population": 106357,
       "value": 306730503.03,
@@ -1231,6 +1348,7 @@
     {
       "name": "COMUNE DI TRIESTE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Trieste",
       "codiceFiscale": "00210240321",
       "population": 198843,
       "value": 285757192.6,
@@ -1239,6 +1357,7 @@
     {
       "name": "COMUNE DI CAGLIARI",
       "region": "Sardegna",
+      "province": "Cagliari",
       "codiceFiscale": "00147990923",
       "population": 147411,
       "value": 243088910.3,
@@ -1247,6 +1366,7 @@
     {
       "name": "COMUNE DI PARMA",
       "region": "Emilia-Romagna",
+      "province": "Parma",
       "codiceFiscale": "00162210348",
       "population": 198121,
       "value": 228311495.31,
@@ -1255,6 +1375,7 @@
     {
       "name": "COMUNE DI L'AQUILA",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "80002270660",
       "population": 69717,
       "value": 225877862.5,
@@ -1263,6 +1384,7 @@
     {
       "name": "COMUNE DI MODENA",
       "region": "Emilia-Romagna",
+      "province": "Modena",
       "codiceFiscale": "00221940364",
       "population": 184597,
       "value": 207321360.36,
@@ -1271,6 +1393,7 @@
     {
       "name": "COMUNE DI RIMINI",
       "region": "Emilia-Romagna",
+      "province": "Rimini",
       "codiceFiscale": "00304260409",
       "population": 150046,
       "value": 204041303.29,
@@ -1279,6 +1402,7 @@
     {
       "name": "COMUNE DI CORIGLIANO-ROSSANO",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "03557570789",
       "population": 74268,
       "value": 199457280.53,
@@ -1287,6 +1411,7 @@
     {
       "name": "COMUNE DI ANCONA",
       "region": "Marche",
+      "province": "Ancona",
       "codiceFiscale": "00351040423",
       "population": 99377,
       "value": 196879670.6,
@@ -1295,6 +1420,7 @@
     {
       "name": "COMUNE DI BERGAMO",
       "region": "Lombardia",
+      "province": "Bergamo",
       "codiceFiscale": "80034840167",
       "population": 120157,
       "value": 196357433.94,
@@ -1303,6 +1429,7 @@
     {
       "name": "COMUNE DI TRENTO",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Trento",
       "codiceFiscale": "00355870221",
       "population": 118504,
       "value": 193611779.62,
@@ -1311,6 +1438,7 @@
     {
       "name": "COMUNE DI ALESSANDRIA",
       "region": "Piemonte",
+      "province": "Alessandria",
       "codiceFiscale": "00429440068",
       "population": 91854,
       "value": 188799903.87,
@@ -1319,6 +1447,7 @@
     {
       "name": "COMUNE DI REGGIO DI CALABRIA",
       "region": "Calabria",
+      "province": "Reggio di Calabria",
       "codiceFiscale": "00136380805",
       "population": 169679,
       "value": 185301503.79,
@@ -1327,6 +1456,7 @@
     {
       "name": "COMUNE DI PERUGIA",
       "region": "Umbria",
+      "province": "Perugia",
       "codiceFiscale": "00163570542",
       "population": 162099,
       "value": 183024820.59,
@@ -1335,6 +1465,7 @@
     {
       "name": "COMUNE DI PRATO",
       "region": "Toscana",
+      "province": "Prato",
       "codiceFiscale": "84006890481",
       "population": 197088,
       "value": 182494323.01,
@@ -1343,6 +1474,7 @@
     {
       "name": "COMUNE DI SALERNO",
       "region": "Campania",
+      "province": "Salerno",
       "codiceFiscale": "80000330656",
       "population": 126715,
       "value": 181409754.16,
@@ -1351,6 +1483,7 @@
     {
       "name": "COMUNE DI REGGIO NELL'EMILIA",
       "region": "Emilia-Romagna",
+      "province": "Reggio nell'Emilia",
       "codiceFiscale": "00145920351",
       "population": 171207,
       "value": 180647741.41,
@@ -1359,6 +1492,7 @@
     {
       "name": "COMUNE DI LIVORNO",
       "region": "Toscana",
+      "province": "Livorno",
       "codiceFiscale": "00104330493",
       "population": 153418,
       "value": 175375570.05,
@@ -1367,6 +1501,7 @@
     {
       "name": "COMUNE DI RAVENNA",
       "region": "Emilia-Romagna",
+      "province": "Ravenna",
       "codiceFiscale": "00354730392",
       "population": 156304,
       "value": 174398740.46,
@@ -1375,6 +1510,7 @@
     {
       "name": "COMUNE DI UDINE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Udine",
       "codiceFiscale": "00168650307",
       "population": 98304,
       "value": 169928730.38,
@@ -1383,6 +1519,7 @@
     {
       "name": "COMUNE DI FERRARA",
       "region": "Emilia-Romagna",
+      "province": "Ferrara",
       "codiceFiscale": "00297110389",
       "population": 129391,
       "value": 166472637.51,
@@ -1391,6 +1528,7 @@
     {
       "name": "COMUNE DI CATANZARO",
       "region": "Calabria",
+      "province": "Catanzaro",
       "codiceFiscale": "00129520797",
       "population": 84109,
       "value": 162851957.33,
@@ -1399,6 +1537,7 @@
     {
       "name": "COMUNE DI COSENZA",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "00347720781",
       "population": 63701,
       "value": 156231516.63,
@@ -1407,6 +1546,7 @@
     {
       "name": "COMUNE DI SASSARI",
       "region": "Sardegna",
+      "province": "Sassari",
       "codiceFiscale": "00239740905",
       "population": 121085,
       "value": 151583109.01,
@@ -1415,6 +1555,7 @@
     {
       "name": "COMUNE DI LECCE",
       "region": "Puglia",
+      "province": "Lecce",
       "codiceFiscale": "80008510754",
       "population": 94250,
       "value": 149928503.29,
@@ -1423,6 +1564,7 @@
     {
       "name": "COMUNE DI PISA",
       "region": "Toscana",
+      "province": "Pisa",
       "codiceFiscale": "00341620508",
       "population": 89117,
       "value": 146758258.73,
@@ -1431,6 +1573,7 @@
     {
       "name": "COMUNE DI FIUMICINO",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "97086740582",
       "population": 82481,
       "value": 142202249.31,
@@ -1439,6 +1582,7 @@
     {
       "name": "COMUNE DI FOGGIA",
       "region": "Puglia",
+      "province": "Foggia",
       "codiceFiscale": "00363460718",
       "population": 145652,
       "value": 137837524.22,
@@ -1447,6 +1591,7 @@
     {
       "name": "COMUNE DI VICENZA",
       "region": "Veneto",
+      "province": "Vicenza",
       "codiceFiscale": "00516890241",
       "population": 110299,
       "value": 134975436.76,
@@ -1455,6 +1600,7 @@
     {
       "name": "COMUNE DI RICCIONE",
       "region": "Emilia-Romagna",
+      "province": "Rimini",
       "codiceFiscale": "00324360403",
       "population": 34465,
       "value": 134164250.96,
@@ -1463,6 +1609,7 @@
     {
       "name": "COMUNE DI PIACENZA",
       "region": "Emilia-Romagna",
+      "province": "Piacenza",
       "codiceFiscale": "00229080338",
       "population": 102887,
       "value": 130796224.95,
@@ -1471,6 +1618,7 @@
     {
       "name": "COMUNE DI MONZA",
       "region": "Lombardia",
+      "province": "MONZA - BRIANZA",
       "codiceFiscale": "02030880153",
       "population": 122883,
       "value": 130769279.22,
@@ -1479,6 +1627,7 @@
     {
       "name": "COMUNE DI NOVARA",
       "region": "Piemonte",
+      "province": "Novara",
       "codiceFiscale": "00125680033",
       "population": 102187,
       "value": 123261211.46,
@@ -1487,6 +1636,7 @@
     {
       "name": "COMUNE DI MACERATA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "80001650433",
       "population": 40538,
       "value": 121895723.24,
@@ -1495,6 +1645,7 @@
     {
       "name": "COMUNE DI LECCO",
       "region": "Lombardia",
+      "province": "Lecco",
       "codiceFiscale": "00623530136",
       "population": 47125,
       "value": 117142168.45,
@@ -1503,6 +1654,7 @@
     {
       "name": "COMUNE DI FORLI'",
       "region": "Emilia-Romagna",
+      "province": "Forli'-Cesena",
       "codiceFiscale": "00606620409",
       "population": 117050,
       "value": 116795115.45,
@@ -1511,6 +1663,7 @@
     {
       "name": "COMUNE DI PESCARA",
       "region": "Abruzzo",
+      "province": "Pescara",
       "codiceFiscale": "00124600685",
       "population": 118461,
       "value": 115551479.08,
@@ -1519,6 +1672,7 @@
     {
       "name": "COMUNE DI LATINA",
       "region": "Lazio",
+      "province": "Latina",
       "codiceFiscale": "00097020598",
       "population": 127859,
       "value": 113172920.52,
@@ -1527,6 +1681,7 @@
     {
       "name": "COMUNE DI PESARO",
       "region": "Marche",
+      "province": "Pesaro Urbino",
       "codiceFiscale": "00272430414",
       "population": 95392,
       "value": 112953245.34,
@@ -1535,6 +1690,7 @@
     {
       "name": "COMUNE DI POZZUOLI",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "00508900636",
       "population": 76255,
       "value": 110458983.13,
@@ -1543,6 +1699,7 @@
     {
       "name": "COMUNE DI SIRACUSA",
       "region": "Sicilia",
+      "province": "Siracusa",
       "codiceFiscale": "80001010893",
       "population": 116247,
       "value": 106296502.55,
@@ -1551,6 +1708,7 @@
     {
       "name": "COMUNE DI POMEZIA",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "02298490588",
       "population": 64451,
       "value": 105061996.57,
@@ -1559,6 +1717,7 @@
     {
       "name": "COMUNE DI ASCOLI PICENO",
       "region": "Marche",
+      "province": "Ascoli Piceno",
       "codiceFiscale": "00229010442",
       "population": 45448,
       "value": 101510391.35,
@@ -1567,6 +1726,7 @@
     {
       "name": "COMUNE DI LUCCA",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00378210462",
       "population": 89234,
       "value": 98961765.65,
@@ -1575,6 +1735,7 @@
     {
       "name": "COMUNE DI PORDENONE",
       "region": "Friuli-Venezia Giulia",
+      "province": "Pordenone",
       "codiceFiscale": "80002150938",
       "population": 52147,
       "value": 97630657.69,
@@ -1583,6 +1744,7 @@
     {
       "name": "COMUNE DI TREVISO",
       "region": "Veneto",
+      "province": "Treviso",
       "codiceFiscale": "80007310263",
       "population": 85322,
       "value": 96667741.6,
@@ -1591,6 +1753,7 @@
     {
       "name": "COMUNE DI AREZZO",
       "region": "Toscana",
+      "province": "Arezzo",
       "codiceFiscale": "00176820512",
       "population": 96330,
       "value": 96608904.66,
@@ -1599,6 +1762,7 @@
     {
       "name": "COMUNE DI CESENA",
       "region": "Emilia-Romagna",
+      "province": "Forli'-Cesena",
       "codiceFiscale": "00143280402",
       "population": 96066,
       "value": 95055799.65,
@@ -1607,6 +1771,7 @@
     {
       "name": "COMUNE DI SANREMO",
       "region": "Liguria",
+      "province": "Imperia",
       "codiceFiscale": "00253750087",
       "population": 52992,
       "value": 94842898.65,
@@ -1615,6 +1780,7 @@
     {
       "name": "COMUNE DI BRINDISI",
       "region": "Puglia",
+      "province": "Brindisi",
       "codiceFiscale": "80000250748",
       "population": 82298,
       "value": 94685192.24,
@@ -1623,6 +1789,7 @@
     {
       "name": "COMUNE DI PISTOIA",
       "region": "Toscana",
+      "province": "Pistoia",
       "codiceFiscale": "00108690470",
       "population": 89054,
       "value": 94039283.04,
@@ -1631,6 +1798,7 @@
     {
       "name": "COMUNE DI OLBIA",
       "region": "Sardegna",
+      "province": "Gallura Nord-Est Sardegna",
       "codiceFiscale": "91008330903",
       "population": 61481,
       "value": 93065110.94,
@@ -1639,6 +1807,7 @@
     {
       "name": "COMUNE DI LA SPEZIA",
       "region": "Liguria",
+      "province": "La Spezia",
       "codiceFiscale": "00211160114",
       "population": 92696,
       "value": 92588450.49,
@@ -1647,6 +1816,7 @@
     {
       "name": "COMUNE DI GROSSETO",
       "region": "Toscana",
+      "province": "Grosseto",
       "codiceFiscale": "00082520537",
       "population": 81482,
       "value": 92225027.48,
@@ -1655,6 +1825,7 @@
     {
       "name": "COMUNE DI SIENA",
       "region": "Toscana",
+      "province": "Siena",
       "codiceFiscale": "00050800523",
       "population": 52833,
       "value": 91429257.38,
@@ -1663,6 +1834,7 @@
     {
       "name": "COMUNE DI MASSA",
       "region": "Toscana",
+      "province": "Massa-Carrara",
       "codiceFiscale": "00181760455",
       "population": 65992,
       "value": 89953062.4,
@@ -1671,6 +1843,7 @@
     {
       "name": "COMUNE DI TERNI",
       "region": "Umbria",
+      "province": "Terni",
       "codiceFiscale": "00175660554",
       "population": 106436,
       "value": 89535999.34,
@@ -1679,6 +1852,7 @@
     {
       "name": "COMUNE DI MANTOVA",
       "region": "Lombardia",
+      "province": "Mantova",
       "codiceFiscale": "00189800204",
       "population": 49044,
       "value": 87388340.03,
@@ -1687,6 +1861,7 @@
     {
       "name": "COMUNE DI FERMO",
       "region": "Marche",
+      "province": "FERMO",
       "codiceFiscale": "00334990447",
       "population": 35842,
       "value": 87069786.5,
@@ -1695,6 +1870,7 @@
     {
       "name": "COMUNE DI VARESE",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00441340122",
       "population": 78818,
       "value": 86573158.48,
@@ -1703,6 +1879,7 @@
     {
       "name": "COMUNE DI LAMEZIA TERME",
       "region": "Calabria",
+      "province": "Catanzaro",
       "codiceFiscale": "00301390795",
       "population": 67246,
       "value": 86506727.46,
@@ -1711,6 +1888,7 @@
     {
       "name": "COMUNE DI COMO",
       "region": "Lombardia",
+      "province": "Como",
       "codiceFiscale": "80005370137",
       "population": 83586,
       "value": 84341258.66,
@@ -1719,6 +1897,7 @@
     {
       "name": "COMUNE DI VIAREGGIO",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00274950468",
       "population": 60755,
       "value": 82900113.98,
@@ -1727,6 +1906,7 @@
     {
       "name": "COMUNE DI GALLARATE",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00560180127",
       "population": 52963,
       "value": 82779847.18,
@@ -1735,6 +1915,7 @@
     {
       "name": "COMUNE DI GIUGLIANO IN CAMPANIA",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "80049220637",
       "population": 124209,
       "value": 81772539.33,
@@ -1743,6 +1924,7 @@
     {
       "name": "COMUNE DI SANTA MARIA CAPUA VETERE",
       "region": "Campania",
+      "province": "Caserta",
       "codiceFiscale": "00136270618",
       "population": 32122,
       "value": 81094495.92,
@@ -1751,6 +1933,7 @@
     {
       "name": "COMUNE DI CREMONA",
       "region": "Lombardia",
+      "province": "Cremona",
       "codiceFiscale": "00297960197",
       "population": 70675,
       "value": 80955785.2,
@@ -1759,6 +1942,7 @@
     {
       "name": "COMUNE DI MAZARA DEL VALLO",
       "region": "Sicilia",
+      "province": "Trapani",
       "codiceFiscale": "82001410818",
       "population": 50029,
       "value": 80145968.42,
@@ -1767,6 +1951,7 @@
     {
       "name": "COMUNE DI ANDRIA",
       "region": "Puglia",
+      "province": "Barletta Andria e Trani",
       "codiceFiscale": "81001210723",
       "population": 96941,
       "value": 80129601.7,
@@ -1775,6 +1960,7 @@
     {
       "name": "COMUNE DI PAVIA",
       "region": "Lombardia",
+      "province": "Pavia",
       "codiceFiscale": "00296180185",
       "population": 71297,
       "value": 79201232.3,
@@ -1783,6 +1969,7 @@
     {
       "name": "COMUNE DI BENEVENTO",
       "region": "Campania",
+      "province": "Benevento",
       "codiceFiscale": "00074270620",
       "population": 56048,
       "value": 78578865.66,
@@ -1791,6 +1978,7 @@
     {
       "name": "COMUNE DI CUNEO",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00480530047",
       "population": 55914,
       "value": 78266510.59,
@@ -1799,6 +1987,7 @@
     {
       "name": "COMUNE DI RAGUSA",
       "region": "Sicilia",
+      "province": "Ragusa",
       "codiceFiscale": "00180270886",
       "population": 73736,
       "value": 77520401.72,
@@ -1807,6 +1996,7 @@
     {
       "name": "COMUNE DI VITERBO",
       "region": "Lazio",
+      "province": "Viterbo",
       "codiceFiscale": "80008850564",
       "population": 66188,
       "value": 76332994.75,
@@ -1815,6 +2005,7 @@
     {
       "name": "COMUNE DI BAGHERIA",
       "region": "Sicilia",
+      "province": "Palermo",
       "codiceFiscale": "81000170829",
       "population": 53010,
       "value": 75696849.79,
@@ -1823,6 +2014,7 @@
     {
       "name": "COMUNE DI SESTO SAN GIOVANNI",
       "region": "Lombardia",
+      "province": "Milano",
       "codiceFiscale": "02253930156",
       "population": 78495,
       "value": 75428795.24,
@@ -1831,6 +2023,7 @@
     {
       "name": "COMUNE DI CARRARA",
       "region": "Toscana",
+      "province": "Massa-Carrara",
       "codiceFiscale": "00079450458",
       "population": 59757,
       "value": 74863378.75,
@@ -1839,6 +2032,7 @@
     {
       "name": "COMUNE DI QUARTU SANT'ELENA",
       "region": "Sardegna",
+      "province": "Cagliari",
       "codiceFiscale": "00288630924",
       "population": 68509,
       "value": 74692666.24,
@@ -1847,6 +2041,7 @@
     {
       "name": "COMUNE DI BUSTO ARSIZIO",
       "region": "Lombardia",
+      "province": "Varese",
       "codiceFiscale": "00224000125",
       "population": 83372,
       "value": 73971898.22,
@@ -1855,6 +2050,7 @@
     {
       "name": "COMUNE DI IMOLA",
       "region": "Emilia-Romagna",
+      "province": "Bologna",
       "codiceFiscale": "00794470377",
       "population": 69332,
       "value": 72198429.28,
@@ -1863,6 +2059,7 @@
     {
       "name": "COMUNE DI MARSALA",
       "region": "Sicilia",
+      "province": "Trapani",
       "codiceFiscale": "00139550818",
       "population": 79835,
       "value": 71073992.65,
@@ -1871,6 +2068,7 @@
     {
       "name": "COMUNE DI CAMAIORE",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "00190560466",
       "population": 31864,
       "value": 68544112.67,
@@ -1879,6 +2077,7 @@
     {
       "name": "COMUNE DI LODI",
       "region": "Lombardia",
+      "province": "Lodi",
       "codiceFiscale": "84507570152",
       "population": 45158,
       "value": 68353290.88,
@@ -1887,6 +2086,7 @@
     {
       "name": "COMUNE DI SAN GIORGIO A CREMANO",
       "region": "Campania",
+      "province": "Napoli",
       "codiceFiscale": "01435550635",
       "population": 42096,
       "value": 68249049.56,
@@ -1897,6 +2097,7 @@
     {
       "name": "COMUNE DI CALASCIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "80007890660",
       "population": 125,
       "value": 9411472.55,
@@ -1905,6 +2106,7 @@
     {
       "name": "COMUNE DI BEMA",
       "region": "Lombardia",
+      "province": "Sondrio",
       "codiceFiscale": "00090830142",
       "population": 114,
       "value": 7916906.78,
@@ -1913,6 +2115,7 @@
     {
       "name": "COMUNE DI ELVA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "80004570042",
       "population": 78,
       "value": 5313418.08,
@@ -1921,6 +2124,7 @@
     {
       "name": "COMUNE DI VILLA SANTA LUCIA DEGLI ABRUZZI",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00193560661",
       "population": 88,
       "value": 5532533.77,
@@ -1929,6 +2133,7 @@
     {
       "name": "COMUNE DI USSITA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "81001810431",
       "population": 360,
       "value": 11867737.48,
@@ -1937,6 +2142,7 @@
     {
       "name": "COMUNE DI SANTO STEFANO DI SESSANIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00173470667",
       "population": 110,
       "value": 2712250.66,
@@ -1945,6 +2151,7 @@
     {
       "name": "COMUNE DI CARAPELLE CALVISIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00197710668",
       "population": 78,
       "value": 1867924.86,
@@ -1953,6 +2160,7 @@
     {
       "name": "COMUNE DI PALU' DEL FERSINA",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Trento",
       "codiceFiscale": "00272300229",
       "population": 158,
       "value": 3737063.72,
@@ -1961,6 +2169,7 @@
     {
       "name": "COMUNE DI BOLOGNOLA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "81000910430",
       "population": 147,
       "value": 3362333.51,
@@ -1969,6 +2178,7 @@
     {
       "name": "COMUNE DI FOSSA",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "80001770660",
       "population": 658,
       "value": 14988199.48,
@@ -1977,6 +2187,7 @@
     {
       "name": "COMUNE DI SARACINESCO",
       "region": "Lazio",
+      "province": "Roma",
       "codiceFiscale": "86001790582",
       "population": 172,
       "value": 3740079.69,
@@ -1985,6 +2196,7 @@
     {
       "name": "COMUNE DI FAGNANO ALTO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00193030665",
       "population": 351,
       "value": 7457024.39,
@@ -1993,6 +2205,7 @@
     {
       "name": "COMUNE DI MONTELAPIANO",
       "region": "Abruzzo",
+      "province": "Chieti",
       "codiceFiscale": "81002650695",
       "population": 69,
       "value": 1449810.35,
@@ -2001,6 +2214,7 @@
     {
       "name": "COMUNE DI CASTEL DEL GIUDICE",
       "region": "Molise",
+      "province": "Isernia",
       "codiceFiscale": "80000990947",
       "population": 305,
       "value": 6342467.3,
@@ -2009,6 +2223,7 @@
     {
       "name": "COMUNE DI SAURIS",
       "region": "Friuli-Venezia Giulia",
+      "province": "Udine",
       "codiceFiscale": "84001370307",
       "population": 390,
       "value": 7898356.58,
@@ -2017,6 +2232,7 @@
     {
       "name": "COMUNE DI ARGENTERA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "80003430040",
       "population": 80,
       "value": 1509189.91,
@@ -2025,6 +2241,7 @@
     {
       "name": "COMUNE DI VALPRATO SOANA",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "02216150017",
       "population": 96,
       "value": 1798038.08,
@@ -2033,6 +2250,7 @@
     {
       "name": "COMUNE DI MONCENISIO",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "01021740012",
       "population": 49,
       "value": 906187.69,
@@ -2041,6 +2259,7 @@
     {
       "name": "COMUNE DI OSTANA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00453120040",
       "population": 89,
       "value": 1616256.38,
@@ -2049,6 +2268,7 @@
     {
       "name": "COMUNE DI ROSELLO",
       "region": "Abruzzo",
+      "province": "Chieti",
       "codiceFiscale": "81002970697",
       "population": 166,
       "value": 2963151.47,
@@ -2057,6 +2277,7 @@
     {
       "name": "COMUNE DI PRATA D'ANSIDONIA",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00195150669",
       "population": 447,
       "value": 7829414.97,
@@ -2065,6 +2286,7 @@
     {
       "name": "COMUNE DI PIETRACAMELA",
       "region": "Abruzzo",
+      "province": "Teramo",
       "codiceFiscale": "80005250677",
       "population": 207,
       "value": 3330138.97,
@@ -2073,6 +2295,7 @@
     {
       "name": "COMUNE DI MONTE CAVALLO",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "81000130435",
       "population": 103,
       "value": 1653082.62,
@@ -2081,6 +2304,7 @@
     {
       "name": "COMUNE DI CHAMOIS",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "81002610079",
       "population": 108,
       "value": 1728264.17,
@@ -2089,6 +2313,7 @@
     {
       "name": "COMUNE DI ACCIANO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "83003750664",
       "population": 256,
       "value": 4007676.39,
@@ -2097,6 +2322,7 @@
     {
       "name": "COMUNE DI INGRIA",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "01840350019",
       "population": 46,
       "value": 711008.43,
@@ -2105,6 +2331,7 @@
     {
       "name": "COMUNE DI RHEMES-NOTRE-DAME",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00138020078",
       "population": 76,
       "value": 1172105.5,
@@ -2113,6 +2340,7 @@
     {
       "name": "COMUNE DI MACRA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00478030042",
       "population": 45,
       "value": 682502.36,
@@ -2121,6 +2349,7 @@
     {
       "name": "COMUNE DI BALOCCO",
       "region": "Piemonte",
+      "province": "Vercelli",
       "codiceFiscale": "00425380029",
       "population": 214,
       "value": 3244496.92,
@@ -2129,6 +2358,7 @@
     {
       "name": "COMUNE DI SAN BENEDETTO IN PERILLIS",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00219500667",
       "population": 98,
       "value": 1476046.77,
@@ -2137,6 +2367,7 @@
     {
       "name": "COMUNE DI NAVELLI",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00188910665",
       "population": 569,
       "value": 8353803.2,
@@ -2145,6 +2376,7 @@
     {
       "name": "COMUNE DI BRIGA ALTA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00553180043",
       "population": 41,
       "value": 596257.95,
@@ -2153,6 +2385,7 @@
     {
       "name": "COMUNE DI SANT'ALESSIO IN ASPROMONTE",
       "region": "Calabria",
+      "province": "Reggio di Calabria",
       "codiceFiscale": "80003150804",
       "population": 316,
       "value": 4506072.33,
@@ -2161,6 +2394,7 @@
     {
       "name": "COMUNE DI BARD",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00093700078",
       "population": 102,
       "value": 1422340.68,
@@ -2169,6 +2403,7 @@
     {
       "name": "COMUNE DI FALLO",
       "region": "Abruzzo",
+      "province": "Chieti",
       "codiceFiscale": "81001730696",
       "population": 116,
       "value": 1600428.3,
@@ -2177,6 +2412,7 @@
     {
       "name": "COMUNE DI ROIO DEL SANGRO",
       "region": "Abruzzo",
+      "province": "Chieti",
       "codiceFiscale": "81003010691",
       "population": 97,
       "value": 1338037.84,
@@ -2185,6 +2421,7 @@
     {
       "name": "COMUNE DI GAGLIANO ATERNO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00212360663",
       "population": 225,
       "value": 3049564.91,
@@ -2193,6 +2430,7 @@
     {
       "name": "COMUNE DI VALLEVE",
       "region": "Lombardia",
+      "province": "Bergamo",
       "codiceFiscale": "00637290164",
       "population": 126,
       "value": 1635304.1,
@@ -2201,6 +2439,7 @@
     {
       "name": "COMUNE DI MARMORA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00483290045",
       "population": 58,
       "value": 735047.93,
@@ -2209,6 +2448,7 @@
     {
       "name": "COMUNE DI TIONE DEGLI ABRUZZI",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00189270663",
       "population": 258,
       "value": 3258020.43,
@@ -2217,6 +2457,7 @@
     {
       "name": "COMUNE DI ROSAZZA",
       "region": "Piemonte",
+      "province": "Biella",
       "codiceFiscale": "00390580025",
       "population": 97,
       "value": 1222478.76,
@@ -2225,6 +2466,7 @@
     {
       "name": "COMUNE DI FABBRICHE DI VERGEMOLI",
       "region": "Toscana",
+      "province": "Lucca",
       "codiceFiscale": "02335530461",
       "population": 705,
       "value": 8842941.55,
@@ -2233,6 +2475,7 @@
     {
       "name": "COMUNE DI NOASCA",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "83500090010",
       "population": 106,
       "value": 1320660.62,
@@ -2241,6 +2484,7 @@
     {
       "name": "COMUNE DI FANO ADRIANO",
       "region": "Abruzzo",
+      "province": "Teramo",
       "codiceFiscale": "92001400677",
       "population": 262,
       "value": 3249211.13,
@@ -2249,6 +2493,7 @@
     {
       "name": "COMUNE DI BARADILI",
       "region": "Sardegna",
+      "province": "Oristano",
       "codiceFiscale": "80007220959",
       "population": 80,
       "value": 983507.3,
@@ -2257,6 +2502,7 @@
     {
       "name": "COMUNE DI CASTELVECCHIO CALVISIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00197730666",
       "population": 120,
       "value": 1473304.61,
@@ -2265,6 +2511,7 @@
     {
       "name": "COMUNE DI PAGANICO SABINO",
       "region": "Lazio",
+      "province": "Rieti",
       "codiceFiscale": "00113470579",
       "population": 157,
       "value": 1915005.74,
@@ -2273,6 +2520,7 @@
     {
       "name": "COMUNE DI MASSIMINO",
       "region": "Liguria",
+      "province": "Savona",
       "codiceFiscale": "00261180095",
       "population": 104,
       "value": 1256205.8,
@@ -2281,6 +2529,7 @@
     {
       "name": "COMUNE DI ROCCA DI CAMBIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00213130669",
       "population": 506,
       "value": 5969051.05,
@@ -2289,6 +2538,7 @@
     {
       "name": "COMUNE DI FONTECCHIO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00189210669",
       "population": 286,
       "value": 3356251.03,
@@ -2297,6 +2547,7 @@
     {
       "name": "COMUNE DI SEMESTENE",
       "region": "Sardegna",
+      "province": "Sassari",
       "codiceFiscale": "00254670904",
       "population": 125,
       "value": 1459445.04,
@@ -2305,6 +2556,7 @@
     {
       "name": "COMUNE DI PERTICA ALTA",
       "region": "Lombardia",
+      "province": "Brescia",
       "codiceFiscale": "87000290178",
       "population": 553,
       "value": 6247208.28,
@@ -2313,6 +2565,7 @@
     {
       "name": "COMUNE DI CELLE DI SAN VITO",
       "region": "Puglia",
+      "province": "Foggia",
       "codiceFiscale": "80003290717",
       "population": 148,
       "value": 1670895.42,
@@ -2321,6 +2574,7 @@
     {
       "name": "COMUNE DI CIRIGLIANO",
       "region": "Basilicata",
+      "province": "Matera",
       "codiceFiscale": "83000370771",
       "population": 273,
       "value": 3055791.15,
@@ -2329,6 +2583,7 @@
     {
       "name": "COMUNE DI GUARDIA PERTICARA",
       "region": "Basilicata",
+      "province": "Potenza",
       "codiceFiscale": "80005710761",
       "population": 526,
       "value": 5819316.61,
@@ -2337,6 +2592,7 @@
     {
       "name": "COMUNE DI CARCOFORO",
       "region": "Piemonte",
+      "province": "Vercelli",
       "codiceFiscale": "82000610020",
       "population": 75,
       "value": 812760.26,
@@ -2345,6 +2601,7 @@
     {
       "name": "COMUNE DI CERVATTO",
       "region": "Piemonte",
+      "province": "Vercelli",
       "codiceFiscale": "82000730026",
       "population": 47,
       "value": 508801.3,
@@ -2353,6 +2610,7 @@
     {
       "name": "COMUNE DI LETTOPALENA",
       "region": "Abruzzo",
+      "province": "Chieti",
       "codiceFiscale": "00230170698",
       "population": 314,
       "value": 3397548.22,
@@ -2361,6 +2619,7 @@
     {
       "name": "COMUNE DI CAMPOTOSTO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00085160661",
       "population": 457,
       "value": 4915056.83,
@@ -2369,6 +2628,7 @@
     {
       "name": "COMUNE DI CELLE DI MACRA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00478050040",
       "population": 89,
       "value": 955467.76,
@@ -2377,6 +2637,7 @@
     {
       "name": "COMUNE DI ENTRACQUE",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00507800043",
       "population": 760,
       "value": 8144744.52,
@@ -2385,6 +2646,7 @@
     {
       "name": "COMUNE DI CARREGA LIGURE",
       "region": "Piemonte",
+      "province": "Alessandria",
       "codiceFiscale": "92003030068",
       "population": 82,
       "value": 870486.95,
@@ -2393,6 +2655,7 @@
     {
       "name": "COMUNE DI ARVIER",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "80003210079",
       "population": 806,
       "value": 8419600.31,
@@ -2401,6 +2664,7 @@
     {
       "name": "COMUNE DI CASTELMAGNO",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00478910045",
       "population": 55,
       "value": 572017.36,
@@ -2409,6 +2673,7 @@
     {
       "name": "COMUNE DI SAMBUCO",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "80003270040",
       "population": 83,
       "value": 851249.7,
@@ -2417,6 +2682,7 @@
     {
       "name": "COMUNE DI BLELLO",
       "region": "Lombardia",
+      "province": "Bergamo",
       "codiceFiscale": "00707790168",
       "population": 74,
       "value": 758315.72,
@@ -2425,6 +2691,7 @@
     {
       "name": "COMUNE DI PORTOFINO",
       "region": "Liguria",
+      "province": "Genova",
       "codiceFiscale": "00826220105",
       "population": 358,
       "value": 3660262.82,
@@ -2433,6 +2700,7 @@
     {
       "name": "COMUNE DI LASTEBASSE",
       "region": "Veneto",
+      "province": "Vicenza",
       "codiceFiscale": "00577360241",
       "population": 178,
       "value": 1819811.76,
@@ -2441,6 +2709,7 @@
     {
       "name": "COMUNE DI MUCCIA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "00263210437",
       "population": 800,
       "value": 8145791.71,
@@ -2449,6 +2718,7 @@
     {
       "name": "COMUNE DI LUCOLI",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00094420668",
       "population": 824,
       "value": 8230216.88,
@@ -2457,6 +2727,7 @@
     {
       "name": "COMUNE DI MARCETELLI",
       "region": "Lazio",
+      "province": "Rieti",
       "codiceFiscale": "00077920577",
       "population": 57,
       "value": 568015.89,
@@ -2465,6 +2736,7 @@
     {
       "name": "COMUNE DI PETRURO IRPINO",
       "region": "Campania",
+      "province": "Avellino",
       "codiceFiscale": "80010890640",
       "population": 295,
       "value": 2915687.75,
@@ -2473,6 +2745,7 @@
     {
       "name": "COMUNE DI CISSONE",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00476920046",
       "population": 78,
       "value": 762087.68,
@@ -2481,6 +2754,7 @@
     {
       "name": "COMUNE DI AQUILA D'ARROSCIA",
       "region": "Liguria",
+      "province": "Imperia",
       "codiceFiscale": "00246520084",
       "population": 138,
       "value": 1319365.16,
@@ -2489,6 +2763,7 @@
     {
       "name": "COMUNE DI CANNA",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "81000970780",
       "population": 610,
       "value": 5829644.09,
@@ -2497,6 +2772,7 @@
     {
       "name": "COMUNE DI SAN PIO DELLE CAMERE",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00197690662",
       "population": 650,
       "value": 6205906.09,
@@ -2505,6 +2781,7 @@
     {
       "name": "COMUNE DI PONTE GARDENA",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Bolzano - Bozen",
       "codiceFiscale": "94055150216",
       "population": 219,
       "value": 2088906.81,
@@ -2513,6 +2790,7 @@
     {
       "name": "COMUNE DI BELLINO",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "00534820048",
       "population": 96,
       "value": 915254.26,
@@ -2521,6 +2799,7 @@
     {
       "name": "COMUNE DI VALSAVARENCHE",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00124870072",
       "population": 154,
       "value": 1460886.86,
@@ -2529,6 +2808,7 @@
     {
       "name": "COMUNE DI MASSELLO",
       "region": "Piemonte",
+      "province": "Torino",
       "codiceFiscale": "85000150012",
       "population": 57,
       "value": 540245.84,
@@ -2537,6 +2817,7 @@
     {
       "name": "COMUNE DI CASTELVECCHIO DI ROCCA BARBENA",
       "region": "Liguria",
+      "province": "Savona",
       "codiceFiscale": "00379280092",
       "population": 127,
       "value": 1195672.49,
@@ -2545,6 +2826,7 @@
     {
       "name": "COMUNE DI STELVIO",
       "region": "Trentino-Alto Adige/Südtirol",
+      "province": "Bolzano - Bozen",
       "codiceFiscale": "82008420216",
       "population": 1146,
       "value": 10787451.28,
@@ -2553,6 +2835,7 @@
     {
       "name": "COMUNE DI CITTAREALE",
       "region": "Lazio",
+      "province": "Rieti",
       "codiceFiscale": "00122890577",
       "population": 388,
       "value": 3577497.06,
@@ -2561,6 +2844,7 @@
     {
       "name": "COMUNE DI RITTANA",
       "region": "Piemonte",
+      "province": "Cuneo",
       "codiceFiscale": "80001890047",
       "population": 104,
       "value": 945162.8,
@@ -2569,6 +2853,7 @@
     {
       "name": "COMUNE DI VALGRISENCHE",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00101190072",
       "population": 186,
       "value": 1687918.04,
@@ -2577,6 +2862,7 @@
     {
       "name": "COMUNE DI GRESSONEY-LA-TRINITE'",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00109710079",
       "population": 320,
       "value": 2892220.53,
@@ -2585,6 +2871,7 @@
     {
       "name": "COMUNE DI CAPORCIANO",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "00187590666",
       "population": 201,
       "value": 1811001.34,
@@ -2593,6 +2880,7 @@
     {
       "name": "COMUNE DI VACCARIZZO ALBANESE",
       "region": "Calabria",
+      "province": "Cosenza",
       "codiceFiscale": "84000210785",
       "population": 1001,
       "value": 8900008.02,
@@ -2601,6 +2889,7 @@
     {
       "name": "COMUNE DI VOLTURARA APPULA",
       "region": "Puglia",
+      "province": "Foggia",
       "codiceFiscale": "82000370716",
       "population": 366,
       "value": 3252638.38,
@@ -2609,6 +2898,7 @@
     {
       "name": "COMUNE DI CASTELSANTANGELO SUL NERA",
       "region": "Marche",
+      "province": "Macerata",
       "codiceFiscale": "00242630432",
       "population": 221,
       "value": 1962861.44,
@@ -2617,6 +2907,7 @@
     {
       "name": "COMUNE DI DOGNA",
       "region": "Friuli-Venezia Giulia",
+      "province": "Udine",
       "codiceFiscale": "84005290303",
       "population": 150,
       "value": 1314535.08,
@@ -2625,6 +2916,7 @@
     {
       "name": "COMUNE DI CASTELDELCI",
       "region": "Emilia-Romagna",
+      "province": "Rimini",
       "codiceFiscale": "80008970412",
       "population": 364,
       "value": 3184033.52,
@@ -2633,6 +2925,7 @@
     {
       "name": "COMUNE DI PIEDICAVALLO",
       "region": "Piemonte",
+      "province": "Biella",
       "codiceFiscale": "00390570026",
       "population": 170,
       "value": 1484742.25,
@@ -2641,6 +2934,7 @@
     {
       "name": "COMUNE DI MONTELEONE ROCCA DORIA",
       "region": "Sardegna",
+      "province": "Sassari",
       "codiceFiscale": "00222250904",
       "population": 103,
       "value": 898034.55,
@@ -2649,6 +2943,7 @@
     {
       "name": "COMUNE DI SETZU",
       "region": "Sardegna",
+      "province": "Medio Campidano",
       "codiceFiscale": "82001290921",
       "population": 125,
       "value": 1085155.69,
@@ -2657,6 +2952,7 @@
     {
       "name": "COMUNE DI MICIGLIANO",
       "region": "Lazio",
+      "province": "Rieti",
       "codiceFiscale": "00113670574",
       "population": 112,
       "value": 970590.11,
@@ -2665,6 +2961,7 @@
     {
       "name": "COMUNE DI ZUCCARELLO",
       "region": "Liguria",
+      "province": "Savona",
       "codiceFiscale": "00331480095",
       "population": 284,
       "value": 2452512.26,
@@ -2673,6 +2970,7 @@
     {
       "name": "COMUNE DI POLINO",
       "region": "Umbria",
+      "province": "Terni",
       "codiceFiscale": "00178250551",
       "population": 204,
       "value": 1729644.92,
@@ -2681,6 +2979,7 @@
     {
       "name": "COMUNE DI OLLOMONT",
       "region": "Valle d'Aosta/Vallée d'Aoste",
+      "province": "Valle d'Aosta",
       "codiceFiscale": "00101810075",
       "population": 165,
       "value": 1395540.43,
@@ -2689,6 +2988,7 @@
     {
       "name": "COMUNE DI SANT'EUSANIO FORCONESE",
       "region": "Abruzzo",
+      "province": "L'Aquila",
       "codiceFiscale": "80002610667",
       "population": 365,
       "value": 3059631.54,
@@ -2703,12 +3003,12 @@
     "siopeMovementsLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
     "siopeRegistryLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
     "ipaLastModified": "Fri, 21 Aug 2026 03:14:18 GMT",
-    "observedAt": "2026-08-21T03:31:16+00:00"
+    "observedAt": "2026-08-21T11:34:54+00:00"
   },
   "methodology": {
     "measure": "pagamenti di cassa SIOPE dei Comuni",
     "periodicity": "movimenti mensili puri, sommati da gennaio all'ultimo mese disponibile",
-    "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA",
+    "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA; Provincia pubblicata nell'anagrafica enti SIOPE",
     "populationSource": "popolazione riportata nell'anagrafica enti SIOPE",
     "populationReference": "data di riferimento non dichiarata dalla fonte",
     "populationSourceLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",

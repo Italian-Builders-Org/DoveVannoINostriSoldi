@@ -136,6 +136,35 @@
   background: var(--chart-primary);
 }
 
+.categoryComponents {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 0;
+}
+
+.categoryComponents > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+}
+
+.categoryComponents dt,
+.categoryComponents dd,
+.categoryCaveat {
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.categoryComponents dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.categoryCaveat {
+  margin: 2px 0 0;
+}
+
 .documentLink {
   display: inline-flex;
   min-height: 44px;

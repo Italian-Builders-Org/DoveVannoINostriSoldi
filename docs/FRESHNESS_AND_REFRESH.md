@@ -129,7 +129,7 @@ Timeout, errori di rete, risposte `408`, `425`, `429` e alcuni errori `5xx` veng
 | Fonte | Cadenza sorgente | Discovery DoveVannoINostriSoldi | Dati |
 | --- | --- | ---: | ---: |
 | IPA Enti | giornaliera | 1 h | 1 h |
-| OpenBDAP · Pagamenti Stato e opere MOP | mensile per i pagamenti; data propria per MOP | 1 h · invalidazione, metadati entro 2 h | 6 h |
+| OpenBDAP · Pagamenti Stato e opere MOP | mensile + consuntivo annuale per i pagamenti; data propria per MOP | 1 h · invalidazione, metadati entro 2 h | 6 h |
 | ANAC open dataset | mensile | 3 h | 12 h |
 | OpenCoesione | bimestrale prevista | 6 h · workflow snapshot | 6 h · cache API |
 | OpenCivitas | irregolare | 24 h · workflow snapshot | 24 h · cache API |

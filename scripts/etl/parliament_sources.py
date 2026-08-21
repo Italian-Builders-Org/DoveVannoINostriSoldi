@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import html.parser
 import http.cookiejar
 import io
@@ -31,6 +32,7 @@ MANIFEST_PATH = ROOT / "src/data/generated/parliament-source-manifest.json"
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 MAX_HTML_BYTES = 2_000_000
 MAX_CSV_BYTES = 8_000_000
+MAX_PDF_BYTES = 20_000_000
 CAMERA_HOSTS = {"trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"}
 SENATE_HOSTS = {"dati.senato.it", "www.senato.it", "senato.it"}
 SOURCE_UNAVAILABLE_HTTP_CODES = {403, 408, 425, 429, 500, 502, 503, 504}
@@ -54,12 +56,16 @@ class Document:
     document_number: int | None = None
     presented_at: str | None = None
     record_url: str | None = None
+    asset_sha256: str | None = None
+    asset_bytes: int | None = None
+    document_suffix: str | None = None
 
     def identity(self) -> tuple[Any, ...]:
         return (
             self.kind,
             self.year,
             self.document_number,
+            self.document_suffix,
             self.title,
             self.presented_at,
             self.record_url,
@@ -101,6 +107,18 @@ def require_int(value: Any, field: str, minimum: int, maximum: int) -> int:
     return value
 
 
+def index_objects_by_id(value: Any, field: str) -> dict[str, dict[str, Any]]:
+    indexed: dict[str, dict[str, Any]] = {}
+    for index, raw_item in enumerate(require_list(value, field)):
+        item_field = f"{field}[{index}]"
+        item = require_object(raw_item, item_field)
+        item_id = require_text(item.get("id"), f"{item_field}.id")
+        if item_id in indexed:
+            raise StructuralError(f"{field}: id duplicato {item_id}")
+        indexed[item_id] = item
+    return indexed
+
+
 def official_url(value: Any, field: str, hosts: set[str]) -> str:
     raw = require_text(value, field)
     parsed = urllib.parse.urlparse(raw)
@@ -126,13 +144,49 @@ def parse_iso_date(value: Any, field: str) -> str:
     return raw
 
 
-def document_from_mapping(value: Any, field: str, chamber: str) -> Document:
+def normalize_senate_suffix(value: Any, field: str) -> str | None:
+    """Normalize the optional Senate number suffix without discarding it."""
+    if value is None:
+        raise TemporarySourceError(f"Senato CSV: campo mancante {field}")
+    if not isinstance(value, str):
+        raise StructuralError(f"{field}: testo atteso")
+    suffix = " ".join(value.split())
+    if not suffix:
+        return None
+    if len(suffix) > 64 or not suffix.isprintable():
+        raise StructuralError(f"{field}: suffisso non valido")
+    return suffix
+
+
+def document_from_mapping(
+    value: Any,
+    field: str,
+    chamber: str,
+    *,
+    require_asset: bool = False,
+) -> Document:
     item = require_object(value, field)
     kind = require_text(item.get("kind"), f"{field}.kind")
     if kind not in {"account", "budget"}:
         raise StructuralError(f"{field}.kind: account o budget atteso")
     hosts = CAMERA_HOSTS if chamber == "camera" else SENATE_HOSTS
     number = item.get("documentNumber")
+    asset_sha256: str | None = None
+    asset_bytes: int | None = None
+    if chamber == "camera" and require_asset:
+        asset = require_object(item.get("asset"), f"{field}.asset")
+        asset_sha256 = require_text(asset.get("sha256"), f"{field}.asset.sha256")
+        if not re.fullmatch(r"[0-9a-f]{64}", asset_sha256):
+            raise StructuralError(f"{field}.asset.sha256: SHA-256 minuscolo atteso")
+        asset_bytes = require_int(asset.get("bytes"), f"{field}.asset.bytes", 1, MAX_PDF_BYTES)
+        if kind == "account":
+            evidence = require_list(item.get("evidence"), f"{field}.evidence")
+            if not evidence:
+                raise StructuralError(f"{field}.evidence: riferimenti al documento richiesti")
+            for index, raw_evidence in enumerate(evidence):
+                evidence_item = require_object(raw_evidence, f"{field}.evidence[{index}]")
+                require_text(evidence_item.get("pages"), f"{field}.evidence[{index}].pages")
+                require_text(evidence_item.get("scope"), f"{field}.evidence[{index}].scope")
     return Document(
         kind=kind,
         year=require_int(item.get("year"), f"{field}.year", 1948, 2200),
@@ -147,11 +201,13 @@ def document_from_mapping(value: Any, field: str, chamber: str) -> Document:
         record_url=(
             None if item.get("recordUrl") is None else official_url(item.get("recordUrl"), f"{field}.recordUrl", hosts)
         ),
+        asset_sha256=asset_sha256,
+        asset_bytes=asset_bytes,
     )
 
 
 def validate_public_snapshot(snapshot: dict[str, Any]) -> None:
-    if snapshot.get("schemaVersion") != 1 or snapshot.get("transformVersion") != 1:
+    if snapshot.get("schemaVersion") != 1 or snapshot.get("transformVersion") != 2:
         raise StructuralError("parliament-overview: versione 1 attesa")
     chambers = require_list(snapshot.get("chambers"), "parliament-overview.chambers")
     if not 1 <= len(chambers) <= 2:
@@ -178,11 +234,57 @@ def validate_public_snapshot(snapshot: dict[str, Any]) -> None:
                 for key in ("values", "categories", "highlights")
             ):
                 raise StructuralError(f"{statement_field}: valori strutturati mancanti")
+            if chamber_id == "camera" and statement.get("kind") == "account" and statement.get("year") == 2025:
+                categories_by_id = index_objects_by_id(
+                    statement.get("categories"),
+                    f"{statement_field}.categories",
+                )
+                pensions = require_object(categories_by_id.get("pensions"), f"{statement_field}.pensions")
+                if pensions.get("label") != "Spese previdenziali":
+                    raise StructuralError(f"{statement_field}.pensions: il Titolo III non è la sola voce vitalizi")
+                if pensions.get("paid") != 418.22631632:
+                    raise StructuralError(f"{statement_field}.pensions: pagamenti effettivi inattesi")
+                components = index_objects_by_id(
+                    pensions.get("components"),
+                    f"{statement_field}.pensions.components",
+                )
+                component_values = {
+                    component_id: component.get("paid")
+                    for component_id, component in components.items()
+                }
+                if component_values != {
+                    "former-deputies": 96.48449618,
+                    "retired-staff": 321.74182014,
+                }:
+                    raise StructuralError(f"{statement_field}.pensions: Categorie XII e XIII inattese")
+                caveat = require_text(pensions.get("caveat"), f"{statement_field}.pensions.caveat")
+                if "non equivale ai soli vitalizi" not in caveat.lower():
+                    raise StructuralError(f"{statement_field}.pensions: limite semantico mancante")
+                employees = require_object(categories_by_id.get("employees"), f"{statement_field}.employees")
+                if employees.get("paid") != 204.11385629:
+                    raise StructuralError(f"{statement_field}.employees: pagamenti effettivi inattesi")
 
 
 def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tuple[list[Document], list[Document], int]:
     if manifest.get("schemaVersion") != 1 or manifest.get("discoveryVersion") != 1:
         raise StructuralError("parliament-source-manifest: versione 1 attesa")
+    snapshot_artifact = require_object(manifest.get("snapshotArtifact"), "manifest.snapshotArtifact")
+    if snapshot_artifact.get("path") != "src/data/generated/parliament-overview.json":
+        raise StructuralError("manifest.snapshotArtifact.path: percorso inatteso")
+    expected_snapshot_bytes = require_int(
+        snapshot_artifact.get("bytes"), "manifest.snapshotArtifact.bytes", 1, MAX_CSV_BYTES
+    )
+    expected_snapshot_sha256 = require_text(
+        snapshot_artifact.get("sha256"), "manifest.snapshotArtifact.sha256"
+    )
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_snapshot_sha256):
+        raise StructuralError("manifest.snapshotArtifact.sha256: SHA-256 minuscolo atteso")
+    snapshot_payload = SNAPSHOT_PATH.read_bytes()
+    if (
+        len(snapshot_payload) != expected_snapshot_bytes
+        or hashlib.sha256(snapshot_payload).hexdigest() != expected_snapshot_sha256
+    ):
+        raise StructuralError("manifest.snapshotArtifact: snapshot pubblico non riconciliato")
     verified_at = require_text(manifest.get("verifiedAt"), "manifest.verifiedAt")
     try:
         datetime.fromisoformat(verified_at.replace("Z", "+00:00"))
@@ -192,7 +294,12 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
     camera = require_object(manifest.get("camera"), "manifest.camera")
     official_url(camera.get("landingUrl"), "manifest.camera.landingUrl", CAMERA_HOSTS)
     camera_docs = [
-        document_from_mapping(item, f"manifest.camera.documents[{index}]", "camera")
+        document_from_mapping(
+            item,
+            f"manifest.camera.documents[{index}]",
+            "camera",
+            require_asset=True,
+        )
         for index, item in enumerate(require_list(camera.get("documents"), "manifest.camera.documents"))
     ]
     if not camera_docs or len({item.identity() for item in camera_docs}) != len(camera_docs):
@@ -290,11 +397,11 @@ def parse_senate_documents(payload: str, series: str = "VIII") -> list[Document]
     reader = csv.DictReader(io.StringIO(payload))
     required = {
         "documento", "legislatura", "tipoDoc", "numeroDoc", "numeroRomano",
-        "titolo", "dataPresentazione", "URLTesto",
+        "suffissoNumeroDoc", "titolo", "dataPresentazione", "URLTesto",
     }
     if reader.fieldnames is None or not required <= set(reader.fieldnames):
         raise StructuralError(f"Senato CSV: colonne mancanti {sorted(required - set(reader.fieldnames or []))}")
-    grouped: dict[tuple[str, int], Document] = {}
+    documents_by_identity: dict[tuple[Any, ...], Document] = {}
     for row in reader:
         if row["numeroRomano"].strip() != series or row["tipoDoc"].strip() != SENATE_DOCUMENT_TYPE:
             continue
@@ -336,18 +443,31 @@ def parse_senate_documents(payload: str, series: str = "VIII") -> list[Document]
         record_url = normalize_official_url(row["documento"], "Senato.recordUrl", SENATE_HOSTS)
         document_url = normalize_official_url(row["URLTesto"], "Senato.documentUrl", SENATE_HOSTS)
         presented_at = parse_iso_date(row["dataPresentazione"], "Senato.dataPresentazione")
-        document = Document(kind, year, title, document_url, number, presented_at, record_url)
-        key = (record_url, number)
-        previous = grouped.get(key)
-        if previous is None:
-            grouped[key] = document
-        elif previous.identity()[:-1] != document.identity()[:-1]:
-            raise StructuralError(f"Senato CSV: metadati incoerenti per il documento {number}")
-        elif document.document_url > previous.document_url:
-            grouped[key] = document
-    if not grouped:
+        suffix = normalize_senate_suffix(row.get("suffissoNumeroDoc"), "Senato.suffissoNumeroDoc")
+        document = Document(
+            kind,
+            year,
+            title,
+            document_url,
+            number,
+            presented_at,
+            record_url,
+            document_suffix=suffix,
+        )
+        # Exact duplicate rows are harmless; variants by URL, date or suffix
+        # remain distinct so the caller can fail closed against the manifest.
+        documents_by_identity.setdefault(document.identity(), document)
+    if not documents_by_identity:
         raise StructuralError(f"Senato CSV: nessun documento della serie {series}")
-    return sorted(grouped.values(), key=lambda item: item.document_number or 0)
+    return sorted(
+        documents_by_identity.values(),
+        key=lambda item: (
+            item.document_number or 0,
+            item.document_suffix or "",
+            item.presented_at or "",
+            item.document_url,
+        ),
+    )
 
 
 def limited_read(response: Any, maximum: int, field: str) -> bytes:
@@ -374,6 +494,28 @@ def download_camera(landing_url: str, timeout: int) -> list[Document]:
             raise StructuralError(f"Camera: HTML atteso, ricevuto {content_type or 'nessun Content-Type'}")
         payload = limited_read(response, MAX_HTML_BYTES, "Camera").decode("utf-8")
     return parse_camera_documents(payload)
+
+
+def verify_camera_asset(document: Document, timeout: int) -> None:
+    if document.asset_sha256 is None or document.asset_bytes is None:
+        raise StructuralError(f"Camera {document.year}: lock del PDF mancante")
+    request = urllib.request.Request(
+        document.document_url,
+        headers={"User-Agent": USER_AGENT, "Accept": "application/pdf"},
+    )
+    with open_official(urllib.request.build_opener(), request, CAMERA_HOSTS, timeout) as response:
+        content_type = response.headers.get("Content-Type", "").split(";", 1)[0].lower()
+        if content_type != "application/pdf":
+            raise StructuralError(
+                f"Camera {document.year}: PDF atteso, ricevuto {content_type or 'nessun Content-Type'}"
+            )
+        payload = limited_read(response, MAX_PDF_BYTES, f"Camera PDF {document.year}")
+    observed_sha256 = hashlib.sha256(payload).hexdigest()
+    if len(payload) != document.asset_bytes or observed_sha256 != document.asset_sha256:
+        raise StructuralError(
+            f"Camera {document.year}: PDF ufficiale modificato "
+            f"(bytes={len(payload)}, sha256={observed_sha256})"
+        )
 
 
 class SenateFormParser(html.parser.HTMLParser):
@@ -441,8 +583,11 @@ def compare_documents(label: str, expected: list[Document], actual: list[Documen
     actual_set = {item.identity() for item in actual}
     if expected_set == actual_set:
         return
-    added = sorted(actual_set - expected_set)
-    removed = sorted(expected_set - actual_set)
+    def sort_identity(identity: tuple[Any, ...]) -> tuple[str, ...]:
+        return tuple("" if value is None else str(value) for value in identity)
+
+    added = sorted(actual_set - expected_set, key=sort_identity)
+    removed = sorted(expected_set - actual_set, key=sort_identity)
     details = []
     if added:
         details.append(f"nuovi={added}")
@@ -455,6 +600,8 @@ def online_check(manifest: dict[str, Any], expected_camera: list[Document], expe
     camera = require_object(manifest["camera"], "manifest.camera")
     actual_camera = download_camera(camera["landingUrl"], timeout)
     compare_documents("Camera", expected_camera, actual_camera)
+    for document in expected_camera:
+        verify_camera_asset(document, timeout)
 
     senate = require_object(manifest["senato"], "manifest.senato")
     actual_senate = download_senate(senate["registryUrl"], senate["legislature"], timeout)

@@ -38,6 +38,7 @@ test("SIOPE query validates years and can filter a region", async () => {
   assert.ok(result.topMunicipalities.every((item) => item.region === "Lazio"));
   assert.ok(result.topMunicipalitiesByValue.every((item) => item.region === "Lazio"));
   assert.ok(result.topMunicipalitiesByPerCapita.every((item) => item.region === "Lazio"));
+  assert.ok(result.topMunicipalitiesByPerCapita.every((item) => item.province.length > 0));
   assert.equal(result.queryLimitations.regionAggregateComplete, true);
   assert.match(result.queryLimitations.municipalityLists, /non elenco completo/i);
 });

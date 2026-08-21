@@ -14,6 +14,14 @@ export type ParliamentCategory = {
   id: string;
   label: string;
   paid: number;
+  components?: ParliamentCategoryComponent[];
+  caveat?: string;
+};
+
+export type ParliamentCategoryComponent = {
+  id: string;
+  label: string;
+  paid: number;
 };
 
 export type ParliamentHighlight = {
@@ -45,7 +53,7 @@ export type ParliamentChamber = {
 
 export type ParliamentSnapshot = {
   schemaVersion: 1;
-  transformVersion: 1;
+  transformVersion: 2;
   observedAt: string;
   unit: "million-euro";
   rounding: string;
@@ -114,6 +122,53 @@ function listOfAmounts<T extends "paid" | "value">(
   });
 }
 
+function categoryList(value: unknown, field: string): ParliamentCategory[] {
+  if (!Array.isArray(value)) throw new Error(`${field}: lista attesa`);
+  const base = listOfAmounts(value, field, "paid");
+  return base.map((category, index) => {
+    const record = object(value[index], `${field}[${index}]`);
+    const components = record.components === undefined
+      ? undefined
+      : listOfAmounts(record.components, `${field}[${index}].components`, "paid");
+    const caveat = record.caveat === undefined
+      ? undefined
+      : text(record.caveat, `${field}[${index}].caveat`);
+
+    if (components) {
+      const componentTotal = components.reduce((total, component) => total + component.paid, 0);
+      if (Math.abs(componentTotal - category.paid) > 0.000001) {
+        throw new Error(`${field}[${index}]: componenti non riconciliate con la categoria`);
+      }
+      if (!caveat) {
+        throw new Error(`${field}[${index}]: nota semantica richiesta per la scomposizione`);
+      }
+    }
+
+    if (category.id === "pensions") {
+      if (category.label !== "Spese previdenziali") {
+        throw new Error(`${field}[${index}]: il Titolo III non può essere rinominato vitalizi`);
+      }
+      const componentIds = components?.map((component) => component.id).sort() ?? [];
+      if (
+        componentIds.length !== 2 ||
+        componentIds[0] !== "former-deputies" ||
+        componentIds[1] !== "retired-staff"
+      ) {
+        throw new Error(`${field}[${index}]: Categorie XII e XIII richieste`);
+      }
+      if (!caveat?.toLocaleLowerCase("it-IT").includes("non equivale ai soli vitalizi")) {
+        throw new Error(`${field}[${index}]: limite semantico sui vitalizi richiesto`);
+      }
+    }
+
+    return {
+      ...category,
+      ...(components ? { components } : {}),
+      ...(caveat ? { caveat } : {}),
+    };
+  });
+}
+
 function statement(value: unknown, field: string): ParliamentStatement {
   const record = object(value, field);
   const kind = record.kind;
@@ -133,7 +188,7 @@ function statement(value: unknown, field: string): ParliamentStatement {
     : undefined;
   const categories = record.categories === undefined
     ? undefined
-    : listOfAmounts(record.categories, `${field}.categories`, "paid");
+    : categoryList(record.categories, `${field}.categories`);
   const highlights = record.highlights === undefined
     ? undefined
     : listOfAmounts(record.highlights, `${field}.highlights`, "value");
@@ -171,7 +226,7 @@ function hasStructuredData(entry: ParliamentStatement): boolean {
 
 export function assertParliamentSnapshot(value: unknown): ParliamentSnapshot {
   const record = object(value, "snapshot");
-  if (record.schemaVersion !== 1 || record.transformVersion !== 1) {
+  if (record.schemaVersion !== 1 || record.transformVersion !== 2) {
     throw new Error("snapshot: versione 1 attesa");
   }
   const observedAt = text(record.observedAt, "snapshot.observedAt");
@@ -219,7 +274,7 @@ export function assertParliamentSnapshot(value: unknown): ParliamentSnapshot {
   const methodology = object(record.methodology, "snapshot.methodology");
   return {
     schemaVersion: 1,
-    transformVersion: 1,
+    transformVersion: 2,
     observedAt,
     unit: "million-euro",
     rounding: text(record.rounding, "snapshot.rounding"),

@@ -42,6 +42,6 @@
     "impeccable": "3.5.0",
     "lighthouse": "^13.4.1",
     "puppeteer": "^25.8.0",
-    "typescript": "^5.9.0"
+    "typescript": "^7.0.2"
   }
 }

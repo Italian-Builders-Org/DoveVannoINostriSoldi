@@ -162,9 +162,11 @@ export function ItalyRegionsMap({
         <label className={styles.mobileSelector}>
           <span>Scegli una regione</span>
           <select value={selectedCode} onChange={(event) => selectRegion(event.target.value)}>
-            {Object.entries(REGION_NAME_BY_ISTAT_CODE).map(([code, name]) => (
-              <option value={code} key={code}>{name}</option>
-            ))}
+            {Object.entries(REGION_NAME_BY_ISTAT_CODE)
+              .sort(([, a], [, b]) => a.localeCompare(b, "it"))
+              .map(([code, name]) => (
+                <option value={code} key={code}>{name}</option>
+              ))}
           </select>
         </label>
 

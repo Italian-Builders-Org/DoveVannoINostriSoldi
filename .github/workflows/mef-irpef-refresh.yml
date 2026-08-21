@@ -171,7 +171,7 @@ jobs:
           python -m unittest -v tests/etl/test_mef_irpef_municipal.py
           python scripts/etl/mef_irpef_municipal_snapshot.py --check
       - name: Upload reviewed regeneration candidate
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mef-irpef-2024-${{ github.run_id }}
           if-no-files-found: error

@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-irpef
           path: .lighthouseci/
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload production server log on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: production-server-log
           path: /tmp/dvns-next.log

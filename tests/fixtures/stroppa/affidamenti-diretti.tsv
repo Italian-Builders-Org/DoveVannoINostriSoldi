@@ -1,0 +1,5 @@
+ente|ipa|cig|contraente|cf|importo|oggetto|data|url
+Ente Test|ente_test|B000000001|Fornitore Test||100|Affidamento diretto per servizio A|2025-03-10|https://example.test/atto-1
+Ente Test|ente_test|B000000002|n.d.|n.d.|n.d.|Art. 50 per servizio B|2025-01-01|https://example.test/elenco
+Ente Test|ente_test|B000000003|n.d.|n.d.|200|Trattativa diretta per servizio C|2024-08|https://example.test/elenco
+Ente Due|ente_due|B000000004|Fornitore Due||300|Procedura per evento pubblico|2025-05-12|https://example.test/atto-4

@@ -1,0 +1,14 @@
+{
+  "n": 4,
+  "n_con_importo": 3,
+  "n_importo_nd": 1,
+  "importo_somma_parse_ok": 600,
+  "catalogo_nuovi_t3rn": 2,
+  "non_catalogo_238_11mln": true,
+  "items": [
+    {"ente":"Ente Test","ipa":"ente_test","cig":"B000000001","contraente":"Fornitore Test","cf":null,"importo":{"eur":100,"parse_ok":true},"oggetto":"Affidamento diretto per servizio A","data":"2025-03-10","url":"https://example.test/atto-1"},
+    {"ente":"Ente Test","ipa":"ente_test","cig":"B000000002","contraente":null,"cf":null,"importo":{"eur":null,"parse_ok":false},"oggetto":"Art. 50 per servizio B","data":"2025-01-01","url":"https://example.test/elenco"},
+    {"ente":"Ente Test","ipa":"ente_test","cig":"B000000003","contraente":null,"cf":null,"importo":{"eur":200,"parse_ok":true},"oggetto":"Trattativa diretta per servizio C","data":"2024-08","url":"https://example.test/elenco"},
+    {"ente":"Ente Due","ipa":"ente_due","cig":"B000000004","contraente":"Fornitore Due","cf":null,"importo":{"eur":300,"parse_ok":true},"oggetto":"Procedura per evento pubblico","data":"2025-05-12","url":"https://example.test/atto-4"}
+  ]
+}

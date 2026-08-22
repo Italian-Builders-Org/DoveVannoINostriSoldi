@@ -1,0 +1,11 @@
+path	size_bytes	type	role	sensitivity	license_or_reuse	source	date_scope	validation
+archive:spesa-pa-voce-2026-08-21.tar.gz	10139244307	gzip tar	raw	potential personal data	unknown	archive provided by Andrea Stroppa	package 2026-08-21	sha256 verified; 51303 members; not extracted wholesale
+dashboard/README.md	4032	Markdown	note	public	not found	package documentation	2026-08-20	read; URL count conflicts with urls.csv
+dashboard/affidamenti-diretti.json	4670298	JSON	final package candidate	potential personal data	not found	row URLs plus fonte_file	2024-2026	6506 items; TSV normalized match; partial fields
+dashboard/affidamenti-diretti.tsv	2857457	pipe-delimited text	final package candidate	potential personal data	not found	row URL only	2024-2026	6506 records; 2445 amounts; 2293 contractors
+dashboard/consulenze-legali-NOTE.md	2166	Markdown	note	public personal data	not found	official-source pointers	2024-2026	method reviewed; row verification pending
+dashboard/consulenze-pnrr-NOTE.md	5552	Markdown	note	public personal data	not found	official-source pointers	2024-2026	method reviewed; distinct layers must not be summed
+dashboard/eventi-convegni-NOTE.md	1407	Markdown	note	public	not found	official-source pointers	2024-2026	method reviewed; known-amount sum is not waste
+dashboard/revisione-numeri-metodo.md	3376	Markdown	QC	public	not found	package and official-source pointers	2026-08-20	validated negative like-for-like checks
+dashboard/stato-lavori-last.md	651	Markdown	QC/status	public	not applicable	package status	2026-08-21	identifies live master and stale side copy
+dashboard/urls.csv	338749	CSV	derived	public	not found	official-site URLs	2026-08-20	FAILED denominator reconciliation: 1240 vs README 781

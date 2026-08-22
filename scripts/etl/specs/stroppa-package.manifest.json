@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "archiveBasename": "spesa-pa-voce-2026-08-21.tar.gz",
+  "archiveSizeBytes": 10139244307,
+  "archiveSha256": "6e4bd9e9edc27c71703f33448038df4311d58d911a227cf37db69f649c3cd80e",
+  "observedAt": "2026-08-22T16:48:23Z",
+  "extractionPolicy": "listing-and-selective-extraction-only",
+  "selectedEntries": [
+    {
+      "path": "dashboard/README.md",
+      "sizeBytes": 4032,
+      "sha256": "c13be00bed5e87c6c3d7249813568028a71deaab84d54e4322b3b6b788275346",
+      "role": "note",
+      "sensitivity": "public",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "descrizione del pacchetto dashboard",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/affidamenti-diretti.json",
+      "sizeBytes": 4670298,
+      "sha256": "d47bcdb10181e1b7c877e31882843e04fd232010f75364f9c4d7485f54a25897",
+      "role": "final",
+      "sensitivity": "potential_personal_data",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "metadati e record correnti del catalogo affidamenti diretti",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/affidamenti-diretti.tsv",
+      "sizeBytes": 2857457,
+      "sha256": "cd6a8265d606f26513a41a8a4813a21645ef5c083a6b4e9f5fb17982fbb4c8d8",
+      "role": "final",
+      "sensitivity": "potential_personal_data",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "6506 record correnti 2024-2026; campi parziali",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/consulenze-legali-NOTE.md",
+      "sizeBytes": 2166,
+      "sha256": "0bda92d6a1f96d468a497b8a6bbe2b56c8b5e31c8dfb8392fcb5ff75bc58b19b",
+      "role": "note",
+      "sensitivity": "public_personal_data",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "metodo e copertura consulenze legali 2024-2026",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/consulenze-pnrr-NOTE.md",
+      "sizeBytes": 5552,
+      "sha256": "ede548cc9d26003fea3b7b810277588cc68d030eb91030c7dcfe50a87f1bbde0",
+      "role": "note",
+      "sensitivity": "public_personal_data",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "metodo e strati consulenze PNRR 2024-2026",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/eventi-convegni-NOTE.md",
+      "sizeBytes": 1407,
+      "sha256": "fc5d50df956aa4bb0ccce86cbebd1b6dba029731f7cf18199b1cfefaa0e59236",
+      "role": "note",
+      "sensitivity": "public",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "metodo eventi e convegni 2024-2026",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/revisione-numeri-metodo.md",
+      "sizeBytes": 3376,
+      "sha256": "87bd2e607b082afb43e603691815c21f32bc976c1f86d0a773a17f62ec0bd2b9",
+      "role": "qc",
+      "sensitivity": "public",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "QC like-for-like sui benchmark candidati",
+      "validationStatus": "validated"
+    },
+    {
+      "path": "dashboard/stato-lavori-last.md",
+      "sizeBytes": 651,
+      "sha256": "dcd6264365c838dd9f09dc482bc71c9e0e853392d46c175f527e486b0c8edc39",
+      "role": "qc",
+      "sensitivity": "public",
+      "licenseStatus": "not_applicable",
+      "sourceUrl": null,
+      "dataDate": "2026-08-21",
+      "scope": "stato operativo del pacchetto e distinzione master/stale",
+      "validationStatus": "partial"
+    },
+    {
+      "path": "dashboard/urls.csv",
+      "sizeBytes": 338749,
+      "sha256": "f37f5bbc9c290740fc3357f5fbb82b3871a81d1ca1586cfc7a336b56b97e55c0",
+      "role": "derived",
+      "sensitivity": "public",
+      "licenseStatus": "not_found",
+      "sourceUrl": null,
+      "dataDate": "2026-08-20",
+      "scope": "catalogo URL; 1240 righe dati contro 781 dichiarate nel README",
+      "validationStatus": "failed"
+    }
+  ]
+}

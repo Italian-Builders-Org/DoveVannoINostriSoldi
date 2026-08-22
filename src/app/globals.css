@@ -257,6 +257,8 @@ main td a:not(.btn) {
   gap: var(--space-1);
   min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: var(--space-4);
   scrollbar-width: none;
 }
 .primary-nav::-webkit-scrollbar { display: none; }
@@ -281,6 +283,7 @@ main td a:not(.btn) {
   color: var(--color-neutral-600);
   white-space: nowrap;
 }
+.nav-overflow-hint { display: none; }
 
 /* ── page shells ────────────────────────────────────────────────────────── */
 
@@ -522,6 +525,19 @@ main { display: block; }
 }
 
 @media (max-width: 620px) {
+  .nav-row { gap: var(--space-2); }
+  .nav-overflow-hint {
+    display: block;
+    flex: none;
+    padding-left: var(--space-2);
+    color: var(--color-neutral-600);
+    background: var(--color-bg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
   :root { --gutter: 14px; }
   body { font-size: 13.5px; }
   .site-header { position: static; }

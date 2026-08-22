@@ -12,19 +12,19 @@ export const metadata: Metadata = {
 const offers = [
   [
     "Lettura con AI",
-    "Partiamo da un problema concreto. I modelli leggono i dati che ci date: fonti pubbliche, archivi interni, fogli, o un mix. Ricostruiamo che cosa dicono i numeri, che cosa manca e che cosa si può confrontare. Ogni cifra resta agganciata alla sua origine.",
+    "Leggiamo fonti pubbliche, archivi interni o entrambi. Ogni cifra resta legata alla sua origine.",
   ],
   [
     "Report o cruscotto interno",
-    "Costruiamo una vista per un ufficio, un consiglio o un team: si chiede in italiano e si ottiene una risposta sui dati del progetto, con fonte, data, perimetro e limiti di ogni cifra.",
+    "Una vista per uffici e team, con fonte, data, perimetro e limiti di ogni risposta.",
   ],
   [
     "Formazione",
-    "Addestriamo chi deve usare l'intelligenza artificiale sul lavoro vero, senza inventare numeri: dati pubblici, dati aziendali, gare, controllo di gestione, comunicazione.",
+    "Uso pratico dell'AI su dati, gare, controllo di gestione e comunicazione, senza inventare numeri.",
   ],
   [
     "Strumento AI per l'impresa o per la PA",
-    "Progettiamo e mettiamo in opera un assistente o un flusso interno: cercare documenti, seguire pratiche, interrogare archivi. Può stare sulle fonti pubbliche, sui dati dell'organizzazione, o su tutti e due.",
+    "Un assistente o flusso interno per cercare documenti, seguire pratiche e interrogare archivi.",
   ],
 ] as const;
 
@@ -32,43 +32,24 @@ export default function ConsultingPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Intelligenza artificiale per aziende e PA</h1>
+        <h1>Raccontaci il progetto</h1>
         <p>
-          Il sito resta gratuito. Qui si parla di incarichi: progetti di intelligenza
-          artificiale per un&apos;azienda o un&apos;amministrazione. Si può lavorare sui dati
-          pubblici, sui dati interni, o su entrambi. Non è obbligatorio usare le fonti
-          del sito.
+          Aiutiamo aziende e amministrazioni a usare dati e intelligenza artificiale per
+          un lavoro concreto. Il sito pubblico resta gratuito e indipendente.
         </p>
       </div>
 
       <div className="notice">
-        <strong>Due cose distinte</strong>
+        <strong>Il sito resta indipendente</strong>
         <p>
-          I dati pubblici restano pubblici. Un incarico di consulenza non compra accesso
-          privilegiato, non cambia i numeri sul sito e non è un parere legale, contabile o
-          un accertamento. I dati dell&apos;organizzazione restano dell&apos;organizzazione: non
-          finiscono sul sito. Per le amministrazioni questa è una richiesta di contatto: un
-          eventuale incarico segue le regole di affidamento previste.
+          Un incarico non compra accesso privilegiato e non cambia i numeri pubblicati. I dati
+          interni restano dell&apos;organizzazione. Per una PA, il form è solo una richiesta di
+          contatto: ogni incarico segue le regole di affidamento previste.
         </p>
       </div>
 
       <div className={styles.layout}>
-        <section className={styles.offers} aria-labelledby="offers-title">
-          <h2 id="offers-title" className="panel-title">
-            Che cosa costruiamo
-          </h2>
-          {offers.map(([title, text]) => (
-            <article className="panel" key={title}>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-          <p className={styles.topicsHint}>
-            Nel form trovi le stesse voci: {Object.values(CONSULTING_TOPICS).join("; ")}.
-          </p>
-        </section>
-
-        <section className="panel" aria-labelledby="form-title">
+        <section className={`panel ${styles.formPanel}`} aria-labelledby="form-title">
           <h2 id="form-title" className="panel-title">
             Richiedi un contatto
           </h2>
@@ -78,6 +59,22 @@ export default function ConsultingPage() {
             indirizzo che indichi nel form.
           </p>
           <LeadForm />
+        </section>
+
+        <section className={`panel ${styles.offers}`} aria-labelledby="offers-title">
+          <h2 id="offers-title" className="panel-title">Possiamo aiutarti con</h2>
+          <div className={styles.offerList}>
+            {offers.map(([title, text]) => (
+              <article key={title}>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+          <p className={styles.topicsHint}>
+            Scegli una delle {Object.keys(CONSULTING_TOPICS).length} voci nel form; puoi precisare
+            il caso nel messaggio finale.
+          </p>
         </section>
       </div>
     </main>

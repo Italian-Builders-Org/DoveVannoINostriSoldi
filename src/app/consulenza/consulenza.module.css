@@ -1,16 +1,20 @@
 .layout {
   display: grid;
-  grid-template-columns: minmax(min(100%, 300px), 1fr) minmax(min(100%, 300px), 1fr);
+  grid-template-columns: minmax(min(100%, 300px), 1.25fr) minmax(min(100%, 300px), 1fr);
   gap: var(--space-4);
   align-items: start;
 }
 
 .offers {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .offers :global(.panel-title) { margin-bottom: 0; }
+
+.offerList { display: grid; }
+.offerList article { padding-block: var(--space-3); border-top: 1px solid var(--color-neutral-200); }
+.offerList article:first-child { border-top: 0; }
 
 .offers h3 {
   margin: 0 0 var(--space-2);
@@ -28,6 +32,8 @@
   font-size: 12px;
   color: var(--color-neutral-600);
 }
+
+.formPanel { min-width: 0; }
 
 .formIntro {
   margin: 0 0 var(--space-4);

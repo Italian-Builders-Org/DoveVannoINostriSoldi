@@ -209,3 +209,37 @@ test("the narrow mobile header never collapses the wordmark into a text column",
   );
   assert.match(navigation, /className="brand" aria-label="Dove vanno i nostri soldi, home"/);
 });
+
+test("primary navigation matches route boundaries and exposes mobile overflow", async () => {
+  const [globalsCss, navigation] = await Promise.all([
+    source("../src/app/globals.css"),
+    source("../src/components/navigation.tsx"),
+  ]);
+
+  assert.match(navigation, /pathname === href \|\| pathname\.startsWith\(`\$\{href\}\/`\)/);
+  assert.match(navigation, /className="nav-overflow-hint"/);
+  assert.match(globalsCss, /overscroll-behavior-inline: contain/);
+  assert.match(globalsCss, /@media \(max-width: 620px\)[\s\S]*?\.nav-overflow-hint \{[\s\S]*?display: block;/);
+});
+
+test("consulting puts the protected form before the compact offer index", async () => {
+  const [page, css] = await Promise.all([
+    source("../src/app/consulenza/page.tsx"),
+    source("../src/app/consulenza/consulenza.module.css"),
+  ]);
+  assert.ok(page.indexOf("form-title") < page.indexOf("offers-title"));
+  assert.match(page, /className=\{`panel \$\{styles\.formPanel\}`\}/);
+  assert.match(page, /className=\{`panel \$\{styles\.offers\}`\}/);
+  assert.match(css, /grid-template-columns: minmax\(min\(100%, 300px\), 1\.25fr\)/);
+});
+
+test("cohesion adds a mobile summary without removing the exact table", async () => {
+  const [page, css] = await Promise.all([
+    source("../src/app/coesione/page.tsx"),
+    source("../src/app/coesione/coesione.module.css"),
+  ]);
+  assert.match(page, /items\.slice\(0, 4\)/);
+  assert.match(page, /Scorri lateralmente la tabella per tutti i valori esatti/);
+  assert.match(page, /<table className="table">/);
+  assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.dimensionSummary \{[\s\S]*?display: grid;/);
+});

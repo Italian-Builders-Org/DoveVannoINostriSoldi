@@ -10,7 +10,7 @@ const NAVIGATION_TIMEOUT_MS = 45_000;
 const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
-const INFO_TOOLTIP_IDS = ["cash-payments-tip", "spending-glossary-tip"];
+const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");
@@ -1029,6 +1029,12 @@ try {
         assertTextMatches(await bodyText(page), /A che punto sono i progetti/i, label);
         await assertCohesionStatusLayout(page, label);
         await assertCohesionPathwayContrast(page, label);
+        const summaries = await page.$$eval('[class*="dimensionSummary"]', (items) =>
+          items.map((item) => ({ display: getComputedStyle(item).display, rows: item.children.length })),
+        );
+        assert.equal(summaries.length, 2, `${label}: sommari delle dimensioni assenti`);
+        assert.equal(summaries.every((summary) => summary.rows === 4), true, `${label}: righe sommario inattese`);
+        assert.equal(summaries.every((summary) => summary.display !== "none"), width <= 620, `${label}: visibilità sommario incoerente`);
       },
     });
     completed.push(label);
@@ -1043,14 +1049,19 @@ try {
       validate: async (page) => {
         assertTextMatches(
           await bodyText(page),
-          /Intelligenza artificiale per aziende e PA/i,
+          /Raccontaci il progetto/i,
           label,
         );
-        const form = await page.$eval("main form", (element) => ({
-          hasPrivacyLink: Boolean(element.querySelector('a[href="/privacy"]')),
-          invalidBeforeSubmit: !element.checkValidity(),
-          requiredFields: element.querySelectorAll("[required]").length,
-        }));
+        const form = await page.$eval("main form", (element) => {
+          const offers = document.getElementById("offers-title")?.closest("section");
+          return {
+            beforeOffers: Boolean(offers && (element.compareDocumentPosition(offers) & Node.DOCUMENT_POSITION_FOLLOWING)),
+            hasPrivacyLink: Boolean(element.querySelector('a[href="/privacy"]')),
+            invalidBeforeSubmit: !element.checkValidity(),
+            requiredFields: element.querySelectorAll("[required]").length,
+          };
+        });
+        assert.equal(form.beforeOffers, true, `${label}: il form segue ancora l’elenco offerte`);
         assert.equal(form.hasPrivacyLink, true, `${label}: informativa privacy non collegata`);
         assert.equal(form.invalidBeforeSubmit, true, `${label}: form vuoto considerato valido`);
         assert.ok(form.requiredFields >= 7, `${label}: campi obbligatori inattesi`);
@@ -1066,6 +1077,34 @@ try {
     validate: async (page) => assertConsultingSuccess(page, "Consulenza submit riuscito 390px"),
   });
   completed.push("Consulenza submit riuscito 390px");
+
+  for (const [pathname, width, expected] of [
+    ["/spese/sanita", 320, "Soldi"],
+    ["/metodologia", 375, "Fonti"],
+    ["/coesione/asili", 390, "Fondi e progetti"],
+  ]) {
+    const label = `Navigazione attiva ${width}px ${pathname}`;
+    await runScenario(browser, {
+      label,
+      pathname,
+      width,
+      validate: async (page) => {
+        const active = await page.$$eval(
+          'nav[aria-label="Navigazione principale"] a[aria-current="page"]',
+          (links) => links.map((link) => link.textContent?.trim()),
+        );
+        assert.deepEqual(active, [expected], `${label}: sezione attiva inattesa`);
+        const visible = await page.$eval('nav[aria-label="Navigazione principale"]', (nav) => {
+          const link = nav.querySelector('a[aria-current="page"]');
+          const navRect = nav.getBoundingClientRect();
+          const linkRect = link?.getBoundingClientRect();
+          return Boolean(linkRect && linkRect.left >= navRect.left - 1 && linkRect.right <= navRect.right + 1);
+        });
+        assert.equal(visible, true, `${label}: sezione attiva fuori viewport`);
+      },
+    });
+    completed.push(label);
+  }
 
   for (const width of [390, 1280]) {
     const label = `Privacy consulenza ${width}px`;

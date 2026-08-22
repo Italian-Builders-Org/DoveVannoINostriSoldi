@@ -1,0 +1,24 @@
+{
+  "benchmarkCandidates": 5,
+  "benchmarkExcludedByReason": {
+    "piattaforma-editoriale-specifica": 1
+  },
+  "benchmarkIncluded": 4,
+  "boundaries": [
+    "descriptive_award_distribution_not_market_price",
+    "package_amount_basis_was_mixed_and_is_normalized_from_official_acts",
+    "proposals_and_editorial_reach_not_published",
+    "deviation_is_not_evidence_of_waste_or_illegality"
+  ],
+  "generatedAt": "2026-08-22T17:10:00Z",
+  "licenseOrReuse": "not_verified",
+  "officialDocumentHashesPinned": 5,
+  "packageAmountBasisObserved": {
+    "gross": 2,
+    "net": 3
+  },
+  "records": 5,
+  "schemaVersion": 1,
+  "snapshotSha256": "15dda4750f15c422168d2334347a5dc6f48239f03c32a71f7003fc3352552ed9",
+  "sourceSpecSha256": "26d5a5294842a20097dabf9b0e5fad886c15f86d046d36ce145a28ada3ba819e"
+}

@@ -1,0 +1,580 @@
+{
+  "assessments": [
+    {
+      "benchmarkId": "benchmark:bb18edfd7b",
+      "classification": "benchmark_deviation",
+      "id": "assessment:bb18edfd7b",
+      "observationId": "observation:bb18edfd7b",
+      "strength": "reproduced_computation"
+    },
+    {
+      "benchmarkId": "benchmark:bb19028cfb",
+      "classification": "benchmark_deviation",
+      "id": "assessment:bb19028cfb",
+      "observationId": "observation:bb19028cfb",
+      "strength": "reproduced_computation"
+    },
+    {
+      "benchmarkId": "benchmark:bb19625e0d",
+      "classification": "benchmark_deviation",
+      "id": "assessment:bb19625e0d",
+      "observationId": "observation:bb19625e0d",
+      "strength": "reproduced_computation"
+    },
+    {
+      "benchmarkId": "benchmark:bb19f574a5",
+      "classification": "benchmark_deviation",
+      "id": "assessment:bb19f574a5",
+      "observationId": "observation:bb19f574a5",
+      "strength": "reproduced_computation"
+    },
+    {
+      "classification": "incomplete_or_not_comparable",
+      "id": "assessment:bb23e9f610",
+      "observationId": "observation:bb23e9f610",
+      "reasons": [
+        "La determina specifica una singola piattaforma editoriale con perimetro diverso dagli altri quattro affidamenti."
+      ],
+      "strength": "insufficient_evidence"
+    }
+  ],
+  "benchmarkCohorts": [
+    {
+      "comparability": {
+        "amountPhase": "award",
+        "categoryTaxonomy": "vive-editorial-campaign-v1",
+        "categoryValue": "generic-editorial-promotion-same-exhibition",
+        "geography": "Roma",
+        "periodKey": "2026-04",
+        "periodPrecision": "exact_day",
+        "procurementScope": "same spender, exhibition, chapter, procedure and generic service wording",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "denominator": {
+        "candidateRecords": 5,
+        "excludedByReason": {
+          "piattaforma-editoriale-specifica": 1
+        },
+        "includedRecords": 4,
+        "label": "Cinque affidamenti editoriali individuati per la stessa mostra"
+      },
+      "formulaVersion": "net-award-median-r7-v1",
+      "id": "cohort:vive-maddalena-editorial-2026",
+      "inputFingerprint": "66f5da30702c5615c0daa5ea22277413c1680ea5ae76a19982b39b6c28aecb01",
+      "metricVersion": 1,
+      "sourceIds": [
+        "source:mic:determina-57",
+        "source:mic:determina-58",
+        "source:mic:determina-59",
+        "source:mic:determina-60"
+      ],
+      "status": "verified",
+      "summary": {
+        "count": 4,
+        "medianCents": 249575,
+        "minimumCohortSize": 4,
+        "p25Cents": 219363,
+        "p75Cents": 252500,
+        "p90Cents": 257000,
+        "quantileConvention": "linear_interpolation_r7"
+      }
+    }
+  ],
+  "benchmarks": [
+    {
+      "cohortId": "cohort:vive-maddalena-editorial-2026",
+      "deltaCents": 425,
+      "formula": "observedCents - medianCents",
+      "id": "benchmark:bb18edfd7b",
+      "medianCents": 249575,
+      "observationId": "observation:bb18edfd7b",
+      "observedCents": 250000,
+      "relativeDeltaBasisPoints": 17
+    },
+    {
+      "cohortId": "cohort:vive-maddalena-editorial-2026",
+      "deltaCents": -119575,
+      "formula": "observedCents - medianCents",
+      "id": "benchmark:bb19028cfb",
+      "medianCents": 249575,
+      "observationId": "observation:bb19028cfb",
+      "observedCents": 130000,
+      "relativeDeltaBasisPoints": -4791
+    },
+    {
+      "cohortId": "cohort:vive-maddalena-editorial-2026",
+      "deltaCents": 10425,
+      "formula": "observedCents - medianCents",
+      "id": "benchmark:bb19625e0d",
+      "medianCents": 249575,
+      "observationId": "observation:bb19625e0d",
+      "observedCents": 260000,
+      "relativeDeltaBasisPoints": 418
+    },
+    {
+      "cohortId": "cohort:vive-maddalena-editorial-2026",
+      "deltaCents": -425,
+      "formula": "observedCents - medianCents",
+      "id": "benchmark:bb19f574a5",
+      "medianCents": 249575,
+      "observationId": "observation:bb19f574a5",
+      "observedCents": 249150,
+      "relativeDeltaBasisPoints": -17
+    }
+  ],
+  "generatedAt": "2026-08-22T17:10:00Z",
+  "observations": [
+    {
+      "amount": {
+        "cents": 250000,
+        "currency": "EUR",
+        "phase": "award",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "caveats": [
+        "Importo netto verificato nell'atto; nel pacchetto il campo importo coincide con il netto ufficiale.",
+        "Il preventivo e le metriche di copertura editoriale non sono pubblicati nell'allegato verificato.",
+        "La determina autorizza l'affidamento; non prova pagamento, esecuzione o conformità del servizio."
+      ],
+      "id": "observation:bb18edfd7b",
+      "period": {
+        "coverage": "complete",
+        "end": "2026-04-01",
+        "kind": "award",
+        "referenceYear": 2026,
+        "sourcePrecision": "exact_day",
+        "start": "2026-04-01"
+      },
+      "procurement": {
+        "awardStatus": "awarded",
+        "cig": "BB18EDFD7B",
+        "classification": {
+          "confidence": "source_declared",
+          "origin": "source_field",
+          "ruleVersion": null,
+          "sourceField": "Procedura nella determina"
+        },
+        "cpv": null,
+        "normalized": "direct_award",
+        "ocid": null,
+        "ruleVersionId": null,
+        "sourceLabel": "Affidamento diretto ai sensi dell'art. 50, comma 1, lett. b), D.Lgs. 36/2023"
+      },
+      "sourceIds": [
+        "source:mic:determina-57",
+        "source:package:affidamenti-diretti"
+      ],
+      "subjectId": "subject:award:bb18edfd7b",
+      "topic": "advertising",
+      "what": "campagna editoriale di promozione e sponsorizzazione della mostra «La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino»"
+    },
+    {
+      "amount": {
+        "cents": 130000,
+        "currency": "EUR",
+        "phase": "award",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "caveats": [
+        "Importo netto verificato nell'atto; nel pacchetto il campo importo coincide con il lordo ufficiale.",
+        "Il preventivo e le metriche di copertura editoriale non sono pubblicati nell'allegato verificato.",
+        "La determina autorizza l'affidamento; non prova pagamento, esecuzione o conformità del servizio."
+      ],
+      "id": "observation:bb19028cfb",
+      "period": {
+        "coverage": "complete",
+        "end": "2026-04-01",
+        "kind": "award",
+        "referenceYear": 2026,
+        "sourcePrecision": "exact_day",
+        "start": "2026-04-01"
+      },
+      "procurement": {
+        "awardStatus": "awarded",
+        "cig": "BB19028CFB",
+        "classification": {
+          "confidence": "source_declared",
+          "origin": "source_field",
+          "ruleVersion": null,
+          "sourceField": "Procedura nella determina"
+        },
+        "cpv": null,
+        "normalized": "direct_award",
+        "ocid": null,
+        "ruleVersionId": null,
+        "sourceLabel": "Affidamento diretto ai sensi dell'art. 50, comma 1, lett. b), D.Lgs. 36/2023"
+      },
+      "sourceIds": [
+        "source:mic:determina-58",
+        "source:package:affidamenti-diretti"
+      ],
+      "subjectId": "subject:award:bb19028cfb",
+      "topic": "advertising",
+      "what": "campagna editoriale di promozione e sponsorizzazione della mostra «La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino»"
+    },
+    {
+      "amount": {
+        "cents": 260000,
+        "currency": "EUR",
+        "phase": "award",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "caveats": [
+        "Importo netto verificato nell'atto; nel pacchetto il campo importo coincide con il netto ufficiale.",
+        "Il preventivo e le metriche di copertura editoriale non sono pubblicati nell'allegato verificato.",
+        "La determina autorizza l'affidamento; non prova pagamento, esecuzione o conformità del servizio."
+      ],
+      "id": "observation:bb19625e0d",
+      "period": {
+        "coverage": "complete",
+        "end": "2026-04-01",
+        "kind": "award",
+        "referenceYear": 2026,
+        "sourcePrecision": "exact_day",
+        "start": "2026-04-01"
+      },
+      "procurement": {
+        "awardStatus": "awarded",
+        "cig": "BB19625E0D",
+        "classification": {
+          "confidence": "source_declared",
+          "origin": "source_field",
+          "ruleVersion": null,
+          "sourceField": "Procedura nella determina"
+        },
+        "cpv": null,
+        "normalized": "direct_award",
+        "ocid": null,
+        "ruleVersionId": null,
+        "sourceLabel": "Affidamento diretto ai sensi dell'art. 50, comma 1, lett. b), D.Lgs. 36/2023"
+      },
+      "sourceIds": [
+        "source:mic:determina-59",
+        "source:package:affidamenti-diretti"
+      ],
+      "subjectId": "subject:award:bb19625e0d",
+      "topic": "advertising",
+      "what": "campagna editoriale di promozione e sponsorizzazione della mostra «La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino»"
+    },
+    {
+      "amount": {
+        "cents": 249150,
+        "currency": "EUR",
+        "phase": "award",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "caveats": [
+        "Importo netto verificato nell'atto; nel pacchetto il campo importo coincide con il lordo ufficiale.",
+        "Il preventivo e le metriche di copertura editoriale non sono pubblicati nell'allegato verificato.",
+        "La determina autorizza l'affidamento; non prova pagamento, esecuzione o conformità del servizio."
+      ],
+      "id": "observation:bb19f574a5",
+      "period": {
+        "coverage": "complete",
+        "end": "2026-04-01",
+        "kind": "award",
+        "referenceYear": 2026,
+        "sourcePrecision": "exact_day",
+        "start": "2026-04-01"
+      },
+      "procurement": {
+        "awardStatus": "awarded",
+        "cig": "BB19F574A5",
+        "classification": {
+          "confidence": "source_declared",
+          "origin": "source_field",
+          "ruleVersion": null,
+          "sourceField": "Procedura nella determina"
+        },
+        "cpv": null,
+        "normalized": "direct_award",
+        "ocid": null,
+        "ruleVersionId": null,
+        "sourceLabel": "Affidamento diretto ai sensi dell'art. 50, comma 1, lett. b), D.Lgs. 36/2023"
+      },
+      "sourceIds": [
+        "source:mic:determina-60",
+        "source:package:affidamenti-diretti"
+      ],
+      "subjectId": "subject:award:bb19f574a5",
+      "topic": "advertising",
+      "what": "campagna editoriale di promozione e sponsorizzazione della mostra «La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino»"
+    },
+    {
+      "amount": {
+        "cents": 720000,
+        "currency": "EUR",
+        "phase": "award",
+        "taxTreatment": "net",
+        "unit": "total"
+      },
+      "caveats": [
+        "Importo netto verificato nell'atto; nel pacchetto il campo importo coincide con il netto ufficiale.",
+        "Il preventivo e le metriche di copertura editoriale non sono pubblicati nell'allegato verificato.",
+        "La determina autorizza l'affidamento; non prova pagamento, esecuzione o conformità del servizio."
+      ],
+      "id": "observation:bb23e9f610",
+      "period": {
+        "coverage": "complete",
+        "end": "2026-04-07",
+        "kind": "award",
+        "referenceYear": 2026,
+        "sourcePrecision": "exact_day",
+        "start": "2026-04-07"
+      },
+      "procurement": {
+        "awardStatus": "awarded",
+        "cig": "BB23E9F610",
+        "classification": {
+          "confidence": "source_declared",
+          "origin": "source_field",
+          "ruleVersion": null,
+          "sourceField": "Procedura nella determina"
+        },
+        "cpv": null,
+        "normalized": "direct_award",
+        "ocid": null,
+        "ruleVersionId": null,
+        "sourceLabel": "Affidamento diretto ai sensi dell'art. 50, comma 1, lett. b), D.Lgs. 36/2023"
+      },
+      "sourceIds": [
+        "source:mic:determina-67",
+        "source:package:affidamenti-diretti"
+      ],
+      "subjectId": "subject:award:bb23e9f610",
+      "topic": "advertising",
+      "what": "campagna editoriale di promozione e sponsorizzazione della mostra «La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino»"
+    }
+  ],
+  "publicationChecks": [],
+  "schemaVersion": 1,
+  "shareCards": [
+    {
+      "amountLabel": "€2.500 netti; €3.050 con IVA",
+      "assessmentId": "assessment:bb18edfd7b",
+      "benchmarkLabel": "€4,25 sopra la mediana di 4 affidamenti editoriali per la stessa mostra (€2.495,75)",
+      "caveat": "Confronta importi netti totali, non prezzi unitari. L'atto autorizza l'affidamento, non prova pagamento o conformità.",
+      "evidenceLabel": "Confronto calcolato su 4 determine ufficiali",
+      "id": "card:bb18edfd7b",
+      "periodLabel": "Determina 57 del 1 aprile 2026",
+      "publicationStatus": "publishable",
+      "sourceIds": [
+        "source:mic:determina-57"
+      ],
+      "spender": "Vittoriano e Palazzo Venezia",
+      "title": "€2.500 netti per promuovere una mostra",
+      "what": "Campagna editoriale affidata a Ascacomunicazione S.r.l."
+    },
+    {
+      "amountLabel": "€1.300 netti; €1.586 con IVA",
+      "assessmentId": "assessment:bb19028cfb",
+      "benchmarkLabel": "€1.195,75 sotto la mediana di 4 affidamenti editoriali per la stessa mostra (€2.495,75)",
+      "caveat": "Confronta importi netti totali, non prezzi unitari. L'atto autorizza l'affidamento, non prova pagamento o conformità.",
+      "evidenceLabel": "Confronto calcolato su 4 determine ufficiali",
+      "id": "card:bb19028cfb",
+      "periodLabel": "Determina 58 del 1 aprile 2026",
+      "publicationStatus": "publishable",
+      "sourceIds": [
+        "source:mic:determina-58"
+      ],
+      "spender": "Vittoriano e Palazzo Venezia",
+      "title": "€1.300 netti per promuovere una mostra",
+      "what": "Campagna editoriale affidata a Exibartlab S.r.l."
+    },
+    {
+      "amountLabel": "€2.600 netti; €3.172 con IVA",
+      "assessmentId": "assessment:bb19625e0d",
+      "benchmarkLabel": "€104,25 sopra la mediana di 4 affidamenti editoriali per la stessa mostra (€2.495,75)",
+      "caveat": "Confronta importi netti totali, non prezzi unitari. L'atto autorizza l'affidamento, non prova pagamento o conformità.",
+      "evidenceLabel": "Confronto calcolato su 4 determine ufficiali",
+      "id": "card:bb19625e0d",
+      "periodLabel": "Determina 59 del 1 aprile 2026",
+      "publicationStatus": "publishable",
+      "sourceIds": [
+        "source:mic:determina-59"
+      ],
+      "spender": "Vittoriano e Palazzo Venezia",
+      "title": "€2.600 netti per promuovere una mostra",
+      "what": "Campagna editoriale affidata a Danae Project S.r.l."
+    },
+    {
+      "amountLabel": "€2.491,50 netti; €3.039,63 con IVA",
+      "assessmentId": "assessment:bb19f574a5",
+      "benchmarkLabel": "€4,25 sotto la mediana di 4 affidamenti editoriali per la stessa mostra (€2.495,75)",
+      "caveat": "Confronta importi netti totali, non prezzi unitari. L'atto autorizza l'affidamento, non prova pagamento o conformità.",
+      "evidenceLabel": "Confronto calcolato su 4 determine ufficiali",
+      "id": "card:bb19f574a5",
+      "periodLabel": "Determina 60 del 1 aprile 2026",
+      "publicationStatus": "publishable",
+      "sourceIds": [
+        "source:mic:determina-60"
+      ],
+      "spender": "Vittoriano e Palazzo Venezia",
+      "title": "€2.491,50 netti per promuovere una mostra",
+      "what": "Campagna editoriale affidata a Artribune S.r.l."
+    }
+  ],
+  "sources": [
+    {
+      "id": "source:mic:determina-57",
+      "licenseOrReuse": null,
+      "locator": "CIG BB18EDFD7B; pagina ufficiale https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42689_566_1.html",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": "2026-04-03",
+      "publisher": "Vittoriano e Palazzo Venezia - Ministero della Cultura",
+      "role": "official_primary",
+      "sha256": "8345b42741a24d06a9d2ca83bdd71501bc0913003392e9cd6218c3720e3ee090",
+      "title": "Determina 57 del 2026-04-01",
+      "url": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215004911873370O__Odetermina_57_askanewssigned.pdf",
+      "verification": "verified"
+    },
+    {
+      "id": "source:mic:determina-58",
+      "licenseOrReuse": null,
+      "locator": "CIG BB19028CFB; pagina ufficiale https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42690_566_1.html",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": "2026-04-03",
+      "publisher": "Vittoriano e Palazzo Venezia - Ministero della Cultura",
+      "role": "official_primary",
+      "sha256": "c4d52239cddeb0981a17412b49723eae162ab04e3cc7baebaa5ad0b85d81c950",
+      "title": "Determina 58 del 2026-04-01",
+      "url": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215013228263370O__Odetermina_58_exibartsigned.pdf",
+      "verification": "verified"
+    },
+    {
+      "id": "source:mic:determina-59",
+      "licenseOrReuse": null,
+      "locator": "CIG BB19625E0D; pagina ufficiale https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42691_566_1.html",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": "2026-04-03",
+      "publisher": "Vittoriano e Palazzo Venezia - Ministero della Cultura",
+      "role": "official_primary",
+      "sha256": "3b0e03c86594924aac42cd88918ffdcee97a152f43d99efafce8a923a90a2279",
+      "title": "Determina 59 del 2026-04-01",
+      "url": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215020623223370O__Odetermina_59_danae_project_srlsigned.pdf",
+      "verification": "verified"
+    },
+    {
+      "id": "source:mic:determina-60",
+      "licenseOrReuse": null,
+      "locator": "CIG BB19F574A5; pagina ufficiale https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42692_566_1.html",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": "2026-04-03",
+      "publisher": "Vittoriano e Palazzo Venezia - Ministero della Cultura",
+      "role": "official_primary",
+      "sha256": "b6320e72de50a65da02161d06446b081b348922cda4368e04e03fc791e64d5cd",
+      "title": "Determina 60 del 2026-04-01",
+      "url": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215024534573370O__Odetermina_60_artribunesigned.pdf",
+      "verification": "verified"
+    },
+    {
+      "id": "source:mic:determina-67",
+      "licenseOrReuse": null,
+      "locator": "CIG BB23E9F610; pagina ufficiale https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_43234_566_1.html",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": "2026-04-16",
+      "publisher": "Vittoriano e Palazzo Venezia - Ministero della Cultura",
+      "role": "official_primary",
+      "sha256": "5b0205c7ed7fe90fff3506921468d038f9d4640d789fbd153bebd041c6079c90",
+      "title": "Determina 67 del 2026-04-07",
+      "url": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/261059470831193370O__Odetermina67_messaggero.pdf",
+      "verification": "verified"
+    },
+    {
+      "id": "source:package:affidamenti-diretti",
+      "licenseOrReuse": null,
+      "locator": "dashboard/affidamenti-diretti.tsv",
+      "observedAt": "2026-08-22T17:10:00Z",
+      "publishedAt": null,
+      "publisher": "Pacchetto ricevuto da Andrea Stroppa",
+      "role": "package_input",
+      "sha256": "cd6a8265d606f26513a41a8a4813a21645ef5c083a6b4e9f5fb17982fbb4c8d8",
+      "title": "Catalogo affidamenti diretti",
+      "url": null,
+      "verification": "package_only_unverified"
+    }
+  ],
+  "subjects": [
+    {
+      "displayName": "Affidamento editoriale a Ascacomunicazione S.r.l.",
+      "id": "subject:award:bb18edfd7b",
+      "identifiers": [
+        {
+          "scheme": "cig",
+          "sourceId": "source:mic:determina-57",
+          "validFrom": null,
+          "validTo": null,
+          "value": "BB18EDFD7B"
+        }
+      ],
+      "kind": "award",
+      "personalDataPublication": "not_personal"
+    },
+    {
+      "displayName": "Affidamento editoriale a Exibartlab S.r.l.",
+      "id": "subject:award:bb19028cfb",
+      "identifiers": [
+        {
+          "scheme": "cig",
+          "sourceId": "source:mic:determina-58",
+          "validFrom": null,
+          "validTo": null,
+          "value": "BB19028CFB"
+        }
+      ],
+      "kind": "award",
+      "personalDataPublication": "not_personal"
+    },
+    {
+      "displayName": "Affidamento editoriale a Danae Project S.r.l.",
+      "id": "subject:award:bb19625e0d",
+      "identifiers": [
+        {
+          "scheme": "cig",
+          "sourceId": "source:mic:determina-59",
+          "validFrom": null,
+          "validTo": null,
+          "value": "BB19625E0D"
+        }
+      ],
+      "kind": "award",
+      "personalDataPublication": "not_personal"
+    },
+    {
+      "displayName": "Affidamento editoriale a Artribune S.r.l.",
+      "id": "subject:award:bb19f574a5",
+      "identifiers": [
+        {
+          "scheme": "cig",
+          "sourceId": "source:mic:determina-60",
+          "validFrom": null,
+          "validTo": null,
+          "value": "BB19F574A5"
+        }
+      ],
+      "kind": "award",
+      "personalDataPublication": "not_personal"
+    },
+    {
+      "displayName": "Affidamento editoriale a Piemme S.p.A.",
+      "id": "subject:award:bb23e9f610",
+      "identifiers": [
+        {
+          "scheme": "cig",
+          "sourceId": "source:mic:determina-67",
+          "validFrom": null,
+          "validTo": null,
+          "value": "BB23E9F610"
+        }
+      ],
+      "kind": "award",
+      "personalDataPublication": "not_personal"
+    }
+  ],
+  "transformVersion": 1
+}

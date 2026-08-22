@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-22T17:10:00Z",
+  "packageInput": {
+    "path": "dashboard/affidamenti-diretti.tsv",
+    "sha256": "cd6a8265d606f26513a41a8a4813a21645ef5c083a6b4e9f5fb17982fbb4c8d8",
+    "licenseStatus": "not_found"
+  },
+  "campaign": {
+    "spender": "Vittoriano e Palazzo Venezia",
+    "title": "La Maddalena di Piero di Cosimo: arte, storia e vite di donne nel Rinascimento fiorentino",
+    "eventStart": "2026-04-16",
+    "eventEnd": "2026-07-05",
+    "chapter": "1.2.1.065 - 1.03.02.02.005",
+    "category": "campagna editoriale di promozione e sponsorizzazione"
+  },
+  "records": [
+    {
+      "cig": "BB18EDFD7B",
+      "supplier": "Ascacomunicazione S.r.l.",
+      "determination": "57",
+      "determinationDate": "2026-04-01",
+      "pagePublishedAt": "2026-04-03",
+      "pageUrl": "https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42689_566_1.html",
+      "officialDocumentUrl": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215004911873370O__Odetermina_57_askanewssigned.pdf",
+      "officialDocumentSha256": "8345b42741a24d06a9d2ca83bdd71501bc0913003392e9cd6218c3720e3ee090",
+      "netCents": 250000,
+      "vatCents": 55000,
+      "grossCents": 305000,
+      "packageAmountCents": 250000,
+      "scope": "generic_editorial_campaign",
+      "includedInBenchmark": true
+    },
+    {
+      "cig": "BB19028CFB",
+      "supplier": "Exibartlab S.r.l.",
+      "determination": "58",
+      "determinationDate": "2026-04-01",
+      "pagePublishedAt": "2026-04-03",
+      "pageUrl": "https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42690_566_1.html",
+      "officialDocumentUrl": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215013228263370O__Odetermina_58_exibartsigned.pdf",
+      "officialDocumentSha256": "c4d52239cddeb0981a17412b49723eae162ab04e3cc7baebaa5ad0b85d81c950",
+      "netCents": 130000,
+      "vatCents": 28600,
+      "grossCents": 158600,
+      "packageAmountCents": 158600,
+      "scope": "generic_editorial_campaign",
+      "includedInBenchmark": true
+    },
+    {
+      "cig": "BB19625E0D",
+      "supplier": "Danae Project S.r.l.",
+      "determination": "59",
+      "determinationDate": "2026-04-01",
+      "pagePublishedAt": "2026-04-03",
+      "pageUrl": "https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42691_566_1.html",
+      "officialDocumentUrl": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215020623223370O__Odetermina_59_danae_project_srlsigned.pdf",
+      "officialDocumentSha256": "3b0e03c86594924aac42cd88918ffdcee97a152f43d99efafce8a923a90a2279",
+      "netCents": 260000,
+      "vatCents": 57200,
+      "grossCents": 317200,
+      "packageAmountCents": 260000,
+      "scope": "generic_editorial_campaign",
+      "includedInBenchmark": true
+    },
+    {
+      "cig": "BB19F574A5",
+      "supplier": "Artribune S.r.l.",
+      "determination": "60",
+      "determinationDate": "2026-04-01",
+      "pagePublishedAt": "2026-04-03",
+      "pageUrl": "https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_42692_566_1.html",
+      "officialDocumentUrl": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/269215024534573370O__Odetermina_60_artribunesigned.pdf",
+      "officialDocumentSha256": "b6320e72de50a65da02161d06446b081b348922cda4368e04e03fc791e64d5cd",
+      "netCents": 249150,
+      "vatCents": 54813,
+      "grossCents": 303963,
+      "packageAmountCents": 303963,
+      "scope": "generic_editorial_campaign",
+      "includedInBenchmark": true
+    },
+    {
+      "cig": "BB23E9F610",
+      "supplier": "Piemme S.p.A.",
+      "determination": "67",
+      "determinationDate": "2026-04-07",
+      "pagePublishedAt": "2026-04-16",
+      "pageUrl": "https://trasparenza.cultura.gov.it/archivio105_procedure-dal-01012024_0_43234_566_1.html",
+      "officialDocumentUrl": "https://trasparenza.cultura.gov.it/moduli/downloadFile.php?file=oggetto_allegati/261059470831193370O__Odetermina67_messaggero.pdf",
+      "officialDocumentSha256": "5b0205c7ed7fe90fff3506921468d038f9d4640d789fbd153bebd041c6079c90",
+      "netCents": 720000,
+      "vatCents": 158400,
+      "grossCents": 878400,
+      "packageAmountCents": 720000,
+      "scope": "named_digital_media_platform",
+      "includedInBenchmark": false
+    }
+  ]
+}

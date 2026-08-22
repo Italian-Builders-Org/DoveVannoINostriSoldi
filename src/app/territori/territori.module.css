@@ -19,6 +19,22 @@
   min-width: 0;
 }
 
+.rankingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.rankingGroup { min-width: 0; }
+
+.rankingGroupTitle {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .areaRow th,
 .areaRow td {
   background: var(--color-neutral-100);
@@ -85,6 +101,7 @@
 }
 
 @media (max-width: 760px) {
+  .rankingGrid { grid-template-columns: minmax(0, 1fr); }
   .coverage { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 }
 

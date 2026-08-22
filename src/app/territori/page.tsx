@@ -35,6 +35,10 @@ export default async function TerritoriesPage({
   const regions = regionsByPerCapita(data);
   const regionsByArea = groupRegionsByMacroArea(regions);
   const topByPerCapita = data.topMunicipalitiesByPerCapita.slice(0, 20);
+  const topByPerCapitaGroups = [
+    { label: "Posizioni 1-10", municipalities: topByPerCapita.slice(0, 10) },
+    { label: "Posizioni 11-20", municipalities: topByPerCapita.slice(10, 20) },
+  ];
   const topByVolume = data.topMunicipalitiesByValue.slice(0, 10);
   const regionScale = Math.max(
     ...regions.map((region) => region.value),
@@ -146,39 +150,51 @@ export default async function TerritoriesPage({
         <div className={styles.aside}>
           <section className="panel" data-municipality-ranking="per-capita">
             <h2 className="panel-title">I {topByPerCapita.length} Comuni con più pagamenti per abitante</h2>
-            <div className="table-scroll" role="region" aria-label="Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Comune</th>
-                    <th scope="col" className="num">Per abitante</th>
-                    <th scope="col" className="num">Totale</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topByPerCapita.map((municipality) => (
-                    <tr key={municipality.codiceFiscale}>
-                      <th scope="row">
-                        {municipalityName(municipality.name)}
-                        <small>
-                          {municipality.province} · {municipality.region}
-                        </small>
-                        <small>
-                          {municipality.population === null
-                            ? "abitanti non disponibili"
-                            : `${integer(municipality.population)} abitanti`}
-                        </small>
-                      </th>
-                      <td className="num">
-                        {municipality.perCapita === null
-                          ? "n.d."
-                          : exactEuro(municipality.perCapita)}
-                      </td>
-                      <td className="num">{compactEuro(municipality.value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className={styles.rankingGrid}>
+              {topByPerCapitaGroups.map((group) => (
+                <div className={styles.rankingGroup} key={group.label}>
+                  <h3 className={styles.rankingGroupTitle}>{group.label}</h3>
+                  <div
+                    className="table-scroll"
+                    role="region"
+                    aria-label={`${group.label}: Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne`}
+                    tabIndex={0}
+                  >
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Comune</th>
+                          <th scope="col" className="num">Per abitante</th>
+                          <th scope="col" className="num">Totale</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.municipalities.map((municipality) => (
+                          <tr key={municipality.codiceFiscale}>
+                            <th scope="row">
+                              {municipalityName(municipality.name)}
+                              <small>
+                                {municipality.province} · {municipality.region}
+                              </small>
+                              <small>
+                                {municipality.population === null
+                                  ? "abitanti non disponibili"
+                                  : `${integer(municipality.population)} abitanti`}
+                              </small>
+                            </th>
+                            <td className="num">
+                              {municipality.perCapita === null
+                                ? "n.d."
+                                : exactEuro(municipality.perCapita)}
+                            </td>
+                            <td className="num">{compactEuro(municipality.value)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 

@@ -270,7 +270,11 @@ test("territories keeps provenance close and reflows without a short desktop col
   assert.match(page, /aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente/);
   assert.match(page, /tabIndex=\{0\}/);
   assert.match(page, /periodo tra gennaio e \{monthLabel\}/);
+  assert.match(page, /Posizioni 1-10/);
+  assert.match(page, /Posizioni 11-20/);
   assert.match(css, /\.split \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
+  assert.match(css, /\.rankingGrid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.rankingGrid \{ grid-template-columns: minmax\(0, 1fr\); \}/);
   assert.match(css, /\.regionTableHint \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.regionTableHint \{[\s\S]*?display: block;/);
 });

@@ -243,3 +243,17 @@ test("cohesion adds a mobile summary without removing the exact table", async ()
   assert.match(page, /<table className="table">/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.dimensionSummary \{[\s\S]*?display: grid;/);
 });
+
+test("spending exposes a mobile jump to the complete expenditure breakdown", async () => {
+  const [page, css] = await Promise.all([
+    source("../src/app/spese/page.tsx"),
+    source("../src/app/spese/spese.module.css"),
+  ]);
+
+  assert.match(page, /href="#voci-spesa"/);
+  assert.match(page, /id="voci-spesa"/);
+  assert.match(page, /Vedi le \{data\.titles\.length\} voci di uscita/);
+  assert.match(page, /periodo gennaio–\{monthLabel\}/);
+  assert.match(css, /\.mobileDataJump \{ display: none; \}/);
+  assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.mobileDataJump \{[\s\S]*?display: inline-block;/);
+});

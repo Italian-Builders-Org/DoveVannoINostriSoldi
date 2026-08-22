@@ -82,9 +82,12 @@ export default async function MoneyPage({
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>
           <p>
-            Pagamenti dei Comuni da gennaio a {monthLabel} {data.year}, divisi per tipo di uscita.
-            Fonte SIOPE, file del {longDate(data.source.siopeMovementsLastModified)}.
+            Pagamenti dei Comuni nel periodo gennaio–{monthLabel} {data.year}, divisi per tipo di
+            uscita. Fonte SIOPE, file del {longDate(data.source.siopeMovementsLastModified)}.
           </p>
+          <Link className={styles.mobileDataJump} href="#voci-spesa">
+            Vedi le {data.titles.length} voci di uscita ↓
+          </Link>
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/spese" />
       </div>
@@ -157,7 +160,7 @@ export default async function MoneyPage({
       </section>
 
       <div className={styles.split}>
-        <section className="panel">
+        <section className="panel" id="voci-spesa">
           <h2 className="panel-title">Le {data.titles.length} voci di uscita</h2>
 
           <section className={styles.analysis} aria-labelledby="spese-analysis-title">

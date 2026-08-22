@@ -6,6 +6,8 @@
   flex-wrap: wrap;
 }
 
+.mobileDataJump { display: none; }
+
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -220,6 +222,14 @@
 
 @media (max-width: 620px) {
   .intro { align-items: stretch; }
+  .mobileDataJump {
+    display: inline-block;
+    min-height: 24px;
+    margin-top: var(--space-2);
+    color: var(--color-accent-700);
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
   .titleHead { flex-direction: column; gap: 2px; }
   .monthList li { grid-template-columns: 62px minmax(0, 1fr) 42px; }
   .quantiles { grid-template-columns: 1fr 1fr; }

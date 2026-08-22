@@ -48,9 +48,12 @@ export default function InstitutionsPage() {
           Parlamento, Palazzo Chigi, Ministeri e Regioni hanno conti e regole diverse.
           Scegli il percorso che ti interessa: non li sommiamo in un totale unico.
         </p>
+        <p className="scope-line" data-evidence-stage="scope">
+          Orientamento · periodi e unità cambiano per fonte · nessun totale comune
+        </p>
       </div>
 
-      <section aria-labelledby="percorsi-istituzionali">
+      <section aria-labelledby="percorsi-istituzionali" data-evidence-stage="visual">
         <div className={styles.sectionHeader}>
           <h2 id="percorsi-istituzionali">Quattro conti, quattro perimetri</h2>
           <p>In ogni pagina trovi importi esatti o limiti di copertura, periodo e fonte ufficiale.</p>
@@ -69,11 +72,12 @@ export default function InstitutionsPage() {
         </div>
       </section>
 
-      <div className="notice">
-        <strong>Perché non c&apos;è un totale delle istituzioni</strong>
+      <div className="notice" data-evidence-stage="source">
+        <strong>Fonti e limiti dell&apos;hub</strong>
         <p>
           Periodi, perimetri e fasi contabili non coincidono. Sommarli produrrebbe un numero
-          fuorviante. I confronti restano dentro ogni fonte e solo tra grandezze compatibili.
+          fuorviante. I confronti restano dentro ogni fonte e solo tra grandezze compatibili;
+          metodo, licenza, copertura e limiti completi sono in fondo a ciascun percorso.
         </p>
       </div>
     </main>

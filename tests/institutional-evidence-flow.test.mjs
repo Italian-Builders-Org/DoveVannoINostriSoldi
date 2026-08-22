@@ -43,7 +43,7 @@ test("data routes expose period, perimeter, unit and a complete final provenance
     assert.match(pages[route], pattern, `${route}: incomplete visible scope`);
     assert.match(
       pages[route],
-      /Fonte, metodo, licenza, copertura e limiti|Fonti, metodo, copertura e limiti/,
+      /Font[ei], metodo, licenza, copertura e limiti/,
       `${route}: incomplete final provenance heading`,
     );
   }

@@ -192,7 +192,7 @@ export default function ParliamentPage() {
       <section className="panel" aria-labelledby="fonti-parlamento" data-evidence-stage="source">
         <div className={styles.coverageHeader}>
           <div>
-            <h2 id="fonti-parlamento">Fonti, metodo, copertura e limiti</h2>
+            <h2 id="fonti-parlamento">Fonti, metodo, licenza, copertura e limiti</h2>
             <p>Un documento censito non diventa automaticamente un dato numerico.</p>
           </div>
           <span>Documenti 2024 · fonti ufficiali</span>

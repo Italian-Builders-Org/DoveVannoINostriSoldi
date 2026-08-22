@@ -488,6 +488,47 @@ async function assertRegionalMapSelection(page, label) {
   for (const path of regionPaths) await path.dispose();
 }
 
+async function assertSpendingComposition(page, label, width) {
+  const selector = '[data-composition-state="ready"]';
+  await page.waitForSelector(selector);
+  const state = await page.$eval(selector, (root, viewportWidth) => {
+    const visual = root.querySelector('[aria-label^="Composizione di"]');
+    const map = document.querySelector('[data-region-map="true"]');
+    const municipalityHeading = [...document.querySelectorAll("h2")].find((heading) =>
+      heading.textContent?.includes("Comuni con più pagamenti per abitante"),
+    );
+    return {
+      legendButtons: root.querySelectorAll("ol button").length,
+      visualDisplay: visual ? getComputedStyle(visual).display : null,
+      visualHeight: visual?.getBoundingClientRect().height ?? 0,
+      hasMetadata: /Denominatore:.*Fonte:/s.test(root.textContent ?? ""),
+      compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      mapBeforeMunicipalities: Boolean(
+        map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
+      ),
+      shouldCollapse: viewportWidth <= 620,
+    };
+  }, width);
+  assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
+  assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
+  assert.equal(state.compositionBeforeMap, true, `${label}: composizione dopo la mappa nel DOM`);
+  assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
+  assert.equal(state.visualDisplay === "none", state.shouldCollapse, `${label}: fallback mobile incoerente`);
+  if (!state.shouldCollapse) assert.ok(state.visualHeight >= 250, `${label}: geometria treemap non riservata`);
+
+  const firstLegendButton = `${selector} ol button`;
+  await page.focus(firstLegendButton);
+  await page.waitForSelector(`${selector} [role="tooltip"]`, { visible: true });
+  const describedBy = await page.$eval(firstLegendButton, (button) => button.getAttribute("aria-describedby"));
+  assert.ok(describedBy, `${label}: tooltip non collegato al controllo`);
+  await page.keyboard.press("Escape");
+  await page.waitForFunction((rootSelector) => !document.querySelector(`${rootSelector} [role="tooltip"]`), {}, selector);
+
+  await page.click(`${selector} details summary`);
+  const rows = await page.$$eval(`${selector} details tbody tr`, (items) => items.length);
+  assert.equal(rows, 6, `${label}: tabella equivalente incompleta`);
+}
+
 async function assertTableKeyboardScroll(page, label) {
   await page.waitForSelector(TABLE_REGION, { visible: true });
   const tableState = await page.$eval(TABLE_REGION, (region) => ({
@@ -1050,6 +1091,17 @@ try {
       validate: async (page) => {
         await assertInfoTooltips(page, label);
       },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Composizione spesa home ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/",
+      width,
+      validate: async (page) => assertSpendingComposition(page, label, width),
     });
     completed.push(label);
   }

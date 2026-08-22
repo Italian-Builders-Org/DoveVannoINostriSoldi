@@ -49,8 +49,8 @@ export default async function TerritoriesPage({
         <div className="page-intro">
           <h1>Pagamenti dei Comuni, territorio per territorio</h1>
           <p>
-            Pagamenti dei Comuni con sede nella regione, da gennaio a {monthLabel} {data.year}. Media
-            italiana:{" "}
+            Pagamenti dei Comuni con sede nella regione, nel periodo gennaio–{monthLabel} {data.year}.
+            Media italiana:{" "}
             {data.nationalPerCapita === null
               ? "non disponibile"
               : `${exactEuro(data.nationalPerCapita)} per abitante`}
@@ -64,6 +64,15 @@ export default async function TerritoriesPage({
       <div className={styles.split}>
         <section className="panel">
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
+          <p className={styles.datasetMeta}>
+            Fonte SIOPE · {data.source.siopeOwner}. File del{" "}
+            {longDate(data.source.siopeMovementsLastModified)} · periodo gennaio–{monthLabel}{" "}
+            {data.year}. Pro capite: {data.methodology.populationSource},{" "}
+            {data.methodology.populationReference}.
+          </p>
+          <p className={styles.regionTableHint}>
+            Tabella completa: scorri orizzontalmente per abitanti e copertura dei Comuni →
+          </p>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
             <table className="table">
               <thead>

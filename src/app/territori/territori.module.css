@@ -7,10 +7,9 @@
 }
 
 .split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
-  align-items: start;
 }
 
 .aside {
@@ -35,6 +34,15 @@
   text-transform: uppercase;
   color: var(--color-neutral-600);
 }
+
+.datasetMeta {
+  max-width: 100ch;
+  margin: 0 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.regionTableHint { display: none; }
 
 .note {
   margin: var(--space-3) 0 0;
@@ -76,15 +84,18 @@
   color: var(--color-neutral-800);
 }
 
-@media (max-width: 1100px) {
-  .split { grid-template-columns: minmax(0, 1fr); }
-}
-
 @media (max-width: 760px) {
   .coverage { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 }
 
 @media (max-width: 620px) {
   .intro { align-items: stretch; }
+  .regionTableHint {
+    display: block;
+    margin: 0 0 var(--space-3);
+    color: var(--color-neutral-700);
+    font-size: 12px;
+    font-weight: 600;
+  }
   .coverageList dd { font-size: 18px; }
 }

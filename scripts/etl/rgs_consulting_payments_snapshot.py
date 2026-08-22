@@ -82,6 +82,12 @@ def require_text(value: object, label: str) -> str:
     return value.strip()
 
 
+def require_safe_integer(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or abs(value) > MAX_SAFE_INTEGER:
+        raise SnapshotError(f"{label} deve essere un intero sicuro")
+    return value
+
+
 def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
@@ -91,8 +97,14 @@ def canonical_json(value: object) -> bytes:
 
 
 def validate_spec(spec: dict[str, object]) -> None:
-    if spec.get("schemaVersion") != 1 or spec.get("datasetId") != "rgs-consulting-payments-2024-2025":
+    if (
+        require_safe_integer(spec.get("schemaVersion"), "schemaVersion") != 1
+        or spec.get("datasetId") != "rgs-consulting-payments-2024-2025"
+    ):
         raise SnapshotError("source spec non supportata")
+    generated_at = require_text(spec.get("generatedAt"), "generatedAt")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", generated_at):
+        raise SnapshotError("timestamp di generazione non valido")
     if require_list(spec.get("canonicalHeaders"), "canonicalHeaders") != HEADERS or len(HEADERS) != 46:
         raise SnapshotError("header canonici divergenti")
     pairs: dict[str, str] = {}
@@ -125,6 +137,8 @@ def validate_spec(spec: dict[str, object]) -> None:
     if (
         license_evidence.get("kind") != "record_landing_page_link"
         or license_evidence.get("observedHref") != "http://creativecommons.org/licenses/by/3.0"
+        or license_evidence.get("cssSelector")
+        != ".field-name-metadata-license a[href='http://creativecommons.org/licenses/by/3.0']"
         or license_evidence.get("observedAt") != source["observedAt"]
         or require_list(license_evidence.get("landingUrls"), "source.licenseEvidence.landingUrls")
         != [EXPECTED_SOURCES[year]["landingUrl"] for year in sorted(EXPECTED_SOURCES)]
@@ -137,13 +151,13 @@ def validate_spec(spec: dict[str, object]) -> None:
         raise SnapshotError("sono richieste due sorgenti annuali")
     for raw in sources:
         item = require_dict(raw, "sources[]")
-        year = item.get("year")
+        year = require_safe_integer(item.get("year"), "sources[].year")
         if year not in (2024, 2025) or year in years:
             raise SnapshotError("anno sorgente inatteso o duplicato")
-        years.add(int(year))
+        years.add(year)
         for key in ("datasetId", "landingUrl", "catalogUrl", "csvUrl", "schemaUrl", "sourceSha256"):
             require_text(item.get(key), f"sources[{year}].{key}")
-        expected_identity = EXPECTED_SOURCES[int(year)]
+        expected_identity = EXPECTED_SOURCES[year]
         for key, expected_value in expected_identity.items():
             if item.get(key) != expected_value:
                 raise SnapshotError(f"identità sorgente {year}/{key} divergente")
@@ -155,7 +169,7 @@ def validate_spec(spec: dict[str, object]) -> None:
         if item.get("trailingEmptyField") is not (year == 2025):
             raise SnapshotError(f"regola campo terminale inattesa per {year}")
         for key in ("sourceBytes", "expectedSourceRows", "expectedSelectedRows", "expectedPaidCents"):
-            if not isinstance(item.get(key), int) or int(item[key]) < 1:
+            if require_safe_integer(item.get(key), f"sources[{year}].{key}") < 1:
                 raise SnapshotError(f"sources[{year}].{key} non valido")
         if not isinstance(item.get("sourceSha256"), str) or not SHA_RE.fullmatch(str(item["sourceSha256"])):
             raise SnapshotError(f"sources[{year}].sourceSha256 non valido")
@@ -355,12 +369,6 @@ def build_snapshot(spec: dict[str, object], inputs: dict[int, bytes]) -> dict[st
     return snapshot
 
 
-def require_safe_integer(value: object, label: str) -> int:
-    if isinstance(value, bool) or not isinstance(value, int) or abs(value) > MAX_SAFE_INTEGER:
-        raise SnapshotError(f"{label} deve essere un intero sicuro")
-    return value
-
-
 def validate_snapshot(snapshot: dict[str, object], spec: dict[str, object]) -> None:
     validate_spec(spec)
     expected_top_level = {
@@ -370,11 +378,13 @@ def validate_snapshot(snapshot: dict[str, object], spec: dict[str, object]) -> N
     }
     if set(snapshot) != expected_top_level:
         raise SnapshotError("chiavi artefatto inattese")
+    years = require_list(snapshot.get("years"), "years")
+    exact_years = [require_safe_integer(year, f"years[{index}]") for index, year in enumerate(years)]
     if (
-        snapshot.get("schemaVersion") != 1
+        require_safe_integer(snapshot.get("schemaVersion"), "schemaVersion") != 1
         or snapshot.get("datasetId") != spec["datasetId"]
         or snapshot.get("generatedAt") != spec["generatedAt"]
-        or snapshot.get("years") != [2024, 2025]
+        or exact_years != [2024, 2025]
         or snapshot.get("amountUnit") != "euro_cents"
     ):
         raise SnapshotError("metadati artefatto divergenti")
@@ -407,7 +417,13 @@ def validate_snapshot(snapshot: dict[str, object], spec: dict[str, object]) -> N
         "licenseUrl": source_spec["licenseUrl"], "licenseEvidence": source_spec["licenseEvidence"],
         "resources": expected_resources,
     }
-    if snapshot.get("source") != expected_source:
+    snapshot_source = require_dict(snapshot.get("source"), "source")
+    resources = require_list(snapshot_source.get("resources"), "source.resources")
+    for index, raw_resource in enumerate(resources):
+        resource = require_dict(raw_resource, f"source.resources[{index}]")
+        require_safe_integer(resource.get("year"), f"source.resources[{index}].year")
+        require_safe_integer(resource.get("sourceBytes"), f"source.resources[{index}].sourceBytes")
+    if snapshot_source != expected_source:
         raise SnapshotError("provenienza artefatto divergente dalla source spec")
 
     rows = require_list(snapshot.get("rows"), "rows")
@@ -449,7 +465,20 @@ def validate_snapshot(snapshot: dict[str, object], spec: dict[str, object]) -> N
     coverage = require_dict(snapshot.get("coverage"), "coverage")
     if set(coverage) != {"sourceRows", "selectedRows", "zeroPaidRows", "paidCashCents", "annual"}:
         raise SnapshotError("chiavi copertura inattese")
-    require_list(coverage.get("annual"), "coverage.annual")
+    for key in ("sourceRows", "selectedRows", "zeroPaidRows", "paidCashCents"):
+        require_safe_integer(coverage.get(key), f"coverage.{key}")
+    annual_coverage = require_list(coverage.get("annual"), "coverage.annual")
+    for index, raw_annual in enumerate(annual_coverage):
+        annual = require_dict(raw_annual, f"coverage.annual[{index}]")
+        if set(annual) != {"year", "sourceRows", "selectedRows", "zeroPaidRows", "paidCashCents", "byCe3"}:
+            raise SnapshotError(f"chiavi copertura annuale inattese: coverage.annual[{index}]")
+        for key in ("year", "sourceRows", "selectedRows", "zeroPaidRows", "paidCashCents"):
+            require_safe_integer(annual.get(key), f"coverage.annual[{index}].{key}")
+        by_ce3 = require_dict(annual.get("byCe3"), f"coverage.annual[{index}].byCe3")
+        if set(by_ce3) != set(CE3):
+            raise SnapshotError(f"categorie copertura annuale inattese: coverage.annual[{index}].byCe3")
+        for code, value in by_ce3.items():
+            require_safe_integer(value, f"coverage.annual[{index}].byCe3.{code}")
     expected_annual: list[dict[str, object]] = []
     for annual_spec in require_list(spec["sources"], "sources"):
         annual_contract = require_dict(annual_spec, "sources[]")

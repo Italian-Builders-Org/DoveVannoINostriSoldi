@@ -135,6 +135,22 @@ class RgsConsultingPaymentsSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ETL.SnapshotError, "intero sicuro"):
             ETL.validate_snapshot(bad_amount, spec)
 
+    def test_snapshot_validator_rejects_numeric_type_coercion(self):
+        spec = ETL.load_spec(SPEC_PATH)
+        snapshot = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+        mutations = (
+            ("schemaVersion", lambda value: value.__setitem__("schemaVersion", True)),
+            ("years", lambda value: value.__setitem__("years", [2024.0, 2025.0])),
+            ("coverage.paidCashCents", lambda value: value["coverage"].__setitem__("paidCashCents", 11357039641.0)),
+            ("source.resources.sourceBytes", lambda value: value["source"]["resources"][0].__setitem__("sourceBytes", 12478207.0)),
+        )
+        for label, mutate in mutations:
+            with self.subTest(field=label):
+                mutated = copy.deepcopy(snapshot)
+                mutate(mutated)
+                with self.assertRaisesRegex(ETL.SnapshotError, "intero sicuro"):
+                    ETL.validate_snapshot(mutated, spec)
+
     def test_builder_rejects_missing_or_extra_annual_inputs(self):
         spec = ETL.load_spec(SPEC_PATH)
         for inputs in ({2024: b""}, {2024: b"", 2025: b"", 2026: b""}):
@@ -158,6 +174,11 @@ class RgsConsultingPaymentsSnapshotTests(unittest.TestCase):
         bad_evidence["source"]["licenseEvidence"]["observedHref"] = "https://example.test/license"
         with self.assertRaisesRegex(ETL.SnapshotError, "prova record-specifica"):
             ETL.validate_spec(bad_evidence)
+
+        bad_selector = copy.deepcopy(spec)
+        bad_selector["source"]["licenseEvidence"]["cssSelector"] = ".license a"
+        with self.assertRaisesRegex(ETL.SnapshotError, "prova record-specifica"):
+            ETL.validate_spec(bad_selector)
 
     def test_spec_rejects_every_annual_source_identity_mutation(self):
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))

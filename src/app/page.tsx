@@ -2,6 +2,7 @@ import Link from "next/link";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
+import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
 import { getProcurementComparisonForYear } from "@/lib/audit-data";
 import {
   billions,
@@ -28,32 +29,17 @@ import {
 } from "@/lib/siope-snapshot";
 import styles from "./home.module.css";
 
-/* The donut walks this ramp in order; five buckets, five steps of contrast. */
-const SLICE_COLORS = [
-  "var(--color-accent)",
-  "var(--color-neutral-800)",
-  "var(--color-neutral-500)",
-  "var(--color-neutral-400)",
-  "var(--color-accent-300)",
+const COMPOSITION_FAMILIES: CompositionFamily[] = [
+  "services",
+  "investment",
+  "pass-through",
+  "financing",
+  "other",
 ];
 
 function selectedYear(value: string | string[] | undefined): number {
   const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
   return availableSiopeYears.includes(parsed) ? parsed : availableSiopeYears[0];
-}
-
-/** Turns shares into the cumulative `from% to%` stops a conic gradient wants. */
-function donutGradientStops(slices: { color: string; share: number }[]): string {
-  return slices
-    .reduce<{ at: number; stops: string[] }>(
-      (accumulator, slice) => {
-        const to = accumulator.at + slice.share;
-        accumulator.stops.push(`${slice.color} ${accumulator.at}% ${to}%`);
-        return { at: to, stops: accumulator.stops };
-      },
-      { at: 0, stops: [] },
-    )
-    .stops.join(",");
 }
 
 export default async function HomePage({
@@ -83,13 +69,11 @@ export default async function HomePage({
     const value = bucket.codes.reduce((sum, code) => sum + (valueByCode.get(code) ?? 0), 0);
     return {
       ...bucket,
+      id: bucket.codes.join("-"),
       value,
-      share: siope.totalPaid > 0 ? (value / siope.totalPaid) * 100 : 0,
-      color: SLICE_COLORS[index % SLICE_COLORS.length],
+      family: COMPOSITION_FAMILIES[index],
     };
   });
-
-  const donutStops = donutGradientStops(buckets);
 
   const topRegions = regionsByPerCapita(siope).slice(0, 6);
   const topMunicipalities = municipalitiesByPerCapita(siope).slice(0, 5);
@@ -149,36 +133,25 @@ export default async function HomePage({
           <hr className={styles.rule} />
 
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Per cosa sono stati spesi</h2>
-            <InfoTooltip id="spending-glossary-tip" label="Piccolo glossario delle voci di spesa">
-              <b>Piccolo glossario</b>
-              {HOME_SPENDING_BUCKETS.map((bucket) => (
-                <span key={bucket.name}>
-                  · <b>{bucket.name}</b>: {bucket.explanation}
-                </span>
-              ))}
-            </InfoTooltip>
+            <h2 className="panel-title">Come si compone il totale</h2>
           </div>
-
-          <div className={styles.donutBlock}>
-            <div
-              className={styles.donut}
-              role="img"
-              aria-label={`Ripartizione dei pagamenti: ${buckets
-                .map((bucket) => `${bucket.name} ${percent(bucket.share)}`)
-                .join(", ")}`}
-              style={{ background: `conic-gradient(${donutStops})` }}
-            />
-            <ul className={styles.donutLegend}>
-              {buckets.map((bucket) => (
-                <li key={bucket.name}>
-                  <i aria-hidden="true" style={{ background: bucket.color }} />
-                  <span>{bucket.name}</span>
-                  <b>{percent(bucket.share)}</b>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <SpendingComposition
+            state={{ kind: "ready", totalEuro: siope.totalPaid, items: buckets.map((bucket) => ({
+              id: bucket.id,
+              label: bucket.name,
+              valueEuro: bucket.value,
+              explanation: bucket.explanation,
+              family: bucket.family,
+            })) }}
+            period={`Da gennaio a ${siope.latestMonthLabel.toLocaleLowerCase("it-IT")} ${siope.year}`}
+            scope="Pagamenti di cassa dei Comuni in tutta Italia"
+            denominator="totale dei pagamenti SIOPE dei Comuni nel periodo"
+            source={{
+              label: `${siope.source.siopeOwner} · SIOPE`,
+              href: siope.source.siopeMovementsUrl,
+              observedAt: longDate(siope.source.observedAt),
+            }}
+          />
           <Link
             className={`btn btn-block ${styles.spendingDetailsLink}`}
             href={`/spese?anno=${year}`}
@@ -187,33 +160,6 @@ export default async function HomePage({
           </Link>
         </section>
 
-        <section className="panel">
-          <h2 className="panel-title">
-            I {topMunicipalities.length} Comuni con più pagamenti per abitante
-          </h2>
-          <ol className={styles.rankList}>
-            {topMunicipalities.map((municipality, index) => (
-              <li key={municipality.codiceFiscale}>
-                <span>{index + 1}</span>
-                <strong>
-                  {municipalityName(municipality.name)}
-                  <small>
-                    {municipality.population === null
-                      ? "popolazione non disponibile"
-                      : `${integer(municipality.population)} abitanti`}
-                  </small>
-                </strong>
-                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
-              </li>
-            ))}
-          </ol>
-          <p className={styles.note}>
-            Default pro capite. Il totale resta disponibile nel dettaglio territoriale.
-          </p>
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi il confronto territoriale
-          </Link>
-        </section>
       </div>
 
       <div className={styles.column}>
@@ -345,6 +291,34 @@ export default async function HomePage({
               {siope.latestMonthLabel} è ancora in corso: il numero salirà.
             </p>
           )}
+        </section>
+
+        <section className="panel">
+          <h2 className="panel-title">
+            I {topMunicipalities.length} Comuni con più pagamenti per abitante
+          </h2>
+          <ol className={styles.rankList}>
+            {topMunicipalities.map((municipality, index) => (
+              <li key={municipality.codiceFiscale}>
+                <span>{index + 1}</span>
+                <strong>
+                  {municipalityName(municipality.name)}
+                  <small>
+                    {municipality.population === null
+                      ? "popolazione non disponibile"
+                      : `${integer(municipality.population)} abitanti`}
+                  </small>
+                </strong>
+                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.note}>
+            Confronto pro capite; il totale resta nel dettaglio territoriale.
+          </p>
+          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+            Vedi il confronto territoriale
+          </Link>
         </section>
 
         <section className="panel">

@@ -887,6 +887,39 @@ try {
           return Boolean(heading?.querySelector("a"));
         });
         assert.equal(trentinoHasLink, false, `${label}: il Trentino non deve avere un link CPT ambiguo`);
+        const mobileSummary = await page.$eval('[aria-label="Riepilogo per macro-area"]', (summary) => ({
+          display: getComputedStyle(summary).display,
+          rows: summary.children.length,
+        }));
+        assert.equal(mobileSummary.rows, 3, `${label}: riepilogo macro-aree incompleto`);
+        assert.equal(mobileSummary.display !== "none", width <= 620, `${label}: riepilogo mobile incoerente`);
+        assertTextMatches(await bodyText(page), /non una classifica di merito/i, label);
+        const tableFocused = await page.$eval('[aria-label^="Pagamenti di tutte le regioni"]', (region) => {
+          region.focus();
+          return document.activeElement === region;
+        });
+        assert.equal(tableFocused, true, `${label}: tabella regionale non focalizzabile`);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Composizione spese ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/spese?anno=2026",
+      width,
+      validate: async (page) => {
+        const text = await bodyText(page);
+        assertTextMatches(text, /Per cosa vengono spesi i soldi/i, label);
+        assertTextMatches(text, /Le 7 voci di uscita/i, label);
+        assertTextMatches(text, /gennaio-agosto · parziale/i, label);
+        const method = await page.$("main details summary");
+        assert.ok(method, `${label}: disclosure metodologia assente`);
+        await method.focus();
+        await page.keyboard.press("Enter");
+        assert.equal(await page.$eval("main details", (details) => details.open), true, `${label}: disclosure non aperta`);
       },
     });
     completed.push(label);

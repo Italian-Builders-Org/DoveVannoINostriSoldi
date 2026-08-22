@@ -64,6 +64,18 @@ export default async function TerritoriesPage({
       <div className={styles.split}>
         <section className="panel">
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
+          <ol className={styles.regionSummary} aria-label="Riepilogo per macro-area">
+            {regionsByArea.map(({ area, summary }) => (
+              <li key={area}>
+                <strong>{area}</strong>
+                <span>{summary.perCapita === null ? "n.d." : exactEuro(summary.perCapita)} per abitante</span>
+                <b>{compactEuroLike(summary.value, regionScale)} totali</b>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.regionTableHint}>
+            Scorri lateralmente la tabella per abitanti e copertura dei Comuni.
+          </p>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
             <table className="table">
               <thead>
@@ -137,6 +149,10 @@ export default async function TerritoriesPage({
         <div className={styles.aside}>
           <section className="panel" data-municipality-ranking="per-capita">
             <h2 className="panel-title">I {topByPerCapita.length} Comuni con più pagamenti per abitante</h2>
+            <p className={styles.rankingGuardrail}>
+              È un confronto di cassa, non una classifica di merito. Popolazione, turismo e opere
+              straordinarie possono cambiare molto il valore pro capite.
+            </p>
             <div className="table-scroll" role="region" aria-label="Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
               <table className="table">
                 <thead>

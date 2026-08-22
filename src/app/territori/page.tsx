@@ -49,7 +49,7 @@ export default async function TerritoriesPage({
         <div className="page-intro">
           <h1>Pagamenti dei Comuni, territorio per territorio</h1>
           <p>
-            Pagamenti dei Comuni con sede nella regione, nel periodo gennaio–{monthLabel} {data.year}.
+            Pagamenti dei Comuni con sede nella regione, nel periodo tra gennaio e {monthLabel} {data.year}.
             Media italiana:{" "}
             {data.nationalPerCapita === null
               ? "non disponibile"
@@ -66,7 +66,7 @@ export default async function TerritoriesPage({
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
           <p className={styles.datasetMeta}>
             Fonte SIOPE · {data.source.siopeOwner}. File del{" "}
-            {longDate(data.source.siopeMovementsLastModified)} · periodo gennaio–{monthLabel}{" "}
+            {longDate(data.source.siopeMovementsLastModified)} · periodo tra gennaio e {monthLabel}{" "}
             {data.year}. Pro capite: {data.methodology.populationSource},{" "}
             {data.methodology.populationReference}.
           </p>

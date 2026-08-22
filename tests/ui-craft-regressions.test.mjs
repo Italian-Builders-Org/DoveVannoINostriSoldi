@@ -253,7 +253,7 @@ test("spending exposes a mobile jump to the complete expenditure breakdown", asy
   assert.match(page, /href="#voci-spesa"/);
   assert.match(page, /id="voci-spesa"/);
   assert.match(page, /Vedi le \{data\.titles\.length\} voci di uscita/);
-  assert.match(page, /periodo gennaio–\{monthLabel\}/);
+  assert.match(page, /periodo tra gennaio e \{monthLabel\}/);
   assert.match(css, /\.mobileDataJump \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.mobileDataJump \{[\s\S]*?display: inline-block;/);
 });
@@ -269,7 +269,7 @@ test("territories keeps provenance close and reflows without a short desktop col
   assert.match(page, /Tabella completa: scorri orizzontalmente per abitanti e copertura dei Comuni/);
   assert.match(page, /aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente/);
   assert.match(page, /tabIndex=\{0\}/);
-  assert.match(page, /periodo gennaio–\{monthLabel\}/);
+  assert.match(page, /periodo tra gennaio e \{monthLabel\}/);
   assert.match(css, /\.split \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
   assert.match(css, /\.regionTableHint \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.regionTableHint \{[\s\S]*?display: block;/);

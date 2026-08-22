@@ -82,7 +82,7 @@ export default async function MoneyPage({
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>
           <p>
-            Pagamenti dei Comuni nel periodo gennaio–{monthLabel} {data.year}, divisi per tipo di
+            Pagamenti dei Comuni nel periodo tra gennaio e {monthLabel} {data.year}, divisi per tipo di
             uscita. Fonte SIOPE, file del {longDate(data.source.siopeMovementsLastModified)}.
           </p>
           <Link className={styles.mobileDataJump} href="#voci-spesa">

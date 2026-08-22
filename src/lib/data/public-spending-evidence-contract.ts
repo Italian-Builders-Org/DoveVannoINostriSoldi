@@ -17,7 +17,12 @@ export const sourceSchema = z.object({
   kind: z.enum(["official_record", "official_dataset", "official_finding", "legal_basis"]),
   url: httpUrl,
   identifier: z.string().min(1).optional(),
+  locator: z.object({
+    kind: z.enum(["cig", "document_number"]),
+    value: z.string().min(1),
+  }).optional(),
   publishedAt: isoDate.optional(),
+  actDate: isoDate.optional(),
   retrievedAt: isoDate,
   scope: z.string().min(1),
   reuseStatus: z.enum(["verified", "restricted", "unknown"]),
@@ -120,6 +125,7 @@ export const observationSchema = z.object({
   classification: z.enum([
     "documented_irregularity",
     "anomaly",
+    "benchmark_reference",
     "missing_transparency",
     "incomplete_or_not_comparable",
   ]),
@@ -204,9 +210,30 @@ export const publicSpendingEvidenceSnapshotSchema = z.object({
       if (observation.evidenceStrength !== "computed_from_verified_sources") {
         context.addIssue({ code: "custom", message: "evidenza calcolata e verificata richiesta", path });
       }
+      if (observation.benchmark?.targetDeltaCents === 0) {
+        context.addIssue({ code: "custom", message: "delta zero non è un'anomalia", path });
+      }
+    }
+    if (observation.classification === "benchmark_reference") {
+      const hasOfficialDataSource = linkedSources.some((source) =>
+        source?.kind === "official_record" || source?.kind === "official_dataset");
+      if (
+        !observation.benchmark ||
+        observation.benchmark.targetDeltaCents !== 0 ||
+        observation.evidenceStrength !== "verified_official_record" ||
+        observation.publicationStatus !== "blocked" ||
+        !hasOfficialDataSource
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "riferimento benchmark ufficiale con delta zero e pubblicazione bloccata richiesto",
+          path,
+        });
+      }
     }
     if (
       (observation.classification === "anomaly" ||
+        observation.classification === "benchmark_reference" ||
         observation.evidenceStrength === "computed_from_verified_sources") &&
       !linkedSources.some((source) =>
         source?.kind === "official_record" || source?.kind === "official_dataset")
@@ -331,6 +358,9 @@ export function assessSocialCardReadiness(
   if (!observation.amount) reasons.push("importo non disponibile");
   if (!observation.benchmark) reasons.push("benchmark non disponibile");
   if (observation.evidenceStrength === "unverified") reasons.push("evidenza non verificata");
+  if (observation.classification === "benchmark_reference") {
+    reasons.push("riferimento benchmark non destinato a card");
+  }
   const sources = new Map(snapshot.sources.map((source) => [source.id, source]));
   const linkedSources = observation.sourceIds.map((sourceId) => sources.get(sourceId));
   if (linkedSources.some((source) => !source)) {

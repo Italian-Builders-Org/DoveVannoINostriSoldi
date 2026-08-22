@@ -20,6 +20,18 @@ function fixture() {
   return JSON.parse(readFileSync(fixturePath, "utf8"));
 }
 
+function benchmarkReferenceFixture() {
+  const snapshot = fixture();
+  const reference = snapshot.observations[2];
+  reference.classification = "benchmark_reference";
+  reference.evidenceStrength = "verified_official_record";
+  reference.publicationStatus = "blocked";
+  reference.benchmark = structuredClone(snapshot.observations[0].benchmark);
+  reference.benchmark.targetDeltaCents = 0;
+  reference.benchmark.targetDeltaPercent = 0;
+  return snapshot;
+}
+
 function benchmarkMembers() {
   return [80_000, 100_000, 120_000, 140_000].map((valueCents, index) => ({
     observationId: `synthetic-${index + 1}`,
@@ -71,6 +83,32 @@ test("fails closed on unsupported evidence classifications", () => {
   const declaredDenominator = fixture();
   declaredDenominator.observations[0].benchmark.denominator.name = "unità arbitraria";
   assert.throws(() => assertPublicSpendingEvidenceSnapshot(declaredDenominator), /non riconciliate/);
+});
+
+test("keeps a zero-delta benchmark reference neutral and off social cards", () => {
+  const snapshot = assertPublicSpendingEvidenceSnapshot(benchmarkReferenceFixture());
+  const reference = snapshot.observations[2];
+
+  assert.deepEqual(assessSocialCardReadiness(snapshot, reference), [
+    "stato non pubblicabile",
+    "riferimento benchmark non destinato a card",
+  ]);
+
+  const zeroDeltaAnomaly = benchmarkReferenceFixture();
+  zeroDeltaAnomaly.observations[2].classification = "anomaly";
+  zeroDeltaAnomaly.observations[2].evidenceStrength = "computed_from_verified_sources";
+  zeroDeltaAnomaly.observations[2].publicationStatus = "publishable";
+  assert.throws(
+    () => assertPublicSpendingEvidenceSnapshot(zeroDeltaAnomaly),
+    /delta zero non è un'anomalia/,
+  );
+
+  const publishableReference = benchmarkReferenceFixture();
+  publishableReference.observations[2].publicationStatus = "publishable";
+  assert.throws(
+    () => assertPublicSpendingEvidenceSnapshot(publishableReference),
+    /pubblicazione bloccata/,
+  );
 });
 
 test("requires a verified legal basis for missing-transparency claims", () => {

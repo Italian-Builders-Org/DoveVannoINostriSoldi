@@ -1,0 +1,58 @@
+{
+  "datasetId": "vive_roma_in_moneta_restoration_2026",
+  "title": "Tre affidamenti per il restauro di singoli dipinti destinati alla mostra Roma in moneta",
+  "publisher": "Istituto Vittoriano e Palazzo Venezia",
+  "officialIndexUrl": "https://vive.cultura.gov.it/it/bandi-di-gara-procedura-sotto-soglia",
+  "retrievedAt": "2026-08-22",
+  "selection": {
+    "includedCigs": [
+      "BBE275FE86",
+      "BBFA1A8A40",
+      "BC099887CD"
+    ],
+    "dimensions": {
+      "spendingEntity": "Istituto Vittoriano e Palazzo Venezia",
+      "exhibition": "Roma in moneta: arte e potere nella storia della città eterna: l'età moderna e contemporanea",
+      "serviceScope": "Restauro di un singolo dipinto destinato alla mostra",
+      "procurementMethod": "Affidamento diretto",
+      "taxBasis": "Importo netto IVA",
+      "amountUnit": "Totale dell'affidamento",
+      "period": "2026-07-01/2026-09-27"
+    },
+    "limits": [
+      "Tre record sono una coorte descrittiva minima, non una stima di prezzo equo.",
+      "Dimensioni, tecnica, stato conservativo e complessità dell'intervento possono differire.",
+      "Le differenze rispetto alla mediana sono segnali comparativi, non prove di spreco o illecito."
+    ]
+  },
+  "excludedComparison": {
+    "cig": "BBF994A2A0",
+    "identifier": "Determina 107/2026; CIG BBF994A2A0",
+    "locator": {
+      "kind": "cig",
+      "value": "BBF994A2A0"
+    },
+    "actDate": "2026-06-10",
+    "observedAt": "2026-08-22",
+    "title": "Trasporto andata e ritorno, imballaggio e disimballaggio di un'opera destinata alla stessa mostra",
+    "category": "trasporto-opera-stessa-mostra",
+    "sourceUrl": "https://vive.cultura.gov.it/_cms/sites/default/files/determina/Determina%20107%20-%20Trasporto%20opera%20Accardi%20SPEDART-signed.pdf",
+    "period": {
+      "start": "2026-07-01",
+      "end": "2026-09-27",
+      "precision": "day"
+    },
+    "amount": {
+      "valueCents": 50000,
+      "currency": "EUR",
+      "taxBasis": "net",
+      "unit": "award_total"
+    },
+    "denominator": {
+      "name": "affidamento per il trasporto di un'opera",
+      "value": 1,
+      "unit": "affidamento"
+    },
+    "reason": "Escluso: trasporto, imballaggio e disimballaggio hanno categoria e scope di servizio diversi dal restauro di un dipinto."
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-22",
+  "sources": [
+    {
+      "id": "vive-determina-101-2026",
+      "title": "Determina 101/2026 - restauro di un dipinto su tavola per la mostra Roma in moneta",
+      "publisher": "Istituto Vittoriano e Palazzo Venezia",
+      "kind": "official_record",
+      "url": "https://vive.cultura.gov.it/_cms/sites/default/files/determina/Determina%20101_2026%20-%20Lo%20Studiolo-signed.pdf",
+      "identifier": "Determina 101/2026; CIG BBE275FE86",
+      "locator": {
+        "kind": "cig",
+        "value": "BBE275FE86"
+      },
+      "actDate": "2026-06-03",
+      "retrievedAt": "2026-08-22",
+      "scope": "Affidamento diretto per il restauro di un singolo dipinto destinato alla mostra Roma in moneta, 1 luglio-27 settembre 2026",
+      "reuseStatus": "unknown"
+    },
+    {
+      "id": "vive-determina-109-2026",
+      "title": "Determina 109/2026 - restauro del dipinto Morte di Cesare per la mostra Roma in moneta",
+      "publisher": "Istituto Vittoriano e Palazzo Venezia",
+      "kind": "official_record",
+      "url": "https://vive.cultura.gov.it/_cms/sites/default/files/determina/Determina%20109%20-%20Restauro%20Morte%20di%20Cesare%20-%20Bologna-signed.pdf",
+      "identifier": "Determina 109/2026; CIG BBFA1A8A40",
+      "locator": {
+        "kind": "cig",
+        "value": "BBFA1A8A40"
+      },
+      "actDate": "2026-06-10",
+      "retrievedAt": "2026-08-22",
+      "scope": "Affidamento diretto per il restauro di un singolo dipinto destinato alla mostra Roma in moneta, 1 luglio-27 settembre 2026",
+      "reuseStatus": "unknown"
+    },
+    {
+      "id": "vive-determina-114-2026",
+      "title": "Determina 114/2026 - restauro del dipinto Battesimo di Cristo per la mostra Roma in moneta",
+      "publisher": "Istituto Vittoriano e Palazzo Venezia",
+      "kind": "official_record",
+      "url": "https://vive.cultura.gov.it/_cms/sites/default/files/determina/Determina%20114%20Restauro%20Bigari-signed.pdf",
+      "identifier": "Determina 114/2026; CIG BC099887CD",
+      "locator": {
+        "kind": "cig",
+        "value": "BC099887CD"
+      },
+      "actDate": "2026-06-16",
+      "retrievedAt": "2026-08-22",
+      "scope": "Affidamento diretto per il restauro di un singolo dipinto destinato alla mostra Roma in moneta, 1 luglio-27 settembre 2026",
+      "reuseStatus": "unknown"
+    }
+  ],
+  "observations": [
+    {
+      "id": "vive-roma-in-moneta-restauro-bbe275fe86",
+      "observedAt": "2026-08-22",
+      "title": "Restauro del dipinto su tavola Madonna in trono con bambino per la mostra Roma in moneta",
+      "category": "restauro-dipinto-singolo-stessa-mostra",
+      "subject": {
+        "spendingEntity": {
+          "name": "Istituto Vittoriano e Palazzo Venezia"
+        }
+      },
+      "amount": {
+        "valueCents": 209016,
+        "currency": "EUR",
+        "taxBasis": "net",
+        "unit": "award_total"
+      },
+      "denominator": {
+        "name": "affidamento per il restauro di un singolo dipinto",
+        "value": 1,
+        "unit": "affidamento",
+        "sourceId": "vive-determina-101-2026"
+      },
+      "period": {
+        "start": "2026-07-01",
+        "end": "2026-09-27",
+        "precision": "day"
+      },
+      "procurementMethod": {
+        "value": "direct_award",
+        "provenance": "source_explicit"
+      },
+      "sourceIds": [
+        "vive-determina-101-2026"
+      ],
+      "classification": "benchmark_reference",
+      "evidenceStrength": "verified_official_record",
+      "publicationStatus": "blocked",
+      "caveats": [
+        "Valore mediano usato come riferimento del benchmark; non è classificato come anomalia e non è destinato a una card.",
+        "Coorte di tre affidamenti omogenei per ente, mostra, categoria, unità, periodo e base IVA; complessità tecnica, dimensioni e stato conservativo delle opere possono differire.",
+        "Importo netto IVA indicato nella determina; l'eventuale totale lordo non è usato nel benchmark.",
+        "Il nome del contraente non è ripubblicato; CIG e atto ufficiale consentono la verifica."
+      ],
+      "benchmark": {
+        "cohortId": "vive-roma-in-moneta-restauro-dipinti-2026",
+        "cohortLabel": "Tre affidamenti VIVE per il restauro di un singolo dipinto destinato alla stessa mostra",
+        "category": "restauro-dipinto-singolo-stessa-mostra",
+        "period": {
+          "start": "2026-07-01",
+          "end": "2026-09-27",
+          "precision": "day"
+        },
+        "taxBasis": "net",
+        "unit": "award_total",
+        "denominator": {
+          "name": "affidamento per il restauro di un singolo dipinto",
+          "value": 1,
+          "unit": "affidamento"
+        },
+        "method": "linear_interpolation_r7",
+        "cohortSize": 3,
+        "medianCents": 209016,
+        "p25Cents": 118508,
+        "p75Cents": 418008,
+        "targetDeltaCents": 0,
+        "targetDeltaPercent": 0,
+        "observationIds": [
+          "vive-roma-in-moneta-restauro-bbe275fe86",
+          "vive-roma-in-moneta-restauro-bbfa1a8a40",
+          "vive-roma-in-moneta-restauro-bc099887cd"
+        ]
+      }
+    },
+    {
+      "id": "vive-roma-in-moneta-restauro-bbfa1a8a40",
+      "observedAt": "2026-08-22",
+      "title": "Restauro del dipinto Morte di Cesare per la mostra Roma in moneta",
+      "category": "restauro-dipinto-singolo-stessa-mostra",
+      "subject": {
+        "spendingEntity": {
+          "name": "Istituto Vittoriano e Palazzo Venezia"
+        }
+      },
+      "amount": {
+        "valueCents": 28000,
+        "currency": "EUR",
+        "taxBasis": "net",
+        "unit": "award_total"
+      },
+      "denominator": {
+        "name": "affidamento per il restauro di un singolo dipinto",
+        "value": 1,
+        "unit": "affidamento",
+        "sourceId": "vive-determina-109-2026"
+      },
+      "period": {
+        "start": "2026-07-01",
+        "end": "2026-09-27",
+        "precision": "day"
+      },
+      "procurementMethod": {
+        "value": "direct_award",
+        "provenance": "source_explicit"
+      },
+      "sourceIds": [
+        "vive-determina-109-2026"
+      ],
+      "classification": "anomaly",
+      "evidenceStrength": "computed_from_verified_sources",
+      "publicationStatus": "publishable",
+      "caveats": [
+        "Segnale comparativo basso rispetto alla mediana; non dimostra spreco, illecito, qualità o necessità dell'intervento.",
+        "Coorte di tre affidamenti omogenei per ente, mostra, categoria, unità, periodo e base IVA; complessità tecnica, dimensioni e stato conservativo delle opere possono differire.",
+        "Importo netto IVA indicato nella determina; l'eventuale totale lordo non è usato nel benchmark.",
+        "Il nome del contraente non è ripubblicato; CIG e atto ufficiale consentono la verifica."
+      ],
+      "benchmark": {
+        "cohortId": "vive-roma-in-moneta-restauro-dipinti-2026",
+        "cohortLabel": "Tre affidamenti VIVE per il restauro di un singolo dipinto destinato alla stessa mostra",
+        "category": "restauro-dipinto-singolo-stessa-mostra",
+        "period": {
+          "start": "2026-07-01",
+          "end": "2026-09-27",
+          "precision": "day"
+        },
+        "taxBasis": "net",
+        "unit": "award_total",
+        "denominator": {
+          "name": "affidamento per il restauro di un singolo dipinto",
+          "value": 1,
+          "unit": "affidamento"
+        },
+        "method": "linear_interpolation_r7",
+        "cohortSize": 3,
+        "medianCents": 209016,
+        "p25Cents": 118508,
+        "p75Cents": 418008,
+        "targetDeltaCents": -181016,
+        "targetDeltaPercent": -86.60389635243236,
+        "observationIds": [
+          "vive-roma-in-moneta-restauro-bbe275fe86",
+          "vive-roma-in-moneta-restauro-bbfa1a8a40",
+          "vive-roma-in-moneta-restauro-bc099887cd"
+        ]
+      }
+    },
+    {
+      "id": "vive-roma-in-moneta-restauro-bc099887cd",
+      "observedAt": "2026-08-22",
+      "title": "Restauro del dipinto ad olio su tela Battesimo di Cristo per la mostra Roma in moneta",
+      "category": "restauro-dipinto-singolo-stessa-mostra",
+      "subject": {
+        "spendingEntity": {
+          "name": "Istituto Vittoriano e Palazzo Venezia"
+        }
+      },
+      "amount": {
+        "valueCents": 627000,
+        "currency": "EUR",
+        "taxBasis": "net",
+        "unit": "award_total"
+      },
+      "denominator": {
+        "name": "affidamento per il restauro di un singolo dipinto",
+        "value": 1,
+        "unit": "affidamento",
+        "sourceId": "vive-determina-114-2026"
+      },
+      "period": {
+        "start": "2026-07-01",
+        "end": "2026-09-27",
+        "precision": "day"
+      },
+      "procurementMethod": {
+        "value": "direct_award",
+        "provenance": "source_explicit"
+      },
+      "sourceIds": [
+        "vive-determina-114-2026"
+      ],
+      "classification": "anomaly",
+      "evidenceStrength": "computed_from_verified_sources",
+      "publicationStatus": "publishable",
+      "caveats": [
+        "Segnale comparativo alto rispetto alla mediana; non dimostra spreco, illecito, qualità o necessità dell'intervento.",
+        "Coorte di tre affidamenti omogenei per ente, mostra, categoria, unità, periodo e base IVA; complessità tecnica, dimensioni e stato conservativo delle opere possono differire.",
+        "Importo netto IVA indicato nella determina; l'eventuale totale lordo non è usato nel benchmark.",
+        "Il nome del contraente non è ripubblicato; CIG e atto ufficiale consentono la verifica."
+      ],
+      "benchmark": {
+        "cohortId": "vive-roma-in-moneta-restauro-dipinti-2026",
+        "cohortLabel": "Tre affidamenti VIVE per il restauro di un singolo dipinto destinato alla stessa mostra",
+        "category": "restauro-dipinto-singolo-stessa-mostra",
+        "period": {
+          "start": "2026-07-01",
+          "end": "2026-09-27",
+          "precision": "day"
+        },
+        "taxBasis": "net",
+        "unit": "award_total",
+        "denominator": {
+          "name": "affidamento per il restauro di un singolo dipinto",
+          "value": 1,
+          "unit": "affidamento"
+        },
+        "method": "linear_interpolation_r7",
+        "cohortSize": 3,
+        "medianCents": 209016,
+        "p25Cents": 118508,
+        "p75Cents": 418008,
+        "targetDeltaCents": 417984,
+        "targetDeltaPercent": 199.97703525088988,
+        "observationIds": [
+          "vive-roma-in-moneta-restauro-bbe275fe86",
+          "vive-roma-in-moneta-restauro-bbfa1a8a40",
+          "vive-roma-in-moneta-restauro-bc099887cd"
+        ]
+      }
+    }
+  ]
+}

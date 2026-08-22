@@ -31,8 +31,11 @@ export default function SourcesPage() {
       </div>
 
       <section className="panel">
-        <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
-          <table className="table">
+        <p className={styles.tableHint} id="sources-table-hint">
+          Scorri lateralmente per frequenza di pubblicazione e ultimo dato disponibile.
+        </p>
+        <div className="table-scroll" role="region" aria-label="Registro delle fonti" aria-describedby="sources-table-hint" tabIndex={0}>
+          <table className={`table ${styles.sourceTable}`}>
             <thead>
               <tr>
                 <th scope="col">Fonte</th>

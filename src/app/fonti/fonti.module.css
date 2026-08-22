@@ -3,6 +3,14 @@
   font-variant-numeric: tabular-nums;
 }
 
+.sourceTable {
+  min-width: 980px;
+}
+
+.tableHint {
+  display: none;
+}
+
 .principles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -39,3 +47,13 @@
   background: var(--color-accent-100);
 }
 .linkList i { font-style: normal; color: var(--color-neutral-600); }
+
+@media (max-width: 620px) {
+  .tableHint {
+    display: block;
+    margin: 0 0 var(--space-2);
+    color: var(--color-neutral-700);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}

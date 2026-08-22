@@ -47,6 +47,21 @@ const participationsCss = await readFile(
   new URL("../src/app/partecipazioni/partecipazioni.module.css", import.meta.url),
   "utf8",
 );
+const sourcesPage = await readFile(new URL("../src/app/fonti/page.tsx", import.meta.url), "utf8");
+const sourcesCss = await readFile(
+  new URL("../src/app/fonti/fonti.module.css", import.meta.url),
+  "utf8",
+);
+const mcpPage = await readFile(new URL("../src/app/mcp/page.tsx", import.meta.url), "utf8");
+const mcpCss = await readFile(new URL("../src/app/mcp/mcp.module.css", import.meta.url), "utf8");
+const methodologyPage = await readFile(
+  new URL("../src/app/metodologia/page.tsx", import.meta.url),
+  "utf8",
+);
+const sourceStatusPage = await readFile(
+  new URL("../src/app/fonti/stato/page.tsx", import.meta.url),
+  "utf8",
+);
 
 test("the fiscal formula has one explicit screen-reader relationship", () => {
   const accessibleFormula =
@@ -86,6 +101,19 @@ test("wide oversight tables disclose horizontal scrolling on mobile", () => {
   assert.match(participationsPage, /aria-describedby="participations-table-hint"/);
   assert.match(participationsPage, /Freccia sinistra e Freccia destra/);
   assert.match(participationsCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
+});
+
+test("source and MCP registries preserve complete mobile table geometry", () => {
+  assert.match(sourcesPage, /aria-describedby="sources-table-hint"/);
+  assert.match(sourcesCss, /\.sourceTable \{\s*min-width: 980px;/);
+  assert.match(mcpPage, /aria-describedby="datasets-table-hint"/);
+  assert.match(mcpCss, /\.datasetTable \{[^}]*min-width: 1100px;/);
+  assert.match(mcpCss, /@media \(max-width: 760px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
+});
+
+test("supporting pages avoid decorative sequence labels", () => {
+  assert.doesNotMatch(methodologyPage, /styles\.index|padStart/);
+  assert.doesNotMatch(sourceStatusPage, /styles\.kicker|STATO DELLE FONTI/);
 });
 
 test("scope guidance is consolidated without losing its source boundaries", () => {

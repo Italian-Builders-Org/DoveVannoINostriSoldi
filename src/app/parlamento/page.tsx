@@ -60,9 +60,12 @@ export default function ParliamentPage() {
           estratto e riconciliato; per i documenti 2024 dei due rami mostriamo per ora soltanto
           metadati e procedure. Non li sommiamo e non stimiamo i numeri che non abbiamo verificato.
         </p>
+        <p className="scope-line" data-evidence-stage="scope">
+          Camera · consuntivi e bilanci verificati · milioni di euro · documenti 2024 censiti separatamente
+        </p>
       </div>
 
-      <dl className="stat-strip">
+      <dl className="stat-strip" data-evidence-stage="kpi">
         <div>
           <dt>Rami con numeri verificati</dt>
           <dd>{chambers.length}</dd>
@@ -93,54 +96,8 @@ export default function ParliamentPage() {
         </p>
       </div>
 
-      <section className="panel" aria-labelledby="copertura-parlamento">
-        <div className={styles.coverageHeader}>
-          <div>
-            <h2 id="copertura-parlamento">Copertura dei due rami</h2>
-            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
-          </div>
-          <span>Documenti 2024 · fonti ufficiali</span>
-        </div>
-        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
-        <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Ramo</th>
-                <th scope="col">Documento</th>
-                <th scope="col">Approvato</th>
-                <th scope="col">Copertura</th>
-                <th scope="col">Fonte</th>
-              </tr>
-            </thead>
-            <tbody>
-              {documentCoverage.map((source) => (
-                <tr key={source.id}>
-                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
-                  <td>
-                    {source.title}
-                    <small>ID fonte: {source.sourceRecordId}</small>
-                  </td>
-                  <td>{longDate(source.updatedAt)}</td>
-                  <td>
-                    <span className={styles.metadataStatus}>Solo metadati</span>
-                    <small>Numeri del PDF non verificati</small>
-                  </td>
-                  <td>
-                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
-                    {source.downloadUrl ? (
-                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       {chambers.map((chamber) => (
-        <section className={styles.chamber} key={chamber.id}>
+        <section className={styles.chamber} key={chamber.id} data-evidence-stage="detail">
           <header className={styles.chamberHeader}>
             <div>
               <span>Dati ufficiali</span>
@@ -232,8 +189,59 @@ export default function ParliamentPage() {
         </section>
       ))}
 
-      <section className="panel">
-        <h2 className="panel-title">Cosa non pubblichiamo ancora</h2>
+      <section className="panel" aria-labelledby="fonti-parlamento" data-evidence-stage="source">
+        <div className={styles.coverageHeader}>
+          <div>
+            <h2 id="fonti-parlamento">Fonti, metodo, licenza, copertura e limiti</h2>
+            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
+          </div>
+          <span>Documenti 2024 · fonti ufficiali</span>
+        </div>
+        <p className={styles.plainText}>{parliamentSnapshot.methodology.publicationCheck}</p>
+        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
+        <div
+          className={`table-scroll ${styles.coverageTable}`}
+          role="region"
+          aria-label="Copertura dei documenti contabili di Camera e Senato"
+          tabIndex={0}
+        >
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Ramo</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Approvato</th>
+                <th scope="col">Copertura</th>
+                <th scope="col">Licenza</th>
+                <th scope="col">Fonte</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documentCoverage.map((source) => (
+                <tr key={source.id}>
+                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
+                  <td>
+                    {source.title}
+                    <small>ID fonte: {source.sourceRecordId}</small>
+                  </td>
+                  <td>{longDate(source.updatedAt)}</td>
+                  <td>
+                    <span className={styles.metadataStatus}>Solo metadati</span>
+                    <small>Numeri del PDF non verificati</small>
+                  </td>
+                  <td>Non dichiarata sulla pagina ufficiale</td>
+                  <td>
+                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
+                    {source.downloadUrl ? (
+                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <h3 className={styles.limitsHeading}>Limiti di pubblicazione e confronto</h3>
         <p className={styles.plainText}>{parliamentSnapshot.methodology.missingData}</p>
         <p className={styles.plainText}>{parliamentSnapshot.methodology.comparability}</p>
         <div className={styles.relatedLinks}>

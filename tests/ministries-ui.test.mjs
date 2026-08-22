@@ -41,7 +41,7 @@ test("Totale CP has a treemap and an exact accessible table fallback", () => {
 });
 
 test("Ministries exact table remains internally scrollable", () => {
-  assert.match(css, /min-width: 820px/);
+  assert.match(css, /min-width: 940px/);
   assert.match(css, /@media \(max-width: 900px\)/);
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.doesNotMatch(css, /border-radius|box-shadow|linear-gradient|transition:\s*all/);

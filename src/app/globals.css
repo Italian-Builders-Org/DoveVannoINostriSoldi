@@ -306,6 +306,14 @@ main { display: block; }
   font-size: 14px;
   color: var(--color-neutral-700);
 }
+.page-intro .scope-line {
+  margin-top: var(--space-3);
+  color: var(--color-neutral-800);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
 
 /* ── footer ─────────────────────────────────────────────────────────────── */
 

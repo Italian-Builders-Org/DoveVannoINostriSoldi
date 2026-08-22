@@ -237,7 +237,7 @@
 }
 
 .coverageTable table {
-  min-width: 760px;
+  min-width: 900px;
 }
 
 .coverageTable td > small {
@@ -251,6 +251,11 @@
   margin: 0 0 var(--space-3);
   color: var(--color-neutral-700);
   font-size: 0.85rem;
+}
+
+.limitsHeading {
+  margin: var(--space-6) 0 var(--space-2);
+  font-size: 1rem;
 }
 
 @media (max-width: 620px) {

@@ -12,6 +12,11 @@ export const metadata: Metadata = {
 };
 
 const euro = (cents: number) => cents / 100;
+const percentage = new Intl.NumberFormat("it-IT", {
+  style: "percent",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
 
 export default function MinistriesPage() {
   const { ministries, totals, coverage } = rgsMinistriesSnapshot;
@@ -26,9 +31,12 @@ export default function MinistriesPage() {
           competenza dell&apos;anno: separiamo Pagato CP da Rimasto da pagare CP e mostriamo
           come insieme formano il Totale CP. Non includiamo Palazzo Chigi, Camera, Senato o Regioni.
         </p>
+        <p className="scope-line" data-evidence-stage="scope">
+          Consuntivo RGS 2025 · 15 Ministeri · competenza · euro
+        </p>
       </div>
 
-      <section className={styles.frameSection} aria-labelledby="quadro-cp" data-institutional-section>
+      <section className={styles.frameSection} aria-labelledby="quadro-cp" data-institutional-section data-evidence-stage="kpi">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="quadro-cp">Due componenti del Totale CP</h2>
@@ -40,11 +48,6 @@ export default function MinistriesPage() {
           </div>
           <span>Consuntivo · EUR</span>
         </div>
-        <p className={styles.definitionNote}>
-          <strong>Economie-Maggiori spese CP</strong>
-          Nella fonte indica l&apos;importo di competenza rimasto inutilizzato rispetto alle
-          previsioni o utilizzato oltre i limiti. È una voce diversa da Rimasto da pagare CP.
-        </p>
         <dl className="stat-strip">
           <div>
             <dt>Totale CP</dt>
@@ -62,9 +65,14 @@ export default function MinistriesPage() {
             <span className="stat-note">{exactEuro(euro(totals.remainingCpCents))} esatti</span>
           </div>
         </dl>
+        <p className={styles.definitionNote}>
+          <strong>Economie-Maggiori spese CP</strong>
+          Nella fonte indica l&apos;importo di competenza rimasto inutilizzato rispetto alle
+          previsioni o utilizzato oltre i limiti. È una voce diversa da Rimasto da pagare CP.
+        </p>
       </section>
 
-      <section className="panel" aria-labelledby="composizione-cp" data-institutional-section>
+      <section className="panel" aria-labelledby="composizione-cp" data-institutional-section data-evidence-stage="visual">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="composizione-cp">Come si distribuisce il Totale CP</h2>
@@ -78,7 +86,7 @@ export default function MinistriesPage() {
         <MinistryCommitmentTreemap ministries={ministries} />
       </section>
 
-      <section className="panel" aria-labelledby="elenco-ministeri" data-institutional-section>
+      <section className="panel" aria-labelledby="elenco-ministeri" data-institutional-section data-evidence-stage="detail">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="elenco-ministeri">Valori esatti per Ministero</h2>
@@ -102,6 +110,7 @@ export default function MinistriesPage() {
               <tr>
                 <th scope="col">Ministero</th>
                 <th scope="col">Totale CP</th>
+                <th scope="col">Quota del Totale CP</th>
                 <th scope="col">Pagato CP</th>
                 <th scope="col">Rimasto da pagare CP</th>
               </tr>
@@ -116,6 +125,7 @@ export default function MinistriesPage() {
                       <small>Codice RGS {ministry.code} · IPA {identity?.ipaCode ?? "non collegato"}</small>
                     </th>
                     <td>{exactEuro(euro(ministry.commitmentsCpCents))}</td>
+                    <td>{percentage.format(ministry.commitmentsCpCents / totals.commitmentsCpCents)}</td>
                     <td>{exactEuro(euro(ministry.paymentsCompetenceCpCents))}</td>
                     <td>{exactEuro(euro(ministry.remainingCpCents))}</td>
                   </tr>
@@ -126,6 +136,7 @@ export default function MinistriesPage() {
               <tr>
                 <th scope="row">Totale dei 15 Ministeri</th>
                 <td>{exactEuro(euro(totals.commitmentsCpCents))}</td>
+                <td>{percentage.format(1)}</td>
                 <td>{exactEuro(euro(totals.paymentsCompetenceCpCents))}</td>
                 <td>{exactEuro(euro(totals.remainingCpCents))}</td>
               </tr>
@@ -134,8 +145,8 @@ export default function MinistriesPage() {
         </div>
       </section>
 
-      <section className="panel" aria-labelledby="fonte-ministeri" data-institutional-section>
-        <h2 className="panel-title" id="fonte-ministeri">Fonte, perimetro e controlli</h2>
+      <section className="panel" aria-labelledby="fonte-ministeri" data-institutional-section data-evidence-stage="source">
+        <h2 className="panel-title" id="fonte-ministeri">Fonte, metodo, licenza, copertura e limiti</h2>
         <div className={styles.provenance}>
           <div><span>Titolare</span><strong>{source.owner}</strong></div>
           <div><span>Rilascio aggiornato</span><strong>{longDate(source.updatedAt)}</strong></div>

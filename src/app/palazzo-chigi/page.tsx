@@ -40,9 +40,12 @@ export default function PalazzoChigiPage() {
           Mostriamo separatamente ciò che è stato impegnato e ciò che è stato pagato, senza
           sommarlo ai Ministeri o al Parlamento.
         </p>
+        <p className="scope-line" data-evidence-stage="scope">
+          Rendiconto PCM 2024 · sola Presidenza del Consiglio · euro
+        </p>
       </div>
 
-      <dl className="stat-strip">
+      <dl className="stat-strip" data-evidence-stage="kpi">
         <div>
           <dt>Pagato nel 2024</dt>
           <dd>{compactEuro(euro(data.totals.paymentsTotalCents))}</dd>
@@ -75,7 +78,7 @@ export default function PalazzoChigiPage() {
         </p>
       </div>
 
-      <section className={styles.phaseGrid} aria-labelledby="fasi-contabili">
+      <section className={styles.phaseGrid} aria-labelledby="fasi-contabili" data-evidence-stage="visual">
         <div className={styles.phaseHeading}>
           <h2 id="fasi-contabili">Come si compone il pagato</h2>
           <p>
@@ -102,7 +105,7 @@ export default function PalazzoChigiPage() {
         </dl>
       </section>
 
-      <section className="panel" aria-labelledby="missioni-pcm">
+      <section className="panel" aria-labelledby="missioni-pcm" data-evidence-stage="visual">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="missioni-pcm">Pagamenti per missione</h2>
@@ -120,6 +123,7 @@ export default function PalazzoChigiPage() {
           role="region"
           aria-label="Valori esatti dei pagamenti PCM per missione"
           tabIndex={0}
+          data-evidence-stage="detail"
         >
           <table className="table">
             <thead>
@@ -152,8 +156,8 @@ export default function PalazzoChigiPage() {
         </div>
       </section>
 
-      <section className="panel" aria-labelledby="fonte-pcm">
-        <h2 className="panel-title" id="fonte-pcm">Fonte e controlli</h2>
+      <section className="panel" aria-labelledby="fonte-pcm" data-evidence-stage="source">
+        <h2 className="panel-title" id="fonte-pcm">Fonte, metodo, licenza, copertura e limiti</h2>
         <div className={styles.provenance}>
           <div>
             <span>Titolare</span>

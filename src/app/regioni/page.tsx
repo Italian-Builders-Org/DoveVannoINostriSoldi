@@ -43,6 +43,9 @@ export default async function RegionsPage({
           2 Province autonome. Qui mostriamo impegni, non pagamenti, e non li mescoliamo con
           Comuni, sanità, CPT o residuo fiscale.
         </p>
+        <p className="scope-line" data-evidence-stage="scope">
+          Consuntivi Istat 2024 · 22 amministrazioni · impegni · euro
+        </p>
       </div>
 
       <form className={styles.selector} action="/regioni" method="get">
@@ -57,7 +60,7 @@ export default async function RegionsPage({
         <button type="submit">Mostra il consuntivo</button>
       </form>
 
-      <dl className="stat-strip">
+      <dl className="stat-strip" data-evidence-stage="kpi">
         <div>
           <dt>Impegni 2024</dt>
           <dd>{compactEuro(euro(selected.commitmentsCents))}</dd>
@@ -84,7 +87,7 @@ export default async function RegionsPage({
         </p>
       </div>
 
-      <section className="panel" aria-labelledby="composizione-regionale">
+      <section className="panel" aria-labelledby="composizione-regionale" data-evidence-stage="visual">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="composizione-regionale">Per cosa sono stati impegnati</h2>
@@ -102,6 +105,7 @@ export default async function RegionsPage({
           role="region"
           aria-label={`Valori esatti degli impegni 2024 di ${selected.label} per Titolo`}
           tabIndex={0}
+          data-evidence-stage="detail"
         >
           <table className="table">
             <thead><tr><th scope="col">Titolo</th><th scope="col">Impegni 2024</th><th scope="col">Quota</th></tr></thead>
@@ -121,7 +125,7 @@ export default async function RegionsPage({
         </div>
       </section>
 
-      <section className="panel" aria-labelledby="copertura-regioni">
+      <section className="panel" aria-labelledby="copertura-regioni" data-evidence-stage="detail">
         <div className={styles.sectionHeader}>
           <div>
             <h2 id="copertura-regioni">Tutte le amministrazioni nel file</h2>
@@ -150,8 +154,8 @@ export default async function RegionsPage({
         </div>
       </section>
 
-      <section className="panel" aria-labelledby="fonte-regioni">
-        <h2 className="panel-title" id="fonte-regioni">Fonte, periodo e controlli</h2>
+      <section className="panel" aria-labelledby="fonte-regioni" data-evidence-stage="source">
+        <h2 className="panel-title" id="fonte-regioni">Fonte, metodo, licenza, copertura e limiti</h2>
         <div className={styles.provenance}>
           <div><span>Titolare</span><strong>{source.owner}</strong></div>
           <div><span>Pubblicato</span><strong>{longDate(source.publishedAt)}</strong></div>

@@ -61,7 +61,7 @@
 .tooltip span { display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
 .tooltip p { margin: 6px 0 0; color: var(--color-on-strong-muted); font-size: 12px; }
 .meta { margin: 0; color: var(--color-neutral-700); font-size: 11px; }
-.partial { margin: 0; padding: var(--space-3); border-left: 3px solid var(--color-warning); background: var(--color-warning-bg); font-size: 12px; }
+.partial { margin: 0; padding: var(--space-3); border: 1px solid var(--color-warning-border); background: var(--color-warning-bg); font-size: 12px; }
 .tableDetails summary { min-height: 44px; padding-block: 12px; font-weight: 600; cursor: pointer; }
 
 @media (max-width: 620px) {

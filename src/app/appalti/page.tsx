@@ -3,6 +3,7 @@ import Link from "next/link";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { exactEuro, integer, longDate, percent } from "@/lib/format";
 import styles from "./appalti.module.css";
+import { ScrollRegion } from "./scroll-region";
 
 export const metadata: Metadata = {
   title: "Appalti pubblici",
@@ -22,7 +23,6 @@ const procedureRows = [
   ...featuredProcedureEntries,
   { label: `Altre ${otherProcedureEntries.length} etichette`, records: otherProcedureCount },
 ];
-const largestProcedureCount = procedureRows[0]?.records ?? 1;
 
 const directAward = data.procedureChoice.directAward;
 const directAwardFamily = data.procedureChoice.directAwardFamily;
@@ -139,14 +139,14 @@ export default function AppaltiPage() {
                 </strong>
               </div>
               <div className={styles.barTrack} aria-hidden="true">
-                <i style={{ width: `${(row.records / largestProcedureCount) * 100}%` }} />
+                <i style={{ width: `${(row.records / totalCigs) * 100}%` }} />
               </div>
               <span className={styles.barRank}>#{index + 1}</span>
             </li>
           ))}
         </ol>
 
-        <div className="table-scroll" role="region" aria-label="Tabella esatta della distribuzione delle procedure" tabIndex={0}>
+        <ScrollRegion className="table-scroll" role="region" aria-label="Tabella esatta della distribuzione delle procedure" tabIndex={0}>
           <table className="table">
             <caption>Le stesse categorie rappresentate nel grafico, con conteggio e quota sul totale dei CIG unici 2025</caption>
             <thead>
@@ -166,11 +166,11 @@ export default function AppaltiPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
 
         <details className={styles.detailTable}>
           <summary>Apri tutte le 32 etichette originali</summary>
-          <div className="table-scroll" role="region" aria-label="Tutte le etichette originali delle procedure ANAC" tabIndex={0}>
+          <ScrollRegion className="table-scroll" role="region" aria-label="Tutte le etichette originali delle procedure ANAC" tabIndex={0}>
             <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
             <table className="table">
               <caption>Tutte le etichette presenti nel campo procedura del perimetro ANAC CIG 2025</caption>
@@ -191,7 +191,7 @@ export default function AppaltiPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </ScrollRegion>
         </details>
       </section>
 
@@ -245,7 +245,7 @@ export default function AppaltiPage() {
           <span className="tag tag-neutral">Intervallo dichiarato da ANAC</span>
         </div>
 
-        <div className="table-scroll" role="region" aria-label="Indicatori della fascia tra 135 mila e 140 mila euro" tabIndex={0}>
+        <ScrollRegion className="table-scroll" role="region" aria-label="Indicatori della fascia tra 135 mila e 140 mila euro" tabIndex={0}>
           <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
           <table className="table">
             <caption>Conteggi della fascia di importo e denominatori espliciti</caption>
@@ -274,7 +274,16 @@ export default function AppaltiPage() {
               </tr>
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
+
+        <p className={styles.note}>
+          <strong>Definizione stretta:</strong> per questa riga contiamo solo servizi o forniture con
+          etichetta “AFFIDAMENTO DIRETTO”, contratto d&apos;appalto e importo del lotto da 135.000 €
+          incluso a 140.000 € escluso.
+          <small className={styles.definitionSource}>
+            Regola dati: {thresholdBand.strictContractDefinition}
+          </small>
+        </p>
 
         <div className={styles.exactAmounts}>
           <h3>Valori del lotto che ricorrono spesso</h3>
@@ -283,7 +292,7 @@ export default function AppaltiPage() {
             descrittivo, non come prova: il valore non dice da solo come è stata scelta la procedura
             né quanto è stato pagato.
           </p>
-          <div className="table-scroll" role="region" aria-label="Valori esatti del lotto più ricorrenti" tabIndex={0}>
+          <ScrollRegion className="table-scroll" role="region" aria-label="Valori esatti del lotto più ricorrenti" tabIndex={0}>
             <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
             <table className="table">
               <caption>Conteggi per valore esatto di importo_lotto, quota sul totale dei CIG unici 2025</caption>
@@ -304,13 +313,13 @@ export default function AppaltiPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </ScrollRegion>
         </div>
       </section>
 
       <section className={`panel ${styles.coveragePanel}`} aria-labelledby="coverage-title">
         <h2 id="coverage-title" className="panel-title">Che cosa è entrato nel conteggio</h2>
-        <div className="table-scroll" role="region" aria-label="Controlli di copertura del dataset ANAC" tabIndex={0}>
+        <ScrollRegion className="table-scroll" role="region" aria-label="Controlli di copertura del dataset ANAC" tabIndex={0}>
           <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
           <table className="table">
             <caption>Controlli di copertura e record esclusi dal perimetro pubblicato</caption>
@@ -349,7 +358,7 @@ export default function AppaltiPage() {
               </tr>
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
       </section>
 
       <section className={`panel ${styles.sourcePanel}`} id="fonti-metodo" aria-labelledby="sources-title">

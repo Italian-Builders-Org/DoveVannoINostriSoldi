@@ -4,6 +4,8 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const pageSource = readFileSync(new URL("../src/app/appalti/page.tsx", import.meta.url), "utf8");
+const scrollRegionSource = readFileSync(new URL("../src/app/appalti/scroll-region.tsx", import.meta.url), "utf8");
+const stylesSource = readFileSync(new URL("../src/app/appalti/appalti.module.css", import.meta.url), "utf8");
 const controlsPageSource = readFileSync(new URL("../src/app/controlli/page.tsx", import.meta.url), "utf8");
 const { anacCigSnapshot } = await import("../src/lib/anac-cig-snapshot.ts");
 
@@ -28,6 +30,10 @@ test("appalti page makes the chart/table equivalence and denominator explicit", 
   assert.match(pageSource, /Quota sul denominatore/);
   assert.match(pageSource, /Apri tutte le 32 etichette originali/);
   assert.match(pageSource, /AFFIDAMENTO DIRETTO/);
+  assert.match(pageSource, /row\.records \/ totalCigs/);
+  assert.doesNotMatch(pageSource, /largestProcedureCount/);
+  assert.match(pageSource, /ScrollRegion/);
+  assert.match(scrollRegionSource, /event\.key === "End"/);
   assert.equal((pageSource.match(/Scorri la tabella verso destra/g) ?? []).length, 4);
   assert.equal(anacCigSnapshot.provenance.license, "CC BY-SA 4.0");
 });
@@ -36,6 +42,10 @@ test("appalti page treats threshold concentrations as screening signals, not fin
   assert.match(pageSource, /non dimostrano da soli spreco, illecito, corruzione/);
   assert.match(pageSource, /non dimostra da sola un frazionamento/);
   assert.match(pageSource, /non è un prezzo unitario/);
+  assert.match(pageSource, /Definizione stretta/);
+  assert.match(pageSource, /thresholdBand\.strictContractDefinition/);
+  assert.match(pageSource, /135\.000 €/);
+  assert.match(stylesSource, /\.detailTable\s*\{[^}]*min-width:\s*0/);
   assert.doesNotMatch(pageSource, /93%|quasi 95%|sprechi accertati|fornitori?\s*:/i);
 });
 

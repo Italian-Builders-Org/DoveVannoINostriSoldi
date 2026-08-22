@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-01-31",
+  "sources": [
+    {
+      "id": "synthetic-record-source",
+      "title": "Fonte ufficiale sintetica",
+      "publisher": "Ente dimostrativo",
+      "kind": "official_record",
+      "url": "https://example.test/atti/1",
+      "identifier": "ATTO-SINTETICO-1",
+      "publishedAt": "2026-01-15",
+      "retrievedAt": "2026-01-31",
+      "scope": "Fixture sintetica per test del contratto",
+      "reuseStatus": "unknown"
+    }
+  ],
+  "observations": [
+    {
+      "id": "synthetic-observation-1",
+      "observedAt": "2026-01-31",
+      "title": "Servizio dimostrativo",
+      "category": "servizio-sintetico",
+      "subject": {
+        "spendingEntity": { "name": "Ente dimostrativo" },
+        "counterparty": { "name": "Fornitore dimostrativo" }
+      },
+      "amount": {
+        "valueCents": 120000,
+        "currency": "EUR",
+        "taxBasis": "net",
+        "unit": "award_total"
+      },
+      "denominator": { "name": "affidamento", "value": 1, "unit": "affidamento", "sourceId": "synthetic-record-source" },
+      "period": { "start": "2026-01-01", "end": "2026-01-31", "precision": "month" },
+      "procurementMethod": { "value": "direct_award", "provenance": "source_explicit" },
+      "sourceIds": ["synthetic-record-source"],
+      "classification": "anomaly",
+      "evidenceStrength": "computed_from_verified_sources",
+      "publicationStatus": "publishable",
+      "caveats": ["Fixture sintetica: non descrive una spesa reale."],
+      "benchmark": {
+        "cohortId": "synthetic-cohort",
+        "cohortLabel": "Tre servizi sintetici omogenei",
+        "category": "servizio-sintetico",
+        "period": { "start": "2026-01-01", "end": "2026-01-31", "precision": "month" },
+        "taxBasis": "net",
+        "unit": "award_total",
+        "denominator": { "name": "affidamento", "value": 1, "unit": "affidamento" },
+        "method": "linear_interpolation_r7",
+        "cohortSize": 3,
+        "medianCents": 100000,
+        "p25Cents": 90000,
+        "p75Cents": 110000,
+        "targetDeltaCents": 20000,
+        "targetDeltaPercent": 20,
+        "observationIds": ["synthetic-observation-1", "synthetic-observation-2", "synthetic-observation-3"]
+      }
+    },
+    {
+      "id": "synthetic-observation-2",
+      "observedAt": "2026-01-31",
+      "title": "Secondo servizio dimostrativo",
+      "category": "servizio-sintetico",
+      "subject": { "spendingEntity": { "name": "Ente dimostrativo" } },
+      "amount": { "valueCents": 80000, "currency": "EUR", "taxBasis": "net", "unit": "award_total" },
+      "denominator": { "name": "affidamento", "value": 1, "unit": "affidamento", "sourceId": "synthetic-record-source" },
+      "period": { "start": "2026-01-01", "end": "2026-01-31", "precision": "month" },
+      "procurementMethod": { "value": "unknown", "provenance": "not_available" },
+      "sourceIds": ["synthetic-record-source"],
+      "classification": "incomplete_or_not_comparable",
+      "evidenceStrength": "verified_official_record",
+      "publicationStatus": "blocked",
+      "caveats": ["Fixture sintetica: non descrive una spesa reale."]
+    },
+    {
+      "id": "synthetic-observation-3",
+      "observedAt": "2026-01-31",
+      "title": "Terzo servizio dimostrativo",
+      "category": "servizio-sintetico",
+      "subject": { "spendingEntity": { "name": "Ente dimostrativo" } },
+      "amount": { "valueCents": 100000, "currency": "EUR", "taxBasis": "net", "unit": "award_total" },
+      "denominator": { "name": "affidamento", "value": 1, "unit": "affidamento", "sourceId": "synthetic-record-source" },
+      "period": { "start": "2026-01-01", "end": "2026-01-31", "precision": "month" },
+      "procurementMethod": { "value": "unknown", "provenance": "not_available" },
+      "sourceIds": ["synthetic-record-source"],
+      "classification": "incomplete_or_not_comparable",
+      "evidenceStrength": "verified_official_record",
+      "publicationStatus": "blocked",
+      "caveats": ["Fixture sintetica: non descrive una spesa reale."]
+    }
+  ]
+}

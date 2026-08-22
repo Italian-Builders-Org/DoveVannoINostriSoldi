@@ -20,6 +20,8 @@ Nelle graduatorie comunali, la Provincia viene dall'associazione tra `ANAG_ENTI_
 
 Per i pagamenti dello Stato, i rilasci `PBS_SPE_Mxx_*` sono mensili e cumulati dal 1° gennaio al mese contabile indicato. I rilasci `PBS_SPE_RND_*` sono consuntivi annuali: per una query con il solo anno vengono preferiti quando disponibili, mentre query mensili e storico restano esclusivamente sulla serie mensile. Le serie non vengono sommate o mescolate.
 
+La pagina Ministeri usa invece `2025_RND_SPE_ELB_CAP_001`, rendiconto elaborabile per capitolo: 5.395 righe, 41 colonne e 15 amministrazioni. L'ETL `scripts/etl/rgs_ministries_account.py` blocca la pubblicazione se cambiano file, schema, anno, amministrazioni o identità contabili. CP (competenza), RS (residui) e CS (cassa) restano campi distinti. La scheda di questo specifico rilascio dichiara CC BY 3.0; la licenza non viene estesa ad altri dataset RGS.
+
 Il connettore MOP legge prima i metadati e lo schema ufficiale. Gli alias tecnici delle colonne vengono scoperti a ogni controllo e accettati soltanto se nome, significato e tipo restano quelli previsti dal contratto. Questo evita di pubblicare valori nella colonna sbagliata dopo una modifica della fonte.
 
 Al controllo del 3 agosto 2026, lo schema dichiarava 560.245 codici locali di progetto e 541.539 CUP distinti. La ricerca usa il CUP esatto e interroga soltanto le righe necessarie: non scarica oltre mezzo milione di opere durante una richiesta web.

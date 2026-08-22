@@ -20,7 +20,7 @@ Le pagine importano un solo modulo di dominio:
 ```text
 /parlamento     -> dossier Parlamento
 /palazzo-chigi  -> dossier Presidenza del Consiglio
-/ministeri      -> indice Ministeri, con dettaglio OpenBDAP già esistente
+/ministeri      -> rendiconto RGS dei Ministeri; dettaglio pagamenti separato già esistente
 /regioni        -> conti propri regionali omogenei, quando verificati
 ```
 
@@ -52,7 +52,7 @@ La base è il candidato “quattro dossier, un confine contabile comune”. È s
 
 - Accettiamo loader distinti per mantenere ownership e significato contabile.
 - Accettiamo superfici inizialmente sparse quando la fonte è solo metadata, invece di stimare importi.
-- Accettiamo di riusare il dettaglio OpenBDAP dei Ministeri, invece di duplicarne parsing e controlli.
+- Manteniamo distinto il rendiconto elaborabile dei Ministeri dalla serie OpenBDAP che espone solo pagamenti.
 
 ## Rischi e domande aperte
 

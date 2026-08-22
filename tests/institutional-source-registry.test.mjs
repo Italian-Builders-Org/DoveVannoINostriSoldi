@@ -5,7 +5,9 @@ import { INSTITUTIONAL_SOURCE_REGISTRY } from "../src/lib/data/institutional-sou
 test("institutional source registry keeps stable IDs, dates and publication readiness", () => {
   assert.equal(new Set(INSTITUTIONAL_SOURCE_REGISTRY.map((source) => source.id)).size, INSTITUTIONAL_SOURCE_REGISTRY.length);
   assert.ok(INSTITUTIONAL_SOURCE_REGISTRY.every((source) => source.sourceRecordId && source.sourceUrl.startsWith("https://")));
-  assert.ok(INSTITUTIONAL_SOURCE_REGISTRY.every((source) => source.licenseStatus === "not-declared"));
+  assert.ok(INSTITUTIONAL_SOURCE_REGISTRY.every((source) =>
+    source.licenseStatus === "declared" ? Boolean(source.licenseName) : source.licenseName === null,
+  ));
 
   const parliament = INSTITUTIONAL_SOURCE_REGISTRY.filter((source) => source.domain === "parliament");
   assert.ok(parliament.every((source) => source.readiness === "metadata-only"));
@@ -20,4 +22,7 @@ test("institutional source registry keeps stable IDs, dates and publication read
   assert.ok(ministries.every((source) => source.downloadUrl?.startsWith("https://bdap-opendata.rgs.mef.gov.it/")));
   assert.ok(ministries.every((source) => source.assetId?.endsWith("@rgs")));
   assert.deepEqual(ministries.map((source) => source.expectedSchema?.fieldCount), [41, 41]);
+  const ministries2025 = ministries.find((source) => source.referencePeriod === "2025");
+  assert.equal(ministries2025?.readiness, "verified-data");
+  assert.equal(ministries2025?.licenseName, "CC BY 3.0");
 });

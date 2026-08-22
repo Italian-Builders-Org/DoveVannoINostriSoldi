@@ -82,6 +82,42 @@ async function inspect(page, route, viewport) {
     if (viewport.width <= 620) {
       assert.ok(evidence.labels <= 12, `${route}: troppe micro-label nel treemap mobile`);
     }
+  } else if (route === "/ministeri") {
+    assert.equal(shell.stats, 3, `${route}: Totale CP, Pagato CP e Rimasto CP devono restare verificabili`);
+    await page.waitForSelector('figure [role="img"] svg');
+    const evidence = await page.evaluate(() => {
+      const tableRegion = document.querySelector(
+        '[role="region"][aria-label="Valori esatti dei Ministeri nel rendiconto RGS 2025"]',
+      );
+      tableRegion?.focus();
+      const initialScrollLeft = tableRegion?.scrollLeft ?? 0;
+      if (tableRegion) tableRegion.scrollLeft = tableRegion.scrollWidth;
+      const result = {
+        activeTable: document.activeElement === tableRegion,
+        rectangles: document.querySelectorAll('figure [role="img"] svg rect').length,
+        sections: document.querySelectorAll("[data-institutional-section]").length,
+        totalCpHeaders: [...(tableRegion?.querySelectorAll("th") ?? [])]
+          .filter((node) => node.textContent?.trim() === "Totale CP").length,
+        rows: tableRegion?.querySelectorAll("tbody tr").length ?? 0,
+        scrollable: Boolean(
+          tableRegion &&
+          tableRegion.scrollWidth > tableRegion.clientWidth &&
+          tableRegion.scrollLeft > initialScrollLeft,
+        ),
+        total: tableRegion?.querySelector("tfoot")?.textContent?.replace(/\s+/g, " ").trim(),
+      };
+      if (tableRegion) tableRegion.scrollLeft = initialScrollLeft;
+      return result;
+    });
+    assert.equal(evidence.activeTable, true, `${route}: tabella non focalizzabile`);
+    assert.equal(evidence.rows, 15, `${route}: copertura dei Ministeri incompleta`);
+    assert.equal(evidence.totalCpHeaders, 1, `${route}: fallback esatto Totale CP assente`);
+    assert.ok(evidence.rectangles >= 15, `${route}: treemap Ministeri incompleto`);
+    assert.equal(evidence.sections, 4, `${route}: devono esserci quattro sezioni verticali`);
+    assert.match(evidence.total ?? "", /Totale dei 15 Ministeri/);
+    if (viewport.width <= 620) {
+      assert.equal(evidence.scrollable, true, `${route}: tabella mobile non scorre`);
+    }
   } else {
     const evidence = await page.evaluate(() => ({
       metadataRows: document.querySelectorAll(
@@ -117,6 +153,8 @@ try {
     ["/palazzo-chigi", { width: 390, height: 844, deviceScaleFactor: 1 }],
     ["/parlamento", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
     ["/parlamento", { width: 390, height: 844, deviceScaleFactor: 1 }],
+    ["/ministeri", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
+    ["/ministeri", { width: 390, height: 844, deviceScaleFactor: 1 }],
   ];
   for (const [route, viewport] of scenarios) {
     const page = await browser.newPage();
@@ -129,5 +167,10 @@ try {
 } finally {
   const browserProcess = browser.process();
   const closed = await Promise.race([browser.close().then(() => true), delay(3_000).then(() => false)]);
-  if (!closed && browserProcess?.exitCode === null) browserProcess.kill("SIGTERM");
+  if (!closed && browserProcess?.exitCode === null) {
+    browserProcess.kill("SIGTERM");
+    browserProcess.unref();
+  }
 }
+
+process.exit(0);

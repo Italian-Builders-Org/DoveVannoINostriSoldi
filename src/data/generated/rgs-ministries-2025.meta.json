@@ -1,0 +1,31 @@
+{
+  "asset": {
+    "bytes": 4196648,
+    "delimiter": ";",
+    "encoding": "cp1252",
+    "sha256": "2887db4905d30445abc795083f2861f969173baf235a56917932c9fcc242e368"
+  },
+  "dataArtifact": {
+    "bytes": 25183,
+    "path": "src/data/generated/rgs-ministries-2025.data.json",
+    "sha256": "86280974963c227e66cfcebab6849b54fa1edfccf67de9e15ed076290cd86028"
+  },
+  "schemaVersion": 1,
+  "source": {
+    "acquiredAt": "2026-08-22T00:00:00Z",
+    "createdAt": "2026-05-28",
+    "format": "csv",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-spese-capitolo?metadati=showall",
+    "licenseName": "CC BY 3.0",
+    "licenseStatus": "declared",
+    "owner": "Ragioneria Generale dello Stato",
+    "referencePeriod": "2025",
+    "resourceUrl": "https://bdap-opendata.rgs.mef.gov.it/export/csv/2025---Rendiconto-Pubblicato-Elaborabile-Spese-Capitolo.csv",
+    "sourceRecordId": "2025_RND_SPE_ELB_CAP_001",
+    "updatedAt": "2026-07-14"
+  },
+  "transformation": {
+    "description": "41 colonne validate; 5.395 righe riconciliate e aggregate per Ministero e missione senza mescolare CP, RS e CS.",
+    "version": 1
+  }
+}

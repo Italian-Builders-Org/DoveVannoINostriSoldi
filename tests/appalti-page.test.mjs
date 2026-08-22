@@ -28,6 +28,7 @@ test("appalti page makes the chart/table equivalence and denominator explicit", 
   assert.match(pageSource, /Quota sul denominatore/);
   assert.match(pageSource, /Apri tutte le 32 etichette originali/);
   assert.match(pageSource, /AFFIDAMENTO DIRETTO/);
+  assert.equal((pageSource.match(/Scorri la tabella verso destra/g) ?? []).length, 4);
   assert.equal(anacCigSnapshot.provenance.license, "CC BY-SA 4.0");
 });
 

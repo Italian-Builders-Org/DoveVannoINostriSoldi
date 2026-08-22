@@ -171,6 +171,7 @@ export default function AppaltiPage() {
         <details className={styles.detailTable}>
           <summary>Apri tutte le 32 etichette originali</summary>
           <div className="table-scroll" role="region" aria-label="Tutte le etichette originali delle procedure ANAC" tabIndex={0}>
+            <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
             <table className="table">
               <caption>Tutte le etichette presenti nel campo procedura del perimetro ANAC CIG 2025</caption>
               <thead>
@@ -245,6 +246,7 @@ export default function AppaltiPage() {
         </div>
 
         <div className="table-scroll" role="region" aria-label="Indicatori della fascia tra 135 mila e 140 mila euro" tabIndex={0}>
+          <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
           <table className="table">
             <caption>Conteggi della fascia di importo e denominatori espliciti</caption>
             <thead>
@@ -282,6 +284,7 @@ export default function AppaltiPage() {
             né quanto è stato pagato.
           </p>
           <div className="table-scroll" role="region" aria-label="Valori esatti del lotto più ricorrenti" tabIndex={0}>
+            <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
             <table className="table">
               <caption>Conteggi per valore esatto di importo_lotto, quota sul totale dei CIG unici 2025</caption>
               <thead>
@@ -308,6 +311,7 @@ export default function AppaltiPage() {
       <section className={`panel ${styles.coveragePanel}`} aria-labelledby="coverage-title">
         <h2 id="coverage-title" className="panel-title">Che cosa è entrato nel conteggio</h2>
         <div className="table-scroll" role="region" aria-label="Controlli di copertura del dataset ANAC" tabIndex={0}>
+          <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
           <table className="table">
             <caption>Controlli di copertura e record esclusi dal perimetro pubblicato</caption>
             <thead>

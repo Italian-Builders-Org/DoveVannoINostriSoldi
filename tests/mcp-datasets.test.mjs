@@ -55,6 +55,23 @@ test("SIOPE query validates years and can filter a region", async () => {
   assert.match(result.queryLimitations.distribution, /non è pubblicata|risposta nazionale/i);
 });
 
+test("SIOPE region filter matches hyphen and space variants of the same name", async () => {
+  const withHyphen = await queryPublicDataset({ dataset: "siope_comuni", year: 2025, region: "Emilia-Romagna" });
+  const withSpace = await queryPublicDataset({ dataset: "siope_comuni", year: 2025, region: "Emilia Romagna" });
+  const mixedCase = await queryPublicDataset({ dataset: "siope_comuni", year: 2025, region: "  EMILIA   romagna " });
+  assert.equal(withHyphen.regions.length, 1);
+  assert.equal(withHyphen.regions[0].region, "Emilia-Romagna");
+  assert.deepEqual(withSpace.regions, withHyphen.regions);
+  assert.deepEqual(mixedCase.regions, withHyphen.regions);
+});
+
+test("SIOPE region filter rejects an unrecognized region instead of silently returning national totals", async () => {
+  await assert.rejects(
+    queryPublicDataset({ dataset: "siope_comuni", year: 2025, region: "Non Esiste" }),
+    /Regione SIOPE non riconosciuta.*Non Esiste/,
+  );
+});
+
 test("SIOPE national MCP query carries only compact full-population aggregates", async () => {
   const result = await queryPublicDataset({ dataset: "siope_comuni", year: 2026 });
   assert.equal(result.distribution.schemaVersion, 2);

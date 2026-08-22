@@ -48,6 +48,21 @@ function jsonSafe<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+/**
+ * Normalizes a Region name for comparison only (never for display or storage):
+ * folds case, unifies curly/straight apostrophes, and treats hyphens and
+ * spaces as the same separator so "Emilia Romagna" matches "Emilia-Romagna".
+ */
+function normalizeRegionFilterValue(value: string): string {
+  return value
+    .normalize("NFKC")
+    .trim()
+    .toLocaleLowerCase("it-IT")
+    .replace(/[‘’`´]/g, "'")
+    .replace(/[‐-―-]/g, " ")
+    .replace(/\s+/g, " ");
+}
+
 export async function queryPublicDataset(
   query: DatasetQuery,
   options: { signal?: AbortSignal } = {},
@@ -65,15 +80,22 @@ export async function queryPublicDataset(
         throw new Error(`Anno SIOPE non disponibile. Anni validi: ${availableSiopeYears.join(", ")}.`);
       }
       const snapshot = getSiopeMunicipalSnapshot(year);
-      const region = query.region?.trim().toLocaleLowerCase("it-IT");
-      if (!region) return jsonSafe(snapshot);
+      const rawRegion = query.region?.trim();
+      if (!rawRegion) return jsonSafe(snapshot);
+      const region = normalizeRegionFilterValue(rawRegion);
+      const matchingRegions = snapshot.regions.filter((item) => normalizeRegionFilterValue(item.region) === region);
+      if (matchingRegions.length === 0) {
+        throw new Error(
+          `Regione SIOPE non riconosciuta: "${rawRegion}". Regioni valide: ${snapshot.regions.map((item) => item.region).join(", ")}.`,
+        );
+      }
       const { distribution: nationalDistribution, ...snapshotWithoutDistribution } = snapshot;
       return jsonSafe({
         ...snapshotWithoutDistribution,
-        regions: snapshot.regions.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
-        topMunicipalities: snapshot.topMunicipalities.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
-        topMunicipalitiesByValue: snapshot.topMunicipalitiesByValue.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
-        topMunicipalitiesByPerCapita: snapshot.topMunicipalitiesByPerCapita.filter((item) => item.region.toLocaleLowerCase("it-IT") === region),
+        regions: matchingRegions,
+        topMunicipalities: snapshot.topMunicipalities.filter((item) => normalizeRegionFilterValue(item.region) === region),
+        topMunicipalitiesByValue: snapshot.topMunicipalitiesByValue.filter((item) => normalizeRegionFilterValue(item.region) === region),
+        topMunicipalitiesByPerCapita: snapshot.topMunicipalitiesByPerCapita.filter((item) => normalizeRegionFilterValue(item.region) === region),
         queryLimitations: {
           regionAggregateComplete: false,
           regionAggregateCompleteDeprecated:

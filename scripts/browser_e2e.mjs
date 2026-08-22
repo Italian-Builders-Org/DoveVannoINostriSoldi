@@ -10,7 +10,7 @@ const NAVIGATION_TIMEOUT_MS = 45_000;
 const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
-const INFO_TOOLTIP_IDS = ["cash-payments-tip", "spending-glossary-tip"];
+const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");

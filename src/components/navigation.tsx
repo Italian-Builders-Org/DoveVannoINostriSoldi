@@ -20,6 +20,10 @@ const primary = [
   { href: "/fonti", label: "Fonti", aliases: ["/metodologia"] },
 ];
 
+export function matchesNavigationSection(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navigation() {
   const pathname = usePathname();
   const navigationRef = useRef<HTMLElement>(null);
@@ -85,8 +89,8 @@ export function Navigation() {
             const active =
               item.href === "/"
                 ? pathname === "/"
-                : pathname.startsWith(item.href) ||
-                  item.aliases?.some((alias) => pathname.startsWith(alias));
+                : matchesNavigationSection(pathname, item.href) ||
+                  item.aliases?.some((alias) => matchesNavigationSection(pathname, alias));
             return (
               <Link
                 key={item.href}
@@ -99,6 +103,7 @@ export function Navigation() {
             );
           })}
         </nav>
+        <span className="nav-overflow-hint" aria-hidden="true">Scorri →</span>
         <span className="nav-note">Fonte e data sempre visibili</span>
       </div>
     </header>

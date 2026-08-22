@@ -124,6 +124,12 @@ La gerarchia si costruisce con il fondo e una linea da 1px, non con l'ombra:
 
 Header su una riga: marchio con firma tricolore, ricerca, azione. Sotto, la barra delle sezioni con sottolineatura accentata sulla voce corrente. Sotto i 900px l'header va a capo e la ricerca prende tutta la riga; la barra delle sezioni scorre orizzontalmente senza scrollbar visibile.
 
+Le sezioni sono l'indice stabile degli argomenti: un link è attivo solo sulla route esatta o su un suo figlio, mai per semplice prefisso testuale. Sotto 620px una cue testuale segnala lo scroll e la sezione attiva viene portata in vista. URL, alias e label restano una sola fonte di verità nel componente di navigazione.
+
+### Percorsi con form
+
+Il form è l'azione primaria e precede nel DOM gli elenchi descrittivi, soprattutto su mobile. Le offerte diventano un indice compatto, non una sequenza di card equivalenti. Refactor visuali non cambiano `name`, valori, campi required, idempotenza, consenso, stati o contratto API; ogni modifica richiede submit browser prima/dopo.
+
 ### Dashboard
 
 La home è una griglia a tre colonne (`360px | 1fr | 300px`): lettura/composizione, geografia, dettaglio. A 1320px la colonna destra diventa una banda di moduli a piena larghezza; a 900px tutto segue lo stesso ordine DOM in colonna singola. La classifica dei Comuni non precede mai la mappa.

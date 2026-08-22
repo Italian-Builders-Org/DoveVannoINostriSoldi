@@ -35,13 +35,24 @@ function DimensionTable({
 }) {
   const heading = label === "tema" ? "Tema" : "Natura della spesa";
   return (
-    <div
-      className="table-scroll"
-      role="region"
-      aria-label={`Costo pubblico dei progetti OpenCoesione per ${label}`}
-      tabIndex={0}
-    >
-      <table className="table">
+    <>
+      <ol className={styles.dimensionSummary} aria-label={`Prime voci per costo pubblico, per ${label}`}>
+        {items.slice(0, 4).map((item) => (
+          <li key={item.slug}>
+            <strong>{item.label}</strong>
+            <span>{compactEuro(euros(item.publicCostCents))} · {percent(item.publicCostShare * 100)} del totale</span>
+            <b>{percent(item.paymentCostRatio * 100)} pagato/costo</b>
+          </li>
+        ))}
+      </ol>
+      <p className={styles.mobileTableNote}>Prime quattro voci per costo pubblico. Scorri lateralmente la tabella per tutti i valori esatti.</p>
+      <div
+        className="table-scroll"
+        role="region"
+        aria-label={`Costo pubblico dei progetti OpenCoesione per ${label}`}
+        tabIndex={0}
+      >
+        <table className="table">
         <thead>
           <tr>
             <th scope="col">{heading}</th>
@@ -85,8 +96,9 @@ function DimensionTable({
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+        </table>
+      </div>
+    </>
   );
 }
 
@@ -134,7 +146,7 @@ export default function CohesionPage() {
 
       <div className="stat-strip">
         <div>
-          <span className="stat-label">Soldi messi sul piatto</span>
+          <span className="stat-label">Costo pubblico previsto</span>
           <span className="stat-value">{compactEuro(euros(snapshot.totals.publicCostCents))}</span>
           <span className="stat-note">
             di cui {compactEuro(euros(snapshot.totals.cohesionPublicCostCents))} da fondi di
@@ -142,7 +154,7 @@ export default function CohesionPage() {
           </span>
         </div>
         <div>
-          <span className="stat-label">Soldi già pagati</span>
+          <span className="stat-label">Pagamenti registrati</span>
           <span className="stat-value">{compactEuro(euros(snapshot.totals.paymentsCents))}</span>
           <span className="stat-note">
             di cui {compactEuro(euros(snapshot.totals.cohesionPaymentsCents))} da fondi di coesione

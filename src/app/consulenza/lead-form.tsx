@@ -152,7 +152,7 @@ export function LeadForm() {
       </label>
 
       <label>
-        <span>Che tipo di progetto ti interessa *</span>
+        <span>Progetto che ti interessa *</span>
         <select className="input" name="topic" required defaultValue="">
           <option value="" disabled>
             Seleziona
@@ -166,7 +166,7 @@ export function LeadForm() {
       </label>
 
       <label>
-        <span>Budget da dedicare al progetto AI *</span>
+        <span>Budget indicativo *</span>
         <select className="input" name="budget" required defaultValue="">
           <option value="" disabled>
             Seleziona
@@ -180,7 +180,7 @@ export function LeadForm() {
       </label>
 
       <label className={styles.message}>
-        <span>Che lavoro dovrebbe fare l&apos;intelligenza artificiale *</span>
+        <span>Obiettivo del progetto *</span>
         <textarea
           className="input"
           name="message"

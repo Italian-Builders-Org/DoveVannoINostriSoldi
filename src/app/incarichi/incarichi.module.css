@@ -1,0 +1,320 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.breadcrumb a { color: var(--color-neutral-700); }
+.breadcrumb a:hover { color: var(--color-accent-800); }
+
+.scopeBand {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-block: 1px solid var(--color-neutral-300);
+  background: var(--color-surface);
+}
+
+.scopeBand > div {
+  min-width: 0;
+  padding: 12px 16px;
+  border-right: 1px solid var(--color-neutral-300);
+}
+
+.scopeBand > div:last-child { border-right: 0; }
+
+.scopeBand span,
+.scopeBand strong {
+  display: block;
+}
+
+.scopeBand span {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.scopeBand strong {
+  margin-top: 4px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.latestGrid,
+.comparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.latestGrid > h2,
+.comparisonGrid > h2 {
+  grid-column: 1 / -1;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sectionHead :global(.panel-title) { margin-bottom: var(--space-3); }
+
+.sectionHead > span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.metricList {
+  margin: 0;
+}
+
+.metricList > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.metricList > div:last-child { border-bottom: 0; }
+.metricList dt { color: var(--color-neutral-700); }
+
+.metricList dd {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.02em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricList dd small,
+.moneyCell small {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.metricList dd strong,
+.moneyCell strong { display: block; }
+
+.note,
+.noteIntro {
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  max-width: 100ch;
+}
+
+.noteIntro {
+  margin-top: -4px;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+}
+
+.tableHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.trend {
+  margin: 0;
+}
+
+.trend figcaption {
+  max-width: 88ch;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.trendRows {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.trendYear {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.trendYear > strong {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.trendLine {
+  display: grid;
+  grid-template-columns: 86px minmax(100px, 1fr) max-content;
+  gap: var(--space-2);
+  align-items: center;
+  min-height: 23px;
+}
+
+.trendLabel {
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.track,
+.compositionTrack {
+  display: block;
+  height: 10px;
+  background: var(--color-neutral-200);
+}
+
+.track i,
+.compositionTrack i {
+  display: block;
+  height: 100%;
+}
+
+.externalBar { background: var(--color-neutral-800); }
+.employeeBar { background: var(--color-neutral-500); }
+
+.trendValue {
+  min-width: 70px;
+  color: var(--color-neutral-800);
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.composition {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.compositionRow {
+  display: grid;
+  grid-template-columns: 150px minmax(120px, 1fr) max-content;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.compositionLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 13px;
+}
+
+.compositionLabel strong {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.compositionRow small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.sourceGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.sourceGrid dd {
+  margin: 4px 0 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.methodNotes {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.methodNotes p {
+  margin: 0;
+  max-width: 90ch;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+}
+
+.methodNotes strong { font-weight: 700; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.backLink {
+  margin: 0;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .scopeBand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scopeBand > div:nth-child(2n) { border-right: 0; }
+  .scopeBand > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-neutral-300); }
+  .sourceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .latestGrid,
+  .comparisonGrid { grid-template-columns: 1fr; }
+  .scopeBand { grid-template-columns: 1fr; }
+  .scopeBand > div { border-right: 0; border-bottom: 1px solid var(--color-neutral-300); }
+  .scopeBand > div:last-child { border-bottom: 0; }
+  .trendYear { grid-template-columns: 38px 1fr; gap: var(--space-2); }
+  .trendLine { grid-template-columns: 72px minmax(70px, 1fr) max-content; gap: 6px; }
+  .compositionRow { grid-template-columns: 1fr; gap: 6px; }
+  .compositionLabel { justify-content: flex-start; }
+  .compositionRow small { text-align: left; }
+  .sourceGrid { grid-template-columns: 1fr; }
+  .actions .btn { width: 100%; }
+  .tableHint { display: block; }
+  :global(.table-scroll) table { min-width: 900px; }
+}

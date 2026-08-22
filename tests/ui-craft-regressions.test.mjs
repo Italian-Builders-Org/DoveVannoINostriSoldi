@@ -273,15 +273,19 @@ test("state payment bars scale against the true maximum", async () => {
 });
 
 test("state detail and health tables disclose mobile horizontal scrolling", async () => {
-  const [administration, administrationCss, health, healthCss, stateCss] = await Promise.all([
+  const [administration, administrationCss, health, healthCss, stateCss, browserE2e] = await Promise.all([
     source("../src/app/stato/amministrazioni/[codice]/page.tsx"),
     source("../src/app/stato/amministrazioni/[codice]/amministrazione.module.css"),
     source("../src/app/spese/sanita/page.tsx"),
     source("../src/app/spese/sanita/sanita.module.css"),
     source("../src/app/stato/stato.module.css"),
+    source("../scripts/browser_e2e.mjs"),
   ]);
 
   assert.match(administration, /Scorri lateralmente per codice e importo pagato/);
+  assert.match(administration, /aria-label="Dettaglio economico per codice e importo pagato"/);
+  assert.match(browserE2e, /\/stato\?anno=2025/);
+  assert.match(browserE2e, /\/stato\/amministrazioni\/02\?anno=2025/);
   assert.equal((health.match(/Scorri lateralmente/g) ?? []).length, 3);
   assert.match(administrationCss, /@media \(max-width: 720px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block/);
   assert.match(healthCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block/);

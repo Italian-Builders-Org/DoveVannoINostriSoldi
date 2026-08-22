@@ -204,7 +204,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
             <p>Le prime voci ordinate per totale pagato nel periodo selezionato.</p>
           </div>
           <p className={localStyles.tableHint}>Scorri lateralmente per codice e importo pagato.</p>
-          <div className={`table-scroll ${localStyles.detailTable}`} role="region" aria-label="Dettaglio economico" tabIndex={0}>
+          <div className={`table-scroll ${localStyles.detailTable}`} role="region" aria-label="Dettaglio economico per codice e importo pagato" tabIndex={0}>
             <table className="table">
               <thead>
                 <tr>

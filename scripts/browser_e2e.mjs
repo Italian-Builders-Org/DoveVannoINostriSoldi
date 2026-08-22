@@ -1281,7 +1281,7 @@ try {
     completed.push(label);
   }
 
-  for (const [pathname, routeLabel] of [["/stato", "Stato"], ["/stato/amministrazioni/2", "Amministrazione"]]) {
+  for (const [pathname, routeLabel] of [["/stato?anno=2025", "Stato"], ["/stato/amministrazioni/02?anno=2025", "Amministrazione"]]) {
     for (const width of [390, 1280]) {
       const label = `${routeLabel} canali ${width}px`;
       await runScenario(browser, {

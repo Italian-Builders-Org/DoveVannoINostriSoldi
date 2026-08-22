@@ -100,6 +100,7 @@ export default function HealthSpendingPage() {
           </div>
           <span className="tag tag-neutral">2024 · consuntivo</span>
         </div>
+        <p className={styles.tableHint}>Scorri lateralmente per codice, importo e copertura.</p>
         <div className="table-scroll" role="region" aria-label="Voci contabili sanità 2024" tabIndex={0}>
           <table className="table">
             <caption className={styles.visuallyHidden}>Voci contabili del Conto Economico SSN 2024</caption>
@@ -158,6 +159,7 @@ export default function HealthSpendingPage() {
           </div>
           <span className="tag tag-neutral">{integer(data.coverage.regions)} codici geografici</span>
         </div>
+        <p className={styles.tableHint}>Scorri lateralmente per tutte le misure regionali.</p>
         <div className="table-scroll" role="region" aria-label="Aggregati regionali del Conto Economico SSN" tabIndex={0}>
           <table className="table">
             <caption className={styles.visuallyHidden}>Aggregati per codice geografico OpenBDAP</caption>
@@ -209,6 +211,7 @@ export default function HealthSpendingPage() {
             </p>
           </div>
         </div>
+        <p className={styles.tableHint}>Scorri lateralmente per importi e codici dell&apos;ente.</p>
         <div className="table-scroll" role="region" aria-label="Dettaglio per ente del Conto Economico SSN" tabIndex={0}>
           <table className="table" id="enti-dettaglio">
             <caption className={styles.visuallyHidden}>Tutti gli enti e le articolazioni contabili presenti nel dataset</caption>

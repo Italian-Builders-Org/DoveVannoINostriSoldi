@@ -12,7 +12,15 @@
   min-width: 720px;
 }
 
+.tableHint { display: none; }
+
 @media (max-width: 720px) {
+  .tableHint {
+    display: block;
+    margin: 0 0 var(--space-2);
+    color: var(--color-neutral-600);
+    font-size: 11px;
+  }
   .detailTable {
     margin-inline: -12px;
     padding-inline: 12px;

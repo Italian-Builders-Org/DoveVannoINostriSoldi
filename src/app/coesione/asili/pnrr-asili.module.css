@@ -86,6 +86,13 @@
   border-block: 1px solid var(--color-neutral-300);
 }
 
+.archiveScope {
+  max-width: 80ch;
+  margin: 0 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
 .statRail div {
   min-width: 0;
   padding: var(--space-4);
@@ -302,6 +309,10 @@
 
   .cardMetrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: auto;
   }
 }
 

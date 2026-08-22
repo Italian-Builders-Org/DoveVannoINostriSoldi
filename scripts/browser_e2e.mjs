@@ -1292,7 +1292,7 @@ try {
           await assertPaymentMethodScale(page, label);
           if (pathname.includes("/amministrazioni/")) {
             await assertMobileTableHints(page, label, 1, width <= 720);
-            const table = await page.$('[role="region"][aria-label*="codice e importo pagato"]');
+            const table = await page.$('[role="region"][aria-label="Dettaglio economico"]');
             assert.ok(table, `${label}: regione del dettaglio economico assente`);
             await table.focus();
             assert.equal(await table.evaluate((element) => document.activeElement === element), true, `${label}: tabella non focalizzabile`);
@@ -1313,6 +1313,9 @@ try {
         const text = await bodyText(page);
         assertTextMatches(text, /Da miliardi nazionali a un CUP verificabile/i, label);
         assertTextMatches(text, /progetti trovati/i, label);
+        assertTextMatches(text, /Intero archivio: 3\.841 CUP/i, label);
+        assertTextMatches(text, /dati al 13 giugno 2026/i, label);
+        assertTextMatches(text, /Fonte Italia Domani/i, label);
         assert.ok(await page.$('input[name="q"]'), `${label}: ricerca assente`);
         assert.ok(await page.$('select[name="regione"]'), `${label}: filtro regione assente`);
         assert.ok(await page.$('article a[href^="/progetti/"]'), `${label}: schede progetto assenti`);

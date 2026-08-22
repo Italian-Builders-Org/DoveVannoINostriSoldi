@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "rgs-state-budget-territorial-2023",
+  "generatedAt": "2026-08-22T00:00:00Z",
+  "source": {
+    "publisher": "Ragioneria Generale dello Stato",
+    "recordId": "SRS_SPE_BIL_SPESR_001",
+    "recordNumber": 33477,
+    "reportNumber": 5318,
+    "uuid": "6e4f0ada-f0f6-4122-ba4a-350818773daf@rgs",
+    "year": 2023,
+    "createdAt": "2025-11-21",
+    "updatedAt": "2025-11-25",
+    "dataObservedAt": "2025-09-03",
+    "downloadObservedAt": "2026-08-22",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall",
+    "schemaUrl": "https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5318_Spesa%20Statale%20Regionalizzata%20-%20Bilancio.pdf",
+    "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/export/csv/2023---Distribuzione-territoriale-della-spesa-del-bilancio-dello-Stato---Spesa-Statale-Regionalizzata.csv",
+    "sourceBytes": 3933609,
+    "sourceSha256": "bf37c613ea9d467a95618684b0cd69cf332e276792e67e6c985358173b01cf16",
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "quoteChar": "\"",
+    "lineEnding": "CRLF",
+    "licenseStatus": "not_declared"
+  },
+  "headers": [
+    "Anno di Interesse",
+    "Territorio",
+    "Titolo",
+    "Categoria",
+    "Missione",
+    "Tipo Misura",
+    "Importo"
+  ],
+  "territories": {
+    "region": [
+      "ABRUZZO",
+      "BASILICATA",
+      "CALABRIA",
+      "CAMPANIA",
+      "EMILIA-ROMAGNA",
+      "FRIULI-VENEZIA GIULIA",
+      "LAZIO",
+      "LIGURIA",
+      "LOMBARDIA",
+      "MARCHE",
+      "MOLISE",
+      "PIEMONTE",
+      "PUGLIA",
+      "SARDEGNA",
+      "SICILIA",
+      "TOSCANA",
+      "TRENTINO-ALTO ADIGE/SÜDTIROL",
+      "UMBRIA",
+      "VALLE D'AOSTA/VALLÉE D'AOSTE",
+      "VENETO"
+    ],
+    "macroarea": [
+      "CENTRO",
+      "ISOLE",
+      "NORD-EST",
+      "NORD-OVEST",
+      "SUD"
+    ],
+    "national": [
+      "ITALIA"
+    ]
+  },
+  "titles": [
+    "TITOLO I - SPESE CORRENTI",
+    "TITOLO II - SPESE IN CONTO CAPITALE"
+  ],
+  "categories": [
+    "01-REDDITI DA LAVORO DIPENDENTE",
+    "02-CONSUMI INTERMEDI",
+    "03-IMPOSTE PAGATE SULLA PRODUZIONE",
+    "04-TRASFERIMENTI CORRENTI AD AMMINISTRAZIONI PUBBLICHE",
+    "05-TRASFERIMENTI CORRENTI A FAMIGLIE E ISTITUZIONI SOCIALI PRIVATE",
+    "06-TRASFERIMENTI CORRENTI A IMPRESE",
+    "07-TRASFERIMENTI CORRENTI A ESTERO",
+    "09-INTERESSI PASSIVI E ALTRI ONERI FINANZIARI",
+    "12-ALTRE USCITE CORRENTI",
+    "13-FONDI DA RIPARTIRE DI PARTE CORRENTE",
+    "21-INVESTIMENTI FISSI LORDI E ACQUISTI DI TERRENI",
+    "22-CONTRIBUTI AGLI INVESTIMENTI AD AMMINISTRAZIONI PUBBLICHE",
+    "23-CONTRIBUTI AGLI INVESTIMENTI AD IMPRESE",
+    "24-CONTRIBUTI AGLI INVESTIMENTI A FAMIGLIE E ISTITUZIONI SOCIALI PRIVATE",
+    "25-CONTRIBUTI AGLI INVESTIMENTI A ESTERO",
+    "26-ALTRI TRASFERIMENTI IN CONTO CAPITALE",
+    "31-ACQUISIZIONI DI ATTIVITA' FINANZIARIE"
+  ],
+  "missions": [
+    "001-Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+    "002-Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+    "003-Relazioni finanziarie con le autonomie territoriali",
+    "004-L'Italia in Europa e nel mondo",
+    "005-Difesa e sicurezza del territorio",
+    "006-Giustizia",
+    "007-Ordine pubblico e sicurezza",
+    "008-Soccorso civile",
+    "009-Agricoltura, politiche agroalimentari e pesca",
+    "010-Energia e diversificazione delle fonti energetiche",
+    "011-Competitivita' e sviluppo delle imprese",
+    "012-Regolazione dei mercati",
+    "013-Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+    "014-Infrastrutture pubbliche e logistica",
+    "015-Comunicazioni",
+    "016-Commercio internazionale ed internazionalizzazione del sistema produttivo",
+    "017-Ricerca e innovazione",
+    "018-Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+    "019-Casa e assetto urbanistico",
+    "020-Tutela della salute",
+    "021-Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+    "022-Istruzione scolastica",
+    "023-Istruzione universitaria e formazione post-universitaria",
+    "024-Diritti sociali, politiche sociali e famiglia",
+    "025-Politiche previdenziali",
+    "026-Politiche per il lavoro",
+    "027-Immigrazione, accoglienza e garanzia dei diritti",
+    "028-Sviluppo e riequilibrio territoriale",
+    "029-Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+    "030-Giovani e sport",
+    "031-Turismo",
+    "032-Servizi istituzionali e generali delle amministrazioni pubbliche",
+    "034-Debito pubblico"
+  ],
+  "measures": [
+    {
+      "label": "Spesa Complessiva - Valori Assoluti (mln)",
+      "publishedUnit": "million_eur",
+      "storageUnit": "hundredths_of_million_eur",
+      "scale": 2,
+      "additiveWithinOneTerritoryLevel": true,
+      "denominatorStatus": "not_applicable"
+    },
+    {
+      "label": "Spesa Complessiva - in rapporto al PIL (%)",
+      "publishedUnit": "percent_of_gdp",
+      "storageUnit": "hundredths_of_percent",
+      "scale": 2,
+      "additiveWithinOneTerritoryLevel": false,
+      "denominatorStatus": "publisher_derived_not_versioned"
+    },
+    {
+      "label": "Spesa Complessiva - per abitante (Euro)",
+      "publishedUnit": "eur_per_inhabitant",
+      "storageUnit": "hundredths_of_eur_per_inhabitant",
+      "scale": 2,
+      "additiveWithinOneTerritoryLevel": false,
+      "denominatorStatus": "publisher_derived_not_versioned"
+    },
+    {
+      "label": "Spesa Complessiva - per Kmq (Euro)",
+      "publishedUnit": "eur_per_square_kilometre",
+      "storageUnit": "hundredths_of_eur_per_square_kilometre",
+      "scale": 2,
+      "additiveWithinOneTerritoryLevel": false,
+      "denominatorStatus": "publisher_derived_not_versioned"
+    }
+  ],
+  "expected": {
+    "sourceRows": 20268,
+    "dimensionRows": 5067,
+    "rowsPerMeasure": 5067,
+    "zeroValues": 3880,
+    "territoryCount": 26,
+    "titleCount": 2,
+    "categoryCount": 17,
+    "missionCount": 33,
+    "absoluteReconciliation": {
+      "nationalHundredthsMillionEur": 29735168,
+      "regionsHundredthsMillionEur": 29735159,
+      "regionDeltaHundredthsMillionEur": -9,
+      "macroareasHundredthsMillionEur": 29735164,
+      "macroareaDeltaHundredthsMillionEur": -4,
+      "completeRegionKeys": 82,
+      "maxRegionKeyAbsDeltaHundredthsMillionEur": 3,
+      "completeMacroareaKeys": 192,
+      "maxMacroareaKeyAbsDeltaHundredthsMillionEur": 2
+    }
+  }
+}

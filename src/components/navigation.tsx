@@ -11,9 +11,14 @@ import { REPO_URL } from "@/lib/site";
 
 const primary = [
   { href: "/", label: "Home" },
-  { href: "/spese", label: "Soldi", aliases: ["/stato", "/parlamento"] },
+  { href: "/spese", label: "Soldi", aliases: ["/stato"] },
   { href: "/territori", label: "Territori" },
   { href: "/coesione", label: "Fondi e progetti" },
+  {
+    href: "/istituzioni",
+    label: "Istituzioni",
+    aliases: ["/parlamento", "/palazzo-chigi", "/ministeri", "/regioni"],
+  },
   { href: "/enti", label: "Enti e società", aliases: ["/partecipazioni"] },
   { href: "/controlli", label: "Cosa controllare" },
   { href: "/assistente", label: "Assistente" },

@@ -54,7 +54,29 @@ async function inspect(page, route, viewport) {
   assert.ok(shell.bodyWidth <= shell.clientWidth + 1, `${route}: overflow orizzontale globale`);
   assert.deepEqual(errors, [], `${route}: errori runtime o HTTP`);
 
-  if (route === "/palazzo-chigi") {
+  if (route === "/istituzioni") {
+    const evidence = await page.evaluate(() => ({
+      activeHub: document.querySelector('a[href="/istituzioni"][aria-current="page"]')?.textContent?.trim(),
+      links: [...document.querySelectorAll("[data-institution-link]")].map((link) => link.getAttribute("href")),
+    }));
+    assert.equal(evidence.activeHub, "Istituzioni", `${route}: voce menu non attiva`);
+    assert.deepEqual(evidence.links, ["/parlamento", "/palazzo-chigi", "/ministeri", "/regioni"]);
+  } else if (route === "/consulenza") {
+    const evidence = await page.evaluate(() => {
+      const form = document.querySelector("form[aria-busy]");
+      const required = form?.querySelectorAll("[required]").length ?? 0;
+      return {
+        form: Boolean(form),
+        invalidBeforeInput: form instanceof HTMLFormElement ? !form.checkValidity() : false,
+        required,
+        submit: form?.querySelector('button[type="submit"]')?.textContent?.trim(),
+      };
+    });
+    assert.equal(evidence.form, true, `${route}: form assente`);
+    assert.equal(evidence.invalidBeforeInput, true, `${route}: validazione required non attiva`);
+    assert.ok(evidence.required >= 8, `${route}: campi obbligatori mancanti`);
+    assert.equal(evidence.submit, "Invia la richiesta", `${route}: submit non disponibile`);
+  } else if (route === "/palazzo-chigi") {
     assert.equal(shell.stats, 3, `${route}: la prima vista deve avere tre fatti`);
     await page.waitForSelector('figure [role="img"] svg');
     const evidence = await page.evaluate(() => {
@@ -186,6 +208,8 @@ const browser = await puppeteer.launch({
 
 try {
   const scenarios = [
+    ["/istituzioni", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
+    ["/istituzioni", { width: 390, height: 844, deviceScaleFactor: 1 }],
     ["/palazzo-chigi", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
     ["/palazzo-chigi", { width: 390, height: 844, deviceScaleFactor: 1 }],
     ["/parlamento", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
@@ -194,6 +218,8 @@ try {
     ["/ministeri", { width: 390, height: 844, deviceScaleFactor: 1 }],
     ["/regioni", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
     ["/regioni", { width: 390, height: 844, deviceScaleFactor: 1 }],
+    ["/consulenza", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
+    ["/consulenza", { width: 390, height: 844, deviceScaleFactor: 1 }],
   ];
   for (const [route, viewport] of scenarios) {
     const page = await browser.newPage();

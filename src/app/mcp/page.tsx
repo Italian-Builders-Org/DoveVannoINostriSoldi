@@ -71,7 +71,10 @@ export default function McpPage() {
 
       <section className="panel" aria-labelledby="datasets-title">
         <h2 id="datasets-title">{datasetCatalog.length} dataset interrogabili</h2>
-        <div className="table-scroll" role="region" aria-label="Catalogo dei dataset MCP" tabIndex={0}>
+        <p className={styles.tableHint} id="datasets-table-hint">
+          Scorri lateralmente per aggiornamento, filtri e limiti di ogni dataset.
+        </p>
+        <div className="table-scroll" role="region" aria-label="Catalogo dei dataset MCP" aria-describedby="datasets-table-hint" tabIndex={0}>
           <table className={styles.datasetTable}>
             <caption className={styles.visuallyHidden}>
               Dataset disponibili nel server MCP, fonti ufficiali, modalità di aggiornamento,

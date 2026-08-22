@@ -57,7 +57,7 @@
 .toolList dt { font-weight: 600; }
 .toolList dd { margin: 3px 0 0; color: var(--color-neutral-700); }
 
-.datasetTable { width: 100%; border-collapse: collapse; text-align: left; }
+.datasetTable { width: 100%; min-width: 1100px; border-collapse: collapse; text-align: left; }
 .datasetTable th,
 .datasetTable td { padding: 11px 12px; border-bottom: 1px solid var(--color-neutral-200); vertical-align: top; }
 .datasetTable thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--color-neutral-600); }
@@ -77,6 +77,10 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.tableHint {
+  display: none;
 }
 
 .sectionIntro {
@@ -130,6 +134,13 @@
   .serviceFacts { grid-template-columns: minmax(0, 1fr); }
   .serviceFacts > div:nth-child(odd),
   .serviceFacts > div:nth-child(even) { padding-inline: 0; border-left: 0; }
+  .tableHint {
+    display: block;
+    margin: 0 0 var(--space-2);
+    color: var(--color-neutral-700);
+    font-size: 11px;
+    line-height: 1.45;
+  }
 }
 
 @media (max-width: 480px) {

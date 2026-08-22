@@ -80,7 +80,6 @@ export default async function SourceStatusPage() {
 
       <header className={styles.header}>
         <div>
-          <span className={styles.kicker}>STATO DELLE FONTI</span>
           <h1 className={styles.title}>Quando sono stati aggiornati i dati.</h1>
           <p className={styles.lead}>
             Mostriamo tre cose diverse: se abbiamo collegato la fonte, se risponde in questo

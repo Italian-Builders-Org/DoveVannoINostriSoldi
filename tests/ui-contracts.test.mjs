@@ -39,6 +39,14 @@ const controlsCss = await readFile(
   new URL("../src/app/controlli/controlli.module.css", import.meta.url),
   "utf8",
 );
+const participationsPage = await readFile(
+  new URL("../src/app/partecipazioni/page.tsx", import.meta.url),
+  "utf8",
+);
+const participationsCss = await readFile(
+  new URL("../src/app/partecipazioni/partecipazioni.module.css", import.meta.url),
+  "utf8",
+);
 
 test("the fiscal formula has one explicit screen-reader relationship", () => {
   const accessibleFormula =
@@ -67,6 +75,17 @@ test("municipal screening is marked derived, bounded and dimension-aware", () =>
   assert.match(controlsPage, /selectedYear !== null/);
   assert.match(controlsPage, /non\s+sono una graduatoria di Comuni/);
   assert.match(controlsCss, /\.outlierTable table \{[\s\S]*?min-width: 900px;/);
+});
+
+test("wide oversight tables disclose horizontal scrolling on mobile", () => {
+  assert.equal(controlsPage.match(/className=\{styles\.tableHint\}/g)?.length, 4);
+  assert.match(controlsPage, /aria-describedby="outlier-table-hint"/);
+  assert.match(controlsPage, /aria-describedby="procurement-table-hint"/);
+  assert.match(controlsCss, /\.tableHint \{\s*display: none;/);
+  assert.match(controlsCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
+  assert.match(participationsPage, /aria-describedby="participations-table-hint"/);
+  assert.match(participationsPage, /Freccia sinistra e Freccia destra/);
+  assert.match(participationsCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
 });
 
 test("scope guidance is consolidated without losing its source boundaries", () => {

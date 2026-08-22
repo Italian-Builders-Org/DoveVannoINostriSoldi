@@ -1,0 +1,336 @@
+.page {
+  gap: var(--space-6);
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.scopeLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.scopeLine strong {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.readingNotice {
+  border-color: var(--color-neutral-400);
+}
+
+.readingNotice strong {
+  display: inline;
+  color: var(--color-text);
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.leadPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, .65fr);
+  gap: var(--space-8);
+  align-items: end;
+}
+
+.leadCopy p,
+.sectionHeading p,
+.sourcePanel > p,
+.exactAmounts p {
+  max-width: 75ch;
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.leadCopy strong {
+  color: var(--color-text);
+}
+
+.leadMeasure {
+  display: grid;
+  gap: 4px;
+  padding-top: var(--space-4);
+  border-top: 3px solid var(--chart-primary);
+}
+
+.leadMeasure span {
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.leadMeasure strong {
+  font-family: var(--font-heading);
+  font-size: 44px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.leadMeasure small {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.procedurePanel,
+.subsetPanel,
+.thresholdPanel,
+.coveragePanel,
+.sourcePanel {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.sectionHeading .tag {
+  flex: 0 0 auto;
+}
+
+.barList {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barList li {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding-left: 30px;
+}
+
+.barMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.barMeta > span {
+  min-width: 0;
+  color: var(--color-text);
+}
+
+.barMeta strong {
+  flex: 0 0 auto;
+  color: var(--color-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.barMeta small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.barTrack {
+  height: 12px;
+  background: var(--color-neutral-200);
+}
+
+.barTrack i {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  background: var(--chart-primary);
+}
+
+.barList li:nth-child(2) .barTrack i { background: var(--chart-secondary); }
+.barList li:nth-child(3) .barTrack i { background: var(--chart-tertiary); }
+.barList li:nth-child(4) .barTrack i { background: var(--chart-quaternary); }
+.barList li:nth-child(5) .barTrack i { background: var(--chart-quinary); }
+.barList li:nth-child(6) .barTrack i { background: var(--color-neutral-700); }
+.barList li:nth-child(7) .barTrack i { background: var(--color-neutral-400); }
+
+.barRank {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.detailTable {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: var(--space-3);
+}
+
+.detailTable summary,
+.methodDetails summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--color-accent-700);
+  font-weight: 700;
+}
+
+.detailTable .table-scroll {
+  margin-top: var(--space-3);
+}
+
+.detailTable table {
+  min-width: 680px;
+}
+
+.threeStats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.threeStats > div:nth-child(3n) {
+  border-right: 0;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.thresholdPanel table,
+.coveragePanel table,
+.sourcePanel table {
+  min-width: 760px;
+}
+
+.thresholdPanel td.num:last-child,
+.thresholdPanel th.num:last-child {
+  white-space: normal;
+  min-width: 250px;
+}
+
+.exactAmounts {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.exactAmounts h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 18px;
+}
+
+.sourcePanel {
+  scroll-margin-top: var(--space-4);
+}
+
+.sourceList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-6);
+  margin: 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.sourceList > div {
+  display: grid;
+  grid-template-columns: minmax(110px, .4fr) minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.sourceList dt {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sourceList dd {
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+}
+
+.methodDetails {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: var(--space-3);
+}
+
+.methodDetails ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.nextStep {
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .leadPanel {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .leadMeasure {
+    max-width: 22rem;
+  }
+
+  .sectionHeading {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .barMeta {
+    display: grid;
+    gap: 3px;
+  }
+
+  .barMeta strong {
+    justify-self: start;
+  }
+
+  .sourceList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .leadMeasure strong {
+    font-size: 36px;
+  }
+
+  .scopeLine {
+    line-height: 1.5;
+  }
+}

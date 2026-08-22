@@ -181,7 +181,8 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           <p>
             Il portale può confrontare casi omogenei, trovare dati mancanti e ordinare le verifiche.
             Non conduce indagini e non sostituisce Guardia di finanza, ANAC, Corte dei conti o il
-            controllo umano. Gli aggregati CIG 2025 verificati sono disponibili nel{" "}
+            controllo umano. Gli aggregati CIG 2025 verificati sono disponibili nella{" "}
+            <Link href="/appalti">pagina Appalti 2025</Link> e nel{" "}
             <Link href="/mcp">dataset MCP ANAC</Link>; il{" "}
             <a
               href="https://dati.anticorruzione.it/opendata/dataset"

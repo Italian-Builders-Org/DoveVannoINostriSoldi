@@ -49,6 +49,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
     "www.perlapa.gov.it",
   ],
   camera: ["trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"],
+  senato: ["www.senato.it", "senato.it", "dati.senato.it"],
   "partecipazioni-pubbliche": ["www.de.mef.gov.it", "de.mef.gov.it"],
 };
 

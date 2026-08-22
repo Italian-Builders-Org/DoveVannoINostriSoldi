@@ -15,6 +15,7 @@ import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
 import { consulentiSnapshot } from "@/lib/consulenti-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
+import parliamentManifest from "@/data/generated/parliament-source-manifest.json";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
@@ -454,6 +455,17 @@ function snapshotManagedCamera(): SourceHealth {
   };
 }
 
+function snapshotManagedSenate(): SourceHealth {
+  return {
+    ...baseHealth("senato"),
+    reachability: "not-probed",
+    freshness: freshnessFor("senato", null),
+    latencyMs: null,
+    detail: `Metadati verificati il ${parliamentManifest.verifiedAt.slice(0, 10)} · importi esclusi finché i PDF contabili non sono acquisiti e verificati.`,
+    recordCount: parliamentManifest.senato.latestDocuments.length,
+  };
+}
+
 export function getSnapshotManagedSourceHealth(): SourceHealth[] {
   return [
     snapshotManagedAnac(),
@@ -466,6 +478,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedMefParticipations(),
     snapshotManagedConsulenti(),
     snapshotManagedCamera(),
+    snapshotManagedSenate(),
   ];
 }
 

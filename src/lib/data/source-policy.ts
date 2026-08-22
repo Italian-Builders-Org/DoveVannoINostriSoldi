@@ -15,6 +15,7 @@ export type SourceId =
   | "opencivitas"
   | "consulenti"
   | "camera"
+  | "senato"
   | "partecipazioni-pubbliche";
 
 export type SourceCadence =
@@ -231,6 +232,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 12_000,
     maxRetries: 1,
     tags: ["source:camera", "domain:parliament"],
+  },
+  senato: {
+    id: "senato",
+    label: "Senato · Spese e trasparenza",
+    owner: "Senato della Repubblica",
+    sourceUrl: "https://www.senato.it/relazioni-con-i-cittadini/spese-trasparenza/spese-e-trasparenza",
+    cadence: "su-pubblicazione",
+    cadenceNote: "I documenti contabili seguono la pubblicazione istituzionale; gli importi restano esclusi finché il PDF non è acquisito e verificato.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: 12 * HOUR,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:senato", "domain:parliament"],
   },
   "partecipazioni-pubbliche": {
     id: "partecipazioni-pubbliche",

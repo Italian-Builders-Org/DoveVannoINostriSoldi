@@ -6,6 +6,7 @@ import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
+import parliamentManifest from "@/data/generated/parliament-source-manifest.json";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -39,6 +40,10 @@ const exhaustiveLatestDataBySlug = {
     label: String(
       Math.max(...parliamentSnapshot.chambers.flatMap((chamber) => chamber.statements.map((item) => item.year))),
     ),
+  },
+  senato: {
+    kind: "period",
+    label: String(Math.max(...parliamentManifest.senato.latestDocuments.map((item) => item.year))),
   },
   inps: {
     kind: "period",

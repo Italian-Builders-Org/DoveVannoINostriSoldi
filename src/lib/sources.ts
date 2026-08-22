@@ -179,6 +179,17 @@ export const publicSources: PublicSource[] = [
     url: "https://trasparenza.camera.it/bilancio-della-camera",
     note: "Conto consuntivo 2025 e bilancio 2026 collegati ai documenti ufficiali. Gli importi strutturati conservano la precisione verificata disponibile e il significato contabile della Camera; la UI arrotonda soltanto la presentazione.",
   },
+  {
+    slug: "senato",
+    name: "Senato · Spese e trasparenza",
+    owner: "Senato della Repubblica",
+    area: "Parlamento",
+    cadence: "Secondo pubblicazione istituzionale",
+    coverage: "Documenti contabili censiti; importi non ancora verificati",
+    format: "Web · PDF",
+    url: "https://www.senato.it/relazioni-con-i-cittadini/spese-trasparenza/spese-e-trasparenza",
+    note: "Il rendiconto 2024 e il bilancio 2025 sono registrati come metadati ufficiali. I PDF contabili non ereditano la licenza CC BY del portale dati.senato.it e nessun importo viene pubblicato senza acquisizione, hash e parsing verificato.",
+  },
 ];
 
 export const sourceCounts = {

@@ -12,6 +12,7 @@ test("annual CPT coverage remains a period instead of an invented date", () => {
   assert.deepEqual(latestDataBySlug.anac, { kind: "period", label: "2025" });
   assert.deepEqual(latestDataBySlug.consulenti, { kind: "period", label: "2026 · parziale" });
   assert.deepEqual(latestDataBySlug.camera, { kind: "period", label: "2026" });
+  assert.deepEqual(latestDataBySlug.senato, { kind: "period", label: "2025" });
   assert.deepEqual(latestDataBySlug.inps, {
     kind: "period",
     label: "spesa 2025 · territori 2024",

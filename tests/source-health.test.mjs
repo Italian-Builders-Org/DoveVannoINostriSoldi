@@ -65,10 +65,13 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.equal(cpt?.freshness.sourceTimestamp, null);
   const consulenti = overview.find((entry) => entry.sourceId === "consulenti");
   const camera = overview.find((entry) => entry.sourceId === "camera");
+  const senate = overview.find((entry) => entry.sourceId === "senato");
   assert.equal(consulenti?.freshness.sourceTimestamp, null);
   assert.equal(camera?.freshness.sourceTimestamp, null);
   assert.match(consulenti?.detail ?? "", /Snapshot estratto il/);
   assert.match(camera?.detail ?? "", /Snapshot verificato il/);
+  assert.equal(senate?.recordCount, 2);
+  assert.match(senate?.detail ?? "", /importi esclusi/);
   const mefIrpef = overview.find((entry) => entry.sourceId === "mef-irpef");
   assert.equal(mefIrpef?.reachability, "not-probed");
   assert.equal(mefIrpef?.recordCount, 7_896);

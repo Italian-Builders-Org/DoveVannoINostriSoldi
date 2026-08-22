@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "domain": "parliament",
+  "subjectId": "camera",
+  "title": "Camera dei deputati",
+  "coverage": {
+    "kind": "complete",
+    "covered": 1,
+    "expected": 1,
+    "note": "Il totale dei pagamenti è riconciliato con le categorie pubblicate."
+  },
+  "sources": [
+    {
+      "id": "camera-account-2025",
+      "sourceId": "camera",
+      "sourceRecordId": null,
+      "owner": "Camera dei deputati",
+      "officialUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+      "format": "pdf",
+      "sourceCreatedAt": null,
+      "sourceUpdatedAt": null,
+      "publishedAt": null,
+      "acquiredAt": "2026-08-20T14:14:16Z",
+      "rawSha256": "b35c7b6bb718ca83e1b1af47c3b5d3e0ffb4b2e124eee45e1c16aa929a66c0bd",
+      "transformVersion": 2,
+      "transformation": "Importi estratti dal PDF e riconciliati con le categorie del consuntivo.",
+      "locator": "pagine 7-8",
+      "license": { "status": "not-declared", "name": null, "url": null },
+      "rightsNote": "Documento istituzionale; condizioni di riuso non dichiarate nel file."
+    }
+  ],
+  "facts": [
+    {
+      "id": "effective-payments",
+      "label": "Pagamenti per la spesa effettiva",
+      "quantity": { "value": 94362520000, "unit": "euro-cents" },
+      "period": { "kind": "financial-year", "year": 2025 },
+      "frame": {
+        "subject": "own-institution",
+        "basis": "cash",
+        "measure": "payment",
+        "statement": "final-account",
+        "scope": "Spesa effettiva della Camera, Titoli I-III",
+        "classification": "Categorie del conto consuntivo della Camera"
+      },
+      "denominator": null,
+      "evidenceId": "camera-account-2025",
+      "explanation": "Pagamenti registrati nel conto consuntivo, esclusi i valori non riconciliati."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "asset": {
+    "bytes": 280471,
+    "sha256": "ba98c16063bf2bb8b62cd29fbd1dae23eded549faaac2ba06707ac7206ccbb7f"
+  },
+  "dataArtifact": {
+    "bytes": 25984,
+    "path": "src/data/generated/istat-regions-2024.data.json",
+    "sha256": "03c4b4424167207938558bbc32467678e6cefe295a4d4dd81e777b8a831e7f28"
+  },
+  "schemaVersion": 1,
+  "source": {
+    "acquiredAt": "2026-08-22T00:00:00Z",
+    "format": "zip+xlsx",
+    "landingUrl": "https://www.istat.it/tavole-di-dati/i-bilanci-consuntivi-delle-regioni-e-province-autonome-anno-2024/",
+    "licenseStatus": "not-declared",
+    "owner": "Istat",
+    "publishedAt": "2026-05-05",
+    "referencePeriod": "2024",
+    "resourceUrl": "https://www.istat.it/wp-content/uploads/2026/05/Tavole.zip",
+    "sourceRecordId": "istat:125266"
+  },
+  "spendingWorkbook": {
+    "bytes": 200402,
+    "path": "Tavole/Regioni_definitivi_2024_Tavola 2 - Spese anno 2024.xlsx",
+    "sha256": "a2b6f7d0de90e7fa8c15fb6d325535cb747f3b5a19b49bcb33dc16d61bc16682"
+  },
+  "transformation": {
+    "description": "Esclusi i tre fogli aggregati; letti solo gli impegni dei sei Titoli e riconciliati con il totale ufficiale per 22 amministrazioni.",
+    "version": 1
+  }
+}

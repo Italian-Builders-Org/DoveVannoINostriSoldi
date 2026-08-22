@@ -25,4 +25,10 @@ test("institutional source registry keeps stable IDs, dates and publication read
   const ministries2025 = ministries.find((source) => source.referencePeriod === "2025");
   assert.equal(ministries2025?.readiness, "verified-data");
   assert.equal(ministries2025?.licenseName, "CC BY 3.0");
+  const regions = INSTITUTIONAL_SOURCE_REGISTRY.find((source) => source.domain === "region");
+  assert.equal(regions?.sourceRecordId, "istat:125266");
+  assert.equal(regions?.readiness, "verified-data");
+  assert.deepEqual(regions?.expectedSchema, { fieldCount: 4, rowCount: 22 });
+  assert.equal(regions?.createdAt, null);
+  assert.equal(regions?.updatedAt, null);
 });

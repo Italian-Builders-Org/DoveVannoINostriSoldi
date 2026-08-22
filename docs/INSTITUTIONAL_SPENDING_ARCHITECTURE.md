@@ -21,7 +21,7 @@ Le pagine importano un solo modulo di dominio:
 /parlamento     -> dossier Parlamento
 /palazzo-chigi  -> dossier Presidenza del Consiglio
 /ministeri      -> rendiconto RGS dei Ministeri; dettaglio pagamenti separato già esistente
-/regioni        -> conti propri regionali omogenei, quando verificati
+/regioni        -> consuntivi Istat 2024 di 22 amministrazioni, impegni per Titolo
 ```
 
 Un eventuale `/istituzioni` orienta tra le route e mostra la copertura. Non somma valori.
@@ -56,7 +56,7 @@ La base è il candidato “quattro dossier, un confine contabile comune”. È s
 
 ## Rischi e domande aperte
 
-- Quale release nazionale omogenea contiene i conti propri di tutte le Regioni e Province autonome con denominatori compatibili?
+- Quale release Istat della popolazione può essere bloccata sul 2024 per abilitare confronti pro capite senza forzare il rapporto 22 amministrazioni/20 geografie?
 - Quali sezioni PCM possono essere pubblicate come dati strutturati oltre al rendiconto, senza mescolare incarichi, contratti e bilancio?
 - I dati ANAC e Consulenti Pubblici offrono chiavi stabili per ogni istituzione o soltanto filtri di scoperta?
 

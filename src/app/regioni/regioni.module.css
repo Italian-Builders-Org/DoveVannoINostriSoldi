@@ -1,0 +1,146 @@
+.selector {
+  display: flex;
+  align-items: end;
+  gap: var(--space-3);
+  margin-block-end: var(--space-8);
+}
+
+.selector label {
+  display: grid;
+  gap: var(--space-2);
+  min-width: min(100%, 430px);
+  font-weight: 750;
+}
+
+.selector select {
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-text);
+  background: var(--color-raised);
+}
+
+.selector button {
+  min-height: 44px;
+  padding-inline: var(--space-5);
+  border: 1px solid var(--color-accent);
+  color: var(--color-raised);
+  background: var(--color-accent);
+  font-weight: 800;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-block-end: var(--space-6);
+}
+
+.sectionHeader h2 {
+  margin: 0;
+}
+
+.sectionHeader p {
+  max-width: 72ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-700);
+}
+
+.sectionHeader > span,
+.provenance span {
+  color: var(--color-neutral-700);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.titleTable,
+.allEntitiesTable {
+  margin-block-start: var(--space-6);
+}
+
+.titleTable table {
+  min-width: 680px;
+}
+
+.allEntitiesTable table {
+  min-width: 760px;
+}
+
+.titleTable td,
+.allEntitiesTable td {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.titleTable tfoot {
+  font-weight: 800;
+}
+
+.statusNote {
+  max-width: 76ch;
+  color: var(--color-neutral-700);
+}
+
+.scrollHint {
+  display: none;
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+}
+
+.provenance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-block: var(--space-6);
+}
+
+.provenance div {
+  padding-block-start: var(--space-3);
+  border-block-start: 1px solid var(--color-neutral-300);
+}
+
+.provenance strong {
+  display: block;
+  margin-block-start: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.sourceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-5);
+}
+
+.sourceLinks a {
+  font-weight: 750;
+}
+
+@media (max-width: 900px) {
+  .provenance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .selector,
+  .sectionHeader {
+    display: grid;
+  }
+
+  .selector button {
+    width: 100%;
+  }
+
+  .provenance {
+    grid-template-columns: 1fr;
+  }
+
+  .scrollHint {
+    display: block;
+  }
+}

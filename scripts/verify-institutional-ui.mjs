@@ -118,6 +118,43 @@ async function inspect(page, route, viewport) {
     if (viewport.width <= 620) {
       assert.equal(evidence.scrollable, true, `${route}: tabella mobile non scorre`);
     }
+  } else if (route === "/regioni") {
+    assert.equal(shell.stats, 3, `${route}: la prima vista deve avere tre fatti`);
+    await page.waitForSelector('figure [role="img"] svg');
+    const evidence = await page.evaluate(() => {
+      const chart = document.querySelector('figure [role="img"]');
+      const titleTable = document.querySelector(
+        '[role="region"][aria-label^="Valori esatti degli impegni 2024"]',
+      );
+      const coverageTable = document.querySelector(
+        '[role="region"][aria-label="Impegni esatti delle 22 amministrazioni regionali"]',
+      );
+      titleTable?.focus();
+      const initialScrollLeft = titleTable?.scrollLeft ?? 0;
+      if (titleTable) titleTable.scrollLeft = titleTable.scrollWidth;
+      const result = {
+        activeTable: document.activeElement === titleTable,
+        coverageRows: coverageTable?.querySelectorAll("tbody tr").length ?? 0,
+        rectangles: chart?.querySelectorAll("svg rect").length ?? 0,
+        scrollable: Boolean(
+          titleTable &&
+          titleTable.scrollWidth > titleTable.clientWidth &&
+          titleTable.scrollLeft > initialScrollLeft,
+        ),
+        titleRows: titleTable?.querySelectorAll("tbody tr").length ?? 0,
+        total: titleTable?.querySelector("tfoot")?.textContent?.replace(/\s+/g, " ").trim(),
+      };
+      if (titleTable) titleTable.scrollLeft = initialScrollLeft;
+      return result;
+    });
+    assert.equal(evidence.activeTable, true, `${route}: tabella Titoli non focalizzabile`);
+    assert.equal(evidence.titleRows, 6, `${route}: Titoli incompleti`);
+    assert.equal(evidence.coverageRows, 22, `${route}: copertura amministrazioni incompleta`);
+    assert.ok(evidence.rectangles >= 5, `${route}: treemap incompleto`);
+    assert.match(evidence.total ?? "", /Totale ufficiale.+100,0\s?%/);
+    if (viewport.width <= 620) {
+      assert.equal(evidence.scrollable, true, `${route}: tabella Titoli mobile non scorre`);
+    }
   } else {
     const evidence = await page.evaluate(() => ({
       metadataRows: document.querySelectorAll(
@@ -155,6 +192,8 @@ try {
     ["/parlamento", { width: 390, height: 844, deviceScaleFactor: 1 }],
     ["/ministeri", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
     ["/ministeri", { width: 390, height: 844, deviceScaleFactor: 1 }],
+    ["/regioni", { width: 1440, height: 1000, deviceScaleFactor: 1 }],
+    ["/regioni", { width: 390, height: 844, deviceScaleFactor: 1 }],
   ];
   for (const [route, viewport] of scenarios) {
     const page = await browser.newPage();

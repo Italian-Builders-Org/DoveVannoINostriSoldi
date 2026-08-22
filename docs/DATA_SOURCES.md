@@ -90,6 +90,7 @@ I file CIG, aggiudicazioni, aggiudicatari ed esecuzione restano dataset distinti
 **Titolare:** AgID.  
 **Uso:** anagrafe canonica degli enti, Codice IPA, codice fiscale, sito istituzionale, categoria.  
 **Freschezza:** dataset Enti con aggiornamento giornaliero.  
+
 **Ruolo:** base per scoprire i siti istituzionali e alimentare il crawler di Amministrazione Trasparente.
 
 Risorse integrate:
@@ -100,6 +101,19 @@ Risorse integrate:
 - amministrazioni centrali: categoria IPA `C1`; i ministeri vengono distinti dalla PCM con i codici natura, non dal testo della denominazione.
 
 Le UO non hanno un campo semantico che certifichi “dipartimento”, “direzione generale” o “ufficio”. Queste qualifiche richiedono un crosswalk ufficiale con regolamenti e sezioni Amministrazione Trasparente.
+
+### Bilanci consuntivi Istat delle Regioni 2024
+
+**Titolare:** Istat.
+
+**Periodo:** consuntivo definitivo 2024, pubblicato il 5 maggio 2026.
+
+**Perimetro:** 22 amministrazioni individuali: 15 Regioni ordinarie, 5 Regioni speciali e 2 Province autonome. I tre fogli aggregati Italia/ordinario/speciale servono solo come contesto e non vengono sommati alle amministrazioni.
+
+**Misura pubblicata:** impegni per Titolo. Pagamenti di competenza e sui residui restano fuori da questa vista.
+**Licenza:** non dichiarata sulla pagina o nell'archivio verificato; non ne viene attribuita una.
+
+L'ETL `scripts/etl/istat_regions_account.py` blocca archivio ZIP, workbook spese, 25 fogli, coordinate e totali ufficiali. Per ogni amministrazione i sei Titoli devono riconciliarsi con il `TOTALE GENERALE DELLE SPESE`. La pagina non usa una mappa perché 22 amministrazioni non corrispondono alle 20 geometrie regionali e non calcola valori pro capite finché popolazione e mapping non sono bloccati sullo stesso periodo.
 
 ## Tier 2: trasparenza distribuita
 

@@ -14,7 +14,7 @@ export type InstitutionalSourceRegistryEntry = {
   sourceUrl: string;
   downloadUrl: string | null;
   assetId: string | null;
-  format: "html" | "pdf" | "csv" | "xlsx";
+  format: "html" | "pdf" | "csv" | "xlsx" | "zip";
   expectedSchema: { fieldCount: number; rowCount: number } | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -137,5 +137,26 @@ export const INSTITUTIONAL_SOURCE_REGISTRY = [
     readiness: "pending-download-validation",
     accountingScope: "Rendiconto dello Stato per 15 amministrazioni, distinto da previsioni e pagamenti mensili.",
     safeUse: "Valori solo dopo download, checksum, controllo delle 41 colonne e mappatura esatta delle amministrazioni.",
+  },
+  {
+    id: "istat-regional-accounts-2024",
+    domain: "region",
+    subjectId: "regional-administrations",
+    owner: "Istat",
+    title: "Bilanci consuntivi delle Regioni e Province autonome 2024",
+    sourceRecordId: "istat:125266",
+    referencePeriod: "2024",
+    sourceUrl: "https://www.istat.it/tavole-di-dati/i-bilanci-consuntivi-delle-regioni-e-province-autonome-anno-2024/",
+    downloadUrl: "https://www.istat.it/wp-content/uploads/2026/05/Tavole.zip",
+    assetId: "sha256:ba98c16063bf2bb8b62cd29fbd1dae23eded549faaac2ba06707ac7206ccbb7f",
+    format: "zip",
+    expectedSchema: { fieldCount: 4, rowCount: 22 },
+    createdAt: null,
+    updatedAt: null,
+    licenseStatus: "not-declared",
+    licenseName: null,
+    readiness: "verified-data",
+    accountingScope: "Consuntivi armonizzati di 22 amministrazioni regionali e Province autonome.",
+    safeUse: "Impegni 2024 per Titolo dentro una singola amministrazione; nessun pro capite o mappa senza mapping aggiuntivi.",
   },
 ] as const satisfies readonly InstitutionalSourceRegistryEntry[];

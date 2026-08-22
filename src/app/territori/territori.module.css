@@ -8,16 +8,27 @@
 
 .split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
   gap: var(--space-4);
   align-items: start;
 }
 
 .aside {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
   min-width: 0;
+}
+
+.aside > :global(.notice) { grid-column: 1 / -1; }
+
+.regionSummary,
+.regionTableHint { display: none; }
+
+.rankingGuardrail {
+  max-width: 70ch;
+  margin: 0 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
 }
 
 .areaRow th,
@@ -76,15 +87,35 @@
   color: var(--color-neutral-800);
 }
 
-@media (max-width: 1100px) {
-  .split { grid-template-columns: minmax(0, 1fr); }
-}
-
 @media (max-width: 760px) {
+  .aside { grid-template-columns: minmax(0, 1fr); }
+  .aside > :global(.notice) { grid-column: auto; }
   .coverage { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 }
 
 @media (max-width: 620px) {
   .intro { align-items: stretch; }
+  .regionSummary {
+    display: grid;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+  .regionSummary li {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-neutral-200);
+  }
+  .regionSummary li:first-child { border-top: 0; }
+  .regionSummary strong { font-size: 13px; }
+  .regionSummary span { color: var(--color-neutral-700); font-size: 12px; }
+  .regionSummary b { font-size: 12px; font-variant-numeric: tabular-nums; }
+  .regionTableHint {
+    display: block;
+    margin: 0 0 var(--space-3);
+    color: var(--color-neutral-600);
+    font-size: 11px;
+  }
   .coverageList dd { font-size: 18px; }
 }

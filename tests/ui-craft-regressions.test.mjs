@@ -243,3 +243,17 @@ test("cohesion adds a mobile summary without removing the exact table", async ()
   assert.match(page, /<table className="table">/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.dimensionSummary \{[\s\S]*?display: grid;/);
 });
+
+test("territories pairs a mobile summary with the complete regional table", async () => {
+  const [page, css] = await Promise.all([
+    source("../src/app/territori/page.tsx"),
+    source("../src/app/territori/territori.module.css"),
+  ]);
+
+  assert.match(page, /aria-label="Riepilogo per macro-area"/);
+  assert.match(page, /Scorri lateralmente la tabella per abitanti e copertura dei Comuni/);
+  assert.match(page, /non una classifica di merito/i);
+  assert.match(page, /aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente/);
+  assert.match(css, /\.aside \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.regionSummary \{[\s\S]*?display: grid;/);
+});

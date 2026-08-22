@@ -18,6 +18,16 @@ export const metadata: Metadata = {
     "Per cosa vengono spesi i soldi dei Comuni: le voci di uscita dei pagamenti di cassa SIOPE, mese per mese.",
 };
 
+const TITLE_FAMILY_BY_CODE: Record<string, string> = {
+  "1": "services",
+  "2": "investment",
+  "7": "pass-through",
+  "4": "financing",
+  "5": "financing",
+  "0": "other",
+  "3": "other",
+};
+
 function selectedYear(value: string | string[] | undefined): number {
   const raw = Array.isArray(value) ? value[0] ?? "" : value ?? "";
   const parsed = /^\d{4}$/.test(raw) ? Number(raw) : Number.NaN;
@@ -54,6 +64,7 @@ export default async function MoneyPage({
   const titles = data.titles.map((title) => ({
     ...title,
     copy: siopeTitleCopy(title.code),
+    family: TITLE_FAMILY_BY_CODE[title.code] ?? "other",
     share: data.totalPaid > 0 ? (title.value / data.totalPaid) * 100 : 0,
   }));
   const titleOneShare = siopeTitleShare(data, "1");
@@ -82,9 +93,12 @@ export default async function MoneyPage({
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>
           <p>
-            Pagamenti dei Comuni da gennaio a {monthLabel} {data.year}, divisi per tipo di uscita.
-            Fonte SIOPE, file del {longDate(data.source.siopeMovementsLastModified)}.
+            Pagamenti dei Comuni nel periodo tra gennaio e {monthLabel} {data.year}, divisi per tipo di
+            uscita. Importi in euro e quote sul totale dei pagamenti nel periodo.
           </p>
+          <Link className={styles.mobileDataJump} href="#voci-spesa">
+            Vedi le {data.titles.length} voci di uscita ↓
+          </Link>
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/spese" />
       </div>
@@ -115,7 +129,7 @@ export default async function MoneyPage({
       </div>
 
       <section
-        className="notice scope-notice"
+        className={`notice scope-notice ${styles.scopeNotice}`}
         aria-labelledby="spese-scope-title"
       >
         <h2 id="spese-scope-title">Quali spese vuoi vedere?</h2>
@@ -157,7 +171,7 @@ export default async function MoneyPage({
       </section>
 
       <div className={styles.split}>
-        <section className="panel">
+        <section className="panel" id="voci-spesa">
           <h2 className="panel-title">Le {data.titles.length} voci di uscita</h2>
 
           <section className={styles.analysis} aria-labelledby="spese-analysis-title">
@@ -275,7 +289,7 @@ export default async function MoneyPage({
 
           <ol className={styles.titleList}>
             {titles.map((title) => (
-              <li key={title.code}>
+              <li key={title.code} data-family={title.family}>
                 <div className={styles.titleHead}>
                   <h3>
                     {title.copy.name}
@@ -356,8 +370,8 @@ export default async function MoneyPage({
         </div>
       </div>
 
-      <details className={styles.method}>
-        <summary>Come sono raccolti questi dati</summary>
+      <section className={`panel ${styles.method}`} aria-labelledby="spese-method-title">
+        <h2 className="panel-title" id="spese-method-title">Fonti e metodo</h2>
         <p>
           Misura: {data.methodology.measure}. {data.methodology.periodicity}. Righe lette:{" "}
           {integer(data.coverage.movementRows)} · incluse:{" "}
@@ -374,7 +388,7 @@ export default async function MoneyPage({
           · {data.source.siopeOwner} · scaricato il {longDate(data.source.observedAt)}.{" "}
           <Link href="/metodologia">Come leggiamo i dati →</Link>
         </p>
-      </details>
+      </section>
     </main>
   );
 }

@@ -71,7 +71,7 @@ test("municipal screening is marked derived, bounded and dimension-aware", () =>
 
 test("scope guidance is consolidated without losing its source boundaries", () => {
   assert.equal(
-    spendingPage.match(/className="notice scope-notice"/g)?.length,
+    spendingPage.match(/className=\{`notice scope-notice \$\{styles\.scopeNotice\}`\}/g)?.length,
     1,
   );
   assert.equal(

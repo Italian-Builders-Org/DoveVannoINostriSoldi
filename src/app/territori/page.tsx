@@ -35,6 +35,10 @@ export default async function TerritoriesPage({
   const regions = regionsByPerCapita(data);
   const regionsByArea = groupRegionsByMacroArea(regions);
   const topByPerCapita = data.topMunicipalitiesByPerCapita.slice(0, 20);
+  const topByPerCapitaGroups = [
+    { label: "Posizioni 1-10", municipalities: topByPerCapita.slice(0, 10) },
+    { label: "Posizioni 11-20", municipalities: topByPerCapita.slice(10, 20) },
+  ];
   const topByVolume = data.topMunicipalitiesByValue.slice(0, 10);
   const regionScale = Math.max(
     ...regions.map((region) => region.value),
@@ -49,8 +53,8 @@ export default async function TerritoriesPage({
         <div className="page-intro">
           <h1>Pagamenti dei Comuni, territorio per territorio</h1>
           <p>
-            Pagamenti dei Comuni con sede nella regione, da gennaio a {monthLabel} {data.year}. Media
-            italiana:{" "}
+            Pagamenti dei Comuni con sede nella regione, nel periodo tra gennaio e {monthLabel} {data.year}.
+            Media italiana:{" "}
             {data.nationalPerCapita === null
               ? "non disponibile"
               : `${exactEuro(data.nationalPerCapita)} per abitante`}
@@ -64,8 +68,11 @@ export default async function TerritoriesPage({
       <div className={styles.split}>
         <section className="panel">
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
+          <p className={styles.regionTableHint}>
+            Tabella completa: scorri orizzontalmente per abitanti e copertura dei Comuni →
+          </p>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
-            <table className="table">
+            <table className={`table ${styles.regionTable}`}>
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
@@ -125,51 +132,56 @@ export default async function TerritoriesPage({
               ))}
             </table>
           </div>
-          <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
-          <p className={styles.note}>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
-          <p className={styles.note}>
-            I link regionali aprono i dati CPT 2023, un perimetro distinto da SIOPE. Nei CPT,
-            Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
-            del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
-          </p>
         </section>
 
         <div className={styles.aside}>
           <section className="panel" data-municipality-ranking="per-capita">
             <h2 className="panel-title">I {topByPerCapita.length} Comuni con più pagamenti per abitante</h2>
-            <div className="table-scroll" role="region" aria-label="Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Comune</th>
-                    <th scope="col" className="num">Per abitante</th>
-                    <th scope="col" className="num">Totale</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topByPerCapita.map((municipality) => (
-                    <tr key={municipality.codiceFiscale}>
-                      <th scope="row">
-                        {municipalityName(municipality.name)}
-                        <small>
-                          {municipality.province} · {municipality.region}
-                        </small>
-                        <small>
-                          {municipality.population === null
-                            ? "abitanti non disponibili"
-                            : `${integer(municipality.population)} abitanti`}
-                        </small>
-                      </th>
-                      <td className="num">
-                        {municipality.perCapita === null
-                          ? "n.d."
-                          : exactEuro(municipality.perCapita)}
-                      </td>
-                      <td className="num">{compactEuro(municipality.value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className={styles.rankingGrid}>
+              {topByPerCapitaGroups.map((group) => (
+                <div className={styles.rankingGroup} key={group.label}>
+                  <h3 className={styles.rankingGroupTitle}>{group.label}</h3>
+                  <div
+                    className="table-scroll"
+                    role="region"
+                    aria-label={`${group.label}: Comuni ordinati per pagamenti pro capite; scorri orizzontalmente per vedere tutte le colonne`}
+                    tabIndex={0}
+                  >
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Comune</th>
+                          <th scope="col" className="num">Per abitante</th>
+                          <th scope="col" className="num">Totale</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.municipalities.map((municipality) => (
+                          <tr key={municipality.codiceFiscale}>
+                            <th scope="row">
+                              {municipalityName(municipality.name)}
+                              <small>
+                                {municipality.province} · {municipality.region}
+                              </small>
+                              <small>
+                                {municipality.population === null
+                                  ? "abitanti non disponibili"
+                                  : `${integer(municipality.population)} abitanti`}
+                              </small>
+                            </th>
+                            <td className="num">
+                              {municipality.perCapita === null
+                                ? "n.d."
+                                : exactEuro(municipality.perCapita)}
+                            </td>
+                            <td className="num">{compactEuro(municipality.value)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -217,7 +229,7 @@ export default async function TerritoriesPage({
         </div>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Quanto entra e quanto viene speso sul territorio?</strong>
         <p>
           I Conti Pubblici Territoriali permettono di confrontare entrate e spese della Pubblica
@@ -226,7 +238,7 @@ export default async function TerritoriesPage({
         </p>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Redditi e imposta netta dichiarata</strong>
         <p>
           Il MEF pubblica contribuenti, redditi, imposta netta dichiarata e addizionali per Comune.
@@ -235,7 +247,7 @@ export default async function TerritoriesPage({
         </p>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Confronta spesa e fabbisogno standard</strong>
         <p>
           Per i Comuni delle Regioni a statuto ordinario puoi confrontare la spesa storica con il
@@ -274,20 +286,36 @@ export default async function TerritoriesPage({
               <dd>{integer(data.coverage.withoutPopulation)}</dd>
             </div>
           </dl>
-          <p>
-            I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
-            restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
-            senza una corrispondenza ufficiale. Il denominatore è la{" "}
-            {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
-            aggiornata il{" "}
-            {data.methodology.populationSourceLastModified
-              ? longDate(data.methodology.populationSourceLastModified)
-              : "data non disponibile"}. Fonte SIOPE · {data.source.siopeOwner},
-            scaricata il{" "}
-            {longDate(data.source.observedAt)}.{" "}
-            <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
-          </p>
         </div>
+      </section>
+
+      <section className={`panel ${styles.method}`} aria-labelledby="territori-method-title">
+        <h2 className="panel-title" id="territori-method-title">Fonti e metodo</h2>
+        <p>Nota di metodo: {data.methodology.warning}</p>
+        <p>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
+        <p>
+          I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
+          restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
+          senza una corrispondenza ufficiale. Il denominatore è la{" "}
+          {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
+          aggiornata il{" "}
+          {data.methodology.populationSourceLastModified
+            ? longDate(data.methodology.populationSourceLastModified)
+            : "data non disponibile"}.
+        </p>
+        <p>
+          I link regionali aprono i dati CPT 2023, un perimetro distinto da SIOPE. Nei CPT,
+          Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
+          del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
+        </p>
+        <p>
+          Fonte{" "}
+          <a href={data.source.siopeMovementsUrl} target="_blank" rel="noreferrer">SIOPE</a>
+          {" "}· {data.source.siopeOwner} · file del{" "}
+          {longDate(data.source.siopeMovementsLastModified)} · scaricato il{" "}
+          {longDate(data.source.observedAt)}.{" "}
+          <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
+        </p>
       </section>
     </main>
   );

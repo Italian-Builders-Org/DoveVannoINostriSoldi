@@ -7,10 +7,9 @@
 }
 
 .split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
-  align-items: start;
 }
 
 .aside {
@@ -19,6 +18,39 @@
   gap: var(--space-4);
   min-width: 0;
 }
+
+.rankingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.rankingGroup { min-width: 0; }
+
+.rankingGroupTitle {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.regionTable a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-neutral-400);
+  text-underline-offset: 2px;
+}
+
+.regionTable a:hover,
+.regionTable a:focus-visible { color: var(--color-accent-700); }
+
+.relatedNotice {
+  border-color: var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.relatedNotice :global(strong) { color: var(--color-neutral-700); }
 
 .areaRow th,
 .areaRow td {
@@ -35,6 +67,8 @@
   text-transform: uppercase;
   color: var(--color-neutral-600);
 }
+
+.regionTableHint { display: none; }
 
 .note {
   margin: var(--space-3) 0 0;
@@ -76,15 +110,31 @@
   color: var(--color-neutral-800);
 }
 
-@media (max-width: 1100px) {
-  .split { grid-template-columns: minmax(0, 1fr); }
+.method {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.method p {
+  max-width: 100ch;
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
 }
 
 @media (max-width: 760px) {
+  .rankingGrid { grid-template-columns: minmax(0, 1fr); }
   .coverage { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 }
 
 @media (max-width: 620px) {
   .intro { align-items: stretch; }
+  .regionTableHint {
+    display: block;
+    margin: 0 0 var(--space-3);
+    color: var(--color-neutral-700);
+    font-size: 12px;
+    font-weight: 600;
+  }
   .coverageList dd { font-size: 18px; }
 }

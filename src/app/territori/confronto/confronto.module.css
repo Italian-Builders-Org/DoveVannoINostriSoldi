@@ -64,6 +64,13 @@
   outline-offset: 3px;
 }
 
+.scrollHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
 .table {
   min-width: 1140px;
 }
@@ -195,6 +202,7 @@
 }
 
 @media (max-width: 620px) {
+  .scrollHint { display: block; }
   .filters {
     grid-template-columns: minmax(0, 1fr);
   }

@@ -292,3 +292,22 @@ test("state detail and health tables disclose mobile horizontal scrolling", asyn
   assert.match(stateCss, /\.title \{[\s\S]*?overflow-wrap: anywhere/);
   assert.match(stateCss, /\.sourceSummary \{ max-width: 100%; min-width: 0; \}/);
 });
+
+test("fiscal comparison tables share the keyboard scroll pattern", async () => {
+  const [fiscal, fiscalCss, comparison, comparisonCss] = await Promise.all([
+    source("../src/app/territori/fisco/page.tsx"),
+    source("../src/app/territori/fisco/fisco.module.css"),
+    source("../src/app/territori/confronto/page.tsx"),
+    source("../src/app/territori/confronto/confronto.module.css"),
+  ]);
+
+  for (const page of [fiscal, comparison]) {
+    assert.match(page, /HorizontalScrollRegion/);
+    assert.match(page, /Scorri lateralmente/);
+    assert.match(page, /Freccia\s+sinistra/);
+  }
+  assert.match(fiscal, /id="fiscal-scroll-hint"/);
+  assert.match(comparison, /id="comparison-scroll-hint"/);
+  assert.match(fiscalCss, /@media \(max-width: 760px\)[\s\S]*?\.scrollHint \{ display: block; \}/);
+  assert.match(comparisonCss, /@media \(max-width: 620px\)[\s\S]*?\.scrollHint \{ display: block; \}/);
+});

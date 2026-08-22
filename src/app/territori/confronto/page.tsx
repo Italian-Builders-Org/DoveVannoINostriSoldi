@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
+import { HorizontalScrollRegion } from "@/components/horizontal-scroll-region";
 import { exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
@@ -250,14 +251,17 @@ export default async function MunicipalComparisonPage({
         </div>
 
         {municipalities.length > 0 ? (
-          <div
-            aria-describedby="comparison-method results-summary"
-            aria-label="Tabella dei Comuni. Scorri orizzontalmente per vedere tutte le colonne."
-            className={`table-scroll ${styles.tableRegion}`}
-            role="region"
-            tabIndex={0}
-          >
-            <table className={`table ${styles.table}`}>
+          <>
+            <p className={styles.scrollHint} id="comparison-scroll-hint">
+              Scorri lateralmente per fabbisogno, differenze e servizi. Da tastiera usa Freccia
+              sinistra, Freccia destra, Inizio e Fine.
+            </p>
+            <HorizontalScrollRegion
+              ariaDescribedBy="comparison-method results-summary comparison-scroll-hint"
+              ariaLabel="Confronto tra spesa storica e fabbisogno standard dei Comuni"
+              className={`table-scroll ${styles.tableRegion}`}
+            >
+              <table className={`table ${styles.table}`}>
               <caption>
                 Spesa storica, fabbisogno standard e servizi dei Comuni nel
                 2022
@@ -311,8 +315,9 @@ export default async function MunicipalComparisonPage({
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+              </table>
+            </HorizontalScrollRegion>
+          </>
         ) : (
           <div className={styles.emptyState}>
             <p>Prova a cambiare il nome del Comune o a scegliere un’altra Regione.</p>

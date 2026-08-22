@@ -9,6 +9,8 @@ const SERVER_TIMEOUT_MS = 60_000;
 const NAVIGATION_TIMEOUT_MS = 45_000;
 const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
+const FISCAL_TABLE_REGION = '[role="region"][aria-label="Dettaglio entrate e spese per territorio"]';
+const COMPARISON_TABLE_REGION = '[role="region"][aria-label="Confronto tra spesa storica e fabbisogno standard dei Comuni"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
 const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
 
@@ -529,9 +531,9 @@ async function assertSpendingComposition(page, label, width) {
   assert.equal(rows, 6, `${label}: tabella equivalente incompleta`);
 }
 
-async function assertTableKeyboardScroll(page, label) {
-  await page.waitForSelector(TABLE_REGION, { visible: true });
-  const tableState = await page.$eval(TABLE_REGION, (region) => ({
+async function assertTableKeyboardScroll(page, label, selector = TABLE_REGION, expectOverflow = true) {
+  await page.waitForSelector(selector, { visible: true });
+  const tableState = await page.$eval(selector, (region) => ({
     clientWidth: region.clientWidth,
     hasTable: Boolean(region.querySelector("table")),
     scrollWidth: region.scrollWidth,
@@ -539,18 +541,25 @@ async function assertTableKeyboardScroll(page, label) {
   }));
   assert.equal(tableState.hasTable, true, `${label}: tabella assente`);
   assert.equal(tableState.tabIndex, 0, `${label}: regione tabella non raggiungibile da tastiera`);
-  assert.ok(
-    tableState.scrollWidth > tableState.clientWidth,
-    `${label}: la tabella non espone lo scroll orizzontale atteso`,
-  );
+  if (!expectOverflow) {
+    assert.ok(
+      tableState.scrollWidth <= tableState.clientWidth + 1,
+      `${label}: overflow desktop inatteso`,
+    );
+    await page.focus(selector);
+    assert.equal(await page.$eval(selector, (region) => document.activeElement === region), true);
+    return;
+  }
 
-  await page.$eval(TABLE_REGION, (region) => region.scrollTo({ left: 0, behavior: "auto" }));
-  await page.focus(TABLE_REGION);
+  assert.ok(tableState.scrollWidth > tableState.clientWidth, `${label}: scroll orizzontale assente`);
+
+  await page.$eval(selector, (region) => region.scrollTo({ left: 0, behavior: "auto" }));
+  await page.focus(selector);
   await page.keyboard.press("ArrowRight");
   await page.waitForFunction(
     (selector) => document.querySelector(selector)?.scrollLeft > 0,
     { timeout: 2_000 },
-    TABLE_REGION,
+    selector,
   );
 
   await page.keyboard.press("End");
@@ -560,15 +569,24 @@ async function assertTableKeyboardScroll(page, label) {
       return region && region.scrollLeft >= region.scrollWidth - region.clientWidth - 1;
     },
     { timeout: 2_000 },
-    TABLE_REGION,
+    selector,
   );
 
   await page.keyboard.press("Home");
   await page.waitForFunction(
     (selector) => document.querySelector(selector)?.scrollLeft === 0,
     { timeout: 2_000 },
-    TABLE_REGION,
+    selector,
   );
+}
+
+async function assertResponsiveScrollHint(page, label, selector, visible) {
+  const state = await page.$eval(selector, (hint) => ({
+    display: getComputedStyle(hint).display,
+    text: hint.textContent ?? "",
+  }));
+  assert.equal(state.display !== "none", visible, `${label}: visibilità dell'istruzione di scorrimento inattesa`);
+  assert.match(state.text, /Scorri lateralmente/i, `${label}: istruzione di scorrimento assente`);
 }
 
 async function assertHealthSpendingTables(page, label) {
@@ -713,6 +731,25 @@ try {
       },
     });
     completed.push(label);
+  }
+
+  for (const [pathname, routeLabel, tableSelector, hintSelector] of [
+    ["/territori/fisco", "Fisco", FISCAL_TABLE_REGION, "#fiscal-scroll-hint"],
+    ["/territori/confronto", "Confronto", COMPARISON_TABLE_REGION, "#comparison-scroll-hint"],
+  ]) {
+    for (const width of [390, 1280]) {
+      const label = `${routeLabel} tabella ${width}px`;
+      await runScenario(browser, {
+        label,
+        pathname,
+        width,
+        validate: async (page) => {
+          await assertTableKeyboardScroll(page, label, tableSelector, width <= 760);
+          await assertResponsiveScrollHint(page, label, hintSelector, width <= 760);
+        },
+      });
+      completed.push(label);
+    }
   }
 
   await runScenario(browser, {

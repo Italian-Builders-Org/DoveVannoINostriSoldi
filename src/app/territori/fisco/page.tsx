@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { HorizontalScrollRegion } from "@/components/horizontal-scroll-region";
 import { queryCptRegionalFiscal } from "@/lib/cpt-regional-fiscal-snapshot";
 import { longDate } from "@/lib/format";
 import styles from "./fisco.module.css";
@@ -110,11 +111,14 @@ export default function RegionalFiscalPage() {
 
       <section className="panel" aria-labelledby="fiscal-table-title">
         <h2 className="panel-title" id="fiscal-table-title">Entrate, spese e saldo</h2>
-        <div
-          className="table-scroll"
-          role="region"
-          aria-label="Dettaglio entrate e spese per territorio; scorri orizzontalmente per vedere tutte le colonne"
-          tabIndex={0}
+        <p className={styles.scrollHint} id="fiscal-scroll-hint">
+          Scorri lateralmente per spese, saldo e totali. Da tastiera usa Freccia sinistra,
+          Freccia destra, Inizio e Fine.
+        </p>
+        <HorizontalScrollRegion
+          ariaDescribedBy="fiscal-table-title fiscal-scroll-hint"
+          ariaLabel="Dettaglio entrate e spese per territorio"
+          className={`table-scroll ${styles.tableRegion}`}
         >
           <table className="table">
             <caption className={styles.visuallyHidden}>Valori CPT PA consolidati {data.year}, ordinati per saldo pro capite</caption>
@@ -143,7 +147,7 @@ export default function RegionalFiscalPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </HorizontalScrollRegion>
       </section>
 
       <div className="notice">

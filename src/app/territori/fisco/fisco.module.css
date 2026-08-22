@@ -96,6 +96,17 @@
   font-size: 12px;
 }
 
+.scrollHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.tableRegion:focus-visible {
+  outline-offset: 3px;
+}
+
 .methodology {
   max-width: 920px;
 }
@@ -126,6 +137,7 @@
 }
 
 @media (max-width: 760px) {
+  .scrollHint { display: block; }
   .sectionHeading { display: grid; }
   .balanceChart li { grid-template-columns: minmax(130px, 1fr) 96px; gap: 5px var(--space-3); }
   .regionName { grid-column: 1; }

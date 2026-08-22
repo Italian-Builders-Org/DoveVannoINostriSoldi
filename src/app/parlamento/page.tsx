@@ -3,12 +3,13 @@ import Link from "next/link";
 import { longDate } from "@/lib/format";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import type { ParliamentStatement } from "@/lib/data/parliament-contract";
+import { INSTITUTIONAL_SOURCE_REGISTRY } from "@/lib/data/institutional-source-registry";
 import styles from "./parlamento.module.css";
 
 export const metadata: Metadata = {
-  title: "Spese del Parlamento, dati della Camera",
+  title: "Spese del Parlamento: Camera e Senato",
   description:
-    "Bilanci e pagamenti della Camera dei deputati, collegati ai documenti ufficiali. Il Senato sarà pubblicato solo dopo una verifica equivalente.",
+    "Dati verificati della Camera e copertura documentale separata per Camera e Senato, con periodi, procedure e fonti ufficiali.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -38,6 +39,9 @@ function statementValue(statement: ParliamentStatement, key: string): number | n
 
 export default function ParliamentPage() {
   const chambers = parliamentSnapshot.chambers;
+  const documentCoverage = INSTITUTIONAL_SOURCE_REGISTRY.filter(
+    (source) => source.domain === "parliament",
+  );
   const latestAccount = chambers
     .flatMap((chamber) => chamber.statements)
     .filter((statement) => statement.kind === "account")
@@ -50,17 +54,17 @@ export default function ParliamentPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Spese del Parlamento, dati della Camera</h1>
+        <h1>Spese del Parlamento</h1>
         <p>
-          Al momento sono pronti i dati della Camera dei deputati. Mostriamo soltanto i bilanci che
-          abbiamo trasformato in dati e ricontrollato. Consuntivi e previsioni restano separati,
-          perché descrivono momenti diversi.
+          Camera e Senato hanno bilanci autonomi. Per la Camera mostriamo i dati che abbiamo già
+          estratto e riconciliato; per i documenti 2024 dei due rami mostriamo per ora soltanto
+          metadati e procedure. Non li sommiamo e non stimiamo i numeri che non abbiamo verificato.
         </p>
       </div>
 
       <dl className="stat-strip">
         <div>
-          <dt>Rami con dati pronti</dt>
+          <dt>Rami con numeri verificati</dt>
           <dd>{chambers.length}</dd>
           <span className="stat-note">su documenti ufficiali verificati</span>
         </div>
@@ -88,6 +92,51 @@ export default function ParliamentPage() {
           impegnato o pagato. Non sommiamo i due valori e non stimiamo i dati che mancano.
         </p>
       </div>
+
+      <section className="panel" aria-labelledby="copertura-parlamento">
+        <div className={styles.coverageHeader}>
+          <div>
+            <h2 id="copertura-parlamento">Copertura dei due rami</h2>
+            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
+          </div>
+          <span>Documenti 2024 · fonti ufficiali</span>
+        </div>
+        <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Ramo</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Approvato</th>
+                <th scope="col">Copertura</th>
+                <th scope="col">Fonte</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documentCoverage.map((source) => (
+                <tr key={source.id}>
+                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
+                  <td>
+                    {source.title}
+                    <small>{source.sourceRecordId}</small>
+                  </td>
+                  <td>{longDate(source.updatedAt)}</td>
+                  <td>
+                    <span className={styles.metadataStatus}>Solo metadati</span>
+                    <small>Numeri del PDF non verificati</small>
+                  </td>
+                  <td>
+                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
+                    {source.downloadUrl ? (
+                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       {chambers.map((chamber) => (
         <section className={styles.chamber} key={chamber.id}>

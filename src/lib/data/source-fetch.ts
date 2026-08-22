@@ -50,6 +50,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   ],
   camera: ["trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"],
   senato: ["www.senato.it", "senato.it", "dati.senato.it"],
+  pcm: ["presidenza.governo.it"],
   "partecipazioni-pubbliche": ["www.de.mef.gov.it", "de.mef.gov.it"],
 };
 

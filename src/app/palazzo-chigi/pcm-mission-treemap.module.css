@@ -1,0 +1,73 @@
+.figure {
+  margin: 0;
+}
+
+.chart {
+  width: 100%;
+  height: 460px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.tileLabel,
+.tileShare,
+.tileAmount {
+  fill: var(--color-raised);
+  pointer-events: none;
+}
+
+.tileLabel {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.tileShare {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.tileAmount {
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.tooltip {
+  max-width: 310px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-raised);
+  background: var(--color-text);
+}
+
+.tooltip span,
+.tooltip strong,
+.tooltip small {
+  display: block;
+}
+
+.tooltip span,
+.tooltip small {
+  color: var(--color-neutral-300);
+}
+
+.tooltip strong {
+  margin-block: var(--space-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.figure figcaption {
+  max-width: 72ch;
+  margin-block-start: var(--space-3);
+  color: var(--color-neutral-600);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 620px) {
+  .chart {
+    height: 360px;
+  }
+
+  .tileAmount {
+    display: none;
+  }
+}

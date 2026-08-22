@@ -190,6 +190,17 @@ export const publicSources: PublicSource[] = [
     url: "https://www.senato.it/relazioni-con-i-cittadini/spese-trasparenza/spese-e-trasparenza",
     note: "Il rendiconto 2024 e il bilancio 2025 sono registrati come metadati ufficiali. I PDF contabili non ereditano la licenza CC BY del portale dati.senato.it e nessun importo viene pubblicato senza acquisizione, hash e parsing verificato.",
   },
+  {
+    slug: "pcm",
+    name: "Bilanci della Presidenza del Consiglio",
+    owner: "Presidenza del Consiglio dei ministri",
+    area: "Palazzo Chigi",
+    cadence: "Annuale, secondo approvazione e pubblicazione istituzionale",
+    coverage: "Rendiconto finanziario PCM 2024, 572 righe e 13 missioni",
+    format: "XLSX · snapshot JSON verificato",
+    url: "https://presidenza.governo.it/AmministrazioneTrasparente/Bilanci/BilancioPreventivoConsultivo/ContoFinanziario/2024/index.html",
+    note: "Impegni, pagamenti in conto competenza e pagamenti in conto residui restano separati. Il workbook è della sola PCM e non viene sommato ai Ministeri o al Parlamento. La pagina non dichiara una licenza per il file.",
+  },
 ];
 
 export const sourceCounts = {

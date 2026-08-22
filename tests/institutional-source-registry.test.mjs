@@ -10,7 +10,8 @@ test("institutional source registry keeps stable IDs, dates and publication read
   const parliament = INSTITUTIONAL_SOURCE_REGISTRY.filter((source) => source.domain === "parliament");
   assert.ok(parliament.every((source) => source.readiness === "metadata-only"));
   const pcm = INSTITUTIONAL_SOURCE_REGISTRY.find((source) => source.id === "pcm-rendiconto-2024");
-  assert.equal(pcm?.readiness, "pending-download-validation");
+  assert.equal(pcm?.readiness, "verified-data");
+  assert.deepEqual(pcm?.expectedSchema, { fieldCount: 32, rowCount: 572 });
   const ministries = INSTITUTIONAL_SOURCE_REGISTRY.filter((source) => source.domain === "ministry");
   assert.deepEqual(ministries.map((source) => source.sourceRecordId).sort(), [
     "2024_RND_SPE_ELB_CAP_001",

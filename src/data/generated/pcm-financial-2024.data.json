@@ -1,0 +1,108 @@
+{
+  "coverage": {
+    "centresOfResponsibility": 20,
+    "currentAccountRowsReconciled": 572,
+    "excludedBlankRows": 1,
+    "missions": 13,
+    "sourceRows": 572
+  },
+  "definitions": {
+    "commitments": "Obbligazioni registrate nell'esercizio, in competenza.",
+    "notComparable": "Stanziamenti, impegni e pagamenti descrivono fasi diverse e non vengono sommati.",
+    "paymentsCurrent": "Pagamenti dell'esercizio su impegni dello stesso esercizio.",
+    "paymentsResidual": "Pagamenti dell'esercizio su residui di esercizi precedenti.",
+    "paymentsTotal": "Somma dei pagamenti in conto competenza e in conto residui.",
+    "scope": "Rendiconto finanziario della sola Presidenza del Consiglio dei ministri."
+  },
+  "missions": [
+    {
+      "code": "8",
+      "commitmentsCents": 156953874851,
+      "label": "SOCCORSO CIVILE",
+      "paymentsCents": 157515457774
+    },
+    {
+      "code": "1",
+      "commitmentsCents": 121293446896,
+      "label": "ORGANI COSTITUZIONALI A RILEVANZA COSTITUZIONALE E PRESIDENZA DEL CONSIGLIO DEI MINISTRI",
+      "paymentsCents": 108633911843
+    },
+    {
+      "code": "17",
+      "commitmentsCents": 160449288780,
+      "label": "RICERCA E INNOVAZIONE",
+      "paymentsCents": 91961699036
+    },
+    {
+      "code": "24",
+      "commitmentsCents": 54983988428,
+      "label": "DIRITTI SOCIALI, SOLIDARIETA' E FAMIGLIA",
+      "paymentsCents": 56304482758
+    },
+    {
+      "code": "30",
+      "commitmentsCents": 53048815782,
+      "label": "GIOVANI E SPORT",
+      "paymentsCents": 54037510361
+    },
+    {
+      "code": "32",
+      "commitmentsCents": 54776044429,
+      "label": "SERVIZI ISTITUZIONALI E GENERALI DELLE AMMINISTRAZIONI PUBBLICHE",
+      "paymentsCents": 27000525270
+    },
+    {
+      "code": "15",
+      "commitmentsCents": 31800485034,
+      "label": "COMUNICAZIONI",
+      "paymentsCents": 24991267795
+    },
+    {
+      "code": "11",
+      "commitmentsCents": 9750000000,
+      "label": "COMPETITIVITA' E SVILUPPO DELLE IMPRESE",
+      "paymentsCents": 9546617200
+    },
+    {
+      "code": "19",
+      "commitmentsCents": 19843644679,
+      "label": "CASA E ASSETTO URBANISTICO",
+      "paymentsCents": 6398329406
+    },
+    {
+      "code": "18",
+      "commitmentsCents": 1500000000,
+      "label": "SVILUPPO SOSTENIBILE E TUTELA DEL TERRITORIO E DELL'AMBIENTE",
+      "paymentsCents": 2786322094
+    },
+    {
+      "code": "0",
+      "commitmentsCents": 865172,
+      "label": "0",
+      "paymentsCents": 865172
+    },
+    {
+      "code": "3",
+      "commitmentsCents": 0,
+      "label": "RELAZIONI FINANZIARIE CON LE AUTONOMIE TERRITORIALI",
+      "paymentsCents": 0
+    },
+    {
+      "code": "4",
+      "commitmentsCents": 0,
+      "label": "L'ITALIA IN EUROPA E NEL MONDO",
+      "paymentsCents": 0
+    }
+  ],
+  "referenceYear": 2024,
+  "schemaVersion": 1,
+  "totals": {
+    "commitmentsCents": 664400454051,
+    "finalCompetenceAppropriationCents": 1513870713096,
+    "paymentsCurrentCents": 416105364000,
+    "paymentsResidualCents": 123071624709,
+    "paymentsTotalCents": 539176988709,
+    "remainingCurrentCents": 248295090051
+  },
+  "unit": "euro_cents"
+}

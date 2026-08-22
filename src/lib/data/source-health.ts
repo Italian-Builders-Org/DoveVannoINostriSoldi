@@ -16,6 +16,8 @@ import { consulentiSnapshot } from "@/lib/consulenti-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import parliamentManifest from "@/data/generated/parliament-source-manifest.json";
+import pcmMetadata from "@/data/generated/pcm-financial-2024.meta.json";
+import pcmData from "@/data/generated/pcm-financial-2024.data.json";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
@@ -466,6 +468,17 @@ function snapshotManagedSenate(): SourceHealth {
   };
 }
 
+function snapshotManagedPcm(): SourceHealth {
+  return {
+    ...baseHealth("pcm"),
+    reachability: "not-probed",
+    freshness: freshnessFor("pcm", pcmMetadata.source.publishedAt),
+    latencyMs: null,
+    detail: `Rendiconto PCM ${pcmData.referenceYear} · workbook XLSX verificato e ${pcmData.coverage.sourceRows} righe riconciliate.`,
+    recordCount: pcmData.coverage.sourceRows,
+  };
+}
+
 export function getSnapshotManagedSourceHealth(): SourceHealth[] {
   return [
     snapshotManagedAnac(),
@@ -479,6 +492,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedConsulenti(),
     snapshotManagedCamera(),
     snapshotManagedSenate(),
+    snapshotManagedPcm(),
   ];
 }
 

@@ -7,6 +7,7 @@ import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import parliamentManifest from "@/data/generated/parliament-source-manifest.json";
+import pcmMetadata from "@/data/generated/pcm-financial-2024.meta.json";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -45,6 +46,7 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: String(Math.max(...parliamentManifest.senato.latestDocuments.map((item) => item.year))),
   },
+  pcm: { kind: "period", label: pcmMetadata.source.referencePeriod },
   inps: {
     kind: "period",
     label: `spesa ${inpsCivilInvaliditySnapshot.spending.series.at(-1)!.year} · territori ${inpsCivilInvaliditySnapshot.regionalNewPensions.years.at(-1)}`,

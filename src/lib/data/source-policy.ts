@@ -16,6 +16,7 @@ export type SourceId =
   | "consulenti"
   | "camera"
   | "senato"
+  | "pcm"
   | "partecipazioni-pubbliche";
 
 export type SourceCadence =
@@ -246,6 +247,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 12_000,
     maxRetries: 1,
     tags: ["source:senato", "domain:parliament"],
+  },
+  pcm: {
+    id: "pcm",
+    label: "Bilanci della Presidenza del Consiglio",
+    owner: "Presidenza del Consiglio dei ministri",
+    sourceUrl: "https://presidenza.governo.it/AmministrazioneTrasparente/Bilanci/BilancioPreventivoConsultivo/index.html",
+    cadence: "annuale",
+    cadenceNote: "Bilanci e rendiconti seguono l'approvazione e la pubblicazione istituzionale; ogni nuovo workbook richiede una verifica di schema.",
+    discoveryRevalidateSeconds: 12 * HOUR,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:pcm", "domain:presidency-spending"],
   },
   "partecipazioni-pubbliche": {
     id: "partecipazioni-pubbliche",

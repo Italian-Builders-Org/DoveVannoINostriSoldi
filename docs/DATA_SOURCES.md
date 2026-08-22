@@ -273,6 +273,14 @@ La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazion
 
 I valori del Senato non sono ancora normalizzati e non compaiono nell'API o nella pagina pubblica. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera e Senato hanno bilanci autonomi e non verranno sommati automaticamente.
 
+### Presidenza del Consiglio dei ministri
+
+La sezione Amministrazione trasparente della PCM pubblica bilanci di previsione e conti finanziari. La prima integrazione usa il workbook ufficiale del Rendiconto 2024, approvato il 10 giugno 2025 e pubblicato il 19 giugno 2025.
+
+Il file contiene 572 righe di capitolo. La pipeline conserva separati stanziamento definitivo di competenza, impegni, pagamenti in conto competenza e pagamenti in conto residui. Il totale pagato della pagina è la somma dichiarata delle due colonne di pagamento; non è sommato agli impegni o agli stanziamenti. Tutte le righe riconciliano `impegnato = pagato C/C + rimasto da pagare C/C`.
+
+Il perimetro è la sola Presidenza del Consiglio. Non viene unito al bilancio dello Stato, ai Ministeri o ai bilanci autonomi di Camera e Senato. La pagina ufficiale non dichiara una licenza per il workbook; il portale non ne inventa una. Manifesto, checksum, trasformazione e comandi di verifica sono documentati in `docs/PCM_FINANCIAL_2024.md`.
+
 ## Fonti successive
 
 ### Anagrafe delle opere incompiute

@@ -93,6 +93,7 @@
   margin: 0 0 var(--space-2);
   font-size: 30px;
   letter-spacing: -.02em;
+  overflow-wrap: anywhere;
 }
 
 .lead {
@@ -535,12 +536,16 @@
   }
 
   .title {
-    font-size: clamp(40px, 13vw, 58px);
+    font-size: clamp(32px, 10vw, 48px);
   }
 
   .primaryMetric strong {
-    font-size: clamp(50px, 18vw, 78px);
+    font-size: clamp(42px, 15vw, 68px);
+    overflow-wrap: anywhere;
   }
+
+  .sourceSummary { max-width: 100%; min-width: 0; }
+  .sourceSummaryRow { grid-template-columns: minmax(0, 90px) minmax(0, 1fr); }
 
   .sectionHeader {
     display: block;

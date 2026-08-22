@@ -606,6 +606,30 @@ async function assertHealthSpendingTables(page, label) {
   }
 }
 
+async function assertPaymentMethodScale(page, label) {
+  const rows = await page.$$eval("[data-payment-method-value]", (elements) =>
+    elements.map((element) => ({
+      value: Number(element.getAttribute("data-payment-method-value")),
+      width: Number.parseFloat(element.querySelector("[aria-hidden='true'] i")?.style.width ?? "NaN"),
+    })),
+  );
+
+  assert.ok(rows.length > 1, `${label}: canali di pagamento assenti`);
+  assert.equal(rows.every((row) => Number.isFinite(row.value) && Number.isFinite(row.width)), true);
+  const maximumValue = Math.max(...rows.map((row) => row.value));
+  const maximumRows = rows.filter((row) => row.value === maximumValue);
+  assert.equal(maximumRows.every((row) => Math.abs(row.width - 100) < 0.01), true, `${label}: il massimo non occupa il 100%`);
+  assert.equal(rows.every((row) => row.width <= 100), true, `${label}: barra oltre il 100%`);
+}
+
+async function assertMobileTableHints(page, label, expectedCount, visible) {
+  const hints = await page.$$eval('[class*="tableHint"]', (elements) =>
+    elements.map((element) => getComputedStyle(element).display !== "none"),
+  );
+  assert.equal(hints.length, expectedCount, `${label}: numero di avvisi di scorrimento inatteso`);
+  assert.equal(hints.every((isVisible) => isVisible === visible), true, `${label}: visibilità degli avvisi incoerente`);
+}
+
 async function bodyText(page) {
   return page.$eval("body", (body) => body.innerText);
 }
@@ -1214,9 +1238,32 @@ try {
         assertTextMatches(text, /non pubblica una voce chiamata “gettonisti” o “cooperative”/i, label);
         assertTextMatches(text, /Non è una graduatoria/i, label);
         await assertHealthSpendingTables(page, label);
+        await assertMobileTableHints(page, label, 3, width <= 620);
       },
     });
     completed.push(label);
+  }
+
+  for (const [pathname, routeLabel] of [["/stato", "Stato"], ["/stato/amministrazioni/2", "Amministrazione"]]) {
+    for (const width of [390, 1280]) {
+      const label = `${routeLabel} canali ${width}px`;
+      await runScenario(browser, {
+        label,
+        pathname,
+        width,
+        validate: async (page) => {
+          await assertPaymentMethodScale(page, label);
+          if (pathname.includes("/amministrazioni/")) {
+            await assertMobileTableHints(page, label, 1, width <= 720);
+            const table = await page.$('[role="region"][aria-label*="codice e importo pagato"]');
+            assert.ok(table, `${label}: regione del dettaglio economico assente`);
+            await table.focus();
+            assert.equal(await table.evaluate((element) => document.activeElement === element), true, `${label}: tabella non focalizzabile`);
+          }
+        },
+      });
+      completed.push(label);
+    }
   }
 
   for (const width of [320, 390, 768, 1280]) {

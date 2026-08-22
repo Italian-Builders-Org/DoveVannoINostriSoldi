@@ -68,6 +68,8 @@
   font-size: 12px;
 }
 
+.tableHint { display: none; }
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -91,6 +93,12 @@
 }
 
 @media (max-width: 620px) {
+  .tableHint {
+    display: block;
+    margin: 0 0 var(--space-2);
+    color: var(--color-neutral-600);
+    font-size: 11px;
+  }
   .stats:global(.stat-strip) {
     grid-template-columns: 1fr;
   }

@@ -257,3 +257,34 @@ test("territories pairs a mobile summary with the complete regional table", asyn
   assert.match(css, /\.aside \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.regionSummary \{[\s\S]*?display: grid;/);
 });
+
+test("state payment bars scale against the true maximum", async () => {
+  const [overview, administration] = await Promise.all([
+    source("../src/app/stato/page.tsx"),
+    source("../src/app/stato/amministrazioni/[codice]/page.tsx"),
+  ]);
+
+  assert.match(overview, /Math\.max\(\.\.\.snapshot\.paymentMethods\.map\(\(method\) => method\.value\), 0\)/);
+  assert.match(administration, /Math\.max\(\.\.\.data\.paymentMethods\.map\(\(method\) => method\.value\), 0\)/);
+  assert.match(overview, /data-payment-method-value=\{method\.value\}/);
+  assert.match(administration, /data-payment-method-value=\{method\.value\}/);
+  assert.doesNotMatch(overview, /paymentMethods\[0\]\?\.value/);
+  assert.doesNotMatch(administration, /paymentMethods\[0\]\?\.value/);
+});
+
+test("state detail and health tables disclose mobile horizontal scrolling", async () => {
+  const [administration, administrationCss, health, healthCss, stateCss] = await Promise.all([
+    source("../src/app/stato/amministrazioni/[codice]/page.tsx"),
+    source("../src/app/stato/amministrazioni/[codice]/amministrazione.module.css"),
+    source("../src/app/spese/sanita/page.tsx"),
+    source("../src/app/spese/sanita/sanita.module.css"),
+    source("../src/app/stato/stato.module.css"),
+  ]);
+
+  assert.match(administration, /Scorri lateralmente per codice e importo pagato/);
+  assert.equal((health.match(/Scorri lateralmente/g) ?? []).length, 3);
+  assert.match(administrationCss, /@media \(max-width: 720px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block/);
+  assert.match(healthCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block/);
+  assert.match(stateCss, /\.title \{[\s\S]*?overflow-wrap: anywhere/);
+  assert.match(stateCss, /\.sourceSummary \{ max-width: 100%; min-width: 0; \}/);
+});

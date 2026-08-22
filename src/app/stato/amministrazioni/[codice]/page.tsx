@@ -57,7 +57,7 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
 }
 
 function AdministrationDashboard({ data }: { data: StateAdministrationSpending }) {
-  const maxPaymentMethod = data.paymentMethods[0]?.value ?? 0;
+  const maxPaymentMethod = Math.max(...data.paymentMethods.map((method) => method.value), 0);
   const identity = data.administration.identity;
   const isConsuntivo = data.period.releaseKind === "consuntivo";
   const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
@@ -203,6 +203,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
             <div><h2>Dettaglio economico</h2></div>
             <p>Le prime voci ordinate per totale pagato nel periodo selezionato.</p>
           </div>
+          <p className={localStyles.tableHint}>Scorri lateralmente per codice e importo pagato.</p>
           <div className={`table-scroll ${localStyles.detailTable}`} role="region" aria-label="Dettaglio economico" tabIndex={0}>
             <table className="table">
               <thead>
@@ -235,7 +236,11 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
           {data.paymentMethods.map((method) => {
             const width = maxPaymentMethod > 0 ? (method.value / maxPaymentMethod) * 100 : 0;
             return (
-              <div className={styles.methodRow} key={method.code ?? method.label}>
+              <div
+                className={styles.methodRow}
+                data-payment-method-value={method.value}
+                key={method.code ?? method.label}
+              >
                 <span>{method.label}</span>
                 <div className={styles.methodTrack} aria-hidden="true">
                   <i style={{ width: `${Math.min(width, 100)}%` }} />

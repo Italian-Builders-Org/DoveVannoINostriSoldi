@@ -234,6 +234,89 @@ async function assertCohesionStatusLayout(page, label) {
   }
 }
 
+async function assertCohesionPathwayContrast(page, label) {
+  const state = await page.$eval("main", (main) => {
+    const heading = [...main.querySelectorAll("h2")].find((candidate) =>
+      candidate.textContent?.includes("Segui un progetto fino alla gara"),
+    );
+    const panel = heading?.closest("section");
+    const paragraph = panel?.querySelector("p");
+    if (!panel || !heading || !paragraph) return null;
+
+    function luminance(color) {
+      const channels = color.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+      if (!channels || channels.length !== 3) return null;
+      const linear = channels.map((channel) => {
+        const value = channel / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+    }
+
+    function ratio(foreground, background) {
+      const first = luminance(foreground);
+      const second = luminance(background);
+      if (first === null || second === null) return null;
+      return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
+    }
+
+    const background = getComputedStyle(panel).backgroundColor;
+    const headingColor = getComputedStyle(heading).color;
+    const paragraphColor = getComputedStyle(paragraph).color;
+    return {
+      headingContrast: ratio(headingColor, background),
+      paragraphContrast: ratio(paragraphColor, background),
+    };
+  });
+
+  assert.ok(state, `${label}: percorso PNRR non trovato`);
+  assert.ok(state.headingContrast >= 4.5, `${label}: contrasto titolo ${state.headingContrast}`);
+  assert.ok(state.paragraphContrast >= 4.5, `${label}: contrasto testo ${state.paragraphContrast}`);
+}
+
+async function assertConsultingSuccess(page, label) {
+  const submissions = [];
+  await page.setRequestInterception(true);
+  page.on("request", async (request) => {
+    if (request.isInterceptResolutionHandled()) return;
+    const requestUrl = new URL(request.url());
+    if (request.method() === "POST" && requestUrl.pathname === "/api/consulenza") {
+      submissions.push(JSON.parse(request.postData() ?? "{}"));
+      await request.respond({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true }),
+      });
+      return;
+    }
+    await request.continue();
+  });
+
+  await page.type('input[name="name"]', "Mario Rossi");
+  await page.type('input[name="email"]', "mario.rossi@example.it");
+  await page.type('input[name="organization"]', "Comune di Esempio");
+  await page.select('select[name="organizationType"]', "pa");
+  await page.select('select[name="topic"]', "lettura");
+  await page.select('select[name="budget"]', "non_so");
+  await page.type(
+    'textarea[name="message"]',
+    "Vorremmo capire come leggere e confrontare un archivio pubblico con fonti verificabili.",
+  );
+  await page.click('input[name="consent"]');
+  await page.click('main form button[type="submit"]');
+  await page.waitForSelector('[role="status"]', { visible: true });
+
+  const result = await page.$eval('[role="status"]', (status) => ({
+    active: document.activeElement === status,
+    text: status.textContent,
+  }));
+  assert.equal(submissions.length, 1, `${label}: numero di submit inatteso`);
+  assert.match(submissions[0].submissionId, /^[0-9a-f-]{36}$/i, `${label}: idempotency id assente`);
+  assert.equal(submissions[0].consent, true, `${label}: consenso non inviato`);
+  assert.equal(result.active, true, `${label}: focus non spostato sul successo`);
+  assertTextMatches(result.text ?? "", /Richiesta inviata/i, label);
+}
+
 async function assertInfoTooltips(page, label) {
   for (const tooltipId of INFO_TOOLTIP_IDS) {
     const selector = `button[aria-controls="${tooltipId}"]`;
@@ -904,6 +987,7 @@ try {
       validate: async (page) => {
         assertTextMatches(await bodyText(page), /A che punto sono i progetti/i, label);
         await assertCohesionStatusLayout(page, label);
+        await assertCohesionPathwayContrast(page, label);
       },
     });
     completed.push(label);
@@ -933,6 +1017,14 @@ try {
     });
     completed.push(label);
   }
+
+  await runScenario(browser, {
+    label: "Consulenza submit riuscito 390px",
+    pathname: "/consulenza",
+    width: 390,
+    validate: async (page) => assertConsultingSuccess(page, "Consulenza submit riuscito 390px"),
+  });
+  completed.push("Consulenza submit riuscito 390px");
 
   for (const width of [390, 1280]) {
     const label = `Privacy consulenza ${width}px`;

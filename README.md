@@ -258,6 +258,7 @@ Per proporre una nuova fonte, apri una issue con:
 
 - [@fragiannicola](https://x.com/fragiannicola)
 - [@dom_gag_96](https://x.com/dom_gag_96)
+- [@OstinelliLuca](https://x.com/OstinelliLuca)
 
 ## Licenza
 

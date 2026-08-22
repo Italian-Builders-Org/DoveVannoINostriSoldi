@@ -12,6 +12,11 @@ export const metadata: Metadata = {
 };
 
 const euro = (cents: number) => cents / 100;
+const percentage = new Intl.NumberFormat("it-IT", {
+  style: "percent",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
 
 export default function MinistriesPage() {
   const { ministries, totals, coverage } = rgsMinistriesSnapshot;
@@ -105,6 +110,7 @@ export default function MinistriesPage() {
               <tr>
                 <th scope="col">Ministero</th>
                 <th scope="col">Totale CP</th>
+                <th scope="col">Quota del Totale CP</th>
                 <th scope="col">Pagato CP</th>
                 <th scope="col">Rimasto da pagare CP</th>
               </tr>
@@ -119,6 +125,7 @@ export default function MinistriesPage() {
                       <small>Codice RGS {ministry.code} · IPA {identity?.ipaCode ?? "non collegato"}</small>
                     </th>
                     <td>{exactEuro(euro(ministry.commitmentsCpCents))}</td>
+                    <td>{percentage.format(ministry.commitmentsCpCents / totals.commitmentsCpCents)}</td>
                     <td>{exactEuro(euro(ministry.paymentsCompetenceCpCents))}</td>
                     <td>{exactEuro(euro(ministry.remainingCpCents))}</td>
                   </tr>
@@ -129,6 +136,7 @@ export default function MinistriesPage() {
               <tr>
                 <th scope="row">Totale dei 15 Ministeri</th>
                 <td>{exactEuro(euro(totals.commitmentsCpCents))}</td>
+                <td>{percentage.format(1)}</td>
                 <td>{exactEuro(euro(totals.paymentsCompetenceCpCents))}</td>
                 <td>{exactEuro(euro(totals.remainingCpCents))}</td>
               </tr>

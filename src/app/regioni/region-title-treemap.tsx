@@ -3,6 +3,7 @@
 import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 import type { TreemapNode } from "recharts";
 import type { IstatRegionalAdministration } from "@/lib/data/istat-regions-contract";
+import { institutionalCategoryColor } from "@/lib/chart-category-colors";
 import styles from "./region-title-treemap.module.css";
 
 const compactEuro = new Intl.NumberFormat("it-IT", {
@@ -41,20 +42,20 @@ function tile(props: TreemapNode) {
         y={node.y}
         width={node.width}
         height={node.height}
-        fill="var(--color-accent)"
-        fillOpacity={0.96 - (node.index % 4) * 0.1}
+        fill={institutionalCategoryColor(node.index)}
         stroke="var(--color-raised)"
         strokeWidth={2}
       />
       {showLabel ? (
         <>
           <text x={node.x + 12} y={node.y + 25} className={styles.tileLabel}>{node.shortLabel}</text>
-          <text x={node.x + 12} y={node.y + 45} className={styles.tileShare}>{percentage.format(node.share ?? 0)}</text>
           {showAmount ? (
-            <text x={node.x + 12} y={node.y + 66} className={styles.tileAmount}>
-              {compactEuro.format((node.commitmentsCents ?? 0) / 100)}
+            <text x={node.x + 12} y={node.y + 47} className={styles.tileAmount}>
+              {compactEuro.format((node.commitmentsCents ?? 0) / 100)} · {percentage.format(node.share ?? 0)}
             </text>
-          ) : null}
+          ) : (
+            <text x={node.x + 12} y={node.y + 45} className={styles.tileShare}>{percentage.format(node.share ?? 0)}</text>
+          )}
         </>
       ) : null}
     </g>

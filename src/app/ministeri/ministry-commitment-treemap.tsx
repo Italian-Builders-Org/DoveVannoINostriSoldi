@@ -3,7 +3,15 @@
 import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 import type { TreemapNode } from "recharts";
 import type { RgsMinistry } from "@/lib/data/rgs-ministries-contract";
+import { institutionalCategoryColor } from "@/lib/chart-category-colors";
 import styles from "./ministry-commitment-treemap.module.css";
+
+const compactEuro = new Intl.NumberFormat("it-IT", {
+  style: "currency",
+  currency: "EUR",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
@@ -60,8 +68,7 @@ function tile(props: TreemapNode) {
         y={node.y}
         width={node.width}
         height={node.height}
-        fill="var(--color-accent)"
-        fillOpacity={0.96 - (node.index % 4) * 0.1}
+        fill={institutionalCategoryColor(node.index)}
         stroke="var(--color-raised)"
         strokeWidth={2}
       />
@@ -72,7 +79,7 @@ function tile(props: TreemapNode) {
           </text>
           {showShare ? (
             <text x={node.x + 12} y={node.y + 47} className={styles.tileShare}>
-              {percentage.format(node.share ?? 0)}
+              {compactEuro.format((node.totalCpCents ?? 0) / 100)} · {percentage.format(node.share ?? 0)}
             </text>
           ) : null}
         </>

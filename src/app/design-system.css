@@ -92,6 +92,15 @@
   --chart-quinary: var(--color-accent-300);
   --chart-negative: var(--color-accent-700);
 
+  /* Categorie additive: famiglie distinte, non semaforiche. Il rosso resta
+     riservato ad azioni e avvisi; etichette e tabelle rendono il colore ridondante. */
+  --chart-category-blue: #2855a5;
+  --chart-category-teal: #087c74;
+  --chart-category-purple: #6b46a3;
+  --chart-category-amber: #9a5b00;
+  --chart-category-green: #2f6f44;
+  --chart-category-slate: #405b70;
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --focus-ring: var(--color-accent);
 }

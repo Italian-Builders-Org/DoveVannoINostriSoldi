@@ -64,8 +64,17 @@
     "observedAt": "2026-08-22",
     "license": "Creative Commons Attribution",
     "licenseId": "cc-by",
-    "licenseVersion": "3.0 Unported",
-    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+    "licenseVersion": "3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+    "licenseEvidence": {
+      "kind": "record_landing_page_link",
+      "observedHref": "http://creativecommons.org/licenses/by/3.0",
+      "observedAt": "2026-08-22",
+      "landingUrls": [
+        "https://bdap-opendata.rgs.mef.gov.it/content/2024-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione",
+        "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione"
+      ]
+    }
   },
   "sources": [
     {

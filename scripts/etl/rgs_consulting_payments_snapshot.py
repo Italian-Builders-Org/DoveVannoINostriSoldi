@@ -9,7 +9,7 @@ import hashlib
 import json
 import re
 import tempfile
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, fields
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
@@ -42,6 +42,22 @@ CE3 = {
     "4": "Prestazioni di lavoro parasubordinato",
 }
 SELECTED_CE2 = ("2", "Spese per acquisto di servizi")
+EXPECTED_SOURCES = {
+    2024: {
+        "datasetId": "spd_rnd_spe_elb_pig_01_2024",
+        "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione",
+        "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=d73a538b-5652-463f-8c97-b09b3ec818cd",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/d73a538b-5652-463f-8c97-b09b3ec818cd.csv",
+        "schemaUrl": "https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5189_Rendiconto%20Pubblicato%20Elaborabile%20Spese.pdf",
+    },
+    2025: {
+        "datasetId": "spd_rnd_spe_elb_pig_01_2025",
+        "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione",
+        "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=f65dca45-815a-4e1c-899e-46ab75766047",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/f65dca45-815a-4e1c-899e-46ab75766047.csv",
+        "schemaUrl": "https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5507_Rendiconto%20Pubblicato%20Elaborabile%20Spese.pdf",
+    },
+}
 
 
 class SnapshotError(ValueError):
@@ -95,7 +111,7 @@ def validate_spec(spec: dict[str, object]) -> None:
     if (
         source.get("licenseId") != "cc-by"
         or source.get("license") != "Creative Commons Attribution"
-        or source.get("licenseVersion") != "3.0 Unported"
+        or source.get("licenseVersion") != "3.0"
         or source.get("licenseUrl") != "https://creativecommons.org/licenses/by/3.0/"
     ):
         raise SnapshotError("licenza sorgente inattesa")
@@ -105,6 +121,15 @@ def validate_spec(spec: dict[str, object]) -> None:
         raise SnapshotError("catalogo sorgente non ufficiale")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(source["observedAt"])):
         raise SnapshotError("data di osservazione sorgente non valida")
+    license_evidence = require_dict(source.get("licenseEvidence"), "source.licenseEvidence")
+    if (
+        license_evidence.get("kind") != "record_landing_page_link"
+        or license_evidence.get("observedHref") != "http://creativecommons.org/licenses/by/3.0"
+        or license_evidence.get("observedAt") != source["observedAt"]
+        or require_list(license_evidence.get("landingUrls"), "source.licenseEvidence.landingUrls")
+        != [EXPECTED_SOURCES[year]["landingUrl"] for year in sorted(EXPECTED_SOURCES)]
+    ):
+        raise SnapshotError("prova record-specifica della licenza divergente")
 
     years: set[int] = set()
     sources = require_list(spec.get("sources"), "sources")
@@ -118,6 +143,10 @@ def validate_spec(spec: dict[str, object]) -> None:
         years.add(int(year))
         for key in ("datasetId", "landingUrl", "catalogUrl", "csvUrl", "schemaUrl", "sourceSha256"):
             require_text(item.get(key), f"sources[{year}].{key}")
+        expected_identity = EXPECTED_SOURCES[int(year)]
+        for key, expected_value in expected_identity.items():
+            if item.get(key) != expected_value:
+                raise SnapshotError(f"identità sorgente {year}/{key} divergente")
         for key in ("landingUrl", "catalogUrl", "csvUrl", "schemaUrl"):
             if not str(item[key]).startswith("https://bdap-opendata.rgs.mef.gov.it/"):
                 raise SnapshotError(f"URL OpenBDAP non ufficiale: {year}/{key}")
@@ -166,6 +195,8 @@ class PaymentRow:
     chapter: str
     managementPlanNumber: str
     managementPlan: str
+    ce2Code: str
+    ce2Label: str
     ce3Code: str
     ce3Label: str
     missionCode: str
@@ -240,7 +271,8 @@ def parse_csv(payload: bytes, annual: dict[str, object]) -> tuple[list[PaymentRo
                 id=row_id, year=year, forecastCode=forecast,
                 administration=value("Amministrazione"), chapterNumber=chapter_number,
                 chapter=value("Capitolo di Spesa"), managementPlanNumber=plan_number,
-                managementPlan=value("Piano di Gestione"), ce3Code=code, ce3Label=label,
+                managementPlan=value("Piano di Gestione"),
+                ce2Code=ce2[0], ce2Label=ce2[1], ce3Code=code, ce3Label=label,
                 missionCode=value("Codice Missione"), mission=value("Missione"),
                 programCode=value("Codice Programma"), program=value("Programma"),
                 responsibilityCenterCode=value("Codice Centro Responsabilità"),
@@ -262,6 +294,8 @@ def parse_csv(payload: bytes, annual: dict[str, object]) -> tuple[list[PaymentRo
 
 def build_snapshot(spec: dict[str, object], inputs: dict[int, bytes]) -> dict[str, object]:
     validate_spec(spec)
+    if set(inputs) != set(EXPECTED_SOURCES):
+        raise SnapshotError("input annuali inattesi: richiesti esattamente 2024 e 2025")
     rows: list[PaymentRow] = []
     annual_coverage: list[dict[str, object]] = []
     resources: list[dict[str, object]] = []
@@ -285,7 +319,7 @@ def build_snapshot(spec: dict[str, object], inputs: dict[int, bytes]) -> dict[st
     if len({row.id for row in rows}) != len(rows):
         raise SnapshotError("identità piano di gestione duplicata fra le sorgenti")
     source = require_dict(spec["source"], "source")
-    return {
+    snapshot = {
         "schemaVersion": 1, "datasetId": spec["datasetId"], "generatedAt": spec["generatedAt"],
         "title": "Pagamenti per consulenze e lavoro parasubordinato nel Rendiconto dello Stato",
         "accountingGrain": "Una riga per esercizio, stato di previsione, capitolo e piano di gestione (PG).",
@@ -311,12 +345,139 @@ def build_snapshot(spec: dict[str, object], inputs: dict[int, bytes]) -> dict[st
             "publisher": source["publisher"], "catalogUrl": source["catalogUrl"],
             "observedAt": source["observedAt"], "license": source["license"],
             "licenseId": source["licenseId"], "licenseVersion": source["licenseVersion"],
-            "licenseUrl": source["licenseUrl"],
+            "licenseUrl": source["licenseUrl"], "licenseEvidence": source["licenseEvidence"],
             "resources": resources,
         },
         "categories": [{"code": code, "label": label} for code, label in CE3.items()],
         "rows": [asdict(row) for row in rows],
     }
+    validate_snapshot(snapshot, spec)
+    return snapshot
+
+
+def require_safe_integer(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or abs(value) > MAX_SAFE_INTEGER:
+        raise SnapshotError(f"{label} deve essere un intero sicuro")
+    return value
+
+
+def validate_snapshot(snapshot: dict[str, object], spec: dict[str, object]) -> None:
+    validate_spec(spec)
+    expected_top_level = {
+        "schemaVersion", "datasetId", "generatedAt", "title", "accountingGrain",
+        "years", "amountUnit", "coverage", "methodology", "caveats", "source",
+        "categories", "rows",
+    }
+    if set(snapshot) != expected_top_level:
+        raise SnapshotError("chiavi artefatto inattese")
+    if (
+        snapshot.get("schemaVersion") != 1
+        or snapshot.get("datasetId") != spec["datasetId"]
+        or snapshot.get("generatedAt") != spec["generatedAt"]
+        or snapshot.get("years") != [2024, 2025]
+        or snapshot.get("amountUnit") != "euro_cents"
+    ):
+        raise SnapshotError("metadati artefatto divergenti")
+    for key in ("title", "accountingGrain"):
+        require_text(snapshot.get(key), key)
+    methodology = require_dict(snapshot.get("methodology"), "methodology")
+    if set(methodology) != {"selection", "amount", "period", "scope"}:
+        raise SnapshotError("metodologia artefatto incompleta")
+    for key, value in methodology.items():
+        require_text(value, f"methodology.{key}")
+    caveats = require_list(snapshot.get("caveats"), "caveats")
+    if not caveats or not all(isinstance(item, str) and item.strip() for item in caveats):
+        raise SnapshotError("limiti artefatto incompleti")
+    expected_categories = [{"code": code, "label": label} for code, label in CE3.items()]
+    if snapshot.get("categories") != expected_categories:
+        raise SnapshotError("categorie artefatto divergenti")
+
+    source_spec = require_dict(spec["source"], "source")
+    expected_resources = [
+        {key: annual[key] for key in (
+            "year", "datasetId", "landingUrl", "catalogUrl", "csvUrl", "schemaUrl",
+            "sourceBytes", "sourceSha256",
+        )}
+        for annual in require_list(spec["sources"], "sources")
+    ]
+    expected_source = {
+        "publisher": source_spec["publisher"], "catalogUrl": source_spec["catalogUrl"],
+        "observedAt": source_spec["observedAt"], "license": source_spec["license"],
+        "licenseId": source_spec["licenseId"], "licenseVersion": source_spec["licenseVersion"],
+        "licenseUrl": source_spec["licenseUrl"], "licenseEvidence": source_spec["licenseEvidence"],
+        "resources": expected_resources,
+    }
+    if snapshot.get("source") != expected_source:
+        raise SnapshotError("provenienza artefatto divergente dalla source spec")
+
+    rows = require_list(snapshot.get("rows"), "rows")
+    row_keys = {field.name for field in fields(PaymentRow)}
+    seen: set[str] = set()
+    sort_keys: list[tuple[int, str, str, str]] = []
+    annual_rows: dict[int, list[dict[str, object]]] = {2024: [], 2025: []}
+    string_fields = row_keys - {
+        "year", "paidResidualCents", "paidCurrentCents", "paidCashCents",
+    }
+    for index, raw_row in enumerate(rows):
+        row = require_dict(raw_row, f"rows[{index}]")
+        if set(row) != row_keys:
+            raise SnapshotError(f"chiavi riga inattese: rows[{index}]")
+        for key in string_fields:
+            require_text(row.get(key), f"rows[{index}].{key}")
+        year = require_safe_integer(row.get("year"), f"rows[{index}].year")
+        if year not in annual_rows:
+            raise SnapshotError(f"anno riga inatteso: rows[{index}]")
+        if (row.get("ce2Code"), row.get("ce2Label")) != SELECTED_CE2:
+            raise SnapshotError(f"coppia CE2 riga divergente: rows[{index}]")
+        ce3_code = str(row["ce3Code"])
+        if CE3.get(ce3_code) != row.get("ce3Label"):
+            raise SnapshotError(f"coppia CE3 riga divergente: rows[{index}]")
+        expected_id = f'{year}:{row["forecastCode"]}:{row["chapterNumber"]}:{row["managementPlanNumber"]}'
+        if row.get("id") != expected_id or expected_id in seen:
+            raise SnapshotError(f"identità riga divergente o duplicata: rows[{index}]")
+        seen.add(expected_id)
+        paid_rs = require_safe_integer(row.get("paidResidualCents"), f"rows[{index}].paidResidualCents")
+        paid_cp = require_safe_integer(row.get("paidCurrentCents"), f"rows[{index}].paidCurrentCents")
+        paid_cs = require_safe_integer(row.get("paidCashCents"), f"rows[{index}].paidCashCents")
+        if paid_cs != paid_rs + paid_cp:
+            raise SnapshotError(f"identità contabile riga divergente: rows[{index}]")
+        sort_keys.append((year, str(row["forecastCode"]), str(row["chapterNumber"]), str(row["managementPlanNumber"])))
+        annual_rows[year].append(row)
+    if sort_keys != sorted(sort_keys):
+        raise SnapshotError("ordinamento righe divergente")
+
+    coverage = require_dict(snapshot.get("coverage"), "coverage")
+    if set(coverage) != {"sourceRows", "selectedRows", "zeroPaidRows", "paidCashCents", "annual"}:
+        raise SnapshotError("chiavi copertura inattese")
+    require_list(coverage.get("annual"), "coverage.annual")
+    expected_annual: list[dict[str, object]] = []
+    for annual_spec in require_list(spec["sources"], "sources"):
+        annual_contract = require_dict(annual_spec, "sources[]")
+        year = int(annual_contract["year"])
+        selected = annual_rows[year]
+        paid_cash_cents = sum(int(row["paidCashCents"]) for row in selected)
+        if (
+            len(selected) != annual_contract["expectedSelectedRows"]
+            or paid_cash_cents != annual_contract["expectedPaidCents"]
+        ):
+            raise SnapshotError(f"righe o totale artefatto {year} divergenti dalla source spec")
+        expected_annual.append({
+            "year": year,
+            "sourceRows": annual_contract["expectedSourceRows"],
+            "selectedRows": len(selected),
+            "zeroPaidRows": sum(row["paidCashCents"] == 0 for row in selected),
+            "paidCashCents": paid_cash_cents,
+            "byCe3": {code: sum(row["ce3Code"] == code for row in selected) for code in sorted(CE3)},
+        })
+    expected_coverage = {
+        "sourceRows": sum(int(item["sourceRows"]) for item in expected_annual),
+        "selectedRows": len(rows),
+        "zeroPaidRows": sum(int(item["zeroPaidRows"]) for item in expected_annual),
+        "paidCashCents": sum(int(item["paidCashCents"]) for item in expected_annual),
+        "annual": expected_annual,
+    }
+    if coverage != expected_coverage:
+        raise SnapshotError("copertura o riconciliazione byCe3 divergente")
 
 
 def write_snapshot(snapshot: dict[str, object], output: Path) -> None:
@@ -328,6 +489,11 @@ def write_snapshot(snapshot: dict[str, object], output: Path) -> None:
 
 
 def check_snapshot(spec: dict[str, object], inputs: dict[int, bytes], output: Path) -> None:
+    try:
+        committed = json.loads(output.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise SnapshotError("snapshot illeggibile") from error
+    validate_snapshot(require_dict(committed, "snapshot"), spec)
     if output.read_bytes() != canonical_json(build_snapshot(spec, inputs)) + b"\n":
         raise SnapshotError("snapshot generato divergente: rigenerare l'artefatto")
 

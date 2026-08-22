@@ -94,6 +94,7 @@ class RgsConsultingPaymentsSnapshotTests(unittest.TestCase):
     def test_official_snapshot_discloses_scope_coverage_and_zero_rows(self):
         ETL.load_spec(SPEC_PATH)
         snapshot = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+        ETL.validate_snapshot(snapshot, ETL.load_spec(SPEC_PATH))
         self.assertEqual(snapshot["years"], [2024, 2025])
         self.assertEqual(snapshot["amountUnit"], "euro_cents")
         self.assertIn("piano di gestione", snapshot["accountingGrain"].lower())
@@ -112,8 +113,34 @@ class RgsConsultingPaymentsSnapshotTests(unittest.TestCase):
         self.assertIn("non transazioni", " ".join(snapshot["caveats"]))
         self.assertIn("non è una classifica", " ".join(snapshot["caveats"]))
         self.assertIn("2026", " ".join(snapshot["caveats"]))
-        self.assertEqual(snapshot["source"]["licenseVersion"], "3.0 Unported")
+        self.assertEqual(snapshot["source"]["licenseVersion"], "3.0")
+        self.assertEqual(snapshot["source"]["licenseEvidence"]["kind"], "record_landing_page_link")
         self.assertTrue(all("schemaUrl" in resource for resource in snapshot["source"]["resources"]))
+
+    def test_snapshot_validator_rejects_semantic_row_and_coverage_mutations(self):
+        spec = ETL.load_spec(SPEC_PATH)
+        snapshot = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+        bad_label = copy.deepcopy(snapshot)
+        bad_label["rows"][0]["ce3Label"] = "Etichetta corrotta"
+        with self.assertRaisesRegex(ETL.SnapshotError, "coppia CE3"):
+            ETL.validate_snapshot(bad_label, spec)
+
+        bad_coverage = copy.deepcopy(snapshot)
+        bad_coverage["coverage"]["annual"][0]["byCe3"]["2"] += 1
+        with self.assertRaisesRegex(ETL.SnapshotError, "byCe3"):
+            ETL.validate_snapshot(bad_coverage, spec)
+
+        bad_amount = copy.deepcopy(snapshot)
+        bad_amount["rows"][0]["paidCashCents"] = 9_007_199_254_740_992
+        with self.assertRaisesRegex(ETL.SnapshotError, "intero sicuro"):
+            ETL.validate_snapshot(bad_amount, spec)
+
+    def test_builder_rejects_missing_or_extra_annual_inputs(self):
+        spec = ETL.load_spec(SPEC_PATH)
+        for inputs in ({2024: b""}, {2024: b"", 2025: b"", 2026: b""}):
+            with self.subTest(years=sorted(inputs)):
+                with self.assertRaisesRegex(ETL.SnapshotError, "input annuali inattesi"):
+                    ETL.build_snapshot(spec, inputs)
 
     def test_spec_rejects_classification_or_license_drift(self):
         spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
@@ -126,6 +153,21 @@ class RgsConsultingPaymentsSnapshotTests(unittest.TestCase):
         bad_license["source"]["licenseVersion"] = "non dichiarata"
         with self.assertRaisesRegex(ETL.SnapshotError, "licenza sorgente inattesa"):
             ETL.validate_spec(bad_license)
+
+        bad_evidence = copy.deepcopy(spec)
+        bad_evidence["source"]["licenseEvidence"]["observedHref"] = "https://example.test/license"
+        with self.assertRaisesRegex(ETL.SnapshotError, "prova record-specifica"):
+            ETL.validate_spec(bad_evidence)
+
+    def test_spec_rejects_every_annual_source_identity_mutation(self):
+        spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
+        for source_index, source in enumerate(spec["sources"]):
+            for field in ("datasetId", "landingUrl", "catalogUrl", "csvUrl", "schemaUrl"):
+                with self.subTest(year=source["year"], field=field):
+                    mutated = copy.deepcopy(spec)
+                    mutated["sources"][source_index][field] += "-mutated"
+                    with self.assertRaisesRegex(ETL.SnapshotError, "identità sorgente"):
+                        ETL.validate_spec(mutated)
 
     def test_parser_accepts_exact_rows_and_preserves_zero(self):
         payload = csv_payload(valid_row(paid_rs="0.00", paid_cp="0.00", paid_cs="0.00"))

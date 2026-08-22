@@ -78,6 +78,13 @@
   margin-block-start: var(--space-8);
 }
 
+.scrollHint {
+  display: none;
+  margin: var(--space-5) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+}
+
 .exactTable table {
   min-width: 680px;
 }
@@ -165,5 +172,9 @@
   .sectionHeader > span {
     display: block;
     margin-block-start: var(--space-2);
+  }
+
+  .scrollHint {
+    display: block;
   }
 }

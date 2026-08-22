@@ -69,12 +69,12 @@ export default function ParliamentPage() {
           <span className="stat-note">su documenti ufficiali verificati</span>
         </div>
         <div>
-          <dt>Ultimo consuntivo</dt>
+          <dt>Ultimo consuntivo Camera</dt>
           <dd>{latestAccount?.year ?? "Non disponibile"}</dd>
           <span className="stat-note">spese già registrate</span>
         </div>
         <div>
-          <dt>Ultimo bilancio</dt>
+          <dt>Ultimo bilancio Camera</dt>
           <dd>{latestBudget?.year ?? "Non disponibile"}</dd>
           <span className="stat-note">spese previste</span>
         </div>
@@ -101,6 +101,7 @@ export default function ParliamentPage() {
           </div>
           <span>Documenti 2024 · fonti ufficiali</span>
         </div>
+        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
         <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
           <table className="table">
             <thead>
@@ -118,7 +119,7 @@ export default function ParliamentPage() {
                   <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
                   <td>
                     {source.title}
-                    <small>{source.sourceRecordId}</small>
+                    <small>ID fonte: {source.sourceRecordId}</small>
                   </td>
                   <td>{longDate(source.updatedAt)}</td>
                   <td>

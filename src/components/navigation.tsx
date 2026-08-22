@@ -104,6 +104,7 @@ export function Navigation() {
             );
           })}
         </nav>
+        <span className="nav-scroll-hint" aria-hidden="true">Scorri →</span>
         <span className="nav-note">Fonte e data sempre visibili</span>
       </div>
     </header>

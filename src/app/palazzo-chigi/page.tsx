@@ -114,6 +114,7 @@ export default function PalazzoChigiPage() {
           missions={data.missions}
           totalCents={data.totals.paymentsTotalCents}
         />
+        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere importi e quote.</p>
         <div
           className={`table-scroll ${styles.exactTable}`}
           role="region"

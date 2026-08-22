@@ -240,6 +240,19 @@
   min-width: 760px;
 }
 
+.coverageTable td > small {
+  display: block;
+  margin-block-start: var(--space-1);
+  color: var(--color-neutral-600);
+}
+
+.scrollHint {
+  display: none;
+  margin: 0 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+}
+
 @media (max-width: 620px) {
   .coverageHeader {
     display: block;
@@ -248,5 +261,9 @@
   .coverageHeader > span {
     display: block;
     margin-block-start: var(--space-3);
+  }
+
+  .scrollHint {
+    display: block;
   }
 }

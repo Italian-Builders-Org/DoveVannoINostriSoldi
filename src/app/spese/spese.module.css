@@ -22,6 +22,11 @@
   min-width: 0;
 }
 
+.scopeNotice {
+  border-color: var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
 /* ── the expenditure titles ─────────────────────────────────────────────── */
 
 .titleList {
@@ -68,8 +73,13 @@
 .titleTrack i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-family-other);
 }
+.titleList li[data-family="services"] .titleTrack i { background: var(--chart-family-services); }
+.titleList li[data-family="investment"] .titleTrack i { background: var(--chart-family-investment); }
+.titleList li[data-family="pass-through"] .titleTrack i { background: var(--chart-family-pass-through); }
+.titleList li[data-family="financing"] .titleTrack i { background: var(--chart-family-financing); }
+.titleList li[data-family="other"] .titleTrack i { background: var(--chart-family-other); }
 
 .titleList p {
   margin: 0;
@@ -177,7 +187,7 @@
 .monthList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-family-services);
 }
 .monthList li > b {
   text-align: right;
@@ -195,22 +205,11 @@
 /* ── methodology ────────────────────────────────────────────────────────── */
 
 .method {
-  padding: 16px 18px;
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-300);
+  display: grid;
+  gap: var(--space-3);
 }
-.method summary {
-  cursor: pointer;
-  font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
-}
-.method summary:hover { color: var(--color-accent-700); }
 .method p {
-  margin: var(--space-3) 0 0;
+  margin: 0;
   font-size: 13px;
   color: var(--color-neutral-800);
   max-width: 100ch;

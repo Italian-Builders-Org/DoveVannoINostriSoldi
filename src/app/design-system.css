@@ -94,11 +94,11 @@
   --chart-quaternary: var(--color-neutral-400);
   --chart-quinary: var(--color-accent-300);
   --chart-negative: var(--color-accent-700);
-  --chart-family-services: #cfc2f2;
-  --chart-family-investment: #f2bdc7;
-  --chart-family-pass-through: #f2d071;
-  --chart-family-financing: #efb36d;
-  --chart-family-other: #bdd8e5;
+  --chart-family-services: #aac6e8;
+  --chart-family-investment: #9fd3cb;
+  --chart-family-pass-through: #c1afe1;
+  --chart-family-financing: #e8c47f;
+  --chart-family-other: #acd0ae;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --focus-ring: var(--color-accent);

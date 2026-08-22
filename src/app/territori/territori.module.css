@@ -35,6 +35,23 @@
   font-weight: 600;
 }
 
+.regionTable a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: var(--color-neutral-400);
+  text-underline-offset: 2px;
+}
+
+.regionTable a:hover,
+.regionTable a:focus-visible { color: var(--color-accent-700); }
+
+.relatedNotice {
+  border-color: var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.relatedNotice :global(strong) { color: var(--color-neutral-700); }
+
 .areaRow th,
 .areaRow td {
   background: var(--color-neutral-100);
@@ -49,13 +66,6 @@
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--color-neutral-600);
-}
-
-.datasetMeta {
-  max-width: 100ch;
-  margin: 0 0 var(--space-3);
-  color: var(--color-neutral-700);
-  font-size: 12px;
 }
 
 .regionTableHint { display: none; }
@@ -98,6 +108,18 @@
   margin: 0;
   font-size: 13px;
   color: var(--color-neutral-800);
+}
+
+.method {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.method p {
+  max-width: 100ch;
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
 }
 
 @media (max-width: 760px) {

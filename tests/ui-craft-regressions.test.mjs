@@ -175,6 +175,11 @@ test("strong civic surfaces use defined foreground tokens", async () => {
   assert.match(cohesionCss, /color:\s*var\(--color-on-strong\);/);
   assert.match(cohesionCss, /color:\s*var\(--color-on-strong-muted\);/);
   assert.doesNotMatch(cohesionCss, /var\(--color-neutral-0\)/);
+  assert.match(tokens, /--chart-family-services:\s*#aac6e8;/);
+  assert.match(tokens, /--chart-family-investment:\s*#9fd3cb;/);
+  assert.match(tokens, /--chart-family-pass-through:\s*#c1afe1;/);
+  assert.match(tokens, /--chart-family-financing:\s*#e8c47f;/);
+  assert.match(tokens, /--chart-family-other:\s*#acd0ae;/);
 });
 
 test("the fiscal layout uses only defined spacing tokens", async () => {
@@ -254,18 +259,31 @@ test("spending exposes a mobile jump to the complete expenditure breakdown", asy
   assert.match(page, /id="voci-spesa"/);
   assert.match(page, /Vedi le \{data\.titles\.length\} voci di uscita/);
   assert.match(page, /periodo tra gennaio e \{monthLabel\}/);
+  assert.doesNotMatch(page.slice(page.indexOf("<h1>"), page.indexOf("<PeriodSelector")), /Fonte SIOPE/);
+  assert.ok(page.indexOf("Fonti e metodo") > page.indexOf("Flusso mensile e cumulato delle spese"));
+  assert.match(page, /data-family=\{title\.family\}/);
+  assert.match(css, /data-family="services"[\s\S]*?var\(--chart-family-services\)/);
+  assert.match(css, /data-family="investment"[\s\S]*?var\(--chart-family-investment\)/);
+  assert.match(css, /data-family="pass-through"[\s\S]*?var\(--chart-family-pass-through\)/);
+  assert.match(css, /\.scopeNotice \{[\s\S]*?border-color: var\(--color-neutral-300\);/);
+  assert.match(css, /\.monthList li > i > b \{[\s\S]*?background: var\(--chart-family-services\);/);
   assert.match(css, /\.mobileDataJump \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.mobileDataJump \{[\s\S]*?display: inline-block;/);
 });
 
-test("territories keeps provenance close and reflows without a short desktop column", async () => {
+test("territories puts complete provenance after the data and reflows without a short desktop column", async () => {
   const [page, css] = await Promise.all([
     source("../src/app/territori/page.tsx"),
     source("../src/app/territori/territori.module.css"),
   ]);
 
-  assert.match(page, /Fonte SIOPE · \{data\.source\.siopeOwner\}/);
-  assert.match(page, /Pro capite: \{data\.methodology\.populationSource\}/);
+  const firstDataset = page.indexOf("Pagamenti di tutte le regioni");
+  const method = page.indexOf("Fonti e metodo");
+  assert.ok(firstDataset >= 0);
+  assert.ok(method > firstDataset);
+  assert.ok(page.indexOf("Fonte{\" \"}", method) > method);
+  assert.doesNotMatch(page.slice(page.indexOf("<h1>"), firstDataset), /Fonte SIOPE/);
+  assert.match(page, /\{data\.methodology\.populationSource\}/);
   assert.match(page, /Tabella completa: scorri orizzontalmente per abitanti e copertura dei Comuni/);
   assert.match(page, /aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente/);
   assert.match(page, /tabIndex=\{0\}/);
@@ -274,6 +292,9 @@ test("territories keeps provenance close and reflows without a short desktop col
   assert.match(page, /Posizioni 11-20/);
   assert.match(css, /\.split \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
   assert.match(css, /\.rankingGrid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+  assert.match(page, /className=\{`table \$\{styles\.regionTable\}`\}/);
+  assert.match(css, /\.regionTable a \{[\s\S]*?color: var\(--color-text\);[\s\S]*?text-decoration: underline;/);
+  assert.match(css, /\.relatedNotice \{[\s\S]*?border-color: var\(--color-neutral-300\);/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.rankingGrid \{ grid-template-columns: minmax\(0, 1fr\); \}/);
   assert.match(css, /\.regionTableHint \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.regionTableHint \{[\s\S]*?display: block;/);

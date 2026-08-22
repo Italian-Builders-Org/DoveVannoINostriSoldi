@@ -68,17 +68,11 @@ export default async function TerritoriesPage({
       <div className={styles.split}>
         <section className="panel">
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
-          <p className={styles.datasetMeta}>
-            Fonte SIOPE · {data.source.siopeOwner}. File del{" "}
-            {longDate(data.source.siopeMovementsLastModified)} · periodo tra gennaio e {monthLabel}{" "}
-            {data.year}. Pro capite: {data.methodology.populationSource},{" "}
-            {data.methodology.populationReference}.
-          </p>
           <p className={styles.regionTableHint}>
             Tabella completa: scorri orizzontalmente per abitanti e copertura dei Comuni →
           </p>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
-            <table className="table">
+            <table className={`table ${styles.regionTable}`}>
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
@@ -138,13 +132,6 @@ export default async function TerritoriesPage({
               ))}
             </table>
           </div>
-          <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
-          <p className={styles.note}>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
-          <p className={styles.note}>
-            I link regionali aprono i dati CPT 2023, un perimetro distinto da SIOPE. Nei CPT,
-            Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
-            del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
-          </p>
         </section>
 
         <div className={styles.aside}>
@@ -242,7 +229,7 @@ export default async function TerritoriesPage({
         </div>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Quanto entra e quanto viene speso sul territorio?</strong>
         <p>
           I Conti Pubblici Territoriali permettono di confrontare entrate e spese della Pubblica
@@ -251,7 +238,7 @@ export default async function TerritoriesPage({
         </p>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Redditi e imposta netta dichiarata</strong>
         <p>
           Il MEF pubblica contribuenti, redditi, imposta netta dichiarata e addizionali per Comune.
@@ -260,7 +247,7 @@ export default async function TerritoriesPage({
         </p>
       </div>
 
-      <div className="notice">
+      <div className={`notice ${styles.relatedNotice}`}>
         <strong>Confronta spesa e fabbisogno standard</strong>
         <p>
           Per i Comuni delle Regioni a statuto ordinario puoi confrontare la spesa storica con il
@@ -299,20 +286,36 @@ export default async function TerritoriesPage({
               <dd>{integer(data.coverage.withoutPopulation)}</dd>
             </div>
           </dl>
-          <p>
-            I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
-            restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
-            senza una corrispondenza ufficiale. Il denominatore è la{" "}
-            {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
-            aggiornata il{" "}
-            {data.methodology.populationSourceLastModified
-              ? longDate(data.methodology.populationSourceLastModified)
-              : "data non disponibile"}. Fonte SIOPE · {data.source.siopeOwner},
-            scaricata il{" "}
-            {longDate(data.source.observedAt)}.{" "}
-            <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
-          </p>
         </div>
+      </section>
+
+      <section className={`panel ${styles.method}`} aria-labelledby="territori-method-title">
+        <h2 className="panel-title" id="territori-method-title">Fonti e metodo</h2>
+        <p>Nota di metodo: {data.methodology.warning}</p>
+        <p>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
+        <p>
+          I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
+          restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
+          senza una corrispondenza ufficiale. Il denominatore è la{" "}
+          {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
+          aggiornata il{" "}
+          {data.methodology.populationSourceLastModified
+            ? longDate(data.methodology.populationSourceLastModified)
+            : "data non disponibile"}.
+        </p>
+        <p>
+          I link regionali aprono i dati CPT 2023, un perimetro distinto da SIOPE. Nei CPT,
+          Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
+          del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
+        </p>
+        <p>
+          Fonte{" "}
+          <a href={data.source.siopeMovementsUrl} target="_blank" rel="noreferrer">SIOPE</a>
+          {" "}· {data.source.siopeOwner} · file del{" "}
+          {longDate(data.source.siopeMovementsLastModified)} · scaricato il{" "}
+          {longDate(data.source.observedAt)}.{" "}
+          <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
+        </p>
       </section>
     </main>
   );

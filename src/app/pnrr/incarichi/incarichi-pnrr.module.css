@@ -1,0 +1,235 @@
+.page {
+  gap: var(--space-6);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.breadcrumb a {
+  color: inherit;
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.scopeLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.scopeLine strong {
+  color: var(--color-text);
+}
+
+.programPanel,
+.tierPanel,
+.assignmentsPanel,
+.sourcesPanel {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.sectionHeading p,
+.sourcesPanel p {
+  max-width: 75ch;
+  margin: 0;
+  color: var(--color-neutral-700);
+}
+
+.sectionHeading > :last-child {
+  flex: 0 0 auto;
+}
+
+.programGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.programCard {
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-neutral-300);
+  border-top: 4px solid var(--chart-primary);
+  background: var(--color-raised);
+}
+
+.programCard:nth-child(2) {
+  border-top-color: var(--chart-secondary);
+}
+
+.programCard > span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.programCard > strong {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.programCard > p {
+  min-height: 3em;
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--color-neutral-700);
+}
+
+.programCard dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.programCard dl div {
+  min-width: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.programCard dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.programCard dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.featuredMetric {
+  display: grid;
+  min-width: 160px;
+  padding-top: var(--space-3);
+  border-top: 3px solid var(--chart-tertiary);
+}
+
+.featuredMetric strong {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  line-height: 1;
+}
+
+.featuredMetric span {
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.tableRegion {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tierPanel table {
+  min-width: 640px;
+}
+
+.assignmentDetails {
+  min-width: 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.assignmentDetails summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  color: var(--color-accent-700);
+  font-weight: 800;
+}
+
+.assignmentDetails table {
+  min-width: 1180px;
+}
+
+.assignmentDetails th:first-child {
+  min-width: 190px;
+}
+
+.assignmentDetails td:nth-child(3) {
+  min-width: 280px;
+}
+
+.tableHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.readingNotice {
+  border-color: var(--color-neutral-400);
+}
+
+.sourcesPanel ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.sourceNote {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .sectionHeading {
+    display: grid;
+  }
+
+  .sectionHeading > :last-child {
+    justify-self: start;
+  }
+
+  .programGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .programCard > p {
+    min-height: 0;
+  }
+
+  .tableHint {
+    display: block;
+  }
+}
+
+@media (max-width: 520px) {
+  .programCard dl {
+    grid-template-columns: 1fr;
+  }
+}

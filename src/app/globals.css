@@ -615,6 +615,17 @@ main { display: block; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
+/* La tendina esce dal riquadro della barra, che scorre in orizzontale finché
+   le voci non ci stanno: sopra i 1040px la barra sta tutta e non deve clippare.
+   Sotto, resta scorrevole e le sotto-voci si raggiungono dalla subnav-row. */
+@media (min-width: 1040px) {
+  .primary-nav { overflow-x: visible; }
+}
+@media (max-width: 1039px) {
+  .nav-item-has-menu:hover .nav-submenu,
+  .nav-item-has-menu:focus-within .nav-submenu { display: none; }
+}
+
 @media (max-width: 1180px) {
   :root { --gutter: 20px; }
   .header-search { width: 260px; }

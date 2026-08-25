@@ -282,7 +282,14 @@ export async function navigate(
 ) {
   const response = await page.goto(url, { timeout: timeoutMs, waitUntil });
   assert.ok(response, `${label}: navigazione senza risposta HTTP`);
-  assert.equal(response.status(), 200, `${label}: HTTP ${response.status()}`);
+  // 200 is the normal response; 304 is a valid conditional-GET cache hit
+  // (Next.js returns it when the browser sends If-None-Match). Both are
+  // successful navigations — 304 is not an error.
+  const status = response.status();
+  assert.ok(
+    status === 200 || status === 304,
+    `${label}: HTTP ${status}`,
+  );
   if (readySelector) {
     await page.waitForSelector(readySelector, { visible: true, timeout: timeoutMs });
   }

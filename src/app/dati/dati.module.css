@@ -451,6 +451,8 @@
   /* Tall enough for several rows, short enough that the sticky header stays
      on screen while reading the results pane. */
   max-height: min(60vh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--color-raised);
 }
 
@@ -695,7 +697,6 @@
   margin: 0 0 var(--space-4);
   padding: 10px 12px;
   background: var(--color-neutral-100);
-  border-left: 3px solid var(--color-accent-700);
 }
 
 .cardTeaserLabel {

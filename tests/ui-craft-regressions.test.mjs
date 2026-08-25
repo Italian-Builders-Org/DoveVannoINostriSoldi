@@ -66,18 +66,18 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
 });
 
 test("CI verifies every main commit and uses the current artifact runtime", async () => {
-  const [ci, mefRefresh, browserE2e] = await Promise.all([
+  const [ci, mefRefresh, harness] = await Promise.all([
     source("../.github/workflows/ci.yml"),
     source("../.github/workflows/mef-irpef-refresh.yml"),
-    source("../scripts/browser_e2e.mjs"),
+    source("../scripts/browser/harness.mjs"),
   ]);
 
   assert.match(ci, /github\.event\.pull_request\.number \|\| github\.sha/);
   assert.doesNotMatch(ci, /github\.event\.pull_request\.number \|\| github\.ref/);
   assert.doesNotMatch(`${ci}\n${mefRefresh}`, /actions\/upload-artifact@v4/);
-  assert.equal((`${ci}\n${mefRefresh}`.match(/actions\/upload-artifact@v7/g) ?? []).length, 3);
-  assert.match(browserE2e, /const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;/);
-  assert.match(browserE2e, /timeout: BROWSER_LAUNCH_TIMEOUT_MS/);
+  assert.equal((`${ci}\n${mefRefresh}`.match(/actions\/upload-artifact@v7/g) ?? []).length, 4);
+  assert.match(harness, /const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;/);
+  assert.match(harness, /timeoutMs = BROWSER_LAUNCH_TIMEOUT_MS/);
 });
 
 test("Lighthouse budgets use a three-run median instead of a single noisy sample", async () => {

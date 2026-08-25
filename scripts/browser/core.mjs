@@ -1,167 +1,23 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
-import { tmpdir } from "node:os";
-import path from "node:path";
-import puppeteer from "puppeteer";
+import {
+  closeBrowser,
+  createPage,
+  defaultBaseUrl,
+  installDiagnostics,
+  launchBrowser,
+  navigate,
+  saveFailureArtifacts,
+  scenarioIdFromLabel,
+  waitForServer,
+} from "./harness.mjs";
 
-const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
-const SERVER_TIMEOUT_MS = 60_000;
-const NAVIGATION_TIMEOUT_MS = 45_000;
-const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;
-const BROWSER_CLOSE_TIMEOUT_MS = 5_000;
+const baseUrl = defaultBaseUrl();
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
 const INFO_TOOLTIP_IDS = ["cash-payments-tip", "spending-glossary-tip"];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");
-}
-
-function delay(milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
-
-async function closeBrowser(browser) {
-  let timeout;
-  try {
-    await Promise.race([
-      browser.close(),
-      new Promise((_, reject) => {
-        timeout = setTimeout(
-          () => reject(new Error("Timeout durante la chiusura di Chromium.")),
-          BROWSER_CLOSE_TIMEOUT_MS,
-        );
-      }),
-    ]);
-  } catch (error) {
-    const browserProcess = browser.process();
-    if (browserProcess && !browserProcess.killed) browserProcess.kill("SIGKILL");
-    console.warn(error instanceof Error ? error.message : String(error));
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
-}
-
-function pageUrl(pathname) {
-  return new URL(pathname, baseUrl).toString();
-}
-
-async function waitForServer() {
-  const deadline = Date.now() + SERVER_TIMEOUT_MS;
-  let lastError;
-
-  while (Date.now() < deadline) {
-    try {
-      const response = await fetch(pageUrl("/territori/irpef"), {
-        redirect: "manual",
-        signal: AbortSignal.timeout(3_000),
-      });
-      if (response.ok) return;
-      lastError = new Error(`HTTP ${response.status}`);
-    } catch (error) {
-      lastError = error;
-    }
-    await delay(500);
-  }
-
-  const detail = lastError instanceof Error ? lastError.message : "errore sconosciuto";
-  throw new Error(`Server non pronto entro ${SERVER_TIMEOUT_MS / 1_000}s: ${detail}`);
-}
-
-function chromeExecutable() {
-  const configured = [
-    process.env.PUPPETEER_EXECUTABLE_PATH,
-    process.env.CHROME_PATH,
-  ].filter(Boolean);
-  const systemCandidates = [
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/Applications/Chromium.app/Contents/MacOS/Chromium",
-    "/usr/bin/google-chrome",
-    "/usr/bin/google-chrome-stable",
-    "/usr/bin/chromium",
-    "/usr/bin/chromium-browser",
-  ];
-  let bundled;
-
-  try {
-    bundled = puppeteer.executablePath();
-  } catch {
-    // Puppeteer can be installed with its browser download disabled in CI.
-  }
-
-  return [...configured, bundled, ...systemCandidates]
-    .filter((candidate) => typeof candidate === "string" && candidate.length > 0)
-    .find((candidate) => existsSync(candidate));
-}
-
-function relevantRequestFailure(request) {
-  const failure = request.failure();
-  const resourceType = request.resourceType();
-  const requestUrl = request.url();
-
-  if (!failure || !/^https?:/i.test(requestUrl)) return null;
-
-  // Next may cancel speculative RSC prefetches without affecting the rendered page.
-  const cancelledNextPrefetch =
-    failure.errorText === "net::ERR_ABORTED" &&
-    (resourceType === "fetch" || resourceType === "other") &&
-    new URL(requestUrl).searchParams.has("_rsc");
-  const cancelledLocationLookup =
-    failure.errorText === "net::ERR_ABORTED" &&
-    resourceType === "fetch" &&
-    new URL(requestUrl).pathname === "/api/location";
-  // Location is an optional client hint and can be cancelled when a scenario
-  // closes its page; neither cancellation affects the rendered route.
-  if (cancelledNextPrefetch || cancelledLocationLookup) return null;
-
-  return `${resourceType} ${requestUrl}: ${failure.errorText}`;
-}
-
-function installDiagnostics(page, label, isExpectedFailure = () => false) {
-  const failures = [];
-
-  page.on("pageerror", (error) => {
-    failures.push(`pageerror: ${error instanceof Error ? error.message : String(error)}`);
-  });
-  page.on("console", (message) => {
-    if (message.type() !== "error") return;
-    const location = message.location();
-    const suffix = location.url ? ` (${location.url}:${location.lineNumber ?? 0})` : "";
-    failures.push(`console.error: ${message.text()}${suffix}`);
-  });
-  page.on("requestfailed", (request) => {
-    const failure = relevantRequestFailure(request);
-    if (failure) failures.push(`requestfailed: ${failure}`);
-  });
-  page.on("response", (response) => {
-    if (response.status() < 400) return;
-    const responseUrl = new URL(response.url());
-    if (responseUrl.origin !== baseUrl.origin) return;
-    failures.push(`HTTP ${response.status()}: ${response.url()}`);
-  });
-
-  return async function assertNoBrowserErrors() {
-    await delay(150);
-    const unexpectedFailures = failures.filter((failure) => !isExpectedFailure(failure));
-    assert.deepEqual(
-      unexpectedFailures,
-      [],
-      `${label}: errori browser:\n${unexpectedFailures.join("\n")}`,
-    );
-  };
-}
-
-async function saveFailureScreenshot(page, label) {
-  if (page.isClosed()) return null;
-  const safeLabel = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  const screenshotPath = path.join(tmpdir(), `dvns-browser-e2e-${safeLabel}-${Date.now()}.png`);
-
-  try {
-    await page.screenshot({ path: screenshotPath, fullPage: true });
-    return screenshotPath;
-  } catch {
-    return null;
-  }
 }
 
 async function viewportState(page) {
@@ -684,44 +540,34 @@ async function activeLevel(page) {
   return page.$eval(ACTIVE_LEVEL, (link) => link.textContent?.trim());
 }
 
-async function navigate(page, pathname, label) {
-  const response = await page.goto(pageUrl(pathname), {
-    timeout: NAVIGATION_TIMEOUT_MS,
-    waitUntil: "domcontentloaded",
-  });
-  assert.ok(response, `${label}: navigazione senza risposta HTTP`);
-  assert.equal(response.status(), 200, `${label}: HTTP ${response.status()}`);
-  await page.waitForSelector("main h1", { visible: true, timeout: NAVIGATION_TIMEOUT_MS });
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForNetworkIdle({ idleTime: 350, timeout: 10_000 });
-}
-
-async function runScenario(browser, { expectedFailure, label, pathname, validate, width }) {
-  const page = await browser.newPage();
+async function runScenario(browser, {
+  expectedFailure = () => false,
+  label,
+  pathname,
+  validate,
+  width,
+}) {
+  const requestedUrl = new URL(pathname, baseUrl).toString();
+  const page = await createPage(browser, { width });
+  const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
   let thrown;
 
   try {
-    page.setDefaultTimeout(10_000);
-    page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT_MS);
-    await page.setCacheEnabled(false);
-    await page.setViewport({
-      width,
-      height: width <= 460 ? 844 : 900,
-      deviceScaleFactor: 1,
-      hasTouch: width <= 390,
-      isMobile: width <= 390,
-    });
-    const assertNoBrowserErrors = installDiagnostics(page, label, expectedFailure);
-    await navigate(page, pathname, label);
+    await navigate(page, { url: requestedUrl, label });
     await assertResponsiveShell(page, label, width);
     await validate(page);
-    await assertNoBrowserErrors();
+    await assertNoErrors(expectedFailure);
   } catch (error) {
     thrown = error;
-    const screenshot = await saveFailureScreenshot(page, label);
-    if (screenshot) {
-      console.error(`${label}: screenshot diagnostico ${screenshot}`);
-    }
+    await saveFailureArtifacts(page, {
+      suite: "core",
+      scenarioId: scenarioIdFromLabel(label),
+      label,
+      requestedUrl,
+      finalUrl: page.url(),
+      viewport: { width },
+      diagnostics: diagnostics(),
+    });
   } finally {
     await page.close().catch(() => {});
   }
@@ -729,19 +575,13 @@ async function runScenario(browser, { expectedFailure, label, pathname, validate
   if (thrown) throw thrown;
 }
 
-await waitForServer();
+await waitForServer(baseUrl);
 
-const executablePath = chromeExecutable();
 let browser;
 const completed = [];
 
 try {
-  browser = await puppeteer.launch({
-    args: ["--disable-dev-shm-usage", "--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath,
-    headless: true,
-    timeout: BROWSER_LAUNCH_TIMEOUT_MS,
-  });
+  browser = await launchBrowser();
 
   for (const width of [390, 768, 1280]) {
     const label = `Scheda economica Benevento ${width}px`;

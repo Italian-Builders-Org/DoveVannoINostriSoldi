@@ -1,136 +1,26 @@
 #!/usr/bin/env node
 
-import { access, mkdir, writeFile } from "node:fs/promises";
-import { constants as fsConstants } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import lighthouse from "lighthouse";
-import puppeteer from "puppeteer";
+import {
+  closeBrowser,
+  defaultBaseUrl,
+  launchBrowser,
+  resolveBrowserExecutable,
+  waitForServer,
+} from "./browser/harness.mjs";
 
-const DEFAULT_BASE_URL = "http://127.0.0.1:3000";
 const AUDIT_PATH = "/territori/irpef";
-const SERVER_WAIT_MS = 45_000;
-const REQUEST_TIMEOUT_MS = 5_000;
 const REPORT_DIR = resolve(process.cwd(), ".lighthouseci");
 const JSON_REPORT_PATH = resolve(REPORT_DIR, "irpef-lighthouse.json");
 const HTML_REPORT_PATH = resolve(REPORT_DIR, "irpef-lighthouse.html");
 const SUMMARY_REPORT_PATH = resolve(REPORT_DIR, "irpef-lighthouse-summary.json");
 const LIGHTHOUSE_RUN_COUNT = 3;
-const BROWSER_CLOSE_TIMEOUT_MS = 5_000;
-
-const sleep = (milliseconds) =>
-  new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
-
-async function closeBrowser(browser) {
-  let timeout;
-  try {
-    await Promise.race([
-      browser.close(),
-      new Promise((_, reject) => {
-        timeout = setTimeout(
-          () => reject(new Error("Timeout durante la chiusura di Chromium.")),
-          BROWSER_CLOSE_TIMEOUT_MS,
-        );
-      }),
-    ]);
-  } catch (error) {
-    const browserProcess = browser.process();
-    if (browserProcess && !browserProcess.killed) browserProcess.kill("SIGKILL");
-    console.warn(error instanceof Error ? error.message : String(error));
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
-}
 
 function auditUrl() {
-  const baseUrl = new URL(process.env.DVNS_BASE_URL ?? DEFAULT_BASE_URL);
-
-  if (baseUrl.protocol !== "http:" && baseUrl.protocol !== "https:") {
-    throw new Error("DVNS_BASE_URL deve usare il protocollo http o https.");
-  }
-
-  return new URL(AUDIT_PATH, baseUrl).toString();
-}
-
-async function waitForServer(url) {
-  const deadline = Date.now() + SERVER_WAIT_MS;
-  let lastError = "nessuna risposta";
-
-  while (Date.now() < deadline) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-    try {
-      const response = await fetch(url, {
-        cache: "no-store",
-        redirect: "follow",
-        signal: controller.signal,
-      });
-
-      if (response.ok) {
-        await response.body?.cancel();
-        return;
-      }
-
-      lastError = `HTTP ${response.status}`;
-    } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error);
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    await sleep(500);
-  }
-
-  throw new Error(
-    `Server non pronto dopo ${SERVER_WAIT_MS / 1_000}s (${lastError}): ${url}`,
-  );
-}
-
-async function executablePath() {
-  const environmentCandidates = [
-    process.env.PUPPETEER_EXECUTABLE_PATH,
-    process.env.CHROME_PATH,
-    process.env.GOOGLE_CHROME_BIN,
-  ];
-  const platformCandidates =
-    process.platform === "darwin"
-      ? [
-          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-          "/Applications/Chromium.app/Contents/MacOS/Chromium",
-        ]
-      : process.platform === "linux"
-        ? [
-            "/usr/bin/google-chrome",
-            "/usr/bin/google-chrome-stable",
-            "/usr/bin/chromium",
-            "/usr/bin/chromium-browser",
-          ]
-        : [];
-
-  let bundledCandidate;
-  try {
-    bundledCandidate = puppeteer.executablePath();
-  } catch {
-    // Puppeteer reports the actionable browser-install error if no candidate exists.
-  }
-
-  for (const candidate of [
-    ...environmentCandidates,
-    bundledCandidate,
-    ...platformCandidates,
-  ]) {
-    if (!candidate) continue;
-
-    try {
-      await access(candidate, fsConstants.X_OK);
-      return candidate;
-    } catch {
-      // Try the next known Chrome/Chromium location.
-    }
-  }
-
-  return undefined;
+  return new URL(AUDIT_PATH, defaultBaseUrl()).toString();
 }
 
 function categoryScore(lhr, id) {
@@ -235,13 +125,11 @@ function printResults(values, errors) {
 async function main() {
   const url = auditUrl();
   console.log(`Attendo ${url}`);
-  await waitForServer(url);
+  await waitForServer();
 
-  const resolvedExecutablePath = await executablePath();
-  const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-dev-shm-usage"],
+  const resolvedExecutablePath = resolveBrowserExecutable();
+  const browser = await launchBrowser({
     executablePath: resolvedExecutablePath,
-    headless: true,
   });
 
   try {

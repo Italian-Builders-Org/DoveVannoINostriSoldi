@@ -4,13 +4,16 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# Event-aware concurrency:
+# - PR: a new commit cancels the previous run (same PR number → same group).
+# - main: every commit completes its own verification (unique SHA → unique group,
+#   so a newer push can never cancel an older one).
 concurrency:
-  # Keep only the newest run for a PR, but verify every commit pushed to main.
-  # A rerun of an older main commit must never cancel validation of a newer one.
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
@@ -18,14 +21,15 @@ env:
   NEXT_TELEMETRY_DISABLED: "1"
 
 jobs:
-  quality:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  static:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -33,73 +37,101 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Install pinned ETL dependencies
-        run: >-
-          python -m pip install --no-deps --only-binary=:all:
-          --require-hashes -r requirements-etl.txt
 
       - name: Check changed whitespace
         shell: bash
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: bash scripts/ci/check-whitespace.sh
+
+      - name: Lint, typecheck, design and brand checks
+        run: npm run ci:static
+
+      - name: Actionlint
         run: |
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            comparison_base="$PR_BASE_SHA"
-          else
-            comparison_base="$PUSH_BEFORE_SHA"
-          fi
+          curl -sSL -o /tmp/actionlint.tar.gz \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          tar -xzf /tmp/actionlint.tar.gz -C /tmp
+          /tmp/actionlint -color
 
-          if [[ "$comparison_base" =~ ^[0-9a-f]{40}$ ]] \
-            && [[ "$comparison_base" != "0000000000000000000000000000000000000000" ]] \
-            && git cat-file -e "${comparison_base}^{commit}"; then
-            git diff --check "$comparison_base" HEAD
-          else
-            git diff --check HEAD^ HEAD
-          fi
+  node:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-      - name: Lint
-        run: npm run lint
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
 
-      - name: Test
-        run: npm test
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Test ETL contracts
+      - name: Node test suite
+        run: npm run test:node
+
+  etl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned ETL dependencies
+        run: >-
+          python -m pip install --no-deps --only-binary=:all:
+          --require-hashes -r requirements-etl.txt
+
+      - name: ETL test suite
         run: python -m unittest discover -s tests/etl -p 'test_*.py'
 
-      - name: Typecheck
-        run: npm run typecheck
+  production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-      - name: Impeccable design detector
-        run: npm run design:check
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
 
-      - name: Verify generated brand assets
-        run: npm run brand:check
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run build
 
-      - name: Production HTTP, MCP, Browser and Lighthouse gates
-        run: |
-          npm run start -- --hostname 127.0.0.1 --port 3000 > /tmp/dvns-next.log 2>&1 &
-          server_pid=$!
-          cleanup() {
-            kill "$server_pid" 2>/dev/null || true
-            wait "$server_pid" 2>/dev/null || true
-          }
-          trap cleanup EXIT
-          npm run test:mcp:http
-          npm run test:mcp:load -- --requests 60 --concurrency 10 --p95-ms 3000
-          npm run test:browser:e2e
-          npm run test:lighthouse
+      - name: Production gates (server readiness, MCP, browser, Lighthouse)
+        run: bash scripts/ci/run-production-gates.sh
+
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-diagnostics
+          path: artifacts/browser/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload Lighthouse reports
         if: always()
@@ -118,3 +150,36 @@ jobs:
           path: /tmp/dvns-next.log
           if-no-files-found: ignore
           retention-days: 7
+
+  required:
+    name: required
+    needs: [static, node, etl, production]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Aggregate gate results
+        shell: bash
+        env:
+          STATIC_RESULT: ${{ needs.static.result }}
+          NODE_RESULT: ${{ needs.node.result }}
+          ETL_RESULT: ${{ needs.etl.result }}
+          PRODUCTION_RESULT: ${{ needs.production.result }}
+        run: |
+          {
+            echo "| Gate | Result |"
+            echo "|------|--------|"
+            echo "| static | ${STATIC_RESULT} |"
+            echo "| node | ${NODE_RESULT} |"
+            echo "| etl | ${ETL_RESULT} |"
+            echo "| production | ${PRODUCTION_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in "$STATIC_RESULT" "$NODE_RESULT" "$ETL_RESULT" "$PRODUCTION_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "ERROR: gate result '${result}' is not success — CI / required fails." >&2
+              exit 1
+            fi
+          done
+
+          echo "All gates passed — CI / required is green."

@@ -31,19 +31,23 @@ distinti.
 
 ## Verifica locale
 
-Esegui almeno:
+La CI è organizzata in quattro job paralleli (`static`, `node`, `etl`,
+`production`) aggregati da `CI / required`. Puoi riprodurre gli stessi gate
+localmente con i comandi stabili:
 
 ```bash
 npm ci
-npm run lint
-npm test
-python3 -m unittest discover -s tests/etl -p 'test_*.py'
-npm run typecheck
-npm run design:check
-npm run brand:check
+npm run ci:static
+npm run test:node
+npm run test:etl
 npm run build
 git diff --check
 ```
+
+`ci:static` esegue lint, typecheck, design:check e brand:check insieme.
+I test browser e Lighthouse richiedono un server `next start` attivo su
+`127.0.0.1:3000`; vedi `scripts/ci/run-production-gates.sh` per l'orchestrazione
+completa usata dalla CI.
 
 Una modifica UI richiede anche verifica Browser a 390, 768 e 1280 px, tastiera,
 focus, stati di errore/caricamento/vuoto, console e overflow. Una modifica MCP

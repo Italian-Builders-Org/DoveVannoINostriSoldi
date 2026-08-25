@@ -35,7 +35,7 @@ LOCAL_ACTION_FILENAMES = frozenset({"action.yml", "action.yaml"})
 # treated as action references. The optional quote is back-referenced, so a
 # malformed or mismatched quoted scalar is not accepted.
 USES_RE = re.compile(
-    r"^[ \t]*(?:-[ \t]*)?uses:[ \t]+"
+    r"^[ \t]*(?:-[ \t]*)?(?:(?P<key_quote>['\"])uses(?P=key_quote)|uses):[ \t]+"
     r"(?:(?P<anchor>&[A-Za-z_][A-Za-z0-9_-]*)[ \t]+)?"
     r"(?P<quote>['\"]?)(?P<ref>[^\s#'\"]+)(?P=quote)"
     r"(?:[ \t]+#[ \t]*(?P<comment>.*))?[ \t]*$"
@@ -54,20 +54,30 @@ ANCHOR_RE = re.compile(
 )
 ALIAS_RE = re.compile(r"^\*(?P<name>[A-Za-z_][A-Za-z0-9_-]*)$")
 USES_KEY_RE = re.compile(
-    r"^[ \t]*(?:-[ \t]*)?uses:[ \t]*(?P<value>.*)$"
+    r"^[ \t]*(?:-[ \t]*)?(?:(?P<key_quote>['\"])uses(?P=key_quote)|uses):[ \t]*(?P<value>.*)$"
 )
 
 # Block/folded YAML scalars can hide an action ref on following lines. The
 # checker deliberately requires an explicit single-line scalar so these valid
 # YAML forms fail closed instead of bypassing pin validation.
 BLOCK_SCALAR_USES_RE = re.compile(
-    r"^[ \t]*(?:-[ \t]*)?uses:[ \t]+"
+    r"^[ \t]*(?:-[ \t]*)?(?:(?P<key_quote>['\"])uses(?P=key_quote)|uses):[ \t]+"
     r"(?P<indicator>[>|](?:[+-]?[1-9]?|[1-9]?[+-]?))"
     r"(?:[ \t]+#[^\n]*)?[ \t]*$"
 )
 
 # A full 40-char lowercase hex SHA
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+DOCKER_DIGEST_RE = re.compile(r"^docker://[^@\s]+@sha256:[0-9a-f]{64}$")
+
+# GitHub accepts compact mapping entries such as
+# ``- { name: Checkout, \"uses\": actions/checkout@<sha> }``.  Keep the
+# accepted grammar narrow: only a mapping boundary may introduce the key.
+INLINE_USES_RE = re.compile(
+    r"(?:^|[{,][ \t]*)(?:(?P<key_quote>['\"])uses(?P=key_quote)|uses):[ \t]+"
+    r"(?:(?P<quote>['\"])(?P<ref>[^'\"]+)(?P=quote)|(?P<bare>[^,}\s#]+))"
+    r"(?:[ \t]+#[ \t]*(?P<comment>.*))?"
+)
 
 # A valid GitHub action reference: owner/repo or owner/repo/subpath
 ACTION_RE = re.compile(r"^[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)+$")
@@ -115,33 +125,38 @@ def extract_uses(workflow_path: Path) -> list[tuple[int, str, str | None]]:
             anchors[anchor_match.group("name")] = anchor_match.group("ref")
 
         match = USES_RE.match(line)
-        if match is None:
+        matches = [match] if match is not None else list(INLINE_USES_RE.finditer(line))
+        if not matches:
             continue
 
-        action_ref = match.group("ref")
-        alias_match = ALIAS_RE.fullmatch(action_ref)
-        if alias_match:
-            action_ref = anchors.get(alias_match.group("name"))
+        for match in matches:
+            action_ref = match.group("ref") or match.group("bare")
             if action_ref is None:
                 continue
+            alias_match = ALIAS_RE.fullmatch(action_ref)
+            if alias_match:
+                action_ref = anchors.get(alias_match.group("name"))
+                if action_ref is None:
+                    continue
 
-        raw_comment = match.group("comment")
-        version_comment = raw_comment.strip() if raw_comment is not None else None
+            raw_comment = match.group("comment")
+            version_comment = raw_comment.strip() if raw_comment is not None else None
 
-        # Skip local actions (./.github/actions/...)
-        if action_ref.startswith("./"):
-            continue
-        # Skip Docker actions
-        if action_ref.startswith("docker://"):
-            continue
-        # Must be owner/repo@ref
-        if "@" not in action_ref:
-            continue
-        action_name = action_ref.split("@")[0]
-        if not ACTION_RE.match(action_name):
-            continue
+            # Skip local actions (./.github/actions/...)
+            if action_ref.startswith("./"):
+                continue
+            # Docker actions are retained so mutable tags can fail closed.
+            if action_ref.startswith("docker://"):
+                results.append((line_num, action_ref, version_comment))
+                continue
+            # Must be owner/repo@ref
+            if "@" not in action_ref:
+                continue
+            action_name = action_ref.split("@")[0]
+            if not ACTION_RE.match(action_name):
+                continue
 
-        results.append((line_num, action_ref, version_comment))
+            results.append((line_num, action_ref, version_comment))
 
     return results
 
@@ -168,14 +183,21 @@ def unsupported_uses_lines(workflow_path: Path) -> list[tuple[int, str]]:
 
         match = USES_RE.match(line)
         if match is None:
-            results.append((
-                line_num,
-                "uses: unsupported scalar — use an explicit single-line "
-                "action reference",
-            ))
-            continue
+            inline_matches = list(INLINE_USES_RE.finditer(line))
+            if inline_matches:
+                match = inline_matches[0]
+            else:
+                results.append((
+                    line_num,
+                    "uses: unsupported scalar — use an explicit single-line "
+                    "action reference",
+                ))
+                continue
 
-        action_ref = match.group("ref")
+        action_ref = match.group("ref") or match.group("bare")
+        if action_ref is None:
+            results.append((line_num, "uses: unsupported scalar — use an explicit single-line action reference"))
+            continue
         alias_match = ALIAS_RE.fullmatch(action_ref)
         if alias_match:
             action_ref = anchors.get(alias_match.group("name"))
@@ -187,6 +209,8 @@ def unsupported_uses_lines(workflow_path: Path) -> list[tuple[int, str]]:
                 ))
                 continue
 
+        if action_ref.startswith("docker://"):
+            continue
         if (
             not action_ref.startswith(("./", "docker://"))
             and ("@" not in action_ref or not ACTION_RE.match(action_ref.split("@", 1)[0]))
@@ -213,6 +237,14 @@ def check_workflow(
         errors.append(f"{file_label}:{line_num}: {reason}")
 
     for line_num, action_ref, comment in extract_uses(workflow_path):
+        if action_ref.startswith("docker://"):
+            if not DOCKER_DIGEST_RE.fullmatch(action_ref):
+                errors.append(
+                    f"{file_label}:{line_num}: {action_ref} — "
+                    "mutable Docker action reference; pin the image with @sha256:<digest>"
+                )
+            continue
+
         action_name, ref = action_ref.split("@", 1)
 
         # Must be a 40-char SHA

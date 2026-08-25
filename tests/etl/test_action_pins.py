@@ -168,7 +168,7 @@ class ActionPinCheckerTests(TestCase):
         self.assertIn("version comment 'v5'", errors[0])
         self.assertIn("expected '# v6'", errors[0])
 
-    def test_local_and_docker_actions_are_exempt(self) -> None:
+    def test_local_actions_are_exempt_but_docker_tags_are_rejected(self) -> None:
         path = self.fixture_file()
         path.write_text(
             "steps:\n"
@@ -182,9 +182,35 @@ class ActionPinCheckerTests(TestCase):
 
         self.assertEqual(
             check_action_pins.extract_uses(path),
-            [(7, f"actions/checkout@{PINNED_SHA}", "v6")],
+            [(5, "docker://alpine:3.20", None), (7, f"actions/checkout@{PINNED_SHA}", "v6")],
         )
-        self.assertEqual(check_action_pins.check_workflow(path, PINS), [])
+        errors = check_action_pins.check_workflow(path, PINS)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("mutable Docker action reference", errors[0])
+
+    def test_docker_digest_is_accepted(self) -> None:
+        digest = "b" * 64
+        errors = self.errors_for(f"steps:\n  - uses: docker://alpine@sha256:{digest}\n")
+        self.assertEqual(errors, [])
+
+    def test_quoted_key_and_inline_mapping_are_checked(self) -> None:
+        path = self.fixture_file()
+        path.write_text(
+            "steps:\n"
+            f'  - "uses": actions/checkout@{PINNED_SHA} # v6\n'
+            f"  - {{ name: Checkout, 'uses': actions/checkout@{OTHER_SHA} }}\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(
+            check_action_pins.extract_uses(path),
+            [
+                (2, f"actions/checkout@{PINNED_SHA}", "v6"),
+                (3, f"actions/checkout@{OTHER_SHA}", None),
+            ],
+        )
+        errors = check_action_pins.check_workflow(path, PINS)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("SHA does not match", errors[0])
 
     def test_main_scans_workflow_and_both_local_action_yaml_names(self) -> None:
         workflows = self.fixture_root / "workflows"
@@ -215,7 +241,7 @@ class ActionPinCheckerTests(TestCase):
             "  using: composite\n"
             "  steps:\n"
             "    - uses: ./.github/actions/other\n"
-            "    - uses: docker://alpine:3.20\n",
+            "    - uses: docker://alpine@sha256:" + "c" * 64 + "\n",
             encoding="utf-8",
         )
         pins_file = self.fixture_root / "action-pins.json"
@@ -235,7 +261,7 @@ class ActionPinCheckerTests(TestCase):
         report = output.getvalue()
         self.assertIn("4 workflow/action file(s)", report)
         self.assertIn("(2 workflow, 2 local action)", report)
-        self.assertIn("3 third-party action reference(s)", report)
+        self.assertIn("4 third-party action reference(s)", report)
         self.assertIn("1 pinned action(s)", report)
 
     @staticmethod
@@ -250,7 +276,12 @@ class ActionPinCheckerTests(TestCase):
                 if not line.startswith("uses:"):
                     continue
                 action_ref = line[len("uses:") :].split("#", 1)[0].strip()
-                if action_ref.startswith(("./", "docker://")) or "@" not in action_ref:
+                if action_ref.startswith("./"):
+                    continue
+                if action_ref.startswith("docker://"):
+                    count += 1
+                    continue
+                if "@" not in action_ref:
                     continue
                 action_name = action_ref.split("@", 1)[0]
                 if re.fullmatch(

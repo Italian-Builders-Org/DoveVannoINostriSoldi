@@ -95,7 +95,9 @@ class WorkflowGovernanceTests(unittest.TestCase):
 
     def test_local_action_has_no_token_fallback_and_is_pin_locked(self):
         action = (ROOT / ".github" / "actions" / "publish-data-refresh" / "action.yml").read_text(encoding="utf-8")
-        self.assertIn("actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859", action)
+        self.assertIn("actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0", action)
+        self.assertIn("client-id: ${{ inputs.app-client-id }}", action)
+        self.assertNotIn("app-id:", action)
         self.assertIn("permission-contents: write", action)
         self.assertIn("permission-pull-requests: write", action)
         permission_lines = [

@@ -19,7 +19,7 @@
     "typecheck": "tsc --noEmit",
     "design:check": "impeccable detect src/",
     "ci:static": "npm run lint && npm run typecheck && npm run design:check && npm run brand:check",
-    "ci:action-pins": "python3 scripts/ci/check-action-pins.py",
+    "ci:action-pins": "node scripts/ci/check-action-pins.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:node": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:etl": "python3 -m unittest discover -s tests/etl -p 'test_*.py'",
@@ -53,6 +53,7 @@
     "impeccable": "3.6.0",
     "lighthouse": "^13.4.1",
     "puppeteer": "^25.8.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "yaml": "2.9.0"
   }
 }

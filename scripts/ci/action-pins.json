@@ -1,6 +1,6 @@
 {
   "$schema": "1",
-  "description": "SHA-pinned GitHub Actions used across all workflows. Every third-party action must be pinned to an immutable commit SHA. The tag comment in the workflow file documents which semantic version the SHA corresponds to. The pin checker (scripts/ci/check-action-pins.py) verifies that every `uses:` reference in .github/workflows/ matches a SHA in this file.",
+  "description": "SHA-pinned GitHub Actions used across all workflows. Every third-party action must be pinned to an immutable commit SHA. The tag comment in the workflow file documents which semantic version the SHA corresponds to. The pin checker (scripts/ci/check-action-pins.mjs) verifies supported uses locations in workflows and composite actions.",
   "pinnedAt": "2026-08-25",
   "actions": {
     "actions/checkout": {

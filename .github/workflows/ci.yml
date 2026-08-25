@@ -70,7 +70,7 @@ jobs:
           /tmp/actionlint -color
 
       - name: Check action SHA pins
-        run: python3 scripts/ci/check-action-pins.py
+        run: npm run ci:action-pins
 
   security:
     name: Zizmor security scan

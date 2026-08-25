@@ -600,7 +600,8 @@
     flex-direction: column;
   }
 
-  .dataTable th:first-child {
+  .dataTable thead th:first-child,
+  .dataTable tbody th:first-child {
     position: static;
   }
 }

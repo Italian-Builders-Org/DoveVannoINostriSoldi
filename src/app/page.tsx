@@ -108,6 +108,16 @@ export default async function HomePage({
     <main className={`shell ${styles.dashboard}`}>
       <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
       <div className={styles.column}>
+        <section className="panel panel-accent" aria-labelledby="home-recipients-cta">
+          <h2 id="home-recipients-cta" className="panel-title">Destinatari e importi</h2>
+          <p className={styles.note}>
+            Società, affidamenti e ricorrenze nei dataset integrati, con grafici leggibili.
+          </p>
+          <Link className="btn btn-block" href="/dati">
+            Vedi chi ha ricevuto di più
+          </Link>
+        </section>
+
         <section className="panel">
           <div className={styles.panelHead}>
             <h2 className="panel-title">Pagamenti effettuati dai Comuni</h2>

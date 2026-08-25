@@ -4,12 +4,15 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
+  activeCatalogConstraintCount,
   catalogQueryHref,
   catalogViewHref,
   groupPriorityDatasets,
   isPriorityDataset,
   matchesCatalogFilters,
+  matchesCatalogSearch,
   parseCatalogQuery,
+  parseCatalogSearch,
   parseCatalogView,
   relatedReadingForDataset,
 } = await import("../src/lib/integrated-catalog-views.ts");
@@ -38,6 +41,7 @@ test("catalog filters compose into stable query strings", () => {
       publication: "catalog-only",
       undeclaredReuse: true,
     },
+    q: null,
   });
   assert.equal(
     catalogQueryHref(query),
@@ -73,6 +77,53 @@ test("catalog filters compose into stable query strings", () => {
     ),
     false,
   );
+});
+
+test("catalog search parses cerca, preserves it in hrefs, and matches title/ambito/teaser", () => {
+  assert.equal(parseCatalogSearch("  Acme   Spa  "), "Acme Spa");
+  assert.equal(parseCatalogSearch("   "), null);
+  assert.equal(parseCatalogSearch("x".repeat(100)).length, 80);
+
+  const withSearch = parseCatalogQuery({
+    vista: "tutti",
+    cerca: "vincitori",
+  });
+  assert.equal(withSearch.q, "vincitori");
+  assert.equal(
+    catalogQueryHref(withSearch),
+    "/dati?vista=tutti&cerca=vincitori",
+  );
+  assert.equal(
+    catalogViewHref("ambito", withSearch.filters, withSearch.q),
+    "/dati?vista=ambito&cerca=vincitori",
+  );
+  assert.equal(parseCatalogQuery({ q: "alias" }).q, "alias");
+  assert.equal(activeCatalogConstraintCount(withSearch), 1);
+  assert.equal(
+    activeCatalogConstraintCount({
+      ...withSearch,
+      filters: { ...withSearch.filters, evidence: "missing-data" },
+    }),
+    2,
+  );
+
+  const dataset = {
+    id: "vincitori",
+    domain: "procurement",
+    evidenceLabel: "documented-fact",
+    licenseStatus: "open",
+    publication: "rows",
+    title: "Fornitori per settore e importo",
+    authority: "ANAC",
+  };
+  assert.equal(matchesCatalogSearch(dataset, "fornitori"), true);
+  assert.equal(matchesCatalogSearch(dataset, "appalti", { domainLabel: "Appalti" }), true);
+  assert.equal(
+    matchesCatalogSearch(dataset, "acme", { teaserLine: "Acme S.p.A. · 1,2 mln €" }),
+    true,
+  );
+  assert.equal(matchesCatalogSearch(dataset, "inesistente"), false);
+  assert.equal(matchesCatalogSearch(dataset, ""), true);
 });
 
 test("priority groups use existing evidence labels without inventing medians", async () => {
@@ -135,8 +186,13 @@ test("dati page wires views, filters and reading links without median inventing"
   ]);
   assert.match(page, /parseCatalogQuery/);
   assert.match(page, /matchesCatalogFilters/);
+  assert.match(page, /matchesCatalogSearch/);
   assert.match(page, /partitionPriorityCatalog/);
   assert.match(page, /filterBar/);
+  assert.match(page, /searchBar/);
+  assert.match(page, /name="cerca"/);
+  assert.match(page, /readableVisible/);
+  assert.match(page, /missingVisible/);
   assert.match(page, /Da controllare/);
   assert.match(page, /Numeri da leggere/);
   assert.match(page, /Cosa manca ancora/);
@@ -147,5 +203,18 @@ test("dati page wires views, filters and reading links without median inventing"
   assert.match(page, /href="\/confronti"/);
   assert.doesNotMatch(page, /mediana di mercato sul catalogo/i);
   assert.match(css, /\.filterBar \{/);
+  assert.match(css, /\.searchBar \{/);
   assert.match(css, /\.filterGroup a\[aria-current="page"\]/);
+});
+
+test("home and controlli expose the recipients CTA into /dati", async () => {
+  const [home, controlli] = await Promise.all([
+    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/controlli/page.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(home, /Vedi chi ha ricevuto di più/);
+  assert.match(home, /href="\/dati"/);
+  assert.match(controlli, /Vedi chi ha ricevuto di più/);
+  assert.match(controlli, /href="\/dati"/);
+  assert.match(controlli, /href="\/appalti\/fornitori"/);
 });

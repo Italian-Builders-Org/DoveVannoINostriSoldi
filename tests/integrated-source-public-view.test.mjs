@@ -505,7 +505,7 @@ test("the server boundary and pages preserve missing, zero and async Next route 
   assert.match(detail, /value === ""/);
   assert.match(detail, /Dato non presente/);
   assert.match(detail, /value === "0"/);
-  assert.match(detail, /<caption>/);
+  assert.match(detail, /<caption className=\{styles\.tableCaption\}>/);
   assert.match(detail, /role="region"/);
   assert.match(detail, /Fonte, riuso e limiti/);
   assert.match(detail, /URL canonico non disponibile/);

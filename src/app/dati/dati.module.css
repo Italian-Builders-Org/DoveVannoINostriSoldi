@@ -159,6 +159,50 @@
   font-size: 14px;
 }
 
+.searchBar {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.searchBar label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.searchBar > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+}
+
+.searchHint,
+.searchClear {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-neutral-600);
+}
+
+.searchClear strong {
+  color: var(--color-text);
+}
+
+@media (max-width: 520px) {
+  .searchBar > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .searchBar button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
 .filterBar {
   display: grid;
   gap: var(--space-3);
@@ -404,11 +448,31 @@
 
 .dataTable {
   border-top: 1px solid var(--color-neutral-300);
+  /* Tall enough for several rows, short enough that the sticky header stays
+     on screen while reading the results pane. */
+  max-height: min(60vh, 32rem);
+  background: var(--color-raised);
 }
 
 .dataTable table {
   width: max-content;
   min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Keep the accessible caption out of the sticky scrollport so headings sit
+   flush at the top of the results pane. */
+.tableCaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .dataTable th,
@@ -419,16 +483,34 @@
   overflow-wrap: anywhere;
 }
 
-.dataTable th:first-child {
-  min-width: 220px;
+.dataTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-raised);
+  box-shadow: inset 0 -1px 0 var(--color-neutral-400);
+}
+
+/* Keep the row id visible while scrolling sideways; the corner cell stays
+   above both the sticky header and the sticky first column. */
+.dataTable tbody th:first-child,
+.dataTable thead th:first-child {
   position: sticky;
   left: 0;
-  z-index: 1;
+  min-width: 220px;
   background: var(--color-raised);
 }
 
+.dataTable tbody th:first-child {
+  z-index: 1;
+  box-shadow: 1px 0 0 var(--color-neutral-200);
+}
+
 .dataTable thead th:first-child {
-  z-index: 2;
+  z-index: 3;
+  box-shadow:
+    inset 0 -1px 0 var(--color-neutral-400),
+    1px 0 0 var(--color-neutral-200);
 }
 
 .dataTable code {
@@ -664,10 +746,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-4);
-  margin: 0 0 var(--space-3);
-  padding: var(--space-2) 0;
+  margin: 0;
+  padding: var(--space-3) 18px;
   border-block: 1px solid var(--color-neutral-200);
   list-style: none;
+  background: color-mix(in srgb, var(--color-neutral-100) 70%, var(--color-raised));
 }
 
 .valueLegend li {
@@ -676,11 +759,13 @@
   gap: var(--space-2);
   min-width: 0;
   font-size: 12px;
+  line-height: 1.4;
 }
 
 .valueLegend strong {
   font-weight: 700;
   white-space: nowrap;
+  color: var(--color-text);
 }
 
 .valueLegend span { color: var(--color-neutral-600); }

@@ -322,5 +322,5 @@
   .sourceGrid { grid-template-columns: 1fr; }
   .actions .btn { width: 100%; }
   .tableHint { display: block; }
-  :global(.table-scroll) table { min-width: 900px; }
+  .tableHint + :global(.table-scroll) table { min-width: 900px; }
 }

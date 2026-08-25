@@ -108,7 +108,7 @@ test("the overview stays flat and scroll-safe on narrow screens", () => {
   assert.match(css, /\.scopeBand\s*\{/);
   assert.match(css, /\.latestGrid,[\s\S]*\.comparisonGrid/);
   assert.match(css, /\.compositionTrack/);
-  assert.match(css, /:global\(\.table-scroll\) table \{ min-width: 900px; \}/);
+  assert.match(css, /\.tableHint \+ :global\(\.table-scroll\) table \{ min-width: 900px; \}/);
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.doesNotMatch(css, /border-radius\s*:/);
   assert.doesNotMatch(css, /gradient\s*\(/i);

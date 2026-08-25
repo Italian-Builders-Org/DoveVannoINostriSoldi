@@ -289,7 +289,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
             {result.rows.length > 0 ? (
               <div className={`table-scroll ${styles.dataTable}`} role="region" aria-label={`Righe di ${dataset.title}`} tabIndex={0}>
                 <table className="table">
-                  <caption>
+                  <caption className={styles.tableCaption}>
                     Valori pubblici esatti
                     {amounts.size > 0 ? ". Colonne di importo allineate a destra." : "."}
                   </caption>

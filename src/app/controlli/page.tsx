@@ -164,6 +164,14 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           Numeri presi da relazioni ufficiali, rivisti il {longDate(`${auditReviewedAt}T00:00:00Z`)}.
           Ogni numero dice una cosa precisa e mostra anche i suoi limiti.
         </p>
+        <div className={styles.entryActions}>
+          <Link className="btn btn-primary" href="/dati">
+            Vedi chi ha ricevuto di più
+          </Link>
+          <Link className="btn btn-secondary" href="/appalti/fornitori">
+            Fornitori e aggiudicatari
+          </Link>
+        </div>
       </div>
 
       <nav className={styles.yearFilter} aria-label="Filtra i controlli per anno">

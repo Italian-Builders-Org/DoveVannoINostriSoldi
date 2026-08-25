@@ -71,7 +71,11 @@ export type CatalogFilters = Readonly<{
 export type CatalogQuery = Readonly<{
   view: CatalogView;
   filters: CatalogFilters;
+  /** Free-text search over title, ambito, id, authority and teaser lines. */
+  q: string | null;
 }>;
+
+export const CATALOG_SEARCH_MAX_LENGTH = 80;
 
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
@@ -81,6 +85,15 @@ export function parseCatalogView(value: string | string[] | undefined): CatalogV
   const raw = firstParam(value);
   if (raw === "ambito" || raw === "tutti" || raw === "priorita") return raw;
   return DEFAULT_CATALOG_VIEW;
+}
+
+/** Trims and bounds the catalog search box; empty becomes null. */
+export function parseCatalogSearch(value: string | string[] | undefined): string | null {
+  const raw = firstParam(value);
+  if (raw === undefined) return null;
+  const trimmed = raw.trim().replace(/\s+/g, " ");
+  if (trimmed === "") return null;
+  return trimmed.slice(0, CATALOG_SEARCH_MAX_LENGTH);
 }
 
 export function parseCatalogFilters(input: {
@@ -111,10 +124,13 @@ export function parseCatalogQuery(searchParams: {
   evidenza?: string | string[];
   pubblicazione?: string | string[];
   riuso?: string | string[];
+  cerca?: string | string[];
+  q?: string | string[];
 }): CatalogQuery {
   return {
     view: parseCatalogView(searchParams.vista),
     filters: parseCatalogFilters(searchParams),
+    q: parseCatalogSearch(searchParams.cerca ?? searchParams.q),
   };
 }
 
@@ -124,16 +140,21 @@ export function catalogQueryHref(query: CatalogQuery): string {
   if (query.filters.evidence) params.set("evidenza", query.filters.evidence);
   if (query.filters.publication) params.set("pubblicazione", query.filters.publication);
   if (query.filters.undeclaredReuse) params.set("riuso", "non-dichiarato");
+  if (query.q) params.set("cerca", query.q);
   const encoded = params.toString();
   return encoded ? `/dati?${encoded}` : "/dati";
 }
 
-export function catalogViewHref(view: CatalogView, filters: CatalogFilters = {
-  evidence: null,
-  publication: null,
-  undeclaredReuse: false,
-}): string {
-  return catalogQueryHref({ view, filters });
+export function catalogViewHref(
+  view: CatalogView,
+  filters: CatalogFilters = {
+    evidence: null,
+    publication: null,
+    undeclaredReuse: false,
+  },
+  q: string | null = null,
+): string {
+  return catalogQueryHref({ view, filters, q });
 }
 
 export function isPriorityDataset(dataset: Pick<CatalogDatasetSummary, "evidenceLabel">): boolean {
@@ -188,6 +209,28 @@ export function matchesCatalogFilters(
   return true;
 }
 
+/** Case-insensitive match on id, title, domain, authority, domain label and teaser. */
+export function matchesCatalogSearch(
+  dataset: CatalogDatasetSummary &
+    Partial<Readonly<{ title: string; authority: string }>>,
+  query: string,
+  extras: Readonly<{ domainLabel?: string; teaserLine?: string | null }> = {},
+): boolean {
+  const needle = query.trim().toLocaleLowerCase("it-IT");
+  if (needle === "") return true;
+  const haystack = [
+    dataset.id,
+    dataset.title ?? "",
+    dataset.authority ?? "",
+    dataset.domain,
+    extras.domainLabel ?? "",
+    extras.teaserLine ?? "",
+  ]
+    .join("\n")
+    .toLocaleLowerCase("it-IT");
+  return haystack.includes(needle);
+}
+
 export function relatedReadingForDataset(
   dataset: Pick<CatalogDatasetSummary, "id" | "domain">,
 ): RelatedReading | null {
@@ -234,4 +277,8 @@ export function activeFilterCount(filters: CatalogFilters): number {
     (filters.publication ? 1 : 0) +
     (filters.undeclaredReuse ? 1 : 0)
   );
+}
+
+export function activeCatalogConstraintCount(query: CatalogQuery): number {
+  return activeFilterCount(query.filters) + (query.q ? 1 : 0);
 }

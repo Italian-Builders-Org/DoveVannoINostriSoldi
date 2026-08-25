@@ -187,7 +187,23 @@ async function driveCatalog(page, directory) {
   );
   assert.ok(priorityLinks.length > 0 && priorityLinks.length < 79, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
+  assert.ok(await page.$('input[name="cerca"]'), "/dati: campo cerca catalogo assente");
+  const hasReadableSection = await page.evaluate(() =>
+    Boolean(document.getElementById("numeri-da-leggere")),
+  );
+  assert.ok(hasReadableSection, "/dati: sezione Numeri da leggere assente");
   await screenshot(page, directory, "catalog.png");
+
+  actions.push(await goto(page, "/dati?cerca=vincitori", "Tutti i dataset integrati"));
+  const searchLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
+    [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
+  );
+  assert.ok(
+    searchLinks.some((href) => href === "/dati/vincitori"),
+    "/dati?cerca=vincitori: scheda vincitori assente",
+  );
+  assert.ok(searchLinks.length < priorityLinks.length, "/dati?cerca=vincitori: atteso un sottoinsieme");
+  await screenshot(page, directory, "catalog-cerca.png");
 
   actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>

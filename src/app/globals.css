@@ -588,11 +588,30 @@ main { display: block; }
 .warning-notice strong { color: var(--color-warning); }
 
 /* Any table that can outgrow its column scrolls inside its own box rather
-   than pushing the page sideways. */
+   than pushing the page sideways. Tall result sets also scroll vertically so
+   the column headings can stay pinned as a reading reference. */
 .table-scroll {
   width: 100%;
-  overflow-x: auto;
+  max-height: min(60vh, 32rem);
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Sticky headers need separate borders: collapse makes Chrome paint ghost
+   fragments of neighbouring cells while scrolling. */
+.table-scroll > table,
+.table-scroll > .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-raised);
+  box-shadow: inset 0 -1px 0 var(--color-neutral-400);
 }
 
 .chart-data {

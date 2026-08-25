@@ -1,0 +1,52 @@
+name: Publish data refresh
+description: Publish one validated generated-data artifact through the repository data bot.
+inputs:
+  artifact-id:
+    description: Generated-artifact registry identifier.
+    required: true
+  app-client-id:
+    description: GitHub App client ID for the data publisher.
+    required: true
+  app-private-key:
+    description: GitHub App private key for the data publisher.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Require data publisher credentials
+      shell: bash
+      env:
+        DATA_BOT_APP_CLIENT_ID: ${{ inputs.app-client-id }}
+        DATA_BOT_APP_PRIVATE_KEY: ${{ inputs.app-private-key }}
+      run: |
+        set -euo pipefail
+        test -n "${DATA_BOT_APP_CLIENT_ID}" || {
+          echo "DATA_BOT_APP_CLIENT_ID is required" >&2
+          exit 1
+        }
+        test -n "${DATA_BOT_APP_PRIVATE_KEY}" || {
+          echo "DATA_BOT_APP_PRIVATE_KEY is required" >&2
+          exit 1
+        }
+
+    - name: Mint data publisher token
+      id: data-bot-token
+      uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+      with:
+        client-id: ${{ inputs.app-client-id }}
+        private-key: ${{ inputs.app-private-key }}
+        permission-contents: write
+        permission-pull-requests: write
+
+    - name: Publish validated generated data
+      shell: bash
+      env:
+        GH_TOKEN: ${{ steps.data-bot-token.outputs.token }}
+        ARTIFACT_ID: ${{ inputs.artifact-id }}
+      run: |
+        set -euo pipefail
+        test -n "${GH_TOKEN}" || {
+          echo "The GitHub App token was not minted" >&2
+          exit 1
+        }
+        python3 scripts/ci/publish-data-refresh.py --artifact-id "${ARTIFACT_ID}"

@@ -11,10 +11,12 @@ updates:
       timezone: Europe/Rome
     open-pull-requests-limit: 5
     groups:
-      npm-minor-and-patch:
+      npm-patch:
+        update-types:
+          - patch
+      npm-minor:
         update-types:
           - minor
-          - patch
 
   - package-ecosystem: github-actions
     directory: /

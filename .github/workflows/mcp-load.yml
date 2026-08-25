@@ -1,4 +1,4 @@
-name: MCP staging load
+name: MCP Preview load
 
 on:
   workflow_dispatch:
@@ -20,17 +20,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: mcp-staging-load-${{ github.ref }}
+  group: mcp-preview-load-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  staging-load:
-    name: staging-load
+  preview-load:
+    name: preview-load
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    environment: staging
+    environment: Preview
     env:
-      MCP_STAGING_URL: ${{ secrets.MCP_STAGING_URL }}
+      MCP_PREVIEW_URL: ${{ secrets.MCP_PREVIEW_URL }}
       MCP_LOAD_ALLOW_REMOTE: "1"
     steps:
       - name: Checkout
@@ -47,8 +47,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Require an explicit staging endpoint
-        run: test -n "$MCP_STAGING_URL"
+      - name: Require an explicit Preview endpoint
+        run: test -n "$MCP_PREVIEW_URL"
 
       - name: Run bounded MCP load test
         env:
@@ -57,7 +57,7 @@ jobs:
           LOAD_P95_MS: ${{ inputs.p95_ms }}
         run: >-
           node scripts/mcp_load.mjs
-          --url "${MCP_STAGING_URL%/}/api/mcp"
+          --url "${MCP_PREVIEW_URL%/}/api/mcp"
           --requests "$LOAD_REQUESTS"
           --concurrency "$LOAD_CONCURRENCY"
           --p95-ms "$LOAD_P95_MS"

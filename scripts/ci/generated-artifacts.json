@@ -31,7 +31,13 @@
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",
-      "trustModel": "Scheduled workflow downloads official statistics and commits the snapshot. PR-side validation proves the committed file is internally valid offline."
+      "publication": {
+        "branch": "automation/data/consulenti",
+        "commitTitle": "chore(data): refresh Consulenti Pubblici snapshot",
+        "prTitle": "data: refresh Consulenti Pubblici snapshot",
+        "upstreamUrl": "https://consulentipubblici.dfp.gov.it/progetto"
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
       "id": "cpt-regional-fiscal",
@@ -226,7 +232,13 @@
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/mef-participations-refresh.yml",
-      "trustModel": "Scheduled workflow downloads official annual data and commits the snapshot."
+      "publication": {
+        "branch": "automation/data/mef-participations",
+        "commitTitle": "chore(data): refresh MEF public participations snapshot",
+        "prTitle": "data: refresh MEF public participations snapshot",
+        "upstreamUrl": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html"
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
       "id": "opencivitas-2022",
@@ -248,7 +260,13 @@
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/opencivitas-refresh.yml",
-      "trustModel": "Scheduled workflow downloads official data and commits the snapshot."
+      "publication": {
+        "branch": "automation/data/opencivitas",
+        "commitTitle": "chore(data): refresh OpenCivitas municipal snapshot",
+        "prTitle": "data: refresh OpenCivitas municipal snapshot",
+        "upstreamUrl": "https://www.opencivitas.it/it/open-data"
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
       "id": "opencoesione",
@@ -271,7 +289,13 @@
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/opencoesione-refresh.yml",
-      "trustModel": "Scheduled workflow downloads official data and commits the snapshot."
+      "publication": {
+        "branch": "automation/data/opencoesione",
+        "commitTitle": "chore(data): refresh OpenCoesione national snapshot",
+        "prTitle": "data: refresh OpenCoesione national snapshot",
+        "upstreamUrl": "https://opencoesione.gov.it/it/api/aggregati/"
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
       "id": "parliament",
@@ -448,7 +472,13 @@
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/siope-refresh.yml",
-      "trustModel": "The offline contract (scripts/etl/siope_snapshot_check.py) is the single implementation used locally, in CI, and in the refresh workflow. The scheduled workflow rebuilds from the official SIOPE source and commits."
+      "publication": {
+        "branch": "automation/data/siope",
+        "commitTitle": "chore(data): refresh SIOPE municipal snapshot",
+        "prTitle": "data: refresh SIOPE municipal snapshot",
+        "upstreamUrl": "https://www.siope.it/documenti/siope2/open/last"
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
       "id": "ssn-cce-2024",

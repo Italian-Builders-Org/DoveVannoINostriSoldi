@@ -1,21 +1,10 @@
 name: OpenCoesione national snapshot
 
 on:
-  push:
-    branches:
-      - main
-      - feat/opencoesione-dashboard
-    paths:
-      - scripts/etl/opencoesione_snapshot.py
-      - src/lib/data/opencoesione-contract.ts
-      - src/data/generated/opencoesione-overview.json
-      - tests/opencoesione-contract.test.mjs
-      - .github/workflows/opencoesione-refresh.yml
   schedule:
     - cron: "17 */6 * * *"
   workflow_dispatch:
 
-# contents: read — least-privilege: only read repository contents.
 permissions:
   contents: read
 
@@ -28,16 +17,15 @@ jobs:
     name: refresh
     runs-on: ubuntu-24.04
     timeout-minutes: 8
-    permissions:
-      contents: write # Required to push the refreshed snapshot commit directly
+    environment: source-operations
     env:
-      TARGET_BRANCH: ${{ github.ref_name }}
+      PYTHONPATH: scripts/etl
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-          ref: ${{ env.TARGET_BRANCH }}
+          ref: main
           fetch-depth: 0
 
       - name: Setup Python
@@ -50,19 +38,9 @@ jobs:
 
       - name: Validate offline fallback
         run: python scripts/etl/opencoesione_snapshot.py --check
-
-      - name: Commit new official release
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -z "$(git status --porcelain -- src/data/generated/opencoesione-overview.json)" ]]; then
-            echo "No OpenCoesione release change to commit."
-            exit 0
-          fi
-
-          git config user.name "dove-vanno-i-nostri-soldi-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add src/data/generated/opencoesione-overview.json
-          git commit -m "chore(data): refresh OpenCoesione snapshot"
-          git pull --rebase origin "${TARGET_BRANCH}"
-          git push origin "HEAD:${TARGET_BRANCH}"
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: opencoesione
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

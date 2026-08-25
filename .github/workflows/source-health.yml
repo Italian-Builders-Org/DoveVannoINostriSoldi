@@ -20,19 +20,14 @@ jobs:
     environment: source-operations
     timeout-minutes: 5
     env:
-      REFRESH_URL: ${{ secrets.REFRESH_URL }}
+      CANONICAL_BASE_URL: https://www.dovevannoinostrisoldi.com
     steps:
       - name: Probe active source adapters
         shell: bash
         run: |
           set -euo pipefail
 
-          if [[ -z "${REFRESH_URL}" ]]; then
-            echo "::notice::Source health is not configured yet. Set REFRESH_URL after deployment."
-            exit 0
-          fi
-
-          base_url="${REFRESH_URL%/}"
+          base_url="${CANONICAL_BASE_URL%/}"
           curl \
             --fail-with-body \
             --silent \

@@ -25,9 +25,11 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 REGISTRY_PATH = ROOT / "scripts" / "ci" / "generated-artifacts.json"
@@ -38,6 +40,16 @@ VALID_MODES = frozenset(
 VALID_COVERAGE = frozenset({"standalone", "etl-suite", "node-tests"})
 # Extensions considered "generated data" for unregistered-file detection.
 GENERATED_EXTENSIONS = frozenset({".json", ".jsonl", ".jsonl.gz", ".ts"})
+PUBLICATION_IDS = frozenset(
+    {
+        "consulenti-pubblici",
+        "mef-participations",
+        "opencivitas-2022",
+        "opencoesione",
+        "siope-municipal",
+    }
+)
+PUBLICATION_BRANCH_RE = re.compile(r"^automation/data/[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 class ValidationError(Exception):
@@ -69,6 +81,8 @@ def validate_schema(registry: dict) -> list[str]:
 
     seen_ids: set[str] = set()
     seen_files: dict[str, str] = {}
+    seen_publication_branches: dict[str, str] = {}
+    publication_ids: set[str] = set()
     standalone_commands: set[str] = set()
 
     for i, art in enumerate(artifacts):
@@ -163,6 +177,56 @@ def validate_schema(registry: dict) -> list[str]:
         if wf is not None and not isinstance(wf, str):
             errors.append(f"{art_id}: 'refreshWorkflow' must be a string or null.")
 
+        publication = art.get("publication")
+        if publication is not None:
+            publication_ids.add(art_id)
+            if not isinstance(publication, dict):
+                errors.append(f"{art_id}: 'publication' must be an object.")
+                publication = {}
+
+            branch = publication.get("branch")
+            if not isinstance(branch, str) or not PUBLICATION_BRANCH_RE.fullmatch(branch):
+                errors.append(f"{art_id}: publication.branch must match automation/data/<source>.")
+            elif branch in seen_publication_branches:
+                errors.append(
+                    f"{art_id}: publication.branch '{branch}' is already owned by "
+                    f"'{seen_publication_branches[branch]}'."
+                )
+            else:
+                seen_publication_branches[branch] = art_id
+
+            for field in ("commitTitle", "prTitle", "upstreamUrl"):
+                value = publication.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    errors.append(f"{art_id}: publication.{field} must be non-empty.")
+
+            upstream = publication.get("upstreamUrl")
+            if isinstance(upstream, str) and upstream.strip():
+                parsed = urlparse(upstream)
+                if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+                    errors.append(
+                        f"{art_id}: publication.upstreamUrl must be an HTTPS URL without credentials."
+                    )
+
+            offline_spec = art.get("offlineCheck", {})
+            generator_spec = art.get("generator", {})
+            eligible = (
+                art_id in PUBLICATION_IDS
+                and mode == "online-refresh"
+                and isinstance(generator_spec, dict)
+                and generator_spec.get("requiresNetworkInput") is True
+                and isinstance(offline_spec, dict)
+                and offline_spec.get("coveredBy") == "standalone"
+                and isinstance(offline_spec.get("command"), str)
+                and bool(wf)
+            )
+            if not eligible:
+                errors.append(
+                    f"{art_id}: publication is allowed only for eligible source-only refresh artifacts."
+                )
+        elif art_id in PUBLICATION_IDS:
+            errors.append(f"{art_id}: publication metadata is required for the five source publishers.")
+
         # sourceSpec required for source-lock mode
         spec = art.get("sourceSpec")
         if spec is not None and not isinstance(spec, str):
@@ -187,6 +251,18 @@ def validate_schema(registry: dict) -> list[str]:
                 errors.append(
                     f"{art_id}: 'generator.requiresNetworkInput' must be a boolean."
                 )
+
+    missing_publications = PUBLICATION_IDS - publication_ids
+    if missing_publications:
+        errors.append(
+            "Missing publication metadata for: " + ", ".join(sorted(missing_publications))
+        )
+    unexpected_publications = publication_ids - PUBLICATION_IDS
+    if unexpected_publications:
+        errors.append(
+            "Publication metadata is not permitted for: "
+            + ", ".join(sorted(unexpected_publications))
+        )
 
     # Validate exclusions
     for i, exc in enumerate(registry.get("exclusions", [])):
@@ -393,6 +469,8 @@ def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str]]
 
             # Parse the command string
             parts = cmd.split()
+            if parts and parts[0] in {"python", "python3"}:
+                parts[0] = sys.executable
             result = subprocess.run(parts, cwd=ROOT, env=env, capture_output=True, text=True)
             if result.returncode == 0:
                 executed.append(f"{art_id}: {cmd}")

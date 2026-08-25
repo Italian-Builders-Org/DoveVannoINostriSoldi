@@ -70,4 +70,4 @@ jobs:
             echo "### Fonte parlamentare temporaneamente non verificabile"
             echo "Lo snapshot verificato non è stato modificato e questo tentativo non conta come controllo riuscito."
           } >> "$GITHUB_STEP_SUMMARY"
-          exit 0
+          exit 1

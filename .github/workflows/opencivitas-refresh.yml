@@ -1,20 +1,10 @@
 name: OpenCivitas municipal snapshot
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - scripts/etl/opencivitas_snapshot.py
-      - scripts/etl/certs/**
-      - src/lib/data/opencivitas-contract.ts
-      - src/data/generated/opencivitas-2022.json
-      - tests/opencivitas-contract.test.mjs
-      - .github/workflows/opencivitas-refresh.yml
   schedule:
     - cron: "23 4 * * *"
   workflow_dispatch:
 
-# contents: read — least-privilege: only read repository contents.
 permissions:
   contents: read
 
@@ -27,15 +17,14 @@ jobs:
     name: refresh
     runs-on: ubuntu-24.04
     timeout-minutes: 12
-    permissions:
-      contents: write # Required to push the refreshed snapshot commit directly
+    environment: source-operations
     env:
-      TARGET_BRANCH: ${{ github.ref_name }}
+      PYTHONPATH: scripts/etl
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-          ref: ${{ env.TARGET_BRANCH }}
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
@@ -44,17 +33,9 @@ jobs:
         run: python scripts/etl/opencivitas_snapshot.py
       - name: Validate snapshot offline
         run: python scripts/etl/opencivitas_snapshot.py --check
-      - name: Commit changed official data
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -z "$(git status --porcelain -- src/data/generated/opencivitas-2022.json)" ]]; then
-            echo "No OpenCivitas data change to commit."
-            exit 0
-          fi
-          git config user.name "dove-vanno-i-nostri-soldi-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add src/data/generated/opencivitas-2022.json
-          git commit -m "chore(data): refresh OpenCivitas snapshot"
-          git pull --rebase origin "${TARGET_BRANCH}"
-          git push origin "HEAD:${TARGET_BRANCH}"
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: opencivitas-2022
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

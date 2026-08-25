@@ -1,19 +1,8 @@
 name: SIOPE municipal snapshot
 
 on:
-  push:
-    branches:
-      - main
-      - feat/siope-territorial-dashboard
-    paths:
-      - scripts/etl/siope_municipal_snapshot.py
-      - scripts/etl/siope_snapshot_check.py
-      - src/lib/siope-municipality-detail.ts
-      - tests/municipality-profile.test.mjs
-      - tests/siope-snapshot.test.mjs
-      - .github/workflows/siope-refresh.yml
   schedule:
-    - cron: "29 * * * *"
+    - cron: "29 4 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -23,11 +12,10 @@ on:
         type: boolean
 
 permissions:
-  # contents: read — default. Write permission is scoped to the job below.
   contents: read
 
 concurrency:
-  group: siope-municipal-snapshot-${{ github.ref }}
+  group: siope-municipal-snapshot
   cancel-in-progress: true
 
 jobs:
@@ -35,18 +23,15 @@ jobs:
     name: refresh
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    # Direct-push data workflow: PR4 will replace with bot PRs.
-    permissions:
-      contents: write # Required to push the refreshed snapshot commit directly
+    environment: source-operations
     env:
-      TARGET_BRANCH: ${{ github.ref_name }}
       PYTHONPATH: scripts/etl
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-          ref: ${{ env.TARGET_BRANCH }}
+          ref: main
           fetch-depth: 0
 
       - name: Setup Python
@@ -101,31 +86,9 @@ jobs:
           node --experimental-strip-types --test
           tests/siope-snapshot.test.mjs
           tests/municipality-profile.test.mjs
-
-      - name: Commit source update
-        shell: bash
-        run: |
-          set -euo pipefail
-          artifacts=(
-            src/data/generated/siope-municipal-2024.json
-            src/data/generated/siope-municipal-2025.json
-            src/data/generated/siope-municipal.json
-            src/data/generated/siope-municipal-detail-2024.json
-            src/data/generated/siope-municipal-detail-2025.json
-            src/data/generated/siope-municipal-detail.json
-          )
-          if [[ -z "$(git status --porcelain -- "${artifacts[@]}")" ]]; then
-            echo "No SIOPE snapshot change to commit."
-            exit 0
-          fi
-
-          git config user.name "dove-vanno-i-nostri-soldi-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add "${artifacts[@]}"
-          git commit -m "chore(data): refresh SIOPE municipal snapshot"
-
-          # The ETL can take several minutes. If another commit landed while it
-          # was running, replay the data-only commit on top of the latest branch
-          # head instead of failing with a non-fast-forward push.
-          git pull --rebase origin "${TARGET_BRANCH}"
-          git push origin "HEAD:${TARGET_BRANCH}"
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: siope-municipal
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

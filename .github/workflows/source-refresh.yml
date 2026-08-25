@@ -1,8 +1,6 @@
 name: Source refresh
 
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 
 # contents: read — least-privilege: only read repository contents.
@@ -29,8 +27,8 @@ jobs:
           set -euo pipefail
 
           if [[ -z "${REFRESH_URL}" || -z "${SOURCE_REFRESH_SECRET}" ]]; then
-            echo "::notice::Source refresh is not configured yet. Set REFRESH_URL and SOURCE_REFRESH_SECRET repository secrets after deployment."
-            exit 0
+            echo "::error::Source refresh is not configured. Set REFRESH_URL and SOURCE_REFRESH_SECRET in the source-operations environment."
+            exit 1
           fi
 
           base_url="${REFRESH_URL%/}"

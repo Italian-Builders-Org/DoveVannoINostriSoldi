@@ -10,6 +10,7 @@ export type SourceId =
   | "cpt"
   | "mef-irpef"
   | "siope"
+  | "istat"
   | "opencoesione"
   | "italiadomani"
   | "opencivitas"
@@ -168,6 +169,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 15_000,
     maxRetries: 1,
     tags: ["source:siope", "domain:local-spending"],
+  },
+  istat: {
+    id: "istat",
+    label: "ISTAT SITUAS",
+    owner: "Istituto nazionale di statistica",
+    sourceUrl: "https://situas.istat.it/web/#/territorio",
+    cadence: "periodica",
+    cadenceNote: "SITUAS pubblica quadri territoriali interrogabili per data; lo snapshot viene rigenerato dopo variazioni ufficiali.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat", "domain:territorial-geography"],
   },
   opencoesione: {
     id: "opencoesione",

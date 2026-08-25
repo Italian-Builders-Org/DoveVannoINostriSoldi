@@ -34,6 +34,8 @@ function roundedEuro(cents: number): string {
   return `${integer(Math.round(cents / 100))} €`;
 }
 
+const decimal = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 2 });
+
 function signedPerCapita(cents: number): string {
   if (cents === 0) return "Nessuno scostamento per abitante";
   return `${roundedEuro(Math.abs(cents))} ${cents > 0 ? "in più" : "in meno"} per abitante`;
@@ -69,6 +71,8 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
   const pnrr = profile.pnrrChildcare.data;
   const spendingRows = buildMunicipalitySpendingRows(latestSiope.titles, latestSiope.totalCents);
   const trendYears = profile.siope.data.years.slice().reverse();
+  const geography = latestSiope.geography;
+  const peer = profile.siope.peerBenchmark;
   const trendMaximum = Math.max(1, ...trendYears.map((year) => year.totalCents ?? 0));
   const openCivitasMaximum = openCivitas
     ? Math.max(openCivitas.record.historicalSpendingCents, openCivitas.record.standardSpendingCents, 1)
@@ -108,6 +112,15 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
               </dd>
             </div>
             <div>
+              <dt>Per km²</dt>
+              <dd>
+                {latestSiope.perSquareKmCents === null
+                  ? "Non disponibile"
+                  : exactEuro(latestSiope.perSquareKmCents / 100)}
+              </dd>
+              {geography ? <small>Superficie ISTAT {decimal.format(geography.surfaceSquareKilometres)} km²</small> : null}
+            </div>
+            <div>
               <dt>Copertura</dt>
               <dd>
                 <span className={latestSiope.completeness === "partial" ? styles.partialStatus : styles.completeStatus}>
@@ -118,6 +131,50 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
             </div>
           </div>
         </dl>
+
+        {peer && latestSiope.perSquareKmCents !== null ? (
+          <section className={styles.peerBenchmark} aria-labelledby="peer-benchmark-title">
+            <div className={styles.sectionHeading}>
+              <div>
+                <h3 id="peer-benchmark-title">Confronto con Comuni simili</h3>
+                <p>{peer.peers} Comuni confrontabili · {peer.criteria.join(", ")}.</p>
+              </div>
+              <span className="tag tag-neutral">{peer.year}</span>
+            </div>
+            <div
+              className={styles.peerTrack}
+              style={{
+                "--peer-start": `${Math.min(100, peer.perSquareKmCents.p25 / Math.max(peer.perSquareKmCents.p75, latestSiope.perSquareKmCents) * 100)}%`,
+                "--peer-width": `${Math.max(2, (peer.perSquareKmCents.p75 - peer.perSquareKmCents.p25) / Math.max(peer.perSquareKmCents.p75, latestSiope.perSquareKmCents) * 100)}%`,
+                "--municipality-position": `${Math.min(100, latestSiope.perSquareKmCents / Math.max(peer.perSquareKmCents.p75, latestSiope.perSquareKmCents) * 100)}%`,
+              } as CSSProperties}
+              aria-label={`Il Comune registra ${exactEuro(latestSiope.perSquareKmCents / 100)} per km²; mediana dei territori simili ${exactEuro(peer.perSquareKmCents.median / 100)}`}
+            >
+              <span aria-hidden="true"><i /><b /></span>
+            </div>
+            <dl className={styles.peerValues}>
+              <div><dt>Comune</dt><dd>{exactEuro(latestSiope.perSquareKmCents / 100)} / km²</dd></div>
+              <div><dt>Mediana dei pari</dt><dd>{exactEuro(peer.perSquareKmCents.median / 100)} / km²</dd></div>
+              <div><dt>Fascia centrale</dt><dd>Da {exactEuro(peer.perSquareKmCents.p25 / 100)} a {exactEuro(peer.perSquareKmCents.p75 / 100)}</dd></div>
+            </dl>
+            <p className={styles.sourceNote}>Il confronto è descrittivo: non misura efficienza, qualità dei servizi o spesa necessaria.</p>
+          </section>
+        ) : null}
+
+        {geography ? (
+          <details className={styles.territoryDetails}>
+            <summary>Caratteristiche del territorio</summary>
+            <dl>
+              <div><dt>Superficie</dt><dd>{decimal.format(geography.surfaceSquareKilometres)} km²</dd></div>
+              <div><dt>Densità</dt><dd>{geography.densityPerSquareKilometre === null ? "n.d." : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`}</dd></div>
+              <div><dt>Altimetria</dt><dd>{geography.altimetricZoneLabel ?? "n.d."}{geography.altitudeMetres === null ? "" : ` · ${integer(geography.altitudeMetres)} m`}</dd></div>
+              <div><dt>Urbanizzazione</dt><dd>{geography.degreeUrbanizationLabel ?? "n.d."}</dd></div>
+              <div><dt>Litoraneità</dt><dd>{geography.coastal ? "Comune litoraneo" : "Non litoraneo"}</dd></div>
+              <div><dt>Insularità</dt><dd>{geography.island ? "Comune isolano" : "Non isolano"}</dd></div>
+            </dl>
+            <p>Fonte: <a href="https://situas.istat.it/web/#/territorio" target="_blank" rel="noreferrer">ISTAT SITUAS ↗</a>, quadro territoriale al {geography.referenceDate}.</p>
+          </details>
+        ) : null}
 
         {latestSiope.hasMovements ? (
           <div className={styles.spendingBreakdown}>
@@ -211,6 +268,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   <th scope="col">Copertura</th>
                   <th scope="col">Totale</th>
                   <th scope="col">Per abitante</th>
+                  <th scope="col">Per km²</th>
                 </tr>
               </thead>
               <tbody>
@@ -220,6 +278,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                     <td data-label="Copertura">{coverageText(year)}</td>
                     <td data-label="Totale">{year.totalCents === null ? "Nessun movimento" : compactEuro(year.totalCents / 100)}</td>
                     <td data-label="Per abitante">{year.perCapitaCents === null ? "Non disponibile" : exactEuro(year.perCapitaCents / 100)}</td>
+                    <td data-label="Per km²">{year.perSquareKmCents === null ? "Non disponibile" : exactEuro(year.perSquareKmCents / 100)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -284,6 +343,11 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                 <dt>Differenza rispetto al valore di riferimento</dt>
                 <dd>{signedEuro(openCivitas.record.differenceCents)}</dd>
                 <small>{signedPerCapita(openCivitas.record.differencePerCapitaCents)}</small>
+              </div>
+              <div>
+                <dt>Differenza per km²</dt>
+                <dd>{openCivitas.differencePerSquareKmCents === null ? "Non disponibile" : signedEuro(openCivitas.differencePerSquareKmCents)}</dd>
+                <small>Normalizzazione sulla superficie ISTAT {openCivitas.referenceYear}</small>
               </div>
               <div>
                 <dt>Servizi rispetto a Comuni simili</dt>

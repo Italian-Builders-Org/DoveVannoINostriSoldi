@@ -3,6 +3,8 @@ import {
   availableSiopeYears,
   getSiopeMunicipalSnapshot,
 } from "@/lib/siope-snapshot";
+import { getSiopeMunicipalityPeerObservations } from "@/lib/siope-municipality-detail";
+import { municipalityGeographySource } from "@/lib/municipality-geography";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +57,11 @@ export function GET(request: NextRequest) {
 
   const snapshot = getSiopeMunicipalSnapshot(year);
   const distribution = snapshot.distribution;
+  const territorialValues = getSiopeMunicipalityPeerObservations(year)
+    .map((item) => item.perSquareKmCents)
+    .sort((left, right) => left - right);
+  const nearestRank = (probability: number) =>
+    territorialValues[Math.max(0, Math.ceil(probability * territorialValues.length) - 1)] ?? null;
 
   return Response.json(
     {
@@ -65,6 +72,18 @@ export function GET(request: NextRequest) {
       availability: "verified_full_raw_refresh",
       period: distribution.period,
       distribution,
+      territorialNormalization: {
+        measure: "pagamenti comunali per chilometro quadrato",
+        municipalities: territorialValues.length,
+        perSquareKmCents: {
+          p10: nearestRank(0.10),
+          p25: nearestRank(0.25),
+          p50: nearestRank(0.50),
+          p75: nearestRank(0.75),
+          p90: nearestRank(0.90),
+        },
+        source: municipalityGeographySource,
+      },
       snapshotCoverage: snapshot.coverage,
       source: snapshot.source,
       limitations: [

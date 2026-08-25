@@ -107,6 +107,8 @@ Elenco e contratti: documentazione in `docs/` e catalogo su [/mcp](https://www.d
 
 ### Controlli prima di una modifica
 
+Il progetto richiede Python 3.12, dichiarato in `.python-version`. I comandi npm che eseguono ETL usano `scripts/run-python.mjs`: selezionano Python 3.12 anche quando il `python3` di sistema è più vecchio e terminano con un errore esplicito se la versione non è installata. È possibile indicare un interprete specifico con `PYTHON=/percorso/python3.12`.
+
 ```bash
 npm run lint
 npm test
@@ -124,9 +126,9 @@ Gli ultimi due richiedono il build di produzione su `http://127.0.0.1:3000`. Det
 Gli script in `scripts/etl/` scaricano le fonti ufficiali e producono gli snapshot usati dal sito. Esempio:
 
 ```bash
-python3 scripts/etl/siope_municipal_snapshot.py --year 2025 \
+npm run python -- scripts/etl/siope_municipal_snapshot.py --year 2025 \
   --output src/data/generated/siope-municipal-2025.json
-python3 scripts/etl/opencoesione_snapshot.py --check
+npm run python -- scripts/etl/opencoesione_snapshot.py --check
 ```
 
 Politica di freschezza: [docs/FRESHNESS_AND_REFRESH.md](docs/FRESHNESS_AND_REFRESH.md).

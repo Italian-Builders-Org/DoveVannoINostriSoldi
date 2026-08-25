@@ -15,6 +15,7 @@ comunale SIOPE e il Codice IPA pubblicato nei due dataset coincide. I collegamen
 - OpenCivitas: lo stesso Codice ISTAT, soltanto dopo la verifica MEF/IPA del codice catastale;
 - PNRR asili e prima infanzia: codice fiscale esatto del soggetto attuatore;
 - SIOPE: codice fiscale e Codice IPA, mantenendo separate le annualità 2024, 2025 e 2026.
+- ISTAT SITUAS: codice ISTAT a sei cifre e codice fiscale comunale, mantenendo separati gli snapshot annuali 2022–2026.
 
 Un identificativo ambiguo, assente o incoerente interrompe soltanto il collegamento interessato.
 Non viene pubblicata una corrispondenza probabile.
@@ -67,6 +68,7 @@ il valore osservato è realmente zero. Questa distinzione viene conservata fino 
 - finanziamenti PNRR, importi di gara e pagamenti sono misure differenti; la prima release mostra i
   finanziamenti noti senza chiamarli spesa realizzata.
 - SIOPE 2026 può essere parziale: mese finale, data del dato e completezza sono visibili.
+- La scheda mostra totale, valore per abitante e valore per km² dello stesso importo SIOPE. Il benchmark tra pari usa almeno dieci osservazioni, esclude il Comune corrente e pubblica criteri e livello di fallback; superficie e fattori geografici restano visibili come contesto, non come punteggio di complessità o efficienza.
 
 La prima release non include confronti diretti tra Comuni, serie mensili comunali o dettaglio
 comunale ANAC e consulenze.

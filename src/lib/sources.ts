@@ -27,6 +27,18 @@ export const publicSources: PublicSource[] = [
     note: "Fonte primaria attiva: movimenti mensili nazionali, anagrafiche SIOPE, snapshot comunale versionato e dashboard territoriale.",
   },
   {
+    slug: "istat",
+    name: "ISTAT SITUAS",
+    owner: "Istituto nazionale di statistica",
+    area: "Dimensione e caratteristiche dei territori",
+    cadence: "Quadri territoriali interrogabili per data",
+    coverage: "Comuni italiani 2022–2026: superficie, popolazione e classificazioni territoriali",
+    format: "API JSON · snapshot verificato",
+    url: "https://situas.istat.it/web/#/territorio",
+    note: "Denominatori territoriali per €/km² e contesto geografico; i fattori restano separati e non formano un indice di efficienza.",
+    joinKeys: ["codice ISTAT Comune", "codice fiscale Comune", "anno"],
+  },
+  {
     slug: "openbdap",
     name: "OpenBDAP",
     owner: "Ragioneria Generale dello Stato",

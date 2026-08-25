@@ -313,6 +313,12 @@ La differenza monetaria non è una prova di spreco. Un Comune può avere costi d
 
 Il join con IPA e SIOPE usa il codice ISTAT del Comune. Le Regioni a statuto speciale e le Province autonome non sono trattate come dati mancanti: sono fuori dal perimetro dichiarato da questa pubblicazione.
 
+### ISTAT SITUAS · caratteristiche geografiche comunali
+
+La normalizzazione territoriale usa uno snapshot annuale dei report ufficiali SITUAS “Comuni - Dimensione”, “Comuni - Caratteristiche del territorio” e “Identificativi dei Comuni”. Le annualità 2022–2026 sono collegate esclusivamente con il codice ISTAT a sei cifre o, per SIOPE, con il codice fiscale comunale ufficiale. Lo snapshot conserva superficie, popolazione residente e anno della popolazione, densità, zona altimetrica, altitudine, grado di urbanizzazione, litoraneità e insularità, insieme a URL, dimensione e SHA-256 di ogni risposta acquisita.
+
+`Euro per km²` è calcolato come importo in centesimi diviso per la superficie ISTAT espressa in km², con arrotondamento al centesimo. Se il denominatore non è disponibile o non è positivo, il valore resta `null`. La metrica non è un giudizio di efficienza: rende confrontabile l'intensità finanziaria rispetto all'estensione amministrata. I confronti tra pari mantengono sempre fasce dichiarate di popolazione e superficie e rilassano progressivamente gli altri fattori soltanto per ottenere almeno dieci osservazioni.
+
 ## Tier 4: incarichi e istituzioni
 
 ### Partecipazioni pubbliche MEF

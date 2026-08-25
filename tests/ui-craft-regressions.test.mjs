@@ -163,8 +163,11 @@ test("municipality rankings expose province and region as visible context", asyn
   ]);
 
   assert.match(contract, /province: string;/);
-  assert.match(page, /data-municipality-ranking="per-capita"/);
+  assert.match(page, /data-municipality-ranking=\{metric\}/);
+  assert.match(page, /"per-abitante", "per-km2", "totale"/);
   assert.match(page, /\{municipality\.province\} · \{municipality\.region\}/);
+  assert.match(page, /const isPartialYear = partialMonth\(data\) !== null/);
+  assert.doesNotMatch(page, /latestMonth < 12/);
 });
 
 test("the narrow mobile header never collapses the wordmark into a text column", async () => {

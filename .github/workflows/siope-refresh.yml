@@ -63,22 +63,26 @@ jobs:
           if [[ "${FORCE_REFRESH}" == "true" ]]; then
             args+=(--force)
           fi
-          years=(2024 2025 2026)
-          for year in "${years[@]}"; do
-            case "${year}" in
-              2024)
+          current_year="$(date -u +%Y)"
+          years=("$((current_year - 2))" "$((current_year - 1))" "${current_year}")
+          for index in "${!years[@]}"; do
+            year="${years[index]}"
+            # The filenames are stable rolling slots. Their declared year is
+            # read from the validated artifact, so January needs no code edit.
+            case "${index}" in
+              0)
                 output="src/data/generated/siope-municipal-2024.json"
                 detail_output="src/data/generated/siope-municipal-detail-2024.json"
                 ;;
-              2025)
+              1)
                 output="src/data/generated/siope-municipal-2025.json"
                 detail_output="src/data/generated/siope-municipal-detail-2025.json"
                 ;;
-              2026)
+              2)
                 output="src/data/generated/siope-municipal.json"
                 detail_output="src/data/generated/siope-municipal-detail.json"
                 ;;
-              *) echo "Unsupported SIOPE snapshot year: ${year}" >&2; exit 1 ;;
+              *) echo "Unsupported SIOPE rolling slot: ${index}" >&2; exit 1 ;;
             esac
             python scripts/etl/siope_municipal_snapshot.py \
               --year "${year}" \

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { integer } from "@/lib/format";
 import { offsetFromPage, pageCountFromTotal, pageFromOffset } from "@/lib/pagination";
@@ -136,6 +137,18 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
           dall’editore ma non versionati nel record. Non vengono ricalcolati né usati come addendi.
         </p>
       </section>
+
+      <nav className={styles.quickMeasures} aria-label="Scelte rapide della misura RGS">
+        {rgsTerritorialMeasures.map((measure) => (
+          <Link
+            key={measure.id}
+            href={`/spese/territoriale?livello=${result.query.level}&misura=${measure.id}&limit=${result.pagination.limit}`}
+            aria-current={result.query.measure === measure.id ? "page" : undefined}
+          >
+            {measure.id === "absolute" ? "Totale" : measure.id === "gdp-share" ? "% PIL" : measure.id === "per-inhabitant" ? "Per abitante" : "Per km²"}
+          </Link>
+        ))}
+      </nav>
 
       <section className={`panel ${styles.filterPanel}`} aria-labelledby="territorial-filter-title">
         <div className={styles.sectionHead}>

@@ -154,6 +154,30 @@
       "trustModel": "Partitioned JSONL.gz row files derived from the source ledger. Validated by the ETL test suite which loads and checks the committed rows."
     },
     {
+      "id": "istat-municipality-geography",
+      "owner": "ISTAT SITUAS municipal geography snapshot",
+      "files": [
+        "src/data/generated/istat-municipality-geography.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/istat_municipality_geography.py --validate-committed",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_municipality_geography.py"
+      ],
+      "nodeTests": [
+        "tests/municipality-geography.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/istat_municipality_geography.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The committed annual snapshot is validated offline for schema, coverage, identifiers, denominators, and provenance; online generation downloads the official ISTAT SITUAS reports."
+    },
+    {
       "id": "istat-regions-2024",
       "owner": "ISTAT regional accounts 2024",
       "files": [

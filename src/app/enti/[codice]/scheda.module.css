@@ -130,7 +130,7 @@
 
 .paymentSummary {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(480px, 1fr);
   margin: var(--space-4) 0 0;
   border: 1px solid var(--color-accent-300);
   background: var(--color-accent-100);
@@ -172,7 +172,7 @@
 
 .paymentSummary > .paymentFacts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 0;
 }
 
@@ -182,6 +182,66 @@
 }
 .paymentFacts > div + div { border-left: 1px solid var(--color-accent-200); }
 .paymentFacts dd { font-size: 21px; }
+
+.peerBenchmark {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.peerBenchmark h3 { margin: 0; font-size: 16px; }
+.peerBenchmark h3 + p { margin: 4px 0 0; color: var(--color-neutral-600); font-size: 12px; }
+
+.peerTrack { margin: var(--space-4) 4px var(--space-3); }
+.peerTrack > span {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 99px;
+  background: var(--color-neutral-200);
+}
+.peerTrack i {
+  position: absolute;
+  left: var(--peer-start);
+  width: var(--peer-width);
+  top: 0;
+  bottom: 0;
+  border-radius: 99px;
+  background: var(--color-accent-300);
+}
+.peerTrack b {
+  position: absolute;
+  left: var(--municipality-position);
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--color-accent-800);
+  border-radius: 50%;
+  background: white;
+  transform: translate(-50%, -50%);
+}
+
+.peerValues,
+.territoryDetails dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+.peerValues dt,
+.territoryDetails dt { color: var(--color-neutral-600); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.peerValues dd,
+.territoryDetails dd { margin: 4px 0 0; font-weight: 700; }
+
+.territoryDetails {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+}
+.territoryDetails summary { cursor: pointer; font-weight: 700; }
+.territoryDetails dl { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-4); }
+.territoryDetails > p { margin: var(--space-3) 0 0; color: var(--color-neutral-600); font-size: 12px; }
 
 .partialStatus,
 .completeStatus {
@@ -651,6 +711,10 @@
   .sectionHeading { align-items: stretch; flex-direction: column; }
   .paymentSummary { grid-template-columns: minmax(0, 1fr); }
   .paymentSummary > div + div { border-left: 0; border-top: 1px solid var(--color-accent-200); }
+  .paymentSummary > .paymentFacts { grid-template-columns: minmax(0, 1fr); }
+  .paymentFacts > div + div { border-left: 0; border-top: 1px solid var(--color-accent-200); }
+  .peerValues,
+  .territoryDetails dl { grid-template-columns: minmax(0, 1fr); }
   .metricGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .spendingRow { grid-template-columns: minmax(0, 1fr) auto; }
   .spendingTrack { grid-column: 1 / -1; grid-row: 2; }

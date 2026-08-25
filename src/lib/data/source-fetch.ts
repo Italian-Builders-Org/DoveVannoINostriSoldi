@@ -32,6 +32,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   ],
   inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it"],
   cpt: ["politichecoesione.governo.it", "www.politichecoesione.governo.it"],
+  istat: ["situas.istat.it", "situas-servizi.istat.it", "www.istat.it"],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,
   siope: [
     "www.siope.it",

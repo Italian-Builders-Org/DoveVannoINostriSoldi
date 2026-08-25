@@ -55,6 +55,10 @@ Il contesto provinciale delle graduatorie usa invece una relazione interna allo 
 
 L'ETL rifiuta un codice provinciale sconosciuto: non deduce la Provincia dal nome del Comune e non distribuisce dati su territori non pubblicati dalla fonte.
 
+La superficie e le caratteristiche territoriali vengono aggiunte in un secondo passaggio dallo snapshot annuale ISTAT SITUAS. Il collegamento usa il codice fiscale comunale esatto; non usa nomi o coordinate approssimate. Ogni annualità espone il totale originale SIOPE, il valore per abitante quando disponibile e il valore per km² quando è disponibile una superficie positiva. Il totale resta l'importo di riconciliazione e le normalizzazioni non modificano i movimenti sottostanti.
+
+Il benchmark della scheda comunale esclude il Comune osservato. Parte da pari nella stessa fascia di popolazione e superficie e applica zona altimetrica, urbanizzazione, litoraneità e insularità; se non rimangono almeno dieci confronti, rilassa questi ultimi criteri in ordine dichiarato. Il risultato mostra mediana e intervallo interquartile, senza etichette di merito.
+
 ## Aggiornamento
 
 Scaricare il file nazionale a ogni richiesta web sarebbe costoso e fragile. La pipeline è quindi separata dal rendering:
@@ -66,7 +70,7 @@ Scaricare il file nazionale a ogni richiesta web sarebbe costoso e fragile. La p
 5. riconcilia automaticamente totali mensili, regionali e headline;
 6. committa soltanto lo snapshot validato.
 
-Il workflow è programmato ogni ora. **La frequenza del controllo non viene presentata come frequenza di pubblicazione del dato**: la piattaforma cambia soltanto quando cambia la fonte ufficiale.
+Il workflow è programmato ogni ora. **La frequenza del controllo non viene presentata come frequenza di pubblicazione del dato**: la piattaforma cambia soltanto quando cambia la fonte ufficiale. Le tre annualità pubblicate sono slot mobili calcolati dall'anno UTC corrente; al cambio di gennaio la pipeline passa automaticamente al nuovo anno e conserva i due precedenti senza richiedere modifiche al runtime.
 
 ## Contratto generato
 

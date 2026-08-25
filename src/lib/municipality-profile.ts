@@ -6,9 +6,17 @@ import type { PnrrChildcareMeta } from "@/lib/data/pnrr-childcare-contract";
 import type { MefIrpefQueryResult, MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
 import {
   getSiopeMunicipalityDetail,
+  getSiopeMunicipalityPeerObservations,
   type SiopeMunicipalityDetail,
 } from "@/lib/siope-municipality-detail";
 import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import {
+  eurosPerSquareKilometreCents,
+  getMunicipalityGeographyByIstatCode,
+  populationBand,
+  surfaceBand,
+  type MunicipalityGeography,
+} from "@/lib/municipality-geography";
 
 export type ProfileUnavailableReason = "outside_source_scope" | "no_matching_record";
 
@@ -28,6 +36,7 @@ export type MunicipalityProfile = Readonly<{
     data: SiopeMunicipalityDetail;
     methodology: ReturnType<typeof getSiopeMunicipalSnapshot>["methodology"];
     sources: readonly Readonly<{ year: number; url: string; observedAt: string }>[];
+    peerBenchmark: MunicipalityPeerBenchmark | null;
   }>;
   irpef: ProfileSection<Readonly<{
     period: MefIrpefQueryResult["period"];
@@ -41,6 +50,10 @@ export type MunicipalityProfile = Readonly<{
     record: OpenCivitasMunicipality;
     methodology: OpenCivitasSnapshot["methodology"];
     source: OpenCivitasSnapshot["source"];
+    geography: MunicipalityGeography | null;
+    historicalPerSquareKmCents: number | null;
+    standardPerSquareKmCents: number | null;
+    differencePerSquareKmCents: number | null;
   }>>;
   pnrrChildcare: Readonly<{
     status: "available";
@@ -62,6 +75,68 @@ export type MunicipalityProfile = Readonly<{
     }>;
   }>;
 }>;
+
+export type MunicipalityPeerBenchmark = Readonly<{
+  year: number;
+  peers: number;
+  criteria: readonly string[];
+  fallbackLevel: number;
+  perSquareKmCents: Readonly<{ p25: number; median: number; p75: number }>;
+  perCapitaCents: Readonly<{ p25: number; median: number; p75: number }> | null;
+}>;
+
+function quantiles(values: number[]): { p25: number; median: number; p75: number } {
+  const sorted = [...values].sort((left, right) => left - right);
+  const value = (probability: number) => sorted[Math.max(0, Math.ceil(probability * sorted.length) - 1)];
+  return { p25: value(0.25), median: value(0.5), p75: value(0.75) };
+}
+
+function peerBenchmark(taxCode: string, geography: MunicipalityGeography): MunicipalityPeerBenchmark | null {
+  const observations = getSiopeMunicipalityPeerObservations(geography.year)
+    .filter((item) => item.taxCode !== taxCode);
+  const samePopulation = (item: typeof observations[number]) =>
+    populationBand(item.geography.residentPopulation) === populationBand(geography.residentPopulation);
+  const sameSurface = (item: typeof observations[number]) =>
+    surfaceBand(item.geography.surfaceSquareMetres) === surfaceBand(geography.surfaceSquareMetres);
+  const stages = [
+    {
+      criteria: ["fascia di popolazione", "fascia di superficie", "zona altimetrica", "urbanizzazione", "litoraneità e insularità"],
+      match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item) &&
+        item.geography.altimetricZone === geography.altimetricZone &&
+        item.geography.degreeUrbanization === geography.degreeUrbanization &&
+        item.geography.coastal === geography.coastal && item.geography.island === geography.island,
+    },
+    {
+      criteria: ["fascia di popolazione", "fascia di superficie", "zona altimetrica", "urbanizzazione"],
+      match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item) &&
+        item.geography.altimetricZone === geography.altimetricZone &&
+        item.geography.degreeUrbanization === geography.degreeUrbanization,
+    },
+    {
+      criteria: ["fascia di popolazione", "fascia di superficie", "zona altimetrica"],
+      match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item) &&
+        item.geography.altimetricZone === geography.altimetricZone,
+    },
+    {
+      criteria: ["fascia di popolazione", "fascia di superficie"],
+      match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item),
+    },
+  ];
+  for (const [fallbackLevel, stage] of stages.entries()) {
+    const peers = observations.filter(stage.match);
+    if (peers.length < 10) continue;
+    const perCapita = peers.flatMap((item) => item.perCapitaCents === null ? [] : [item.perCapitaCents]);
+    return {
+      year: geography.year,
+      peers: peers.length,
+      criteria: stage.criteria,
+      fallbackLevel,
+      perSquareKmCents: quantiles(peers.map((item) => item.perSquareKmCents)),
+      perCapitaCents: perCapita.length >= 10 ? quantiles(perCapita) : null,
+    };
+  }
+  return null;
+}
 
 function unavailable(
   status: "out_of_scope" | "not_found",
@@ -149,6 +224,7 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
     : undefined;
   let openCivitas: MunicipalityProfile["openCivitas"];
   if (openCivitasRecord) {
+    const geography = getMunicipalityGeographyByIstatCode(openCivitasSnapshot.referenceYear, istatCode!);
     openCivitas = {
       status: "available",
       data: {
@@ -157,6 +233,19 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
         record: openCivitasRecord,
         methodology: openCivitasSnapshot.methodology,
         source: openCivitasSnapshot.source,
+        geography,
+        historicalPerSquareKmCents: eurosPerSquareKilometreCents(
+          openCivitasRecord.historicalSpendingCents,
+          geography?.surfaceSquareMetres ?? null,
+        ),
+        standardPerSquareKmCents: eurosPerSquareKilometreCents(
+          openCivitasRecord.standardSpendingCents,
+          geography?.surfaceSquareMetres ?? null,
+        ),
+        differencePerSquareKmCents: eurosPerSquareKilometreCents(
+          openCivitasRecord.differenceCents,
+          geography?.surfaceSquareMetres ?? null,
+        ),
       },
     };
   } else if (
@@ -197,6 +286,9 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
         const snapshot = getSiopeMunicipalSnapshot(year.year);
         return { year: year.year, url: snapshot.source.siopeMovementsUrl, observedAt: year.observedAt };
       }),
+      peerBenchmark: siope.years[0].geography
+        ? peerBenchmark(taxCode, siope.years[0].geography)
+        : null,
     },
     irpef,
     openCivitas,

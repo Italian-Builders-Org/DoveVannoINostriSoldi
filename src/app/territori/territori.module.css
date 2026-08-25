@@ -6,6 +6,193 @@
   flex-wrap: wrap;
 }
 
+.periodBadge {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  padding: 5px 8px;
+  border-left: 3px solid var(--color-accent-700);
+  background: var(--color-accent-100);
+  color: var(--color-accent-900);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.metricSelector {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  padding: 3px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+.metricSelector a {
+  min-height: 40px;
+  padding: 10px 15px;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.metricSelector a[aria-current="page"] {
+  color: white;
+  background: var(--color-accent-800);
+}
+
+.viewBlock {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.viewSelector {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px;
+  border: 1px solid var(--color-neutral-300);
+  background: white;
+}
+
+.viewSelector button {
+  min-width: 96px;
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.viewSelector button[aria-selected="true"] {
+  background: var(--color-neutral-900);
+  color: white;
+}
+
+.rankingGuide p {
+  margin: var(--space-2) 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.rankingGuide a {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.municipalityPanel {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.municipalityHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.municipalityHeading p {
+  max-width: 78ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.municipalityHeading > a {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.eyebrow {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.municipalityFilters {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.2fr) repeat(3, minmax(150px, 1fr)) auto;
+  align-items: end;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.municipalityFilters label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.municipalityFilters label > span {
+  color: var(--color-neutral-700);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.municipalityFilters input,
+.municipalityFilters select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0;
+  background: white;
+  color: var(--color-neutral-900);
+  font: inherit;
+  font-size: 12px;
+}
+
+.filterActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 42px;
+}
+
+.filterActions button {
+  min-height: 42px;
+  padding: 9px 13px;
+  border: 1px solid var(--color-accent-800);
+  background: var(--color-accent-800);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.filterActions a {
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.resultsSummary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.resultsSummary strong {
+  color: var(--color-neutral-900);
+}
+
+.emptyState {
+  padding: var(--space-6) !important;
+  color: var(--color-neutral-600);
+  text-align: center;
+}
+
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
@@ -43,6 +230,19 @@
   max-width: 90ch;
 }
 
+.methodDetails {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.methodDetails summary {
+  cursor: pointer;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  font-weight: 650;
+}
+
 .coverage {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -78,13 +278,20 @@
 
 @media (max-width: 1100px) {
   .split { grid-template-columns: minmax(0, 1fr); }
+  .municipalityFilters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
   .coverage { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .municipalityHeading { display: grid; }
 }
 
 @media (max-width: 620px) {
   .intro { align-items: stretch; }
   .coverageList dd { font-size: 18px; }
+  .viewSelector { width: 100%; }
+  .viewSelector button { flex: 1; }
+  .municipalityFilters { grid-template-columns: minmax(0, 1fr); }
+  .filterActions { justify-content: space-between; }
+  .resultsSummary { display: grid; }
 }

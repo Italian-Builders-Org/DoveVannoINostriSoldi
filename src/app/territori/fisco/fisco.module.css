@@ -139,3 +139,20 @@
   .formulaVisual { display: grid; grid-template-columns: 1fr auto; }
   .formulaVisual strong { grid-column: 1 / -1; }
 }
+.metricSelector {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  padding: 3px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+.metricSelector a {
+  min-height: 40px;
+  padding: 10px 15px;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.metricSelector a[aria-current="page"] { color: white; background: var(--color-accent-800); }

@@ -1,0 +1,386 @@
+.figure {
+  margin: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.regionSearch {
+  display: grid;
+  grid-template-columns: auto minmax(220px, 340px);
+  align-items: center;
+  justify-content: end;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.regionSearch select {
+  min-height: 40px;
+  padding: 8px 34px 8px 10px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0;
+  background: white;
+  color: var(--color-neutral-900);
+  font: inherit;
+}
+
+.heading p {
+  max-width: 72ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.referenceLabel {
+  display: grid;
+  grid-template-columns: 10px auto;
+  gap: 1px 7px;
+  flex: none;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+}
+
+.referenceLabel i {
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  width: 2px;
+  background: var(--color-neutral-900);
+}
+
+.referenceLabel strong {
+  color: var(--color-neutral-900);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart li {
+  display: grid;
+  grid-template-columns: minmax(150px, 210px) minmax(220px, 1fr) minmax(105px, auto);
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 24px;
+}
+
+.chart li[data-selected] {
+  padding: 4px 6px;
+  outline: 2px solid var(--color-accent-700);
+  outline-offset: 2px;
+  background: color-mix(in srgb, var(--color-accent-100) 55%, white);
+}
+
+.regionName {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  color: var(--color-neutral-900);
+  font-size: 12px;
+  font-weight: 650;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.track {
+  position: relative;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  background: var(--color-neutral-100);
+  cursor: pointer;
+}
+
+.regionName:focus-visible,
+.track:focus-visible {
+  outline: 2px solid var(--color-accent-700);
+  outline-offset: 3px;
+}
+
+.bar {
+  position: absolute;
+  inset-block: 1px;
+  left: 0;
+  width: var(--bar-width);
+  background: var(--color-neutral-600);
+}
+
+.reference {
+  position: absolute;
+  z-index: 1;
+  top: -3px;
+  bottom: -3px;
+  left: var(--reference-position);
+  width: 2px;
+  background: var(--color-neutral-900);
+}
+
+.value {
+  text-align: right;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.figure figcaption {
+  margin-top: var(--space-4);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.selectionHint {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3);
+  border-left: 3px solid var(--color-neutral-400);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.selectedPanel,
+.comparison {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.selectedHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.selectedHeading span {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.selectedHeading h3,
+.comparison h3,
+.comparison h4,
+.trend h3 {
+  margin: 3px 0 0;
+  font-family: var(--font-heading);
+}
+
+.selectedHeading button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-accent-700);
+  background: white;
+  color: var(--color-accent-800);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.selectedHeading button:disabled {
+  border-color: var(--color-neutral-300);
+  color: var(--color-neutral-500);
+  cursor: not-allowed;
+}
+
+.selectedStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: var(--space-3) 0;
+  background: var(--color-neutral-200);
+}
+
+.selectedStats > div {
+  padding: var(--space-3);
+  background: var(--color-neutral-100);
+}
+
+.selectedStats dt,
+.comparison dt {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.selectedStats dd,
+.comparison dd {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.selectedPanel > a {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.trend {
+  display: grid;
+  grid-template-columns: minmax(170px, .55fr) minmax(300px, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-neutral-100);
+}
+
+.trend h3 {
+  font-size: 15px;
+}
+
+.trend p,
+.comparison p {
+  margin: 5px 0 0;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+}
+
+.trend ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trend li {
+  display: grid;
+  grid-template-columns: 38px minmax(80px, 1fr) minmax(85px, auto);
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.trend li small {
+  grid-column: 2 / -1;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+}
+
+.trendTrack {
+  height: 8px;
+  background: white;
+}
+
+.trendTrack i {
+  display: block;
+  width: var(--trend-width);
+  height: 100%;
+  background: var(--color-neutral-700);
+}
+
+.trendTrack .partialTrendBar {
+  background: repeating-linear-gradient(135deg, var(--color-neutral-700) 0 4px, transparent 4px 8px);
+}
+
+.comparison > div:first-child {
+  margin-bottom: var(--space-3);
+}
+
+.comparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.comparisonGrid article {
+  position: relative;
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.comparisonGrid article > button {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.comparisonGrid h4 {
+  padding-right: 30px;
+  font-size: 15px;
+}
+
+.comparisonGrid dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+
+@media (max-width: 700px) {
+  .heading {
+    display: grid;
+  }
+
+  .referenceLabel {
+    justify-self: start;
+  }
+
+  .regionSearch {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+
+  .chart li {
+    grid-template-columns: minmax(110px, 1fr) minmax(90px, 1.2fr);
+    gap: 4px var(--space-2);
+  }
+
+  .regionName {
+    font-size: 11px;
+  }
+
+  .value {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+    color: var(--color-neutral-700);
+    font-size: 11px;
+  }
+
+
+  .selectedHeading {
+    display: grid;
+  }
+
+  .selectedStats,
+  .comparisonGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .trend {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 460px) {
+  .selectedStats,
+  .comparisonGrid {
+    grid-template-columns: 1fr;
+  }
+}

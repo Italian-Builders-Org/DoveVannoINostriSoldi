@@ -83,9 +83,9 @@ unset DVNS_VERIFY_VIEWPORT
 Run the offline semantic gates before browser claims:
 
 ```bash
-python3 scripts/etl/source_corpus_intake.py --check
-python3 scripts/etl/integrated_curated_datasets.py check
-python3 scripts/etl/integrated_source_release.py --check
+npm run python -- scripts/etl/source_corpus_intake.py --check
+npm run python -- scripts/etl/integrated_curated_datasets.py check
+npm run python -- scripts/etl/integrated_source_release.py --check
 npm test
 npm run typecheck
 ```

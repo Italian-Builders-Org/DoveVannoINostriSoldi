@@ -3,6 +3,7 @@ import {
   validateCptRegionalFiscalSnapshot,
   type CptRegionalFiscalSnapshot,
 } from "@/lib/data/cpt-regional-fiscal-contract";
+import { eurosPerSquareKilometreCents, getRegionGeography } from "@/lib/municipality-geography";
 
 export const cptRegionalFiscalSnapshot = validateCptRegionalFiscalSnapshot(
   rawSnapshot as CptRegionalFiscalSnapshot,
@@ -37,7 +38,17 @@ export function queryCptRegionalFiscal(query: CptRegionalFiscalQuery = {}) {
       (!requestedRegion ||
         normalizedRegion(row.region) === requestedRegion ||
         row.regionCode === query.region?.trim()),
-  );
+  ).map((row) => {
+    const geography = getRegionGeography(year, row.regionCode);
+    const surface = geography?.surfaceSquareMetres ?? null;
+    return {
+      ...row,
+      geography,
+      revenuePerSquareKmCents: eurosPerSquareKilometreCents(row.revenueCents, surface),
+      expenditurePerSquareKmCents: eurosPerSquareKilometreCents(row.expenditureCents, surface),
+      balancePerSquareKmCents: eurosPerSquareKilometreCents(row.balanceCents, surface),
+    };
+  });
   if (requestedRegion && rows.length === 0) {
     throw new Error(`Territorio CPT non disponibile: ${query.region?.trim()}.`);
   }

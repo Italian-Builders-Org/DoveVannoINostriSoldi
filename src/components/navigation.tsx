@@ -110,11 +110,17 @@ export function Navigation() {
           onPointerLeave={(event) => {
             // Touch opens via the caret and must stay open after the finger lifts.
             if (event.pointerType === "touch") return;
-            if (navigationRef.current?.contains(event.relatedTarget as Node | null)) return;
+            if (
+              event.relatedTarget instanceof Node &&
+              navigationRef.current?.contains(event.relatedTarget)
+            ) return;
             closeMenu();
           }}
           onBlur={(event) => {
-            if (navigationRef.current?.contains(event.relatedTarget as Node | null)) return;
+            if (
+              event.relatedTarget instanceof Node &&
+              navigationRef.current?.contains(event.relatedTarget)
+            ) return;
             closeMenu();
           }}
         >

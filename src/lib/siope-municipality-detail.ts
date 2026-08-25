@@ -2,9 +2,14 @@ import "server-only";
 
 import detail2024 from "@/data/generated/siope-municipal-detail-2024.json";
 import detail2025 from "@/data/generated/siope-municipal-detail-2025.json";
-import detail2026 from "@/data/generated/siope-municipal-detail.json";
+import detailCurrent from "@/data/generated/siope-municipal-detail.json";
 import { partialMonthOf } from "@/lib/siope-calendar";
 import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import {
+  eurosPerSquareKilometreCents,
+  getMunicipalityGeographyByTaxCode,
+  type MunicipalityGeography,
+} from "@/lib/municipality-geography";
 
 const TITLE_ORDER = ["0", "1", "2", "3", "4", "5", "7"] as const;
 const EXPECTED_COLUMNS = [
@@ -33,6 +38,8 @@ export type SiopeMunicipalityYear = Readonly<{
   totalCents: number | null;
   population: number | null;
   perCapitaCents: number | null;
+  perSquareKmCents: number | null;
+  geography: MunicipalityGeography | null;
   titles: readonly SiopeMunicipalityTitle[];
 }>;
 
@@ -175,11 +182,17 @@ function validateArtifact(value: unknown, expectedYear: number): ValidatedArtifa
   return { year: expectedYear, latestMonth, generatedAt, titleLabels: labels as Record<string, string>, rows };
 }
 
-const artifacts = [
-  validateArtifact(detail2026, 2026),
-  validateArtifact(detail2025, 2025),
-  validateArtifact(detail2024, 2024),
-];
+function declaredArtifactYear(value: unknown): number {
+  return integer(object(value, "SIOPE dettaglio").year, "SIOPE dettaglio.year", 2016);
+}
+
+const artifacts = [detailCurrent, detail2025, detail2024]
+  .map((detail) => validateArtifact(detail, declaredArtifactYear(detail)))
+  .sort((left, right) => right.year - left.year);
+
+if (new Set(artifacts.map((artifact) => artifact.year)).size !== artifacts.length) {
+  throw new Error("SIOPE dettaglio: annualità duplicate negli slot pubblicati");
+}
 
 const rowsByYearAndTaxCode = new Map(
   artifacts.map((artifact) => [artifact.year, new Map(artifact.rows.map((row) => [row[0], row]))]),
@@ -201,6 +214,7 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
     region: identity[4],
     years: artifacts.map((artifact): SiopeMunicipalityYear => {
       const row = rowsByYearAndTaxCode.get(artifact.year)?.get(taxCode);
+      const geography = getMunicipalityGeographyByTaxCode(artifact.year, taxCode);
       if (!row) {
         return {
           year: artifact.year,
@@ -211,6 +225,8 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
           totalCents: null,
           population: null,
           perCapitaCents: null,
+          perSquareKmCents: null,
+          geography,
           titles: [],
         };
       }
@@ -228,10 +244,49 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
         totalCents: row[6],
         population: row[5],
         perCapitaCents: row[6] !== null && row[5] !== null ? Math.round(row[6] / row[5]) : null,
+        perSquareKmCents: eurosPerSquareKilometreCents(
+          row[6],
+          geography?.surfaceSquareMetres ?? null,
+        ),
+        geography,
         titles,
       };
     }),
   };
+}
+
+export type SiopeMunicipalityPeerObservation = Readonly<{
+  taxCode: string;
+  name: string;
+  province: string;
+  region: string | null;
+  totalCents: number;
+  perCapitaCents: number | null;
+  perSquareKmCents: number;
+  geography: MunicipalityGeography;
+}>;
+
+export function getSiopeMunicipalityPeerObservations(year: number): readonly SiopeMunicipalityPeerObservation[] {
+  const artifact = artifacts.find((item) => item.year === year);
+  if (!artifact) return [];
+  return artifact.rows.flatMap((row) => {
+    const geography = getMunicipalityGeographyByTaxCode(year, row[0]);
+    const perSquareKmCents = eurosPerSquareKilometreCents(
+      row[6],
+      geography?.surfaceSquareMetres ?? null,
+    );
+    if (row[6] === null || !geography || perSquareKmCents === null) return [];
+    return [{
+      taxCode: row[0],
+      name: row[2],
+      province: row[3],
+      region: row[4],
+      totalCents: row[6],
+      perCapitaCents: row[5] === null ? null : Math.round(row[6] / row[5]),
+      perSquareKmCents,
+      geography,
+    }];
+  });
 }
 
 export const siopeMunicipalityDetailCoverage = artifacts.map((artifact) => ({

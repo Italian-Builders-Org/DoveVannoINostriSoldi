@@ -5,6 +5,10 @@ import {
   type MefIrpefLevel,
   type MefIrpefQuery,
 } from "@/lib/mef-irpef-snapshot";
+import {
+  getMunicipalityGeographyByIstatCode,
+  getRegionGeography,
+} from "@/lib/municipality-geography";
 
 const ALLOWED_PARAMS = new Set([
   "anno",
@@ -69,7 +73,15 @@ function parseQuery(params: URLSearchParams): MefIrpefQuery {
 export function GET(request: NextRequest) {
   try {
     const result = queryMefMunicipalIrpef(parseQuery(request.nextUrl.searchParams));
-    return Response.json(result, {
+    const data = result.data.map((record) => ({
+      ...record,
+      geography: record.territory.level === "municipality"
+        ? getMunicipalityGeographyByIstatCode(result.period.taxYear, record.territory.code)
+        : record.territory.level === "region"
+          ? getRegionGeography(result.period.taxYear, record.territory.code)
+          : null,
+    }));
+    return Response.json({ ...result, data }, {
       headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" },
     });
   } catch (error) {

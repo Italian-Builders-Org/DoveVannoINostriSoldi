@@ -23,7 +23,7 @@ function runFixture(values, headers = requiredHeaders) {
   const input = join(directory, "input.csv");
   const output = join(directory, "output.json");
   writeFileSync(input, `${headers.join(";")}\n${headers.map((header) => values[header] ?? "").join(";")}\n`);
-  const result = spawnSync("python3", [
+  const result = spawnSync(process.execPath, ["scripts/run-python.mjs",
     script,
     "--input", input,
     "--reference-year", "2030",

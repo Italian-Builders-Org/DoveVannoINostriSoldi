@@ -49,7 +49,7 @@ test("OpenCivitas keeps source anomaly warnings and nullable assessments", () =>
 });
 
 test("OpenCivitas ETL validates the committed snapshot offline", () => {
-  const checked = spawnSync("python3", ["scripts/etl/opencivitas_snapshot.py", "--check"], {
+  const checked = spawnSync(process.execPath, ["scripts/run-python.mjs", "scripts/etl/opencivitas_snapshot.py", "--check"], {
     encoding: "utf8",
   });
   assert.equal(checked.status, 0, checked.stderr);

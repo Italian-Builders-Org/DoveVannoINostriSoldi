@@ -88,21 +88,20 @@ test("SIOPE snapshot exposes a complete national municipal aggregation", async (
   );
 });
 
-test("SIOPE refresh manifest and imported snapshot years stay aligned", async () => {
+test("SIOPE refresh rolling slots and imported snapshot years stay aligned", async () => {
   const workflow = await readFile(
     new URL("../.github/workflows/siope-refresh.yml", import.meta.url),
     "utf8",
   );
-  const manifest = workflow.match(/years=\(([^)]+)\)/);
-  assert.ok(manifest, "the refresh workflow must declare its snapshot year manifest");
-  const workflowYears = manifest[1]
-    .trim()
-    .split(/\s+/)
-    .map((year) => Number(year));
-  const snapshotYears = historicalSnapshotUrls
-    .map((url) => Number(url.pathname.match(/siope-municipal(?:-(\d{4}))?\.json$/)?.[1] ?? "2026"))
-    .sort((left, right) => left - right);
-  assert.deepEqual(workflowYears, snapshotYears);
+  const snapshotYears = (await Promise.all(
+    historicalSnapshotUrls.map(async (url) => JSON.parse(await readFile(url, "utf8")).year),
+  )).sort((left, right) => left - right);
+
+  assert.deepEqual(snapshotYears, [snapshotYears[2] - 2, snapshotYears[2] - 1, snapshotYears[2]]);
+  assert.match(workflow, /current_year="\$\(date -u \+%Y\)"/);
+  for (const path of historicalSnapshotUrls.map((url) => url.pathname.split("/").at(-1))) {
+    assert.match(workflow, new RegExp(path.replaceAll(".", "\\.")));
+  }
 });
 
 test("monthly flows, regional totals and headline total reconcile", async () => {
@@ -185,6 +184,16 @@ test("the period selector is backed by three reconciled SIOPE years", async () =
       data.totalPaid,
     );
   }
+});
+
+test("the current SIOPE slot derives its year from the artifact", async () => {
+  const runtime = await readFile(new URL("../src/lib/siope-snapshot.ts", import.meta.url), "utf8");
+  const workflow = await readFile(new URL("../.github/workflows/siope-refresh.yml", import.meta.url), "utf8");
+
+  assert.match(runtime, /importedSnapshots\.map\(\(snapshot\) => \[snapshot\.year, snapshot\]\)/);
+  assert.doesNotMatch(runtime, /return snapshots\[2026\]/);
+  assert.match(workflow, /current_year="\$\(date -u \+%Y\)"/);
+  assert.match(workflow, /years=\("\$\(\(current_year - 2\)\)" "\$\(\(current_year - 1\)\)" "\$\{current_year\}"\)/);
 });
 
 test("full-population distribution artifacts are bounded and reconcile", async () => {

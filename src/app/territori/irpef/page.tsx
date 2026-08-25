@@ -13,6 +13,10 @@ import {
 } from "@/lib/mef-irpef-snapshot";
 import type { MefIrpefMeasureKey } from "@/lib/data/mef-irpef-contract";
 import { municipalityName } from "@/lib/municipality-name";
+import {
+  getMunicipalityGeographyByIstatCode,
+  getRegionGeography,
+} from "@/lib/municipality-geography";
 import styles from "./irpef.module.css";
 
 export const metadata: Metadata = {
@@ -158,6 +162,24 @@ function territoryContext(
   const region = regionNames.get(record.territory.regionCode) ?? `Regione ${record.territory.regionCode}`;
   if (record.territory.level === "province") return region;
   return `${record.territory.provinceAbbreviation} · ${region}`;
+}
+
+function geographyContext(record: MefIrpefTerritoryRecord, year: number): string | null {
+  if (record.territory.level === "municipality") {
+    const geography = getMunicipalityGeographyByIstatCode(year, record.territory.code);
+    if (!geography) return null;
+    const density = geography.densityPerSquareKilometre === null
+      ? "densità n.d."
+      : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`;
+    return `${geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km² · ${density} · ${geography.altimetricZoneLabel ?? "altimetria n.d."}`;
+  }
+  if (record.territory.level === "region") {
+    const geography = getRegionGeography(year, record.territory.code);
+    return geography
+      ? `${geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km² · ${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`
+      : null;
+  }
+  return null;
 }
 
 function paginationUrl(result: ReturnType<typeof queryMefMunicipalIrpef>, offset: number): string {
@@ -426,6 +448,7 @@ export default async function MefIrpefPage({
                 <tr>
                   <th scope="col">Territorio</th>
                   <th className="num" scope="col">Contribuenti</th>
+                  <th scope="col">Contesto geografico</th>
                   {METRIC_KEYS.map((key) => (
                     <th className="num" key={key} scope="col">{METRIC_LABELS[key]}</th>
                   ))}
@@ -434,6 +457,7 @@ export default async function MefIrpefPage({
               <tbody>
                 {result.data.map((record) => {
                   const context = territoryContext(record, regionNames);
+                  const geography = geographyContext(record, result.period.taxYear);
                   return (
                     <tr key={`${record.territory.level}:${record.territory.code}`}>
                       <th scope="row">
@@ -441,6 +465,7 @@ export default async function MefIrpefPage({
                         {context ? <small>{context}</small> : null}
                       </th>
                       <td className="num">{integer(record.taxpayers)}</td>
+                      <td>{geography ?? "Non disponibile per questo livello"}</td>
                       {METRIC_KEYS.map((key) => (
                         <td className="num" key={key}>
                           <TableAmount

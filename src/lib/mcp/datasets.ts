@@ -65,13 +65,36 @@ export async function queryPublicDataset(
   switch (query.dataset) {
     case "siope_comuni": {
       const { availableSiopeYears, getSiopeMunicipalSnapshot } = await import("@/lib/siope-snapshot");
+      const { getSiopeMunicipalityPeerObservations } = await import("@/lib/siope-municipality-detail");
+      const { getRegionGeography, eurosPerSquareKilometreCents, municipalityGeographySource } = await import("@/lib/municipality-geography");
+      const { istatCodeOfRegion } = await import("@/lib/italy-regions");
       const year = query.year ?? availableSiopeYears[0];
       if (!availableSiopeYears.includes(year)) {
         throw new Error(`Anno SIOPE non disponibile. Anni validi: ${availableSiopeYears.join(", ")}.`);
       }
       const snapshot = getSiopeMunicipalSnapshot(year);
+      const territorialNormalization = {
+        source: municipalityGeographySource,
+        regions: snapshot.regions.map((item) => {
+          const code = istatCodeOfRegion(item.region);
+          const geography = code ? getRegionGeography(year, code) : null;
+          return {
+            region: item.region,
+            geography,
+            perSquareKmCents: eurosPerSquareKilometreCents(
+              Math.round(item.value * 100),
+              geography?.surfaceSquareMetres ?? null,
+            ),
+          };
+        }),
+        topMunicipalitiesByPerSquareKm: getSiopeMunicipalityPeerObservations(year)
+          .slice()
+          .sort((left, right) => right.perSquareKmCents - left.perSquareKmCents)
+          .slice(0, 100),
+        caveat: "La misura per km² è descrittiva e non misura efficienza, qualità o fabbisogno.",
+      };
       const regionInput = query.region?.trim();
-      if (!regionInput) return jsonSafe(snapshot);
+      if (!regionInput) return jsonSafe({ ...snapshot, territorialNormalization });
       const canonicalRegion = resolveCanonicalRegionName(regionInput);
       if (!canonicalRegion) {
         throw new Error(formatRegionNotFoundError(regionInput));
@@ -104,6 +127,11 @@ export async function queryPublicDataset(
             "Sottoinsieme dei primi 100 Comuni nazionali per totale o pro capite, non elenco completo della regione.",
           distribution:
             `La distribuzione completa ${nationalDistribution.period.year} è disponibile soltanto nella risposta nazionale senza filtro regione; qui l'aggregato regionale è in regions.`,
+        },
+        territorialNormalization: {
+          ...territorialNormalization,
+          regions: territorialNormalization.regions.filter((item) => item.region === canonicalRegion),
+          topMunicipalitiesByPerSquareKm: territorialNormalization.topMunicipalitiesByPerSquareKm.filter((item) => item.region === canonicalRegion),
         },
       });
     }

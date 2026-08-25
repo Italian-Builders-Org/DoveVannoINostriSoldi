@@ -1,7 +1,7 @@
 import { partialMonthOf } from "@/lib/siope-calendar";
 import snapshot2024 from "@/data/generated/siope-municipal-2024.json";
 import snapshot2025 from "@/data/generated/siope-municipal-2025.json";
-import snapshot2026 from "@/data/generated/siope-municipal.json";
+import snapshotCurrent from "@/data/generated/siope-municipal.json";
 
 export type SiopeMunicipalMonthlyPoint = {
   month: number;
@@ -568,11 +568,12 @@ export function assertSiopeDistributionIntegrity(value: unknown, expectedYear: n
  * committed. Keeping it as a versioned build input makes web requests cheap,
  * deterministic and independent from a 50+ MB upstream download.
  */
-const rawSnapshots = {
-  2024: snapshot2024,
-  2025: snapshot2025,
-  2026: snapshot2026,
-} as const;
+const importedSnapshots = [snapshot2024, snapshot2025, snapshotCurrent];
+const rawSnapshots = Object.fromEntries(importedSnapshots.map((snapshot) => [snapshot.year, snapshot]));
+
+if (Object.keys(rawSnapshots).length !== importedSnapshots.length) {
+  throw new Error("SIOPE: annualità duplicate negli slot pubblicati");
+}
 
 for (const [year, snapshot] of Object.entries(rawSnapshots)) {
   assertSiopeDistributionIntegrity(snapshot, Number(year));
@@ -588,7 +589,9 @@ export function getSiopeMunicipalSnapshot(year?: number): SiopeMunicipalSnapshot
   if (year && year in snapshots) {
     return snapshots[year];
   }
-  return snapshots[2026];
+  const latestYear = availableSiopeYears[0];
+  if (latestYear === undefined) throw new Error("SIOPE: nessuna annualità disponibile");
+  return snapshots[latestYear];
 }
 
 export const siopeMunicipalSnapshot = getSiopeMunicipalSnapshot();

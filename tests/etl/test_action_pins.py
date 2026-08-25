@@ -212,6 +212,40 @@ class ActionPinCheckerTests(TestCase):
         self.assertEqual(len(errors), 1)
         self.assertIn("SHA does not match", errors[0])
 
+    def test_spaces_before_colon_and_inline_anchor_are_checked(self) -> None:
+        errors = self.errors_for(
+            "steps:\n"
+            "  - uses : actions/checkout@v6\n"
+            "  - { uses: &checkout actions/checkout@v6 }\n"
+        )
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(all("tag-based ref" in error for error in errors))
+
+    def test_run_strings_are_not_interpreted_as_action_mappings(self) -> None:
+        errors = self.errors_for(
+            "steps:\n"
+            "  - run: 'echo \"{ uses: actions/checkout@v6 }\"'\n"
+        )
+        self.assertEqual(errors, [])
+
+    def test_pin_lock_schema_fails_closed_with_controlled_error(self) -> None:
+        for invalid in (
+            {"actions": PINS},
+            {"$schema": "1", "description": "test", "pinnedAt": "today", "actions": {"actions/checkout": {"tag": "v6"}}, "tools": {}},
+            {"$schema": "1", "description": "test", "pinnedAt": "today", "actions": {"actions/checkout": {"tag": "v6", "sha": "not-a-sha"}}, "tools": {}, "unexpected": True},
+        ):
+            pins_file = self.fixture_root / "invalid-action-pins.json"
+            pins_file.write_text(json.dumps(invalid), encoding="utf-8")
+            output = io.StringIO()
+            with (
+                mock.patch.object(check_action_pins, "PINS_FILE", pins_file),
+                contextlib.redirect_stdout(output),
+                contextlib.redirect_stderr(output),
+            ):
+                result = check_action_pins.main([])
+            self.assertEqual(result, 1)
+            self.assertIn("ERROR: invalid action pin lock:", output.getvalue())
+
     def test_main_scans_workflow_and_both_local_action_yaml_names(self) -> None:
         workflows = self.fixture_root / "workflows"
         actions = self.fixture_root / "actions"
@@ -245,7 +279,16 @@ class ActionPinCheckerTests(TestCase):
             encoding="utf-8",
         )
         pins_file = self.fixture_root / "action-pins.json"
-        pins_file.write_text(json.dumps({"actions": PINS}), encoding="utf-8")
+        pins_file.write_text(
+            json.dumps({
+                "$schema": "1",
+                "description": "test",
+                "pinnedAt": "2026-08-25",
+                "actions": PINS,
+                "tools": {},
+            }),
+            encoding="utf-8",
+        )
 
         output = io.StringIO()
         with (

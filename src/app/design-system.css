@@ -11,6 +11,8 @@
   --color-surface: #eae9e9;
   --color-raised: #ffffff;
   --color-text: #201e1d;
+  --color-on-strong: #ffffff;
+  --color-on-strong-muted: #d7d3d3;
   --color-accent: #ec3013;
   --color-accent-2: #e15b47;
   --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
@@ -93,6 +95,11 @@
   --chart-quaternary: var(--color-neutral-400);
   --chart-quinary: var(--color-accent-300);
   --chart-negative: var(--color-accent-700);
+  --chart-family-services: #cfc2f2;
+  --chart-family-investment: #f2bdc7;
+  --chart-family-pass-through: #f2d071;
+  --chart-family-financing: #efb36d;
+  --chart-family-other: #bdd8e5;
 
   /* Additive part-to-whole charts only. Red stays for CTA and warnings. */
   --chart-category-blue: #2855a5;
@@ -132,9 +139,11 @@
   padding: 7px var(--space-3);
   min-height: 44px;
   border-radius: var(--radius-md);
+  transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease;
 }
 .btn svg { display: block; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:active:not(:disabled) { transform: scale(.98); }
 .btn-primary { background: var(--color-accent-700); color: var(--color-raised); }
 .btn-primary:hover { background: var(--color-accent-800); }
 .btn-primary:active { background: var(--color-accent-900); }

@@ -17,6 +17,10 @@ La schermata deve far capire rapidamente:
 
 Una sola metrica può dominare una superficie. Le altre diventano confronti, serie, metadata o dettagli. Grafici e mappe devono ridurre il tempo necessario per capire un pattern, mai decorare uno spazio vuoto.
 
+La domanda sceglie la forma: mappa per geografia, linea per trend, barre o dot plot per confronti, distribuzione/percentili per benchmark, tabella per valori esatti e card per un singolo insight verificabile. Un treemap è ammesso solo per parti additive dello stesso totale, con categorie non sovrapposte, denominatore e copertura dichiarati, etichette leggibili, equivalente tabellare e fallback mobile. Non usare una visualizzazione solo perché più spettacolare.
+
+L'ordine di lettura condiviso è: **dato principale → confronto → contesto → dettaglio → fonte**. Su mobile resta lo stesso ordine semantico: non si anticipa un elenco secondario davanti alla visualizzazione o al confronto che spiega la pagina. La gerarchia deve restare leggibile in scala di grigi attraverso posizione, dimensione, peso, spaziatura e linee; il colore non porta mai da solo la priorità.
+
 Il marchio “Confluenza” porta il tricolore nell'header come firma di identità. Nell'interfaccia usa la variante trasparente; favicon e icone installabili conservano il fondale inchiostro. Il punto azzurro appartiene all'asset ufficiale e non introduce un nuovo colore nell'interfaccia. Il tricolore non è la palette delle visualizzazioni.
 
 I token vivono in `src/app/design-system.css`; la base e la chrome dell'applicazione in `src/app/globals.css`. Nessun colore va scritto a mano in un componente: se manca un token, si aggiunge lì.
@@ -50,6 +54,16 @@ La palette è grigio-carta caldo con un unico rosso di segnalazione. Evitare ner
 
 `--color-positive`, `--color-warning` e `--color-critical` (con i rispettivi `-bg` e `-border`) servono solo agli stati delle fonti e alla freschezza dei dati. Restano dentro il valore tonale del testo: un badge di stato non deve mai gridare più forte di un numero.
 
+`--color-on-strong` e `--color-on-strong-muted` sono i soli ruoli testuali ammessi sulle superfici scure. Non usare un passo della rampa neutra come se fosse bianco: i token di foreground dichiarano il rapporto con la superficie e devono essere provati nel browser.
+
+### Significato, confronto e direzione
+
+- **Fatto documentato** e **confronto calcolato** usano tono neutro e un'etichetta testuale.
+- **Segnale da approfondire** usa accento più una frase esplicita; non implica spreco o illecito.
+- **Dato mancante** usa un ruolo neutro e spiega il motivo; zero, assente e non disponibile restano distinti.
+- Verde e rosso indicano un esito positivo o negativo solo quando l'indicatore dichiara una direzione. Per spesa, costo o pagamento, più alto o più basso non è automaticamente migliore.
+- Le scale sequenziali rappresentano quantità; le scale divergenti sono ammesse solo attorno a un riferimento dichiarato. Legenda, unità e valore testuale rendono il colore ridondante.
+
 ### Token per le visualizzazioni
 
 `--chart-primary` è l'accento; `--chart-secondary…quinary` scendono lungo la rampa neutra. Una serie accentata su contesto neutro, mai un arcobaleno generico.
@@ -75,6 +89,8 @@ Un'unica famiglia: **Archivo**, caricata con `next/font/google` e self-hosted. `
 - corpo: 14px (13,5px sotto i 620px), `line-height: 1.55`;
 - etichetta di pannello (`.panel-title`): 11px, 800, maiuscolo, `letter-spacing: .09em`;
 - didascalia e nota: 12px, `neutral-600`.
+
+La scala spaziale condivisa è 4/8/12/16/20/24/32px (`--space-1/2/3/4/5/6/8`). Le eccezioni ottiche restano locali e motivate; valori ricorrenti non devono essere riscritti pagina per pagina.
 
 Ogni cifra confrontabile usa `font-variant-numeric: tabular-nums`. Le celle numeriche non vanno a capo: è il contenitore a scorrere.
 
@@ -112,7 +128,13 @@ Header su una riga: marchio con firma tricolore, ricerca, azione. Sotto, la barr
 
 ### Dashboard
 
-La home è una griglia a tre colonne (`288px | 1fr | 300px`). A 1320px la colonna destra diventa una banda di card a piena larghezza; a 900px tutto è in colonna singola.
+La home è una griglia a tre colonne (`360px | 1fr | 300px`): lettura/composizione, geografia, dettaglio. A 1320px la colonna destra diventa una banda di moduli a piena larghezza; a 900px tutto segue lo stesso ordine DOM in colonna singola. La classifica dei Comuni non precede mai la mappa.
+
+### Composizione della spesa
+
+`SpendingComposition` riceve valori assoluti, totale canonico, periodo, perimetro, denominatore e fonte. Lo stato `ready` deve riconciliare la somma al centesimo; `partial` mostra residuo e categorie mancanti senza simulare copertura completa. L'area è proporzionale al valore. Le celle sotto la soglia di leggibilità usano un indice e restano spiegate nella lista; sotto 620px il treemap collassa in lista con barre. Tooltip da tastiera e tabella equivalente non sostituiscono i dati essenziali già visibili.
+
+Use: fotografia additiva dello stesso totale, categorie mutuamente esclusive, copertura verificata. Avoid: trend, ranking preciso, benchmark, categorie sovrapposte, denominatori o periodi diversi.
 
 ### Panels
 

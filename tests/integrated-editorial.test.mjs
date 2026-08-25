@@ -120,7 +120,7 @@ test("every curated dataset drills down from its topic to a complete or explanat
   assert.doesNotMatch(topicPage, /limit: 5/);
   assert.match(topicPage, /configured\.catalogBoundary/);
   assert.match(detailPage, /dataset\.queryable/);
-  assert.match(detailPage, /Dataset contabilizzato senza righe pubbliche/);
+  assert.match(detailPage, /materiale è contato nel catalogo senza righe pubbliche/);
 
   for (const dataset of catalog.datasets) {
     if (dataset.publication === "rows" || dataset.publication === "source-index") {

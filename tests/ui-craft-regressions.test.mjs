@@ -149,6 +149,20 @@ test("reported chart styles stay within the registry design tokens", async () =>
   }
 });
 
+test("strong civic surfaces use defined foreground tokens", async () => {
+  const [tokens, cohesionCss] = await Promise.all([
+    source("../src/app/design-system.css"),
+    source("../src/app/coesione/coesione.module.css"),
+  ]);
+
+  assert.match(tokens, /--color-on-strong:\s*#[0-9a-f]{6};/i);
+  assert.match(tokens, /--color-on-strong-muted:\s*#[0-9a-f]{6};/i);
+  assert.match(tokens, /--space-5:\s*20px;/);
+  assert.match(cohesionCss, /color:\s*var\(--color-on-strong\);/);
+  assert.match(cohesionCss, /color:\s*var\(--color-on-strong-muted\);/);
+  assert.doesNotMatch(cohesionCss, /var\(--color-neutral-0\)/);
+});
+
 test("the fiscal layout uses only defined spacing tokens", async () => {
   const [fiscalCss, spendingCss] = await Promise.all([
     source("../src/app/territori/fisco/fisco.module.css"),

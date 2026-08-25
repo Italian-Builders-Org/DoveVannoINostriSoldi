@@ -26,13 +26,13 @@ test("coesione trace panel keeps high-contrast text on the dark surface", () => 
   const surface = token("color-neutral-900");
   assert.match(coesioneCss, /\.tracePanel[\s\S]*background:\s*var\(--color-neutral-900\)/);
   assert.match(coesioneCss, /\.tracePanel > div > span:first-child[\s\S]*color:\s*var\(--color-accent-300\)/);
-  assert.match(coesioneCss, /\.traceAction span[\s\S]*color:\s*var\(--color-neutral-300\)/);
+  assert.match(coesioneCss, /\.traceAction span[\s\S]*color:\s*var\(--color-on-strong-muted\)/);
 
   const pairs = [
     ["trace heading", token("color-raised"), surface],
     ["trace body", token("color-neutral-300"), surface],
     ["trace kicker", token("color-accent-300"), surface],
-    ["trace metric label", token("color-neutral-300"), surface],
+    ["trace metric label", token("color-on-strong-muted"), surface],
     ["trace metric value", token("color-raised"), surface],
   ];
 

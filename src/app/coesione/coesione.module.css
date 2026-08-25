@@ -12,7 +12,7 @@
   align-items: end;
   margin: var(--space-6) 0;
   padding: clamp(24px, 5vw, 52px);
-  color: var(--color-raised);
+  color: var(--color-on-strong);
   background: var(--color-neutral-900);
   border-top: 3px solid var(--color-accent);
 }
@@ -26,15 +26,15 @@
 .tracePanel h2 {
   max-width: 18ch;
   margin: 8px 0 12px;
-  color: var(--color-raised);
+  color: var(--color-on-strong);
   font-size: clamp(30px, 5vw, 52px);
   line-height: .98;
-  letter-spacing: -.05em;
+  letter-spacing: -.04em;
 }
 .tracePanel p {
   max-width: 65ch;
   margin: 0;
-  color: var(--color-neutral-300);
+  color: var(--color-on-strong-muted);
 }
 .traceAction {
   display: flex;
@@ -43,13 +43,13 @@
   gap: 8px;
 }
 .traceAction strong {
-  color: var(--color-raised);
+  color: var(--color-on-strong);
   font-size: 32px;
   letter-spacing: -.04em;
 }
 .traceAction span {
   margin-bottom: var(--space-3);
-  color: var(--color-neutral-300);
+  color: var(--color-on-strong-muted);
   font-size: 11px;
 }
 

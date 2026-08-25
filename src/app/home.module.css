@@ -1,12 +1,11 @@
 /*
- * The home dashboard: three columns of panels. The side columns are sized to
- * their content and the middle one takes whatever is left, so the board fills
- * any viewport width instead of stopping at a fixed canvas.
+ * The home dashboard keeps one reading rail, one geographic canvas and one
+ * detail rail. DOM order survives when the rails collapse.
  */
 
 .dashboard {
   display: grid;
-  grid-template-columns: 288px minmax(0, 1fr) 300px;
+  grid-template-columns: 360px minmax(0, 1fr) 300px;
   align-items: start;
   gap: var(--space-4);
   padding-block: var(--space-4) 0;
@@ -109,58 +108,6 @@
   border: 0;
   margin: var(--space-4) 0;
   background: var(--color-neutral-300);
-}
-
-/* ── donut ──────────────────────────────────────────────────────────────── */
-
-.donutBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.donut {
-  width: 88px;
-  height: 88px;
-  flex: none;
-  border-radius: 50%;
-  /* A ring, not a pie: the hole keeps the slices readable at this size. */
-  mask: radial-gradient(circle, transparent 52%, #000 53%);
-  -webkit-mask: radial-gradient(circle, transparent 52%, #000 53%);
-}
-
-.donutLegend {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  font-size: 12px;
-  min-width: 0;
-}
-.donutLegend li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.donutLegend i {
-  width: 9px;
-  height: 9px;
-  flex: none;
-}
-.donutLegend span {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.donutLegend b {
-  flex: none;
-  font-variant-numeric: tabular-nums;
 }
 
 .spendingDetailsLink {
@@ -352,7 +299,7 @@
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 1320px) {
-  .dashboard { grid-template-columns: 272px minmax(0, 1fr); }
+  .dashboard { grid-template-columns: 360px minmax(0, 1fr); }
   /* The right-hand rail becomes a full-width band of cards under the board. */
   .dashboard > .column:last-child {
     grid-column: 1 / -1;
@@ -365,14 +312,10 @@
 @media (max-width: 900px) {
   .dashboard { grid-template-columns: minmax(0, 1fr); }
   .dashboard > .column:last-child { grid-column: auto; }
-  .donutBlock { flex-direction: row; align-items: center; }
-  .donutLegend { width: auto; }
 }
 
 @media (max-width: 620px) {
   .headline { font-size: 32px; }
-  .donutBlock { flex-direction: column; align-items: stretch; }
-  .donut { align-self: center; }
   .mapStats { display: grid; grid-template-columns: 1fr 1fr; }
   .monthList li { grid-template-columns: 58px minmax(0, 1fr) 36px; }
 }

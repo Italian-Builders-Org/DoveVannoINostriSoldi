@@ -899,19 +899,25 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
-        assertTextMatches(text, /I 20 Comuni con più pagamenti per abitante/i, label);
+        assertTextMatches(text, /Valori più alti · per abitante/i, label);
         const firstMunicipality = await page.$eval(
-          '[data-municipality-ranking="per-capita"] tbody tr:first-child th',
-          (heading) => ({
-            name: [...heading.childNodes]
-              .find((node) => node.nodeType === Node.TEXT_NODE)
-              ?.textContent?.trim(),
-            context: [...heading.querySelectorAll("small")].map((item) => item.textContent?.trim()),
-          }),
+          '[data-municipality-ranking="per-abitante"] tbody tr:first-child',
+          (row) => {
+            const heading = row.querySelector("th");
+            return {
+              name: [...(heading?.childNodes ?? [])]
+                .find((node) => node.nodeType === Node.TEXT_NODE)
+                ?.textContent?.trim(),
+              context: heading?.querySelector("small")?.textContent?.trim(),
+              population: row.children[3]?.textContent?.trim(),
+              surface: row.children[4]?.textContent?.trim(),
+            };
+          },
         );
         assert.match(firstMunicipality.name ?? "", /\S/);
-        assert.match(firstMunicipality.context[0] ?? "", /^\S.* · \S.*$/);
-        assert.match(firstMunicipality.context[1] ?? "", /abitanti$/);
+        assert.match(firstMunicipality.context ?? "", /^\S.* · \S.*$/);
+        assert.match(firstMunicipality.population ?? "", /^\d[\d.]*$/);
+        assert.match(firstMunicipality.surface ?? "", /km²$/);
         await assertResponsiveShell(page, label, width);
       },
     });
@@ -1004,11 +1010,12 @@ try {
     const label = `Macro-aree territori ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/territori?anno=2024",
+      pathname: "/territori?anno=2024&vista=tabella",
       width,
       validate: async (page) => {
-        const groups = await page.$$eval("main table tbody", (bodies) =>
-          bodies.slice(0, 3).map((body) => ({
+        const groups = await page.$$eval(
+          'main [aria-label^="Pagamenti di tutte le regioni"] tbody',
+          (bodies) => bodies.map((body) => ({
             heading: body.querySelector("tr:first-child th")?.textContent?.trim(),
             rows: body.querySelectorAll("tr").length,
           })),

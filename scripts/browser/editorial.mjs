@@ -41,7 +41,7 @@ async function inspectRoute(browser, pathname, title, width) {
       const dataLink = [...document.querySelectorAll("a")].some((link) =>
         /Vedi tutte le righe|Dati e fonti|registro completo/i.test(link.textContent ?? ""),
       );
-      const limits = [...document.querySelectorAll("h2")].some((heading) =>
+      const limits = [...document.querySelectorAll("h2, summary")].some((heading) =>
         /non dimostra|limiti/i.test(heading.textContent ?? ""),
       );
       return {

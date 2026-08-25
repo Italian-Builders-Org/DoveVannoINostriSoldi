@@ -82,9 +82,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      # Application-level network guard: blocks outbound TCP during offline
-      # verification. Loopback (127.0.0.0/8, ::1) is allowed.
-      DVNS_OFFLINE_GUARD: "1"
+      # PYTHONPATH for ETL scripts that import sibling modules.
+      # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,
+      # AFTER dependency installation, so pip can reach PyPI.
       PYTHONPATH: scripts/etl:scripts/ci
     steps:
       - name: Checkout
@@ -103,9 +103,13 @@ jobs:
           --require-hashes -r requirements-etl.txt
 
       - name: ETL test suite (offline)
+        env:
+          DVNS_OFFLINE_GUARD: "1"
         run: npm run test:etl
 
       - name: Validate committed generated artifacts (offline)
+        env:
+          DVNS_OFFLINE_GUARD: "1"
         run: npm run test:snapshots
 
       - name: ETL gate summary

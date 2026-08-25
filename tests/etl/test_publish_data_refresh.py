@@ -6,9 +6,8 @@ import importlib.util
 import json
 import subprocess
 import sys
-import unittest
-from unittest import mock
 from pathlib import Path
+from unittest import TestCase, main, mock
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,7 +19,7 @@ sys.modules[SPEC.name] = publisher
 SPEC.loader.exec_module(publisher)
 
 
-class PublishDataRefreshTests(unittest.TestCase):
+class PublishDataRefreshTests(TestCase):
     def test_registry_has_exact_five_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
         publications = {
@@ -429,4 +428,4 @@ class PublishDataRefreshTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

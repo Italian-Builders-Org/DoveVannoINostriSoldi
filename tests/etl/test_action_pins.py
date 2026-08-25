@@ -8,9 +8,8 @@ import io
 import json
 import re
 import tempfile
-import unittest
 from pathlib import Path
-from unittest import mock
+from unittest import TestCase, main, mock
 
 
 _ROOT = Path(__file__).resolve().parents[2]
@@ -29,7 +28,7 @@ PINS = {
 }
 
 
-class ActionPinCheckerTests(unittest.TestCase):
+class ActionPinCheckerTests(TestCase):
     def setUp(self) -> None:
         self.tempdir = tempfile.TemporaryDirectory(
             dir=check_action_pins.ROOT, prefix=".action-pins-test-"
@@ -271,4 +270,4 @@ class ActionPinCheckerTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

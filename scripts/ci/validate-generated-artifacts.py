@@ -144,23 +144,61 @@ def validate_schema(registry: dict) -> list[str]:
         node_tests = art.get("nodeTests", [])
         if not isinstance(node_tests, list):
             errors.append(f"{art_id}: 'nodeTests' must be a list.")
+            node_tests = []
+
+        # --- Cross-field invariants: coveredBy must have executable evidence ---
+        if covered == "etl-suite" and len(tests) == 0:
+            errors.append(
+                f"{art_id}: coveredBy='etl-suite' requires at least one "
+                f"'reconciliationTests' entry."
+            )
+        if covered == "node-tests" and len(node_tests) == 0:
+            errors.append(
+                f"{art_id}: coveredBy='node-tests' requires at least one "
+                f"'nodeTests' entry."
+            )
 
         # Optional: refreshWorkflow
         wf = art.get("refreshWorkflow")
         if wf is not None and not isinstance(wf, str):
             errors.append(f"{art_id}: 'refreshWorkflow' must be a string or null.")
 
-        # Optional: sourceSpec (for source-lock)
+        # sourceSpec required for source-lock mode
         spec = art.get("sourceSpec")
         if spec is not None and not isinstance(spec, str):
             errors.append(f"{art_id}: 'sourceSpec' must be a string or null.")
+        if mode == "source-lock" and (not spec or not isinstance(spec, str)):
+            errors.append(
+                f"{art_id}: verificationMode='source-lock' requires a non-empty 'sourceSpec'."
+            )
+
+        # trustModel must be a non-empty string
+        trust = art.get("trustModel")
+        if not trust or not isinstance(trust, str):
+            errors.append(f"{art_id}: 'trustModel' must be a non-empty string.")
 
         # generator
         gen = art.get("generator")
         if not isinstance(gen, dict):
             errors.append(f"{art_id}: 'generator' must be an object.")
-        elif "requiresNetworkInput" not in gen:
-            errors.append(f"{art_id}: 'generator.requiresNetworkInput' is required.")
+        else:
+            net_input = gen.get("requiresNetworkInput")
+            if not isinstance(net_input, bool):
+                errors.append(
+                    f"{art_id}: 'generator.requiresNetworkInput' must be a boolean."
+                )
+
+    # Validate exclusions
+    for i, exc in enumerate(registry.get("exclusions", [])):
+        if not isinstance(exc, dict):
+            errors.append(f"exclusion[{i}]: must be an object.")
+            continue
+        exc_path = exc.get("path")
+        if not exc_path or not isinstance(exc_path, str):
+            errors.append(f"exclusion[{i}]: 'path' must be a non-empty string.")
+        exc_reason = exc.get("reason")
+        if not exc_reason or not isinstance(exc_reason, str):
+            errors.append(f"exclusion[{i}]: 'reason' must be a non-empty string.")
 
     return errors
 
@@ -269,7 +307,7 @@ def detect_unregistered_files(registry: dict) -> list[str]:
 
 
 def git_porcelain() -> str:
-    """Return `git status --porcelain` output."""
+    """Return `git status --porcelain` output (for diagnostics only)."""
     result = subprocess.run(
         ["git", "status", "--porcelain"],
         cwd=ROOT,
@@ -277,6 +315,57 @@ def git_porcelain() -> str:
         text=True,
     )
     return result.stdout
+
+
+def worktree_fingerprint() -> str:
+    """Return a content-based fingerprint of the working tree.
+
+    Captures tracked-file modifications (via ``git diff HEAD --binary``) and
+    untracked-file contents (via SHA-256 hashing), so that any actual content
+    change is detected regardless of staging state.
+
+    Unlike ``git status --porcelain`` line comparison, this fingerprint:
+
+    * Is invariant to staging-state transitions (e.g. `` M`` → ``MM``) that
+      don't change file content.
+    * Catches further modifications to files that were already dirty before
+      the check (the status line stays the same, but the diff content changes).
+    """
+    parts: list[str] = []
+
+    # Tracked file changes (staged + unstaged) as a binary patch.
+    # --no-ext-diff ensures deterministic output regardless of diff drivers.
+    diff_result = subprocess.run(
+        ["git", "diff", "HEAD", "--binary", "--no-ext-diff", "--no-color"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    parts.append(diff_result.stdout)
+
+    # Untracked files — not covered by ``git diff HEAD``.
+    # List them and hash their contents so new or modified untracked
+    # files are detected.
+    ls_result = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    untracked = sorted(
+        line for line in ls_result.stdout.strip().split("\n") if line
+    )
+    for filepath in untracked:
+        full_path = ROOT / filepath
+        if not full_path.is_file():
+            continue
+        hasher = hashlib.sha256()
+        with open(full_path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(8192), b""):
+                hasher.update(chunk)
+        parts.append(f"{filepath}\0{hasher.hexdigest()}")
+
+    return "\n".join(parts)
 
 
 def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str]]:
@@ -386,8 +475,8 @@ def main() -> int:
         print("\n(Run with --run-checks to execute offline artifact checks)")
         return 0
 
-    # 2. Capture worktree baseline
-    baseline = git_porcelain()
+    # 2. Capture worktree baseline (content-based fingerprint)
+    baseline = worktree_fingerprint()
 
     # 3. Run offline checks
     print("\n--- Running standalone offline checks ---")
@@ -409,24 +498,23 @@ def main() -> int:
 
     print(f"\n✅ {len(executed)} standalone check(s) passed")
 
-    # 4. Worktree cleanliness
-    after = git_porcelain()
-    new_changes = []
-    baseline_lines = set(baseline.strip().split("\n")) if baseline.strip() else set()
-    after_lines = set(after.strip().split("\n")) if after.strip() else set()
+    # 4. Worktree cleanliness (content-based: compares working-tree fingerprint
+    #    before and after checks to detect any modification, including further
+    #    changes to files that were already dirty before the check).
+    after = worktree_fingerprint()
 
-    new_lines = after_lines - baseline_lines
-    if new_lines:
-        new_changes = sorted(new_lines)
-
-    if new_changes:
+    if after != baseline:
+        # Diagnostic: show current working-tree status for investigation
+        status = git_porcelain()
         print(
-            f"\n❌ Worktree cleanliness check FAILED: "
-            f"offline checks introduced {len(new_changes)} new modification(s):\n",
+            "\n❌ Worktree cleanliness check FAILED: "
+            "offline checks modified the working tree",
             file=sys.stderr,
         )
-        for line in new_changes:
-            print(f"  {line}", file=sys.stderr)
+        if status.strip():
+            print("  Current git status:", file=sys.stderr)
+            for line in status.strip().split("\n"):
+                print(f"  {line}", file=sys.stderr)
         return 1
 
     print("✅ Working tree clean after validation")

@@ -11,6 +11,7 @@ from __future__ import annotations
 import os
 import socket
 import sys
+import tempfile
 import unittest
 import urllib.request
 
@@ -74,6 +75,48 @@ class OfflineGuardTests(unittest.TestCase):
         self.assertFalse(offline_guard.is_active())
         # Restore for tearDown
         offline_guard.install()
+
+    def test_unix_domain_socket_is_allowed(self) -> None:
+        """Unix domain sockets (AF_UNIX) are not blocked by the guard.
+
+        Before the fix, the guard treated the string path address as a
+        tuple, extracted its first character ('/'), and blocked it as a
+        non-loopback host.
+        """
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sock_path = os.path.join(tmpdir, "test.sock")
+            listener = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            listener.bind(sock_path)
+            listener.listen(1)
+
+            client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            try:
+                client.connect(sock_path)  # Must NOT raise ConnectionError
+                client.sendall(b"hello")
+                conn, _ = listener.accept()
+                data = conn.recv(5)
+                self.assertEqual(data, b"hello")
+                conn.close()
+            finally:
+                client.close()
+                listener.close()
+
+    def test_ipv6_loopback_is_allowed(self) -> None:
+        """IPv6 loopback (::1) connections are allowed by the guard."""
+        listener = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            listener.bind(("::1", 0))
+            listener.listen(1)
+            port = listener.getsockname()[1]
+
+            client = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+            try:
+                client.connect(("::1", port))  # Should NOT raise
+            finally:
+                client.close()
+        finally:
+            listener.close()
 
 
 if __name__ == "__main__":

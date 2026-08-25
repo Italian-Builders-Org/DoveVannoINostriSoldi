@@ -121,7 +121,7 @@ jobs:
             echo ""
             echo "| Check | Result |"
             echo "|-------|--------|"
-            echo "| ETL test suite (214 tests, offline) | ${{ job.status == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| ETL test suite (offline) | ${{ job.status == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Generated-artifact registry + offline checks | ${{ job.status == 'success' && '✅ PASS' || '❌ FAIL' }} |"
             echo "| Application-level network guard | active (loopback only) |"
             echo ""

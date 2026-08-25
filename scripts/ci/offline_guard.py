@@ -44,7 +44,7 @@ ALLOWED_PREFIXES = (
 
 def _is_loopback(host: str | None) -> bool:
     if host is None:
-        return True  # Unix domain socket or unnamed — allow
+        return True  # Unnamed address — allow (AF_UNIX handled separately)
     if not isinstance(host, str):
         return False
     if host.lower() == "localhost":
@@ -62,6 +62,10 @@ def _is_loopback(host: str | None) -> bool:
 
 
 def _block_connect(self, address, *args, **kwargs):
+    # Unix domain sockets use a string path, not a (host, port) tuple.
+    # They are local by definition — always allow.
+    if self.family == socket.AF_UNIX:
+        return _ORIGINAL_CONNECT(self, address, *args, **kwargs)
     # address is (host, port) for AF_INET, (host, port, flowinfo, scopeid) for AF_INET6
     if address and len(address) >= 1:
         host = address[0]
@@ -74,6 +78,10 @@ def _block_connect(self, address, *args, **kwargs):
 
 
 def _block_connect_ex(self, address, *args, **kwargs):
+    # Unix domain sockets use a string path, not a (host, port) tuple.
+    # They are local by definition — always allow.
+    if self.family == socket.AF_UNIX:
+        return _ORIGINAL_CONNECT_EX(self, address, *args, **kwargs)
     if address and len(address) >= 1:
         host = address[0]
         if not _is_loopback(host):

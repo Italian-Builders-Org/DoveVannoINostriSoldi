@@ -486,7 +486,9 @@
         "coveredBy": "node-tests"
       },
       "reconciliationTests": [],
-      "nodeTests": [],
+      "nodeTests": [
+        "tests/confronti-page.test.mjs"
+      ],
       "generator": {
         "command": null,
         "requiresNetworkInput": false

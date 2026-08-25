@@ -81,6 +81,11 @@ jobs:
   etl:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      # Application-level network guard: blocks outbound TCP during offline
+      # verification. Loopback (127.0.0.0/8, ::1) is allowed.
+      DVNS_OFFLINE_GUARD: "1"
+      PYTHONPATH: scripts/etl:scripts/ci
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -97,8 +102,26 @@ jobs:
           python -m pip install --no-deps --only-binary=:all:
           --require-hashes -r requirements-etl.txt
 
-      - name: ETL test suite
-        run: python -m unittest discover -s tests/etl -p 'test_*.py'
+      - name: ETL test suite (offline)
+        run: npm run test:etl
+
+      - name: Validate committed generated artifacts (offline)
+        run: npm run test:snapshots
+
+      - name: ETL gate summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## ETL gate"
+            echo ""
+            echo "| Check | Result |"
+            echo "|-------|--------|"
+            echo "| ETL test suite (214 tests, offline) | ${{ job.status == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| Generated-artifact registry + offline checks | ${{ job.status == 'success' && '✅ PASS' || '❌ FAIL' }} |"
+            echo "| Application-level network guard | active (loopback only) |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
 
   production:
     runs-on: ubuntu-24.04

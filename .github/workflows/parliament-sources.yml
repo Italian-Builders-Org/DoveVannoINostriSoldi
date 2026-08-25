@@ -12,16 +12,6 @@ on:
       - tests/etl/test_parliament_sources.py
       - tests/fixtures/parliament/**
       - .github/workflows/parliament-sources.yml
-  pull_request:
-    paths:
-      - scripts/etl/parliament_sources.py
-      - src/lib/data/parliament-contract.ts
-      - src/data/generated/parliament-overview.json
-      - src/data/generated/parliament-source-manifest.json
-      - tests/parliament-contract.test.mjs
-      - tests/etl/test_parliament_sources.py
-      - tests/fixtures/parliament/**
-      - .github/workflows/parliament-sources.yml
   schedule:
     - cron: "37 */6 * * *"
   workflow_dispatch:

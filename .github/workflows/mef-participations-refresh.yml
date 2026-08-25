@@ -8,12 +8,6 @@ on:
       - src/data/generated/mef-participations-overview.json
       - tests/mef-participations.test.mjs
       - .github/workflows/mef-participations-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/mef_participations_snapshot.py
-      - src/data/generated/mef-participations-overview.json
-      - tests/mef-participations.test.mjs
-      - .github/workflows/mef-participations-refresh.yml
   schedule:
     - cron: "23 5 * * *"
   workflow_dispatch:
@@ -26,19 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - run: python scripts/etl/mef_participations_snapshot.py --check
-
   refresh:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

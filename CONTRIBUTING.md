@@ -40,6 +40,7 @@ npm ci
 npm run ci:static
 npm run test:node
 npm run test:etl
+npm run test:snapshots
 npm run build
 git diff --check
 ```
@@ -48,6 +49,46 @@ git diff --check
 I test browser e Lighthouse richiedono un server `next start` attivo su
 `127.0.0.1:3000`; vedi `scripts/ci/run-production-gates.sh` per l'orchestrazione
 completa usata dalla CI.
+
+### ETL e artifact verification
+
+```bash
+npm run test:etl        # full ETL transformation/reconciliation test suite (214 tests)
+npm run test:snapshots  # generated-artifact registry + offline artifact checks
+```
+
+`test:etl` esegue l'intera suite di test Python (trasformazione, riconciliazione,
+contratti fail-closed) una sola volta.
+
+`test:snapshots` valida il registro degli artifact generati
+(`scripts/ci/generated-artifacts.json`), esegue i controlli offline `--check`
+uniche per ogni artifact, verifica la pulizia del worktree e rileva file
+generati non registrati. Non riesegue la suite ETL.
+
+### Limite di trust: PR vs fonti ufficiali
+
+Le pull request validano i dati versioneati **offline**: il registro dimostra
+che ogni artifact è internamente valido senza contattare fonti esterne.
+
+I workflow pianificati o manuali (`*-refresh.yml`) sono responsabili di
+osservare le fonti ufficiali esterne e aggiornare gli snapshot. Il validatore
+offline viene usato sia localmente sia nei workflow di refresh, garantendo una
+sola implementazione del contratto.
+
+### Network guard
+
+La CI attiva un **application-level network guard** durante la verifica ETL e
+artifact. Il guard blocca le connessioni TCP in uscita verso indirizzi non di
+loopback. Non è isolamento egress a livello kernel: intercetta i percorsi
+applicativi esercitati dalla suite (socket, urllib, http.client, http/https in
+Node). Loopback (127.0.0.0/8, ::1) è sempre consentito.
+
+Per attivarlo localmente:
+
+```bash
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/ci/validate-generated-artifacts.py --run-checks
+```
 
 Una modifica UI richiede anche verifica Browser a 390, 768 e 1280 px, tastiera,
 focus, stati di errore/caricamento/vuoto, console e overflow. Una modifica MCP

@@ -1,0 +1,528 @@
+{
+  "schemaVersion": 1,
+  "generatedDataRoots": [
+    "src/data/generated",
+    "data/source-ledger"
+  ],
+  "exclusions": [
+    {
+      "path": "src/data/generated/italy-regions.ts",
+      "reason": "Static TypeScript reference table, not generated data. Validated by tests/italy-regions.test.mjs."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "consulenti-pubblici",
+      "owner": "Consulenti Pubblici national snapshot",
+      "files": [
+        "src/data/generated/consulenti-overview.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/consulenti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/consulenti-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/consulenti_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",
+      "trustModel": "Scheduled workflow downloads official statistics and commits the snapshot. PR-side validation proves the committed file is internally valid offline."
+    },
+    {
+      "id": "cpt-regional-fiscal",
+      "owner": "CPT regional fiscal snapshot",
+      "files": [
+        "src/data/generated/cpt-regional-fiscal.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_cpt_regional_fiscal.py"
+      ],
+      "nodeTests": [
+        "tests/cpt-regional-fiscal.test.mjs",
+        "tests/cpt-regional-fiscal-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/cpt_regional_fiscal_snapshot.py --revenue ... --expenditure ... --population ... --output ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "No standalone offline check; the ETL test suite validates the transformation logic with fixtures."
+    },
+    {
+      "id": "indire-pnrr-assignments",
+      "owner": "INDIRE PNRR assignments",
+      "files": [
+        "src/data/generated/indire-pnrr-assignments.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/indire_pnrr_assignments.py --validate-committed",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_indire_pnrr_assignments.py"
+      ],
+      "nodeTests": [
+        "tests/indire-pnrr-assignments.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/indire_pnrr_assignments.py --input-xlsx ... --output ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The --validate-committed flag validates the committed snapshot offline without network access."
+    },
+    {
+      "id": "inps-civil-invalidity",
+      "owner": "INPS civil invalidity",
+      "files": [
+        "src/data/generated/inps-civil-invalidity.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/inps-invalidity.test.mjs",
+        "tests/inps-invalidity-route.test.mjs"
+      ],
+      "generator": {
+        "command": null,
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed artifact with no Python generator. Validated by Node contract tests that assert structural and semantic invariants."
+    },
+    {
+      "id": "integrated-catalog",
+      "owner": "Integrated source release catalog",
+      "files": [
+        "src/data/generated/integrated/catalog.json"
+      ],
+      "verificationMode": "integrated-release",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_integrated_curated_datasets.py",
+        "tests/etl/test_integrated_source_release.py"
+      ],
+      "nodeTests": [
+        "tests/integrated-curated-datasets.test.mjs",
+        "tests/integrated-source-public-view.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/integrated_curated_datasets.py build",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": ".github/workflows/source-refresh.yml",
+      "trustModel": "Derived from committed source-ledger products. The standalone --check is too slow for CI (validates 11.9M rows); the ETL test suite validates the committed catalog."
+    },
+    {
+      "id": "integrated-rows",
+      "owner": "Integrated source release rows",
+      "files": [
+        "src/data/generated/integrated/rows"
+      ],
+      "verificationMode": "integrated-release",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_integrated_source_release.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python scripts/etl/integrated_curated_datasets.py build",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": ".github/workflows/source-refresh.yml",
+      "trustModel": "Partitioned JSONL.gz row files derived from the source ledger. Validated by the ETL test suite which loads and checks the committed rows."
+    },
+    {
+      "id": "istat-regions-2024",
+      "owner": "ISTAT regional accounts 2024",
+      "files": [
+        "src/data/generated/istat-regions-2024.data.json",
+        "src/data/generated/istat-regions-2024.meta.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/istat_regions_account.py --validate-committed",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_regions_account.py"
+      ],
+      "nodeTests": [
+        "tests/istat-regions-account.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/istat_regions_account.py --input ... --acquired-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The --validate-committed flag validates the committed data and metadata offline."
+    },
+    {
+      "id": "mef-irpef-2024",
+      "owner": "MEF municipal IRPEF 2024",
+      "files": [
+        "src/data/generated/mef-irpef-2024.data.json",
+        "src/data/generated/mef-irpef-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python scripts/etl/mef_irpef_municipal_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_mef_irpef_municipal.py"
+      ],
+      "nodeTests": [
+        "tests/mef-irpef.test.mjs",
+        "tests/mef-irpef-route.test.mjs",
+        "tests/mef-irpef-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/mef_irpef_municipal_snapshot.py --input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/mef-irpef-refresh.yml",
+      "sourceSpec": "scripts/etl/specs/mef-irpef-2024.source.json",
+      "trustModel": "Source-lock: the upstream asset is pinned by SHA-256 and byte size. PR validation checks the committed artifact offline; the scheduled workflow verifies the pinned hash has not drifted."
+    },
+    {
+      "id": "mef-participations",
+      "owner": "MEF public participations",
+      "files": [
+        "src/data/generated/mef-participations-overview.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/mef_participations_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/mef-participations.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/mef_participations_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/mef-participations-refresh.yml",
+      "trustModel": "Scheduled workflow downloads official annual data and commits the snapshot."
+    },
+    {
+      "id": "opencivitas-2022",
+      "owner": "OpenCivitas municipal 2022",
+      "files": [
+        "src/data/generated/opencivitas-2022.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/opencivitas-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/opencivitas-refresh.yml",
+      "trustModel": "Scheduled workflow downloads official data and commits the snapshot."
+    },
+    {
+      "id": "opencoesione",
+      "owner": "OpenCoesione national snapshot",
+      "files": [
+        "src/data/generated/opencoesione-overview.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencoesione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/opencoesione-contract.test.mjs",
+        "tests/opencoesione-derived.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencoesione_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/opencoesione-refresh.yml",
+      "trustModel": "Scheduled workflow downloads official data and commits the snapshot."
+    },
+    {
+      "id": "parliament",
+      "owner": "Parliamentary source monitor",
+      "files": [
+        "src/data/generated/parliament-overview.json",
+        "src/data/generated/parliament-source-manifest.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/parliament_sources.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_parliament_sources.py"
+      ],
+      "nodeTests": [
+        "tests/parliament-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/parliament_sources.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/parliament-sources.yml",
+      "trustModel": "Offline PR validation checks committed data. The scheduled workflow also performs a live official-register check with retry/warning behavior (PR4 scope to revisit)."
+    },
+    {
+      "id": "pcm-financial-2024",
+      "owner": "PCM financial account 2024",
+      "files": [
+        "src/data/generated/pcm-financial-2024.data.json",
+        "src/data/generated/pcm-financial-2024.meta.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/pcm_financial_account.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pcm_financial_account.py"
+      ],
+      "nodeTests": [
+        "tests/pcm-financial.test.mjs",
+        "tests/pcm-financial-route.test.mjs",
+        "tests/pcm-financial-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/pcm_financial_account.py --input ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The --check flag validates the committed data and metadata offline."
+    },
+    {
+      "id": "pnrr-childcare",
+      "owner": "PNRR childcare snapshot",
+      "files": [
+        "src/data/generated/pnrr-childcare.data.json",
+        "src/data/generated/pnrr-childcare.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python scripts/etl/pnrr_childcare_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pnrr_childcare_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/pnrr-childcare-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/pnrr_childcare_snapshot.py --projects-input ... --locations-input ... --tenders-input ... --awardees-input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/pnrr-childcare-refresh.yml",
+      "sourceSpec": "scripts/etl/specs/pnrr-childcare.source.json",
+      "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
+    },
+    {
+      "id": "rgs-consulting-payments",
+      "owner": "RGS consulting payments 2024-2025",
+      "files": [
+        "src/data/generated/rgs-consulting-payments-2024-2025.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_rgs_consulting_payments_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python scripts/etl/rgs_consulting_payments_snapshot.py --input-2024 ... --input-2025 ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/rgs-consulting-payments-2024-2025.source.json",
+      "trustModel": "Source-lock: the standalone --check requires input files not available in CI. The ETL test suite loads and validates the committed artifact directly."
+    },
+    {
+      "id": "rgs-ministries-2025",
+      "owner": "RGS ministries account 2025",
+      "files": [
+        "src/data/generated/rgs-ministries-2025.data.json",
+        "src/data/generated/rgs-ministries-2025.meta.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/rgs_ministries_account.py --validate-committed",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_rgs_ministries_account.py"
+      ],
+      "nodeTests": [
+        "tests/ministries-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/rgs_ministries_account.py --input ... --acquired-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The --validate-committed flag validates the committed data and metadata offline."
+    },
+    {
+      "id": "rgs-state-budget-territorial-2023",
+      "owner": "RGS state budget territorial 2023",
+      "files": [
+        "src/data/generated/rgs-state-budget-territorial-2023.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_rgs_state_budget_territorial_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python scripts/etl/rgs_state_budget_territorial_snapshot.py --input ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/rgs-state-budget-territorial-2023.source.json",
+      "trustModel": "Source-lock: the standalone --check requires input files not available in CI. The ETL test suite loads and validates the committed artifact directly."
+    },
+    {
+      "id": "siope-municipal",
+      "owner": "SIOPE municipal snapshot",
+      "files": [
+        "src/data/generated/siope-municipal.json",
+        "src/data/generated/siope-municipal-2024.json",
+        "src/data/generated/siope-municipal-2025.json",
+        "src/data/generated/siope-municipal-detail.json",
+        "src/data/generated/siope-municipal-detail-2024.json",
+        "src/data/generated/siope-municipal-detail-2025.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python scripts/etl/siope_municipal_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/siope-snapshot.test.mjs",
+        "tests/municipality-profile.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/siope_municipal_snapshot.py --year ... --output ... --detail-output ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/siope-refresh.yml",
+      "trustModel": "The offline contract (scripts/etl/siope_snapshot_check.py) is the single implementation used locally, in CI, and in the refresh workflow. The scheduled workflow rebuilds from the official SIOPE source and commits."
+    },
+    {
+      "id": "ssn-cce-2024",
+      "owner": "SSN OpenBDAP CCE 2024",
+      "files": [
+        "src/data/generated/ssn-cce-2024.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python scripts/etl/ssn_cce_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_ssn_cce_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python scripts/etl/ssn_cce_snapshot.py --national-input ... --regional-input ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/ssn-cce-2024.source.json",
+      "trustModel": "Source-lock: the upstream assets are pinned by SHA-256. The --check flag validates the committed artifact offline."
+    },
+    {
+      "id": "vive-roma-restoration",
+      "owner": "VIVE Roma in moneta restoration",
+      "files": [
+        "src/data/generated/vive-roma-in-moneta-restoration.json",
+        "src/data/generated/vive-roma-in-moneta-restoration.meta.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [],
+      "generator": {
+        "command": null,
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed artifact with no Python generator. Validated by the Node runtime contract in src/lib/vive-restoration-snapshot.ts."
+    },
+    {
+      "id": "source-ledger-proofs",
+      "owner": "Source ledger integrity proofs",
+      "files": [
+        "data/source-ledger/source-catalog-proof.json",
+        "data/source-ledger/release-proof.json",
+        "data/source-ledger/dataset-proof.json",
+        "data/source-ledger/receipt.json",
+        "data/source-ledger/sources.jsonl",
+        "data/source-ledger/datasets",
+        "data/source-ledger/elements"
+      ],
+      "verificationMode": "integrated-release",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "etl-suite"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_curated_source_catalog.py",
+        "tests/etl/test_curated_source_identity_ledger.py",
+        "tests/etl/test_source_corpus_intake.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python scripts/etl/curated_source_catalog.py build",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": ".github/workflows/source-refresh.yml",
+      "trustModel": "Integrity proofs derived from the committed source corpus. The standalone check requires input files; the ETL test suite validates the committed proofs."
+    }
+  ]
+}

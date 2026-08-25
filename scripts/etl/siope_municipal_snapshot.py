@@ -986,11 +986,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--detail-output", type=Path, default=DEFAULT_DETAIL_OUTPUT)
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Validate the committed snapshot offline without network access",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+
+    if args.check:
+        from siope_snapshot_check import check_committed_snapshot
+
+        summary = check_committed_snapshot(args.output)
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        return 0
+
     if args.year < 2016 or args.year > datetime.now(timezone.utc).year + 1:
         raise SystemExit(f"Anno non valido: {args.year}")
 

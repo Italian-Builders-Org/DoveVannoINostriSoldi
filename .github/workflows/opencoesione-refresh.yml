@@ -11,13 +11,6 @@ on:
       - src/data/generated/opencoesione-overview.json
       - tests/opencoesione-contract.test.mjs
       - .github/workflows/opencoesione-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/opencoesione_snapshot.py
-      - src/lib/data/opencoesione-contract.ts
-      - src/data/generated/opencoesione-overview.json
-      - tests/opencoesione-contract.test.mjs
-      - .github/workflows/opencoesione-refresh.yml
   schedule:
     - cron: "17 */6 * * *"
   workflow_dispatch:
@@ -30,26 +23,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout pull request merge commit
-        uses: actions/checkout@v6
-
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-
-      - name: Validate committed snapshot offline
-        run: python scripts/etl/opencoesione_snapshot.py --check
-
   refresh:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:

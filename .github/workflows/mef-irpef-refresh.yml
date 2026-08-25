@@ -10,14 +10,6 @@ on:
       - src/data/generated/mef-irpef-2024.meta.json
       - src/data/generated/mef-irpef-2024.data.json
       - .github/workflows/mef-irpef-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/specs/mef-irpef-2024.source.json
-      - scripts/etl/mef_irpef_municipal_snapshot.py
-      - tests/etl/test_mef_irpef_municipal.py
-      - src/data/generated/mef-irpef-2024.meta.json
-      - src/data/generated/mef-irpef-2024.data.json
-      - .github/workflows/mef-irpef-refresh.yml
   schedule:
     - cron: "17 6 * * 1"
   workflow_dispatch:
@@ -36,7 +28,7 @@ concurrency:
 
 jobs:
   offline-contract:
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

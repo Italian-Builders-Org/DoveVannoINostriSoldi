@@ -10,14 +10,6 @@ on:
       - src/data/generated/pnrr-childcare.data.json
       - src/data/generated/pnrr-childcare.meta.json
       - .github/workflows/pnrr-childcare-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/specs/pnrr-childcare.source.json
-      - scripts/etl/pnrr_childcare_snapshot.py
-      - tests/etl/test_pnrr_childcare_snapshot.py
-      - src/data/generated/pnrr-childcare.data.json
-      - src/data/generated/pnrr-childcare.meta.json
-      - .github/workflows/pnrr-childcare-refresh.yml
   schedule:
     - cron: "37 5 * * 1"
   workflow_dispatch:
@@ -36,7 +28,7 @@ concurrency:
 
 jobs:
   offline-contract:
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

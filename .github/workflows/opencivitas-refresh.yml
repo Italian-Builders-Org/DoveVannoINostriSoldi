@@ -10,14 +10,6 @@ on:
       - src/data/generated/opencivitas-2022.json
       - tests/opencivitas-contract.test.mjs
       - .github/workflows/opencivitas-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/opencivitas_snapshot.py
-      - scripts/etl/certs/**
-      - src/lib/data/opencivitas-contract.ts
-      - src/data/generated/opencivitas-2022.json
-      - tests/opencivitas-contract.test.mjs
-      - .github/workflows/opencivitas-refresh.yml
   schedule:
     - cron: "23 4 * * *"
   workflow_dispatch:
@@ -30,20 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - name: Validate committed snapshot offline
-        run: python scripts/etl/opencivitas_snapshot.py --check
-
   refresh:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:

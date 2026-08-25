@@ -9,13 +9,6 @@ on:
       - src/data/generated/consulenti-overview.json
       - tests/consulenti-contract.test.mjs
       - .github/workflows/consulenti-refresh.yml
-  pull_request:
-    paths:
-      - scripts/etl/consulenti_snapshot.py
-      - src/lib/data/consulenti-contract.ts
-      - src/data/generated/consulenti-overview.json
-      - tests/consulenti-contract.test.mjs
-      - .github/workflows/consulenti-refresh.yml
   schedule:
     - cron: "37 */6 * * *"
   workflow_dispatch:
@@ -28,20 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - name: Validate committed snapshot offline
-        run: python scripts/etl/consulenti_snapshot.py --check
-
   refresh:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     permissions:

@@ -212,6 +212,22 @@ def _edge_key(rel: dict) -> tuple:
     return tuple(rel[field] for field in EDGE_FIELDS)
 
 
+def _edge_id(rel: dict) -> str:
+    """Stable composite key for a relation (hash of all edge fields).
+
+    Distinct edges that legitimately share a ``source_record_id`` (e.g. one act
+    granting two appointments) still get different ids, so it is safe to use as
+    a React key / de-duplication token.
+    """
+    canonical = json.dumps(
+        [rel[field] for field in EDGE_FIELDS],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return "ie_" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
+
+
 def build_relations(rows: list[dict]) -> tuple[list[dict], int]:
     """Emit one edge per source row, dropping accidental full-duplicate rows.
 
@@ -245,6 +261,7 @@ def build_relations(rows: list[dict]) -> tuple[list[dict], int]:
             duplicates += 1
             continue
         seen.add(key)
+        rel["id"] = _edge_id(rel)
         relations.append(rel)
     return relations, duplicates
 
@@ -260,6 +277,7 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
         "generatedAt": generated_at,
         "relationCount": len(relations),
         "duplicatesRemoved": duplicates,
+        "license": "AGPL-3.0-or-later",
         "source": {
             "owner": OWNER,
             "dataset": SOURCE_DATASET,
@@ -296,6 +314,7 @@ def validate_artifact(snapshot: object) -> dict:
     if not isinstance(relations, list) or not relations:
         raise ContractError("artifact.relations: lista non vuota attesa")
     seen_ids: set[str] = set()
+    seen_edge_ids: set[str] = set()
     seen_edges: set[tuple] = set()
     for index, rel in enumerate(relations, start=1):
         for field in REQUIRED:
@@ -305,6 +324,12 @@ def validate_artifact(snapshot: object) -> dict:
         if not rid:
             raise ContractError(f"relazione {index}: source_record_id vuoto")
         seen_ids.add(rid)
+        eid = rel.get("id")
+        if not isinstance(eid, str) or not eid:
+            raise ContractError(f"relazione {index}: id mancante")
+        if eid in seen_edge_ids:
+            raise ContractError(f"relazione {index}: id duplicato")
+        seen_edge_ids.add(eid)
         if rel.get("amount") is not None and not isinstance(rel["amount"], (int, float)):
             raise ContractError(f"relazione {index}: amount non numerico")
         edge_key = tuple(rel.get(field) for field in EDGE_FIELDS)
@@ -323,6 +348,60 @@ def write_if_changed(snapshot: dict, output: Path) -> bool:
         encoding="utf-8",
     )
     return True
+
+
+def build_meta(snapshot: dict, rows: list[dict]) -> dict:
+    """Lightweight, relation-free projection for SSR/metadata (no full parse).
+
+    The server reads ONLY this file to render the count + caveat, so /esplora
+    never parses the multi-MB edges array. Keeps top entities for a quick
+    editorial overview without shipping every edge to the client.
+    """
+    person_counter: dict[str, int] = {}
+    entity_counter: dict[str, int] = {}
+    role_counter: dict[str, int] = {}
+    for rel in snapshot["relations"]:
+        person_counter[rel["subject_key"]] = person_counter.get(rel["subject_key"], 0) + 1
+        entity_counter[rel["object_key"]] = entity_counter.get(rel["object_key"], 0) + 1
+        if rel.get("role"):
+            role_counter[rel["role"]] = role_counter.get(rel["role"], 0) + 1
+    acquisition = rows[0]["acquisition_date"] if rows else ""
+    return {
+        "schemaVersion": snapshot["schemaVersion"],
+        "scope": snapshot["scope"],
+        "generatedAt": snapshot["generatedAt"],
+        "relationCount": snapshot["relationCount"],
+        "duplicatesRemoved": snapshot["duplicatesRemoved"],
+        "acquisitionDate": acquisition,
+        "license": snapshot.get("license", "AGPL-3.0-or-later"),
+        "caveat": snapshot["methodology"]["caveat"],
+        "mergePolicy": snapshot["methodology"]["mergePolicy"],
+        "source": snapshot["source"],
+        "topPersons": [
+            {"key": k, "count": c}
+            for k, c in sorted(person_counter.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+        "topEntities": [
+            {"key": k, "count": c}
+            for k, c in sorted(entity_counter.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+        "edgesByRole": role_counter,
+    }
+
+
+def write_meta(meta: dict, output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_gzip(snapshot: dict, output: Path) -> None:
+    """Compressed full artifact for bandwidth/cold-start (served with Content-Encoding)."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n"
+    output.write_bytes(gzip.compress(payload.encode("utf-8"), mtime=0))
 
 
 def main() -> int:
@@ -352,7 +431,22 @@ def main() -> int:
     snapshot = normalize(rows, utc_now())
     validate_artifact(snapshot)
     write_if_changed(snapshot, args.output)
-    print(json.dumps({"relationCount": snapshot["relationCount"], "output": str(args.output)}, ensure_ascii=False))
+    meta = build_meta(snapshot, rows)
+    meta_path = args.output.with_suffix(".meta.json")
+    write_meta(meta, meta_path)
+    gz_path = args.output.with_suffix(".json.gz")
+    write_gzip(snapshot, gz_path)
+    print(
+        json.dumps(
+            {
+                "relationCount": snapshot["relationCount"],
+                "output": str(args.output),
+                "meta": str(meta_path),
+                "gz": str(gz_path),
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0
 
 

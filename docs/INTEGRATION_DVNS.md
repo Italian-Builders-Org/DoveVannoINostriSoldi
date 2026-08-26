@@ -44,24 +44,39 @@ esempio dopo `{ href: "/controlli", label: "Segnali" }`:
 
 ## Patch 2 — `scripts/ci/generated-artifacts.json`
 
-Aggiungere il blocco:
+Aggiungere il blocco dentro l'array `"artifacts"` (la radice del file e' un oggetto
+con `"schemaVersion"`, `"generatedDataRoots"`, `"exclusions"`, `"artifacts"`):
 
 ```json
 {
   "id": "investigative-explorer-incarichi",
-  "files": ["src/data/generated/investigative-explorer-incarichi.json"],
-  "verificationMode": "snapshot-json",
+  "owner": "Investigative Explorer - slice incarichi (issue #105)",
+  "files": [
+    "src/data/generated/investigative-explorer-incarichi.json",
+    "src/data/generated/investigative-explorer-incarichi.meta.json",
+    "src/data/generated/investigative-explorer-incarichi.json.gz"
+  ],
+  "verificationMode": "curated-committed",
   "offlineCheck": {
-    "command": "python scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json"
+    "command": "python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json",
+    "coveredBy": "standalone"
   },
   "reconciliationTests": ["tests/etl/test_investigative_explorer_incarichi.py"],
   "nodeTests": ["tests/investigative-explorer-incarichi.test.mjs"],
   "generator": {
-    "command": "python scripts/etl/investigative_explorer_build.py --input <path-fonti-integrare> --output src/data/generated/investigative-explorer-incarichi.json"
+    "command": "python3 scripts/etl/investigative_explorer_build.py --input <path-righe-integate-incarichi> --acquired <acquisitionDate> --output src/data/generated/investigative-explorer-incarichi.json",
+    "requiresNetworkInput": false
   },
-  "requiresNetworkInput": false
+  "trustModel": "Curated slice from committed integrated rows (incarichi-nominativi-shard); --check validates offline, no person auto-merge."
 }
 ```
+
+Note: il `generator` produce tre file (tutti registrati in `files`):
+- `investigative-explorer-incarichi.json` — artifact completo validato da `offlineCheck`;
+- `investigative-explorer-incarichi.meta.json` — proiezione leggera (solo conteggi,
+  caveat, top entità): la SSR di `/esplora` legge **solo** questo, mai l'array archi;
+- `investigative-explorer-incarichi.json.gz` — artifact compresso per banda/cold-start
+  (servito con `Content-Encoding: gzip`).
 
 ## Pipeline di generazione nel fork
 
@@ -85,14 +100,29 @@ npm run build
 ## Requisiti dei founder (da `leggiadesso.txt`) — stato
 
 - [x] Rotta `/esplora` nell'area "Cosa controllare"
-- [x] Ricerca trasversale persone / CIG-CUP / enti (route + API server-side)
+- [x] Ricerca trasversale persone / CIG-CUP / enti (indice invertito lato server, cache)
 - [x] Grafo generato dai dati integrati DVNS, riallineato ai refresh
 - [x] Provenance + caveat su **ogni** relazione
-- [x] Nessun auto-merge di persone senza ID stabile (verificato: tuple-arco univoca)
+- [x] Nessun auto-merge di persone senza ID stabile (verificato: `id` arco da hash composto)
 - [x] `requiresNetworkInput: false` (offline-safe)
-- [~] Valutazione payload/perf: la slice è ~37k archi, servita via API
-      server-side (il client riceve solo i risultati), non l'intero JSON. Da
-      misurare con `npm run build` + Lighthouse prima del merge.
+
+### Esito review founder (PR #128) — fix applicati
+
+Bloccanti segnalati e relativi fix (tutti implementati):
+
+- [x] **SSR non deve parsare 35 MB** → `/esplora` legge solo `*.meta.json` (leggero).
+- [x] **`verificationMode` incoerente** → `curated-committed` (coerente con `requiresNetworkInput:false`).
+- [x] **API fragile / search lineare / nessun debounce** → route `dynamic` (no `force-static`+searchParams), indice invertito con cache lato server, debounce 250 ms lato client; il client riceve solo i risultati.
+- [x] **CIG/CUP solo in nota, non cercati** → `note_source` è nei campi indicizzati; copy onesta sulla slice.
+- [x] **`key={source_record_id}` collide** → ogni arco ha `id` stabile (hash di tutti i campi), usato come chiave React.
+- [x] **Copy/UI prometteva più della slice** → testo allineato: fetta `incarichi-nominativi-shard` (persona↔ente), CIG/CUP e atti in nota e ricercabili; link forte a `/incarichi`.
+
+Suggerimenti (non bloccanti): compressione/shard (ora `.json.gz` presente), link
+`/incarichi`↔`/esplora` (aggiunto), licenza (presente `AGPL-3.0-or-later` nei metadati).
+
+> Nota dimensione: l'artifact `.json` resta nel tree (validato da `offlineCheck`).
+> Se i maintainer preferiscono toglierlo dal clone, si può validare il `.json.gz`
+> e non committare il `.json`; scelta lasciata alla review.
 
 ## Privacy e sicurezza
 

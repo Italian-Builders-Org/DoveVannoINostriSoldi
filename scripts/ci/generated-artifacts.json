@@ -663,11 +663,13 @@
       "id": "investigative-explorer-incarichi",
       "owner": "Investigative Explorer - slice incarichi (issue #105)",
       "files": [
-        "src/data/generated/investigative-explorer-incarichi.json"
+        "src/data/generated/investigative-explorer-incarichi.json",
+        "src/data/generated/investigative-explorer-incarichi.meta.json",
+        "src/data/generated/investigative-explorer-incarichi.json.gz"
       ],
-      "verificationMode": "online-refresh",
+      "verificationMode": "curated-committed",
       "offlineCheck": {
-        "command": "python scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json",
+        "command": "python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
@@ -677,7 +679,7 @@
         "tests/investigative-explorer-incarichi.test.mjs"
       ],
       "generator": {
-        "command": "python scripts/etl/investigative_explorer_build.py --input <path-righe-integate-incarichi> --acquired <acquisitionDate> --output src/data/generated/investigative-explorer-incarichi.json",
+        "command": "python3 scripts/etl/investigative_explorer_build.py --input <path-righe-integate-incarichi> --acquired <acquisitionDate> --output src/data/generated/investigative-explorer-incarichi.json",
         "requiresNetworkInput": false
       },
       "trustModel": "Curated slice from committed integrated rows (incarichi-nominativi-shard); --check validates offline, no person auto-merge."

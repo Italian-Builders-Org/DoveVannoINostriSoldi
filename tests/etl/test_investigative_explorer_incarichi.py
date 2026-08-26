@@ -222,6 +222,36 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             checked = run(["--check", "--output", str(out)])
             self.assertEqual(checked.returncode, 0, checked.stderr)
 
+    def test_meta_gz_and_stable_id(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fix.csv"
+            fixture.write_text(
+                "relation_type,subject_type,subject_key,object_type,object_key,source_dataset,"
+                "source_record_id,period,acquisition_date,confidence_note,role,importo_if_present,"
+                "ipa,fonte_url,note_source\n"
+                "person_has_appointment,person,MARIO ROSSI,public_entity,Comune X,"
+                "incarichi-nominativi-shard,aaa,2025-01-01,2026-08-25,nota,dirigente,1000.00,IPAX,u,u\n"
+                "person_has_appointment,person,MARIO ROSSI,public_entity,Comune Y,"
+                "incarichi-nominativi-shard,bbb,2025-02-02,2026-08-25,nota2,consulente,,IPAY,v,v\n",
+                encoding="utf-8",
+            )
+            out = Path(tmp) / "inv.json"
+            built = run(["--input", str(fixture), "--output", str(out)])
+            self.assertEqual(built.returncode, 0, built.stderr)
+            meta = out.with_suffix(".meta.json")
+            gz = out.with_suffix(".json.gz")
+            self.assertTrue(meta.exists(), "meta non emesso")
+            self.assertTrue(gz.exists(), "gz non emesso")
+            data = json.loads(out.read_text(encoding="utf-8"))
+            ids = [r["id"] for r in data["relations"]]
+            self.assertEqual(len(ids), len(set(ids)), "id non univoci")
+            m = json.loads(meta.read_text(encoding="utf-8"))
+            self.assertEqual(m["relationCount"], data["relationCount"])
+            self.assertNotIn("relations", m, "il meta non deve contenere gli archi")
+            self.assertIn("topPersons", m)
+            self.assertIn("topEntities", m)
+            self.assertTrue(gz.stat().st_size < out.stat().st_size, "gz non comprime")
+
 
 if __name__ == "__main__":
     unittest.main()

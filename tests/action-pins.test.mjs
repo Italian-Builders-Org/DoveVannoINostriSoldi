@@ -27,6 +27,13 @@ test("resolves block and flow anchors and aliases", () => {
   assert.equal(checkWorkflow(step, pins), 2);
 });
 
+test("inherits flow job comments for reusable workflows", () => {
+  const file = fixture(`jobs:\n  build: { uses: actions/checkout@${sha} } # v6\n`);
+  assert.equal(checkWorkflow(file, pins), 1);
+  const wrong = fixture(`jobs:\n  build: { uses: actions/checkout@${sha} } # v5\n`);
+  assert.throws(() => checkWorkflow(wrong, pins), /version comment/);
+});
+
 test("checks mutable references and Docker policy", () => {
   const tag = fixture("jobs:\n  build:\n    uses: actions/checkout@v6\n");
   assert.throws(() => checkWorkflow(tag, pins), /mutable|unsupported|version comment|SHA/);

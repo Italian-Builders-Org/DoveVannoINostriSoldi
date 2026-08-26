@@ -114,7 +114,7 @@ function checkWorkflow(file, pins) {
   for (const job of jobs.items) {
     const jobValue = resolveNode(job.value, doc);
     if (!isMap(jobValue)) continue;
-    for (const pair of mapPairs(jobValue, "uses", doc)) { checkRef(file, lineCounter, pair.value, pins, doc); count += 1; }
+    for (const pair of mapPairs(jobValue, "uses", doc)) { checkRef(file, lineCounter, pair.value, pins, doc, jobValue.comment); count += 1; }
     const steps = mapValue(jobValue, "steps", doc);
     if (!isSeq(steps)) continue;
     for (const step of steps.items) {

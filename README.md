@@ -6,6 +6,10 @@ Riunisce dati ufficiali sparsi su portali diversi. Ogni numero mostra **fonte**,
 
 **Sito:** [dovevannoinostrisoldi.com](https://www.dovevannoinostrisoldi.com)
 
+[![Buy me an AI compute](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/dovevannoinostrisoldi)
+
+Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
+
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
 | Territori | Cosa controllare |

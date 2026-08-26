@@ -186,7 +186,7 @@ export default function ConfrontiPage() {
         <p>
           Tre affidamenti simili hanno importi molto diversi. Con questi soli atti non possiamo dire
           che uno sia uno spreco: dimensioni e tecnica possono cambiare il lavoro. La domanda utile
-          è: <strong>quali elementi tecnici spiegano il divario?</strong>
+          è: <strong>quali elementi tecnici giustificano il divario?</strong>
         </p>
       </section>
 

@@ -68,9 +68,8 @@ export default async function RgsConsultingPage({ searchParams }: ConsultingPage
         <p className={styles.eyebrow}>Rendiconto dello Stato · 2024-2025</p>
         <h1>Consulenze e lavoro parasubordinato nei conti RGS</h1>
         <p>
-          Tutte le 268 righe selezionate dai piani di gestione ufficiali: importi di cassa,
-          amministrazione, capitolo e classificazione economica, senza trasformarli in incarichi
-          individuali.
+          Tutte le 268 righe selezionate dai piani di gestione ufficiali: sono aggregati contabili per capitolo e piano di gestione,
+          non transazioni né contratti individuali.
         </p>
       </header>
 
@@ -100,9 +99,7 @@ export default async function RgsConsultingPage({ searchParams }: ConsultingPage
       <section className="notice scope-notice" aria-labelledby="consulting-boundary-title">
         <h2 id="consulting-boundary-title">Cosa misura questa pagina</h2>
         <p>
-          Totali per capitolo di spesa. Non elenca consulenti, contratti o singole prestazioni. Un
-          confronto tra amministrazioni non prova da solo spreco o irregolarità. Zero è un valore
-          pubblicato, non un dato mancante.
+          Totali per capitolo di spesa. La fonte non identifica consulenti, beneficiari, contratti o singole prestazioni. Un confronto tra amministrazioni non prova efficienza, irregolarità o spreco. Zero è un valore pubblicato, non un dato mancante.
         </p>
       </section>
 

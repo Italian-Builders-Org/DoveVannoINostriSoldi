@@ -154,8 +154,8 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
       <div className="notice">
         <strong>Pagamenti e ReGiS</strong>
         <p>
-          {pnrrChildcareMeta.methodology.fundingWarning} Se mancano i pagamenti ReGiS, li segniamo
-          come mancanti: non li stimiamo.
+          {pnrrChildcareMeta.methodology.fundingWarning} Il tracciato non contiene i pagamenti ReGiS. Se
+          mancano, li segniamo come mancanti: non li stimiamo.
         </p>
       </div>
     </main>

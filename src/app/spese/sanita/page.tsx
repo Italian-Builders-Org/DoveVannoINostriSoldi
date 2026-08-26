@@ -262,6 +262,7 @@ export default function HealthSpendingPage() {
       <div className="notice">
         <strong>Non è un conto di pagamenti</strong>
         <p>
+          Questo conto economico non sostituisce una contabilità dei pagamenti.
           Per i pagamenti dei Comuni vai a <Link href="/spese">Soldi</Link>; per l’invalidità civile
           ai dati <Link href="/spese/invalidita">INPS</Link>. Fonti e ambiti diversi.
         </p>

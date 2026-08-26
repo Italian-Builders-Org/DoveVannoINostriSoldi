@@ -13,7 +13,7 @@ export default function AppointmentsDetailPage() {
       introduction="Il dettaglio riunisce incarichi nominativi, consulenze legali e PNRR, collaboratori, CV, personale, staff e indennità, mantenendo separati perimetri e strati contabili incompatibili."
       domains={["appointments", "consultancies", "personnel"]}
       editorialSection="incarichi"
-      interpretation="Gli incarichi nominativi non vengono sommati ai capitoli contabili CE3; requisiti, durata, compenso e curriculum sono elementi distinti. Un confronto orienta la verifica, non attribuisce da solo inadeguatezza o responsabilità."
+      interpretation="Gli incarichi nominativi non si sommano ai capitoli CE3. Un confronto orienta la verifica: non decide da solo se qualcuno è inadeguato."
       related={[
         {
           href: "/incarichi",

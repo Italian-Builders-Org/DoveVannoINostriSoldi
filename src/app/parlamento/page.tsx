@@ -87,8 +87,8 @@ export default function ParliamentPage() {
       <div className="notice">
         <strong>Come leggere questi numeri</strong>
         <p>
-          Un bilancio dice quanto si prevede di spendere. Un consuntivo dice quanto è stato
-          impegnato o pagato. Ogni documento resta sul suo perimetro.
+          Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
+          pagato. Ogni documento resta sul suo ambito.
         </p>
       </div>
 

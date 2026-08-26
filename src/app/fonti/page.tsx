@@ -124,13 +124,12 @@ export default function SourcesPage() {
       </section>
 
       <div className="notice">
-        <strong>“Aggiornato” significa: aggiornato quanto la fonte</strong>
+        <strong>“Aggiornato” quanto la fonte</strong>
         <p>
-          Se una fonte pubblica nuovi dati una volta al mese, non li chiamiamo dati in tempo reale.
-          Mostriamo l&apos;ultimo periodo disponibile, quando lo abbiamo controllato e quando è
-          atteso il prossimo aggiornamento.{" "}
-          <Link href="/fonti/stato">Stato operativo delle fonti →</Link> ·{" "}
-          <Link href="/metodologia">Come leggiamo i dati →</Link>
+          Se la fonte pubblica i dati una volta al mese, non sono in tempo reale. Mostriamo ultimo
+          periodo, ultimo controllo e prossimo aggiornamento atteso.{" "}
+          <Link href="/fonti/stato">Stato delle fonti →</Link> ·{" "}
+          <Link href="/metodologia">Metodo →</Link>
         </p>
       </div>
     </main>

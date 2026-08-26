@@ -78,8 +78,8 @@ export default async function RegionsPage({
       <div className="notice">
         <strong>Perimetro di lettura</strong>
         <p>
-          Gli importi sono gli impegni assoluti di {selected.label}. Senza una popolazione Istat
-          allineata allo stesso anno non calcoliamo valori pro capite e non usiamo la mappa.
+          Sono gli impegni assoluti di {selected.label}. Senza popolazione Istat dello stesso anno
+          non calcoliamo il pro capite e non usiamo la mappa.
         </p>
       </div>
 

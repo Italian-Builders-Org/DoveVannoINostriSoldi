@@ -85,9 +85,8 @@ export default async function SourceCoveragePage() {
       <div className="notice">
         <strong>Copertura completa, uso selettivo</strong>
         <p>
-          Il registro prova che niente è stato tralasciato. Le disposizioni distinguono ciò che può
-          alimentare il prodotto da copie, tentativi di raccolta, materiale tecnico e contenuti da
-          mantenere in quarantena. Manifest-only non significa elemento mancante.
+          Il registro mostra che niente è stato saltato. Poi si sceglie cosa entra nel prodotto e
+          cosa resta in quarantena. “Solo manifesto” non significa dato mancante.
         </p>
       </div>
 

@@ -125,15 +125,11 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
       </section>
 
       <section className="notice warning-notice scope-notice" aria-labelledby="territorial-boundary-title">
-        <h2 id="territorial-boundary-title">Tre livelli sovrapposti, mai un unico totale</h2>
+        <h2 id="territorial-boundary-title">Non sommare Italia, macroaree e regioni</h2>
         <p>
-          Italia, macroaree e regioni descrivono lo stesso perimetro a livelli differenti e non
-          devono essere sommati insieme. Per questo ogni interrogazione restituisce un solo livello
-          territoriale e una sola misura.
-        </p>
-        <p>
-          Percentuale del PIL, euro per abitante ed euro per km² usano denominatori calcolati
-          dall’editore ma non versionati nel record. Non vengono ricalcolati né usati come addendi.
+          Sono tre livelli dello stesso conto e non devono essere sommati insieme. Ogni ricerca usa
+          un solo livello e una sola misura. PIL e euro per abitante usano denominatori calcolati
+          dall&apos;editore ma non versionati nel record: non li ricalcoliamo né li sommiamo.
         </p>
       </section>
 
@@ -295,12 +291,11 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
       </section>
 
       <section className={`notice ${styles.debtNotice}`} aria-labelledby="territorial-debt-title">
-        <h2 id="territorial-debt-title">Interessi e debito: l’etichetta non risolve il perimetro</h2>
+        <h2 id="territorial-debt-title">Interessi e debito: etichette da non sommare a caso</h2>
         <p>
-          Per Italia, l’incrocio fra categoria 09 e missione 034 riporta 8.057,70 milioni di euro.
-          La landing descrive il dataset al netto degli interessi sul debito, mentre il CSV conserva
-          righe con queste etichette. La pagina non le elimina e non deduce da sola che ogni importo
-          sia incluso o escluso dal perimetro dichiarato.
+          Per l’Italia, categoria 09 e missione 034 danno 8.057,70 milioni di euro. La scheda RGS
+          parla di dati al netto degli interessi sul debito, ma il CSV tiene queste etichette. Qui non
+          le cancelliamo e non decidiamo da soli cosa rientra nel perimetro.
         </p>
       </section>
 

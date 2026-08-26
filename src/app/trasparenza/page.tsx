@@ -21,7 +21,7 @@ export default function TransparencyPage() {
         "candidate-batches",
       ]}
       editorialSection="trasparenza"
-      interpretation="Un documento non reperito, un URL morto o uno scostamento richiede una verifica e può motivare accesso civico; non prova automaticamente occultamento, danno o spreco. Gli importi citati negli atti di controllo non sono necessariamente danni accertati."
+      interpretation="Documento mancante o scostamento vanno verificati e possono motivare accesso civico. Non provano da soli occultamento o spreco. Gli importi negli atti non sono automaticamente danni accertati."
       related={[
         {
           href: "/controlli/segnalazioni",

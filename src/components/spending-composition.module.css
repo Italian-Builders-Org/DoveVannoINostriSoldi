@@ -1,13 +1,15 @@
 .composition {
   display: grid;
   gap: var(--space-3);
+  min-width: 0;
   container-type: inline-size;
   container-name: composition;
 }
 .visual {
   position: relative;
+  width: 100%;
+  min-width: 0;
   aspect-ratio: 100 / 62;
-  min-height: 260px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-400);
   contain: layout paint;

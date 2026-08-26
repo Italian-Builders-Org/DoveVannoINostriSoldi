@@ -38,7 +38,7 @@ export default function SupportersPage() {
                   {supporter.name}
                 </a>
               </strong>
-              {" — "}
+              {": "}
               {supporter.contribution}
             </li>
           ))}

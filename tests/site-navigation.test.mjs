@@ -114,7 +114,11 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(supporters, /mantoventure\.com/);
   assert.match(supporters, /italianbuilders\.co/);
   assert.match(supporters, /modello GLM/);
+  assert.match(supporters, /INDIVIDUAL_SUPPORTERS/);
+  assert.match(supporters, /Clodo76/);
+  assert.match(supporters, /github\.com\/Clodo76/);
   assert.match(page, /SITE_SUPPORTERS/);
+  assert.match(page, /INDIVIDUAL_SUPPORTERS/);
   assert.match(page, /BUY_ME_A_COFFEE_URL/);
   assert.match(footer, /href="\/supporter"/);
   assert.match(footer, /BUY_ME_A_COFFEE_URL/);

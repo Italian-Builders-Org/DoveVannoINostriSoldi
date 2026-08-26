@@ -133,8 +133,8 @@ export default async function PublicSourceCatalogPage({ searchParams }: SourceCa
       <div className="notice">
         <strong>Quarantena non significa omissione</strong>
         <p>
-          L&apos;ID, il numero di occorrenze, la classificazione e la ragione restano nel catalogo. Viene
-          trattenuto soltanto il valore che non supera il confine di pubblicazione.
+          ID, occorrenze, classificazione e motivo restano nel catalogo. Nascondiamo solo il valore
+          che non può essere pubblicato.
         </p>
       </div>
 

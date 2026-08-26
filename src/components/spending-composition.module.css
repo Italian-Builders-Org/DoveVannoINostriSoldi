@@ -10,6 +10,7 @@
   width: 100%;
   min-width: 0;
   aspect-ratio: 100 / 62;
+  min-height: 250px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-400);
   contain: layout paint;

@@ -128,9 +128,9 @@ export default async function TerritoriesPage({
           <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
           <p className={styles.note}>Copertura pro capite: {data.methodology.perCapitaCoverage}.</p>
           <p className={styles.note}>
-            I link regionali aprono i dati CPT 2023, un perimetro distinto da SIOPE. Nei CPT,
-            Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
-            del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
+            I link regionali aprono i dati CPT 2023, separati da SIOPE. Nei CPT, Trento e Bolzano
+            restano due Province autonome: il totale SIOPE del Trentino-Alto Adige non viene forzato
+            su una sola voce.
           </p>
         </section>
 
@@ -209,39 +209,34 @@ export default async function TerritoriesPage({
           <div className="notice">
             <strong>Come leggere i totali assoluti</strong>
             <p>
-              Un Comune turistico serve molte più persone dei suoi residenti, e un Comune che
-              ricostruisce dopo un terremoto spende per opere che dureranno decenni. I totali
-              vanno letti con popolazione, servizi e contesto locale.
+              Un totale alto può dipendere da turismo, ricostruzione o servizi offerti a non
+              residenti. Guarda anche popolazione e contesto.
             </p>
           </div>
         </div>
       </div>
 
       <div className="notice">
-        <strong>Quanto entra e quanto viene speso sul territorio?</strong>
+        <strong>Entrate e spese sul territorio</strong>
         <p>
-          I Conti Pubblici Territoriali permettono di confrontare entrate e spese della Pubblica
-          Amministrazione consolidata su una base contabile coerente, con il pro capite come vista
-          iniziale. <Link href="/territori/fisco">Apri entrate, spese e saldo per regione →</Link>
+          Confronta entrate e spese della PA sul territorio.{" "}
+          <Link href="/territori/fisco">Apri i Conti Pubblici Territoriali →</Link>
         </p>
       </div>
 
       <div className="notice">
-        <strong>Redditi e imposta netta dichiarata</strong>
+        <strong>Redditi e imposte dichiarate</strong>
         <p>
-          Il MEF pubblica contribuenti, redditi, imposta netta dichiarata e addizionali per Comune.
-          Sono dati dichiarativi di imposta netta e restano separati dal saldo CPT.{" "}
-          <Link href="/territori/irpef">Apri i dati IRPEF per Regione, Provincia e Comune →</Link>
+          Dati MEF su contribuenti, redditi e imposta netta per Comune.{" "}
+          <Link href="/territori/irpef">Apri IRPEF →</Link>
         </p>
       </div>
 
       <div className="notice">
-        <strong>Confronta spesa e fabbisogno standard</strong>
+        <strong>Spesa e fabbisogno standard</strong>
         <p>
-          Per i Comuni delle Regioni a statuto ordinario puoi confrontare la spesa storica con il
-          fabbisogno calcolato da OpenCivitas. Il confronto include importo totale, valore per
-          abitante, percentuale e livello dei servizi.{" "}
-          <Link href="/territori/confronto">Apri il confronto tra Comuni →</Link>
+          Per i Comuni in Regioni a statuto ordinario: spesa storica vs fabbisogno OpenCivitas.{" "}
+          <Link href="/territori/confronto">Apri il confronto →</Link>
         </p>
       </div>
 

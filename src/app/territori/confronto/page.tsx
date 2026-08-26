@@ -180,10 +180,8 @@ export default async function MunicipalComparisonPage({
       <div className="notice">
         <strong>Come leggere il confronto</strong>
         <p>
-          Una differenza positiva indica che la spesa storica è superiore al
-          fabbisogno standard. Può dipendere dai servizi offerti, dai costi
-          locali o dal modo in cui sono usate le risorse. Il numero, da solo,
-          non permette di scegliere una spiegazione.
+          Se la differenza è positiva, la spesa storica supera il fabbisogno standard. Può dipendere
+          da servizi, costi locali o uso delle risorse. Il numero da solo non spiega il perché.
         </p>
       </div>
 

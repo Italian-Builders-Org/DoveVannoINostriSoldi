@@ -13,7 +13,7 @@ export default function OperatingSpendingPage() {
       introduction="Canoni, auto, welfare, missioni, rimborsi, eventi, campagne, capitoli statali e progetti sono consultabili nel perimetro in cui sono stati osservati."
       domains={["operations", "state-accounts", "projects"]}
       editorialSection="spese"
-      interpretation="Pagamenti, previsioni e massimali restano separati. I capitoli di missione non sono trasferte individuali; i canoni senza superficie non producono un valore €/m²; una spesa documentata non è automaticamente uno spreco."
+      interpretation="Pagamenti, previsioni e massimali restano separati. I capitoli di missione non sono trasferte individuali. Una spesa documentata non è automaticamente uno spreco."
       related={[
         {
           href: "/spese/consulenze",

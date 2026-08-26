@@ -182,16 +182,11 @@ export default function ConfrontiPage() {
       </section>
 
       <section className={"notice " + styles.interpretation} aria-labelledby="interpretation-title">
-        <h2 id="interpretation-title">Che cosa possiamo dire, e che cosa manca</h2>
+        <h2 id="interpretation-title">Cosa possiamo dire</h2>
         <p>
-          Possiamo dire che tre affidamenti confrontabili hanno importi molto diversi. Non possiamo
-          dire, con questi soli atti, che uno sia uno spreco: dimensioni, tecnica, stato conservativo
-          e complessità dell&apos;intervento possono cambiare il lavoro necessario.
-        </p>
-        <p>
-          La domanda pubblica corretta è quindi concreta: <strong>quali elementi tecnici giustificano
-          il divario?</strong> Una relazione, un computo o una motivazione più dettagliata permetterebbero
-          di distinguere una differenza spiegabile da una vera inefficienza.
+          Tre affidamenti simili hanno importi molto diversi. Con questi soli atti non possiamo dire
+          che uno sia uno spreco: dimensioni e tecnica possono cambiare il lavoro. La domanda utile
+          è: <strong>quali elementi tecnici giustificano il divario?</strong>
         </p>
       </section>
 

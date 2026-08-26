@@ -201,9 +201,8 @@ export default function PnrrAssignmentsPage() {
       <section className={`notice scope-notice ${styles.readingNotice}`} aria-labelledby="reading-title">
         <h2 id="reading-title">Come leggere questi numeri</h2>
         <p>
-          Il totale somma compensi dichiarati per l&apos;intera durata dei contratti. Non misura quanto è
-          già stato pagato, non è un costo annuale e non consente da solo di stabilire utilità, qualità
-          o spreco. Lo snapshot è storico: descrive l&apos;aggiornamento di aprile 2026.
+          Il totale somma i compensi dichiarati per tutta la durata dei contratti. Non misura quanto è
+          già stato pagato e non è una spesa annuale. Aggiornamento: aprile 2026.
         </p>
       </section>
 

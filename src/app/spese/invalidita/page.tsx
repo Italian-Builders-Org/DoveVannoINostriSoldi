@@ -62,9 +62,8 @@ export default function CivilInvalidityPage() {
       <div className="notice">
         <strong>La voce comprende tutte le prestazioni di invalidità civile</strong>
         <p>
-          La voce INPS comprende l’insieme delle prestazioni di invalidità civile. Nel dettaglio
-          contabile 2024 della Gestione n. 25 l’accompagnamento è la componente maggiore. Quel
-          dettaglio ha però un perimetro più ristretto e non si somma né si sottrae al totale sopra.
+          Nel dettaglio 2024 della Gestione n. 25 l’accompagnamento è la voce più grande. Quel
+          dettaglio ha un ambito più stretto: non si somma né si sottrae al totale sopra.
         </p>
       </div>
 

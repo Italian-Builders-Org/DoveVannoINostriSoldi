@@ -39,9 +39,8 @@ export default function MethodPage() {
       <div className="notice warning-notice">
         <strong>Controlli e approfondimenti</strong>
         <p>
-          DoveVannoINostriSoldi aiuta a trovare dati e segnali da approfondire. Il lavoro di ANAC,
-          Corte dei conti, magistratura e verifiche dell&apos;amministrazione resta quello ufficiale.
-          Nessun algoritmo attribuisce automaticamente illeciti o responsabilità personali.
+          Qui trovi dati e segnali da verificare. I controlli ufficiali restano di ANAC, Corte dei
+          conti, magistratura e amministrazioni. Nessun algoritmo decide da solo illeciti o colpe.
         </p>
       </div>
     </main>

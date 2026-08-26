@@ -83,17 +83,11 @@ export default function AppaltiPage() {
       </section>
 
       <section className={`notice scope-notice ${styles.readingNotice}`} aria-labelledby="appalti-reading-title">
-        <h2 id="appalti-reading-title">La lettura corretta in una frase</h2>
+        <h2 id="appalti-reading-title">Come leggere questi numeri</h2>
         <p>
-          Questi conteggi mostrano come sono classificati i CIG pubblicati e indicano dove guardare
-          meglio negli atti.
+          Contano come sono etichettati i CIG pubblicati. Il campo <strong>importo_lotto</strong> è
+          il valore dichiarato del lotto nella banca dati.
         </p>
-        <div className="scope-notice__section">
-          <h3>Che cosa misura il valore</h3>
-          <p>
-            <strong>importo_lotto</strong> è il valore dichiarato del lotto nella banca dati.
-          </p>
-        </div>
       </section>
 
       <section className={`panel ${styles.leadPanel}`} aria-labelledby="procedure-title">
@@ -237,8 +231,8 @@ export default function AppaltiPage() {
             <h2 id="threshold-title" className="panel-title">Un segnale vicino alla soglia</h2>
             <p>
               Nella fascia <strong>[135.000 €, 140.000 €)</strong> ci sono {integer(thresholdBand.servicesAndSuppliesRecords)}
-              {" "}CIG di servizi e forniture. La fascia serve a scegliere cosa verificare negli atti
-              originali.
+              {" "}CIG di servizi e forniture. Questi numeri indicano dove guardare meglio negli atti.
+              La fascia serve a scegliere cosa verificare negli atti originali.
             </p>
           </div>
           <span className="tag tag-neutral">Intervallo dichiarato da ANAC</span>

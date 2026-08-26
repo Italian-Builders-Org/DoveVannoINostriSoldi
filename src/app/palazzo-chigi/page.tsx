@@ -67,12 +67,11 @@ export default function PalazzoChigiPage() {
       </dl>
 
       <div className="notice">
-        <strong>Tre numeri diversi, tre significati diversi</strong>
+        <strong>Tre numeri diversi</strong>
         <p>
-          <strong>Disponibile</strong>: quanto c&apos;era in bilancio.
-          <strong> Impegnato</strong>: quanto si è deciso di spendere.
-          <strong> Pagato</strong>: quanto è davvero uscito nel 2024.
-          Tre passaggi dello stesso percorso contabile, letti uno per uno.
+          <strong>Disponibile</strong>: in bilancio.
+          <strong> Impegnato</strong>: deciso da spendere.
+          <strong> Pagato</strong>: davvero uscito nel 2024.
         </p>
       </div>
 

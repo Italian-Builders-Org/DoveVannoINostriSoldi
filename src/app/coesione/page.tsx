@@ -163,9 +163,8 @@ export default function CohesionPage() {
       <div className="notice">
         <strong>Come leggere questi numeri</strong>
         <p>
-          La quota confronta ogni categoria con il costo pubblico nazionale. “Pagato sul costo”
-          è un rapporto tra soldi usciti e costo previsto. La media per progetto mescola record
-          molto diversi.
+          La quota confronta ogni tema con il costo pubblico nazionale. “Pagato sul costo” è soldi
+          usciti diviso costo previsto.
         </p>
       </div>
 
@@ -282,8 +281,7 @@ export default function CohesionPage() {
       <div className="notice">
         <strong>Come leggere «pagato»</strong>
         <p>
-          “Pagato” indica che i soldi sono usciti. Le categorie raccolgono progetti eterogenei.{" "}
-          {snapshot.methodology.territorialWarning}
+          “Pagato” significa che i soldi sono usciti. {snapshot.methodology.territorialWarning}
         </p>
       </div>
 

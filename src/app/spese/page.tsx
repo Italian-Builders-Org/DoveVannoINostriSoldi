@@ -119,42 +119,15 @@ export default async function MoneyPage({
         className="notice scope-notice"
         aria-labelledby="spese-scope-title"
       >
-        <h2 id="spese-scope-title">Quali spese vuoi vedere?</h2>
+        <h2 id="spese-scope-title">Qui vedi i pagamenti dei Comuni</h2>
         <p>
-          Questa pagina mostra uscite di cassa dei Comuni. Le contabilità degli altri enti restano
-          separate.
+          Solo uscite di cassa dei Comuni. Gli altri conti restano separati:{" "}
+          <Link href={`/territori?anno=${year}`}>territori</Link>,{" "}
+          <Link href="/spese/invalidita">invalidità INPS</Link>,{" "}
+          <Link href="/spese/sanita">sanità</Link>,{" "}
+          <Link href="/stato">Stato</Link>,{" "}
+          <Link href="/parlamento">Parlamento</Link>.
         </p>
-        <div className="scope-notice__section">
-          <h3>Comuni · dettaglio territoriale</h3>
-          <p>
-            Apri i <Link href={`/territori?anno=${year}`}>pagamenti per regione e le classifiche
-            comunali pubblicate</Link>. Il dataset attuale non contiene una ripartizione
-            provinciale né ogni voce di spesa per singolo Comune.
-          </p>
-        </div>
-        <div className="scope-notice__section">
-          <h3>Invalidità civile INPS · contabilità separata</h3>
-          <p>
-            È una contabilità diversa da SIOPE e resta separata. Abbiamo verificato spesa
-            nazionale, prestazioni vigenti e nuove pensioni per regione nei documenti ufficiali
-            INPS. <Link href="/spese/invalidita">Apri i dati sull&apos;invalidità civile →</Link>
-          </p>
-        </div>
-        <div className="scope-notice__section">
-          <h3>Enti SSN · Conto Economico consuntivo 2024</h3>
-          <p>
-            Il Conto Economico OpenBDAP misura costi di competenza economica e resta separato da
-            SIOPE e dalla contabilità INPS. <Link href="/spese/sanita">Apri
-            personale e servizi degli enti SSN →</Link>
-          </p>
-        </div>
-        <div className="scope-notice__section">
-          <h3>Altri livelli della spesa pubblica</h3>
-          <p>
-            Per gli altri livelli apri le <Link href="/stato">spese delle amministrazioni
-            centrali</Link> oppure le <Link href="/parlamento">spese del Parlamento</Link>.
-          </p>
-        </div>
       </section>
 
       <div className={styles.split}>

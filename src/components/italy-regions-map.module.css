@@ -105,15 +105,19 @@
   text-overflow: ellipsis;
 }
 .detail span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.25;
   font-variant-numeric: tabular-nums;
 }
 .detail small {
-  display: block;
   font-size: 10px;
   font-weight: 400;
+  line-height: 1.2;
   letter-spacing: .07em;
   text-transform: uppercase;
   color: var(--color-neutral-600);

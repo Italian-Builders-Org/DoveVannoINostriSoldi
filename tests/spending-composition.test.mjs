@@ -62,4 +62,8 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   assert.match(component, /Partial composition cannot exceed its canonical total/);
   assert.match(css, /aspect-ratio: 100 \/ 62/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.visual \{ display: none; \}/);
+  assert.match(css, /\.legendCopy \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
+  assert.match(component, /styles\.legendCopy/);
+  assert.match(component, /styles\.legendLabel/);
+  assert.match(component, /styles\.legendAmount/);
 });

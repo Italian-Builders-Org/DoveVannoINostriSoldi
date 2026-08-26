@@ -110,7 +110,10 @@ export function SpendingComposition({
               onClick={() => toggle(item)}
             >
               {labelMode === "full" ? (
-                <span><b>{item.label}</b><strong>{percent(share(item))}</strong></span>
+                <span className={styles.tileCopy}>
+                  <b>{item.label}</b>
+                  <strong>{percent(share(item))}</strong>
+                </span>
               ) : labelMode === "index" ? <span className={styles.tileIndex}>{index + 1}</span> : null}
             </button>
           );
@@ -136,9 +139,12 @@ export function SpendingComposition({
                 }
               }}
             >
-              <i className={styles[item.family]} aria-hidden="true" />
-              <span><b>{index + 1}. {item.label}</b><small>{compactEuro(item.valueEuro)}</small></span>
-              <strong>{percent(share(item))}</strong>
+              <i className={`${styles.legendSwatch} ${styles[item.family]}`} aria-hidden="true" />
+              <span className={styles.legendCopy}>
+                <b className={styles.legendLabel}>{index + 1}. {item.label}</b>
+                <small className={styles.legendAmount}>{compactEuro(item.valueEuro)}</small>
+              </span>
+              <strong className={styles.legendShare}>{percent(share(item))}</strong>
             </button>
             <i className={styles.mobileBar} aria-hidden="true">
               <span className={styles[item.family]} style={{ width: `${share(item)}%` }} />

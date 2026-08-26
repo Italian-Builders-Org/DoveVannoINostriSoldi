@@ -79,8 +79,8 @@ export default function IncarichiPage() {
       <div className="notice warning-notice">
         <strong>2026 è un anno parziale</strong>
         <p>
-          I dati più recenti possono crescere o cambiare con nuove comunicazioni. Per questo non
-          usiamo il 2026 come confronto definitivo con gli anni chiusi e non sommiamo le due serie.
+          I dati recenti possono ancora cambiare. Non usiamo il 2026 come confronto definitivo con
+          gli anni chiusi e non sommiamo le due serie.
         </p>
       </div>
 

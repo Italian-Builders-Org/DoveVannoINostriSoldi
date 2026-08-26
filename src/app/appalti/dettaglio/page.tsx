@@ -13,7 +13,7 @@ export default function ProcurementDetailPage() {
       introduction="Affidamenti diretti, CIG di ministeri e autorità, fornitori aggregati, gruppi societari, rinnovi, proroghe e materiale Consip sono raccolti senza confondere inventari incompleti con classifiche definitive."
       domains={["procurement"]}
       editorialSection="appalti"
-      interpretation="Un affidamento, una ripetizione o una differenza di prezzo è un fatto da contestualizzare. I record fuori Consip restano documentati, ma non sono presentati come sovrapprezzi quando mancano modello o SKU comparabili."
+      interpretation="Un affidamento o una differenza di prezzo va contestualizzato. Fuori Consip restiamo documentati, ma senza modello confrontabile non parliamo di sovrapprezzo."
       related={[
         {
           href: "/appalti",

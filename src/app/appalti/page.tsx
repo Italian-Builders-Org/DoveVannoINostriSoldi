@@ -83,17 +83,11 @@ export default function AppaltiPage() {
       </section>
 
       <section className={`notice scope-notice ${styles.readingNotice}`} aria-labelledby="appalti-reading-title">
-        <h2 id="appalti-reading-title">La lettura corretta in una frase</h2>
+        <h2 id="appalti-reading-title">Come leggere questi numeri</h2>
         <p>
-          Questi conteggi mostrano come sono classificati i CIG pubblicati e indicano dove guardare
-          meglio negli atti.
+          Contano come sono etichettati i CIG pubblicati. Il campo <strong>importo_lotto</strong> è
+          il valore dichiarato del lotto.
         </p>
-        <div className="scope-notice__section">
-          <h3>Che cosa misura il valore</h3>
-          <p>
-            <strong>importo_lotto</strong> è il valore dichiarato del lotto nella banca dati.
-          </p>
-        </div>
       </section>
 
       <section className={`panel ${styles.leadPanel}`} aria-labelledby="procedure-title">

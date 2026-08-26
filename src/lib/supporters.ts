@@ -4,6 +4,17 @@ export type SiteSupporter = Readonly<{
   contribution: string;
 }>;
 
+/** Individual donors acknowledged publicly (e.g. Buy Me a Coffee). */
+export const INDIVIDUAL_SUPPORTERS: readonly SiteSupporter[] = [
+  {
+    name: "Clodo76",
+    href: "https://github.com/Clodo76",
+    contribution:
+      "Primo sostegno su Buy Me a Coffee per aiutare a coprire compute e hosting del progetto.",
+  },
+];
+
+/** Organisations and communities that provide infrastructure, time or community. */
 export const SITE_SUPPORTERS: readonly SiteSupporter[] = [
   {
     name: "Regolo.ai",

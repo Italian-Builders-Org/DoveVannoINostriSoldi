@@ -199,38 +199,28 @@ export default async function ControlsPage({ searchParams }: PageProps) {
         className="notice scope-notice"
         aria-labelledby="controlli-reading-title"
       >
-        <h2 id="controlli-reading-title">Che cosa dicono e che cosa non dicono</h2>
+        <h2 id="controlli-reading-title">Cosa dicono questi segnali</h2>
         <p>
-          Pagamenti, debiti, costi e ipotesi misurano cose diverse e restano separati. Un segnale
-          indica cosa approfondire. Consulta le <Link href="/fonti">fonti
-          ufficiali</Link> e il <Link href="/metodologia">metodo usato per leggere i dati</Link>.
+          Pagamenti, debiti e costi non si mescolano. Un segnale indica cosa approfondire; non sostituisce Guardia di finanza, ANAC, Corte dei conti o il controllo umano. Vedi le{" "}
+          <Link href="/fonti">fonti</Link>, il <Link href="/metodologia">metodo</Link>, gli{" "}
+          <Link href="/appalti">appalti</Link>, il <Link href="/mcp">dataset MCP ANAC</Link> e il{" "}
+          <a
+            href="https://dati.anticorruzione.it/opendata/dataset"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Apri il catalogo open data ANAC in una nuova scheda"
+          >
+            catalogo ANAC ↗
+          </a>
+          .
         </p>
-        <div className="scope-notice__section">
-          <h3>Dove l&apos;automazione aiuta davvero</h3>
-          <p>
-            Il portale può confrontare casi omogenei, trovare dati mancanti e ordinare le verifiche.
-            Non conduce indagini e non sostituisce Guardia di finanza, ANAC, Corte dei conti o il
-            controllo umano. Gli aggregati CIG 2025 verificati sono disponibili nella{" "}
-            <Link href="/appalti">pagina Appalti 2025</Link> e nel{" "}
-            <Link href="/mcp">dataset MCP ANAC</Link>; il{" "}
-            <a
-              href="https://dati.anticorruzione.it/opendata/dataset"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Apri il catalogo open data ANAC in una nuova scheda"
-            >
-              catalogo ufficiale ANAC ↗
-            </a>{" "}
-            resta la fonte primaria.
-          </p>
-        </div>
       </section>
 
       <section className={`panel ${styles.typeLegend}`} aria-labelledby="signal-types-title">
         <h2 id="signal-types-title" className="panel-title">Come leggere i numeri</h2>
         <p className={styles.legendLead}>
-          Ogni blocco indica un tipo di dato diverso. La riga colorata sopra la cifra principale
-          mostra quanto è forte il segnale, non una colpevolezza.
+          Ogni blocco è un tipo di dato diverso. La riga colorata mostra quanto è forte il segnale,
+          non una colpa.
         </p>
         <ul className={styles.toneLegend}>
           {(Object.keys(toneLabels) as Array<keyof typeof toneLabels>).map((tone) => (
@@ -267,15 +257,15 @@ export default async function ControlsPage({ searchParams }: PageProps) {
         <header className={styles.sectionIntro}>
           <h2 id="official-signals-title">Segnali da relazioni ufficiali</h2>
           <p>
-            Cifre pubblicate da autorità di controllo, indagine o vigilanza. Ogni scheda riporta
-            perimetro, stato del dato e limiti di interpretazione.
+            Cifre pubblicate da autorità di controllo. Ogni scheda indica ambito, stato del dato e
+            limiti di lettura.
           </p>
         </header>
         {signals.length === 0 ? (
           <p className={styles.note}>
             Per l&apos;anno selezionato non ci sono segnali da relazioni ufficiali nel nostro
-            perimetro. Non significa che non ce ne siano stati: significa che noi non ne abbiamo
-            ancora uno documentato e verificabile.
+            ambito. Non significa che non ce ne siano: significa che qui non ne abbiamo ancora uno
+            verificabile.
           </p>
         ) : null}
 

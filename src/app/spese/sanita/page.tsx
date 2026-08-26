@@ -83,7 +83,7 @@ export default function HealthSpendingPage() {
           La fonte non pubblica una voce chiamata “gettonisti” o “cooperative”. BA2080 è il
           <em> Totale Costo del personale</em>; BA1350 è “Consulenze, Collaborazioni, Interinale e
           altre prestazioni di lavoro sanitarie e sociosanitarie”. Non trasformiamo una voce
-          aggregata in una categoria contrattuale e non deduciamo qualità, efficienza o frodi.
+          aggregata in un tipo di contratto e non deduciamo qualità o frodi.
         </p>
       </div>
 
@@ -260,11 +260,10 @@ export default function HealthSpendingPage() {
       </div>
 
       <div className="notice">
-        <strong>Questo dataset non sostituisce una contabilità dei pagamenti</strong>
+        <strong>Non è un conto di pagamenti</strong>
         <p>
-          Per gli esborsi di cassa dei Comuni consulta <Link href="/spese">Soldi</Link>; per le
-          prestazioni di invalidità civile consulta i dati <Link href="/spese/invalidita">INPS</Link>.
-          Sono fonti, perimetri e definizioni diversi.
+          Per i pagamenti dei Comuni vai a <Link href="/spese">Soldi</Link>; per l’invalidità civile
+          ai dati <Link href="/spese/invalidita">INPS</Link>. Fonti e ambiti diversi.
         </p>
       </div>
     </main>

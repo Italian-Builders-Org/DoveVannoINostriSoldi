@@ -3,7 +3,7 @@ import {
   FOOTER_SITEMAP_COLUMNS,
   FOOTER_SITEMAP_GROUPS,
 } from "@/lib/site-navigation";
-import { REPO_URL } from "@/lib/site";
+import { BUY_ME_A_COFFEE_URL, REPO_URL } from "@/lib/site";
 
 type SiteFooterProps = Readonly<{
   latestTerritorialCheckLabel: string;
@@ -45,6 +45,24 @@ export function SiteFooter({ latestTerritorialCheckLabel }: SiteFooterProps) {
           ))}
         </div>
       </section>
+
+      <aside className="footer-support" aria-labelledby="footer-support-title">
+        <div className="footer-support-copy">
+          <h2 id="footer-support-title">Sostieni il progetto</h2>
+          <p>
+            Il sito resta indipendente e open source. Un contributo aiuta a pagare compute e
+            hosting; non influenza i dati pubblicati.
+          </p>
+        </div>
+        <a
+          className="footer-support-action"
+          href={BUY_ME_A_COFFEE_URL}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buy me an AI compute
+        </a>
+      </aside>
 
       <div className="footer-row">
         <span>Ultimo controllo SIOPE o IRPEF: {latestTerritorialCheckLabel}</span>

@@ -132,6 +132,10 @@
 @media (max-width: 900px) {
   .tables { grid-template-columns: minmax(0, 1fr); }
   .tracePanel { grid-template-columns: minmax(0, 1fr); }
+  .statusList li {
+    grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr) minmax(240px, .9fr);
+  }
+  .statusList li > b { white-space: normal; }
 }
 
 @media (max-width: 620px) {

@@ -1,0 +1,476 @@
+import "server-only";
+
+import integratedCatalog from "@/data/generated/integrated/catalog.json";
+import {
+  EDITORIAL_TOPICS,
+  type EditorialTopic,
+} from "@/lib/integrated-editorial";
+import { integratedDomainLabel } from "@/lib/integrated-domains";
+import { datasetCatalog } from "@/lib/mcp/catalog";
+import { searchIpaEntities, type IpaEntity } from "@/lib/ipa";
+import {
+  PRIMARY_NAV,
+  SITE_MAP_GROUPS,
+} from "@/lib/site-navigation";
+import {
+  GLOBAL_SEARCH_DEFAULT_LIMIT,
+  GLOBAL_SEARCH_MAX_LIMIT,
+  GLOBAL_SEARCH_MAX_QUERY_LENGTH,
+  GLOBAL_SEARCH_MIN_QUERY_LENGTH,
+} from "@/lib/global-search-contract";
+import type {
+  GlobalSearchResponse,
+  SearchKind,
+  SearchMatchReason,
+  SearchGroup,
+  SearchResult,
+} from "@/lib/global-search-contract";
+
+export {
+  GLOBAL_SEARCH_DEFAULT_LIMIT,
+  GLOBAL_SEARCH_MAX_LIMIT,
+  GLOBAL_SEARCH_MAX_QUERY_LENGTH,
+  GLOBAL_SEARCH_MIN_QUERY_LENGTH,
+} from "@/lib/global-search-contract";
+export type {
+  GlobalSearchResponse,
+  SearchGroup,
+  SearchKind,
+  SearchMatchReason,
+  SearchResult,
+} from "@/lib/global-search-contract";
+export type SearchIndexDocument = Readonly<{
+  id: string;
+  href: string;
+  title: string;
+  context: string;
+  type: Exclude<SearchKind, "ente">;
+  aliases: readonly string[];
+  description: string | null;
+}>;
+
+type FieldMatch = Readonly<{
+  quality: number;
+  reason: "exact" | "prefix" | "tokens";
+}>;
+
+type IntegratedSearchEntry = Readonly<{
+  id: string;
+  title: string;
+  domain: string;
+  authority: string;
+  caveats: readonly string[];
+}>;
+
+const SEARCH_KIND_LABELS: Readonly<Record<SearchKind, string>> = {
+  pagina: "Pagine",
+  sezione: "Sezioni",
+  dataset: "Dataset",
+  strumento: "Strumenti",
+  ente: "Enti",
+};
+
+const SEARCH_KIND_ORDER: readonly SearchKind[] = [
+  "pagina",
+  "sezione",
+  "dataset",
+  "strumento",
+  "ente",
+];
+
+const SEARCH_MATCH_LABELS: Readonly<Record<SearchMatchReason, string>> = {
+  "title-exact": "Titolo esatto",
+  "title-prefix": "Prefisso nel titolo",
+  "title-tokens": "Parole nel titolo",
+  alias: "Alias o sinonimo",
+  description: "Descrizione",
+  entity: "Nome dell'ente",
+};
+
+/** Terms users reasonably use for the canonical routes already in the site map. */
+const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
+  "/": ["inizio"],
+  "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
+  "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
+  "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],
+  "/spese/invalidita": ["invalidita", "inps", "pensioni", "prestazioni"],
+  "/spese/consulenze": ["consulenze", "incarichi", "collaborazioni"],
+  "/spese/territoriale": ["territorio", "regioni", "spesa statale"],
+  "/spese/operative": ["costi operativi", "funzionamento"],
+  "/stato": ["amministrazioni centrali", "ministeri", "stato"],
+  "/debito": ["debito", "debito pubblico", "maastricht", "interessi"],
+  "/stato/legislature": ["elezioni", "governi", "confronto legislatura"],
+  "/territori": ["territorio", "regioni", "comuni", "geografia"],
+  "/territori/irpef": ["redditi", "imposta", "tasse", "dichiarazioni"],
+  "/territori/fisco": ["entrate", "saldo", "cpt", "conti pubblici territoriali"],
+  "/territori/confronto": ["benchmark comuni", "comuni simili", "fabbisogni"],
+  "/coesione": ["fondi", "progetti", "coesione", "pnrr"],
+  "/coesione/asili": ["asili", "prima infanzia", "nidi", "pnrr asili"],
+  "/confronti": ["confronti", "benchmark", "comparazioni"],
+  "/pnrr/incarichi": ["incarichi pnrr", "indire"],
+  "/istituzioni": ["istituzioni", "enti istituzionali"],
+  "/parlamento": ["camera", "senato", "assemblee"],
+  "/palazzo-chigi": ["presidenza del consiglio", "pcm", "governo"],
+  "/ministeri": ["ministeri", "amministrazioni"],
+  "/regioni": ["regioni", "province autonome"],
+  "/enti": ["enti", "comune", "comuni", "amministrazioni", "registro"],
+  "/partecipazioni": ["societa partecipate", "quote", "partecipate"],
+  "/appalti": ["appalti", "contratti", "gare", "acquisti"],
+  "/appalti/dettaglio": ["appalti dettagli", "fornitori", "aggiudicatari"],
+  "/incarichi": ["incarichi", "consulenze", "personale"],
+  "/incarichi/dettaglio": ["incarichi dettagli", "consulenti", "collaborazioni"],
+  "/dati": ["dataset", "catalogo dati", "dati integrati"],
+  "/controlli": ["segnali", "verifiche", "controlli"],
+  "/trasparenza": ["trasparenza", "documenti mancanti", "atti"],
+  "/assistente": ["domande", "domande testuali", "ai dati"],
+  "/mcp": ["model context protocol", "protocollo mcp", "api dati"],
+  "/supporto": ["aiuto", "assistenza"],
+  "/fonti": ["fonti", "sorgenti", "origine dati"],
+  "/fonti/stato": ["stato fonti", "aggiornamento fonti", "salute fonti"],
+  "/fonti/copertura": ["copertura", "fonti integrate", "completezza"],
+  "/fonti/catalogo": ["catalogo fonti", "identita fonti"],
+  "/metodologia": ["metodo", "metodologia", "come leggiamo i dati"],
+};
+
+const PUBLIC_DATASET_TITLES: Readonly<Record<string, string>> = {
+  vincitori: "Fornitori per settore e importo",
+  "gruppi-vincitori": "Gruppi societari dei fornitori",
+  "vincitori-cig": "Collegamenti fornitore-CIG",
+};
+
+const integratedEntries = (integratedCatalog.datasets as readonly IntegratedSearchEntry[]).map(
+  (dataset) => ({
+    ...dataset,
+    title: PUBLIC_DATASET_TITLES[dataset.id] ?? dataset.title,
+  }),
+);
+
+function unique(values: readonly string[]): string[] {
+  return [...new Set(values.filter((value) => value.trim().length > 0))];
+}
+
+function addDocument(
+  documents: Map<string, SearchIndexDocument>,
+  document: SearchIndexDocument,
+): void {
+  const existing = documents.get(document.href);
+  if (!existing) {
+    documents.set(document.href, document);
+    return;
+  }
+
+  documents.set(document.href, {
+    ...existing,
+    aliases: unique([...existing.aliases, ...document.aliases]),
+    description: existing.description ?? document.description,
+  });
+}
+
+function topicSectionLabel(topic: EditorialTopic): string {
+  const parent = PRIMARY_NAV.find((section) =>
+    section.children?.some((child) => child.href === `/${topic.section}`),
+  );
+  return parent?.label ?? topic.section;
+}
+
+function buildSearchDocuments(): readonly SearchIndexDocument[] {
+  const documents = new Map<string, SearchIndexDocument>();
+
+  for (const group of SITE_MAP_GROUPS) {
+    for (const link of group.links) {
+      const primary = PRIMARY_NAV.find((section) => section.href === link.href);
+      const type: SearchIndexDocument["type"] =
+        group.title === "Strumenti"
+          ? "strumento"
+          : primary
+            ? "sezione"
+            : "pagina";
+      const sectionLabel = primary?.label ?? group.title;
+      const aliases = [
+        group.title,
+        ...(primary?.aliases ?? []),
+        ...(ROUTE_ALIASES[link.href] ?? []),
+      ];
+      addDocument(documents, {
+        id: `site:${link.href}`,
+        href: link.href,
+        title: link.label,
+        context: sectionLabel,
+        type,
+        aliases: unique(aliases),
+        description: null,
+      });
+    }
+  }
+
+  for (const topic of EDITORIAL_TOPICS) {
+    const href = `/${topic.section}/${topic.slug}`;
+    addDocument(documents, {
+      id: `topic:${href}`,
+      href,
+      title: topic.title,
+      context: topicSectionLabel(topic),
+      type: "pagina",
+      aliases: unique([
+        topic.slug,
+        topic.section,
+        topicSectionLabel(topic),
+        ...topic.datasets.map((dataset) => dataset.label),
+        ...topic.datasets.map((dataset) => dataset.id),
+      ]),
+      description: `${topic.description} ${topic.introduction}`,
+    });
+  }
+
+  for (const dataset of datasetCatalog) {
+    const href = `/mcp#dataset-${encodeURIComponent(dataset.id)}`;
+    addDocument(documents, {
+      id: `dataset:${dataset.id}`,
+      href,
+      title: dataset.title,
+      context: dataset.sources[0]?.name ?? "Catalogo MCP",
+      type: "dataset",
+      aliases: unique([
+        dataset.id,
+        ...dataset.sources.flatMap((source) => [source.name, source.owner]),
+      ]),
+      description: [dataset.summary, dataset.caveat].filter(Boolean).join(" ") || null,
+    });
+  }
+
+  for (const dataset of integratedEntries) {
+    const href = `/dati/${encodeURIComponent(dataset.id)}`;
+    addDocument(documents, {
+      id: `dataset:integrated:${dataset.id}`,
+      href,
+      title: dataset.title,
+      context: integratedDomainLabel(dataset.domain),
+      type: "dataset",
+      aliases: unique([
+        dataset.id,
+        integratedDomainLabel(dataset.domain),
+        dataset.authority,
+      ]),
+      description: dataset.caveats.join(" ") || null,
+    });
+  }
+
+  return [...documents.values()];
+}
+
+const SEARCH_DOCUMENTS = buildSearchDocuments();
+const italianCollator = new Intl.Collator("it", { sensitivity: "base" });
+
+/**
+ * Fold accents and punctuation while keeping a stable, human-readable token
+ * boundary. This is deliberately not fuzzy matching: every hit remains
+ * explainable as a title, alias, description or entity match.
+ */
+export function normalizeSearchText(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("it-IT")
+    .replace(/[’'`]/g, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function tokens(value: string): readonly string[] {
+  const normalized = normalizeSearchText(value);
+  return normalized ? normalized.split(" ") : [];
+}
+
+function tokenQuality(queryToken: string, candidateToken: string): number {
+  if (candidateToken === queryToken) return 3;
+  if (candidateToken.startsWith(queryToken)) return 2;
+  if (candidateToken.includes(queryToken)) return 1;
+  return 0;
+}
+
+function matchField(value: string, query: string, queryTokens: readonly string[]): FieldMatch | null {
+  const normalized = normalizeSearchText(value);
+  if (!normalized || !query) return null;
+  if (normalized === query) return { quality: 3, reason: "exact" };
+  if (normalized.startsWith(query)) return { quality: 2, reason: "prefix" };
+
+  const candidateTokens = tokens(normalized);
+  const qualities = queryTokens.map((queryToken) =>
+    Math.max(...candidateTokens.map((candidateToken) => tokenQuality(queryToken, candidateToken)), 0),
+  );
+  if (qualities.some((quality) => quality === 0)) return null;
+  if (qualities.every((quality) => quality === 3)) return { quality: 1.8, reason: "tokens" };
+  if (qualities.every((quality) => quality >= 2)) return { quality: 1.6, reason: "tokens" };
+  return { quality: 1.4, reason: "tokens" };
+}
+
+function resultForDocument(document: SearchIndexDocument, query: string): SearchResult | null {
+  const queryTokens = tokens(query);
+  const titleMatch = matchField(document.title, query, queryTokens);
+  const aliasMatch = document.aliases.reduce<FieldMatch | null>(
+    (best, alias) => {
+      const match = matchField(alias, query, queryTokens);
+      return match && (!best || match.quality > best.quality) ? match : best;
+    },
+    null,
+  );
+  const descriptionMatch = document.description
+    ? matchField(document.description, query, queryTokens)
+    : null;
+
+  let reason: SearchMatchReason;
+  let score: number;
+  if (titleMatch) {
+    reason =
+      titleMatch.reason === "exact"
+        ? "title-exact"
+        : titleMatch.reason === "prefix"
+          ? "title-prefix"
+          : "title-tokens";
+    score = 6_000 + titleMatch.quality * 100;
+  } else if (aliasMatch) {
+    reason = "alias";
+    score = 4_000 + aliasMatch.quality * 100;
+  } else if (descriptionMatch) {
+    reason = "description";
+    score = 2_600 + descriptionMatch.quality * 100;
+  } else {
+    return null;
+  }
+
+  return {
+    id: document.id,
+    href: document.href,
+    title: document.title,
+    context: document.context,
+    type: document.type,
+    description: document.description,
+    match: { reason, label: SEARCH_MATCH_LABELS[reason] },
+    score,
+  };
+}
+
+function resultForEntity(entity: IpaEntity, query: string): SearchResult | null {
+  const queryTokens = tokens(query);
+  const fields = [entity.denominazione, entity.acronimo, entity.codiceIpa, entity.tipologia].filter(
+    (value): value is string => Boolean(value),
+  );
+  const match = fields.reduce<FieldMatch | null>((best, field) => {
+    const candidate = matchField(field, query, queryTokens);
+    return candidate && (!best || candidate.quality > best.quality) ? candidate : best;
+  }, null);
+  if (!match) return null;
+
+  const description = [entity.tipologia, entity.codiceIpa].filter(Boolean).join(" · ") || null;
+  return {
+    id: `entity:${entity.codiceIpa}`,
+    href: `/enti/${encodeURIComponent(entity.codiceIpa)}`,
+    title: entity.denominazione,
+    context: "Registro IPA",
+    type: "ente",
+    description,
+    match: { reason: "entity", label: SEARCH_MATCH_LABELS.entity },
+    score: 1_600 + match.quality * 100,
+  };
+}
+
+function compareResults(left: SearchResult, right: SearchResult): number {
+  return (
+    right.score - left.score ||
+    SEARCH_KIND_ORDER.indexOf(left.type) - SEARCH_KIND_ORDER.indexOf(right.type) ||
+    italianCollator.compare(left.title, right.title) ||
+    italianCollator.compare(left.href, right.href) ||
+    left.id.localeCompare(right.id)
+  );
+}
+
+export function searchSiteDocuments(rawQuery: string): readonly SearchResult[] {
+  return rankSearchDocuments(SEARCH_DOCUMENTS, rawQuery);
+}
+
+export function rankSearchDocuments(
+  documents: readonly SearchIndexDocument[],
+  rawQuery: string,
+): readonly SearchResult[] {
+  const query = normalizeSearchText(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
+  if (tokens(query).length === 0) return [];
+  return documents.map((document) => resultForDocument(document, query))
+    .filter((result): result is SearchResult => result !== null)
+    .sort(compareResults);
+}
+
+function groupResults(results: readonly SearchResult[]): readonly SearchGroup[] {
+  return SEARCH_KIND_ORDER.flatMap((type) => {
+    const grouped = results.filter((result) => result.type === type);
+    return grouped.length > 0
+      ? [{ type, label: SEARCH_KIND_LABELS[type], results: grouped }]
+      : [];
+  });
+}
+
+function emptyResponse(query: string, entitiesAvailable = true): GlobalSearchResponse {
+  return {
+    ok: true,
+    query,
+    groups: [],
+    total: 0,
+    hasMore: false,
+    staticTotal: 0,
+    entityTotal: 0,
+    entitiesAvailable,
+  };
+}
+
+function safeLimit(value: number | undefined): number {
+  if (!Number.isFinite(value)) return GLOBAL_SEARCH_DEFAULT_LIMIT;
+  return Math.min(Math.max(Math.trunc(value as number), 1), GLOBAL_SEARCH_MAX_LIMIT);
+}
+
+export async function searchGlobal(input: {
+  query: string;
+  limit?: number;
+}): Promise<GlobalSearchResponse> {
+  const query = input.query.trim().slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH);
+  const normalizedQuery = normalizeSearchText(query);
+  if (normalizedQuery.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH) return emptyResponse(query);
+
+  const limit = safeLimit(input.limit);
+  const staticResults = searchSiteDocuments(query);
+  let entitiesAvailable = true;
+  let entityTotal = 0;
+  let entityResults: SearchResult[] = [];
+
+  try {
+    const entitySearch = await searchIpaEntities({
+      query: normalizedQuery,
+      limit: Math.min(50, Math.max(limit * 3, 12)),
+    });
+    entityTotal = entitySearch.total;
+    entityResults = entitySearch.records
+      .map((entity) => resultForEntity(entity, normalizedQuery))
+      .filter((result): result is SearchResult => result !== null);
+  } catch {
+    entitiesAvailable = false;
+  }
+
+  const byId = new Map<string, SearchResult>();
+  for (const result of [...staticResults, ...entityResults]) {
+    const existing = byId.get(result.id);
+    if (!existing || compareResults(result, existing) < 0) byId.set(result.id, result);
+  }
+  const combined = [...byId.values()].sort(compareResults);
+  const visible = combined.slice(0, limit);
+  const total = staticResults.length + entityTotal;
+
+  return {
+    ok: true,
+    query,
+    groups: groupResults(visible),
+    total,
+    hasMore: total > visible.length,
+    staticTotal: staticResults.length,
+    entityTotal,
+    entitiesAvailable,
+  };
+}

@@ -31,22 +31,89 @@
 }
 
 .panelHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title action"
+    "note action";
+  align-items: start;
+  column-gap: var(--space-2);
+  row-gap: var(--space-2);
+  min-height: 44px;
 }
 .panelHead :global(.panel-title),
 .panelHead > h2 {
+  grid-area: title;
   flex: 1 1 auto;
   min-width: 0;
-  margin-bottom: 0;
+  margin: 0;
+  line-height: 1.12;
 }
 
 .headNote {
+  grid-area: note;
+  min-width: 0;
   font-size: 12px;
   color: var(--color-neutral-600);
+}
+
+.panelHead > :global([data-info-tooltip]),
+.panelHead > :global(nav) {
+  grid-area: action;
+  align-self: start;
+}
+
+/* Keep each compact card on one internal rhythm. A flex panel can anchor its
+   action at the bottom when the responsive band gives sibling cards a shared
+   height, while a naturally sized card keeps the note and action together. */
+.rankPanel,
+.regionsPanel,
+.sourcePanel,
+.actionPanel,
+.readingPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.rankPanel :global(.panel-title),
+.regionsPanel :global(.panel-title),
+.sourcePanel :global(.panel-title),
+.actionPanel :global(.panel-title),
+.readingPanel :global(.panel-title) {
+  margin-bottom: 0;
+}
+.rankPanel .note,
+.sourcePanel .note,
+.actionPanel .note,
+.readingPanel .readingNote { margin: 0; }
+.rankPanel :global(.btn-block),
+.regionsPanel :global(.btn-block),
+.sourcePanel :global(.btn-block),
+.actionPanel :global(.btn-block) { margin-top: auto; }
+.actionPanel .factRows { margin-top: 0; }
+.actionPanel .ratioHead,
+.actionPanel .ratioTrack { margin-top: 0; }
+.periodSelector {
+  justify-self: stretch;
+  margin-bottom: 0;
+}
+
+.mapStage {
+  min-width: 0;
+  margin-top: var(--space-3);
+}
+
+.regionNameCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.regionNameCell > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* ── headline block ─────────────────────────────────────────────────────── */
@@ -220,12 +287,12 @@
 .monthList li > i {
   display: block;
   height: 10px;
-  background: var(--color-neutral-200);
+  background: var(--chart-data-track);
 }
 .monthList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 .monthList li > b {
   text-align: right;
@@ -276,12 +343,12 @@
 .ratioTrack {
   height: 10px;
   margin-top: 6px;
-  background: var(--color-neutral-200);
+  background: var(--chart-progress-track);
 }
 .ratioTrack i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-progress);
 }
 
 .note {
@@ -289,12 +356,132 @@
   font-size: 12px;
   color: var(--color-neutral-600);
 }
+.anomalyGallery {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.anomalyItem {
+  --anomaly-accent: var(--chart-data-primary);
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 11px 12px 10px;
+  border: 1px solid var(--color-neutral-200);
+  border-top: 2px solid var(--anomaly-accent);
+  background: var(--color-neutral-100);
+}
+.anomalyItem[data-signal="gdf-public-spending-fraud"] {
+  --anomaly-accent: var(--chart-category-blue);
+}
+.anomalyItem[data-signal="pnrr-beyond-2026"] {
+  --anomaly-accent: var(--chart-progress);
+}
+.anomalyItemHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.anomalyIcon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  color: var(--anomaly-accent);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-200);
+}
+.anomalyArea {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.anomalyItem h3 {
+  margin: 1px 0 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.anomalyValue {
+  display: block;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.03em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.anomalyBar {
+  display: block;
+  height: 6px;
+  margin-top: 2px;
+  background: var(--chart-data-track);
+}
+.anomalyBar i {
+  display: block;
+  height: 100%;
+  background: var(--anomaly-accent);
+}
+.anomalyMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 2px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.anomalyMeta span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.anomalyMeta a {
+  flex: none;
+  color: var(--anomaly-accent);
+  font-weight: 700;
+  text-align: end;
+}
+.anomalyCaveat,
+.anomalyFallback {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.anomalyCaveat {
+  color: var(--color-neutral-700);
+  font-weight: 700;
+}
+.anomalyFallback a {
+  font-weight: 700;
+}
 
 .readingNote {
   margin: 0 0 var(--space-3);
   font-size: 13px;
   color: var(--color-neutral-800);
 }
+.readingLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  min-height: 44px;
+  margin-top: auto;
+  font-weight: 700;
+}
+.readingLink svg { flex: none; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
@@ -307,17 +494,31 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     align-items: start;
   }
+  .dashboard > .column:last-child > :global(.panel) > :global(.btn-block) {
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 900px) {
   .dashboard { grid-template-columns: minmax(0, 1fr); }
-  .dashboard > .column:last-child { grid-column: auto; }
+  .dashboard > .column:last-child {
+    grid-column: auto;
+    display: flex;
+  }
+  .dashboard > .column:last-child > :global(.panel) { height: auto; }
 }
 
 @media (max-width: 620px) {
   .headline { font-size: 32px; }
   .mapStats { display: grid; grid-template-columns: 1fr 1fr; }
   .monthList li { grid-template-columns: 58px minmax(0, 1fr) 36px; }
+}
+
+@media (max-width: 560px) {
+  .panelHead > :global(nav).periodSelector {
+    grid-area: 2 / 1 / auto / -1;
+    width: 100%;
+  }
 }
 
 @media (max-width: 420px) {

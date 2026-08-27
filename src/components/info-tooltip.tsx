@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { HelpCircleIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import styles from "./info-tooltip.module.css";
 
 export function InfoTooltip({
@@ -79,6 +81,7 @@ export function InfoTooltip({
     <span
       ref={wrapperRef}
       className={styles.wrapper}
+      data-info-tooltip="true"
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse") {
           setTooltipLeft(null);
@@ -126,7 +129,7 @@ export function InfoTooltip({
           setOpen((current) => !current);
         }}
       >
-        ?
+        <HugeiconsIcon icon={HelpCircleIcon} size={18} strokeWidth={1.7} aria-hidden="true" />
       </button>
       <span
         ref={tooltipRef}

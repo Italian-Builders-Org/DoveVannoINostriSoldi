@@ -83,7 +83,7 @@ export default function McpPage() {
             <thead><tr><th scope="col">Dataset</th><th scope="col">Fonte</th><th scope="col">Aggiornamento</th><th scope="col">Filtri</th><th scope="col">Limiti</th></tr></thead>
             <tbody>
               {datasetCatalog.map((dataset) => (
-                <tr key={dataset.id}>
+                <tr id={`dataset-${dataset.id}`} key={dataset.id}>
                   <th scope="row">
                     <strong>{dataset.title}</strong>
                     <code className={styles.datasetId}>{dataset.id}</code>

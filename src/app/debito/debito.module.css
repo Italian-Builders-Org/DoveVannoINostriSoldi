@@ -286,7 +286,7 @@
 .provenanceRow small {
   margin-top: 4px;
   color: var(--color-neutral-600);
-  font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 600 11px var(--font-body);
   overflow-wrap: anywhere;
 }
 

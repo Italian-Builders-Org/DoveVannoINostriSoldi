@@ -86,11 +86,11 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
     <div className={styles.provenanceRow}>
       <div>
         <strong>{datasetLabel(dataset)}</strong>
-        <small>{releaseLabel} · {dataset.productCode}</small>
+        <small>{releaseLabel} · <code>{dataset.productCode}</code></small>
       </div>
       <div>
         <span>{dataset.title}</span>
-        <small>Identificativo {dataset.packageId}</small>
+        <small>Identificativo <code>{dataset.packageId}</code></small>
       </div>
       <div className={styles.provenanceActions}>
         <a href={dataset.csvUrl} target="_blank" rel="noreferrer" aria-label={`Scarica il CSV RGS ${datasetLabel(dataset)} (si apre in una nuova scheda)`}>CSV RGS ↗</a>

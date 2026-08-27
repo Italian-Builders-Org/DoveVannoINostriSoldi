@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Stemma del Piemonte fatto da Blackcat il 18 gennaio 2018 alle ore 12:22 UTC+1 -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="650" height="650" viewBox="0 0 650 650" overflow="visible" enable-background="new 0 0 650 650" xml:space="preserve">
+<rect fill="#C0BEC2" width="650" height="650" />
+<rect fill="#D5001D" width="216" height="216" x="034" y="034" />
+<rect fill="#D5001D" width="216" height="216" x="400" y="034" />
+<rect fill="#D5001D" width="216" height="216" x="034" y="400" />
+<rect fill="#D5001D" width="216" height="216" x="400" y="400" />
+<rect fill="#016DB4" width="326" height="040" x="162" y="070" />
+<polygon fill="#016DB4" points="182,70 207,140 137,140 162,70" />
+<polygon fill="#016DB4" points="335,70 360,140 290,140 315,70" />
+<polygon fill="#016DB4" points="488,70 513,140 443,140 468,70" />
+</svg>

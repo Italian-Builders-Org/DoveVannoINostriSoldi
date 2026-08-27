@@ -12,6 +12,7 @@ const integratedSourceRuntimeFiles = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  allowedDevOrigins: ["localhost", "127.0.0.1"],
   outputFileTracingIncludes: {
     "/dati": integratedSourceRuntimeFiles,
     "/dati/*": integratedSourceRuntimeFiles,

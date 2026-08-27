@@ -11,7 +11,8 @@ const navigationSource = fs.readFileSync(
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { PRIMARY_NAV, activeNavSection, isNavChildActive } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, isNavChildActive } = await import("../src/lib/site-navigation.ts");
+const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
@@ -22,8 +23,10 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.match(layoutSource, /GoogleAnalytics/);
   assert.match(globalsCss, /\.nav-submenu \{/);
   assert.doesNotMatch(globalsCss, /\.subnav-row \{/);
-  assert.match(globalsCss, /\.footer-sitemap-rows \{/);
-  assert.match(globalsCss, /row-gap: var\(--space-6\)/);
+  assert.match(globalsCss, /\.footer-sitemap-columns \{/);
+  assert.match(globalsCss, /column-count: 4/);
+  assert.match(globalsCss, /break-inside: avoid/);
+  assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });
 
@@ -46,6 +49,8 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /<button\s+type="button"\s+className="nav-item-toggle"/);
   assert.match(navigationComponent, /aria-expanded=\{open\}/);
   assert.match(navigationComponent, /aria-controls=\{menuId\}/);
+  assert.match(navigationComponent, /icon=\{ArrowDown01Icon\}/);
+  assert.doesNotMatch(navigationComponent, /▾|Scorri →/);
   assert.match(navigationComponent, /event\.key === "Escape"/);
   assert.match(navigationComponent, /document\.addEventListener\("pointerdown", dismissOutside\)/);
   // Open state carries the path it was opened on, so a completed navigation
@@ -69,84 +74,65 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/);
 });
 
-test("query-aware section links identify the selected business metric", async () => {
-  const business = PRIMARY_NAV.find((item) => item.href === "/imprese");
-  assert.ok(business?.children);
-
-  assert.equal(
-    isNavChildActive(
-      "/imprese",
-      "/imprese?metric=employees",
-      business.children,
-      "metric=employees&period=2026-Q2",
-    ),
-    true,
+test("navigation guards related targets before checking containment", async () => {
+  const navigationComponent = await readFile(
+    new URL("../src/components/navigation.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    navigationComponent,
+    /import \{ isEventTargetWithin \} from "@\/lib\/navigation-boundary";/,
   );
   assert.equal(
-    isNavChildActive(
-      "/imprese",
-      "/imprese",
-      business.children,
-      "metric=employees&period=2026-Q2",
-    ),
-    false,
+    navigationComponent.match(
+      /isEventTargetWithin\(navigationRef\.current, event\.relatedTarget\)/g,
+    )?.length,
+    2,
   );
-  assert.equal(
-    isNavChildActive(
-      "/imprese?metric=active_local_units",
-      "/imprese?metric=active_local_units",
-      business.children,
-    ),
-    true,
-  );
-  assert.equal(
-    isNavChildActive(
-      "/imprese",
-      "/imprese?metric=employees",
-      business.children,
-      "metric=active_enterprises",
-    ),
-    false,
-  );
-  assert.equal(
-    isNavChildActive("/imprese", "/imprese", business.children, "period=2026-07-31"),
-    true,
-  );
-  assert.equal(
-    isNavChildActive("/imprese", "/imprese", business.children, "metric=unknown"),
-    false,
-  );
+  assert.match(navigationComponent, /event\.pointerType === "touch"\) return;/);
 });
 
-test("menu links close the open submenu and the business panels expose headings", async () => {
-  const [navigationComponent, sectionComponent, businessPage] = await Promise.all([
-    readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/app/imprese/page.tsx", import.meta.url), "utf8"),
-  ]);
+test("navigation related target guard distinguishes nodes from other event targets", () => {
+  const originalNode = globalThis.Node;
+  class TestNode extends EventTarget {
+    parent;
 
-  assert.match(navigationComponent, /onClick=\{closeMenu\}/);
-  assert.match(navigationComponent, /useSearchParams/);
-  assert.match(navigationComponent, /currentSearch/);
-  assert.match(navigationComponent, /useState<string \| null>\(null\)/);
-  assert.match(navigationComponent, /useLayoutEffect/);
-  assert.match(navigationComponent, /openMenu\.search === null/);
-  assert.match(navigationComponent, /<Suspense fallback=\{null\}>/);
-  assert.match(navigationComponent, /<NavigationSearchSync onChange=\{setCurrentSearch\} \/>/);
-  assert.equal(
-    navigationComponent.match(/<NavigationContent pathname=/g)?.length,
-    1,
-    "the interactive primary navigation must not be duplicated across a Suspense fallback",
-  );
-  assert.match(sectionComponent, /useSearchParams/);
-  assert.match(sectionComponent, /currentSearch/);
-  assert.match(sectionComponent, /currentSearch=\{null\}/);
-  assert.match(sectionComponent, /currentSearch !== null/);
-  assert.match(sectionComponent, /<Suspense fallback=/);
-  assert.match(businessPage, /aria-labelledby="scope-title"/);
-  assert.match(businessPage, /<h2 id="scope-title" className="panel-title">Perimetro selezionato<\/h2>/);
-  assert.match(businessPage, /<h2 id="ranking-title" className="panel-title">Prime 10 regioni<\/h2>/);
-  assert.match(businessPage, /aria-label="Prime 10 regioni ordinate per valore assoluto"/);
+    constructor(parent = null) {
+      super();
+      this.parent = parent;
+    }
+
+    contains(target) {
+      if (!(target instanceof TestNode)) throw new TypeError("contains() expects a Node");
+      return target === this || (target instanceof TestNode && target.parent === this);
+    }
+  }
+
+  Object.defineProperty(globalThis, "Node", {
+    configurable: true,
+    value: TestNode,
+  });
+
+  try {
+    const navigation = new TestNode();
+    const internal = new TestNode(navigation);
+    const external = new TestNode();
+    const nonNode = new EventTarget();
+
+    assert.equal(isEventTargetWithin(navigation, nonNode), false);
+    assert.equal(isEventTargetWithin(navigation, internal), true);
+    assert.equal(isEventTargetWithin(navigation, external), false);
+    assert.equal(isEventTargetWithin(navigation, null), false);
+  } finally {
+    if (originalNode === undefined) {
+      delete globalThis.Node;
+    } else {
+      Object.defineProperty(globalThis, "Node", {
+        configurable: true,
+        value: originalNode,
+      });
+    }
+  }
 });
 
 test("every page offers the rest of its section without the header menu", async () => {

@@ -1,0 +1,58 @@
+.crest {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+}
+
+.md {
+  width: 56px;
+  height: 56px;
+  padding: 6px;
+}
+
+.image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fallback {
+  color: var(--color-neutral-600);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.attribution {
+  max-width: 88ch;
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.attribution a {
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .sm {
+    width: 28px;
+    height: 28px;
+    padding: 3px;
+  }
+}

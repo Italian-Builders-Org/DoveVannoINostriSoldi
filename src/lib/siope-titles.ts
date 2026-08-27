@@ -111,29 +111,34 @@ export function siopeTitleCopy(
  * Seven slices is more than a thumbnail chart can carry, so the home page
  * groups the tail into five buckets.
  */
-export const HOME_SPENDING_BUCKETS: { name: string; explanation: string; codes: string[] }[] = [
+export const HOME_SPENDING_BUCKETS: { name: string; shortName: string; explanation: string; codes: string[] }[] = [
   {
     name: "Spese correnti",
+    shortName: "Spese correnti",
     explanation: "Funzionamento ordinario: personale, servizi, attività quotidiane.",
     codes: ["1"],
   },
   {
     name: "Investimenti in opere",
+    shortName: "Investimenti",
     explanation: "Conto capitale: infrastrutture, edifici, impianti.",
     codes: ["2"],
   },
   {
     name: "Partite di giro",
+    shortName: "Partite di giro",
     explanation: "Uscite per conto terzi, riversate ad altri soggetti.",
     codes: ["7"],
   },
   {
     name: "Prestiti e anticipazioni",
+    shortName: "Prestiti",
     explanation: "Rimborso di mutui e chiusura di anticipazioni di tesoreria.",
     codes: ["5", "4"],
   },
   {
     name: "Altre uscite",
+    shortName: "Altre uscite",
     explanation: "Voci da classificare e investimenti finanziari.",
     codes: ["0", "3"],
   },

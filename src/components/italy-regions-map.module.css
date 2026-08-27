@@ -135,6 +135,16 @@
   border: 0;
 }
 
+/* Keep the accessible equivalent inside the visually hidden 1px box. The
+   table remains in the accessibility tree, while fixed layout prevents its
+   long exact values from contributing intrinsic page width at narrow sizes. */
+.srOnly table {
+  width: 1px;
+  min-width: 1px;
+  max-width: 1px;
+  table-layout: fixed;
+}
+
 @media (max-width: 1100px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .detail { grid-template-columns: repeat(3, minmax(84px, 1fr)); }

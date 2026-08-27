@@ -6,12 +6,17 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HeaderSearch } from "@/components/header-search";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { GithubIcon } from "@hugeicons/core-free-icons";
+import {
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  GithubIcon,
+} from "@hugeicons/core-free-icons";
 import {
   PRIMARY_NAV,
   isNavChildActive,
   isNavSectionActive,
 } from "@/lib/site-navigation";
+import { isEventTargetWithin } from "@/lib/navigation-boundary";
 import { REPO_URL } from "@/lib/site";
 
 type NavigationContentProps = Readonly<{
@@ -88,7 +93,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
   useEffect(() => {
     if (openHref === null) return;
     function dismissOutside(event: PointerEvent) {
-      if (!navigationRef.current?.contains(event.target as Node)) closeMenu();
+      if (!isEventTargetWithin(navigationRef.current, event.target)) closeMenu();
     }
     function dismissOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") closeMenu();
@@ -148,11 +153,11 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           onPointerLeave={(event) => {
             // Touch opens via the caret and must stay open after the finger lifts.
             if (event.pointerType === "touch") return;
-            if (navigationRef.current?.contains(event.relatedTarget as Node | null)) return;
+            if (isEventTargetWithin(navigationRef.current, event.relatedTarget)) return;
             closeMenu();
           }}
           onBlur={(event) => {
-            if (navigationRef.current?.contains(event.relatedTarget as Node | null)) return;
+            if (isEventTargetWithin(navigationRef.current, event.relatedTarget)) return;
             closeMenu();
           }}
         >
@@ -212,7 +217,12 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                           )
                         }
                       >
-                        <span aria-hidden="true">▾</span>
+                        <HugeiconsIcon
+                          icon={ArrowDown01Icon}
+                          size={15}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
                       </button>
                       <div
                         className="nav-submenu"
@@ -252,7 +262,8 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           </ul>
         </nav>
         <span className="nav-scroll-hint" aria-hidden="true">
-          Scorri →
+          Scorri
+          <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={1.8} />
         </span>
         <span className="nav-note">Fonti e dati sempre visibili</span>
       </div>

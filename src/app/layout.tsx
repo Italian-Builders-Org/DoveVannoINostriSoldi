@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo } from "next/font/google";
+import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
@@ -9,10 +9,10 @@ import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import "./design-system.css";
 import "./globals.css";
 
-const archivo = Archivo({
-  subsets: ["latin", "latin-ext"],
+const geist = Geist({
+  subsets: ["latin"],
   display: "swap",
-  variable: "--font-archivo",
+  variable: "--font-geist",
 });
 
 /** The freshest verification timestamp among the two territorial tax/spending snapshots. */
@@ -49,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it" className={archivo.variable}>
+    <html lang="it" className={geist.variable}>
       <body>
         <GoogleAnalytics />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>

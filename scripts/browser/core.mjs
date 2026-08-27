@@ -1360,7 +1360,7 @@ try {
       pathname: "/",
       width,
       validate: async (page) => {
-        const input = await page.$("#global-entity-search");
+        const input = await page.$("#global-site-search");
         assert.ok(input, `${label}: campo di ricerca assente`);
         await input.type("Roma");
         await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
@@ -1384,7 +1384,7 @@ try {
     pathname: "/",
     width: 390,
     validate: async (page) => {
-      const input = await page.$("#global-entity-search");
+      const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header Escape: campo assente");
       await input.type("Roma");
       await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
@@ -1399,11 +1399,11 @@ try {
     label: "Ricerca header errore 390px",
     pathname: "/",
     width: 390,
-    expectedFailure: (failure) => failure.includes("/api/enti?q=Roma&limit=7"),
+    expectedFailure: (failure) => failure.includes("/api/search?q=Roma&limit=8"),
     validate: async (page) => {
       await page.setRequestInterception(true);
       page.on("request", (request) => {
-        if (new URL(request.url()).pathname === "/api/enti") {
+        if (new URL(request.url()).pathname === "/api/search") {
           void request.respond({
             status: 503,
             contentType: "application/json",
@@ -1413,11 +1413,11 @@ try {
           void request.continue();
         }
       });
-      const input = await page.$("#global-entity-search");
+      const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header errore: campo assente");
       await input.type("Roma");
       await page.waitForFunction(() =>
-        document.body.innerText.includes("La ricerca rapida non è disponibile"),
+        document.body.innerText.includes("La ricerca globale non è disponibile"),
       );
       await page.keyboard.press("Escape");
       assert.equal(await input.evaluate((element) => element.getAttribute("aria-expanded")), "false");
@@ -1432,24 +1432,39 @@ try {
     validate: async (page) => {
       await page.setRequestInterception(true);
       page.on("request", (request) => {
-        if (new URL(request.url()).pathname === "/api/enti") {
+        if (new URL(request.url()).pathname === "/api/search") {
           void request.respond({
             status: 200,
             contentType: "application/json",
             body: JSON.stringify({
               ok: true,
-              records: [{
-                codiceIpa: "ente_test",
-                denominazione: "Amministrazione straordinariamente lunga senza separatori utili alla visualizzazione",
-                tipologia: "Pubblica amministrazione territoriale",
+              query: "ente",
+              groups: [{
+                type: "ente",
+                label: "Enti",
+                results: [{
+                  id: "entity:ente_test",
+                  href: "/enti/ente_test",
+                  title: "Amministrazione straordinariamente lunga senza separatori utili alla visualizzazione",
+                  context: "Registro IPA",
+                  type: "ente",
+                  description: "Pubblica amministrazione territoriale · ente_test",
+                  match: { reason: "entity", label: "Nome dell'ente" },
+                  score: 1900,
+                }],
               }],
+              total: 1,
+              hasMore: false,
+              staticTotal: 0,
+              entityTotal: 1,
+              entitiesAvailable: true,
             }),
           });
         } else {
           void request.continue();
         }
       });
-      const input = await page.$("#global-entity-search");
+      const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header testo lungo: campo assente");
       await input.type("ente");
       await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });

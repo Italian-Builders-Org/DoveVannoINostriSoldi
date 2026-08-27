@@ -5,30 +5,24 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
+import {
+  GLOBAL_SEARCH_MIN_QUERY_LENGTH,
+  type GlobalSearchResponse,
+  type SearchResult,
+} from "@/lib/global-search-contract";
 
-type Suggestion = {
-  codiceIpa: string;
-  denominazione: string;
-  tipologia: string | null;
-};
-
-type EntiSearchResponse = {
-  ok: boolean;
-  records?: Array<{
-    codiceIpa: string;
-    denominazione: string;
-    tipologia: string | null;
-  }>;
-};
-
-const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 200;
+const SUGGESTION_LIMIT = 8;
+
+function flattenResults(response: GlobalSearchResponse | null): readonly SearchResult[] {
+  return response?.groups.flatMap((group) => group.results) ?? [];
+}
 
 export function HeaderSearch() {
   const router = useRouter();
   const listboxId = useId();
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [response, setResponse] = useState<GlobalSearchResponse | null>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
@@ -36,13 +30,15 @@ export function HeaderSearch() {
   const rootRef = useRef<HTMLFormElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
+  const results = flattenResults(response);
+  const trimmedQuery = query.trim();
+  const showDropdown = open && trimmedQuery.length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH;
 
   useEffect(() => {
-    const trimmed = query.trim();
     const requestId = ++requestIdRef.current;
     abortRef.current?.abort();
 
-    if (trimmed.length < MIN_QUERY_LENGTH) {
+    if (trimmedQuery.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH) {
       return;
     }
 
@@ -51,32 +47,23 @@ export function HeaderSearch() {
       abortRef.current = controller;
       setLoading(true);
 
-      fetch(`/api/enti?q=${encodeURIComponent(trimmed)}&limit=7`, {
+      fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}&limit=${SUGGESTION_LIMIT}`, {
         signal: controller.signal,
       })
-        .then((response) => {
-          if (!response.ok) throw new Error(`Ricerca IPA HTTP ${response.status}`);
-          return response.json() as Promise<EntiSearchResponse>;
+        .then((request) => {
+          if (!request.ok) throw new Error(`Ricerca globale HTTP ${request.status}`);
+          return request.json() as Promise<GlobalSearchResponse>;
         })
         .then((payload) => {
-          if (requestId !== requestIdRef.current) return;
-          if (!payload.ok || !payload.records) {
-            throw new Error("Risposta della ricerca IPA non valida");
-          }
-          setSuggestions(
-            payload.records.map((record) => ({
-              codiceIpa: record.codiceIpa,
-              denominazione: record.denominazione,
-              tipologia: record.tipologia,
-            })),
-          );
+          if (requestId !== requestIdRef.current || payload.ok !== true) return;
+          setResponse(payload);
           setActiveIndex(-1);
           setSearchError(false);
         })
         .catch((error: unknown) => {
           if (error instanceof DOMException && error.name === "AbortError") return;
           if (requestId !== requestIdRef.current) return;
-          setSuggestions([]);
+          setResponse(null);
           setActiveIndex(-1);
           setSearchError(true);
         })
@@ -90,7 +77,7 @@ export function HeaderSearch() {
       abortRef.current?.abort();
       if (requestId === requestIdRef.current) requestIdRef.current += 1;
     };
-  }, [query]);
+  }, [trimmedQuery]);
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -100,11 +87,10 @@ export function HeaderSearch() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
-  const showDropdown = open && query.trim().length >= MIN_QUERY_LENGTH;
-
-  function goToSuggestion(suggestion: Suggestion) {
+  function goToResult(result: SearchResult) {
     setOpen(false);
-    router.push(`/enti/${encodeURIComponent(suggestion.codiceIpa)}`);
+    setActiveIndex(-1);
+    router.push(result.href);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -115,49 +101,54 @@ export function HeaderSearch() {
       return;
     }
 
-    if (!showDropdown || suggestions.length === 0) return;
+    if (!showDropdown || results.length === 0) return;
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((index) => (index + 1) % suggestions.length);
+      setActiveIndex((index) => (index + 1) % results.length);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex((index) => (index <= 0 ? suggestions.length - 1 : index - 1));
-    } else if (event.key === "Enter") {
-      if (activeIndex >= 0) {
-        event.preventDefault();
-        goToSuggestion(suggestions[activeIndex]);
-      }
+      setActiveIndex((index) => (index <= 0 ? results.length - 1 : index - 1));
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setActiveIndex(results.length - 1);
+    } else if (event.key === "Enter" && activeIndex >= 0) {
+      event.preventDefault();
+      goToResult(results[activeIndex]);
     }
   }
 
   return (
     <form
       className="header-search"
-      action="/enti"
+      action="/cerca"
       method="get"
       role="search"
       autoComplete="off"
       ref={rootRef}
       onSubmit={() => setOpen(false)}
     >
-      <label htmlFor="global-entity-search">Cerca nel registro degli enti</label>
+      <label htmlFor="global-site-search">Cerca nel sito</label>
       <input
         className="input"
-        id="global-entity-search"
+        id="global-site-search"
         name="q"
         type="search"
-        placeholder="Cerca un Comune, un ente o un ministero"
+        placeholder="Cerca pagine, dati o enti"
         autoComplete="off"
         value={query}
+        maxLength={180}
         onChange={(event) => {
           const nextQuery = event.target.value;
           abortRef.current?.abort();
           setQuery(nextQuery);
-          setSuggestions([]);
+          setResponse(null);
           setActiveIndex(-1);
           setSearchError(false);
-          setLoading(nextQuery.trim().length >= MIN_QUERY_LENGTH);
+          setLoading(nextQuery.trim().length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH);
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
@@ -170,7 +161,7 @@ export function HeaderSearch() {
           showDropdown && activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined
         }
       />
-      <button type="submit" aria-label="Cerca">
+      <button type="submit" aria-label="Cerca nel sito">
         <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.7} aria-hidden="true" />
       </button>
 
@@ -178,45 +169,60 @@ export function HeaderSearch() {
         <div className="header-search-dropdown">
           {loading ? (
             <p className="header-search-empty" role="status" aria-live="polite">
-              Cerco…
+              Cerco nel sito…
             </p>
           ) : searchError ? (
             <p className="header-search-empty" role="status" aria-live="polite">
-              La ricerca rapida non è disponibile. Premi Invio per cercare nella pagina Enti.
+              La ricerca globale non è disponibile. Premi Invio per riprovare.
             </p>
-          ) : suggestions.length === 0 ? (
+          ) : response && results.length === 0 ? (
             <p className="header-search-empty" role="status" aria-live="polite">
-              Nessun risultato in IPA per &ldquo;{query.trim()}&rdquo;
+              Nessun risultato per &ldquo;{trimmedQuery}&rdquo;
             </p>
           ) : null}
-          <div id={listboxId} role="listbox" aria-label="Enti suggeriti" aria-busy={loading}>
-            {suggestions.map((suggestion, index) => (
-              <Link
-                key={suggestion.codiceIpa}
-                href={`/enti/${encodeURIComponent(suggestion.codiceIpa)}`}
-                id={`${listboxId}-${index}`}
-                role="option"
-                tabIndex={-1}
-                aria-selected={index === activeIndex}
-                className="header-search-option"
-                data-active={index === activeIndex ? "true" : undefined}
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => setOpen(false)}
-              >
-                <span className="header-search-option-name">{suggestion.denominazione}</span>
-                {suggestion.tipologia ? (
-                  <span className="header-search-option-type">{suggestion.tipologia}</span>
-                ) : null}
-              </Link>
+
+          <div id={listboxId} role="listbox" aria-label="Risultati della ricerca" aria-busy={loading}>
+            {response?.groups.map((group) => (
+              <div key={group.type} role="group" aria-label={group.label}>
+                <div className="header-search-group-label" role="presentation">
+                  {group.label}
+                </div>
+                {group.results.map((result) => {
+                  const resultIndex = results.indexOf(result);
+                  return (
+                    <Link
+                      key={result.id}
+                      href={result.href}
+                      id={`${listboxId}-${resultIndex}`}
+                      role="option"
+                      tabIndex={-1}
+                      aria-selected={resultIndex === activeIndex}
+                      className="header-search-option"
+                      data-active={resultIndex === activeIndex ? "true" : undefined}
+                      onMouseEnter={() => setActiveIndex(resultIndex)}
+                      onClick={() => setOpen(false)}
+                    >
+                      <span className="header-search-option-copy">
+                        <span className="header-search-option-name">{result.title}</span>
+                        <span className="header-search-option-context">{result.context}</span>
+                      </span>
+                      <span className="header-search-option-type">{result.match.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             ))}
           </div>
-          <Link
-            href={`/enti?q=${encodeURIComponent(query.trim())}`}
-            className="header-search-all"
-            onClick={() => setOpen(false)}
-          >
-            Vedi tutti i risultati per &ldquo;{query.trim()}&rdquo;
-          </Link>
+
+          {response?.hasMore ? (
+            <Link
+              href={`/cerca?q=${encodeURIComponent(trimmedQuery)}`}
+              className="header-search-all"
+              onClick={() => setOpen(false)}
+            >
+              Vedi tutti i risultati
+            </Link>
+          ) : null}
         </div>
       ) : null}
     </form>

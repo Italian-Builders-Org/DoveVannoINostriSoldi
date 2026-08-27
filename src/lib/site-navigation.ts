@@ -217,7 +217,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   },
 ] as const;
 
-/** Footer map: main sections only, in reading order, split into balanced rows. */
+/** Footer map: main sections only, in reading order; CSS balances them into columns. */
 export const FOOTER_SITEMAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] =
   SITE_MAP_GROUPS.filter((group) => group.title !== "Home" && group.title !== "Legale");
 

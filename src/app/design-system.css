@@ -62,9 +62,9 @@
   --color-critical-border: var(--color-accent-300);
   --color-negative: var(--color-critical);
 
-  --font-heading: var(--font-archivo), system-ui, sans-serif;
+  --font-heading: var(--font-geist), system-ui, sans-serif;
   --font-heading-weight: 800;
-  --font-body: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-geist), system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --space-1: 4px;
@@ -100,6 +100,13 @@
   --chart-family-pass-through: #f2d071;
   --chart-family-financing: #efb36d;
   --chart-family-other: #bdd8e5;
+
+  /* Neutral quantities and completion use their own roles. Red is reserved
+     for actions, warnings and genuinely critical states. */
+  --chart-data-primary: #176b73;
+  --chart-data-track: #dce9e9;
+  --chart-progress: #73833a;
+  --chart-progress-track: #e5e8d9;
 
   /* Additive part-to-whole charts only. Red stays for CTA and warnings. */
   --chart-category-blue: #2855a5;

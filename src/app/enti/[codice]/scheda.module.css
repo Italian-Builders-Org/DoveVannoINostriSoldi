@@ -215,7 +215,7 @@
   width: 14px;
   height: 14px;
   border: 3px solid var(--color-accent-800);
-  background: white;
+  background: var(--color-raised);
   transform: translate(-50%, -50%);
 }
 

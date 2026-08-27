@@ -36,8 +36,8 @@
   text-decoration: none;
 }
 .metricSelector a[aria-current="page"] {
-  color: white;
-  background: var(--color-accent-800);
+  color: var(--color-raised);
+  background: var(--color-accent-700);
 }
 
 .viewBlock {
@@ -52,7 +52,7 @@
   width: fit-content;
   padding: 3px;
   border: 1px solid var(--color-neutral-300);
-  background: white;
+  background: var(--color-raised);
 }
 
 .viewSelector button {
@@ -69,7 +69,7 @@
 
 .viewSelector button[aria-selected="true"] {
   background: var(--color-neutral-900);
-  color: white;
+  color: var(--color-on-strong);
 }
 
 .rankingGuide p {
@@ -147,8 +147,8 @@
   padding: 8px 10px;
   border: 1px solid var(--color-neutral-300);
   border-radius: 0;
-  background: white;
-  color: var(--color-neutral-900);
+  background: var(--color-raised);
+  color: var(--color-text);
   font: inherit;
   font-size: 12px;
 }
@@ -163,9 +163,9 @@
 .filterActions button {
   min-height: 42px;
   padding: 9px 13px;
-  border: 1px solid var(--color-accent-800);
-  background: var(--color-accent-800);
-  color: white;
+  border: 1px solid var(--color-accent-700);
+  background: var(--color-accent-700);
+  color: var(--color-raised);
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -186,7 +186,7 @@
 }
 
 .resultsSummary strong {
-  color: var(--color-neutral-900);
+  color: var(--color-text);
 }
 
 .emptyState {

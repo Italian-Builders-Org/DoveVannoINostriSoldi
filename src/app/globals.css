@@ -238,6 +238,32 @@ nav li a { text-decoration: none; }
 }
 .header-action-icon:hover { color: var(--color-accent-700); }
 
+.theme-toggle-icon-dark {
+  display: grid;
+  place-items: center;
+}
+.theme-toggle-icon-light {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle-icon-dark {
+  display: none;
+}
+[data-theme="dark"] .theme-toggle-icon-light {
+  display: grid;
+  place-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle-icon-dark {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .theme-toggle-icon-light {
+    display: grid;
+    place-items: center;
+  }
+}
+
 /* ── primary navigation ─────────────────────────────────────────────────── */
 
 .nav-row {

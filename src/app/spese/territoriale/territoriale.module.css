@@ -239,4 +239,4 @@
   font-weight: 700;
   text-decoration: none;
 }
-.quickMeasures a[aria-current="page"] { color: white; background: var(--color-accent-800); }
+.quickMeasures a[aria-current="page"] { color: var(--color-raised); background: var(--color-accent-700); }

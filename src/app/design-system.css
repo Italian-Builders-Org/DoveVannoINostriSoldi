@@ -113,6 +113,170 @@
   --focus-ring: var(--color-accent);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #161514;
+    --color-surface: #1e1c1b;
+    --color-raised: #252322;
+    --color-text: #ece8e7;
+    --color-on-strong: #ffffff;
+    --color-on-strong-muted: #c8c3c1;
+    --color-accent: #ff563c;
+    --color-accent-2: #ef6853;
+    --color-divider: color-mix(in srgb, #ece8e7 20%, transparent);
+
+    /* Tonal ramps — dark mode */
+    --color-neutral-100: #2c2a29;
+    --color-neutral-200: #373433;
+    --color-neutral-300: #484443;
+    --color-neutral-400: #615c5a;
+    --color-neutral-500: #7d7775;
+    --color-neutral-600: #aba5a3;
+    --color-neutral-700: #c8c3c1;
+    --color-neutral-800: #e2dedd;
+    --color-neutral-900: #121110;
+
+    --color-accent-100: #331814;
+    --color-accent-200: #4d201a;
+    --color-accent-300: #742a1f;
+    --color-accent-400: #a33725;
+    --color-accent-500: #d6442c;
+    --color-accent-600: #f0553a;
+    --color-accent-700: #ff705a;
+    --color-accent-800: #ff9280;
+    --color-accent-900: #ffc2b8;
+
+    --color-accent-2-100: #331a17;
+    --color-accent-2-200: #4d241f;
+    --color-accent-2-300: #743128;
+    --color-accent-2-400: #a34235;
+    --color-accent-2-500: #d45544;
+    --color-accent-2-600: #eb6a58;
+    --color-accent-2-700: #ff8270;
+    --color-accent-2-800: #ffa294;
+    --color-accent-2-900: #ffcbc2;
+
+    /* Status */
+    --color-positive: #4ade80;
+    --color-positive-bg: #122a1b;
+    --color-positive-border: #225936;
+    --color-warning: #f59e0b;
+    --color-warning-bg: #2c1f0d;
+    --color-warning-border: #5c4015;
+    --color-critical: var(--color-accent-700);
+    --color-critical-bg: var(--color-accent-100);
+    --color-critical-border: var(--color-accent-300);
+    --color-negative: var(--color-critical);
+
+    /* Elevation */
+    --shadow-sm: 0 1px 2px color-mix(in srgb, #000000 40%, transparent);
+    --shadow-md: 0 3px 10px color-mix(in srgb, #000000 50%, transparent);
+    --shadow-lg: 0 12px 32px color-mix(in srgb, #000000 65%, transparent);
+
+    --chart-primary: var(--color-accent);
+    --chart-secondary: var(--color-neutral-700);
+    --chart-tertiary: var(--color-neutral-500);
+    --chart-quaternary: var(--color-neutral-400);
+    --chart-quinary: var(--color-accent-400);
+    --chart-negative: var(--color-accent-600);
+    --chart-family-services: #625194;
+    --chart-family-investment: #8c4554;
+    --chart-family-pass-through: #876d29;
+    --chart-family-financing: #8a5a24;
+    --chart-family-other: #3c6275;
+
+    --chart-category-blue: #2855a5;
+    --chart-category-teal: #087c74;
+    --chart-category-purple: #6b46a3;
+    --chart-category-amber: #9a5b00;
+    --chart-category-green: #2f6f44;
+    --chart-category-slate: #405b70;
+
+    --focus-ring: var(--color-accent);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #161514;
+  --color-surface: #1e1c1b;
+  --color-raised: #252322;
+  --color-text: #ece8e7;
+  --color-on-strong: #ffffff;
+  --color-on-strong-muted: #c8c3c1;
+  --color-accent: #ff563c;
+  --color-accent-2: #ef6853;
+  --color-divider: color-mix(in srgb, #ece8e7 20%, transparent);
+
+  /* Tonal ramps — dark mode */
+  --color-neutral-100: #2c2a29;
+  --color-neutral-200: #373433;
+  --color-neutral-300: #484443;
+  --color-neutral-400: #615c5a;
+  --color-neutral-500: #7d7775;
+  --color-neutral-600: #aba5a3;
+  --color-neutral-700: #c8c3c1;
+  --color-neutral-800: #e2dedd;
+  --color-neutral-900: #121110;
+
+  --color-accent-100: #331814;
+  --color-accent-200: #4d201a;
+  --color-accent-300: #742a1f;
+  --color-accent-400: #a33725;
+  --color-accent-500: #d6442c;
+  --color-accent-600: #f0553a;
+  --color-accent-700: #ff705a;
+  --color-accent-800: #ff9280;
+  --color-accent-900: #ffc2b8;
+
+  --color-accent-2-100: #331a17;
+  --color-accent-2-200: #4d241f;
+  --color-accent-2-300: #743128;
+  --color-accent-2-400: #a34235;
+  --color-accent-2-500: #d45544;
+  --color-accent-2-600: #eb6a58;
+  --color-accent-2-700: #ff8270;
+  --color-accent-2-800: #ffa294;
+  --color-accent-2-900: #ffcbc2;
+
+  /* Status */
+  --color-positive: #4ade80;
+  --color-positive-bg: #122a1b;
+  --color-positive-border: #225936;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #2c1f0d;
+  --color-warning-border: #5c4015;
+  --color-critical: var(--color-accent-700);
+  --color-critical-bg: var(--color-accent-100);
+  --color-critical-border: var(--color-accent-300);
+  --color-negative: var(--color-critical);
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #000000 40%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #000000 50%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #000000 65%, transparent);
+
+  --chart-primary: var(--color-accent);
+  --chart-secondary: var(--color-neutral-700);
+  --chart-tertiary: var(--color-neutral-500);
+  --chart-quaternary: var(--color-neutral-400);
+  --chart-quinary: var(--color-accent-400);
+  --chart-negative: var(--color-accent-600);
+  --chart-family-services: #625194;
+  --chart-family-investment: #8c4554;
+  --chart-family-pass-through: #876d29;
+  --chart-family-financing: #8a5a24;
+  --chart-family-other: #3c6275;
+
+  --chart-category-blue: #2855a5;
+  --chart-category-teal: #087c74;
+  --chart-category-purple: #6b46a3;
+  --chart-category-amber: #9a5b00;
+  --chart-category-green: #2f6f44;
+  --chart-category-slate: #405b70;
+
+  --focus-ring: var(--color-accent);
+}
+
 /* — rules — */
 .hr {
   height: 2px;

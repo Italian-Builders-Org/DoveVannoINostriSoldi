@@ -27,8 +27,8 @@
   padding: 8px 34px 8px 10px;
   border: 1px solid var(--color-neutral-300);
   border-radius: 0;
-  background: white;
-  color: var(--color-neutral-900);
+  background: var(--color-raised);
+  color: var(--color-text);
   font: inherit;
 }
 
@@ -52,11 +52,11 @@
   grid-row: 1 / span 2;
   align-self: stretch;
   width: 2px;
-  background: var(--color-neutral-900);
+  background: var(--color-text);
 }
 
 .referenceLabel strong {
-  color: var(--color-neutral-900);
+  color: var(--color-text);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
@@ -81,7 +81,7 @@
   padding: 4px 6px;
   outline: 2px solid var(--color-accent-700);
   outline-offset: 2px;
-  background: color-mix(in srgb, var(--color-accent-100) 55%, white);
+  background: var(--color-accent-100);
 }
 
 .regionName {
@@ -89,7 +89,7 @@
   border: 0;
   background: transparent;
   overflow: hidden;
-  color: var(--color-neutral-900);
+  color: var(--color-text);
   font-size: 12px;
   font-weight: 650;
   text-align: left;
@@ -128,7 +128,7 @@
   bottom: -3px;
   left: var(--reference-position);
   width: 2px;
-  background: var(--color-neutral-900);
+  background: var(--color-text);
 }
 
 .value {
@@ -186,7 +186,7 @@
   min-height: 38px;
   padding: 8px 12px;
   border: 1px solid var(--color-accent-700);
-  background: white;
+  background: var(--color-raised);
   color: var(--color-accent-800);
   font-size: 12px;
   font-weight: 700;
@@ -277,7 +277,7 @@
 
 .trendTrack {
   height: 8px;
-  background: white;
+  background: var(--color-neutral-200);
 }
 
 .trendTrack i {

@@ -18,6 +18,17 @@ test("fonti uses the lightweight company atlas metadata entry point", async () =
   assert.equal(Object.keys(companyAtlasSources).length, 3);
 });
 
+test("company atlas turnover labels explain source units and stay legible", async () => {
+  const pageSource = await readFile(new URL("../src/app/imprese/page.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../src/app/imprese/imprese.module.css", import.meta.url), "utf8");
+
+  assert.match(pageSource, /Unità fonte: \{turnoverView\.metricUnit\}/);
+  assert.match(pageSource, /\\u00a0mld\\u00a0€/);
+  assert.match(pageSource, /className=\{styles\.sectorName\}/);
+  assert.match(styles, /\.sectorLabel \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto/);
+  assert.match(styles, /\.sectorLabel strong \{[^}]*white-space: nowrap/);
+});
+
 test("observation index matches the generated snapshot across filter shapes", () => {
   const index = createCompanyAtlasObservationIndex(snapshot.observations);
   const cases = [

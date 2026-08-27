@@ -46,12 +46,12 @@ function compactTurnover(value: number | null): string {
   if (value === null) return "n.d.";
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
-    return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mld €`;
+    return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })}\u00a0mld\u00a0€`;
   }
   if (absolute >= 1_000) {
-    return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mln €`;
+    return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })}\u00a0mln\u00a0€`;
   }
-  return `${integer(value)} mila €`;
+  return `${integer(value)}\u00a0mila\u00a0€`;
 }
 
 function atlasHref(view: { metric: string; period: string; region: string; sector: string; band?: string }, region?: string) {
@@ -149,7 +149,7 @@ export default async function ImpresePage({
                 <span className="status status-attiva">Snapshot ISTAT</span>
               </div>
               <strong className={styles.headline}>{compactTurnover(turnoverView.nationalValue)}</strong>
-              <p className={styles.headlineNote}>{turnoverView.metricUnit} · {turnoverView.periodLabel}</p>
+              <p className={styles.headlineNote}>Unità fonte: {turnoverView.metricUnit} · {turnoverView.periodLabel}</p>
 
               <dl className={styles.factRows}>
                 <div><dt>Metrica</dt><dd>{turnoverView.metricLabel}</dd></div>
@@ -354,7 +354,13 @@ export default async function ImpresePage({
                 const share = sector.value !== null && sectorTotal > 0 ? (sector.value / sectorTotal) * 100 : 0;
                 return (
                   <li key={sector.code}>
-                    <div className={styles.sectorLabel}><b>{sector.code}</b><span>{sector.label}</span><strong>{compactCount(sector.value)}</strong></div>
+                    <div className={styles.sectorLabel}>
+                      <span className={styles.sectorName}>
+                        <b>{sector.code}</b>
+                        <span>{sector.label}</span>
+                      </span>
+                      <strong>{compactCount(sector.value)}</strong>
+                    </div>
                     <i aria-hidden="true"><b style={{ width: `${share}%` }} /></i>
                     <small>{sector.value === null ? "n.d." : percent(share)} del perimetro settoriale</small>
                   </li>

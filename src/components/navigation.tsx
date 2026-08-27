@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } f
 import { HeaderSearch } from "@/components/header-search";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { GithubIcon } from "@hugeicons/core-free-icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   PRIMARY_NAV,
   isNavChildActive,
@@ -127,6 +128,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           <Link className="header-action header-action-accent" href="/mcp">
             Istruzioni MCP
           </Link>
+          <ThemeToggle />
           <a
             className="header-action header-action-icon"
             href={REPO_URL}

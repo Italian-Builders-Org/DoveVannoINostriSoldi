@@ -39,6 +39,17 @@ La palette è grigio-carta caldo con un unico rosso di segnalazione. Evitare ner
 - `--color-accent-2: #e15b47` — accento secondario, usato di rado;
 - `--color-divider` — separatore calcolato dal testo.
 
+### Dark mode
+
+La modalità scura inverte la gerarchia conservando l'identità calda e sobria:
+- `--color-bg: #161514` — fondo applicazione scuro;
+- `--color-surface: #1e1c1b` — fondo secondario;
+- `--color-raised: #252322` — superficie dei pannelli;
+- `--color-text: #ece8e7` — testo principale;
+- `--color-accent: #ff563c` e `--color-accent-700: #ff705a` — accento ad alto contrasto (WCAG AA) per azioni, link e serie primarie.
+
+I token neutrali (`neutral-100…900`) e di stato (`positive`, `warning`, `critical`) scalano simmetricamente per garantire contrasto e leggibilità immediata su tutti i grafici, mappe, tabelle e controlli.
+
 ### Rampe tonali
 
 `--color-neutral-100…900` e `--color-accent-100…900` sono generate in OKLCH su un'unica scala di luminosità: lo stesso passo di due rampe diverse ha lo stesso valore visivo. Le regole d'uso:

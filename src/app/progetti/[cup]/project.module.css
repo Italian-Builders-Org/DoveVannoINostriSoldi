@@ -9,7 +9,7 @@
 }
 
 .breadcrumb strong {
-  color: var(--color-neutral-900);
+  color: var(--color-text);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }

@@ -39,8 +39,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  colorScheme: "light",
-  themeColor: "#f3f2f2",
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3f2f2" },
+    { media: "(prefers-color-scheme: dark)", color: "#161514" },
+  ],
 };
 
 export default function RootLayout({
@@ -49,7 +52,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it" className={archivo.variable}>
+    <html lang="it" className={archivo.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("dvns-theme");var m=window.matchMedia("(prefers-color-scheme: dark)").matches;var d=t==="dark"||((t!=="light")&&m);if(d){document.documentElement.setAttribute("data-theme","dark");document.documentElement.style.colorScheme="dark";}else{document.documentElement.setAttribute("data-theme","light");document.documentElement.style.colorScheme="light";}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body>
         <GoogleAnalytics />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>

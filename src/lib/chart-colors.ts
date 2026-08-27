@@ -6,14 +6,14 @@
  * competing with the tricolour in the header.
  */
 export const CHART_COLORS = [
-  "#ec3013",
-  "#444141",
-  "#9b9797",
-  "#ef6853",
-  "#605d5d",
-  "#ffc4b8",
+  "var(--chart-primary)",
+  "var(--chart-secondary)",
+  "var(--chart-tertiary)",
+  "var(--color-accent-2)",
+  "var(--color-neutral-700)",
+  "var(--chart-quinary)",
 ] as const;
 
 export function chartColor(index: number): string {
-  return CHART_COLORS[index % CHART_COLORS.length];
+  return CHART_COLORS[index % CHART_COLORS.length]!;
 }

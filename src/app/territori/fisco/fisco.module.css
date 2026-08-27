@@ -12,7 +12,7 @@
 }
 
 .formulaVisual b { color: var(--color-neutral-600); }
-.formulaVisual strong { color: var(--color-neutral-900); }
+.formulaVisual strong { color: var(--color-text); }
 
 .sectionHeading {
   display: flex;
@@ -105,7 +105,7 @@
 .methodology dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .methodology dl > div { border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-3); }
 .methodology dt { color: var(--color-neutral-600); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
-.methodology dd { margin: 5px 0 0; color: var(--color-neutral-900); }
+.methodology dd { margin: 5px 0 0; color: var(--color-text); }
 .methodology > p { margin: var(--space-6) 0 0; color: var(--color-neutral-700); font-size: 13px; }
 
 .sources { margin-top: var(--space-6); }
@@ -156,4 +156,4 @@
   font-weight: 700;
   text-decoration: none;
 }
-.metricSelector a[aria-current="page"] { color: white; background: var(--color-accent-800); }
+.metricSelector a[aria-current="page"] { color: var(--color-raised); background: var(--color-accent-700); }

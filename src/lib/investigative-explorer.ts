@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export type Relation = {
@@ -21,11 +21,11 @@ export type Relation = {
 };
 
 export type InvestigativeMeta = {
-  schemaVersion: number;
-  scope: string;
-  generatedAt: string;
+  schemaVersion?: number;
+  scope?: string;
+  generatedAt?: string;
   relationCount: number;
-  duplicatesRemoved: number;
+  duplicatesRemoved?: number;
   acquisitionDate?: string;
   license?: string;
   caveat?: string;
@@ -53,6 +53,10 @@ const ARTIFACT_PATH = join(
   process.cwd(),
   "src/data/generated/investigative-explorer-incarichi.json",
 );
+const META_PATH = join(
+  process.cwd(),
+  "src/data/generated/investigative-explorer-incarichi.meta.json",
+);
 
 let cache: InvestigativeExplorerArtifact | null = null;
 
@@ -62,6 +66,17 @@ export function loadInvestigativeExplorer(): InvestigativeExplorerArtifact {
   if (data.schemaVersion !== 1) throw new Error("schema artifact non supportato");
   cache = data;
   return data;
+}
+
+const EMPTY_META: InvestigativeMeta = { relationCount: 0, caveat: "" };
+
+export function loadInvestigativeMeta(): InvestigativeMeta {
+  if (!existsSync(META_PATH)) return EMPTY_META;
+  try {
+    return JSON.parse(readFileSync(META_PATH, "utf8")) as InvestigativeMeta;
+  } catch {
+    return EMPTY_META;
+  }
 }
 
 export type SearchIndex = {

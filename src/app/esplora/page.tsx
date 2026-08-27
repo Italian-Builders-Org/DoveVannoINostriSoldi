@@ -1,7 +1,6 @@
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
 import { EsploraSearch } from "./EsploraSearch";
 import Link from "next/link";
+import { loadInvestigativeMeta } from "@/lib/investigative-explorer";
 import styles from "./esplora.module.css";
 
 export const metadata = {
@@ -10,27 +9,8 @@ export const metadata = {
     "Ricerca trasversale di persone ed enti negli incarichi pubblici (fetta incarichi-nominativi-shard). I riferimenti CIG/CUP e di atto sono in nota e ricercabili.",
 };
 
-type MetaLike = {
-  relationCount?: number;
-  caveat?: string;
-  acquisitionDate?: string;
-};
-
-function loadMeta(): MetaLike {
-  const p = join(
-    process.cwd(),
-    "src/data/generated/investigative-explorer-incarichi.meta.json",
-  );
-  if (!existsSync(p)) return { relationCount: 0, caveat: "" };
-  try {
-    return JSON.parse(readFileSync(p, "utf8")) as MetaLike;
-  } catch {
-    return { relationCount: 0, caveat: "" };
-  }
-}
-
 export default function EsploraPage() {
-  const m = loadMeta();
+  const m = loadInvestigativeMeta();
   const count = m.relationCount ?? 0;
   const caveat = m.caveat ?? "";
 

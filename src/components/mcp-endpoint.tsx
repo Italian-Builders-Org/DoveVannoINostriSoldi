@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "@/app/mcp/mcp.module.css";
 import { PUBLIC_MCP_ENDPOINT } from "@/lib/site";
 
@@ -42,18 +42,12 @@ function useClipboardFeedback(value: string, enabled = true) {
 }
 
 export function McpEndpoint() {
-  const origin = useSyncExternalStore(
-    () => () => undefined,
-    () => window.location.origin,
-    () => "",
-  );
-  const endpoint = `${origin}/api/mcp`;
-  const { copy, status } = useClipboardFeedback(endpoint, Boolean(origin));
+  const { copy, status } = useClipboardFeedback(PUBLIC_MCP_ENDPOINT);
 
   return (
     <div className={styles.endpointRow}>
-      <code>{endpoint}</code>
-      <button className="btn" type="button" onClick={copy} disabled={!origin}>
+      <code>{PUBLIC_MCP_ENDPOINT}</code>
+      <button className="btn" type="button" onClick={copy}>
         {status === "copied" ? "Copiato" : status === "error" ? "Copia non riuscita" : "Copia endpoint"}
       </button>
       <span className={styles.srStatus} role="status" aria-live="polite">

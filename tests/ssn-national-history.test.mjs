@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
+import { isOpenBdapReachable } from "./helpers/live-openbdap.mjs";
 
 const { SSN_NATIONAL_HISTORY_YEARS, getSsnNationalHistory, nationalValuesFromRows } = await import(
   "../src/lib/ssn-national-history.ts"
@@ -20,7 +21,11 @@ test(
   // 13 sequential live OpenBDAP CSV fetches (one discovery call plus one per year); can take
   // a couple of minutes under retry per the openbdap source policy.
   { timeout: 300_000 },
-  async () => {
+  async (context) => {
+    if (!(await isOpenBdapReachable())) {
+      context.skip("OpenBDAP non raggiungibile — test live saltato");
+      return;
+    }
     const history = await getSsnNationalHistory();
     assert.equal(history.years.length, 13);
     assert.deepEqual(history.years.map((entry) => entry.year), [...SSN_NATIONAL_HISTORY_YEARS]);
@@ -338,11 +343,15 @@ test("SSN national history accepts OpenBDAP CSVs with one empty trailing delimit
   }
 });
 
-test("openbdap_ssn_storico_nazionale MCP dataset rejects filters and stays within the response budget", async () => {
+test("openbdap_ssn_storico_nazionale MCP dataset rejects filters and stays within the response budget", async (context) => {
   await assert.rejects(
     queryPublicDataset({ dataset: "openbdap_ssn_storico_nazionale", year: 2024 }),
     /Filtri non supportati/,
   );
+  if (!(await isOpenBdapReachable())) {
+    context.skip("OpenBDAP non raggiungibile — test live saltato");
+    return;
+  }
   const result = await queryPublicDataset({ dataset: "openbdap_ssn_storico_nazionale" });
   assert.equal(result.years.length, 13);
   assert.ok(JSON.stringify(result).length < 750 * 1024);

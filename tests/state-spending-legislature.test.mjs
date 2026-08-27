@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
+import { isOpenBdapReachable } from "./helpers/live-openbdap.mjs";
 
 const { LEGISLATURES, getLegislatureSpendingCycles, fullYearsWithinLegislature } = await import(
   "../src/lib/state-spending-legislature.ts"
@@ -93,7 +94,11 @@ test(
   // up to ~30s under retry per the openbdap source policy (15s timeout, 1 retry), so this needs
   // real headroom rather than the 120s default.
   { timeout: 300_000 },
-  async () => {
+  async (context) => {
+    if (!(await isOpenBdapReachable())) {
+      context.skip("OpenBDAP non raggiungibile — test live saltato");
+      return;
+    }
     const cycles = await getLegislatureSpendingCycles();
     assert.equal(cycles.length, LEGISLATURES.length);
 
@@ -131,11 +136,15 @@ test(
   },
 );
 
-test("openbdap_spesa_legislature MCP dataset rejects any filter and exposes the same cycles", async () => {
+test("openbdap_spesa_legislature MCP dataset rejects any filter and exposes the same cycles", async (context) => {
   await assert.rejects(
     queryPublicDataset({ dataset: "openbdap_spesa_legislature", year: 2024 }),
     /Filtri non supportati/,
   );
+  if (!(await isOpenBdapReachable())) {
+    context.skip("OpenBDAP non raggiungibile — test live saltato");
+    return;
+  }
   const result = await queryPublicDataset({ dataset: "openbdap_spesa_legislature" });
   assert.equal(result.cycles.length, LEGISLATURES.length);
   assert.ok(JSON.stringify(result).length < 750 * 1024);

@@ -341,14 +341,22 @@ test("SSN national history accepts OpenBDAP CSVs with one empty trailing delimit
   }
 });
 
-test("openbdap_ssn_storico_nazionale MCP dataset rejects filters and stays within the response budget", async (context) => {
+test("openbdap_ssn_storico_nazionale MCP dataset rejects filters and stays within the response budget", async () => {
   await assert.rejects(
     queryPublicDataset({ dataset: "openbdap_ssn_storico_nazionale", year: 2024 }),
     /Filtri non supportati/,
   );
-  await runLiveOpenBdap(context, async () => {
+  // Every other case in this file serves the history from a stub. Without one
+  // the assertion depends on OpenBDAP answering, which makes a local run fail
+  // for a reason that has nothing to do with the dataset contract.
+  const originalFetch = globalThis.fetch;
+  const stub = stubHistoryFetch();
+  globalThis.fetch = stub.fetchStub;
+  try {
     const result = await queryPublicDataset({ dataset: "openbdap_ssn_storico_nazionale" });
     assert.equal(result.years.length, 13);
     assert.ok(JSON.stringify(result).length < 750 * 1024);
-  });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

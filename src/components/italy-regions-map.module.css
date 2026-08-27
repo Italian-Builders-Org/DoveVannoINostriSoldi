@@ -1,22 +1,99 @@
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
 }
 
-.mapColumn { min-width: 0; }
+.controls {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(300px, .72fr) minmax(320px, 1fr);
+  gap: var(--space-3);
+}
 
-.asideColumn { min-width: 0; }
+.metricControl,
+.regionSelector {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.metricControl legend,
+.regionSelector > span {
+  display: block;
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+
+.metricControl > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-400);
+}
+
+.metricControl button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--color-neutral-700);
+  background: var(--color-raised);
+  border: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+.metricControl button + button { border-left: 1px solid var(--color-neutral-300); }
+.metricControl button:hover { color: var(--color-text); background: var(--color-neutral-200); }
+.metricControl button[aria-pressed="true"] { color: var(--color-raised); background: var(--color-accent-700); }
+.metricControl button[aria-pressed="true"]:hover { background: var(--color-accent-800); }
+
+.regionSelector select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+  font-size: 13px;
+}
+
+.mapColumn {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 2px 0 var(--space-2);
+}
+.mapHeading strong {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.mapHeading span { font-size: 11px; color: var(--color-neutral-600); }
 
 .map {
   display: block;
   width: 100%;
-  max-height: 520px;
+  height: 500px;
+  max-height: 54vh;
+  min-height: 390px;
 }
 
-/* A mid-grey outline, not white: two pale neighbours must still read as two
-   regions, and every border has to survive against the palest step. */
 .region {
   stroke: var(--color-neutral-500);
   stroke-width: 1;
@@ -33,8 +110,6 @@
   outline: none;
 }
 
-/* SVG paints sibling paths in document order. Draw the active outlines again
-   after all fills so a later region can never cover a hovered border. */
 .outline {
   fill: none;
   stroke: var(--color-text);
@@ -48,9 +123,6 @@
 .selectedOutline { stroke-width: 2.5; }
 .selectedOutline.hoverOutline { stroke-width: 3; }
 
-/* One sequential ramp, read as intensity rather than as five categories. It
-   starts at accent-200 rather than accent-100: the first step has to be
-   distinguishable from the white panel behind the map. */
 .level0 { fill: var(--color-accent-200); background: var(--color-accent-200); }
 .level1 { fill: var(--color-accent-300); background: var(--color-accent-300); }
 .level2 { fill: var(--color-accent-400); background: var(--color-accent-400); }
@@ -61,13 +133,14 @@
 .legend {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2px;
-  margin-top: var(--space-3);
+  margin-top: var(--space-2);
   font-size: 11px;
   color: var(--color-neutral-600);
 }
 .legend i {
-  width: 26px;
+  width: 30px;
   height: 10px;
   flex: none;
   border: 1px solid var(--color-neutral-400);
@@ -76,52 +149,57 @@
 .legendEnd:first-child { margin-right: var(--space-2); }
 .legendEnd:last-child { margin-left: var(--space-2); }
 
-.mobileSelector { display: none; }
-
 .geoNote {
   margin: var(--space-2) 0 0;
   font-size: 11px;
   color: var(--color-neutral-600);
 }
 
-/* The reading row under the map: hover/focus previews until a click or an
-   explicit keyboard selection fixes the region. */
-.detail {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(140px, 1.4fr) repeat(5, minmax(84px, 1fr));
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-  padding: 10px 14px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-400);
+.summary {
+  margin-top: auto;
+  padding-top: var(--space-4);
 }
-.detail b {
-  font-family: var(--font-heading);
-  font-size: 14px;
-  font-weight: var(--font-heading-weight);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.detail span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+
+.inspector {
   min-width: 0;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.25;
-  font-variant-numeric: tabular-nums;
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
 }
-.detail small {
+.inspectorLabel {
+  display: block;
   font-size: 10px;
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: .07em;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.inspector > b {
+  display: block;
+  margin-top: var(--space-3);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.02em;
+}
+.inspector dl { margin: var(--space-4) 0; }
+.inspector dl > div {
+  padding: 11px 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+.inspector dt {
+  font-size: 10px;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--color-neutral-600);
 }
+.inspector dd {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.inspector dl > div:nth-child(n + 3) dd { font-size: 13px; font-weight: 600; }
 
 .srOnly {
   position: absolute;
@@ -135,37 +213,25 @@
   border: 0;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1050px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
-  .detail { grid-template-columns: repeat(3, minmax(84px, 1fr)); }
-  .detail b { grid-column: 1 / -1; }
+  .controls { grid-column: auto; }
+  .map { max-height: 500px; }
+  .inspector dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .inspector dl > div { padding-right: var(--space-3); }
 }
 
 @media (max-width: 760px) {
-  .map { max-height: 440px; }
+  .controls { grid-template-columns: minmax(0, 1fr); }
+  .mapHeading { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .map { height: 420px; min-height: 340px; }
   .legendEnd { display: none; }
-  .legend { justify-content: center; }
-
-  .mobileSelector {
-    display: grid;
-    gap: 6px;
-    margin-top: var(--space-3);
-    font-size: 12px;
-    color: var(--color-neutral-700);
-  }
-  .mobileSelector select {
-    width: 100%;
-    min-height: 44px;
-    padding: 0 12px;
-    border: 1px solid var(--color-neutral-400);
-    background: var(--color-raised);
-    color: var(--color-text);
-    font-size: 14px;
-  }
+  .inspector dl { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 480px) {
-  .detail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metricControl button { padding-inline: 5px; font-size: 11px; }
+  .map { height: 360px; min-height: 300px; }
 }
 
 @media (hover: none) {
@@ -174,5 +240,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .region { transition: none; }
+  .region,
+  .metricControl button { transition: none; }
 }

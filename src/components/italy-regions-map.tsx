@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ITALY_REGIONS_VIEWBOX,
@@ -13,10 +14,56 @@ import {
 import { compactEuro, exactEuro, integer } from "@/lib/format";
 import styles from "./italy-regions-map.module.css";
 
+type RegionalMetricDefinition = {
+  label: string;
+  title: string;
+  legendLabel: string;
+  legendEnds: readonly [string, string];
+  value: (region: SiopeRegionPoint | undefined) => number | null;
+  format: (value: number) => string;
+  ariaSuffix: string;
+};
+
+const regionalMetrics = {
+  "per-capita": {
+    label: "Per abitante",
+    title: "Pagamenti comunali per abitante coperto, per regione",
+    legendLabel: "Scala dei pagamenti per abitante coperto",
+    legendEnds: ["Meno per abitante", "Più per abitante"],
+    value: (region) => region?.perCapita ?? null,
+    format: exactEuro,
+    ariaSuffix: "per abitante coperto",
+  },
+  total: {
+    label: "Totale pagato",
+    title: "Pagamenti comunali totali, per regione",
+    legendLabel: "Scala dei pagamenti totali",
+    legendEnds: ["Totale minore", "Totale maggiore"],
+    value: (region) => region?.value ?? null,
+    format: compactEuro,
+    ariaSuffix: "pagati",
+  },
+  municipalities: {
+    label: "Comuni inclusi",
+    title: "Comuni inclusi nei dati SIOPE, per regione",
+    legendLabel: "Scala del numero di Comuni inclusi",
+    legendEnds: ["Meno Comuni", "Più Comuni"],
+    value: (region) => region?.municipalities ?? null,
+    format: integer,
+    ariaSuffix: "Comuni inclusi",
+  },
+} satisfies Record<string, RegionalMetricDefinition>;
+
+type RegionalMetric = keyof typeof regionalMetrics;
+
 const italianRegionCollator = new Intl.Collator("it");
 const regionOptions = Object.entries(REGION_NAME_BY_ISTAT_CODE).sort(([, left], [, right]) =>
   italianRegionCollator.compare(left, right),
 );
+const regionalMetricEntries = Object.entries(regionalMetrics) as Array<
+  [RegionalMetric, RegionalMetricDefinition]
+>;
+const navigableRegionCodes: string[] = italyRegionGeometry.map(({ code }) => code);
 
 function quantile(values: number[], fraction: number): number {
   const index = Math.min(values.length - 1, Math.floor(values.length * fraction));
@@ -26,13 +73,15 @@ function quantile(values: number[], fraction: number): number {
 export function ItalyRegionsMap({
   regions,
   period,
-  aside,
+  summary,
+  detailsHref,
 }: {
   regions: SiopeRegionPoint[];
   period: string;
-  /** National figures shown beside the map; owned by the page, not the map. */
-  aside?: React.ReactNode;
+  summary?: React.ReactNode;
+  detailsHref: string;
 }) {
+  const [metric, setMetric] = useState<RegionalMetric>("per-capita");
   const [selectedCode, setSelectedCode] = useState("03");
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
   const [focusedCode, setFocusedCode] = useState<string | null>(null);
@@ -40,17 +89,15 @@ export function ItalyRegionsMap({
   const [automaticSelection, setAutomaticSelection] = useState<"ip" | null>(null);
   const userSelected = useRef(false);
   const regionPathRefs = useRef(new Map<string, SVGPathElement>());
-  const { byCode, thresholds } = useMemo(() => {
-    const mapped = regionDataByIstatCode(regions);
+  const byCode = useMemo(() => regionDataByIstatCode(regions), [regions]);
+  const metricDefinition = regionalMetrics[metric];
+  const thresholds = useMemo(() => {
     const values = regions
-      .map((region) => region.perCapita)
+      .map(metricDefinition.value)
       .filter((value): value is number => value !== null)
       .sort((left, right) => left - right);
-    return {
-      byCode: mapped,
-      thresholds: [0.2, 0.4, 0.6, 0.8].map((fraction) => quantile(values, fraction)),
-    };
-  }, [regions]);
+    return [0.2, 0.4, 0.6, 0.8].map((fraction) => quantile(values, fraction));
+  }, [metricDefinition, regions]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -97,7 +144,6 @@ export function ItalyRegionsMap({
 
   const displayedCode = selectionLocked ? selectedCode : hoveredCode ?? selectedCode;
   const selected = byCode.get(displayedCode);
-  const navigableCodes: string[] = italyRegionGeometry.map(({ code }) => code);
   const outlinedCodes = [selectedCode, hoveredCode].filter(
     (code, index, codes): code is string => code !== null && codes.indexOf(code) === index,
   );
@@ -109,21 +155,21 @@ export function ItalyRegionsMap({
       return;
     }
 
-    const currentIndex = navigableCodes.indexOf(code);
+    const currentIndex = navigableRegionCodes.indexOf(code);
     let nextIndex: number | null = null;
     if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      nextIndex = (currentIndex + 1) % navigableCodes.length;
+      nextIndex = (currentIndex + 1) % navigableRegionCodes.length;
     } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      nextIndex = (currentIndex - 1 + navigableCodes.length) % navigableCodes.length;
+      nextIndex = (currentIndex - 1 + navigableRegionCodes.length) % navigableRegionCodes.length;
     } else if (event.key === "Home") {
       nextIndex = 0;
     } else if (event.key === "End") {
-      nextIndex = navigableCodes.length - 1;
+      nextIndex = navigableRegionCodes.length - 1;
     }
 
     if (nextIndex === null) return;
     event.preventDefault();
-    const nextCode = navigableCodes[nextIndex];
+    const nextCode = navigableRegionCodes[nextIndex];
     setFocusedCode(nextCode);
     previewRegion(nextCode);
     regionPathRefs.current.get(nextCode)?.focus();
@@ -131,31 +177,68 @@ export function ItalyRegionsMap({
 
   function level(value: number | null): number | null {
     if (value === null) return null;
-    return thresholds.findIndex((threshold) => value <= threshold) === -1
-      ? thresholds.length
-      : thresholds.findIndex((threshold) => value <= threshold);
+    const matchingIndex = thresholds.findIndex((threshold) => value <= threshold);
+    return matchingIndex === -1 ? thresholds.length : matchingIndex;
   }
 
   return (
     <div className={styles.layout}>
+      <div className={styles.controls}>
+        <fieldset className={styles.metricControl}>
+          <legend>Misura</legend>
+          <div>
+            {regionalMetricEntries.map(([value, definition]) => (
+              <button
+                type="button"
+                key={value}
+                data-region-metric={value}
+                aria-pressed={metric === value}
+                onClick={() => setMetric(value)}
+              >
+                {definition.label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <label className={styles.regionSelector}>
+          <span>Territorio</span>
+          <select
+            data-region-selector="true"
+            value={selectedCode}
+            onChange={(event) => selectRegion(event.target.value)}
+          >
+            {regionOptions.map(([code, name]) => (
+              <option value={code} key={code}>{name}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       <div className={styles.mapColumn}>
+        <div className={styles.mapHeading}>
+          <strong>{metricDefinition.title}</strong>
+          <span>{period}</span>
+        </div>
         <svg
           className={styles.map}
           viewBox={ITALY_REGIONS_VIEWBOX}
+          preserveAspectRatio="xMidYMid meet"
           role="group"
           data-region-map="true"
           aria-labelledby="regional-map-title regional-map-description"
         >
-          <title id="regional-map-title">Pagamenti comunali per abitante coperto, per regione</title>
+          <title id="regional-map-title">{metricDefinition.title}</title>
           <desc id="regional-map-description">
-            Mappa regionale colorata in base ai pagamenti di cassa SIOPE dei Comuni. Usa Tab per
-            entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione
-            per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
+            Mappa regionale colorata in base alla misura selezionata. Usa Tab per entrare nella
+            mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione per
+            un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
           </desc>
           {italyRegionGeometry.map((geometry) => {
             const region = byCode.get(geometry.code);
-            const colorLevel = level(region?.perCapita ?? null);
-            const selected = selectedCode === geometry.code;
+            const value = metricDefinition.value(region);
+            const colorLevel = level(value);
+            const selectedRegion = selectedCode === geometry.code;
             const focusable = (focusedCode ?? selectedCode) === geometry.code;
             const hovered = hoveredCode === geometry.code;
             return (
@@ -171,14 +254,14 @@ export function ItalyRegionsMap({
                 }`}
                 tabIndex={focusable ? 0 : -1}
                 role="button"
-                aria-pressed={selected}
+                aria-pressed={selectedRegion}
                 aria-label={`${REGION_NAME_BY_ISTAT_CODE[geometry.code]}: ${
-                  region?.perCapita === null || region?.perCapita === undefined
+                  value === null
                     ? "dato non disponibile"
-                    : `${exactEuro(region.perCapita)} per abitante coperto`
+                    : `${metricDefinition.format(value)} ${metricDefinition.ariaSuffix}`
                 }`}
                 data-hovered={hovered ? "true" : undefined}
-                data-selected={selected ? "true" : undefined}
+                data-selected={selectedRegion ? "true" : undefined}
                 onPointerEnter={() => previewRegion(geometry.code)}
                 onPointerLeave={() => clearPreview(geometry.code)}
                 onFocus={() => {
@@ -211,18 +294,23 @@ export function ItalyRegionsMap({
           })}
         </svg>
 
-        <label className={styles.mobileSelector}>
-          <span>Scegli una regione</span>
-          <select
-            data-region-selector="true"
-            value={selectedCode}
-            onChange={(event) => selectRegion(event.target.value)}
-          >
-            {regionOptions.map(([code, name]) => (
-              <option value={code} key={code}>{name}</option>
-            ))}
-          </select>
-        </label>
+        <div className={styles.legend} aria-label={metricDefinition.legendLabel}>
+          <span className={styles.legendEnd}>{metricDefinition.legendEnds[0]}</span>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <i
+              key={index}
+              className={styles[`level${index}`]}
+              title={
+                index === 0
+                  ? `fino a ${metricDefinition.format(thresholds[0])}`
+                  : index === 4
+                    ? `oltre ${metricDefinition.format(thresholds[3])}`
+                    : `da ${metricDefinition.format(thresholds[index - 1])} a ${metricDefinition.format(thresholds[index])}`
+              }
+            />
+          ))}
+          <span className={styles.legendEnd}>{metricDefinition.legendEnds[1]}</span>
+        </div>
 
         {automaticSelection ? (
           <p className={styles.geoNote}>
@@ -231,50 +319,36 @@ export function ItalyRegionsMap({
           </p>
         ) : null}
 
-        <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
-          <span className={styles.legendEnd}>Meno spesa per abitante</span>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <i
-              key={index}
-              className={styles[`level${index}`]}
-              title={
-                index === 0
-                  ? `fino a ${integer(thresholds[0])} €`
-                  : index === 4
-                    ? `oltre ${integer(thresholds[3])} €`
-                    : `da ${integer(thresholds[index - 1])} a ${integer(thresholds[index])} €`
-              }
-            />
-          ))}
-          <span className={styles.legendEnd}>Più spesa per abitante</span>
-        </div>
+        {summary ? <div className={styles.summary}>{summary}</div> : null}
       </div>
 
-      {aside ? <div className={styles.asideColumn}>{aside}</div> : null}
-
-      <div className={styles.detail} data-region-detail="true" aria-live="polite">
+      <aside className={styles.inspector} data-region-detail="true" aria-live="polite">
+        <span className={styles.inspectorLabel}>Regione selezionata</span>
         <b>{selected?.region ?? "Dato non disponibile"}</b>
-        <span>
-          <small>Totale</small>
-          {selected ? compactEuro(selected.value) : "n.d."}
-        </span>
-        <span>
-          <small>Per abitante</small>
-          {selected?.perCapita === null || !selected ? "n.d." : exactEuro(selected.perCapita)}
-        </span>
-        <span>
-          <small>Abitanti</small>
-          {selected?.population == null ? "n.d." : integer(selected.population)}
-        </span>
-        <span>
-          <small>Comuni</small>
-          {selected ? integer(selected.municipalities) : "n.d."}
-        </span>
-        <span>
-          <small>Periodo</small>
-          {period}
-        </span>
-      </div>
+        <dl>
+          <div>
+            <dt>Per abitante</dt>
+            <dd>{selected?.perCapita === null || !selected ? "n.d." : exactEuro(selected.perCapita)}</dd>
+          </div>
+          <div>
+            <dt>Totale pagato</dt>
+            <dd>{selected ? compactEuro(selected.value) : "n.d."}</dd>
+          </div>
+          <div>
+            <dt>Popolazione coperta</dt>
+            <dd>{selected?.population == null ? "n.d." : integer(selected.population)}</dd>
+          </div>
+          <div>
+            <dt>Comuni inclusi</dt>
+            <dd>{selected ? integer(selected.municipalities) : "n.d."}</dd>
+          </div>
+          <div>
+            <dt>Periodo</dt>
+            <dd>{period}</dd>
+          </div>
+        </dl>
+        <Link className="btn btn-block" href={detailsHref}>Vedi il confronto completo</Link>
+      </aside>
 
       <div className={styles.srOnly}>
         <table>
@@ -283,7 +357,7 @@ export function ItalyRegionsMap({
           <tbody>
             {regions.map((region) => (
               <tr key={region.region}>
-                <th>{region.region}</th>
+                <th scope="row">{region.region}</th>
                 <td>{exactEuro(region.value)}</td>
                 <td>{region.perCapita === null ? "Non disponibile" : exactEuro(region.perCapita)}</td>
                 <td>{integer(region.municipalities)}</td>

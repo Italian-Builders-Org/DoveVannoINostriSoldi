@@ -1,127 +1,110 @@
-/*
- * The home dashboard keeps one reading rail, one geographic canvas and one
- * detail rail. DOM order survives when the rails collapse.
- */
-
 .dashboard {
-  display: grid;
-  grid-template-columns: 360px minmax(0, 1fr) 300px;
-  align-items: start;
-  gap: var(--space-4);
-  padding-block: var(--space-4) 0;
-}
-
-.pageTitle {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-.column {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  min-width: 0;
+  padding-block: var(--space-5) 0;
 }
+
+.pageIntro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+.pageIntro h1 { margin: 0; font-size: 30px; }
+.pageIntro p { margin: 6px 0 0; color: var(--color-neutral-700); }
+
+.atlasPanel { padding-bottom: var(--space-3); }
 
 .panelHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 .panelHead :global(.panel-title),
-.panelHead > h2 {
-  flex: 1 1 auto;
-  min-width: 0;
-  margin-bottom: 0;
-}
+.panelHead > h2,
+.panelHead > div { min-width: 0; }
+.panelHead :global(.panel-title),
+.panelHead > h2 { flex: 1 1 auto; margin-bottom: 0; }
+.panelHead > div > :global(.panel-title) { margin-bottom: 2px; }
+.panelHead p { margin: 0; font-size: 12px; color: var(--color-neutral-600); }
+.headNote { flex: none; font-size: 11px; color: var(--color-neutral-600); }
 
-.headNote {
-  font-size: 12px;
+.nationalSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-300);
+}
+.nationalSummary > div {
+  min-width: 0;
+  padding: 12px 14px;
+  border-right: 1px solid var(--color-neutral-300);
+}
+.nationalSummary > div:last-child { border-right: 0; }
+.nationalSummary span,
+.nationalSummary strong,
+.nationalSummary small { display: block; }
+.nationalSummary span {
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
   color: var(--color-neutral-600);
 }
-
-/* ── headline block ─────────────────────────────────────────────────────── */
-
-.freshness {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin: var(--space-3) 0 0;
-  font-size: 12px;
-  color: var(--color-neutral-700);
-}
-.freshness i {
-  width: 7px;
-  height: 7px;
-  flex: none;
-  background: var(--color-accent);
-}
-
-.headline {
-  display: block;
-  margin-top: var(--space-2);
+.nationalSummary strong {
+  margin-top: 4px;
   font-family: var(--font-heading);
-  font-size: 38px;
+  font-size: 20px;
   font-weight: var(--font-heading-weight);
-  letter-spacing: -.03em;
-  line-height: 1.05;
   font-variant-numeric: tabular-nums;
 }
+.nationalSummary small { margin-top: 2px; font-size: 11px; color: var(--color-neutral-600); }
 
-.headlineNote {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: var(--color-neutral-700);
+.attribution { margin: var(--space-3) 0 0; font-size: 11px; color: var(--color-neutral-600); }
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: var(--space-4);
+  align-items: stretch;
 }
 
-.factRows {
-  margin: var(--space-3) 0 0;
-}
-.factRows > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 7px 0;
-  border-top: 1px solid var(--color-neutral-200);
-  font-size: 12.5px;
-}
-.factRows dt { color: var(--color-neutral-700); }
-.factRows dd {
+.panelAction { margin-top: var(--space-3); }
+
+.monthPanel { display: flex; flex-direction: column; }
+.monthChartScroll { display: flex; flex: 1; width: 100%; overflow-x: auto; }
+.monthChart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 620px;
+  min-height: 420px;
   margin: 0;
-  font-weight: 600;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.rule {
-  height: 1px;
-  border: 0;
-  margin: var(--space-4) 0;
-  background: var(--color-neutral-300);
-}
-
-.spendingDetailsLink {
-  min-height: 44px;
-  margin-top: var(--space-3);
-}
-
-/* ── ranked municipalities ──────────────────────────────────────────────── */
-
-.rankList {
-  margin: 0;
-  padding: 0;
+  padding: var(--space-3) 0 0;
   list-style: none;
 }
+.monthChart li {
+  display: grid;
+  grid-template-rows: 20px minmax(230px, 1fr) 24px;
+  align-items: end;
+  min-width: 0;
+  text-align: center;
+}
+.monthChart li > b { font-size: 11px; font-variant-numeric: tabular-nums; }
+.monthChart li > i {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  border-bottom: 1px solid var(--color-neutral-400);
+}
+.monthChart li > i > span { display: block; width: min(34px, 64%); background: var(--color-accent-700); }
+.monthChart li > span { padding-top: 5px; overflow: hidden; font-size: 11px; text-overflow: ellipsis; }
+.running { background: var(--color-neutral-500) !important; }
+
+.rankList { margin: 0; padding: 0; list-style: none; }
 .rankList li {
   display: flex;
   align-items: baseline;
@@ -130,196 +113,65 @@
   border-bottom: 1px solid var(--color-neutral-200);
   font-size: 13px;
 }
-.rankList li > span {
-  flex: none;
-  width: 14px;
-  font-size: 11px;
-  color: var(--color-neutral-600);
-  font-variant-numeric: tabular-nums;
-}
-.rankList strong {
-  flex: 1;
-  min-width: 0;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.rankList strong small {
-  display: block;
-  margin-top: 2px;
-  overflow: hidden;
-  color: var(--color-neutral-600);
-  font-size: 11px;
-  font-weight: 400;
-  text-overflow: ellipsis;
-}
-.rankList b {
-  flex: none;
-  font-variant-numeric: tabular-nums;
-}
+.rankList li > span { flex: none; width: 14px; color: var(--color-neutral-600); font-size: 11px; }
+.rankList strong { flex: 1; min-width: 0; font-weight: 500; }
+.rankList strong small { display: block; margin-top: 2px; color: var(--color-neutral-600); font-size: 11px; font-weight: 400; }
+.rankList b { flex: none; font-variant-numeric: tabular-nums; }
 
-/* ── map side statistics ────────────────────────────────────────────────── */
-
-.mapStats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.mapStats > div {
-  padding: 12px 14px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
-}
-.mapStats span {
-  display: block;
-  font-size: 10px;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: var(--color-neutral-600);
-}
-.mapStats strong {
-  display: block;
-  margin: 6px 0 4px;
-  font-family: var(--font-heading);
-  font-size: 21px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums;
-}
-.mapStats small {
-  display: block;
-  font-size: 12px;
-  color: var(--color-neutral-600);
-}
-
-.attribution {
-  margin: var(--space-3) 0 0;
-  font-size: 11px;
-  color: var(--color-neutral-600);
-}
-
-/* ── month bars ─────────────────────────────────────────────────────────── */
-
-.monthList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.monthList li {
+.supportGrid {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) 38px;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
 }
-.monthList li > span { color: var(--color-neutral-700); }
-.monthList li > i {
-  display: block;
-  height: 10px;
-  background: var(--color-neutral-200);
-}
-.monthList li > i > b {
-  display: block;
-  height: 100%;
-  background: var(--color-accent);
-}
-.monthList li > b {
-  text-align: right;
-  font-weight: 600;
-}
-.running { background: var(--color-neutral-500) !important; }
 
-/* ── source cards ───────────────────────────────────────────────────────── */
-
-.sourceList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.sourceList article + article {
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
-}
-.sourceList header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
+.sourceList { display: flex; flex-direction: column; gap: var(--space-3); }
+.sourceList article + article { padding-top: var(--space-3); border-top: 1px solid var(--color-neutral-200); }
+.sourceList header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .sourceList strong { font-size: 13px; }
 .sourceList dl { margin: var(--space-2) 0 0; }
-.sourceList dl > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 4px 0;
-  font-size: 12px;
-}
-.sourceList dt { color: var(--color-neutral-600); }
-.sourceList dd { margin: 0; text-align: right; }
+.sourceList dl > div,
+.factRows > div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; font-size: 12px; }
+.sourceList dt,
+.factRows dt { color: var(--color-neutral-600); }
+.sourceList dd,
+.factRows dd { margin: 0; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-/* ── ratio bar ──────────────────────────────────────────────────────────── */
+.factRows { margin: 0; }
+.factRows > div { border-top: 1px solid var(--color-neutral-200); }
 
-.ratioHead {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: var(--space-3);
-  font-size: 12px;
-}
+.ratioHead { display: flex; justify-content: space-between; gap: 10px; margin-top: var(--space-3); font-size: 12px; }
 .ratioHead b { font-variant-numeric: tabular-nums; }
+.ratioTrack { height: 10px; margin-top: 6px; background: var(--color-neutral-200); }
+.ratioTrack i { display: block; height: 100%; background: var(--color-accent); }
 
-.ratioTrack {
-  height: 10px;
-  margin-top: 6px;
-  background: var(--color-neutral-200);
-}
-.ratioTrack i {
-  display: block;
-  height: 100%;
-  background: var(--color-accent);
-}
+.note { margin: var(--space-3) 0; font-size: 12px; color: var(--color-neutral-600); }
+.readingNotice { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: start; gap: var(--space-4); }
+.readingNotice p { margin: 0; }
 
-.note {
-  margin: var(--space-3) 0 0;
-  font-size: 12px;
-  color: var(--color-neutral-600);
+@media (max-width: 1240px) {
+  .supportGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.readingNote {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  color: var(--color-neutral-800);
+@media (max-width: 980px) {
+  .pageIntro { align-items: flex-start; flex-direction: column; gap: var(--space-3); }
+  .insightGrid { grid-template-columns: minmax(0, 1fr); }
+  .monthChartScroll { flex: none; }
+  .monthChart { min-height: 300px; }
+  .nationalSummary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nationalSummary > div:nth-child(2) { border-right: 0; }
+  .nationalSummary > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-neutral-300); }
 }
 
-/* ── responsive ─────────────────────────────────────────────────────────── */
-
-@media (max-width: 1320px) {
-  .dashboard { grid-template-columns: 360px minmax(0, 1fr); }
-  /* The right-hand rail becomes a full-width band of cards under the board. */
-  .dashboard > .column:last-child {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    align-items: start;
-  }
+@media (max-width: 680px) {
+  .dashboard { padding-block-start: var(--space-4); }
+  .pageIntro h1 { font-size: 24px; }
+  .supportGrid { grid-template-columns: minmax(0, 1fr); }
+  .readingNotice { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
 }
 
-@media (max-width: 900px) {
-  .dashboard { grid-template-columns: minmax(0, 1fr); }
-  .dashboard > .column:last-child { grid-column: auto; }
-}
-
-@media (max-width: 620px) {
-  .headline { font-size: 32px; }
-  .mapStats { display: grid; grid-template-columns: 1fr 1fr; }
-  .monthList li { grid-template-columns: 58px minmax(0, 1fr) 36px; }
-}
-
-@media (max-width: 420px) {
-  .mapStats { grid-template-columns: 1fr; }
+@media (max-width: 460px) {
+  .nationalSummary { grid-template-columns: minmax(0, 1fr); }
+  .nationalSummary > div { border-right: 0; border-bottom: 1px solid var(--color-neutral-300); }
+  .nationalSummary > div:last-child { border-bottom: 0; }
 }

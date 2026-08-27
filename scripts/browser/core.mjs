@@ -319,6 +319,27 @@ async function assertRegionalMapSelection(page, label) {
   );
   assert.equal(regionPaths.length, 20, `${label}: la mappa deve esporre 20 regioni`);
 
+  const metricCases = [
+    ["total", "Pagamenti comunali totali, per regione", / pagati$/],
+    ["municipalities", "Comuni inclusi nei dati SIOPE, per regione", / Comuni inclusi$/],
+    ["per-capita", "Pagamenti comunali per abitante coperto, per regione", / per abitante coperto$/],
+  ];
+  for (const [metric, expectedTitle, expectedValue] of metricCases) {
+    const selector = `[data-region-metric="${metric}"]`;
+    await page.click(selector);
+    await page.waitForFunction(
+      (metricSelector) => document.querySelector(metricSelector)?.getAttribute("aria-pressed") === "true",
+      { timeout: 2_000 },
+      selector,
+    );
+    const metricState = await page.$eval(mapSelector, (map) => ({
+      firstRegionLabel: map.querySelector('path[role="button"]')?.getAttribute("aria-label") ?? "",
+      title: map.querySelector("title")?.textContent ?? "",
+    }));
+    assert.equal(metricState.title, expectedTitle, `${label}: titolo errato per ${metric}`);
+    assert.match(metricState.firstRegionLabel, expectedValue, `${label}: valore errato per ${metric}`);
+  }
+
   const lombardia = await page.$(`${mapSelector} path[aria-label^="Lombardia:"]`);
   const veneto = await page.$(`${mapSelector} path[aria-label^="Veneto:"]`);
   assert.ok(lombardia, `${label}: percorso Lombardia assente`);
@@ -401,7 +422,7 @@ async function assertSpendingComposition(page, label, width) {
       visualDisplay: visual ? getComputedStyle(visual).display : null,
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
       hasMetadata: /Denominatore:.*Fonte:/s.test(root.textContent ?? ""),
-      compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      mapBeforeComposition: Boolean(map && (map.compareDocumentPosition(root) & Node.DOCUMENT_POSITION_FOLLOWING)),
       mapBeforeMunicipalities: Boolean(
         map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
       ),
@@ -410,7 +431,7 @@ async function assertSpendingComposition(page, label, width) {
   }, width);
   assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
   assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
-  assert.equal(state.compositionBeforeMap, true, `${label}: composizione dopo la mappa nel DOM`);
+  assert.equal(state.mapBeforeComposition, true, `${label}: la mappa non precede la composizione nel DOM`);
   assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
   assert.equal(state.visualDisplay === "none", state.shouldCollapse, `${label}: fallback mobile incoerente`);
   if (!state.shouldCollapse) assert.ok(state.visualHeight >= 250, `${label}: geometria treemap non riservata`);

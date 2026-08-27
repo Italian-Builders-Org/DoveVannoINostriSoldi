@@ -24,15 +24,16 @@ test("narrow responsive grids cannot exceed their container", async () => {
   }
 });
 
-test("the home has one semantic title without adding a visual hero", async () => {
+test("the home exposes one visible title for the territorial explorer", async () => {
   const [page, css] = await Promise.all([
     source("../src/app/page.tsx"),
     source("../src/app/home.module.css"),
   ]);
 
   assert.equal(page.match(/<h1\b/g)?.length, 1);
-  assert.match(page, /<h1 className=\{styles\.pageTitle\}>Dove vanno i nostri soldi pubblici<\/h1>/);
-  assert.match(css, /\.pageTitle \{[\s\S]*?clip-path: inset\(50%\);/);
+  assert.match(page, /<h1>Esplora i pagamenti dei Comuni<\/h1>/);
+  assert.match(css, /\.pageIntro h1 \{[^}]*font-size: 30px;/);
+  assert.doesNotMatch(css, /\.pageTitle \{[\s\S]*?clip-path: inset\(50%\);/);
 });
 
 test("information tooltips expose and dismiss their description", async () => {
@@ -60,7 +61,8 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
     tooltipCss,
     /\.tooltip\[data-open="true"\]\[data-positioned="false"\][\s\S]*?visibility: hidden;/,
   );
-  assert.match(home, /\.panelHead > h2 \{[\s\S]*?flex: 1 1 auto;[\s\S]*?min-width: 0;/);
+  assert.match(home, /\.panelHead > h2,[\s\S]*?\.panelHead > div \{ min-width: 0; \}/);
+  assert.match(home, /\.panelHead > h2 \{ flex: 1 1 auto;/);
   assert.match(globals, /@media \(min-width: 901px\) and \(max-width: 980px\)/);
   assert.match(globals, /\.header-search \{ order: 3; width: 100%; \}/);
 });

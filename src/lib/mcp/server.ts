@@ -103,6 +103,9 @@ const querySchema = z.object({
   band: z.string().max(30)
     .describe("Codice della fascia di valore della produzione, solo per il dataset che la dichiara.")
     .optional(),
+  years: z.number().int().min(2).max(20)
+    .describe("Numero di Leggi di Bilancio più recenti da restituire, da 2 a 20, solo per il dataset che lo dichiara.")
+    .optional(),
   limit: z.number().int().min(1).max(100)
     .describe("Numero massimo di record da restituire, da 1 a 100, solo per dataset che supportano limit.")
     .optional(),

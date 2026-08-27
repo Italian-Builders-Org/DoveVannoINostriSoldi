@@ -12,6 +12,7 @@ export const DATASET_IDS = [
   "openbdap_ssn_conto_economico",
   "openbdap_ssn_storico_nazionale",
   "openbdap_spesa_legislature",
+  "openbdap_legge_bilancio_storico",
   "opencivitas_fabbisogni",
   "opencoesione_progetti",
   "pnrr_asili",
@@ -58,6 +59,7 @@ export type DatasetQuery = {
   period?: string;
   sector?: string;
   band?: string;
+  years?: number;
   limit?: number;
   offset?: number;
   cursor?: string;
@@ -96,6 +98,7 @@ const exampleQueries = {
   openbdap_ssn_conto_economico: { dataset: "openbdap_ssn_conto_economico", year: 2024, region: "Calabria", limit: 20 },
   openbdap_ssn_storico_nazionale: { dataset: "openbdap_ssn_storico_nazionale" },
   openbdap_spesa_legislature: { dataset: "openbdap_spesa_legislature" },
+  openbdap_legge_bilancio_storico: { dataset: "openbdap_legge_bilancio_storico", years: 6 },
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   pnrr_asili: { dataset: "pnrr_asili", region: "Lazio", limit: 20 },
@@ -168,6 +171,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "openbdap_ssn_conto_economico", title: "Conto Economico degli enti del SSN", summary: "Consuntivo 2024 OpenBDAP con aggregato nazionale, aggregati regionali e dettaglio di 232 enti; costo del personale, acquisti di servizi e voci ufficiali di consulenze, collaborazioni, interinale e altre prestazioni di lavoro.", sourceIds: ["openbdap"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Il nazionale e le Regioni provengono da dataset ufficiali distinti dal dettaglio enti; le 21 righe codeSsn=999 non sono esposte per evitare doppio conteggio. Le voci sono categorie contabili: non equivalgono a gettonisti, cooperative, organico o pagamenti di cassa e non consentono classifiche di efficienza o inferenze sulla qualità sanitaria." },
   { id: "openbdap_ssn_storico_nazionale", title: "Serie storica nazionale del Conto Economico SSN", summary: "Costi della produzione, personale, prestazioni di lavoro e acquisti di servizi a livello nazionale, dal 2012 al 2024.", sourceIds: ["openbdap"], freshness: "live", filters: [], caveat: "Solo livello nazionale: il dettaglio regionale e per ente resta disponibile soltanto per il 2024 in openbdap_ssn_conto_economico. Voci di competenza economica, non pagamenti di cassa; non identificano gettonisti, cooperative o organico e non permettono classifiche di efficienza tra anni o Regioni." },
   { id: "openbdap_spesa_legislature", title: "Spesa dello Stato per legislatura", summary: "Confronto descrittivo tra l'anno pre-elettorale e la media degli altri anni completi di ogni legislatura, sulla spesa OpenBDAP RGS per missione (2014-2025).", sourceIds: ["openbdap"], freshness: "live", filters: [], caveat: "Confronto puramente descrittivo, non un test di significatività statistica: due sole legislature complete osservate, la spesa statale cresce anche per motivi non elettorali (trend, inflazione) e il 2020-2021 include la spesa emergenziale COVID-19, dichiarata esplicitamente. Non implica causalità né intento elettorale, non copre spesa comunale, regionale o europea." },
+  { id: "openbdap_legge_bilancio_storico", title: "Legge di Bilancio per missione, serie storica", summary: "Stanziamento di competenza pubblicato dalla Legge di Bilancio per missione, ultime leggi di bilancio confrontabili (dal 2017), con variazione anno su anno.", sourceIds: ["openbdap"], freshness: "live", filters: ["years"], caveat: "È lo stanziamento enacted pubblicato dalla Legge di Bilancio (competenza, primo anno), non le misure della manovra né un pagamento osservato: non isola un fondo, un bonus o un'aliquota specifici, per cui serve la lettura editoriale di UPB o Corte dei Conti. Copre solo missioni con nome stabile dal 2017 (prima di allora la tassonomia è stata rinominata) e include il rimborso lordo del debito pubblico, che domina la missione Debito pubblico indipendentemente dalle scelte di policy dell'anno." },
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
   { id: "pnrr_asili", title: "PNRR asili e prima infanzia", summary: "Progetti Italia Domani per CUP, localizzazioni, finanziamenti, gare e aggiudicatari.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "query", "region", "province", "limit", "offset"], caveat: "Il finanziamento PNRR non è un pagamento osservato; gare e aggiudicazioni sono livelli distinti." },

@@ -169,6 +169,12 @@ export async function queryPublicDataset(
       const { getLegislatureSpendingCycles } = await import("@/lib/state-spending-legislature");
       return jsonSafe({ cycles: await getLegislatureSpendingCycles({ signal: options.signal }) });
     }
+    case "openbdap_legge_bilancio_storico": {
+      const { getBudgetLawMissionSeries } = await import("@/lib/bdap-legge-bilancio");
+      return jsonSafe(
+        await getBudgetLawMissionSeries({ windowYears: query.years, signal: options.signal }),
+      );
+    }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");
       if (query.year && query.year !== openCivitasSnapshot.referenceYear) {

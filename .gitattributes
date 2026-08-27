@@ -1,0 +1,17 @@
+# The repository is authored with LF. Without this file a Windows checkout runs
+# under Git's default core.autocrlf=true and rewrites every tracked text file to
+# CRLF, which breaks the byte-level guarantees this project is built on.
+
+* text=auto eol=lf
+
+# Verified artifacts: Git must never rewrite these bytes in either direction.
+# Their sha256 and byte size are part of the published provenance, so a line
+# ending conversion turns a valid snapshot into a failed reconciliation.
+/data/source-ledger/** -text
+/src/data/generated/** -text
+
+*.gz binary
+*.ico binary
+*.jpg binary
+*.png binary
+*.pem -text

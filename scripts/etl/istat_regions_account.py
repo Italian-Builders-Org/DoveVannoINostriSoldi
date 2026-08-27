@@ -213,7 +213,7 @@ def build_snapshot(payload: bytes, acquired_at: str) -> tuple[dict, dict]:
         "asset": {"bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()},
         "spendingWorkbook": {"path": SPENDING_FILE, "bytes": len(spending), "sha256": hashlib.sha256(spending).hexdigest()},
         "transformation": {"version": 1, "description": "Esclusi i tre fogli aggregati; letti solo gli impegni dei sei Titoli e riconciliati con il totale ufficiale per 22 amministrazioni."},
-        "dataArtifact": {"path": str(DATA_PATH.relative_to(ROOT)), "bytes": len(data_bytes), "sha256": hashlib.sha256(data_bytes).hexdigest()},
+        "dataArtifact": {"path": DATA_PATH.relative_to(ROOT).as_posix(), "bytes": len(data_bytes), "sha256": hashlib.sha256(data_bytes).hexdigest()},
     }
     return data, meta
 

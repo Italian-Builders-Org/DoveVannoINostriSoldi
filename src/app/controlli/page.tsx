@@ -348,58 +348,65 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           </div>
 
           {topSpendingOutliers.length > 0 ? (
-            <div
-              className={"table-scroll " + styles.outlierTable}
-              role="region"
-              aria-label="Screening derivato dei Comuni oltre la soglia regionale"
-              tabIndex={0}
-            >
-              <table className="table">
-                <caption>
-                  {topSpendingOutliers.length} di {integer(spendingOutliers.pagination.total)}
-                  {" "}risultati dello screening, ordinati per distanza dalla soglia per facilitare
-                  la lettura · OpenCivitas {openCivitasSnapshot.referenceYear}
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Comune</th>
-                    <th scope="col">Provincia · Regione</th>
-                    <th scope="col" className="num">Differenza per abitante</th>
-                    <th scope="col" className="num">Popolazione implicita</th>
-                    <th scope="col">Distanza dalla soglia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topSpendingOutliers.map((outlier) => (
-                    <tr key={outlier.istatCode}>
-                      <th scope="row">
-                        {municipalityName(outlier.name)}
-                        <small>{outlier.istatCode}</small>
-                      </th>
-                      <td>
-                        {municipalityName(outlier.province)} · {municipalityName(outlier.region)}
-                      </td>
-                      <td className="num">
-                        {signedEuroFromCents(outlier.differencePerCapitaCents)}
-                        <small>{outlier.direction === "sopra" ? "sopra" : "sotto"} la soglia</small>
-                      </td>
-                      <td className="num">
-                        {outlier.impliedPopulation === null
-                          ? "non disponibile"
-                          : "~" + integer(outlier.impliedPopulation)}
-                        <small>{populationBandLabels[outlier.populationBand]}</small>
-                      </td>
-                      <td>
-                        {outlier.excessMultiple === null
-                          ? "IQR = 0"
-                          : number.format(outlier.excessMultiple) + " × IQR"}
-                        <small>{signedEuroFromCents(outlier.distanceBeyondFenceCents)} oltre</small>
-                      </td>
+            <>
+              <p className={styles.tableHint} id="outlier-table-hint">
+                Scorri lateralmente per differenza, popolazione e distanza dalla soglia. Da
+                tastiera usa Freccia sinistra e Freccia destra.
+              </p>
+              <div
+                className={"table-scroll " + styles.outlierTable}
+                role="region"
+                aria-label="Screening derivato dei Comuni oltre la soglia regionale"
+                aria-describedby="outlier-table-hint"
+                tabIndex={0}
+              >
+                <table className="table">
+                  <caption>
+                    {topSpendingOutliers.length} di {integer(spendingOutliers.pagination.total)}
+                    {" "}risultati dello screening, ordinati per distanza dalla soglia per facilitare
+                    la lettura · OpenCivitas {openCivitasSnapshot.referenceYear}
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Comune</th>
+                      <th scope="col">Provincia · Regione</th>
+                      <th scope="col" className="num">Differenza per abitante</th>
+                      <th scope="col" className="num">Popolazione implicita</th>
+                      <th scope="col">Distanza dalla soglia</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {topSpendingOutliers.map((outlier) => (
+                      <tr key={outlier.istatCode}>
+                        <th scope="row">
+                          {municipalityName(outlier.name)}
+                          <small>{outlier.istatCode}</small>
+                        </th>
+                        <td>
+                          {municipalityName(outlier.province)} · {municipalityName(outlier.region)}
+                        </td>
+                        <td className="num">
+                          {signedEuroFromCents(outlier.differencePerCapitaCents)}
+                          <small>{outlier.direction === "sopra" ? "sopra" : "sotto"} la soglia</small>
+                        </td>
+                        <td className="num">
+                          {outlier.impliedPopulation === null
+                            ? "non disponibile"
+                            : "~" + integer(outlier.impliedPopulation)}
+                          <small>{populationBandLabels[outlier.populationBand]}</small>
+                        </td>
+                        <td>
+                          {outlier.excessMultiple === null
+                            ? "IQR = 0"
+                            : number.format(outlier.excessMultiple) + " × IQR"}
+                          <small>{signedEuroFromCents(outlier.distanceBeyondFenceCents)} oltre</small>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <p className={styles.note}>Nessun valore supera la soglia con i dati attuali.</p>
           )}
@@ -413,7 +420,10 @@ export default async function ControlsPage({ searchParams }: PageProps) {
               ricostruzioni totale ÷ per abitante. Resta una stima implicita, distinta da un
               dato demografico ISTAT.
             </p>
-            <div className={"table-scroll " + styles.outlierTable} role="region" aria-label="Controllo di sensibilità per fascia di popolazione" tabIndex={0}>
+            <p className={styles.tableHint} id="sensitivity-table-hint">
+              Scorri lateralmente per coorti, Comuni valutati e valori oltre soglia.
+            </p>
+            <div className={"table-scroll " + styles.outlierTable} role="region" aria-label="Controllo di sensibilità per fascia di popolazione" aria-describedby="sensitivity-table-hint" tabIndex={0}>
               <table className="table">
                 <caption>Controllo di sensibilità del metodo per fascia di popolazione implicita</caption>
                 <thead>
@@ -507,10 +517,14 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           </div>
         )}
 
+        <p className={styles.tableHint} id="procurement-table-hint">
+          Scorri lateralmente per quote sul numero, valore e fonte.
+        </p>
         <div
           className={`table-scroll ${styles.procurementTable}`}
           role="region"
           aria-label="Serie annuale degli affidamenti diretti ANAC"
+          aria-describedby="procurement-table-hint"
           tabIndex={0}
         >
           <table className="table">
@@ -656,10 +670,14 @@ export default async function ControlsPage({ searchParams }: PageProps) {
             </p>
             <details className={styles.scenarioMethod}>
               <summary>Vedi formula e ipotesi</summary>
+              <p className={styles.tableHint} id="scenario-table-hint">
+                Scorri lateralmente per confrontare tutte le basi del modello.
+              </p>
               <div
                 className="table-scroll"
                 role="region"
                 aria-label="Ipotesi percentuali dei tre scenari"
+                aria-describedby="scenario-table-hint"
                 tabIndex={0}
               >
                 <table className="table">

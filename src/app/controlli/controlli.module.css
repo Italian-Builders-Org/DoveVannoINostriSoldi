@@ -520,6 +520,10 @@
   max-width: 100ch;
 }
 
+.tableHint {
+  display: none;
+}
+
 @media (max-width: 620px) {
   .yearFilter {
     align-items: flex-start;
@@ -537,6 +541,15 @@
   }
 
   .signalValue { font-size: 27px; }
+
+  .tableHint {
+    display: block;
+    margin: var(--space-3) 0 var(--space-2);
+    color: var(--color-neutral-700);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
   .breakdown li {
     grid-template-columns: minmax(0, 1fr) 112px;
   }

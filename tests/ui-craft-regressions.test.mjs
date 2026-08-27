@@ -61,7 +61,7 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
     /\.tooltip\[data-open="true"\]\[data-positioned="false"\][\s\S]*?visibility: hidden;/,
   );
   assert.match(home, /\.panelHead > h2 \{[\s\S]*?flex: 1 1 auto;[\s\S]*?min-width: 0;/);
-  assert.match(globals, /@media \(min-width: 901px\) and \(max-width: 980px\)/);
+  assert.match(globals, /@media \(min-width: 901px\) and \(max-width: 1100px\)/);
   assert.match(globals, /\.header-search \{ order: 3; width: 100%; \}/);
 });
 

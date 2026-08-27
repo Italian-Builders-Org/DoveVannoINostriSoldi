@@ -4,6 +4,10 @@ import test from "node:test";
 
 const page = await readFile(new URL("../src/app/stato/page.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/app/stato/stato.module.css", import.meta.url), "utf8");
+const administrationPage = await readFile(
+  new URL("../src/app/stato/amministrazioni/[codice]/page.tsx", import.meta.url),
+  "utf8",
+);
 
 test("state page reads the Next 16 searchParams promise and fails closed", () => {
   assert.match(page, /searchParams: Promise<\{ anno\?: string \| string\[\] \}>/);
@@ -32,4 +36,11 @@ test("state period controls preserve keyboard-sized targets on narrow screens", 
   assert.match(css, /\.periodSelector a,\s*\.separationLink \{[\s\S]*?min-height: 44px;/);
   assert.match(css, /@media \(max-width: 720px\)[\s\S]*?\.periodSelector \{\s*display: block;/);
   assert.match(css, /\.periodSelector a\[aria-current="page"\]/);
+});
+
+test("state payment bars scale against the true series maximum", () => {
+  assert.match(page, /Math\.max\(\.\.\.snapshot\.paymentMethods\.map\(\(method\) => method\.value\), 0\)/);
+  assert.match(administrationPage, /Math\.max\(\.\.\.data\.paymentMethods\.map\(\(method\) => method\.value\), 0\)/);
+  assert.doesNotMatch(page, /paymentMethods\[0\]/);
+  assert.doesNotMatch(administrationPage, /paymentMethods\[0\]/);
 });

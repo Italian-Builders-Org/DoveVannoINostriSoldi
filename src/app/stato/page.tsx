@@ -123,7 +123,7 @@ function StatePeriodSelector({ isConsuntivo }: { isConsuntivo: boolean }) {
 }
 
 function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
-  const maxPaymentMethod = snapshot.paymentMethods[0]?.value ?? 0;
+  const maxPaymentMethod = Math.max(...snapshot.paymentMethods.map((method) => method.value), 0);
   const sourceUpdatedAt = snapshot.sources.mission.metadataModified;
   const isConsuntivo = snapshot.period.releaseKind === "consuntivo";
   const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
@@ -369,7 +369,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
               <div className={styles.methodRow} key={method.code ?? method.label}>
                 <span>{method.label}</span>
                 <div className={styles.methodTrack} aria-hidden="true">
-                  <i style={{ width: `${Math.min(width, 100)}%` }} />
+                  <i style={{ width: `${width}%` }} />
                 </div>
                 <strong>{compactEuro(method.value)}</strong>
               </div>

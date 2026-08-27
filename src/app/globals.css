@@ -730,8 +730,9 @@ main { display: block; }
 }
 
 /* Keep the header's fixed actions inside the viewport before the full
-   mobile layout takes over at 900px. */
-@media (min-width: 901px) and (max-width: 980px) {
+   mobile layout takes over at 900px. The theme toggle adds a fixed action,
+   so the compact two-row header starts early enough for 1024px viewports. */
+@media (min-width: 901px) and (max-width: 1100px) {
   .header-inner {
     flex-wrap: wrap;
     gap: var(--space-3);

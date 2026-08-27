@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
-import { compactEuro, integer } from "@/lib/format";
+import { compactEuro, integer, longDate } from "@/lib/format";
 import {
   PnrrChildcareQueryError,
   pnrrChildcareData,
@@ -103,7 +103,18 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
         {error ? <p className={styles.error} role="alert">{error}</p> : null}
       </section>
 
-      <div className={styles.statRail} aria-label="Copertura del tracciato">
+      <p className={styles.archiveScope}>
+        <strong>Intero archivio: {integer(pnrrChildcareMeta.coverage.uniqueProjects)} CUP</strong>
+        <span aria-hidden="true"> · </span>
+        misura {pnrrChildcareMeta.submeasure.code}
+        <span aria-hidden="true"> · </span>
+        dati al {longDate(pnrrChildcareMeta.referenceDate)}
+        <span aria-hidden="true"> · </span>
+        <a href={pnrrChildcareMeta.source.landingUrl} target="_blank" rel="noreferrer">
+          Fonte Italia Domani ↗
+        </a>
+      </p>
+      <div className={styles.statRail} aria-label="Copertura dell’intero archivio">
         <div><strong>{compactEuro(pnrrChildcareMeta.totals.pnrrFundingCents / 100)}</strong><span>finanziamento PNRR registrato</span></div>
         <div><strong>{integer(pnrrChildcareMeta.coverage.tenderRows)}</strong><span>gare collegate</span></div>
         <div><strong>{integer(pnrrChildcareMeta.coverage.awardeeRows)}</strong><span>righe aggiudicatario</span></div>

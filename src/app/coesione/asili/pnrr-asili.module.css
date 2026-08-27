@@ -79,6 +79,13 @@
   font-weight: 700;
 }
 
+.archiveScope {
+  max-width: 80ch;
+  margin: 0 0 var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
 .statRail {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -302,6 +309,10 @@
 
   .cardMetrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: auto;
   }
 }
 

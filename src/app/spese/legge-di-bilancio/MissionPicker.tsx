@@ -360,7 +360,7 @@ export function MissionPicker({
             </span>
             <div className={styles.planHeadActions}>
               <button type="button" className="btn btn-secondary" onClick={onClearAll}>
-                Torna al dato pubblicato
+                Ricomincia
               </button>
               <button type="button" className="btn btn-primary" onClick={onShare}>
                 Condividi la tua finanziaria
@@ -622,7 +622,7 @@ export function MissionPicker({
 
       <p className={styles.pickerCaption}>
         {hasScenario
-          ? `Il treemap è dimensionato sulla tua ipotesi. «Torna al dato pubblicato» rimette tutto sullo stanziamento reale ${latestYear}.`
+          ? `Il treemap è dimensionato sulla tua ipotesi. «Ricomincia» rimette tutto sullo stanziamento reale ${latestYear}.`
           : "Tocca − / + su un riquadro per aumentarlo o tagliarlo; la barra in basso segue il saldo."}
       </p>
     </div>

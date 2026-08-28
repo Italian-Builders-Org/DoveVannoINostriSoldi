@@ -168,7 +168,7 @@ export default async function LeggeDiBilancioPage({
             (somma su tutte le amministrazioni). Il numero sotto il nome è la variazione reale
             rispetto all&apos;anno prima. Quando sposti lo slider, le voci che tocchi restano
             segnate con una trama a righe e il treemap si ridisegna sulla nuova ripartizione;
-            &laquo;Torna al dato pubblicato&raquo; azzera lo scenario.
+            &laquo;Ricomincia&raquo; azzera lo scenario.
           </p>
         </div>
       ) : null}

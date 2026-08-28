@@ -100,7 +100,7 @@ export function BuilderHud({
         onClick={onShare}
         disabled={!hasScenario}
       >
-        Condividi
+        Condividi la finanziaria
       </button>
     </div>
   );

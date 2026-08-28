@@ -78,7 +78,7 @@
 .sectorLabelPlain { grid-template-columns: minmax(0, 1fr) auto; }
 .sectorLabel b { color: var(--color-accent-700); }
 .sectorLabel span { overflow: hidden; color: var(--color-neutral-800); text-overflow: ellipsis; white-space: nowrap; }
-.sectorLabel strong { font-variant-numeric: tabular-nums; }
+.sectorLabel strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .sectorList i { display: block; height: 7px; margin-top: 5px; background: var(--color-neutral-200); }
 .sectorList i b { display: block; height: 100%; background: var(--color-accent); }
 .sectorList small { display: block; margin-top: 3px; color: var(--color-neutral-600); font-size: 10px; }

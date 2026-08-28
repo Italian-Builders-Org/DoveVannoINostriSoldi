@@ -1045,14 +1045,6 @@
   border: 1px dashed var(--color-neutral-500);
 }
 
-.legendTrend {
-  width: 16px;
-  height: 0;
-  border: 0;
-  border-top: 2px dashed var(--color-neutral-500);
-  border-radius: 0;
-}
-
 .figure figcaption {
   max-width: 720px;
   margin-top: var(--space-3);

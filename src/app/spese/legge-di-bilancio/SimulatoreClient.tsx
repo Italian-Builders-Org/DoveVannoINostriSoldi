@@ -7,7 +7,6 @@ import {
   CartesianGrid,
   Cell,
   ComposedChart,
-  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -445,18 +444,6 @@ export function SimulatoreClient({
                   cursor={{ fill: "var(--color-neutral-100)" }}
                   content={<ScenarioTooltip />}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="observedAmountEur"
-                  name="Andamento"
-                  stroke="var(--color-neutral-500)"
-                  strokeWidth={2}
-                  strokeDasharray="5 3"
-                  dot={false}
-                  activeDot={false}
-                  connectNulls
-                  isAnimationActive={false}
-                />
                 <Bar
                   dataKey="amountEur"
                   name="Stanziamento pubblicato"
@@ -483,7 +470,6 @@ export function SimulatoreClient({
         <div className={styles.legend} aria-hidden="true">
           <span><i className={styles.legendObserved} /> Stanziamento pubblicato (dato osservato)</span>
           <span><i className={styles.legendHypothetical} /> Scenario ipotetico: verde se aumenti, rosso se riduci</span>
-          <span><i className={styles.legendTrend} /> Andamento nel periodo</span>
         </div>
 
         <figcaption>

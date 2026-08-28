@@ -61,9 +61,25 @@ test("the production deployment advertises HTTPS and a security contact", async 
     source("../public/.well-known/security.txt"),
   ]);
 
-  assert.match(vercel, /Strict-Transport-Security/);
-  assert.match(vercel, /max-age=86400/);
-  assert.doesNotMatch(vercel, /preload/);
+  const vercelConfig = JSON.parse(vercel);
+  const catchAllRules = vercelConfig.headers.filter((rule) => rule.source === "/(.*)");
+  assert.equal(catchAllRules.length, 1);
+
+  const allHstsEntries = vercelConfig.headers.flatMap((rule) =>
+    rule.headers.filter((header) => header.key.toLowerCase() === "strict-transport-security"),
+  );
+  assert.equal(allHstsEntries.length, 1);
+
+  const hstsEntries = catchAllRules[0].headers.filter(
+    (header) => header.key.toLowerCase() === "strict-transport-security",
+  );
+  assert.equal(hstsEntries.length, 1);
+  assert.deepEqual(hstsEntries[0], {
+    key: "Strict-Transport-Security",
+    value: "max-age=31536000",
+  });
+  assert.doesNotMatch(hstsEntries[0].value, /includeSubDomains/i);
+  assert.doesNotMatch(hstsEntries[0].value, /preload/i);
   assert.match(vercel, /X-Content-Type-Options/);
   assert.match(securityTxt, /Italian-Builders-Org\/DoveVannoINostriSoldi\/issues/);
   assert.match(securityTxt, /Expires: 2027-08-24T00:00:00.000Z/);

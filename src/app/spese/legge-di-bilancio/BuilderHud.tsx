@@ -4,6 +4,9 @@ import type { Plan } from "./reallocation";
 import { netToneColor, shortLabel, toneColor } from "./reallocation";
 import styles from "./simulatore.module.css";
 
+/** Ritocco fine dell'HUD: 1 punto per click, come lo step dello slider. */
+const HUD_STEP_PCT = 1;
+
 const compactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
   currency: "EUR",
@@ -65,8 +68,8 @@ export function BuilderHud({
         <button
           type="button"
           className={styles.hudStep}
-          onClick={() => onStep(-5)}
-          aria-label={`Riduci ${shortLabel(selectedMission)} di 5 punti`}
+          onClick={() => onStep(-HUD_STEP_PCT)}
+          aria-label={`Riduci ${shortLabel(selectedMission)} di ${HUD_STEP_PCT} punto`}
         >
           −
         </button>
@@ -74,8 +77,8 @@ export function BuilderHud({
         <button
           type="button"
           className={styles.hudStep}
-          onClick={() => onStep(5)}
-          aria-label={`Aumenta ${shortLabel(selectedMission)} di 5 punti`}
+          onClick={() => onStep(HUD_STEP_PCT)}
+          aria-label={`Aumenta ${shortLabel(selectedMission)} di ${HUD_STEP_PCT} punto`}
         >
           +
         </button>

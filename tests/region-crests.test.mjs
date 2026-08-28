@@ -49,10 +49,10 @@ test("ogni SVG locale è presente, hashato e senza contenuto eseguibile o riferi
     const svg = await readFile(join(projectRoot, entry.assetFile), "utf8");
     assert.ok(svg.toLowerCase().includes("<svg"), code + ": root SVG mancante");
     assert.doesNotMatch(svg, new RegExp("<(script|foreignObject|iframe|object|embed|audio|video|form)", "i"));
-    assert.doesNotMatch(svg, new RegExp(" on[a-z]+[[:space:]]*=", "i"));
+    assert.doesNotMatch(svg, /\s+on[a-z0-9_-]+\s*=/i);
     assert.ok(!svg.includes('href="http') && !svg.includes('xlink:href="http'));
     assert.ok(!svg.includes('href="//') && !svg.includes('xlink:href="//'));
-    assert.ok(!svg.match(new RegExp("url\\([[:space:]]*[\"']?(https?:|//)", "i")));
+    assert.doesNotMatch(svg, /url\(\s*["']?(?:https?:|\/\/)/i);
     const hash = createHash("sha1").update(svg).digest("hex");
     assert.equal(hash, entry.sha1, code + ": hash locale diverso dal manifest");
   }
@@ -66,7 +66,7 @@ test("RegionCrest usa asset locali, label semantiche e fallback accessibile", as
   assert.ok(component.includes('from "next/image"'));
   assert.ok(component.includes("src={entry.asset}"));
   assert.ok(component.includes("unoptimized"));
-  assert.ok(component.includes('loading="eager"'));
+  assert.ok(component.includes('loading="lazy"'));
   assert.ok(component.includes('alt={decorative ? "" :'));
   assert.ok(component.includes("Bandiera regionale"));
   assert.ok(component.includes("data-region-crest-type"));

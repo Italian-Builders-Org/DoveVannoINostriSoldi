@@ -4,6 +4,36 @@ The AGPL-3.0 license in `LICENSE` applies to the project code, with optional
 commercial terms described in `COMMERCIAL.md`. Embedded or linked datasets keep
 their original licenses and attribution requirements.
 
+## Simboli delle regioni italiane
+
+Gli SVG locali in `public/region-crests/` provengono da Wikimedia Commons. Sono
+mostrati solo per aiutare a riconoscere il territorio: il loro uso non implica
+approvazione o affiliazione da parte delle Regioni. Per il Veneto viene usata la
+bandiera regionale come alternativa vettoriale, indicata esplicitamente
+nell'interfaccia. Gli hash si riferiscono alle copie locali normalizzate con
+terminatori di riga LF.
+
+- **Piemonte** (`/region-crests/piemonte.svg`): F l a n k e r; ottimizzato da Blackcat; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Piemonte-Stemma.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `6932edf2ed736855d05bee8e6eb3824e6c00f2f5`.
+- **Valle d'Aosta/Vallée d'Aoste** (`/region-crests/valle-daosta.svg`): F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Valle_d%27Aosta-Stemma.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `d32cc951433a7f104adf174ef9fb3a61c044c104`.
+- **Lombardia** (`/region-crests/lombardia.svg`): Sinigagl & F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Lombardia-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `563f1b38d75c0bae2629051154a40ca1f49f6787`.
+- **Trentino-Alto Adige/Südtirol** (`/region-crests/trentino-alto-adige.svg`): F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Trentino-South_Tyrol.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `b28305bfcd052f40f66cf9fe64589f88236e212d`.
+- **Veneto** (bandiera regionale, `/region-crests/veneto.svg`): F l a n k e r (opera derivata); [fonte](https://commons.wikimedia.org/wiki/File:Flag_of_Veneto.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `d877bcb78d9834b9d22a2446988137d2b0e8ffa5`.
+- **Friuli-Venezia Giulia** (`/region-crests/friuli-venezia-giulia.svg`): GTRus; [fonte](https://commons.wikimedia.org/wiki/File:CoA_of_Friuli-Venezia_Giulia.svg); [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); SHA-1 `12d572be86682ff80c007042433f8f43ae9afd5e`.
+- **Liguria** (`/region-crests/liguria.svg`): F l a n k e r; modificato da Luigi Chiesa; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Liguria.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `8e4ba8008acd822377cab9546fe1aa0c02456f69`.
+- **Emilia-Romagna** (`/region-crests/emilia-romagna.svg`): Gambo7; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Emilia-Romagna-Stemma.svg); [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); SHA-1 `620602944e8d09d6219c36193f5067cf7d96d957`.
+- **Toscana** (`/region-crests/toscana.svg`): Alejandro Mery; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Tuscany.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `0a4765815d6247b99b3cd33d04b64ff6ed653c2f`.
+- **Umbria** (`/region-crests/umbria.svg`): F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Umbria-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `0e1bb83a394db89f8edc9bbf603d6f8396b15916`.
+- **Marche** (`/region-crests/marche.svg`): F l a n k e r; crop di Yiyi; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Marche.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `8e9ceaf1cea6acf78b2a675546898e2d4dd56efd`.
+- **Lazio** (`/region-crests/lazio.svg`): Credenza; Sinigagl; opera derivata di Serenthia; [fonte](https://commons.wikimedia.org/wiki/File:Lazio_Coat_of_Arms.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `db57cd024e6bdcbd31730082883f4d21d0734c18`.
+- **Abruzzo** (`/region-crests/abruzzo.svg`): F l a n k e r; versione più recente di Ddurbmonnejg; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Abruzzo-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `3d94a708205bd2512a321e82f8868d0c2266c0d4`.
+- **Molise** (`/region-crests/molise.svg`): F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Molise-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `767b8478c1f1a8853a5193d75786d2124094c4bd`.
+- **Campania** (`/region-crests/campania.svg`): GJo; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Campania-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `aa8f5bb3589462c592e40003918a4ca0491d95f6`.
+- **Puglia** (`/region-crests/puglia.svg`): ANGELUS; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_Arms_of_Apulia.svg); [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); SHA-1 `03e26da3b08aea4b203e072618e5544c055d8301`.
+- **Basilicata** (`/region-crests/basilicata.svg`): F l a n k e r; [fonte](https://commons.wikimedia.org/wiki/File:Regione-Basilicata-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `8bb997547b934b8038b05eb064efce8f77eae9ef`.
+- **Calabria** (`/region-crests/calabria.svg`): Wikimedia Commons, autore non dichiarato; [fonte](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Calabria.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `0d46fcea8b085a84192e6a5e82e9d2bb89d158b5`.
+- **Sicilia** (`/region-crests/sicilia.svg`): Ddurbmonnejg; [fonte](https://commons.wikimedia.org/wiki/File:Regione_Sicilia-Stemma_(Gonfalone).svg); [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); SHA-1 `71e8ccaca8a29469bb3ae22988f386e7a250a7a5`.
+- **Sardegna** (`/region-crests/sardegna.svg`): Fabiocarboni; [fonte](https://commons.wikimedia.org/wiki/File:Sardegna-Stemma.svg); [pubblico dominio](https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain); SHA-1 `483e3084919f36e60c611e942dbcd1fa73570d7a`.
+
 ## Consip participation and awardee data 2024–2026
 
 - **Works:** annual Consip `Partecipazioni` records projected as the three

@@ -1262,8 +1262,8 @@ try {
       validate: async (page) => {
         const sitemap = await page.$(".footer-sitemap");
         assert.ok(sitemap, `${label}: mappa del sito assente`);
-        const rowCount = await page.$$eval(".footer-sitemap-grid", (rows) => rows.length);
-        assert.equal(rowCount, 3, `${label}: attese 3 righe nella mappa`);
+        const columns = await page.$(".footer-sitemap-columns");
+        assert.ok(columns, `${label}: contenitore dei gruppi assente`);
         const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
         assert.equal(groupCount, 9, `${label}: attesi 9 gruppi nella mappa`);
         const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>

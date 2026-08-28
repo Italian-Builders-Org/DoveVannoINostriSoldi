@@ -72,7 +72,7 @@
   gap: var(--space-3);
   font-size: 13px;
 }
-.statusList li { grid-template-columns: minmax(0, 1fr) minmax(120px, 1.2fr) 300px; }
+.statusList li { grid-template-columns: minmax(0, 1fr) minmax(120px, 1.2fr) 310px; }
 .shareList li { grid-template-columns: minmax(0, 1fr) minmax(100px, 1fr) 62px; }
 
 .statusList li > span,

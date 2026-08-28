@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  EXPLORER_DEFAULT_RESULT_LIMIT,
+  EXPLORER_MAX_QUERY_LENGTH,
+  EXPLORER_MIN_QUERY_LENGTH,
+} from "@/lib/investigative-explorer-contract";
 import styles from "./esplora.module.css";
 
 type Relation = {
@@ -30,18 +35,26 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const request = useRef<{ controller: AbortController; sequence: number } | null>(null);
+  const sequence = useRef(0);
 
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
+      sequence.current += 1;
+      request.current?.controller.abort();
+      request.current = null;
     },
     [],
   );
 
   function run(value: string) {
+    const currentSequence = ++sequence.current;
     setQuery(value);
     if (timer.current) clearTimeout(timer.current);
-    if (value.trim().length < 2) {
+    request.current?.controller.abort();
+    request.current = null;
+    if (value.trim().length < EXPLORER_MIN_QUERY_LENGTH) {
       setResults([]);
       setError(null);
       setLoading(false);
@@ -50,18 +63,26 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
     setLoading(true);
     setError(null);
     timer.current = setTimeout(async () => {
+      const controller = new AbortController();
+      request.current = { controller, sequence: currentSequence };
       try {
         const res = await fetch(
-          `/api/esplora?q=${encodeURIComponent(value)}&limit=100`,
+          `/api/esplora?q=${encodeURIComponent(value)}&limit=${EXPLORER_DEFAULT_RESULT_LIMIT}`,
+          { signal: controller.signal },
         );
         if (!res.ok) throw new Error(`risposta ${res.status}`);
         const data = (await res.json()) as { results: Relation[] };
+        if (sequence.current !== currentSequence) return;
         setResults(data.results ?? []);
       } catch (err) {
+        if (controller.signal.aborted || sequence.current !== currentSequence) return;
         setError(err instanceof Error ? err.message : "errore di ricerca");
         setResults([]);
       } finally {
-        setLoading(false);
+        if (sequence.current === currentSequence) {
+          setLoading(false);
+          request.current = null;
+        }
       }
     }, 250);
   }
@@ -78,6 +99,7 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
         type="search"
         value={query}
         onChange={(event) => run(event.target.value)}
+        maxLength={EXPLORER_MAX_QUERY_LENGTH}
         placeholder="Nome, ente, CIG/CUP, ID atto…"
         aria-label="Cerca relazioni"
         className={styles.searchInput}
@@ -85,7 +107,7 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
       <p className={styles.resultStatus} aria-live="polite">
         {loading
           ? "Ricerca…"
-          : query.trim().length < 2
+          : query.trim().length < EXPLORER_MIN_QUERY_LENGTH
             ? `${initialCount.toLocaleString("it-IT")} relazioni indicizzate`
             : `${results.length} risultati`}
       </p>

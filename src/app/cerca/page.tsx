@@ -13,6 +13,10 @@ import styles from "./cerca.module.css";
 export const metadata: Metadata = {
   title: "Cerca nel sito",
   description: "Pagine, dataset, strumenti ed enti del registro IPA in un'unica ricerca.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 type SearchPageProps = {

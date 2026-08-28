@@ -72,7 +72,7 @@ export function RegionCrest({
         height={entry.height}
         alt={decorative ? "" : `${symbolLabel} di ${name}`}
         unoptimized
-        loading="eager"
+        loading="lazy"
         decoding="async"
       />
     </span>
@@ -93,8 +93,17 @@ export function RegionCrestAttribution() {
       <a href={manifest.catalogUrl} target="_blank" rel="noreferrer">
         nel catalogo Wikimedia Commons ↗
       </a>
-      . Il simbolo del Veneto è indicato come bandiera regionale alternativa. I simboli identificano
-      il territorio: non sono una misura dei pagamenti e non modificano la choropleth.
+      ; i crediti completi sono nelle{" "}
+      <a
+        href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/blob/main/THIRD_PARTY_NOTICES.md#simboli-delle-regioni-italiane"
+        target="_blank"
+        rel="noreferrer"
+      >
+        note di attribuzione ↗
+      </a>
+      . Il simbolo del Veneto è indicato come bandiera regionale alternativa. I simboli
+      identificano il territorio: non sono una misura dei pagamenti, non modificano la choropleth
+      e non implicano approvazione istituzionale.
     </p>
   );
 }

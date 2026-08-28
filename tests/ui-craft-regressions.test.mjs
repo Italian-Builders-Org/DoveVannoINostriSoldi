@@ -261,5 +261,9 @@ test("the relationship explorer uses its module styles and keeps result context"
   assert.match(explorer, /r\.period/);
   assert.match(explorer, /euro\.format\(r\.amount\)/);
   assert.match(explorer, /r\.confidence_note/);
+  assert.match(explorer, /new AbortController\(\)/);
+  assert.match(explorer, /signal: controller\.signal/);
+  assert.match(explorer, /sequence\.current !== currentSequence/);
+  assert.match(explorer, /sequence\.current \+= 1/);
   assert.doesNotMatch(explorer, /className="(?:search-input|relation-list|relation-item)"/);
 });

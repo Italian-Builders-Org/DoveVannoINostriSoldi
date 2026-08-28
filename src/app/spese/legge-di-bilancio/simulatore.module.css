@@ -186,6 +186,7 @@
 }
 
 .tileBox {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -217,12 +218,33 @@
   text-overflow: ellipsis;
 }
 
-.gaugeCaption {
-  fill: var(--color-raised);
-  font-size: 9px;
+/* Bottoni −/+ dentro il riquadro: unico elemento che riprende i click. */
+.tileSteppers {
+  position: absolute;
+  inset-block-end: 6px;
+  inset-inline-end: 6px;
+  display: flex;
+  gap: 4px;
+}
+
+.tileStep {
+  pointer-events: auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-raised) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 20%, transparent);
+  font-size: 15px;
   font-weight: 800;
-  letter-spacing: .02em;
-  pointer-events: none;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tileStep:hover {
+  background: var(--color-raised);
+  border-color: var(--color-accent-600);
+  color: var(--color-accent-700);
 }
 
 .tileScenarioTag {
@@ -542,41 +564,76 @@
   line-height: 1;
 }
 
-.shareLead {
-  margin: 0 0 var(--space-3);
-  color: var(--color-neutral-600);
-  font-size: 12px;
-}
-
-.shareList {
+.shareVerdict {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 2px;
   margin: 0 0 var(--space-3);
-  padding: 0;
-  list-style: none;
-}
-
-.shareList li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--color-neutral-200);
   color: var(--color-text);
+  font-family: var(--font-heading);
   font-size: 13px;
+  font-weight: 700;
 }
 
-.shareList li b {
-  flex-shrink: 0;
+.shareVerdictDetail {
+  color: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* Barre divergenti: verso destra gli aumenti (verde), verso sinistra i tagli (rosso). */
+.shareBars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0 0 var(--space-3);
+}
+
+.shareBarRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 11px;
+}
+
+.shareBarLabel {
+  overflow: hidden;
+  color: var(--color-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.shareBarLabel b {
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.shareMore {
-  border-bottom: 0 !important;
-  color: var(--color-neutral-600) !important;
-  font-size: 12px;
+.shareBarTrack {
+  position: relative;
+  height: 14px;
+  background: var(--color-neutral-100);
+}
+
+.shareBarTrack::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--color-neutral-400);
+}
+
+.shareBarFill {
+  position: absolute;
+  inset-block: 2px;
+}
+
+.shareBarsMore {
+  margin: 2px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
 }
 
 .shareCta {
@@ -666,14 +723,21 @@
 
 .minorChip {
   display: inline-flex;
+  align-items: stretch;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.minorChipSelect {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
   min-height: 44px;
   padding: 6px 10px;
   color: var(--color-text);
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-300);
+  background: none;
+  border: 0;
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -681,30 +745,63 @@
 
 .minorChip:hover {
   border-color: var(--color-neutral-500);
+}
+
+.minorChipSelect:hover {
   background: var(--color-neutral-100);
 }
 
-.minorChip small {
+.minorChipSelect small {
   color: var(--color-neutral-600);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
-.minorChipActive {
-  border-color: var(--color-accent-600);
+.minorChipSteppers {
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--color-neutral-300);
+}
+
+.minorChipStep {
+  flex: 1;
+  width: 30px;
+  padding: 0;
+  color: var(--color-neutral-700);
+  background: var(--color-neutral-100);
+  border: 0;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.minorChipStep + .minorChipStep {
+  border-block-start: 1px solid var(--color-neutral-300);
+}
+
+.minorChipStep:hover {
+  color: var(--color-accent-700);
   background: var(--color-accent-100);
 }
 
-.minorChipActive small {
+.minorChipActive {
+  border-color: var(--color-accent-600);
+}
+
+.minorChipActive .minorChipSelect {
+  background: var(--color-accent-100);
+}
+
+.minorChipActive .minorChipSelect small {
   color: var(--color-accent-700);
 }
 
 .minorChipAdjusted {
   border-style: dashed;
-  border-color: var(--color-accent-500);
 }
 
-.minorChipAdjusted small {
+.minorChipAdjusted .minorChipSelect small {
   color: var(--color-accent-700);
 }
 
@@ -823,6 +920,16 @@
 .controlHint {
   margin: 0;
   color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.missionNote {
+  margin-top: var(--space-2);
+  padding: 8px 10px;
+  color: var(--color-neutral-700);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -996,5 +1103,144 @@
 
   .treemap {
     height: 340px;
+  }
+}
+
+/* HUD: barra fissa in basso, visibile finché stai costruendo la manovra. */
+.hud {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  padding: 10px var(--space-4);
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+  box-shadow: var(--shadow-md);
+}
+
+.hudMission {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 160px;
+}
+
+.hudMissionName {
+  overflow: hidden;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hudMission b {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.hudStepper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--color-neutral-300);
+}
+
+.hudStep {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--color-text);
+  background: var(--color-neutral-100);
+  border: 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hudStep:first-child {
+  border-inline-end: 1px solid var(--color-neutral-300);
+}
+
+.hudStep:last-child {
+  border-inline-start: 1px solid var(--color-neutral-300);
+}
+
+.hudStep:hover {
+  color: var(--color-accent-700);
+  background: var(--color-accent-100);
+}
+
+.hudStepValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  padding-inline: 8px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.hudStatus {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.hudStatusLabel {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.hudStatus b {
+  font-size: 17px;
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+}
+
+.hudStatusHint {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.hudShare {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .hud {
+    gap: 8px var(--space-3);
+    padding: 8px var(--space-3);
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .hudMission {
+    flex: 1 1 52%;
+  }
+
+  .hudStatus {
+    flex: 1 1 40%;
+    margin-inline-start: 0;
+    justify-content: flex-end;
+  }
+
+  .hudStepper {
+    flex: 0 0 auto;
+  }
+
+  .hudShare {
+    flex: 1 1 auto;
   }
 }

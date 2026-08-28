@@ -76,13 +76,13 @@ export default async function LeggeDiBilancioPage({
         <p className={styles.howtoLead}>Costruisci il tuo scenario di riallocazione</p>
         <ol className={styles.howtoSteps}>
           <li>
-            <span>1</span> Scegli una missione dal treemap qui sotto
+            <span>1</span> Tocca − / + su un riquadro del treemap per aumentarlo o tagliarlo
           </li>
           <li>
-            <span>2</span> Sposta lo slider per aumentarne o tagliarne lo stanziamento
+            <span>2</span> La barra in basso segue il saldo netto della tua manovra
           </li>
           <li>
-            <span>3</span> Leggi come cambiano il saldo netto e la ripartizione fra le missioni
+            <span>3</span> Quando sei soddisfatto, condividi la tua proposta
           </li>
         </ol>
       </section>

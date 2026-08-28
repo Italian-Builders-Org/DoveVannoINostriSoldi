@@ -1,13 +1,22 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo } from "react";
 import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 import type { TreemapNode } from "recharts";
 import { institutionalCategoryColor } from "@/lib/chart-category-colors";
-import { PUBLIC_SITE_URL } from "@/lib/site";
+import {
+  computePlan,
+  effectiveAmount,
+  MAJOR_SHARE_THRESHOLD,
+  type MissionSummary,
+  scenarioPctOf,
+  shortLabel,
+  toneColor,
+} from "./reallocation";
 import styles from "./simulatore.module.css";
 
-const SHARE_HOST = new URL(PUBLIC_SITE_URL).host.replace(/^www\./, "");
+/** Passo del ritocco rapido con i bottoni −/+ (punti percentuali). */
+const STEP_PCT = 5;
 
 const compactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
@@ -46,80 +55,7 @@ function billionsEuro(value: number): string {
   return `${integerFmt.format(value / 1_000_000_000)} Mld €`;
 }
 
-/**
- * Missioni che restano fuori dal treemap perché sotto questa quota dello
- * stanziamento dell'ultimo anno diventerebbero riquadri di pochi pixel: le
- * serviamo come striscia di chip di pari dimensione, tutte selezionabili.
- * La ripartizione fra treemap ed elenco resta ancorata al dato osservato,
- * così un riquadro non salta nell'elenco quando lo ridimensioni.
- */
-const MAJOR_SHARE_THRESHOLD = 0.007;
-
-/** Etichette brevi per la tassonomia RGS delle missioni (nomi stabili dal 2017). */
-const SHORT_LABELS: Readonly<Record<string, string>> = {
-  "Agricoltura, politiche agroalimentari e pesca": "Agricoltura e pesca",
-  "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio":
-    "Amministrazione generale",
-  "Casa e assetto urbanistico": "Casa e urbanistica",
-  "Commercio internazionale ed internazionalizzazione del sistema produttivo": "Commercio internazionale",
-  "Competitivita' e sviluppo delle imprese": "Sviluppo delle imprese",
-  "Comunicazioni": "Comunicazioni",
-  "Debito pubblico": "Debito pubblico",
-  "Difesa e sicurezza del territorio": "Difesa",
-  "Diritti sociali, politiche sociali e famiglia": "Diritti sociali e famiglia",
-  "Diritto alla mobilita' e sviluppo dei sistemi di trasporto": "Mobilità e trasporti",
-  "Energia e diversificazione delle fonti energetiche": "Energia",
-  "Fondi da ripartire": "Fondi da ripartire",
-  "Giovani e sport": "Giovani e sport",
-  "Giustizia": "Giustizia",
-  "Immigrazione, accoglienza e garanzia dei diritti": "Immigrazione e accoglienza",
-  "Infrastrutture pubbliche e logistica": "Infrastrutture e logistica",
-  "Istruzione scolastica": "Istruzione scolastica",
-  "Istruzione universitaria e formazione post-universitaria": "Università e ricerca",
-  "L'Italia in Europa e nel mondo": "Italia in Europa e nel mondo",
-  "Ordine pubblico e sicurezza": "Ordine pubblico e sicurezza",
-  "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri":
-    "Organi costituzionali e PCM",
-  "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica":
-    "Politiche economiche e bilancio",
-  "Politiche per il lavoro": "Lavoro",
-  "Politiche previdenziali": "Previdenza",
-  "Regolazione dei mercati": "Regolazione dei mercati",
-  "Relazioni finanziarie con le autonomie territoriali": "Finanza delle autonomie",
-  "Ricerca e innovazione": "Ricerca e innovazione",
-  "Servizi istituzionali e generali delle amministrazioni pubbliche": "Servizi istituzionali PA",
-  "Soccorso civile": "Soccorso civile",
-  "Sviluppo e riequilibrio territoriale": "Sviluppo territoriale",
-  "Sviluppo sostenibile e tutela del territorio e dell'ambiente": "Ambiente e territorio",
-  "Turismo": "Turismo",
-  "Tutela della salute": "Salute",
-  "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici": "Cultura e paesaggio",
-};
-
-function shortLabel(mission: string): string {
-  return SHORT_LABELS[mission] ?? mission;
-}
-
-function scenarioPctOf(map: Record<string, number>, mission: string): number {
-  return map[mission] ?? 0;
-}
-
-/** Verde quando la voce cresce, rosso quando cala, neutro se invariata. */
-function toneColor(value: number): string {
-  if (value > 0) return "var(--color-positive)";
-  if (value < 0) return "var(--color-critical)";
-  return "var(--color-neutral-500)";
-}
-
-function effectiveAmount(item: MissionSummary, map: Record<string, number>): number {
-  return item.latestAmountEur * (1 + scenarioPctOf(map, item.mission) / 100);
-}
-
-export type MissionSummary = {
-  mission: string;
-  latestAmountEur: number;
-  realDeltaPct: number | null;
-};
+export type { MissionSummary };
 
 type MissionNode = TreemapNode & {
   mission?: string;
@@ -137,106 +73,33 @@ export function MissionPicker({
   summaries,
   selectedMission,
   onSelect,
+  onAdjust,
   onClearMission,
   onClearAll,
+  onShare,
   latestYear,
   scenarioByMission,
 }: {
   summaries: MissionSummary[];
   selectedMission: string;
   onSelect: (mission: string) => void;
+  /** Ritocco rapido: aggiunge `deltaPct` punti alla missione (e la seleziona). */
+  onAdjust: (mission: string, deltaPct: number) => void;
   onClearMission: (mission: string) => void;
   onClearAll: () => void;
+  onShare: () => void;
   latestYear: number;
   /** Variazione ipotetica (punti percentuali) per missione toccata. */
   scenarioByMission: Record<string, number>;
 }) {
   const hatchId = useId();
-  const shareDialogRef = useRef<HTMLDialogElement>(null);
-  const [shareUrl, setShareUrl] = useState("");
-  const [linkCopied, setLinkCopied] = useState(false);
 
-  const plan = useMemo(() => {
-    const observedTotal = summaries.reduce((acc, item) => acc + item.latestAmountEur, 0);
-    const effectiveTotal = summaries.reduce(
-      (acc, item) => acc + effectiveAmount(item, scenarioByMission),
-      0,
-    );
-    const entries = summaries
-      .filter((item) => scenarioPctOf(scenarioByMission, item.mission) !== 0 && item.latestAmountEur > 0)
-      .map((item) => {
-        const observed = item.latestAmountEur;
-        const effective = effectiveAmount(item, scenarioByMission);
-        return {
-          mission: item.mission,
-          pct: scenarioPctOf(scenarioByMission, item.mission),
-          realDeltaPct: item.realDeltaPct,
-          observed,
-          effective,
-          diff: effective - observed,
-        };
-      })
-      .sort((left, right) => Math.abs(right.diff) - Math.abs(left.diff));
-
-    const increases = entries.filter((entry) => entry.diff > 0);
-    const cuts = entries.filter((entry) => entry.diff < 0);
-    const increasesTotal = increases.reduce((acc, entry) => acc + entry.diff, 0);
-    const cutsTotal = cuts.reduce((acc, entry) => acc + entry.diff, 0); // ≤ 0
-    const net = effectiveTotal - observedTotal;
-
-    return {
-      observedTotal,
-      effectiveTotal,
-      entries,
-      net,
-      netPct: observedTotal > 0 ? (net / observedTotal) * 100 : 0,
-      increasesTotal,
-      cutsTotal,
-      increasesCount: increases.length,
-      cutsCount: cuts.length,
-    };
-  }, [summaries, scenarioByMission]);
+  const plan = useMemo(
+    () => computePlan(summaries, scenarioByMission),
+    [summaries, scenarioByMission],
+  );
 
   const hasScenario = plan.entries.length > 0;
-
-  const SHARE_HASHTAG = "#lamialeggedibilancio";
-  const shareText = `E se la prossima Legge di Bilancio la scrivessi tu? Ecco la mia proposta: saldo netto ${signedCompactEuro(
-    plan.net,
-  )} su ${plan.entries.length} ${plan.entries.length === 1 ? "missione" : "missioni"}. Fatta con Dove Vanno I Nostri Soldi, ora prova a scrivere la tua:`;
-  // Messaggio completo: testo, poi il link, poi l'hashtag a capo.
-  const shareMessage = `${shareText}\n${shareUrl}\n\n${SHARE_HASHTAG}`;
-
-  function openShare() {
-    setShareUrl(window.location.href);
-    setLinkCopied(false);
-    shareDialogRef.current?.showModal();
-  }
-
-  async function copyShareLink() {
-    try {
-      await navigator.clipboard.writeText(shareMessage);
-      setLinkCopied(true);
-      window.setTimeout(() => setLinkCopied(false), 2000);
-    } catch {
-      /* clipboard non disponibile: resta lo screenshot del riquadro */
-    }
-  }
-
-  // Solo le piattaforme che accettano un testo personalizzato: Facebook e
-  // LinkedIn ignorano ogni parametro di testo e mostrano solo l'anteprima del link.
-  const encodedUrl = encodeURIComponent(shareUrl);
-  const encodedMessage = encodeURIComponent(shareMessage);
-  const socialLinks = [
-    // testo tutto nel parametro `text`, senza `url`, così l'hashtag resta in fondo
-    { label: "X", href: `https://twitter.com/intent/tweet?text=${encodedMessage}` },
-    { label: "WhatsApp", href: `https://wa.me/?text=${encodedMessage}` },
-    {
-      label: "Telegram",
-      href: `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(
-        `${shareText}\n\n${SHARE_HASHTAG}`,
-      )}`,
-    },
-  ];
 
   const { treemapData, minor } = useMemo(() => {
     const observedTotal = summaries.reduce((acc, item) => acc + item.latestAmountEur, 0);
@@ -287,7 +150,12 @@ export function MissionPicker({
     const selected = mission === selectedMission;
     const showLabel = width >= 46 && height >= 24;
     const showMeta = width >= 74 && height >= 46;
+    const showStep = width >= 120 && height >= 72;
     const select = () => onSelect(mission);
+    const stepHandler = (delta: number) => (event: { stopPropagation: () => void }) => {
+      event.stopPropagation();
+      onAdjust(mission, delta);
+    };
 
     const pct = node.scenarioPct ?? 0;
     const adjusted = pct !== 0;
@@ -295,16 +163,6 @@ export function MissionPicker({
     const hatchRef = pct >= 0 ? `url(#${hatchId}-up)` : `url(#${hatchId}-down)`;
     const observed = node.observedEur ?? 0;
     const effective = node.effectiveEur ?? observed;
-
-    // Barra di confronto "oggi vs ipotesi" in fondo al riquadro, su scala
-    // condivisa: dice di quanto la tua ipotesi allunga o accorcia la voce.
-    const showGauge = adjusted && width >= 132 && height >= 104;
-    const gaugeX = x + 12;
-    const gaugeW = width - 24;
-    const gaugeY = y + height - 26;
-    const gaugeMax = Math.max(observed, effective, 1);
-    const observedW = gaugeW * (observed / gaugeMax);
-    const effectiveW = gaugeW * (effective / gaugeMax);
 
     // Le voci toccate mostrano il bordo nel colore del verso (verde su, rosso giù);
     // la selezione resta leggibile dallo spessore maggiore e dal velo a righe.
@@ -379,32 +237,6 @@ export function MissionPicker({
             />
           </>
         ) : null}
-        {showGauge ? (
-          <>
-            <rect x={gaugeX} y={gaugeY} width={gaugeW} height={10} fill="var(--color-raised)" fillOpacity={0.26} />
-            <rect x={gaugeX} y={gaugeY} width={observedW} height={10} fill="var(--color-raised)" fillOpacity={0.5} />
-            <rect
-              x={gaugeX}
-              y={gaugeY}
-              width={effectiveW}
-              height={10}
-              fill={hatchRef}
-              stroke={tone}
-              strokeWidth={1.5}
-            />
-            <line
-              x1={gaugeX + observedW}
-              x2={gaugeX + observedW}
-              y1={gaugeY - 3}
-              y2={gaugeY + 13}
-              stroke="var(--color-raised)"
-              strokeWidth={2}
-            />
-            <text x={gaugeX} y={gaugeY - 6} className={styles.gaugeCaption}>
-              oggi {compactEuro.format(observed)} · ipotesi {compactEuro.format(effective)}
-            </text>
-          </>
-        ) : null}
         {showLabel ? (
           <foreignObject x={x} y={y} width={width} height={height} className={styles.tileFo}>
             <div className={styles.tileBox}>
@@ -426,6 +258,26 @@ export function MissionPicker({
                   }}
                 >
                   ipotesi {signedPercent(pct)}
+                </span>
+              ) : null}
+              {showStep ? (
+                <span className={styles.tileSteppers}>
+                  <button
+                    type="button"
+                    className={styles.tileStep}
+                    onClick={stepHandler(-STEP_PCT)}
+                    aria-label={`Riduci ${node.shortLabel ?? mission} di ${STEP_PCT} punti`}
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.tileStep}
+                    onClick={stepHandler(STEP_PCT)}
+                    aria-label={`Aumenta ${node.shortLabel ?? mission} di ${STEP_PCT} punti`}
+                  >
+                    +
+                  </button>
                 </span>
               ) : null}
             </div>
@@ -451,7 +303,7 @@ export function MissionPicker({
               <button type="button" className="btn btn-secondary" onClick={onClearAll}>
                 Torna al dato pubblicato
               </button>
-              <button type="button" className="btn btn-primary" onClick={openShare}>
+              <button type="button" className="btn btn-primary" onClick={onShare}>
                 Condividi la tua finanziaria
               </button>
             </div>
@@ -566,78 +418,6 @@ export function MissionPicker({
               </div>
             );
           })()}
-
-          <dialog
-            ref={shareDialogRef}
-            className={styles.shareDialog}
-            onClick={(event) => {
-              if (event.target === shareDialogRef.current) shareDialogRef.current?.close();
-            }}
-          >
-            <div className={styles.shareDialogInner}>
-              <button
-                type="button"
-                className={styles.shareClose}
-                aria-label="Chiudi"
-                onClick={() => shareDialogRef.current?.close()}
-              >
-                ×
-              </button>
-
-              <figure
-                className={styles.shareCard}
-                style={{ borderTopColor: toneColor(plan.net) }}
-              >
-                <figcaption className={styles.shareKicker}>
-                  La mia proposta per la prossima Legge di Bilancio
-                </figcaption>
-                <p className={styles.shareNet} style={{ color: toneColor(plan.net) }}>
-                  {signedCompactEuro(plan.net)}
-                </p>
-                <p className={styles.shareLead}>
-                  saldo netto · {plan.entries.length}{" "}
-                  {plan.entries.length === 1 ? "missione" : "missioni"} ·{" "}
-                  {signedPercent(plan.netPct)} sul totale
-                </p>
-                <ul className={styles.shareList}>
-                  {plan.entries.slice(0, 4).map((entry) => (
-                    <li key={entry.mission}>
-                      <span>{shortLabel(entry.mission)}</span>
-                      <b style={{ color: toneColor(entry.pct) }}>{signedPercent(entry.pct)}</b>
-                    </li>
-                  ))}
-                  {plan.entries.length > 4 ? (
-                    <li className={styles.shareMore}>
-                      <span>+{plan.entries.length - 4} altre missioni</span>
-                    </li>
-                  ) : null}
-                </ul>
-                <p className={styles.shareCta}>
-                  Crea la tua finanziaria · {SHARE_HOST}/spese/legge-di-bilancio
-                </p>
-              </figure>
-
-              <div className={styles.shareLinks}>
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {social.label}
-                  </a>
-                ))}
-                <button type="button" onClick={copyShareLink}>
-                  {linkCopied ? "Copiato ✓" : "Copia link"}
-                </button>
-              </div>
-
-              <small className={styles.shareHint}>
-                Oppure fai uno screenshot di questo riquadro e postalo.
-              </small>
-            </div>
-          </dialog>
         </div>
       ) : null}
 
@@ -705,24 +485,47 @@ export function MissionPicker({
             const pct = scenarioPctOf(scenarioByMission, item.mission);
             const adjusted = pct !== 0;
             const effective = effectiveAmount(item, scenarioByMission);
+            const label = shortLabel(item.mission);
             return (
-              <button
+              <div
                 key={item.mission}
-                type="button"
                 className={`${styles.minorChip} ${selected ? styles.minorChipActive : ""} ${
                   adjusted ? styles.minorChipAdjusted : ""
                 }`}
                 style={adjusted && !selected ? { borderColor: toneColor(pct) } : undefined}
-                aria-pressed={selected}
-                onClick={() => onSelect(item.mission)}
               >
-                <span>{shortLabel(item.mission)}</span>
-                <small style={adjusted ? { color: toneColor(pct) } : undefined}>
-                  {adjusted
-                    ? `${compactEuro.format(item.latestAmountEur)} → ${compactEuro.format(effective)} (${signedPercent(pct)})`
-                    : `${item.latestAmountEur > 0 ? compactEuro.format(item.latestAmountEur) : "≈ 0"} · ${signedPercent(item.realDeltaPct)}`}
-                </small>
-              </button>
+                <button
+                  type="button"
+                  className={styles.minorChipSelect}
+                  aria-pressed={selected}
+                  onClick={() => onSelect(item.mission)}
+                >
+                  <span>{label}</span>
+                  <small style={adjusted ? { color: toneColor(pct) } : undefined}>
+                    {adjusted
+                      ? `${compactEuro.format(item.latestAmountEur)} → ${compactEuro.format(effective)} (${signedPercent(pct)})`
+                      : `${item.latestAmountEur > 0 ? compactEuro.format(item.latestAmountEur) : "≈ 0"} · ${signedPercent(item.realDeltaPct)}`}
+                  </small>
+                </button>
+                <span className={styles.minorChipSteppers}>
+                  <button
+                    type="button"
+                    className={styles.minorChipStep}
+                    aria-label={`Riduci ${label} di ${STEP_PCT} punti`}
+                    onClick={() => onAdjust(item.mission, -STEP_PCT)}
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.minorChipStep}
+                    aria-label={`Aumenta ${label} di ${STEP_PCT} punti`}
+                    onClick={() => onAdjust(item.mission, STEP_PCT)}
+                  >
+                    +
+                  </button>
+                </span>
+              </div>
             );
           })}
         </div>
@@ -731,7 +534,7 @@ export function MissionPicker({
       <p className={styles.pickerCaption}>
         {hasScenario
           ? `Il treemap è dimensionato sulla tua ipotesi. «Torna al dato pubblicato» rimette tutto sullo stanziamento reale ${latestYear}.`
-          : "Scegli un riquadro, poi usa lo slider qui sotto per costruire lo scenario."}
+          : "Tocca − / + su un riquadro per aumentarlo o tagliarlo; la barra in basso segue il saldo."}
       </p>
     </div>
   );

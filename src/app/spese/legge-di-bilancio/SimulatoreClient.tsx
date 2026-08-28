@@ -15,8 +15,18 @@ import {
 } from "recharts";
 import type { MissionEnactedAllocation } from "@/lib/bdap-legge-bilancio";
 import { ChartDataTable } from "@/components/charts/chart-data-table";
-import { MissionPicker, type MissionSummary } from "./MissionPicker";
+import { BuilderHud } from "./BuilderHud";
+import { MissionPicker } from "./MissionPicker";
 import { encodePiano, orderedMissionList } from "./piano-codec";
+import {
+  clampPct,
+  computePlan,
+  computeVerdict,
+  MISSION_NOTES,
+  type MissionSummary,
+  shortLabel,
+} from "./reallocation";
+import { ShareDialog } from "./ShareDialog";
 import styles from "./simulatore.module.css";
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
@@ -159,18 +169,36 @@ export function SimulatoreClient({
 
   const sliderPct = scenarioByMission[selectedMission] ?? 0;
 
-  const setSliderPct = useCallback(
-    (pct: number) =>
+  const setMissionPct = useCallback(
+    (mission: string, pct: number) =>
       setScenarioByMission((previous) => {
         const next = { ...previous };
-        if (pct === 0) {
-          delete next[selectedMission];
-        } else {
-          next[selectedMission] = pct;
-        }
+        const clamped = clampPct(pct);
+        if (clamped === 0) delete next[mission];
+        else next[mission] = clamped;
         return next;
       }),
-    [selectedMission],
+    [],
+  );
+
+  const setSliderPct = useCallback(
+    (pct: number) => setMissionPct(selectedMission, pct),
+    [setMissionPct, selectedMission],
+  );
+
+  // Ritocco rapido dai bottoni −/+ (tile, chip, HUD): seleziona e somma i punti.
+  const adjustMission = useCallback(
+    (mission: string, deltaPct: number) => {
+      setSelectedMission(mission);
+      setScenarioByMission((previous) => {
+        const next = { ...previous };
+        const clamped = clampPct((previous[mission] ?? 0) + deltaPct);
+        if (clamped === 0) delete next[mission];
+        else next[mission] = clamped;
+        return next;
+      });
+    },
+    [],
   );
 
   const clearMissionScenario = useCallback(
@@ -185,6 +213,16 @@ export function SimulatoreClient({
   );
 
   const clearAllScenario = useCallback(() => setScenarioByMission({}), []);
+
+  const plan = useMemo(
+    () => computePlan(missionSummaries, scenarioByMission),
+    [missionSummaries, scenarioByMission],
+  );
+  const verdict = useMemo(
+    () => computeVerdict(plan, missionSummaries, scenarioByMission),
+    [plan, missionSummaries, scenarioByMission],
+  );
+  const [shareOpen, setShareOpen] = useState(false);
 
   const series = useMemo(
     () =>
@@ -258,8 +296,10 @@ export function SimulatoreClient({
         summaries={missionSummaries}
         selectedMission={selectedMission}
         onSelect={setSelectedMission}
+        onAdjust={adjustMission}
         onClearMission={clearMissionScenario}
         onClearAll={clearAllScenario}
+        onShare={() => setShareOpen(true)}
         latestYear={latest.year}
         scenarioByMission={scenarioByMission}
       />
@@ -268,7 +308,7 @@ export function SimulatoreClient({
         <div className={styles.figureHeader}>
           <div>
             <span>STANZIAMENTO PUBBLICATO · LEGGE DI BILANCIO</span>
-            <h2>{selectedMission}</h2>
+            <h2>{shortLabel(selectedMission)}</h2>
           </div>
           <b>{years[0]}–{hypothesisYear}</b>
         </div>
@@ -314,6 +354,10 @@ export function SimulatoreClient({
                 <span>+{SLIDER_MAX}%</span>
               </div>
             </div>
+
+            {MISSION_NOTES[selectedMission] ? (
+              <small className={styles.missionNote}>{MISSION_NOTES[selectedMission]}</small>
+            ) : null}
 
             <div className={styles.controlFooter}>
               <button
@@ -445,6 +489,21 @@ export function SimulatoreClient({
           }))}
         />
       </figure>
+
+      <BuilderHud
+        selectedMission={selectedMission}
+        selectedPct={sliderPct}
+        onStep={(delta) => adjustMission(selectedMission, delta)}
+        plan={plan}
+        onShare={() => setShareOpen(true)}
+      />
+
+      <ShareDialog
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        plan={plan}
+        verdict={verdict}
+      />
     </div>
   );
 }

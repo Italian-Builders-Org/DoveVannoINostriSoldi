@@ -46,6 +46,9 @@ git diff --check
 ```
 
 `ci:static` esegue lint, typecheck, design:check e brand:check insieme.
+Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`
+(per esempio `PYTHON=python npm run test:node`): i test che attraversano il
+confine ETL usano quel nome, il default resta `python3`.
 I test browser e Lighthouse richiedono un server `next start` attivo su
 `127.0.0.1:3000`; vedi `scripts/ci/run-production-gates.sh` per l'orchestrazione
 completa usata dalla CI.

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
-import { extname, join, relative } from "node:path";
+import { extname, join, relative, sep } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import "./helpers/register-ts-alias.mjs";
@@ -219,7 +219,10 @@ test("the full municipal artifact stays behind the server query boundary", async
       matches.push(relative(repositoryRoot, file));
     }
   }
-  assert.deepEqual(matches.map((path) => path.replace(/^.*?src\//, "src/")).sort(), [
+  // relative() yields the platform separator; the expected identity is a repository
+  // path, so compare on one canonical form instead of the host's.
+  const repositoryPaths = matches.map((path) => path.split(sep).join("/"));
+  assert.deepEqual(repositoryPaths.map((path) => path.replace(/^.*?src\//, "src/")).sort(), [
     "src/lib/mef-irpef-snapshot.ts",
   ]);
   const snapshotSource = await readFile(

@@ -6,6 +6,12 @@ import styles from "./company-atlas-filters.module.css";
 
 type SelectOption = Readonly<{ id: string; label: string }>;
 
+function sectorChoiceLabel(id: string, label: string) {
+  if (id.toLowerCase() === "all") return label;
+  if (id.localeCompare(label, "it", { sensitivity: "accent" }) === 0) return label;
+  return `${id} · ${label}`;
+}
+
 type CompanyAtlasFiltersProps = Readonly<{
   filters: Required<Pick<AtlasFilters, "metric" | "period" | "region" | "sector" | "band">>;
   metrics: SelectOption[];
@@ -95,7 +101,7 @@ export function CompanyAtlasFilters({
             <option value="all">Tutti i settori</option>
             {sectors.filter((option) => option.id.toLowerCase() !== "all").map((option) => (
               <option key={option.id} value={option.id}>
-                {option.id === "all" ? option.label : `${option.id} · ${option.label}`}
+                {sectorChoiceLabel(option.id, option.label)}
               </option>
             ))}
           </select>

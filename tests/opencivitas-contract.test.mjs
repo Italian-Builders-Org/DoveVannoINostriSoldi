@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { X509Certificate } from "node:crypto";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 import { assertOpenCivitasSnapshot } from "../src/lib/data/opencivitas-contract.ts";
 
 const snapshotPath = new URL("../src/data/generated/opencivitas-2022.json", import.meta.url);
@@ -49,7 +50,7 @@ test("OpenCivitas keeps source anomaly warnings and nullable assessments", () =>
 });
 
 test("OpenCivitas ETL validates the committed snapshot offline", () => {
-  const checked = spawnSync("python3", ["scripts/etl/opencivitas_snapshot.py", "--check"], {
+  const checked = spawnSync(PYTHON_BIN, ["scripts/etl/opencivitas_snapshot.py", "--check"], {
     encoding: "utf8",
   });
   assert.equal(checked.status, 0, checked.stderr);

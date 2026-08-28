@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 import snapshot from "../src/data/generated/mef-participations-overview.json" with { type: "json" };
 
 const script = fileURLToPath(new URL("../scripts/etl/mef_participations_snapshot.py", import.meta.url));
@@ -23,7 +24,7 @@ function runFixture(values, headers = requiredHeaders) {
   const input = join(directory, "input.csv");
   const output = join(directory, "output.json");
   writeFileSync(input, `${headers.join(";")}\n${headers.map((header) => values[header] ?? "").join(";")}\n`);
-  const result = spawnSync("python3", [
+  const result = spawnSync(PYTHON_BIN, [
     script,
     "--input", input,
     "--reference-year", "2030",

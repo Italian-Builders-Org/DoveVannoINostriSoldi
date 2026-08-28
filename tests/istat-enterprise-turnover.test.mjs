@@ -188,6 +188,18 @@ test("getIstatTurnoverView builds compliant view for dashboard", () => {
   assert.equal(campaniaView.selectedRegion?.value, 216_750_478);
 });
 
+test("turnover sector list shows the ISTAT label once, without the 22px ATECO code column", async () => {
+  const pageSource = await readFile(new URL("../src/app/imprese/page.tsx", import.meta.url), "utf8");
+  const turnoverBlock = pageSource.slice(
+    pageSource.indexOf("isTurnover"),
+    pageSource.indexOf("const view = getCompanyAtlasView"),
+  );
+
+  assert.match(turnoverBlock, /sectorLabelPlain/);
+  assert.doesNotMatch(turnoverBlock, /<b>\{sector\.code\}<\/b>/);
+  assert.match(turnoverBlock, /\{sector\.label\}/);
+});
+
 test("fonti lists the lightweight ISTAT turnover source next to the camera sources", async () => {
   const pageSource = await readFile(new URL("../src/app/fonti/page.tsx", import.meta.url), "utf8");
 

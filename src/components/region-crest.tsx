@@ -17,7 +17,7 @@ type ManifestEntry = {
 const entries = manifest.regions as Record<string, ManifestEntry>;
 
 export type RegionCrestProps = {
-  /** ISTAT code from the regional source contract (01–20). */
+  /** ISTAT code from the regional source contract (01 to 20). */
   regionCode: string | null | undefined;
   /** Visible name used in the accessible label and fallback. */
   regionName?: string;

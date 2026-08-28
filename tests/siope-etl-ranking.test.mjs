@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 
 const execFileAsync = promisify(execFile);
 
@@ -18,7 +19,7 @@ test("SIOPE ETL ranks a low-volume municipality first per capita", async () => {
     "by_value, by_per_capita = municipality_rankings(items, 3)",
     "print(json.dumps({'value': [x['name'] for x in by_value], 'perCapita': [x['name'] for x in by_per_capita], 'sentinel': parse_population('00000001'), 'valid': parse_population('00000125')}))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const result = JSON.parse(stdout);
@@ -51,7 +52,7 @@ test("SIOPE ETL resolves official provinces and rejects unknown province codes",
     "        rejected = False",
     "    print(json.dumps({'province': province, 'count': count, 'rejected': rejected}))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const result = JSON.parse(stdout);
@@ -73,7 +74,7 @@ test("SIOPE registry validity is evaluated against the requested year", async ()
     "    active_2027, _, count_2027 = load_municipalities(archive, {'CF1': 'Piemonte'}, 2027)",
     "    print(json.dumps({'active2026': sorted(active_2026), 'active2027': sorted(active_2027), 'count2026': count_2026, 'count2027': count_2027}))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   assert.deepEqual(JSON.parse(stdout), {
@@ -101,7 +102,7 @@ test("SIOPE ETL builds resident-weighted distribution from the full municipal in
     "result = build_distribution(rows=rows, year=2026, latest_month=8, observed_at='2026-08-21T00:00:00+00:00', validators=validators)",
     "print(json.dumps(result))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const result = JSON.parse(stdout);
@@ -164,7 +165,7 @@ test("SIOPE ETL keeps an IPA-unmatched municipality national but not geographic"
     "    result = build_snapshot(year=2026, movements_zip=movements, registry_zip=registry, ipa_path=ipa, validators=validators)",
     "    print(json.dumps({'snapshot': result}))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const { snapshot } = JSON.parse(stdout);
@@ -200,7 +201,7 @@ test("SIOPE distribution does not fabricate a share for a zero denominator", asy
     "result = build_distribution(rows=rows, year=2025, latest_month=12, observed_at='2026-08-21T00:00:00+00:00', validators=validators)",
     "print(json.dumps(result))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const result = JSON.parse(stdout);
@@ -226,7 +227,7 @@ test("SIOPE distribution rejects fake provenance and inconsistent title componen
     "        errors.append(str(error))",
     "print(json.dumps(errors))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const errors = JSON.parse(stdout);
@@ -260,7 +261,7 @@ test("SIOPE refresh skip includes upstream ETag when it is available", async () 
     "  no_etag = is_unchanged(path, 2026, validators)",
     "print(json.dumps({'same': same, 'drift': drift, 'noEtag': no_etag}))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   assert.deepEqual(JSON.parse(stdout), { same: true, drift: false, noEtag: true });

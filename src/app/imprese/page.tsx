@@ -172,8 +172,7 @@ export default async function ImpresePage({
                   const share = sector.value !== null && sectorTotal > 0 ? (sector.value / sectorTotal) * 100 : 0;
                   return (
                     <li key={sector.code}>
-                      <div className={styles.sectorLabel}>
-                        <b>{sector.code}</b>
+                      <div className={`${styles.sectorLabel} ${styles.sectorLabelPlain}`}>
                         <span>{sector.label}</span>
                         <strong>{compactTurnover(sector.value)}</strong>
                       </div>

@@ -74,7 +74,8 @@
 
 .sectorList { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .sectorList li { min-width: 0; }
-.sectorLabel { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 5px; font-size: 12px; }
+.sectorLabel { display: grid; grid-template-columns: max-content minmax(0, 1fr) auto; align-items: baseline; gap: 5px; font-size: 12px; }
+.sectorLabelPlain { grid-template-columns: minmax(0, 1fr) auto; }
 .sectorLabel b { color: var(--color-accent-700); }
 .sectorLabel span { overflow: hidden; color: var(--color-neutral-800); text-overflow: ellipsis; white-space: nowrap; }
 .sectorLabel strong { font-variant-numeric: tabular-nums; }

@@ -97,6 +97,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/incarichi", label: "Incarichi" },
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },
+      { href: "/esplora", label: "Esplora relazioni" },
     ],
   },
   { href: "/assistente", label: "Assistente" },

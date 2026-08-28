@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 import { assertConsulentiSnapshot } from "../src/lib/data/consulenti-contract.ts";
 
 const snapshotPath = new URL(
@@ -79,7 +80,7 @@ test("Consulenti Pubblici ETL converts decimal amounts to integer cents", () => 
   );
 
   const generated = spawnSync(
-    "python3",
+    PYTHON_BIN,
     ["scripts/etl/consulenti_snapshot.py", "--input", input, "--output", output],
     { encoding: "utf8" },
   );
@@ -89,7 +90,7 @@ test("Consulenti Pubblici ETL converts decimal amounts to integer cents", () => 
   assert.equal(snapshot.employeeAppointments[0].paidCents, 1001);
 
   const checked = spawnSync(
-    "python3",
+    PYTHON_BIN,
     ["scripts/etl/consulenti_snapshot.py", "--check", "--output", output],
     { encoding: "utf8" },
   );

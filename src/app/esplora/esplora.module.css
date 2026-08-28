@@ -1,0 +1,52 @@
+.intro {
+  padding: 2rem 0 1rem;
+  max-width: 70ch;
+}
+
+.intro h1 {
+  margin-bottom: 0.5rem;
+}
+
+.caveat {
+  color: var(--muted-foreground, inherit);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.provenance {
+  padding: 1.5rem 0 2rem;
+  font-size: 0.9rem;
+}
+
+.relation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.relation-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, currentColor);
+  border-radius: 10px;
+}
+
+.relation-subject {
+  font-weight: 600;
+}
+
+.relation-type,
+.relation-role {
+  font-size: 0.78rem;
+  color: var(--muted-foreground, inherit);
+}
+
+.relation-source {
+  margin-left: auto;
+  font-size: 0.82rem;
+}

@@ -23,6 +23,15 @@
   letter-spacing: .12em;
   text-transform: uppercase;
 }
+
+:global([data-theme="dark"]) .tracePanel > div > span:first-child {
+  color: var(--color-accent-900);
+}
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .tracePanel > div > span:first-child {
+    color: var(--color-accent-900);
+  }
+}
 .tracePanel h2 {
   max-width: 18ch;
   margin: 8px 0 12px;

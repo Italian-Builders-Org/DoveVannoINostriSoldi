@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { PUBLIC_SITE_URL } from "@/lib/site";
 import {
   Bar,
   CartesianGrid,
@@ -165,6 +166,14 @@ export function SimulatoreClient({
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
   }, [scenarioByMission, orderedMissions, router, pathname]);
+
+  // Calcolato dallo stato React, non da window.location: il link è sempre
+  // coerente con il piano corrente anche se lo condividi subito dopo averlo
+  // toccato, prima che router.replace abbia aggiornato l'URL del browser.
+  const shareUrl = useMemo(() => {
+    const encoded = encodePiano(scenarioByMission, orderedMissions);
+    return `${PUBLIC_SITE_URL}${pathname}${encoded ? `?piano=${encoded}` : ""}`;
+  }, [scenarioByMission, orderedMissions, pathname]);
 
   const sliderPct = scenarioByMission[selectedMission] ?? 0;
 
@@ -506,6 +515,7 @@ export function SimulatoreClient({
         onClose={() => setShareOpen(false)}
         plan={plan}
         verdict={verdict}
+        shareUrl={shareUrl}
       />
     </div>
   );

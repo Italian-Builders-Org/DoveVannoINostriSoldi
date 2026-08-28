@@ -89,7 +89,20 @@ test("piano codec round-trips through the ordered mission list", () => {
   assert.deepEqual(decodePiano(encoded, ordered), scenario);
 });
 
-test("piano codec drops out-of-range indexes and zero values", () => {
+test("piano codec drops unknown slugs, zero values, and links missing the version prefix", () => {
   const ordered = orderedMissionList(SUMMARIES.map((s) => s.mission));
-  assert.deepEqual(decodePiano("99:10,0:0", ordered), {});
+  assert.deepEqual(decodePiano("v1:missione-che-non-esiste:10,tutela-della-salute:0", ordered), {});
+  // A link encoded by a future/older format is dropped rather than misread.
+  assert.deepEqual(decodePiano("tutela-della-salute:10", ordered), {});
+});
+
+test("piano codec is stable across mission renames: an unknown slug is dropped, not remapped", () => {
+  const missions = SUMMARIES.map((s) => s.mission);
+  const encoded = encodePiano({ "Tutela della salute": 15 }, missions);
+  const renamed = missions.map((mission) =>
+    mission === "Tutela della salute" ? "Tutela e promozione della salute" : mission,
+  );
+  // With index-based encoding this used to silently land on whichever mission
+  // took the old alphabetical slot; slug-based encoding just drops it.
+  assert.deepEqual(decodePiano(encoded, renamed), {});
 });

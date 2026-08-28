@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import type { Plan, Verdict } from "./reallocation";
 import { netToneColor, shortLabel, toneColor } from "./reallocation";
@@ -34,21 +34,24 @@ export function ShareDialog({
   onClose,
   plan,
   verdict,
+  shareUrl,
 }: {
   open: boolean;
   onClose: () => void;
   plan: Plan;
   verdict: Verdict;
+  /** Link dello scenario corrente, calcolato dal chiamante dallo stato React
+   * (non da window.location, che si aggiorna solo dopo un giro di router). */
+  shareUrl: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [shareUrl, setShareUrl] = useState("");
+  const titleId = useId();
   const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
-      setShareUrl(window.location.href);
       setLinkCopied(false);
       dialog.showModal();
     } else if (!open && dialog.open) {
@@ -98,6 +101,7 @@ export function ShareDialog({
     <dialog
       ref={dialogRef}
       className={styles.shareDialog}
+      aria-labelledby={titleId}
       onClose={onClose}
       onClick={(event) => {
         if (event.target === dialogRef.current) onClose();
@@ -109,7 +113,7 @@ export function ShareDialog({
         </button>
 
         <figure className={styles.shareCard} style={{ borderTopColor: netToneColor(plan.net) }}>
-          <figcaption className={styles.shareKicker}>
+          <figcaption id={titleId} className={styles.shareKicker}>
             La mia proposta per la prossima Legge di Bilancio
           </figcaption>
           <p className={styles.shareNet} style={{ color: netToneColor(plan.net) }}>

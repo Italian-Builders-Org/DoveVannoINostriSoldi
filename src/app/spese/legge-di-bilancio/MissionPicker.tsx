@@ -236,7 +236,10 @@ export function MissionPicker({
     const pct = node.scenarioPct ?? 0;
     const adjusted = pct !== 0;
     const tone = toneColor(pct);
-    const hatchRef = pct >= 0 ? `url(#${hatchId}-up)` : `url(#${hatchId}-down)`;
+    // L'id del pattern include l'indice della tile: più missioni "toccate" nello
+    // stesso render creerebbero altrimenti <pattern> duplicati con lo stesso id.
+    const tileHatchId = `${hatchId}-${node.index ?? 0}`;
+    const hatchRef = pct >= 0 ? `url(#${tileHatchId}-up)` : `url(#${tileHatchId}-down)`;
     const observed = node.observedEur ?? 0;
     const effective = node.effectiveEur ?? observed;
 
@@ -284,7 +287,7 @@ export function MissionPicker({
           <>
             <defs>
               <pattern
-                id={`${hatchId}-up`}
+                id={`${tileHatchId}-up`}
                 patternUnits="userSpaceOnUse"
                 width="6"
                 height="6"
@@ -294,7 +297,7 @@ export function MissionPicker({
                 <line x1="0" y1="0" x2="0" y2="6" stroke="var(--color-positive)" strokeWidth="2" />
               </pattern>
               <pattern
-                id={`${hatchId}-down`}
+                id={`${tileHatchId}-down`}
                 patternUnits="userSpaceOnUse"
                 width="6"
                 height="6"

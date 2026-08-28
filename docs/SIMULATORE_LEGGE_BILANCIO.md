@@ -83,7 +83,8 @@ per evitare di disegnare uno zero falso dove OpenBDAP semplicemente non ha pubbl
   riquadro è dimensionato sull'importo assegnato dall'utente, non più sullo stanziamento pubblicato.
   Per non far mai passare l'ipotesi come dato reale: il contenitore ha bordo tratteggiato e una
   didascalia esplicita, le voci toccate sono a righe con bordo tratteggiato e barra di confronto
-  «oggi vs ipotesi», e un solo bottone («Torna al dato pubblicato») rimette tutto sul dato RGS. La
+  «oggi vs ipotesi». Due bottoni distinti tornano al dato RGS: «Azzera questa voce» azzera solo la
+  missione selezionata, «Ricomincia» rimette l'intero piano sullo stanziamento pubblicato. La
   ripartizione fra treemap ed elenco «missioni minori» resta ancorata al dato osservato, così un
   riquadro non salta di categoria mentre lo ridimensioni.
 

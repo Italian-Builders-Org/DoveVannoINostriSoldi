@@ -224,6 +224,22 @@ export function SimulatoreClient({
   );
   const [shareOpen, setShareOpen] = useState(false);
 
+  // L'HUD serve mentre lavori sul treemap; quando la card «Stanziamento
+  // pubblicato» (grafico + slider) è a schermo lo stepper è ridondante, quindi
+  // la barra scivola via.
+  const figureRef = useRef<HTMLElement>(null);
+  const [workbenchVisible, setWorkbenchVisible] = useState(false);
+  useEffect(() => {
+    const element = figureRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setWorkbenchVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   const series = useMemo(
     () =>
       allocations
@@ -304,7 +320,7 @@ export function SimulatoreClient({
         scenarioByMission={scenarioByMission}
       />
 
-      <figure className={styles.figure}>
+      <figure className={styles.figure} ref={figureRef}>
         <div className={styles.figureHeader}>
           <div>
             <span>STANZIAMENTO PUBBLICATO · LEGGE DI BILANCIO</span>
@@ -496,6 +512,7 @@ export function SimulatoreClient({
         onStep={(delta) => adjustMission(selectedMission, delta)}
         plan={plan}
         onShare={() => setShareOpen(true)}
+        hidden={workbenchVisible}
       />
 
       <ShareDialog

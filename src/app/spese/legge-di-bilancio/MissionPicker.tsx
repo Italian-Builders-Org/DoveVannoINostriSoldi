@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 import type { TreemapNode } from "recharts";
 import { institutionalCategoryColor } from "@/lib/chart-category-colors";
@@ -57,6 +57,40 @@ function billionsEuro(value: number): string {
 
 export type { MissionSummary };
 
+/** Geometria di una tile abbastanza grande da ospitare i bottoni −/+ in overlay. */
+type StepTile = {
+  mission: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  pct: number;
+};
+
+/** Sotto questa soglia i −/+ non ci stanno: si regola da chip, HUD o slider. */
+const STEP_TILE_MIN_WIDTH = 96;
+const STEP_TILE_MIN_HEIGHT = 64;
+
+function sameStepTiles(a: StepTile[], b: StepTile[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let index = 0; index < a.length; index += 1) {
+    const previous = a[index];
+    const next = b[index];
+    if (
+      previous.mission !== next.mission ||
+      previous.x !== next.x ||
+      previous.y !== next.y ||
+      previous.width !== next.width ||
+      previous.height !== next.height ||
+      previous.pct !== next.pct
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
 type MissionNode = TreemapNode & {
   mission?: string;
   shortLabel?: string;
@@ -93,6 +127,13 @@ export function MissionPicker({
   scenarioByMission: Record<string, number>;
 }) {
   const hatchId = useId();
+
+  // I bottoni −/+ vivono in un layer HTML sopra il treemap, non dentro l'SVG:
+  // il rendering dei <foreignObject> annidati in Recharts è inaffidabile e il
+  // tooltip finiva sopra i bottoni. Ogni tile marca il suo <g> con data-*;
+  // dopo il render misuriamo i rettangoli e disegniamo l'overlay HTML.
+  const treemapRef = useRef<HTMLDivElement>(null);
+  const [stepTiles, setStepTiles] = useState<StepTile[]>([]);
 
   const plan = useMemo(
     () => computePlan(summaries, scenarioByMission),
@@ -138,6 +179,45 @@ export function MissionPicker({
     };
   }, [summaries, scenarioByMission]);
 
+  useEffect(() => {
+    const container = treemapRef.current;
+    if (!container) return;
+
+    const measure = () => {
+      const next: StepTile[] = [];
+      container.querySelectorAll<SVGGElement>("g[data-mission]").forEach((group) => {
+        const rect = group.querySelector<SVGRectElement>("rect");
+        if (!rect) return;
+        const width = rect.width.baseVal.value;
+        const height = rect.height.baseVal.value;
+        if (width < STEP_TILE_MIN_WIDTH || height < STEP_TILE_MIN_HEIGHT) return;
+        next.push({
+          mission: group.dataset.mission ?? "",
+          label: group.dataset.label || group.dataset.mission || "",
+          x: rect.x.baseVal.value,
+          y: rect.y.baseVal.value,
+          width,
+          height,
+          pct: Number(group.dataset.pct ?? 0),
+        });
+      });
+      setStepTiles((previous) => (sameStepTiles(previous, next) ? previous : next));
+    };
+
+    measure();
+    // ResponsiveContainer può assestare le dimensioni un frame dopo il mount:
+    // rimisuriamo su rAF e con un fallback, oltre che a ogni resize reale.
+    const raf = requestAnimationFrame(measure);
+    const timer = window.setTimeout(measure, 300);
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [treemapData]);
+
   const renderTile = (props: unknown) => {
     const node = props as MissionNode;
     const width = node.width ?? 0;
@@ -150,12 +230,7 @@ export function MissionPicker({
     const selected = mission === selectedMission;
     const showLabel = width >= 46 && height >= 24;
     const showMeta = width >= 74 && height >= 46;
-    const showStep = width >= 120 && height >= 72;
     const select = () => onSelect(mission);
-    const stepHandler = (delta: number) => (event: { stopPropagation: () => void }) => {
-      event.stopPropagation();
-      onAdjust(mission, delta);
-    };
 
     const pct = node.scenarioPct ?? 0;
     const adjusted = pct !== 0;
@@ -177,6 +252,9 @@ export function MissionPicker({
         className={styles.tile}
         role="button"
         tabIndex={0}
+        data-mission={mission}
+        data-label={node.shortLabel ?? mission}
+        data-pct={pct}
         aria-pressed={selected}
         aria-label={`${node.shortLabel ?? mission}: ${
           adjusted
@@ -258,26 +336,6 @@ export function MissionPicker({
                   }}
                 >
                   ipotesi {signedPercent(pct)}
-                </span>
-              ) : null}
-              {showStep ? (
-                <span className={styles.tileSteppers}>
-                  <button
-                    type="button"
-                    className={styles.tileStep}
-                    onClick={stepHandler(-STEP_PCT)}
-                    aria-label={`Riduci ${node.shortLabel ?? mission} di ${STEP_PCT} punti`}
-                  >
-                    −
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.tileStep}
-                    onClick={stepHandler(STEP_PCT)}
-                    aria-label={`Aumenta ${node.shortLabel ?? mission} di ${STEP_PCT} punti`}
-                  >
-                    +
-                  </button>
                 </span>
               ) : null}
             </div>
@@ -429,6 +487,7 @@ export function MissionPicker({
       ) : null}
 
       <div
+        ref={treemapRef}
         className={`${styles.treemap} ${hasScenario ? styles.treemapScenario : ""}`}
         style={hasScenario ? { borderColor: toneColor(plan.net) } : undefined}
         role="group"
@@ -448,6 +507,8 @@ export function MissionPicker({
             isAnimationActive={false}
           >
             <Tooltip
+              position={{ x: 8, y: 8 }}
+              wrapperStyle={{ pointerEvents: "none", zIndex: 1 }}
               content={({ active, payload }) => {
                 const point = payload?.[0]?.payload as MissionNode | undefined;
                 if (!active || !point) return null;
@@ -473,6 +534,33 @@ export function MissionPicker({
             />
           </Treemap>
         </ResponsiveContainer>
+
+        <div className={styles.tileStepLayer}>
+          {stepTiles.map((tile) => (
+            <span
+              key={tile.mission}
+              className={styles.tileSteppers}
+              style={{ left: tile.x + tile.width, top: tile.y + tile.height }}
+            >
+              <button
+                type="button"
+                className={styles.tileStep}
+                onClick={() => onAdjust(tile.mission, -STEP_PCT)}
+                aria-label={`Riduci ${tile.label} di ${STEP_PCT} punti`}
+              >
+                −
+              </button>
+              <button
+                type="button"
+                className={styles.tileStep}
+                onClick={() => onAdjust(tile.mission, STEP_PCT)}
+                aria-label={`Aumenta ${tile.label} di ${STEP_PCT} punti`}
+              >
+                +
+              </button>
+            </span>
+          ))}
+        </div>
       </div>
 
       {minor.length > 0 ? (

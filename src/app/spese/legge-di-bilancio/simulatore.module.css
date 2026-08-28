@@ -138,6 +138,9 @@
   flex-direction: column;
   gap: var(--space-6);
   margin-top: var(--space-6);
+  /* `clip` non crea uno scroll container (lo sticky resta ancorato al viewport)
+     ma ritaglia l'HUD quando scivola giù nascosta: niente scroll morto in fondo. */
+  overflow: clip;
 }
 
 .picker {
@@ -156,6 +159,7 @@
 }
 
 .treemap {
+  position: relative;
   width: 100%;
   height: 420px;
   border: 1px solid var(--color-neutral-300);
@@ -218,13 +222,20 @@
   text-overflow: ellipsis;
 }
 
-/* Bottoni −/+ dentro il riquadro: unico elemento che riprende i click. */
+/* Layer HTML sopra il treemap: ospita i bottoni −/+ fuori dall'SVG, così il
+   rendering è uniforme su ogni tile e il tooltip non li copre più. */
+.tileStepLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .tileSteppers {
   position: absolute;
-  inset-block-end: 6px;
-  inset-inline-end: 6px;
   display: flex;
   gap: 4px;
+  transform: translate(calc(-100% - 6px), calc(-100% - 6px));
 }
 
 .tileStep {
@@ -706,13 +717,14 @@
 }
 
 .minorStrip {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-2);
+  align-items: stretch;
 }
 
 .minorLabel {
-  width: 100%;
+  grid-column: 1 / -1;
   margin: 0;
   color: var(--color-neutral-600);
   font-size: 11px;
@@ -722,7 +734,7 @@
 }
 
 .minorChip {
-  display: inline-flex;
+  display: flex;
   align-items: stretch;
   background: var(--color-raised);
   border: 1px solid var(--color-neutral-300);
@@ -730,6 +742,7 @@
 
 .minorChipSelect {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
@@ -1120,6 +1133,20 @@
   background: var(--color-raised);
   border: 1px solid var(--color-neutral-300);
   box-shadow: var(--shadow-md);
+  transition: transform .22s ease, opacity .22s ease;
+}
+
+/* Grafico + slider a schermo: lì lo stepper duplica lo slider, la barra scende. */
+.hudHidden {
+  transform: translateY(calc(100% + var(--space-6)));
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud {
+    transition: none;
+  }
 }
 
 .hudMission {

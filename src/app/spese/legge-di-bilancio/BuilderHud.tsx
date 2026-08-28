@@ -34,17 +34,26 @@ export function BuilderHud({
   onStep,
   plan,
   onShare,
+  hidden = false,
 }: {
   selectedMission: string;
   selectedPct: number;
   onStep: (deltaPct: number) => void;
   plan: Plan;
   onShare: () => void;
+  /** Nascosta quando il grafico + slider sono a schermo: lì lo stepper è ridondante. */
+  hidden?: boolean;
 }) {
   const hasScenario = plan.entries.length > 0;
 
   return (
-    <div className={styles.hud} role="region" aria-label="Stato della tua manovra">
+    <div
+      className={`${styles.hud} ${hidden ? styles.hudHidden : ""}`}
+      role="region"
+      aria-label="Stato della tua manovra"
+      aria-hidden={hidden}
+      inert={hidden}
+    >
       <div className={styles.hudMission}>
         <span className={styles.hudMissionName}>{shortLabel(selectedMission)}</span>
         {selectedPct !== 0 ? (

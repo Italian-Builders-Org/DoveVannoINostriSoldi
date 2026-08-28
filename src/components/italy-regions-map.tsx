@@ -5,7 +5,8 @@ import {
   ITALY_REGIONS_VIEWBOX,
   italyRegionGeometry,
 } from "@/data/generated/italy-regions";
-import type { SiopeRegionPoint } from "@/lib/siope-snapshot";
+import { italyProvinceGeometry } from "@/data/generated/italy-provinces";
+import type { SiopeProvincePoint, SiopeRegionPoint } from "@/lib/siope-snapshot";
 import {
   REGION_NAME_BY_ISTAT_CODE,
   regionDataByIstatCode,
@@ -28,6 +29,7 @@ export function ItalyRegionsMap({
   period,
   aside,
   compact = false,
+  provinces = [],
 }: {
   regions: SiopeRegionPoint[];
   period: string;
@@ -35,6 +37,8 @@ export function ItalyRegionsMap({
   aside?: React.ReactNode;
   /** Dense dashboard treatment; interaction and accessible table remain available. */
   compact?: boolean;
+  /** Official ISTAT province geometries receive verified SIOPE municipal aggregates. */
+  provinces?: SiopeProvincePoint[];
 }) {
   const [selectedCode, setSelectedCode] = useState("03");
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
@@ -43,17 +47,22 @@ export function ItalyRegionsMap({
   const [automaticSelection, setAutomaticSelection] = useState<"ip" | null>(null);
   const userSelected = useRef(false);
   const regionPathRefs = useRef(new Map<string, SVGPathElement>());
+  const showProvinceGeometry = compact && provinces.length > 0;
+  const provinceByName = useMemo(
+    () => new Map(provinces.map((province) => [province.province, province])),
+    [provinces],
+  );
   const { byCode, thresholds } = useMemo(() => {
     const mapped = regionDataByIstatCode(regions);
-    const values = regions
-      .map((region) => region.perCapita)
+    const values = (showProvinceGeometry ? provinces : regions)
+      .map((point) => point.perCapita)
       .filter((value): value is number => value !== null)
       .sort((left, right) => left - right);
     return {
       byCode: mapped,
       thresholds: [0.2, 0.4, 0.6, 0.8].map((fraction) => quantile(values, fraction)),
     };
-  }, [regions]);
+  }, [provinces, regions, showProvinceGeometry]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -155,6 +164,22 @@ export function ItalyRegionsMap({
             entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione
             per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
           </desc>
+          {showProvinceGeometry ? italyProvinceGeometry.map((geometry) => {
+            const province = provinceByName.get(geometry.name);
+            const colorLevel = level(province?.perCapita ?? null);
+            return (
+              <path
+                key={`province-${geometry.code}`}
+                d={geometry.path}
+                className={`${styles.province} ${
+                  colorLevel === null ? styles.noData : styles[`level${colorLevel}`]
+                }`}
+                aria-hidden="true"
+                focusable="false"
+                pointerEvents="none"
+              />
+            );
+          }) : null}
           {italyRegionGeometry.map((geometry) => {
             const region = byCode.get(geometry.code);
             const colorLevel = level(region?.perCapita ?? null);
@@ -169,7 +194,7 @@ export function ItalyRegionsMap({
                 }}
                 key={geometry.code}
                 d={geometry.path}
-                className={`${styles.region} ${
+                className={`${styles.region} ${showProvinceGeometry ? styles.regionOverlay : ""} ${
                   colorLevel === null ? styles.noData : styles[`level${colorLevel}`]
                 }`}
                 tabIndex={focusable ? 0 : -1}

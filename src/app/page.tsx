@@ -10,6 +10,7 @@ import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { auditSignals, getHomeAnomalySignals, procurementReducedCompetition2025, type AuditSignal } from "@/lib/audit-data";
 import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
+import { getSiopeProvincePoints } from "@/lib/siope-municipality-detail";
 import { HOME_SPENDING_BUCKETS } from "@/lib/siope-titles";
 import { availableSiopeYears, getSiopeMunicipalSnapshot, regionsByPerCapita } from "@/lib/siope-snapshot";
 import styles from "./home.module.css";
@@ -49,6 +50,7 @@ function Sparkline({ values, tone = "blue" }: { values: readonly number[]; tone?
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ anno?: string | string[] }> }) {
   const year = selectedYear((await searchParams).anno);
   const siope = getSiopeMunicipalSnapshot(year);
+  const provinces = getSiopeProvincePoints(year);
   const monthLabel = siope.latestMonthLabel.toLocaleLowerCase("it-IT");
   const valueByCode = new Map(siope.titles.map((title) => [title.code, title.value]));
   const buckets = HOME_SPENDING_BUCKETS.map((bucket) => ({
@@ -102,7 +104,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
       <section className={`${styles.panel} ${styles.mapPanel}`}>
         <div className={styles.panelHead}><h2>Mappa della spesa pubblica</h2><div className={styles.segmented}><b>Totale spesa</b><span>Pro capite</span></div></div>
-        <ItalyRegionsMap compact regions={siope.regions} period={`da gennaio a ${monthLabel} ${year}`} aside={
+        <ItalyRegionsMap compact provinces={provinces} regions={siope.regions} period={`da gennaio a ${monthLabel} ${year}`} aside={
           <div className={styles.mapRanking}>
             <div className={styles.mapRankingHead}><span>Regione</span><span>Spesa pro capite</span></div>
             {rankedRegions.map((region) => <div key={region.region}><strong>{region.region}</strong><span>{region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}</span></div>)}

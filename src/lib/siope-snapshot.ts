@@ -20,6 +20,15 @@ export type SiopeRegionPoint = {
   municipalitiesWithPopulation: number;
 };
 
+export type SiopeProvincePoint = {
+  province: string;
+  region: string | null;
+  value: number;
+  population: number;
+  perCapita: number | null;
+  municipalities: number;
+};
+
 export type SiopeSpendingTitle = {
   code: string;
   label: string;

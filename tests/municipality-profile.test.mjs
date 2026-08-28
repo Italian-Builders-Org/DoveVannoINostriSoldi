@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
+import { italyProvinceGeometry } from "../src/data/generated/italy-provinces.ts";
 
-const [{ getMunicipalityProfile }, { getSiopeMunicipalityDetail }, { buildMunicipalitySpendingRows }] = await Promise.all([
+const [{ getMunicipalityProfile }, { getSiopeMunicipalityDetail, getSiopeProvincePoints }, { buildMunicipalitySpendingRows }] = await Promise.all([
   import("../src/lib/municipality-profile.ts"),
   import("../src/lib/siope-municipality-detail.ts"),
   import("../src/lib/municipality-spending-view.ts"),
@@ -70,6 +71,27 @@ test("SIOPE municipality artifacts stay compact and retain national coverage", (
     assert.equal(
       artifact.coverage.withMovements + artifact.coverage.withoutMovements,
       artifact.coverage.activeMunicipalities,
+    );
+  }
+});
+
+test("SIOPE province aggregates reconcile nationally and cover every ISTAT geometry", () => {
+  const artifactPathByYear = new Map([
+    [2024, detailArtifacts[0]],
+    [2025, detailArtifacts[1]],
+    [2026, detailArtifacts[2]],
+  ]);
+  for (const year of [2026, 2025, 2024]) {
+    const artifact = JSON.parse(readFileSync(artifactPathByYear.get(year), "utf8"));
+    const provinces = getSiopeProvincePoints(year);
+    assert.equal(provinces.length, 110);
+    assert.deepEqual(
+      [...provinces.map((province) => province.province)].sort(),
+      [...italyProvinceGeometry.map((province) => province.name)].sort(),
+    );
+    assert.equal(
+      Math.round(provinces.reduce((total, province) => total + province.value, 0) * 100),
+      artifact.municipalities.reduce((total, row) => total + (row[6] ?? 0), 0),
     );
   }
 });

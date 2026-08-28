@@ -5,22 +5,41 @@ import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const [, , outputFile, sourceArchive] = process.argv;
+const [, , outputFile, sourceArchive, requestedLevel = "regions"] = process.argv;
 
-if (!outputFile || !sourceArchive) {
+if (!outputFile || !sourceArchive || !["regions", "provinces"].includes(requestedLevel)) {
   throw new Error(
-    "Uso: node scripts/maps/generate_italy_regions.mjs <output TypeScript> <ZIP ufficiale>",
+    "Uso: node scripts/maps/generate_italy_regions.mjs <output TypeScript> <ZIP ufficiale> [regions|provinces]",
   );
 }
 
-const SHAPEFILE = "Reg01012026_g_WGS84.shp";
-const DATABASE = "Reg01012026_g_WGS84.dbf";
+const LEVELS = {
+  regions: {
+    directory: "Reg01012026_g",
+    shapefile: "Reg01012026_g_WGS84.shp",
+    database: "Reg01012026_g_WGS84.dbf",
+    expected: 20,
+    codeField: "COD_REG",
+    nameField: "DEN_REG",
+    simplificationTolerance: 2_500,
+    minimumPartArea: 500_000,
+  },
+  provinces: {
+    directory: "ProvCM01012026_g",
+    shapefile: "ProvCM01012026_g_WGS84.shp",
+    database: "ProvCM01012026_g_WGS84.dbf",
+    expected: 110,
+    codeField: "COD_UTS",
+    nameField: "DEN_UTS",
+    simplificationTolerance: 1_800,
+    minimumPartArea: 250_000,
+  },
+};
+const level = LEVELS[requestedLevel];
 const SOURCE_URL =
   "https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip";
 const SOURCE_SHA256 = "b011a590656c3a3ebc297fba80726a376aa843b6f164641cf6a4a990021a81d6";
 const VIEWBOX = { width: 560, height: 640, padding: 12 };
-const SIMPLIFICATION_TOLERANCE = 2_500;
-const MINIMUM_PART_AREA = 500_000;
 
 function parseDbf(buffer) {
   const recordCount = buffer.readUInt32LE(4);
@@ -195,15 +214,18 @@ function projectRegions(regions) {
   }));
 }
 
-function typescript(regions) {
-  const serializedRegions = regions
+function typescript(features) {
+  const serializedFeatures = features
     .map(
-      (region) =>
-        `  { code: ${JSON.stringify(region.code)}, name: ${JSON.stringify(region.name)}, path: ${JSON.stringify(region.path)} },`,
+      (feature) => requestedLevel === "regions"
+        ? `  { code: ${JSON.stringify(feature.code)}, name: ${JSON.stringify(feature.name)}, path: ${JSON.stringify(feature.path)} },`
+        : `  { code: ${JSON.stringify(feature.code)}, regionCode: ${JSON.stringify(feature.regionCode)}, name: ${JSON.stringify(feature.name)}, abbreviation: ${JSON.stringify(feature.abbreviation)}, path: ${JSON.stringify(feature.path)} },`,
     )
     .join("\n");
 
-  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs\n */\n\nexport const ITALY_REGIONS_VIEWBOX = ${JSON.stringify(`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`)};\n\nexport const italyRegionGeometry = [\n${serializedRegions}\n] as const;\n`;
+  const exportPrefix = requestedLevel === "regions" ? "REGIONS" : "PROVINCES";
+  const collectionName = requestedLevel === "regions" ? "italyRegionGeometry" : "italyProvinceGeometry";
+  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs (${requestedLevel})\n */\n\nexport const ITALY_${exportPrefix}_VIEWBOX = ${JSON.stringify(`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`)};\n\nexport const ${collectionName} = [\n${serializedFeatures}\n] as const;\n`;
 }
 
 const archiveBuffer = await readFile(sourceArchive);
@@ -213,34 +235,43 @@ if (archiveSha256 !== SOURCE_SHA256) {
 }
 const shapeBuffer = execFileSync(
   "unzip",
-  ["-p", sourceArchive, `Reg01012026_g/${SHAPEFILE}`],
-  { maxBuffer: 4 * 1024 * 1024 },
+  ["-p", sourceArchive, `${level.directory}/${level.shapefile}`],
+  { maxBuffer: 8 * 1024 * 1024 },
 );
 const dbfBuffer = execFileSync(
   "unzip",
-  ["-p", sourceArchive, `Reg01012026_g/${DATABASE}`],
+  ["-p", sourceArchive, `${level.directory}/${level.database}`],
   { maxBuffer: 1024 * 1024 },
 );
 const records = parseDbf(dbfBuffer);
 const shapes = parseShapefile(shapeBuffer);
 
-if (records.length !== shapes.length || shapes.length !== 20) {
-  throw new Error(`Attese 20 regioni ISTAT, trovate ${records.length} record e ${shapes.length} geometrie.`);
+if (records.length !== shapes.length || shapes.length !== level.expected) {
+  throw new Error(`Attese ${level.expected} geometrie ISTAT (${requestedLevel}), trovati ${records.length} record e ${shapes.length} geometrie.`);
 }
 
 const normalized = records.map((record, index) => {
-  const code = String(Number.parseInt(record.COD_REG, 10)).padStart(2, "0");
-  const name = record.DEN_REG;
+  const rawCode = Number.parseInt(record[level.codeField], 10);
+  const code = requestedLevel === "regions"
+    ? String(rawCode).padStart(2, "0")
+    : String(rawCode);
+  const name = record[level.nameField];
   const parts = shapes[index]
-    .filter((part) => part.length >= 4 && polygonArea(part) >= MINIMUM_PART_AREA)
-    .map((part) => simplifyRing(part, SIMPLIFICATION_TOLERANCE))
+    .filter((part) => part.length >= 4 && polygonArea(part) >= level.minimumPartArea)
+    .map((part) => simplifyRing(part, level.simplificationTolerance))
     .filter((part) => part.length >= 3);
 
   if (!code || !name || parts.length === 0) {
     throw new Error(`Geometria ISTAT non valida alla riga ${index + 1}.`);
   }
 
-  return { code, name, parts };
+  return {
+    code,
+    name,
+    regionCode: String(Number.parseInt(record.COD_REG, 10)).padStart(2, "0"),
+    abbreviation: record.SIGLA ?? "",
+    parts,
+  };
 });
 
 const projected = projectRegions(normalized);
@@ -249,5 +280,5 @@ const simplifiedPointCount = normalized.flatMap((region) => region.parts).flat()
 await mkdir(path.dirname(outputFile), { recursive: true });
 await writeFile(outputFile, typescript(projected), "utf8");
 console.log(
-  `Generate ${projected.length} regioni in ${outputFile} (${originalPointCount} -> ${simplifiedPointCount} punti)`,
+  `Generate ${projected.length} geometrie ${requestedLevel} in ${outputFile} (${originalPointCount} -> ${simplifiedPointCount} punti)`,
 );

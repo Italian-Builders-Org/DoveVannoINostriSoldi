@@ -68,8 +68,8 @@
   height: 234px;
   max-height: 234px;
   margin-left: auto;
-  transform: translate(12px, -2px) scale(.9, 1.08);
-  transform-origin: center;
+  transform: translate(0, -10px) scale(1, 1.27);
+  transform-origin: top center;
 }
 .compact .detail { display: none; }
 .compact .level0 { fill: #e8ebff; background: #e8ebff; }
@@ -78,6 +78,15 @@
 .compact .level3 { fill: #667fe7; background: #667fe7; }
 .compact .level4 { fill: #344daf; background: #344daf; }
 .compact .region { stroke: #8a96bd; stroke-width: .7; }
+.compact .province {
+  stroke: #aeb9df;
+  stroke-width: .45;
+  vector-effect: non-scaling-stroke;
+}
+.compact .regionOverlay { fill: transparent; stroke: transparent; }
+.compact .regionOverlay:hover,
+.compact .regionOverlay:focus-visible,
+.compact .regionOverlay[data-hovered="true"] { fill: transparent; }
 /* The reference dashboard reads as a neutral national overview. Keep the
    keyboard/click selection semantics, but only draw the dark outline while a
    person is actively previewing a region. */

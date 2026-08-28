@@ -79,6 +79,14 @@ nav li a { text-decoration: none; }
 
 /* ── dashboard chrome ───────────────────────────────────────────────────── */
 
+/* The approved dashboard is a 1280px composition. Scale the whole desktop
+   canvas from that single coordinate system so browser zoom and wider panels
+   cannot independently resize the header, sidebar and charts. At 1280px this
+   resolves to 1; at the app's 1440 CSS-pixel canvas it resolves to 1.125. */
+@media (min-width: 1000px) and (min-height: 700px) {
+  html:has([data-dashboard-home]) { zoom: calc(100vw / 1280px); }
+}
+
 .site-header {
   position: sticky;
   top: 0;

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { italyProvinceGeometry } from "../src/data/generated/italy-provinces.ts";
 import { italyRegionGeometry } from "../src/data/generated/italy-regions.ts";
 import {
   ISTAT_CODE_BY_REGION_NAME,
@@ -35,6 +36,20 @@ test("ISTAT geometry and SIOPE data cover the same 20 regions", async () => {
     ),
   );
   assert.ok(italyRegionGeometry.every((region) => region.path.startsWith("M") && region.path.endsWith("Z")));
+});
+
+test("ISTAT province geometry is complete, unique and mapped to known regions", () => {
+  assert.equal(italyProvinceGeometry.length, 110);
+  assert.equal(new Set(italyProvinceGeometry.map((province) => province.code)).size, 110);
+  assert.equal(new Set(italyProvinceGeometry.map((province) => province.name)).size, 110);
+  assert.ok(
+    italyProvinceGeometry.every((province) => REGION_NAME_BY_ISTAT_CODE[province.regionCode]),
+  );
+  assert.ok(
+    italyProvinceGeometry.every(
+      (province) => province.path.startsWith("M") && province.path.endsWith("Z"),
+    ),
+  );
 });
 
 test("every region resolves to exactly one macro area, with no silent drops", () => {

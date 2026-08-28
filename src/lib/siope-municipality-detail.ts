@@ -4,7 +4,7 @@ import detail2024 from "@/data/generated/siope-municipal-detail-2024.json";
 import detail2025 from "@/data/generated/siope-municipal-detail-2025.json";
 import detail2026 from "@/data/generated/siope-municipal-detail.json";
 import { partialMonthOf } from "@/lib/siope-calendar";
-import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import { getSiopeMunicipalSnapshot, type SiopeProvincePoint } from "@/lib/siope-snapshot";
 import {
   eurosPerSquareKilometreCents,
   getMunicipalityGeographyByTaxCodeIfNameAgrees,
@@ -191,6 +191,60 @@ const artifacts = [
 const rowsByYearAndTaxCode = new Map(
   artifacts.map((artifact) => [artifact.year, new Map(artifact.rows.map((row) => [row[0], row]))]),
 );
+
+const OFFICIAL_PROVINCE_NAME = new Map([
+  ["Barletta Andria e Trani", "Barletta-Andria-Trani"],
+  ["Bolzano - Bozen", "Bolzano/Bozen"],
+  ["FERMO", "Fermo"],
+  ["Forli'-Cesena", "Forlì-Cesena"],
+  ["MONZA - BRIANZA", "Monza e della Brianza"],
+  ["Pesaro Urbino", "Pesaro e Urbino"],
+  ["Reggio di Calabria", "Reggio Calabria"],
+  ["Valle d'Aosta", "Valle d'Aosta/Vallée d'Aoste"],
+]);
+
+export function getSiopeProvincePoints(year: number): SiopeProvincePoint[] {
+  const artifact = artifacts.find((candidate) => candidate.year === year);
+  if (!artifact) throw new Error(`SIOPE dettaglio provinciale non disponibile per il ${year}`);
+
+  const grouped = new Map<string, {
+    province: string;
+    region: string | null;
+    totalCents: number;
+    population: number;
+    municipalities: number;
+  }>();
+
+  for (const row of artifact.rows) {
+    if (row[6] === null) continue;
+    const province = OFFICIAL_PROVINCE_NAME.get(row[3]) ?? row[3];
+    const current = grouped.get(province) ?? {
+      province,
+      region: row[4],
+      totalCents: 0,
+      population: 0,
+      municipalities: 0,
+    };
+    if (current.region === null && row[4] !== null) {
+      current.region = row[4];
+    } else if (row[4] !== null && current.region !== row[4]) {
+      throw new Error(`Provincia ${province}: regioni SIOPE discordanti`);
+    }
+    current.totalCents += row[6];
+    current.population += row[5] ?? 0;
+    current.municipalities += 1;
+    grouped.set(province, current);
+  }
+
+  return [...grouped.values()].map((province) => ({
+    province: province.province,
+    region: province.region,
+    value: province.totalCents / 100,
+    population: province.population,
+    perCapita: province.population === 0 ? null : province.totalCents / 100 / province.population,
+    municipalities: province.municipalities,
+  }));
+}
 
 export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalityDetail | null {
   const taxCode = rawTaxCode.trim();

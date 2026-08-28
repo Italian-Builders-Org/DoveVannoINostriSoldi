@@ -134,13 +134,11 @@
 }
 
 .simulator {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   margin-top: var(--space-6);
-  /* `clip` non crea uno scroll container (lo sticky resta ancorato al viewport)
-     ma ritaglia l'HUD quando scivola giù nascosta: niente scroll morto in fondo. */
-  overflow: clip;
 }
 
 .picker {
@@ -1132,9 +1130,13 @@
   transition: transform .22s ease, opacity .22s ease;
 }
 
-/* Grafico + slider a schermo: lì lo stepper duplica lo slider, la barra scende. */
+/* Grafico + slider a schermo: lì lo stepper duplica lo slider. La barra esce
+   dal flusso (position: absolute) così non lascia spazio vuoto sopra le note. */
 .hudHidden {
-  transform: translateY(calc(100% + var(--space-6)));
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  transform: translateY(8px);
   opacity: 0;
   pointer-events: none;
 }

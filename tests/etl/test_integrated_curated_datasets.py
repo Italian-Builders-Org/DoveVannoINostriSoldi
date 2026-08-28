@@ -1868,7 +1868,7 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         proof = json.loads(self.proof_path.read_text(encoding="utf-8"))
         proof["catalogSha256"] = sha256(self.catalog_path.read_bytes())
         for path in (rows_path, receipt_path, self.catalog_path):
-            relative = str(path.relative_to(self.repository))
+            relative = path.relative_to(self.repository).as_posix()
             proof["artifactSha256"][relative] = sha256(path.read_bytes())
         self.proof_path.write_bytes(ETL.canonical_json(proof))
 
@@ -1888,7 +1888,7 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         self.catalog_path.write_bytes(ETL.canonical_json(catalog))
         proof = json.loads(self.proof_path.read_text(encoding="utf-8"))
         proof["catalogSha256"] = sha256(self.catalog_path.read_bytes())
-        proof["artifactSha256"][str(self.catalog_path.relative_to(self.repository))] = sha256(
+        proof["artifactSha256"][self.catalog_path.relative_to(self.repository).as_posix()] = sha256(
             self.catalog_path.read_bytes()
         )
         self.proof_path.write_bytes(ETL.canonical_json(proof))
@@ -1913,6 +1913,28 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ETL.DatasetBuildError, "extra|inatteso|stale"):
             self.check()
+
+    def test_proof_keys_use_posix_separators_not_host_backslashes(self) -> None:
+        from pathlib import PureWindowsPath
+
+        windows_key = str(PureWindowsPath("src") / "data" / "generated" / "catalog.json")
+        posix_key = (PureWindowsPath("src") / "data" / "generated" / "catalog.json").as_posix()
+        self.assertEqual(windows_key, r"src\data\generated\catalog.json")
+        self.assertEqual(posix_key, "src/data/generated/catalog.json")
+        self.assertNotEqual(windows_key, posix_key)
+
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=1)
+        self.build()
+        proof = json.loads(self.proof_path.read_text(encoding="utf-8"))
+        self.assertGreater(len(proof["artifactSha256"]), 0)
+        for key in proof["artifactSha256"]:
+            self.assertNotIn("\\", key, f"chiave proof non canonica: {key!r}")
+            self.assertEqual(key, key.replace("\\", "/"))
+            self.assertEqual(key, Path(key).as_posix())
 
 
 if __name__ == "__main__":

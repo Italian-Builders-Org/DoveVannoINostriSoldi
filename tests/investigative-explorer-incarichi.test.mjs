@@ -40,9 +40,14 @@ test("artifact satisfies the published contract", () => {
   }
   const data = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   assert.equal(data.schemaVersion, 1);
+  assert.equal(data.transformVersion, 2);
   assert.equal(data.scope, "investigative-explorer-incarichi");
   assert.ok(Array.isArray(data.relations) && data.relations.length > 0);
   assert.equal(data.relationCount, data.relations.length);
+  assert.equal(
+    data.suspectDuplicates,
+    data.relations.filter((rel) => rel.suspect_duplicate).length,
+  );
 
   const seen = new Set();
   for (const rel of data.relations) {
@@ -88,6 +93,7 @@ test("il meta file leggero rispecchia il conteggio senza archi", () => {
   const a = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   const meta = JSON.parse(readFileSync(META, "utf8"));
   assert.equal(meta.relationCount, a.relationCount);
+  assert.equal(meta.suspectDuplicates ?? 0, a.suspectDuplicates ?? 0);
   assert.ok(!("relations" in meta), "il meta non deve contenere gli archi");
   assert.ok(
     JSON.stringify(meta).length < JSON.stringify(a).length / 50,
@@ -146,4 +152,54 @@ test("la search index trova CIG/CUP presenti in nota (senza full scan)", async (
   assert.equal(byPerson[0].id, "a");
   const none = searchExplorer(idx, "CIG 000000000", 100);
   assert.equal(none.length, 0);
+});
+
+test("la search index esclude i record gemelli di importo", async () => {
+  const { buildSearchIndex, searchExplorer } = await import(
+    "../src/lib/investigative-explorer.ts"
+  );
+  const fixture = [
+    {
+      id: "keep",
+      relation_type: "person_has_appointment",
+      subject_type: "person",
+      subject_key: "D ANGELI DOMENICO",
+      object_type: "public_entity",
+      object_key: "INPS",
+      source_dataset: "incarichi-nominativi-shard",
+      source_record_id: "keep",
+      period: "2025-06-30",
+      acquisition_date: "2026-08-23",
+      confidence_note: "n",
+      role: "consulente",
+      amount: 47040,
+      ipa: null,
+      source_url: null,
+      note_source: "INPS.6480.20/06/2025.0003791",
+    },
+    {
+      id: "inflated",
+      relation_type: "person_has_appointment",
+      subject_type: "person",
+      subject_key: "D ANGELI DOMENICO",
+      object_type: "public_entity",
+      object_key: "INPS",
+      source_dataset: "incarichi-nominativi-shard",
+      source_record_id: "inflated",
+      period: "2025-06-30",
+      acquisition_date: "2026-08-23",
+      confidence_note: "n",
+      role: "consulente",
+      amount: 4704000,
+      ipa: null,
+      source_url: null,
+      note_source: "INPS.6480.20/06/2025.0003791",
+      suspect_duplicate: true,
+    },
+  ];
+  const idx = buildSearchIndex(fixture);
+  const hits = searchExplorer(idx, "ANGELI", 100);
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].id, "keep");
+  assert.equal(hits[0].amount, 47040);
 });

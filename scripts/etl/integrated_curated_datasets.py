@@ -2557,7 +2557,7 @@ def build_artifacts(*, spec_path: Path, source_root: Path, catalog_path: Path, r
         "schemaVersion": 1, "generatedAt": spec["generatedAt"], "complete": True,
         "totals": totals, "catalogSha256": sha256_bytes(catalog_payload),
         "artifactSha256": {
-            str(Path(path).relative_to(ROOT)): sha256_bytes(payload)
+            Path(path).relative_to(ROOT).as_posix(): sha256_bytes(payload)
             for path, payload in sorted(artifacts.items())
         },
     }
@@ -2603,10 +2603,10 @@ def check_artifacts(artifacts: dict[str, bytes]) -> None:
         try:
             actual = path.read_bytes()
         except OSError:
-            mismatches.append(f"mancante: {path.relative_to(ROOT)}")
+            mismatches.append(f"mancante: {path.relative_to(ROOT).as_posix()}")
             continue
         if actual != expected:
-            mismatches.append(f"divergente: {path.relative_to(ROOT)}")
+            mismatches.append(f"divergente: {path.relative_to(ROOT).as_posix()}")
     if mismatches:
         raise DatasetBuildError("artefatti non riproducibili:\n" + "\n".join(mismatches))
 
@@ -2801,7 +2801,7 @@ def check_committed(
     if actual_rows_paths != expected_rows_paths or actual_receipt_paths != expected_receipt_paths:
         raise DatasetBuildError("artefatti extra, inattesi, stale o mancanti nelle directory dataset")
     artifact_hashes = require_dict(proof.get("artifactSha256"), "proof.artifactSha256")
-    expected_keys = {str(path.relative_to(ROOT)) for path in expected_paths}
+    expected_keys = {path.relative_to(ROOT).as_posix() for path in expected_paths}
     if set(artifact_hashes) != expected_keys:
         raise DatasetBuildError("insieme artefatti nel proof divergente")
 
@@ -2966,7 +2966,7 @@ def check_committed(
     if proof.get("totals") != totals:
         raise DatasetBuildError("totali proof/catalogo divergenti")
     for path in expected_paths:
-        relative = str(path.relative_to(ROOT))
+        relative = path.relative_to(ROOT).as_posix()
         if path in expected_rows_paths:
             payload = read_bounded_regular_file(
                 path,

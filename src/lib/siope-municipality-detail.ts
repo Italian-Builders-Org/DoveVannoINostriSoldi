@@ -7,7 +7,7 @@ import { partialMonthOf } from "@/lib/siope-calendar";
 import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import {
   eurosPerSquareKilometreCents,
-  getMunicipalityGeographyByTaxCode,
+  getMunicipalityGeographyByTaxCodeIfNameAgrees,
   type MunicipalityGeography,
 } from "@/lib/municipality-geography";
 
@@ -208,7 +208,7 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
     region: identity[4],
     years: artifacts.map((artifact): SiopeMunicipalityYear => {
       const row = rowsByYearAndTaxCode.get(artifact.year)?.get(taxCode);
-      const geography = getMunicipalityGeographyByTaxCode(artifact.year, taxCode);
+      const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(artifact.year, taxCode, identity[2]);
       if (!row) {
         return {
           year: artifact.year,
@@ -287,7 +287,7 @@ export function getSiopeMunicipalityPeerCoverage(year: number): SiopeMunicipalit
   let withMovementsAndGeography = 0;
   for (const row of artifact.rows) {
     const hasMovements = row[6] !== null;
-    const geography = getMunicipalityGeographyByTaxCode(year, row[0]);
+    const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(year, row[0], row[2]);
     const hasGeography = geography !== null;
     if (hasMovements) withMovements += 1;
     if (hasGeography) withGeography += 1;
@@ -309,7 +309,7 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
   const artifact = artifacts.find((item) => item.year === year);
   if (!artifact) return [];
   return artifact.rows.flatMap((row) => {
-    const geography = getMunicipalityGeographyByTaxCode(year, row[0]);
+    const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(year, row[0], row[2]);
     const perSquareKmCents = eurosPerSquareKilometreCents(
       row[6],
       geography?.surfaceSquareMetres ?? null,

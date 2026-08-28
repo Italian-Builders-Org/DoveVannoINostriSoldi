@@ -48,8 +48,14 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
                 raw_rows = sum(1 for _ in csv.DictReader(fh))
             self.assertIsInstance(data.get("duplicatesRemoved"), int)
             self.assertGreaterEqual(data["duplicatesRemoved"], 0)
+            self.assertIsInstance(data.get("suspectDuplicates"), int)
+            self.assertGreaterEqual(data["suspectDuplicates"], 0)
             self.assertEqual(data["relationCount"], raw_rows - data["duplicatesRemoved"])
             self.assertEqual(data["relationCount"], len(data["relations"]))
+            self.assertEqual(
+                data["suspectDuplicates"],
+                sum(1 for rel in data["relations"] if rel.get("suspect_duplicate")),
+            )
             seen = set()
             for rel in data["relations"]:
                 for field in REQUIRED:
@@ -65,10 +71,15 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             self.skipTest(f"artifact non generato: {ARTIFACT}")
         data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
         self.assertEqual(data["schemaVersion"], 1)
+        self.assertEqual(data["transformVersion"], 2)
         self.assertEqual(data["scope"], "investigative-explorer-incarichi")
         self.assertIsInstance(data["relations"], list)
         self.assertGreater(len(data["relations"]), 0)
         self.assertEqual(data["relationCount"], len(data["relations"]))
+        self.assertEqual(
+            data["suspectDuplicates"],
+            sum(1 for rel in data["relations"] if rel.get("suspect_duplicate")),
+        )
         seen = set()
         for rel in data["relations"]:
             for field in REQUIRED:
@@ -247,10 +258,130 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             self.assertEqual(len(ids), len(set(ids)), "id non univoci")
             m = json.loads(meta.read_text(encoding="utf-8"))
             self.assertEqual(m["relationCount"], data["relationCount"])
+            self.assertEqual(m["suspectDuplicates"], data["suspectDuplicates"])
             self.assertNotIn("relations", m, "il meta non deve contenere gli archi")
             self.assertIn("topPersons", m)
             self.assertIn("topEntities", m)
             self.assertTrue(gz.stat().st_size < out.stat().st_size, "gz non comprime")
+
+    def _write_edges(self, tmp: str, rows: list[str]) -> Path:
+        fixture = Path(tmp) / "fix.csv"
+        fixture.write_text(
+            "relation_type,subject_type,subject_key,object_type,object_key,source_dataset,"
+            "source_record_id,period,acquisition_date,confidence_note,role,importo_if_present,"
+            "ipa,fonte_url,note_source\n"
+            + "\n".join(rows)
+            + "\n",
+            encoding="utf-8",
+        )
+        return fixture
+
+    def test_scale_twin_marks_inflated_keeps_both_rows(self):
+        # Issue #147: same person, same act extrema, same period, amounts ×100.
+        note = (
+            "Collaborazione - Consulenza specialistica in ambito medico — "
+            "INPS.6480.20/06/2025.0003791; PerlaPA CCE 2025; periodo 2025-07-01–2026-06-30"
+        )
+        peer_note = (
+            "Collaborazione - Consulenza specialistica in ambito medico — "
+            "INPS.6480.20/06/2025.0003787; PerlaPA CCE 2025; periodo 2025-07-01–2026-06-30"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = self._write_edges(
+                tmp,
+                [
+                    'person_has_appointment,person,D ANGELI DOMENICO,public_entity,INPS,'
+                    'incarichi-nominativi-shard,keep,2025-06-30,2026-08-23,nota,consulente,47040,IPA,u,'
+                    f'"{note}"',
+                    'person_has_appointment,person,D ANGELI DOMENICO,public_entity,INPS,'
+                    'incarichi-nominativi-shard,inflated,2025-06-30,2026-08-23,nota,consulente,4704000,IPA,u,'
+                    f'"{note}"',
+                    'person_has_appointment,person,GENOVESE LEONARDO,public_entity,INPS,'
+                    'incarichi-nominativi-shard,peer,2025-06-30,2026-08-23,nota,consulente,47040,IPA,u,'
+                    f'"{peer_note}"',
+                ],
+            )
+            out = Path(tmp) / "inv.json"
+            built = run(["--input", str(fixture), "--output", str(out)])
+            self.assertEqual(built.returncode, 0, built.stderr)
+            data = json.loads(out.read_text(encoding="utf-8"))
+            self.assertEqual(data["relationCount"], 3)
+            self.assertEqual(data["suspectDuplicates"], 1)
+            by_id = {rel["source_record_id"]: rel for rel in data["relations"]}
+            self.assertTrue(by_id["inflated"].get("suspect_duplicate"))
+            self.assertFalse(by_id["keep"].get("suspect_duplicate"))
+            self.assertFalse(by_id["peer"].get("suspect_duplicate"))
+            self.assertEqual(by_id["keep"]["amount"], 47040.0)
+            self.assertEqual(by_id["inflated"]["amount"], 4704000.0)
+            meta = json.loads(out.with_suffix(".meta.json").read_text(encoding="utf-8"))
+            self.assertEqual(meta["suspectDuplicates"], 1)
+            person_counts = {row["key"]: row["count"] for row in meta["topPersons"]}
+            self.assertEqual(person_counts["D ANGELI DOMENICO"], 1)
+            checked = run(["--check", "--output", str(out)])
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_scale_twin_without_peers_keeps_smaller_amount(self):
+        note = "Consulenza — INPS.6480.20/06/2025.0003791; periodo 2025-07-01–2026-06-30"
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = self._write_edges(
+                tmp,
+                [
+                    'person_has_appointment,person,ROSSI MARIO,public_entity,Ente X,'
+                    'incarichi-nominativi-shard,small,2025-01-01,2026-08-23,nota,consulente,50,IPA,u,'
+                    f'"{note}"',
+                    'person_has_appointment,person,ROSSI MARIO,public_entity,Ente X,'
+                    'incarichi-nominativi-shard,big,2025-01-01,2026-08-23,nota,consulente,50000,IPA,u,'
+                    f'"{note}"',
+                ],
+            )
+            out = Path(tmp) / "inv.json"
+            self.assertEqual(run(["--input", str(fixture), "--output", str(out)]).returncode, 0)
+            data = json.loads(out.read_text(encoding="utf-8"))
+            by_id = {rel["source_record_id"]: rel for rel in data["relations"]}
+            self.assertEqual(data["suspectDuplicates"], 1)
+            self.assertTrue(by_id["big"].get("suspect_duplicate"))
+            self.assertFalse(by_id["small"].get("suspect_duplicate"))
+
+    def test_different_acts_are_not_scale_twins(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = self._write_edges(
+                tmp,
+                [
+                    'person_has_appointment,person,ROSSI MARIO,public_entity,Ente X,'
+                    'incarichi-nominativi-shard,a,2025-01-01,2026-08-23,nota,consulente,47040,IPA,u,'
+                    '"Atto — INPS.6480.20/06/2025.0003791; nota"',
+                    'person_has_appointment,person,ROSSI MARIO,public_entity,Ente X,'
+                    'incarichi-nominativi-shard,b,2025-01-01,2026-08-23,nota,consulente,4704000,IPA,u,'
+                    '"Atto — INPS.6480.20/06/2025.0003999; nota"',
+                ],
+            )
+            out = Path(tmp) / "inv.json"
+            self.assertEqual(run(["--input", str(fixture), "--output", str(out)]).returncode, 0)
+            data = json.loads(out.read_text(encoding="utf-8"))
+            self.assertEqual(data["suspectDuplicates"], 0)
+            self.assertFalse(any(rel.get("suspect_duplicate") for rel in data["relations"]))
+
+    def test_committed_perla_twin_is_flagged_when_present(self):
+        if not ARTIFACT.exists():
+            self.skipTest(f"artifact non generato: {ARTIFACT}")
+        data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+        inflated = [
+            rel
+            for rel in data["relations"]
+            if rel.get("amount") == 4704000.0
+            and "INPS.6480.20/06/2025.0003791" in (rel.get("note_source") or "")
+        ]
+        if not inflated:
+            self.skipTest("coppia PerlaPA #147 assente dallo snapshot")
+        self.assertTrue(all(rel.get("suspect_duplicate") for rel in inflated))
+        kept = [
+            rel
+            for rel in data["relations"]
+            if rel.get("amount") == 47040.0
+            and "INPS.6480.20/06/2025.0003791" in (rel.get("note_source") or "")
+            and not rel.get("suspect_duplicate")
+        ]
+        self.assertGreaterEqual(len(kept), 1)
 
 
 if __name__ == "__main__":

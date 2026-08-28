@@ -250,14 +250,12 @@ function normalizedSearch(value: string): string {
     .trim();
 }
 
+const italianNameCollator = new Intl.Collator("it-IT", { sensitivity: "base" });
+
 function compareRecords(left: InternalRecord, right: InternalRecord): number {
-  const nameOrder = left.sortKey.localeCompare(
-    right.sortKey,
-    "it-IT",
-    { sensitivity: "base" },
-  );
+  const nameOrder = italianNameCollator.compare(left.sortKey, right.sortKey);
   if (nameOrder !== 0) return nameOrder;
-  return left.territory.code.localeCompare(right.territory.code, "en");
+  return left.territory.code < right.territory.code ? -1 : left.territory.code > right.territory.code ? 1 : 0;
 }
 
 function toReportedMeasure(measure: MefIrpefAggregateMeasure): ReportedMeasure {

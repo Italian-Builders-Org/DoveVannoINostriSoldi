@@ -150,6 +150,97 @@ export function getMunicipalityGeographyByTaxCode(year: number, taxCode: string)
   return record && row ? unpack(year, record.referenceDate, row) : null;
 }
 
+function normalizeMunicipalityName(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLocaleUpperCase("it-IT")
+    .replace(/^COMUNE\s+(DI|DEL|DELLA|DELLO|DEI|DEGLI|DELLE)\s+/u, "")
+    .replace(/\s+CAPITALE$/u, "")
+    .replace(/[''`´]/g, "")
+    .replace(/[^A-Z0-9/-]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function compactMunicipalityName(name: string): string {
+  return normalizeMunicipalityName(name).replace(/[ /-]/g, "");
+}
+
+function italianIstatNameCandidates(istatName: string): string[] {
+  const normalized = normalizeMunicipalityName(istatName);
+  const candidates = [normalized];
+  for (const part of normalized.split("/")) {
+    const trimmed = part.trim();
+    if (trimmed) candidates.push(trimmed);
+    const hyphen = trimmed.lastIndexOf("-");
+    if (hyphen >= 3 && trimmed.length - hyphen - 1 >= 3) {
+      candidates.push(trimmed.slice(0, hyphen).trim());
+    }
+  }
+  return candidates;
+}
+
+function siopeNameCandidates(siopeName: string): string[] {
+  const normalized = normalizeMunicipalityName(siopeName);
+  const candidates = [normalized];
+  const epithet = normalized.match(/^(.*)\s-\s[A-Z0-9]+$/);
+  if (epithet?.[1]) candidates.push(epithet[1].trim());
+  return candidates;
+}
+
+function compactedNamesAgree(left: string, right: string): boolean {
+  if (left === right) return true;
+  const delta = left.length - right.length;
+  if (delta > 1 || delta < -1) {
+    const [shorter, longer] = left.length < right.length ? [left, right] : [right, left];
+    return shorter.length >= 8 && longer.startsWith(shorter);
+  }
+  const [a, b] = left.length <= right.length ? [left, right] : [right, left];
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      i += 1;
+      j += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) return false;
+    if (a.length === b.length) {
+      i += 1;
+      j += 1;
+    } else {
+      j += 1;
+    }
+  }
+  return edits + (b.length - j) <= 1;
+}
+
+/**
+ * ISTAT SITUAS report 61 has a known COD_COM_FISCALE rotation in the Fermo
+ * and Salerno clusters. A tax-code hit is usable only when the SIOPE name
+ * still identifies the same municipality; otherwise the join must fail closed.
+ */
+export function municipalityNamesAgree(siopeName: string, istatName: string): boolean {
+  const istatCandidates = italianIstatNameCandidates(istatName).map(compactMunicipalityName);
+  return siopeNameCandidates(siopeName).some((candidate) => {
+    const left = compactMunicipalityName(candidate);
+    return Boolean(left) && istatCandidates.some((right) => compactedNamesAgree(left, right));
+  });
+}
+
+export function getMunicipalityGeographyByTaxCodeIfNameAgrees(
+  year: number,
+  taxCode: string,
+  siopeName: string,
+): MunicipalityGeography | null {
+  const geography = getMunicipalityGeographyByTaxCode(year, taxCode);
+  if (!geography || !municipalityNamesAgree(siopeName, geography.name)) return null;
+  return geography;
+}
+
 export function eurosPerSquareKilometreCents(
   amountCents: number | null,
   surfaceSquareMetres: number | null,

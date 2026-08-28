@@ -22,7 +22,9 @@ import csv
 import gzip
 import hashlib
 import json
+import re
 import sys
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -33,6 +35,28 @@ DEFAULT_INPUT = Path(
 SOURCE_DATASET = "incarichi-nominativi-shard"
 OWNER = "DoveVannoINostriSoldi · Investigative Explorer (slice incarichi)"
 ROUTE_URL = "https://www.dovevannoinostrisoldi.com/esplora"
+TRANSFORM_VERSION = 2
+
+# PerlaPA act extrema in the note (e.g. INPS.6480.20/06/2025.0003791).
+ACT_EXTREMA_RE = re.compile(r"([A-Z]{2,}[A-Z0-9]*\.\d+\.\d{2}/\d{2}/\d{4}\.\d+)")
+AMOUNT_SCALE_FACTORS = (100, 1000)
+
+MERGE_POLICY = (
+    "Due persone con lo stesso nominativo NON sono fuse: ogni riga di origine "
+    "resta un arco distinto identificato da source_record_id."
+)
+CAVEAT = (
+    "Un collegamento indica dove approfondire, non un'illegittimita'. "
+    "Non sommare importi o perimetri tra dataset diversi. "
+    "I record gemelli stesso-atto con importo in rapporto ×100 o ×1000 sono "
+    "marcati suspect_duplicate ed esclusi da aggregati e ricerca; la riga resta nell'artifact."
+)
+AMOUNT_SCALE_TWINS = (
+    "Stesso soggetto, stesso ente, stessi estremi di atto in nota e stesso periodo, "
+    "importi in rapporto esatto ×100 o ×1000: si tiene l'importo coincidente con la moda "
+    "dei pari (stesso ente, periodo e ruolo), altrimenti il minore; gli altri archi "
+    "restano con suspect_duplicate. Nessuna riga è cancellata."
+)
 
 REQUIRED = (
     "relation_type",
@@ -228,6 +252,93 @@ def _edge_id(rel: dict) -> str:
     return "ie_" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
 
 
+def _act_extrema(note: object) -> str | None:
+    if not isinstance(note, str) or not note:
+        return None
+    match = ACT_EXTREMA_RE.search(note)
+    return match.group(1) if match else None
+
+
+def _amount_cents(amount: float) -> int:
+    return round(float(amount) * 100)
+
+
+def _peer_amount_cents(
+    relations: list[dict],
+    exclude_ids: set[str],
+    object_key: str,
+    period: str,
+    role: object,
+) -> int | None:
+    """Modal amount among peers (same entity, period, role), or None."""
+    counts: dict[int, int] = {}
+    for rel in relations:
+        if rel["id"] in exclude_ids:
+            continue
+        if rel["object_key"] != object_key or (rel.get("period") or "") != period:
+            continue
+        if (rel.get("role") or None) != (role or None):
+            continue
+        amount = rel.get("amount")
+        if not isinstance(amount, (int, float)) or amount <= 0:
+            continue
+        cents = _amount_cents(amount)
+        counts[cents] = counts.get(cents, 0) + 1
+    if not counts:
+        return None
+    return max(counts.items(), key=lambda item: (item[1], -item[0]))[0]
+
+
+def mark_scale_twins(relations: list[dict]) -> int:
+    """Mark suspect_duplicate on same-act amount-scale twins. Never deletes a row.
+
+    Group: same subject, entity, act extrema in the note, and period.
+    Scale: amounts in exact euro-cent ratio ×100 or ×1000 (issue #147).
+    Keeper: peer-mode amount if it is one of the scale values, else the smaller.
+    Only the inflated members are flagged; the source rows stay in the artifact.
+    """
+    groups: dict[tuple, list[dict]] = defaultdict(list)
+    for rel in relations:
+        act_id = _act_extrema(rel.get("note_source"))
+        if not act_id:
+            continue
+        amount = rel.get("amount")
+        if not isinstance(amount, (int, float)) or amount <= 0:
+            continue
+        key = (rel["subject_key"], rel["object_key"], act_id, rel.get("period") or "")
+        groups[key].append(rel)
+
+    marked = 0
+    for key, rows in groups.items():
+        if len(rows) < 2:
+            continue
+        cents_list = [_amount_cents(row["amount"]) for row in rows]
+        scale_cents: set[int] = set()
+        for index, left in enumerate(cents_list):
+            for right in cents_list[index + 1 :]:
+                lo, hi = (left, right) if left <= right else (right, left)
+                if hi in {lo * factor for factor in AMOUNT_SCALE_FACTORS}:
+                    scale_cents.add(left)
+                    scale_cents.add(right)
+        if len(scale_cents) < 2:
+            continue
+        exclude_ids = {row["id"] for row in rows}
+        peer = _peer_amount_cents(
+            relations,
+            exclude_ids,
+            key[1],
+            key[3],
+            rows[0].get("role"),
+        )
+        keeper_cents = peer if peer in scale_cents else min(scale_cents)
+        inflated = {keeper_cents * factor for factor in AMOUNT_SCALE_FACTORS}
+        for rel, cents in zip(rows, cents_list):
+            if cents in scale_cents and cents in inflated:
+                rel["suspect_duplicate"] = True
+                marked += 1
+    return marked
+
+
 def build_relations(rows: list[dict]) -> tuple[list[dict], int]:
     """Emit one edge per source row, dropping accidental full-duplicate rows.
 
@@ -270,13 +381,15 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
     relations, duplicates = build_relations(rows)
     if not relations:
         raise ContractError("nessun arco da emettere: il dataset di origine e' vuoto")
+    suspects = mark_scale_twins(relations)
     return {
         "schemaVersion": 1,
-        "transformVersion": 1,
+        "transformVersion": TRANSFORM_VERSION,
         "scope": "investigative-explorer-incarichi",
         "generatedAt": generated_at,
         "relationCount": len(relations),
         "duplicatesRemoved": duplicates,
+        "suspectDuplicates": suspects,
         "license": "AGPL-3.0-or-later",
         "source": {
             "owner": OWNER,
@@ -288,14 +401,9 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
             "provenance": "Ogni arco riporta source_dataset, source_record_id, period, acquisition_date, hash/URL atto e caveat.",
         },
         "methodology": {
-            "mergePolicy": (
-                "Due persone con lo stesso nominativo NON sono fuse: ogni riga di origine "
-                "resta un arco distinto identificato da source_record_id."
-            ),
-            "caveat": (
-                "Un collegamento indica dove approfondire, non un'illegittimita'. "
-                "Non sommare importi o perimetri tra dataset diversi."
-            ),
+            "mergePolicy": MERGE_POLICY,
+            "caveat": CAVEAT,
+            "amountScaleTwins": AMOUNT_SCALE_TWINS,
             "redactions": "Usate solo le righe pubbliche; i campi oscurati non sono inclusi.",
         },
         "relations": relations,
@@ -306,16 +414,20 @@ def validate_artifact(snapshot: object) -> dict:
     root = snapshot
     if not isinstance(root, dict):
         raise ContractError("artifact: oggetto atteso")
-    if root.get("schemaVersion") != 1 or root.get("transformVersion") != 1:
+    if root.get("schemaVersion") != 1 or root.get("transformVersion") != TRANSFORM_VERSION:
         raise ContractError("artifact: versione non supportata")
     if root.get("scope") != "investigative-explorer-incarichi":
         raise ContractError("artifact.scope non valido")
+    suspects = root.get("suspectDuplicates")
+    if not isinstance(suspects, int) or suspects < 0:
+        raise ContractError("artifact.suspectDuplicates: intero >= 0 atteso")
     relations = root.get("relations")
     if not isinstance(relations, list) or not relations:
         raise ContractError("artifact.relations: lista non vuota attesa")
     seen_ids: set[str] = set()
     seen_edge_ids: set[str] = set()
     seen_edges: set[tuple] = set()
+    flagged = 0
     for index, rel in enumerate(relations, start=1):
         for field in REQUIRED:
             if not (isinstance(rel.get(field), str) and rel[field].strip()):
@@ -332,10 +444,17 @@ def validate_artifact(snapshot: object) -> dict:
         seen_edge_ids.add(eid)
         if rel.get("amount") is not None and not isinstance(rel["amount"], (int, float)):
             raise ContractError(f"relazione {index}: amount non numerico")
+        flag = rel.get("suspect_duplicate")
+        if flag is True:
+            flagged += 1
+        elif flag not in (None, False):
+            raise ContractError(f"relazione {index}: suspect_duplicate non booleano")
         edge_key = tuple(rel.get(field) for field in EDGE_FIELDS)
         if edge_key in seen_edges:
             raise ContractError(f"relazione {index}: arco duplicato (merge non consentito)")
         seen_edges.add(edge_key)
+    if flagged != suspects:
+        raise ContractError("artifact.suspectDuplicates non riconciliato con gli archi")
     return root
 
 
@@ -361,6 +480,8 @@ def build_meta(snapshot: dict, rows: list[dict]) -> dict:
     entity_counter: dict[str, int] = {}
     role_counter: dict[str, int] = {}
     for rel in snapshot["relations"]:
+        if rel.get("suspect_duplicate"):
+            continue
         person_counter[rel["subject_key"]] = person_counter.get(rel["subject_key"], 0) + 1
         entity_counter[rel["object_key"]] = entity_counter.get(rel["object_key"], 0) + 1
         if rel.get("role"):
@@ -372,6 +493,7 @@ def build_meta(snapshot: dict, rows: list[dict]) -> dict:
         "generatedAt": snapshot["generatedAt"],
         "relationCount": snapshot["relationCount"],
         "duplicatesRemoved": snapshot["duplicatesRemoved"],
+        "suspectDuplicates": snapshot.get("suspectDuplicates", 0),
         "acquisitionDate": acquisition,
         "license": snapshot.get("license", "AGPL-3.0-or-later"),
         "caveat": snapshot["methodology"]["caveat"],

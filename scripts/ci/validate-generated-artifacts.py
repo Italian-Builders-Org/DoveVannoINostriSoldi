@@ -355,7 +355,7 @@ def detect_unregistered_files(registry: dict) -> list[str]:
             dirnames[:] = [d for d in dirnames if not d.startswith(".")]
             for fname in filenames:
                 full = Path(dirpath) / fname
-                rel = str(full.relative_to(ROOT))
+                rel = full.relative_to(ROOT).as_posix()
                 if rel in registered:
                     continue
 

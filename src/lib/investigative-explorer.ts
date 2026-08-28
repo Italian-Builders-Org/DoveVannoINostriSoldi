@@ -18,6 +18,7 @@ export type Relation = {
   ipa?: string | null;
   source_url?: string | null;
   note_source?: string | null;
+  suspect_duplicate?: boolean;
 };
 
 export type InvestigativeMeta = {
@@ -26,6 +27,7 @@ export type InvestigativeMeta = {
   generatedAt?: string;
   relationCount: number;
   duplicatesRemoved?: number;
+  suspectDuplicates?: number;
   acquisitionDate?: string;
   license?: string;
   caveat?: string;
@@ -43,6 +45,7 @@ export type InvestigativeExplorerArtifact = {
   generatedAt: string;
   relationCount: number;
   duplicatesRemoved: number;
+  suspectDuplicates?: number;
   license: string;
   source: Record<string, unknown>;
   methodology: Record<string, unknown>;
@@ -104,7 +107,8 @@ function tokenize(value: string): string[] {
 
 export function buildSearchIndex(relations: Relation[]): SearchIndex {
   const tokenToIds = new Map<string, number[]>();
-  relations.forEach((rel, i) => {
+  const indexed = relations.filter((rel) => !rel.suspect_duplicate);
+  indexed.forEach((rel, i) => {
     const tokens = new Set<string>();
     for (const field of INDEXED_FIELDS) {
       const v = rel[field];
@@ -118,7 +122,7 @@ export function buildSearchIndex(relations: Relation[]): SearchIndex {
       else tokenToIds.set(t, [i]);
     }
   });
-  return { relations, tokenToIds };
+  return { relations: indexed, tokenToIds };
 }
 
 export function searchExplorer(index: SearchIndex, query: string, limit = 100): Relation[] {

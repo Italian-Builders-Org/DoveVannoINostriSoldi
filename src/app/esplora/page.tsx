@@ -12,6 +12,8 @@ export const metadata = {
 export default function EsploraPage() {
   const m = loadInvestigativeMeta();
   const count = m.relationCount ?? 0;
+  const suspects = m.suspectDuplicates ?? 0;
+  const searchable = Math.max(0, count - suspects);
   const caveat = m.caveat ?? "";
 
   return (
@@ -21,14 +23,20 @@ export default function EsploraPage() {
         <p>
           Fetta verticale su <code>incarichi-nominativi-shard</code>: ogni arco collega una
           persona a un ente (incarico). Su{" "}
-          <strong>{count.toLocaleString("it-IT")}</strong> relazioni estratte dai dati
-          integrati DVNS, i riferimenti CIG/CUP e di atto compaiono in nota ed sono
-          ricercabili. Non fondiamo persone con lo stesso nome senza un id stabile.
+          <strong>{searchable.toLocaleString("it-IT")}</strong> relazioni ricercabili, i
+          riferimenti CIG/CUP e di atto compaiono in nota ed sono ricercabili. Non fondiamo
+          persone con lo stesso nome senza un id stabile.
         </p>
+        {suspects > 0 ? (
+          <p className={styles.caveat}>
+            {suspects.toLocaleString("it-IT")} record gemelli di importo (stesso atto, rapporto
+            ×100 o ×1000) restano nell&apos;artifact ma sono esclusi da aggregati e ricerca.
+          </p>
+        ) : null}
         <p className={styles.caveat}>{caveat}</p>
       </section>
 
-      <EsploraSearch initialCount={count} />
+      <EsploraSearch initialCount={searchable} />
 
       <section className={styles.provenance}>
         <Link href="/incarichi">Registro ufficiale incarichi</Link>

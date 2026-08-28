@@ -221,6 +221,7 @@ export async function discoverBudgetLawMissionDataset(
  * step against an unexpectedly large or runaway response, not a size we
  * expect to hit in normal operation. */
 const MAX_CSV_BYTES = 32 * 1024 * 1024;
+const FULL_AGGREGATE_DEADLINE_MS = 20_000;
 
 async function fetchDatasetRows(
   dataset: BudgetLawMissionDataset,
@@ -332,9 +333,9 @@ type FullMissionAggregate = {
 let fullAggregateCache: { promise: Promise<FullMissionAggregate>; expiresAt: number } | null =
   null;
 
-async function computeFullMissionAggregate(): Promise<FullMissionAggregate> {
-  const dataset = await discoverBudgetLawMissionDataset();
-  const records = await fetchDatasetRows(dataset);
+async function computeFullMissionAggregate(signal: AbortSignal): Promise<FullMissionAggregate> {
+  const dataset = await discoverBudgetLawMissionDataset(signal);
+  const records = await fetchDatasetRows(dataset, signal);
 
   const totalsByYearMission = new Map<string, number>();
   const missionsByYear = new Map<number, Set<string>>();
@@ -365,12 +366,39 @@ function getFullMissionAggregate(): Promise<FullMissionAggregate> {
     return fullAggregateCache.promise;
   }
   const revalidateSeconds = getSourcePolicy("openbdap").dataRevalidateSeconds;
-  const promise = computeFullMissionAggregate().catch((error: unknown) => {
+  const promise = computeFullMissionAggregate(
+    AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS),
+  ).catch((error: unknown) => {
     if (fullAggregateCache?.promise === promise) fullAggregateCache = null;
     throw error;
   });
   fullAggregateCache = { promise, expiresAt: Date.now() + revalidateSeconds * 1000 };
   return promise;
+}
+
+function waitForAggregate(
+  promise: Promise<FullMissionAggregate>,
+  signal?: AbortSignal,
+): Promise<FullMissionAggregate> {
+  if (!signal) return promise;
+  const abortReason = () =>
+    signal.reason ?? new DOMException("Request aborted", "AbortError");
+  if (signal.aborted) return Promise.reject(abortReason());
+
+  return new Promise((resolve, reject) => {
+    const onAbort = () => reject(abortReason());
+    signal.addEventListener("abort", onAbort, { once: true });
+    promise.then(
+      (value) => {
+        signal.removeEventListener("abort", onAbort);
+        resolve(value);
+      },
+      (error: unknown) => {
+        signal.removeEventListener("abort", onAbort);
+        reject(error);
+      },
+    );
+  });
 }
 
 /** Test-only: drops the cached aggregate so the next call fetches fresh. */
@@ -389,8 +417,8 @@ export function resetBudgetLawMissionSeriesCacheForTests(): void {
  * later recorded as paid (bdap-payments.ts / /stato/legislature).
  *
  * The window is validated up front, before any cache lookup or fetch. The
- * shared population fetch does not accept a caller's `signal`: a request
- * that aborts while the cache is being filled does not cancel that fetch,
+ * shared population fetch has its own global deadline. A caller's `signal`
+ * stops only that caller from waiting: it does not cancel the shared fetch,
  * since other pending requests may depend on it completing.
  */
 export async function getBudgetLawMissionSeries(
@@ -409,7 +437,7 @@ export async function getBudgetLawMissionSeries(
   if (options.signal?.aborted) throw options.signal.reason;
 
   const { dataset, availableYears, missionsByYear, totalsByYearMission } =
-    await getFullMissionAggregate();
+    await waitForAggregate(getFullMissionAggregate(), options.signal);
 
   if (availableYears.length < MIN_BUDGET_LAW_WINDOW_YEARS) {
     throw new BudgetLawWindowUnavailableError(

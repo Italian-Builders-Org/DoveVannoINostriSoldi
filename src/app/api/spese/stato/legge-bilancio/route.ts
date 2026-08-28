@@ -31,7 +31,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const series = await getBudgetLawMissionSeries({ windowYears });
+    const series = await getBudgetLawMissionSeries({
+      windowYears,
+      signal: request.signal,
+    });
 
     return NextResponse.json(
       {

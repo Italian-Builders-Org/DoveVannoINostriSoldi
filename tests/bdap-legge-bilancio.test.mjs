@@ -210,6 +210,45 @@ test("getBudgetLawMissionSeries caches the aggregate: two calls with different w
   }
 });
 
+test("an aborted caller stops waiting without cancelling the shared aggregate", async () => {
+  resetBudgetLawMissionSeriesCacheForTests();
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (input) => {
+    const url = new URL(input.toString());
+    calls.push(url.toString());
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    if (url.pathname.endsWith("/package_search")) {
+      return new Response(
+        JSON.stringify({ success: true, result: { results: [packageFixture()] } }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }
+    if (url.pathname.endsWith(`${packageId}.csv`)) {
+      return new Response(FIXTURE_CSV, {
+        status: 200,
+        headers: { "content-type": "text/csv" },
+      });
+    }
+    throw new Error(`URL non atteso nel test: ${url.toString()}`);
+  };
+
+  try {
+    const controller = new AbortController();
+    const cancelled = getBudgetLawMissionSeries({ signal: controller.signal });
+    const survivor = getBudgetLawMissionSeries();
+    controller.abort(new DOMException("request cancelled", "AbortError"));
+
+    await assert.rejects(cancelled, (error) => error?.name === "AbortError");
+    const series = await survivor;
+    assert.deepEqual(series.years, [2022, 2023, 2024]);
+    assert.equal(calls.filter((call) => call.includes(`${packageId}.csv`)).length, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+    resetBudgetLawMissionSeriesCacheForTests();
+  }
+});
+
 test("getBudgetLawMissionSeries honours a smaller requested window", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {

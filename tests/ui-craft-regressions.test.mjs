@@ -33,7 +33,7 @@ test("the home has one semantic dashboard title and a bounded KPI header", async
   assert.equal(page.match(/<h1\b/g)?.length, 1);
   assert.match(page, /<h1>Panoramica Italia<\/h1>/);
   assert.match(page, /className=\{styles\.summaryGrid\} aria-label="Indicatori principali"/);
-  assert.match(css, /\.summaryGrid \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/);
+  assert.match(css, /\.summaryGrid \{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\);/);
 });
 
 test("the home supporting rail forms a balanced grid without empty auto-fit cells", async () => {
@@ -43,7 +43,9 @@ test("the home supporting rail forms a balanced grid without empty auto-fit cell
     source("../src/components/italy-regions-map.module.css"),
   ]);
 
-  assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+  assert.match(css, /\.sourcesPanel \{[\s\S]*?grid-column:span 6/);
+  assert.match(css, /\.reportPanel \{[\s\S]*?grid-column:span 3/);
+  assert.match(css, /\.commitmentPanel \{[\s\S]*?grid-column:span 3/);
   assert.doesNotMatch(css, /repeat\(auto-fit, minmax\(280px, 1fr\)\)/);
   const anomalyRule = css.match(/\.anomalyItem \{([\s\S]*?)\n\}/)?.[1] ?? "";
   assert.doesNotMatch(anomalyRule, /background:|border:\s*1px/);
@@ -77,7 +79,7 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
     tooltipCss,
     /\.tooltip\[data-open="true"\]\[data-positioned="false"\][\s\S]*?visibility: hidden;/,
   );
-  assert.match(home, /\.panelHead > h2 \{[\s\S]*?flex: 1 1 auto;[\s\S]*?min-width: 0;/);
+  assert.match(home, /\.panelHead > div \{[\s\S]*?flex:\s*1 1 auto;[\s\S]*?min-width:\s*0;/);
   assert.match(globals, /@media \(max-width: 900px\)/);
   assert.match(globals, /\.header-search \{[\s\S]*?grid-column: 1 \/ -1;[\s\S]*?width: 100%;/);
 });

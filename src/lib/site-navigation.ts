@@ -6,6 +6,7 @@
 export type NavLink = Readonly<{
   href: string;
   label: string;
+  group?: string;
 }>;
 
 export type NavSection = Readonly<{
@@ -16,6 +17,7 @@ export type NavSection = Readonly<{
 }>;
 
 export type DashboardNavSection = NavSection & Readonly<{
+  utility?: boolean;
   icon:
     | "overview"
     | "spending"
@@ -24,6 +26,8 @@ export type DashboardNavSection = NavSection & Readonly<{
     | "contracts"
     | "projects"
     | "controls"
+    | "comparison"
+    | "reports"
     | "data"
     | "assistant";
 }>;
@@ -137,8 +141,33 @@ export const PRIMARY_NAV: readonly NavSection[] = [
 export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
   { href: "/", label: "Panoramica", icon: "overview" },
   {
+    href: "/spese",
+    label: "Spesa pubblica",
+    icon: "spending",
+    aliases: ["/stato", "/debito"],
+    children: [
+      { href: "/spese", label: "Pagamenti comunali", group: "Comuni e territori" },
+      { href: "/spese/sanita", label: "Sanità", group: "Sanità e prestazioni" },
+      { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
+      { href: "/spese/invalidita", label: "Invalidità INPS" },
+      { href: "/spese/operative", label: "Spese operative", group: "Spese per attività" },
+      { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/spese/eventi", label: "Eventi e convegni" },
+      { href: "/spese/campagne", label: "Campagne e pubblicità" },
+      { href: "/spese/affitti", label: "Affitti e immobili" },
+      { href: "/spese/missioni", label: "Missioni e trasferte" },
+      { href: "/spese/auto-welfare", label: "Auto e welfare" },
+      { href: "/spese/rimborsi", label: "Rimborsi spese" },
+      { href: "/spese/capitoli-progetti", label: "Capitoli e progetti" },
+      { href: "/spese/territoriale", label: "Spesa statale per territorio", group: "Stato e debito" },
+      { href: "/stato", label: "Amministrazioni centrali" },
+      { href: "/stato/legislature", label: "Spesa per legislatura" },
+      { href: "/debito", label: "Debito pubblico" },
+    ],
+  },
+  {
     href: "/territori",
-    label: "Mappa della spesa",
+    label: "Territori",
     icon: "spending",
     aliases: ["/territori/irpef", "/territori/fisco", "/territori/confronto"],
     children: [
@@ -150,45 +179,38 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
   },
   {
     href: "/istituzioni",
-    label: "Enti e Amministrazioni",
+    label: "Enti e imprese",
     icon: "institutions",
-    aliases: ["/enti", "/partecipazioni", "/parlamento", "/palazzo-chigi", "/ministeri", "/regioni"],
+    aliases: ["/enti", "/parlamento", "/palazzo-chigi", "/ministeri", "/regioni", "/imprese", "/partecipazioni"],
     children: [
-      { href: "/istituzioni", label: "Panoramica istituzioni" },
+      { href: "/istituzioni", label: "Panoramica istituzioni", group: "Istituzioni ed enti" },
       { href: "/enti", label: "Registro enti" },
-      { href: "/partecipazioni", label: "Partecipazioni pubbliche" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/ministeri", label: "Ministeri" },
       { href: "/regioni", label: "Regioni" },
-    ],
-  },
-  {
-    href: "/imprese",
-    label: "Fornitori e Beneficiari",
-    icon: "business",
-    children: [
-      { href: "/imprese", label: "Panoramica imprese" },
+      { href: "/imprese", label: "Panoramica imprese", group: "Imprese e partecipate" },
       { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
       { href: "/imprese?metric=employees", label: "Addetti" },
       { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
       { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
       { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+      { href: "/partecipazioni", label: "Partecipazioni pubbliche" },
     ],
   },
   {
     href: "/appalti",
-    label: "Contratti e Gare",
+    label: "Contratti e incarichi",
     icon: "contracts",
     aliases: ["/incarichi", "/pnrr/incarichi"],
     children: [
-      { href: "/appalti", label: "Appalti" },
+      { href: "/appalti", label: "Appalti", group: "Appalti" },
       { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
       { href: "/appalti/affidamenti-diretti", label: "Affidamenti diretti e CIG" },
       { href: "/appalti/fornitori", label: "Fornitori e aggiudicatari" },
       { href: "/appalti/rinnovi-proroghe", label: "Rinnovi e proroghe" },
       { href: "/appalti/consip-da-confrontare", label: "Acquisti da confrontare" },
-      { href: "/incarichi", label: "Incarichi pubblici" },
+      { href: "/incarichi", label: "Incarichi pubblici", group: "Incarichi" },
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
       { href: "/incarichi/consulenze-legali", label: "Consulenze legali" },
       { href: "/incarichi/pnrr", label: "Consulenze e incarichi PNRR" },
@@ -199,7 +221,7 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
   },
   {
     href: "/coesione",
-    label: "Progetti e Opere",
+    label: "Progetti e fondi",
     icon: "projects",
     aliases: ["/progetti"],
     children: [
@@ -208,81 +230,40 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
     ],
   },
   {
-    href: "/spese",
-    label: "Spesa per Categoria",
-    icon: "spending",
-    aliases: ["/stato", "/debito"],
-    children: [
-      { href: "/spese", label: "Pagamenti comunali" },
-      { href: "/spese/sanita", label: "Sanità" },
-      { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
-      { href: "/spese/invalidita", label: "Invalidità INPS" },
-      { href: "/spese/consulenze", label: "Consulenze ministeriali" },
-      { href: "/spese/territoriale", label: "Spesa statale per territorio" },
-      { href: "/spese/operative", label: "Spese operative" },
-      { href: "/spese/eventi", label: "Eventi e convegni" },
-      { href: "/spese/campagne", label: "Campagne e pubblicità" },
-      { href: "/spese/affitti", label: "Affitti e immobili" },
-      { href: "/spese/missioni", label: "Missioni e trasferte" },
-      { href: "/spese/auto-welfare", label: "Auto e welfare" },
-      { href: "/spese/rimborsi", label: "Rimborsi spese" },
-      { href: "/spese/capitoli-progetti", label: "Capitoli e progetti" },
-      { href: "/stato", label: "Amministrazioni centrali" },
-      { href: "/stato/legislature", label: "Spesa per legislatura" },
-      { href: "/debito", label: "Debito pubblico" },
-    ],
-  },
-  {
     href: "/controlli",
-    label: "Anomalie e Sprechi",
+    label: "Segnali e verifiche",
     icon: "controls",
-    aliases: ["/trasparenza"],
+    aliases: ["/trasparenza", "/confronti", "/esplora"],
     children: [
-      { href: "/controlli", label: "Segnali da approfondire" },
+      { href: "/controlli", label: "Segnali da approfondire", group: "Controlli" },
       { href: "/controlli/segnalazioni", label: "Segnalazioni da spiegare" },
       { href: "/controlli/corte-dei-conti", label: "Atti della Corte dei conti" },
       { href: "/controlli/working-set", label: "Casi da verificare" },
       { href: "/trasparenza", label: "Trasparenza e verifiche" },
       { href: "/trasparenza/documenti-mancanti", label: "Documenti non reperibili" },
       { href: "/trasparenza/perimetro-enti", label: "Perimetro degli enti" },
-    ],
-  },
-  {
-    href: "/confronti",
-    label: "Confronti e Benchmark",
-    icon: "controls",
-    aliases: ["/esplora"],
-    children: [
-      { href: "/confronti", label: "Confronti verificati" },
+      { href: "/confronti", label: "Confronti verificati", group: "Confronti" },
       { href: "/confronti/catalogo", label: "Benchmark da rendere omogenei" },
       { href: "/esplora", label: "Esplora relazioni" },
     ],
   },
-  { href: "/assistente", label: "AI Insights", icon: "assistant" },
-  { href: "/supporto", label: "Segnalazioni dei cittadini", icon: "assistant" },
   {
     href: "/dati",
-    label: "Open Data",
+    label: "Dati e fonti",
     icon: "data",
-    aliases: ["/mcp"],
+    aliases: ["/mcp", "/fonti", "/metodologia"],
     children: [
-      { href: "/dati", label: "Catalogo dati" },
+      { href: "/dati", label: "Catalogo dati", group: "Dati aperti" },
       { href: "/mcp", label: "Accesso MCP" },
-    ],
-  },
-  {
-    href: "/fonti",
-    label: "Documentazione",
-    icon: "data",
-    aliases: ["/metodologia"],
-    children: [
-      { href: "/fonti", label: "Elenco fonti" },
+      { href: "/fonti", label: "Elenco fonti", group: "Fonti e metodo" },
       { href: "/fonti/stato", label: "Stato delle fonti" },
       { href: "/fonti/copertura", label: "Copertura integrata" },
       { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
       { href: "/metodologia", label: "Metodologia" },
     ],
   },
+  { href: "/assistente", label: "Assistente dati", icon: "assistant", utility: true },
+  { href: "/supporto", label: "Segnalazioni", icon: "reports", utility: true },
 ] as const;
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
@@ -358,11 +339,14 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },
       { href: "/trasparenza", label: "Trasparenza e verifiche" },
+      { href: "/confronti", label: "Confronti verificati" },
+      { href: "/esplora", label: "Esplora relazioni" },
     ],
   },
   {
     title: "Strumenti",
     links: [
+      { href: "/cerca", label: "Cerca in tutta la piattaforma" },
       { href: "/assistente", label: "Assistente" },
       { href: "/mcp", label: "Istruzioni MCP" },
       { href: "/supporto", label: "Supporto" },
@@ -448,7 +432,7 @@ export function isNavSectionActive(pathname: string, item: NavSection): boolean 
 export function activeNavSection(pathname: string): NavSection | null {
   if (parseNavigationLocation(pathname).pathname === "/") return null;
   return (
-    PRIMARY_NAV.filter((item) => item.children && item.children.length > 0)
+    DASHBOARD_NAV.filter((item) => item.children && item.children.length > 0)
       .filter((item) => isNavSectionActive(pathname, item))
       .sort((left, right) => right.href.length - left.href.length)[0] ?? null
   );

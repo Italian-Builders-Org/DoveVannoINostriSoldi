@@ -19,6 +19,8 @@ const regionOptions = Object.entries(REGION_NAME_BY_ISTAT_CODE).sort(([, left], 
   italianRegionCollator.compare(left, right),
 );
 
+export type MapMetric = "total" | "per-capita";
+
 function quantile(values: number[], fraction: number): number {
   const index = Math.min(values.length - 1, Math.floor(values.length * fraction));
   return values[index] ?? 0;
@@ -30,6 +32,7 @@ export function ItalyRegionsMap({
   aside,
   compact = false,
   provinces = [],
+  metric = "per-capita",
 }: {
   regions: SiopeRegionPoint[];
   period: string;
@@ -39,6 +42,8 @@ export function ItalyRegionsMap({
   compact?: boolean;
   /** Official ISTAT province geometries receive verified SIOPE municipal aggregates. */
   provinces?: SiopeProvincePoint[];
+  /** Verified SIOPE measure used for the choropleth and accessible labels. */
+  metric?: MapMetric;
 }) {
   const [selectedCode, setSelectedCode] = useState("03");
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
@@ -55,14 +60,14 @@ export function ItalyRegionsMap({
   const { byCode, thresholds } = useMemo(() => {
     const mapped = regionDataByIstatCode(regions);
     const values = (showProvinceGeometry ? provinces : regions)
-      .map((point) => point.perCapita)
+      .map((point) => metric === "total" ? point.value : point.perCapita)
       .filter((value): value is number => value !== null)
       .sort((left, right) => left - right);
     return {
       byCode: mapped,
       thresholds: [0.2, 0.4, 0.6, 0.8].map((fraction) => quantile(values, fraction)),
     };
-  }, [provinces, regions, showProvinceGeometry]);
+  }, [metric, provinces, regions, showProvinceGeometry]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -148,6 +153,10 @@ export function ItalyRegionsMap({
       : thresholds.findIndex((threshold) => value <= threshold);
   }
 
+  const metricTitle = metric === "total"
+    ? "Pagamenti comunali totali"
+    : "Pagamenti comunali per abitante coperto";
+
   return (
     <div className={`${styles.layout} ${compact ? styles.compact : ""}`}>
       <div className={styles.mapColumn}>
@@ -158,15 +167,15 @@ export function ItalyRegionsMap({
           data-region-map="true"
           aria-labelledby="regional-map-title regional-map-description"
         >
-          <title id="regional-map-title">Pagamenti comunali per abitante coperto, per regione</title>
+          <title id="regional-map-title">{metricTitle}, per regione</title>
           <desc id="regional-map-description">
-            Mappa regionale colorata in base ai pagamenti di cassa SIOPE dei Comuni. Usa Tab per
+            Mappa regionale colorata in base ai {metric === "total" ? "pagamenti totali" : "pagamenti per abitante coperto"} di cassa SIOPE dei Comuni. Usa Tab per
             entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione
             per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
           </desc>
           {showProvinceGeometry ? italyProvinceGeometry.map((geometry) => {
             const province = provinceByName.get(geometry.name);
-            const colorLevel = level(province?.perCapita ?? null);
+            const colorLevel = level(province ? metric === "total" ? province.value : province.perCapita : null);
             return (
               <path
                 key={`province-${geometry.code}`}
@@ -182,7 +191,7 @@ export function ItalyRegionsMap({
           }) : null}
           {italyRegionGeometry.map((geometry) => {
             const region = byCode.get(geometry.code);
-            const colorLevel = level(region?.perCapita ?? null);
+            const colorLevel = level(region ? metric === "total" ? region.value : region.perCapita : null);
             const selected = selectedCode === geometry.code;
             const focusable = (focusedCode ?? selectedCode) === geometry.code;
             const hovered = hoveredCode === geometry.code;
@@ -201,9 +210,11 @@ export function ItalyRegionsMap({
                 role="button"
                 aria-pressed={selected}
                 aria-label={`${REGION_NAME_BY_ISTAT_CODE[geometry.code]}: ${
-                  region?.perCapita === null || region?.perCapita === undefined
+                  !region || (metric === "per-capita" && region.perCapita === null)
                     ? "dato non disponibile"
-                    : `${exactEuro(region.perCapita)} per abitante coperto`
+                    : metric === "total"
+                      ? `${exactEuro(region.value)} di pagamenti comunali`
+                      : `${exactEuro(region.perCapita!)} per abitante coperto`
                 }`}
                 data-hovered={hovered ? "true" : undefined}
                 data-selected={selected ? "true" : undefined}
@@ -260,24 +271,32 @@ export function ItalyRegionsMap({
         ) : null}
 
         {compact ? (
-          <div className={`${styles.legend} ${styles.compactLegend}`} aria-label="Scala dei pagamenti pro capite">
-            <strong>Spesa pro capite (€)</strong>
-            {[4, 3, 2, 1, 0].map((index) => {
-              const label = index === 4
-                ? `> ${integer(thresholds[3])}`
-                : index === 0
-                  ? `≤ ${integer(thresholds[0])}`
-                  : `da ${integer(thresholds[index - 1])} a ${integer(thresholds[index])}`;
-              return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
-            })}
-          </div>
+          <>
+            <div className={`${styles.legend} ${styles.compactLegend}`} aria-label={`Scala dei ${metric === "total" ? "pagamenti totali" : "pagamenti pro capite"}`}>
+              <strong>{metric === "total" ? "Pagamenti totali" : "Pagamenti pro capite (€)"}</strong>
+              {[4, 3, 2, 1, 0].map((index) => {
+                const formatThreshold = (value: number) => metric === "total" ? compactEuro(value) : integer(value);
+                const label = index === 4
+                  ? `> ${formatThreshold(thresholds[3])}`
+                  : index === 0
+                    ? `≤ ${formatThreshold(thresholds[0])}`
+                    : `da ${formatThreshold(thresholds[index - 1])} a ${formatThreshold(thresholds[index])}`;
+                return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
+              })}
+            </div>
+            <div className={styles.compactDetail} aria-live="polite">
+              <strong>{selected?.region ?? "Regione non disponibile"}</strong>
+              <span>{!selected ? "n.d." : metric === "total" ? compactEuro(selected.value) : selected.perCapita === null ? "n.d." : exactEuro(selected.perCapita)}</span>
+              <small>{period}</small>
+            </div>
+          </>
         ) : (
-          <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
-            <span className={styles.legendEnd}>Meno spesa per abitante</span>
+          <div className={styles.legend} aria-label={`Scala dei ${metric === "total" ? "pagamenti totali" : "pagamenti pro capite"}`}>
+            <span className={styles.legendEnd}>{metric === "total" ? "Meno pagamenti" : "Meno spesa per abitante"}</span>
             {[0, 1, 2, 3, 4].map((index) => (
               <i key={index} className={styles[`level${index}`]} />
             ))}
-            <span className={styles.legendEnd}>Più spesa per abitante</span>
+            <span className={styles.legendEnd}>{metric === "total" ? "Più pagamenti" : "Più spesa per abitante"}</span>
           </div>
         )}
       </div>

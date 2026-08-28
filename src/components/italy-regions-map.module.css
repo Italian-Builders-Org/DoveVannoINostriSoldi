@@ -90,8 +90,23 @@
 /* The reference dashboard reads as a neutral national overview. Keep the
    keyboard/click selection semantics, but only draw the dark outline while a
    person is actively previewing a region. */
-.compact .selectedOutline:not(.hoverOutline) { display: none; }
 .compact .hoverOutline { stroke-width: 1.35; }
+.compactDetail {
+  position: absolute;
+  left: 0;
+  bottom: 3px;
+  display: grid;
+  gap: 1px;
+  max-width: 145px;
+  padding: 5px 7px;
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 5px;
+  font-size: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.compactDetail span { font-weight: 650; }
+.compactDetail small { color: var(--color-neutral-600); font-size: 6.5px; }
 
 .compact .compactLegend {
   position: absolute;

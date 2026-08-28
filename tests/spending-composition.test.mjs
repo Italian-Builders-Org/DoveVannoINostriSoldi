@@ -88,16 +88,15 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   assert.match(css, /\.tileIndex \{[\s\S]*?width: auto;[\s\S]*?height: auto;/);
 });
 
-test("home reading guidance is a compact accessible aside", async () => {
-  const [page, css] = await Promise.all([
+test("home keeps period, perimeter and caveats beside the values they qualify", async () => {
+  const [page, map] = await Promise.all([
     readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/home-map-panel.tsx", import.meta.url), "utf8"),
   ]);
-  assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
-  assert.match(page, /<h2 id="reading-title" className="panel-title">Come leggere questi numeri<\/h2>/);
-  assert.match(page, /className=\{styles\.readingRules\}/);
-  assert.match(page, /href="\/metodologia"/);
-  assert.doesNotMatch(page, /panel-accent \$\{styles\.readingPanel\}/);
-  assert.match(css, /\.readingPanel \{[\s\S]*?grid-column: 1 \/ -1;[\s\S]*?background: var\(--color-neutral-100\);/);
-  assert.match(css, /\.readingRules \{[\s\S]*?display: grid;/);
+  assert.match(page, /Periodo SIOPE/);
+  assert.match(page, /con perimetri separati/);
+  assert.match(page, /include le partite di giro/);
+  assert.match(map, /Comuni non regionalizzati/);
+  assert.match(page, /Report ufficiali rivisti manualmente/);
+  assert.match(page, /href=\{`\/fonti#\$\{slug\}`\}/);
 });

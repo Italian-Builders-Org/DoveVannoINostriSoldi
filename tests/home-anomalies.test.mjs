@@ -25,7 +25,7 @@ test("home anomaly gallery uses three distinct verified phenomena", () => {
 });
 
 test("home anomaly gallery keeps the compact presentation and one caveat", () => {
-  assert.match(homePage, /Anomalie e potenziali sprechi/);
+  assert.match(homePage, /Segnali pubblici da approfondire/);
   assert.match(homePage, /anomalyGallery/);
   assert.match(homePage, /anomalyMarker/);
   assert.doesNotMatch(homePage, /ContractsIcon|ShieldCheck|CalendarClockIcon/);

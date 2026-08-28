@@ -13,7 +13,7 @@ import {
   type IpaEntity,
 } from "@/lib/ipa";
 import {
-  PRIMARY_NAV,
+  DASHBOARD_NAV,
   SITE_MAP_GROUPS,
 } from "@/lib/site-navigation";
 import {
@@ -172,7 +172,7 @@ function addDocument(
 }
 
 function topicSectionLabel(topic: EditorialTopic): string {
-  const parent = PRIMARY_NAV.find((section) =>
+  const parent = DASHBOARD_NAV.find((section) =>
     section.children?.some((child) => child.href === `/${topic.section}`),
   );
   return parent?.label ?? topic.section;
@@ -183,11 +183,13 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
 
   for (const group of SITE_MAP_GROUPS) {
     for (const link of group.links) {
-      const primary = PRIMARY_NAV.find((section) => section.href === link.href);
+      const primary = DASHBOARD_NAV.find((section) =>
+        section.href === link.href || section.children?.some((child) => child.href === link.href),
+      );
       const type: SearchIndexDocument["type"] =
         group.title === "Strumenti"
           ? "strumento"
-          : primary
+          : primary?.href === link.href
             ? "sezione"
             : "pagina";
       const sectionLabel = primary?.label ?? group.title;

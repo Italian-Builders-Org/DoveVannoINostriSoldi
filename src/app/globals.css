@@ -349,6 +349,7 @@ body > nav[aria-label="Sezioni della pagina"] {
   border-radius: 7px;
 }
 .nav-item[data-section-active="true"] { background: var(--color-neutral-100); }
+.nav-item[data-utility-start="true"] { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--color-neutral-200); border-radius: 0; }
 .nav-item > a {
   display: flex;
   align-items: center;
@@ -404,13 +405,17 @@ body > nav[aria-label="Sezioni della pagina"] {
   box-shadow: 0 16px 40px color-mix(in srgb, var(--color-neutral-900) 14%, transparent);
 }
 .nav-submenu-title {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 10px 10px;
   color: var(--color-neutral-600);
   font-size: 10px;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
+.nav-submenu-title span { color: var(--color-neutral-500); font-size: 9px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.nav-submenu-group { padding: 10px 10px 4px; color: var(--color-neutral-500); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .nav-submenu ul {
   margin: 0;
   padding: 0;
@@ -882,6 +887,9 @@ main { display: block; }
     box-shadow: none;
   }
   .nav-submenu-title { display: none; }
+  .nav-item { grid-template-columns: minmax(0, 1fr) 44px; }
+  .nav-item > a, .nav-item-toggle { min-height: 44px; }
+  .nav-item-toggle { width: 44px; height: 44px; }
   .footer-sitemap-columns {
     column-count: 2;
     column-gap: var(--space-4);

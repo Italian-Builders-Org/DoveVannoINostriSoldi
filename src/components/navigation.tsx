@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AiBrain02Icon,
@@ -47,9 +47,15 @@ const NAV_ICONS = {
   contracts: ContractsIcon,
   projects: ConstructionIcon,
   controls: ChartAnalysisIcon,
+  comparison: GitCompareArrowsIcon,
+  reports: Notification01Icon,
   data: Database01Icon,
   assistant: AiBrain02Icon,
 } as const;
+
+function submenuId(href: string) {
+  return `nav-menu-${href === "/" ? "overview" : href.slice(1).replaceAll("/", "-")}`;
+}
 
 export function Navigation() {
   const pathname = usePathname();
@@ -77,6 +83,8 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
 
 function NavigationContent({ pathname, currentSearch }: NavigationContentProps) {
   const navigationRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<{
     href: string;
@@ -105,7 +113,29 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
       if (!isEventTargetWithin(navigationRef.current, event.target)) closeNavigation();
     }
     function dismissOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") closeNavigation();
+      if (event.key === "Tab" && mobileOpen) {
+        const focusable = [...(sidebarRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [])].filter((element) => !element.hasAttribute("hidden"));
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (!first || !last) return;
+        if (event.shiftKey && (document.activeElement === first || !sidebarRef.current?.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (event.key !== "Escape") return;
+      const menuTrigger = openHref
+        ? navigationRef.current?.querySelector<HTMLButtonElement>(`[aria-controls="${submenuId(openHref)}"]`)
+        : null;
+      const returnTarget = mobileOpen ? mobileToggleRef.current : menuTrigger;
+      closeNavigation();
+      window.requestAnimationFrame(() => returnTarget?.focus());
     }
     document.addEventListener("pointerdown", dismissOutside);
     document.addEventListener("keydown", dismissOnEscape);
@@ -115,11 +145,22 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     };
   }, [openHref, mobileOpen, closeNavigation]);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => navigationRef.current?.querySelector<HTMLElement>("a")?.focus());
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
+
   return (
     <>
       <header className="site-header">
         <div className="header-inner">
           <button
+            ref={mobileToggleRef}
             type="button"
             className="mobile-menu-toggle"
             aria-expanded={mobileOpen}
@@ -181,6 +222,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
       </header>
 
       <aside
+        ref={sidebarRef}
         id="dashboard-sidebar"
         className="dashboard-sidebar"
         data-mobile-open={mobileOpen ? "true" : undefined}
@@ -231,6 +273,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             <Link href="/supporter">Chi siamo</Link>
             <Link href="/metodologia">Metodologia</Link>
             <Link href="/privacy">Privacy</Link>
+            <Link href="/termini">Termini</Link>
             <Link href="/supporto">Contatti</Link>
           </div>
         </div>
@@ -270,17 +313,15 @@ function NavigationItem({
 }>) {
   const active = isNavSectionActive(pathname, item);
   const hasChildren = Boolean(item.children?.length);
-  const menuId = `nav-menu-${item.icon}`;
+  const menuId = submenuId(item.href);
 
   return (
     <li
       className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
       data-section-active={active ? "true" : undefined}
       data-open={open ? "true" : undefined}
-      onPointerEnter={(event) => {
-        if (event.pointerType === "touch") return;
-        if (hasChildren) onOpen(item.href);
-      }}
+      data-utility={item.utility ? "true" : undefined}
+      data-utility-start={item.href === "/assistente" ? "true" : undefined}
       onFocusCapture={(event) => {
         if (hasChildren && !(event.target as HTMLElement).matches(".nav-item-toggle")) {
           onOpen(item.href);
@@ -311,24 +352,27 @@ function NavigationItem({
             <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
           </button>
           <div className="nav-submenu" id={menuId} role="region" aria-label={`Pagine in ${item.label}`}>
-            <strong className="nav-submenu-title">{item.label}</strong>
+            <strong className="nav-submenu-title">{item.label}<span>{item.children.length} pagine</span></strong>
             <ul>
               {item.children.map((child) => (
-                <li key={child.href}>
-                  <Link
-                    href={child.href}
-                    aria-current={
-                      currentSearch !== null &&
-                      isNavChildActive(pathname, child.href, item.children!, currentSearch)
-                        ? "page"
-                        : undefined
-                    }
-                    onClick={onClose}
-                  >
-                    {child.label}
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={13} strokeWidth={1.8} aria-hidden="true" />
-                  </Link>
-                </li>
+                <Fragment key={child.href}>
+                  {child.group ? <li className="nav-submenu-group">{child.group}</li> : null}
+                  <li>
+                    <Link
+                      href={child.href}
+                      aria-current={
+                        currentSearch !== null &&
+                        isNavChildActive(pathname, child.href, item.children!, currentSearch)
+                          ? "page"
+                          : undefined
+                      }
+                      onClick={onClose}
+                    >
+                      {child.label}
+                      <HugeiconsIcon icon={ArrowRight01Icon} size={13} strokeWidth={1.8} aria-hidden="true" />
+                    </Link>
+                  </li>
+                </Fragment>
               ))}
             </ul>
           </div>

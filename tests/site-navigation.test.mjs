@@ -12,6 +12,7 @@ const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.met
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 const { activeNavSection, isNavChildActive, DASHBOARD_NAV, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
+const { EDITORIAL_TOPICS } = await import("../src/lib/integrated-editorial.ts");
 const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
@@ -51,14 +52,14 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /aria-controls=\{menuId\}/);
   assert.match(navigationComponent, /icon=\{ArrowDown01Icon\}/);
   assert.doesNotMatch(navigationComponent, /▾|Scorri →/);
-  assert.match(navigationComponent, /event\.key === "Escape"/);
+  assert.match(navigationComponent, /event\.key !== "Escape"/);
   assert.match(navigationComponent, /document\.addEventListener\("pointerdown", dismissOutside\)/);
   // Open state carries the path it was opened on, so a completed navigation
   // closes the menu without a setState in an effect.
   assert.match(navigationComponent, /openMenu\?\.pathname === pathname/);
-  // Hover, focus and caret share one open slot so two panels cannot overlap.
-  assert.match(navigationComponent, /onPointerEnter=/);
-  assert.match(navigationComponent, /pointerType === "touch"/);
+  // Focus and caret share one open slot so two panels cannot overlap. Pointer
+  // hover does not pre-open a panel just before the caret click.
+  assert.doesNotMatch(navigationComponent, /onPointerEnter=/);
   assert.match(navigationComponent, /onFocusCapture=/);
   assert.doesNotMatch(
     globalsCss,
@@ -83,18 +84,15 @@ test("reference dashboard taxonomy keeps every canonical destination reachable",
 
   assert.deepEqual(DASHBOARD_NAV.map((section) => section.label), [
     "Panoramica",
-    "Mappa della spesa",
-    "Enti e Amministrazioni",
-    "Fornitori e Beneficiari",
-    "Contratti e Gare",
-    "Progetti e Opere",
-    "Spesa per Categoria",
-    "Anomalie e Sprechi",
-    "Confronti e Benchmark",
-    "AI Insights",
-    "Segnalazioni dei cittadini",
-    "Open Data",
-    "Documentazione",
+    "Spesa pubblica",
+    "Territori",
+    "Enti e imprese",
+    "Contratti e incarichi",
+    "Progetti e fondi",
+    "Segnali e verifiche",
+    "Dati e fonti",
+    "Assistente dati",
+    "Segnalazioni",
   ]);
   assert.deepEqual([...canonical].filter((href) => !dashboard.has(href)), []);
   for (const href of [
@@ -107,6 +105,17 @@ test("reference dashboard taxonomy keeps every canonical destination reachable",
   ]) {
     assert.ok(dashboard.has(href), `${href} deve restare raggiungibile dal menu`);
   }
+});
+
+test("every generated editorial page remains reachable from a sidebar section", () => {
+  const dashboard = new Set(
+    DASHBOARD_NAV.flatMap((section) => [section.href, ...(section.children ?? []).map((child) => child.href)]),
+  );
+  for (const topic of EDITORIAL_TOPICS) {
+    const href = `/${topic.section}/${topic.slug}`;
+    assert.ok(dashboard.has(href), `${href} deve essere raggiungibile dalla sidebar`);
+  }
+  assert.match(navigationSource, /href: "\/termini"/);
 });
 
 test("navigation guards related targets before checking containment", async () => {
@@ -124,7 +133,7 @@ test("navigation guards related targets before checking containment", async () =
     )?.length,
     2,
   );
-  assert.match(navigationComponent, /event\.pointerType === "touch" \|\| mobileOpen\) return;/);
+  assert.match(navigationComponent, /href\.slice\(1\)\.replaceAll\("\/", "-"\)/);
 });
 
 test("navigation related target guard distinguishes nodes from other event targets", () => {
@@ -261,23 +270,21 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   assert.ok(coesione?.children?.some((child) => child.href === "/coesione/asili"));
 
   const enti = activeNavSection("/enti/c_a783");
-  assert.equal(enti?.href, "/enti");
+  assert.equal(enti?.href, "/istituzioni");
 
   const appalti = activeNavSection("/appalti");
-  assert.equal(appalti?.href, "/controlli");
+  assert.equal(appalti?.href, "/appalti");
   assert.equal(isNavChildActive("/appalti", "/appalti", appalti.children), true);
-  assert.deepEqual(
-    appalti?.children?.map((child) => child.label),
-    ["Appalti", "Incarichi", "Catalogo dati", "Segnali", "Esplora relazioni"],
-  );
+  assert.ok(appalti?.children?.some((child) => child.href === "/appalti/fornitori"));
+  assert.ok(appalti?.children?.some((child) => child.href === "/incarichi"));
 
   const catalog = activeNavSection("/dati/vincitori");
-  assert.equal(catalog?.href, "/controlli");
+  assert.equal(catalog?.href, "/dati");
   assert.equal(isNavChildActive("/dati/vincitori", "/dati", catalog.children), true);
-  assert.equal(isNavChildActive("/dati/vincitori", "/controlli", catalog.children), false);
+  assert.equal(isNavChildActive("/dati/vincitori", "/fonti", catalog.children), false);
 
   const incarichi = activeNavSection("/incarichi");
-  assert.equal(incarichi?.href, "/controlli");
+  assert.equal(incarichi?.href, "/appalti");
 
   const stato = activeNavSection("/stato");
   assert.equal(stato?.href, "/spese");

@@ -12,9 +12,8 @@
  * timeout chain.
  *
  * `runLiveOpenBdap` wraps a live assertion body: it probes first, then runs
- * the body, and if the body throws a `SourceFetchError` (OpenBDAP answered the
- * probe but flaked during the heavy data fetch) the test is skipped instead of
- * failing. Real assertion failures propagate normally.
+ * the body, and skips only an explicit OpenBDAP outage, network error, timeout,
+ * or abort. Configuration and data-contract failures propagate normally.
  */
 
 const BDAP_ACTION = "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action";
@@ -37,9 +36,13 @@ export async function isOpenBdapReachable({ timeoutMs = 8_000 } = {}) {
   }
 }
 
-function isTransientSourceError(error) {
-  if (error?.name === "SourceFetchError") return true;
+export function isTransientSourceError(error) {
+  if (error?.name === "OpenBdapUnavailableError") return true;
   if (error?.name === "AbortError" || error?.name === "TimeoutError") return true;
+  if (error?.name === "SourceFetchError") {
+    return /^Errore di rete verso openbdap\b/.test(error?.message ?? "")
+      || /^Impossibile interrogare la fonte openbdap\b/.test(error?.message ?? "");
+  }
   return false;
 }
 

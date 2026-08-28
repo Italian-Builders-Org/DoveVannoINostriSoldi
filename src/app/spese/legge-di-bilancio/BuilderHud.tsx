@@ -1,7 +1,7 @@
 "use client";
 
 import type { Plan } from "./reallocation";
-import { shortLabel, toneColor } from "./reallocation";
+import { netToneColor, shortLabel, toneColor } from "./reallocation";
 import styles from "./simulatore.module.css";
 
 const compactEuro = new Intl.NumberFormat("it-IT", {
@@ -87,7 +87,7 @@ export function BuilderHud({
             <span className={styles.hudStatusLabel}>
               Saldo · {plan.entries.length} {plan.entries.length === 1 ? "voce" : "voci"}
             </span>
-            <b style={{ color: toneColor(plan.net) }}>{signedCompactEuro(plan.net)}</b>
+            <b style={{ color: netToneColor(plan.net) }}>{signedCompactEuro(plan.net)}</b>
           </>
         ) : (
           <span className={styles.hudStatusHint}>Tocca − / + su un riquadro per iniziare</span>

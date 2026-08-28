@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import type { Plan, Verdict } from "./reallocation";
-import { shortLabel, toneColor } from "./reallocation";
+import { netToneColor, shortLabel, toneColor } from "./reallocation";
 import styles from "./simulatore.module.css";
 
 const SHARE_HOST = new URL(PUBLIC_SITE_URL).host.replace(/^www\./, "");
@@ -108,11 +108,11 @@ export function ShareDialog({
           ×
         </button>
 
-        <figure className={styles.shareCard} style={{ borderTopColor: toneColor(plan.net) }}>
+        <figure className={styles.shareCard} style={{ borderTopColor: netToneColor(plan.net) }}>
           <figcaption className={styles.shareKicker}>
             La mia proposta per la prossima Legge di Bilancio
           </figcaption>
-          <p className={styles.shareNet} style={{ color: toneColor(plan.net) }}>
+          <p className={styles.shareNet} style={{ color: netToneColor(plan.net) }}>
             {signedCompactEuro(plan.net)}
           </p>
           <p className={styles.shareVerdict}>

@@ -169,6 +169,15 @@ export function toneColor(value: number): string {
   return "var(--color-neutral-500)";
 }
 
+/**
+ * Colore del saldo netto della manovra: qui la logica è rovesciata rispetto a
+ * `toneColor`. Saldo positivo = si spende di più → rosso; saldo ≤ 0 = si
+ * risparmia → verde.
+ */
+export function netToneColor(net: number): string {
+  return net > 0 ? "var(--color-critical)" : "var(--color-positive)";
+}
+
 export function clampPct(value: number): number {
   return Math.max(-50, Math.min(50, Math.round(value)));
 }

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { computePlan, computeVerdict, clampPct } = await import(
+const { computePlan, computeVerdict, clampPct, netToneColor } = await import(
   "../src/app/spese/legge-di-bilancio/reallocation.ts"
 );
 const { encodePiano, decodePiano, orderedMissionList } = await import(
@@ -67,6 +67,12 @@ test("computeVerdict is empty on an untouched budget", () => {
   const verdict = computeVerdict(computePlan(SUMMARIES, {}), SUMMARIES, {});
   assert.match(verdict.headline, /nessuna modifica/i);
   assert.equal(verdict.detail, null);
+});
+
+test("netToneColor is inverted: overspending is red, saving is green", () => {
+  assert.equal(netToneColor(5_000_000_000), "var(--color-critical)");
+  assert.equal(netToneColor(0), "var(--color-positive)");
+  assert.equal(netToneColor(-5_000_000_000), "var(--color-positive)");
 });
 
 test("clampPct rounds and bounds to ±50", () => {

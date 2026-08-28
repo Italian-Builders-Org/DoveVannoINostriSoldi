@@ -9,6 +9,7 @@ import {
   effectiveAmount,
   MAJOR_SHARE_THRESHOLD,
   type MissionSummary,
+  netToneColor,
   scenarioPctOf,
   shortLabel,
   toneColor,
@@ -455,9 +456,9 @@ export function MissionPicker({
                       </span>
                     </div>
                   </div>
-                  <div className={styles.saldoNet} style={{ borderColor: toneColor(plan.net) }}>
+                  <div className={styles.saldoNet} style={{ borderColor: netToneColor(plan.net) }}>
                     <span className={styles.saldoNetLabel}>Saldo netto</span>
-                    <span className={styles.saldoNetValue} style={{ color: toneColor(plan.net) }}>
+                    <span className={styles.saldoNetValue} style={{ color: netToneColor(plan.net) }}>
                       {signedCompactEuro(plan.net)}
                     </span>
                     <span className={styles.saldoNetSub}>
@@ -489,7 +490,7 @@ export function MissionPicker({
       <div
         ref={treemapRef}
         className={`${styles.treemap} ${hasScenario ? styles.treemapScenario : ""}`}
-        style={hasScenario ? { borderColor: toneColor(plan.net) } : undefined}
+        style={hasScenario ? { borderColor: netToneColor(plan.net) } : undefined}
         role="group"
         aria-label={
           hasScenario

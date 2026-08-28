@@ -4,6 +4,7 @@ import {
   type DelimitedRecord,
 } from "@/lib/data/delimited";
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
+import { getSourcePolicy } from "@/lib/data/source-policy";
 import { parseOpenBdapAmount } from "@/lib/data/bdap-payment-contract";
 
 const BDAP_BASE = "https://bdap-opendata.rgs.mef.gov.it";
@@ -216,6 +217,11 @@ export async function discoverBudgetLawMissionDataset(
   return matches[0];
 }
 
+/** Generous ceiling over the live dump (~4.5 MB): guards the aggregation
+ * step against an unexpectedly large or runaway response, not a size we
+ * expect to hit in normal operation. */
+const MAX_CSV_BYTES = 32 * 1024 * 1024;
+
 async function fetchDatasetRows(
   dataset: BudgetLawMissionDataset,
   signal?: AbortSignal,
@@ -236,7 +242,21 @@ async function fetchDatasetRows(
     throw new Error("OpenBDAP non ha restituito un CSV per il dataset Legge di Bilancio");
   }
 
-  const rows = parseDelimitedRecords(decodePublicDataText(await response.arrayBuffer()));
+  const declaredLength = Number(response.headers.get("content-length") ?? NaN);
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_CSV_BYTES) {
+    throw new Error(
+      `OpenBDAP CSV troppo grande (${declaredLength} byte, limite ${MAX_CSV_BYTES})`,
+    );
+  }
+
+  const buffer = await response.arrayBuffer();
+  if (buffer.byteLength > MAX_CSV_BYTES) {
+    throw new Error(
+      `OpenBDAP CSV troppo grande (${buffer.byteLength} byte, limite ${MAX_CSV_BYTES})`,
+    );
+  }
+
+  const rows = parseDelimitedRecords(decodePublicDataText(buffer));
   if (rows.length === 0) throw new Error("Dataset OpenBDAP Legge di Bilancio vuoto");
   return rows;
 }
@@ -292,32 +312,29 @@ export function missionYearOverYearDelta(
   };
 }
 
-/**
- * Reads the full OpenBDAP AMPMA historical series once, aggregates the
- * enacted competenza appropriation (CP A1) per year and mission across every
- * amministrazione and macroaggregato, and returns the most recent stable
- * window plus its consecutive year-over-year deltas per mission.
- *
- * "Enacted appropriation" is not "actual payment": this reads what each
- * Legge di Bilancio set aside, not what OpenBDAP's Rendiconto consuntivo
- * later recorded as paid (bdap-payments.ts / /stato/legislature).
- */
-export async function getBudgetLawMissionSeries(
-  options: { windowYears?: number; signal?: AbortSignal } = {},
-): Promise<BudgetLawMissionSeries> {
-  const requestedWindow = options.windowYears ?? DEFAULT_BUDGET_LAW_WINDOW_YEARS;
-  if (
-    !Number.isInteger(requestedWindow) ||
-    requestedWindow < MIN_BUDGET_LAW_WINDOW_YEARS ||
-    requestedWindow > MAX_BUDGET_LAW_WINDOW_YEARS
-  ) {
-    throw new BudgetLawInvalidWindowError(
-      `Finestra di anni non valida per la Legge di Bilancio: deve essere tra ${MIN_BUDGET_LAW_WINDOW_YEARS} e ${MAX_BUDGET_LAW_WINDOW_YEARS}`,
-    );
-  }
+type FullMissionAggregate = {
+  dataset: BudgetLawMissionDataset;
+  availableYears: number[];
+  missionsByYear: Map<number, Set<string>>;
+  totalsByYearMission: Map<string, number>;
+};
 
-  const dataset = await discoverBudgetLawMissionDataset(options.signal);
-  const records = await fetchDatasetRows(dataset, options.signal);
+/**
+ * In-memory cache for the expensive step (discover + download + parse the
+ * ~4.5 MB CSV + aggregate per year/mission), which is independent of the
+ * requested window. The CSV response is well over Next's 2 MB Data Cache
+ * entry limit, so relying on `fetch`'s own cache silently fails and
+ * re-downloads/re-parses the whole file on every visit; caching the small
+ * aggregated result here instead means that only happens once per
+ * `dataRevalidateSeconds`. The in-flight promise itself is cached so
+ * concurrent callers share one download instead of racing separate ones.
+ */
+let fullAggregateCache: { promise: Promise<FullMissionAggregate>; expiresAt: number } | null =
+  null;
+
+async function computeFullMissionAggregate(): Promise<FullMissionAggregate> {
+  const dataset = await discoverBudgetLawMissionDataset();
+  const records = await fetchDatasetRows(dataset);
 
   const totalsByYearMission = new Map<string, number>();
   const missionsByYear = new Map<number, Set<string>>();
@@ -335,6 +352,65 @@ export async function getBudgetLawMissionSeries(
   }
 
   const availableYears = [...missionsByYear.keys()].sort((left, right) => left - right);
+  return { dataset, availableYears, missionsByYear, totalsByYearMission };
+}
+
+/**
+ * Returns the cached aggregate, refreshing it when missing or expired. A
+ * failed population is not cached, so the next call retries instead of
+ * being stuck on an error for the rest of the TTL.
+ */
+function getFullMissionAggregate(): Promise<FullMissionAggregate> {
+  if (fullAggregateCache && fullAggregateCache.expiresAt > Date.now()) {
+    return fullAggregateCache.promise;
+  }
+  const revalidateSeconds = getSourcePolicy("openbdap").dataRevalidateSeconds;
+  const promise = computeFullMissionAggregate().catch((error: unknown) => {
+    if (fullAggregateCache?.promise === promise) fullAggregateCache = null;
+    throw error;
+  });
+  fullAggregateCache = { promise, expiresAt: Date.now() + revalidateSeconds * 1000 };
+  return promise;
+}
+
+/** Test-only: drops the cached aggregate so the next call fetches fresh. */
+export function resetBudgetLawMissionSeriesCacheForTests(): void {
+  fullAggregateCache = null;
+}
+
+/**
+ * Reads the full OpenBDAP AMPMA historical series once, aggregates the
+ * enacted competenza appropriation (CP A1) per year and mission across every
+ * amministrazione and macroaggregato, and returns the most recent stable
+ * window plus its consecutive year-over-year deltas per mission.
+ *
+ * "Enacted appropriation" is not "actual payment": this reads what each
+ * Legge di Bilancio set aside, not what OpenBDAP's Rendiconto consuntivo
+ * later recorded as paid (bdap-payments.ts / /stato/legislature).
+ *
+ * The window is validated up front, before any cache lookup or fetch. The
+ * shared population fetch does not accept a caller's `signal`: a request
+ * that aborts while the cache is being filled does not cancel that fetch,
+ * since other pending requests may depend on it completing.
+ */
+export async function getBudgetLawMissionSeries(
+  options: { windowYears?: number; signal?: AbortSignal } = {},
+): Promise<BudgetLawMissionSeries> {
+  const requestedWindow = options.windowYears ?? DEFAULT_BUDGET_LAW_WINDOW_YEARS;
+  if (
+    !Number.isInteger(requestedWindow) ||
+    requestedWindow < MIN_BUDGET_LAW_WINDOW_YEARS ||
+    requestedWindow > MAX_BUDGET_LAW_WINDOW_YEARS
+  ) {
+    throw new BudgetLawInvalidWindowError(
+      `Finestra di anni non valida per la Legge di Bilancio: deve essere tra ${MIN_BUDGET_LAW_WINDOW_YEARS} e ${MAX_BUDGET_LAW_WINDOW_YEARS}`,
+    );
+  }
+  if (options.signal?.aborted) throw options.signal.reason;
+
+  const { dataset, availableYears, missionsByYear, totalsByYearMission } =
+    await getFullMissionAggregate();
+
   if (availableYears.length < MIN_BUDGET_LAW_WINDOW_YEARS) {
     throw new BudgetLawWindowUnavailableError(
       `OpenBDAP non pubblica ancora almeno ${MIN_BUDGET_LAW_WINDOW_YEARS} Leggi di Bilancio confrontabili dal ${MIN_STABLE_MISSION_YEAR} in poi.`,

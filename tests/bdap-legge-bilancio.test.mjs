@@ -11,6 +11,7 @@ const {
   MIN_STABLE_MISSION_YEAR,
   missionYearOverYearDelta,
   normalizeBudgetLawPackage,
+  resetBudgetLawMissionSeriesCacheForTests,
 } = await import("../src/lib/bdap-legge-bilancio.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
 
@@ -74,6 +75,7 @@ const FIXTURE_ROWS = [
 const FIXTURE_CSV = [CSV_HEADER, ...FIXTURE_ROWS].join("\n");
 
 function installFetch(csv) {
+  resetBudgetLawMissionSeriesCacheForTests();
   const originalFetch = globalThis.fetch;
   const calls = [];
   globalThis.fetch = async (input) => {
@@ -191,6 +193,18 @@ test("getBudgetLawMissionSeries aggregates per mission, skips pre-2017 rows, and
 
     assert.ok(fetchMock.calls.some((call) => call.includes("package_search")));
     assert.ok(fetchMock.calls.some((call) => call.includes(`${packageId}.csv`)));
+  } finally {
+    fetchMock.restore();
+  }
+});
+
+test("getBudgetLawMissionSeries caches the aggregate: two calls with different windows share one download", async () => {
+  const fetchMock = installFetch(FIXTURE_CSV);
+  try {
+    await getBudgetLawMissionSeries({ windowYears: 3 });
+    await getBudgetLawMissionSeries({ windowYears: 2 });
+    const csvCalls = fetchMock.calls.filter((call) => call.includes(`${packageId}.csv`));
+    assert.equal(csvCalls.length, 1);
   } finally {
     fetchMock.restore();
   }

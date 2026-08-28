@@ -325,7 +325,7 @@ export function SimulatoreClient({
             <span>STANZIAMENTO PUBBLICATO · LEGGE DI BILANCIO</span>
             <h2>{shortLabel(selectedMission)}</h2>
           </div>
-          <b>{years[0]}–{hypothesisYear}</b>
+          <b>{years[0]}-{hypothesisYear}</b>
         </div>
 
         <div className={styles.workbench}>

@@ -58,8 +58,8 @@ export function ShareDialog({
 
   const missionCount = plan.entries.length;
   const shareText =
-    `E se la prossima Legge di Bilancio la scrivessi tu? La mia proposta — ${verdict.headline}: ` +
-    `saldo netto ${signedCompactEuro(plan.net)} su ${missionCount} ` +
+    `E se la prossima Legge di Bilancio la scrivessi tu? La mia proposta: ${verdict.headline}. ` +
+    `Saldo netto ${signedCompactEuro(plan.net)} su ${missionCount} ` +
     `${missionCount === 1 ? "missione" : "missioni"}. ` +
     `Fatta con Dove Vanno I Nostri Soldi, ora prova a scrivere la tua:`;
   const shareMessage = `${shareText}\n${shareUrl}\n\n${SHARE_HASHTAG}`;

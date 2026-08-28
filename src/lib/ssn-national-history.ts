@@ -1,4 +1,8 @@
 import { decodePublicDataText, parseDelimitedRows, type DelimitedRecord } from "@/lib/data/delimited";
+import {
+  isOpenBdapCsvConversionError,
+  OpenBdapUnavailableError,
+} from "@/lib/data/openbdap-response";
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import { SSN_CCE_METRICS, type SsnCceMetricId, type SsnCceValues } from "@/lib/data/ssn-cce-contract";
 
@@ -401,6 +405,11 @@ async function fetchNationalYear(
   const payload = await withAbort(response.arrayBuffer(), signal);
   const textPayload = decodePublicDataText(payload);
   // A 200 JSON error from the dump endpoint must never be parsed as a partial dataset.
+  if (isOpenBdapCsvConversionError(textPayload)) {
+    throw new OpenBdapUnavailableError(
+      `OpenBDAP non ha reso disponibile il CSV per l'anno ${pkg.year}`,
+    );
+  }
   if (textPayload.trimStart().startsWith("{") || textPayload.trimStart().startsWith("[")) {
     throw new Error(`OpenBDAP ha restituito un errore JSON invece del CSV per l'anno ${pkg.year}`);
   }

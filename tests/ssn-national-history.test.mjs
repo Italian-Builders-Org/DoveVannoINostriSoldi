@@ -204,7 +204,13 @@ function delayed(ms, signal) {
   });
 }
 
-function stubHistoryFetch({ delayMs = 0, jsonYear = null, trailingDelimiter = false, missingLicenseIdYear = null } = {}) {
+function stubHistoryFetch({
+  conversionErrorYear = null,
+  delayMs = 0,
+  jsonYear = null,
+  missingLicenseIdYear = null,
+  trailingDelimiter = false,
+} = {}) {
   const packages = [...SSN_NATIONAL_HISTORY_YEARS].map(packageResult);
   if (missingLicenseIdYear !== null) {
     const packageToMutate = packages.find((candidate) => candidate.name.endsWith(`_${missingLicenseIdYear}`));
@@ -231,6 +237,15 @@ function stubHistoryFetch({ delayMs = 0, jsonYear = null, trailingDelimiter = fa
       const pkg = packages.find((candidate) => candidate.id === packageId);
       assert.ok(pkg, `package ${packageId}`);
       const year = Number(pkg.name.slice(-4));
+      if (year === conversionErrorYear) {
+        return new Response(JSON.stringify({
+          success: false,
+          error: { message: "Cannot convert data to csv" },
+        }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        });
+      }
       if (year === jsonYear) {
         return new Response(JSON.stringify({ error: "Attachment not found" }), {
           status: 200,
@@ -309,6 +324,21 @@ test("SSN national history rejects a 200 JSON error returned by the CSV dump", a
     await assert.rejects(
       getSsnNationalHistory({ deadlineMs: 2_000 }),
       /errore JSON invece del CSV.*2018/i,
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("SSN national history classifies only the known conversion outage as unavailable", async () => {
+  const originalFetch = globalThis.fetch;
+  const stub = stubHistoryFetch({ conversionErrorYear: 2018 });
+  globalThis.fetch = stub.fetchStub;
+  try {
+    await assert.rejects(
+      getSsnNationalHistory({ deadlineMs: 2_000 }),
+      (error) => error?.name === "OpenBdapUnavailableError"
+        && /CSV.*2018/i.test(error.message),
     );
   } finally {
     globalThis.fetch = originalFetch;

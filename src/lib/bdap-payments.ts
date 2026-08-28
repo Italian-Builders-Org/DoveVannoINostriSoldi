@@ -3,6 +3,10 @@ import {
   parseDelimitedRecords,
   type DelimitedRecord,
 } from "@/lib/data/delimited";
+import {
+  isOpenBdapCsvConversionError,
+  OpenBdapUnavailableError,
+} from "@/lib/data/openbdap-response";
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import {
   assertOpenBdapComponentTotal,
@@ -325,7 +329,7 @@ function normalizePackage(
     notes,
     referenceYear: period.year,
     metadataModified: text(pkg.metadata_modified),
-    csvUrl: `${BDAP_DUMP}/${packageId}.csv`,
+    csvUrl: `${BDAP_DUMP}/${packageId}.csv?download=1`,
     apiUrl: `${BDAP_ACTION}/package_show?id=${encodeURIComponent(packageId)}`,
   };
 
@@ -591,11 +595,17 @@ async function fetchDatasetRows(
   }
 
   const contentType = response.headers.get("content-type") ?? "";
+  const payload = decodePublicDataText(await response.arrayBuffer());
   if (!contentType.toLowerCase().includes("csv")) {
+    if (isOpenBdapCsvConversionError(payload)) {
+      throw new OpenBdapUnavailableError(
+        "OpenBDAP non ha reso disponibile il CSV per il dataset richiesto",
+      );
+    }
     throw new Error("OpenBDAP non ha restituito un CSV per il dataset richiesto");
   }
 
-  const rows = parseDelimitedRecords(decodePublicDataText(await response.arrayBuffer()));
+  const rows = parseDelimitedRecords(payload);
   if (rows.length === 0) throw new Error("Dataset OpenBDAP vuoto");
   return rows;
 }

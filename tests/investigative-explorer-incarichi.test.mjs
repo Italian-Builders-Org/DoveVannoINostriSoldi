@@ -137,7 +137,7 @@ test("la search index trova CIG/CUP strutturati (senza full scan)", async () => 
       amount: null,
       ipa: "IPAX",
       source_url: null,
-      references: { cig: ["A123456789"], cup: [] },
+      references: { cig: ["A123456789"], cup: ["J12ABC345678901"] },
     },
     {
       id: "b",
@@ -162,6 +162,9 @@ test("la search index trova CIG/CUP strutturati (senza full scan)", async () => 
   const byCig = searchExplorer(idx, "CIG A123456789", 100);
   assert.equal(byCig.length, 1);
   assert.equal(byCig[0].id, "a");
+  const byCup = searchExplorer(idx, "CUP J12ABC345678901", 100);
+  assert.equal(byCup.length, 1);
+  assert.equal(byCup[0].id, "a");
   const byPerson = searchExplorer(idx, "rossi", 100);
   assert.equal(byPerson.length, 1);
   assert.equal(byPerson[0].id, "a");

@@ -3,7 +3,12 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const { SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
-const { getSnapshotManagedSourceHealth, orderSourceHealth } = await import(
+const {
+  getSnapshotManagedSourceHealth,
+  orderSourceHealth,
+  SOURCE_HEALTH_ADAPTERS,
+  validateIstatMunicipalityGeographyMetadata,
+} = await import(
   "../src/lib/data/source-health.ts"
 );
 
@@ -37,8 +42,14 @@ function fakeLiveHealth(sourceId) {
   };
 }
 
-test("source health registry covers every operational source, including ANAC, INPS and CPT", () => {
+test("source health registry covers every operational source, including ANAC, INPS and CPT", async () => {
+  assert.deepEqual(Object.keys(SOURCE_HEALTH_ADAPTERS), SOURCE_IDS);
+  assert.ok(Object.values(SOURCE_HEALTH_ADAPTERS).every((adapter) => typeof adapter === "function"));
   const snapshots = getSnapshotManagedSourceHealth();
+  for (const snapshot of snapshots) {
+    const health = await SOURCE_HEALTH_ADAPTERS[snapshot.sourceId]();
+    assert.equal(health.sourceId, snapshot.sourceId);
+  }
   const snapshotIds = new Set(snapshots.map((entry) => entry.sourceId));
   const live = SOURCE_IDS
     .filter((sourceId) => !snapshotIds.has(sourceId))
@@ -86,6 +97,31 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.equal(pnrr?.recordCount, 3_841);
   assert.equal(pnrr?.freshness.sourceTimestamp, "2026-06-13");
   assert.match(pnrr?.detail ?? "", /18\.851 gare/);
+  const istat = overview.find((entry) => entry.sourceId === "istat");
+  assert.equal(istat?.reachability, "not-probed");
+  assert.equal(istat?.recordCount, 7_894);
+  assert.equal(istat?.freshness.sourceTimestamp, "2026-08-25");
+  assert.match(istat?.detail ?? "", /SITUAS/);
+  assert.match(istat?.detail ?? "", /generato il 2026-08-25/);
+  assert.match(istat?.detail ?? "", /dati al 2026-08-25/);
+  assert.match(istat?.detail ?? "", /7894 comuni/);
+});
+
+test("ISTAT health metadata fails closed on sidecar drift", () => {
+  assert.throws(
+    () => validateIstatMunicipalityGeographyMetadata({
+      schemaVersion: 1,
+      datasetId: "istat-municipality-geography",
+      generatedAt: "2026-08-25T00:00:00Z",
+      availableYears: [2026],
+      latest: {
+        year: 2025,
+        sourceTimestamp: "25/08/2026",
+        municipalities: 7_894,
+      },
+    }),
+    /Metadati health ISTAT SITUAS non validi/,
+  );
 });
 
 test("source health registry fails closed when an adapter is omitted", () => {

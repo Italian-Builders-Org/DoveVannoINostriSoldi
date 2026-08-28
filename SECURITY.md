@@ -2,10 +2,15 @@
 
 ## Segnalare una vulnerabilità
 
-Non aprire una issue pubblica per vulnerabilità non ancora corrette. Usa la
-sezione **Security** del repository e crea una private vulnerability report. Se
-la funzione non è disponibile, contatta privatamente un maintainer del progetto
-prima di pubblicare dettagli sfruttabili.
+Non aprire una issue pubblica per vulnerabilità non ancora corrette.
+
+Usa il canale privato GitHub:
+
+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/security/advisories/new
+
+Il form è visibile nella sezione Security del repository come
+**Report a vulnerability** (chi non è admin) oppure
+**New draft security advisory** (chi ha permessi di amministrazione).
 
 Indica superficie interessata, prerequisiti, impatto, passaggi minimi per la
 riproduzione e una proposta di mitigazione, se disponibile. Non includere dati
@@ -18,4 +23,4 @@ accesso a variabili d'ambiente, SSRF, injection, esposizione di dati non pubblic
 dipendenze compromesse e workflow GitHub con privilegi eccessivi.
 
 I problemi di qualità o interpretazione dei dati senza impatto di sicurezza
-vanno invece segnalati con una issue ordinaria, allegando la fonte ufficiale.
+vanno segnalati con una issue ordinaria, allegando la fonte ufficiale.

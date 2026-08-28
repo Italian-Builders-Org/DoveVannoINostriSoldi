@@ -87,9 +87,10 @@ export default function PrivacyPage() {
       <section className="panel">
         <h2 className="panel-title">I tuoi diritti</h2>
         <p>
-          Puoi chiedere accesso, correzione, cancellazione, limitazione, portabilità quando
-          applicabile o opposizione tramite la pagina <a href="/supporto">Supporto</a>. Puoi anche
-          presentare reclamo al Garante per la protezione dei dati personali.
+          Un canale privato per accesso, correzione, cancellazione, limitazione, portabilità quando
+          applicabile o opposizione non è ancora indicato sul sito. Le issue GitHub sono pubbliche:
+          non inviare dati personali. Puoi presentare reclamo al Garante per la protezione dei dati
+          personali. La pagina <a href="/supporto">Supporto</a> resta per problemi tecnici del sito.
         </p>
       </section>
     </main>

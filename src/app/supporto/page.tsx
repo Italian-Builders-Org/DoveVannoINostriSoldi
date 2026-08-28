@@ -20,17 +20,21 @@ export default function SupportPage() {
         <p>
           Apri una <a href={`${REPO_URL}/issues`}>issue pubblica su GitHub</a> indicando pagina o
           endpoint, risultato atteso, risultato osservato, data e passaggi per riprodurlo. Non
-          inserire dati personali, credenziali o informazioni riservate.
+          inserire dati personali, credenziali o informazioni riservate. Per una vulnerabilità non
+          ancora corretta non aprire una issue: usa il{" "}
+          <a href={`${REPO_URL}/security/advisories/new`}>report privato GitHub</a>.
         </p>
       </section>
 
       <section className="panel">
-        <h2 className="panel-title">Privacy e segnalazioni riservate</h2>
+        <h2 className="panel-title">Privacy</h2>
         <p>
-          Per esercitare i diritti privacy o segnalare un problema che non deve essere pubblico,
-          apri una <a href={`${REPO_URL}/issues`}>issue su GitHub</a> indicando l&apos;oggetto
-          «diritti privacy». Non inviare segreti o dataset personali non richiesti; descrivi prima il
-          problema e attendi una risposta prima di allegare materiali sensibili.
+          Le issue GitHub sono pubbliche. Non usarle per diritti privacy, dati personali o
+          segnalazioni riservate. Un canale privato per queste richieste non è ancora indicato su
+          questa pagina. Puoi presentare reclamo al{" "}
+          <a href="https://www.garanteprivacy.it/" target="_blank" rel="noreferrer">
+            Garante per la protezione dei dati personali
+          </a>.
         </p>
       </section>
 

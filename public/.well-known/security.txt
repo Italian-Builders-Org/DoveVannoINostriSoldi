@@ -1,5 +1,5 @@
-Contact: https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues
+Contact: https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/security/advisories/new
 Preferred-Languages: it, en
 Canonical: https://www.dovevannoinostrisoldi.com/.well-known/security.txt
-Policy: https://www.dovevannoinostrisoldi.com/privacy
+Policy: https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/security/policy
 Expires: 2027-08-24T00:00:00.000Z

@@ -11,6 +11,9 @@ titolare, URL ufficiale, licenza specifica, formato, geografia, periodo di
 riferimento, data di pubblicazione e frequenza di aggiornamento. Spiega anche che
 cosa il dato non misura.
 
+Non aprire una issue pubblica per una vulnerabilità non ancora corretta. Segui
+[SECURITY.md](SECURITY.md) e usa il report privato.
+
 Non distribuire totali nazionali fra territori senza una geografia pubblicata
 dalla fonte. Non trasformare anomalie, differenze contabili o valori elevati in
 affermazioni su spreco, frode, efficienza, qualità o responsabilità individuale.

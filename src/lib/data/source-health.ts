@@ -25,6 +25,7 @@ import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
+import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
 export type SourceIntegrationState = "active";
 export type SourceReachability = "up" | "down" | "not-probed";
@@ -75,6 +76,51 @@ function text(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const cleaned = value.trim();
   return cleaned || null;
+}
+
+type IstatMunicipalityGeographyMetadata = Readonly<{
+  schemaVersion: 1;
+  datasetId: "istat-municipality-geography";
+  generatedAt: string;
+  availableYears: number[];
+  latest: Readonly<{
+    year: number;
+    sourceTimestamp: string;
+    municipalities: number;
+  }>;
+}>;
+
+export function validateIstatMunicipalityGeographyMetadata(
+  value: unknown,
+): IstatMunicipalityGeographyMetadata {
+  const metadata = value as Partial<IstatMunicipalityGeographyMetadata>;
+  const years = metadata.availableYears;
+  const latest = metadata.latest;
+  const validIsoDate = (date: unknown) =>
+    typeof date === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/u.test(date) &&
+    !Number.isNaN(new Date(`${date}T00:00:00Z`).valueOf());
+
+  if (
+    metadata.schemaVersion !== 1 ||
+    metadata.datasetId !== "istat-municipality-geography" ||
+    typeof metadata.generatedAt !== "string" ||
+    Number.isNaN(new Date(metadata.generatedAt).valueOf()) ||
+    !Array.isArray(years) ||
+    years.length === 0 ||
+    !years.every((year, index) =>
+      Number.isSafeInteger(year) && (index === 0 || year > years[index - 1]!),
+    ) ||
+    !latest ||
+    latest.year !== years.at(-1) ||
+    !validIsoDate(latest.sourceTimestamp) ||
+    !Number.isSafeInteger(latest.municipalities) ||
+    latest.municipalities < 7_800
+  ) {
+    throw new Error("Metadati health ISTAT SITUAS non validi");
+  }
+
+  return metadata as IstatMunicipalityGeographyMetadata;
 }
 
 function freshnessFor(sourceId: SourceId, sourceTimestamp: string | null): Freshness {
@@ -412,6 +458,20 @@ function snapshotManagedMefIrpef(): SourceHealth {
   };
 }
 
+function snapshotManagedIstat(): SourceHealth {
+  const metadata = validateIstatMunicipalityGeographyMetadata(
+    istatMunicipalityGeographyMetadata,
+  );
+  return {
+    ...baseHealth("istat"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat", metadata.latest.sourceTimestamp),
+    latencyMs: null,
+    detail: `Snapshot SITUAS generato il ${metadata.generatedAt.slice(0, 10)} · dati al ${metadata.latest.sourceTimestamp} · geografia comunale ${metadata.latest.year} · ${metadata.latest.municipalities.toLocaleString("it-IT")} comuni · serie ${metadata.availableYears.at(0)}-${metadata.latest.year}`,
+    recordCount: metadata.latest.municipalities,
+  };
+}
+
 function snapshotManagedMefParticipations(): SourceHealth {
   return {
     ...baseHealth("partecipazioni-pubbliche"),
@@ -501,6 +561,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedInps(),
     snapshotManagedCpt(),
     snapshotManagedMefIrpef(),
+    snapshotManagedIstat(),
     snapshotManagedOpenCoesione(),
     snapshotManagedPnrrChildcare(),
     snapshotManagedOpenCivitas(),
@@ -514,6 +575,31 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
   ];
 }
 
+type SourceHealthAdapter = () => SourceHealth | Promise<SourceHealth>;
+
+/** One concrete health adapter for every source policy. */
+export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
+  ipa: probeIpa,
+  "ipa-struttura": probeIpaStructure,
+  openbdap: probeOpenBdap,
+  anac: snapshotManagedAnac,
+  inps: snapshotManagedInps,
+  cpt: snapshotManagedCpt,
+  "mef-irpef": snapshotManagedMefIrpef,
+  siope: probeSiope,
+  istat: snapshotManagedIstat,
+  opencoesione: snapshotManagedOpenCoesione,
+  italiadomani: snapshotManagedPnrrChildcare,
+  opencivitas: snapshotManagedOpenCivitas,
+  consulenti: snapshotManagedConsulenti,
+  camera: snapshotManagedCamera,
+  senato: snapshotManagedSenate,
+  pcm: snapshotManagedPcm,
+  "partecipazioni-pubbliche": snapshotManagedMefParticipations,
+  bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
+  eurostat: () => snapshotManagedPublicDebt("eurostat"),
+} satisfies Record<SourceId, SourceHealthAdapter>);
+
 /** Orders every adapter by the public registry and fails closed on omissions. */
 export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealth[] {
   const bySource = new Map(entries.map((entry) => [entry.sourceId, entry]));
@@ -525,17 +611,10 @@ export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealt
 }
 
 export async function getSourceHealthOverview(): Promise<SourceHealth[]> {
-  const [ipa, ipaStructure, openbdap, siope] = await Promise.all([
-    probeIpa(),
-    probeIpaStructure(),
-    probeOpenBdap(),
-    probeSiope(),
-  ]);
-  return orderSourceHealth([
-    ipa,
-    ipaStructure,
-    openbdap,
-    siope,
-    ...getSnapshotManagedSourceHealth(),
-  ]);
+  const entries = await Promise.all(SOURCE_IDS.map((sourceId) => {
+    const adapter = SOURCE_HEALTH_ADAPTERS[sourceId] as SourceHealthAdapter | undefined;
+    if (!adapter) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
+    return adapter();
+  }));
+  return orderSourceHealth(entries);
 }

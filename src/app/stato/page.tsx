@@ -436,12 +436,12 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
       </div>
 
       <div className="notice">
-        <strong>Simulatore Legge di Bilancio</strong>
+        <strong>E se la Legge di Bilancio la scrivessi tu?</strong>
         <p>
           Variazione anno su anno dello stanziamento pubblicato per missione nelle ultime Leggi
           di Bilancio, con uno scenario ipotetico che puoi costruire tu, sempre distinto dal dato
           reale.{" "}
-          <Link href="/stato/simulatore">Apri il simulatore →</Link>
+          <Link href="/spese/legge-di-bilancio">Scrivi la tua Legge di Bilancio →</Link>
         </p>
       </div>
     </>

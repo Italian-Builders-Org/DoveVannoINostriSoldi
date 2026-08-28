@@ -1,6 +1,6 @@
 # Simulatore Legge di Bilancio
 
-La pagina [/stato/simulatore](/stato/simulatore) mostra la variazione anno su anno dello
+La pagina [/spese/legge-di-bilancio](/spese/legge-di-bilancio) mostra la variazione anno su anno dello
 stanziamento **pubblicato** per missione nelle ultime Leggi di Bilancio confrontabili, e lascia
 all'utente costruire uno scenario ipotetico a partire da quel dato reale. Lo scenario è sempre
 disegnato in modo visivamente distinto dal dato osservato (trama a righe, non colore pieno) e mai
@@ -65,7 +65,27 @@ per evitare di disegnare uno zero falso dove OpenBDAP semplicemente non ha pubbl
 
 - `GET /api/spese/stato/legge-bilancio`, parametro opzionale `anni` (intero, 2-20; default 6).
 - MCP: `query_dataset` con `dataset=openbdap_legge_bilancio_storico`, filtro opzionale `years`.
-- UI: [/stato/simulatore](/stato/simulatore), collegata da [/stato](/stato).
+- UI: [/spese/legge-di-bilancio](/spese/legge-di-bilancio), collegata da [/stato](/stato) e dal menu «Soldi». La missione si
+  sceglie da un treemap (`MissionPicker`) dimensionato sullo stanziamento dell'ultimo anno: le
+  missioni sopra lo 0,7% del totale sono riquadri cliccabili (con nome breve, importo compatto e
+  variazione reale), le più piccole una striscia di chip di pari dimensione sotto il grafico. Ogni
+  riquadro è un `<g role="button">` focalizzabile da tastiera; i chip sono `<button>` nativi.
+- **Piano di riallocazione**: lo slider modifica la voce selezionata, ma la modifica resta in un
+  piano per missione (`scenarioByMission` in `SimulatoreClient`) anche quando cambi missione, così
+  l'utente vede l'intero scenario che ha costruito: un pannello elenca ogni voce toccata (da → a,
+  contributo al totale, rimozione singola) più l'effetto netto sul totale delle 34 missioni.
+- Il pannello chiude con **«Come cambia la Legge di Bilancio»**: aumenti e tagli del piano sommati
+  separatamente (con barre e conteggio voci) e il saldo netto con il verdetto in parole («in più, da
+  trovare come copertura» / «aumenti e tagli quasi si compensano» / «risorse liberate»), poi la riga
+  osservato → scenario. Serve a distinguere una riallocazione a saldo zero da un allargamento della
+  manovra.
+- Con almeno una voce toccata **il treemap si ridisegna sulla ripartizione ipotetica**: ogni
+  riquadro è dimensionato sull'importo assegnato dall'utente, non più sullo stanziamento pubblicato.
+  Per non far mai passare l'ipotesi come dato reale: il contenitore ha bordo tratteggiato e una
+  didascalia esplicita, le voci toccate sono a righe con bordo tratteggiato e barra di confronto
+  «oggi vs ipotesi», e un solo bottone («Torna al dato pubblicato») rimette tutto sul dato RGS. La
+  ripartizione fra treemap ed elenco «missioni minori» resta ancorata al dato osservato, così un
+  riquadro non salta di categoria mentre lo ridimensioni.
 
 ## Riferimenti
 

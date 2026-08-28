@@ -71,6 +71,47 @@ class WorkflowGovernanceTests(unittest.TestCase):
         ):
             self.assertIn(fragment, text)
 
+    def test_runtime_health_is_scheduled_pinned_and_secret_free(self):
+        text = self.read("runtime-health.yml")
+        self.assertRegex(text, r'(?m)^\s*-\s*cron:\s*"7,22,37,52 \* \* \* \*"\s*$')
+        self.assertIn("  workflow_dispatch:", text)
+        self.assertIn("  contents: read", text)
+        self.assertRegex(text, r"(?m)^\s*group:\s*runtime-health\s*$")
+        self.assertRegex(text, r"(?m)^\s*cancel-in-progress:\s*true\s*$")
+        self.assertIn("runs-on: ubuntu-24.04", text)
+        self.assertIn("timeout-minutes: 8", text)
+        self.assertIn("CANONICAL_BASE_URL: https://www.dovevannoinostrisoldi.com", text)
+        self.assertIn(
+            "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6",
+            text,
+        )
+        self.assertIn(
+            "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7",
+            text,
+        )
+        self.assertIn(
+            "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7",
+            text,
+        )
+        self.assertRegex(text, r"node-version:\s*[\"']22(?:\.\d+\.\d+)?[\"']")
+        self.assertIn("persist-credentials: false", text)
+        self.assertIn(
+            'node scripts/runtime-health.mjs --output "$RUNNER_TEMP/runtime-health.json"',
+            text,
+        )
+        self.assertIn("GITHUB_STEP_SUMMARY", text)
+        self.assertNotIn("Object.entries(payload)", text)
+        self.assertIn("| Warnings |", text)
+        self.assertIn("| Revision |", text)
+        self.assertRegex(text, r"(?m)^\s*if:\s*failure\(\)\s*$")
+        self.assertIn("name: runtime-health", text)
+        self.assertIn("path: ${{ runner.temp }}/runtime-health.json", text)
+        self.assertIn("if-no-files-found: ignore", text)
+        self.assertIn("retention-days: 7", text)
+        self.assertNotRegex(text, r"\bnpm\s+(?:install|ci)\b")
+        for forbidden in ("GITHUB_TOKEN", "github.token", "secrets.", "webhook", "Authorization"):
+            self.assertNotIn(forbidden, text)
+
     def test_parliament_temporary_unavailability_is_failure_with_summary(self):
         text = self.read("parliament-sources.yml")
         self.assertIn("Fonte parlamentare temporaneamente non verificabile", text)

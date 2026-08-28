@@ -362,7 +362,14 @@ test("requestWithRetry aborts on timeout and never follows redirects", async () 
   await assert.rejects(
     requestWithRetry("https://example.test/slow", {
       fetchImpl: async (_url, init) => new Promise((_resolve, reject) => {
-        init.signal.addEventListener("abort", () => reject(init.signal.reason), { once: true });
+        // AbortSignal.timeout() does not keep Node's event loop alive. Keep one
+        // bounded timer referenced so this fake transport can observe abort on
+        // the same Node 22 runtime used by GitHub Actions.
+        const guard = setTimeout(() => reject(new Error("timeout signal was not observed")), 100);
+        init.signal.addEventListener("abort", () => {
+          clearTimeout(guard);
+          reject(init.signal.reason);
+        }, { once: true });
       }),
       timeoutMs: 5,
       maxAttempts: 1,

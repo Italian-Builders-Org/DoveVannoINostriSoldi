@@ -163,7 +163,8 @@
       "id": "istat-municipality-geography",
       "owner": "ISTAT SITUAS municipal geography snapshot",
       "files": [
-        "src/data/generated/istat-municipality-geography.json"
+        "src/data/generated/istat-municipality-geography.json",
+        "src/data/generated/istat-municipality-geography.meta.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {

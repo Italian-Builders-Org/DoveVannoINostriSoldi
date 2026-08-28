@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { BUY_ME_A_COFFEE_URL } from "@/lib/site";
-import { INDIVIDUAL_SUPPORTERS, SITE_SUPPORTERS } from "@/lib/supporters";
+import {
+  INDIVIDUAL_SUPPORTERS,
+  INDIVIDUAL_SUPPORTERS_OBSERVED_AT,
+  SITE_SUPPORTERS,
+} from "@/lib/supporters";
 import styles from "../legal-page.module.css";
 
 export const metadata: Metadata = {
@@ -27,9 +31,16 @@ export default function SupportersPage() {
           <a href={BUY_ME_A_COFFEE_URL} target="_blank" rel="noreferrer">
             Buy Me a Coffee
           </a>{" "}
-          aiuta a pagare compute e hosting. Raggruppiamo i contributi quando il nome pubblico
-          coincide; i sostegni anonimi sono aggregati separatamente ({INDIVIDUAL_SUPPORTERS.length} voci).
-          Il contributo resta volontario e non influenza i dati pubblicati.
+          aiuta a pagare compute e hosting. I numeri indicano unità compute acquistate, non importi
+          in euro. Raggruppiamo i contributi quando il nome pubblico visualizzato coincide: non è
+          una verifica dell&apos;identità reale. I sostegni anonimi o non attribuibili sono aggregati
+          separatamente ({INDIVIDUAL_SUPPORTERS.length} voci). Il contributo resta volontario e non
+          influenza i dati pubblicati.
+        </p>
+        <p>
+          Dati pubblici osservati su Buy Me a Coffee il{" "}
+          <time dateTime={INDIVIDUAL_SUPPORTERS_OBSERVED_AT}>29 agosto 2026</time>. Mostriamo solo
+          nomi e messaggi pubblici.
         </p>
         <ul>
           {INDIVIDUAL_SUPPORTERS.map((supporter) => (

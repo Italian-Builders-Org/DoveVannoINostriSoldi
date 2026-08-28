@@ -15,6 +15,19 @@ export type NavSection = Readonly<{
   children?: readonly NavLink[];
 }>;
 
+export type DashboardNavSection = NavSection & Readonly<{
+  icon:
+    | "overview"
+    | "spending"
+    | "institutions"
+    | "business"
+    | "contracts"
+    | "projects"
+    | "controls"
+    | "data"
+    | "assistant";
+}>;
+
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home" },
   {
@@ -113,6 +126,117 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/metodologia", label: "Metodo" },
     ],
   },
+] as const;
+
+/**
+ * Compact dashboard navigation. It reorganises every primary destination into
+ * fewer, task-oriented families without changing or removing any route.
+ * PRIMARY_NAV remains the canonical compatibility map for route matching and
+ * integrations; this collection owns the visible information architecture.
+ */
+export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
+  { href: "/", label: "Panoramica", icon: "overview" },
+  {
+    href: "/spese",
+    label: "Spesa pubblica",
+    icon: "spending",
+    aliases: ["/stato", "/debito", "/territori"],
+    children: [
+      { href: "/spese", label: "Pagamenti comunali" },
+      { href: "/spese/sanita", label: "Sanità" },
+      { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
+      { href: "/spese/invalidita", label: "Invalidità INPS" },
+      { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/spese/territoriale", label: "Spesa statale per territorio" },
+      { href: "/spese/operative", label: "Spese operative" },
+      { href: "/stato", label: "Amministrazioni centrali" },
+      { href: "/stato/legislature", label: "Spesa per legislatura" },
+      { href: "/debito", label: "Debito pubblico" },
+      { href: "/territori", label: "Mappa territoriale" },
+      { href: "/territori/irpef", label: "Redditi IRPEF" },
+      { href: "/territori/fisco", label: "Entrate e spese" },
+      { href: "/territori/confronto", label: "Confronto Comuni" },
+    ],
+  },
+  {
+    href: "/istituzioni",
+    label: "Enti e amministrazioni",
+    icon: "institutions",
+    aliases: ["/enti", "/partecipazioni", "/parlamento", "/palazzo-chigi", "/ministeri", "/regioni"],
+    children: [
+      { href: "/istituzioni", label: "Panoramica istituzioni" },
+      { href: "/enti", label: "Registro enti" },
+      { href: "/partecipazioni", label: "Partecipazioni pubbliche" },
+      { href: "/parlamento", label: "Parlamento" },
+      { href: "/palazzo-chigi", label: "Palazzo Chigi" },
+      { href: "/ministeri", label: "Ministeri" },
+      { href: "/regioni", label: "Regioni" },
+    ],
+  },
+  {
+    href: "/imprese",
+    label: "Imprese e beneficiari",
+    icon: "business",
+    children: [
+      { href: "/imprese", label: "Panoramica imprese" },
+      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
+      { href: "/imprese?metric=employees", label: "Addetti" },
+      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
+      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
+      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+    ],
+  },
+  {
+    href: "/appalti",
+    label: "Contratti e incarichi",
+    icon: "contracts",
+    aliases: ["/incarichi", "/pnrr/incarichi"],
+    children: [
+      { href: "/appalti", label: "Appalti" },
+      { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
+      { href: "/incarichi", label: "Incarichi pubblici" },
+      { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
+      { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
+    ],
+  },
+  {
+    href: "/coesione",
+    label: "Progetti e opere",
+    icon: "projects",
+    aliases: ["/progetti"],
+    children: [
+      { href: "/coesione", label: "Coesione e PNRR" },
+      { href: "/coesione/asili", label: "Asili e prima infanzia" },
+    ],
+  },
+  {
+    href: "/controlli",
+    label: "Controlli e confronti",
+    icon: "controls",
+    aliases: ["/confronti", "/esplora", "/trasparenza"],
+    children: [
+      { href: "/controlli", label: "Segnali da approfondire" },
+      { href: "/confronti", label: "Confronti verificati" },
+      { href: "/esplora", label: "Esplora relazioni" },
+      { href: "/trasparenza", label: "Trasparenza e verifiche" },
+    ],
+  },
+  {
+    href: "/dati",
+    label: "Dati, fonti e metodo",
+    icon: "data",
+    aliases: ["/fonti", "/metodologia", "/mcp"],
+    children: [
+      { href: "/dati", label: "Catalogo dati" },
+      { href: "/fonti", label: "Elenco fonti" },
+      { href: "/fonti/stato", label: "Stato delle fonti" },
+      { href: "/fonti/copertura", label: "Copertura integrata" },
+      { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
+      { href: "/metodologia", label: "Metodologia" },
+      { href: "/mcp", label: "Accesso MCP" },
+    ],
+  },
+  { href: "/assistente", label: "Assistente", icon: "assistant" },
 ] as const;
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [

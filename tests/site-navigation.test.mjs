@@ -11,7 +11,7 @@ const navigationSource = fs.readFileSync(
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, isNavChildActive } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, isNavChildActive, DASHBOARD_NAV, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
@@ -30,7 +30,7 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });
 
-test("primary navigation keeps dropdowns and no section subnav bar", async () => {
+test("dashboard navigation keeps flyout panels and no duplicate subnav bar", async () => {
   const navigationComponent = await readFile(
     new URL("../src/components/navigation.tsx", import.meta.url),
     "utf8",
@@ -67,11 +67,24 @@ test("a submenu can be opened without a pointer that can hover", async () => {
 
   assert.match(globalsCss, /\.nav-item-has-menu\[data-open="true"\] \.nav-submenu/);
   assert.match(globalsCss, /\.nav-item-toggle \{/);
-  assert.match(globalsCss, /@media \(max-width: 1260px\)/);
-  // Below that break the row scrolls, so the panel must be anchored outside it.
-  assert.match(globalsCss, /\.nav-row \{\n\s*position: relative;/);
-  assert.match(navigationComponent, /data-menu-open=\{openHref \? "true" : undefined\}/);
-  assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/);
+  assert.match(globalsCss, /@media \(max-width: 900px\)/);
+  // On narrow screens the same navigation becomes a real off-canvas drawer.
+  assert.match(globalsCss, /\.dashboard-sidebar\[data-mobile-open="true"\] \{ transform: translateX\(0\); \}/);
+  assert.match(navigationComponent, /data-mobile-open=\{mobileOpen \? "true" : undefined\}/);
+  assert.match(navigationComponent, /aria-controls="dashboard-sidebar"/);
+});
+
+test("compact dashboard taxonomy keeps every canonical destination reachable", () => {
+  const hrefs = (sections) => new Set(
+    sections.flatMap((section) => [section.href, ...(section.children ?? []).map((child) => child.href)]),
+  );
+  const canonical = hrefs(PRIMARY_NAV);
+  const dashboard = hrefs(DASHBOARD_NAV);
+
+  assert.equal(DASHBOARD_NAV.length, 9);
+  assert.deepEqual([...canonical].filter((href) => !dashboard.has(href)), []);
+  assert.ok(DASHBOARD_NAV.some((section) => section.label === "Contratti e incarichi"));
+  assert.ok(DASHBOARD_NAV.some((section) => section.label === "Dati, fonti e metodo"));
 });
 
 test("navigation guards related targets before checking containment", async () => {
@@ -89,7 +102,7 @@ test("navigation guards related targets before checking containment", async () =
     )?.length,
     2,
   );
-  assert.match(navigationComponent, /event\.pointerType === "touch"\) return;/);
+  assert.match(navigationComponent, /event\.pointerType === "touch" \|\| mobileOpen\) return;/);
 });
 
 test("navigation related target guard distinguishes nodes from other event targets", () => {

@@ -7,27 +7,27 @@
  */
 
 :root {
-  --color-bg: #f3f2f2;
-  --color-surface: #eae9e9;
+  --color-bg: #f7f8fa;
+  --color-surface: #eef1f5;
   --color-raised: #ffffff;
-  --color-text: #201e1d;
+  --color-text: #161a22;
   --color-on-strong: #ffffff;
   --color-on-strong-muted: #d7d3d3;
   --color-accent: #ec3013;
   --color-accent-2: #e15b47;
-  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  --color-divider: color-mix(in srgb, #161a22 28%, transparent);
 
   /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
      same step of any role matches the others in visual value. */
-  --color-neutral-100: #f8f4f4;
-  --color-neutral-200: #eae7e7;
-  --color-neutral-300: #d7d3d3;
-  --color-neutral-400: #bab6b6;
-  --color-neutral-500: #9b9797;
-  --color-neutral-600: #6a6666;
-  --color-neutral-700: #605d5d;
-  --color-neutral-800: #444141;
-  --color-neutral-900: #2d2b2b;
+  --color-neutral-100: #f4f6f8;
+  --color-neutral-200: #e8ebef;
+  --color-neutral-300: #dce0e6;
+  --color-neutral-400: #c4c9d1;
+  --color-neutral-500: #969da8;
+  --color-neutral-600: #626a75;
+  --color-neutral-700: #59606b;
+  --color-neutral-800: #363c46;
+  --color-neutral-900: #1e242e;
 
   --color-accent-100: #fff2ef;
   --color-accent-200: #ffe0d9;
@@ -75,15 +75,15 @@
   --space-6: 24px;
   --space-8: 32px;
 
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 11px;
 
   /* Elevation — derived from the ground: soft ink-tinted shadows on a
      light theme. */
-  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
-  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
-  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+  --shadow-sm: 0 1px 3px color-mix(in srgb, #26354a 9%, transparent);
+  --shadow-md: 0 8px 24px color-mix(in srgb, #26354a 12%, transparent);
+  --shadow-lg: 0 18px 44px color-mix(in srgb, #26354a 16%, transparent);
 
   /* Layout — the shell is fluid; these only bound it on very wide screens. */
   --max: 1560px;
@@ -200,6 +200,8 @@ textarea.input {
   padding: 18px;
   background: var(--color-raised);
   border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 .panel-accent {
   background: var(--color-neutral-100);

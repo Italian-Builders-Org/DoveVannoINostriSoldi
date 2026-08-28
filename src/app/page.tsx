@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import {
+  Alert02Icon,
+  Analytics01Icon,
+  ArrowRight01Icon,
+  Building03Icon,
+  ChartUpIcon,
+  FilterHorizontalIcon,
+  Location01Icon,
+  Money03Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
@@ -130,7 +139,59 @@ export default async function HomePage({
 
   return (
     <main className={`shell ${styles.dashboard}`}>
-      <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
+      <header className={styles.dashboardHeader}>
+        <div className={styles.dashboardTitle}>
+          <span className={styles.dashboardTitleIcon} aria-hidden="true">
+            <HugeiconsIcon icon={Analytics01Icon} size={24} strokeWidth={1.7} />
+          </span>
+          <div>
+            <h1>Panoramica Italia</h1>
+            <p>Scopri come vengono spesi i soldi pubblici.</p>
+            <small>Dati comunali aggiornati al {longDate(siope.source.siopeMovementsLastModified)}</small>
+          </div>
+        </div>
+        <div className={styles.dashboardFilters}>
+          <PeriodSelector
+            activeYear={year}
+            years={availableSiopeYears}
+            pathname="/"
+            className={styles.periodSelector}
+          />
+          <Link className={styles.advancedFilter} href="/cerca">
+            <HugeiconsIcon icon={FilterHorizontalIcon} size={16} strokeWidth={1.7} aria-hidden="true" />
+            Filtri avanzati
+          </Link>
+        </div>
+      </header>
+
+      <section className={styles.summaryGrid} aria-label="Indicatori principali">
+        <article>
+          <span><HugeiconsIcon icon={Money03Icon} size={16} strokeWidth={1.8} aria-hidden="true" /> Spesa comunale</span>
+          <strong>{compactEuro(siope.totalPaid)}</strong>
+          <small>da gennaio a {monthLabel} {year}</small>
+        </article>
+        <article>
+          <span><HugeiconsIcon icon={Building03Icon} size={16} strokeWidth={1.8} aria-hidden="true" /> Comuni inclusi</span>
+          <strong>{integer(siope.coverage.withMovements)}</strong>
+          <small>su {integer(siope.coverage.activeSiopeMunicipalities)} validi</small>
+        </article>
+        <article>
+          <span><HugeiconsIcon icon={Location01Icon} size={16} strokeWidth={1.8} aria-hidden="true" /> Per abitante</span>
+          <strong>{siope.nationalPerCapita === null ? "n.d." : exactEuro(siope.nationalPerCapita)}</strong>
+          <small>media nazionale coperta</small>
+        </article>
+        <article>
+          <span><HugeiconsIcon icon={ChartUpIcon} size={16} strokeWidth={1.8} aria-hidden="true" /> Fondi pagati</span>
+          <strong>{cohesionForYear ? compactEuro(cohesionPaid) : "n.d."}</strong>
+          <small>OpenCoesione · serie cumulata</small>
+        </article>
+        <article className={styles.warningMetric}>
+          <span><HugeiconsIcon icon={Alert02Icon} size={16} strokeWidth={1.8} aria-hidden="true" /> Segnali verificati</span>
+          <strong>{integer(anomalySignals.length)}</strong>
+          <small>da approfondire, non prove</small>
+        </article>
+      </section>
+
       <div className={styles.column}>
         <section className="panel">
           <div className={styles.panelHead}>
@@ -242,12 +303,7 @@ export default async function HomePage({
         <section className={`panel ${styles.mapPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Dove si spende di più, regione per regione</h2>
-            <PeriodSelector
-              activeYear={year}
-              years={availableSiopeYears}
-              pathname="/"
-              className={styles.periodSelector}
-            />
+            <span className={styles.headNote}>Totale e valore per abitante</span>
           </div>
 
           <div className={styles.mapStage}>

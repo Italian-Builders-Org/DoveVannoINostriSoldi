@@ -27,11 +27,14 @@ export function ItalyRegionsMap({
   regions,
   period,
   aside,
+  compact = false,
 }: {
   regions: SiopeRegionPoint[];
   period: string;
   /** National figures shown beside the map; owned by the page, not the map. */
   aside?: React.ReactNode;
+  /** Dense dashboard treatment; interaction and accessible table remain available. */
+  compact?: boolean;
 }) {
   const [selectedCode, setSelectedCode] = useState("03");
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
@@ -137,7 +140,7 @@ export function ItalyRegionsMap({
   }
 
   return (
-    <div className={styles.layout}>
+    <div className={`${styles.layout} ${compact ? styles.compact : ""}`}>
       <div className={styles.mapColumn}>
         <svg
           className={styles.map}

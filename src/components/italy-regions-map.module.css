@@ -58,6 +58,21 @@
 .level4 { fill: var(--color-accent-800); background: var(--color-accent-800); }
 .noData { fill: var(--color-neutral-200); background: var(--color-neutral-200); }
 
+.compact {
+  grid-template-columns: minmax(0, 1fr) 178px;
+  gap: 12px;
+}
+.compact .map { height: 234px; max-height: 234px; }
+.compact .detail { display: none; }
+.compact .legend { margin-top: 2px; font-size: 9px; }
+.compact .legend i { width: 17px; height: 8px; }
+.compact .level0 { fill: #e8ebff; background: #e8ebff; }
+.compact .level1 { fill: #cbd3ff; background: #cbd3ff; }
+.compact .level2 { fill: #9daeff; background: #9daeff; }
+.compact .level3 { fill: #667fe7; background: #667fe7; }
+.compact .level4 { fill: #344daf; background: #344daf; }
+.compact .region { stroke: #8a96bd; stroke-width: .7; }
+
 .legend {
   display: flex;
   align-items: center;

@@ -74,17 +74,39 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /aria-controls="dashboard-sidebar"/);
 });
 
-test("compact dashboard taxonomy keeps every canonical destination reachable", () => {
+test("reference dashboard taxonomy keeps every canonical destination reachable", () => {
   const hrefs = (sections) => new Set(
     sections.flatMap((section) => [section.href, ...(section.children ?? []).map((child) => child.href)]),
   );
   const canonical = hrefs(PRIMARY_NAV);
   const dashboard = hrefs(DASHBOARD_NAV);
 
-  assert.equal(DASHBOARD_NAV.length, 9);
+  assert.deepEqual(DASHBOARD_NAV.map((section) => section.label), [
+    "Panoramica",
+    "Mappa della spesa",
+    "Enti e Amministrazioni",
+    "Fornitori e Beneficiari",
+    "Contratti e Gare",
+    "Progetti e Opere",
+    "Spesa per Categoria",
+    "Anomalie e Sprechi",
+    "Confronti e Benchmark",
+    "AI Insights",
+    "Segnalazioni dei cittadini",
+    "Open Data",
+    "Documentazione",
+  ]);
   assert.deepEqual([...canonical].filter((href) => !dashboard.has(href)), []);
-  assert.ok(DASHBOARD_NAV.some((section) => section.label === "Contratti e incarichi"));
-  assert.ok(DASHBOARD_NAV.some((section) => section.label === "Dati, fonti e metodo"));
+  for (const href of [
+    "/appalti/fornitori",
+    "/incarichi/personale-organi",
+    "/spese/capitoli-progetti",
+    "/controlli/working-set",
+    "/trasparenza/documenti-mancanti",
+    "/confronti/catalogo",
+  ]) {
+    assert.ok(dashboard.has(href), `${href} deve restare raggiungibile dal menu`);
+  }
 });
 
 test("navigation guards related targets before checking containment", async () => {

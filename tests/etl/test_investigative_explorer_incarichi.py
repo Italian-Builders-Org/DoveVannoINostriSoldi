@@ -1,4 +1,7 @@
 import csv
+import copy
+import gzip
+import hashlib
 import json
 import subprocess
 import sys
@@ -21,7 +24,7 @@ EDGE_FIELDS = [
     "amount",
     "ipa",
     "source_url",
-    "note_source",
+    "references",
 ]
 
 
@@ -71,7 +74,7 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             self.skipTest(f"artifact non generato: {ARTIFACT}")
         data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
         self.assertEqual(data["schemaVersion"], 1)
-        self.assertEqual(data["transformVersion"], 2)
+        self.assertEqual(data["transformVersion"], 3)
         self.assertEqual(data["scope"], "investigative-explorer-incarichi")
         self.assertIsInstance(data["relations"], list)
         self.assertGreater(len(data["relations"]), 0)
@@ -89,6 +92,43 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             key = json.dumps([rel.get(f) for f in EDGE_FIELDS], sort_keys=True)
             self.assertNotIn(key, seen, "arco duplicato (merge non consentito)")
             seen.add(key)
+
+    def test_validator_rejects_unexpected_fields_and_zero_cig(self):
+        data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+        with_extra = copy.deepcopy(data)
+        with_extra["relations"][0]["free_text"] = "campo non previsto"
+        with self.assertRaisesRegex(_etl.ContractError, "campi pubblici non previsti"):
+            _etl.validate_artifact(with_extra)
+
+        with_zero_cig = copy.deepcopy(data)
+        with_zero_cig["relations"][0]["references"]["cig"] = ["0000000000"]
+        with self.assertRaisesRegex(_etl.ContractError, "CIG tutto-zero"):
+            _etl.validate_artifact(with_zero_cig)
+
+    def test_private_numeric_url_spellings_are_rejected(self):
+        for value in (
+            "http://2130706433/path",
+            "http://0x7f000001/path",
+            "http://0177.0.0.1/path",
+            "https://@example.org/path",
+        ):
+            with self.subTest(value=value):
+                self.assertIsNone(_etl._safe_source_url(value))
+
+    def test_privacy_redaction_preserves_legacy_identity(self):
+        data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
+        identity = sorted(
+            (rel["source_record_id"], rel["id"])
+            for rel in data["relations"]
+        )
+        fingerprint = hashlib.sha256(
+            json.dumps(identity, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        self.assertEqual(
+            fingerprint,
+            "e4fae05130a598294499bdb71a961d24c2c33d4b8a7d3707365bd704d6031b9e",
+            "la proiezione privacy non deve cambiare gli id legacy",
+        )
 
     def test_fixture_no_person_merge(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -175,6 +215,8 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             self.assertEqual(rel["source_url"], "https://example.org/a")
             self.assertNotIn("cf_ente", rel)
             self.assertNotIn("cf_piva", rel)
+            self.assertNotIn("note_source", rel)
+            self.assertEqual(rel["references"], {"cig": [], "cup": []})
             checked = run(["--check", "--output", str(out)])
             self.assertEqual(checked.returncode, 0, checked.stderr)
 
@@ -259,10 +301,96 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             m = json.loads(meta.read_text(encoding="utf-8"))
             self.assertEqual(m["relationCount"], data["relationCount"])
             self.assertEqual(m["suspectDuplicates"], data["suspectDuplicates"])
+            self.assertEqual(m["transformVersion"], 3)
+            self.assertEqual(m["artifactBytes"], out.stat().st_size)
+            self.assertEqual(m["artifactSha256"], hashlib.sha256(out.read_bytes()).hexdigest())
+            self.assertEqual(gzip.decompress(gz.read_bytes()), out.read_bytes())
+            self.assertEqual(m["gzipBytes"], gz.stat().st_size)
+            self.assertEqual(m["gzipSha256"], hashlib.sha256(gz.read_bytes()).hexdigest())
             self.assertNotIn("relations", m, "il meta non deve contenere gli archi")
             self.assertIn("topPersons", m)
             self.assertIn("topEntities", m)
             self.assertTrue(gz.stat().st_size < out.stat().st_size, "gz non comprime")
+
+    def test_check_rejects_corrupt_meta_or_gzip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fix.csv"
+            fixture.write_text(
+                "relation_type,subject_type,subject_key,object_type,object_key,source_dataset,"
+                "source_record_id,period,acquisition_date,confidence_note,role,importo_if_present,"
+                "ipa,fonte_url,note_source\n"
+                "person_has_appointment,person,MARIO ROSSI,public_entity,Comune X,"
+                "incarichi-nominativi-shard,aaa,2025-01-01,2026-08-25,nota,dirigente,1000,IPAX,u,u\n",
+                encoding="utf-8",
+            )
+            out = Path(tmp) / "inv.json"
+            built = run(["--input", str(fixture), "--output", str(out)])
+            self.assertEqual(built.returncode, 0, built.stderr)
+            meta_path = out.with_suffix(".meta.json")
+            gzip_path = out.with_suffix(".json.gz")
+            good_meta = meta_path.read_bytes()
+            good_gzip = gzip_path.read_bytes()
+
+            meta = json.loads(good_meta)
+            meta["relationCount"] += 1
+            meta_path.write_text(json.dumps(meta), encoding="utf-8")
+            self.assertNotEqual(run(["--check", "--output", str(out)]).returncode, 0)
+
+            meta_path.write_bytes(good_meta)
+            gzip_path.write_bytes(good_gzip[:-1])
+            self.assertNotEqual(run(["--check", "--output", str(out)]).returncode, 0)
+
+    def test_integrated_directory_is_sorted_and_public_projection_is_safe(self):
+        row = {
+            "cells": {
+                "cig": "0000000000",
+                "data": "2025-01-01",
+                "ente": "Ente X",
+                "fonte_url": "file:///tmp/private",
+                "importo_euro": "10",
+                "ipa": "IPA",
+                "nominativo": "ROSSI MARIO",
+                "note": "CUP J12ABC345678901; CIG A123456789; contatto test@example.org",
+                "oggetto": "servizio",
+                "tipo": "consulente",
+            },
+            "sourceRowSha256": "a" * 64,
+            "sourceUrls": ["file:///tmp/private", "https://example.org/source"],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp) / "rows"
+            directory.mkdir()
+            for ordinal in (1, 0):
+                with gzip.open(
+                    directory / f"incarichi-nominativi-shard.part-{ordinal:05d}.jsonl.gz",
+                    "wt",
+                    encoding="utf-8",
+                ) as handle:
+                    copy = dict(row)
+                    copy["sourceRowSha256"] = str(ordinal) * 64
+                    handle.write(json.dumps(copy) + "\n")
+            rows = _etl.load_dvns_rows(directory, "2026-08-23")
+            self.assertEqual([row["source_record_id"] for row in rows], ["0" * 64, "1" * 64])
+            out = Path(tmp) / "inv.json"
+            built = run([
+                "--input-dir", str(directory), "--acquired", "2026-08-23",
+                "--generated-at", "2026-08-23T00:00:00Z", "--output", str(out),
+            ])
+            self.assertEqual(built.returncode, 0, built.stderr)
+            data = json.loads(out.read_text(encoding="utf-8"))
+            for rel in data["relations"]:
+                self.assertNotIn("note_source", rel)
+                self.assertNotIn("test@example.org", json.dumps(rel))
+                self.assertEqual(rel["source_url"], "https://example.org/source")
+                self.assertEqual(rel["references"], {"cig": ["A123456789"], "cup": ["J12ABC345678901"]})
+
+    def test_integrated_directory_requires_contiguous_parts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp) / "rows"
+            directory.mkdir()
+            (directory / "incarichi-nominativi-shard.part-00001.jsonl.gz").write_bytes(b"")
+            with self.assertRaisesRegex(_etl.ContractError, "non contigui"):
+                _etl.load_dvns_rows(directory, "2026-08-23")
 
     def _write_edges(self, tmp: str, rows: list[str]) -> Path:
         fixture = Path(tmp) / "fix.csv"
@@ -366,10 +494,8 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
             self.skipTest(f"artifact non generato: {ARTIFACT}")
         data = json.loads(ARTIFACT.read_text(encoding="utf-8"))
         inflated = [
-            rel
-            for rel in data["relations"]
-            if rel.get("amount") == 4704000.0
-            and "INPS.6480.20/06/2025.0003791" in (rel.get("note_source") or "")
+            rel for rel in data["relations"]
+            if rel.get("source_record_id") == "88c1bfe6e30300a491d54a39b1eb2c3002e9b71b883c584dbac61e7c7925ebb0"
         ]
         if not inflated:
             self.skipTest("coppia PerlaPA #147 assente dallo snapshot")
@@ -377,8 +503,7 @@ class InvestigativeExplorerIncarichiTestCase(unittest.TestCase):
         kept = [
             rel
             for rel in data["relations"]
-            if rel.get("amount") == 47040.0
-            and "INPS.6480.20/06/2025.0003791" in (rel.get("note_source") or "")
+            if rel.get("source_record_id") == "423942f7693a8dd239fac71e30ee0be567539d474f095bb393bd3f746a9155e6"
             and not rel.get("suspect_duplicate")
         ]
         self.assertGreaterEqual(len(kept), 1)

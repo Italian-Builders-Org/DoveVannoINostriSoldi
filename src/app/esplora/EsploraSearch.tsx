@@ -19,7 +19,7 @@ type Relation = {
   amount?: number | null;
   source_url?: string | null;
   confidence_note: string;
-  note_source?: string | null;
+  references: { cig: string[]; cup: string[] };
 };
 
 const euro = new Intl.NumberFormat("it-IT", {
@@ -92,7 +92,7 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
       <div className={styles.searchHead}>
         <div>
           <h2 id="explorer-search-title" className="panel-title">Cerca nelle relazioni</h2>
-          <p>Inserisci almeno due caratteri: nomi, enti, CIG, CUP o identificativi degli atti.</p>
+          <p>Inserisci almeno due caratteri: nomi, enti o riferimenti CIG/CUP.</p>
         </div>
       </div>
       <input
@@ -100,7 +100,7 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
         value={query}
         onChange={(event) => run(event.target.value)}
         maxLength={EXPLORER_MAX_QUERY_LENGTH}
-        placeholder="Nome, ente, CIG/CUP, ID atto…"
+        placeholder="Nome, ente o CIG/CUP…"
         aria-label="Cerca relazioni"
         className={styles.searchInput}
       />
@@ -130,8 +130,10 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
             {r.amount !== null && r.amount !== undefined ? (
               <span className={styles.relationAmount}>{euro.format(r.amount)}</span>
             ) : null}
-            {r.note_source ? (
-              <span className={styles.relationNote}>{r.note_source}</span>
+            {(r.references.cig.length > 0 || r.references.cup.length > 0) ? (
+              <span className={styles.relationNote}>
+                {[...r.references.cig.map((code) => `CIG ${code}`), ...r.references.cup.map((code) => `CUP ${code}`)].join(" · ")}
+              </span>
             ) : null}
             <small className={styles.confidenceNote}>{r.confidence_note}</small>
             {r.source_url ? (

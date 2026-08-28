@@ -27,18 +27,25 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import parse_qsl, unquote, urlsplit
 
 OUTPUT = Path("src/data/generated/investigative-explorer-incarichi.json")
 DEFAULT_INPUT = Path(
     "data/relations/persona_incarico_ente__incarichi_nominativi_shard.csv"
 )
+DEFAULT_INPUT_DIR = Path("src/data/generated/integrated/rows")
 SOURCE_DATASET = "incarichi-nominativi-shard"
 OWNER = "DoveVannoINostriSoldi · Investigative Explorer (slice incarichi)"
 ROUTE_URL = "https://www.dovevannoinostrisoldi.com/esplora"
-TRANSFORM_VERSION = 2
+TRANSFORM_VERSION = 3
+MAX_ARTIFACT_BYTES = 50 * 1024 * 1024
 
 # PerlaPA act extrema in the note (e.g. INPS.6480.20/06/2025.0003791).
 ACT_EXTREMA_RE = re.compile(r"([A-Z]{2,}[A-Z0-9]*\.\d+\.\d{2}/\d{2}/\d{4}\.\d+)")
+CIG_RE = re.compile(r"\b(?:codice\s+)?cig(?:\s+(?:derivato|smart))?\s*(?:n\.?\s*)?[:#-]?\s*([A-Z0-9]{10})\b", re.IGNORECASE)
+CUP_RE = re.compile(r"\b(?:codice\s+)?cup\s*(?:n\.?\s*)?[:#-]?\s*([A-Z0-9]{15})\b", re.IGNORECASE)
+SAFE_CIG_RE = re.compile(r"^[A-Z0-9]{10}$")
+SAFE_CUP_RE = re.compile(r"^[A-Z0-9]{15}$")
 AMOUNT_SCALE_FACTORS = (100, 1000)
 
 MERGE_POLICY = (
@@ -48,11 +55,11 @@ MERGE_POLICY = (
 CAVEAT = (
     "Un collegamento indica dove approfondire, non un'illegittimita'. "
     "Non sommare importi o perimetri tra dataset diversi. "
-    "I record gemelli stesso-atto con importo in rapporto ×100 o ×1000 sono "
+    "I record gemelli con lo stesso riferimento interno e importo in rapporto ×100 o ×1000 sono "
     "marcati suspect_duplicate ed esclusi da aggregati e ricerca; la riga resta nell'artifact."
 )
 AMOUNT_SCALE_TWINS = (
-    "Stesso soggetto, stesso ente, stessi estremi di atto in nota e stesso periodo, "
+    "Stesso soggetto, stesso ente, stesso riferimento interno di origine e stesso periodo, "
     "importi in rapporto esatto ×100 o ×1000: si tiene l'importo coincidente con la moda "
     "dei pari (stesso ente, periodo e ruolo), altrimenti il minore; gli altri archi "
     "restano con suspect_duplicate. Nessuna riga è cancellata."
@@ -132,6 +139,115 @@ def load_rows(path: Path) -> list[dict]:
         return list(reader)
 
 
+def _safe_source_url(value: object) -> str | None:
+    """Keep only public HTTP(S) URLs suitable for a committed artifact."""
+    if not isinstance(value, str):
+        return None
+    candidate = value.strip()
+    decoded = unquote(candidate)
+    if not candidate or any(ord(char) < 0x20 or ord(char) == 0x7F or char.isspace() for char in decoded):
+        return None
+    try:
+        parsed = urlsplit(candidate)
+        hostname = parsed.hostname
+        port = parsed.port
+    except ValueError:
+        return None
+    if (
+        parsed.scheme.lower() not in {"http", "https"}
+        or not hostname
+        or "@" in parsed.netloc
+        or parsed.username
+        or parsed.password
+    ):
+        return None
+    sensitive_query = {"auth", "authorization", "apikey", "credential", "password", "secret", "session", "signature", "token"}
+    if any(
+        key.lower().replace("-", "_") in sensitive_query
+        or key.lower().endswith(("_token", "_secret", "_password", "_signature"))
+        for key, _ in parse_qsl(parsed.query, keep_blank_values=True)
+    ):
+        return None
+    lowered = hostname.rstrip(".").lower()
+    if lowered in {"localhost", "localhost.localdomain"} or lowered.endswith((".localhost", ".local", ".internal", ".test")):
+        return None
+    # Reject resolver-specific numeric host spellings instead of risking a
+    # decimal, hexadecimal or dotted-octal alias for a private address.
+    if re.fullmatch(r"(?:0x[0-9a-f]+|\d+)", lowered) or (
+        re.fullmatch(r"[0-9.]+", lowered)
+        and any(part.startswith("0") and len(part) > 1 for part in lowered.split("."))
+    ):
+        return None
+    try:
+        import ipaddress
+
+        address = ipaddress.ip_address(lowered)
+    except ValueError:
+        address = None
+    if address is not None and (
+        address.is_private
+        or address.is_loopback
+        or address.is_link_local
+        or address.is_reserved
+        or address.is_multicast
+        or address.is_unspecified
+    ):
+        return None
+    if port is not None and not 1 <= port <= 65535:
+        return None
+    return candidate
+
+
+def _source_url(values: object) -> str | None:
+    candidates = values if isinstance(values, list) else [values]
+    for value in candidates:
+        if not isinstance(value, str):
+            continue
+        for candidate in re.split(r",\s*(?=https?://)", value, flags=re.IGNORECASE):
+            safe = _safe_source_url(candidate)
+            if safe:
+                return safe
+    return None
+
+
+def _reference_codes(cig: object, text: object) -> dict[str, list[str]]:
+    """Extract identifiers only; never copy the source prose into the artifact."""
+    values = {"cig": set(), "cup": set()}
+    direct_cig = str(cig or "").strip().upper()
+    if (
+        SAFE_CIG_RE.fullmatch(direct_cig)
+        and direct_cig != "0000000000"
+        and any(char.isdigit() for char in direct_cig)
+    ):
+        values["cig"].add(direct_cig)
+    source_text = text if isinstance(text, str) else ""
+    for match in CIG_RE.finditer(source_text):
+        code = match.group(1).upper()
+        if code != "0000000000" and any(char.isdigit() for char in code):
+            values["cig"].add(code)
+    for match in CUP_RE.finditer(source_text):
+        values["cup"].add(match.group(1).upper())
+    return {key: sorted(codes) for key, codes in values.items()}
+
+
+def _part_files(path: Path) -> list[Path]:
+    if not path.is_dir():
+        raise ContractError(f"directory input non trovato: {path}")
+    pattern = re.compile(rf"^{re.escape(SOURCE_DATASET)}\.part-(\d{{5}})\.jsonl\.gz$")
+    found: list[tuple[int, Path]] = []
+    for candidate in path.iterdir():
+        match = pattern.fullmatch(candidate.name)
+        if match and candidate.is_file():
+            found.append((int(match.group(1)), candidate))
+    found.sort(key=lambda item: item[0])
+    if not found:
+        raise ContractError(f"nessun part-file {SOURCE_DATASET} trovato in {path}")
+    ordinals = [ordinal for ordinal, _ in found]
+    if ordinals != list(range(len(ordinals))):
+        raise ContractError("part-file non contigui: input non riproducibile")
+    return [candidate for _, candidate in found]
+
+
 # Public projection of incarichi-nominativi-shard in the DVNS portale.
 # cf_ente / cf_piva are privateFields and are excluded by their pipeline.
 DVNS_PUBLIC_FIELDS = (
@@ -162,52 +278,61 @@ def load_dvns_rows(path: Path, acquired: str | None = None) -> list[dict]:
     are not part of our relation; we only read the public cells. Two distinct
     acts never collapse because source_record_id is the DVNS source-row hash.
     """
-    if str(path).endswith(".gz"):
-        handle = gzip.open(path, "rt", encoding="utf-8")
-    else:
-        handle = path.open(encoding="utf-8")
     rows: list[dict] = []
-    with handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            r = json.loads(line)
-            cells = r.get("cells") or {}
-            public = {field: (cells.get(field) or "") for field in DVNS_PUBLIC_FIELDS}
-            nominativo = (public.get("nominativo") or "").strip()
-            ente = (public.get("ente") or "").strip()
-            if not nominativo or not ente:
-                # Riga senza persona o senza ente: non forma un arco relazionale.
-                continue
-            oggetto = (public.get("oggetto") or "").strip()
-            cig = (public.get("cig") or "").strip()
-            note_parts = [part for part in (f"CIG {cig}" if cig else "", oggetto, (public.get("note") or "").strip()) if part]
-            source_urls = r.get("sourceUrls") or []
-            source_url = (source_urls[0] if source_urls else public.get("fonte_url") or "") or None
-            source_record_id = (r.get("sourceRowSha256") or "").strip() or _row_sha256(public)
-            rows.append(
-                {
-                    "relation_type": "person_has_appointment",
-                    "subject_type": "person",
-                    "subject_key": nominativo,
-                    "object_type": "public_entity",
-                    "object_key": ente,
-                    "source_dataset": SOURCE_DATASET,
-                    "source_record_id": source_record_id,
-                    "period": (public.get("data") or "").strip(),
-                    "acquisition_date": acquired or "",
-                    "confidence_note": (
-                        "Incarico da fonte estesa (AT/enti). Non sommare righe o importi "
-                        "con altri dataset di incarichi senza riconciliazione."
-                    ),
-                    "role": (public.get("tipo") or "").strip() or None,
-                    "importo_if_present": (public.get("importo_euro") or "").strip(),
-                    "ipa": (public.get("ipa") or "").strip() or None,
-                    "fonte_url": (source_url.strip() if isinstance(source_url, str) else None),
-                    "note_source": "; ".join(note_parts) or None,
-                }
-            )
+    paths = _part_files(path) if path.is_dir() else [path]
+    for input_path in paths:
+        handle = gzip.open(input_path, "rt", encoding="utf-8") if str(input_path).endswith(".gz") else input_path.open(encoding="utf-8")
+        with handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                cells = r.get("cells") or {}
+                public = {field: (cells.get(field) or "") for field in DVNS_PUBLIC_FIELDS}
+                nominativo = (public.get("nominativo") or "").strip()
+                ente = (public.get("ente") or "").strip()
+                if not nominativo or not ente:
+                    continue
+                oggetto = (public.get("oggetto") or "").strip()
+                note = (public.get("note") or "").strip()
+                cig = (public.get("cig") or "").strip()
+                source_urls = r.get("sourceUrls") or []
+                source_url = _source_url(source_urls) or _source_url(public.get("fonte_url"))
+                source_record_id = (r.get("sourceRowSha256") or "").strip() or _row_sha256(public)
+                rows.append(
+                    {
+                        "relation_type": "person_has_appointment",
+                        "subject_type": "person",
+                        "subject_key": nominativo,
+                        "object_type": "public_entity",
+                        "object_key": ente,
+                        "source_dataset": SOURCE_DATASET,
+                        "source_record_id": source_record_id,
+                        "period": (public.get("data") or "").strip(),
+                        "acquisition_date": acquired or "",
+                        "confidence_note": (
+                            "Incarico da fonte estesa (AT/enti). Non sommare righe o importi "
+                            "con altri dataset di incarichi senza riconciliazione."
+                        ),
+                        "role": (public.get("tipo") or "").strip() or None,
+                        "importo_if_present": (public.get("importo_euro") or "").strip(),
+                        "ipa": (public.get("ipa") or "").strip() or None,
+                        "fonte_url": source_url,
+                        "_legacy_source_url": (
+                            (source_urls[0] if source_urls else public.get("fonte_url") or "")
+                            if isinstance(source_urls, list)
+                            else public.get("fonte_url") or ""
+                        ).strip() or None,
+                        "references": _reference_codes(cig, f"{cig} {oggetto} {note}"),
+                        "_legacy_note_source": "; ".join(
+                            part for part in (f"CIG {cig}" if cig else "", oggetto, note) if part
+                        ) or None,
+                        "_act_extrema": _act_extrema(
+                            "; ".join(part for part in (f"CIG {cig}" if cig else "", oggetto, note) if part)
+                        ),
+                    }
+                )
     if not rows:
         raise ContractError("nessun arco estraibile dalle righe integrate DVNS")
     return rows
@@ -228,12 +353,29 @@ EDGE_FIELDS = (
     "amount",
     "ipa",
     "source_url",
-    "note_source",
+    "references",
 )
 
 
-def _edge_key(rel: dict) -> tuple:
-    return tuple(rel[field] for field in EDGE_FIELDS)
+def _edge_key(rel: dict) -> str:
+    return json.dumps([rel[field] for field in EDGE_FIELDS], ensure_ascii=False, sort_keys=True)
+
+
+LEGACY_EDGE_FIELDS = (
+    "relation_type", "subject_type", "subject_key", "object_type", "object_key",
+    "source_dataset", "source_record_id", "period", "acquisition_date",
+    "confidence_note", "role", "amount", "ipa", "_legacy_source_url",
+    "_legacy_note_source",
+)
+
+
+def _legacy_edge_key(rel: dict) -> str:
+    return json.dumps(
+        [rel[field] for field in LEGACY_EDGE_FIELDS],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
 
 
 def _edge_id(rel: dict) -> str:
@@ -244,7 +386,7 @@ def _edge_id(rel: dict) -> str:
     a React key / de-duplication token.
     """
     canonical = json.dumps(
-        [rel[field] for field in EDGE_FIELDS],
+        [rel[field] for field in LEGACY_EDGE_FIELDS],
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
@@ -299,7 +441,7 @@ def mark_scale_twins(relations: list[dict]) -> int:
     """
     groups: dict[tuple, list[dict]] = defaultdict(list)
     for rel in relations:
-        act_id = _act_extrema(rel.get("note_source"))
+        act_id = rel.get("_act_extrema")
         if not act_id:
             continue
         amount = rel.get("amount")
@@ -364,10 +506,15 @@ def build_relations(rows: list[dict]) -> tuple[list[dict], int]:
             "role": (row.get("role") or "").strip() or None,
             "amount": _amount(row.get("importo_if_present"), f"riga {index}.importo_if_present"),
             "ipa": (row.get("ipa") or "").strip() or None,
-            "source_url": (row.get("fonte_url") or "").strip() or None,
-            "note_source": (row.get("note_source") or "").strip() or None,
+            "source_url": _source_url(row.get("fonte_url")),
+            "_legacy_source_url": row.get("_legacy_source_url") or (row.get("fonte_url") or "").strip() or None,
+            "references": row.get("references") or _reference_codes(
+                row.get("cig"), row.get("note_source")
+            ),
+            "_legacy_note_source": row.get("_legacy_note_source") or row.get("note_source"),
+            "_act_extrema": row.get("_act_extrema") or _act_extrema(row.get("note_source")),
         }
-        key = _edge_key(rel)
+        key = _legacy_edge_key(rel)
         if key in seen:
             duplicates += 1
             continue
@@ -382,6 +529,13 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
     if not relations:
         raise ContractError("nessun arco da emettere: il dataset di origine e' vuoto")
     suspects = mark_scale_twins(relations)
+    public_relations = []
+    for relation in relations:
+        public = {field: relation[field] for field in EDGE_FIELDS}
+        public["id"] = relation["id"]
+        if relation.get("suspect_duplicate"):
+            public["suspect_duplicate"] = True
+        public_relations.append(public)
     return {
         "schemaVersion": 1,
         "transformVersion": TRANSFORM_VERSION,
@@ -398,7 +552,7 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
             "license": "AGPL-3.0-or-later",
             "reuseTerms": "Riuso con attribuzione e licenza identica",
             "observedAt": generated_at,
-            "provenance": "Ogni arco riporta source_dataset, source_record_id, period, acquisition_date, hash/URL atto e caveat.",
+            "provenance": "Ogni arco riporta source_dataset, source_record_id, period, acquisition_date, riferimenti CIG/CUP strutturati, URL validato e caveat.",
         },
         "methodology": {
             "mergePolicy": MERGE_POLICY,
@@ -406,7 +560,7 @@ def normalize(rows: list[dict], generated_at: str) -> dict:
             "amountScaleTwins": AMOUNT_SCALE_TWINS,
             "redactions": "Usate solo le righe pubbliche; i campi oscurati non sono inclusi.",
         },
-        "relations": relations,
+        "relations": public_relations,
     }
 
 
@@ -426,9 +580,15 @@ def validate_artifact(snapshot: object) -> dict:
         raise ContractError("artifact.relations: lista non vuota attesa")
     seen_ids: set[str] = set()
     seen_edge_ids: set[str] = set()
-    seen_edges: set[tuple] = set()
+    seen_edges: set[str] = set()
     flagged = 0
     for index, rel in enumerate(relations, start=1):
+        if not isinstance(rel, dict):
+            raise ContractError(f"relazione {index}: oggetto atteso")
+        allowed_fields = set(EDGE_FIELDS) | {"id", "suspect_duplicate"}
+        unexpected_fields = sorted(set(rel) - allowed_fields)
+        if unexpected_fields:
+            raise ContractError(f"relazione {index}: campi pubblici non previsti {unexpected_fields}")
         for field in REQUIRED:
             if not (isinstance(rel.get(field), str) and rel[field].strip()):
                 raise ContractError(f"relazione {index}: {field} mancante")
@@ -444,17 +604,36 @@ def validate_artifact(snapshot: object) -> dict:
         seen_edge_ids.add(eid)
         if rel.get("amount") is not None and not isinstance(rel["amount"], (int, float)):
             raise ContractError(f"relazione {index}: amount non numerico")
+        if "note_source" in rel or "_act_extrema" in rel:
+            raise ContractError(f"relazione {index}: testo sorgente interno non pubblicabile")
+        references = rel.get("references")
+        if not isinstance(references, dict) or set(references) != {"cig", "cup"}:
+            raise ContractError(f"relazione {index}: references non valido")
+        for kind, pattern in (("cig", SAFE_CIG_RE), ("cup", SAFE_CUP_RE)):
+            codes = references[kind]
+            if not isinstance(codes, list) or codes != sorted(set(codes)):
+                raise ContractError(f"relazione {index}: riferimenti {kind} non validi")
+            if not all(isinstance(code, str) and pattern.fullmatch(code) for code in codes):
+                raise ContractError(f"relazione {index}: riferimenti {kind} non validi")
+            if kind == "cig" and "0000000000" in codes:
+                raise ContractError(f"relazione {index}: CIG tutto-zero non pubblicabile")
+        source_url = rel.get("source_url")
+        if source_url is not None and _safe_source_url(source_url) != source_url:
+            raise ContractError(f"relazione {index}: source_url non sicuro")
         flag = rel.get("suspect_duplicate")
         if flag is True:
             flagged += 1
         elif flag not in (None, False):
             raise ContractError(f"relazione {index}: suspect_duplicate non booleano")
-        edge_key = tuple(rel.get(field) for field in EDGE_FIELDS)
+        edge_key = _edge_key(rel)
         if edge_key in seen_edges:
             raise ContractError(f"relazione {index}: arco duplicato (merge non consentito)")
         seen_edges.add(edge_key)
     if flagged != suspects:
         raise ContractError("artifact.suspectDuplicates non riconciliato con gli archi")
+    encoded = json.dumps(root, ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    if len(encoded) > MAX_ARTIFACT_BYTES:
+        raise ContractError(f"artifact oltre il limite di {MAX_ARTIFACT_BYTES} byte")
     return root
 
 
@@ -462,14 +641,14 @@ def write_if_changed(snapshot: dict, output: Path) -> bool:
     output.parent.mkdir(parents=True, exist_ok=True)
     # Canonical JSON (compact, LF, trailing newline) to match DVNS conventions
     # and keep the committed artifact byte-stable and hashable.
-    output.write_text(
-        json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
+    payload = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n"
+    if len(payload.encode("utf-8")) > MAX_ARTIFACT_BYTES:
+        raise ContractError(f"artifact oltre il limite di {MAX_ARTIFACT_BYTES} byte")
+    output.write_text(payload, encoding="utf-8")
     return True
 
 
-def build_meta(snapshot: dict, rows: list[dict]) -> dict:
+def build_meta(snapshot: dict, rows: list[dict], artifact: bytes, compressed: bytes) -> dict:
     """Lightweight, relation-free projection for SSR/metadata (no full parse).
 
     The server reads ONLY this file to render the count + caveat, so /esplora
@@ -489,6 +668,7 @@ def build_meta(snapshot: dict, rows: list[dict]) -> dict:
     acquisition = rows[0]["acquisition_date"] if rows else ""
     return {
         "schemaVersion": snapshot["schemaVersion"],
+        "transformVersion": snapshot["transformVersion"],
         "scope": snapshot["scope"],
         "generatedAt": snapshot["generatedAt"],
         "relationCount": snapshot["relationCount"],
@@ -508,6 +688,10 @@ def build_meta(snapshot: dict, rows: list[dict]) -> dict:
             for k, c in sorted(entity_counter.items(), key=lambda kv: kv[1], reverse=True)[:50]
         ],
         "edgesByRole": role_counter,
+        "artifactBytes": len(artifact),
+        "artifactSha256": hashlib.sha256(artifact).hexdigest(),
+        "gzipBytes": len(compressed),
+        "gzipSha256": hashlib.sha256(compressed).hexdigest(),
     }
 
 
@@ -522,14 +706,62 @@ def write_meta(meta: dict, output: Path) -> None:
 def write_gzip(snapshot: dict, output: Path) -> None:
     """Compressed full artifact for bandwidth/cold-start (served with Content-Encoding)."""
     output.parent.mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n"
-    output.write_bytes(gzip.compress(payload.encode("utf-8"), mtime=0))
+    payload = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n"
+    import io
+
+    buffer = io.BytesIO()
+    with gzip.GzipFile(filename="", mode="wb", fileobj=buffer, compresslevel=9, mtime=0) as handle:
+        handle.write(payload.encode("utf-8"))
+    compressed = bytearray(buffer.getvalue())
+    if len(compressed) < 10:
+        raise ContractError("gzip canonico incompleto")
+    compressed[9] = 255
+    if len(compressed) > MAX_ARTIFACT_BYTES:
+        raise ContractError(f"gzip oltre il limite di {MAX_ARTIFACT_BYTES} byte")
+    output.write_bytes(bytes(compressed))
+
+
+def validate_companion_files(snapshot: dict, output: Path) -> None:
+    """Validate JSON, metadata and canonical gzip as one committed unit."""
+    meta_path = output.with_suffix(".meta.json")
+    gzip_path = output.with_suffix(".json.gz")
+    if not meta_path.is_file() or not gzip_path.is_file():
+        raise ContractError("file companion meta/gzip mancanti")
+    artifact = output.read_bytes()
+    compressed = gzip_path.read_bytes()
+    try:
+        inflated = gzip.decompress(compressed)
+    except (OSError, EOFError) as exc:
+        raise ContractError("gzip companion non valido") from exc
+    if inflated != artifact:
+        raise ContractError("gzip non coerente con l'artifact JSON")
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError("meta companion non valido") from exc
+    expected = {
+        "schemaVersion": snapshot["schemaVersion"],
+        "transformVersion": snapshot["transformVersion"],
+        "relationCount": snapshot["relationCount"],
+        "suspectDuplicates": snapshot["suspectDuplicates"],
+        "artifactBytes": len(artifact),
+        "artifactSha256": hashlib.sha256(artifact).hexdigest(),
+        "gzipBytes": len(compressed),
+        "gzipSha256": hashlib.sha256(compressed).hexdigest(),
+    }
+    for field, value in expected.items():
+        if meta.get(field) != value:
+            raise ContractError(f"meta companion non riconciliato: {field}")
+    if "relations" in meta:
+        raise ContractError("meta companion non deve contenere relazioni")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true", help="Valida l'artifact senza rigenerare")
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
+    input_group = parser.add_mutually_exclusive_group()
+    input_group.add_argument("--input", type=Path)
+    input_group.add_argument("--input-dir", type=Path, default=None)
     parser.add_argument("--output", type=Path, default=OUTPUT)
     parser.add_argument(
         "--acquired",
@@ -537,27 +769,36 @@ def main() -> int:
         default=None,
         help="Data di acquisizione (YYYY-MM-DD) per righe integrate DVNS",
     )
+    parser.add_argument("--generated-at", type=str, default=None)
     args = parser.parse_args()
 
     if args.check:
-        data = json.loads(args.output.read_text(encoding="utf-8"))
-        validate_artifact(data)
+        if not args.output.is_file():
+            raise ContractError(f"artifact non trovato: {args.output}")
+        data = validate_artifact(json.loads(args.output.read_text(encoding="utf-8")))
+        validate_companion_files(data, args.output)
         print(f"Investigative Explorer artifact valido: {args.output} ({data['relationCount']} archi)")
         return 0
 
-    suffix = str(args.input).lower()
-    if suffix.endswith((".jsonl", ".jsonl.gz", ".json")):
-        rows = load_dvns_rows(args.input, args.acquired)
+    input_path = args.input_dir or args.input or (DEFAULT_INPUT_DIR if DEFAULT_INPUT_DIR.exists() else DEFAULT_INPUT)
+    suffix = str(input_path).lower()
+    if args.input_dir or suffix.endswith((".jsonl", ".jsonl.gz", ".json")) or input_path.is_dir():
+        rows = load_dvns_rows(input_path, args.acquired)
     else:
-        rows = load_rows(args.input)
-    snapshot = normalize(rows, utc_now())
+        rows = load_rows(input_path)
+    generated_at = args.generated_at or (f"{args.acquired}T00:00:00Z" if args.acquired else utc_now())
+    snapshot = normalize(rows, generated_at)
     validate_artifact(snapshot)
     write_if_changed(snapshot, args.output)
-    meta = build_meta(snapshot, rows)
+    artifact_bytes = args.output.read_bytes()
     meta_path = args.output.with_suffix(".meta.json")
-    write_meta(meta, meta_path)
     gz_path = args.output.with_suffix(".json.gz")
     write_gzip(snapshot, gz_path)
+    compressed_bytes = gz_path.read_bytes()
+    if gzip.decompress(compressed_bytes) != artifact_bytes:
+        raise ContractError("gzip non coerente con l'artifact JSON")
+    meta = build_meta(snapshot, rows, artifact_bytes, compressed_bytes)
+    write_meta(meta, meta_path)
     print(
         json.dumps(
             {

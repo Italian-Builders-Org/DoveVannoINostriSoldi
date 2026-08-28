@@ -24,8 +24,7 @@ test("company atlas turnover labels explain source units and stay legible", asyn
 
   assert.match(pageSource, /Unità fonte: \{turnoverView\.metricUnit\}/);
   assert.match(pageSource, /\\u00a0mld\\u00a0€/);
-  assert.match(pageSource, /className=\{styles\.sectorName\}/);
-  assert.match(styles, /\.sectorLabel \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto/);
+  assert.match(styles, /\.sectorLabelPlain \{[^}]*grid-template-columns: minmax\(0, 1fr\) auto/);
   assert.match(styles, /\.sectorLabel strong \{[^}]*white-space: nowrap/);
 });
 

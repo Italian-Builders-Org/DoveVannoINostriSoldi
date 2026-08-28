@@ -303,6 +303,77 @@ async function assertInfoTooltips(page, label) {
   }
 }
 
+async function assertThemeBehavior(page, label) {
+  const toggleSelector = "button.theme-toggle";
+  const toggle = await page.$(toggleSelector);
+  assert.ok(toggle, `${label}: pulsante cambio tema non trovato`);
+
+  // 1. Preferenza di sistema scura
+  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "dark" }]);
+  await page.evaluate(() => localStorage.removeItem("dvns-theme"));
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForSelector("main", { visible: true });
+
+  let state = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute("data-theme"),
+    storedTheme: localStorage.getItem("dvns-theme"),
+    ariaPressed: document.querySelector("button.theme-toggle")?.getAttribute("aria-pressed"),
+  }));
+  assert.equal(state.dataTheme, "dark", `${label}: preferenza di sistema scura non applicata a data-theme`);
+  assert.equal(state.storedTheme, null, `${label}: localStorage non deve essere impostato da sola preferenza sistema`);
+
+  // 2. Cambio manuale verso chiaro
+  await page.click(toggleSelector);
+  await page.waitForFunction(() => document.documentElement.getAttribute("data-theme") === "light");
+  state = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute("data-theme"),
+    storedTheme: localStorage.getItem("dvns-theme"),
+    ariaPressed: document.querySelector("button.theme-toggle")?.getAttribute("aria-pressed"),
+  }));
+  assert.equal(state.dataTheme, "light", `${label}: cambio manuale verso chiaro fallito`);
+  assert.equal(state.storedTheme, "light", `${label}: localStorage non aggiornato dopo toggle chiaro`);
+  assert.equal(state.ariaPressed, "false", `${label}: aria-pressed deve essere false per tema chiaro`);
+
+  // 3. Persistenza tema chiaro dopo reload con media query dark
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForSelector("main", { visible: true });
+  state = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute("data-theme"),
+    storedTheme: localStorage.getItem("dvns-theme"),
+    ariaPressed: document.querySelector("button.theme-toggle")?.getAttribute("aria-pressed"),
+  }));
+  assert.equal(state.dataTheme, "light", `${label}: preferenza manuale chiara non persistita dopo reload`);
+  assert.equal(state.storedTheme, "light", `${label}: localStorage perso dopo reload`);
+
+  // 4. Cambio manuale verso scuro
+  await page.click(toggleSelector);
+  await page.waitForFunction(() => document.documentElement.getAttribute("data-theme") === "dark");
+  state = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute("data-theme"),
+    storedTheme: localStorage.getItem("dvns-theme"),
+    ariaPressed: document.querySelector("button.theme-toggle")?.getAttribute("aria-pressed"),
+  }));
+  assert.equal(state.dataTheme, "dark", `${label}: cambio manuale verso scuro fallito`);
+  assert.equal(state.storedTheme, "dark", `${label}: localStorage non aggiornato dopo toggle scuro`);
+  assert.equal(state.ariaPressed, "true", `${label}: aria-pressed deve essere true per tema scuro`);
+
+  // 5. Persistenza tema scuro dopo reload con media query light
+  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "light" }]);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForSelector("main", { visible: true });
+  state = await page.evaluate(() => ({
+    dataTheme: document.documentElement.getAttribute("data-theme"),
+    storedTheme: localStorage.getItem("dvns-theme"),
+    ariaPressed: document.querySelector("button.theme-toggle")?.getAttribute("aria-pressed"),
+  }));
+  assert.equal(state.dataTheme, "dark", `${label}: preferenza manuale scura non persistita dopo reload`);
+  assert.equal(state.storedTheme, "dark", `${label}: localStorage perso dopo reload`);
+
+  // Teardown
+  await page.evaluate(() => localStorage.removeItem("dvns-theme"));
+  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "light" }]);
+}
+
 async function assertRegionalMapSelection(page, label) {
   const mapSelector = '[data-region-map="true"]';
   const detailSelector = '[data-region-detail="true"] b';
@@ -1656,6 +1727,19 @@ try {
           "false",
           `${label}: stato busy non concluso`,
         );
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Tema e contrasto ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/",
+      width,
+      validate: async (page) => {
+        await assertThemeBehavior(page, label);
       },
     });
     completed.push(label);

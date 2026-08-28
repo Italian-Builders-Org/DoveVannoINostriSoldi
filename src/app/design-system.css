@@ -181,7 +181,7 @@
     --chart-negative: var(--color-accent-600);
     --chart-family-services: #625194;
     --chart-family-investment: #8c4554;
-    --chart-family-pass-through: #876d29;
+    --chart-family-pass-through: #755d20;
     --chart-family-financing: #8a5a24;
     --chart-family-other: #3c6275;
 
@@ -263,7 +263,7 @@
   --chart-negative: var(--color-accent-600);
   --chart-family-services: #625194;
   --chart-family-investment: #8c4554;
-  --chart-family-pass-through: #876d29;
+  --chart-family-pass-through: #755d20;
   --chart-family-financing: #8a5a24;
   --chart-family-other: #3c6275;
 

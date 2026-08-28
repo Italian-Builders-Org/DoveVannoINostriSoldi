@@ -62,3 +62,23 @@ test("dark status and notice palette pairs meet WCAG AA", () => {
   assert.ok(contrast(darkToken("color-positive"), darkToken("color-positive-bg")) >= 4.5);
   assert.ok(contrast(darkToken("color-warning"), darkToken("color-warning-bg")) >= 4.5);
 });
+
+test("spending treemap family tokens meet WCAG AA in both light and dark themes", () => {
+  const families = ["services", "investment", "pass-through", "financing", "other"];
+  const lightForeground = token("color-text");
+  const darkForeground = darkToken("color-text");
+
+  for (const family of families) {
+    const lightBg = token(`chart-family-${family}`);
+    const darkBg = darkToken(`chart-family-${family}`);
+
+    assert.ok(
+      contrast(lightForeground, lightBg) >= 4.5,
+      `light chart-family-${family} (${lightBg}) vs ${lightForeground} under 4.5:1`,
+    );
+    assert.ok(
+      contrast(darkForeground, darkBg) >= 4.5,
+      `dark chart-family-${family} (${darkBg}) vs ${darkForeground} under 4.5:1`,
+    );
+  }
+});

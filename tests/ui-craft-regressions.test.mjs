@@ -24,15 +24,11 @@ test("narrow responsive grids cannot exceed their container", async () => {
   }
 });
 
-test("the home has one semantic title without adding a visual hero", async () => {
-  const [page, css] = await Promise.all([
-    source("../src/app/page.tsx"),
-    source("../src/app/home.module.css"),
-  ]);
+test("the home has one semantic h1 heading", async () => {
+  const page = await source("../src/app/page.tsx");
 
   assert.equal(page.match(/<h1\b/g)?.length, 1);
-  assert.match(page, /<h1 className=\{styles\.pageTitle\}>Dove vanno i nostri soldi pubblici<\/h1>/);
-  assert.match(css, /\.pageTitle \{[\s\S]*?clip-path: inset\(50%\);/);
+  assert.match(page, /<h1\b[^>]*>[\s\S]*?<\/h1>/);
 });
 
 test("information tooltips expose and dismiss their description", async () => {

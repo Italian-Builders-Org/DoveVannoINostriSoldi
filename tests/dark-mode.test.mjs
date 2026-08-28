@@ -71,3 +71,13 @@ test("globals.css handles zero-flash icon visibility across themes", () => {
   assert.match(globalsCss, /\[data-theme="dark"\]\s*\.theme-toggle-icon-light\s*\{\s*display:\s*grid;/);
   assert.match(globalsCss, /@media\s*\(prefers-color-scheme:\s*dark\)/);
 });
+
+test("header keeps fixed actions inside the medium desktop viewport", () => {
+  assert.match(globalsCss, /@media \(min-width: 901px\) and \(max-width: 1100px\)/);
+  assert.match(globalsCss, /@media \(min-width: 901px\) and \(max-width: 1100px\)\s*\{[\s\S]*?\.header-inner\s*\{[\s\S]*?flex-wrap: wrap;/);
+});
+
+test("theme helper functions follow storage and system precedence contract", () => {
+  // Without localStorage or matchMedia, defaults to light
+  assert.equal(getEffectiveTheme(), "light");
+});

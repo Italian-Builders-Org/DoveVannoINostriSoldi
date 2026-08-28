@@ -78,6 +78,11 @@
 .compact .level3 { fill: #667fe7; background: #667fe7; }
 .compact .level4 { fill: #344daf; background: #344daf; }
 .compact .region { stroke: #8a96bd; stroke-width: .7; }
+/* The reference dashboard reads as a neutral national overview. Keep the
+   keyboard/click selection semantics, but only draw the dark outline while a
+   person is actively previewing a region. */
+.compact .selectedOutline:not(.hoverOutline) { display: none; }
+.compact .hoverOutline { stroke-width: 1.35; }
 
 .compact .compactLegend {
   position: absolute;

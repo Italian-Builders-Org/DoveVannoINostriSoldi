@@ -101,7 +101,7 @@ nav li a { text-decoration: none; }
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
   width: 230px;
   color: inherit;
@@ -132,7 +132,7 @@ nav li a { text-decoration: none; }
 .brand-text small {
   margin-top: 2px;
   color: var(--color-neutral-600);
-  font-size: 9px;
+  font-size: 7.5px;
   line-height: 1.2;
 }
 
@@ -336,7 +336,7 @@ body > nav[aria-label="Sezioni della pagina"] {
 .nav-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 28px;
+  grid-template-columns: minmax(0, 1fr) 22px;
   align-items: center;
   border-radius: 7px;
 }
@@ -365,7 +365,7 @@ body > nav[aria-label="Sezioni della pagina"] {
 .nav-item-toggle {
   display: grid;
   place-items: center;
-  width: 28px;
+  width: 22px;
   height: 32px;
   padding: 0;
   color: var(--color-neutral-600);
@@ -375,6 +375,7 @@ body > nav[aria-label="Sezioni della pagina"] {
 }
 .nav-item-toggle:hover { color: var(--color-text); }
 .nav-item-toggle > svg {
+  opacity: .42;
   transition: transform 160ms var(--ease-out);
 }
 .nav-item-toggle[aria-expanded="true"] > svg { transform: rotate(-90deg); }

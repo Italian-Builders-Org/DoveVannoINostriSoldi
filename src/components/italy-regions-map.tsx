@@ -242,7 +242,7 @@ export function ItalyRegionsMap({
                 ? `> ${integer(thresholds[3])}`
                 : index === 0
                   ? `≤ ${integer(thresholds[0])}`
-                  : `${integer(thresholds[index - 1])} – ${integer(thresholds[index])}`;
+                  : `da ${integer(thresholds[index - 1])} a ${integer(thresholds[index])}`;
               return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
             })}
           </div>

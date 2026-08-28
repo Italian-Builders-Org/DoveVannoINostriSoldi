@@ -13,39 +13,34 @@ const manifest = JSON.parse(
 const regionCodes = Object.keys(manifest.regions).sort();
 const localEntries = Object.entries(manifest.regions).filter(([, entry]) => entry.asset);
 
-test("manifest copre tutti i 20 codici ISTAT e dichiara i fallback", () => {
+test("manifest copre tutti i 20 codici ISTAT con simboli locali", () => {
   assert.deepEqual(
     regionCodes,
     Array.from({ length: 20 }, (_, index) => String(index + 1).padStart(2, "0")),
   );
   assert.equal(manifest.coverage.totalRegions, 20);
-  assert.equal(manifest.coverage.localAssetCount, 10);
-  assert.equal(localEntries.length, 10);
-  assert.deepEqual(
-    manifest.coverage.fallbackCodes.sort(),
-    Object.entries(manifest.regions)
-      .filter(([, entry]) => !entry.asset)
-      .map(([code]) => code)
-      .sort(),
-  );
+  assert.equal(manifest.coverage.localAssetCount, 20);
+  assert.equal(manifest.coverage.metadataVerifiedCount, 20);
+  assert.equal(manifest.coverage.fallbackCount, 0);
+  assert.deepEqual(manifest.coverage.fallbackCodes, []);
+  assert.equal(localEntries.length, 20);
+  assert.equal(localEntries.filter(([, entry]) => entry.assetType === "commons-crest").length, 19);
+  assert.equal(localEntries.filter(([, entry]) => entry.assetType === "commons-regional-flag").length, 1);
   for (const [code, entry] of Object.entries(manifest.regions)) {
     assert.ok(entry.name, code + ": nome mancante");
-    if (entry.asset) {
-      assert.ok(entry.asset.startsWith("/region-crests/") && entry.asset.endsWith(".svg"));
-      assert.ok(entry.assetFile.startsWith("public/region-crests/") && entry.assetFile.endsWith(".svg"));
-      assert.ok(entry.sourceUrl.startsWith("https://upload.wikimedia.org/wikipedia/commons/"));
-      assert.ok(entry.sourcePage.startsWith("https://commons.wikimedia.org/wiki/File:"));
-      assert.ok(["Public domain", "CC BY-SA 3.0", "CC BY-SA 4.0"].includes(entry.license));
-      assert.ok(entry.licenseUrl.startsWith("https://"));
-      assert.ok(entry.author, code + ": autore mancante");
-      assert.ok(entry.attribution, code + ": attribuzione mancante");
-      assert.match(entry.sha1, /^[a-f0-9]{40}$/);
-      assert.ok(Number.isInteger(entry.width) && entry.width > 0);
-      assert.ok(Number.isInteger(entry.height) && entry.height > 0);
-    } else {
-      assert.equal(typeof entry.fallbackReason, "string");
-      assert.ok(entry.fallbackReason.length > 20, code + ": motivazione fallback poco chiara");
-    }
+    assert.ok(entry.asset, code + ": asset locale mancante");
+    assert.ok(["commons-crest", "commons-regional-flag"].includes(entry.assetType));
+    assert.ok(entry.asset.startsWith("/region-crests/") && entry.asset.endsWith(".svg"));
+    assert.ok(entry.assetFile.startsWith("public/region-crests/") && entry.assetFile.endsWith(".svg"));
+    assert.ok(entry.sourceUrl.startsWith("https://upload.wikimedia.org/wikipedia/commons/"));
+    assert.ok(entry.sourcePage.startsWith("https://commons.wikimedia.org/wiki/File:"));
+    assert.ok(["Public domain", "CC BY-SA 3.0", "CC BY-SA 4.0"].includes(entry.license));
+    assert.ok(entry.licenseUrl.startsWith("https://"));
+    assert.ok(entry.author, code + ": autore mancante");
+    assert.ok(entry.attribution, code + ": attribuzione mancante");
+    assert.match(entry.sha1, /^[a-f0-9]{40}$/);
+    assert.ok(Number.isInteger(entry.width) && entry.width > 0);
+    assert.ok(Number.isInteger(entry.height) && entry.height > 0);
   }
 });
 
@@ -63,12 +58,14 @@ test("ogni SVG locale è presente, hashato e senza contenuto eseguibile o riferi
   }
 });
 
-test("RegionCrest usa solo asset locali, alt decorativo e fallback accessibile", async () => {
+test("RegionCrest usa asset locali, label semantiche e fallback accessibile", async () => {
   const component = await readFile(join(projectRoot, "src/components/region-crest.tsx"), "utf8");
   assert.ok(component.includes('from "next/image"'));
   assert.ok(component.includes("src={entry.asset}"));
   assert.ok(component.includes("unoptimized"));
   assert.ok(component.includes('alt={decorative ? "" :'));
+  assert.ok(component.includes("Bandiera regionale"));
+  assert.ok(component.includes("data-region-crest-type"));
   assert.ok(component.includes('data-region-crest="fallback"'));
   assert.ok(component.includes("Stemma non disponibile per"));
   for (const route of ["src/app/page.tsx", "src/app/regioni/page.tsx", "src/app/territori/page.tsx"]) {

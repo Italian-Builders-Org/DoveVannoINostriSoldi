@@ -1,19 +1,20 @@
 {
   "schemaVersion": 1,
   "catalogUrl": "https://commons.wikimedia.org/wiki/Category:SVG_coats_of_arms_of_regions_of_Italy",
-  "checkedAt": "2026-08-26",
+  "checkedAt": "2026-08-28",
   "scope": "Le 20 regioni italiane secondo i codici ISTAT usati dal confronto SIOPE.",
   "coverage": {
     "totalRegions": 20,
-    "localAssetCount": 10,
-    "metadataVerifiedCount": 18,
-    "fallbackCount": 10,
-    "fallbackCodes": ["05", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
-    "note": "Sono stati inclusi soltanto i dieci SVG scaricati e controllati localmente. Gli altri file con metadati verificati non sono stati inclusi senza copia locale; Puglia è esclusa per la richiesta di cancellazione presente sulla pagina file, mentre per il Veneto non è stato trovato un SVG regionale idoneo nella raccolta."
+    "localAssetCount": 20,
+    "metadataVerifiedCount": 20,
+    "fallbackCount": 0,
+    "fallbackCodes": [],
+    "note": "Tutti i 20 simboli regionali hanno una copia SVG locale controllata e hashata. Diciannove sono stemmi regionali provenienti da Wikimedia Commons; per il Veneto è usata, come alternativa vettoriale pertinente e chiaramente indicata, la bandiera regionale Commons. Non è stato necessario creare badge originali e non vengono usati file con richieste di cancellazione."
   },
   "regions": {
     "01": {
       "name": "Piemonte",
+      "assetType": "commons-crest",
       "asset": "/region-crests/piemonte.svg",
       "assetFile": "public/region-crests/piemonte.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Regione-Piemonte-Stemma.svg",
@@ -28,6 +29,7 @@
     },
     "02": {
       "name": "Valle d'Aosta/Vallée d'Aoste",
+      "assetType": "commons-crest",
       "asset": "/region-crests/valle-daosta.svg",
       "assetFile": "public/region-crests/valle-daosta.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Valle_d%27Aosta-Stemma.svg",
@@ -42,6 +44,7 @@
     },
     "03": {
       "name": "Lombardia",
+      "assetType": "commons-crest",
       "asset": "/region-crests/lombardia.svg",
       "assetFile": "public/region-crests/lombardia.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Regione-Lombardia-Stemma.svg",
@@ -56,6 +59,7 @@
     },
     "04": {
       "name": "Trentino-Alto Adige/Südtirol",
+      "assetType": "commons-crest",
       "asset": "/region-crests/trentino-alto-adige.svg",
       "assetFile": "public/region-crests/trentino-alto-adige.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Coat_of_arms_of_Trentino-South_Tyrol.svg",
@@ -70,18 +74,23 @@
     },
     "05": {
       "name": "Veneto",
-      "asset": null,
-      "assetFile": null,
-      "sourceUrl": null,
-      "sourcePage": null,
-      "license": null,
-      "licenseUrl": null,
-      "author": null,
-      "attribution": null,
-      "fallbackReason": "Nella raccolta indicata non è stato trovato un SVG regionale del Veneto idoneo; le occorrenze disponibili erano una mappa o un file raster."
+      "assetType": "commons-regional-flag",
+      "assetLabel": "Bandiera regionale (alternativa vettoriale)",
+      "asset": "/region-crests/veneto.svg",
+      "assetFile": "public/region-crests/veneto.svg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Flag_of_Veneto.svg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Flag_of_Veneto.svg",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "author": "F l a n k e r (opera derivata)",
+      "attribution": "F l a n k e r (opera derivata)",
+      "sha1": "d877bcb78d9834b9d22a2446988137d2b0e8ffa5",
+      "width": 1163,
+      "height": 776
     },
     "06": {
       "name": "Friuli-Venezia Giulia",
+      "assetType": "commons-crest",
       "asset": "/region-crests/friuli-venezia-giulia.svg",
       "assetFile": "public/region-crests/friuli-venezia-giulia.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b6/CoA_of_Friuli-Venezia_Giulia.svg",
@@ -96,6 +105,7 @@
     },
     "07": {
       "name": "Liguria",
+      "assetType": "commons-crest",
       "asset": "/region-crests/liguria.svg",
       "assetFile": "public/region-crests/liguria.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Coat_of_arms_of_Liguria.svg",
@@ -110,6 +120,7 @@
     },
     "08": {
       "name": "Emilia-Romagna",
+      "assetType": "commons-crest",
       "asset": "/region-crests/emilia-romagna.svg",
       "assetFile": "public/region-crests/emilia-romagna.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Regione-Emilia-Romagna-Stemma.svg",
@@ -124,6 +135,7 @@
     },
     "09": {
       "name": "Toscana",
+      "assetType": "commons-crest",
       "asset": "/region-crests/toscana.svg",
       "assetFile": "public/region-crests/toscana.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Coat_of_arms_of_Tuscany.svg",
@@ -138,6 +150,7 @@
     },
     "10": {
       "name": "Umbria",
+      "assetType": "commons-crest",
       "asset": "/region-crests/umbria.svg",
       "assetFile": "public/region-crests/umbria.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Regione-Umbria-Stemma.svg",
@@ -152,6 +165,7 @@
     },
     "11": {
       "name": "Marche",
+      "assetType": "commons-crest",
       "asset": "/region-crests/marche.svg",
       "assetFile": "public/region-crests/marche.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Coat_of_arms_of_Marche.svg",
@@ -166,111 +180,139 @@
     },
     "12": {
       "name": "Lazio",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/lazio.svg",
+      "assetFile": "public/region-crests/lazio.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/Lazio_Coat_of_Arms.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Lazio_Coat_of_Arms.svg",
       "license": "CC BY-SA 3.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
       "author": "Credenza; Sinigagl; opera derivata di Serenthia",
       "attribution": "Credenza; Sinigagl; opera derivata di Serenthia",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "db57cd024e6bdcbd31730082883f4d21d0734c18",
+      "width": 512,
+      "height": 512
     },
     "13": {
       "name": "Abruzzo",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/abruzzo.svg",
+      "assetFile": "public/region-crests/abruzzo.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Regione-Abruzzo-Stemma.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Regione-Abruzzo-Stemma.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
       "author": "F l a n k e r; versione più recente di Ddurbmonnejg",
       "attribution": "F l a n k e r; versione più recente di Ddurbmonnejg",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "3d94a708205bd2512a321e82f8868d0c2266c0d4",
+      "width": 512,
+      "height": 1028
     },
     "14": {
       "name": "Molise",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/molise.svg",
+      "assetFile": "public/region-crests/molise.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Regione-Molise-Stemma.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Regione-Molise-Stemma.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
       "author": "F l a n k e r",
       "attribution": "F l a n k e r",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "767b8478c1f1a8853a5193d75786d2124094c4bd",
+      "width": 237,
+      "height": 254
     },
     "15": {
       "name": "Campania",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/campania.svg",
+      "assetFile": "public/region-crests/campania.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Regione-Campania-Stemma.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Regione-Campania-Stemma.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
       "author": "GJo",
       "attribution": "GJo",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "aa8f5bb3589462c592e40003918a4ca0491d95f6",
+      "width": 224,
+      "height": 280
     },
     "16": {
       "name": "Puglia",
-      "asset": null,
-      "assetFile": null,
-      "sourceUrl": null,
-      "sourcePage": null,
-      "license": null,
-      "licenseUrl": null,
-      "author": null,
-      "attribution": null,
-      "fallbackReason": "Esclusa: la pagina Commons è soggetta a richiesta di cancellazione per dubbio copyright; non usiamo il file finché la situazione non è chiara."
+      "assetType": "commons-crest",
+      "assetLabel": "Stemma regionale Commons",
+      "asset": "/region-crests/puglia.svg",
+      "assetFile": "public/region-crests/puglia.svg",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Coat_of_Arms_of_Apulia.svg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Coat_of_Arms_of_Apulia.svg",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "author": "ANGELUS",
+      "attribution": "ANGELUS",
+      "sha1": "44cdba700b215d5eaec7df4b4ee5c5ad2690914c",
+      "width": 360,
+      "height": 600
     },
     "17": {
       "name": "Basilicata",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/basilicata.svg",
+      "assetFile": "public/region-crests/basilicata.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Regione-Basilicata-Stemma.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Regione-Basilicata-Stemma.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
       "author": "F l a n k e r",
       "attribution": "F l a n k e r",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "8bb997547b934b8038b05eb064efce8f77eae9ef",
+      "width": 280,
+      "height": 356
     },
     "18": {
       "name": "Calabria",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/calabria.svg",
+      "assetFile": "public/region-crests/calabria.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Coat_of_arms_of_Calabria.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Calabria.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
-      "author": "Non dichiarato nella pagina file Commons",
+      "author": "Autore non dichiarato nella pagina file Commons",
       "attribution": "Wikimedia Commons; autore non dichiarato",
-      "fallbackReason": "Metadati e licenza leggibili, ma autore non dichiarato e SVG non copiato localmente in questa sessione."
+      "sha1": "0d46fcea8b085a84192e6a5e82e9d2bb89d158b5",
+      "width": 595,
+      "height": 653
     },
     "19": {
       "name": "Sicilia",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/sicilia.svg",
+      "assetFile": "public/region-crests/sicilia.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/Regione_Sicilia-Stemma_%28Gonfalone%29.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Regione_Sicilia-Stemma_(Gonfalone).svg",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
       "author": "Ddurbmonnejg",
       "attribution": "Ddurbmonnejg",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "71e8ccaca8a29469bb3ae22988f386e7a250a7a5",
+      "width": 512,
+      "height": 713
     },
     "20": {
       "name": "Sardegna",
-      "asset": null,
-      "assetFile": null,
+      "assetType": "commons-crest",
+      "asset": "/region-crests/sardegna.svg",
+      "assetFile": "public/region-crests/sardegna.svg",
       "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/33/Sardegna-Stemma.svg",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Sardegna-Stemma.svg",
       "license": "Public domain",
       "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain",
       "author": "Fabiocarboni",
       "attribution": "Fabiocarboni",
-      "fallbackReason": "Metadati verificati, ma SVG non copiato localmente in questa sessione."
+      "sha1": "c324b0c79a0810554fff6e7c9a46e40537b6beda",
+      "width": 512,
+      "height": 679
     }
   }
 }

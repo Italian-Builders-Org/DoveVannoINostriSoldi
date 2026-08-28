@@ -4,6 +4,8 @@ import styles from "./region-crest.module.css";
 
 type ManifestEntry = {
   name: string;
+  assetType?: "commons-crest" | "commons-regional-flag";
+  assetLabel?: string;
   asset: string | null;
   sourcePage: string | null;
   license: string | null;
@@ -34,6 +36,7 @@ export function RegionCrest({
 }: RegionCrestProps) {
   const entry = regionCode ? entries[regionCode] : undefined;
   const name = regionName ?? entry?.name ?? "regione";
+  const symbolLabel = entry?.assetType === "commons-regional-flag" ? "Bandiera regionale" : "Stemma";
   const classes = [styles.crest, styles[size], className].filter(Boolean).join(" ");
 
   if (!entry?.asset || !entry.width || !entry.height) {
@@ -59,13 +62,15 @@ export function RegionCrest({
       data-source-page={entry.sourcePage ?? undefined}
       data-license={entry.license ?? undefined}
       data-author={entry.author ?? undefined}
+      data-region-crest-type={entry.assetType ?? undefined}
+      title={entry.assetLabel ?? `${symbolLabel} di ${name}`}
     >
       <Image
         className={styles.image}
         src={entry.asset}
         width={entry.width}
         height={entry.height}
-        alt={decorative ? "" : "Stemma di " + name}
+        alt={decorative ? "" : `${symbolLabel} di ${name}`}
         unoptimized
         decoding="async"
       />
@@ -74,15 +79,21 @@ export function RegionCrest({
 }
 
 export function RegionCrestAttribution() {
+  const crestCount = Object.values(entries).filter((entry) => entry.assetType === "commons-crest").length;
+  const alternateCount = Object.values(entries).filter(
+    (entry) => entry.assetType === "commons-regional-flag",
+  ).length;
+
   return (
     <p className={styles.attribution} data-region-crest-attribution>
-      Stemmi regionali: 10 SVG locali verificati, con autore e licenza registrati nel manifest;
-      per le altre regioni mostriamo un segnaposto neutro{" "}
+      Simboli regionali: {crestCount} stemmi SVG Commons e {alternateCount} alternativa vettoriale
+      Commons, con autore e licenza registrati nel manifest. Non usiamo segnaposto neutri né badge
+      originali{" "}
       <a href={manifest.catalogUrl} target="_blank" rel="noreferrer">
         nel catalogo Wikimedia Commons ↗
       </a>
-      . Gli stemmi identificano il territorio: non sono una misura dei pagamenti e non modificano
-      la choropleth.
+      . Il simbolo del Veneto è indicato come bandiera regionale alternativa. I simboli identificano
+      il territorio: non sono una misura dei pagamenti e non modificano la choropleth.
     </p>
   );
 }

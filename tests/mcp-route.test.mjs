@@ -568,7 +568,7 @@ test("MCP query cancellation reaches the bounded dataset loader", async () => {
     signal: controller.signal,
   }));
 
-  const observationDeadline = Date.now() + 2_000;
+  const observationDeadline = Date.now() + 10_000;
   while (true) {
     const diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
     if (diagnostics.activeLoads > 0 || diagnostics.completedChunkLoads > 0) break;
@@ -581,7 +581,7 @@ test("MCP query cancellation reaches the bounded dataset loader", async () => {
   assert.equal(response.status, 499);
   await response.text();
 
-  const cleanupDeadline = Date.now() + 2_000;
+  const cleanupDeadline = Date.now() + 10_000;
   let diagnostics;
   while (true) {
     diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();

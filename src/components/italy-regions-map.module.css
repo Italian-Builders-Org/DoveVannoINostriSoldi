@@ -59,19 +59,49 @@
 .noData { fill: var(--color-neutral-200); background: var(--color-neutral-200); }
 
 .compact {
-  grid-template-columns: minmax(0, 1fr) 178px;
+  grid-template-columns: minmax(0, 1fr) 160px;
   gap: 12px;
 }
-.compact .map { height: 234px; max-height: 234px; }
+.compact .mapColumn { position: relative; }
+.compact .map {
+  width: 70%;
+  height: 234px;
+  max-height: 234px;
+  margin-left: auto;
+  transform: translate(12px, -2px) scale(.9, 1.08);
+  transform-origin: center;
+}
 .compact .detail { display: none; }
-.compact .legend { margin-top: 2px; font-size: 9px; }
-.compact .legend i { width: 17px; height: 8px; }
 .compact .level0 { fill: #e8ebff; background: #e8ebff; }
 .compact .level1 { fill: #cbd3ff; background: #cbd3ff; }
 .compact .level2 { fill: #9daeff; background: #9daeff; }
 .compact .level3 { fill: #667fe7; background: #667fe7; }
 .compact .level4 { fill: #344daf; background: #344daf; }
 .compact .region { stroke: #8a96bd; stroke-width: .7; }
+
+.compact .compactLegend {
+  position: absolute;
+  top: 87px;
+  left: 0;
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  font-size: 7px;
+}
+.compact .compactLegend strong {
+  margin-bottom: 3px;
+  color: var(--color-neutral-600);
+  font-size: 7px;
+  font-weight: 500;
+}
+.compact .compactLegend span {
+  display: grid;
+  grid-template-columns: 9px auto;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.compact .compactLegend i { width: 9px; height: 10px; border: 0; }
 
 .legend {
   display: flex;

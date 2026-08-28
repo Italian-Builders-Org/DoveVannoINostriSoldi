@@ -138,7 +138,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
             <Image
               className="brand-mark"
-              src="/brand/dvns-mark-transparent.svg"
+              src="/brand/dvns-lv-mark.svg"
               width={38}
               height={38}
               alt=""
@@ -226,11 +226,12 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
 
         <div className="sidebar-meta">
           <strong>DoveVannoINostriSoldi</strong>
-          <span>© 2026 · Open source</span>
+          <span>© 2026 Tutti i diritti riservati</span>
           <div>
             <Link href="/supporter">Chi siamo</Link>
+            <Link href="/metodologia">Metodologia</Link>
             <Link href="/privacy">Privacy</Link>
-            <Link href="/termini">Termini</Link>
+            <Link href="/supporto">Contatti</Link>
           </div>
         </div>
       </aside>

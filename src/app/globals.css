@@ -95,21 +95,22 @@ nav li a { text-decoration: none; }
   align-items: center;
   gap: 20px;
   min-height: 58px;
-  padding-inline: 14px 18px;
+  padding-inline: 18px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   min-width: 0;
+  width: 230px;
   color: inherit;
 }
 .brand:hover { color: inherit; }
 .brand-mark {
   display: block;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex: none;
   object-fit: contain;
 }
@@ -121,8 +122,9 @@ nav li a { text-decoration: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.brand-text strong { overflow: visible; }
 .brand-text strong {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 750;
   letter-spacing: -.02em;
   line-height: 1.15;
@@ -150,7 +152,8 @@ nav li a { text-decoration: none; }
 .header-search {
   position: relative;
   justify-self: center;
-  width: min(100%, 440px);
+  width: min(100%, 408px);
+  transform: translateX(-18px);
 }
 .header-search label {
   position: absolute;
@@ -162,7 +165,12 @@ nav li a { text-decoration: none; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.header-search input { padding-right: 46px; }
+.header-search input {
+  min-height: 32px;
+  height: 32px;
+  padding: 0 40px 0 12px;
+  font-size: 10px;
+}
 .header-search button {
   position: absolute;
   top: 0;
@@ -170,7 +178,7 @@ nav li a { text-decoration: none; }
   display: grid;
   place-items: center;
   width: 44px;
-  height: 38px;
+  height: 32px;
   padding: 0;
   border: 0;
   color: var(--color-neutral-600);
@@ -300,7 +308,7 @@ nav li a { text-decoration: none; }
   display: flex;
   flex-direction: column;
   width: 190px;
-  padding: 10px 10px 12px;
+  padding: 10px 14px 12px;
   overflow-y: auto;
   background: var(--color-raised);
   border-right: 1px solid var(--color-neutral-300);
@@ -426,18 +434,20 @@ body > nav[aria-label="Sezioni della pagina"] {
 
 .sidebar-mission {
   margin-top: 8px;
-  padding: 11px;
+  padding: 15px 13px;
+  min-height: 151px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-200);
   border-radius: 9px;
 }
 .sidebar-mission strong {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.35;
+  max-width: 110px;
 }
 .sidebar-mission p {
-  margin: 6px 0 9px;
+  margin: 10px 0 14px;
   color: var(--color-neutral-600);
   font-size: 10px;
 }
@@ -445,23 +455,29 @@ body > nav[aria-label="Sezioni della pagina"] {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   color: var(--color-raised);
   background: var(--color-neutral-900);
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 700;
 }
 .sidebar-meta {
   display: grid;
   gap: 3px;
-  padding: 10px 6px 0;
+  padding: 25px 8px 0;
   font-size: 9px;
   color: var(--color-neutral-600);
 }
 .sidebar-meta strong { color: var(--color-text); font-size: 10px; }
-.sidebar-meta div { display: flex; gap: 10px; margin-top: 6px; }
+.sidebar-meta div { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
 .sidebar-meta a { color: var(--color-neutral-600); }
+.sidebar-meta a::before {
+  content: "○";
+  display: inline-block;
+  width: 14px;
+  color: var(--color-neutral-600);
+}
 .sidebar-meta a:hover { color: var(--color-text); }
 
 .sidebar-backdrop {

@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
-  Alert02Icon, Analytics01Icon, ArrowDown01Icon, ArrowRight01Icon,
+  Alert02Icon, ArrowDown01Icon, ArrowRight01Icon,
   Building03Icon, CheckmarkCircle02Icon, Database01Icon, FilterHorizontalIcon,
   Location01Icon, Money03Icon, UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
@@ -61,8 +61,9 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     const end = start + (bucket.value / bucketTotal) * 100;
     return `${CHART_COLORS[index]} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
   }).join(", ");
-  const topRegions = regionsByPerCapita(siope).slice(0, 7);
-  const regionMax = Math.max(...topRegions.map((region) => region.perCapita ?? 0), 1);
+  const rankedRegions = regionsByPerCapita(siope).slice(0, 10);
+  const benchmarkRegions = rankedRegions.slice(0, 7);
+  const regionMax = Math.max(...benchmarkRegions.map((region) => region.perCapita ?? 0), 1);
   const anomalySignals = getHomeAnomalySignals();
   const extraSignalIds = new Set(["tax-expenditures", "off-budget-debt"]);
   const anomalyRows = [...anomalySignals, ...auditSignals.filter((signal) => extraSignalIds.has(signal.id))].slice(0, 5);
@@ -75,7 +76,9 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     <main className={`shell ${styles.dashboard}`} data-dashboard-home>
       <header className={styles.dashboardHeader}>
         <div className={styles.dashboardTitle}>
-          <span className={styles.dashboardTitleIcon} aria-hidden="true"><HugeiconsIcon icon={Analytics01Icon} size={34} strokeWidth={1.5} /></span>
+          <span className={styles.dashboardTitleIcon} aria-hidden="true">
+            <svg viewBox="0 0 48 36"><path d="M1 18h5l4-10 6 21 7-26 7 31 6-18h5l6-7" /></svg>
+          </span>
           <div><h1>Panoramica Italia</h1><p>Scopri come vengono spesi i soldi pubblici.</p><small>Dati comunali aggiornati al {longDate(siope.source.siopeMovementsLastModified)}</small></div>
         </div>
         <div className={styles.dashboardFilters}>
@@ -98,11 +101,11 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </section>
 
       <section className={`${styles.panel} ${styles.mapPanel}`}>
-        <div className={styles.panelHead}><h2>Mappa della spesa pubblica</h2><div className={styles.segmented}><b>Pro capite</b><span>Totale spesa</span></div></div>
+        <div className={styles.panelHead}><h2>Mappa della spesa pubblica</h2><div className={styles.segmented}><b>Totale spesa</b><span>Pro capite</span></div></div>
         <ItalyRegionsMap compact regions={siope.regions} period={`da gennaio a ${monthLabel} ${year}`} aside={
           <div className={styles.mapRanking}>
             <div className={styles.mapRankingHead}><span>Regione</span><span>Spesa pro capite</span></div>
-            {topRegions.slice(0, 6).map((region) => <div key={region.region}><strong>{region.region}</strong><span>{region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}</span></div>)}
+            {rankedRegions.map((region) => <div key={region.region}><strong>{region.region}</strong><span>{region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}</span></div>)}
             <div className={styles.mapRankingTotal}><strong>Italia</strong><span>{siope.nationalPerCapita === null ? "n.d." : exactEuro(siope.nationalPerCapita)}</span></div>
             <Link href={`/territori?anno=${year}`}>Vedi tutte le regioni <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link>
           </div>
@@ -110,7 +113,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </section>
 
       <section className={`${styles.panel} ${styles.anomalyPanel}`}>
-        <div className={styles.panelHead}><h2>Anomalie da approfondire</h2><Link href="/controlli">Vedi tutte <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link></div>
+        <div className={styles.panelHead}><h2>Anomalie e potenziali sprechi</h2><Link href="/controlli">Vedi tutte <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link></div>
         <div className={styles.anomalyGallery}>
           {anomalyRows.map((signal, index) => (
             <a key={signal.id} href={signal.source.url} target="_blank" rel="noreferrer" className={styles.anomalyRow}>
@@ -136,7 +139,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className={`${styles.panel} ${styles.benchmarkPanel}`}>
         <div className={styles.panelHead}><h2>Confronti e benchmark</h2></div>
         <div className={styles.metricSelect}>Spesa pro capite <HugeiconsIcon icon={ArrowDown01Icon} size={12} /></div>
-        <ul className={styles.benchmarkList}>{topRegions.map((region) => { const value = region.perCapita ?? 0; const below = siope.nationalPerCapita !== null && value < siope.nationalPerCapita; return <li key={region.region}><span>{region.region}</span><i><b data-below={below || undefined} style={{ width: `${Math.max(4, (value / regionMax) * 100)}%` }} /></i><strong>{exactEuro(value)}</strong></li>; })}</ul>
+        <ul className={styles.benchmarkList}>{benchmarkRegions.map((region) => { const value = region.perCapita ?? 0; const below = siope.nationalPerCapita !== null && value < siope.nationalPerCapita; return <li key={region.region}><span>{region.region}</span><i><b data-below={below || undefined} style={{ width: `${Math.max(4, (value / regionMax) * 100)}%` }} /></i><strong>{exactEuro(value)}</strong></li>; })}</ul>
         <Link className={styles.panelLink} href="/confronti">Vai al confronto completo <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link>
       </section>
 

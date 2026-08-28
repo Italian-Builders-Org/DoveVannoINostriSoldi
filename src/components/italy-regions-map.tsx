@@ -234,23 +234,27 @@ export function ItalyRegionsMap({
           </p>
         ) : null}
 
-        <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
-          <span className={styles.legendEnd}>Meno spesa per abitante</span>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <i
-              key={index}
-              className={styles[`level${index}`]}
-              title={
-                index === 0
-                  ? `fino a ${integer(thresholds[0])} €`
-                  : index === 4
-                    ? `oltre ${integer(thresholds[3])} €`
-                    : `da ${integer(thresholds[index - 1])} a ${integer(thresholds[index])} €`
-              }
-            />
-          ))}
-          <span className={styles.legendEnd}>Più spesa per abitante</span>
-        </div>
+        {compact ? (
+          <div className={`${styles.legend} ${styles.compactLegend}`} aria-label="Scala dei pagamenti pro capite">
+            <strong>Spesa pro capite (€)</strong>
+            {[4, 3, 2, 1, 0].map((index) => {
+              const label = index === 4
+                ? `> ${integer(thresholds[3])}`
+                : index === 0
+                  ? `≤ ${integer(thresholds[0])}`
+                  : `${integer(thresholds[index - 1])} – ${integer(thresholds[index])}`;
+              return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
+            })}
+          </div>
+        ) : (
+          <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
+            <span className={styles.legendEnd}>Meno spesa per abitante</span>
+            {[0, 1, 2, 3, 4].map((index) => (
+              <i key={index} className={styles[`level${index}`]} />
+            ))}
+            <span className={styles.legendEnd}>Più spesa per abitante</span>
+          </div>
+        )}
       </div>
 
       {aside ? <div className={styles.asideColumn}>{aside}</div> : null}

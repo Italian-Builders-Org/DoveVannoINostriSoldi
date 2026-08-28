@@ -19,6 +19,10 @@
   width: 100%;
   min-width: 0;
   aspect-ratio: 100 / 62;
+  /* Reserve one stable canvas for every snapshot.  The container query keeps
+     wider single-column layouts proportional without letting the year-specific
+     labels change the height of the panel. */
+  height: clamp(250px, 62cqw, 320px);
   min-height: 250px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-400);
@@ -31,7 +35,7 @@
   align-content: start;
   min-width: 0;
   min-height: 0;
-  padding: var(--space-3);
+  padding: clamp(8px, 1.5cqw, var(--space-3));
   overflow: hidden;
   border: 2px solid var(--color-raised);
   color: var(--color-on-strong);
@@ -43,6 +47,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
   max-width: 100%;
   text-align: left;
   line-height: 1.2;
@@ -53,19 +58,26 @@
   font-weight: 700;
   line-height: 1.25;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 .tileCopy small {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.15;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 .tileIndex {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
   font-family: var(--font-heading);
   font-size: 15px;
   font-weight: var(--font-heading-weight);
   line-height: 1;
 }
+.tile[data-label-mode="index"] { padding: 0; }
 .services { background: var(--chart-category-blue); }
 .investment { background: var(--chart-category-purple); }
 .pass-through { background: var(--chart-category-amber); }

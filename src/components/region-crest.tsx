@@ -72,6 +72,7 @@ export function RegionCrest({
         height={entry.height}
         alt={decorative ? "" : `${symbolLabel} di ${name}`}
         unoptimized
+        loading="eager"
         decoding="async"
       />
     </span>

@@ -9,6 +9,7 @@ export type SearchMatchReason =
   | "title-exact"
   | "title-prefix"
   | "title-tokens"
+  | "title-fuzzy"
   | "alias"
   | "description"
   | "entity";
@@ -43,4 +44,3 @@ export type GlobalSearchResponse = Readonly<{
   entityTotal: number;
   entitiesAvailable: boolean;
 }>;
-

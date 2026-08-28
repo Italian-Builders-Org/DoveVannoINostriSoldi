@@ -77,7 +77,12 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   assert.match(component, /styles\.legendAmount/);
   assert.match(component, /Più grande è il riquadro, maggiore è la quota sul totale/);
   assert.match(component, /Più lunga è la barra, maggiore è la quota sul totale/);
-  assert.match(component, /rectangle\.width >= 38 && rectangle\.height >= 24/);
+  assert.match(component, /rectangle\.width >= 42 && rectangle\.height >= 28/);
+  assert.match(component, /rectangle\.width >= 28 && rectangle\.height >= 21/);
+  assert.match(component, /data-label-mode=\{labelMode\}/);
+  assert.match(component, /title=\{`\$\{item\.label\}: \$\{exactEuro\(item\.valueEuro\)\}/);
   assert.match(component, /item\.shortLabel \?\? item\.label/);
   assert.match(css, /\.tileCopy b \{[\s\S]*?font-family: var\(--font-heading\);/);
+  assert.match(css, /\.visual \{[\s\S]*?height: clamp\(250px, 62cqw, 320px\);/);
+  assert.match(css, /\.tile\[data-label-mode="index"\] \{[\s\S]*?padding: 0;/);
 });

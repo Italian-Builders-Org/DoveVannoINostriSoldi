@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight01Icon,
-  CalendarClockIcon,
-  ContractsIcon,
-  ShieldCheck,
-} from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
@@ -50,17 +45,14 @@ const HOME_ANOMALY_PRESENTATION = {
   "procurement-direct-awards-2025": {
     title: "Affidamenti diretti",
     period: "2025 · procedure da 40.000 € in su",
-    icon: ContractsIcon,
   },
   "gdf-public-spending-fraud": {
     title: "Frodi accertate nei controlli",
     period: "dal 1 gen 2025 al 31 mag 2026",
-    icon: ShieldCheck,
   },
   "pnrr-beyond-2026": {
     title: "Risorse PNRR oltre il 2026",
     period: "Previsione · febbraio 2026",
-    icon: CalendarClockIcon,
   },
 } as const;
 
@@ -488,10 +480,9 @@ export default async function HomePage({
             </InfoTooltip>
           </div>
           <div className={styles.anomalyGallery}>
-            {anomalySignals.map((signal) => {
+            {anomalySignals.map((signal, index) => {
               const presentation = HOME_ANOMALY_PRESENTATION[signal.id as keyof typeof HOME_ANOMALY_PRESENTATION];
               if (!presentation) return null;
-              const Icon = presentation.icon;
 
               return (
                 <article
@@ -500,8 +491,8 @@ export default async function HomePage({
                   key={signal.id}
                 >
                   <div className={styles.anomalyItemHead}>
-                    <span className={styles.anomalyIcon} aria-hidden="true">
-                      <HugeiconsIcon icon={Icon} size={18} strokeWidth={1.8} />
+                    <span className={styles.anomalyMarker} aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
                     <span className={styles.anomalyArea}>{signal.area}</span>
                   </div>

@@ -42,9 +42,10 @@ export async function GET(request: Request) {
   const result = await searchGlobal({ query, limit: boundedLimit(params.get("limit")) });
   return Response.json(result, {
     headers: {
-      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+      // Search is interactive and backed by a changing public registry. Avoid
+      // replaying a stale empty prefix result from the browser or an edge cache.
+      "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
     },
   });
 }
-

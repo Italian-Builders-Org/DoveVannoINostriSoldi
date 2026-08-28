@@ -5,7 +5,7 @@
 
 .dashboard {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr) 300px;
+  grid-template-columns: 360px minmax(0, 1fr);
   align-items: start;
   gap: var(--space-4);
   padding-block: var(--space-4) 0;
@@ -29,6 +29,17 @@
   gap: var(--space-4);
   min-width: 0;
 }
+
+/* Supporting modules sit in a shared two-by-two band. Keeping them in a
+   third vertical rail made the footer wait for the longest rail and left
+   large empty areas under the two shorter columns on laptop-sized screens. */
+.dashboard > .column:last-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+.dashboard > .column:last-child > :global(.panel) { height: 100%; }
 
 .panelHead {
   display: grid;
@@ -358,7 +369,7 @@
 }
 .anomalyGallery {
   display: grid;
-  gap: var(--space-2);
+  gap: 0;
   margin: 0;
 }
 
@@ -367,10 +378,8 @@
   display: grid;
   gap: 6px;
   min-width: 0;
-  padding: 11px 12px 10px;
-  border: 1px solid var(--color-neutral-200);
-  border-top: 2px solid var(--anomaly-accent);
-  background: var(--color-neutral-100);
+  padding: 13px 0;
+  border-top: 1px solid var(--color-neutral-300);
 }
 .anomalyItem[data-signal="gdf-public-spending-fraud"] {
   --anomaly-accent: var(--chart-category-blue);
@@ -384,15 +393,16 @@
   gap: var(--space-2);
   min-width: 0;
 }
-.anomalyIcon {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
+.anomalyMarker {
+  min-width: 24px;
   flex: none;
   color: var(--anomaly-accent);
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-200);
+  border-bottom: 2px solid currentColor;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  line-height: 1.6;
+  text-align: center;
 }
 .anomalyArea {
   min-width: 0;
@@ -486,14 +496,6 @@
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 1320px) {
-  .dashboard { grid-template-columns: 360px minmax(0, 1fr); }
-  /* The right-hand rail becomes a full-width band of cards under the board. */
-  .dashboard > .column:last-child {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    align-items: start;
-  }
   .dashboard > .column:last-child > :global(.panel) > :global(.btn-block) {
     margin-top: 0;
   }

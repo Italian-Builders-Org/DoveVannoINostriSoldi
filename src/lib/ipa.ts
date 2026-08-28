@@ -2,6 +2,12 @@ import { fetchOfficialSource } from "@/lib/data/source-fetch";
 
 const IPA_DATASTORE_SEARCH =
   "https://indicepa.gov.it/ipa-dati/api/3/action/datastore_search";
+const IPA_DATASTORE_SEARCH_SQL =
+  "https://indicepa.gov.it/ipa-dati/api/3/action/datastore_search_sql";
+
+const IPA_SEARCH_MAX_QUERY_LENGTH = 180;
+const IPA_SEARCH_MAX_QUERY_TOKENS = 12;
+const IPA_SEARCH_MAX_LIMIT = 100;
 
 export const IPA_ENTI_RESOURCE_ID = "d09adf99-dc10-4349-8c53-27b1e5aa97b6";
 export const IPA_ENTI_DATASET_URL = "https://www.indicepa.gov.it/ipa-dati/dataset/enti";
@@ -86,6 +92,13 @@ type CkanDatastoreResponse = {
   success?: boolean;
   result?: {
     total?: number;
+    records?: IpaRawEntity[];
+  };
+};
+
+type CkanSqlResponse = {
+  success?: boolean;
+  result?: {
     records?: IpaRawEntity[];
   };
 };
@@ -181,6 +194,37 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(Math.trunc(value), minimum), maximum);
 }
 
+function sqlLiteral(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
+}
+
+function tokenSearchPredicate(token: string): string {
+  // The IPA gateway documents SQL search but rejects PostgreSQL regex
+  // operators at its web-application firewall. ILIKE is supported and keeps
+  // the query useful for any incomplete token, including a token in the
+  // middle of a compound institution name. Exact prefix quality is decided
+  // locally by the deterministic ranking layer.
+  const pattern = sqlLiteral(`%${token}%`);
+  return [
+    `"Denominazione_ente" ILIKE ${pattern}`,
+    `"Acronimo" ILIKE ${pattern}`,
+    `"Codice_IPA" ILIKE ${pattern}`,
+    `"Tipologia" ILIKE ${pattern}`,
+  ].join(" OR ");
+}
+
+function normalizedQueryTokens(value: string): string[] {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("it-IT")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim()
+    .split(/\s+/u)
+    .filter(Boolean)
+    .slice(0, IPA_SEARCH_MAX_QUERY_TOKENS);
+}
+
 async function datastoreRequest(params: URLSearchParams): Promise<IpaSearchResult> {
   params.set("resource_id", IPA_ENTI_RESOURCE_ID);
 
@@ -221,7 +265,7 @@ export async function searchIpaEntities(options: {
   params.set("offset", String(clamp(options.offset ?? 0, 0, 1_000_000)));
 
   const query = options.query?.trim();
-  if (query) params.set("q", query.slice(0, 180));
+  if (query) params.set("q", query.slice(0, IPA_SEARCH_MAX_QUERY_LENGTH));
 
   const filters: Record<string, string> = {};
   const categoryCode = options.categoryCode?.trim().slice(0, 20);
@@ -231,6 +275,66 @@ export async function searchIpaEntities(options: {
   if (Object.keys(filters).length > 0) params.set("filters", JSON.stringify(filters));
 
   return datastoreRequest(params);
+}
+
+/**
+ * Search IPA by deterministic token prefixes.
+ *
+ * CKAN's datastore `q` parameter is a full-text query and does not reliably
+ * return a name when the user has typed only its beginning (for example
+ * `Jes` for `Jesolo`). The SQL endpoint is still read-only here: the resource
+ * id is fixed, query tokens are normalized/escaped, the result count is
+ * bounded, and the ordering is explicit. This function is intentionally
+ * separate from the general `/api/enti` adapter so its narrow prefix contract
+ * cannot change the semantics of existing exact/full-text API consumers.
+ */
+export async function searchIpaEntitiesByPrefix(options: {
+  query: string;
+  limit?: number;
+}): Promise<IpaSearchResult> {
+  const query = options.query.trim().slice(0, IPA_SEARCH_MAX_QUERY_LENGTH);
+  const queryTokens = normalizedQueryTokens(query);
+  const limit = clamp(options.limit ?? 20, 1, IPA_SEARCH_MAX_LIMIT);
+
+  if (queryTokens.length === 0) {
+    return searchIpaEntities({ limit });
+  }
+
+  const predicates = queryTokens.map(tokenSearchPredicate).map((predicate) => `(${predicate})`);
+  const sql = [
+    `SELECT *`,
+    `FROM "${IPA_ENTI_RESOURCE_ID}"`,
+    `WHERE ${predicates.join(" AND ")}`,
+    `ORDER BY lower("Denominazione_ente"), lower("Codice_IPA")`,
+    `LIMIT ${limit}`,
+  ].join(" ");
+  const sourceUrl = `${IPA_DATASTORE_SEARCH_SQL}?${new URLSearchParams({ sql }).toString()}`;
+  const response = await fetchOfficialSource("ipa", sourceUrl, {
+    kind: "data",
+    headers: { Accept: "application/json" },
+    tags: ["dataset:ipa-enti", "view:global-search"],
+  });
+
+  if (!response.ok) {
+    throw new Error(`IPA SQL upstream HTTP ${response.status}`);
+  }
+
+  const payload = (await response.json()) as CkanSqlResponse;
+  if (!payload.success || !Array.isArray(payload.result?.records)) {
+    throw new Error("Risposta di ricerca per prefisso IPA non valida");
+  }
+
+  const records = payload.result.records;
+
+  return {
+    // The SQL adapter is deliberately bounded and reports the returned match
+    // count. COUNT(*) OVER() is rejected by the IPA gateway even though the
+    // underlying CKAN endpoint supports ordinary read-only SELECT queries.
+    total: records.length,
+    records: records.map(normalizeEntity),
+    observedAt: new Date().toISOString(),
+    sourceUrl,
+  };
 }
 
 export async function getIpaCentralAdministrations(): Promise<IpaSearchResult> {

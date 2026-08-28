@@ -202,9 +202,17 @@ export function SpendingComposition({
         {items.map((item, index) => {
           const rectangle = rectangleById.get(item.id);
           if (!rectangle) return null;
-          const labelMode = rectangle.width >= 38 && rectangle.height >= 24
+          /*
+           * The geometry is expressed in the deterministic 100 × 62 layout
+           * units.  Keep a generous safety margin around the copy: a tile is
+           * allowed to show its name only when both dimensions leave room for
+           * the padding, two lines of type and the percentage.  Smaller
+           * tiles intentionally show only their ordinal; the complete name,
+           * amount and share remain in the legend and exact table below.
+           */
+          const labelMode = rectangle.width >= 42 && rectangle.height >= 28
             ? "detail"
-            : rectangle.width >= 24 && rectangle.height >= 18
+            : rectangle.width >= 28 && rectangle.height >= 21
               ? "label"
               : "index";
           return (
@@ -218,7 +226,9 @@ export function SpendingComposition({
                 width: `${rectangle.width}%`,
                 height: `${(rectangle.height / 62) * 100}%`,
               }}
+              data-label-mode={labelMode}
               aria-label={`${index + 1}. ${item.label}: ${percent(share(item))}`}
+              title={`${item.label}: ${exactEuro(item.valueEuro)} · ${percent(share(item))}`}
               aria-describedby={displayedId === item.id ? tooltipId : undefined}
               aria-pressed={pinnedId === item.id}
               data-active={displayedId === item.id ? "true" : undefined}

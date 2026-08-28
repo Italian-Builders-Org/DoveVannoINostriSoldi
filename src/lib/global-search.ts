@@ -7,7 +7,11 @@ import {
 } from "@/lib/integrated-editorial";
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import { datasetCatalog } from "@/lib/mcp/catalog";
-import { searchIpaEntities, type IpaEntity } from "@/lib/ipa";
+import {
+  searchIpaEntities,
+  searchIpaEntitiesByPrefix,
+  type IpaEntity,
+} from "@/lib/ipa";
 import {
   PRIMARY_NAV,
   SITE_MAP_GROUPS,
@@ -51,7 +55,7 @@ export type SearchIndexDocument = Readonly<{
 
 type FieldMatch = Readonly<{
   quality: number;
-  reason: "exact" | "prefix" | "tokens";
+  reason: "exact" | "prefix" | "tokens" | "fuzzy";
 }>;
 
 type IntegratedSearchEntry = Readonly<{
@@ -82,6 +86,7 @@ const SEARCH_MATCH_LABELS: Readonly<Record<SearchMatchReason, string>> = {
   "title-exact": "Titolo esatto",
   "title-prefix": "Prefisso nel titolo",
   "title-tokens": "Parole nel titolo",
+  "title-fuzzy": "Corrispondenza simile nel titolo",
   alias: "Alias o sinonimo",
   description: "Descrizione",
   entity: "Nome dell'ente",
@@ -263,8 +268,8 @@ const italianCollator = new Intl.Collator("it", { sensitivity: "base" });
 
 /**
  * Fold accents and punctuation while keeping a stable, human-readable token
- * boundary. This is deliberately not fuzzy matching: every hit remains
- * explainable as a title, alias, description or entity match.
+ * boundary. Fuzzy matches are deliberately narrow (one edit on a token of at
+ * least four characters) so every hit remains explainable and useful.
  */
 export function normalizeSearchText(value: string): string {
   return value
@@ -282,10 +287,47 @@ function tokens(value: string): readonly string[] {
   return normalized ? normalized.split(" ") : [];
 }
 
+const FUZZY_MIN_TOKEN_LENGTH = 4;
+
+function editDistanceAtMostOne(left: string, right: string): boolean {
+  const leftCharacters = [...left];
+  const rightCharacters = [...right];
+  if (Math.abs(leftCharacters.length - rightCharacters.length) > 1) return false;
+
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let edits = 0;
+  while (leftIndex < leftCharacters.length && rightIndex < rightCharacters.length) {
+    if (leftCharacters[leftIndex] === rightCharacters[rightIndex]) {
+      leftIndex += 1;
+      rightIndex += 1;
+      continue;
+    }
+
+    edits += 1;
+    if (edits > 1) return false;
+    if (leftCharacters.length > rightCharacters.length) leftIndex += 1;
+    else if (rightCharacters.length > leftCharacters.length) rightIndex += 1;
+    else {
+      leftIndex += 1;
+      rightIndex += 1;
+    }
+  }
+
+  return edits + (leftCharacters.length - leftIndex) + (rightCharacters.length - rightIndex) <= 1;
+}
+
 function tokenQuality(queryToken: string, candidateToken: string): number {
   if (candidateToken === queryToken) return 3;
   if (candidateToken.startsWith(queryToken)) return 2;
-  if (candidateToken.includes(queryToken)) return 1;
+  if (queryToken.length >= FUZZY_MIN_TOKEN_LENGTH && candidateToken.includes(queryToken)) return 1;
+  if (
+    queryToken.length >= FUZZY_MIN_TOKEN_LENGTH &&
+    candidateToken.length >= FUZZY_MIN_TOKEN_LENGTH &&
+    editDistanceAtMostOne(queryToken, candidateToken)
+  ) {
+    return 0.5;
+  }
   return 0;
 }
 
@@ -300,6 +342,7 @@ function matchField(value: string, query: string, queryTokens: readonly string[]
     Math.max(...candidateTokens.map((candidateToken) => tokenQuality(queryToken, candidateToken)), 0),
   );
   if (qualities.some((quality) => quality === 0)) return null;
+  if (qualities.some((quality) => quality === 0.5)) return { quality: 1.2, reason: "fuzzy" };
   if (qualities.every((quality) => quality === 3)) return { quality: 1.8, reason: "tokens" };
   if (qualities.every((quality) => quality >= 2)) return { quality: 1.6, reason: "tokens" };
   return { quality: 1.4, reason: "tokens" };
@@ -327,7 +370,9 @@ function resultForDocument(document: SearchIndexDocument, query: string): Search
         ? "title-exact"
         : titleMatch.reason === "prefix"
           ? "title-prefix"
-          : "title-tokens";
+          : titleMatch.reason === "fuzzy"
+            ? "title-fuzzy"
+            : "title-tokens";
     score = 6_000 + titleMatch.quality * 100;
   } else if (aliasMatch) {
     reason = "alias";
@@ -375,6 +420,23 @@ function resultForEntity(entity: IpaEntity, query: string): SearchResult | null 
   };
 }
 
+export function rankEntitySearchResults(
+  entities: readonly IpaEntity[],
+  rawQuery: string,
+): readonly SearchResult[] {
+  const query = normalizeSearchText(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
+  if (tokens(query).length === 0) return [];
+
+  const byHref = new Map<string, SearchResult>();
+  for (const entity of entities) {
+    const result = resultForEntity(entity, query);
+    if (!result) continue;
+    const existing = byHref.get(result.href);
+    if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
+  }
+  return [...byHref.values()].sort(compareResults);
+}
+
 function compareResults(left: SearchResult, right: SearchResult): number {
   return (
     right.score - left.score ||
@@ -395,9 +457,14 @@ export function rankSearchDocuments(
 ): readonly SearchResult[] {
   const query = normalizeSearchText(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
   if (tokens(query).length === 0) return [];
-  return documents.map((document) => resultForDocument(document, query))
-    .filter((result): result is SearchResult => result !== null)
-    .sort(compareResults);
+  const byHref = new Map<string, SearchResult>();
+  for (const document of documents) {
+    const result = resultForDocument(document, query);
+    if (!result) continue;
+    const existing = byHref.get(result.href);
+    if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
+  }
+  return [...byHref.values()].sort(compareResults);
 }
 
 function groupResults(results: readonly SearchResult[]): readonly SearchGroup[] {
@@ -442,24 +509,30 @@ export async function searchGlobal(input: {
   let entityResults: SearchResult[] = [];
 
   try {
-    const entitySearch = await searchIpaEntities({
-      query: normalizedQuery,
-      limit: Math.min(50, Math.max(limit * 3, 12)),
-    });
+    const entityLimit = Math.min(50, Math.max(limit * 3, 12));
+    let entitySearch;
+    try {
+      entitySearch = await searchIpaEntitiesByPrefix({
+        query: normalizedQuery,
+        limit: entityLimit,
+      });
+    } catch {
+      // Keep the existing full-text adapter as a fail-safe when the optional
+      // SQL search endpoint is unavailable upstream.
+      entitySearch = await searchIpaEntities({ query: normalizedQuery, limit: entityLimit });
+    }
     entityTotal = entitySearch.total;
-    entityResults = entitySearch.records
-      .map((entity) => resultForEntity(entity, normalizedQuery))
-      .filter((result): result is SearchResult => result !== null);
+    entityResults = [...rankEntitySearchResults(entitySearch.records, normalizedQuery)];
   } catch {
     entitiesAvailable = false;
   }
 
-  const byId = new Map<string, SearchResult>();
+  const byHref = new Map<string, SearchResult>();
   for (const result of [...staticResults, ...entityResults]) {
-    const existing = byId.get(result.id);
-    if (!existing || compareResults(result, existing) < 0) byId.set(result.id, result);
+    const existing = byHref.get(result.href);
+    if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
   }
-  const combined = [...byId.values()].sort(compareResults);
+  const combined = [...byHref.values()].sort(compareResults);
   const visible = combined.slice(0, limit);
   const total = staticResults.length + entityTotal;
 

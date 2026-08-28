@@ -59,15 +59,23 @@ test("ogni SVG locale è presente, hashato e senza contenuto eseguibile o riferi
 });
 
 test("RegionCrest usa asset locali, label semantiche e fallback accessibile", async () => {
-  const component = await readFile(join(projectRoot, "src/components/region-crest.tsx"), "utf8");
+  const [component, css] = await Promise.all([
+    readFile(join(projectRoot, "src/components/region-crest.tsx"), "utf8"),
+    readFile(join(projectRoot, "src/components/region-crest.module.css"), "utf8"),
+  ]);
   assert.ok(component.includes('from "next/image"'));
   assert.ok(component.includes("src={entry.asset}"));
   assert.ok(component.includes("unoptimized"));
+  assert.ok(component.includes('loading="eager"'));
   assert.ok(component.includes('alt={decorative ? "" :'));
   assert.ok(component.includes("Bandiera regionale"));
   assert.ok(component.includes("data-region-crest-type"));
   assert.ok(component.includes('data-region-crest="fallback"'));
   assert.ok(component.includes("Stemma non disponibile per"));
+  assert.match(css, /\.crest \{[\s\S]*?overflow: visible;/);
+  assert.doesNotMatch(css, /\.crest \{[\s\S]*?border:/);
+  assert.doesNotMatch(css, /\.crest \{[\s\S]*?background:/);
+  assert.match(css, /\.image \{[\s\S]*?width: 100%;[\s\S]*?height: 100%;[\s\S]*?object-fit: contain;/);
   for (const route of ["src/app/page.tsx", "src/app/regioni/page.tsx", "src/app/territori/page.tsx"]) {
     const source = await readFile(join(projectRoot, route), "utf8");
     assert.ok(source.includes("RegionCrest"), route + ": integrazione mancante");

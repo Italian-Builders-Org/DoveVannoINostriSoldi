@@ -79,8 +79,8 @@
 .sectorLabel b { color: var(--color-accent-700); }
 .sectorLabel span { overflow: hidden; color: var(--color-neutral-800); text-overflow: ellipsis; white-space: nowrap; }
 .sectorLabel strong { font-variant-numeric: tabular-nums; }
-.sectorList i { display: block; height: 7px; margin-top: 5px; background: var(--color-neutral-200); }
-.sectorList i b { display: block; height: 100%; background: var(--color-accent); }
+.sectorList i { display: block; height: 7px; margin-top: 5px; background: var(--chart-data-track); }
+.sectorList i b { display: block; height: 100%; background: var(--chart-data-primary); }
 .sectorList small { display: block; margin-top: 3px; color: var(--color-neutral-600); font-size: 10px; }
 
 .mapPanel { min-width: 0; }
@@ -89,6 +89,9 @@
 
 .detailCard { display: grid; gap: 3px; margin-top: 14px; padding: 16px; background: var(--color-accent-100); border-left: 2px solid var(--color-accent-700); }
 .detailLabel, .sourcePublisher { color: var(--color-neutral-600); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
+.regionIdentity { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.regionIdentity > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detailRegion { display: inline-flex; align-items: center; gap: 9px; }
 .detailCard strong { font-size: 19px; }
 .detailCard b { color: var(--color-accent-900); font-size: 30px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .detailCard small { color: var(--color-neutral-700); font-size: 11px; }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CompanyAtlasFilters } from "@/components/company-atlas-filters";
 import { CompanyAtlasMap } from "@/components/company-atlas-map";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { integer, longDate, percent } from "@/lib/format";
 import {
   COMPANY_ATLAS_ALL,
@@ -52,6 +53,19 @@ function compactTurnover(value: number | null): string {
     return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mln €`;
   }
   return `${integer(value)} mila €`;
+}
+
+function RegionalIdentity({
+  region,
+}: {
+  region: Readonly<{ code: string; name: string }>;
+}) {
+  return (
+    <span className={styles.regionIdentity}>
+      <RegionCrest regionCode={region.code} regionName={region.name} decorative />
+      <span>{region.name}</span>
+    </span>
+  );
 }
 
 function atlasHref(view: { metric: string; period: string; region: string; sector: string; band?: string }, region?: string) {
@@ -218,7 +232,7 @@ export default async function ImpresePage({
                     {topRegions.map((region, index) => (
                       <tr key={region.code}>
                         <td className="num">{index + 1}</td>
-                        <th scope="row"><Link href={atlasHref(turnoverView, region.code)}>{region.name}</Link></th>
+                        <th scope="row"><Link href={atlasHref(turnoverView, region.code)}><RegionalIdentity region={region} /></Link></th>
                         <td className="num">{compactTurnover(region.value)}</td>
                       </tr>
                     ))}
@@ -237,7 +251,12 @@ export default async function ImpresePage({
               </div>
               <div className={styles.detailCard}>
                 <span className={styles.detailLabel}>Regione in evidenza</span>
-                <strong>{visibleRegion?.name ?? "Italia"}</strong>
+                {visibleRegion ? (
+                  <div className={styles.detailRegion}>
+                    <RegionCrest regionCode={visibleRegion.code} regionName={visibleRegion.name} decorative />
+                    <strong>{visibleRegion.name}</strong>
+                  </div>
+                ) : <strong>Italia</strong>}
                 <b>{compactTurnover(visibleRegion?.value ?? turnoverView.nationalValue)}</b>
                 <small>{turnoverView.metricUnit} · {turnoverView.selectedSectorLabel}</small>
               </div>
@@ -272,6 +291,7 @@ export default async function ImpresePage({
             </aside>
           </div>
         </div>
+        <RegionCrestAttribution />
       </main>
     );
   }
@@ -393,7 +413,7 @@ export default async function ImpresePage({
                   {topRegions.map((region, index) => (
                     <tr key={region.code}>
                       <td className="num">{index + 1}</td>
-                      <th scope="row"><Link href={atlasHref(view, region.code)}>{region.name}</Link></th>
+                      <th scope="row"><Link href={atlasHref(view, region.code)}><RegionalIdentity region={region} /></Link></th>
                       <td className="num">{compactCount(region.value)}</td>
                     </tr>
                   ))}
@@ -412,7 +432,12 @@ export default async function ImpresePage({
             </div>
             <div className={styles.detailCard}>
               <span className={styles.detailLabel}>Regione in evidenza</span>
-              <strong>{visibleRegion?.name ?? "Italia"}</strong>
+              {visibleRegion ? (
+                <div className={styles.detailRegion}>
+                  <RegionCrest regionCode={visibleRegion.code} regionName={visibleRegion.name} decorative />
+                  <strong>{visibleRegion.name}</strong>
+                </div>
+              ) : <strong>Italia</strong>}
               <b>{compactCount(visibleRegion?.value ?? view.nationalValue)}</b>
               <small>{view.metricUnit} · {view.selectedSectorLabel}</small>
             </div>
@@ -445,6 +470,7 @@ export default async function ImpresePage({
           </aside>
         </div>
       </div>
-    </main>
+        <RegionCrestAttribution />
+      </main>
   );
 }

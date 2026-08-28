@@ -164,6 +164,21 @@ test("reported chart styles stay within the registry design tokens", async () =>
   }
 });
 
+test("quantitative bars reserve red for alerts and actions", async () => {
+  const [tokens, spending, cohesion, companies] = await Promise.all([
+    source("../src/app/design-system.css"),
+    source("../src/app/spese/spese.module.css"),
+    source("../src/app/coesione/coesione.module.css"),
+    source("../src/app/imprese/imprese.module.css"),
+  ]);
+
+  assert.match(tokens, /--chart-primary: var\(--chart-data-primary\);/);
+  assert.match(spending, /\.titleTrack i \{[\s\S]*?background: var\(--chart-data-primary\);/);
+  assert.match(spending, /\.monthList li > i > b \{[\s\S]*?background: var\(--chart-data-primary\);/);
+  assert.match(cohesion, /\.statusList li > i > b,[\s\S]*?background: var\(--chart-progress\);/);
+  assert.match(companies, /\.sectorList i b \{[\s\S]*?background: var\(--chart-data-primary\);/);
+});
+
 test("strong civic surfaces use defined foreground tokens", async () => {
   const [tokens, cohesionCss] = await Promise.all([
     source("../src/app/design-system.css"),
@@ -225,4 +240,26 @@ test("the narrow mobile header never collapses the wordmark into a text column",
     /@media \(max-width: 460px\) \{[\s\S]*?\.brand-text \{ display: none; \}[\s\S]*?\}/,
   );
   assert.match(navigation, /className="brand" aria-label="Dove vanno i nostri soldi, home"/);
+});
+
+test("secondary pages keep route identity and a restrained mobile heading", async () => {
+  const [entities, stateCss] = await Promise.all([
+    source("../src/app/enti/page.tsx"),
+    source("../src/app/stato/stato.module.css"),
+  ]);
+
+  assert.match(entities, /export const metadata: Metadata = \{[\s\S]*?title: "Registro degli enti pubblici"/);
+  assert.match(stateCss, /@media \(max-width: 720px\) \{[\s\S]*?\.title \{[\s\S]*?font-size: clamp\(32px, 9vw, 42px\);/);
+});
+
+test("the relationship explorer uses its module styles and keeps result context", async () => {
+  const explorer = await source("../src/app/esplora/EsploraSearch.tsx");
+
+  assert.match(explorer, /import styles from "\.\/esplora\.module\.css";/);
+  assert.match(explorer, /className=\{styles\.searchInput\}/);
+  assert.match(explorer, /className=\{styles\.relationList\}/);
+  assert.match(explorer, /r\.period/);
+  assert.match(explorer, /euro\.format\(r\.amount\)/);
+  assert.match(explorer, /r\.confidence_note/);
+  assert.doesNotMatch(explorer, /className="(?:search-input|relation-list|relation-item)"/);
 });

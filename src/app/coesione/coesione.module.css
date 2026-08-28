@@ -82,13 +82,13 @@
 .shareList li > i {
   display: block;
   height: 10px;
-  background: var(--color-neutral-200);
+  background: var(--chart-progress-track);
 }
 .statusList li > i > b,
 .shareList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-progress);
 }
 
 .statusList li > b,

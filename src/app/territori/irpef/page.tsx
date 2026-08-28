@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
 import { HorizontalScrollRegion } from "@/components/horizontal-scroll-region";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import {
   MefIrpefQueryError,
@@ -461,6 +462,13 @@ export default async function MefIrpefPage({
                   return (
                     <tr key={`${record.territory.level}:${record.territory.code}`}>
                       <th scope="row">
+                        {record.territory.level === "region" ? (
+                          <RegionCrest
+                            regionCode={record.territory.code}
+                            regionName={record.territory.name}
+                            decorative
+                          />
+                        ) : null}{" "}
                         {territoryName(record)}
                         {context ? <small>{context}</small> : null}
                       </th>
@@ -504,6 +512,8 @@ export default async function MefIrpefPage({
           </nav>
         ) : null}
       </section>
+
+      {displayLevel === "region" && !awaitingMunicipalityFilter ? <RegionCrestAttribution /> : null}
 
       <section className={`panel ${styles.methodology}`} aria-labelledby="irpef-method-title">
         <div>

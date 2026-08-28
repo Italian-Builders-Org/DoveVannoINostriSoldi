@@ -84,5 +84,20 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   assert.match(component, /item\.shortLabel \?\? item\.label/);
   assert.match(css, /\.tileCopy b \{[\s\S]*?font-family: var\(--font-heading\);/);
   assert.match(css, /\.visual \{[\s\S]*?height: clamp\(250px, 62cqw, 320px\);/);
-  assert.match(css, /\.tile\[data-label-mode="index"\] \{[\s\S]*?padding: 0;/);
+  assert.match(css, /\.tile\[data-label-mode="index"\] \{[\s\S]*?place-items: center;[\s\S]*?align-content: center;[\s\S]*?padding: 0;/);
+  assert.match(css, /\.tileIndex \{[\s\S]*?width: auto;[\s\S]*?height: auto;/);
+});
+
+test("home reading guidance is a compact accessible aside", async () => {
+  const [page, css] = await Promise.all([
+    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
+  assert.match(page, /<h2 id="reading-title" className="panel-title">Come leggere questi numeri<\/h2>/);
+  assert.match(page, /className=\{styles\.readingRules\}/);
+  assert.match(page, /href="\/metodologia"/);
+  assert.doesNotMatch(page, /panel-accent \$\{styles\.readingPanel\}/);
+  assert.match(css, /\.readingPanel \{[\s\S]*?grid-column: 1 \/ -1;[\s\S]*?background: var\(--color-neutral-100\);/);
+  assert.match(css, /\.readingRules \{[\s\S]*?display: grid;/);
 });

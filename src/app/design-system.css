@@ -89,7 +89,9 @@
   --max: 1560px;
   --gutter: 28px;
 
-  --chart-primary: var(--color-accent);
+  /* Default series are quantitative, not warnings.  Components that encode
+     a negative value opt into --chart-negative explicitly. */
+  --chart-primary: var(--chart-data-primary);
   --chart-secondary: var(--color-neutral-800);
   --chart-tertiary: var(--color-neutral-500);
   --chart-quaternary: var(--color-neutral-400);

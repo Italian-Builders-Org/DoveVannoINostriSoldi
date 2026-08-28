@@ -4,7 +4,7 @@ import { loadInvestigativeMeta } from "@/lib/investigative-explorer";
 import styles from "./esplora.module.css";
 
 export const metadata = {
-  title: "Esplora relazioni · Dove vanno i nostri soldi?",
+  title: "Esplora relazioni",
   description:
     "Ricerca trasversale di persone ed enti negli incarichi pubblici (fetta incarichi-nominativi-shard). I riferimenti CIG/CUP e di atto sono in nota e ricercabili.",
 };
@@ -15,7 +15,7 @@ export default function EsploraPage() {
   const caveat = m.caveat ?? "";
 
   return (
-    <main className="shell">
+    <main className="shell page">
       <section className={styles.intro}>
         <h1>Esplora relazioni</h1>
         <p>

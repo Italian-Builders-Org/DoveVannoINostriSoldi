@@ -18,7 +18,46 @@
   font-size: 0.9rem;
 }
 
-.relation-list {
+.searchPanel {
+  padding: var(--space-5);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.searchHead p {
+  max-width: 64ch;
+  margin: var(--space-2) 0 var(--space-4);
+  color: var(--color-neutral-700);
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-raised);
+  color: var(--color-ink);
+  font: inherit;
+}
+
+.searchInput:focus-visible {
+  border-color: var(--chart-data-primary);
+  outline: 2px solid color-mix(in srgb, var(--chart-data-primary) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.resultStatus {
+  margin: var(--space-2) 0 var(--space-4);
+  color: var(--color-neutral-600);
+  font-size: 0.88rem;
+}
+
+.error {
+  color: var(--color-accent-800);
+  font-weight: 700;
+}
+
+.relationList {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -26,27 +65,52 @@
   gap: 0.5rem;
 }
 
-.relation-item {
+.relationItem {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.4rem;
   padding: 0.6rem 0.8rem;
-  border: 1px solid var(--border, currentColor);
-  border-radius: 10px;
+  border: 1px solid var(--color-neutral-300);
 }
 
-.relation-subject {
+.relationSubject,
+.relationObject {
   font-weight: 600;
 }
 
-.relation-type,
-.relation-role {
+.relationArrow { color: var(--color-neutral-500); }
+
+.relationType,
+.relationRole,
+.relationPeriod,
+.relationAmount {
   font-size: 0.78rem;
-  color: var(--muted-foreground, inherit);
+  color: var(--color-neutral-600);
 }
 
-.relation-source {
+.relationNote,
+.confidenceNote {
+  flex-basis: 100%;
+  color: var(--color-neutral-700);
+  font-size: 0.82rem;
+}
+
+.confidenceNote {
+  display: -webkit-box;
+  margin-top: 2px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.relationSource {
   margin-left: auto;
   font-size: 0.82rem;
+}
+
+@media (max-width: 620px) {
+  .searchPanel { padding: var(--space-4); }
+  .relationItem { align-items: flex-start; }
+  .relationSource { flex-basis: 100%; margin-left: 0; }
 }

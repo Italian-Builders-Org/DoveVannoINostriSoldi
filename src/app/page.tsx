@@ -533,19 +533,30 @@ export default async function HomePage({
           </Link>
         </section>
 
-        <section className={`panel panel-accent ${styles.readingPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">Come leggere questi numeri</h2>
+        <aside className={styles.readingPanel} aria-labelledby="reading-title">
+          <div className={styles.readingIntro}>
+            <span className={styles.readingKicker}>Chiave di lettura</span>
+            <h2 id="reading-title" className="panel-title">Come leggere questi numeri</h2>
+            <p className={styles.readingNote}>
+              Il totale dice quanto è uscito; il valore per abitante aiuta a confrontare Comuni
+              diversi. Considera sempre anche la dimensione dell&apos;ente e i servizi che gestisce.
+            </p>
           </div>
-          <p className={styles.readingNote}>
-            Qui vedi i pagamenti dei Comuni. Una cifra alta va letta con abitanti e con i servizi
-            che quel Comune gestisce.
-          </p>
+          <dl className={styles.readingRules}>
+            <div>
+              <dt>Totale</dt>
+              <dd>Quanto è stato pagato</dd>
+            </div>
+            <div>
+              <dt>Per abitante</dt>
+              <dd>Un confronto più equo</dd>
+            </div>
+          </dl>
           <Link className={styles.readingLink} href="/metodologia">
             Come leggiamo i dati
             <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
           </Link>
-        </section>
+        </aside>
       </div>
     </main>
   );

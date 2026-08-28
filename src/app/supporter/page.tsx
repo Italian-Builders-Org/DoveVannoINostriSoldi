@@ -27,9 +27,9 @@ export default function SupportersPage() {
           <a href={BUY_ME_A_COFFEE_URL} target="_blank" rel="noreferrer">
             Buy Me a Coffee
           </a>{" "}
-          aiuta a pagare compute e hosting. Elenco aggiornato dai contributi pubblici ricevuti
-          finora ({INDIVIDUAL_SUPPORTERS.length} nomi, inclusi i sostegni anonimi aggregati). Il
-          contributo resta volontario e non influenza i dati pubblicati.
+          aiuta a pagare compute e hosting. Raggruppiamo i contributi quando il nome pubblico
+          coincide; i sostegni anonimi sono aggregati separatamente ({INDIVIDUAL_SUPPORTERS.length} voci).
+          Il contributo resta volontario e non influenza i dati pubblicati.
         </p>
         <ul>
           {INDIVIDUAL_SUPPORTERS.map((supporter) => (

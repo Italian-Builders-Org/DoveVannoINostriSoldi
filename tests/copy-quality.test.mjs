@@ -18,13 +18,19 @@ async function filesBelow(relativePath) {
   return files;
 }
 
-test("readme shows live UI screenshots of home, territories and controls", async () => {
+test("readme shows current UI screenshots of the main public areas", async () => {
   const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
   assert.match(readme, /https:\/\/www\.dovevannoinostrisoldi\.com/);
   assert.match(readme, /https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi/);
   assert.match(readme, /Buy me an AI compute/);
   assert.match(readme, /height="32"/);
-  for (const file of ["home.jpg", "territori.jpg", "controlli.jpg"]) {
+  for (const file of [
+    "home.jpg",
+    "territori.jpg",
+    "controlli.jpg",
+    "istruzione.jpg",
+    "confronto-territori.jpg",
+  ]) {
     assert.match(readme, new RegExp(`docs/readme/${file}`));
     await readFile(new URL(`../docs/readme/${file}`, import.meta.url));
   }

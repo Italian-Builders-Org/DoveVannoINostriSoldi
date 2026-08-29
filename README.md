@@ -16,15 +16,22 @@ Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare 
 | --- | --- |
 | ![Territori: pagamenti comunali per regione e per Comune](docs/readme/territori.jpg) | ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) |
 
+| Atlante Istruzione | Confronto Comuni |
+| --- | --- |
+| ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Confronto Comuni: quattro profili OpenCivitas e tabella territoriale](docs/readme/confronto-territori.jpg) |
+
 ## Cosa trovi sul sito
 
 | Sezione | In sintesi |
 | --- | --- |
 | [Home](https://www.dovevannoinostrisoldi.com/) | Pagamenti dei Comuni, mappa regionale, andamento mensile |
+| [Imprese](https://www.dovevannoinostrisoldi.com/imprese) | Imprese attive, addetti, localizzazioni e fatturato aggregato (ISTAT) |
+| [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Studenti e percorsi della scuola secondaria di II grado per Regione (MIM) |
 | [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), mese per mese |
-| [Territori](https://www.dovevannoinostrisoldi.com/territori) | Confronti per regione/Comune, CPT e IRPEF MEF |
+| [Territori](https://www.dovevannoinostrisoldi.com/territori) | Confronti per Regione e Comune, profili OpenCivitas, CPT e IRPEF MEF |
 | [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione) | OpenCoesione e traccia PNRR asili (Italia Domani) |
 | [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato) | Pagamenti per funzione e amministrazione (OpenBDAP/RGS) |
+| [Debito pubblico](https://www.dovevannoinostrisoldi.com/debito) | Stock, detentori, scadenze e interessi (Banca d'Italia ed Eurostat) |
 | [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio) | Stanziamenti per missione e riallocazione ipotetica (OpenBDAP, competenza A1, non cassa) |
 | [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF |
 | [Istituzioni](https://www.dovevannoinostrisoldi.com/istituzioni) | Parlamento, sanità, invalidità e altri dossier |
@@ -32,7 +39,7 @@ Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare 
 | [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti e date di aggiornamento |
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |
 
-Altre viste utili: [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [assistente](https://www.dovevannoinostrisoldi.com/assistente).
+Altre viste utili: [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [assistente](https://www.dovevannoinostrisoldi.com/assistente).
 
 ## Regole in breve
 

@@ -94,11 +94,17 @@ function TrendSparkline({ indicator }: { indicator: Indicator }) {
   const zeroY = 54 - ((0 - minimum) / (maximum - minimum || 1)) * 44;
 
   return (
-    <svg className={styles.sparkline} viewBox="0 0 240 64" role="img" aria-label={`${indicator.label}: andamento Italia e mediana dei peer`}>
-      <line x1="8" x2="232" y1={zeroY} y2={zeroY} className={styles.zeroLine} />
-      <polyline points={sparklinePoints(peers, minimum, maximum)} className={styles.peerLine} />
-      <polyline points={sparklinePoints(italy, minimum, maximum)} className={styles.italyLine} />
-    </svg>
+    <>
+      <svg className={styles.sparkline} viewBox="0 0 240 64" role="img" aria-label={`${indicator.label}: andamento dal ${indicator.series[0]?.year} al ${indicator.series.at(-1)?.year}, Italia e mediana dei peer`}>
+        <line x1="8" x2="232" y1={zeroY} y2={zeroY} className={styles.zeroLine} />
+        <polyline points={sparklinePoints(peers, minimum, maximum)} className={styles.peerLine} />
+        <polyline points={sparklinePoints(italy, minimum, maximum)} className={styles.italyLine} />
+      </svg>
+      <div className={styles.chartPeriod}>
+        <span>Periodo del grafico</span>
+        <strong>{indicator.series[0]?.year} → {indicator.series.at(-1)?.year}</strong>
+      </div>
+    </>
   );
 }
 
@@ -110,6 +116,21 @@ function comparisonLabel(indicator: Indicator) {
   });
   if (Math.abs(indicator.relativeChange) < 0.05) return "In linea con i peer";
   return `${indicator.relativeChange > 0 ? "Meglio" : "Peggio"} dei peer di ${distance}${suffix}`;
+}
+
+function currentValueLabel(indicator: Indicator) {
+  if (indicator.id === "real_compensation") {
+    return `Indice ${indicator.endValue.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
+  }
+  return sourceValue(indicator.endValue, indicator.id);
+}
+
+function currentValueMeaning(indicator: Indicator, endYear: number) {
+  if (indicator.id === "real_compensation") {
+    const distance = Math.abs(indicator.endValue - 100).toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return `2020 = 100: nel ${endYear} è ${distance}% ${indicator.endValue >= 100 ? "sopra" : "sotto"} quel livello.`;
+  }
+  return `Valore osservato nel ${endYear}`;
 }
 
 export function CurrentGovernmentOverview({
@@ -171,8 +192,16 @@ export function CurrentGovernmentOverview({
                 </div>
                 <p>{copy.question}</p>
                 <div className={styles.valueRow}>
-                  <strong>{sourceValue(indicator.endValue, indicator.id)}</strong>
-                  <span>{rawChangeLabel(indicator)} dal {calculation.baselineYear}</span>
+                  <div className={styles.changeValue}>
+                    <span>Variazione nel mandato</span>
+                    <strong>{rawChangeLabel(indicator)}</strong>
+                    <small>dal {calculation.baselineYear} al {calculation.endYear}</small>
+                  </div>
+                  <div className={styles.currentValue}>
+                    <span>Valore attuale</span>
+                    <strong>{currentValueLabel(indicator)}</strong>
+                    <small>{currentValueMeaning(indicator, calculation.endYear)}</small>
+                  </div>
                 </div>
                 <TrendSparkline indicator={indicator} />
                 <div className={styles.cardFooter}>

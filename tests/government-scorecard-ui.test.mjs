@@ -44,6 +44,10 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /Meglio dei peer/);
   assert.match(currentOverview, /calculation\.indicators\.map/);
   assert.match(currentOverview, /<TrendSparkline indicator=\{indicator\} \/>/);
+  assert.match(currentOverview, /Periodo del grafico/);
+  assert.match(currentOverview, /Variazione nel mandato/);
+  assert.match(currentOverview, /Valore attuale/);
+  assert.match(currentOverview, /2020 = 100/);
   assert.match(currentOverview, /Mediana peer/);
   assert.match(currentOverview, /comparisonLabel\(indicator\)/);
   assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{calculation\.indicators\} \/>/);

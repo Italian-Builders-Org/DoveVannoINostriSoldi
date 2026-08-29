@@ -17,6 +17,7 @@ export function ChartDataTable({
       <summary>Dati del grafico in tabella</summary>
       <div className="table-scroll" role="region" aria-label={label} tabIndex={0}>
         <table className="table">
+          <caption className="table-caption">{label}</caption>
           <thead>
             <tr>
               <th scope="col">Voce</th>

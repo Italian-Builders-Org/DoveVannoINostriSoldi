@@ -271,24 +271,12 @@ export function SpendingComposition({
       <ol className={styles.legend}>
         {items.map((item, index) => (
           <li key={item.id}>
-            <button
-              type="button"
-              aria-describedby={displayedId === item.id ? tooltipId : undefined}
-              aria-pressed={pinnedId === item.id}
-              onFocus={(event) => activate(item.id, event)}
-              onBlur={(event) => deactivate(item.id, event)}
-              onPointerEnter={(event) => activate(item.id, event)}
-              onPointerLeave={(event) => deactivate(item.id, event)}
-              onClick={(event) => toggle(item, event)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setPinnedId(null);
-                  setActiveId(null);
-                  setAnchor(null);
-                }
-              }}
+            {/* The tiles above are the single interactive selection list. Keep
+                this legend as readable supporting content so each item does
+                not appear twice in the keyboard focus order. */}
+            <div
+              className={styles.legendEntry}
+              data-active={displayedId === item.id ? "true" : undefined}
             >
               <i className={`${styles.legendSwatch} ${styles[item.family]}`} aria-hidden="true" />
               <span className={styles.legendCopy}>
@@ -296,7 +284,7 @@ export function SpendingComposition({
                 <small className={styles.legendAmount}>{compactEuro(item.valueEuro)}</small>
               </span>
               <strong className={styles.legendShare}>{percent(share(item))}</strong>
-            </button>
+            </div>
             <i className={styles.mobileBar} aria-hidden="true">
               <span className={styles[item.family]} style={{ width: `${share(item)}%` }} />
             </i>
@@ -332,6 +320,7 @@ export function SpendingComposition({
         <summary>Dati esatti della composizione</summary>
         <div className="table-scroll" role="region" aria-label="Dati esatti della composizione" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Dati esatti della composizione: importi e quote</caption>
             <thead><tr><th scope="col">Voce</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead>
             <tbody>
               {items.map((item) => (

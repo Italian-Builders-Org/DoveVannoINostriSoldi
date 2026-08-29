@@ -202,6 +202,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           {result.records.length > 0 ? (
             <div className="table-scroll" role="region" aria-label="Risultati della ricerca enti" tabIndex={0}>
               <table className="table">
+                <caption className="table-caption">Risultati della ricerca nel registro IPA</caption>
                 <thead>
                   <tr>
                     <th scope="col">Ente</th>
@@ -251,6 +252,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           </div>
           <div className="table-scroll" role="region" aria-label="Principali enti pubblici" tabIndex={0}>
             <table className="table">
+              <caption className="table-caption">Amministrazioni centrali del registro IPA</caption>
               <thead>
                 <tr>
                   <th scope="col">Amministrazione</th>
@@ -347,6 +349,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
         </div>
         <div className="table-scroll" role="region" aria-label="Partecipazioni pubbliche" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Società con più enti soci dichiaranti</caption>
             <thead>
               <tr>
                 <th scope="col">Società</th>

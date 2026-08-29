@@ -286,6 +286,7 @@ export default function IncarichiPage() {
         <p className={styles.tableHint}>Scorri la tabella →</p>
         <div className="table-scroll" role="region" aria-label="Serie annuale degli incarichi esterni" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Serie annuale degli incarichi esterni: incarichi, conclusi e pagamenti</caption>
             <thead>
               <tr>
                 <th scope="col">Anno</th>
@@ -332,6 +333,7 @@ export default function IncarichiPage() {
         <p className={styles.tableHint}>Scorri la tabella →</p>
         <div className="table-scroll" role="region" aria-label="Serie annuale degli incarichi ai dipendenti" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Serie annuale degli incarichi ai dipendenti: incarichi, conclusi e pagamenti</caption>
             <thead>
               <tr>
                 <th scope="col">Anno</th>

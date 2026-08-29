@@ -133,12 +133,9 @@ export function TerritoryMetricChart({
       <ol className={styles.chart}>
         {points.map((point) => (
           <li key={point.label} data-selected={selectedRegion === point.label || undefined}>
-            <button type="button" className={styles.regionName} onClick={() => focus(point.label)}>
-              {point.label}
-            </button>
             <button
               type="button"
-              className={styles.track}
+              className={styles.regionRow}
               onClick={() => focus(point.label)}
               style={{
                 "--bar-width": `${Math.max(1, point.value / maximum * 100)}%`,
@@ -146,10 +143,13 @@ export function TerritoryMetricChart({
               } as CSSProperties}
               aria-label={`${point.label}: ${point.exactValue}. Apri il dettaglio nel grafico.`}
             >
-              <i className={styles.bar} aria-hidden="true" />
-              {reference ? <i className={styles.reference} aria-hidden="true" /> : null}
+              <span className={styles.regionName}>{point.label}</span>
+              <span className={styles.track} aria-hidden="true">
+                <i className={styles.bar} />
+                {reference ? <i className={styles.reference} /> : null}
+              </span>
+              <strong className={styles.value}>{point.formattedValue}</strong>
             </button>
-            <strong className={styles.value} title={point.exactValue}>{point.formattedValue}</strong>
           </li>
         ))}
       </ol>

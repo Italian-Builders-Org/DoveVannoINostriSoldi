@@ -111,6 +111,7 @@ export default function MinistriesPage() {
           tabIndex={0}
         >
           <table className="table">
+            <caption className="table-caption">Valori contabili dei ministeri: impegnato, pagato e residuo</caption>
             <thead>
               <tr>
                 <th scope="col">Ministero</th>

@@ -8,10 +8,20 @@ const navigationSource = fs.readFileSync(
   new URL("../src/lib/site-navigation.ts", import.meta.url),
   "utf8",
 );
+const navigationComponentSource = fs.readFileSync(
+  new URL("../src/components/navigation.tsx", import.meta.url),
+  "utf8",
+);
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, isNavChildActive, DASHBOARD_NAV, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
+const {
+  activeNavSection,
+  isNavChildActive,
+  DASHBOARD_NAV,
+  PRIMARY_NAV,
+} = await import("../src/lib/site-navigation.ts");
+const { PUBLIC_INDEXABLE_PATHS } = await import("../src/lib/public-discovery.ts");
 const { EDITORIAL_TOPICS } = await import("../src/lib/integrated-editorial.ts");
 const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
@@ -32,6 +42,17 @@ async function pageRoutes(relativePath = "") {
   return routes;
 }
 
+function routePatternMatches(pathname, routePattern) {
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const routeSegments = routePattern.split("/").filter(Boolean);
+  return pathSegments.length === routeSegments.length
+    && routeSegments.every((segment, index) => (
+      segment.startsWith("[") && segment.endsWith("]")
+        ? pathSegments[index].length > 0
+        : segment === pathSegments[index]
+    ));
+}
+
 test("site navigation exposes coesione asili without a duplicate global footer", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
   assert.match(navigationSource, /title: "Fondi e progetti"/);
@@ -50,7 +71,7 @@ test("dashboard navigation keeps flyout panels and no duplicate subnav bar", asy
     "utf8",
   );
   assert.match(navigationComponent, /nav-submenu/);
-  assert.doesNotMatch(navigationComponent, /subnav-row|nav\.subnav|activeNavSection/);
+  assert.doesNotMatch(navigationComponent, /subnav-row|nav\.subnav/);
 });
 
 test("sidebar keeps the DVNS mark and exposes a real supporter route", async () => {
@@ -161,6 +182,98 @@ test("every local page route is grouped by one of the thirteen dashboard section
     (route) => route !== "/" && !dashboardHrefs.some((href) => route === href || route.startsWith(`${href}/`)),
   );
   assert.deepEqual(missingRoutes, [], `route non raggruppate: ${missingRoutes.join(", ")}`);
+});
+
+test("the public sitemap and every promoted destination resolve to a page template", async () => {
+  const localRoutes = await pageRoutes();
+  const promotedRoutes = DASHBOARD_NAV.flatMap((section) => [
+    section.href,
+    ...(section.children ?? []).map((child) => child.href.split("?", 1)[0]),
+  ]);
+  const missingSitemapRoutes = PUBLIC_INDEXABLE_PATHS.filter(
+    (route) => !localRoutes.some((template) => routePatternMatches(route, template)),
+  );
+  const missingPromotedRoutes = [...new Set(promotedRoutes)].filter(
+    (route) => route !== "/" && !localRoutes.some((template) => routePatternMatches(route, template)),
+  );
+
+  assert.deepEqual(
+    missingSitemapRoutes,
+    [],
+    `pagine in sitemap senza template locale: ${missingSitemapRoutes.join(", ")}`,
+  );
+  assert.deepEqual(
+    missingPromotedRoutes,
+    [],
+    `destinazioni sidebar senza template locale: ${missingPromotedRoutes.join(", ")}`,
+  );
+});
+
+test("sidebar highlights only the winning section on cross-section destinations", async () => {
+  const navigationComponent = await readFile(
+    new URL("../src/components/navigation.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(navigationComponent, /activeNavSection,/);
+  assert.match(navigationComponent, /const activeSection = activeNavSection\(pathname\)/);
+  assert.match(
+    navigationComponent,
+    /const active = item\.href === "\/"\s*\n\s*\? pathname === "\/"\s*\n\s*: activeSection\?\.href === item\.href;/,
+  );
+  assert.match(
+    navigationComponent,
+    /const parentCurrent = active\s*\n\s*\? \(hasChildren \? "location" : "page"\)\s*\n\s*: undefined;/,
+    "la categoria attiva deve essere location quando espone un sottomenu",
+  );
+  assert.match(
+    navigationComponent,
+    /currentSearch !== null &&\s*active &&\s*isNavChildActive/,
+    "solo i figli della sezione proprietaria possono essere annunciati come pagina corrente",
+  );
+
+  const expectedOwners = new Map([
+    ["/fonti/catalogo", "/dati"],
+    ["/fonti/copertura", "/dati"],
+    ["/fonti/stato", "/dati"],
+    ["/territori/confronto", "/confronti"],
+    ["/appalti/fornitori", "/imprese"],
+    ["/incarichi/nominativi", "/imprese"],
+    ["/controlli/segnalazioni", "/supporto"],
+  ]);
+  for (const [route, expected] of expectedOwners) {
+    assert.equal(activeNavSection(route)?.href, expected, `${route}: proprietario errato`);
+  }
+});
+
+test("category roots expose one location parent and one page overview", () => {
+  assert.match(
+    navigationComponentSource,
+    /aria-current=\{parentCurrent\}/,
+    "il link della categoria deve esporre lo stato semantico calcolato",
+  );
+
+  for (const route of ["/territori", "/imprese"]) {
+    const section = DASHBOARD_NAV.find((candidate) => candidate.href === route);
+    assert.ok(section?.children?.length, `${route}: categoria senza sottomenu`);
+    const activeChildren = section.children.filter((child) =>
+      isNavChildActive(route, child.href, section.children, ""),
+    );
+    assert.deepEqual(
+      activeChildren.map((child) => child.href),
+      [route],
+      `${route}: il root deve avere una sola panoramica corrente`,
+    );
+  }
+
+  const businessSection = DASHBOARD_NAV.find((candidate) => candidate.href === "/imprese");
+  assert.ok(businessSection?.children?.length);
+  assert.deepEqual(
+    businessSection.children
+      .filter((child) => isNavChildActive("/imprese", child.href, businessSection.children, "metric=employees"))
+      .map((child) => child.href),
+    ["/imprese?metric=employees"],
+    "la query Addetti deve mantenere un solo child page",
+  );
 });
 
 test("navigation guards related targets before checking containment", async () => {

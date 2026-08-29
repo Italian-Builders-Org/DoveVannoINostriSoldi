@@ -88,26 +88,11 @@
 .compact .regionOverlay:focus-visible,
 .compact .regionOverlay[data-hovered="true"] { fill: transparent; }
 /* The reference dashboard reads as a neutral national overview. Keep the
-   keyboard/click selection semantics, but only draw the dark outline while a
-   person is actively previewing a region. */
-.compact .hoverOutline { stroke:#344daf; stroke-width: 1.25; }
-.compactDetail {
-  position: absolute;
-  left: 0;
-  bottom: 3px;
-  display: grid;
-  gap: 1px;
-  max-width: 145px;
-  padding: 5px 7px;
-  background: rgb(255 255 255 / 92%);
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 5px;
-  font-size: 8px;
-  font-variant-numeric: tabular-nums;
-}
-.compactDetail span { font-weight: 650; }
-.compactDetail small { color: var(--color-neutral-600); font-size: 6.5px; }
-
+   fixed selection visible after a click, while making an active preview
+   visibly stronger than the resting blue outline. */
+.compact .selectedOutline { stroke:#344daf; stroke-width: 1.5; }
+.compact .hoverOutline { stroke:#1f3f9e; stroke-width: 2.25; }
+.compact .selectedOutline.hoverOutline { stroke-width: 3; }
 .compact .compactLegend {
   position: absolute;
   top: 87px;
@@ -226,7 +211,10 @@
   table-layout: fixed;
 }
 
-@media (max-width: 1100px) {
+/* The home card switches to auto-height at 999px. Keep the compact map and
+   ranking side by side above that point so the fixed-height desktop card
+   cannot clip the ranking between 1000px and 1100px. */
+@media (max-width: 999px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .detail {
     grid-template-columns: repeat(3, minmax(84px, 1fr));

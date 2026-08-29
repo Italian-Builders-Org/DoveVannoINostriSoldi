@@ -115,7 +115,10 @@ export function ItalyRegionsMap({
   const displayedCode = selectionLocked ? selectedCode : hoveredCode ?? selectedCode;
   const selected = byCode.get(displayedCode);
   const navigableCodes: string[] = italyRegionGeometry.map(({ code }) => code);
-  const outlinedCodes = (compact ? [hoveredCode] : [selectedCode, hoveredCode]).filter(
+  // Draw the active outline after all fills in every presentation. Compact
+  // maps used to redraw only hover, so a click updated state but lost its
+  // visible border immediately afterwards.
+  const outlinedCodes = [selectedCode, hoveredCode].filter(
     (code, index, codes): code is string => code !== null && codes.indexOf(code) === index,
   );
 
@@ -162,7 +165,7 @@ export function ItalyRegionsMap({
     ? "I colori rappresentano i valori provinciali. Contorni, hover, clic, tastiera e pannello di dettaglio identificano invece le regioni. "
     : "I colori e i contorni rappresentano i valori regionali. "}Mappa colorata in base ai ${
       metric === "total" ? "pagamenti totali" : "pagamenti per abitante coperto"
-    } di cassa SIOPE dei Comuni. Usa Tab per entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.`;
+    } di cassa SIOPE dei Comuni. Usa Tab per entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione per un’anteprima; fai clic o premi Invio per fissarla nel riepilogo accanto.`;
   const compactLegendTitle = `${metric === "total" ? "Pagamenti totali" : "Pagamenti pro capite (€)"} per ${colorScope}`;
 
   return (
@@ -254,18 +257,20 @@ export function ItalyRegionsMap({
           })}
         </svg>
 
-        <label className={styles.mobileSelector}>
-          <span>Scegli una regione</span>
-          <select
-            data-region-selector="true"
-            value={selectedCode}
-            onChange={(event) => selectRegion(event.target.value)}
-          >
-            {regionOptions.map(([code, name]) => (
-              <option value={code} key={code}>{name}</option>
-            ))}
-          </select>
-        </label>
+        {!compact ? (
+          <label className={styles.mobileSelector}>
+            <span>Scegli una regione</span>
+            <select
+              data-region-selector="true"
+              value={selectedCode}
+              onChange={(event) => selectRegion(event.target.value)}
+            >
+              {regionOptions.map(([code, name]) => (
+                <option value={code} key={code}>{name}</option>
+              ))}
+            </select>
+          </label>
+        ) : null}
 
         {automaticSelection ? (
           <p className={styles.geoNote}>
@@ -291,12 +296,7 @@ export function ItalyRegionsMap({
                     : `da ${formatThreshold(thresholds[index - 1])} a ${formatThreshold(thresholds[index])}`;
                 return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
               })}
-              {showProvinceGeometry ? <small className={styles.compactScope}>Selezione per regione</small> : null}
-            </div>
-            <div className={styles.compactDetail} aria-live="polite">
-              <strong>{selected?.region ?? "Regione non disponibile"}</strong>
-              <span>{!selected ? "n.d." : metric === "total" ? compactEuro(selected.value) : selected.perCapita === null ? "n.d." : exactEuro(selected.perCapita)}</span>
-              <small>{period}</small>
+              {showProvinceGeometry ? <small className={styles.compactScope}>Selezione per regione · clicca per fissare</small> : null}
             </div>
           </>
         ) : (

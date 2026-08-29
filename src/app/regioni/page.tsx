@@ -129,6 +129,7 @@ export default async function RegionsPage({
           tabIndex={0}
         >
           <table className="table">
+            <caption className="table-caption">Voci di bilancio impegnate nel 2024 per {selected.label}</caption>
             <thead>
               <tr>
                 <th scope="col">Voce</th>
@@ -177,6 +178,7 @@ export default async function RegionsPage({
         <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere gli importi.</p>
         <div className={`table-scroll ${styles.allEntitiesTable}`} role="region" aria-label="Impegni esatti delle 22 amministrazioni regionali" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Impegni 2024 delle 22 amministrazioni regionali</caption>
             <thead>
               <tr>
                 <th scope="col">Territorio</th>

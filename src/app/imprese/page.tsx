@@ -227,6 +227,7 @@ export default async function ImpresePage({
               </div>
               <div className="table-scroll" role="region" aria-label="Prime 10 regioni ordinate per valore assoluto" tabIndex={0}>
                 <table className="table">
+                  <caption className="table-caption">Prime 10 regioni per fatturato aggregato ISTAT</caption>
                   <thead><tr><th scope="col">#</th><th scope="col">Regione</th><th scope="col" className="num">Fatturato</th></tr></thead>
                   <tbody>
                     {topRegions.map((region, index) => (
@@ -408,6 +409,7 @@ export default async function ImpresePage({
             </div>
             <div className="table-scroll" role="region" aria-label="Prime 10 regioni ordinate per valore assoluto" tabIndex={0}>
               <table className="table">
+                <caption className="table-caption">Prime 10 regioni per valore assoluto</caption>
                 <thead><tr><th scope="col">#</th><th scope="col">Regione</th><th scope="col" className="num">Valore</th></tr></thead>
                 <tbody>
                   {topRegions.map((region, index) => (

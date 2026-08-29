@@ -42,6 +42,7 @@ function DimensionTable({
       tabIndex={0}
     >
       <table className="table">
+        <caption className="table-caption">Progetti OpenCoesione per {label}: costi, pagamenti e numero di progetti</caption>
         <thead>
           <tr>
             <th scope="col">{heading}</th>
@@ -231,6 +232,7 @@ export default function CohesionPage() {
           <CohesionHistoryChart data={snapshot.annualSeries} />
           <div className="table-scroll" role="region" aria-label="Serie annuale OpenCoesione" tabIndex={0}>
             <table className="table">
+              <caption className="table-caption">Serie annuale cumulata OpenCoesione: impegni e pagamenti</caption>
               <thead>
                 <tr>
                   <th scope="col">Anno</th>

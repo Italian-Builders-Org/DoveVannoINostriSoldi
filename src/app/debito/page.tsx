@@ -160,7 +160,7 @@ export default function PublicDebtPage() {
           {composition.map((item) => <li key={item.id}><div><strong>{item.label}</strong><span>{bpPercent(item.share)}</span></div><span className={styles.bar} aria-hidden="true"><span style={{ width: `${item.share / 100}%` }} /></span></li>)}
         </ul>
         <div className={styles.tableWrap} role="region" aria-label="Composizione del debito in euro convertiti" tabIndex={0}>
-          <table className="table"><thead><tr><th scope="col">Strumento</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{composition.map((item) => <tr key={item.id}><th scope="row">{item.label}</th><td className="num">{exactEuro(euro(item.cents))}</td><td className="num">{bpPercent(item.share)}</td></tr>)}</tbody></table>
+          <table className="table"><caption className="table-caption">Composizione dello stock di debito per strumento</caption><thead><tr><th scope="col">Strumento</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{composition.map((item) => <tr key={item.id}><th scope="row">{item.label}</th><td className="num">{exactEuro(euro(item.cents))}</td><td className="num">{bpPercent(item.share)}</td></tr>)}</tbody></table>
         </div>
         <p className={styles.meta}>Dato al {longDate(stock.referenceDate)} · unità: euro e percentuale dello stock · formula: componente / totale · <a href={data.sources.bancaditalia.bdsUrl} target="_blank" rel="noreferrer">Fonte: BDS Banca d’Italia</a></p>
       </section>
@@ -169,7 +169,7 @@ export default function PublicDebtPage() {
         <h2 className={styles.sectionTitle} id="detiene">5. Chi lo detiene?</h2>
         <p>Dato al {longDate(holders.referenceDate)}: la pubblicazione dei detentori è più lenta dello stock e non viene riempita in avanti.</p>
         <div className={styles.tableWrap} role="region" aria-label="Detentori del debito" tabIndex={0}>
-          <table className="table"><thead><tr><th scope="col">Settore</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{holders.sectors.map((sector) => <tr key={sector.id}><th scope="row">{sector.label}</th><td className="num">{exactEuro(euro(sector.amountCents))}</td><td className="num">{bpPercent(sector.shareBasisPoints)}</td></tr>)}</tbody></table>
+          <table className="table"><caption className="table-caption">Detentori dello stock di debito per settore</caption><thead><tr><th scope="col">Settore</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{holders.sectors.map((sector) => <tr key={sector.id}><th scope="row">{sector.label}</th><td className="num">{exactEuro(euro(sector.amountCents))}</td><td className="num">{bpPercent(sector.shareBasisPoints)}</td></tr>)}</tbody></table>
         </div>
         <ul className={styles.caveats}>
           <li>Sono settori istituzionali, non singoli investitori o necessariamente singoli paesi.</li>
@@ -185,7 +185,7 @@ export default function PublicDebtPage() {
           {maturityBands.map((item) => <li key={item.id}><div><strong>{item.label}</strong><span>{bpPercent(item.share)}</span></div><span className={styles.bar} aria-hidden="true"><span style={{ width: `${item.share / 100}%` }} /></span></li>)}
         </ul>
         <div className={styles.tableWrap} role="region" aria-label="Vita residua del debito in euro convertiti" tabIndex={0}>
-          <table className="table"><thead><tr><th scope="col">Vita residua</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{maturityBands.map((item) => <tr key={item.id}><th scope="row">{item.label}</th><td className="num">{exactEuro(euro(item.cents))}</td><td className="num">{bpPercent(item.share)}</td></tr>)}</tbody></table>
+          <table className="table"><caption className="table-caption">Stock di debito per vita residua</caption><thead><tr><th scope="col">Vita residua</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{maturityBands.map((item) => <tr key={item.id}><th scope="row">{item.label}</th><td className="num">{exactEuro(euro(item.cents))}</td><td className="num">{bpPercent(item.share)}</td></tr>)}</tbody></table>
         </div>
         <p>Vita media residua: <strong>{residualMaturity.averageYears.toLocaleString("it-IT")} anni</strong>. Le fasce sommano al totale del {longDate(residualMaturity.referenceDate)}.</p>
         <p>“Fino a un anno” non è una previsione di crisi né il calendario delle singole aste: misura quanto stock entra presto nella finestra di rifinanziamento.</p>
@@ -215,7 +215,7 @@ export default function PublicDebtPage() {
             <h4>Cosa vediamo</h4>
             <p>Rispetto al {annual.previousYear}, gli interessi {nominalDirection}: {signed(annual.interestChangeCents)}. La quota sulla spesa totale {shareDirection}: {annual.interestShareChangeBasisPoints >= 0 ? "+" : "−"}{Math.abs(annual.interestShareChangeBasisPoints / 100).toLocaleString("it-IT", { minimumFractionDigits: 2 })} punti percentuali. Fonte Eurostat, unità: euro e punti percentuali.</p>
             <div className={styles.tableWrap} role="region" aria-label="Interessi e spesa pubblica per anno" tabIndex={0}>
-              <table className="table"><thead><tr><th scope="col">Anno</th><th scope="col" className="num">Interessi</th><th scope="col" className="num">Spesa totale</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{annual.history.map((point) => <tr key={point.year}><th scope="row">{point.year}</th><td className="num">{exactEuro(euro(point.interestExpenseCents))}</td><td className="num">{exactEuro(euro(point.totalGovernmentExpenditureCents))}</td><td className="num">{bpPercent(point.interestShareBasisPoints)}</td></tr>)}</tbody></table>
+              <table className="table"><caption className="table-caption">Interessi e spesa pubblica per anno</caption><thead><tr><th scope="col">Anno</th><th scope="col" className="num">Interessi</th><th scope="col" className="num">Spesa totale</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{annual.history.map((point) => <tr key={point.year}><th scope="row">{point.year}</th><td className="num">{exactEuro(euro(point.interestExpenseCents))}</td><td className="num">{exactEuro(euro(point.totalGovernmentExpenditureCents))}</td><td className="num">{bpPercent(point.interestShareBasisPoints)}</td></tr>)}</tbody></table>
             </div>
             <h4>Come funziona</h4>
             <p>Importo nominale e quota possono muoversi in direzioni diverse perché cambia anche la spesa totale; il confronto mostra entrambe le direzioni senza sceglierne una come più allarmante.</p>

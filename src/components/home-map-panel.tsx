@@ -66,13 +66,13 @@ export function HomeMapPanel({
         aside={
           <div className={styles.mapRanking}>
             <div className={styles.mapRankingHead}>
-              <span>Regione</span>
+              <span>Classifica regioni</span>
               <span>{metric === "total" ? "Pagamenti" : "Pagamenti pro capite"}</span>
             </div>
             {rankedRegions.map((region) => <div key={region.region}><RegionCrest className={styles.mapRankingCrest} regionCode={istatCodeOfRegion(region.region)} regionName={region.region} decorative /><strong title={region.region}>{region.region}</strong><span>{formatValue(region)}</span></div>)}
             <div className={styles.mapRankingTotal}><i aria-hidden="true" /><strong>Italia</strong><span>{nationalValue}</span></div>
             <small className={styles.mapScope}>SIOPE · {period}. Il totale Italia include {municipalitiesWithoutRegion} Comuni non regionalizzati ({compactEuro(paymentsWithoutRegion)}).</small>
-            <Link href={`/territori?anno=${year}`}>Vedi tutte le regioni <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link>
+            <Link href={`/territori?anno=${year}`}>Vedi tutte le regioni <HugeiconsIcon icon={ArrowRight01Icon} size={12} aria-hidden="true" /></Link>
           </div>
         }
       />

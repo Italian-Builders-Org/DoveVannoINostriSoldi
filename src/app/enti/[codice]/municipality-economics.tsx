@@ -267,6 +267,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
           <summary>Vedi importi esatti e periodi coperti</summary>
           <div className={styles.historyTable} role="region" aria-label="Storico dei pagamenti comunali">
             <table className="table">
+              <caption className="table-caption">Storico annuale dei pagamenti comunali</caption>
               <thead>
                 <tr>
                   <th scope="col">Anno</th>

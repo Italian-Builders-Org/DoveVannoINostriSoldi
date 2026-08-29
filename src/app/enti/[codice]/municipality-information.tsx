@@ -80,6 +80,7 @@ export function MunicipalityInformation({
                   <summary>Vedi le unità organizzative pubblicate</summary>
                   <div className="table-scroll" role="region" aria-label="Unità organizzative del Comune" tabIndex={0}>
                     <table className="table">
+                      <caption className="table-caption">Unità organizzative pubblicate in IPA</caption>
                       <thead>
                         <tr>
                           <th scope="col">Unità organizzativa</th>

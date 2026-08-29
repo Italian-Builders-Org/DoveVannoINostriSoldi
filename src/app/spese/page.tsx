@@ -151,6 +151,7 @@ export default async function MoneyPage({
                 tabIndex={0}
               >
                 <table className="table">
+                  <caption className="table-caption">Quota delle spese correnti per periodo</caption>
                   <thead>
                     <tr>
                       <th scope="col">Periodo</th>
@@ -305,6 +306,7 @@ export default async function MoneyPage({
             <h2 className="panel-title">Flusso e cumulato · mld €</h2>
             <div className="table-scroll" role="region" aria-label="Flusso mensile e cumulato delle spese" tabIndex={0}>
               <table className="table">
+                <caption className="table-caption">Flusso mensile e cumulato delle spese</caption>
                 <thead>
                   <tr>
                     <th scope="col">Mese</th>

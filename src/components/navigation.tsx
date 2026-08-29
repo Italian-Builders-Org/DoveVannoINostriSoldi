@@ -29,9 +29,9 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HeaderSearch } from "@/components/header-search";
 import {
+  activeNavSection,
   DASHBOARD_NAV,
   isNavChildActive,
-  isNavSectionActive,
   type DashboardNavSection,
 } from "@/lib/site-navigation";
 import { isEventTargetWithin } from "@/lib/navigation-boundary";
@@ -307,16 +307,6 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           </Link>
         </section>
 
-        <div className="sidebar-meta">
-          <strong>DoveVannoINostriSoldi</strong>
-          <span>© 2026 Tutti i diritti riservati</span>
-          <div>
-            <Link href="/supporter">Chi siamo</Link>
-            <Link href="/metodologia">Metodologia</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/supporto">Contatti</Link>
-          </div>
-        </div>
       </aside>
       <button
         type="button"
@@ -347,8 +337,14 @@ function NavigationItem({
   onOpen: (href: string, top: number) => void;
   onClose: () => void;
 }>) {
-  const active = isNavSectionActive(pathname, item);
+  const activeSection = activeNavSection(pathname);
+  const active = item.href === "/"
+    ? pathname === "/"
+    : activeSection?.href === item.href;
   const hasChildren = Boolean(item.children?.length);
+  const parentCurrent = active
+    ? (hasChildren ? "location" : "page")
+    : undefined;
   const menuId = submenuId(item.href);
   const getMenuTop = (element: Element) =>
     Math.max(64, Math.min(element.getBoundingClientRect().top - 8, window.innerHeight - 452));
@@ -368,7 +364,7 @@ function NavigationItem({
     >
       <Link
         href={item.href}
-        aria-current={pathname === item.href && currentSearch === "" ? "page" : undefined}
+        aria-current={parentCurrent}
         data-section-active={active ? "true" : undefined}
         onClick={onClose}
       >
@@ -409,6 +405,7 @@ function NavigationItem({
                       href={child.href}
                       aria-current={
                         currentSearch !== null &&
+                        active &&
                         isNavChildActive(pathname, child.href, item.children!, currentSearch)
                           ? "page"
                           : undefined

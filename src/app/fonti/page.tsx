@@ -35,6 +35,7 @@ export default function SourcesPage() {
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Registro delle fonti pubbliche collegate</caption>
             <thead>
               <tr>
                 <th scope="col">Fonte</th>
@@ -97,6 +98,7 @@ export default function SourcesPage() {
           tabIndex={0}
         >
           <table className="table">
+            <caption className="table-caption">Fonti del modulo Atlante Imprese</caption>
             <thead>
               <tr>
                 <th scope="col">Fonte</th>

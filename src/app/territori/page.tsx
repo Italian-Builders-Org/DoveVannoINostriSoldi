@@ -367,6 +367,7 @@ export default async function TerritoriesPage({
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
             <table className="table">
+              <caption className="table-caption">Pagamenti regionali per {METRIC_LABELS[metric].toLocaleLowerCase("it-IT")} · {year}</caption>
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
@@ -545,6 +546,7 @@ export default async function TerritoriesPage({
 
         <div className="table-scroll" role="region" aria-label={`Comuni ordinati ${METRIC_LABELS[metric]}; scorri orizzontalmente per vedere tutte le colonne`} tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Comuni ordinati per {METRIC_LABELS[metric].toLocaleLowerCase("it-IT")} · {year}</caption>
             <thead>
               <tr>
                 <th scope="col">Comune</th>

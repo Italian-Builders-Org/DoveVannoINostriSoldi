@@ -177,6 +177,7 @@ export default async function EntityPage({ params }: PageProps) {
                 {structure.unitaOrganizzative.records.length > 0 ? (
                   <div className="table-scroll" role="region" aria-label="Unità organizzative dell’ente" tabIndex={0}>
                     <table className="table">
+                      <caption className="table-caption">Unità organizzative principali dell&apos;ente in IPA</caption>
                       <thead>
                         <tr>
                           <th scope="col">Unità organizzativa</th>
@@ -217,6 +218,7 @@ export default async function EntityPage({ params }: PageProps) {
                     </summary>
                     <div className="table-scroll" role="region" aria-label="Altre unità organizzative dell’ente" tabIndex={0}>
                       <table className="table">
+                        <caption className="table-caption">Altre unità organizzative dell&apos;ente in IPA</caption>
                         <thead>
                           <tr>
                             <th scope="col">Unità organizzativa</th>

@@ -104,7 +104,7 @@
   .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .legend li { min-width: 0; }
-.legend button {
+.legendEntry {
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr) auto;
   align-items: start;
@@ -116,10 +116,8 @@
   background: transparent;
   color: var(--color-text);
   text-align: left;
-  cursor: pointer;
 }
-.legend button:hover,
-.legend button[aria-pressed="true"] { border-color: var(--color-neutral-400); background: var(--color-neutral-100); }
+.legendEntry[data-active="true"] { border-color: var(--color-neutral-400); background: var(--color-neutral-100); }
 .legendSwatch {
   width: 10px;
   align-self: stretch;
@@ -184,7 +182,7 @@
   .guideMobile { display: inline; }
   .visual { display: none; }
   .legend { grid-template-columns: minmax(0, 1fr); }
-  .legend button { min-height: 52px; }
+  .legendEntry { min-height: 52px; }
   .mobileBar { display: block; height: 4px; margin: 0 8px; background: var(--color-neutral-200); }
   .mobileBar span { display: block; height: 100%; }
 }

@@ -103,6 +103,7 @@ export default function ParliamentPage() {
         <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
         <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Copertura dei documenti contabili di Camera e Senato</caption>
             <thead>
               <tr>
                 <th scope="col">Ramo</th>

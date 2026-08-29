@@ -205,6 +205,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
           </div>
           <div className={`table-scroll ${localStyles.detailTable}`} role="region" aria-label="Dettaglio economico" tabIndex={0}>
             <table className="table">
+              <caption className="table-caption">Dettaglio economico dei pagamenti nel periodo selezionato</caption>
               <thead>
                 <tr>
                   <th scope="col">Voce</th>

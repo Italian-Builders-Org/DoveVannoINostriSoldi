@@ -297,6 +297,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
             />
             <div className={`table-scroll ${styles.administrationTable}`} role="region" aria-label="Amministrazioni per totale pagato" tabIndex={0}>
               <table className="table">
+                <caption className="table-caption">Amministrazioni centrali per totale pagato</caption>
                 <thead>
                   <tr>
                     <th scope="col">Amministrazione</th>

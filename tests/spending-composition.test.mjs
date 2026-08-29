@@ -73,6 +73,9 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.visual \{ display: none; \}/);
   assert.match(css, /\.legendCopy \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
   assert.match(component, /styles\.legendCopy/);
+  assert.match(component, /className=\{styles\.legendEntry\}/);
+  assert.match(component, /<caption className="table-caption">Dati esatti della composizione: importi e quote<\/caption>/);
+  assert.doesNotMatch(css, /\.legend button/);
   assert.match(component, /styles\.legendLabel/);
   assert.match(component, /styles\.legendAmount/);
   assert.match(component, /Più grande è il riquadro, maggiore è la quota sul totale/);

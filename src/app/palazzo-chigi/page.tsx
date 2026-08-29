@@ -122,6 +122,7 @@ export default function PalazzoChigiPage() {
           tabIndex={0}
         >
           <table className="table">
+            <caption className="table-caption">Pagamenti di Palazzo Chigi per area di lavoro</caption>
             <thead>
               <tr>
                 <th scope="col">Area di lavoro</th>

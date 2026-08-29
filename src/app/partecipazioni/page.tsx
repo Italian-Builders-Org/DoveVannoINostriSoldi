@@ -121,6 +121,7 @@ export default function ParticipationsPage() {
         </p>
         <div className="table-scroll" role="region" aria-label="Organizzazioni partecipate da più amministrazioni" aria-describedby="participations-table-hint" tabIndex={0}>
           <table className="table">
+            <caption className="table-caption">Organizzazioni partecipate da più amministrazioni</caption>
             <thead>
               <tr>
                 <th scope="col">#</th>

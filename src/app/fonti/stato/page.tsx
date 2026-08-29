@@ -129,53 +129,67 @@ export default async function SourceStatusPage() {
       </section>
 
       <section className={styles.table} aria-label="Stato delle fonti ufficiali">
-        <div className={styles.tableHeader}>
-          <span>Fonte</span>
-          <span>Collegamento</span>
-          <span>Risponde ora?</span>
-          <span>Data del dato</span>
-        </div>
+        <table className={styles.dataTable}>
+          <caption className={styles.caption}>
+            Stato delle fonti ufficiali: collegamento, raggiungibilità e data del dato
+          </caption>
+          <thead className={styles.tableHeader}>
+            <tr>
+              <th scope="col">Fonte</th>
+              <th scope="col">Collegamento</th>
+              <th scope="col">Risponde ora?</th>
+              <th scope="col">Data del dato</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sources.map((source) => (
+              <tr className={styles.row} key={source.sourceId}>
+                <th scope="row" className={styles.source} data-label="Fonte">
+                  <strong>{source.label}</strong>
+                  <span>{source.owner}</span>
+                  <a href={source.policy.sourceUrl} target="_blank" rel="noreferrer">
+                    apri fonte ufficiale ↗
+                  </a>
+                </th>
 
-        {sources.map((source) => (
-          <article className={styles.row} key={source.sourceId}>
-            <div className={styles.source}>
-              <strong>{source.label}</strong>
-              <span>{source.owner}</span>
-              <a href={source.policy.sourceUrl} target="_blank" rel="noreferrer">
-                apri fonte ufficiale ↗
-              </a>
-            </div>
+                <td className={styles.meta} data-label="Collegamento">
+                  <strong>Collegata</strong>
+                  <span>Cadenza: {source.policy.cadence}</span>
+                  <span>
+                    Cerchiamo nuovi dati ogni {duration(source.policy.discoveryRevalidateSeconds)}
+                  </span>
+                </td>
 
-            <div className={styles.meta}>
-              <strong>Collegata</strong>
-              <span>Cadenza: {source.policy.cadence}</span>
-              <span>Cerchiamo nuovi dati ogni {duration(source.policy.discoveryRevalidateSeconds)}</span>
-            </div>
+                <td className={styles.health} data-label="Risponde ora?">
+                  <span className={`${styles.status} ${reachabilityClass(source)}`}>
+                    {reachabilityLabel(source)}
+                  </span>
+                  <strong>
+                    {source.latencyMs !== null
+                      ? `${numberFormatter.format(source.latencyMs)} ms`
+                      : "Non disponibile"}
+                  </strong>
+                  <span>{source.detail ?? "Nessun dettaglio disponibile"}</span>
+                  {source.recordCount !== null && (
+                    <span>
+                      {numberFormatter.format(source.recordCount)} elementi rilevati dal controllo
+                    </span>
+                  )}
+                </td>
 
-            <div className={styles.health}>
-              <span className={`${styles.status} ${reachabilityClass(source)}`}>
-                {reachabilityLabel(source)}
-              </span>
-              <strong>
-                {source.latencyMs !== null ? `${numberFormatter.format(source.latencyMs)} ms` : "Non disponibile"}
-              </strong>
-              <span>{source.detail ?? "Nessun dettaglio disponibile"}</span>
-              {source.recordCount !== null && (
-                <span>{numberFormatter.format(source.recordCount)} elementi rilevati dal controllo</span>
-              )}
-            </div>
-
-            <div className={styles.policy}>
-              <span className={`${styles.status} ${freshnessClass(source)}`}>
-                {freshnessLabel(source)}
-              </span>
-              <strong>{sourceDate(source.freshness.sourceTimestamp)}</strong>
-              <span>{sourceAge(source.freshness.ageSeconds)}</span>
-              <span>dati ricontrollati ogni {duration(source.policy.dataRevalidateSeconds)}</span>
-              <span>{source.policy.cadenceNote}</span>
-            </div>
-          </article>
-        ))}
+                <td className={styles.policy} data-label="Data del dato">
+                  <span className={`${styles.status} ${freshnessClass(source)}`}>
+                    {freshnessLabel(source)}
+                  </span>
+                  <strong>{sourceDate(source.freshness.sourceTimestamp)}</strong>
+                  <span>{sourceAge(source.freshness.ageSeconds)}</span>
+                  <span>dati ricontrollati ogni {duration(source.policy.dataRevalidateSeconds)}</span>
+                  <span>{source.policy.cadenceNote}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <p className={styles.footerNote}>

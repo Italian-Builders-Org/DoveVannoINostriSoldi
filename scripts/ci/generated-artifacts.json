@@ -4,13 +4,32 @@
     "src/data/generated",
     "data/source-ledger"
   ],
-  "exclusions": [
-    {
-      "path": "src/data/generated/italy-regions.ts",
-      "reason": "Static TypeScript reference table, not generated data. Validated by tests/italy-regions.test.mjs."
-    }
-  ],
+  "exclusions": [],
   "artifacts": [
+    {
+      "id": "istat-administrative-boundaries",
+      "owner": "ISTAT administrative boundaries at 1 January 2026",
+      "files": [
+        "src/data/generated/italy-regions.ts",
+        "src/data/generated/italy-provinces.ts"
+      ],
+      "verificationMode": "source-lock",
+      "sourceSpec": "docs/ISTAT_REGIONAL_MAP.md",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/italy-regions.test.mjs"
+      ],
+      "generator": {
+        "command": "node scripts/maps/generate_italy_regions.mjs src/data/generated/italy-regions.ts <verified ZIP> regions && node scripts/maps/generate_italy_regions.mjs src/data/generated/italy-provinces.ts <verified ZIP> provinces",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Both committed SVG geometry tables are derived from the same checksum-locked ISTAT archive and the same regional-envelope projection. Node contract tests validate coverage, shared projection metadata and region/province mappings."
+    },
     {
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",

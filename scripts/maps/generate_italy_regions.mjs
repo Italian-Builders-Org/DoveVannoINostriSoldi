@@ -22,7 +22,10 @@ const LEVELS = {
     codeField: "COD_REG",
     nameField: "DEN_REG",
     simplificationTolerance: 2_500,
-    minimumPartArea: 500_000,
+    // The regional layer defines both the shared envelope and the interactive
+    // hit targets. Retain every official island so a visible provincial part
+    // can never exist outside its region's geometry or projection bounds.
+    minimumPartArea: 0,
   },
   provinces: {
     directory: "ProvCM01012026_g",
@@ -35,11 +38,11 @@ const LEVELS = {
     minimumPartArea: 250_000,
   },
 };
-const level = LEVELS[requestedLevel];
 const SOURCE_URL =
   "https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip";
 const SOURCE_SHA256 = "b011a590656c3a3ebc297fba80726a376aa843b6f164641cf6a4a990021a81d6";
 const VIEWBOX = { width: 560, height: 640, padding: 12 };
+const PROJECTION_ID = "istat-2026-regional-envelope-560x640-p12-v1";
 
 function parseDbf(buffer) {
   const recordCount = buffer.readUInt32LE(4);
@@ -179,8 +182,8 @@ function round(value) {
   return Number(value.toFixed(1));
 }
 
-function projectRegions(regions) {
-  const points = regions.flatMap((region) => region.parts.flat());
+function projectionFor(features) {
+  const points = features.flatMap((feature) => feature.parts.flat());
   const eastings = points.map(([easting]) => easting);
   const northings = points.map(([, northing]) => northing);
   const minimumEasting = Math.min(...eastings);
@@ -198,14 +201,34 @@ function projectRegions(regions) {
   const xOffset = (VIEWBOX.width - contentWidth) / 2;
   const yOffset = (VIEWBOX.height - contentHeight) / 2;
 
-  return regions.map((region) => ({
-    ...region,
-    path: region.parts
+  return {
+    id: PROJECTION_ID,
+    viewBox: `0 0 ${VIEWBOX.width} ${VIEWBOX.height}`,
+    basis: "regional-envelope",
+    minimumEasting,
+    maximumNorthing,
+    scale,
+    xOffset,
+    yOffset,
+  };
+}
+
+function projectFeatures(features, projection) {
+  return features.map((feature) => ({
+    ...feature,
+    path: feature.parts
       .map((part) => {
         const projected = part.map(([easting, northing]) => [
-          xOffset + (easting - minimumEasting) * scale,
-          yOffset + (maximumNorthing - northing) * scale,
+          projection.xOffset + (easting - projection.minimumEasting) * projection.scale,
+          projection.yOffset + (projection.maximumNorthing - northing) * projection.scale,
         ]);
+        for (const [x, y] of projected) {
+          if (x < 0 || x > VIEWBOX.width || y < 0 || y > VIEWBOX.height) {
+            throw new Error(
+              `Geometria ${feature.name} fuori dal viewBox condiviso: ${x}, ${y}.`,
+            );
+          }
+        }
         return projected
           .map(([x, y], index) => `${index === 0 ? "M" : "L"}${round(x)} ${round(y)}`)
           .join("") + "Z";
@@ -214,7 +237,7 @@ function projectRegions(regions) {
   }));
 }
 
-function typescript(features) {
+function typescript(features, projection) {
   const serializedFeatures = features
     .map(
       (feature) => requestedLevel === "regions"
@@ -225,7 +248,17 @@ function typescript(features) {
 
   const exportPrefix = requestedLevel === "regions" ? "REGIONS" : "PROVINCES";
   const collectionName = requestedLevel === "regions" ? "italyRegionGeometry" : "italyProvinceGeometry";
-  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs (${requestedLevel})\n */\n\nexport const ITALY_${exportPrefix}_VIEWBOX = ${JSON.stringify(`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`)};\n\nexport const ${collectionName} = [\n${serializedFeatures}\n] as const;\n`;
+  const publicProjection = {
+    id: projection.id,
+    viewBox: projection.viewBox,
+    basis: projection.basis,
+    minimumEasting: projection.minimumEasting,
+    maximumNorthing: projection.maximumNorthing,
+    scale: projection.scale,
+    xOffset: projection.xOffset,
+    yOffset: projection.yOffset,
+  };
+  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs (${requestedLevel})\n */\n\nexport const ITALY_${exportPrefix}_PROJECTION = ${JSON.stringify(publicProjection)} as const;\nexport const ITALY_${exportPrefix}_VIEWBOX = ITALY_${exportPrefix}_PROJECTION.viewBox;\n\nexport const ${collectionName} = [\n${serializedFeatures}\n] as const;\n`;
 }
 
 const archiveBuffer = await readFile(sourceArchive);
@@ -233,52 +266,65 @@ const archiveSha256 = createHash("sha256").update(archiveBuffer).digest("hex");
 if (archiveSha256 !== SOURCE_SHA256) {
   throw new Error(`Checksum ISTAT non valido: atteso ${SOURCE_SHA256}, trovato ${archiveSha256}.`);
 }
-const shapeBuffer = execFileSync(
-  "unzip",
-  ["-p", sourceArchive, `${level.directory}/${level.shapefile}`],
-  { maxBuffer: 8 * 1024 * 1024 },
-);
-const dbfBuffer = execFileSync(
-  "unzip",
-  ["-p", sourceArchive, `${level.directory}/${level.database}`],
-  { maxBuffer: 1024 * 1024 },
-);
-const records = parseDbf(dbfBuffer);
-const shapes = parseShapefile(shapeBuffer);
+function loadFeatures(levelName) {
+  const definition = LEVELS[levelName];
+  const shapeBuffer = execFileSync(
+    "unzip",
+    ["-p", sourceArchive, `${definition.directory}/${definition.shapefile}`],
+    { maxBuffer: 8 * 1024 * 1024 },
+  );
+  const dbfBuffer = execFileSync(
+    "unzip",
+    ["-p", sourceArchive, `${definition.directory}/${definition.database}`],
+    { maxBuffer: 1024 * 1024 },
+  );
+  const records = parseDbf(dbfBuffer);
+  const shapes = parseShapefile(shapeBuffer);
 
-if (records.length !== shapes.length || shapes.length !== level.expected) {
-  throw new Error(`Attese ${level.expected} geometrie ISTAT (${requestedLevel}), trovati ${records.length} record e ${shapes.length} geometrie.`);
-}
-
-const normalized = records.map((record, index) => {
-  const rawCode = Number.parseInt(record[level.codeField], 10);
-  const code = requestedLevel === "regions"
-    ? String(rawCode).padStart(2, "0")
-    : String(rawCode);
-  const name = record[level.nameField];
-  const parts = shapes[index]
-    .filter((part) => part.length >= 4 && polygonArea(part) >= level.minimumPartArea)
-    .map((part) => simplifyRing(part, level.simplificationTolerance))
-    .filter((part) => part.length >= 3);
-
-  if (!code || !name || parts.length === 0) {
-    throw new Error(`Geometria ISTAT non valida alla riga ${index + 1}.`);
+  if (records.length !== shapes.length || shapes.length !== definition.expected) {
+    throw new Error(`Attese ${definition.expected} geometrie ISTAT (${levelName}), trovati ${records.length} record e ${shapes.length} geometrie.`);
   }
 
-  return {
-    code,
-    name,
-    regionCode: String(Number.parseInt(record.COD_REG, 10)).padStart(2, "0"),
-    abbreviation: record.SIGLA ?? "",
-    parts,
-  };
-});
+  const features = records.map((record, index) => {
+    const rawCode = Number.parseInt(record[definition.codeField], 10);
+    const code = levelName === "regions"
+      ? String(rawCode).padStart(2, "0")
+      : String(rawCode);
+    const name = record[definition.nameField];
+    const parts = shapes[index]
+      .filter((part) => part.length >= 4 && polygonArea(part) >= definition.minimumPartArea)
+      .map((part) => simplifyRing(part, definition.simplificationTolerance))
+      .filter((part) => part.length >= 3);
 
-const projected = projectRegions(normalized);
-const originalPointCount = shapes.flat(2).length;
-const simplifiedPointCount = normalized.flatMap((region) => region.parts).flat().length;
+    if (!code || !name || parts.length === 0) {
+      throw new Error(`Geometria ISTAT non valida alla riga ${index + 1} (${levelName}).`);
+    }
+
+    return {
+      code,
+      name,
+      regionCode: String(Number.parseInt(record.COD_REG, 10)).padStart(2, "0"),
+      abbreviation: record.SIGLA ?? "",
+      parts,
+    };
+  });
+
+  return {
+    features,
+    originalPointCount: shapes.flat(2).length,
+    simplifiedPointCount: features.flatMap((feature) => feature.parts).flat().length,
+  };
+}
+
+// Both layers must use the complete official regional envelope. Computing it
+// once from the regional layer guarantees that province fills and regional hit
+// targets share one coordinate system, including the smaller official islands.
+const regionalSource = loadFeatures("regions");
+const requestedSource = requestedLevel === "regions" ? regionalSource : loadFeatures(requestedLevel);
+const projection = projectionFor(regionalSource.features);
+const projected = projectFeatures(requestedSource.features, projection);
 await mkdir(path.dirname(outputFile), { recursive: true });
-await writeFile(outputFile, typescript(projected), "utf8");
+await writeFile(outputFile, typescript(projected, projection), "utf8");
 console.log(
-  `Generate ${projected.length} geometrie ${requestedLevel} in ${outputFile} (${originalPointCount} -> ${simplifiedPointCount} punti)`,
+  `Generate ${projected.length} geometrie ${requestedLevel} in ${outputFile} (${requestedSource.originalPointCount} -> ${requestedSource.simplifiedPointCount} punti; proiezione ${projection.id})`,
 );

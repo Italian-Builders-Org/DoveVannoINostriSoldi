@@ -131,6 +131,12 @@
   white-space: nowrap;
 }
 .compact .compactLegend i { width: 9px; height: 10px; border: 0; }
+.compact .compactScope {
+  margin-top: 3px;
+  color: var(--color-neutral-700);
+  font-size: 6.5px;
+  line-height: 1.2;
+}
 
 .legend {
   display: flex;

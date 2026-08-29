@@ -125,6 +125,9 @@ test("the regional map has a deterministic fallback and roving keyboard focus", 
   assert.match(map, /"ArrowLeft"|"ArrowUp"/);
   assert.match(map, /regionPathRefs\.current\.get\(nextCode\)\?\.focus\(\)/);
   assert.match(map, /<select[\s\S]*?value=\{selectedCode\}/);
+  assert.match(map, /data-map-semantics=\{showProvinceGeometry \? "province-colors-region-interaction"/);
+  assert.match(map, /I colori rappresentano i valori provinciali/);
+  assert.match(map, /Selezione per regione/);
 });
 
 test("the mobile region selector is sorted once with Italian collation", async () => {

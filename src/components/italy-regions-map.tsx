@@ -156,6 +156,14 @@ export function ItalyRegionsMap({
   const metricTitle = metric === "total"
     ? "Pagamenti comunali totali"
     : "Pagamenti comunali per abitante coperto";
+  const colorScope = showProvinceGeometry ? "provincia" : "regione";
+  const mapTitle = `${metricTitle}, colori per ${colorScope}`;
+  const mapDescription = `${showProvinceGeometry
+    ? "I colori rappresentano i valori provinciali. Contorni, hover, clic, tastiera e pannello di dettaglio identificano invece le regioni. "
+    : "I colori e i contorni rappresentano i valori regionali. "}Mappa colorata in base ai ${
+      metric === "total" ? "pagamenti totali" : "pagamenti per abitante coperto"
+    } di cassa SIOPE dei Comuni. Usa Tab per entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.`;
+  const compactLegendTitle = `${metric === "total" ? "Pagamenti totali" : "Pagamenti pro capite (€)"} per ${colorScope}`;
 
   return (
     <div className={`${styles.layout} ${compact ? styles.compact : ""}`}>
@@ -167,12 +175,8 @@ export function ItalyRegionsMap({
           data-region-map="true"
           aria-labelledby="regional-map-title regional-map-description"
         >
-          <title id="regional-map-title">{metricTitle}, per regione</title>
-          <desc id="regional-map-description">
-            Mappa regionale colorata in base ai {metric === "total" ? "pagamenti totali" : "pagamenti per abitante coperto"} di cassa SIOPE dei Comuni. Usa Tab per
-            entrare nella mappa e i tasti freccia per esplorare le regioni. Passa sopra una regione
-            per un’anteprima; fai clic o premi Invio per fissarla nel pannello accanto.
-          </desc>
+          <title id="regional-map-title">{mapTitle}</title>
+          <desc id="regional-map-description">{mapDescription}</desc>
           {showProvinceGeometry ? italyProvinceGeometry.map((geometry) => {
             const province = provinceByName.get(geometry.name);
             const colorLevel = level(province ? metric === "total" ? province.value : province.perCapita : null);
@@ -272,8 +276,12 @@ export function ItalyRegionsMap({
 
         {compact ? (
           <>
-            <div className={`${styles.legend} ${styles.compactLegend}`} aria-label={`Scala dei ${metric === "total" ? "pagamenti totali" : "pagamenti pro capite"}`}>
-              <strong>{metric === "total" ? "Pagamenti totali" : "Pagamenti pro capite (€)"}</strong>
+            <div
+              className={`${styles.legend} ${styles.compactLegend}`}
+              data-map-semantics={showProvinceGeometry ? "province-colors-region-interaction" : "region-colors-region-interaction"}
+              aria-label={`Scala dei ${metric === "total" ? "pagamenti totali" : "pagamenti pro capite"} per ${colorScope}; selezione per regione`}
+            >
+              <strong>{compactLegendTitle}</strong>
               {[4, 3, 2, 1, 0].map((index) => {
                 const formatThreshold = (value: number) => metric === "total" ? compactEuro(value) : integer(value);
                 const label = index === 4
@@ -283,6 +291,7 @@ export function ItalyRegionsMap({
                     : `da ${formatThreshold(thresholds[index - 1])} a ${formatThreshold(thresholds[index])}`;
                 return <span key={index}><i className={styles[`level${index}`]} />{label}</span>;
               })}
+              {showProvinceGeometry ? <small className={styles.compactScope}>Selezione per regione</small> : null}
             </div>
             <div className={styles.compactDetail} aria-live="polite">
               <strong>{selected?.region ?? "Regione non disponibile"}</strong>

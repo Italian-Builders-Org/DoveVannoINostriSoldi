@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { italyProvinceGeometry } from "../src/data/generated/italy-provinces.ts";
-import { italyRegionGeometry } from "../src/data/generated/italy-regions.ts";
+import {
+  ITALY_PROVINCES_PROJECTION,
+  ITALY_PROVINCES_VIEWBOX,
+  italyProvinceGeometry,
+} from "../src/data/generated/italy-provinces.ts";
+import {
+  ITALY_REGIONS_PROJECTION,
+  ITALY_REGIONS_VIEWBOX,
+  italyRegionGeometry,
+} from "../src/data/generated/italy-regions.ts";
 import {
   ISTAT_CODE_BY_REGION_NAME,
   ITALY_MACRO_AREAS,
@@ -19,6 +27,14 @@ const annualSnapshotUrls = [
   new URL("../src/data/generated/siope-municipal-2025.json", import.meta.url),
   snapshotUrl,
 ];
+
+function coordinates(path) {
+  const values = [...path.matchAll(/-?\d+(?:\.\d+)?/g)].map((match) => Number(match[0]));
+  return Array.from({ length: values.length / 2 }, (_, index) => [
+    values[index * 2],
+    values[index * 2 + 1],
+  ]);
+}
 
 test("ISTAT geometry and SIOPE data cover the same 20 regions", async () => {
   const snapshot = JSON.parse(await readFile(snapshotUrl, "utf8"));
@@ -50,6 +66,24 @@ test("ISTAT province geometry is complete, unique and mapped to known regions", 
       (province) => province.path.startsWith("M") && province.path.endsWith("Z"),
     ),
   );
+});
+
+test("ISTAT region and province layers use the same national projection", () => {
+  assert.equal(ITALY_REGIONS_PROJECTION.id, "istat-2026-regional-envelope-560x640-p12-v1");
+  assert.equal(ITALY_REGIONS_PROJECTION.basis, "regional-envelope");
+  assert.equal(ITALY_REGIONS_VIEWBOX, "0 0 560 640");
+  assert.equal(ITALY_PROVINCES_VIEWBOX, ITALY_REGIONS_VIEWBOX);
+  assert.deepEqual(ITALY_PROVINCES_PROJECTION, ITALY_REGIONS_PROJECTION);
+});
+
+test("every generated region and province point stays inside the shared viewBox", () => {
+  const [, , width, height] = ITALY_REGIONS_VIEWBOX.split(" ").map(Number);
+  for (const geometry of [...italyRegionGeometry, ...italyProvinceGeometry]) {
+    for (const [x, y] of coordinates(geometry.path)) {
+      assert.ok(x >= 0 && x <= width, `${geometry.name}: x=${x} outside ${width}`);
+      assert.ok(y >= 0 && y <= height, `${geometry.name}: y=${y} outside ${height}`);
+    }
+  }
 });
 
 test("every region resolves to exactly one macro area, with no silent drops", () => {

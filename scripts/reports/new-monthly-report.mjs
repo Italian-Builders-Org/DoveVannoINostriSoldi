@@ -183,18 +183,19 @@ export function buildMonthlyReportDraft({ month, cutoff, snapshots, provenance }
 
   const municipal = snapshots.municipal;
   const municipalMonth = municipal && `${municipal.year}-${String(municipal.latestMonth).padStart(2, "0")}`;
-  if (municipal && checkedDate(municipal.source.observedAt) <= cutoff && municipalMonth <= month) {
+  const municipalCheckedOn = municipal && checkedDate(municipal.source.observedAt);
+  if (municipal && municipalCheckedOn <= cutoff && municipalMonth <= month) {
     evidence.push(evidenceFor(INPUTS.municipal, {
       id: "municipal-payments", datasetId: "siope_municipal_payments", publisher: municipal.source.siopeOwner,
       title: "Pagamenti di cassa SIOPE dei Comuni", publicUrl: municipal.source.siopeMovementsUrl,
-      checkedOn: checkedDate(municipal.source.observedAt),
+      checkedOn: municipalCheckedOn,
       referencePeriod: { kind: "month", month: municipalMonth, completeness: "partial" },
       perimeter: municipal.methodology.measure, caveat: municipal.methodology.warning,
     }, provenance));
     facts.push({
       id: "municipal-payments-ytd", label: "Pagamenti comunali registrati", value: money(Math.round(municipal.totalPaid * 100)),
       plainLanguage: `Da gennaio al mese ${municipal.latestMonth} del ${municipal.year}, i pagamenti comunali registrati ammontano a ${municipal.totalPaid} euro.`,
-      referencePeriod: periodRange(`${municipal.year}-01-01`, `${municipalMonth}-31`, "partial"),
+      referencePeriod: periodRange(`${municipal.year}-01-01`, municipalCheckedOn, "partial"),
       perimeter: municipal.methodology.measure, denominator: null, caveat: municipal.methodology.warning,
       evidenceIds: ["municipal-payments"],
     });

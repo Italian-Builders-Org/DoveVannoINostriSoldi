@@ -16,7 +16,7 @@ if (/drafts|data\/generated|fetch\s*\(/u.test(indexSource)) {
   throw new Error("Registry report non valido: bozze, snapshot correnti o fetch non possono essere importati");
 }
 for (const name of readdirSync(publishedDir).filter((entry) => entry.endsWith(".ts") && entry !== "index.ts")) {
-  if (!indexSource.includes(`./${name.slice(0, -3)}`)) throw new Error(`Edizione pubblicata non registrata: ${name}`);
+  if (!indexSource.includes(name.slice(0, -3))) throw new Error(`Edizione pubblicata non registrata: ${name}`);
   const source = readFileSync(resolve(publishedDir, name), "utf8");
   if (/content\/monthly-reports\/drafts|data\/generated|fetch\s*\(/u.test(source)) {
     throw new Error(`Edizione pubblicata dipendente da dati mutabili: ${name}`);

@@ -84,6 +84,7 @@ test("il generatore congela i fatti, le due figure e le venti regioni", () => {
   assert.equal(draft.facts.find((fact) => fact.id === "active-stock-latest").value.value, 5_022_940);
   assert.equal(draft.facts.find((fact) => fact.id === "public-debt-latest").value.cents, 320_724_730_000_000);
   assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd").referencePeriod.completeness, "partial");
+  assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd").referencePeriod.to, "2026-08-25");
   const frozen = JSON.stringify(draft.figures);
   companies.observations[0].value = 999_999_999;
   assert.equal(JSON.stringify(draft.figures), frozen);

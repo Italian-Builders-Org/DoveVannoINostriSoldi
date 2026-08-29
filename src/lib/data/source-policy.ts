@@ -20,7 +20,9 @@ export type SourceId =
   | "pcm"
   | "partecipazioni-pubbliche"
   | "bancaditalia"
-  | "eurostat";
+  | "eurostat"
+  | "ameco"
+  | "governi-presidenza";
 
 export type SourceCadence =
   | "giornaliera"
@@ -63,6 +65,36 @@ const DAY = 24 * HOUR;
  * misleading "stale" judgement.
  */
 export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
+  ameco: {
+    id: "ameco",
+    label: "Commissione europea · AMECO",
+    owner: "Commissione europea · DG ECFIN",
+    sourceUrl: "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+    cadence: "su-pubblicazione",
+    cadenceNote:
+      "AMECO viene aggiornato con i principali esercizi previsivi della Commissione; il controllo settimanale intercetta un nuovo vintage senza presentare le serie come dati in tempo reale.",
+    discoveryRevalidateSeconds: 7 * DAY,
+    dataRevalidateSeconds: 7 * DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:ameco", "domain:government-scorecard"],
+  },
+  "governi-presidenza": {
+    id: "governi-presidenza",
+    label: "Presidenza del Consiglio · governi nelle legislature",
+    owner: "Presidenza del Consiglio dei Ministri",
+    sourceUrl: "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+    cadence: "periodica",
+    cadenceNote:
+      "La cronologia istituzionale cambia con l'insediamento di un nuovo governo; il controllo giornaliero valida contenuto e ordine prima di aggiornare lo snapshot.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:governi-presidenza", "domain:government-scorecard"],
+  },
   ipa: {
     id: "ipa",
     label: "Indice PA",

@@ -27,6 +27,8 @@ function dated(value: string | null): SourceLatestData {
    time. Annual periods remain periods: they must not be converted into an
    invented day just to reuse date formatting. */
 const exhaustiveLatestDataBySlug = {
+  ameco: { kind: "period", label: "osservati 2024 · previsioni 2025-2027" },
+  "governi-presidenza": { kind: "period", label: "governo in carica dal 2022" },
   bancaditalia: { kind: "date", value: getPublicDebtSnapshot().stock.referenceDate },
   eurostat: { kind: "period", label: String(getPublicDebtSnapshot().annualInterest.referenceYear) },
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),

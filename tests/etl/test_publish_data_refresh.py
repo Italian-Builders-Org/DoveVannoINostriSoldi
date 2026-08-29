@@ -31,6 +31,7 @@ class PublishDataRefreshTests(TestCase):
             set(publications),
             {
                 "consulenti-pubblici",
+                "government-scorecard",
                 "mef-participations",
                 "opencivitas-2022",
                 "opencoesione",
@@ -42,6 +43,7 @@ class PublishDataRefreshTests(TestCase):
             {item["branch"] for item in publications.values()},
             {
                 "automation/data/consulenti",
+                "automation/data/government-scorecard",
                 "automation/data/mef-participations",
                 "automation/data/opencivitas",
                 "automation/data/opencoesione",

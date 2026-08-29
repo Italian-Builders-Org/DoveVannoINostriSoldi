@@ -424,6 +424,39 @@
       "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
     },
     {
+      "id": "government-scorecard",
+      "owner": "European Commission AMECO and Presidency of the Council government scorecard",
+      "files": [
+        "src/data/generated/government-scorecard.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/government_scorecard_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_government_scorecard_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/government-scorecard-contract.test.mjs",
+        "tests/government-scorecard-domain.test.mjs",
+        "tests/government-scorecard-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/government_scorecard_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/government-scorecard-refresh.yml",
+      "sourceSpec": "scripts/etl/specs/government-scorecard.source.json",
+      "publication": {
+        "branch": "automation/data/government-scorecard",
+        "commitTitle": "chore(data): refresh government scorecard snapshot",
+        "prTitle": "data: refresh government scorecard snapshot",
+        "upstreamUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"
+      },
+      "trustModel": "Scheduled workflow creates a managed PR candidate from the official AMECO bulk release and Presidency chronology. ZIP, CSV, series codes, years, peers, weights, hashes and the runtime contract fail closed before publication."
+    },
+    {
       "id": "public-debt",
       "owner": "Banca d'Italia and Eurostat public debt snapshot",
       "files": [

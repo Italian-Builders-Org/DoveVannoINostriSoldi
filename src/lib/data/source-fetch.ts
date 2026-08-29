@@ -54,6 +54,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   pcm: ["presidenza.governo.it"],
   "partecipazioni-pubbliche": ["www.de.mef.gov.it", "de.mef.gov.it"],
   // These sources are snapshot-only at runtime; their Python ETL owns network access.
+  ameco: [],
+  "governi-presidenza": [],
   bancaditalia: [],
   eurostat: [],
 };

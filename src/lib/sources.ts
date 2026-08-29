@@ -16,6 +16,30 @@ export type PublicSource = {
 
 export const publicSources: PublicSource[] = [
   {
+    slug: "ameco",
+    name: "Commissione europea · AMECO",
+    owner: "Commissione europea · DG ECFIN",
+    area: "Pagella macroeconomica annuale dei governi",
+    cadence: "Due release previsive principali l’anno",
+    coverage: "Italia, Francia, Germania e Spagna; serie 1960-2027, Core comparabile dal 1995",
+    format: "ZIP · CSV · snapshot JSON verificato",
+    url: "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+    note: "Sei indicatori alimentano il Core annuale: osservazioni fino al 2024 e previsioni 2025-2027 restano separate. L’ultimo vintage può revisionare anche la storia e non identifica effetti causali dei governi.",
+    joinKeys: ["codice serie AMECO", "paese", "anno"],
+  },
+  {
+    slug: "governi-presidenza",
+    name: "Presidenza del Consiglio · governi nelle legislature",
+    owner: "Presidenza del Consiglio dei Ministri",
+    area: "Cronologia istituzionale dei governi italiani",
+    cadence: "A ogni cambio di governo",
+    coverage: "Governi dal 1943; la pagella comparabile usa la cronologia dal 1995",
+    format: "HTML istituzionale · snapshot JSON verificato",
+    url: "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+    note: "Le date della pagella usano l’insediamento del successore come fine della finestra; dimissioni e affari correnti restano concetti distinti.",
+    joinKeys: ["governo", "data inizio", "data subentro"],
+  },
+  {
     slug: "bancaditalia",
     name: "Banca d'Italia · debito pubblico",
     owner: "Banca d'Italia",

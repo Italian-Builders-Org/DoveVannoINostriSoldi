@@ -43,6 +43,7 @@ GENERATED_EXTENSIONS = frozenset({".json", ".jsonl", ".jsonl.gz", ".ts"})
 PUBLICATION_IDS = frozenset(
     {
         "consulenti-pubblici",
+        "government-scorecard",
         "mef-participations",
         "opencivitas-2022",
         "opencoesione",

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight01Icon, Calendar03Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MonthlyReportFigure, formatReportValue } from "@/components/monthly-report-figure";
+import { MonthlyReportFigure } from "@/components/monthly-report-figure";
+import { formatReportValue } from "@/lib/monthly-report-format";
 import {
   MONTHLY_REPORT_SERIES,
   issueMonthLabel,

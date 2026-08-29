@@ -12,6 +12,7 @@ import {
   signed,
   sourceValue,
 } from "../government-scorecard-format";
+import { GovernmentIndicatorChart } from "../government-indicator-chart";
 import styles from "../governi.module.css";
 
 type GovernmentPageProps = {
@@ -52,11 +53,14 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
   const inheritedTrend = government.inheritance.trend.status === "scored" ? government.inheritance.trend : null;
   const inheritedTrendReason = government.inheritance.trend.status === "not-scored" ? government.inheritance.trend.reason : null;
   const positive = calculation
-    ? [...calculation.indicators].sort((left, right) => right.contributionPoints - left.contributionPoints).slice(0, 3)
+    ? [...calculation.indicators].sort((left, right) => right.contributionPoints - left.contributionPoints).filter((item) => item.contributionPoints > 0).slice(0, 3)
     : [];
   const negative = calculation
     ? [...calculation.indicators].sort((left, right) => left.contributionPoints - right.contributionPoints).filter((item) => item.contributionPoints < 0).slice(0, 3)
     : [];
+  const maximumContribution = calculation
+    ? Math.max(...calculation.indicators.map((item) => Math.abs(item.contributionPoints)), 1)
+    : 1;
 
   return (
     <main className="shell page">
@@ -89,7 +93,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
 
       <section className={styles.detailScore} aria-labelledby="valutazione-sintesi">
         <div>
-          <span>Valutazione dei risultati</span>
+          <span>Core macro provvisorio · 6 indicatori</span>
           {calculation ? (
             <><strong>{formatScore(calculation.score)}<small>/100</small></strong><b>{government.scoreLabel}</b></>
           ) : (
@@ -101,16 +105,22 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
           {calculation ? (
             <p>
               Il Core confronta il periodo {calculation.baselineYear}→{calculation.endYear} con finestre storiche della stessa durata
-              e con Francia, Germania e Spagna. {government.reliability.reason}
+              e con Francia, Germania e Spagna. Non è ancora il voto sul benessere del cittadino. {government.reliability.reason}
             </p>
           ) : (
             <p>{calculationReason} Eredità, contesto e decisioni restano comunque valutati e documentati qui sotto.</p>
           )}
           <p className={styles.causalBoundary}>
-            Questa scheda distingue ciò che è successo durante il mandato da ciò che può essere attribuito alle sue politiche.
-            Non applica bonus o penalità politici decisi a mano.
+            Questo numero non include ancora risparmio familiare, costo della casa, NEET, natalità, migrazione dei laureati o ricchezza netta.
+            La scheda distingue inoltre ciò che è successo durante il mandato da ciò che può essere attribuito alle sue politiche.
           </p>
         </div>
+      </section>
+
+      <section className={styles.scoreLayers} aria-labelledby="tre-livelli">
+        <div><span>1</span><h2 id="tre-livelli">Benessere del cittadino</h2><p>Reddito, costi essenziali, lavoro, risparmio, casa e opportunità. Il paniere completo è in integrazione e oggi non riceve un voto.</p></div>
+        <div><span>2</span><h2>Performance nel contesto</h2><p>Andamento rispetto alla storia italiana e agli stessi anni nei peer. È il livello coperto, solo in parte, dal Core macro.</p></div>
+        <div><span>3</span><h2>Impatto delle politiche</h2><p>Una manovra riceve merito o colpa soltanto con una valutazione indipendente; altrimenti mostriamo atto, obiettivo e risultato senza causalità.</p></div>
       </section>
 
       <section className={`panel ${styles.section}`} aria-labelledby="eredita">
@@ -205,9 +215,40 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
               <div><dt>Rispetto ai peer</dt><dd>{formatScore(calculation.relativeScore)}</dd><span className="stat-note">Francia · Germania · Spagna</span></div>
               <div><dt>Durata statistica</dt><dd>{calculation.windowYears}</dd><span className="stat-note">{calculation.windowYears === 1 ? "anno · lettura indicativa" : "anni tra gli endpoint"}</span></div>
             </dl>
+            <div className={styles.scoreBreakdown}>
+              <div className={styles.breakdownHeading}>
+                <h3>Come i sei indicatori formano il numero</h3>
+                <p>Ogni barra mostra i punti aggiunti o sottratti al valore neutro 50. Sommandoli si ottiene il Core finale.</p>
+              </div>
+              <div className={styles.contributionChart}>
+                {calculation.indicators.map((indicator) => {
+                  const width = Math.abs(indicator.contributionPoints) / maximumContribution * 46;
+                  const positiveContribution = indicator.contributionPoints >= 0;
+                  return (
+                    <div className={styles.contributionRow} key={indicator.id}>
+                      <div><strong>{indicator.label}</strong><small>{indicator.weightBasisPoints / 100}% del Core · indice {formatScore(indicator.score)}/100</small></div>
+                      <div
+                        className={styles.contributionTrack}
+                        role="img"
+                        aria-label={`${indicator.label}: ${indicator.contributionPoints >= 0 ? "più" : "meno"} ${Math.abs(indicator.contributionPoints).toLocaleString("it-IT")} punti`}
+                      >
+                        <span
+                          data-direction={positiveContribution ? "positive" : "negative"}
+                          style={positiveContribution ? { left: "50%", width: `${width}%` } : { left: `${50 - width}%`, width: `${width}%` }}
+                        />
+                      </div>
+                      <b>{indicator.contributionPoints > 0 ? "+" : ""}{indicator.contributionPoints.toLocaleString("it-IT")} pt</b>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <GovernmentIndicatorChart indicators={calculation.indicators} />
+
             <div className={styles.tableWrap} role="region" aria-label={`Risultati economici del governo ${government.name}`} tabIndex={0}>
               <table className="table">
-                <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">Inizio</th><th scope="col" className="num">Fine</th><th scope="col" className="num">Variazione</th><th scope="col" className="num">Italia vs peer</th><th scope="col" className="num">Punti</th></tr></thead>
+                <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">Inizio</th><th scope="col" className="num">Fine</th><th scope="col" className="num">Variazione</th><th scope="col" className="num">Italia vs peer</th><th scope="col" className="num">Indice /100</th></tr></thead>
                 <tbody>{calculation.indicators.map((indicator) => (
                   <tr key={indicator.id}>
                     <th scope="row"><span className={styles.indicatorName}>{indicator.label}</span><small>{indicator.weightBasisPoints / 100}% del voto</small></th>
@@ -220,6 +261,10 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
                 ))}</tbody>
               </table>
             </div>
+            <p className={styles.causalBoundary}>
+              “Italia vs peer” è lo scarto dell’indicatore rispetto alla mediana di Francia, Germania e Spagna: non è lo spread.
+              Il confronto assorbe parte degli shock comuni, ma non corregge ancora differenze di esposizione come dipendenza energetica, struttura industriale o spazio fiscale ereditato.
+            </p>
             <div className={styles.whyGrid}>
               <div><h3>Risultati che hanno alzato il voto</h3><ul className={styles.contributionList}>{positive.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>+{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul></div>
               <div><h3>Risultati che lo hanno frenato</h3>{negative.length > 0 ? <ul className={styles.contributionList}>{negative.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul> : <p>Nessun indicatore sotto il valore neutro in questa finestra.</p>}</div>

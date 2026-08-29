@@ -153,6 +153,47 @@
   font-size: 22px;
 }
 
+.scoreLayers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-4);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.scoreLayers > div {
+  min-width: 0;
+  padding: 17px;
+  background: #fff;
+  border-right: 1px solid var(--color-neutral-200);
+}
+
+.scoreLayers > div:last-child {
+  border-right: 0;
+}
+
+.scoreLayers span {
+  display: inline-grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  color: #fff;
+  background: var(--color-text);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.scoreLayers h2 {
+  margin: 10px 0 7px;
+  font-size: 17px;
+}
+
+.scoreLayers p {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .detailScore > div:last-child > p:not(.causalBoundary) {
   color: var(--color-neutral-700);
   line-height: 1.6;
@@ -363,6 +404,178 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
+}
+
+.citizenModelGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr);
+  gap: var(--space-4);
+}
+
+.citizenModelGrid > div {
+  min-width: 0;
+}
+
+.citizenModelGrid h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.citizenIndicators {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.citizenIndicators li {
+  position: relative;
+  min-width: 0;
+  padding: 15px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+  border-top: 3px solid var(--color-text);
+}
+
+.citizenIndicators li > span {
+  display: block;
+  color: var(--color-accent-700);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.citizenIndicators strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.citizenIndicators p {
+  margin: 6px 0 10px;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.citizenIndicators a {
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.citizenModelGrid > div:last-child .citizenIndicators {
+  grid-template-columns: 1fr;
+}
+
+.citizenModelGrid > div:last-child .citizenIndicators li {
+  border-top-color: var(--color-accent);
+}
+
+.guardrails {
+  margin-top: 8px;
+  padding: 14px;
+  color: #fff;
+  background: var(--color-text);
+}
+
+.guardrails h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.guardrails ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 17px;
+  color: var(--color-neutral-300);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.scoreBreakdown {
+  padding: 18px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.breakdownHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: 14px;
+}
+
+.breakdownHeading h3,
+.breakdownHeading p {
+  margin: 0;
+}
+
+.breakdownHeading h3 {
+  font-size: 18px;
+}
+
+.breakdownHeading p {
+  max-width: 480px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.contributionChart {
+  position: relative;
+  display: grid;
+  gap: 11px;
+}
+
+.contributionRow {
+  display: grid;
+  grid-template-columns: 240px minmax(140px, 1fr) 92px;
+  gap: 10px;
+  align-items: center;
+}
+
+.contributionRow > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.contributionRow small {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+}
+
+.contributionTrack {
+  position: relative;
+  height: 15px;
+  background: linear-gradient(to right, var(--color-neutral-200) 0 49.7%, var(--color-neutral-500) 49.7% 50.3%, var(--color-neutral-200) 50.3% 100%);
+}
+
+.contributionTrack > span {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  min-width: 2px;
+}
+
+.contributionTrack > span[data-direction="positive"] {
+  background: var(--chart-primary);
+}
+
+.contributionTrack > span[data-direction="negative"] {
+  background: var(--color-accent-700);
+}
+
+.contributionRow > b {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 .whyGrid > div {
@@ -729,6 +942,19 @@
   white-space: nowrap;
 }
 
+.spreadExplainer {
+  padding: 15px;
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+}
+
+.spreadExplainer p {
+  margin: 6px 0 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .sources {
   display: grid;
   gap: var(--space-5);
@@ -792,7 +1018,8 @@
   .heroGrid,
   .whyGrid,
   .forecastGrid,
-  .detailScore {
+  .detailScore,
+  .citizenModelGrid {
     grid-template-columns: 1fr;
   }
 
@@ -810,6 +1037,10 @@
 
   .sourceRows article {
     grid-template-columns: 1fr;
+  }
+
+  .contributionRow {
+    grid-template-columns: minmax(170px, .8fr) minmax(130px, 1fr) 75px;
   }
 }
 
@@ -833,8 +1064,37 @@
 
   .resultStrip:global(.stat-strip),
   .inheritanceGrid,
-  .assessmentPath {
+  .assessmentPath,
+  .scoreLayers,
+  .citizenIndicators {
     grid-template-columns: 1fr;
+  }
+
+  .scoreLayers > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+
+  .scoreLayers > div:last-child {
+    border-bottom: 0;
+  }
+
+  .breakdownHeading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .breakdownHeading p {
+    text-align: left;
+  }
+
+  .contributionRow {
+    grid-template-columns: 1fr auto;
+  }
+
+  .contributionTrack {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .assessmentPath article,

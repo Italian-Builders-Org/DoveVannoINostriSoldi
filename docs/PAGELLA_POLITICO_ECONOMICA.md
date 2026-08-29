@@ -53,6 +53,124 @@ governo**, per non suggerire un'attribuzione causale automatica.
 - Il governo in carica riceve soltanto un risultato **provvisorio** e distinto
   dalla previsione.
 
+## Revisione v3: dal Core macro al benessere del cittadino
+
+Il feedback sul primo prototipo evidenzia un errore di prodotto: sei indicatori
+macroeconomici non possono essere mostrati come se fossero già la pagella
+economica completa. Da questa revisione in avanti distinguiamo tre risultati:
+
+1. **benessere del cittadino**: cosa è successo a reddito, costi essenziali,
+   lavoro, risparmio, casa e opportunità;
+2. **performance nel contesto**: quanto l'Italia è migliorata o peggiorata
+   rispetto alla traiettoria ereditata e a Paesi esposti allo stesso periodo;
+3. **impatto delle politiche**: quali manovre sono state approvate e quali
+   effetti possono essere collegati ad esse da valutazioni indipendenti.
+
+Il terzo livello non viene sommato automaticamente ai primi due. Altrimenti lo
+stesso risultato verrebbe contato una volta come dato economico e una seconda
+volta come presunto merito politico.
+
+### I dieci dati da mostrare al cittadino
+
+La schermata principale deve ridurre centinaia di serie a dieci domande. Le
+prime sette formano il candidato **Score cittadino**; le ultime tre sono
+diagnostiche finché copertura e ritardi non consentono confronti equi tra
+governi.
+
+| # | Domanda | Indicatore | Fonte primaria | Uso proposto |
+| ---: | --- | --- | --- | --- |
+| 1 | Quanto resta davvero alle famiglie? | reddito disponibile reale per abitante | [Eurostat `nasa_10_ki`](https://ec.europa.eu/eurostat/databrowser/view/nasa_10_ki/default/table?lang=it) | voto |
+| 2 | Quanto pesano cibo, energia e casa? | IPCA delle spese essenziali rispetto al reddito | [Eurostat `prc_hicp_aind`](https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_aind/default/table?lang=it) | voto |
+| 3 | Quante persone lavorano davvero? | occupazione 20-64 anni | [Eurostat `lfsi_emp_a`](https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_a/default/table?lang=it) | voto |
+| 4 | Quanto reddito non viene assorbito dai consumi? | tasso di risparmio delle famiglie | [Eurostat `tec00131`](https://ec.europa.eu/eurostat/databrowser/view/tec00131/default/table?lang=it) | voto |
+| 5 | Quanti sono schiacciati dal costo della casa? | housing cost overburden, soglia 40% | [Eurostat `ilc_lvho07a`](https://ec.europa.eu/eurostat/databrowser/view/ilc_lvho07a/default/table?lang=it) | voto |
+| 6 | Quanti giovani sono senza lavoro e formazione? | NEET 15-29 anni | [Eurostat `edat_lfse_20`](https://ec.europa.eu/eurostat/databrowser/view/edat_lfse_20/default/table?lang=it) | voto |
+| 7 | Il lavoro crea più valore? | produttività reale per ora | [Eurostat `nama_10_lp_ulc`](https://ec.europa.eu/eurostat/databrowser/view/nama_10_lp_ulc/default/table?lang=it) | voto |
+| 8 | Le persone riescono a realizzare i progetti di figli? | fecondità, natalità e primo figlio | [Eurostat `demo_find`](https://ec.europa.eu/eurostat/databrowser/view/demo_find/default/table?lang=it) | diagnostico: ritardo lungo |
+| 9 | Il Paese trattiene e riporta capitale umano? | saldo dei laureati italiani 25-34 anni | [Istat, tavola 13](https://demo.istat.it/tavole/?l=it&t=apr4) | diagnostico: serie dal 2013 e solo Italia |
+| 10 | Famiglie diverse hanno davvero capacità di investire e rischiare? | ricchezza netta, debiti e attività finanziarie per fascia | [Banca d'Italia, conti distributivi](https://www.bancaditalia.it/statistiche/tematiche/conti-patrimoniali/conti-distributivi/) | diagnostico: copertura recente |
+
+Fecondità e migrazione dei laureati devono essere valutate e mostrate, ma non
+possono ricevere lo stesso peso di un indicatore trimestrale: dipendono da
+decisioni maturate in molti anni e, per i governi più vecchi, la copertura non è
+comparabile. Escluderle dalla schermata sarebbe sbagliato; trasformarle subito
+in punti di voto sarebbe altrettanto arbitrario.
+
+### Stabilità e capacità futura
+
+Accanto allo Score cittadino mostriamo un modulo di sostenibilità, separato e
+visibile, composto da:
+
+- debito, spesa per interessi e costo di rifinanziamento;
+- condizioni del credito, banche e trasmissione dei tassi;
+- investimenti produttivi pubblici e privati, ricerca e sviluppo.
+
+Lo spread BTP-Bund appartiene a questo modulo. Non è il confronto “Italia vs
+peer” oggi mostrato dal Core: è la differenza fra rendimento dei titoli italiani
+e Bund tedeschi. Poiché il Bund è il riferimento, non esiste uno “spread
+BTP-Bund della Germania” direttamente confrontabile con quello italiano. Per
+confrontare il rischio sovrano mostreremo rendimento, differenza rispetto a un
+benchmark comune, spesa per interessi e condizioni del credito senza confondere
+queste misure con il reddito del cittadino.
+
+La prima ipotesi da sottoporre a sensibilità è:
+
+```text
+valutazione complessiva = 80% Score cittadino + 20% sostenibilità futura
+```
+
+I pesi interni non vengono congelati finché il paniere non supera l'audit di
+copertura e ridondanza. In particolare reddito, salari e consumi, oppure debito,
+interessi e spread, non devono contare più volte lo stesso fenomeno.
+
+### Come il contesto modifica il confronto, non il dato
+
+Non assegniamo un bonus manuale per “pandemia”, “guerra” o “crisi energetica”.
+Per ogni indicatore costruiamo tre confronti verificabili:
+
+1. variazione italiana durante il mandato;
+2. scarto rispetto a Paesi nello stesso periodo, scelti usando caratteristiche
+   precedenti al mandato;
+3. scarto rispetto alla traiettoria italiana ereditata prima del mandato.
+
+La formula candidata per ogni indicatore è:
+
+```text
+indicatore_contestualizzato =
+  50% confronto con peer contemporanei e pre-selezionati +
+  30% rottura rispetto alla traiettoria ereditata +
+  20% confronto con finestre storiche italiane della stessa durata
+```
+
+Le variabili usate per scegliere o pesare i peer devono esistere prima di vedere
+il risultato: dipendenza energetica, struttura industriale, apertura commerciale,
+debito e scadenze, condizioni bancarie, regime monetario e spazio fiscale. Se il
+controfattuale non supera i test di pre-trend, la pagina conserva il confronto
+descrittivo e abbassa l'affidabilità invece di forzare un aggiustamento.
+
+Il Core attualmente pubblicato **non implementa ancora questa formula**: usa 50%
+storia italiana e 50% mediana contemporanea di Francia, Germania e Spagna. La UI
+deve quindi chiamarlo sempre “Core macro provvisorio” e mostrare i grafici e i
+punti che lo compongono.
+
+### Come valutare le manovre
+
+Ogni manovra deve avere una scheda con atto, destinatari, costo o copertura,
+meccanismo atteso, data di attuazione, indicatore che dovrebbe muovere e fonte
+indipendente. L'esito assume uno dei quattro stati:
+
+- **effetto stimato**: valutazione causale o quasi-sperimentale adeguata;
+- **contributo plausibile e quantificato**: modello ufficiale o indipendente con
+  assunzioni visibili;
+- **risultato coerente ma non attribuibile**: il dato si muove nella direzione
+  prevista, senza controfattuale;
+- **impatto non ancora quantificabile**: è noto l'atto, non l'effetto.
+
+Sussidi e incentivi alle imprese non ricevono punti perché spendono molto. Sono
+valutati attraverso addizionalità degli investimenti, produttività, occupazione,
+innovazione, esportazioni, costo per risultato ed eventuali effetti di
+sostituzione. Lo stesso vale per misure fiscali, bonus e tagli di imposta.
+
 ## Copertura storica: nessuna soglia rigida al 2005
 
 Vogliamo includere anche i governi precedenti al 2005 ogni volta che le fonti lo

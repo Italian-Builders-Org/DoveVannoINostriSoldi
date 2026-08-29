@@ -14,6 +14,8 @@ type IndicatorCalculation = Readonly<{
   label: string;
   unit: string;
   limitations: string;
+  direction: GovernmentScorecardIndicator["direction"];
+  transformation: GovernmentScorecardIndicator["transformation"];
   weightBasisPoints: number;
   baselineValue: number;
   endValue: number;
@@ -26,6 +28,13 @@ type IndicatorCalculation = Readonly<{
   score: number;
   contributionPoints: number;
   sourceCodes: GovernmentScorecardIndicator["sourceCodes"];
+  series: readonly Readonly<{
+    year: number;
+    italy: number;
+    france: number;
+    germany: number;
+    spain: number;
+  }>[];
 }>;
 
 type ScoreCalculation = Readonly<{
@@ -176,12 +185,22 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
       const relativeScore = robustScore(relative, relativeWindows, snapshot.method.robustScale, snapshot.method.winsorizedZ);
       const score = historicalScore * snapshot.method.historicalWeightBasisPoints / 10_000
         + relativeScore * snapshot.method.peerWeightBasisPoints / 10_000;
+      const series = Array.from({ length: windowYears + 1 }, (_, index) => baselineYear + index).map((year) => {
+        const italy = valueAt(indicator, "italy", year);
+        const france = valueAt(indicator, "france", year);
+        const germany = valueAt(indicator, "germany", year);
+        const spain = valueAt(indicator, "spain", year);
+        if (italy == null || france == null || germany == null || spain == null) throw new Error(`serie grafico incompleta: ${indicator.id}`);
+        return { year, italy, france, germany, spain };
+      });
       return {
         id: indicator.id,
         area: indicator.area,
         label: indicator.label,
         unit: indicator.unit,
         limitations: indicator.limitations,
+        direction: indicator.direction,
+        transformation: indicator.transformation,
         weightBasisPoints: indicator.weightBasisPoints,
         baselineValue,
         endValue,
@@ -194,6 +213,7 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
         score: rounded(score),
         contributionPoints: rounded((score - 50) * indicator.weightBasisPoints / 10_000, 2),
         sourceCodes: indicator.sourceCodes,
+        series,
       };
     });
     const observedScore = indicators.reduce((sum, indicator) => sum + indicator.historicalScore * indicator.weightBasisPoints / 10_000, 0);

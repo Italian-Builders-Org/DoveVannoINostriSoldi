@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { longDate } from "@/lib/format";
 import { getGovernmentScorecardView } from "@/lib/government-scorecard";
+import { CitizenScoreModel } from "./citizen-score-model";
 import { formatScore as score, rawChangeLabel, signed, sourceValue } from "./government-scorecard-format";
 import styles from "./governi.module.css";
 
 export const revalidate = 86_400;
 export const metadata: Metadata = {
   title: "Pagella economica dei governi italiani",
-  description: "Risultati macroeconomici osservati durante i governi italiani, confronto con Francia, Germania e Spagna, contesto storico, misure e scenario corrente.",
+  description: "Benessere dei cittadini, risultati macroeconomici, confronto internazionale, contesto storico, manovre e scenario corrente dei governi italiani.",
 };
 
 export default function GovernmentsPage() {
@@ -18,7 +19,7 @@ export default function GovernmentsPage() {
   const currentNotScoredReason = current.calculation.status === "not-scored" ? current.calculation.reason : "Dati insufficienti.";
   const forecast = current.forecast.status === "scored" ? current.forecast : null;
   const forecastNotScoredReason = current.forecast.status === "not-scored" ? current.forecast.reason : "Scenario non disponibile.";
-  const positive = currentScore ? [...currentScore.indicators].sort((left, right) => right.contributionPoints - left.contributionPoints).slice(0, 3) : [];
+  const positive = currentScore ? [...currentScore.indicators].sort((left, right) => right.contributionPoints - left.contributionPoints).filter((item) => item.contributionPoints > 0).slice(0, 3) : [];
   const negative = currentScore ? [...currentScore.indicators].sort((left, right) => left.contributionPoints - right.contributionPoints).filter((item) => item.contributionPoints < 0).slice(0, 3) : [];
 
   return (
@@ -27,19 +28,21 @@ export default function GovernmentsPage() {
         <span className={styles.kicker}>Risultati, contesto e responsabilità separate</span>
         <h1>Pagella economica dei governi</h1>
         <p>
-          Come è cambiata l’economia durante ogni governo, rispetto alla storia italiana e a Francia,
-          Germania e Spagna. Il voto descrive il periodo: <strong>non dimostra che il governo abbia causato il risultato</strong>.
+          Come sono cambiate la vita economica dei cittadini e la capacità del Paese durante ogni governo,
+          rispetto all’eredità ricevuta e a economie esposte allo stesso periodo.
         </p>
       </header>
 
       <div className={`notice warning-notice ${styles.methodNotice}`}>
-        <strong>Questa è una prima pagella macro, non la classifica definitiva.</strong>
+        <strong>Il numero disponibile oggi non è ancora il voto sul benessere degli italiani.</strong>
         <p>
-          Ogni governo ha una scheda su eredità, contesto, misure e risultati. Il Core usa ancora sei indicatori
-          annuali AMECO dal 1995: una finestra di un anno produce solo un voto indicativo con affidabilità C;
-          se non esiste neppure un intervallo annuale mostriamo la valutazione documentale in attesa delle serie trimestrali.
+          È un Core macro provvisorio basato su sei indicatori annuali AMECO. Non contiene ancora risparmio,
+          casa, NEET, natalità, migrazione dei laureati o distribuzione della ricchezza. Lo manteniamo visibile
+          per rendere auditabile il prototipo, ma non lo presentiamo come pagella completa.
         </p>
       </div>
+
+      <CitizenScoreModel />
 
       <section className={styles.currentSection} aria-labelledby="governo-in-carica">
         <div className={styles.currentHeader}>
@@ -55,11 +58,12 @@ export default function GovernmentsPage() {
 
         {currentScore ? (
           <div className={styles.heroGrid}>
-            <article className={styles.scoreCard} aria-label={`Core macroeconomico ${score(currentScore.score)} su 100`}>
-              <span>Core macroeconomico</span>
+            <article className={styles.scoreCard} aria-label={`Core macro provvisorio ${score(currentScore.score)} su 100`}>
+              <span>Core macro provvisorio · non è il voto cittadino</span>
               <strong>{score(currentScore.score)}<small>/100</small></strong>
               <b>{current.scoreLabel}</b>
-              <p>50% confronto con finestre storiche italiane, 50% confronto contemporaneo con i tre peer.</p>
+              <p>50% confronto con finestre storiche italiane, 50% confronto contemporaneo con Francia, Germania e Spagna.</p>
+              <p><Link href={`/governi/${current.id}`}>Apri grafici, manovre e scheda completa →</Link></p>
             </article>
             <div className={styles.heroDetail}>
               <dl className={`stat-strip ${styles.scoreStrip}`}>
@@ -92,9 +96,9 @@ export default function GovernmentsPage() {
           <div className={styles.sectionHeading}>
             <div>
               <span className={styles.eyebrow}>Leggi il voto, non fidarti del solo numero</span>
-              <h2 id="perche-voto">Perché {score(currentScore.score)}?</h2>
+              <h2 id="perche-voto">Perché il Core vale {score(currentScore.score)}?</h2>
             </div>
-            <p>Il contributo indica di quanti punti ogni indicatore sposta il totale rispetto a un valore neutro di 50.</p>
+            <p>Il contributo indica di quanti punti ciascuno dei sei indicatori sposta il Core rispetto al valore neutro 50.</p>
           </div>
           <div className={styles.whyGrid}>
             <div>
@@ -134,9 +138,9 @@ export default function GovernmentsPage() {
           <div className={styles.sectionHeading}>
             <div>
               <span className={styles.eyebrow}>Cinque aree, pesi dichiarati</span>
-              <h2 id="cinque-aree">Da cosa è composto</h2>
+              <h2 id="cinque-aree">Da cosa è composto il Core provvisorio</h2>
             </div>
-            <p>I pesi non cambiano da un governo all’altro e i dati mancanti non vengono sostituiti con zero.</p>
+            <p>I pesi non cambiano da un governo all’altro. Queste cinque aree non coincidono ancora con il paniere cittadino mostrato sopra.</p>
           </div>
           <ul className={styles.categoryList}>
             {currentScore.categories.map((category) => (
@@ -149,7 +153,7 @@ export default function GovernmentsPage() {
 
           <div className={styles.tableWrap} role="region" aria-label="Indicatori del governo Meloni" tabIndex={0}>
             <table className="table">
-              <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">Baseline</th><th scope="col" className="num">{currentScore.endYear}</th><th scope="col" className="num">Variazione</th><th scope="col" className="num">Italia vs peer</th><th scope="col" className="num">Punti</th></tr></thead>
+              <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">Baseline</th><th scope="col" className="num">{currentScore.endYear}</th><th scope="col" className="num">Variazione</th><th scope="col" className="num">Italia vs peer</th><th scope="col" className="num">Indice /100</th></tr></thead>
               <tbody>
                 {currentScore.indicators.map((indicator) => (
                   <tr key={indicator.id}>
@@ -165,7 +169,7 @@ export default function GovernmentsPage() {
             </table>
           </div>
           <p className={styles.causalBoundary}>
-            Nella colonna “Italia vs peer”, un valore positivo significa che l’Italia è migliorata più della mediana dei tre paesi;
+            “Italia vs peer” non indica lo spread. Un valore positivo significa che l’Italia è migliorata più della mediana dei tre paesi;
             un valore negativo significa che è andata peggio, dopo aver orientato ogni indicatore nel verso favorevole.
           </p>
           <details className={styles.details}>
@@ -257,7 +261,7 @@ export default function GovernmentsPage() {
         </div>
         <div className={styles.tableWrap} role="region" aria-label="Pagella macroeconomica dei governi dal 1995" tabIndex={0}>
           <table className="table">
-            <thead><tr><th scope="col">Governo</th><th scope="col">Mandato</th><th scope="col" className="num">Pos.</th><th scope="col" className="num">Core</th><th scope="col" className="num">Osservato</th><th scope="col" className="num">Peer</th><th scope="col">Affidabilità</th></tr></thead>
+            <thead><tr><th scope="col">Governo</th><th scope="col">Mandato</th><th scope="col" className="num">Pos.</th><th scope="col" className="num">Core provv.</th><th scope="col" className="num">Osservato</th><th scope="col" className="num">Peer</th><th scope="col">Affidabilità</th></tr></thead>
             <tbody>
               {data.governments.map((government) => (
                 <tr key={government.id}>
@@ -338,11 +342,19 @@ export default function GovernmentsPage() {
         <ol className={styles.methodSteps}>
           <li><strong>Misuriamo la variazione.</strong> Livelli reali in log-percentuale; tassi e rapporti in punti percentuali.</li>
           <li><strong>Confrontiamo finestre della stessa durata.</strong> Il risultato italiano viene normalizzato sulla storia dal 1995.</li>
-          <li><strong>Confrontiamo i peer.</strong> Sottraiamo la mediana di Francia, Germania e Spagna nello stesso periodo.</li>
+          <li><strong>Confrontiamo i peer.</strong> Per ogni indicatore sottraiamo la mediana di Francia, Germania e Spagna nello stesso periodo.</li>
           <li><strong>Riduciamo il peso degli estremi.</strong> Usiamo mediana, MAD robusto e z-score limitato tra −3 e +3.</li>
           <li><strong>Combiniamo senza nascondere.</strong> 50% storia italiana + 50% peer; poi pesi fissi 25/20/20/20/15.</li>
         </ol>
         <div className={styles.formula}>Score = 50% andamento storico + 50% risultato relativo ai peer</div>
+        <div className={styles.spreadExplainer}>
+          <strong>Il confronto internazionale non è lo spread.</strong>
+          <p>
+            Lo spread BTP-Bund è la differenza fra il rendimento dei titoli italiani e quello dei Bund tedeschi.
+            La Germania è il riferimento, quindi non ha uno “spread BTP-Bund tedesco” confrontabile con quello italiano.
+            Rendimento sovrano, interessi sul debito e condizioni del credito entreranno come indicatori di stabilità separati.
+          </p>
+        </div>
         <details className={styles.details}>
           <summary>Regole che impediscono un voto fuorviante</summary>
           <ul>

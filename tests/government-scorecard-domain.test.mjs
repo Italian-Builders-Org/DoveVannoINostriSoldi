@@ -23,6 +23,9 @@ test("current score reconciles six indicators, five categories and the 50/50 spl
   for (const indicator of calculation.indicators) {
     assert.ok(indicator.score >= 0 && indicator.score <= 100);
     close(indicator.score, (indicator.historicalScore + indicator.relativeScore) / 2);
+    assert.equal(indicator.series.length, calculation.windowYears + 1);
+    assert.equal(indicator.series[0].year, calculation.baselineYear);
+    assert.equal(indicator.series.at(-1).year, calculation.endYear);
   }
 });
 

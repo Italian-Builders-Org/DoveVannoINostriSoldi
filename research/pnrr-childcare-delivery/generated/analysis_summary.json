@@ -1,0 +1,113 @@
+{
+  "source": {
+    "dataset": "pnrr_asili",
+    "reference_date": "2026-06-13",
+    "snapshot_sha256": "5693cfe012b8de38c065852f0d040e54fda982ca98704e7faaf3a2566c3e0da2",
+    "projects_full_measure": 3841,
+    "tenders_full_measure": 18851,
+    "projects_primary_sample": 2980,
+    "tenders_primary_sample": 13715
+  },
+  "headline": {
+    "concluded": 294,
+    "concluded_share": 0.09865771812080537,
+    "commissioning_or_concluded": 1443,
+    "commissioning_or_concluded_share": 0.4842281879194631,
+    "actual_end_recorded": 294,
+    "actual_end_recorded_share": 0.09865771812080537,
+    "total_funding_eur": 3286914138.89,
+    "pnrr_funding_eur": 2866467234.2,
+    "projects_with_tenders": 2816
+  },
+  "full_measure_robustness": {
+    "projects": 3841,
+    "concluded": 392,
+    "concluded_share": 0.10205675605311117,
+    "commissioning_or_concluded": 1926,
+    "commissioning_or_concluded_share": 0.5014319187711533
+  },
+  "pipeline": [
+    {
+      "maturity": "Concluso",
+      "projects": 294,
+      "funding": 221478248.57,
+      "project_share": 0.09865771812080537,
+      "funding_share": 0.06738181747722617
+    },
+    {
+      "maturity": "Collaudo non concluso",
+      "projects": 1149,
+      "funding": 1372083892.19,
+      "project_share": 0.3855704697986577,
+      "funding_share": 0.4174383127188581
+    },
+    {
+      "maturity": "Esecuzione lavori",
+      "projects": 1371,
+      "funding": 1555659113.07,
+      "project_share": 0.46006711409395973,
+      "funding_share": 0.473288637103052
+    },
+    {
+      "maturity": "Prima dell'esecuzione",
+      "projects": 38,
+      "funding": 38064794.91,
+      "project_share": 0.012751677852348993,
+      "funding_share": 0.011580708622603261
+    },
+    {
+      "maturity": "Fase non disponibile",
+      "projects": 128,
+      "funding": 99628090.15,
+      "project_share": 0.042953020134228186,
+      "funding_share": 0.030310524078260435
+    }
+  ],
+  "correlations": {
+    "coverage_vs_commissioning": {
+      "rho": 0.5851824407815235,
+      "p_value": 0.0067190551244780995,
+      "n": 20
+    },
+    "coverage_vs_concluded": {
+      "rho": 0.6679203180128442,
+      "p_value": 0.001289347339036569,
+      "n": 20
+    },
+    "coverage_vs_funding_per_child": {
+      "rho": -0.5814216281800998,
+      "p_value": 0.00716981892741811,
+      "n": 20
+    }
+  },
+  "model_fit": {
+    "Concluso": {
+      "n": 2778,
+      "aic": 1461.003847314213,
+      "deviance": 1439.003847314213
+    },
+    "Concluso o in collaudo": {
+      "n": 2778,
+      "aic": 3533.411418658046,
+      "deviance": 3511.411418658046
+    },
+    "region_fixed_effects": {
+      "Concluso": {
+        "n": 2778,
+        "aic": 1425.5834317843858,
+        "deviance": 1367.583431784386
+      },
+      "Concluso o in collaudo": {
+        "n": 2778,
+        "aic": 3468.2507266900448,
+        "deviance": 3410.2507266900448
+      }
+    }
+  },
+  "limitations": [
+    "Nessuna variabile pubblica nel dataset misura i posti creati o certificati.",
+    "Le associazioni tra appalti e avanzamento non hanno interpretazione causale.",
+    "La copertura ISTAT e regionale e riferita al 2023/24; il progetto e l'unita micro.",
+    "Finanziamenti e importi di gara non equivalgono a pagamenti erogati."
+  ]
+}

@@ -15,9 +15,12 @@ import {
 } from "@/lib/company-atlas";
 import {
   getIstatTurnoverView,
+  isIstatMetric,
+  istatMetricOptions,
   istatTurnoverRegionOptions,
   istatTurnoverSectorOptions,
 } from "@/lib/istat-turnover";
+import type { IstatMetricFormat } from "@/lib/istat-turnover-contract";
 import styles from "./imprese.module.css";
 
 export const metadata: Metadata = {
@@ -40,7 +43,7 @@ function compactCount(value: number | null): string {
   if (Math.abs(value) >= 1_000) {
     return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mila`;
   }
-  return integer(value);
+  return integer(Math.round(value));
 }
 
 function compactTurnover(value: number | null): string {
@@ -52,7 +55,32 @@ function compactTurnover(value: number | null): string {
   if (absolute >= 1_000) {
     return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mln €`;
   }
-  return `${integer(value)} mila €`;
+  return `${integer(Math.round(value))} mila €`;
+}
+
+function compactEuroPerEmployee(value: number | null): string {
+  if (value === null) return "n.d.";
+  const absolute = Math.abs(value);
+  if (absolute >= 1_000_000) {
+    return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" })} mln € / addetto`;
+  }
+  if (absolute >= 1_000) {
+    return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mila € / addetto`;
+  }
+  return `${integer(Math.round(value))} € / addetto`;
+}
+
+function formatIstatValue(value: number | null, format: IstatMetricFormat): string {
+  if (value === null) return "n.d.";
+  switch (format) {
+    case "thousand-euro":
+      return compactTurnover(value);
+    case "integer":
+    case "decimal":
+      return compactCount(value);
+    case "euro-per-employee":
+      return compactEuroPerEmployee(value);
+  }
 }
 
 function RegionalIdentity({
@@ -96,22 +124,24 @@ export default async function ImpresePage({
 }) {
   const params = await searchParams;
   const requestedMetric = first(params.metric);
-  const isTurnover = requestedMetric === "turnover";
+  const isTurnover = isIstatMetric(requestedMetric);
   const match = searchMatch(first(params.q));
 
   const allMetricOptions = [
     ...companyAtlasMetricOptions().map((item) => ({ id: item.id, label: item.label })),
-    { id: "turnover", label: "Fatturato aggregato (ISTAT)" },
+    ...istatMetricOptions().map((item) => ({ id: item.id, label: item.label })),
   ];
 
   if (isTurnover) {
     const turnoverView = getIstatTurnoverView({
+      metric: requestedMetric,
       region: first(params.region) ?? match.region,
       sector: first(params.sector),
     });
     const source = turnoverView.sources[0];
     const topSectors = turnoverView.sectorBreakdown;
     const sectorTotal = turnoverView.sectorBreakdown.reduce((sum, item) => sum + (item.value ?? 0), 0);
+    const sectorMaximum = Math.max(...topSectors.map((item) => item.value ?? 0), 0);
     const topRegions = turnoverView.ranking.slice(0, 10);
     const visibleRegion = turnoverView.selectedRegion;
     const filterOptions = {
@@ -131,8 +161,8 @@ export default async function ImpresePage({
             <span className={styles.kicker}>Modulo Imprese · Stima anticipata ISTAT 2024</span>
             <h1>Atlante Imprese Italia</h1>
             <p>
-              Dove si concentra il fatturato del sistema produttivo? Esplora i dati aggregati del
-              Registro Frame Territoriale Anticipato 2024 per regione e macro-settore economico.
+              Dove si concentrano fatturato, addetti, unità locali e valore aggiunto del sistema produttivo?
+              Esplora i dati aggregati del Registro Frame Territoriale Anticipato 2024 per regione e macro-settore economico.
             </p>
           </div>
           <div className={styles.heroMeta}>
@@ -144,7 +174,7 @@ export default async function ImpresePage({
 
         <CompanyAtlasFilters
           filters={{
-            metric: "turnover",
+            metric: turnoverView.metric,
             period: turnoverView.period,
             region: turnoverView.region === "ALL" ? "all" : turnoverView.region,
             sector: turnoverView.sector === "ALL" ? "all" : turnoverView.sector,
@@ -162,7 +192,7 @@ export default async function ImpresePage({
                 <h2 id="scope-title" className="panel-title">Perimetro selezionato</h2>
                 <span className="status status-attiva">Snapshot ISTAT</span>
               </div>
-              <strong className={styles.headline}>{compactTurnover(turnoverView.nationalValue)}</strong>
+              <strong className={styles.headline}>{formatIstatValue(turnoverView.nationalValue, turnoverView.metricFormat)}</strong>
               <p className={styles.headlineNote}>{turnoverView.metricUnit} · {turnoverView.periodLabel}</p>
 
               <dl className={styles.factRows}>
@@ -178,20 +208,31 @@ export default async function ImpresePage({
 
             <section className="panel" aria-labelledby="sector-title">
               <div className={styles.panelHead}>
-                <h2 id="sector-title" className="panel-title">Distribuzione per macro-settore</h2>
+                <h2 id="sector-title" className="panel-title">
+                  {turnoverView.metricFormat === "euro-per-employee" ? "Confronto per macro-settore" : "Distribuzione per macro-settore"}
+                </h2>
                 <span className={styles.headNote}>Industria e Servizi</span>
               </div>
               <ul className={styles.sectorList}>
                 {topSectors.map((sector) => {
                   const share = sector.value !== null && sectorTotal > 0 ? (sector.value / sectorTotal) * 100 : 0;
+                  const relativeWidth = turnoverView.metricFormat === "euro-per-employee"
+                    ? (sector.value !== null && sectorMaximum > 0 ? (sector.value / sectorMaximum) * 100 : 0)
+                    : share;
                   return (
                     <li key={sector.code}>
                       <div className={`${styles.sectorLabel} ${styles.sectorLabelPlain}`}>
                         <span>{sector.label}</span>
-                        <strong>{compactTurnover(sector.value)}</strong>
+                        <strong>{formatIstatValue(sector.value, turnoverView.metricFormat)}</strong>
                       </div>
-                      <i aria-hidden="true"><b style={{ width: `${share}%` }} /></i>
-                      <small>{sector.value === null ? "n.d." : percent(share)} del perimetro osservato</small>
+                      <i aria-hidden="true"><b style={{ width: `${relativeWidth}%` }} /></i>
+                      <small>
+                        {sector.value === null
+                          ? "n.d."
+                          : turnoverView.metricFormat === "euro-per-employee"
+                            ? "confronto tra macro-settori"
+                            : `${percent(share)} del perimetro osservato`}
+                      </small>
                     </li>
                   );
                 })}
@@ -213,7 +254,7 @@ export default async function ImpresePage({
                 regions={turnoverView.regionPoints}
                 selectedRegion={turnoverView.region === "ALL" ? "all" : turnoverView.region}
                 metricUnit={turnoverView.metricUnit}
-                valueFormat="thousand-euro"
+                valueFormat={turnoverView.metricFormat}
               />
               <p className={styles.attribution}>
                 Confini amministrativi a fini statistici: <a href="https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip" target="_blank" rel="noreferrer">ISTAT, 1 gennaio 2026</a>, CC BY 4.0. La scala della mappa è relativa al perimetro visualizzato.
@@ -223,23 +264,23 @@ export default async function ImpresePage({
             <section className="panel" aria-labelledby="ranking-title">
               <div className={styles.panelHead}>
                 <h2 id="ranking-title" className="panel-title">Prime 10 regioni</h2>
-                <span className={styles.headNote}>valori compatti in euro</span>
+                <span className={styles.headNote}>{turnoverView.metricUnit}</span>
               </div>
               <div className="table-scroll" role="region" aria-label="Prime 10 regioni ordinate per valore assoluto" tabIndex={0}>
                 <table className="table">
-                  <thead><tr><th scope="col">#</th><th scope="col">Regione</th><th scope="col" className="num">Fatturato</th></tr></thead>
+                  <thead><tr><th scope="col">#</th><th scope="col">Regione</th><th scope="col" className="num">{turnoverView.metricShortLabel}</th></tr></thead>
                   <tbody>
                     {topRegions.map((region, index) => (
                       <tr key={region.code}>
                         <td className="num">{index + 1}</td>
                         <th scope="row"><Link href={atlasHref(turnoverView, region.code)}><RegionalIdentity region={region} /></Link></th>
-                        <td className="num">{compactTurnover(region.value)}</td>
+                        <td className="num">{formatIstatValue(region.value, turnoverView.metricFormat)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className={styles.note}>Sono mostrate le prime 10 regioni per fatturato aggregato. Clicca una regione per fissarla nella mappa e nel perimetro.</p>
+              <p className={styles.note}>Sono mostrate le prime 10 regioni per {turnoverView.metricShortLabel.toLowerCase()}. Clicca una regione per fissarla nella mappa e nel perimetro.</p>
             </section>
           </div>
 
@@ -257,7 +298,7 @@ export default async function ImpresePage({
                     <strong>{visibleRegion.name}</strong>
                   </div>
                 ) : <strong>Italia</strong>}
-                <b>{compactTurnover(visibleRegion?.value ?? turnoverView.nationalValue)}</b>
+                <b>{formatIstatValue(visibleRegion?.value ?? turnoverView.nationalValue, turnoverView.metricFormat)}</b>
                 <small>{turnoverView.metricUnit} · {turnoverView.selectedSectorLabel}</small>
               </div>
               <dl className={styles.factRows}>
@@ -282,8 +323,8 @@ export default async function ImpresePage({
             <aside className={`notice ${styles.boundaryNotice}`}>
               <strong>Confine del modulo</strong>
               <p>
-                Qui non troverai nomi di aziende, identificativi, codici fiscali, partite IVA o fatturato
-                esatto di singole imprese. Il dato è un aggregato regionale e per macro-settore (Industria/Servizi)
+                Qui non troverai nomi di aziende, identificativi, codici fiscali, partite IVA o bilanci
+                esatti di singole imprese. Il dato è un aggregato regionale e per macro-settore (Industria/Servizi)
                 proveniente dalla stima anticipata ISTAT (Registro Frame Territoriale Anticipato 2024, ATECO 2007 agg. 2022),
                 riferito alle unità locali con almeno un dipendente.
               </p>

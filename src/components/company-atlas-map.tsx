@@ -12,7 +12,7 @@ type CompanyAtlasMapProps = Readonly<{
   regions: RegionPoint[];
   selectedRegion: string;
   metricUnit: string;
-  valueFormat?: "thousand-euro";
+  valueFormat?: "thousand-euro" | "integer" | "decimal" | "euro-per-employee" | "count";
   mapTitle?: string;
   mapDescription?: string;
 }>;
@@ -97,7 +97,20 @@ export function CompanyAtlasMap({
       }
       return `${integer(value)} mila €`;
     }
-    return integer(value);
+    if (valueFormat === "euro-per-employee") {
+      const absolute = Math.abs(value);
+      if (absolute >= 1_000_000) {
+        return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" })} mln € / addetto`;
+      }
+      if (absolute >= 1_000) {
+        return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mila € / addetto`;
+      }
+      return `${integer(Math.round(value))} € / addetto`;
+    }
+    if (valueFormat === "decimal") {
+      return value.toLocaleString("it-IT", { maximumFractionDigits: 1 });
+    }
+    return integer(Math.round(value));
   }
 
   return (

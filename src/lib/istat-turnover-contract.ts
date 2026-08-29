@@ -3,6 +3,18 @@ import { z } from "zod";
 export const istatMacroSectorSchema = z.enum(["ALL", "INDUSTRIA", "SERVIZI"]);
 export type IstatMacroSector = z.infer<typeof istatMacroSectorSchema>;
 
+export const istatMetricIdSchema = z.enum([
+  "turnover",
+  "istat_local_units",
+  "istat_employees",
+  "istat_value_added",
+  "istat_value_added_per_employee",
+  "istat_turnover_per_employee",
+]);
+export type IstatMetricId = z.infer<typeof istatMetricIdSchema>;
+
+export type IstatMetricFormat = "thousand-euro" | "integer" | "decimal" | "euro-per-employee";
+
 export const istatTurnoverObservationSchema = z.object({
   observationType: z.literal("aggregate"),
   geographyLevel: z.literal("region"),

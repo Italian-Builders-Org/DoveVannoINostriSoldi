@@ -10,6 +10,10 @@ const {
   istatTurnoverRegionOptions,
   istatTurnoverSectorOptions,
   istatTurnoverSource,
+  isIstatMetric,
+  istatMetricOptions,
+  ISTAT_METRICS,
+  normalizeIstatMetric,
 } = await import("../src/lib/istat-turnover.ts");
 
 const {
@@ -47,7 +51,6 @@ test("the generated ISTAT turnover snapshot is valid under Zod contract", () => 
     assert.ok(region.name.length > 0);
   }
 });
-
 test("Campania row in Tavola 1 equals exactly 216750478 migliaia di euro and reconciles macro-sectors", () => {
   const campaniaAll = istatTurnoverSnapshot.observations.find(
     (obs) => obs.geographyCode === "15" && obs.macroSector === "ALL",
@@ -209,4 +212,212 @@ test("fonti lists the lightweight ISTAT turnover source next to the camera sourc
   assert.match(pageSource, /fatturato individuale/);
   assert.deepEqual(istatTurnoverSourceMetadata, istatTurnoverSnapshot.source);
   assert.deepEqual(istatTurnoverSourceMetadata, istatTurnoverSource());
+});
+
+test("isIstatMetric recognizes all ISTAT metrics and aliases while leaving InfoCamere metrics untouched", () => {
+  // Supported ISTAT metrics
+  assert.equal(isIstatMetric("turnover"), true);
+  assert.equal(isIstatMetric("company_turnover_istat"), true);
+  assert.equal(isIstatMetric("fatturato"), true);
+  assert.equal(isIstatMetric("istat_local_units"), true);
+  assert.equal(isIstatMetric("local_units_istat"), true);
+  assert.equal(isIstatMetric("local_units"), true);
+  assert.equal(isIstatMetric("istat_employees"), true);
+  assert.equal(isIstatMetric("employees_istat"), true);
+  assert.equal(isIstatMetric("istat_value_added"), true);
+  assert.equal(isIstatMetric("value_added_istat"), true);
+  assert.equal(isIstatMetric("value_added"), true);
+  assert.equal(isIstatMetric("istat_value_added_per_employee"), true);
+  assert.equal(isIstatMetric("value_added_per_employee"), true);
+  assert.equal(isIstatMetric("produttivita"), true);
+  assert.equal(isIstatMetric("istat_turnover_per_employee"), true);
+  assert.equal(isIstatMetric("turnover_per_employee"), true);
+  assert.equal(isIstatMetric("istat_not_a_metric"), false);
+  assert.equal(isIstatMetric("random_istat"), false);
+
+  // InfoCamere metrics must NOT be intercepted as ISTAT
+  assert.equal(isIstatMetric("active_enterprises"), false);
+  assert.equal(isIstatMetric("employees"), false); // InfoCamere workforce metric
+  assert.equal(isIstatMetric("active_local_units"), false);
+  assert.equal(isIstatMetric("production_value_band_count"), false);
+  assert.equal(isIstatMetric(undefined), false);
+  assert.equal(isIstatMetric(""), false);
+});
+
+test("normalizeIstatMetric maps metric IDs and aliases correctly", () => {
+  assert.equal(normalizeIstatMetric("turnover"), "turnover");
+  assert.equal(normalizeIstatMetric("company_turnover_istat"), "turnover");
+  assert.equal(normalizeIstatMetric("fatturato"), "turnover");
+  assert.equal(normalizeIstatMetric("istat_local_units"), "istat_local_units");
+  assert.equal(normalizeIstatMetric("local_units_istat"), "istat_local_units");
+  assert.equal(normalizeIstatMetric("local_units"), "istat_local_units");
+  assert.equal(normalizeIstatMetric("istat_employees"), "istat_employees");
+  assert.equal(normalizeIstatMetric("employees_istat"), "istat_employees");
+  assert.equal(normalizeIstatMetric("istat_value_added"), "istat_value_added");
+  assert.equal(normalizeIstatMetric("value_added"), "istat_value_added");
+  assert.equal(normalizeIstatMetric("istat_value_added_per_employee"), "istat_value_added_per_employee");
+  assert.equal(normalizeIstatMetric("value_added_per_employee"), "istat_value_added_per_employee");
+  assert.equal(normalizeIstatMetric("produttivita"), "istat_value_added_per_employee");
+  assert.equal(normalizeIstatMetric("istat_turnover_per_employee"), "istat_turnover_per_employee");
+  assert.equal(normalizeIstatMetric("turnover_per_employee"), "istat_turnover_per_employee");
+  assert.equal(normalizeIstatMetric(undefined), "turnover");
+  assert.equal(normalizeIstatMetric("unknown_xyz"), "turnover");
+});
+
+test("istatMetricOptions exposes all 6 metrics with explicit descriptions, units, and formats", () => {
+  const options = istatMetricOptions();
+  assert.equal(options.length, 6);
+  assert.deepEqual(
+    options.map((o) => o.id),
+    [
+      "turnover",
+      "istat_local_units",
+      "istat_employees",
+      "istat_value_added",
+      "istat_value_added_per_employee",
+      "istat_turnover_per_employee",
+    ],
+  );
+
+  for (const item of ISTAT_METRICS) {
+    assert.ok(item.label.length > 0);
+    assert.ok(item.metricLabel.length > 0);
+    assert.ok(item.shortLabel.length > 0);
+    assert.ok(item.unit.length > 0);
+    assert.ok(item.description.length > 0);
+    assert.ok(item.caveat.length > 0);
+    assert.ok(["thousand-euro", "integer", "decimal", "euro-per-employee"].includes(item.format));
+  }
+});
+
+test("getIstatTurnoverView correctly calculates and returns local units", () => {
+  const nationalView = getIstatTurnoverView({ metric: "istat_local_units" });
+  assert.equal(nationalView.metric, "istat_local_units");
+  assert.equal(nationalView.metricLabel, "Unità locali (ISTAT)");
+  assert.equal(nationalView.metricUnit, "unità locali");
+  assert.equal(nationalView.metricFormat, "integer");
+  assert.equal(nationalView.nationalValue, 1_972_649);
+  assert.equal(nationalView.regionPoints.length, 20);
+
+  // National sector breakdown
+  assert.equal(nationalView.sectorBreakdown[0].value, 544_980); // Industria
+  assert.equal(nationalView.sectorBreakdown[1].value, 1_427_669); // Servizi
+  assert.equal(
+    nationalView.sectorBreakdown[0].value + nationalView.sectorBreakdown[1].value,
+    nationalView.nationalValue,
+  );
+
+  // Campania regional view
+  const campaniaView = getIstatTurnoverView({ metric: "istat_local_units", region: "15" });
+  assert.equal(campaniaView.selectedRegion?.code, "15");
+  assert.equal(campaniaView.selectedRegion?.name, "Campania");
+  assert.equal(campaniaView.selectedRegion?.value, 179_367);
+  assert.equal(campaniaView.sectorBreakdown[0].value, 48_885); // Industria
+  assert.equal(campaniaView.sectorBreakdown[1].value, 130_482); // Servizi
+  assert.equal(
+    campaniaView.sectorBreakdown[0].value + campaniaView.sectorBreakdown[1].value,
+    campaniaView.selectedRegion?.value,
+  );
+});
+
+test("getIstatTurnoverView correctly calculates and returns employees", () => {
+  const nationalView = getIstatTurnoverView({ metric: "istat_employees" });
+  assert.equal(nationalView.metric, "istat_employees");
+  assert.equal(nationalView.metricLabel, "Addetti (ISTAT)");
+  assert.equal(nationalView.metricUnit, "addetti");
+  assert.equal(nationalView.metricFormat, "decimal");
+  assert.equal(nationalView.nationalValue, 15_332_958.22);
+  assert.equal(nationalView.sectorBreakdown[0].value, 5_356_775.67); // Industria
+  assert.equal(nationalView.sectorBreakdown[1].value, 9_976_182.55); // Servizi
+  assert.equal(
+    Math.round((nationalView.sectorBreakdown[0].value + nationalView.sectorBreakdown[1].value) * 100),
+    Math.round(nationalView.nationalValue * 100),
+  );
+
+  // Campania regional view
+  const campaniaView = getIstatTurnoverView({ metric: "istat_employees", region: "15" });
+  assert.equal(campaniaView.selectedRegion?.value, 1_087_048.37);
+  assert.equal(campaniaView.sectorBreakdown[0].value, 342_967.35); // Industria
+  assert.equal(campaniaView.sectorBreakdown[1].value, 744_081.02); // Servizi
+  assert.equal(
+    Math.round((campaniaView.sectorBreakdown[0].value + campaniaView.sectorBreakdown[1].value) * 100),
+    Math.round(campaniaView.selectedRegion.value * 100),
+  );
+});
+
+test("getIstatTurnoverView correctly calculates and returns value added", () => {
+  const nationalView = getIstatTurnoverView({ metric: "istat_value_added" });
+  assert.equal(nationalView.metric, "istat_value_added");
+  assert.equal(nationalView.metricLabel, "Valore aggiunto aggregato");
+  assert.equal(nationalView.metricUnit, "migliaia di euro");
+  assert.equal(nationalView.metricFormat, "thousand-euro");
+  assert.equal(nationalView.nationalValue, 960_538_669);
+  assert.equal(nationalView.sectorBreakdown[0].value, 434_968_295); // Industria
+  assert.equal(nationalView.sectorBreakdown[1].value, 525_570_374); // Servizi
+  assert.equal(
+    nationalView.sectorBreakdown[0].value + nationalView.sectorBreakdown[1].value,
+    nationalView.nationalValue,
+  );
+
+  // Campania regional view
+  const campaniaView = getIstatTurnoverView({ metric: "istat_value_added", region: "15" });
+  assert.equal(campaniaView.selectedRegion?.value, 52_725_025);
+  assert.equal(campaniaView.sectorBreakdown[0].value, 21_589_486); // Industria
+  assert.equal(campaniaView.sectorBreakdown[1].value, 31_135_539); // Servizi
+  assert.equal(
+    campaniaView.sectorBreakdown[0].value + campaniaView.sectorBreakdown[1].value,
+    campaniaView.selectedRegion.value,
+  );
+});
+
+test("getIstatTurnoverView correctly calculates per-employee derived metrics", () => {
+  // Value Added per employee (apparent labour productivity)
+  const vaPerEmpNat = getIstatTurnoverView({ metric: "istat_value_added_per_employee" });
+  assert.equal(vaPerEmpNat.metric, "istat_value_added_per_employee");
+  assert.equal(vaPerEmpNat.metricUnit, "euro per addetto");
+  assert.equal(vaPerEmpNat.metricFormat, "euro-per-employee");
+  const expectedNatVa = (960_538_669 * 1000) / 15_332_958.22;
+  assert.ok(Math.abs(vaPerEmpNat.nationalValue - expectedNatVa) < 0.001);
+
+  const vaPerEmpCampania = getIstatTurnoverView({ metric: "istat_value_added_per_employee", region: "15" });
+  const expectedCampaniaVa = (52_725_025 * 1000) / 1_087_048.37;
+  assert.ok(Math.abs((vaPerEmpCampania.selectedRegion?.value ?? 0) - expectedCampaniaVa) < 0.001);
+
+  // Turnover per employee
+  const toPerEmpNat = getIstatTurnoverView({ metric: "istat_turnover_per_employee" });
+  assert.equal(toPerEmpNat.metric, "istat_turnover_per_employee");
+  assert.equal(toPerEmpNat.metricUnit, "euro per addetto");
+  assert.equal(toPerEmpNat.metricFormat, "euro-per-employee");
+  const expectedNatTo = (3_768_464_269 * 1000) / 15_332_958.22;
+  assert.ok(Math.abs(toPerEmpNat.nationalValue - expectedNatTo) < 0.001);
+
+  const toPerEmpCampania = getIstatTurnoverView({ metric: "istat_turnover_per_employee", region: "15" });
+  const expectedCampaniaTo = (216_750_478 * 1000) / 1_087_048.37;
+  assert.ok(Math.abs((toPerEmpCampania.selectedRegion?.value ?? 0) - expectedCampaniaTo) < 0.001);
+});
+
+test("ranking is strictly descending and valid for every ISTAT metric", () => {
+  const metrics = [
+    "turnover",
+    "istat_local_units",
+    "istat_employees",
+    "istat_value_added",
+    "istat_value_added_per_employee",
+    "istat_turnover_per_employee",
+  ];
+
+  for (const metric of metrics) {
+    const view = getIstatTurnoverView({ metric });
+    assert.equal(view.ranking.length, 20);
+    assert.equal(view.regionPoints.length, 20);
+
+    for (let i = 1; i < view.ranking.length; i++) {
+      const prev = view.ranking[i - 1]?.value ?? 0;
+      const curr = view.ranking[i]?.value ?? 0;
+      assert.ok(
+        prev >= curr,
+        `Ranking for ${metric} not descending at index ${i}: ${prev} < ${curr}`,
+      );
+    }
+  }
 });

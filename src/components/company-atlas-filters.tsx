@@ -12,6 +12,15 @@ function sectorChoiceLabel(id: string, label: string) {
   return `${id} · ${label}`;
 }
 
+const ISTAT_METRIC_IDS = new Set([
+  "turnover",
+  "istat_local_units",
+  "istat_employees",
+  "istat_value_added",
+  "istat_value_added_per_employee",
+  "istat_turnover_per_employee",
+]);
+
 type CompanyAtlasFiltersProps = Readonly<{
   filters: Required<Pick<AtlasFilters, "metric" | "period" | "region" | "sector" | "band">>;
   metrics: SelectOption[];
@@ -45,7 +54,9 @@ export function CompanyAtlasFilters({
       params.delete("period");
       params.delete("band");
       // ATECO 2025 sections and ISTAT macro-sectors are different domains.
-      if (value === "turnover" || filters.metric === "turnover") params.delete("sector");
+      if (ISTAT_METRIC_IDS.has(value) !== ISTAT_METRIC_IDS.has(filters.metric)) {
+        params.delete("sector");
+      }
     }
 
     const query = params.toString();

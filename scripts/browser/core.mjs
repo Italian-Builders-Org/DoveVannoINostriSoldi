@@ -745,6 +745,37 @@ try {
     completed.push(label);
   }
 
+  for (const width of [390, 1280]) {
+    const label = `Atlante Imprese metriche ISTAT ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/imprese?metric=istat_value_added_per_employee&sector=INDUSTRIA",
+      width,
+      validate: async (page) => {
+        const text = await bodyText(page);
+        assertTextMatches(text, /Valore aggiunto per addetto/i, label);
+        assertTextMatches(text, /euro per addetto/i, label);
+        assertTextMatches(text, /Confronto per macro-settore/i, label);
+        assert.doesNotMatch(text, /NaN|undefined/i, `${label}: valore non formattato`);
+
+        const metricFilter = '[data-atlas-filter="metric"]';
+        assert.equal(
+          await page.$eval(metricFilter, (element) => element.value),
+          "istat_value_added_per_employee",
+          `${label}: metrica ISTAT non selezionata dall'URL`,
+        );
+        await page.select(metricFilter, "istat_local_units");
+        await page.waitForFunction(
+          () => new URL(window.location.href).searchParams.get("metric") === "istat_local_units",
+          { timeout: 3_000 },
+        );
+        assertTextMatches(await bodyText(page), /Unità locali \(ISTAT\)/i, label);
+        await assertResponsiveShell(page, `${label} cambio metrica`, width);
+      },
+    });
+    completed.push(label);
+  }
+
   await runScenario(browser, {
     label: "Atlante Imprese query navigation 390px",
     pathname: "/imprese?metric=employees",

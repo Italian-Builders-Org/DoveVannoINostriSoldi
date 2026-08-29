@@ -718,7 +718,17 @@ test("MCP tool call exposes the Legge di Bilancio mission series with the years 
                 title: expectedTitle,
                 notes: `Prodotto - [${productCode}]`,
                 metadata_modified: "2026-01-02T17:37:34.000000",
+                license_id: "cc-by",
                 license_title: "Creative Commons Attribution",
+                license_url: "http://www.opendefinition.org/licenses/cc-by",
+                resources: [
+                  {
+                    id: "32750",
+                    url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`,
+                    format: "csv",
+                    mimetype: "text/csv",
+                  },
+                ],
               },
             ],
           },

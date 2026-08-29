@@ -304,7 +304,7 @@ export function computeVerdict(
     const yourDelta = byCategory.get(catUp) ?? 0;
     // Solo se entrambe le cifre sono abbastanza grandi da non arrotondarsi a zero.
     if (Math.abs(realDelta) >= 500_000_000 && Math.abs(yourDelta) >= 500_000_000) {
-      detail = `Sul ${CATEGORY_LABEL[catUp]}: la manovra reale ${signedBillions(
+      detail = `Sul ${CATEGORY_LABEL[catUp]}: lo stanziamento pubblicato ${signedBillions(
         realDelta,
       )}, la tua ${signedBillions(yourDelta)}`;
     }

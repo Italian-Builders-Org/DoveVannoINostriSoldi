@@ -47,7 +47,17 @@ export type CkanPackage = {
   title?: unknown;
   notes?: unknown;
   metadata_modified?: unknown;
+  license_id?: unknown;
   license_title?: unknown;
+  license_url?: unknown;
+  resources?: unknown;
+};
+
+type CkanResource = {
+  id?: unknown;
+  url?: unknown;
+  format?: unknown;
+  mimetype?: unknown;
 };
 
 type PackageSearchResponse = {
@@ -63,7 +73,9 @@ export type BudgetLawMissionDataset = {
   title: string;
   notes: string;
   metadataModified: string | null;
-  license: string | null;
+  license: string;
+  licenseUrl: string;
+  resourceId: string;
   csvUrl: string;
   apiUrl: string;
 };
@@ -141,6 +153,25 @@ function uuid(value: unknown): string | null {
   return candidate;
 }
 
+function csvResource(pkg: CkanPackage, packageId: string): CkanResource | null {
+  if (!Array.isArray(pkg.resources)) return null;
+  const expectedPath = `/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`;
+  const matches = pkg.resources.filter((resource): resource is CkanResource => {
+    if (!resource || typeof resource !== "object") return false;
+    if (text(resource.format)?.toLowerCase() !== "csv") return false;
+    if (text(resource.mimetype)?.toLowerCase() !== "text/csv") return false;
+    const rawUrl = text(resource.url);
+    if (!rawUrl) return false;
+    try {
+      const url = new URL(rawUrl);
+      return url.hostname === "bdap-opendata.rgs.mef.gov.it" && url.pathname === expectedPath;
+    } catch {
+      return false;
+    }
+  });
+  return matches.length === 1 ? matches[0] : null;
+}
+
 function required(record: DelimitedRecord, key: string): string {
   const value = record[key]?.trim();
   if (!value) throw new Error(`OpenBDAP: campo obbligatorio mancante: ${key}`);
@@ -165,13 +196,29 @@ export function normalizeBudgetLawPackage(pkg: CkanPackage): BudgetLawMissionDat
     return null;
   }
 
+  const licenseId = text(pkg.license_id);
+  const license = text(pkg.license_title);
+  const licenseUrl = text(pkg.license_url);
+  if (
+    licenseId !== "cc-by" ||
+    license !== "Creative Commons Attribution" ||
+    licenseUrl !== "http://www.opendefinition.org/licenses/cc-by"
+  ) {
+    return null;
+  }
+  const resource = csvResource(pkg, packageId);
+  const resourceId = text(resource?.id);
+  if (!resource || !resourceId) return null;
+
   return {
     packageId,
     name,
     title,
     notes,
     metadataModified: text(pkg.metadata_modified),
-    license: text(pkg.license_title),
+    license,
+    licenseUrl,
+    resourceId,
     csvUrl: `${BDAP_DUMP}/${packageId}.csv`,
     apiUrl: `${BDAP_ACTION}/package_show?id=${encodeURIComponent(packageId)}`,
   };
@@ -221,7 +268,10 @@ export async function discoverBudgetLawMissionDataset(
  * step against an unexpectedly large or runaway response, not a size we
  * expect to hit in normal operation. */
 const MAX_CSV_BYTES = 32 * 1024 * 1024;
-const FULL_AGGREGATE_DEADLINE_MS = 20_000;
+// Discovery and CSV download are sequential. OpenBDAP policy allows two
+// 15-second attempts for each request, so the aggregate deadline must leave
+// both operations enough time to exhaust their bounded retry budget.
+const FULL_AGGREGATE_DEADLINE_MS = 70_000;
 
 async function fetchDatasetRows(
   dataset: BudgetLawMissionDataset,
@@ -315,10 +365,20 @@ export function missionYearOverYearDelta(
 
 type FullMissionAggregate = {
   dataset: BudgetLawMissionDataset;
+  acquiredAt: string;
   availableYears: number[];
   missionsByYear: Map<number, Set<string>>;
   totalsByYearMission: Map<string, number>;
 };
+
+function latestConsecutiveYears(availableYears: readonly number[]): number[] {
+  if (availableYears.length === 0) return [];
+  let start = availableYears.length - 1;
+  while (start > 0 && availableYears[start - 1] === availableYears[start] - 1) {
+    start -= 1;
+  }
+  return availableYears.slice(start);
+}
 
 /**
  * In-memory cache for the expensive step (discover + download + parse the
@@ -353,7 +413,13 @@ async function computeFullMissionAggregate(signal: AbortSignal): Promise<FullMis
   }
 
   const availableYears = [...missionsByYear.keys()].sort((left, right) => left - right);
-  return { dataset, availableYears, missionsByYear, totalsByYearMission };
+  return {
+    dataset,
+    acquiredAt: new Date().toISOString(),
+    availableYears,
+    missionsByYear,
+    totalsByYearMission,
+  };
 }
 
 /**
@@ -436,16 +502,17 @@ export async function getBudgetLawMissionSeries(
   }
   if (options.signal?.aborted) throw options.signal.reason;
 
-  const { dataset, availableYears, missionsByYear, totalsByYearMission } =
+  const { dataset, acquiredAt, availableYears, missionsByYear, totalsByYearMission } =
     await waitForAggregate(getFullMissionAggregate(), options.signal);
 
-  if (availableYears.length < MIN_BUDGET_LAW_WINDOW_YEARS) {
+  const consecutiveYears = latestConsecutiveYears(availableYears);
+  if (consecutiveYears.length < MIN_BUDGET_LAW_WINDOW_YEARS) {
     throw new BudgetLawWindowUnavailableError(
-      `OpenBDAP non pubblica ancora almeno ${MIN_BUDGET_LAW_WINDOW_YEARS} Leggi di Bilancio confrontabili dal ${MIN_STABLE_MISSION_YEAR} in poi.`,
+      `OpenBDAP non pubblica almeno ${MIN_BUDGET_LAW_WINDOW_YEARS} Leggi di Bilancio consecutive e confrontabili dal ${MIN_STABLE_MISSION_YEAR} in poi.`,
     );
   }
 
-  const years = availableYears.slice(-Math.min(requestedWindow, availableYears.length));
+  const years = consecutiveYears.slice(-Math.min(requestedWindow, consecutiveYears.length));
   const firstYearMissions = missionsByYear.get(years[0]) ?? new Set<string>();
   const missions = [...firstYearMissions]
     .filter((mission) => years.every((year) => missionsByYear.get(year)?.has(mission)))
@@ -482,6 +549,6 @@ export async function getBudgetLawMissionSeries(
     missions,
     allocations,
     yearOverYearDeltas,
-    observedAt: new Date().toISOString(),
+    observedAt: acquiredAt,
   };
 }

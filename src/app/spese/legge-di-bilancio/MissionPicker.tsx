@@ -263,7 +263,9 @@ export function MissionPicker({
         aria-label={`${node.shortLabel ?? mission}: ${
           adjusted
             ? `ipotesi ${exactEuro.format(effective)} (${signedPercent(pct)} sullo stanziamento ${latestYear} di ${exactEuro.format(observed)})`
-            : `stanziamento ${latestYear} ${exactEuro.format(observed)}, variazione reale ${signedPercent(node.deltaPct ?? null)}`
+            : `stanziamento ${latestYear} ${exactEuro.format(
+                observed,
+              )}, variazione dello stanziamento pubblicato ${signedPercent(node.deltaPct ?? null)}`
         }`}
         onClick={select}
         onKeyDown={(event) => {
@@ -528,7 +530,8 @@ export function MissionPicker({
                       </b>
                     ) : (
                       <b>
-                        {percentage.format(point.share ?? 0)} del totale · variazione reale{" "}
+                        {percentage.format(point.share ?? 0)} del totale · variazione dello
+                        stanziamento pubblicato{" "}
                         {signedPercent(point.deltaPct ?? null)}
                       </b>
                     )}
@@ -625,7 +628,7 @@ export function MissionPicker({
 
       <p className={styles.pickerCaption}>
         {hasScenario
-          ? `Il treemap è dimensionato sulla tua ipotesi. «Ricomincia» rimette tutto sullo stanziamento reale ${latestYear}.`
+          ? `Il treemap è dimensionato sulla tua ipotesi. «Ricomincia» rimette tutto sullo stanziamento pubblicato ${latestYear}.`
           : "Tocca − / + su un riquadro per aumentarlo o tagliarlo; la barra in basso segue il saldo."}
       </p>
     </div>

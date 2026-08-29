@@ -43,6 +43,13 @@ test("computeVerdict flags a social-spending footprint", () => {
   assert.match(verdict.headline, /spesa sociale/);
 });
 
+test("computeVerdict describes the official comparison as a published appropriation", () => {
+  const scenario = { "Tutela della salute": 12 };
+  const verdict = computeVerdict(computePlan(SUMMARIES, scenario), SUMMARIES, scenario);
+  assert.match(verdict.detail, /stanziamento pubblicato/);
+  assert.doesNotMatch(verdict.detail, /manovra reale/);
+});
+
 test("computeVerdict flags a balanced manovra", () => {
   // +5% salute (+10 mld) offset by a cut on debito large enough to net ~0
   const scenario = { "Tutela della salute": 5, "Debito pubblico": -2.5 };

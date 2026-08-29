@@ -14,6 +14,10 @@ const {
   resetBudgetLawMissionSeriesCacheForTests,
 } = await import("../src/lib/bdap-legge-bilancio.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
+const { NextRequest } = await import("next/server.js");
+const { GET: getBudgetLawRoute } = await import(
+  "../src/app/api/spese/stato/legge-bilancio/route.ts"
+);
 
 const packageId = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
 const EXPECTED_TITLE =
@@ -27,7 +31,23 @@ function packageFixture(overrides = {}) {
     title: EXPECTED_TITLE,
     notes: `Prodotto contenente la serie storica dei dati della Legge di Bilancio Spese aggregati per Amministrazione Missione Programma Macroaggregato - [${PRODUCT_CODE}]`,
     metadata_modified: "2026-01-02T17:37:34.000000",
+    license_id: "cc-by",
     license_title: "Creative Commons Attribution",
+    license_url: "http://www.opendefinition.org/licenses/cc-by",
+    resources: [
+      {
+        id: "32750",
+        url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`,
+        format: "csv",
+        mimetype: "text/csv",
+      },
+      {
+        id: "32999",
+        url: "https://bdap-opendata.rgs.mef.gov.it/metadata.pdf",
+        format: "CSV",
+        mimetype: "application/pdf",
+      },
+    ],
     ...overrides,
   };
 }
@@ -102,6 +122,8 @@ test("normalizeBudgetLawPackage accepts the exact product-code and title contrac
   assert.equal(dataset.packageId, packageId);
   assert.equal(dataset.title, EXPECTED_TITLE);
   assert.equal(dataset.license, "Creative Commons Attribution");
+  assert.equal(dataset.licenseUrl, "http://www.opendefinition.org/licenses/cc-by");
+  assert.equal(dataset.resourceId, "32750");
   assert.equal(dataset.csvUrl, `https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`);
   assert.match(dataset.apiUrl, /package_show\?id=/);
 });
@@ -119,6 +141,24 @@ test("normalizeBudgetLawPackage rejects title drift, missing code, and duplicate
     null,
   );
   assert.equal(normalizeBudgetLawPackage(packageFixture({ id: "not-a-uuid" })), null);
+  assert.equal(normalizeBudgetLawPackage(packageFixture({ license_id: "other" })), null);
+  assert.equal(normalizeBudgetLawPackage(packageFixture({ license_url: "https://example.test" })), null);
+  assert.equal(normalizeBudgetLawPackage(packageFixture({ resources: [] })), null);
+  assert.equal(
+    normalizeBudgetLawPackage(
+      packageFixture({
+        resources: [
+          {
+            id: "32750",
+            url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`,
+            format: "CSV",
+            mimetype: "application/pdf",
+          },
+        ],
+      }),
+    ),
+    null,
+  );
 });
 
 test("missionYearOverYearDelta computes the arithmetic delta and guards a zero base", () => {
@@ -156,11 +196,27 @@ test("discoverBudgetLawMissionDataset rejects zero and multiple matches", async 
   empty.restore();
 
   const duplicated = installFetch(FIXTURE_CSV);
+  const secondPackageId = "12345678-1234-4abc-8def-1234567890ab";
   globalThis.fetch = async () =>
     new Response(
       JSON.stringify({
         success: true,
-        result: { results: [packageFixture(), packageFixture({ id: "12345678-1234-4abc-8def-1234567890ab" })] },
+        result: {
+          results: [
+            packageFixture(),
+            packageFixture({
+              id: secondPackageId,
+              resources: [
+                {
+                  id: "32751",
+                  url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${secondPackageId}.csv`,
+                  format: "csv",
+                  mimetype: "text/csv",
+                },
+              ],
+            }),
+          ],
+        },
       }),
       { status: 200, headers: { "content-type": "application/json" } },
     );
@@ -201,10 +257,11 @@ test("getBudgetLawMissionSeries aggregates per mission, skips pre-2017 rows, and
 test("getBudgetLawMissionSeries caches the aggregate: two calls with different windows share one download", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {
-    await getBudgetLawMissionSeries({ windowYears: 3 });
-    await getBudgetLawMissionSeries({ windowYears: 2 });
+    const first = await getBudgetLawMissionSeries({ windowYears: 3 });
+    const second = await getBudgetLawMissionSeries({ windowYears: 2 });
     const csvCalls = fetchMock.calls.filter((call) => call.includes(`${packageId}.csv`));
     assert.equal(csvCalls.length, 1);
+    assert.equal(second.observedAt, first.observedAt);
   } finally {
     fetchMock.restore();
   }
@@ -287,6 +344,20 @@ test("getBudgetLawMissionSeries throws when fewer than two comparable years are 
   }
 });
 
+test("getBudgetLawMissionSeries never labels a gap as a year-over-year change", async () => {
+  const gappedCsv = [
+    CSV_HEADER,
+    csvRow({ year: 2022, admin: "01", mission: "Istruzione", macro: "FUNZIONAMENTO", cpA1: "100" }),
+    csvRow({ year: 2024, admin: "01", mission: "Istruzione", macro: "FUNZIONAMENTO", cpA1: "120" }),
+  ].join("\n");
+  const fetchMock = installFetch(gappedCsv);
+  try {
+    await assert.rejects(getBudgetLawMissionSeries(), BudgetLawWindowUnavailableError);
+  } finally {
+    fetchMock.restore();
+  }
+});
+
 test("openbdap_legge_bilancio_storico MCP dataset rejects unsupported filters and exposes the series", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {
@@ -299,5 +370,56 @@ test("openbdap_legge_bilancio_storico MCP dataset rejects unsupported filters an
     assert.deepEqual(result.missions, ["Istruzione"]);
   } finally {
     fetchMock.restore();
+  }
+});
+
+test("the budget-law route validates its query and never caches errors", async () => {
+  for (const search of ["?anni=2&anni=3", "?anni=1", "?altro=2"]) {
+    const response = await getBudgetLawRoute(
+      new NextRequest(`https://example.test/api/spese/stato/legge-bilancio${search}`),
+    );
+    assert.equal(response.status, 400);
+    assert.equal(response.headers.get("cache-control"), "private, no-store");
+  }
+});
+
+test("the budget-law route exposes the bounded public series with an explicit cache policy", async () => {
+  const fetchMock = installFetch(FIXTURE_CSV);
+  try {
+    const response = await getBudgetLawRoute(
+      new NextRequest("https://example.test/api/spese/stato/legge-bilancio?anni=2"),
+    );
+    assert.equal(response.status, 200);
+    assert.equal(
+      response.headers.get("cache-control"),
+      "public, s-maxage=3600, stale-while-revalidate=21600",
+    );
+    const body = await response.json();
+    assert.equal(body.ok, true);
+    assert.deepEqual(body.years, [2023, 2024]);
+    assert.equal(body.dataset.resourceId, "32750");
+    assert.equal(body.dataset.licenseUrl, "http://www.opendefinition.org/licenses/cc-by");
+  } finally {
+    fetchMock.restore();
+  }
+});
+
+test("the budget-law route keeps upstream details private and marks failures no-store", async () => {
+  resetBudgetLawMissionSeriesCacheForTests();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response("internal source detail", { status: 502, statusText: "Bad Gateway" });
+  try {
+    const response = await getBudgetLawRoute(
+      new NextRequest("https://example.test/api/spese/stato/legge-bilancio"),
+    );
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get("cache-control"), "private, no-store");
+    const body = await response.json();
+    assert.equal(body.error, "La fonte OpenBDAP non è disponibile in questo momento.");
+    assert.doesNotMatch(JSON.stringify(body), /502|Bad Gateway|internal source detail/);
+  } finally {
+    globalThis.fetch = originalFetch;
+    resetBudgetLawMissionSeriesCacheForTests();
   }
 });

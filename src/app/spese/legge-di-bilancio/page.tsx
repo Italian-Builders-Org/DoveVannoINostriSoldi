@@ -130,7 +130,11 @@ export default async function LeggeDiBilancioPage({
             </div>
             <div>
               <dt>Licenza</dt>
-              <dd>{series.dataset.license ?? "non dichiarata dal catalogo"}</dd>
+              <dd>
+                <a href={series.dataset.licenseUrl} target="_blank" rel="noreferrer">
+                  {series.dataset.license} ↗
+                </a>
+              </dd>
             </div>
             <div>
               <dt>Catalogo aggiornato il</dt>
@@ -165,10 +169,10 @@ export default async function LeggeDiBilancioPage({
           <strong>Come leggere il treemap</strong>
           <p>
             Ogni riquadro è una missione: più è grande, più pesa sullo stanziamento pubblicato
-            (somma su tutte le amministrazioni). Il numero sotto il nome è la variazione reale
-            rispetto all&apos;anno prima. Quando sposti lo slider, le voci che tocchi restano
-            segnate con una trama a righe e il treemap si ridisegna sulla nuova ripartizione;
-            &laquo;Ricomincia&raquo; azzera lo scenario.
+            (somma su tutte le amministrazioni). Il numero sotto il nome è la variazione dello
+            stanziamento pubblicato rispetto all&apos;anno prima. Quando sposti lo slider, le voci
+            che tocchi restano segnate con una trama a righe e il treemap si ridisegna sulla nuova
+            ripartizione; &laquo;Ricomincia&raquo; azzera lo scenario.
           </p>
         </div>
       ) : null}

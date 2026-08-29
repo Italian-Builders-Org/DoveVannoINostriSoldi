@@ -1668,6 +1668,29 @@ try {
       pathname: "/spese/legge-di-bilancio",
       width,
       validate: async (page) => {
+        const treemapSelector = '[role="group"][aria-label^="Scegli una missione"]';
+        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 5_000 });
+        const treemapState = await page.$eval(treemapSelector, (root) => {
+          const bounds = root.getBoundingClientRect();
+          const tiles = [...root.querySelectorAll('g[role="button"]')];
+          const visibleTiles = tiles.filter((tile) => {
+            const rect = tile.querySelector("rect")?.getBoundingClientRect();
+            return Boolean(rect && rect.width > 1 && rect.height > 1);
+          });
+          return {
+            height: bounds.height,
+            tiles: tiles.length,
+            visibleTiles: visibleTiles.length,
+          };
+        });
+        assert.ok(treemapState.height >= 400, `${label}: il treemap non riserva spazio`);
+        assert.ok(treemapState.tiles >= 5, `${label}: il treemap non contiene abbastanza missioni`);
+        assert.equal(
+          treemapState.visibleTiles,
+          treemapState.tiles,
+          `${label}: uno o più riquadri del treemap sono vuoti`,
+        );
+
         const sliderSelector = 'input[type="range"]';
         await page.waitForSelector(sliderSelector, { timeout: 5_000 });
         assert.equal(

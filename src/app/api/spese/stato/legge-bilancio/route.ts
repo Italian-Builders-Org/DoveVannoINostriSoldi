@@ -1,5 +1,4 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server.js";
 import { BudgetLawInvalidWindowError, getBudgetLawMissionSeries } from "@/lib/bdap-legge-bilancio";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +25,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Richiesta non valida." },
-      { status: 400 },
+      { status: 400, headers: { "Cache-Control": "private, no-store" } },
     );
   }
 
@@ -58,10 +57,14 @@ export async function GET(request: NextRequest) {
       {
         ok: false,
         source: "RGS / OpenBDAP",
-        observedAt: new Date().toISOString(),
-        error: error instanceof Error ? error.message : "Errore sconosciuto",
+        error:
+          status === 400
+            ? error instanceof Error
+              ? error.message
+              : "Richiesta non valida."
+            : "La fonte OpenBDAP non è disponibile in questo momento.",
       },
-      { status },
+      { status, headers: { "Cache-Control": "private, no-store" } },
     );
   }
 }

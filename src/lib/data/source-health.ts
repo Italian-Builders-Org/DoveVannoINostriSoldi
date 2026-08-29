@@ -26,6 +26,7 @@ import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { getGovernmentScorecardSnapshot } from "@/lib/government-scorecard";
+import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
 export type SourceIntegrationState = "active";
@@ -544,15 +545,21 @@ function snapshotManagedPcm(): SourceHealth {
 function snapshotManagedPublicDebt(sourceId: "bancaditalia" | "eurostat"): SourceHealth {
   const snapshot = getPublicDebtSnapshot();
   const isBank = sourceId === "bancaditalia";
+  const currentSignals = isBank ? null : getGovernmentCurrentSignalsSnapshot();
+  const currentSignalRows = currentSignals?.indicators.reduce(
+    (total, indicator) => total + Object.values(indicator.countries)
+      .reduce((countryTotal, series) => countryTotal + series.length, 0),
+    0,
+  ) ?? 0;
   return {
     ...baseHealth(sourceId),
     reachability: "not-probed",
-    freshness: freshnessFor(sourceId, isBank ? snapshot.stock.referenceDate : `${snapshot.annualInterest.referenceYear}-12-31`),
+    freshness: freshnessFor(sourceId, isBank ? snapshot.stock.referenceDate : currentSignals!.source.sourceUpdatedAt),
     latencyMs: null,
     detail: isBank
       ? `Snapshot ETL attivo · stock al ${snapshot.stock.referenceDate} · quattro cubi BDS riconciliati.`
-      : `Snapshot ETL attivo · interessi e spesa totale ${snapshot.annualInterest.referenceYear} riconciliati.`,
-    recordCount: isBank ? snapshot.stock.history.length : snapshot.annualInterest.history.length,
+      : `Snapshot ETL attivi · IPCA mensile fino a ${currentSignals!.source.referencePeriodThrough} (${currentSignals!.source.datasetCode}) · interessi e spesa totale ${snapshot.annualInterest.referenceYear} riconciliati.`,
+    recordCount: isBank ? snapshot.stock.history.length : snapshot.annualInterest.history.length + currentSignalRows,
   };
 }
 

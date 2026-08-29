@@ -1,6 +1,233 @@
 .summary,
+.liveSignals,
 .peerSection {
   margin-top: var(--space-5);
+}
+
+.liveSignals {
+  padding: clamp(18px, 3vw, 28px);
+  background: #fff;
+  border: 1px solid var(--color-neutral-200);
+}
+
+.liveHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-bottom: 16px;
+}
+
+.liveHeading > div > span {
+  color: var(--color-accent-700);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.liveHeading h2 {
+  margin: 6px 0 0;
+  font-size: clamp(24px, 4vw, 36px);
+  line-height: 1.05;
+}
+
+.liveMeta {
+  max-width: 390px;
+}
+
+.liveHeading p {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.liveLegend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 8px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+}
+
+.liveLegend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liveLegend i {
+  display: block;
+  width: 22px;
+  height: 3px;
+  background: var(--color-accent-700);
+}
+
+.liveLegend i[data-series="peer"] {
+  height: 0;
+  background: transparent;
+  border-top: 2px dashed var(--color-neutral-500);
+}
+
+.liveGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--color-neutral-300);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.signalCard {
+  min-width: 0;
+  padding: 17px;
+  background: var(--color-neutral-100);
+}
+
+.signalCardHeading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.signalCardHeading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.signalCardHeading > span {
+  padding: 5px 7px;
+  color: var(--color-accent-800);
+  background: var(--color-accent-100);
+  font-size: 9px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.signalCard > p {
+  min-height: 34px;
+  margin: 9px 0 12px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.signalValues {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.signalValues > div {
+  display: grid;
+  gap: 3px;
+  padding: 13px 10px 13px 0;
+}
+
+.signalValues > div + div {
+  padding: 13px 0 13px 10px;
+  border-left: 1px solid var(--color-neutral-300);
+  text-align: right;
+}
+
+.signalValues span {
+  color: var(--color-neutral-600);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.signalValues strong {
+  font-family: var(--font-heading);
+  font-size: clamp(25px, 3vw, 34px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.signalValues > div + div strong {
+  font-size: clamp(20px, 2vw, 26px);
+}
+
+.signalChart {
+  width: 100%;
+  height: 88px;
+  margin-top: 10px;
+  overflow: visible;
+}
+
+.signalChart polyline {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.signalPeriod,
+.signalPeer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.signalPeriod {
+  margin-top: -4px;
+  padding-bottom: 9px;
+  color: var(--color-neutral-600);
+  font-size: 9px;
+}
+
+.signalPeriod strong {
+  color: var(--color-text);
+}
+
+.signalPeer {
+  padding: 10px 0;
+  border-top: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-neutral-300);
+  font-size: 10px;
+}
+
+.signalPeer span {
+  color: var(--color-neutral-600);
+}
+
+.signalPeer b {
+  text-align: right;
+}
+
+.signalCard > small {
+  display: block;
+  margin-top: 9px;
+  color: var(--color-neutral-600);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.liveBoundary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 15px;
+  color: var(--color-neutral-200);
+  background: var(--color-text);
+}
+
+.liveBoundary p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.liveBoundary a {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .summary {
@@ -305,17 +532,27 @@
 }
 
 @media (max-width: 900px) {
-  .indicatorGrid {
+  .indicatorGrid,
+  .liveGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 700px) {
   .summaryHeading,
+  .liveHeading,
   .peerHeading {
     align-items: start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .liveHeading p {
+    text-align: left;
+  }
+
+  .liveLegend {
+    justify-content: flex-start;
   }
 
   .legend {
@@ -344,8 +581,18 @@
     font-size: 10px;
   }
 
-  .indicatorGrid {
+  .indicatorGrid,
+  .liveGrid {
     grid-template-columns: 1fr;
+  }
+
+  .signalCard > p {
+    min-height: 0;
+  }
+
+  .liveBoundary {
+    align-items: start;
+    flex-direction: column;
   }
 
   .indicatorCard > p {

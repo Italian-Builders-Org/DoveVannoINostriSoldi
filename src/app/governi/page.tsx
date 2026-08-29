@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { longDate } from "@/lib/format";
+import { getGovernmentCurrentSignalsView } from "@/lib/government-current-signals";
 import { getGovernmentScorecardView } from "@/lib/government-scorecard";
 import { CitizenScoreModel } from "./citizen-score-model";
 import { CurrentGovernmentOverview } from "./current-government-overview";
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 
 export default function GovernmentsPage() {
   const data = getGovernmentScorecardView();
+  const currentSignals = getGovernmentCurrentSignalsView();
   const current = data.current;
   const currentScore = current.calculation.status === "scored" ? current.calculation : null;
   const forecast = current.forecast.status === "scored" ? current.forecast : null;
@@ -28,7 +30,7 @@ export default function GovernmentsPage() {
       </header>
 
       {currentScore ? (
-        <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} />
+        <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} />
       ) : (
         <div className="notice warning-notice">
           <strong>{current.name}: voto non disponibile.</strong>
@@ -37,8 +39,8 @@ export default function GovernmentsPage() {
       )}
 
       <div className={styles.dataBoundary}>
-        <strong>Dati osservati fino al {data.sources.ameco.observedThrough}</strong>
-        <span>Il Core usa sei indicatori macro. Risparmio, casa, natalità e migrazione dei laureati non sono ancora nel voto.</span>
+        <strong>Core al {data.sources.ameco.observedThrough} · costo della vita a {currentSignals.latestPeriod}</strong>
+        <span>Il Core usa sei indicatori annuali. I segnali mensili sono più recenti, ma restano separati dal voto storico.</span>
         <Link href={`/governi/${current.id}`}>Scheda completa di {current.name} →</Link>
       </div>
 

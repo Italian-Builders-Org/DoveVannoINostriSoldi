@@ -8,6 +8,7 @@ const comparison = await readFile(new URL("../src/app/governi/confronta/page.tsx
 const comparisonOverlay = await readFile(new URL("../src/app/governi/confronta/government-comparison-overlay.tsx", import.meta.url), "utf8");
 const citizenModel = await readFile(new URL("../src/app/governi/citizen-score-model.tsx", import.meta.url), "utf8");
 const currentOverview = await readFile(new URL("../src/app/governi/current-government-overview.tsx", import.meta.url), "utf8");
+const currentSignals = await readFile(new URL("../src/app/governi/current-government-signals.tsx", import.meta.url), "utf8");
 const indicatorChart = await readFile(new URL("../src/app/governi/government-indicator-chart.tsx", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/app/governi/governi.module.css", import.meta.url), "utf8");
 const overviewStyles = await readFile(new URL("../src/app/governi/current-government-overview.module.css", import.meta.url), "utf8");
@@ -17,9 +18,10 @@ const discovery = await readFile(new URL("../src/lib/public-discovery.ts", impor
 test("government scorecard is server-first and opens on the current government", () => {
   assert.doesNotMatch(page, /^"use client"/);
   assert.match(page, /Economia italiana: cosa sta migliorando e cosa no/);
-  assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} \/>/);
-  assert.match(page, /Dati osservati fino al/);
-  assert.match(page, /Risparmio, casa, natalità e migrazione dei laureati non sono ancora nel voto/);
+  assert.match(page, /getGovernmentCurrentSignalsView/);
+  assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} currentSignals=\{currentSignals\} \/>/);
+  assert.match(page, /Core al \{data\.sources\.ameco\.observedThrough\} · costo della vita a \{currentSignals\.latestPeriod\}/);
+  assert.match(page, /I segnali mensili sono più recenti, ma restano separati dal voto storico/);
   assert.match(page, /<CitizenScoreModel \/>/);
   assert.ok(page.indexOf("<CurrentGovernmentOverview") < page.indexOf("<CitizenScoreModel"));
 });
@@ -56,6 +58,22 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /comparisonLabel\(indicator\)/);
   assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{calculation\.indicators\} \/>/);
   assert.match(currentOverview, /role="img"/);
+  assert.match(currentOverview, /<CurrentGovernmentSignals data=\{currentSignals\} \/>/);
+});
+
+test("current monthly signals explain cost of living without silently changing the score", () => {
+  assert.doesNotMatch(currentSignals, /^"use client"/);
+  assert.match(currentSignals, /Costo della vita dall’insediamento a oggi/);
+  assert.match(currentSignals, /La percentuale grande mostra quanto sono cambiati i prezzi da ottobre 2022/);
+  assert.match(currentSignals, /Da ottobre 2022/);
+  assert.match(currentSignals, /Ultimi 12 mesi/);
+  assert.match(currentSignals, /Legenda dei grafici mensili/);
+  assert.match(currentSignals, /12 mesi: in aumento/);
+  assert.match(currentSignals, /signal\.series\.map/);
+  assert.match(currentSignals, /Mediana peer/);
+  assert.match(currentSignals, /Questo non è un punto assegnato al governo/);
+  assert.match(currentSignals, /data\.source\.landingUrl/);
+  assert.match(currentSignals, /role="img"/);
 });
 
 test("citizen model exposes ten source-backed indicators and explains every exclusion", () => {
@@ -130,6 +148,7 @@ test("page is discoverable, progressive and responsive", () => {
   assert.match(styles, /\.pageJumps[\s\S]*overflow-x:\s*auto/);
   assert.match(styles, /@media \(max-width: 760px\)/);
   assert.match(overviewStyles, /\.indicatorGrid/);
+  assert.match(overviewStyles, /\.liveGrid/);
   assert.match(overviewStyles, /@media \(max-width: 700px\)/);
   assert.doesNotMatch(styles, /color-neutral-950/);
   assert.match(overviewStyles, /\.summary[\s\S]*background: var\(--color-text\)/);

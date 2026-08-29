@@ -122,6 +122,13 @@ mensili; lavoro, reddito, risparmio, PIL e produttività trimestrali. Il voto fr
 governi resta invece sulla maggiore frequenza comune e validata. Non sommeremo
 una lettura mensile del presente a una classifica annuale del passato.
 
+Il primo modulo corrente implementato usa l'IPCA mensile Eurostat
+`prc_hicp_minr` per prezzi complessivi, alimentari e casa-acqua-energia. Mostra
+la variazione cumulata da ottobre 2022, il tasso degli ultimi dodici mesi e la
+mediana nello stesso periodo di Francia, Germania e Spagna. Questi segnali sono
+diagnostici: descrivono il costo della vita, ma non assegnano punti e non
+dimostrano da soli un effetto causale delle politiche del governo.
+
 Un algoritmo perfetto e interamente causale non è ottenibile: manca il mondo
 controfattuale in cui lo stesso Paese, nello stesso momento, è governato da un
 altro esecutivo. Possiamo però rendere perfetti in senso tecnico provenienza,
@@ -659,12 +666,20 @@ riconciliazioni prima di sostituire atomicamente lo snapshot. Il runtime applica
 un secondo contratto fail-closed. Il refresh schedulato apre una proposta di
 aggiornamento, senza pubblicare silenziosamente dati non validati.
 
+La pipeline `scripts/etl/government_current_signals.py` acquisisce invece il
+JSON-stat Eurostat e valida origine, query, identità del dataset, unità,
+categorie, paesi, continuità mensile e presenza di ogni osservazione. Timestamp
+e hash della risposta restano nello snapshot; un drift della fonte blocca
+l'aggiornamento.
+
 Il controllo automatico del Core viene eseguito ogni settimana, ma AMECO viene
 aggiornato con i principali esercizi previsivi della Commissione, normalmente
 primavera e autunno: controllare più spesso non crea osservazioni nuove. Per il
-cruscotto corrente la pipeline dovrà invece seguire il calendario della singola
-fonte: IPCA e tassi bancari ogni mese; lavoro, reddito, risparmio e conti
-nazionali ogni trimestre; casa, demografia e migrazione ogni anno. Ogni nuova
+cruscotto corrente il primo flusso IPCA controlla ogni settimana se è disponibile
+un nuovo mese; la pubblicazione Eurostat resta mensile. Le prossime pipeline
+seguiranno il calendario della singola fonte: tassi bancari ogni mese; lavoro,
+reddito, risparmio e conti nazionali ogni trimestre; casa, demografia e
+migrazione ogni anno. Ogni nuova
 release genera un candidato validato e una proposta revisionabile, non una
 pubblicazione cieca.
 

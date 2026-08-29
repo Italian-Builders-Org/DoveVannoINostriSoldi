@@ -105,6 +105,11 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.match(istat?.detail ?? "", /generato il 2026-08-25/);
   assert.match(istat?.detail ?? "", /dati al 2026-08-25/);
   assert.match(istat?.detail ?? "", /7894 comuni/);
+  const eurostat = overview.find((entry) => entry.sourceId === "eurostat");
+  assert.equal(eurostat?.freshness.sourceTimestamp, "2026-08-19T09:00:00Z");
+  assert.match(eurostat?.detail ?? "", /IPCA mensile fino a 2026-07/);
+  assert.match(eurostat?.detail ?? "", /interessi e spesa totale 2025/);
+  assert.equal(eurostat?.recordCount, 557);
 });
 
 test("ISTAT health metadata fails closed on sidecar drift", () => {

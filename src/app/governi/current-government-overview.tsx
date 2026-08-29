@@ -1,3 +1,5 @@
+import type { GovernmentCurrentSignalsView } from "@/lib/government-current-signals";
+import { CurrentGovernmentSignals } from "./current-government-signals";
 import { GovernmentIndicatorChart } from "./government-indicator-chart";
 import { formatScore, rawChangeLabel, sourceValue } from "./government-scorecard-format";
 import styles from "./current-government-overview.module.css";
@@ -136,9 +138,11 @@ function currentValueMeaning(indicator: Indicator, endYear: number) {
 export function CurrentGovernmentOverview({
   governmentName,
   calculation,
+  currentSignals,
 }: {
   governmentName: string;
   calculation: Calculation;
+  currentSignals: GovernmentCurrentSignalsView;
 }) {
   const improved = calculation.indicators.filter((indicator) => indicator.orientedChange > 0).length;
   const aheadOfPeers = calculation.indicators.filter((indicator) => indicator.relativeChange > 0).length;
@@ -213,6 +217,8 @@ export function CurrentGovernmentOverview({
           })}
         </div>
       </section>
+
+      <CurrentGovernmentSignals data={currentSignals} />
 
       <section className={styles.peerSection} aria-labelledby="confronto-peer">
         <div className={styles.peerHeading}>

@@ -341,17 +341,17 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
   },
   eurostat: {
     id: "eurostat",
-    label: "Eurostat · interessi sul debito",
+    label: "Eurostat · debito e costo della vita",
     owner: "Eurostat",
-    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
-    cadence: "annuale",
-    cadenceNote: "Interessi e spesa pubblica totale sono dati annuali di contabilità nazionale.",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+    cadence: "mensile",
+    cadenceNote: "L'IPCA viene pubblicato mensilmente; interessi e spesa pubblica totale restano serie annuali di contabilità nazionale. Gli snapshot distinguono sempre dataset e periodo.",
     discoveryRevalidateSeconds: DAY,
     dataRevalidateSeconds: DAY,
-    staleAfterSeconds: 540 * DAY,
+    staleAfterSeconds: 70 * DAY,
     timeoutMs: 20_000,
     maxRetries: 2,
-    tags: ["source:eurostat", "domain:public-debt"],
+    tags: ["source:eurostat", "domain:public-debt", "domain:government-scorecard"],
   },
 };
 

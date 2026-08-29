@@ -425,9 +425,10 @@
     },
     {
       "id": "government-scorecard",
-      "owner": "European Commission AMECO and Presidency of the Council government scorecard",
+      "owner": "European Commission, Presidency of the Council and Eurostat government scorecard",
       "files": [
-        "src/data/generated/government-scorecard.json"
+        "src/data/generated/government-scorecard.json",
+        "src/data/generated/government-current-signals.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -435,15 +436,17 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_government_scorecard_snapshot.py"
+        "tests/etl/test_government_scorecard_snapshot.py",
+        "tests/etl/test_government_current_signals.py"
       ],
       "nodeTests": [
         "tests/government-scorecard-contract.test.mjs",
         "tests/government-scorecard-domain.test.mjs",
-        "tests/government-scorecard-ui.test.mjs"
+        "tests/government-scorecard-ui.test.mjs",
+        "tests/government-current-signals.test.mjs"
       ],
       "generator": {
-        "command": "python3 scripts/etl/government_scorecard_snapshot.py",
+        "command": "python3 scripts/etl/government_scorecard_snapshot.py && python3 scripts/etl/government_current_signals.py",
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/government-scorecard-refresh.yml",
@@ -454,7 +457,7 @@
         "prTitle": "data: refresh government scorecard snapshot",
         "upstreamUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"
       },
-      "trustModel": "Scheduled workflow creates a managed PR candidate from the official AMECO bulk release and Presidency chronology. ZIP, CSV, series codes, years, peers, weights, hashes and the runtime contract fail closed before publication."
+      "trustModel": "Scheduled workflow creates a managed PR candidate from official AMECO, Presidency and Eurostat data. ZIP, CSV, JSON-stat identity, query filters, series codes, periods, peers, weights, complete observations, hashes and runtime contracts fail closed before publication. Monthly HICP signals remain separate from the historical score."
     },
     {
       "id": "public-debt",

@@ -13,6 +13,7 @@ import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
+import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
 
 export type SourceLatestData =
   | { kind: "date"; value: string }
@@ -30,7 +31,10 @@ const exhaustiveLatestDataBySlug = {
   ameco: { kind: "period", label: "osservati 2024 · previsioni 2025-2027" },
   "governi-presidenza": { kind: "period", label: "governo in carica dal 2022" },
   bancaditalia: { kind: "date", value: getPublicDebtSnapshot().stock.referenceDate },
-  eurostat: { kind: "period", label: String(getPublicDebtSnapshot().annualInterest.referenceYear) },
+  eurostat: {
+    kind: "period",
+    label: `IPCA ${getGovernmentCurrentSignalsSnapshot().source.referencePeriodThrough} · conti ${getPublicDebtSnapshot().annualInterest.referenceYear}`,
+  },
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),
   "ipa-struttura": null,

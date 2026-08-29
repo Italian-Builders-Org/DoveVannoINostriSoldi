@@ -19,6 +19,7 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
   GithubIcon,
+  News01Icon,
 } from "@hugeicons/core-free-icons";
 import {
   PRIMARY_NAV,
@@ -312,9 +313,17 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                       ref={active ? activeLinkRef : undefined}
                       onClick={closeMenu}
                     >
-                      {item.label}
-                    </Link>
-                    {hasChildren ? (
+                    {item.icon === "news" ? (
+                      <HugeiconsIcon
+                        icon={News01Icon}
+                        size={17}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                    {item.label}
+                  </Link>
+                  {hasChildren ? (
                       <button
                         type="button"
                         className="nav-item-toggle"

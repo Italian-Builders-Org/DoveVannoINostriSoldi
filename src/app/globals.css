@@ -308,6 +308,7 @@ nav li a { text-decoration: none; }
 .nav-item > a {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 14px 14px;
   font-size: 14px;
   font-weight: 600;

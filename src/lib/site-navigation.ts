@@ -11,12 +11,14 @@ export type NavLink = Readonly<{
 export type NavSection = Readonly<{
   href: string;
   label: string;
+  icon?: "news";
   aliases?: readonly string[];
   children?: readonly NavLink[];
 }>;
 
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home" },
+  { href: "/report", label: "Report mensili", icon: "news" },
   {
     href: "/imprese",
     label: "Imprese",
@@ -132,6 +134,13 @@ export const PRIMARY_NAV: readonly NavSection[] = [
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
   { title: "Home", links: [{ href: "/", label: "Home" }] },
+  {
+    title: "Report mensili",
+    links: [
+      { href: "/report", label: "Archivio dei report" },
+      { href: "/report/2026-08", label: "Agosto 2026: Imprese e territori" },
+    ],
+  },
   {
     title: "Imprese",
     links: [

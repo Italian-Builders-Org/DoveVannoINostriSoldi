@@ -3,9 +3,10 @@ import {
   parseDelimitedRecords,
   type DelimitedRecord,
 } from "@/lib/data/delimited";
-import { fetchOfficialSource } from "@/lib/data/source-fetch";
+import { fetchOfficialSource, SourceFetchError } from "@/lib/data/source-fetch";
 import { getSourcePolicy } from "@/lib/data/source-policy";
 import { parseOpenBdapAmount } from "@/lib/data/bdap-payment-contract";
+import budgetLawSnapshotArtifact from "@/data/generated/openbdap-budget-law-missions.json";
 
 const BDAP_BASE = "https://bdap-opendata.rgs.mef.gov.it";
 const BDAP_ACTION = `${BDAP_BASE}/SpodCkanApi/api/3/action`;
@@ -19,6 +20,28 @@ const BDAP_DUMP = `${BDAP_BASE}/SpodCkanApi/api/3/datastore/dump`;
 const PRODUCT_CODE = "LBF_SPE_CRU_AMPMA_001";
 const EXPECTED_TITLE =
   "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato";
+const SNAPSHOT_PACKAGE_ID = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
+const SNAPSHOT_RESOURCE_ID = "32750";
+const SNAPSHOT_CATALOG_SHA256 =
+  "sha256:c29936b96b538c669f47f62319c051724cd10ce8105b38906eed85f06c696e0c";
+const SNAPSHOT_CSV_SHA256 =
+  "sha256:5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338";
+const SNAPSHOT_CATALOG_BYTES = 6_283;
+const SNAPSHOT_CSV_BYTES = 3_422_462;
+const SNAPSHOT_CATALOG_URL =
+  `${BDAP_ACTION}/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20`;
+const SNAPSHOT_ANNUAL_TOTALS_EUR = new Map<number, number>([
+  [2017, 861_047_385_808],
+  [2018, 852_369_824_700],
+  [2019, 869_498_990_905],
+  [2020, 897_423_599_901],
+  [2021, 1_060_697_407_565],
+  [2022, 1_093_956_278_557],
+  [2023, 1_183_723_964_094],
+  [2024, 1_215_086_092_281],
+  [2025, 1_199_544_721_805],
+  [2026, 1_253_161_463_689],
+]);
 
 /**
  * The RGS mission taxonomy was reworded in 2017 (e.g. "Diritti sociali
@@ -100,6 +123,7 @@ export type MissionYearOverYearDelta = {
 };
 
 export type BudgetLawMissionSeries = {
+  dataMode: "live" | "snapshot";
   dataset: BudgetLawMissionDataset;
   minStableMissionYear: number;
   /** Years actually served, ascending; a subset of the requested window when
@@ -133,6 +157,41 @@ export class BudgetLawInvalidWindowError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "BudgetLawInvalidWindowError";
+  }
+}
+
+export class BudgetLawSourceTemporarilyUnavailableError extends Error {
+  readonly cause?: unknown;
+
+  constructor(message: string, cause?: unknown) {
+    super(message);
+    this.name = "BudgetLawSourceTemporarilyUnavailableError";
+    this.cause = cause;
+  }
+}
+
+function isAbortLike(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    (error.name === "AbortError" || error.name === "TimeoutError")
+  );
+}
+
+function isTemporarySourceFailure(error: unknown): boolean {
+  if (error instanceof BudgetLawSourceTemporarilyUnavailableError) return true;
+  if (isAbortLike(error) && (error as DOMException).name === "TimeoutError") return true;
+  return (
+    error instanceof SourceFetchError &&
+    (error.message.startsWith("Errore di rete verso") ||
+      error.message.startsWith("Impossibile interrogare la fonte"))
+  );
+}
+
+function throwForTemporaryHttpFailure(response: Response, operation: string): void {
+  if ([408, 425, 429, 500, 502, 503, 504].includes(response.status)) {
+    throw new BudgetLawSourceTemporarilyUnavailableError(
+      `OpenBDAP ${operation} temporaneamente non disponibile (HTTP ${response.status})`,
+    );
   }
 }
 
@@ -239,6 +298,7 @@ export async function discoverBudgetLawMissionDataset(
   });
 
   if (!response.ok) {
+    throwForTemporaryHttpFailure(response, "package_search");
     throw new Error(`OpenBDAP package_search HTTP ${response.status}`);
   }
 
@@ -268,6 +328,7 @@ export async function discoverBudgetLawMissionDataset(
  * step against an unexpectedly large or runaway response, not a size we
  * expect to hit in normal operation. */
 const MAX_CSV_BYTES = 32 * 1024 * 1024;
+const MAX_SOURCE_ERROR_BYTES = 16 * 1024;
 // Discovery and CSV download are sequential. OpenBDAP policy allows two
 // 15-second attempts for each request, so the aggregate deadline must leave
 // both operations enough time to exhaust their bounded retry budget.
@@ -285,11 +346,35 @@ async function fetchDatasetRows(
   });
 
   if (!response.ok) {
+    throwForTemporaryHttpFailure(response, "CSV");
     throw new Error(`OpenBDAP CSV HTTP ${response.status}`);
   }
 
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("csv")) {
+    if (contentType.toLowerCase().includes("json")) {
+      const body = await readBoundedResponseBody(
+        response,
+        MAX_SOURCE_ERROR_BYTES,
+        "risposta di errore",
+      );
+      try {
+        const payload = JSON.parse(new TextDecoder("utf-8").decode(body)) as {
+          success?: unknown;
+          error?: { message?: unknown };
+        };
+        if (
+          payload.success === false &&
+          payload.error?.message === "Cannot convert data to csv. Attachment not found"
+        ) {
+          throw new BudgetLawSourceTemporarilyUnavailableError(
+            "OpenBDAP non ha reso disponibile l'allegato CSV richiesto",
+          );
+        }
+      } catch (error) {
+        if (error instanceof BudgetLawSourceTemporarilyUnavailableError) throw error;
+      }
+    }
     throw new Error("OpenBDAP non ha restituito un CSV per il dataset Legge di Bilancio");
   }
 
@@ -300,16 +385,47 @@ async function fetchDatasetRows(
     );
   }
 
-  const buffer = await response.arrayBuffer();
-  if (buffer.byteLength > MAX_CSV_BYTES) {
-    throw new Error(
-      `OpenBDAP CSV troppo grande (${buffer.byteLength} byte, limite ${MAX_CSV_BYTES})`,
-    );
-  }
+  const buffer = await readBoundedResponseBody(response, MAX_CSV_BYTES, "CSV");
 
   const rows = parseDelimitedRecords(decodePublicDataText(buffer));
   if (rows.length === 0) throw new Error("Dataset OpenBDAP Legge di Bilancio vuoto");
   return rows;
+}
+
+async function readBoundedResponseBody(
+  response: Response,
+  maxBytes: number,
+  label: string,
+): Promise<ArrayBuffer> {
+  const reader = response.body?.getReader();
+  if (!reader) {
+    const buffer = await response.arrayBuffer();
+    if (buffer.byteLength > maxBytes) {
+      throw new Error(`OpenBDAP ${label} troppo grande (${buffer.byteLength} byte, limite ${maxBytes})`);
+    }
+    return buffer;
+  }
+
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > maxBytes) {
+      await reader.cancel().catch(() => undefined);
+      throw new Error(`OpenBDAP ${label} troppo grande (${totalBytes} byte, limite ${maxBytes})`);
+    }
+    chunks.push(value);
+  }
+
+  const combined = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    combined.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return combined.buffer;
 }
 
 type RawAllocationRow = {
@@ -472,6 +588,273 @@ export function resetBudgetLawMissionSeriesCacheForTests(): void {
   fullAggregateCache = null;
 }
 
+function objectRecord(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Snapshot Legge di Bilancio: oggetto non valido");
+  }
+  return value as Record<string, unknown>;
+}
+
+function safeNonNegativeInteger(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error(`Snapshot Legge di Bilancio: ${label} non valido`);
+  }
+  return value;
+}
+
+export function validateBudgetLawMissionSeries(
+  value: unknown,
+  options: { expectedDataMode?: "live" | "snapshot" } = {},
+): BudgetLawMissionSeries {
+  const series = objectRecord(value);
+  const dataMode = series.dataMode;
+  if (dataMode !== "live" && dataMode !== "snapshot") {
+    throw new Error("Snapshot Legge di Bilancio: modalità non valida");
+  }
+  if (options.expectedDataMode && dataMode !== options.expectedDataMode) {
+    throw new Error(`Snapshot Legge di Bilancio: modalità ${dataMode} inattesa`);
+  }
+
+  const dataset = objectRecord(series.dataset);
+  if (
+    dataset.packageId !== SNAPSHOT_PACKAGE_ID ||
+    dataset.title !== EXPECTED_TITLE ||
+    dataset.license !== "Creative Commons Attribution" ||
+    dataset.licenseUrl !== "http://www.opendefinition.org/licenses/cc-by" ||
+    dataset.resourceId !== SNAPSHOT_RESOURCE_ID ||
+    dataset.csvUrl !== `${BDAP_DUMP}/${SNAPSHOT_PACKAGE_ID}.csv`
+  ) {
+    throw new Error("Snapshot Legge di Bilancio: identità o licenza della fonte inattesa");
+  }
+
+  if (!Array.isArray(series.years) || series.years.length < 2) {
+    throw new Error("Snapshot Legge di Bilancio: copertura temporale insufficiente");
+  }
+  const years = series.years.map((year) => {
+    if (!Number.isInteger(year) || year < MIN_STABLE_MISSION_YEAR) {
+      throw new Error("Snapshot Legge di Bilancio: anno non valido");
+    }
+    return year as number;
+  });
+  if (years.some((year, index) => index > 0 && year !== years[index - 1] + 1)) {
+    throw new Error("Snapshot Legge di Bilancio: gli anni devono essere consecutivi");
+  }
+
+  if (!Array.isArray(series.missions) || series.missions.length === 0) {
+    throw new Error("Snapshot Legge di Bilancio: missioni mancanti");
+  }
+  const missions = series.missions.map((mission) => {
+    if (typeof mission !== "string" || !mission.trim()) {
+      throw new Error("Snapshot Legge di Bilancio: missione non valida");
+    }
+    return mission;
+  });
+  if (new Set(missions).size !== missions.length) {
+    throw new Error("Snapshot Legge di Bilancio: missioni duplicate");
+  }
+
+  if (!Array.isArray(series.allocations)) {
+    throw new Error("Snapshot Legge di Bilancio: stanziamenti mancanti");
+  }
+  const allocations = series.allocations.map((entry) => {
+    const row = objectRecord(entry);
+    if (!years.includes(row.year as number) || !missions.includes(row.mission as string)) {
+      throw new Error("Snapshot Legge di Bilancio: chiave stanziamento inattesa");
+    }
+    return {
+      year: row.year as number,
+      mission: row.mission as string,
+      amountEur: safeNonNegativeInteger(row.amountEur, "stanziamento"),
+    };
+  });
+  const allocationMap = new Map(
+    allocations.map((row) => [`${row.year}::${row.mission}`, row.amountEur]),
+  );
+  if (
+    allocations.length !== years.length * missions.length ||
+    allocationMap.size !== allocations.length
+  ) {
+    throw new Error("Snapshot Legge di Bilancio: matrice stanziamenti incompleta o duplicata");
+  }
+
+  if (!Array.isArray(series.yearOverYearDeltas)) {
+    throw new Error("Snapshot Legge di Bilancio: variazioni mancanti");
+  }
+  const yearOverYearDeltas = series.yearOverYearDeltas.map((entry) => {
+    const row = objectRecord(entry);
+    const mission = row.mission;
+    const fromYear = row.fromYear;
+    const toYear = row.toYear;
+    if (
+      typeof mission !== "string" ||
+      !missions.includes(mission) ||
+      typeof fromYear !== "number" ||
+      typeof toYear !== "number" ||
+      toYear !== fromYear + 1
+    ) {
+      throw new Error("Snapshot Legge di Bilancio: chiave variazione inattesa");
+    }
+    const fromAmountEur = allocationMap.get(`${fromYear}::${mission}`);
+    const toAmountEur = allocationMap.get(`${toYear}::${mission}`);
+    if (fromAmountEur === undefined || toAmountEur === undefined) {
+      throw new Error("Snapshot Legge di Bilancio: variazione senza stanziamenti di base");
+    }
+    const expectedDelta = toAmountEur - fromAmountEur;
+    const deltaEur = row.deltaEur;
+    const deltaPct = row.deltaPct;
+    const expectedPct = fromAmountEur === 0 ? null : (expectedDelta / fromAmountEur) * 100;
+    if (
+      !Number.isSafeInteger(deltaEur) ||
+      deltaEur !== expectedDelta ||
+      row.fromAmountEur !== fromAmountEur ||
+      row.toAmountEur !== toAmountEur ||
+      !(
+        (expectedPct === null && deltaPct === null) ||
+        (typeof deltaPct === "number" && Math.abs(deltaPct - (expectedPct ?? 0)) < 1e-9)
+      )
+    ) {
+      throw new Error("Snapshot Legge di Bilancio: variazione non riconciliata");
+    }
+    return {
+      mission,
+      fromYear,
+      toYear,
+      fromAmountEur,
+      toAmountEur,
+      deltaEur,
+      deltaPct: deltaPct as number | null,
+    };
+  });
+  const deltaKeys = new Set(
+    yearOverYearDeltas.map((row) => `${row.fromYear}::${row.toYear}::${row.mission}`),
+  );
+  if (
+    yearOverYearDeltas.length !== missions.length * (years.length - 1) ||
+    deltaKeys.size !== yearOverYearDeltas.length
+  ) {
+    throw new Error("Snapshot Legge di Bilancio: matrice variazioni incompleta");
+  }
+
+  if (typeof series.observedAt !== "string" || Number.isNaN(Date.parse(series.observedAt))) {
+    throw new Error("Snapshot Legge di Bilancio: data di acquisizione non valida");
+  }
+  if (series.minStableMissionYear !== MIN_STABLE_MISSION_YEAR) {
+    throw new Error("Snapshot Legge di Bilancio: soglia tassonomia inattesa");
+  }
+
+  return {
+    dataMode,
+    dataset: dataset as BudgetLawMissionDataset,
+    minStableMissionYear: MIN_STABLE_MISSION_YEAR,
+    years,
+    missions,
+    allocations,
+    yearOverYearDeltas,
+    observedAt: series.observedAt,
+  };
+}
+
+function sliceBudgetLawSeries(
+  series: BudgetLawMissionSeries,
+  requestedWindow: number,
+  dataMode: "live" | "snapshot" = series.dataMode,
+): BudgetLawMissionSeries {
+  const years = series.years.slice(-Math.min(requestedWindow, series.years.length));
+  const yearSet = new Set(years);
+  return {
+    ...series,
+    dataMode,
+    years,
+    allocations: series.allocations.filter((row) => yearSet.has(row.year)),
+    yearOverYearDeltas: series.yearOverYearDeltas.filter(
+      (row) => yearSet.has(row.fromYear) && yearSet.has(row.toYear),
+    ),
+  };
+}
+
+type BudgetLawSnapshotArtifact = {
+  schemaVersion: 1;
+  source: {
+    packageId: string;
+    resourceId: string;
+    title: string;
+    license: string;
+    licenseUrl: string;
+    catalogUrl: string;
+    catalogSha256: string;
+    catalogBytes: number;
+    csvUrl: string;
+    csvSha256: string;
+    csvBytes: number;
+    encoding: string;
+    delimiter: string;
+    quoteChar: string;
+    lineEnding: string;
+    observedAt: string;
+  };
+  series: BudgetLawMissionSeries;
+};
+
+export function validateBudgetLawSnapshotArtifact(value: unknown): BudgetLawSnapshotArtifact {
+  const candidate = objectRecord(value);
+  if (candidate.schemaVersion !== 1) {
+    throw new Error("Snapshot Legge di Bilancio: versione artefatto non valida");
+  }
+  const source = objectRecord(candidate.source);
+  if (
+    source.packageId !== SNAPSHOT_PACKAGE_ID ||
+    source.resourceId !== SNAPSHOT_RESOURCE_ID ||
+    source.title !== EXPECTED_TITLE ||
+    source.license !== "Creative Commons Attribution" ||
+    source.licenseUrl !== "http://www.opendefinition.org/licenses/cc-by" ||
+    source.catalogSha256 !== SNAPSHOT_CATALOG_SHA256 ||
+    source.catalogBytes !== SNAPSHOT_CATALOG_BYTES ||
+    source.csvUrl !== `${BDAP_DUMP}/${SNAPSHOT_PACKAGE_ID}.csv` ||
+    source.csvSha256 !== SNAPSHOT_CSV_SHA256 ||
+    source.csvBytes !== SNAPSHOT_CSV_BYTES ||
+    source.encoding !== "cp1252" ||
+    source.delimiter !== ";" ||
+    source.quoteChar !== '"' ||
+    source.lineEnding !== "CRLF" ||
+    source.catalogUrl !== SNAPSHOT_CATALOG_URL ||
+    typeof source.observedAt !== "string" ||
+    Number.isNaN(Date.parse(source.observedAt))
+  ) {
+    throw new Error("Snapshot Legge di Bilancio: provenienza sorgente inattesa");
+  }
+  const series = validateBudgetLawMissionSeries(candidate.series, {
+    expectedDataMode: "snapshot",
+  });
+  if (series.observedAt !== source.observedAt) {
+    throw new Error("Snapshot Legge di Bilancio: date di acquisizione non coerenti");
+  }
+  if (
+    series.years.length !== SNAPSHOT_ANNUAL_TOTALS_EUR.size ||
+    series.years.some((year) => !SNAPSHOT_ANNUAL_TOTALS_EUR.has(year))
+  ) {
+    throw new Error("Snapshot Legge di Bilancio: copertura sorgente inattesa");
+  }
+  for (const year of series.years) {
+    const total = series.allocations
+      .filter((row) => row.year === year)
+      .reduce((sum, row) => sum + row.amountEur, 0);
+    if (!Number.isSafeInteger(total) || total !== SNAPSHOT_ANNUAL_TOTALS_EUR.get(year)) {
+      throw new Error(`Snapshot Legge di Bilancio: totale ${year} non riconciliato`);
+    }
+  }
+  return {
+    schemaVersion: 1,
+    source: source as BudgetLawSnapshotArtifact["source"],
+    series,
+  };
+}
+
+function committedBudgetLawSnapshot(requestedWindow: number): BudgetLawMissionSeries {
+  const artifact = validateBudgetLawSnapshotArtifact(budgetLawSnapshotArtifact);
+  const series = artifact.series;
+  return sliceBudgetLawSeries(series, requestedWindow, "snapshot");
+}
+
 /**
  * Reads the full OpenBDAP AMPMA historical series once, aggregates the
  * enacted competenza appropriation (CP A1) per year and mission across every
@@ -488,7 +871,12 @@ export function resetBudgetLawMissionSeriesCacheForTests(): void {
  * since other pending requests may depend on it completing.
  */
 export async function getBudgetLawMissionSeries(
-  options: { windowYears?: number; signal?: AbortSignal } = {},
+  options: {
+    windowYears?: number;
+    signal?: AbortSignal;
+    allowSnapshot?: boolean;
+    fallbackOnAbort?: boolean;
+  } = {},
 ): Promise<BudgetLawMissionSeries> {
   const requestedWindow = options.windowYears ?? DEFAULT_BUDGET_LAW_WINDOW_YEARS;
   if (
@@ -502,8 +890,18 @@ export async function getBudgetLawMissionSeries(
   }
   if (options.signal?.aborted) throw options.signal.reason;
 
-  const { dataset, acquiredAt, availableYears, missionsByYear, totalsByYearMission } =
-    await waitForAggregate(getFullMissionAggregate(), options.signal);
+  let aggregate: FullMissionAggregate;
+  try {
+    aggregate = await waitForAggregate(getFullMissionAggregate(), options.signal);
+  } catch (error) {
+    if (options.signal?.aborted && !options.fallbackOnAbort) {
+      throw options.signal.reason ?? error;
+    }
+    if (options.allowSnapshot === false) throw error;
+    if (!options.signal?.aborted && !isTemporarySourceFailure(error)) throw error;
+    return committedBudgetLawSnapshot(requestedWindow);
+  }
+  const { dataset, acquiredAt, availableYears, missionsByYear, totalsByYearMission } = aggregate;
 
   const consecutiveYears = latestConsecutiveYears(availableYears);
   if (consecutiveYears.length < MIN_BUDGET_LAW_WINDOW_YEARS) {
@@ -543,6 +941,7 @@ export async function getBudgetLawMissionSeries(
   }
 
   return {
+    dataMode: "live",
     dataset,
     minStableMissionYear: MIN_STABLE_MISSION_YEAR,
     years,

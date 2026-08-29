@@ -266,6 +266,29 @@
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
+      "id": "openbdap-budget-law",
+      "owner": "OpenBDAP budget-law mission series",
+      "files": [
+        "src/data/generated/openbdap-budget-law-missions.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/bdap-legge-bilancio.test.mjs"
+      ],
+      "generator": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --package-json ... --csv ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/openbdap-budget-law-missions.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Committed aggregate generated from the official catalog response and CSV, both identified by SHA-256. Runtime prefers live OpenBDAP data and uses this validated snapshot only when the source is unavailable."
+    },
+    {
       "id": "opencivitas-2022",
       "owner": "OpenCivitas municipal 2022",
       "files": [

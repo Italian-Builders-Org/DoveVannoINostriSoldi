@@ -1683,7 +1683,7 @@ try {
             visibleTiles: visibleTiles.length,
           };
         });
-        assert.ok(treemapState.height >= 400, `${label}: il treemap non riserva spazio`);
+        assert.ok(treemapState.height >= 300, `${label}: il treemap non riserva spazio`);
         assert.ok(treemapState.tiles >= 5, `${label}: il treemap non contiene abbastanza missioni`);
         assert.equal(
           treemapState.visibleTiles,

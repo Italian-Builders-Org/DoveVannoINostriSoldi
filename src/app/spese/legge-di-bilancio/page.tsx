@@ -43,16 +43,14 @@ export default async function LeggeDiBilancioPage({
   const { piano } = await searchParams;
 
   let series: BudgetLawMissionSeries | null = null;
-  let errorMessage: string | null = null;
 
   try {
     series = await getBudgetLawMissionSeries({
       windowYears: DEFAULT_BUDGET_LAW_WINDOW_YEARS,
       signal: AbortSignal.timeout(8_000),
+      fallbackOnAbort: true,
     });
-  } catch (error) {
-    errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
-  }
+  } catch {}
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -87,6 +85,17 @@ export default async function LeggeDiBilancioPage({
         </ol>
       </section>
 
+      {series?.dataMode === "snapshot" ? (
+        <div className="notice warning-notice" role="status">
+          <strong>OpenBDAP non ha risposto durante questa visita</strong>
+          <p>
+            Mostriamo l&apos;ultimo snapshot verificato, acquisito il {longDate(series.observedAt)}.
+            Sono dati ufficiali RGS, non una serie dimostrativa; la data resta visibile anche nella
+            provenienza qui sotto.
+          </p>
+        </div>
+      ) : null}
+
       {series ? (
         <SimulatoreClient
           years={series.years}
@@ -97,7 +106,9 @@ export default async function LeggeDiBilancioPage({
       ) : (
         <div className={styles.errorState} role="alert">
           <strong>Dati OpenBDAP non raggiungibili in questo momento.</strong>
-          <p>Non mostriamo una serie dimostrativa al posto del dato mancante. Dettaglio: {errorMessage ?? "non disponibile"}.</p>
+          <p>
+            Non mostriamo una serie dimostrativa al posto del dato mancante. Riprova più tardi.
+          </p>
         </div>
       )}
 

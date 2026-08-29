@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
@@ -12,6 +13,8 @@ const {
   missionYearOverYearDelta,
   normalizeBudgetLawPackage,
   resetBudgetLawMissionSeriesCacheForTests,
+  validateBudgetLawSnapshotArtifact,
+  validateBudgetLawMissionSeries,
 } = await import("../src/lib/bdap-legge-bilancio.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
 const { NextRequest } = await import("next/server.js");
@@ -23,6 +26,12 @@ const packageId = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
 const EXPECTED_TITLE =
   "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato";
 const PRODUCT_CODE = "LBF_SPE_CRU_AMPMA_001";
+const COMMITTED_SNAPSHOT = JSON.parse(
+  readFileSync("src/data/generated/openbdap-budget-law-missions.json", "utf8"),
+);
+const SOURCE_SPEC = JSON.parse(
+  readFileSync("scripts/etl/specs/openbdap-budget-law-missions.source.json", "utf8"),
+);
 
 function packageFixture(overrides = {}) {
   return {
@@ -306,6 +315,34 @@ test("an aborted caller stops waiting without cancelling the shared aggregate", 
   }
 });
 
+test("a page deadline may explicitly fall back to the committed snapshot", async () => {
+  resetBudgetLawMissionSeriesCacheForTests();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = new URL(input.toString());
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    if (url.pathname.endsWith("/package_search")) {
+      return new Response(
+        JSON.stringify({ success: true, result: { results: [packageFixture()] } }),
+        { headers: { "content-type": "application/json" } },
+      );
+    }
+    return new Response(FIXTURE_CSV, { headers: { "content-type": "text/csv" } });
+  };
+  try {
+    const series = await getBudgetLawMissionSeries({
+      signal: AbortSignal.timeout(1),
+      fallbackOnAbort: true,
+    });
+    assert.equal(series.dataMode, "snapshot");
+    assert.deepEqual(series.years, [2021, 2022, 2023, 2024, 2025, 2026]);
+    await new Promise((resolve) => setTimeout(resolve, 70));
+  } finally {
+    globalThis.fetch = originalFetch;
+    resetBudgetLawMissionSeriesCacheForTests();
+  }
+});
+
 test("getBudgetLawMissionSeries honours a smaller requested window", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {
@@ -358,6 +395,85 @@ test("getBudgetLawMissionSeries never labels a gap as a year-over-year change", 
   }
 });
 
+test("the committed fallback snapshot is complete, consecutive and reconciled", () => {
+  const artifact = validateBudgetLawSnapshotArtifact(COMMITTED_SNAPSHOT);
+  const series = artifact.series;
+  assert.deepEqual(series.years, [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+  assert.equal(series.missions.length, 34);
+  assert.equal(series.allocations.length, 340);
+  assert.equal(series.yearOverYearDeltas.length, 306);
+  assert.match(COMMITTED_SNAPSHOT.source.catalogSha256, /^sha256:[0-9a-f]{64}$/);
+  assert.match(COMMITTED_SNAPSHOT.source.csvSha256, /^sha256:[0-9a-f]{64}$/);
+  assert.equal(
+    COMMITTED_SNAPSHOT.source.catalogSha256,
+    `sha256:${SOURCE_SPEC.source.catalog.sha256}`,
+  );
+  assert.equal(COMMITTED_SNAPSHOT.source.csvSha256, `sha256:${SOURCE_SPEC.source.csv.sha256}`);
+  assert.equal(COMMITTED_SNAPSHOT.source.catalogBytes, SOURCE_SPEC.source.catalog.bytes);
+  assert.equal(COMMITTED_SNAPSHOT.source.csvBytes, SOURCE_SPEC.source.csv.bytes);
+  assert.deepEqual(
+    Object.fromEntries(
+      series.years.map((year) => [
+        year,
+        series.allocations
+          .filter((row) => row.year === year)
+          .reduce((sum, row) => sum + row.amountEur, 0),
+      ]),
+    ),
+    SOURCE_SPEC.expectedAnnualTotalsEur,
+  );
+
+  const drifted = structuredClone(series);
+  drifted.allocations[0].amountEur += 1;
+  assert.throws(
+    () => validateBudgetLawMissionSeries(drifted, { expectedDataMode: "snapshot" }),
+    /variazione non riconciliata/,
+  );
+
+  const balancedDrift = structuredClone(COMMITTED_SNAPSHOT);
+  balancedDrift.series.allocations[0].amountEur += 1;
+  const allocationMap = new Map(
+    balancedDrift.series.allocations.map((row) => [`${row.year}::${row.mission}`, row.amountEur]),
+  );
+  for (const delta of balancedDrift.series.yearOverYearDeltas) {
+    delta.fromAmountEur = allocationMap.get(`${delta.fromYear}::${delta.mission}`);
+    delta.toAmountEur = allocationMap.get(`${delta.toYear}::${delta.mission}`);
+    delta.deltaEur = delta.toAmountEur - delta.fromAmountEur;
+    delta.deltaPct =
+      delta.fromAmountEur === 0 ? null : (delta.deltaEur / delta.fromAmountEur) * 100;
+  }
+  assert.throws(
+    () => validateBudgetLawSnapshotArtifact(balancedDrift),
+    /totale 2017 non riconciliato/,
+  );
+
+  const sourceDrift = structuredClone(COMMITTED_SNAPSHOT);
+  sourceDrift.source.csvSha256 = `sha256:${"0".repeat(64)}`;
+  assert.throws(
+    () => validateBudgetLawSnapshotArtifact(sourceDrift),
+    /provenienza sorgente inattesa/,
+  );
+});
+
+test("source-contract drift fails closed instead of being hidden by the snapshot", async () => {
+  resetBudgetLawMissionSeriesCacheForTests();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response(
+      JSON.stringify({
+        success: true,
+        result: { results: [packageFixture({ license_id: "license-changed" })] },
+      }),
+      { headers: { "content-type": "application/json" } },
+    );
+  try {
+    await assert.rejects(getBudgetLawMissionSeries(), BudgetLawDatasetUnavailableError);
+  } finally {
+    globalThis.fetch = originalFetch;
+    resetBudgetLawMissionSeriesCacheForTests();
+  }
+});
+
 test("openbdap_legge_bilancio_storico MCP dataset rejects unsupported filters and exposes the series", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {
@@ -404,7 +520,7 @@ test("the budget-law route exposes the bounded public series with an explicit ca
   }
 });
 
-test("the budget-law route keeps upstream details private and marks failures no-store", async () => {
+test("the budget-law route falls back to the verified snapshot when OpenBDAP is unavailable", async () => {
   resetBudgetLawMissionSeriesCacheForTests();
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
@@ -413,11 +529,49 @@ test("the budget-law route keeps upstream details private and marks failures no-
     const response = await getBudgetLawRoute(
       new NextRequest("https://example.test/api/spese/stato/legge-bilancio"),
     );
-    assert.equal(response.status, 503);
-    assert.equal(response.headers.get("cache-control"), "private, no-store");
+    assert.equal(response.status, 200);
+    assert.equal(
+      response.headers.get("cache-control"),
+      "public, s-maxage=3600, stale-while-revalidate=21600",
+    );
     const body = await response.json();
-    assert.equal(body.error, "La fonte OpenBDAP non è disponibile in questo momento.");
-    assert.doesNotMatch(JSON.stringify(body), /502|Bad Gateway|internal source detail/);
+    assert.equal(body.dataMode, "snapshot");
+    assert.deepEqual(body.years, [2021, 2022, 2023, 2024, 2025, 2026]);
+    assert.equal(body.error, undefined);
+    assert.doesNotMatch(JSON.stringify(body), /Bad Gateway|internal source detail/);
+  } finally {
+    globalThis.fetch = originalFetch;
+    resetBudgetLawMissionSeriesCacheForTests();
+  }
+});
+
+test("the known OpenBDAP attachment-conversion outage uses the snapshot", async () => {
+  resetBudgetLawMissionSeriesCacheForTests();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = new URL(input.toString());
+    if (url.pathname.endsWith("/package_search")) {
+      return new Response(
+        JSON.stringify({ success: true, result: { results: [packageFixture()] } }),
+        { headers: { "content-type": "application/json" } },
+      );
+    }
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: { message: "Cannot convert data to csv. Attachment not found" },
+      }),
+      { headers: { "content-type": "application/json" } },
+    );
+  };
+  try {
+    const response = await getBudgetLawRoute(
+      new NextRequest("https://example.test/api/spese/stato/legge-bilancio?anni=20"),
+    );
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.dataMode, "snapshot");
+    assert.deepEqual(body.years, [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
   } finally {
     globalThis.fetch = originalFetch;
     resetBudgetLawMissionSeriesCacheForTests();

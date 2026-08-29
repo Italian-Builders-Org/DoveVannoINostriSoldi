@@ -2191,15 +2191,22 @@ try {
         const columns = await page.$(".footer-sitemap-columns");
         assert.ok(columns, `${label}: contenitore dei gruppi assente`);
         const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
-        assert.equal(groupCount, 10, `${label}: attesi 10 gruppi nella mappa`);
+        assert.equal(groupCount, 11, `${label}: attesi 11 gruppi nella mappa`);
         const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>
           items.map((item) => item.textContent?.trim() ?? ""),
         );
         assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
+        assert.ok(headings.includes("Report mensili"), `${label}: sezione Report mensili assente`);
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
         assert.ok(headings.includes("Istituzioni"), `${label}: sezione Istituzioni assente`);
         assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
+        for (const href of ["/report", "/report/2026-08"]) {
+          assert.ok(
+            await page.$(`.footer-sitemap-group a[href='${href}']`),
+            `${label}: link ${href} assente dalla mappa`,
+          );
+        }
         const requiredFooterLinks = [
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-secondary-links a[href='/termini']", "Termini"],

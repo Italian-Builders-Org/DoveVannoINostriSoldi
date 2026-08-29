@@ -18,6 +18,11 @@ export default function GovernmentsPage() {
   const current = data.current;
   const currentScore = current.calculation.status === "scored" ? current.calculation : null;
   const forecast = current.forecast.status === "scored" ? current.forecast : null;
+  const historicalBest = data.governments.find((government) => government.rank === 1);
+  const historicalBestScore = historicalBest?.calculation.status === "scored" ? historicalBest.calculation : null;
+  const historicalBestAreas = historicalBestScore
+    ? [...historicalBestScore.categories].sort((left, right) => right.score - left.score).slice(0, 2)
+    : [];
 
   return (
     <main className="shell page">
@@ -45,9 +50,28 @@ export default function GovernmentsPage() {
       <nav className={styles.pageJumps} aria-label="Sezioni della pagella">
         <a href="#azioni-governo">Cosa ha fatto</a>
         <a href="#scenario">Previsione</a>
-        <a href="#confronto-governi">Confronta i governi</a>
+        <Link href="/governi/confronta">Confronta due governi</Link>
+        <a href="#confronto-governi">Classifica completa</a>
         <a href="#metodo-dati">Metodo e dati mancanti</a>
       </nav>
+
+      {historicalBest && historicalBestScore && (
+        <section className={styles.comparisonLauncher} aria-labelledby="miglior-governo">
+          <div>
+            <span>Miglior risultato tra i governi conclusi e valutabili</span>
+            <h2 id="miglior-governo">{historicalBest.name}</h2>
+            <p>
+              Primo nel Core macro con <strong>{score(historicalBestScore.score)}/100</strong> nel periodo {historicalBestScore.baselineYear}→{historicalBestScore.endYear}.
+              Le aree più forti sono {historicalBestAreas.map((area) => `${area.label} (${score(area.score)})`).join(" e ")}.
+            </p>
+            <small>Affidabilità {historicalBest.reliability.grade} · {historicalBest.reliability.label}. È il miglior risultato nei dati disponibili, non una prova che ogni miglioramento sia stato causato dal governo.</small>
+          </div>
+          <div>
+            <Link className={styles.primaryAction} href="/governi/confronta">Scegli Governo X e Governo Y →</Link>
+            <Link className={styles.secondaryAction} href={`/governi/${historicalBest.id}`}>Perché è primo</Link>
+          </div>
+        </section>
+      )}
 
       <section className={`panel ${styles.section}`} id="azioni-governo" aria-labelledby="azioni-title">
         <div className={styles.sectionHeading}>

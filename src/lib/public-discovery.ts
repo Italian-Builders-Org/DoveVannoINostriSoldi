@@ -29,6 +29,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/fonti/copertura",
   "/fonti/stato",
   "/governi",
+  "/governi/confronta",
   "/imprese",
   "/incarichi",
   "/incarichi/dettaglio",

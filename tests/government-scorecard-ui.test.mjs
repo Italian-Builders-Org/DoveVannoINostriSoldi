@@ -35,7 +35,9 @@ test("page keeps current actions first and makes forecasts, history and method p
   assert.match(page, /<details className=\{styles\.explorer\} id="confronto-governi">/);
   assert.match(page, /<details className=\{styles\.explorer\} id="metodo-dati">/);
   assert.match(page, /non un dato osservato e non un voto anticipato/);
-  assert.match(page, /Il confronto con i peer non è lo spread/);
+  assert.doesNotMatch(page, /Il confronto con i peer non è lo spread/);
+  assert.match(citizenModel, /Perché è fuori oggi:/);
+  assert.match(citizenModel, /Perché resta diagnostico:/);
   assert.match(page, /current\.measures\.map/);
 });
 
@@ -56,12 +58,13 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /role="img"/);
 });
 
-test("citizen model exposes ten source-backed indicators and keeps long-lag diagnostics separate", () => {
-  assert.match(citizenModel, /Dieci dati che parlano alla vita del cittadino/);
-  assert.match(citizenModel, /Sette risultati possono entrare nel voto moderno/);
+test("citizen model exposes ten source-backed indicators and explains every exclusion", () => {
+  assert.match(citizenModel, /Dieci dati candidati, oggi ancora fuori dal punteggio/);
+  assert.match(citizenModel, /Sette possono diventare indicatori di benessere/);
   assert.match(citizenModel, /indicator\.role === "score"/);
   assert.match(citizenModel, /indicator\.role === "diagnostic"/);
-  assert.match(citizenModel, /non sono ancora nel numero mostrato sotto/);
+  assert.match(citizenModel, /sei indicatori macro del Core/);
+  assert.match(citizenModel, /indicator\.exclusionReason/);
   assert.match(citizenModel, /indicator\.sourceUrl/);
 });
 

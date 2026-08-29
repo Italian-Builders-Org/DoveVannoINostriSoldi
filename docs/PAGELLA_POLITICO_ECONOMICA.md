@@ -96,6 +96,37 @@ decisioni maturate in molti anni e, per i governi più vecchi, la copertura non 
 comparabile. Escluderle dalla schermata sarebbe sbagliato; trasformarle subito
 in punti di voto sarebbe altrettanto arbitrario.
 
+### Perché questi dati sono ancora fuori dal numero
+
+La disponibilità di una fonte non basta per assegnare punti. Ogni indicatore
+deve superare insieme sei controlli: stessa definizione nel tempo, copertura dei
+governi della classe, stesso perimetro per i peer, frequenza adeguata alla
+finestra, regole sulle revisioni e assenza di doppio conteggio.
+
+| Indicatore | Frequenza che possiamo usare | Blocco da risolvere prima del voto |
+| --- | --- | --- |
+| reddito reale disponibile | trimestrale per il monitoraggio recente; annuale per la serie proposta | riconciliare le due frequenze e validare gli endpoint dei mandati |
+| spese essenziali | IPCA mensile dal 1996 | fissare categorie e pesi del paniere; non contare due volte l'inflazione già incorporata nel reddito reale |
+| occupazione | trimestrale; annuale per la serie proposta | gestire stagionalità e rotture; non duplicare la disoccupazione |
+| risparmio delle famiglie | trimestrale | neutralizzare picchi eccezionali, revisioni e differenze fra dato lordo e netto |
+| costo della casa | annuale | ritardo e discontinuità d'indagine impediscono un monitoraggio corrente omogeneo |
+| NEET | annuale nella serie proposta | verificare se la serie LFS trimestrale mantiene definizione e copertura storica sufficienti |
+| produttività oraria | annuale nella serie proposta; conti trimestrali come alternativa | scegliere una serie unica e non duplicare PIL e investimenti |
+| fecondità | annuale | ritardo causale lungo e forte influenza di fattori non economici |
+| migrazione dei laureati | annuale e solo Italia nel perimetro proposto | definizioni e peer non ancora omogenei; serie breve |
+| ricchezza distributiva | trimestrale con circa cinque mesi di ritardo | serie recente, componente stimata e revisioni: non copre equamente i governi dal 1995 |
+
+Per il governo in carica possiamo quindi costruire un **cruscotto corrente** più
+frequente del voto storico: inflazione, categorie essenziali, credito e tassi
+mensili; lavoro, reddito, risparmio, PIL e produttività trimestrali. Il voto fra
+governi resta invece sulla maggiore frequenza comune e validata. Non sommeremo
+una lettura mensile del presente a una classifica annuale del passato.
+
+Un algoritmo perfetto e interamente causale non è ottenibile: manca il mondo
+controfattuale in cui lo stesso Paese, nello stesso momento, è governato da un
+altro esecutivo. Possiamo però rendere perfetti in senso tecnico provenienza,
+riproducibilità e formula; e rendere esplicita l'incertezza dell'attribuzione.
+
 ### Stabilità e capacità futura
 
 Accanto allo Score cittadino mostriamo un modulo di sostenibilità, separato e
@@ -152,6 +183,25 @@ Il Core attualmente pubblicato **non implementa ancora questa formula**: usa 50%
 storia italiana e 50% mediana contemporanea di Francia, Germania e Spagna. La UI
 deve quindi chiamarlo sempre “Core macro provvisorio” e mostrare i grafici e i
 punti che lo compongono.
+
+Inflazione, condizioni europee e globali e decisioni UE entrano in tre posti
+diversi, senza diventare bonus discrezionali:
+
+- l'inflazione delle spese essenziali entra negli esiti del cittadino; reddito e
+  salari restano espressi in termini reali per evitare illusioni nominali;
+- ciclo dell'area euro, prezzi energetici e delle importazioni, domanda estera,
+  tassi BCE e condizioni del credito descrivono lo shock comune e l'esposizione
+  italiana precedente allo shock;
+- regolamenti, decisioni UE e PNRR entrano nel registro delle politiche con data,
+  risorse, traguardi e stato di attuazione. L'approvazione di un atto non assegna
+  punti finché non esiste un risultato o una valutazione indipendente.
+
+Le fonti candidate sono l'[IPCA mensile Eurostat](https://ec.europa.eu/eurostat/web/hicp/information-data),
+le [statistiche energetiche Eurostat](https://ec.europa.eu/eurostat/web/energy/information-data),
+i [tassi bancari armonizzati BCE](https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/bank_interest_rates/mfi_interest_rates/html/index.en.html),
+il [Bollettino economico BCE](https://www.ecb.europa.eu/press/economic-bulletin/html/index.en.html),
+lo [scoreboard ufficiale del dispositivo per la ripresa e la resilienza](https://ec.europa.eu/economy_finance/recovery-and-resilience-scoreboard/milestones_and_targets.html) e gli
+atti autentici pubblicati su [EUR-Lex](https://eur-lex.europa.eu/oj/direct-access.html?locale=it).
 
 ### Come valutare le manovre
 
@@ -608,6 +658,15 @@ dimensione, schema CSV, codici AMECO, copertura, paesi, pesi, cronologia, hash e
 riconciliazioni prima di sostituire atomicamente lo snapshot. Il runtime applica
 un secondo contratto fail-closed. Il refresh schedulato apre una proposta di
 aggiornamento, senza pubblicare silenziosamente dati non validati.
+
+Il controllo automatico del Core viene eseguito ogni settimana, ma AMECO viene
+aggiornato con i principali esercizi previsivi della Commissione, normalmente
+primavera e autunno: controllare più spesso non crea osservazioni nuove. Per il
+cruscotto corrente la pipeline dovrà invece seguire il calendario della singola
+fonte: IPCA e tassi bancari ogni mese; lavoro, reddito, risparmio e conti
+nazionali ogni trimestre; casa, demografia e migrazione ogni anno. Ogni nuova
+release genera un candidato validato e una proposta revisionabile, non una
+pubblicazione cieca.
 
 ## Fotografia corrente da usare per validare il prototipo
 

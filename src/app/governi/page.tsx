@@ -175,10 +175,6 @@ export default function GovernmentsPage() {
               <li><strong>Peer:</strong> confrontiamo la stessa variazione con la mediana di Francia, Germania e Spagna.</li>
               <li><strong>Core:</strong> 50% storia italiana e 50% confronto con i peer, con pesi fissi.</li>
             </ol>
-            <div className={styles.spreadExplainer}>
-              <strong>Il confronto con i peer non è lo spread.</strong>
-              <p>Lo spread BTP-Bund confronta il rendimento italiano con il Bund tedesco. Qui confrontiamo invece variazioni economiche nello stesso periodo.</p>
-            </div>
           </section>
           <section className={styles.sources} aria-labelledby="fonti-pagella">
             <div className={styles.sectionHeading}>

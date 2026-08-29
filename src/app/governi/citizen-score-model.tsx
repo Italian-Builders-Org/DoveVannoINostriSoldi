@@ -9,21 +9,22 @@ export function CitizenScoreModel() {
     <section className={`panel ${styles.section}`} aria-labelledby="paniere-cittadino">
       <div className={styles.sectionHeading}>
         <div>
-          <span className={styles.eyebrow}>Il voto che dobbiamo costruire</span>
-          <h2 id="paniere-cittadino">Dieci dati che parlano alla vita del cittadino</h2>
+          <span className={styles.eyebrow}>Il voto che stiamo costruendo</span>
+          <h2 id="paniere-cittadino">Dieci dati candidati, oggi ancora fuori dal punteggio</h2>
         </div>
-        <p>Sette risultati possono entrare nel voto moderno; tre restano diagnostici finché copertura e ritardi non consentono confronti equi fra governi.</p>
+        <p>Sette possono diventare indicatori di benessere; tre restano diagnostici. Per ciascuno mostriamo il limite da risolvere prima di assegnargli un peso.</p>
       </div>
 
       <div className={styles.citizenModelGrid}>
         <div>
-          <h3>Nel voto di benessere</h3>
+          <h3>Candidati al voto di benessere</h3>
           <ol className={styles.citizenIndicators}>
             {scored.map((indicator, index) => (
               <li key={indicator.id}>
                 <span>{index + 1} · {indicator.area}</span>
                 <strong>{indicator.label}</strong>
                 <p>{indicator.question}</p>
+                <small className={styles.exclusionReason}><b>Perché è fuori oggi:</b> {indicator.exclusionReason}</small>
                 <a href={indicator.sourceUrl} target="_blank" rel="noreferrer">{indicator.source} <span aria-hidden="true">↗</span></a>
               </li>
             ))}
@@ -37,6 +38,7 @@ export function CitizenScoreModel() {
                 <span>{scored.length + index + 1} · {indicator.area} · diagnostico</span>
                 <strong>{indicator.label}</strong>
                 <p>{indicator.question}</p>
+                <small className={styles.exclusionReason}><b>Perché resta diagnostico:</b> {indicator.exclusionReason}</small>
                 <a href={indicator.sourceUrl} target="_blank" rel="noreferrer">{indicator.source} <span aria-hidden="true">↗</span></a>
               </li>
             ))}
@@ -49,7 +51,7 @@ export function CitizenScoreModel() {
       </div>
 
       <p className={styles.causalBoundary}>
-        Questi dieci dati <strong>non sono ancora nel numero mostrato sotto</strong>. Il Core attuale resta pubblicato come prototipo macro separato finché il nuovo paniere non supera audit, copertura e test di robustezza.
+        Il numero attuale usa ancora soltanto i sei indicatori macro del Core. Un dato entrerà nel nuovo paniere solo con una serie confrontabile tra governi, una regola contro il doppio conteggio e test pubblici su pesi, revisioni e shock eccezionali.
       </p>
     </section>
   );

@@ -27,7 +27,7 @@ import zipfile
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, NoReturn
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,7 +68,7 @@ class SnapshotError(ValueError):
     """Raised when an input or generated snapshot violates the contract."""
 
 
-def fail(message: str) -> None:
+def fail(message: str) -> NoReturn:
     raise SnapshotError(message)
 
 

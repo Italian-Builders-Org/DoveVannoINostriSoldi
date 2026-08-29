@@ -1,0 +1,7392 @@
+{
+  "schemaVersion": 1,
+  "methodologyVersion": "core-annual-v4",
+  "generatedAt": "2026-08-29T23:11:43Z",
+  "sources": {
+    "ameco": {
+      "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
+      "title": "AMECO annual macro-economic database",
+      "release": "Spring 2026 Economic Forecast",
+      "releaseDate": "2026-06-03",
+      "landingUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+      "downloadUrl": "https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip",
+      "termsUrl": "https://commission.europa.eu/legal-notice_en",
+      "license": "CC BY 4.0 unless otherwise indicated",
+      "cadence": "twice-yearly forecast releases",
+      "geography": "Italy, France, Germany and Spain",
+      "referencePeriod": "annual, 1960-2027; the score uses 1995-2024 observations",
+      "publication": "latest AMECO vintage, not the vintage available during each historical government",
+      "retrievedAt": "2026-08-29T23:11:43Z",
+      "bytes": 6181987,
+      "sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005",
+      "observedThrough": 2024,
+      "forecastFrom": 2025,
+      "forecastThrough": 2027
+    },
+    "governmentChronology": {
+      "owner": "Presidenza del Consiglio dei Ministri",
+      "title": "I Governi nelle Legislature",
+      "pageUrl": "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+      "termsUrl": "https://www.governo.it/it/note-legali",
+      "cadence": "on change of government",
+      "geography": "Italian Republic",
+      "referencePeriod": "17 January 1995 onward; the source page also lists earlier governments",
+      "publication": "current institutional chronology",
+      "historicalOwner": "Camera dei deputati · Portale storico",
+      "dateMeaning": "startDate ed endDate sono i confini istituzionali del governo pubblicati dalle fonti; endDate può coincidere con l'inizio del governo successivo e non indica necessariamente l'ultimo giorno in carica, una data di dimissioni o responsabilità causale",
+      "retrievedAt": "2026-08-29T23:11:43Z",
+      "bytes": 58978,
+      "sha256": "7cdbcf0a069dc877e205f13706cd23c2784fe700a141223d8e7c754e86d0ac41",
+      "historicalReceipts": [
+        {
+          "governmentId": "dini-i",
+          "sourceLabel": "Governo Dini",
+          "pageTitle": "I Governo Dini",
+          "pageUrl": "https://storia.camera.it/governi/i-governo-dini/Ministero%20del%20tesoro",
+          "startDate": "1995-01-17",
+          "endDate": "1996-05-17",
+          "retrievedAt": "2026-08-29T23:11:43Z",
+          "bytes": 33491,
+          "sha256": "8507d633f5198b51c849b6f0288f75f1bed3413b51b7c70fb32cadca83342a3c"
+        },
+        {
+          "governmentId": "prodi-i",
+          "sourceLabel": "Governo Prodi",
+          "pageTitle": "I Governo Prodi",
+          "pageUrl": "https://storia.camera.it/governi/i-governo-prodi/Ministero%20delle%20finanze",
+          "startDate": "1996-05-17",
+          "endDate": "1998-10-21",
+          "retrievedAt": "2026-08-29T23:11:43Z",
+          "bytes": 31629,
+          "sha256": "3b5995ebef3f0ca3ff383e3b87adae5b20ddc227de6c51ab6701855fca37900d"
+        },
+        {
+          "governmentId": "dalema-i",
+          "sourceLabel": "Governo D'Alema",
+          "pageTitle": "I Governo D'Alema",
+          "pageUrl": "https://storia.camera.it/governi/i-governo-d-alema/Presidenza%20del%20Consiglio%20-%20rapporti%20con%20il%20parlamento",
+          "startDate": "1998-10-21",
+          "endDate": "1999-12-22",
+          "retrievedAt": "2026-08-29T23:11:43Z",
+          "bytes": 28298,
+          "sha256": "89204e7539de300273de6ac6b37c04178f572846ddd77296b19ec8579dee6691"
+        },
+        {
+          "governmentId": "dalema-ii",
+          "sourceLabel": "Governo D'Alema II",
+          "pageTitle": "II Governo D'Alema",
+          "pageUrl": "https://storia.camera.it/governi/ii-governo-d-alema/Ministero%20dell%27interno",
+          "startDate": "1999-12-22",
+          "endDate": "2000-04-25",
+          "retrievedAt": "2026-08-29T23:11:43Z",
+          "bytes": 31722,
+          "sha256": "4fbf03c70087c4261454ab9450df49d6c9dba080b33e43c8e06713c8f877211e"
+        },
+        {
+          "governmentId": "amato-ii",
+          "sourceLabel": "Governo Amato II",
+          "pageTitle": "II Governo Amato",
+          "pageUrl": "https://storia.camera.it/governi/ii-governo-amato/Presidenza%20del%20Consiglio%20-%20affari%20regionali",
+          "startDate": "2000-04-25",
+          "endDate": "2001-06-10",
+          "retrievedAt": "2026-08-29T23:11:43Z",
+          "bytes": 27644,
+          "sha256": "dccc917c2e499eda7c705c0d74162d5164f62c9bff085d298bf37b00ed5fc0b6"
+        }
+      ]
+    }
+  },
+  "method": {
+    "firstScoreYear": 1995,
+    "minimumWindowYears": 1,
+    "peerCountryIds": [
+      "france",
+      "germany",
+      "spain"
+    ],
+    "historicalWeightBasisPoints": 5000,
+    "peerWeightBasisPoints": 5000,
+    "robustScale": 1.4826,
+    "winsorizedZ": 3,
+    "scoreStatus": "Indice annuale dei risultati economici nel periodo; ogni governo ha una scheda, mentre il numero richiede almeno un intervallo annuale osservabile",
+    "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
+    "endpointRule": "Semestral approximation for annual data: for the starting endpoint use the prior year when the published start boundary is in January-June and the start year when it is in July-December; for the final endpoint use the prior year when the published end boundary is in January-June and the end year when it is in July-December. This minimizes, but cannot eliminate, months belonging to another government and does not provide daily precision. startDate and endDate are institutional boundaries published by the Presidency and Camera, not individual resignation dates and not evidence of causal responsibility.",
+    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government; attribution is always reported separately"
+  },
+  "indicators": [
+    {
+      "id": "real_compensation",
+      "area": "purchasing-power",
+      "label": "Retribuzione reale per dipendente",
+      "weightBasisPoints": 2500,
+      "direction": "higher",
+      "transformation": "log-change",
+      "unit": "National currency: 2020 = 100",
+      "limitations": "Media per dipendente dell'intera economia; non misura distribuzione dei salari, ore lavorate o reddito familiare.",
+      "sourceSeries": [
+        {
+          "file": "AMECO7.CSV",
+          "codeTemplate": "{country}.3.1.0.0.RWCDC",
+          "title": "Real compensation per employee deflator private consumption: total economy",
+          "unit": "National currency: 2020 = 100"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.3.1.0.0.RWCDC"
+        ],
+        "france": [
+          "FRA.3.1.0.0.RWCDC"
+        ],
+        "germany": [
+          "DEU.3.1.0.0.RWCDC"
+        ],
+        "spain": [
+          "ESP.3.1.0.0.RWCDC"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": 39.42823
+          },
+          {
+            "year": 1961,
+            "value": 40.93655
+          },
+          {
+            "year": 1962,
+            "value": 44.02876
+          },
+          {
+            "year": 1963,
+            "value": 48.92808
+          },
+          {
+            "year": 1964,
+            "value": 52.01476
+          },
+          {
+            "year": 1965,
+            "value": 54.242
+          },
+          {
+            "year": 1966,
+            "value": 56.7163
+          },
+          {
+            "year": 1967,
+            "value": 59.40099
+          },
+          {
+            "year": 1968,
+            "value": 63.29957
+          },
+          {
+            "year": 1969,
+            "value": 66.32019
+          },
+          {
+            "year": 1970,
+            "value": 72.83937
+          },
+          {
+            "year": 1971,
+            "value": 78.16836
+          },
+          {
+            "year": 1972,
+            "value": 80.24563
+          },
+          {
+            "year": 1973,
+            "value": 82.9882
+          },
+          {
+            "year": 1974,
+            "value": 83.88501
+          },
+          {
+            "year": 1975,
+            "value": 85.91781
+          },
+          {
+            "year": 1976,
+            "value": 88.03699
+          },
+          {
+            "year": 1977,
+            "value": 90.60837
+          },
+          {
+            "year": 1978,
+            "value": 93.62306
+          },
+          {
+            "year": 1979,
+            "value": 97.05925
+          },
+          {
+            "year": 1980,
+            "value": 98.06279
+          },
+          {
+            "year": 1981,
+            "value": 101.30988
+          },
+          {
+            "year": 1982,
+            "value": 100.41112
+          },
+          {
+            "year": 1983,
+            "value": 100.70625
+          },
+          {
+            "year": 1984,
+            "value": 101.03868
+          },
+          {
+            "year": 1985,
+            "value": 101.73278
+          },
+          {
+            "year": 1986,
+            "value": 102.5988
+          },
+          {
+            "year": 1987,
+            "value": 105.15853
+          },
+          {
+            "year": 1988,
+            "value": 107.24663
+          },
+          {
+            "year": 1989,
+            "value": 108.88279
+          },
+          {
+            "year": 1990,
+            "value": 112.1829
+          },
+          {
+            "year": 1991,
+            "value": 112.50168
+          },
+          {
+            "year": 1992,
+            "value": 112.4955
+          },
+          {
+            "year": 1993,
+            "value": 110.87711
+          },
+          {
+            "year": 1994,
+            "value": 109.65357
+          },
+          {
+            "year": 1995,
+            "value": 107.67664
+          },
+          {
+            "year": 1996,
+            "value": 110.14479
+          },
+          {
+            "year": 1997,
+            "value": 112.77289
+          },
+          {
+            "year": 1998,
+            "value": 109.31273
+          },
+          {
+            "year": 1999,
+            "value": 109.76568
+          },
+          {
+            "year": 2000,
+            "value": 108.7679
+          },
+          {
+            "year": 2001,
+            "value": 109.32097
+          },
+          {
+            "year": 2002,
+            "value": 108.5346
+          },
+          {
+            "year": 2003,
+            "value": 108.15362
+          },
+          {
+            "year": 2004,
+            "value": 109.17269
+          },
+          {
+            "year": 2005,
+            "value": 109.60997
+          },
+          {
+            "year": 2006,
+            "value": 109.03034
+          },
+          {
+            "year": 2007,
+            "value": 108.9587
+          },
+          {
+            "year": 2008,
+            "value": 108.56997
+          },
+          {
+            "year": 2009,
+            "value": 109.61264
+          },
+          {
+            "year": 2010,
+            "value": 110.43533
+          },
+          {
+            "year": 2011,
+            "value": 108.44263
+          },
+          {
+            "year": 2012,
+            "value": 104.22885
+          },
+          {
+            "year": 2013,
+            "value": 103.92875
+          },
+          {
+            "year": 2014,
+            "value": 103.93407
+          },
+          {
+            "year": 2015,
+            "value": 104.87835
+          },
+          {
+            "year": 2016,
+            "value": 104.63264
+          },
+          {
+            "year": 2017,
+            "value": 103.76122
+          },
+          {
+            "year": 2018,
+            "value": 104.05795
+          },
+          {
+            "year": 2019,
+            "value": 104.46459
+          },
+          {
+            "year": 2020,
+            "value": 100.0
+          },
+          {
+            "year": 2021,
+            "value": 105.22965
+          },
+          {
+            "year": 2022,
+            "value": 102.21496
+          },
+          {
+            "year": 2023,
+            "value": 99.92963
+          },
+          {
+            "year": 2024,
+            "value": 101.50807
+          },
+          {
+            "year": 2025,
+            "value": 103.0297
+          },
+          {
+            "year": 2026,
+            "value": 102.84021
+          },
+          {
+            "year": 2027,
+            "value": 103.48606
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": 30.4801
+          },
+          {
+            "year": 1961,
+            "value": 32.73238
+          },
+          {
+            "year": 1962,
+            "value": 35.16343
+          },
+          {
+            "year": 1963,
+            "value": 37.62739
+          },
+          {
+            "year": 1964,
+            "value": 39.66235
+          },
+          {
+            "year": 1965,
+            "value": 41.22791
+          },
+          {
+            "year": 1966,
+            "value": 42.38545
+          },
+          {
+            "year": 1967,
+            "value": 43.94161
+          },
+          {
+            "year": 1968,
+            "value": 46.88697
+          },
+          {
+            "year": 1969,
+            "value": 48.70208
+          },
+          {
+            "year": 1970,
+            "value": 51.31576
+          },
+          {
+            "year": 1971,
+            "value": 54.05449
+          },
+          {
+            "year": 1972,
+            "value": 56.17125
+          },
+          {
+            "year": 1973,
+            "value": 58.77501
+          },
+          {
+            "year": 1974,
+            "value": 60.61362
+          },
+          {
+            "year": 1975,
+            "value": 64.39673
+          },
+          {
+            "year": 1976,
+            "value": 67.3201
+          },
+          {
+            "year": 1977,
+            "value": 69.10265
+          },
+          {
+            "year": 1978,
+            "value": 71.26589
+          },
+          {
+            "year": 1979,
+            "value": 72.37931
+          },
+          {
+            "year": 1980,
+            "value": 73.10609
+          },
+          {
+            "year": 1981,
+            "value": 73.05256
+          },
+          {
+            "year": 1982,
+            "value": 74.46426
+          },
+          {
+            "year": 1983,
+            "value": 74.65857
+          },
+          {
+            "year": 1984,
+            "value": 74.54407
+          },
+          {
+            "year": 1985,
+            "value": 74.30433
+          },
+          {
+            "year": 1986,
+            "value": 75.43781
+          },
+          {
+            "year": 1987,
+            "value": 75.6298
+          },
+          {
+            "year": 1988,
+            "value": 76.87639
+          },
+          {
+            "year": 1989,
+            "value": 77.10701
+          },
+          {
+            "year": 1990,
+            "value": 78.95191
+          },
+          {
+            "year": 1991,
+            "value": 79.69026
+          },
+          {
+            "year": 1992,
+            "value": 80.65041
+          },
+          {
+            "year": 1993,
+            "value": 81.2703
+          },
+          {
+            "year": 1994,
+            "value": 81.27462
+          },
+          {
+            "year": 1995,
+            "value": 82.14624
+          },
+          {
+            "year": 1996,
+            "value": 82.3779
+          },
+          {
+            "year": 1997,
+            "value": 82.91954
+          },
+          {
+            "year": 1998,
+            "value": 83.98314
+          },
+          {
+            "year": 1999,
+            "value": 85.84533
+          },
+          {
+            "year": 2000,
+            "value": 86.35671
+          },
+          {
+            "year": 2001,
+            "value": 87.08141
+          },
+          {
+            "year": 2002,
+            "value": 89.43208
+          },
+          {
+            "year": 2003,
+            "value": 90.58642
+          },
+          {
+            "year": 2004,
+            "value": 91.70887
+          },
+          {
+            "year": 2005,
+            "value": 92.87937
+          },
+          {
+            "year": 2006,
+            "value": 93.77643
+          },
+          {
+            "year": 2007,
+            "value": 94.26818
+          },
+          {
+            "year": 2008,
+            "value": 94.03636
+          },
+          {
+            "year": 2009,
+            "value": 97.0334
+          },
+          {
+            "year": 2010,
+            "value": 98.60635
+          },
+          {
+            "year": 2011,
+            "value": 99.36761
+          },
+          {
+            "year": 2012,
+            "value": 100.27228
+          },
+          {
+            "year": 2013,
+            "value": 101.60224
+          },
+          {
+            "year": 2014,
+            "value": 102.80674
+          },
+          {
+            "year": 2015,
+            "value": 103.73751
+          },
+          {
+            "year": 2016,
+            "value": 104.65117
+          },
+          {
+            "year": 2017,
+            "value": 105.88622
+          },
+          {
+            "year": 2018,
+            "value": 105.46979
+          },
+          {
+            "year": 2019,
+            "value": 104.57307
+          },
+          {
+            "year": 2020,
+            "value": 100.0
+          },
+          {
+            "year": 2021,
+            "value": 103.56582
+          },
+          {
+            "year": 2022,
+            "value": 103.69587
+          },
+          {
+            "year": 2023,
+            "value": 101.02501
+          },
+          {
+            "year": 2024,
+            "value": 101.98447
+          },
+          {
+            "year": 2025,
+            "value": 103.49266
+          },
+          {
+            "year": 2026,
+            "value": 103.30005
+          },
+          {
+            "year": 2027,
+            "value": 104.52483
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": 31.58456
+          },
+          {
+            "year": 1961,
+            "value": 33.69658
+          },
+          {
+            "year": 1962,
+            "value": 35.71717
+          },
+          {
+            "year": 1963,
+            "value": 36.7898
+          },
+          {
+            "year": 1964,
+            "value": 38.93519
+          },
+          {
+            "year": 1965,
+            "value": 41.28594
+          },
+          {
+            "year": 1966,
+            "value": 42.90956
+          },
+          {
+            "year": 1967,
+            "value": 43.62788
+          },
+          {
+            "year": 1968,
+            "value": 45.80602
+          },
+          {
+            "year": 1969,
+            "value": 49.2344
+          },
+          {
+            "year": 1970,
+            "value": 55.16164
+          },
+          {
+            "year": 1971,
+            "value": 58.23383
+          },
+          {
+            "year": 1972,
+            "value": 60.9765
+          },
+          {
+            "year": 1973,
+            "value": 63.46942
+          },
+          {
+            "year": 1974,
+            "value": 65.34204
+          },
+          {
+            "year": 1975,
+            "value": 66.26499
+          },
+          {
+            "year": 1976,
+            "value": 68.83384
+          },
+          {
+            "year": 1977,
+            "value": 71.35818
+          },
+          {
+            "year": 1978,
+            "value": 73.71648
+          },
+          {
+            "year": 1979,
+            "value": 73.64893
+          },
+          {
+            "year": 1980,
+            "value": 73.57046
+          },
+          {
+            "year": 1981,
+            "value": 72.50384
+          },
+          {
+            "year": 1982,
+            "value": 71.71309
+          },
+          {
+            "year": 1983,
+            "value": 71.69847
+          },
+          {
+            "year": 1984,
+            "value": 71.99022
+          },
+          {
+            "year": 1985,
+            "value": 72.60189
+          },
+          {
+            "year": 1986,
+            "value": 75.71324
+          },
+          {
+            "year": 1987,
+            "value": 77.94026
+          },
+          {
+            "year": 1988,
+            "value": 78.47182
+          },
+          {
+            "year": 1989,
+            "value": 77.49917
+          },
+          {
+            "year": 1990,
+            "value": 78.73438
+          },
+          {
+            "year": 1991,
+            "value": 80.99601
+          },
+          {
+            "year": 1992,
+            "value": 85.4912
+          },
+          {
+            "year": 1993,
+            "value": 85.63014
+          },
+          {
+            "year": 1994,
+            "value": 86.25413
+          },
+          {
+            "year": 1995,
+            "value": 87.96166
+          },
+          {
+            "year": 1996,
+            "value": 88.2819
+          },
+          {
+            "year": 1997,
+            "value": 87.87589
+          },
+          {
+            "year": 1998,
+            "value": 88.38284
+          },
+          {
+            "year": 1999,
+            "value": 88.83026
+          },
+          {
+            "year": 2000,
+            "value": 89.42874
+          },
+          {
+            "year": 2001,
+            "value": 89.29375
+          },
+          {
+            "year": 2002,
+            "value": 89.09929
+          },
+          {
+            "year": 2003,
+            "value": 89.24884
+          },
+          {
+            "year": 2004,
+            "value": 88.56068
+          },
+          {
+            "year": 2005,
+            "value": 87.70402
+          },
+          {
+            "year": 2006,
+            "value": 87.69142
+          },
+          {
+            "year": 2007,
+            "value": 86.88201
+          },
+          {
+            "year": 2008,
+            "value": 87.11721
+          },
+          {
+            "year": 2009,
+            "value": 87.60068
+          },
+          {
+            "year": 2010,
+            "value": 88.34197
+          },
+          {
+            "year": 2011,
+            "value": 89.18348
+          },
+          {
+            "year": 2012,
+            "value": 90.16304
+          },
+          {
+            "year": 2013,
+            "value": 90.6047
+          },
+          {
+            "year": 2014,
+            "value": 92.29445
+          },
+          {
+            "year": 2015,
+            "value": 94.47202
+          },
+          {
+            "year": 2016,
+            "value": 96.03175
+          },
+          {
+            "year": 2017,
+            "value": 97.06598
+          },
+          {
+            "year": 2018,
+            "value": 98.46735
+          },
+          {
+            "year": 2019,
+            "value": 100.28201
+          },
+          {
+            "year": 2020,
+            "value": 100.0
+          },
+          {
+            "year": 2021,
+            "value": 99.91849
+          },
+          {
+            "year": 2022,
+            "value": 97.6672
+          },
+          {
+            "year": 2023,
+            "value": 97.25221
+          },
+          {
+            "year": 2024,
+            "value": 99.88729
+          },
+          {
+            "year": 2025,
+            "value": 102.24223
+          },
+          {
+            "year": 2026,
+            "value": 102.92519
+          },
+          {
+            "year": 2027,
+            "value": 103.43776
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": 24.48786
+          },
+          {
+            "year": 1961,
+            "value": 27.15286
+          },
+          {
+            "year": 1962,
+            "value": 29.69717
+          },
+          {
+            "year": 1963,
+            "value": 33.37575
+          },
+          {
+            "year": 1964,
+            "value": 35.55315
+          },
+          {
+            "year": 1965,
+            "value": 37.40645
+          },
+          {
+            "year": 1966,
+            "value": 41.26601
+          },
+          {
+            "year": 1967,
+            "value": 44.75084
+          },
+          {
+            "year": 1968,
+            "value": 46.32149
+          },
+          {
+            "year": 1969,
+            "value": 50.19802
+          },
+          {
+            "year": 1970,
+            "value": 51.76206
+          },
+          {
+            "year": 1971,
+            "value": 54.59823
+          },
+          {
+            "year": 1972,
+            "value": 59.71047
+          },
+          {
+            "year": 1973,
+            "value": 63.4776
+          },
+          {
+            "year": 1974,
+            "value": 65.40976
+          },
+          {
+            "year": 1975,
+            "value": 69.35189
+          },
+          {
+            "year": 1976,
+            "value": 73.5215
+          },
+          {
+            "year": 1977,
+            "value": 75.31187
+          },
+          {
+            "year": 1978,
+            "value": 78.89058
+          },
+          {
+            "year": 1979,
+            "value": 80.57987
+          },
+          {
+            "year": 1980,
+            "value": 81.64393
+          },
+          {
+            "year": 1981,
+            "value": 82.56907
+          },
+          {
+            "year": 1982,
+            "value": 82.0941
+          },
+          {
+            "year": 1983,
+            "value": 83.2071
+          },
+          {
+            "year": 1984,
+            "value": 82.95984
+          },
+          {
+            "year": 1985,
+            "value": 83.70742
+          },
+          {
+            "year": 1986,
+            "value": 83.83202
+          },
+          {
+            "year": 1987,
+            "value": 85.02675
+          },
+          {
+            "year": 1988,
+            "value": 87.17043
+          },
+          {
+            "year": 1989,
+            "value": 87.667
+          },
+          {
+            "year": 1990,
+            "value": 90.52443
+          },
+          {
+            "year": 1991,
+            "value": 93.56319
+          },
+          {
+            "year": 1992,
+            "value": 97.64364
+          },
+          {
+            "year": 1993,
+            "value": 99.53103
+          },
+          {
+            "year": 1994,
+            "value": 98.4075
+          },
+          {
+            "year": 1995,
+            "value": 97.36858
+          },
+          {
+            "year": 1996,
+            "value": 98.41953
+          },
+          {
+            "year": 1997,
+            "value": 98.3911
+          },
+          {
+            "year": 1998,
+            "value": 99.15037
+          },
+          {
+            "year": 1999,
+            "value": 98.91683
+          },
+          {
+            "year": 2000,
+            "value": 97.84094
+          },
+          {
+            "year": 2001,
+            "value": 97.11401
+          },
+          {
+            "year": 2002,
+            "value": 97.80104
+          },
+          {
+            "year": 2003,
+            "value": 96.62065
+          },
+          {
+            "year": 2004,
+            "value": 95.87652
+          },
+          {
+            "year": 2005,
+            "value": 95.11927
+          },
+          {
+            "year": 2006,
+            "value": 95.13144
+          },
+          {
+            "year": 2007,
+            "value": 95.74488
+          },
+          {
+            "year": 2008,
+            "value": 98.773
+          },
+          {
+            "year": 2009,
+            "value": 103.72166
+          },
+          {
+            "year": 2010,
+            "value": 102.98776
+          },
+          {
+            "year": 2011,
+            "value": 100.65662
+          },
+          {
+            "year": 2012,
+            "value": 97.52695
+          },
+          {
+            "year": 2013,
+            "value": 96.47404
+          },
+          {
+            "year": 2014,
+            "value": 96.55116
+          },
+          {
+            "year": 2015,
+            "value": 97.76863
+          },
+          {
+            "year": 2016,
+            "value": 97.52693
+          },
+          {
+            "year": 2017,
+            "value": 96.78066
+          },
+          {
+            "year": 2018,
+            "value": 97.07323
+          },
+          {
+            "year": 2019,
+            "value": 99.33146
+          },
+          {
+            "year": 2020,
+            "value": 100.0
+          },
+          {
+            "year": 2021,
+            "value": 102.54099
+          },
+          {
+            "year": 2022,
+            "value": 100.67658
+          },
+          {
+            "year": 2023,
+            "value": 100.59834
+          },
+          {
+            "year": 2024,
+            "value": 101.95847
+          },
+          {
+            "year": 2025,
+            "value": 103.49933
+          },
+          {
+            "year": 2026,
+            "value": 103.56367
+          },
+          {
+            "year": 2027,
+            "value": 103.77903
+          }
+        ]
+      }
+    },
+    {
+      "id": "unemployment",
+      "area": "labour",
+      "label": "Tasso di disoccupazione",
+      "weightBasisPoints": 2000,
+      "direction": "lower",
+      "transformation": "point-change",
+      "unit": "Percentage of active population",
+      "limitations": "Non misura inattività, qualità del lavoro, ore lavorate o divari di genere e generazione.",
+      "sourceSeries": [
+        {
+          "file": "AMECO1.CSV",
+          "codeTemplate": "{country}.1.0.0.0.ZUTN",
+          "title": "Unemployment rate: total :- Member States: definition EUROSTAT",
+          "unit": "Percentage of active population"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.1.0.0.0.ZUTN"
+        ],
+        "france": [
+          "FRA.1.0.0.0.ZUTN"
+        ],
+        "germany": [
+          "DEU.1.0.0.0.ZUTN"
+        ],
+        "spain": [
+          "ESP.1.0.0.0.ZUTN"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": 5.3
+          },
+          {
+            "year": 1961,
+            "value": 4.8
+          },
+          {
+            "year": 1962,
+            "value": 4.3
+          },
+          {
+            "year": 1963,
+            "value": 3.6
+          },
+          {
+            "year": 1964,
+            "value": 4.1
+          },
+          {
+            "year": 1965,
+            "value": 5.1
+          },
+          {
+            "year": 1966,
+            "value": 5.5
+          },
+          {
+            "year": 1967,
+            "value": 5.1
+          },
+          {
+            "year": 1968,
+            "value": 5.4
+          },
+          {
+            "year": 1969,
+            "value": 5.4
+          },
+          {
+            "year": 1970,
+            "value": 5.2
+          },
+          {
+            "year": 1971,
+            "value": 5.2
+          },
+          {
+            "year": 1972,
+            "value": 6.1
+          },
+          {
+            "year": 1973,
+            "value": 6.0
+          },
+          {
+            "year": 1974,
+            "value": 5.1
+          },
+          {
+            "year": 1975,
+            "value": 5.6
+          },
+          {
+            "year": 1976,
+            "value": 6.3
+          },
+          {
+            "year": 1977,
+            "value": 6.8
+          },
+          {
+            "year": 1978,
+            "value": 6.8
+          },
+          {
+            "year": 1979,
+            "value": 7.3
+          },
+          {
+            "year": 1980,
+            "value": 7.2
+          },
+          {
+            "year": 1981,
+            "value": 7.5
+          },
+          {
+            "year": 1982,
+            "value": 8.1
+          },
+          {
+            "year": 1983,
+            "value": 7.6
+          },
+          {
+            "year": 1984,
+            "value": 8.0
+          },
+          {
+            "year": 1985,
+            "value": 8.3
+          },
+          {
+            "year": 1986,
+            "value": 9.0
+          },
+          {
+            "year": 1987,
+            "value": 9.7
+          },
+          {
+            "year": 1988,
+            "value": 9.8
+          },
+          {
+            "year": 1989,
+            "value": 9.8
+          },
+          {
+            "year": 1990,
+            "value": 9.0
+          },
+          {
+            "year": 1991,
+            "value": 8.6
+          },
+          {
+            "year": 1992,
+            "value": 8.9
+          },
+          {
+            "year": 1993,
+            "value": 10.2
+          },
+          {
+            "year": 1994,
+            "value": 11.0
+          },
+          {
+            "year": 1995,
+            "value": 11.5
+          },
+          {
+            "year": 1996,
+            "value": 11.9
+          },
+          {
+            "year": 1997,
+            "value": 11.9
+          },
+          {
+            "year": 1998,
+            "value": 12.1
+          },
+          {
+            "year": 1999,
+            "value": 11.5
+          },
+          {
+            "year": 2000,
+            "value": 10.7
+          },
+          {
+            "year": 2001,
+            "value": 9.7
+          },
+          {
+            "year": 2002,
+            "value": 9.1
+          },
+          {
+            "year": 2003,
+            "value": 8.8
+          },
+          {
+            "year": 2004,
+            "value": 8.1
+          },
+          {
+            "year": 2005,
+            "value": 7.8
+          },
+          {
+            "year": 2006,
+            "value": 6.9
+          },
+          {
+            "year": 2007,
+            "value": 6.2
+          },
+          {
+            "year": 2008,
+            "value": 6.8
+          },
+          {
+            "year": 2009,
+            "value": 7.9
+          },
+          {
+            "year": 2010,
+            "value": 8.5
+          },
+          {
+            "year": 2011,
+            "value": 8.5
+          },
+          {
+            "year": 2012,
+            "value": 10.9
+          },
+          {
+            "year": 2013,
+            "value": 12.4
+          },
+          {
+            "year": 2014,
+            "value": 12.9
+          },
+          {
+            "year": 2015,
+            "value": 12.0
+          },
+          {
+            "year": 2016,
+            "value": 11.7
+          },
+          {
+            "year": 2017,
+            "value": 11.3
+          },
+          {
+            "year": 2018,
+            "value": 10.6
+          },
+          {
+            "year": 2019,
+            "value": 9.9
+          },
+          {
+            "year": 2020,
+            "value": 9.3
+          },
+          {
+            "year": 2021,
+            "value": 9.5
+          },
+          {
+            "year": 2022,
+            "value": 8.1
+          },
+          {
+            "year": 2023,
+            "value": 7.7
+          },
+          {
+            "year": 2024,
+            "value": 6.5
+          },
+          {
+            "year": 2025,
+            "value": 6.1
+          },
+          {
+            "year": 2026,
+            "value": 5.7
+          },
+          {
+            "year": 2027,
+            "value": 5.7
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": 1.4
+          },
+          {
+            "year": 1961,
+            "value": 1.2
+          },
+          {
+            "year": 1962,
+            "value": 1.4
+          },
+          {
+            "year": 1963,
+            "value": 1.5
+          },
+          {
+            "year": 1964,
+            "value": 1.2
+          },
+          {
+            "year": 1965,
+            "value": 1.5
+          },
+          {
+            "year": 1966,
+            "value": 1.6
+          },
+          {
+            "year": 1967,
+            "value": 2.1
+          },
+          {
+            "year": 1968,
+            "value": 2.6
+          },
+          {
+            "year": 1969,
+            "value": 2.4
+          },
+          {
+            "year": 1970,
+            "value": 2.6
+          },
+          {
+            "year": 1971,
+            "value": 3.0
+          },
+          {
+            "year": 1972,
+            "value": 3.2
+          },
+          {
+            "year": 1973,
+            "value": 3.2
+          },
+          {
+            "year": 1974,
+            "value": 3.4
+          },
+          {
+            "year": 1975,
+            "value": 4.7
+          },
+          {
+            "year": 1976,
+            "value": 5.2
+          },
+          {
+            "year": 1977,
+            "value": 5.8
+          },
+          {
+            "year": 1978,
+            "value": 6.1
+          },
+          {
+            "year": 1979,
+            "value": 6.9
+          },
+          {
+            "year": 1980,
+            "value": 7.4
+          },
+          {
+            "year": 1981,
+            "value": 8.6
+          },
+          {
+            "year": 1982,
+            "value": 9.4
+          },
+          {
+            "year": 1983,
+            "value": 8.8
+          },
+          {
+            "year": 1984,
+            "value": 8.4
+          },
+          {
+            "year": 1985,
+            "value": 8.7
+          },
+          {
+            "year": 1986,
+            "value": 8.9
+          },
+          {
+            "year": 1987,
+            "value": 8.9
+          },
+          {
+            "year": 1988,
+            "value": 8.5
+          },
+          {
+            "year": 1989,
+            "value": 8.1
+          },
+          {
+            "year": 1990,
+            "value": 7.9
+          },
+          {
+            "year": 1991,
+            "value": 8.1
+          },
+          {
+            "year": 1992,
+            "value": 9.0
+          },
+          {
+            "year": 1993,
+            "value": 10.1
+          },
+          {
+            "year": 1994,
+            "value": 10.4
+          },
+          {
+            "year": 1995,
+            "value": 10.2
+          },
+          {
+            "year": 1996,
+            "value": 10.5
+          },
+          {
+            "year": 1997,
+            "value": 10.7
+          },
+          {
+            "year": 1998,
+            "value": 10.3
+          },
+          {
+            "year": 1999,
+            "value": 10.0
+          },
+          {
+            "year": 2000,
+            "value": 8.6
+          },
+          {
+            "year": 2001,
+            "value": 7.8
+          },
+          {
+            "year": 2002,
+            "value": 7.9
+          },
+          {
+            "year": 2003,
+            "value": 8.5
+          },
+          {
+            "year": 2004,
+            "value": 8.9
+          },
+          {
+            "year": 2005,
+            "value": 8.9
+          },
+          {
+            "year": 2006,
+            "value": 8.8
+          },
+          {
+            "year": 2007,
+            "value": 8.0
+          },
+          {
+            "year": 2008,
+            "value": 7.4
+          },
+          {
+            "year": 2009,
+            "value": 9.1
+          },
+          {
+            "year": 2010,
+            "value": 9.3
+          },
+          {
+            "year": 2011,
+            "value": 9.2
+          },
+          {
+            "year": 2012,
+            "value": 9.8
+          },
+          {
+            "year": 2013,
+            "value": 10.3
+          },
+          {
+            "year": 2014,
+            "value": 10.3
+          },
+          {
+            "year": 2015,
+            "value": 10.3
+          },
+          {
+            "year": 2016,
+            "value": 10.1
+          },
+          {
+            "year": 2017,
+            "value": 9.4
+          },
+          {
+            "year": 2018,
+            "value": 9.0
+          },
+          {
+            "year": 2019,
+            "value": 8.4
+          },
+          {
+            "year": 2020,
+            "value": 8.0
+          },
+          {
+            "year": 2021,
+            "value": 7.9
+          },
+          {
+            "year": 2022,
+            "value": 7.3
+          },
+          {
+            "year": 2023,
+            "value": 7.3
+          },
+          {
+            "year": 2024,
+            "value": 7.4
+          },
+          {
+            "year": 2025,
+            "value": 7.7
+          },
+          {
+            "year": 2026,
+            "value": 8.3
+          },
+          {
+            "year": 2027,
+            "value": 8.7
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": 5.2
+          },
+          {
+            "year": 1992,
+            "value": 6.2
+          },
+          {
+            "year": 1993,
+            "value": 7.4
+          },
+          {
+            "year": 1994,
+            "value": 8.0
+          },
+          {
+            "year": 1995,
+            "value": 7.9
+          },
+          {
+            "year": 1996,
+            "value": 8.5
+          },
+          {
+            "year": 1997,
+            "value": 9.3
+          },
+          {
+            "year": 1998,
+            "value": 9.0
+          },
+          {
+            "year": 1999,
+            "value": 8.1
+          },
+          {
+            "year": 2000,
+            "value": 7.4
+          },
+          {
+            "year": 2001,
+            "value": 7.5
+          },
+          {
+            "year": 2002,
+            "value": 8.2
+          },
+          {
+            "year": 2003,
+            "value": 9.3
+          },
+          {
+            "year": 2004,
+            "value": 10.2
+          },
+          {
+            "year": 2005,
+            "value": 10.5
+          },
+          {
+            "year": 2006,
+            "value": 9.6
+          },
+          {
+            "year": 2007,
+            "value": 8.1
+          },
+          {
+            "year": 2008,
+            "value": 7.0
+          },
+          {
+            "year": 2009,
+            "value": 7.3
+          },
+          {
+            "year": 2010,
+            "value": 6.6
+          },
+          {
+            "year": 2011,
+            "value": 5.5
+          },
+          {
+            "year": 2012,
+            "value": 5.1
+          },
+          {
+            "year": 2013,
+            "value": 4.9
+          },
+          {
+            "year": 2014,
+            "value": 4.7
+          },
+          {
+            "year": 2015,
+            "value": 4.4
+          },
+          {
+            "year": 2016,
+            "value": 3.9
+          },
+          {
+            "year": 2017,
+            "value": 3.5
+          },
+          {
+            "year": 2018,
+            "value": 3.2
+          },
+          {
+            "year": 2019,
+            "value": 2.9
+          },
+          {
+            "year": 2020,
+            "value": 3.6
+          },
+          {
+            "year": 2021,
+            "value": 3.6
+          },
+          {
+            "year": 2022,
+            "value": 3.1
+          },
+          {
+            "year": 2023,
+            "value": 3.1
+          },
+          {
+            "year": 2024,
+            "value": 3.4
+          },
+          {
+            "year": 2025,
+            "value": 3.8
+          },
+          {
+            "year": 2026,
+            "value": 4.0
+          },
+          {
+            "year": 2027,
+            "value": 3.9
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": 2.4
+          },
+          {
+            "year": 1961,
+            "value": 2.4
+          },
+          {
+            "year": 1962,
+            "value": 1.6
+          },
+          {
+            "year": 1963,
+            "value": 2.0
+          },
+          {
+            "year": 1964,
+            "value": 2.8
+          },
+          {
+            "year": 1965,
+            "value": 2.6
+          },
+          {
+            "year": 1966,
+            "value": 2.2
+          },
+          {
+            "year": 1967,
+            "value": 3.0
+          },
+          {
+            "year": 1968,
+            "value": 3.0
+          },
+          {
+            "year": 1969,
+            "value": 2.5
+          },
+          {
+            "year": 1970,
+            "value": 2.6
+          },
+          {
+            "year": 1971,
+            "value": 3.4
+          },
+          {
+            "year": 1972,
+            "value": 2.9
+          },
+          {
+            "year": 1973,
+            "value": 2.6
+          },
+          {
+            "year": 1974,
+            "value": 3.1
+          },
+          {
+            "year": 1975,
+            "value": 4.5
+          },
+          {
+            "year": 1976,
+            "value": 4.9
+          },
+          {
+            "year": 1977,
+            "value": 5.3
+          },
+          {
+            "year": 1978,
+            "value": 7.1
+          },
+          {
+            "year": 1979,
+            "value": 8.8
+          },
+          {
+            "year": 1980,
+            "value": 11.7
+          },
+          {
+            "year": 1981,
+            "value": 14.6
+          },
+          {
+            "year": 1982,
+            "value": 16.6
+          },
+          {
+            "year": 1983,
+            "value": 14.7
+          },
+          {
+            "year": 1984,
+            "value": 16.7
+          },
+          {
+            "year": 1985,
+            "value": 17.8
+          },
+          {
+            "year": 1986,
+            "value": 17.4
+          },
+          {
+            "year": 1987,
+            "value": 19.7
+          },
+          {
+            "year": 1988,
+            "value": 18.7
+          },
+          {
+            "year": 1989,
+            "value": 16.5
+          },
+          {
+            "year": 1990,
+            "value": 15.5
+          },
+          {
+            "year": 1991,
+            "value": 15.5
+          },
+          {
+            "year": 1992,
+            "value": 17.0
+          },
+          {
+            "year": 1993,
+            "value": 22.6
+          },
+          {
+            "year": 1994,
+            "value": 24.1
+          },
+          {
+            "year": 1995,
+            "value": 22.9
+          },
+          {
+            "year": 1996,
+            "value": 22.1
+          },
+          {
+            "year": 1997,
+            "value": 20.6
+          },
+          {
+            "year": 1998,
+            "value": 18.6
+          },
+          {
+            "year": 1999,
+            "value": 15.7
+          },
+          {
+            "year": 2000,
+            "value": 13.9
+          },
+          {
+            "year": 2001,
+            "value": 10.6
+          },
+          {
+            "year": 2002,
+            "value": 11.5
+          },
+          {
+            "year": 2003,
+            "value": 11.5
+          },
+          {
+            "year": 2004,
+            "value": 11.0
+          },
+          {
+            "year": 2005,
+            "value": 9.2
+          },
+          {
+            "year": 2006,
+            "value": 8.5
+          },
+          {
+            "year": 2007,
+            "value": 8.2
+          },
+          {
+            "year": 2008,
+            "value": 11.3
+          },
+          {
+            "year": 2009,
+            "value": 17.9
+          },
+          {
+            "year": 2010,
+            "value": 19.9
+          },
+          {
+            "year": 2011,
+            "value": 21.4
+          },
+          {
+            "year": 2012,
+            "value": 24.8
+          },
+          {
+            "year": 2013,
+            "value": 26.1
+          },
+          {
+            "year": 2014,
+            "value": 24.5
+          },
+          {
+            "year": 2015,
+            "value": 22.1
+          },
+          {
+            "year": 2016,
+            "value": 19.6
+          },
+          {
+            "year": 2017,
+            "value": 17.2
+          },
+          {
+            "year": 2018,
+            "value": 15.3
+          },
+          {
+            "year": 2019,
+            "value": 14.1
+          },
+          {
+            "year": 2020,
+            "value": 15.5
+          },
+          {
+            "year": 2021,
+            "value": 14.9
+          },
+          {
+            "year": 2022,
+            "value": 13.0
+          },
+          {
+            "year": 2023,
+            "value": 12.2
+          },
+          {
+            "year": 2024,
+            "value": 11.4
+          },
+          {
+            "year": 2025,
+            "value": 10.5
+          },
+          {
+            "year": 2026,
+            "value": 9.9
+          },
+          {
+            "year": 2027,
+            "value": 9.6
+          }
+        ]
+      }
+    },
+    {
+      "id": "real_gdp_per_capita",
+      "area": "growth",
+      "label": "PIL reale per abitante",
+      "weightBasisPoints": 2000,
+      "direction": "higher",
+      "transformation": "log-change",
+      "unit": "1000 national currency, 2020 reference levels",
+      "limitations": "Misura produzione media reale, non distribuzione del reddito, benessere o sostenibilità.",
+      "sourceSeries": [
+        {
+          "file": "AMECO6.CSV",
+          "codeTemplate": "{country}.1.1.0.0.RVGDP",
+          "title": "Gross domestic product at 2020 reference levels per head of population",
+          "unit": "1000 national currency, 2020 reference levels"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.1.1.0.0.RVGDP"
+        ],
+        "france": [
+          "FRA.1.1.0.0.RVGDP"
+        ],
+        "germany": [
+          "DEU.1.1.0.0.RVGDP"
+        ],
+        "spain": [
+          "ESP.1.1.0.0.RVGDP"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": 9.15186
+          },
+          {
+            "year": 1961,
+            "value": 9.86061
+          },
+          {
+            "year": 1962,
+            "value": 10.47793
+          },
+          {
+            "year": 1963,
+            "value": 11.04843
+          },
+          {
+            "year": 1964,
+            "value": 11.39179
+          },
+          {
+            "year": 1965,
+            "value": 11.81637
+          },
+          {
+            "year": 1966,
+            "value": 12.50845
+          },
+          {
+            "year": 1967,
+            "value": 13.37624
+          },
+          {
+            "year": 1968,
+            "value": 14.26493
+          },
+          {
+            "year": 1969,
+            "value": 15.11978
+          },
+          {
+            "year": 1970,
+            "value": 15.94778
+          },
+          {
+            "year": 1971,
+            "value": 16.1299
+          },
+          {
+            "year": 1972,
+            "value": 16.58799
+          },
+          {
+            "year": 1973,
+            "value": 17.58299
+          },
+          {
+            "year": 1974,
+            "value": 18.35039
+          },
+          {
+            "year": 1975,
+            "value": 17.80112
+          },
+          {
+            "year": 1976,
+            "value": 18.89035
+          },
+          {
+            "year": 1977,
+            "value": 19.22203
+          },
+          {
+            "year": 1978,
+            "value": 19.70887
+          },
+          {
+            "year": 1979,
+            "value": 20.74429
+          },
+          {
+            "year": 1980,
+            "value": 21.34318
+          },
+          {
+            "year": 1981,
+            "value": 21.43626
+          },
+          {
+            "year": 1982,
+            "value": 21.45374
+          },
+          {
+            "year": 1983,
+            "value": 21.64434
+          },
+          {
+            "year": 1984,
+            "value": 22.29144
+          },
+          {
+            "year": 1985,
+            "value": 22.86909
+          },
+          {
+            "year": 1986,
+            "value": 23.48753
+          },
+          {
+            "year": 1987,
+            "value": 24.20542
+          },
+          {
+            "year": 1988,
+            "value": 25.1685
+          },
+          {
+            "year": 1989,
+            "value": 25.96759
+          },
+          {
+            "year": 1990,
+            "value": 26.46023
+          },
+          {
+            "year": 1991,
+            "value": 26.82241
+          },
+          {
+            "year": 1992,
+            "value": 26.99795
+          },
+          {
+            "year": 1993,
+            "value": 26.75616
+          },
+          {
+            "year": 1994,
+            "value": 27.30559
+          },
+          {
+            "year": 1995,
+            "value": 28.03769
+          },
+          {
+            "year": 1996,
+            "value": 28.40697
+          },
+          {
+            "year": 1997,
+            "value": 28.93869
+          },
+          {
+            "year": 1998,
+            "value": 29.45241
+          },
+          {
+            "year": 1999,
+            "value": 29.94157
+          },
+          {
+            "year": 2000,
+            "value": 31.08984
+          },
+          {
+            "year": 2001,
+            "value": 31.69265
+          },
+          {
+            "year": 2002,
+            "value": 31.71697
+          },
+          {
+            "year": 2003,
+            "value": 31.567
+          },
+          {
+            "year": 2004,
+            "value": 31.79467
+          },
+          {
+            "year": 2005,
+            "value": 31.85064
+          },
+          {
+            "year": 2006,
+            "value": 32.29431
+          },
+          {
+            "year": 2007,
+            "value": 32.56785
+          },
+          {
+            "year": 2008,
+            "value": 31.98693
+          },
+          {
+            "year": 2009,
+            "value": 30.11486
+          },
+          {
+            "year": 2010,
+            "value": 30.44047
+          },
+          {
+            "year": 2011,
+            "value": 30.54626
+          },
+          {
+            "year": 2012,
+            "value": 29.51079
+          },
+          {
+            "year": 2013,
+            "value": 28.91644
+          },
+          {
+            "year": 2014,
+            "value": 28.91168
+          },
+          {
+            "year": 2015,
+            "value": 29.21185
+          },
+          {
+            "year": 2016,
+            "value": 29.62926
+          },
+          {
+            "year": 2017,
+            "value": 30.16106
+          },
+          {
+            "year": 2018,
+            "value": 30.47392
+          },
+          {
+            "year": 2019,
+            "value": 30.68059
+          },
+          {
+            "year": 2020,
+            "value": 28.09628
+          },
+          {
+            "year": 2021,
+            "value": 30.7638
+          },
+          {
+            "year": 2022,
+            "value": 32.31227
+          },
+          {
+            "year": 2023,
+            "value": 32.62676
+          },
+          {
+            "year": 2024,
+            "value": 32.89724
+          },
+          {
+            "year": 2025,
+            "value": 33.08042
+          },
+          {
+            "year": 2026,
+            "value": 33.26832
+          },
+          {
+            "year": 2027,
+            "value": 33.48635
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": 10.5186
+          },
+          {
+            "year": 1961,
+            "value": 10.92067
+          },
+          {
+            "year": 1962,
+            "value": 11.46087
+          },
+          {
+            "year": 1963,
+            "value": 11.95103
+          },
+          {
+            "year": 1964,
+            "value": 12.60409
+          },
+          {
+            "year": 1965,
+            "value": 13.0891
+          },
+          {
+            "year": 1966,
+            "value": 13.64722
+          },
+          {
+            "year": 1967,
+            "value": 14.18906
+          },
+          {
+            "year": 1968,
+            "value": 14.72369
+          },
+          {
+            "year": 1969,
+            "value": 15.6413
+          },
+          {
+            "year": 1970,
+            "value": 16.46171
+          },
+          {
+            "year": 1971,
+            "value": 17.17044
+          },
+          {
+            "year": 1972,
+            "value": 17.78876
+          },
+          {
+            "year": 1973,
+            "value": 18.738
+          },
+          {
+            "year": 1974,
+            "value": 19.43691
+          },
+          {
+            "year": 1975,
+            "value": 19.16527
+          },
+          {
+            "year": 1976,
+            "value": 19.91641
+          },
+          {
+            "year": 1977,
+            "value": 20.5321
+          },
+          {
+            "year": 1978,
+            "value": 21.24959
+          },
+          {
+            "year": 1979,
+            "value": 21.93922
+          },
+          {
+            "year": 1980,
+            "value": 22.19292
+          },
+          {
+            "year": 1981,
+            "value": 22.33068
+          },
+          {
+            "year": 1982,
+            "value": 22.74281
+          },
+          {
+            "year": 1983,
+            "value": 22.90743
+          },
+          {
+            "year": 1984,
+            "value": 23.16457
+          },
+          {
+            "year": 1985,
+            "value": 23.41251
+          },
+          {
+            "year": 1986,
+            "value": 23.85232
+          },
+          {
+            "year": 1987,
+            "value": 24.33121
+          },
+          {
+            "year": 1988,
+            "value": 25.3585
+          },
+          {
+            "year": 1989,
+            "value": 26.3214
+          },
+          {
+            "year": 1990,
+            "value": 26.92244
+          },
+          {
+            "year": 1991,
+            "value": 27.12344
+          },
+          {
+            "year": 1992,
+            "value": 27.40292
+          },
+          {
+            "year": 1993,
+            "value": 27.19067
+          },
+          {
+            "year": 1994,
+            "value": 27.73864
+          },
+          {
+            "year": 1995,
+            "value": 28.2786
+          },
+          {
+            "year": 1996,
+            "value": 28.57507
+          },
+          {
+            "year": 1997,
+            "value": 29.19678
+          },
+          {
+            "year": 1998,
+            "value": 30.09665
+          },
+          {
+            "year": 1999,
+            "value": 30.96293
+          },
+          {
+            "year": 2000,
+            "value": 32.02747
+          },
+          {
+            "year": 2001,
+            "value": 32.40219
+          },
+          {
+            "year": 2002,
+            "value": 32.51434
+          },
+          {
+            "year": 2003,
+            "value": 32.60206
+          },
+          {
+            "year": 2004,
+            "value": 33.29678
+          },
+          {
+            "year": 2005,
+            "value": 33.67614
+          },
+          {
+            "year": 2006,
+            "value": 34.35551
+          },
+          {
+            "year": 2007,
+            "value": 35.01443
+          },
+          {
+            "year": 2008,
+            "value": 34.95789
+          },
+          {
+            "year": 2009,
+            "value": 33.80179
+          },
+          {
+            "year": 2010,
+            "value": 34.31446
+          },
+          {
+            "year": 2011,
+            "value": 34.98502
+          },
+          {
+            "year": 2012,
+            "value": 34.88471
+          },
+          {
+            "year": 2013,
+            "value": 34.98508
+          },
+          {
+            "year": 2014,
+            "value": 35.15381
+          },
+          {
+            "year": 2015,
+            "value": 35.37183
+          },
+          {
+            "year": 2016,
+            "value": 35.54259
+          },
+          {
+            "year": 2017,
+            "value": 36.1382
+          },
+          {
+            "year": 2018,
+            "value": 36.56612
+          },
+          {
+            "year": 2019,
+            "value": 37.163
+          },
+          {
+            "year": 2020,
+            "value": 34.28033
+          },
+          {
+            "year": 2021,
+            "value": 36.47136
+          },
+          {
+            "year": 2022,
+            "value": 37.32048
+          },
+          {
+            "year": 2023,
+            "value": 37.7607
+          },
+          {
+            "year": 2024,
+            "value": 38.1099
+          },
+          {
+            "year": 2025,
+            "value": 38.35368
+          },
+          {
+            "year": 2026,
+            "value": 38.5779
+          },
+          {
+            "year": 2027,
+            "value": 38.9355
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": 30.42837
+          },
+          {
+            "year": 1992,
+            "value": 30.83786
+          },
+          {
+            "year": 1993,
+            "value": 30.36954
+          },
+          {
+            "year": 1994,
+            "value": 31.08102
+          },
+          {
+            "year": 1995,
+            "value": 31.48631
+          },
+          {
+            "year": 1996,
+            "value": 31.7514
+          },
+          {
+            "year": 1997,
+            "value": 32.32272
+          },
+          {
+            "year": 1998,
+            "value": 33.02601
+          },
+          {
+            "year": 1999,
+            "value": 33.73926
+          },
+          {
+            "year": 2000,
+            "value": 34.69487
+          },
+          {
+            "year": 2001,
+            "value": 35.23657
+          },
+          {
+            "year": 2002,
+            "value": 35.12985
+          },
+          {
+            "year": 2003,
+            "value": 34.95616
+          },
+          {
+            "year": 2004,
+            "value": 35.40275
+          },
+          {
+            "year": 2005,
+            "value": 35.76849
+          },
+          {
+            "year": 2006,
+            "value": 37.22661
+          },
+          {
+            "year": 2007,
+            "value": 38.38773
+          },
+          {
+            "year": 2008,
+            "value": 38.8379
+          },
+          {
+            "year": 2009,
+            "value": 36.8126
+          },
+          {
+            "year": 2010,
+            "value": 38.42968
+          },
+          {
+            "year": 2011,
+            "value": 39.87833
+          },
+          {
+            "year": 2012,
+            "value": 40.00835
+          },
+          {
+            "year": 2013,
+            "value": 40.10133
+          },
+          {
+            "year": 2014,
+            "value": 40.85333
+          },
+          {
+            "year": 2015,
+            "value": 41.23251
+          },
+          {
+            "year": 2016,
+            "value": 41.88055
+          },
+          {
+            "year": 2017,
+            "value": 42.9626
+          },
+          {
+            "year": 2018,
+            "value": 43.38758
+          },
+          {
+            "year": 2019,
+            "value": 43.78728
+          },
+          {
+            "year": 2020,
+            "value": 42.01739
+          },
+          {
+            "year": 2021,
+            "value": 43.73002
+          },
+          {
+            "year": 2022,
+            "value": 44.23314
+          },
+          {
+            "year": 2023,
+            "value": 43.4494
+          },
+          {
+            "year": 2024,
+            "value": 43.11489
+          },
+          {
+            "year": 2025,
+            "value": 43.21456
+          },
+          {
+            "year": 2026,
+            "value": 43.51587
+          },
+          {
+            "year": 2027,
+            "value": 43.96718
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": 6.09967
+          },
+          {
+            "year": 1961,
+            "value": 6.70834
+          },
+          {
+            "year": 1962,
+            "value": 7.27201
+          },
+          {
+            "year": 1963,
+            "value": 7.83987
+          },
+          {
+            "year": 1964,
+            "value": 8.24264
+          },
+          {
+            "year": 1965,
+            "value": 8.6635
+          },
+          {
+            "year": 1966,
+            "value": 9.18527
+          },
+          {
+            "year": 1967,
+            "value": 9.46699
+          },
+          {
+            "year": 1968,
+            "value": 9.9724
+          },
+          {
+            "year": 1969,
+            "value": 10.75421
+          },
+          {
+            "year": 1970,
+            "value": 11.10724
+          },
+          {
+            "year": 1971,
+            "value": 11.46619
+          },
+          {
+            "year": 1972,
+            "value": 12.26442
+          },
+          {
+            "year": 1973,
+            "value": 13.07439
+          },
+          {
+            "year": 1974,
+            "value": 13.65893
+          },
+          {
+            "year": 1975,
+            "value": 13.58528
+          },
+          {
+            "year": 1976,
+            "value": 13.88657
+          },
+          {
+            "year": 1977,
+            "value": 14.1346
+          },
+          {
+            "year": 1978,
+            "value": 14.2039
+          },
+          {
+            "year": 1979,
+            "value": 14.08514
+          },
+          {
+            "year": 1980,
+            "value": 14.15422
+          },
+          {
+            "year": 1981,
+            "value": 14.03519
+          },
+          {
+            "year": 1982,
+            "value": 14.12505
+          },
+          {
+            "year": 1983,
+            "value": 14.30539
+          },
+          {
+            "year": 1984,
+            "value": 14.50016
+          },
+          {
+            "year": 1985,
+            "value": 14.7831
+          },
+          {
+            "year": 1986,
+            "value": 15.2186
+          },
+          {
+            "year": 1987,
+            "value": 16.02117
+          },
+          {
+            "year": 1988,
+            "value": 16.80163
+          },
+          {
+            "year": 1989,
+            "value": 17.58517
+          },
+          {
+            "year": 1990,
+            "value": 18.23187
+          },
+          {
+            "year": 1991,
+            "value": 18.64806
+          },
+          {
+            "year": 1992,
+            "value": 18.72958
+          },
+          {
+            "year": 1993,
+            "value": 18.44055
+          },
+          {
+            "year": 1994,
+            "value": 18.79031
+          },
+          {
+            "year": 1995,
+            "value": 19.22588
+          },
+          {
+            "year": 1996,
+            "value": 19.6454
+          },
+          {
+            "year": 1997,
+            "value": 20.26593
+          },
+          {
+            "year": 1998,
+            "value": 21.05151
+          },
+          {
+            "year": 1999,
+            "value": 21.89493
+          },
+          {
+            "year": 2000,
+            "value": 22.92869
+          },
+          {
+            "year": 2001,
+            "value": 23.70357
+          },
+          {
+            "year": 2002,
+            "value": 23.97013
+          },
+          {
+            "year": 2003,
+            "value": 24.22283
+          },
+          {
+            "year": 2004,
+            "value": 24.59091
+          },
+          {
+            "year": 2005,
+            "value": 24.99562
+          },
+          {
+            "year": 2006,
+            "value": 25.59715
+          },
+          {
+            "year": 2007,
+            "value": 25.98873
+          },
+          {
+            "year": 2008,
+            "value": 25.76258
+          },
+          {
+            "year": 2009,
+            "value": 24.58629
+          },
+          {
+            "year": 2010,
+            "value": 24.50641
+          },
+          {
+            "year": 2011,
+            "value": 24.25904
+          },
+          {
+            "year": 2012,
+            "value": 23.55742
+          },
+          {
+            "year": 2013,
+            "value": 23.30502
+          },
+          {
+            "year": 2014,
+            "value": 23.73482
+          },
+          {
+            "year": 2015,
+            "value": 24.72457
+          },
+          {
+            "year": 2016,
+            "value": 25.42192
+          },
+          {
+            "year": 2017,
+            "value": 26.11127
+          },
+          {
+            "year": 2018,
+            "value": 26.61946
+          },
+          {
+            "year": 2019,
+            "value": 26.92686
+          },
+          {
+            "year": 2020,
+            "value": 23.85083
+          },
+          {
+            "year": 2021,
+            "value": 25.44375
+          },
+          {
+            "year": 2022,
+            "value": 26.81584
+          },
+          {
+            "year": 2023,
+            "value": 27.15384
+          },
+          {
+            "year": 2024,
+            "value": 27.80223
+          },
+          {
+            "year": 2025,
+            "value": 28.32339
+          },
+          {
+            "year": 2026,
+            "value": 28.74338
+          },
+          {
+            "year": 2027,
+            "value": 29.05393
+          }
+        ]
+      }
+    },
+    {
+      "id": "debt_ratio",
+      "area": "public-finance",
+      "label": "Debito pubblico sul PIL",
+      "weightBasisPoints": 1000,
+      "direction": "lower",
+      "transformation": "point-change",
+      "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+      "limitations": "Il rapporto cambia sia per il debito sia per il PIL nominale e include effetti ereditati e stock-flow adjustment.",
+      "sourceSeries": [
+        {
+          "file": "AMECO18.CSV",
+          "codeTemplate": "{country}.1.0.319.0.UDGG",
+          "title": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
+          "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.1.0.319.0.UDGG"
+        ],
+        "france": [
+          "FRA.1.0.319.0.UDGG"
+        ],
+        "germany": [
+          "DEU.1.0.319.0.UDGG"
+        ],
+        "spain": [
+          "ESP.1.0.319.0.UDGG"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": 31.72221
+          },
+          {
+            "year": 1961,
+            "value": 29.86477
+          },
+          {
+            "year": 1962,
+            "value": 28.7243
+          },
+          {
+            "year": 1963,
+            "value": 26.78585
+          },
+          {
+            "year": 1964,
+            "value": 26.61714
+          },
+          {
+            "year": 1965,
+            "value": 27.64718
+          },
+          {
+            "year": 1966,
+            "value": 32.29927
+          },
+          {
+            "year": 1967,
+            "value": 31.87383
+          },
+          {
+            "year": 1968,
+            "value": 34.23023
+          },
+          {
+            "year": 1969,
+            "value": 34.84127
+          },
+          {
+            "year": 1970,
+            "value": 35.77657
+          },
+          {
+            "year": 1971,
+            "value": 40.41601
+          },
+          {
+            "year": 1972,
+            "value": 45.90625
+          },
+          {
+            "year": 1973,
+            "value": 48.81052
+          },
+          {
+            "year": 1974,
+            "value": 48.51191
+          },
+          {
+            "year": 1975,
+            "value": 54.74231
+          },
+          {
+            "year": 1976,
+            "value": 54.43488
+          },
+          {
+            "year": 1977,
+            "value": 53.47694
+          },
+          {
+            "year": 1978,
+            "value": 57.51311
+          },
+          {
+            "year": 1979,
+            "value": 56.32982
+          },
+          {
+            "year": 1980,
+            "value": 54.26652
+          },
+          {
+            "year": 1981,
+            "value": 56.52924
+          },
+          {
+            "year": 1982,
+            "value": 61.03335
+          },
+          {
+            "year": 1983,
+            "value": 67.02595
+          },
+          {
+            "year": 1984,
+            "value": 72.29657
+          },
+          {
+            "year": 1985,
+            "value": 78.03342
+          },
+          {
+            "year": 1986,
+            "value": 81.95098
+          },
+          {
+            "year": 1987,
+            "value": 85.68247
+          },
+          {
+            "year": 1988,
+            "value": 87.23444
+          },
+          {
+            "year": 1989,
+            "value": 89.54238
+          },
+          {
+            "year": 1990,
+            "value": 91.3757
+          },
+          {
+            "year": 1991,
+            "value": 94.5379
+          },
+          {
+            "year": 1992,
+            "value": 101.07186
+          },
+          {
+            "year": 1993,
+            "value": 110.71866
+          },
+          {
+            "year": 1994,
+            "value": 116.61749
+          },
+          {
+            "year": 1995,
+            "value": 119.08771
+          },
+          {
+            "year": 1996,
+            "value": 118.89638
+          },
+          {
+            "year": 1997,
+            "value": 116.4905
+          },
+          {
+            "year": 1998,
+            "value": 113.88684
+          },
+          {
+            "year": 1999,
+            "value": 113.05855
+          },
+          {
+            "year": 2000,
+            "value": 108.74277
+          },
+          {
+            "year": 2001,
+            "value": 108.51303
+          },
+          {
+            "year": 2002,
+            "value": 105.94749
+          },
+          {
+            "year": 2003,
+            "value": 105.11402
+          },
+          {
+            "year": 2004,
+            "value": 104.74255
+          },
+          {
+            "year": 2005,
+            "value": 106.17722
+          },
+          {
+            "year": 2006,
+            "value": 106.25788
+          },
+          {
+            "year": 2007,
+            "value": 103.46436
+          },
+          {
+            "year": 2008,
+            "value": 105.80329
+          },
+          {
+            "year": 2009,
+            "value": 116.14151
+          },
+          {
+            "year": 2010,
+            "value": 118.75829
+          },
+          {
+            "year": 2011,
+            "value": 119.12951
+          },
+          {
+            "year": 2012,
+            "value": 125.90126
+          },
+          {
+            "year": 2013,
+            "value": 131.85448
+          },
+          {
+            "year": 2014,
+            "value": 134.79758
+          },
+          {
+            "year": 2015,
+            "value": 134.79046
+          },
+          {
+            "year": 2016,
+            "value": 134.24185
+          },
+          {
+            "year": 2017,
+            "value": 133.74296
+          },
+          {
+            "year": 2018,
+            "value": 134.20019
+          },
+          {
+            "year": 2019,
+            "value": 133.90001
+          },
+          {
+            "year": 2020,
+            "value": 154.38077
+          },
+          {
+            "year": 2021,
+            "value": 145.81992
+          },
+          {
+            "year": 2022,
+            "value": 138.3574
+          },
+          {
+            "year": 2023,
+            "value": 133.93927
+          },
+          {
+            "year": 2024,
+            "value": 134.73942
+          },
+          {
+            "year": 2025,
+            "value": 137.10455
+          },
+          {
+            "year": 2026,
+            "value": 138.4982
+          },
+          {
+            "year": 2027,
+            "value": 139.15188
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": null
+          },
+          {
+            "year": 1992,
+            "value": null
+          },
+          {
+            "year": 1993,
+            "value": null
+          },
+          {
+            "year": 1994,
+            "value": null
+          },
+          {
+            "year": 1995,
+            "value": 57.80499
+          },
+          {
+            "year": 1996,
+            "value": 60.59348
+          },
+          {
+            "year": 1997,
+            "value": 61.98324
+          },
+          {
+            "year": 1998,
+            "value": 62.09972
+          },
+          {
+            "year": 1999,
+            "value": 61.42312
+          },
+          {
+            "year": 2000,
+            "value": 59.72138
+          },
+          {
+            "year": 2001,
+            "value": 59.32226
+          },
+          {
+            "year": 2002,
+            "value": 61.25603
+          },
+          {
+            "year": 2003,
+            "value": 65.36387
+          },
+          {
+            "year": 2004,
+            "value": 66.87941
+          },
+          {
+            "year": 2005,
+            "value": 68.18605
+          },
+          {
+            "year": 2006,
+            "value": 65.40082
+          },
+          {
+            "year": 2007,
+            "value": 65.47676
+          },
+          {
+            "year": 2008,
+            "value": 69.81919
+          },
+          {
+            "year": 2009,
+            "value": 84.05561
+          },
+          {
+            "year": 2010,
+            "value": 86.27793
+          },
+          {
+            "year": 2011,
+            "value": 88.74931
+          },
+          {
+            "year": 2012,
+            "value": 91.74196
+          },
+          {
+            "year": 2013,
+            "value": 94.5578
+          },
+          {
+            "year": 2014,
+            "value": 96.1644
+          },
+          {
+            "year": 2015,
+            "value": 96.97781
+          },
+          {
+            "year": 2016,
+            "value": 98.14973
+          },
+          {
+            "year": 2017,
+            "value": 98.76097
+          },
+          {
+            "year": 2018,
+            "value": 98.52992
+          },
+          {
+            "year": 2019,
+            "value": 98.15773
+          },
+          {
+            "year": 2020,
+            "value": 114.90658
+          },
+          {
+            "year": 2021,
+            "value": 112.78571
+          },
+          {
+            "year": 2022,
+            "value": 111.36558
+          },
+          {
+            "year": 2023,
+            "value": 109.50736
+          },
+          {
+            "year": 2024,
+            "value": 112.63478
+          },
+          {
+            "year": 2025,
+            "value": 115.55171
+          },
+          {
+            "year": 2026,
+            "value": 118.05238
+          },
+          {
+            "year": 2027,
+            "value": 120.19201
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": null
+          },
+          {
+            "year": 1992,
+            "value": null
+          },
+          {
+            "year": 1993,
+            "value": null
+          },
+          {
+            "year": 1994,
+            "value": null
+          },
+          {
+            "year": 1995,
+            "value": 54.89332
+          },
+          {
+            "year": 1996,
+            "value": 57.72122
+          },
+          {
+            "year": 1997,
+            "value": 58.82578
+          },
+          {
+            "year": 1998,
+            "value": 59.43829
+          },
+          {
+            "year": 1999,
+            "value": 60.34921
+          },
+          {
+            "year": 2000,
+            "value": 59.23878
+          },
+          {
+            "year": 2001,
+            "value": 58.06156
+          },
+          {
+            "year": 2002,
+            "value": 59.82311
+          },
+          {
+            "year": 2003,
+            "value": 63.34433
+          },
+          {
+            "year": 2004,
+            "value": 64.96489
+          },
+          {
+            "year": 2005,
+            "value": 67.12017
+          },
+          {
+            "year": 2006,
+            "value": 66.39671
+          },
+          {
+            "year": 2007,
+            "value": 63.68704
+          },
+          {
+            "year": 2008,
+            "value": 65.17032
+          },
+          {
+            "year": 2009,
+            "value": 72.36238
+          },
+          {
+            "year": 2010,
+            "value": 81.03369
+          },
+          {
+            "year": 2011,
+            "value": 78.48367
+          },
+          {
+            "year": 2012,
+            "value": 79.8349
+          },
+          {
+            "year": 2013,
+            "value": 77.45671
+          },
+          {
+            "year": 2014,
+            "value": 74.53784
+          },
+          {
+            "year": 2015,
+            "value": 71.18408
+          },
+          {
+            "year": 2016,
+            "value": 68.30146
+          },
+          {
+            "year": 2017,
+            "value": 63.9878
+          },
+          {
+            "year": 2018,
+            "value": 60.75754
+          },
+          {
+            "year": 2019,
+            "value": 58.68322
+          },
+          {
+            "year": 2020,
+            "value": 68.04103
+          },
+          {
+            "year": 2021,
+            "value": 67.93759
+          },
+          {
+            "year": 2022,
+            "value": 64.39654
+          },
+          {
+            "year": 2023,
+            "value": 62.34543
+          },
+          {
+            "year": 2024,
+            "value": 62.2279
+          },
+          {
+            "year": 2025,
+            "value": 63.49656
+          },
+          {
+            "year": 2026,
+            "value": 65.84855
+          },
+          {
+            "year": 2027,
+            "value": 67.96075
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": null
+          },
+          {
+            "year": 1992,
+            "value": null
+          },
+          {
+            "year": 1993,
+            "value": null
+          },
+          {
+            "year": 1994,
+            "value": null
+          },
+          {
+            "year": 1995,
+            "value": 61.58648
+          },
+          {
+            "year": 1996,
+            "value": 65.44195
+          },
+          {
+            "year": 1997,
+            "value": 64.28631
+          },
+          {
+            "year": 1998,
+            "value": 62.35467
+          },
+          {
+            "year": 1999,
+            "value": 60.85315
+          },
+          {
+            "year": 2000,
+            "value": 57.84051
+          },
+          {
+            "year": 2001,
+            "value": 54.05223
+          },
+          {
+            "year": 2002,
+            "value": 51.23686
+          },
+          {
+            "year": 2003,
+            "value": 47.68694
+          },
+          {
+            "year": 2004,
+            "value": 45.33269
+          },
+          {
+            "year": 2005,
+            "value": 42.39519
+          },
+          {
+            "year": 2006,
+            "value": 39.01906
+          },
+          {
+            "year": 2007,
+            "value": 35.69813
+          },
+          {
+            "year": 2008,
+            "value": 39.6088
+          },
+          {
+            "year": 2009,
+            "value": 53.07928
+          },
+          {
+            "year": 2010,
+            "value": 60.26603
+          },
+          {
+            "year": 2011,
+            "value": 69.52841
+          },
+          {
+            "year": 2012,
+            "value": 89.56038
+          },
+          {
+            "year": 2013,
+            "value": 100.01494
+          },
+          {
+            "year": 2014,
+            "value": 104.44838
+          },
+          {
+            "year": 2015,
+            "value": 102.48521
+          },
+          {
+            "year": 2016,
+            "value": 102.02036
+          },
+          {
+            "year": 2017,
+            "value": 101.20718
+          },
+          {
+            "year": 2018,
+            "value": 99.79096
+          },
+          {
+            "year": 2019,
+            "value": 97.65925
+          },
+          {
+            "year": 2020,
+            "value": 119.27911
+          },
+          {
+            "year": 2021,
+            "value": 115.69678
+          },
+          {
+            "year": 2022,
+            "value": 109.32085
+          },
+          {
+            "year": 2023,
+            "value": 105.18212
+          },
+          {
+            "year": 2024,
+            "value": 101.64604
+          },
+          {
+            "year": 2025,
+            "value": 100.65629
+          },
+          {
+            "year": 2026,
+            "value": 99.60872
+          },
+          {
+            "year": 2027,
+            "value": 98.89854
+          }
+        ]
+      }
+    },
+    {
+      "id": "primary_balance",
+      "area": "public-finance",
+      "label": "Saldo primario sul PIL",
+      "weightBasisPoints": 1000,
+      "direction": "higher",
+      "transformation": "point-change",
+      "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+      "limitations": "Include il ciclo e misure una tantum; non è il saldo strutturale e la serie comparabile parte dal 1995.",
+      "sourceSeries": [
+        {
+          "file": "AMECO16.CSV",
+          "codeTemplate": "{country}.1.0.319.0.UBLGI",
+          "title": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
+          "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.1.0.319.0.UBLGI"
+        ],
+        "france": [
+          "FRA.1.0.319.0.UBLGI"
+        ],
+        "germany": [
+          "DEU.1.0.319.0.UBLGI"
+        ],
+        "spain": [
+          "ESP.1.0.319.0.UBLGI"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": null
+          },
+          {
+            "year": 1992,
+            "value": null
+          },
+          {
+            "year": 1993,
+            "value": null
+          },
+          {
+            "year": 1994,
+            "value": null
+          },
+          {
+            "year": 1995,
+            "value": 3.88412
+          },
+          {
+            "year": 1996,
+            "value": 4.42207
+          },
+          {
+            "year": 1997,
+            "value": 6.13912
+          },
+          {
+            "year": 1998,
+            "value": 4.84606
+          },
+          {
+            "year": 1999,
+            "value": 4.5942
+          },
+          {
+            "year": 2000,
+            "value": 3.68244
+          },
+          {
+            "year": 2001,
+            "value": 2.86232
+          },
+          {
+            "year": 2002,
+            "value": 2.54079
+          },
+          {
+            "year": 2003,
+            "value": 1.71439
+          },
+          {
+            "year": 2004,
+            "value": 1.11922
+          },
+          {
+            "year": 2005,
+            "value": 0.38584
+          },
+          {
+            "year": 2006,
+            "value": 0.80975
+          },
+          {
+            "year": 2007,
+            "value": 3.4022
+          },
+          {
+            "year": 2008,
+            "value": 2.3243
+          },
+          {
+            "year": 2009,
+            "value": -0.66927
+          },
+          {
+            "year": 2010,
+            "value": 0.09444
+          },
+          {
+            "year": 2011,
+            "value": 1.09536
+          },
+          {
+            "year": 2012,
+            "value": 2.13314
+          },
+          {
+            "year": 2013,
+            "value": 1.91548
+          },
+          {
+            "year": 2014,
+            "value": 1.73211
+          },
+          {
+            "year": 2015,
+            "value": 1.63617
+          },
+          {
+            "year": 2016,
+            "value": 1.48177
+          },
+          {
+            "year": 2017,
+            "value": 1.23623
+          },
+          {
+            "year": 2018,
+            "value": 1.42866
+          },
+          {
+            "year": 2019,
+            "value": 1.88757
+          },
+          {
+            "year": 2020,
+            "value": -5.9581
+          },
+          {
+            "year": 2021,
+            "value": -5.45621
+          },
+          {
+            "year": 2022,
+            "value": -4.01662
+          },
+          {
+            "year": 2023,
+            "value": -3.50429
+          },
+          {
+            "year": 2024,
+            "value": 0.53151
+          },
+          {
+            "year": 2025,
+            "value": 0.78674
+          },
+          {
+            "year": 2026,
+            "value": 1.21471
+          },
+          {
+            "year": 2027,
+            "value": 1.29012
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": -0.77263
+          },
+          {
+            "year": 1979,
+            "value": 0.6573
+          },
+          {
+            "year": 1980,
+            "value": 0.79836
+          },
+          {
+            "year": 1981,
+            "value": -0.71506
+          },
+          {
+            "year": 1982,
+            "value": -1.09987
+          },
+          {
+            "year": 1983,
+            "value": -0.33798
+          },
+          {
+            "year": 1984,
+            "value": -0.40872
+          },
+          {
+            "year": 1985,
+            "value": -0.45065
+          },
+          {
+            "year": 1986,
+            "value": -0.64813
+          },
+          {
+            "year": 1987,
+            "value": 0.45241
+          },
+          {
+            "year": 1988,
+            "value": -0.19598
+          },
+          {
+            "year": 1989,
+            "value": 0.67601
+          },
+          {
+            "year": 1990,
+            "value": 0.23679
+          },
+          {
+            "year": 1991,
+            "value": -0.06575
+          },
+          {
+            "year": 1992,
+            "value": -1.63849
+          },
+          {
+            "year": 1993,
+            "value": -3.16045
+          },
+          {
+            "year": 1994,
+            "value": -2.11559
+          },
+          {
+            "year": 1995,
+            "value": -1.65234
+          },
+          {
+            "year": 1996,
+            "value": -0.28153
+          },
+          {
+            "year": 1997,
+            "value": -0.16043
+          },
+          {
+            "year": 1998,
+            "value": 0.99465
+          },
+          {
+            "year": 1999,
+            "value": 1.53382
+          },
+          {
+            "year": 2000,
+            "value": 1.64665
+          },
+          {
+            "year": 2001,
+            "value": 1.63521
+          },
+          {
+            "year": 2002,
+            "value": -0.14746
+          },
+          {
+            "year": 2003,
+            "value": -1.21178
+          },
+          {
+            "year": 2004,
+            "value": -0.75403
+          },
+          {
+            "year": 2005,
+            "value": -0.79205
+          },
+          {
+            "year": 2006,
+            "value": -0.05431
+          },
+          {
+            "year": 2007,
+            "value": -0.30139
+          },
+          {
+            "year": 2008,
+            "value": -0.62919
+          },
+          {
+            "year": 2009,
+            "value": -4.83265
+          },
+          {
+            "year": 2010,
+            "value": -4.61168
+          },
+          {
+            "year": 2011,
+            "value": -2.58905
+          },
+          {
+            "year": 2012,
+            "value": -2.54019
+          },
+          {
+            "year": 2013,
+            "value": -2.60739
+          },
+          {
+            "year": 2014,
+            "value": -2.37672
+          },
+          {
+            "year": 2015,
+            "value": -1.86125
+          },
+          {
+            "year": 2016,
+            "value": -1.8637
+          },
+          {
+            "year": 2017,
+            "value": -1.57254
+          },
+          {
+            "year": 2018,
+            "value": -0.55005
+          },
+          {
+            "year": 2019,
+            "value": -0.8781
+          },
+          {
+            "year": 2020,
+            "value": -7.65052
+          },
+          {
+            "year": 2021,
+            "value": -5.19713
+          },
+          {
+            "year": 2022,
+            "value": -2.82449
+          },
+          {
+            "year": 2023,
+            "value": -3.47623
+          },
+          {
+            "year": 2024,
+            "value": -3.71306
+          },
+          {
+            "year": 2025,
+            "value": -2.86754
+          },
+          {
+            "year": 2026,
+            "value": -2.52354
+          },
+          {
+            "year": 2027,
+            "value": -2.90966
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": -0.50609
+          },
+          {
+            "year": 1992,
+            "value": 0.4843
+          },
+          {
+            "year": 1993,
+            "value": 0.08006
+          },
+          {
+            "year": 1994,
+            "value": 0.78628
+          },
+          {
+            "year": 1995,
+            "value": -5.93227
+          },
+          {
+            "year": 1996,
+            "value": -0.1763
+          },
+          {
+            "year": 1997,
+            "value": 0.36855
+          },
+          {
+            "year": 1998,
+            "value": 0.70133
+          },
+          {
+            "year": 1999,
+            "value": 1.22773
+          },
+          {
+            "year": 2000,
+            "value": 1.45709
+          },
+          {
+            "year": 2001,
+            "value": -0.10936
+          },
+          {
+            "year": 2002,
+            "value": -1.11161
+          },
+          {
+            "year": 2003,
+            "value": -0.92542
+          },
+          {
+            "year": 2004,
+            "value": -0.63797
+          },
+          {
+            "year": 2005,
+            "value": -0.64075
+          },
+          {
+            "year": 2006,
+            "value": 0.93291
+          },
+          {
+            "year": 2007,
+            "value": 2.81734
+          },
+          {
+            "year": 2008,
+            "value": 2.40557
+          },
+          {
+            "year": 2009,
+            "value": -0.56208
+          },
+          {
+            "year": 2010,
+            "value": -1.9795
+          },
+          {
+            "year": 2011,
+            "value": 1.63478
+          },
+          {
+            "year": 2012,
+            "value": 2.23858
+          },
+          {
+            "year": 2013,
+            "value": 1.93317
+          },
+          {
+            "year": 2014,
+            "value": 2.32467
+          },
+          {
+            "year": 2015,
+            "value": 2.30487
+          },
+          {
+            "year": 2016,
+            "value": 2.31988
+          },
+          {
+            "year": 2017,
+            "value": 2.37196
+          },
+          {
+            "year": 2018,
+            "value": 2.80877
+          },
+          {
+            "year": 2019,
+            "value": 2.1203
+          },
+          {
+            "year": 2020,
+            "value": -3.73084
+          },
+          {
+            "year": 2021,
+            "value": -2.57646
+          },
+          {
+            "year": 2022,
+            "value": -1.2062
+          },
+          {
+            "year": 2023,
+            "value": -1.62114
+          },
+          {
+            "year": 2024,
+            "value": -1.6047
+          },
+          {
+            "year": 2025,
+            "value": -1.55715
+          },
+          {
+            "year": 2026,
+            "value": -2.52516
+          },
+          {
+            "year": 2027,
+            "value": -2.85317
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": null
+          },
+          {
+            "year": 1992,
+            "value": null
+          },
+          {
+            "year": 1993,
+            "value": null
+          },
+          {
+            "year": 1994,
+            "value": null
+          },
+          {
+            "year": 1995,
+            "value": -1.85265
+          },
+          {
+            "year": 1996,
+            "value": -0.83465
+          },
+          {
+            "year": 1997,
+            "value": 0.6773
+          },
+          {
+            "year": 1998,
+            "value": 1.43909
+          },
+          {
+            "year": 1999,
+            "value": 2.17139
+          },
+          {
+            "year": 2000,
+            "value": 2.0021
+          },
+          {
+            "year": 2001,
+            "value": 2.51456
+          },
+          {
+            "year": 2002,
+            "value": 2.31492
+          },
+          {
+            "year": 2003,
+            "value": 1.92479
+          },
+          {
+            "year": 2004,
+            "value": 1.87929
+          },
+          {
+            "year": 2005,
+            "value": 2.97612
+          },
+          {
+            "year": 2006,
+            "value": 3.73044
+          },
+          {
+            "year": 2007,
+            "value": 3.46121
+          },
+          {
+            "year": 2008,
+            "value": -2.98346
+          },
+          {
+            "year": 2009,
+            "value": -9.52674
+          },
+          {
+            "year": 2010,
+            "value": -7.59006
+          },
+          {
+            "year": 2011,
+            "value": -7.2063
+          },
+          {
+            "year": 2012,
+            "value": -8.4695
+          },
+          {
+            "year": 2013,
+            "value": -3.92453
+          },
+          {
+            "year": 2014,
+            "value": -2.50349
+          },
+          {
+            "year": 2015,
+            "value": -2.19665
+          },
+          {
+            "year": 2016,
+            "value": -1.44038
+          },
+          {
+            "year": 2017,
+            "value": -0.5376
+          },
+          {
+            "year": 2018,
+            "value": -0.11136
+          },
+          {
+            "year": 2019,
+            "value": -0.81287
+          },
+          {
+            "year": 2020,
+            "value": -7.68411
+          },
+          {
+            "year": 2021,
+            "value": -4.533
+          },
+          {
+            "year": 2022,
+            "value": -2.27712
+          },
+          {
+            "year": 2023,
+            "value": -0.96651
+          },
+          {
+            "year": 2024,
+            "value": -0.7824
+          },
+          {
+            "year": 2025,
+            "value": -0.00095
+          },
+          {
+            "year": 2026,
+            "value": 0.06017
+          },
+          {
+            "year": 2027,
+            "value": 0.52298
+          }
+        ]
+      }
+    },
+    {
+      "id": "investment_share",
+      "area": "future-capacity",
+      "label": "Investimenti totali sul PIL",
+      "weightBasisPoints": 1500,
+      "direction": "higher",
+      "transformation": "point-change",
+      "unit": "Percentage of GDP at current prices",
+      "limitations": "Aggrega investimenti pubblici e privati e non misura qualità, addizionalità o rendimento.",
+      "derived": "gross-fixed-capital-formation / gross-domestic-product * 100",
+      "sourceSeries": [
+        {
+          "file": "AMECO3.CSV",
+          "codeTemplate": "{country}.1.0.0.0.UIGT",
+          "title": "Gross fixed capital formation at current prices: total economy",
+          "unit": "Mrd national currency"
+        },
+        {
+          "file": "AMECO6.CSV",
+          "codeTemplate": "{country}.1.0.0.0.UVGD",
+          "title": "Gross domestic product at current prices",
+          "unit": "Mrd national currency"
+        }
+      ],
+      "sourceId": "ameco",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
+      "sourceCodes": {
+        "italy": [
+          "ITA.1.0.0.0.UIGT",
+          "ITA.1.0.0.0.UVGD"
+        ],
+        "france": [
+          "FRA.1.0.0.0.UIGT",
+          "FRA.1.0.0.0.UVGD"
+        ],
+        "germany": [
+          "DEU.1.0.0.0.UIGT",
+          "DEU.1.0.0.0.UVGD"
+        ],
+        "spain": [
+          "ESP.1.0.0.0.UIGT",
+          "ESP.1.0.0.0.UVGD"
+        ]
+      },
+      "countries": {
+        "italy": [
+          {
+            "year": 1960,
+            "value": 26.84701412
+          },
+          {
+            "year": 1961,
+            "value": 27.36186583
+          },
+          {
+            "year": 1962,
+            "value": 27.78174105
+          },
+          {
+            "year": 1963,
+            "value": 26.61524827
+          },
+          {
+            "year": 1964,
+            "value": 26.37062108
+          },
+          {
+            "year": 1965,
+            "value": 24.76619228
+          },
+          {
+            "year": 1966,
+            "value": 23.56516747
+          },
+          {
+            "year": 1967,
+            "value": 23.75101931
+          },
+          {
+            "year": 1968,
+            "value": 24.51856
+          },
+          {
+            "year": 1969,
+            "value": 25.76902473
+          },
+          {
+            "year": 1970,
+            "value": 26.48025394
+          },
+          {
+            "year": 1971,
+            "value": 26.00363561
+          },
+          {
+            "year": 1972,
+            "value": 25.46544572
+          },
+          {
+            "year": 1973,
+            "value": 27.00881476
+          },
+          {
+            "year": 1974,
+            "value": 28.25369355
+          },
+          {
+            "year": 1975,
+            "value": 27.19221608
+          },
+          {
+            "year": 1976,
+            "value": 25.86922831
+          },
+          {
+            "year": 1977,
+            "value": 25.71885676
+          },
+          {
+            "year": 1978,
+            "value": 25.10743196
+          },
+          {
+            "year": 1979,
+            "value": 25.24374998
+          },
+          {
+            "year": 1980,
+            "value": 26.58240844
+          },
+          {
+            "year": 1981,
+            "value": 26.78555049
+          },
+          {
+            "year": 1982,
+            "value": 25.34558197
+          },
+          {
+            "year": 1983,
+            "value": 24.12669099
+          },
+          {
+            "year": 1984,
+            "value": 23.85124119
+          },
+          {
+            "year": 1985,
+            "value": 23.42877118
+          },
+          {
+            "year": 1986,
+            "value": 22.75248765
+          },
+          {
+            "year": 1987,
+            "value": 22.70535985
+          },
+          {
+            "year": 1988,
+            "value": 23.09866328
+          },
+          {
+            "year": 1989,
+            "value": 23.01005726
+          },
+          {
+            "year": 1990,
+            "value": 23.05622519
+          },
+          {
+            "year": 1991,
+            "value": 22.62381647
+          },
+          {
+            "year": 1992,
+            "value": 22.01335824
+          },
+          {
+            "year": 1993,
+            "value": 19.89872125
+          },
+          {
+            "year": 1994,
+            "value": 19.46062891
+          },
+          {
+            "year": 1995,
+            "value": 19.87011077
+          },
+          {
+            "year": 1996,
+            "value": 19.66804149
+          },
+          {
+            "year": 1997,
+            "value": 19.64297781
+          },
+          {
+            "year": 1998,
+            "value": 19.963938
+          },
+          {
+            "year": 1999,
+            "value": 20.37152232
+          },
+          {
+            "year": 2000,
+            "value": 21.22575867
+          },
+          {
+            "year": 2001,
+            "value": 21.19189246
+          },
+          {
+            "year": 2002,
+            "value": 21.81208675
+          },
+          {
+            "year": 2003,
+            "value": 21.28423466
+          },
+          {
+            "year": 2004,
+            "value": 21.35980209
+          },
+          {
+            "year": 2005,
+            "value": 21.67343941
+          },
+          {
+            "year": 2006,
+            "value": 21.92424187
+          },
+          {
+            "year": 2007,
+            "value": 21.9944756
+          },
+          {
+            "year": 2008,
+            "value": 21.56204577
+          },
+          {
+            "year": 2009,
+            "value": 20.31595976
+          },
+          {
+            "year": 2010,
+            "value": 20.23866452
+          },
+          {
+            "year": 2011,
+            "value": 19.90884672
+          },
+          {
+            "year": 2012,
+            "value": 18.48239189
+          },
+          {
+            "year": 2013,
+            "value": 17.31189808
+          },
+          {
+            "year": 2014,
+            "value": 16.83972945
+          },
+          {
+            "year": 2015,
+            "value": 17.080918
+          },
+          {
+            "year": 2016,
+            "value": 17.29346519
+          },
+          {
+            "year": 2017,
+            "value": 17.57946292
+          },
+          {
+            "year": 2018,
+            "value": 17.97220118
+          },
+          {
+            "year": 2019,
+            "value": 18.12917903
+          },
+          {
+            "year": 2020,
+            "value": 18.20181641
+          },
+          {
+            "year": 2021,
+            "value": 20.77052174
+          },
+          {
+            "year": 2022,
+            "value": 21.77573528
+          },
+          {
+            "year": 2023,
+            "value": 22.65366788
+          },
+          {
+            "year": 2024,
+            "value": 21.51294677
+          },
+          {
+            "year": 2025,
+            "value": 21.83473722
+          },
+          {
+            "year": 2026,
+            "value": 21.97320549
+          },
+          {
+            "year": 2027,
+            "value": 21.96288288
+          }
+        ],
+        "france": [
+          {
+            "year": 1960,
+            "value": 22.93893114
+          },
+          {
+            "year": 1961,
+            "value": 24.3043399
+          },
+          {
+            "year": 1962,
+            "value": 24.08384007
+          },
+          {
+            "year": 1963,
+            "value": 24.93660019
+          },
+          {
+            "year": 1964,
+            "value": 25.86526553
+          },
+          {
+            "year": 1965,
+            "value": 26.24610151
+          },
+          {
+            "year": 1966,
+            "value": 26.56609611
+          },
+          {
+            "year": 1967,
+            "value": 26.98969247
+          },
+          {
+            "year": 1968,
+            "value": 26.6915489
+          },
+          {
+            "year": 1969,
+            "value": 26.41391777
+          },
+          {
+            "year": 1970,
+            "value": 26.08838039
+          },
+          {
+            "year": 1971,
+            "value": 26.30774648
+          },
+          {
+            "year": 1972,
+            "value": 26.42662091
+          },
+          {
+            "year": 1973,
+            "value": 26.67858852
+          },
+          {
+            "year": 1974,
+            "value": 27.28419068
+          },
+          {
+            "year": 1975,
+            "value": 25.83929057
+          },
+          {
+            "year": 1976,
+            "value": 25.39838347
+          },
+          {
+            "year": 1977,
+            "value": 24.48981957
+          },
+          {
+            "year": 1978,
+            "value": 24.03878021
+          },
+          {
+            "year": 1979,
+            "value": 23.93514573
+          },
+          {
+            "year": 1980,
+            "value": 24.78457953
+          },
+          {
+            "year": 1981,
+            "value": 24.25709755
+          },
+          {
+            "year": 1982,
+            "value": 23.61818059
+          },
+          {
+            "year": 1983,
+            "value": 22.21772728
+          },
+          {
+            "year": 1984,
+            "value": 21.47703959
+          },
+          {
+            "year": 1985,
+            "value": 21.28570634
+          },
+          {
+            "year": 1986,
+            "value": 21.27444466
+          },
+          {
+            "year": 1987,
+            "value": 21.90158718
+          },
+          {
+            "year": 1988,
+            "value": 22.63673825
+          },
+          {
+            "year": 1989,
+            "value": 23.16333522
+          },
+          {
+            "year": 1990,
+            "value": 23.38084214
+          },
+          {
+            "year": 1991,
+            "value": 23.15428141
+          },
+          {
+            "year": 1992,
+            "value": 21.9280863
+          },
+          {
+            "year": 1993,
+            "value": 20.46582659
+          },
+          {
+            "year": 1994,
+            "value": 20.1350361
+          },
+          {
+            "year": 1995,
+            "value": 19.7468962
+          },
+          {
+            "year": 1996,
+            "value": 19.46131663
+          },
+          {
+            "year": 1997,
+            "value": 18.96221915
+          },
+          {
+            "year": 1998,
+            "value": 19.34455882
+          },
+          {
+            "year": 1999,
+            "value": 20.17470548
+          },
+          {
+            "year": 2000,
+            "value": 20.8814379
+          },
+          {
+            "year": 2001,
+            "value": 20.86028824
+          },
+          {
+            "year": 2002,
+            "value": 20.33633135
+          },
+          {
+            "year": 2003,
+            "value": 20.49895063
+          },
+          {
+            "year": 2004,
+            "value": 20.83727938
+          },
+          {
+            "year": 2005,
+            "value": 21.25526454
+          },
+          {
+            "year": 2006,
+            "value": 21.89778685
+          },
+          {
+            "year": 2007,
+            "value": 22.5857089
+          },
+          {
+            "year": 2008,
+            "value": 22.93301351
+          },
+          {
+            "year": 2009,
+            "value": 21.44952357
+          },
+          {
+            "year": 2010,
+            "value": 21.48216768
+          },
+          {
+            "year": 2011,
+            "value": 21.69929278
+          },
+          {
+            "year": 2012,
+            "value": 21.65592493
+          },
+          {
+            "year": 2013,
+            "value": 21.26956379
+          },
+          {
+            "year": 2014,
+            "value": 20.95838616
+          },
+          {
+            "year": 2015,
+            "value": 20.55986968
+          },
+          {
+            "year": 2016,
+            "value": 20.92126011
+          },
+          {
+            "year": 2017,
+            "value": 21.42043361
+          },
+          {
+            "year": 2018,
+            "value": 21.87539007
+          },
+          {
+            "year": 2019,
+            "value": 22.41609554
+          },
+          {
+            "year": 2020,
+            "value": 22.43623085
+          },
+          {
+            "year": 2021,
+            "value": 23.48322873
+          },
+          {
+            "year": 2022,
+            "value": 23.48577082
+          },
+          {
+            "year": 2023,
+            "value": 22.83446749
+          },
+          {
+            "year": 2024,
+            "value": 22.09684654
+          },
+          {
+            "year": 2025,
+            "value": 22.0193072
+          },
+          {
+            "year": 2026,
+            "value": 22.00501578
+          },
+          {
+            "year": 2027,
+            "value": 21.94425514
+          }
+        ],
+        "germany": [
+          {
+            "year": 1960,
+            "value": null
+          },
+          {
+            "year": 1961,
+            "value": null
+          },
+          {
+            "year": 1962,
+            "value": null
+          },
+          {
+            "year": 1963,
+            "value": null
+          },
+          {
+            "year": 1964,
+            "value": null
+          },
+          {
+            "year": 1965,
+            "value": null
+          },
+          {
+            "year": 1966,
+            "value": null
+          },
+          {
+            "year": 1967,
+            "value": null
+          },
+          {
+            "year": 1968,
+            "value": null
+          },
+          {
+            "year": 1969,
+            "value": null
+          },
+          {
+            "year": 1970,
+            "value": null
+          },
+          {
+            "year": 1971,
+            "value": null
+          },
+          {
+            "year": 1972,
+            "value": null
+          },
+          {
+            "year": 1973,
+            "value": null
+          },
+          {
+            "year": 1974,
+            "value": null
+          },
+          {
+            "year": 1975,
+            "value": null
+          },
+          {
+            "year": 1976,
+            "value": null
+          },
+          {
+            "year": 1977,
+            "value": null
+          },
+          {
+            "year": 1978,
+            "value": null
+          },
+          {
+            "year": 1979,
+            "value": null
+          },
+          {
+            "year": 1980,
+            "value": null
+          },
+          {
+            "year": 1981,
+            "value": null
+          },
+          {
+            "year": 1982,
+            "value": null
+          },
+          {
+            "year": 1983,
+            "value": null
+          },
+          {
+            "year": 1984,
+            "value": null
+          },
+          {
+            "year": 1985,
+            "value": null
+          },
+          {
+            "year": 1986,
+            "value": null
+          },
+          {
+            "year": 1987,
+            "value": null
+          },
+          {
+            "year": 1988,
+            "value": null
+          },
+          {
+            "year": 1989,
+            "value": null
+          },
+          {
+            "year": 1990,
+            "value": null
+          },
+          {
+            "year": 1991,
+            "value": 24.83950214
+          },
+          {
+            "year": 1992,
+            "value": 25.00850932
+          },
+          {
+            "year": 1993,
+            "value": 23.96172625
+          },
+          {
+            "year": 1994,
+            "value": 24.02471137
+          },
+          {
+            "year": 1995,
+            "value": 23.46465396
+          },
+          {
+            "year": 1996,
+            "value": 22.93291368
+          },
+          {
+            "year": 1997,
+            "value": 22.57261664
+          },
+          {
+            "year": 1998,
+            "value": 22.70087178
+          },
+          {
+            "year": 1999,
+            "value": 22.83347134
+          },
+          {
+            "year": 2000,
+            "value": 22.88294845
+          },
+          {
+            "year": 2001,
+            "value": 21.54336311
+          },
+          {
+            "year": 2002,
+            "value": 19.88670301
+          },
+          {
+            "year": 2003,
+            "value": 19.26388226
+          },
+          {
+            "year": 2004,
+            "value": 18.83146391
+          },
+          {
+            "year": 2005,
+            "value": 18.76442033
+          },
+          {
+            "year": 2006,
+            "value": 19.46240592
+          },
+          {
+            "year": 2007,
+            "value": 19.71517021
+          },
+          {
+            "year": 2008,
+            "value": 19.96303992
+          },
+          {
+            "year": 2009,
+            "value": 18.83819773
+          },
+          {
+            "year": 2010,
+            "value": 19.18616122
+          },
+          {
+            "year": 2011,
+            "value": 20.00811821
+          },
+          {
+            "year": 2012,
+            "value": 19.96631277
+          },
+          {
+            "year": 2013,
+            "value": 19.57714688
+          },
+          {
+            "year": 2014,
+            "value": 19.78257446
+          },
+          {
+            "year": 2015,
+            "value": 19.74775107
+          },
+          {
+            "year": 2016,
+            "value": 20.04384688
+          },
+          {
+            "year": 2017,
+            "value": 20.13392897
+          },
+          {
+            "year": 2018,
+            "value": 20.81752343
+          },
+          {
+            "year": 2019,
+            "value": 21.15229781
+          },
+          {
+            "year": 2020,
+            "value": 21.34267631
+          },
+          {
+            "year": 2021,
+            "value": 21.18150415
+          },
+          {
+            "year": 2022,
+            "value": 21.60104678
+          },
+          {
+            "year": 2023,
+            "value": 21.19168774
+          },
+          {
+            "year": 2024,
+            "value": 20.46031735
+          },
+          {
+            "year": 2025,
+            "value": 20.31255663
+          },
+          {
+            "year": 2026,
+            "value": 20.66929827
+          },
+          {
+            "year": 2027,
+            "value": 21.0055688
+          }
+        ],
+        "spain": [
+          {
+            "year": 1960,
+            "value": 20.94517303
+          },
+          {
+            "year": 1961,
+            "value": 21.95629713
+          },
+          {
+            "year": 1962,
+            "value": 22.43069537
+          },
+          {
+            "year": 1963,
+            "value": 22.69576623
+          },
+          {
+            "year": 1964,
+            "value": 24.25139243
+          },
+          {
+            "year": 1965,
+            "value": 25.52688381
+          },
+          {
+            "year": 1966,
+            "value": 25.72317952
+          },
+          {
+            "year": 1967,
+            "value": 25.850505
+          },
+          {
+            "year": 1968,
+            "value": 26.2861035
+          },
+          {
+            "year": 1969,
+            "value": 26.60741353
+          },
+          {
+            "year": 1970,
+            "value": 26.66928301
+          },
+          {
+            "year": 1971,
+            "value": 24.38709506
+          },
+          {
+            "year": 1972,
+            "value": 25.53695437
+          },
+          {
+            "year": 1973,
+            "value": 27.05059403
+          },
+          {
+            "year": 1974,
+            "value": 28.62644242
+          },
+          {
+            "year": 1975,
+            "value": 27.03927383
+          },
+          {
+            "year": 1976,
+            "value": 25.50232319
+          },
+          {
+            "year": 1977,
+            "value": 24.48041599
+          },
+          {
+            "year": 1978,
+            "value": 23.18076262
+          },
+          {
+            "year": 1979,
+            "value": 22.0751513
+          },
+          {
+            "year": 1980,
+            "value": 22.76696267
+          },
+          {
+            "year": 1981,
+            "value": 22.64245487
+          },
+          {
+            "year": 1982,
+            "value": 22.41617177
+          },
+          {
+            "year": 1983,
+            "value": 21.80415846
+          },
+          {
+            "year": 1984,
+            "value": 19.98291246
+          },
+          {
+            "year": 1985,
+            "value": 20.51975416
+          },
+          {
+            "year": 1986,
+            "value": 21.06497294
+          },
+          {
+            "year": 1987,
+            "value": 22.29781023
+          },
+          {
+            "year": 1988,
+            "value": 24.11891516
+          },
+          {
+            "year": 1989,
+            "value": 25.50270584
+          },
+          {
+            "year": 1990,
+            "value": 25.75289629
+          },
+          {
+            "year": 1991,
+            "value": 25.01810326
+          },
+          {
+            "year": 1992,
+            "value": 23.03050376
+          },
+          {
+            "year": 1993,
+            "value": 21.17250058
+          },
+          {
+            "year": 1994,
+            "value": 21.02184928
+          },
+          {
+            "year": 1995,
+            "value": 21.89680158
+          },
+          {
+            "year": 1996,
+            "value": 21.69605642
+          },
+          {
+            "year": 1997,
+            "value": 22.13861661
+          },
+          {
+            "year": 1998,
+            "value": 23.28339564
+          },
+          {
+            "year": 1999,
+            "value": 24.7406937
+          },
+          {
+            "year": 2000,
+            "value": 25.97267627
+          },
+          {
+            "year": 2001,
+            "value": 25.9006959
+          },
+          {
+            "year": 2002,
+            "value": 26.1773352
+          },
+          {
+            "year": 2003,
+            "value": 27.12390819
+          },
+          {
+            "year": 2004,
+            "value": 27.82530036
+          },
+          {
+            "year": 2005,
+            "value": 29.02840359
+          },
+          {
+            "year": 2006,
+            "value": 30.04549362
+          },
+          {
+            "year": 2007,
+            "value": 29.87580055
+          },
+          {
+            "year": 2008,
+            "value": 27.85662405
+          },
+          {
+            "year": 2009,
+            "value": 23.16219163
+          },
+          {
+            "year": 2010,
+            "value": 21.87421378
+          },
+          {
+            "year": 2011,
+            "value": 20.1470024
+          },
+          {
+            "year": 2012,
+            "value": 18.71059226
+          },
+          {
+            "year": 2013,
+            "value": 17.5983667
+          },
+          {
+            "year": 2014,
+            "value": 18.02995142
+          },
+          {
+            "year": 2015,
+            "value": 18.29894252
+          },
+          {
+            "year": 2016,
+            "value": 18.1917189
+          },
+          {
+            "year": 2017,
+            "value": 18.90619338
+          },
+          {
+            "year": 2018,
+            "value": 19.67390264
+          },
+          {
+            "year": 2019,
+            "value": 20.30501472
+          },
+          {
+            "year": 2020,
+            "value": 20.61593285
+          },
+          {
+            "year": 2021,
+            "value": 20.19953475
+          },
+          {
+            "year": 2022,
+            "value": 20.48823175
+          },
+          {
+            "year": 2023,
+            "value": 20.46581531
+          },
+          {
+            "year": 2024,
+            "value": 20.28783251
+          },
+          {
+            "year": 2025,
+            "value": 20.60857587
+          },
+          {
+            "year": 2026,
+            "value": 21.01711641
+          },
+          {
+            "year": 2027,
+            "value": 21.08273421
+          }
+        ]
+      }
+    }
+  ],
+  "governments": [
+    {
+      "id": "dini-i",
+      "name": "Dini-I",
+      "startDate": "1995-01-17",
+      "endDate": "1996-05-17",
+      "status": "ended"
+    },
+    {
+      "id": "prodi-i",
+      "name": "Prodi-I",
+      "startDate": "1996-05-17",
+      "endDate": "1998-10-21",
+      "status": "ended"
+    },
+    {
+      "id": "dalema-i",
+      "name": "D'Alema-I",
+      "startDate": "1998-10-21",
+      "endDate": "1999-12-22",
+      "status": "ended"
+    },
+    {
+      "id": "dalema-ii",
+      "name": "D'Alema-II",
+      "startDate": "1999-12-22",
+      "endDate": "2000-04-25",
+      "status": "ended"
+    },
+    {
+      "id": "amato-ii",
+      "name": "Amato-II",
+      "startDate": "2000-04-25",
+      "endDate": "2001-06-10",
+      "status": "ended"
+    },
+    {
+      "id": "berlusconi-ii",
+      "name": "Berlusconi-II",
+      "startDate": "2001-06-11",
+      "endDate": "2005-04-23",
+      "status": "ended"
+    },
+    {
+      "id": "berlusconi-iii",
+      "name": "Berlusconi-III",
+      "startDate": "2005-04-23",
+      "endDate": "2006-05-17",
+      "status": "ended"
+    },
+    {
+      "id": "prodi-ii",
+      "name": "Prodi-II",
+      "startDate": "2006-05-17",
+      "endDate": "2008-05-06",
+      "status": "ended"
+    },
+    {
+      "id": "berlusconi-iv",
+      "name": "Berlusconi-IV",
+      "startDate": "2008-05-08",
+      "endDate": "2011-11-16",
+      "status": "ended"
+    },
+    {
+      "id": "monti-i",
+      "name": "Monti-I",
+      "startDate": "2011-11-16",
+      "endDate": "2013-04-27",
+      "status": "ended"
+    },
+    {
+      "id": "letta-i",
+      "name": "Letta-I",
+      "startDate": "2013-04-28",
+      "endDate": "2014-02-21",
+      "status": "ended"
+    },
+    {
+      "id": "renzi-i",
+      "name": "Renzi-I",
+      "startDate": "2014-02-22",
+      "endDate": "2016-12-12",
+      "status": "ended"
+    },
+    {
+      "id": "gentiloni-i",
+      "name": "Gentiloni-I",
+      "startDate": "2016-12-12",
+      "endDate": "2018-06-01",
+      "status": "ended"
+    },
+    {
+      "id": "conte-i",
+      "name": "Conte-I",
+      "startDate": "2018-06-01",
+      "endDate": "2019-09-04",
+      "status": "ended"
+    },
+    {
+      "id": "conte-ii",
+      "name": "Conte-II",
+      "startDate": "2019-09-05",
+      "endDate": "2021-02-13",
+      "status": "ended"
+    },
+    {
+      "id": "draghi-i",
+      "name": "Draghi-I",
+      "startDate": "2021-02-13",
+      "endDate": "2022-10-22",
+      "status": "ended"
+    },
+    {
+      "id": "meloni-i",
+      "name": "Meloni-I",
+      "startDate": "2022-10-22",
+      "endDate": null,
+      "status": "current"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "economic-miracle",
+      "label": "Miracolo economico e industrializzazione",
+      "startYear": 1958,
+      "endYear": 1963,
+      "kind": "regime",
+      "summary": "Rapida industrializzazione, migrazione interna e forte crescita della produttività cambiarono la struttura dell'economia.",
+      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
+    },
+    {
+      "id": "first-oil-shock",
+      "label": "Primo shock petrolifero",
+      "startYear": 1973,
+      "endYear": 1975,
+      "kind": "external-shock",
+      "summary": "Il rincaro del petrolio colpì prezzi, produzione e bilancia commerciale dei paesi importatori di energia.",
+      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
+    },
+    {
+      "id": "second-oil-shock",
+      "label": "Secondo shock petrolifero",
+      "startYear": 1979,
+      "endYear": 1982,
+      "kind": "external-shock",
+      "summary": "Nuove tensioni energetiche si sovrapposero all'inflazione e alla stretta monetaria internazionale.",
+      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
+    },
+    {
+      "id": "lira-crisis",
+      "label": "Crisi della lira e uscita dallo SME",
+      "startYear": 1992,
+      "endYear": 1993,
+      "kind": "financial-shock",
+      "summary": "Pressioni sui cambi e sui conti pubblici portarono alla svalutazione e all'uscita temporanea della lira dallo SME.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/1992/index.html"
+    },
+    {
+      "id": "euro-convergence",
+      "label": "Convergenza verso l'euro",
+      "startYear": 1995,
+      "endYear": 1998,
+      "kind": "regime",
+      "summary": "La preparazione all'unione monetaria condizionò bilancio pubblico, tassi e cambio.",
+      "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
+    },
+    {
+      "id": "euro-introduction",
+      "label": "Introduzione dell'euro e cambio di regime monetario",
+      "startYear": 1999,
+      "endYear": 2002,
+      "kind": "regime",
+      "summary": "L'avvio dell'unione monetaria e poi delle banconote e monete in euro cambiarono il quadro di tassi, cambio e politica monetaria per l'Italia.",
+      "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
+    },
+    {
+      "id": "dot-com-slowdown",
+      "label": "Rallentamento mondiale e crisi dot-com",
+      "startYear": 2000,
+      "endYear": 2002,
+      "kind": "external-shock",
+      "summary": "La frenata internazionale, la correzione dei mercati tecnologici e le conseguenze economiche degli attentati del 2001 indebolirono commercio e investimenti.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2001/index.html"
+    },
+    {
+      "id": "global-expansion-oil",
+      "label": "Espansione mondiale e rincaro del petrolio",
+      "startYear": 2003,
+      "endYear": 2007,
+      "kind": "external-shock",
+      "summary": "La crescita mondiale sostenne la domanda estera, mentre l'aumento del prezzo del petrolio pesò sui paesi importatori di energia come l'Italia.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2005/index.html"
+    },
+    {
+      "id": "global-financial-crisis",
+      "label": "Crisi finanziaria globale",
+      "startYear": 2008,
+      "endYear": 2009,
+      "kind": "external-shock",
+      "summary": "La crisi bancaria e finanziaria internazionale ridusse credito, commercio e produzione.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2008/index.html"
+    },
+    {
+      "id": "sovereign-debt-crisis",
+      "label": "Crisi dei debiti sovrani dell'area euro",
+      "startYear": 2010,
+      "endYear": 2013,
+      "kind": "financial-shock",
+      "summary": "Tensioni sui titoli sovrani, credito debole e consolidamento fiscale pesarono sull'area euro e sull'Italia.",
+      "sourceUrl": "https://www.ecb.europa.eu/press/key/date/2012/html/sp120726.en.html"
+    },
+    {
+      "id": "ecb-purchase-programmes",
+      "label": "Tassi bassi e programmi di acquisto BCE",
+      "startYear": 2015,
+      "endYear": 2022,
+      "kind": "shared-policy-context",
+      "summary": "I programmi di acquisto e i tassi dell'area euro influenzarono costo del debito, credito e condizioni finanziarie senza essere decisioni del governo italiano.",
+      "sourceUrl": "https://www.ecb.europa.eu/mopo/implement/app/html/index.en.html"
+    },
+    {
+      "id": "italian-banking-stress",
+      "label": "Sofferenze bancarie e interventi sul sistema del credito",
+      "startYear": 2015,
+      "endYear": 2017,
+      "kind": "financial-shock",
+      "summary": "L'elevato stock di crediti deteriorati e alcune crisi bancarie condizionarono credito, investimenti e interventi pubblici; i problemi si erano accumulati negli anni precedenti.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2016/index.html"
+    },
+    {
+      "id": "trade-slowdown",
+      "label": "Rallentamento europeo e tensioni commerciali",
+      "startYear": 2018,
+      "endYear": 2019,
+      "kind": "external-shock",
+      "summary": "Il rallentamento del commercio mondiale e dell'industria europea frenò un'economia italiana già debole.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2019/index.html"
+    },
+    {
+      "id": "pandemic",
+      "label": "Pandemia e restrizioni",
+      "startYear": 2020,
+      "endYear": 2021,
+      "kind": "external-shock",
+      "summary": "La pandemia produsse un arresto eccezionale dell'attività e una risposta fiscale e monetaria straordinaria.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2020/index.html"
+    },
+    {
+      "id": "energy-inflation",
+      "label": "Energia, inflazione e guerra in Ucraina",
+      "startYear": 2021,
+      "endYear": 2023,
+      "kind": "external-shock",
+      "summary": "I prezzi energetici erano già in crescita nel 2021 e l'invasione russa aggravò lo shock nel 2022.",
+      "sourceUrl": "https://www.ecb.europa.eu/press/economic-bulletin/articles/2022/html/ecb.ebart202204_01~7b32d31b29.en.html"
+    },
+    {
+      "id": "recovery-plan",
+      "label": "NGEU e attuazione del PNRR",
+      "startYear": 2021,
+      "endYear": 2026,
+      "kind": "shared-policy-context",
+      "summary": "Finanziamenti e riforme europee attraversano più governi: l'origine, le revisioni e l'attuazione non vanno attribuite a un solo esecutivo.",
+      "sourceUrl": "https://commission.europa.eu/business-economy-euro/economic-recovery/recovery-and-resilience-facility/country-pages/italys-recovery-and-resilience-plan_en"
+    },
+    {
+      "id": "ecb-rate-tightening",
+      "label": "Stretta monetaria della BCE",
+      "startYear": 2022,
+      "endYear": 2024,
+      "kind": "shared-policy-context",
+      "summary": "Il rialzo dei tassi deciso dalla BCE per contrastare l'inflazione aumentò il costo del credito e del rifinanziamento del debito nell'intera area euro.",
+      "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
+    }
+  ],
+  "measures": [
+    {
+      "government": "Dini-I",
+      "title": "Riforma del sistema pensionistico",
+      "status": "enacted",
+      "act": "Legge 8 agosto 1995, n. 335",
+      "mechanism": "Introduzione graduale del metodo contributivo e revisione dei requisiti per contenere la spesa pensionistica nel lungo periodo.",
+      "evidence": "La riforma modifica regole e sostenibilità prospettica; gli effetti macro e distributivi maturano oltre la durata del governo.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1995-08-08;335"
+    },
+    {
+      "government": "Prodi-I",
+      "title": "Manovra per la convergenza europea e introduzione dell'IRAP",
+      "status": "enacted",
+      "act": "Legge 23 dicembre 1996, n. 662; decreto legislativo 15 dicembre 1997, n. 446",
+      "mechanism": "Correzione dei conti e riordino di tributi e contributi per sostenere la convergenza verso l'euro.",
+      "evidence": "La misura documenta una scelta fiscale; il punteggio macro non ne identifica l'effetto causale.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446"
+    },
+    {
+      "government": "D'Alema-I",
+      "title": "Finanziaria 1999 e misure per stabilizzazione e sviluppo",
+      "status": "enacted",
+      "act": "Legge 23 dicembre 1998, n. 448",
+      "mechanism": "Interventi su entrate, spese e incentivi nel passaggio finale verso l'unione monetaria.",
+      "evidence": "L'atto documenta la risposta di bilancio; il Core non separa il suo effetto dal ciclo europeo e dalle decisioni maturate prima del cambio di governo.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1998-12-23;448"
+    },
+    {
+      "government": "D'Alema-II",
+      "title": "Avvio della legge finanziaria 2000",
+      "status": "implemented-across-governments",
+      "act": "Legge 23 dicembre 1999, n. 488",
+      "mechanism": "La manovra definì misure annuali di finanza pubblica e sviluppo entrate in attuazione durante un mandato di pochi mesi.",
+      "evidence": "La legge fu preparata durante il governo precedente e promulgata all'inizio del D'Alema-II: la responsabilità va condivisa e gli esiti eccedono il mandato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1999-12-23;488"
+    },
+    {
+      "government": "Amato-II",
+      "title": "Credito d'imposta per nuove assunzioni",
+      "status": "enacted",
+      "act": "Legge 23 dicembre 2000, n. 388, articolo 7",
+      "mechanism": "Incentivo fiscale ai datori di lavoro per incrementare l'occupazione, con maggiorazioni nelle aree svantaggiate.",
+      "evidence": "La platea e il costo sono osservabili nella legge; l'effetto netto sull'occupazione richiede una valutazione dedicata e non coincide con il dato aggregato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-12-23;388"
+    },
+    {
+      "government": "Berlusconi-II",
+      "title": "Riforma del mercato del lavoro",
+      "status": "enacted",
+      "act": "Legge 14 febbraio 2003, n. 30; decreto legislativo 10 settembre 2003, n. 276",
+      "mechanism": "Riordino dei contratti e dei servizi per l'impiego, con maggiore flessibilità nelle forme di lavoro.",
+      "evidence": "La legge è osservabile; gli effetti su occupazione e qualità del lavoro richiedono valutazioni dedicate.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-09-10;276"
+    },
+    {
+      "government": "Berlusconi-III",
+      "title": "Piano d'azione per sviluppo e competitività",
+      "status": "implemented-across-governments",
+      "act": "Decreto-legge 14 marzo 2005, n. 35, convertito dalla legge 14 maggio 2005, n. 80",
+      "mechanism": "Misure su incentivi, procedure, investimenti e competitività avviate nel governo precedente e proseguite dopo il rimpasto.",
+      "evidence": "La continuità tra Berlusconi-II e III impedisce di attribuire gli effetti al solo esecutivo formalmente in carica nella fase finale.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2005-03-14;35"
+    },
+    {
+      "government": "Prodi-II",
+      "title": "Manovra 2007 e riduzione del disavanzo",
+      "status": "enacted",
+      "act": "Legge 27 dicembre 2006, n. 296",
+      "mechanism": "Interventi su entrate e spese con l'obiettivo di correggere i conti pubblici e finanziare misure sociali e di sviluppo.",
+      "evidence": "Il saldo osservato include ciclo, eredità e altre misure; non viene attribuito automaticamente alla legge.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2006-12-27;296"
+    },
+    {
+      "government": "Berlusconi-IV",
+      "title": "Misure anticrisi e successive correzioni di bilancio",
+      "status": "enacted",
+      "act": "Decreto-legge 29 novembre 2008, n. 185; decreto-legge 31 maggio 2010, n. 78",
+      "mechanism": "Sostegno a famiglie e imprese nella crisi globale seguito da una correzione dei conti pubblici.",
+      "evidence": "Crisi globale e crisi sovrana dominano il contesto: non si applicano sconti manuali al voto.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-29;185"
+    },
+    {
+      "government": "Monti-I",
+      "title": "Salva Italia e riforma pensionistica",
+      "status": "enacted",
+      "act": "Decreto-legge 6 dicembre 2011, n. 201",
+      "mechanism": "Consolidamento fiscale, revisione della previdenza e reintroduzione della tassazione immobiliare durante la crisi sovrana.",
+      "evidence": "La stabilizzazione finanziaria e i costi recessivi non sono riassumibili nel solo score macro.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2011-12-06;201"
+    },
+    {
+      "government": "Letta-I",
+      "title": "Abolizione della seconda rata IMU sulla prima casa e misure abitative",
+      "status": "enacted",
+      "act": "Decreto-legge 31 agosto 2013, n. 102",
+      "mechanism": "Riduzione del prelievo immobiliare sull'abitazione principale insieme a interventi su politiche abitative, enti locali e ammortizzatori.",
+      "evidence": "L'effetto sul reddito disponibile varia per famiglia e territorio; il costo e le coperture vanno distinti dall'andamento macro del mandato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-08-31;102"
+    },
+    {
+      "government": "Renzi-I",
+      "title": "Riduzione IRPEF per i dipendenti e Jobs Act",
+      "status": "enacted",
+      "act": "Decreto-legge 24 aprile 2014, n. 66; legge 10 dicembre 2014, n. 183",
+      "mechanism": "Aumento del reddito netto per una platea di lavoratori e riordino delle regole del mercato del lavoro.",
+      "evidence": "Occupazione, salari e composizione dei contratti vanno letti insieme; il dato aggregato non prova l'effetto delle riforme.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2014-12-10;183"
+    },
+    {
+      "government": "Gentiloni-I",
+      "title": "Incentivo strutturale all'occupazione giovanile",
+      "status": "enacted",
+      "act": "Legge 27 dicembre 2017, n. 205",
+      "mechanism": "Esonero contributivo parziale per assunzioni stabili di giovani, inserito nella legge di bilancio 2018.",
+      "evidence": "La misura riduce il costo del lavoro per i beneficiari; occupazione aggiuntiva, sostituzione e durata dei contratti richiedono valutazioni specifiche.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2017-12-27;205"
+    },
+    {
+      "government": "Conte-I",
+      "title": "Reddito di cittadinanza e Quota 100",
+      "status": "enacted",
+      "act": "Decreto-legge 28 gennaio 2019, n. 4",
+      "mechanism": "Introduce un sostegno al reddito collegato a servizi per il lavoro e un canale pensionistico temporaneo con requisiti di età e contributi.",
+      "evidence": "Spesa, povertà, occupazione e pensionamenti richiedono indicatori distinti; il Core macro non valuta da solo efficacia e distribuzione.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2019-01-28;4"
+    },
+    {
+      "government": "Conte-II",
+      "title": "Misure pandemiche e Superbonus",
+      "status": "enacted",
+      "act": "Decreto-legge 19 maggio 2020, n. 34",
+      "mechanism": "Sostegni durante la pandemia e crediti d'imposta per l'edilizia e l'efficienza energetica.",
+      "evidence": "Lo shock Covid rende bassa l'attribuzione; costi e investimenti del Superbonus attraversano governi e anni successivi.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2020-05-19;34"
+    },
+    {
+      "government": "Draghi-I",
+      "title": "Governance e prima attuazione del PNRR",
+      "status": "implemented-across-governments",
+      "act": "Decreto-legge 31 maggio 2021, n. 77",
+      "mechanism": "Governance, procedure e riforme per realizzare il Piano nazionale di ripresa e resilienza.",
+      "evidence": "Il piano nasce nel quadro NGEU e la sua attuazione prosegue con il governo successivo.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2021-05-31;77"
+    },
+    {
+      "government": "Meloni-I",
+      "title": "Cuneo fiscale e IRPEF resi strutturali",
+      "status": "enacted",
+      "act": "Legge 30 dicembre 2024, n. 207",
+      "mechanism": "Bonus e detrazioni fiscali sostituiscono l'esonero contributivo temporaneo e stabilizzano tre aliquote IRPEF.",
+      "evidence": "Il dossier parlamentare quantifica minori entrate; il nesso con salari reali e crescita non è identificato dal dato macro.",
+      "sourceUrl": "https://documenti.camera.it/leg19/dossier/pdf/ID0011fvol4.pdf"
+    },
+    {
+      "government": "Meloni-I",
+      "title": "Restrizioni alla cessione dei crediti edilizi",
+      "status": "enacted",
+      "act": "Decreto-legge 16 febbraio 2023, n. 11",
+      "mechanism": "Limita nuove opzioni di sconto in fattura e cessione dei crediti per contenere l'esposizione futura dei conti pubblici.",
+      "evidence": "Riduce nuove maturazioni ma costi, investimenti e classificazione dei crediti già accumulati continuano negli anni successivi.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-02-16;11"
+    },
+    {
+      "government": "Meloni-I",
+      "title": "Manovra 2026: IRPEF e incentivi agli investimenti",
+      "status": "enacted",
+      "act": "Legge 30 dicembre 2025, n. 199",
+      "mechanism": "Riduzione della seconda aliquota IRPEF e maggiorazione degli ammortamenti per nuovi beni strumentali.",
+      "evidence": "L'UPB valuta modesti gli effetti macro complessivi e segnala che una parte delle misure è temporanea.",
+      "sourceUrl": "https://www.upbilancio.it/it/attivita/pubblicazioni/focus-tematici/focus-tematici-anno-2026/focus-tematico-n-1-20-febbraio-2026-2026/"
+    },
+    {
+      "government": "Meloni-I",
+      "title": "Revisione e attuazione del PNRR",
+      "status": "implemented-across-governments",
+      "act": "PNRR italiano e successive decisioni di revisione dell'Unione europea",
+      "mechanism": "Realizzazione di riforme e investimenti finanziati da NGEU, con rimodulazioni durante il mandato.",
+      "evidence": "Risorse e riforme attraversano Draghi e Meloni: avanzamento e impatto non sono merito esclusivo di un solo governo.",
+      "sourceUrl": "https://commission.europa.eu/business-economy-euro/economic-recovery/recovery-and-resilience-facility/country-pages/italys-recovery-and-resilience-plan_en"
+    }
+  ],
+  "caveats": [
+    "Il Core annuale non è la pagella socio-economica completa raccomandata per il periodo dal 2005.",
+    "I governi precedenti al 1995 sono mostrati come storia e contesto senza voto complessivo.",
+    "I valori 2025-2027 sono previsioni AMECO e non vengono mescolati con le osservazioni fino al 2024.",
+    "Il confronto descrive risultati durante un mandato e non identifica quanto sia stato causato dal governo.",
+    "La banca dati usa l'ultimo vintage AMECO: le serie storiche possono essere state riviste dopo i governi osservati."
+  ]
+}

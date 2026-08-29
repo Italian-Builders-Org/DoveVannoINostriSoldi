@@ -1,0 +1,2847 @@
+{
+  "schemaVersion": 1,
+  "methodologyVersion": "current-signals-v1",
+  "generatedAt": "2026-08-29T23:11:49Z",
+  "governmentStartPeriod": "2022-10",
+  "source": {
+    "owner": "Eurostat",
+    "datasetCode": "prc_hicp_minr",
+    "title": "Harmonised index of consumer prices (HICP) - ECOICOP ver.2 - indices and rates of change, monthly data",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+    "informationUrl": "https://ec.europa.eu/eurostat/web/hicp/information-data",
+    "reuseUrl": "https://ec.europa.eu/eurostat/help/copyright-notice",
+    "apiUrl": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&unit=I25&unit=RCH_A&coicop18=TOTAL&coicop18=CP01&coicop18=CP04&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2022-10",
+    "cadence": "Mensile, normalmente a metà del mese successivo al periodo di riferimento",
+    "sourceUpdatedAt": "2026-08-19T09:00:00Z",
+    "retrievedAt": "2026-08-29T23:11:49Z",
+    "referencePeriodFrom": "2022-10",
+    "referencePeriodThrough": "2026-07",
+    "bytes": 18430,
+    "sha256": "2ea978e70393f577dcb567ebeb6ff40a517d60e8a6c07856357a8a95a1815f40"
+  },
+  "indicators": [
+    {
+      "id": "all-items",
+      "code": "TOTAL",
+      "label": "Prezzi complessivi",
+      "question": "Quanto è aumentato in media il costo del paniere dei consumi?",
+      "indexUnit": "indice 2025=100",
+      "annualRateUnit": "variazione percentuale annua",
+      "limitations": "Media nazionale dei prezzi di consumo: non descrive il paniere specifico di ogni famiglia.",
+      "countries": {
+        "germany": [
+          {
+            "period": "2022-10",
+            "index": 93.65,
+            "annualRate": 11.6
+          },
+          {
+            "period": "2022-11",
+            "index": 93.64,
+            "annualRate": 11.3
+          },
+          {
+            "period": "2022-12",
+            "index": 92.48,
+            "annualRate": 9.6
+          },
+          {
+            "period": "2023-01",
+            "index": 92.98,
+            "annualRate": 9.2
+          },
+          {
+            "period": "2023-02",
+            "index": 93.87,
+            "annualRate": 9.3
+          },
+          {
+            "period": "2023-03",
+            "index": 94.81,
+            "annualRate": 7.7
+          },
+          {
+            "period": "2023-04",
+            "index": 95.34,
+            "annualRate": 7.5
+          },
+          {
+            "period": "2023-05",
+            "index": 95.21,
+            "annualRate": 6.3
+          },
+          {
+            "period": "2023-06",
+            "index": 95.59,
+            "annualRate": 6.7
+          },
+          {
+            "period": "2023-07",
+            "index": 96.05,
+            "annualRate": 6.5
+          },
+          {
+            "period": "2023-08",
+            "index": 96.4,
+            "annualRate": 6.4
+          },
+          {
+            "period": "2023-09",
+            "index": 96.54,
+            "annualRate": 4.3
+          },
+          {
+            "period": "2023-10",
+            "index": 96.4,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2023-11",
+            "index": 95.75,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2023-12",
+            "index": 95.94,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2024-01",
+            "index": 95.8,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2024-02",
+            "index": 96.42,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2024-03",
+            "index": 97.04,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-04",
+            "index": 97.62,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-05",
+            "index": 97.83,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2024-06",
+            "index": 98.03,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2024-07",
+            "index": 98.52,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2024-08",
+            "index": 98.42,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2024-09",
+            "index": 98.34,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2024-10",
+            "index": 98.68,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-11",
+            "index": 98.06,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-12",
+            "index": 98.66,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-01",
+            "index": 98.47,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-02",
+            "index": 98.95,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2025-03",
+            "index": 99.32,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2025-04",
+            "index": 99.8,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2025-05",
+            "index": 99.88,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2025-06",
+            "index": 99.97,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2025-07",
+            "index": 100.35,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2025-08",
+            "index": 100.42,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2025-09",
+            "index": 100.65,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2025-10",
+            "index": 100.95,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2025-11",
+            "index": 100.56,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2025-12",
+            "index": 100.67,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2026-01",
+            "index": 100.56,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2026-02",
+            "index": 100.94,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2026-03",
+            "index": 102.1,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2026-04",
+            "index": 102.66,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2026-05",
+            "index": 102.54,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2026-06",
+            "index": 102.32,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2026-07",
+            "index": 103.2,
+            "annualRate": 2.8
+          }
+        ],
+        "spain": [
+          {
+            "period": "2022-10",
+            "index": 92.86,
+            "annualRate": 7.3
+          },
+          {
+            "period": "2022-11",
+            "index": 92.55,
+            "annualRate": 6.7
+          },
+          {
+            "period": "2022-12",
+            "index": 92.56,
+            "annualRate": 5.5
+          },
+          {
+            "period": "2023-01",
+            "index": 92.16,
+            "annualRate": 5.9
+          },
+          {
+            "period": "2023-02",
+            "index": 93.03,
+            "annualRate": 6.0
+          },
+          {
+            "period": "2023-03",
+            "index": 94.01,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2023-04",
+            "index": 94.44,
+            "annualRate": 3.8
+          },
+          {
+            "period": "2023-05",
+            "index": 94.31,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2023-06",
+            "index": 94.85,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2023-07",
+            "index": 94.78,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2023-08",
+            "index": 95.29,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2023-09",
+            "index": 95.84,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2023-10",
+            "index": 96.09,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2023-11",
+            "index": 95.58,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2023-12",
+            "index": 95.59,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2024-01",
+            "index": 95.4,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2024-02",
+            "index": 95.77,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2024-03",
+            "index": 97.06,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2024-04",
+            "index": 97.65,
+            "annualRate": 3.4
+          },
+          {
+            "period": "2024-05",
+            "index": 97.87,
+            "annualRate": 3.8
+          },
+          {
+            "period": "2024-06",
+            "index": 98.26,
+            "annualRate": 3.6
+          },
+          {
+            "period": "2024-07",
+            "index": 97.52,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2024-08",
+            "index": 97.55,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-09",
+            "index": 97.46,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2024-10",
+            "index": 97.84,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2024-11",
+            "index": 97.87,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-12",
+            "index": 98.3,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-01",
+            "index": 98.15,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2025-02",
+            "index": 98.54,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2025-03",
+            "index": 99.22,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2025-04",
+            "index": 99.84,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2025-05",
+            "index": 99.81,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2025-06",
+            "index": 100.49,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2025-07",
+            "index": 100.15,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2025-08",
+            "index": 100.18,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2025-09",
+            "index": 100.42,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2025-10",
+            "index": 100.95,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2025-11",
+            "index": 100.96,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2025-12",
+            "index": 101.29,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2026-01",
+            "index": 100.53,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2026-02",
+            "index": 100.96,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2026-03",
+            "index": 102.64,
+            "annualRate": 3.4
+          },
+          {
+            "period": "2026-04",
+            "index": 103.36,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2026-05",
+            "index": 103.45,
+            "annualRate": 3.6
+          },
+          {
+            "period": "2026-06",
+            "index": 104.08,
+            "annualRate": 3.6
+          },
+          {
+            "period": "2026-07",
+            "index": 104.06,
+            "annualRate": 3.9
+          }
+        ],
+        "france": [
+          {
+            "period": "2022-10",
+            "index": 93.49,
+            "annualRate": 7.1
+          },
+          {
+            "period": "2022-11",
+            "index": 93.88,
+            "annualRate": 7.1
+          },
+          {
+            "period": "2022-12",
+            "index": 93.79,
+            "annualRate": 6.7
+          },
+          {
+            "period": "2023-01",
+            "index": 94.2,
+            "annualRate": 7.0
+          },
+          {
+            "period": "2023-02",
+            "index": 95.27,
+            "annualRate": 7.3
+          },
+          {
+            "period": "2023-03",
+            "index": 96.25,
+            "annualRate": 6.7
+          },
+          {
+            "period": "2023-04",
+            "index": 96.88,
+            "annualRate": 6.9
+          },
+          {
+            "period": "2023-05",
+            "index": 96.81,
+            "annualRate": 6.0
+          },
+          {
+            "period": "2023-06",
+            "index": 97.01,
+            "annualRate": 5.3
+          },
+          {
+            "period": "2023-07",
+            "index": 97.06,
+            "annualRate": 5.1
+          },
+          {
+            "period": "2023-08",
+            "index": 98.13,
+            "annualRate": 5.7
+          },
+          {
+            "period": "2023-09",
+            "index": 97.57,
+            "annualRate": 5.7
+          },
+          {
+            "period": "2023-10",
+            "index": 97.74,
+            "annualRate": 4.5
+          },
+          {
+            "period": "2023-11",
+            "index": 97.5,
+            "annualRate": 3.9
+          },
+          {
+            "period": "2023-12",
+            "index": 97.64,
+            "annualRate": 4.1
+          },
+          {
+            "period": "2024-01",
+            "index": 97.41,
+            "annualRate": 3.4
+          },
+          {
+            "period": "2024-02",
+            "index": 98.33,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2024-03",
+            "index": 98.57,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-04",
+            "index": 99.18,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-05",
+            "index": 99.32,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2024-06",
+            "index": 99.48,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2024-07",
+            "index": 99.68,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2024-08",
+            "index": 100.27,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2024-09",
+            "index": 98.97,
+            "annualRate": 1.4
+          },
+          {
+            "period": "2024-10",
+            "index": 99.28,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2024-11",
+            "index": 99.14,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2024-12",
+            "index": 99.35,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-01",
+            "index": 99.19,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-02",
+            "index": 99.24,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-03",
+            "index": 99.44,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-04",
+            "index": 100.09,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-05",
+            "index": 99.91,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2025-06",
+            "index": 100.33,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-07",
+            "index": 100.62,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-08",
+            "index": 101.1,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2025-09",
+            "index": 100.03,
+            "annualRate": 1.1
+          },
+          {
+            "period": "2025-10",
+            "index": 100.12,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2025-11",
+            "index": 99.92,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2025-12",
+            "index": 100.0,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2026-01",
+            "index": 99.59,
+            "annualRate": 0.4
+          },
+          {
+            "period": "2026-02",
+            "index": 100.3,
+            "annualRate": 1.1
+          },
+          {
+            "period": "2026-03",
+            "index": 101.4,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2026-04",
+            "index": 102.57,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2026-05",
+            "index": 102.71,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2026-06",
+            "index": 102.36,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2026-07",
+            "index": 103.0,
+            "annualRate": 2.4
+          }
+        ],
+        "italy": [
+          {
+            "period": "2022-10",
+            "index": 96.6,
+            "annualRate": 12.6
+          },
+          {
+            "period": "2022-11",
+            "index": 97.2,
+            "annualRate": 12.5
+          },
+          {
+            "period": "2022-12",
+            "index": 97.4,
+            "annualRate": 12.2
+          },
+          {
+            "period": "2023-01",
+            "index": 96.0,
+            "annualRate": 10.7
+          },
+          {
+            "period": "2023-02",
+            "index": 96.1,
+            "annualRate": 9.8
+          },
+          {
+            "period": "2023-03",
+            "index": 96.8,
+            "annualRate": 8.0
+          },
+          {
+            "period": "2023-04",
+            "index": 97.6,
+            "annualRate": 8.6
+          },
+          {
+            "period": "2023-05",
+            "index": 98.0,
+            "annualRate": 8.0
+          },
+          {
+            "period": "2023-06",
+            "index": 98.0,
+            "annualRate": 6.8
+          },
+          {
+            "period": "2023-07",
+            "index": 96.5,
+            "annualRate": 6.3
+          },
+          {
+            "period": "2023-08",
+            "index": 96.6,
+            "annualRate": 5.6
+          },
+          {
+            "period": "2023-09",
+            "index": 98.3,
+            "annualRate": 5.6
+          },
+          {
+            "period": "2023-10",
+            "index": 98.3,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2023-11",
+            "index": 97.8,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2023-12",
+            "index": 98.0,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2024-01",
+            "index": 96.9,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2024-02",
+            "index": 96.9,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2024-03",
+            "index": 98.0,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2024-04",
+            "index": 98.5,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2024-05",
+            "index": 98.7,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2024-06",
+            "index": 98.9,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2024-07",
+            "index": 98.0,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2024-08",
+            "index": 97.9,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2024-09",
+            "index": 99.0,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2024-10",
+            "index": 99.3,
+            "annualRate": 1.0
+          },
+          {
+            "period": "2024-11",
+            "index": 99.2,
+            "annualRate": 1.4
+          },
+          {
+            "period": "2024-12",
+            "index": 99.3,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2025-01",
+            "index": 98.5,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-02",
+            "index": 98.5,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-03",
+            "index": 100.1,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2025-04",
+            "index": 100.5,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2025-05",
+            "index": 100.4,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-06",
+            "index": 100.6,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-07",
+            "index": 99.7,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-08",
+            "index": 99.5,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2025-09",
+            "index": 100.7,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-10",
+            "index": 100.6,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2025-11",
+            "index": 100.3,
+            "annualRate": 1.1
+          },
+          {
+            "period": "2025-12",
+            "index": 100.5,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2026-01",
+            "index": 99.5,
+            "annualRate": 1.0
+          },
+          {
+            "period": "2026-02",
+            "index": 100.0,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2026-03",
+            "index": 101.7,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2026-04",
+            "index": 103.3,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2026-05",
+            "index": 103.6,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2026-06",
+            "index": 103.6,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2026-07",
+            "index": 102.6,
+            "annualRate": 2.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "food",
+      "code": "CP01",
+      "label": "Alimentari",
+      "question": "Quanto sono aumentati cibo e bevande analcoliche?",
+      "indexUnit": "indice 2025=100",
+      "annualRateUnit": "variazione percentuale annua",
+      "limitations": "La quota di reddito spesa per alimentari varia molto tra famiglie e fasce di reddito.",
+      "countries": {
+        "germany": [
+          {
+            "period": "2022-10",
+            "index": 89.38,
+            "annualRate": 18.9
+          },
+          {
+            "period": "2022-11",
+            "index": 90.5,
+            "annualRate": 19.8
+          },
+          {
+            "period": "2022-12",
+            "index": 91.15,
+            "annualRate": 19.5
+          },
+          {
+            "period": "2023-01",
+            "index": 92.54,
+            "annualRate": 19.5
+          },
+          {
+            "period": "2023-02",
+            "index": 94.73,
+            "annualRate": 21.2
+          },
+          {
+            "period": "2023-03",
+            "index": 95.99,
+            "annualRate": 21.8
+          },
+          {
+            "period": "2023-04",
+            "index": 95.58,
+            "annualRate": 17.5
+          },
+          {
+            "period": "2023-05",
+            "index": 95.47,
+            "annualRate": 15.0
+          },
+          {
+            "period": "2023-06",
+            "index": 95.47,
+            "annualRate": 13.9
+          },
+          {
+            "period": "2023-07",
+            "index": 95.29,
+            "annualRate": 11.4
+          },
+          {
+            "period": "2023-08",
+            "index": 94.99,
+            "annualRate": 9.4
+          },
+          {
+            "period": "2023-09",
+            "index": 95.44,
+            "annualRate": 8.1
+          },
+          {
+            "period": "2023-10",
+            "index": 95.48,
+            "annualRate": 6.8
+          },
+          {
+            "period": "2023-11",
+            "index": 96.01,
+            "annualRate": 6.1
+          },
+          {
+            "period": "2023-12",
+            "index": 96.08,
+            "annualRate": 5.4
+          },
+          {
+            "period": "2024-01",
+            "index": 96.98,
+            "annualRate": 4.8
+          },
+          {
+            "period": "2024-02",
+            "index": 96.79,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2024-03",
+            "index": 96.57,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2024-04",
+            "index": 97.06,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2024-05",
+            "index": 97.01,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2024-06",
+            "index": 97.3,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2024-07",
+            "index": 97.36,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2024-08",
+            "index": 97.25,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-09",
+            "index": 97.72,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2024-10",
+            "index": 98.46,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2024-11",
+            "index": 98.56,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2024-12",
+            "index": 98.76,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-01",
+            "index": 98.45,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2025-02",
+            "index": 99.61,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2025-03",
+            "index": 99.99,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2025-04",
+            "index": 100.27,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2025-05",
+            "index": 100.14,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2025-06",
+            "index": 99.64,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-07",
+            "index": 99.9,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2025-08",
+            "index": 100.23,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2025-09",
+            "index": 100.43,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-10",
+            "index": 100.44,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2025-11",
+            "index": 100.48,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2025-12",
+            "index": 100.41,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2026-01",
+            "index": 101.32,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2026-02",
+            "index": 101.47,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2026-03",
+            "index": 101.52,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2026-04",
+            "index": 101.98,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2026-05",
+            "index": 101.17,
+            "annualRate": 1.0
+          },
+          {
+            "period": "2026-06",
+            "index": 100.47,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2026-07",
+            "index": 100.49,
+            "annualRate": 0.6
+          }
+        ],
+        "spain": [
+          {
+            "period": "2022-10",
+            "index": 88.16,
+            "annualRate": 15.4
+          },
+          {
+            "period": "2022-11",
+            "index": 88.59,
+            "annualRate": 15.3
+          },
+          {
+            "period": "2022-12",
+            "index": 90.0,
+            "annualRate": 15.7
+          },
+          {
+            "period": "2023-01",
+            "index": 90.34,
+            "annualRate": 15.3
+          },
+          {
+            "period": "2023-02",
+            "index": 92.12,
+            "annualRate": 16.6
+          },
+          {
+            "period": "2023-03",
+            "index": 93.1,
+            "annualRate": 16.5
+          },
+          {
+            "period": "2023-04",
+            "index": 93.35,
+            "annualRate": 12.9
+          },
+          {
+            "period": "2023-05",
+            "index": 93.7,
+            "annualRate": 12.0
+          },
+          {
+            "period": "2023-06",
+            "index": 93.93,
+            "annualRate": 10.3
+          },
+          {
+            "period": "2023-07",
+            "index": 94.65,
+            "annualRate": 10.8
+          },
+          {
+            "period": "2023-08",
+            "index": 94.82,
+            "annualRate": 10.5
+          },
+          {
+            "period": "2023-09",
+            "index": 95.28,
+            "annualRate": 10.5
+          },
+          {
+            "period": "2023-10",
+            "index": 96.49,
+            "annualRate": 9.4
+          },
+          {
+            "period": "2023-11",
+            "index": 96.59,
+            "annualRate": 9.0
+          },
+          {
+            "period": "2023-12",
+            "index": 96.56,
+            "annualRate": 7.3
+          },
+          {
+            "period": "2024-01",
+            "index": 97.07,
+            "annualRate": 7.4
+          },
+          {
+            "period": "2024-02",
+            "index": 97.04,
+            "annualRate": 5.3
+          },
+          {
+            "period": "2024-03",
+            "index": 97.1,
+            "annualRate": 4.3
+          },
+          {
+            "period": "2024-04",
+            "index": 97.76,
+            "annualRate": 4.7
+          },
+          {
+            "period": "2024-05",
+            "index": 97.8,
+            "annualRate": 4.4
+          },
+          {
+            "period": "2024-06",
+            "index": 97.88,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2024-07",
+            "index": 97.57,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2024-08",
+            "index": 97.22,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2024-09",
+            "index": 96.97,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2024-10",
+            "index": 98.33,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2024-11",
+            "index": 98.23,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2024-12",
+            "index": 98.28,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-01",
+            "index": 98.84,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-02",
+            "index": 99.16,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2025-03",
+            "index": 99.45,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-04",
+            "index": 99.78,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2025-05",
+            "index": 100.25,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2025-06",
+            "index": 100.6,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2025-07",
+            "index": 100.21,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2025-08",
+            "index": 99.44,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2025-09",
+            "index": 99.29,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-10",
+            "index": 100.71,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-11",
+            "index": 101.04,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2025-12",
+            "index": 101.23,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2026-01",
+            "index": 101.8,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2026-02",
+            "index": 102.38,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2026-03",
+            "index": 102.16,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2026-04",
+            "index": 102.41,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2026-05",
+            "index": 102.45,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2026-06",
+            "index": 102.53,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2026-07",
+            "index": 101.85,
+            "annualRate": 1.6
+          }
+        ],
+        "france": [
+          {
+            "period": "2022-10",
+            "index": 90.91,
+            "annualRate": 12.9
+          },
+          {
+            "period": "2022-11",
+            "index": 91.37,
+            "annualRate": 13.0
+          },
+          {
+            "period": "2022-12",
+            "index": 91.82,
+            "annualRate": 12.9
+          },
+          {
+            "period": "2023-01",
+            "index": 93.43,
+            "annualRate": 14.1
+          },
+          {
+            "period": "2023-02",
+            "index": 95.11,
+            "annualRate": 15.8
+          },
+          {
+            "period": "2023-03",
+            "index": 96.94,
+            "annualRate": 16.9
+          },
+          {
+            "period": "2023-04",
+            "index": 97.46,
+            "annualRate": 15.7
+          },
+          {
+            "period": "2023-05",
+            "index": 97.77,
+            "annualRate": 14.9
+          },
+          {
+            "period": "2023-06",
+            "index": 98.01,
+            "annualRate": 14.3
+          },
+          {
+            "period": "2023-07",
+            "index": 98.06,
+            "annualRate": 13.2
+          },
+          {
+            "period": "2023-08",
+            "index": 98.41,
+            "annualRate": 11.6
+          },
+          {
+            "period": "2023-09",
+            "index": 98.14,
+            "annualRate": 9.9
+          },
+          {
+            "period": "2023-10",
+            "index": 98.17,
+            "annualRate": 8.0
+          },
+          {
+            "period": "2023-11",
+            "index": 98.58,
+            "annualRate": 7.9
+          },
+          {
+            "period": "2023-12",
+            "index": 98.63,
+            "annualRate": 7.4
+          },
+          {
+            "period": "2024-01",
+            "index": 98.85,
+            "annualRate": 5.8
+          },
+          {
+            "period": "2024-02",
+            "index": 98.49,
+            "annualRate": 3.6
+          },
+          {
+            "period": "2024-03",
+            "index": 98.51,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2024-04",
+            "index": 98.59,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2024-05",
+            "index": 99.02,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2024-06",
+            "index": 98.83,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2024-07",
+            "index": 98.59,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-08",
+            "index": 98.91,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-09",
+            "index": 98.59,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-10",
+            "index": 98.89,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2024-11",
+            "index": 98.76,
+            "annualRate": 0.2
+          },
+          {
+            "period": "2024-12",
+            "index": 98.63,
+            "annualRate": 0.0
+          },
+          {
+            "period": "2025-01",
+            "index": 98.94,
+            "annualRate": 0.1
+          },
+          {
+            "period": "2025-02",
+            "index": 98.82,
+            "annualRate": 0.3
+          },
+          {
+            "period": "2025-03",
+            "index": 99.14,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2025-04",
+            "index": 99.92,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2025-05",
+            "index": 100.43,
+            "annualRate": 1.4
+          },
+          {
+            "period": "2025-06",
+            "index": 100.31,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2025-07",
+            "index": 100.34,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-08",
+            "index": 100.66,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2025-09",
+            "index": 100.46,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2025-10",
+            "index": 100.28,
+            "annualRate": 1.4
+          },
+          {
+            "period": "2025-11",
+            "index": 100.23,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2025-12",
+            "index": 100.45,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2026-01",
+            "index": 100.92,
+            "annualRate": 2.0
+          },
+          {
+            "period": "2026-02",
+            "index": 100.94,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2026-03",
+            "index": 101.06,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2026-04",
+            "index": 101.27,
+            "annualRate": 1.4
+          },
+          {
+            "period": "2026-05",
+            "index": 101.6,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2026-06",
+            "index": 101.25,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2026-07",
+            "index": 101.38,
+            "annualRate": 1.0
+          }
+        ],
+        "italy": [
+          {
+            "period": "2022-10",
+            "index": 89.5,
+            "annualRate": 13.6
+          },
+          {
+            "period": "2022-11",
+            "index": 90.3,
+            "annualRate": 13.7
+          },
+          {
+            "period": "2022-12",
+            "index": 90.6,
+            "annualRate": 13.3
+          },
+          {
+            "period": "2023-01",
+            "index": 91.5,
+            "annualRate": 12.7
+          },
+          {
+            "period": "2023-02",
+            "index": 93.0,
+            "annualRate": 13.4
+          },
+          {
+            "period": "2023-03",
+            "index": 93.7,
+            "annualRate": 13.3
+          },
+          {
+            "period": "2023-04",
+            "index": 94.1,
+            "annualRate": 12.3
+          },
+          {
+            "period": "2023-05",
+            "index": 95.0,
+            "annualRate": 11.9
+          },
+          {
+            "period": "2023-06",
+            "index": 95.3,
+            "annualRate": 11.1
+          },
+          {
+            "period": "2023-07",
+            "index": 95.4,
+            "annualRate": 10.9
+          },
+          {
+            "period": "2023-08",
+            "index": 95.6,
+            "annualRate": 10.1
+          },
+          {
+            "period": "2023-09",
+            "index": 95.6,
+            "annualRate": 8.9
+          },
+          {
+            "period": "2023-10",
+            "index": 95.5,
+            "annualRate": 6.7
+          },
+          {
+            "period": "2023-11",
+            "index": 95.8,
+            "annualRate": 6.1
+          },
+          {
+            "period": "2023-12",
+            "index": 96.1,
+            "annualRate": 6.1
+          },
+          {
+            "period": "2024-01",
+            "index": 96.9,
+            "annualRate": 5.9
+          },
+          {
+            "period": "2024-02",
+            "index": 96.6,
+            "annualRate": 3.9
+          },
+          {
+            "period": "2024-03",
+            "index": 96.5,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2024-04",
+            "index": 96.6,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2024-05",
+            "index": 97.0,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2024-06",
+            "index": 96.8,
+            "annualRate": 1.6
+          },
+          {
+            "period": "2024-07",
+            "index": 96.4,
+            "annualRate": 1.0
+          },
+          {
+            "period": "2024-08",
+            "index": 96.5,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2024-09",
+            "index": 96.8,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2024-10",
+            "index": 98.0,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2024-11",
+            "index": 98.6,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2024-12",
+            "index": 98.1,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2025-01",
+            "index": 99.0,
+            "annualRate": 2.2
+          },
+          {
+            "period": "2025-02",
+            "index": 99.0,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2025-03",
+            "index": 99.0,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2025-04",
+            "index": 99.7,
+            "annualRate": 3.2
+          },
+          {
+            "period": "2025-05",
+            "index": 100.2,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2025-06",
+            "index": 100.2,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2025-07",
+            "index": 100.3,
+            "annualRate": 4.0
+          },
+          {
+            "period": "2025-08",
+            "index": 100.6,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2025-09",
+            "index": 100.5,
+            "annualRate": 3.8
+          },
+          {
+            "period": "2025-10",
+            "index": 100.4,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-11",
+            "index": 100.5,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2025-12",
+            "index": 100.5,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2026-01",
+            "index": 101.3,
+            "annualRate": 2.3
+          },
+          {
+            "period": "2026-02",
+            "index": 101.4,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2026-03",
+            "index": 101.8,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2026-04",
+            "index": 102.7,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2026-05",
+            "index": 102.7,
+            "annualRate": 2.5
+          },
+          {
+            "period": "2026-06",
+            "index": 102.0,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2026-07",
+            "index": 101.6,
+            "annualRate": 1.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "housing-energy",
+      "code": "CP04",
+      "label": "Casa, acqua ed energia",
+      "question": "Quanto sono aumentati affitti, utenze domestiche ed energia?",
+      "indexUnit": "indice 2025=100",
+      "annualRateUnit": "variazione percentuale annua",
+      "limitations": "Include affitti e utenze, ma non il prezzo di acquisto della casa né la rata del mutuo.",
+      "countries": {
+        "germany": [
+          {
+            "period": "2022-10",
+            "index": 98.73,
+            "annualRate": 19.3
+          },
+          {
+            "period": "2022-11",
+            "index": 99.08,
+            "annualRate": 19.2
+          },
+          {
+            "period": "2022-12",
+            "index": 93.85,
+            "annualRate": 12.8
+          },
+          {
+            "period": "2023-01",
+            "index": 98.01,
+            "annualRate": 13.9
+          },
+          {
+            "period": "2023-02",
+            "index": 98.07,
+            "annualRate": 12.9
+          },
+          {
+            "period": "2023-03",
+            "index": 98.29,
+            "annualRate": 9.1
+          },
+          {
+            "period": "2023-04",
+            "index": 98.51,
+            "annualRate": 9.2
+          },
+          {
+            "period": "2023-05",
+            "index": 98.47,
+            "annualRate": 7.8
+          },
+          {
+            "period": "2023-06",
+            "index": 98.35,
+            "annualRate": 6.4
+          },
+          {
+            "period": "2023-07",
+            "index": 98.36,
+            "annualRate": 5.1
+          },
+          {
+            "period": "2023-08",
+            "index": 98.67,
+            "annualRate": 4.3
+          },
+          {
+            "period": "2023-09",
+            "index": 98.63,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2023-10",
+            "index": 98.37,
+            "annualRate": -0.4
+          },
+          {
+            "period": "2023-11",
+            "index": 97.9,
+            "annualRate": -1.2
+          },
+          {
+            "period": "2023-12",
+            "index": 97.59,
+            "annualRate": 4.0
+          },
+          {
+            "period": "2024-01",
+            "index": 98.55,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2024-02",
+            "index": 98.55,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-03",
+            "index": 98.4,
+            "annualRate": 0.1
+          },
+          {
+            "period": "2024-04",
+            "index": 99.1,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2024-05",
+            "index": 99.03,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2024-06",
+            "index": 99.06,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2024-07",
+            "index": 99.19,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2024-08",
+            "index": 99.13,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-09",
+            "index": 99.11,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2024-10",
+            "index": 99.17,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2024-11",
+            "index": 99.17,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2024-12",
+            "index": 99.25,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2025-01",
+            "index": 99.46,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-02",
+            "index": 99.61,
+            "annualRate": 1.1
+          },
+          {
+            "period": "2025-03",
+            "index": 99.64,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2025-04",
+            "index": 99.78,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2025-05",
+            "index": 99.85,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2025-06",
+            "index": 99.93,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-07",
+            "index": 100.12,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2025-08",
+            "index": 100.16,
+            "annualRate": 1.0
+          },
+          {
+            "period": "2025-09",
+            "index": 100.21,
+            "annualRate": 1.1
+          },
+          {
+            "period": "2025-10",
+            "index": 100.34,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2025-11",
+            "index": 100.47,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2025-12",
+            "index": 100.45,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2026-01",
+            "index": 100.08,
+            "annualRate": 0.6
+          },
+          {
+            "period": "2026-02",
+            "index": 100.07,
+            "annualRate": 0.5
+          },
+          {
+            "period": "2026-03",
+            "index": 100.48,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2026-04",
+            "index": 100.67,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2026-05",
+            "index": 100.65,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2026-06",
+            "index": 100.59,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2026-07",
+            "index": 100.84,
+            "annualRate": 0.7
+          }
+        ],
+        "spain": [
+          {
+            "period": "2022-10",
+            "index": 98.02,
+            "annualRate": 2.6
+          },
+          {
+            "period": "2022-11",
+            "index": 94.58,
+            "annualRate": 0.9
+          },
+          {
+            "period": "2022-12",
+            "index": 95.27,
+            "annualRate": -4.5
+          },
+          {
+            "period": "2023-01",
+            "index": 91.29,
+            "annualRate": -8.4
+          },
+          {
+            "period": "2023-02",
+            "index": 94.05,
+            "annualRate": -6.1
+          },
+          {
+            "period": "2023-03",
+            "index": 92.16,
+            "annualRate": -16.1
+          },
+          {
+            "period": "2023-04",
+            "index": 90.48,
+            "annualRate": -10.8
+          },
+          {
+            "period": "2023-05",
+            "index": 90.18,
+            "annualRate": -10.4
+          },
+          {
+            "period": "2023-06",
+            "index": 90.94,
+            "annualRate": -12.7
+          },
+          {
+            "period": "2023-07",
+            "index": 91.0,
+            "annualRate": -14.8
+          },
+          {
+            "period": "2023-08",
+            "index": 90.83,
+            "annualRate": -18.0
+          },
+          {
+            "period": "2023-09",
+            "index": 91.19,
+            "annualRate": -13.1
+          },
+          {
+            "period": "2023-10",
+            "index": 90.56,
+            "annualRate": -7.6
+          },
+          {
+            "period": "2023-11",
+            "index": 89.27,
+            "annualRate": -5.6
+          },
+          {
+            "period": "2023-12",
+            "index": 89.74,
+            "annualRate": -5.8
+          },
+          {
+            "period": "2024-01",
+            "index": 92.67,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2024-02",
+            "index": 91.53,
+            "annualRate": -2.7
+          },
+          {
+            "period": "2024-03",
+            "index": 93.55,
+            "annualRate": 1.5
+          },
+          {
+            "period": "2024-04",
+            "index": 94.04,
+            "annualRate": 3.9
+          },
+          {
+            "period": "2024-05",
+            "index": 94.81,
+            "annualRate": 5.1
+          },
+          {
+            "period": "2024-06",
+            "index": 95.54,
+            "annualRate": 5.1
+          },
+          {
+            "period": "2024-07",
+            "index": 93.83,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2024-08",
+            "index": 94.45,
+            "annualRate": 4.0
+          },
+          {
+            "period": "2024-09",
+            "index": 93.83,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2024-10",
+            "index": 94.33,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2024-11",
+            "index": 95.8,
+            "annualRate": 7.3
+          },
+          {
+            "period": "2024-12",
+            "index": 96.34,
+            "annualRate": 7.4
+          },
+          {
+            "period": "2025-01",
+            "index": 99.95,
+            "annualRate": 7.9
+          },
+          {
+            "period": "2025-02",
+            "index": 100.44,
+            "annualRate": 9.7
+          },
+          {
+            "period": "2025-03",
+            "index": 98.87,
+            "annualRate": 5.7
+          },
+          {
+            "period": "2025-04",
+            "index": 97.98,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2025-05",
+            "index": 98.36,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2025-06",
+            "index": 99.53,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2025-07",
+            "index": 100.06,
+            "annualRate": 6.6
+          },
+          {
+            "period": "2025-08",
+            "index": 100.04,
+            "annualRate": 5.9
+          },
+          {
+            "period": "2025-09",
+            "index": 100.43,
+            "annualRate": 7.0
+          },
+          {
+            "period": "2025-10",
+            "index": 101.37,
+            "annualRate": 7.5
+          },
+          {
+            "period": "2025-11",
+            "index": 101.19,
+            "annualRate": 5.6
+          },
+          {
+            "period": "2025-12",
+            "index": 101.77,
+            "annualRate": 5.6
+          },
+          {
+            "period": "2026-01",
+            "index": 102.7,
+            "annualRate": 2.8
+          },
+          {
+            "period": "2026-02",
+            "index": 102.35,
+            "annualRate": 1.9
+          },
+          {
+            "period": "2026-03",
+            "index": 102.5,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2026-04",
+            "index": 99.77,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2026-05",
+            "index": 99.67,
+            "annualRate": 1.3
+          },
+          {
+            "period": "2026-06",
+            "index": 104.17,
+            "annualRate": 4.7
+          },
+          {
+            "period": "2026-07",
+            "index": 105.81,
+            "annualRate": 5.7
+          }
+        ],
+        "france": [
+          {
+            "period": "2022-10",
+            "index": 94.13,
+            "annualRate": 10.3
+          },
+          {
+            "period": "2022-11",
+            "index": 94.4,
+            "annualRate": 9.8
+          },
+          {
+            "period": "2022-12",
+            "index": 93.14,
+            "annualRate": 8.2
+          },
+          {
+            "period": "2023-01",
+            "index": 93.61,
+            "annualRate": 8.0
+          },
+          {
+            "period": "2023-02",
+            "index": 95.36,
+            "annualRate": 8.7
+          },
+          {
+            "period": "2023-03",
+            "index": 95.77,
+            "annualRate": 7.1
+          },
+          {
+            "period": "2023-04",
+            "index": 95.53,
+            "annualRate": 6.2
+          },
+          {
+            "period": "2023-05",
+            "index": 95.19,
+            "annualRate": 5.3
+          },
+          {
+            "period": "2023-06",
+            "index": 95.18,
+            "annualRate": 4.5
+          },
+          {
+            "period": "2023-07",
+            "index": 94.15,
+            "annualRate": 3.0
+          },
+          {
+            "period": "2023-08",
+            "index": 96.37,
+            "annualRate": 5.7
+          },
+          {
+            "period": "2023-09",
+            "index": 96.9,
+            "annualRate": 5.3
+          },
+          {
+            "period": "2023-10",
+            "index": 97.4,
+            "annualRate": 3.5
+          },
+          {
+            "period": "2023-11",
+            "index": 97.52,
+            "annualRate": 3.3
+          },
+          {
+            "period": "2023-12",
+            "index": 97.6,
+            "annualRate": 4.8
+          },
+          {
+            "period": "2024-01",
+            "index": 98.13,
+            "annualRate": 4.8
+          },
+          {
+            "period": "2024-02",
+            "index": 100.01,
+            "annualRate": 4.9
+          },
+          {
+            "period": "2024-03",
+            "index": 99.78,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2024-04",
+            "index": 99.53,
+            "annualRate": 4.2
+          },
+          {
+            "period": "2024-05",
+            "index": 99.6,
+            "annualRate": 4.6
+          },
+          {
+            "period": "2024-06",
+            "index": 99.7,
+            "annualRate": 4.7
+          },
+          {
+            "period": "2024-07",
+            "index": 100.39,
+            "annualRate": 6.6
+          },
+          {
+            "period": "2024-08",
+            "index": 100.49,
+            "annualRate": 4.3
+          },
+          {
+            "period": "2024-09",
+            "index": 100.44,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2024-10",
+            "index": 101.04,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2024-11",
+            "index": 101.11,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2024-12",
+            "index": 101.34,
+            "annualRate": 3.8
+          },
+          {
+            "period": "2025-01",
+            "index": 101.77,
+            "annualRate": 3.7
+          },
+          {
+            "period": "2025-02",
+            "index": 99.88,
+            "annualRate": -0.1
+          },
+          {
+            "period": "2025-03",
+            "index": 99.96,
+            "annualRate": 0.2
+          },
+          {
+            "period": "2025-04",
+            "index": 99.92,
+            "annualRate": 0.4
+          },
+          {
+            "period": "2025-05",
+            "index": 99.57,
+            "annualRate": 0.0
+          },
+          {
+            "period": "2025-06",
+            "index": 99.47,
+            "annualRate": -0.2
+          },
+          {
+            "period": "2025-07",
+            "index": 99.67,
+            "annualRate": -0.7
+          },
+          {
+            "period": "2025-08",
+            "index": 99.82,
+            "annualRate": -0.7
+          },
+          {
+            "period": "2025-09",
+            "index": 99.74,
+            "annualRate": -0.7
+          },
+          {
+            "period": "2025-10",
+            "index": 99.88,
+            "annualRate": -1.1
+          },
+          {
+            "period": "2025-11",
+            "index": 100.23,
+            "annualRate": -0.9
+          },
+          {
+            "period": "2025-12",
+            "index": 100.09,
+            "annualRate": -1.2
+          },
+          {
+            "period": "2026-01",
+            "index": 100.23,
+            "annualRate": -1.5
+          },
+          {
+            "period": "2026-02",
+            "index": 100.26,
+            "annualRate": 0.4
+          },
+          {
+            "period": "2026-03",
+            "index": 101.15,
+            "annualRate": 1.2
+          },
+          {
+            "period": "2026-04",
+            "index": 101.57,
+            "annualRate": 1.7
+          },
+          {
+            "period": "2026-05",
+            "index": 102.45,
+            "annualRate": 2.9
+          },
+          {
+            "period": "2026-06",
+            "index": 102.16,
+            "annualRate": 2.7
+          },
+          {
+            "period": "2026-07",
+            "index": 102.81,
+            "annualRate": 3.2
+          }
+        ],
+        "italy": [
+          {
+            "period": "2022-10",
+            "index": 122.7,
+            "annualRate": 56.9
+          },
+          {
+            "period": "2022-11",
+            "index": 125.6,
+            "annualRate": 56.2
+          },
+          {
+            "period": "2022-12",
+            "index": 124.3,
+            "annualRate": 54.2
+          },
+          {
+            "period": "2023-01",
+            "index": 118.2,
+            "annualRate": 34.6
+          },
+          {
+            "period": "2023-02",
+            "index": 113.2,
+            "annualRate": 24.4
+          },
+          {
+            "period": "2023-03",
+            "index": 105.7,
+            "annualRate": 15.0
+          },
+          {
+            "period": "2023-04",
+            "index": 105.2,
+            "annualRate": 16.6
+          },
+          {
+            "period": "2023-05",
+            "index": 105.8,
+            "annualRate": 15.3
+          },
+          {
+            "period": "2023-06",
+            "index": 102.5,
+            "annualRate": 10.2
+          },
+          {
+            "period": "2023-07",
+            "index": 101.2,
+            "annualRate": 9.1
+          },
+          {
+            "period": "2023-08",
+            "index": 100.6,
+            "annualRate": 2.1
+          },
+          {
+            "period": "2023-09",
+            "index": 100.8,
+            "annualRate": 1.8
+          },
+          {
+            "period": "2023-10",
+            "index": 101.3,
+            "annualRate": -17.4
+          },
+          {
+            "period": "2023-11",
+            "index": 100.7,
+            "annualRate": -19.8
+          },
+          {
+            "period": "2023-12",
+            "index": 100.4,
+            "annualRate": -19.2
+          },
+          {
+            "period": "2024-01",
+            "index": 102.0,
+            "annualRate": -13.7
+          },
+          {
+            "period": "2024-02",
+            "index": 100.0,
+            "annualRate": -11.7
+          },
+          {
+            "period": "2024-03",
+            "index": 98.5,
+            "annualRate": -6.8
+          },
+          {
+            "period": "2024-04",
+            "index": 95.8,
+            "annualRate": -8.9
+          },
+          {
+            "period": "2024-05",
+            "index": 95.7,
+            "annualRate": -9.5
+          },
+          {
+            "period": "2024-06",
+            "index": 96.2,
+            "annualRate": -6.1
+          },
+          {
+            "period": "2024-07",
+            "index": 98.9,
+            "annualRate": -2.3
+          },
+          {
+            "period": "2024-08",
+            "index": 99.2,
+            "annualRate": -1.4
+          },
+          {
+            "period": "2024-09",
+            "index": 99.6,
+            "annualRate": -1.2
+          },
+          {
+            "period": "2024-10",
+            "index": 99.7,
+            "annualRate": -1.6
+          },
+          {
+            "period": "2024-11",
+            "index": 100.0,
+            "annualRate": -0.7
+          },
+          {
+            "period": "2024-12",
+            "index": 100.5,
+            "annualRate": 0.1
+          },
+          {
+            "period": "2025-01",
+            "index": 102.8,
+            "annualRate": 0.8
+          },
+          {
+            "period": "2025-02",
+            "index": 103.1,
+            "annualRate": 3.1
+          },
+          {
+            "period": "2025-03",
+            "index": 104.4,
+            "annualRate": 6.0
+          },
+          {
+            "period": "2025-04",
+            "index": 100.2,
+            "annualRate": 4.6
+          },
+          {
+            "period": "2025-05",
+            "index": 99.5,
+            "annualRate": 4.0
+          },
+          {
+            "period": "2025-06",
+            "index": 98.5,
+            "annualRate": 2.4
+          },
+          {
+            "period": "2025-07",
+            "index": 99.6,
+            "annualRate": 0.7
+          },
+          {
+            "period": "2025-08",
+            "index": 98.5,
+            "annualRate": -0.7
+          },
+          {
+            "period": "2025-09",
+            "index": 98.6,
+            "annualRate": -1.0
+          },
+          {
+            "period": "2025-10",
+            "index": 98.0,
+            "annualRate": -1.7
+          },
+          {
+            "period": "2025-11",
+            "index": 98.2,
+            "annualRate": -1.8
+          },
+          {
+            "period": "2025-12",
+            "index": 98.5,
+            "annualRate": -2.0
+          },
+          {
+            "period": "2026-01",
+            "index": 100.9,
+            "annualRate": -1.8
+          },
+          {
+            "period": "2026-02",
+            "index": 100.9,
+            "annualRate": -2.1
+          },
+          {
+            "period": "2026-03",
+            "index": 102.8,
+            "annualRate": -1.5
+          },
+          {
+            "period": "2026-04",
+            "index": 105.3,
+            "annualRate": 5.1
+          },
+          {
+            "period": "2026-05",
+            "index": 105.3,
+            "annualRate": 5.8
+          },
+          {
+            "period": "2026-06",
+            "index": 105.7,
+            "annualRate": 7.3
+          },
+          {
+            "period": "2026-07",
+            "index": 106.8,
+            "annualRate": 7.2
+          }
+        ]
+      }
+    }
+  ],
+  "caveats": [
+    "Questi segnali mensili descrivono i prezzi osservati durante il mandato e non entrano nel Core annuale.",
+    "Il confronto con i peer usa lo stesso periodo, ma non attribuisce causalmente le differenze alle politiche del governo.",
+    "L'IPCA è una media nazionale: l'esperienza di ogni famiglia dipende dal proprio paniere di spesa.",
+    "I dati Eurostat possono essere rivisti; ogni aggiornamento conserva timestamp e hash della risposta usata."
+  ]
+}

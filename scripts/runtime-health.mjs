@@ -47,6 +47,9 @@ const EXPECTED_SOURCE_IDS = [
   "partecipazioni-pubbliche",
   "bancaditalia",
   "eurostat",
+  "eurostat-hicp",
+  "ameco",
+  "governi-presidenza",
 ];
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));

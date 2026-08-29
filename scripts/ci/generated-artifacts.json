@@ -424,6 +424,56 @@
       "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
     },
     {
+      "id": "government-scorecard",
+      "owner": "European Commission, Presidency of the Council, Chamber of Deputies and Eurostat government scorecard",
+      "files": [
+        "src/data/generated/government-scorecard.json",
+        "src/data/generated/government-current-signals.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/ci/check-government-scorecard-artifacts.py",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_government_scorecard_snapshot.py",
+        "tests/etl/test_government_current_signals.py"
+      ],
+      "nodeTests": [
+        "tests/government-scorecard-contract.test.mjs",
+        "tests/government-scorecard-domain.test.mjs",
+        "tests/government-current-signals.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/government_scorecard_snapshot.py && python3 scripts/etl/government_current_signals.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/government-scorecard-refresh.yml",
+      "sourceSpec": "scripts/etl/specs/government-scorecard.source.json",
+      "sourceSpecs": [
+        "scripts/etl/specs/government-scorecard.source.json",
+        "scripts/etl/specs/government-scorecard-methodology.json",
+        "scripts/etl/specs/government-current-signals.source.json"
+      ],
+      "publication": {
+        "branch": "automation/data/government-scorecard",
+        "commitTitle": "chore(data): refresh government scorecard snapshot",
+        "prTitle": "data: refresh government scorecard snapshot",
+        "upstreamUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+        "upstreamUrls": [
+          "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+          "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+          "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+          "https://storia.camera.it/governi/i-governo-dini/Ministero%20del%20tesoro",
+          "https://storia.camera.it/governi/i-governo-prodi/Ministero%20delle%20finanze",
+          "https://storia.camera.it/governi/i-governo-d-alema/Presidenza%20del%20Consiglio%20-%20rapporti%20con%20il%20parlamento",
+          "https://storia.camera.it/governi/ii-governo-d-alema/Ministero%20dell%27interno",
+          "https://storia.camera.it/governi/ii-governo-amato/Presidenza%20del%20Consiglio%20-%20affari%20regionali"
+        ]
+      },
+      "trustModel": "Scheduled workflow creates a managed PR candidate from official AMECO, Presidency, Chamber of Deputies and Eurostat data. ZIP, CSV, HTML and JSON-stat identity, query filters, series codes, periods, peers, weights, government chronology, complete observations, hashes and runtime contracts fail closed before publication. Monthly HICP signals remain separate from the historical score."
+    },
+    {
       "id": "public-debt",
       "owner": "Banca d'Italia and Eurostat public debt snapshot",
       "files": [

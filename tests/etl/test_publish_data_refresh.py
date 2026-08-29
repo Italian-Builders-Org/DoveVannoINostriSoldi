@@ -6,6 +6,7 @@ import importlib.util
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from unittest import TestCase, main, mock
 
@@ -31,6 +32,7 @@ class PublishDataRefreshTests(TestCase):
             set(publications),
             {
                 "consulenti-pubblici",
+                "government-scorecard",
                 "mef-participations",
                 "opencivitas-2022",
                 "opencoesione",
@@ -42,6 +44,7 @@ class PublishDataRefreshTests(TestCase):
             {item["branch"] for item in publications.values()},
             {
                 "automation/data/consulenti",
+                "automation/data/government-scorecard",
                 "automation/data/mef-participations",
                 "automation/data/opencivitas",
                 "automation/data/opencoesione",
@@ -53,6 +56,132 @@ class PublishDataRefreshTests(TestCase):
             artifact = next(item for item in registry["artifacts"] if item.get("publication") == publication)
             self.assertIn("managed PR candidate", artifact["trustModel"])
             self.assertNotIn("commits the snapshot", artifact["trustModel"])
+
+        government = next(
+            item for item in registry["artifacts"] if item["id"] == "government-scorecard"
+        )
+        self.assertEqual(
+            government["sourceSpecs"],
+            [
+                "scripts/etl/specs/government-scorecard.source.json",
+                "scripts/etl/specs/government-scorecard-methodology.json",
+                "scripts/etl/specs/government-current-signals.source.json",
+            ],
+        )
+        self.assertEqual(len(government["publication"]["upstreamUrls"]), 8)
+        self.assertIn(
+            government["publication"]["upstreamUrl"],
+            government["publication"]["upstreamUrls"],
+        )
+        self.assertEqual(
+            government["publication"]["upstreamUrls"][3:],
+            [
+                item["pageUrl"]
+                for item in json.loads(
+                    (ROOT / "scripts/etl/specs/government-scorecard.source.json").read_text()
+                )["governmentChronology"]["historicalPages"]
+            ],
+        )
+
+    def test_publication_upstreams_preserve_order_and_dedupe(self) -> None:
+        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        government = next(item for item in registry["artifacts"] if item["id"] == "government-scorecard")
+        primary = government["publication"]["upstreamUrl"]
+        government["publication"]["upstreamUrls"] = [
+            primary,
+            "https://example.test/second-source",
+            primary,
+            "https://example.test/third-source",
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            registry_path = Path(directory) / "registry.json"
+            registry_path.write_text(json.dumps(registry), encoding="utf-8")
+            artifact = publisher.load_artifact("government-scorecard", registry_path)
+        self.assertEqual(
+            artifact.publication.upstream_urls,
+            (primary, "https://example.test/second-source", "https://example.test/third-source"),
+        )
+
+    def test_multi_upstream_provenance_body_lists_all_sources(self) -> None:
+        artifact = publisher.load_artifact("government-scorecard")
+        run = publisher.RunContext(
+            token="secret",
+            repository="owner/repo",
+            server_url="https://github.com",
+            workflow_ref="owner/repo/.github/workflows/government-scorecard-refresh.yml@refs/heads/main",
+            event_name="schedule",
+            ref_name="main",
+            sha="a" * 40,
+            run_id="1",
+            run_attempt="1",
+            run_url="https://github.com/owner/repo/actions/runs/1",
+        )
+        body = publisher.provenance_body(
+            artifact, run, base_sha="a" * 40, candidate_sha="b" * 40, digest="c" * 64
+        )
+        start = body.index("Upstreams:\n")
+        end = body.index("Base branch:", start)
+        self.assertEqual(
+            body[start:end],
+            "Upstreams:\n" + "\n".join(f"- {url}" for url in artifact.publication.upstream_urls) + "\n",
+        )
+        self.assertIn("Upstream: " + artifact.publication.upstream_url, body)
+
+    def test_multi_upstream_provenance_is_required_for_managed_pr_matching(self) -> None:
+        artifact = publisher.load_artifact("government-scorecard")
+        tip = "a" * 40
+        parent = "b" * 40
+        digest = "c" * 64
+        run_url = "https://github.com/owner/repo/actions/runs/1"
+        workflow_ref = "owner/repo/.github/workflows/government-scorecard-refresh.yml@refs/heads/main"
+        branch = publisher.BranchCommit(
+            tip=tip,
+            parent=parent,
+            files=tuple(artifact.files),
+            subject=artifact.publication.commit_title,
+            trailers={
+                "Data-Refresh-Artifact": artifact.artifact_id,
+                "Data-Refresh-Base": parent,
+                "Data-Refresh-Files-SHA256": digest,
+                "Data-Refresh-Run": run_url + "/attempt/1",
+            },
+            author_name=publisher.BOT_NAME,
+            author_email=publisher.BOT_EMAIL,
+            committer_name=publisher.BOT_NAME,
+            committer_email=publisher.BOT_EMAIL,
+        )
+        run = publisher.RunContext(
+            token="secret",
+            repository="owner/repo",
+            server_url="https://github.com",
+            workflow_ref=workflow_ref,
+            event_name="schedule",
+            ref_name="main",
+            sha=tip,
+            run_id="1",
+            run_attempt="1",
+            run_url=run_url,
+        )
+        body = publisher.provenance_body(
+            artifact, run, base_sha=parent, candidate_sha=tip, digest=digest
+        )
+        pr = publisher.PullRequest(
+            number=1,
+            state="OPEN",
+            title=artifact.publication.pr_title,
+            body=body,
+            head_ref=artifact.publication.branch,
+            base_ref="main",
+            head_sha=tip,
+            base_sha=parent,
+            merged_at=None,
+        )
+        self.assertTrue(publisher.managed_pr_matches(pr, artifact, branch, workflow_ref))
+        tampered = publisher.PullRequest(**{
+            **pr.__dict__,
+            "body": body.replace(artifact.publication.upstream_urls[-1], "https://example.test/tampered"),
+        })
+        self.assertFalse(publisher.managed_pr_matches(tampered, artifact, branch, workflow_ref))
 
     def test_missing_credentials_fails_before_runner(self) -> None:
         with self.assertRaises(publisher.PublishError):

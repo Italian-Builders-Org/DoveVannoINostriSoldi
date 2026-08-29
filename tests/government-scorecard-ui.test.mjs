@@ -5,36 +5,49 @@ import test from "node:test";
 const page = await readFile(new URL("../src/app/governi/page.tsx", import.meta.url), "utf8");
 const detail = await readFile(new URL("../src/app/governi/[id]/page.tsx", import.meta.url), "utf8");
 const citizenModel = await readFile(new URL("../src/app/governi/citizen-score-model.tsx", import.meta.url), "utf8");
+const currentOverview = await readFile(new URL("../src/app/governi/current-government-overview.tsx", import.meta.url), "utf8");
 const indicatorChart = await readFile(new URL("../src/app/governi/government-indicator-chart.tsx", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/app/governi/governi.module.css", import.meta.url), "utf8");
+const overviewStyles = await readFile(new URL("../src/app/governi/current-government-overview.module.css", import.meta.url), "utf8");
 const navigation = await readFile(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
 const discovery = await readFile(new URL("../src/lib/public-discovery.ts", import.meta.url), "utf8");
 
-test("government scorecard is server-first and labels the current number as an incomplete macro core", () => {
+test("government scorecard is server-first and opens on the current government", () => {
   assert.doesNotMatch(page, /^"use client"/);
-  assert.match(page, /Pagella economica dei governi/);
-  assert.match(page, /Governo in carica · risultato provvisorio/);
-  assert.match(page, /non è ancora il voto sul benessere degli italiani/);
-  assert.match(page, /Core macro provvisorio/);
-  assert.match(page, /Non contiene ancora risparmio/);
+  assert.match(page, /Economia italiana: cosa sta migliorando e cosa no/);
+  assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} \/>/);
+  assert.match(page, /Dati osservati fino al/);
+  assert.match(page, /Risparmio, casa, natalità e migrazione dei laureati non sono ancora nel voto/);
   assert.match(page, /<CitizenScoreModel \/>/);
+  assert.ok(page.indexOf("<CurrentGovernmentOverview") < page.indexOf("<CitizenScoreModel"));
 });
 
-test("page explains the score before rankings and separates the forecast", () => {
-  const headings = ["Perché il Core", "Da cosa è composto il Core provvisorio", "Come potrebbe andare", "Cosa ha fatto il governo Meloni", "Tutti i governi nella serie comparabile", "Come viene deciso il voto"];
+test("page keeps current actions first and makes forecasts, history and method progressive", () => {
+  const headings = ["Cosa ha fatto e cosa possiamo verificare", "Se le previsioni si realizzano", "Confronta il governo attuale con tutti i governi", "Quali dati mancano e come viene calcolato il voto"];
   let cursor = -1;
   for (const heading of headings) {
     const next = page.indexOf(heading);
     assert.ok(next > cursor, heading);
     cursor = next;
   }
-  assert.match(page, /Previsioni separate dai dati osservati/);
-  assert.match(page, /Non è un voto anticipato/);
-  assert.match(page, /Atti, meccanismo ed evidenza/);
-  assert.match(page, /Le misure restano separate dal voto/);
-  assert.match(page, /Manovre e riforme economiche principali/);
-  assert.match(page, /government\.measures\.length > 0/);
-  assert.match(page, /Il confronto internazionale non è lo spread/);
+  assert.match(page, /<details className=\{styles\.explorer\} id="confronto-governi">/);
+  assert.match(page, /<details className=\{styles\.explorer\} id="metodo-dati">/);
+  assert.match(page, /non un dato osservato e non un voto anticipato/);
+  assert.match(page, /Il confronto con i peer non è lo spread/);
+  assert.match(page, /current\.measures\.map/);
+});
+
+test("current overview turns all six indicators into readable trends and peer comparisons", () => {
+  assert.doesNotMatch(currentOverview, /^"use client"/);
+  assert.match(currentOverview, /Come sta andando con \{governmentName\}/);
+  assert.match(currentOverview, /Indicatori migliorati/);
+  assert.match(currentOverview, /Meglio dei peer/);
+  assert.match(currentOverview, /calculation\.indicators\.map/);
+  assert.match(currentOverview, /<TrendSparkline indicator=\{indicator\} \/>/);
+  assert.match(currentOverview, /Mediana peer/);
+  assert.match(currentOverview, /comparisonLabel\(indicator\)/);
+  assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{calculation\.indicators\} \/>/);
+  assert.match(currentOverview, /role="img"/);
 });
 
 test("citizen model exposes ten source-backed indicators and keeps long-lag diagnostics separate", () => {
@@ -47,15 +60,13 @@ test("citizen model exposes ten source-backed indicators and keeps long-lag diag
 });
 
 test("page exposes raw values, peers, missing-score reasons and official sources", () => {
-  assert.match(page, /Baseline/);
-  assert.match(page, /Italia vs peer/);
-  assert.match(page, /Un valore positivo significa che l’Italia è migliorata più/);
+  assert.match(currentOverview, /baselineValue/);
+  assert.match(currentOverview, /endValue/);
+  assert.match(currentOverview, /relativeChange/);
   assert.match(page, /government\.calculation\.reason/);
-  assert.match(page, /government\.rank \?\? "prov\."/);
   assert.match(page, /data\.sources\.ameco\.landingUrl/);
   assert.match(page, /data\.sources\.governmentChronology\.pageUrl/);
-  assert.ok((page.match(/target="_blank"/g) ?? []).length >= 7);
-  assert.match(page, /SHA-256/);
+  assert.ok((page.match(/target="_blank"/g) ?? []).length >= 5);
 });
 
 test("every government links to a dedicated five-part assessment", () => {
@@ -84,14 +95,15 @@ test("government comparison chart is an isolated client component with accessibl
   assert.match(indicatorChart, /accessibilityLayer/);
 });
 
-test("page is discoverable under Institutions and its wide tables are keyboard scrollable", () => {
+test("page is discoverable, progressive and responsive", () => {
   assert.match(navigation, /href: "\/governi", label: "Pagella dei governi"/);
   assert.match(discovery, /"\/governi"/);
-  assert.ok((page.match(/role="region"/g) ?? []).length >= 2);
-  assert.ok((page.match(/tabIndex=\{0\}/g) ?? []).length >= 2);
-  assert.match(styles, /\.tableWrap:focus-visible/);
-  assert.match(styles, /overflow-x:\s*auto/);
+  assert.match(styles, /\.explorer/);
+  assert.match(styles, /\.governmentBars/);
+  assert.match(styles, /\.pageJumps[\s\S]*overflow-x:\s*auto/);
   assert.match(styles, /@media \(max-width: 760px\)/);
+  assert.match(overviewStyles, /\.indicatorGrid/);
+  assert.match(overviewStyles, /@media \(max-width: 700px\)/);
   assert.doesNotMatch(styles, /color-neutral-950/);
-  assert.match(styles, /\.currentSection[\s\S]*background: var\(--color-text\)/);
+  assert.match(overviewStyles, /\.summary[\s\S]*background: var\(--color-text\)/);
 });

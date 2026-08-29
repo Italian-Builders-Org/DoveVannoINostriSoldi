@@ -1014,6 +1014,306 @@
   font-size: 12px;
 }
 
+.compactIntro {
+  max-width: 980px;
+  padding-bottom: 4px;
+}
+
+.compactIntro h1 {
+  max-width: 900px;
+}
+
+.compactIntro p {
+  max-width: 760px;
+}
+
+.dataBoundary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: 13px 16px;
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  border-top: 0;
+  font-size: 11px;
+}
+
+.dataBoundary span {
+  color: var(--color-neutral-700);
+}
+
+.dataBoundary a {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pageJumps {
+  display: flex;
+  gap: 8px;
+  margin: var(--space-4) 0;
+  padding-bottom: 3px;
+  overflow-x: auto;
+}
+
+.pageJumps a {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  color: var(--color-neutral-700);
+  background: #fff;
+  border: 1px solid var(--color-neutral-300);
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.pageJumps a:hover,
+.pageJumps a:focus-visible {
+  color: #fff;
+  background: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.measureGrid details {
+  margin-top: 13px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.measureGrid details summary,
+.inlineDetails > summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.inlineDetails {
+  margin-top: var(--space-4);
+  padding: 14px 16px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.inlineDetails[open] > summary {
+  margin-bottom: var(--space-4);
+}
+
+.forecastCompact {
+  display: grid;
+  grid-template-columns: minmax(150px, .6fr) auto minmax(150px, .6fr) minmax(250px, 1.3fr);
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.forecastCompact > div {
+  display: grid;
+  gap: 3px;
+  padding: 16px;
+  color: #fff;
+  background: var(--color-text);
+}
+
+.forecastCompact > div > span,
+.forecastCompact > div > small {
+  color: var(--color-neutral-400);
+  font-size: 10px;
+}
+
+.forecastCompact > div > strong {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  font-variant-numeric: tabular-nums;
+}
+
+.forecastCompact > div > strong small {
+  font-size: 12px;
+}
+
+.forecastArrow {
+  color: var(--color-accent-700);
+  font-size: 28px;
+  font-weight: 850;
+}
+
+.forecastCompact ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forecastCompact li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 9px 0;
+  border-top: 1px solid var(--color-neutral-200);
+  font-size: 11px;
+}
+
+.explorer {
+  margin-top: var(--space-4);
+  background: #fff;
+  border: 1px solid var(--color-neutral-300);
+}
+
+.explorer > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.explorer > summary::-webkit-details-marker {
+  display: none;
+}
+
+.explorer > summary > span {
+  display: grid;
+  gap: 3px;
+}
+
+.explorer > summary small {
+  color: var(--color-accent-700);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.explorer > summary strong {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 3vw, 25px);
+}
+
+.explorer > summary > b {
+  padding: 8px 10px;
+  color: #fff;
+  background: var(--color-text);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.explorer[open] > summary {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.explorer[open] > summary > b::before {
+  content: "Chiudi ";
+}
+
+.explorer[open] > summary > b {
+  font-size: 0;
+}
+
+.explorer[open] > summary > b::before {
+  font-size: 10px;
+}
+
+.explorerBody {
+  padding: clamp(16px, 3vw, 28px);
+}
+
+.explorerIntro {
+  max-width: 720px;
+  margin: 0 0 var(--space-4);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.governmentBars {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.governmentBars li {
+  display: grid;
+  grid-template-columns: minmax(150px, .8fr) minmax(180px, 1.5fr) 48px minmax(150px, .9fr);
+  gap: 12px;
+  align-items: center;
+  padding: 11px 8px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.governmentBars li[data-current="true"] {
+  background: var(--color-accent-100);
+  border-left: 4px solid var(--color-accent-700);
+}
+
+.governmentBarLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.governmentBarLabel a {
+  font-weight: 850;
+}
+
+.governmentBarLabel span,
+.governmentBars li > small {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+}
+
+.governmentBar {
+  display: block;
+  height: 11px;
+  overflow: hidden;
+  background: var(--color-neutral-200);
+}
+
+.governmentBar i {
+  display: block;
+  height: 100%;
+  background: var(--chart-primary);
+}
+
+.governmentBars li[data-current="true"] .governmentBar i {
+  background: var(--color-accent-700);
+}
+
+.governmentBars li > strong {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.methodCompact {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.methodCompact h2 {
+  margin: 0 0 var(--space-3);
+}
+
+.methodCompact ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 1px;
+  background: var(--color-neutral-200);
+  list-style-position: inside;
+}
+
+.methodCompact li {
+  padding: 15px;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 @media (max-width: 900px) {
   .heroGrid,
   .whyGrid,
@@ -1041,6 +1341,22 @@
 
   .contributionRow {
     grid-template-columns: minmax(170px, .8fr) minmax(130px, 1fr) 75px;
+  }
+
+  .forecastCompact {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .forecastCompact ul {
+    grid-column: 1 / -1;
+  }
+
+  .governmentBars li {
+    grid-template-columns: minmax(140px, .8fr) minmax(150px, 1.4fr) 45px;
+  }
+
+  .governmentBars li > small {
+    grid-column: 2 / -1;
   }
 }
 
@@ -1121,5 +1437,41 @@
   .timeline article {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .dataBoundary {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .forecastCompact {
+    grid-template-columns: 1fr;
+  }
+
+  .forecastArrow {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+
+  .forecastCompact ul {
+    grid-column: auto;
+  }
+
+  .explorer > summary {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .governmentBars li {
+    grid-template-columns: minmax(120px, .8fr) minmax(120px, 1.2fr) 42px;
+  }
+
+  .governmentBarLabel {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .methodCompact ol {
+    grid-template-columns: 1fr;
   }
 }

@@ -12,7 +12,7 @@ type CompanyAtlasMapProps = Readonly<{
   regions: RegionPoint[];
   selectedRegion: string;
   metricUnit: string;
-  valueFormat?: "thousand-euro" | "integer" | "decimal" | "euro-per-employee" | "count";
+  valueFormat?: "thousand-euro" | "integer" | "decimal" | "euro-per-employee";
   mapTitle?: string;
   mapDescription?: string;
 }>;
@@ -143,7 +143,7 @@ export function CompanyAtlasMap({
                 tabIndex={focusable ? 0 : -1}
                 role="button"
                 aria-pressed={selected}
-                aria-label={`${region?.name ?? geometry.name}: ${region?.value === null || region?.value === undefined ? "dato non disponibile" : `${displayValue(region.value)}${valueFormat ? ` (unità fonte: ${metricUnit})` : ` ${metricUnit}`}`}`}
+                aria-label={`${region?.name ?? geometry.name}: ${region?.value === null || region?.value === undefined ? "dato non disponibile" : `${displayValue(region.value)} (unità: ${metricUnit})`}`}
                 data-hovered={hovered ? "true" : undefined}
                 data-selected={selected ? "true" : undefined}
                 onPointerEnter={() => setHoveredCode(geometry.code)}

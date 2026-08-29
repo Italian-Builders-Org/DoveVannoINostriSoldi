@@ -129,6 +129,21 @@ class IstatEnterpriseTurnoverETLTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_snapshot(corrupted_campania)
 
+        missing_metric = json.loads(json.dumps(snapshot))
+        missing_metric["observations"][0].pop("localUnits")
+        with self.assertRaisesRegex(ValueError, "localUnits mancante"):
+            validate_snapshot(missing_metric)
+
+        broken_region_metric = json.loads(json.dumps(snapshot))
+        broken_region_metric["observations"][0]["valueAddedThousandEuro"] += 2
+        with self.assertRaisesRegex(ValueError, "valore aggiunto non riconcilia"):
+            validate_snapshot(broken_region_metric)
+
+        broken_national_metric = json.loads(json.dumps(snapshot))
+        broken_national_metric["national"]["localUnits"] += 1
+        with self.assertRaisesRegex(ValueError, "Unità locali nazionali non riconcilia"):
+            validate_snapshot(broken_national_metric)
+
 
 if __name__ == "__main__":
     unittest.main()

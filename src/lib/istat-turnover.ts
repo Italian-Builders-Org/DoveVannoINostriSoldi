@@ -110,24 +110,24 @@ const metricById = new Map<IstatMetricId, IstatMetricDefinition>(
   ISTAT_METRICS.map((m) => [m.id, m]),
 );
 
-const ISTAT_METRIC_ALIASES = new Set([
-  "turnover",
-  "turnover_istat",
-  "company_turnover_istat",
-  "fatturato",
-  "istat_local_units",
-  "local_units_istat",
-  "local_units",
-  "istat_employees",
-  "employees_istat",
-  "istat_value_added",
-  "value_added_istat",
-  "value_added",
-  "istat_value_added_per_employee",
-  "value_added_per_employee",
-  "produttivita",
-  "istat_turnover_per_employee",
-  "turnover_per_employee",
+const ISTAT_METRIC_ALIASES = new Map<string, IstatMetricId>([
+  ["turnover", "turnover"],
+  ["turnover_istat", "turnover"],
+  ["company_turnover_istat", "turnover"],
+  ["fatturato", "turnover"],
+  ["istat_local_units", "istat_local_units"],
+  ["local_units_istat", "istat_local_units"],
+  ["local_units", "istat_local_units"],
+  ["istat_employees", "istat_employees"],
+  ["employees_istat", "istat_employees"],
+  ["istat_value_added", "istat_value_added"],
+  ["value_added_istat", "istat_value_added"],
+  ["value_added", "istat_value_added"],
+  ["istat_value_added_per_employee", "istat_value_added_per_employee"],
+  ["value_added_per_employee", "istat_value_added_per_employee"],
+  ["produttivita", "istat_value_added_per_employee"],
+  ["istat_turnover_per_employee", "istat_turnover_per_employee"],
+  ["turnover_per_employee", "istat_turnover_per_employee"],
 ]);
 
 export function isIstatMetric(metric: string | undefined): boolean {
@@ -137,30 +137,7 @@ export function isIstatMetric(metric: string | undefined): boolean {
 
 export function normalizeIstatMetric(value: string | undefined): IstatMetricId {
   if (!value) return "turnover";
-  const trimmed = value.trim().toLowerCase();
-  if (trimmed === "turnover" || trimmed === "turnover_istat" || trimmed === "company_turnover_istat" || trimmed === "fatturato") {
-    return "turnover";
-  }
-  if (trimmed === "istat_local_units" || trimmed === "local_units_istat" || trimmed === "local_units") {
-    return "istat_local_units";
-  }
-  if (trimmed === "istat_employees" || trimmed === "employees_istat") {
-    return "istat_employees";
-  }
-  if (trimmed === "istat_value_added" || trimmed === "value_added_istat" || trimmed === "value_added") {
-    return "istat_value_added";
-  }
-  if (
-    trimmed === "istat_value_added_per_employee" ||
-    trimmed === "value_added_per_employee" ||
-    trimmed === "produttivita"
-  ) {
-    return "istat_value_added_per_employee";
-  }
-  if (trimmed === "istat_turnover_per_employee" || trimmed === "turnover_per_employee") {
-    return "istat_turnover_per_employee";
-  }
-  return "turnover";
+  return ISTAT_METRIC_ALIASES.get(value.trim().toLowerCase()) ?? "turnover";
 }
 
 export function istatMetricOptions() {

@@ -27,11 +27,11 @@ export const istatTurnoverObservationSchema = z.object({
   period: z.literal("2024"),
   unit: z.literal("migliaia di euro"),
   value: z.number().int().nonnegative(),
-  localUnits: z.number().int().nonnegative().optional(),
-  employees: z.number().nonnegative().optional(),
+  localUnits: z.number().int().nonnegative(),
+  employees: z.number().positive(),
   payrollEmployees: z.number().nonnegative().optional(),
   laborCostThousandEuro: z.number().int().nonnegative().optional(),
-  valueAddedThousandEuro: z.number().int().nonnegative().optional(),
+  valueAddedThousandEuro: z.number().int().nonnegative(),
   purchasesThousandEuro: z.number().int().nonnegative().optional(),
   sourceId: z.literal("istat-frame-territoriale-2024"),
 }).strict();
@@ -121,7 +121,7 @@ export const istatTurnoverSnapshotSchema = istatTurnoverSnapshotBaseSchema.super
   }
 
   const observationKeys = new Set<string>();
-  const byRegionSector = new Map<string, number>();
+  const byRegionSector = new Map<string, (typeof snapshot.observations)[number]>();
 
   for (const [index, row] of snapshot.observations.entries()) {
     if (!regionSet.has(row.geographyCode)) {
@@ -132,7 +132,7 @@ export const istatTurnoverSnapshotSchema = istatTurnoverSnapshotBaseSchema.super
       issue(["observations", index], `Osservazione duplicata per ${key}`);
     }
     observationKeys.add(key);
-    byRegionSector.set(key, row.value);
+    byRegionSector.set(key, row);
   }
 
   if (snapshot.observations.length !== 60) {
@@ -140,9 +140,9 @@ export const istatTurnoverSnapshotSchema = istatTurnoverSnapshotBaseSchema.super
   }
 
   // Campania parity check: Tavola 1 turnover must be exactly 216750478
-  const campaniaAll = byRegionSector.get("15|ALL");
-  const campaniaInd = byRegionSector.get("15|INDUSTRIA");
-  const campaniaSer = byRegionSector.get("15|SERVIZI");
+  const campaniaAll = byRegionSector.get("15|ALL")?.value;
+  const campaniaInd = byRegionSector.get("15|INDUSTRIA")?.value;
+  const campaniaSer = byRegionSector.get("15|SERVIZI")?.value;
 
   if (campaniaAll !== 216_750_478) {
     issue(["observations"], `Valore Campania ALL non conforme: atteso 216750478, ricevuto ${campaniaAll}`);
@@ -159,10 +159,67 @@ export const istatTurnoverSnapshotSchema = istatTurnoverSnapshotBaseSchema.super
     }
   }
 
+  const reconcile = (
+    path: (string | number)[],
+    label: string,
+    total: number,
+    industry: number,
+    services: number,
+    tolerance: number,
+  ) => {
+    const delta = total - industry - services;
+    if (Math.abs(delta) > tolerance) {
+      issue(path, `${label} non riconcilia: totale meno Industria e Servizi = ${delta}`);
+    }
+  };
+
+  for (const code of EXPECTED_REGION_CODES) {
+    const total = byRegionSector.get(`${code}|ALL`);
+    const industry = byRegionSector.get(`${code}|INDUSTRIA`);
+    const services = byRegionSector.get(`${code}|SERVIZI`);
+    if (!total || !industry || !services) continue;
+
+    reconcile(["observations"], `${code} fatturato`, total.value, industry.value, services.value, 1);
+    reconcile(["observations"], `${code} unità locali`, total.localUnits, industry.localUnits, services.localUnits, 0);
+    reconcile(["observations"], `${code} addetti`, total.employees, industry.employees, services.employees, 0.000001);
+    reconcile(
+      ["observations"],
+      `${code} valore aggiunto`,
+      total.valueAddedThousandEuro,
+      industry.valueAddedThousandEuro,
+      services.valueAddedThousandEuro,
+      1,
+    );
+  }
+
   // National total parity
   if (snapshot.national.turnoverThousandEuro !== 3_768_464_269) {
     issue(["national", "turnoverThousandEuro"], "Totale nazionale fatturato non conforme all'aggregato ufficiale");
   }
+  reconcile(
+    ["national", "localUnits"],
+    "Unità locali nazionali",
+    snapshot.national.localUnits,
+    snapshot.national.industryLocalUnits,
+    snapshot.national.servicesLocalUnits,
+    0,
+  );
+  reconcile(
+    ["national", "employees"],
+    "Addetti nazionali",
+    snapshot.national.employees,
+    snapshot.national.industryEmployees,
+    snapshot.national.servicesEmployees,
+    0.000001,
+  );
+  reconcile(
+    ["national", "valueAddedThousandEuro"],
+    "Valore aggiunto nazionale",
+    snapshot.national.valueAddedThousandEuro,
+    snapshot.national.industryValueAddedThousandEuro,
+    snapshot.national.servicesValueAddedThousandEuro,
+    0,
+  );
 });
 
 export type IstatTurnoverObservation = z.infer<typeof istatTurnoverObservationSchema>;

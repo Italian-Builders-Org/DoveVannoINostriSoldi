@@ -51,6 +51,21 @@ test("the generated ISTAT turnover snapshot is valid under Zod contract", () => 
     assert.ok(region.name.length > 0);
   }
 });
+
+test("the public ISTAT metrics fail closed on missing fields and broken reconciliations", () => {
+  const missingField = structuredClone(istatTurnoverSnapshot);
+  delete missingField.observations[0].localUnits;
+  assert.throws(() => validateIstatTurnoverSnapshot(missingField));
+
+  const brokenRegion = structuredClone(istatTurnoverSnapshot);
+  brokenRegion.observations[0].valueAddedThousandEuro += 2;
+  assert.throws(() => validateIstatTurnoverSnapshot(brokenRegion), /valore aggiunto non riconcilia/i);
+
+  const brokenNational = structuredClone(istatTurnoverSnapshot);
+  brokenNational.national.localUnits += 1;
+  assert.throws(() => validateIstatTurnoverSnapshot(brokenNational), /Unità locali nazionali non riconcilia/i);
+});
+
 test("Campania row in Tavola 1 equals exactly 216750478 migliaia di euro and reconciles macro-sectors", () => {
   const campaniaAll = istatTurnoverSnapshot.observations.find(
     (obs) => obs.geographyCode === "15" && obs.macroSector === "ALL",
@@ -194,13 +209,14 @@ test("getIstatTurnoverView builds compliant view for dashboard", () => {
 test("turnover sector list shows the ISTAT label once, without the 22px ATECO code column", async () => {
   const pageSource = await readFile(new URL("../src/app/imprese/page.tsx", import.meta.url), "utf8");
   const turnoverBlock = pageSource.slice(
-    pageSource.indexOf("isTurnover"),
+    pageSource.indexOf("isIstatView"),
     pageSource.indexOf("const view = getCompanyAtlasView"),
   );
 
   assert.match(turnoverBlock, /sectorLabelPlain/);
   assert.doesNotMatch(turnoverBlock, /<b>\{sector\.code\}<\/b>/);
   assert.match(turnoverBlock, /\{sector\.label\}/);
+  assert.match(turnoverBlock, /turnoverView\.caveats\.map/);
 });
 
 test("fonti lists the lightweight ISTAT turnover source next to the camera sources", async () => {
@@ -376,6 +392,7 @@ test("getIstatTurnoverView correctly calculates per-employee derived metrics", (
   assert.equal(vaPerEmpNat.metric, "istat_value_added_per_employee");
   assert.equal(vaPerEmpNat.metricUnit, "euro per addetto");
   assert.equal(vaPerEmpNat.metricFormat, "euro-per-employee");
+  assert.match(vaPerEmpNat.caveats.join(" "), /Indicatore derivato/i);
   const expectedNatVa = (960_538_669 * 1000) / 15_332_958.22;
   assert.ok(Math.abs(vaPerEmpNat.nationalValue - expectedNatVa) < 0.001);
 

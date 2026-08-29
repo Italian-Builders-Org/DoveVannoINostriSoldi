@@ -431,7 +431,7 @@ def validate_snapshot(snapshot: dict) -> None:
     if len(observations) != expected_count:
         raise ValueError(f"Attese {expected_count} osservazioni, trovate {len(observations)}")
 
-    keys = set()
+    rows_by_key: dict[str, dict] = {}
     for index, obs in enumerate(observations):
         if obs["observationType"] != "aggregate" or obs["geographyLevel"] != "region":
             raise ValueError(f"Osservazione non aggregata regionale all'indice {index}")
@@ -443,13 +443,52 @@ def validate_snapshot(snapshot: dict) -> None:
             raise ValueError(f"Metrica non valida all'indice {index}: {obs['metric']}")
         if obs["value"] is None or obs["value"] < 0:
             raise ValueError(f"Valore nullo o negativo all'indice {index}: {obs['value']}")
+        for field in ("localUnits", "employees", "valueAddedThousandEuro"):
+            if field not in obs or obs[field] is None:
+                raise ValueError(f"Campo {field} mancante all'indice {index}")
+        if obs["localUnits"] < 0 or obs["valueAddedThousandEuro"] < 0:
+            raise ValueError(f"Metrica economica negativa all'indice {index}")
+        if obs["employees"] <= 0:
+            raise ValueError(f"Addetti non positivi all'indice {index}")
         if obs["atecoVersion"] != ATECO_VERSION:
             raise ValueError(f"Versione ATECO non coerente all'indice {index}")
 
         key = f"{obs['geographyCode']}|{obs['macroSector']}"
-        if key in keys:
+        if key in rows_by_key:
             raise ValueError(f"Osservazione duplicata per {key}")
-        keys.add(key)
+        rows_by_key[key] = obs
+
+    def reconcile(label: str, total: float, industry: float, services: float, tolerance: float) -> None:
+        delta = total - industry - services
+        if abs(delta) > tolerance:
+            raise ValueError(f"{label} non riconcilia: totale meno Industria e Servizi = {delta}")
+
+    for region_code in EXPECTED_REGION_CODES:
+        total = rows_by_key[f"{region_code}|ALL"]
+        industry = rows_by_key[f"{region_code}|INDUSTRIA"]
+        services = rows_by_key[f"{region_code}|SERVIZI"]
+        reconcile(f"{region_code} fatturato", total["value"], industry["value"], services["value"], 1)
+        reconcile(
+            f"{region_code} unità locali",
+            total["localUnits"],
+            industry["localUnits"],
+            services["localUnits"],
+            0,
+        )
+        reconcile(
+            f"{region_code} addetti",
+            total["employees"],
+            industry["employees"],
+            services["employees"],
+            0.000001,
+        )
+        reconcile(
+            f"{region_code} valore aggiunto",
+            total["valueAddedThousandEuro"],
+            industry["valueAddedThousandEuro"],
+            services["valueAddedThousandEuro"],
+            1,
+        )
 
     # Parity check: Campania row from Table 1 must be exactly 216750478
     campania_all = next((obs for obs in observations if obs["geographyCode"] == "15" and obs["macroSector"] == "ALL"), None)
@@ -467,6 +506,28 @@ def validate_snapshot(snapshot: dict) -> None:
     # Check national turnover
     if snapshot["national"]["turnoverThousandEuro"] != 3_768_464_269:
         raise ValueError("Totale nazionale fatturato inatteso")
+    national = snapshot["national"]
+    reconcile(
+        "Unità locali nazionali",
+        national["localUnits"],
+        national["industryLocalUnits"],
+        national["servicesLocalUnits"],
+        0,
+    )
+    reconcile(
+        "Addetti nazionali",
+        national["employees"],
+        national["industryEmployees"],
+        national["servicesEmployees"],
+        0.000001,
+    )
+    reconcile(
+        "Valore aggiunto nazionale",
+        national["valueAddedThousandEuro"],
+        national["industryValueAddedThousandEuro"],
+        national["servicesValueAddedThousandEuro"],
+        0,
+    )
 
 
 def canonical_bytes(value: object) -> bytes:

@@ -124,7 +124,7 @@ export default async function ImpresePage({
 }) {
   const params = await searchParams;
   const requestedMetric = first(params.metric);
-  const isTurnover = isIstatMetric(requestedMetric);
+  const isIstatView = isIstatMetric(requestedMetric);
   const match = searchMatch(first(params.q));
 
   const allMetricOptions = [
@@ -132,7 +132,7 @@ export default async function ImpresePage({
     ...istatMetricOptions().map((item) => ({ id: item.id, label: item.label })),
   ];
 
-  if (isTurnover) {
+  if (isIstatView) {
     const turnoverView = getIstatTurnoverView({
       metric: requestedMetric,
       region: first(params.region) ?? match.region,
@@ -266,7 +266,12 @@ export default async function ImpresePage({
                 <h2 id="ranking-title" className="panel-title">Prime 10 regioni</h2>
                 <span className={styles.headNote}>{turnoverView.metricUnit}</span>
               </div>
-              <div className="table-scroll" role="region" aria-label="Prime 10 regioni ordinate per valore assoluto" tabIndex={0}>
+              <div
+                className="table-scroll"
+                role="region"
+                aria-label={`Prime 10 regioni ordinate per ${turnoverView.metricShortLabel.toLowerCase()}`}
+                tabIndex={0}
+              >
                 <table className="table">
                   <thead><tr><th scope="col">#</th><th scope="col">Regione</th><th scope="col" className="num">{turnoverView.metricShortLabel}</th></tr></thead>
                   <tbody>
@@ -316,14 +321,16 @@ export default async function ImpresePage({
               </div>
               <h3 className={styles.sourceTitle}>{source.label}</h3>
               <p className={styles.sourcePublisher}>{source.publisher}</p>
-              <p className={styles.sourceCaveat}>{source.caveat}</p>
+              {turnoverView.caveats.map((caveat) => (
+                <p className={styles.sourceCaveat} key={caveat}>{caveat}</p>
+              ))}
               <a className="btn btn-block" href={source.url} target="_blank" rel="noreferrer">Scarica le tavole ufficiali ISTAT ↗</a>
             </section>
 
             <aside className={`notice ${styles.boundaryNotice}`}>
               <strong>Confine del modulo</strong>
               <p>
-                Qui non troverai nomi di aziende, identificativi, codici fiscali, partite IVA o bilanci
+                Qui non troverai nomi di aziende, identificativi, codici fiscali, partite IVA, fatturati o bilanci
                 esatti di singole imprese. Il dato è un aggregato regionale e per macro-settore (Industria/Servizi)
                 proveniente dalla stima anticipata ISTAT (Registro Frame Territoriale Anticipato 2024, ATECO 2007 agg. 2022),
                 riferito alle unità locali con almeno un dipendente.

@@ -104,6 +104,698 @@
       }
     }
   },
+  "procurement": {
+    "procedure_number_value": [
+      {
+        "procedure_group": "Affidamento diretto semplice",
+        "procedures": 10632,
+        "observed_base_amounts": 10628,
+        "base_amount_eur": 324594084.27,
+        "number_share": 0.775209624498724,
+        "value_share": 0.12322795814180058
+      },
+      {
+        "procedure_group": "Procedura negoziata",
+        "procedures": 1896,
+        "observed_base_amounts": 1893,
+        "base_amount_eur": 1286844624.78,
+        "number_share": 0.13824279985417426,
+        "value_share": 0.4885339667049716
+      },
+      {
+        "procedure_group": "Procedura aperta",
+        "procedures": 654,
+        "observed_base_amounts": 653,
+        "base_amount_eur": 625195146.43,
+        "number_share": 0.047685016405395554,
+        "value_share": 0.23734727485251753
+      },
+      {
+        "procedure_group": "Adesione/accordo quadro",
+        "procedures": 357,
+        "observed_base_amounts": 357,
+        "base_amount_eur": 362067765.6,
+        "number_share": 0.026029894276339775,
+        "value_share": 0.1374543579997576
+      },
+      {
+        "procedure_group": "Procedura ristretta",
+        "procedures": 46,
+        "observed_base_amounts": 46,
+        "base_amount_eur": 17790920.36,
+        "number_share": 0.003353991979584397,
+        "value_share": 0.006754093483732694
+      },
+      {
+        "procedure_group": "Altro affidamento diretto",
+        "procedures": 37,
+        "observed_base_amounts": 37,
+        "base_amount_eur": 2281413.13,
+        "number_share": 0.002697776157491797,
+        "value_share": 0.0008661090737992157
+      },
+      {
+        "procedure_group": "Altro/non disponibile",
+        "procedures": 93,
+        "observed_base_amounts": 93,
+        "base_amount_eur": 15320525.0,
+        "number_share": 0.006780896828290193,
+        "value_share": 0.005816239743420662
+      }
+    ],
+    "contract_number_value": [
+      {
+        "contract_group": "Servizi",
+        "procedures": 9614,
+        "observed_base_amounts": 9614,
+        "base_amount_eur": 258023683.78,
+        "number_share": 0.7009843237331389,
+        "value_share": 0.09795536408478438
+      },
+      {
+        "contract_group": "Lavori",
+        "procedures": 3420,
+        "observed_base_amounts": 3420,
+        "base_amount_eur": 2317032111.75,
+        "number_share": 0.24936201239518774,
+        "value_share": 0.8796313608797515
+      },
+      {
+        "contract_group": "Forniture",
+        "procedures": 191,
+        "observed_base_amounts": 191,
+        "base_amount_eur": 1993190.75,
+        "number_share": 0.013926358002187385,
+        "value_share": 0.0007566891641355918
+      },
+      {
+        "contract_group": "Altro/non disponibile",
+        "procedures": 490,
+        "observed_base_amounts": 482,
+        "base_amount_eur": 57045493.29,
+        "number_share": 0.03572730586948596,
+        "value_share": 0.021656585871328474
+      }
+    ],
+    "timing_quality": [
+      {
+        "quality_group": "Date non entrambe disponibili",
+        "procedures": 4159,
+        "share": 0.3032446226759023
+      },
+      {
+        "quality_group": "Aggiudicazione precedente alla pubblicazione",
+        "procedures": 2654,
+        "share": 0.1935107546481954
+      },
+      {
+        "quality_group": "Durata 0--730 giorni utilizzabile",
+        "procedures": 6892,
+        "share": 0.5025154939846883
+      },
+      {
+        "quality_group": "Durata oltre 730 giorni",
+        "procedures": 10,
+        "share": 0.0007291286912139992
+      }
+    ],
+    "timing_stats": [
+      {
+        "procedure_group": "Tutte le procedure utilizzabili",
+        "n": 6892,
+        "p25": 4.0,
+        "median": 14.0,
+        "p75": 33.0,
+        "p90": 64.0
+      },
+      {
+        "procedure_group": "Affidamento diretto semplice",
+        "n": 4346,
+        "p25": 2.0,
+        "median": 9.0,
+        "p75": 21.0,
+        "p90": 46.0
+      },
+      {
+        "procedure_group": "Procedura negoziata",
+        "n": 1601,
+        "p25": 14.0,
+        "median": 27.0,
+        "p75": 44.0,
+        "p90": 76.0
+      },
+      {
+        "procedure_group": "Procedura aperta",
+        "n": 558,
+        "p25": 28.0,
+        "median": 47.0,
+        "p75": 76.0,
+        "p90": 140.0
+      },
+      {
+        "procedure_group": "Adesione/accordo quadro",
+        "n": 309,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.0
+      },
+      {
+        "procedure_group": "Procedura ristretta",
+        "n": 24,
+        "p25": 10.5,
+        "median": 23.0,
+        "p75": 63.75,
+        "p90": 158.0
+      },
+      {
+        "procedure_group": "Altro affidamento diretto",
+        "n": 15,
+        "p25": 0.0,
+        "median": 4.0,
+        "p75": 9.0,
+        "p90": 28.199999999999996
+      },
+      {
+        "procedure_group": "Altro/non disponibile",
+        "n": 39,
+        "p25": 0.0,
+        "median": 9.0,
+        "p75": 33.5,
+        "p90": 66.60000000000001
+      }
+    ]
+  },
+  "delivery_equity": [
+    {
+      "coverage_tier": "<20",
+      "regions": 3,
+      "estimated_children_0_2": 283573.93682836293,
+      "projects": 1122,
+      "concluded": 55,
+      "commissioning": 417,
+      "total_funding_eur": 1120525579.85,
+      "mature_funding_eur": 415401351.35,
+      "concluded_share": 0.049019607843137254,
+      "commissioning_share": 0.3716577540106952,
+      "projects_per_100k_children": 395.6640065547018,
+      "funding_per_child": 3951.4406450132037,
+      "mature_funding_per_child": 1464.8784581406276,
+      "mature_funding_share": 0.3707200967296151
+    },
+    {
+      "coverage_tier": "20--32,9",
+      "regions": 4,
+      "estimated_children_0_2": 118460.73803862196,
+      "projects": 506,
+      "concluded": 22,
+      "commissioning": 211,
+      "total_funding_eur": 562819049.67,
+      "mature_funding_eur": 240132980.11,
+      "concluded_share": 0.043478260869565216,
+      "commissioning_share": 0.41699604743083,
+      "projects_per_100k_children": 427.14574328840325,
+      "funding_per_child": 4751.102002137645,
+      "mature_funding_per_child": 2027.1102821570219,
+      "mature_funding_share": 0.42666107384033675
+    },
+    {
+      "coverage_tier": "33--39,9",
+      "regions": 8,
+      "estimated_children_0_2": 600106.939420504,
+      "projects": 1052,
+      "concluded": 160,
+      "commissioning": 617,
+      "total_funding_eur": 1194955827.12,
+      "mature_funding_eur": 696884798.7,
+      "concluded_share": 0.1520912547528517,
+      "commissioning_share": 0.5865019011406845,
+      "projects_per_100k_children": 175.30208882701282,
+      "funding_per_child": 1991.2381421116615,
+      "mature_funding_per_child": 1161.2676890104788,
+      "mature_funding_share": 0.583188752993141
+    },
+    {
+      "coverage_tier": "≥40",
+      "regions": 5,
+      "estimated_children_0_2": 196126.94103186965,
+      "projects": 300,
+      "concluded": 57,
+      "commissioning": 198,
+      "total_funding_eur": 408613682.25000006,
+      "mature_funding_eur": 241143010.6,
+      "concluded_share": 0.19,
+      "commissioning_share": 0.66,
+      "projects_per_100k_children": 152.96215727509437,
+      "funding_per_child": 2083.4143443026646,
+      "mature_funding_per_child": 1229.5251704395648,
+      "mature_funding_share": 0.5901491337053728
+    }
+  ],
+  "time_to_completion": {
+    "recorded_duration": {
+      "completed": {
+        "n": 294,
+        "p25_days": 648.75,
+        "median_days": 910.0,
+        "p75_days": 1150.75,
+        "p90_days": 1372.7
+      },
+      "open_elapsed": {
+        "n": 2484,
+        "p25_days": 620.0,
+        "median_days": 1110.0,
+        "p75_days": 1313.0,
+        "p90_days": 1536.0
+      }
+    },
+    "milestones": [
+      {
+        "project_group": "Tutti",
+        "years": 1,
+        "completion_probability": 0.00500863895648318,
+        "at_risk": 2368,
+        "n": 2769,
+        "events": 291
+      },
+      {
+        "project_group": "Tutti",
+        "years": 2,
+        "completion_probability": 0.04371348867257718,
+        "at_risk": 1696,
+        "n": 2769,
+        "events": 291
+      },
+      {
+        "project_group": "Tutti",
+        "years": 3,
+        "completion_probability": 0.11664782188945455,
+        "at_risk": 1343,
+        "n": 2769,
+        "events": 291
+      },
+      {
+        "project_group": "Tutti",
+        "years": 4,
+        "completion_probability": 0.17923723425967708,
+        "at_risk": 277,
+        "n": 2769,
+        "events": 291
+      },
+      {
+        "project_group": "Nuova realizzazione",
+        "years": 1,
+        "completion_probability": 0.0,
+        "at_risk": 1307,
+        "n": 1488,
+        "events": 85
+      },
+      {
+        "project_group": "Nuova realizzazione",
+        "years": 2,
+        "completion_probability": 0.011199143281140689,
+        "at_risk": 986,
+        "n": 1488,
+        "events": 85
+      },
+      {
+        "project_group": "Nuova realizzazione",
+        "years": 3,
+        "completion_probability": 0.048721507000373476,
+        "at_risk": 815,
+        "n": 1488,
+        "events": 85
+      },
+      {
+        "project_group": "Nuova realizzazione",
+        "years": 4,
+        "completion_probability": 0.09643708393330075,
+        "at_risk": 164,
+        "n": 1488,
+        "events": 85
+      },
+      {
+        "project_group": "Ampliamento",
+        "years": 1,
+        "completion_probability": 0.018194524563944547,
+        "at_risk": 299,
+        "n": 348,
+        "events": 70
+      },
+      {
+        "project_group": "Ampliamento",
+        "years": 2,
+        "completion_probability": 0.09607382030801981,
+        "at_risk": 188,
+        "n": 348,
+        "events": 70
+      },
+      {
+        "project_group": "Ampliamento",
+        "years": 3,
+        "completion_probability": 0.24012261482457942,
+        "at_risk": 135,
+        "n": 348,
+        "events": 70
+      },
+      {
+        "project_group": "Ampliamento",
+        "years": 4,
+        "completion_probability": 0.38517113323954444,
+        "at_risk": 27,
+        "n": 348,
+        "events": 70
+      },
+      {
+        "project_group": "Ristrutturazione/recupero",
+        "years": 1,
+        "completion_probability": 0.009126893750235787,
+        "at_risk": 591,
+        "n": 745,
+        "events": 113
+      },
+      {
+        "project_group": "Ristrutturazione/recupero",
+        "years": 2,
+        "completion_probability": 0.09120438506195205,
+        "at_risk": 388,
+        "n": 745,
+        "events": 113
+      },
+      {
+        "project_group": "Ristrutturazione/recupero",
+        "years": 3,
+        "completion_probability": 0.21724401009029248,
+        "at_risk": 277,
+        "n": 745,
+        "events": 113
+      },
+      {
+        "project_group": "Ristrutturazione/recupero",
+        "years": 4,
+        "completion_probability": 0.2874888714187762,
+        "at_risk": 59,
+        "n": 745,
+        "events": 113
+      },
+      {
+        "project_group": "Demolizione/ricostruzione",
+        "years": 1,
+        "completion_probability": 0.0,
+        "at_risk": 113,
+        "n": 127,
+        "events": 8
+      },
+      {
+        "project_group": "Demolizione/ricostruzione",
+        "years": 2,
+        "completion_probability": 0.0,
+        "at_risk": 92,
+        "n": 127,
+        "events": 8
+      },
+      {
+        "project_group": "Demolizione/ricostruzione",
+        "years": 3,
+        "completion_probability": 0.05762987012987009,
+        "at_risk": 80,
+        "n": 127,
+        "events": 8
+      },
+      {
+        "project_group": "Demolizione/ricostruzione",
+        "years": 4,
+        "completion_probability": 0.08372627372627361,
+        "at_risk": 13,
+        "n": 127,
+        "events": 8
+      },
+      {
+        "project_group": "Altro",
+        "years": 1,
+        "completion_probability": 0.016393442622950838,
+        "at_risk": 58,
+        "n": 61,
+        "events": 15
+      },
+      {
+        "project_group": "Altro",
+        "years": 2,
+        "completion_probability": 0.12288261828190872,
+        "at_risk": 42,
+        "n": 61,
+        "events": 15
+      },
+      {
+        "project_group": "Altro",
+        "years": 3,
+        "completion_probability": 0.20845504576660068,
+        "at_risk": 36,
+        "n": 61,
+        "events": 15
+      },
+      {
+        "project_group": "Altro",
+        "years": 4,
+        "completion_probability": 0.20845504576660068,
+        "at_risk": 14,
+        "n": 61,
+        "events": 15
+      }
+    ],
+    "start_cohorts": [
+      {
+        "start_year": 2021.0,
+        "projects": 81,
+        "concluded": 15,
+        "commissioning": 47,
+        "concluded_share": 0.18518518518518517,
+        "commissioning_share": 0.5802469135802469
+      },
+      {
+        "start_year": 2022.0,
+        "projects": 1017,
+        "concluded": 161,
+        "commissioning": 639,
+        "concluded_share": 0.1583087512291052,
+        "commissioning_share": 0.6283185840707964
+      },
+      {
+        "start_year": 2023.0,
+        "projects": 478,
+        "concluded": 90,
+        "commissioning": 285,
+        "concluded_share": 0.18828451882845187,
+        "commissioning_share": 0.5962343096234309
+      },
+      {
+        "start_year": 2024.0,
+        "projects": 679,
+        "concluded": 22,
+        "commissioning": 293,
+        "concluded_share": 0.03240058910162003,
+        "commissioning_share": 0.43151693667157587
+      },
+      {
+        "start_year": 2025.0,
+        "projects": 498,
+        "concluded": 2,
+        "commissioning": 139,
+        "concluded_share": 0.004016064257028112,
+        "commissioning_share": 0.2791164658634538
+      },
+      {
+        "start_year": 2026.0,
+        "projects": 16,
+        "concluded": 1,
+        "commissioning": 2,
+        "concluded_share": 0.0625,
+        "commissioning_share": 0.125
+      }
+    ]
+  },
+  "regional_composition_adjusted": [
+    {
+      "region": "Abruzzo",
+      "complete_cases": 130,
+      "actual_mature": 63,
+      "expected_mature": 66.59448580677132,
+      "actual_share": 0.4846153846153846,
+      "expected_share": 0.5122652754367024,
+      "composition_gap": -0.027649890821317802
+    },
+    {
+      "region": "Basilicata",
+      "complete_cases": 61,
+      "actual_mature": 32,
+      "expected_mature": 31.58901236705882,
+      "actual_share": 0.5245901639344263,
+      "expected_share": 0.5178526617550626,
+      "composition_gap": 0.006737502179363641
+    },
+    {
+      "region": "Calabria",
+      "complete_cases": 313,
+      "actual_mature": 96,
+      "expected_mature": 140.03737564547774,
+      "actual_share": 0.30670926517571884,
+      "expected_share": 0.44740375605583943,
+      "composition_gap": -0.1406944908801206
+    },
+    {
+      "region": "Campania",
+      "complete_cases": 423,
+      "actual_mature": 194,
+      "expected_mature": 202.3416978727228,
+      "actual_share": 0.458628841607565,
+      "expected_share": 0.47834916754780804,
+      "composition_gap": -0.019720325940243033
+    },
+    {
+      "region": "Emilia-Romagna",
+      "complete_cases": 113,
+      "actual_mature": 85,
+      "expected_mature": 69.91460426432569,
+      "actual_share": 0.7522123893805309,
+      "expected_share": 0.6187133120736786,
+      "composition_gap": 0.1334990773068523
+    },
+    {
+      "region": "Friuli-Venezia Giulia",
+      "complete_cases": 31,
+      "actual_mature": 24,
+      "expected_mature": 18.881166560996096,
+      "actual_share": 0.7741935483870968,
+      "expected_share": 0.6090698890643902,
+      "composition_gap": 0.16512365932270656
+    },
+    {
+      "region": "Lazio",
+      "complete_cases": 207,
+      "actual_mature": 82,
+      "expected_mature": 104.23395242842933,
+      "actual_share": 0.3961352657004831,
+      "expected_share": 0.5035456639054557,
+      "composition_gap": -0.10741039820497267
+    },
+    {
+      "region": "Liguria",
+      "complete_cases": 46,
+      "actual_mature": 23,
+      "expected_mature": 26.193526496567635,
+      "actual_share": 0.5,
+      "expected_share": 0.5694244890558181,
+      "composition_gap": -0.0694244890558181
+    },
+    {
+      "region": "Lombardia",
+      "complete_cases": 263,
+      "actual_mature": 178,
+      "expected_mature": 144.1616692811404,
+      "actual_share": 0.6768060836501901,
+      "expected_share": 0.548143229205857,
+      "composition_gap": 0.12866285444433312
+    },
+    {
+      "region": "Marche",
+      "complete_cases": 83,
+      "actual_mature": 55,
+      "expected_mature": 45.079981947216375,
+      "actual_share": 0.6626506024096386,
+      "expected_share": 0.5431323126170647,
+      "composition_gap": 0.11951828979257384
+    },
+    {
+      "region": "Molise",
+      "complete_cases": 45,
+      "actual_mature": 15,
+      "expected_mature": 22.32864782932021,
+      "actual_share": 0.3333333333333333,
+      "expected_share": 0.49619217398489357,
+      "composition_gap": -0.16285884065156025
+    },
+    {
+      "region": "Piemonte",
+      "complete_cases": 133,
+      "actual_mature": 88,
+      "expected_mature": 72.92145585348055,
+      "actual_share": 0.6616541353383458,
+      "expected_share": 0.5482816229585004,
+      "composition_gap": 0.11337251237984547
+    },
+    {
+      "region": "Puglia",
+      "complete_cases": 239,
+      "actual_mature": 100,
+      "expected_mature": 107.9315596980554,
+      "actual_share": 0.41841004184100417,
+      "expected_share": 0.451596484092282,
+      "composition_gap": -0.033186442251277815
+    },
+    {
+      "region": "Sardegna",
+      "complete_cases": 78,
+      "actual_mature": 46,
+      "expected_mature": 44.26832818342129,
+      "actual_share": 0.5897435897435898,
+      "expected_share": 0.5675426690182217,
+      "composition_gap": 0.022200920725368056
+    },
+    {
+      "region": "Sicilia",
+      "complete_cases": 279,
+      "actual_mature": 109,
+      "expected_mature": 129.23062045981573,
+      "actual_share": 0.3906810035842294,
+      "expected_share": 0.4631921880280134,
+      "composition_gap": -0.07251118444378396
+    },
+    {
+      "region": "Toscana",
+      "complete_cases": 112,
+      "actual_mature": 66,
+      "expected_mature": 65.32902157190061,
+      "actual_share": 0.5892857142857143,
+      "expected_share": 0.5832948354633983,
+      "composition_gap": 0.00599087882231597
+    },
+    {
+      "region": "Trentino-Alto Adige",
+      "complete_cases": 36,
+      "actual_mature": 34,
+      "expected_mature": 23.43659155038939,
+      "actual_share": 0.9444444444444444,
+      "expected_share": 0.6510164319552608,
+      "composition_gap": 0.2934280124891836
+    },
+    {
+      "region": "Umbria",
+      "complete_cases": 33,
+      "actual_mature": 18,
+      "expected_mature": 18.025128106957336,
+      "actual_share": 0.5454545454545454,
+      "expected_share": 0.5462160032411314,
+      "composition_gap": -0.000761457786585984
+    },
+    {
+      "region": "Valle d'Aosta",
+      "complete_cases": 4,
+      "actual_mature": 3,
+      "expected_mature": 2.288075021739188,
+      "actual_share": 0.75,
+      "expected_share": 0.572018755434797,
+      "composition_gap": 0.17798124456520303
+    },
+    {
+      "region": "Veneto",
+      "complete_cases": 149,
+      "actual_mature": 100,
+      "expected_mature": 76.21309905420462,
+      "actual_share": 0.6711409395973155,
+      "expected_share": 0.5114973090886216,
+      "composition_gap": 0.1596436305086939
+    }
+  ],
   "limitations": [
     "Nessuna variabile pubblica nel dataset misura i posti creati o certificati.",
     "Le associazioni tra appalti e avanzamento non hanno interpretazione causale.",

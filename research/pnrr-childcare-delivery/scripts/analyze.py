@@ -92,6 +92,18 @@ MATURITY_ORDER = [
     "Fase non disponibile",
 ]
 
+REFERENCE_DATE = pd.Timestamp("2026-06-13")
+TENDER_PROCEDURE_ORDER = [
+    "Affidamento diretto semplice",
+    "Procedura negoziata",
+    "Procedura aperta",
+    "Adesione/accordo quadro",
+    "Procedura ristretta",
+    "Altro affidamento diretto",
+    "Altro/non disponibile",
+]
+CONTRACT_ORDER = ["Servizi", "Lavori", "Forniture", "Altro/non disponibile"]
+
 
 def text(value: object) -> str:
     return "" if value is None else str(value).strip()
@@ -100,6 +112,12 @@ def text(value: object) -> str:
 def parse_year(value: object) -> float:
     match = re.match(r"^(\d{4})", text(value))
     return float(match.group(1)) if match else np.nan
+
+
+def parse_date(value: object) -> pd.Timestamp | pd.NaT:
+    if not text(value):
+        return pd.NaT
+    return pd.to_datetime(value, errors="coerce", utc=True).tz_localize(None)
 
 
 def normalize_region(value: object) -> str | None:
@@ -132,6 +150,34 @@ def classify_maturity(progress: object, phase: object) -> str:
     if not phase_u or "NON DISPONIBILE" in phase_u:
         return "Fase non disponibile"
     return "Prima dell'esecuzione"
+
+
+def classify_tender_procedure(procedure: object) -> str:
+    raw = text(procedure).upper()
+    if raw == "AFFIDAMENTO DIRETTO":
+        return "Affidamento diretto semplice"
+    if "NEGOZIAT" in raw or "DIALOGO COMPETITIVO" in raw:
+        return "Procedura negoziata"
+    if "APERTA" in raw:
+        return "Procedura aperta"
+    if "ACCORDO QUADRO" in raw or "CONVENZIONE" in raw:
+        return "Adesione/accordo quadro"
+    if "RISTRETTA" in raw:
+        return "Procedura ristretta"
+    if "DIRETT" in raw:
+        return "Altro affidamento diretto"
+    return "Altro/non disponibile"
+
+
+def classify_contract_type(value: object) -> str:
+    raw = text(value).upper()
+    if "SERVIZ" in raw:
+        return "Servizi"
+    if "LAVOR" in raw:
+        return "Lavori"
+    if "FORNIT" in raw:
+        return "Forniture"
+    return "Altro/non disponibile"
 
 
 def wilson(successes: int, total: int, z: float = 1.959963984540054) -> tuple[float, float]:
@@ -209,6 +255,9 @@ def project_rows(payload: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
         rows.append(row)
 
         for tender in tenders:
+            is_framework = bool(tender.get("frameworkCig")) or "ACCORDO QUADRO" in text(tender.get("deliveryMode")).upper()
+            published_at = parse_date(tender.get("publishedAt"))
+            awarded_at = parse_date(tender.get("awardedAt"))
             tender_rows.append(
                 {
                     "cup": project.get("cup"),
@@ -224,12 +273,16 @@ def project_rows(payload: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
                     "has_cig": int(bool(tender.get("cig"))),
                     "has_procedure": int(bool(tender.get("procedure"))),
                     "has_contract_type": int(bool(tender.get("contractType"))),
+                    "procedure_raw": tender.get("procedure"),
+                    "procedure_group": classify_tender_procedure(tender.get("procedure")),
+                    "contract_type_raw": tender.get("contractType"),
+                    "contract_group": classify_contract_type(tender.get("contractType")),
+                    "published_at": published_at,
+                    "awarded_at": awarded_at,
+                    "award_days": (awarded_at - published_at).days if pd.notna(published_at) and pd.notna(awarded_at) else np.nan,
                     "is_direct": int("AFFIDAMENTO DIRETTO" in text(tender.get("procedure")).upper()),
                     "is_works": int("LAVORI" in text(tender.get("contractType")).upper()),
-                    "is_framework": int(
-                        bool(tender.get("frameworkCig"))
-                        or "ACCORDO QUADRO" in text(tender.get("deliveryMode")).upper()
-                    ),
+                    "is_framework": int(is_framework),
                 }
             )
     return pd.DataFrame(rows), pd.DataFrame(tender_rows)
@@ -252,6 +305,8 @@ def latex_escape(value: object) -> str:
         "€": r"\texteuro{}",
         "–": "--",
         "—": "---",
+        "≥": r"\(\geq\)",
+        "≤": r"\(\leq\)",
     }
     for old, new in replacements.items():
         string = string.replace(old, new)
@@ -328,12 +383,15 @@ def regional_frame(projects: pd.DataFrame, istat: pd.DataFrame) -> pd.DataFrame:
                 "commissioning_high": m_high,
                 "total_funding_eur": group["total_funding_eur"].sum(),
                 "pnrr_funding_eur": group["pnrr_funding_eur"].sum(),
+                "mature_funding_eur": group.loc[group["commissioning_or_concluded"] == 1, "total_funding_eur"].sum(),
             }
         )
     regional = pd.DataFrame(rows).merge(istat, on="region", how="left", validate="one_to_one")
     regional["estimated_children_0_2"] = regional["authorized_places"] / (regional["coverage_per_100"] / 100)
     regional["funding_per_child"] = regional["total_funding_eur"] / regional["estimated_children_0_2"]
     regional["projects_per_100k_children"] = regional["projects"] / regional["estimated_children_0_2"] * 100_000
+    regional["mature_funding_per_child"] = regional["mature_funding_eur"] / regional["estimated_children_0_2"]
+    regional["mature_funding_share"] = regional["mature_funding_eur"] / regional["total_funding_eur"]
     return regional
 
 
@@ -443,6 +501,347 @@ def plot_procurement(projects: pd.DataFrame, tenders: pd.DataFrame) -> pd.DataFr
     fig.text(0.01, -0.02, f"Fonte: {len(tenders):,} procedure collegate a {len(projects):,} progetti DVNS/PNRR.".replace(",", "."), fontsize=8, color=COLORS["grey"])
     save_figure(fig, "04_impronta_appalti")
     return stats.reset_index()
+
+
+def procurement_number_value(tenders: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    procedure = (
+        tenders.groupby("procedure_group")
+        .agg(
+            procedures=("cup", "size"),
+            observed_base_amounts=("has_amount", "sum"),
+            base_amount_eur=("amount_eur", "sum"),
+        )
+        .reindex(TENDER_PROCEDURE_ORDER, fill_value=0)
+        .reset_index()
+    )
+    procedure["number_share"] = procedure["procedures"] / len(tenders)
+    procedure["value_share"] = procedure["base_amount_eur"] / procedure["base_amount_eur"].sum()
+
+    contract = (
+        tenders.groupby("contract_group")
+        .agg(
+            procedures=("cup", "size"),
+            observed_base_amounts=("has_amount", "sum"),
+            base_amount_eur=("amount_eur", "sum"),
+        )
+        .reindex(CONTRACT_ORDER, fill_value=0)
+        .reset_index()
+    )
+    contract["number_share"] = contract["procedures"] / len(tenders)
+    contract["value_share"] = contract["base_amount_eur"] / contract["base_amount_eur"].sum()
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.4, 5.6), gridspec_kw={"wspace": 0.35})
+    for ax, frame, title in (
+        (axes[0], procedure, "Procedure per modalità di affidamento"),
+        (axes[1], contract, "Procedure per tipo di contratto"),
+    ):
+        view = frame.iloc[::-1].reset_index(drop=True)
+        y = np.arange(len(view))
+        height = 0.36
+        ax.barh(y - height / 2, view["number_share"] * 100, height, color=COLORS["amber"], label="Quota per numero")
+        ax.barh(y + height / 2, view["value_share"] * 100, height, color=COLORS["blue"], label="Quota del valore a base osservato")
+        labels = view.iloc[:, 0].str.replace("Affidamento diretto semplice", "Diretto semplice", regex=False)
+        labels = labels.str.replace("Adesione/accordo quadro", "Accordo quadro", regex=False)
+        labels = labels.str.replace("Altro/non disponibile", "Altro/n.d.", regex=False)
+        ax.set_yticks(y, labels)
+        ax.set_xlabel("Quota (%)")
+        ax.set_title(title)
+        ax.grid(axis="x", alpha=0.18)
+        ax.set_xlim(0, max(90, (view[["number_share", "value_share"]].max().max() * 100) * 1.12))
+    axes[0].legend(frameon=False, loc="lower right", fontsize=8.5)
+    fig.suptitle("Il denominatore cambia il racconto degli appalti", fontsize=14)
+    fig.text(
+        0.01,
+        -0.02,
+        f"Fonte: {len(tenders):,} righe procedura. Il valore è la somma degli importi a base disponibili, non pagamenti né importi aggiudicati.".replace(",", "."),
+        fontsize=8,
+        color=COLORS["grey"],
+    )
+    save_figure(fig, "07_appalti_numero_valore")
+    return procedure, contract
+
+
+def procurement_timing(tenders: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    paired = tenders["award_days"].notna()
+    negative = paired & tenders["award_days"].lt(0)
+    usable = paired & tenders["award_days"].between(0, 730, inclusive="both")
+    over = paired & tenders["award_days"].gt(730)
+    quality = pd.DataFrame(
+        [
+            ["Date non entrambe disponibili", int((~paired).sum())],
+            ["Aggiudicazione precedente alla pubblicazione", int(negative.sum())],
+            ["Durata 0--730 giorni utilizzabile", int(usable.sum())],
+            ["Durata oltre 730 giorni", int(over.sum())],
+        ],
+        columns=["quality_group", "procedures"],
+    )
+    quality["share"] = quality["procedures"] / len(tenders)
+
+    usable_tenders = tenders.loc[usable].copy()
+    timing = (
+        usable_tenders.groupby("procedure_group")["award_days"]
+        .agg(n="size", p25=lambda s: s.quantile(0.25), median="median", p75=lambda s: s.quantile(0.75), p90=lambda s: s.quantile(0.90))
+        .reindex(TENDER_PROCEDURE_ORDER)
+        .dropna(subset=["n"])
+        .reset_index()
+    )
+    total_row = pd.DataFrame(
+        [
+            {
+                "procedure_group": "Tutte le procedure utilizzabili",
+                "n": len(usable_tenders),
+                "p25": usable_tenders["award_days"].quantile(0.25),
+                "median": usable_tenders["award_days"].median(),
+                "p75": usable_tenders["award_days"].quantile(0.75),
+                "p90": usable_tenders["award_days"].quantile(0.90),
+            }
+        ]
+    )
+    timing = pd.concat([total_row, timing], ignore_index=True)
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.3, 5.5), gridspec_kw={"wspace": 0.44})
+    quality_colors = [COLORS["grey"], COLORS["red"], COLORS["teal"], COLORS["amber"]]
+    quality_view = quality.iloc[::-1].reset_index(drop=True)
+    y_quality = np.arange(len(quality_view))
+    axes[0].barh(y_quality, quality_view["share"] * 100, color=list(reversed(quality_colors)))
+    quality_labels = ["Date mancanti", "Ordine negativo", "0--730 giorni validi", ">730 giorni"]
+    axes[0].set_yticks(y_quality, list(reversed(quality_labels)))
+    axes[0].set_xlim(0, 58)
+    axes[0].set_xlabel("Quota di tutte le righe (%)")
+    axes[0].set_title("Validità della coppia di date")
+    axes[0].grid(axis="x", alpha=0.18)
+    for index, row in quality_view.iterrows():
+        axes[0].text(row["share"] * 100 + 0.8, index, f"{int(row['procedures']):,} ({row['share']:.1%})".replace(",", "."), va="center", fontsize=8.5)
+
+    timing_view = timing[timing["procedure_group"] != "Tutte le procedure utilizzabili"].copy()
+    timing_view = timing_view[timing_view["n"] >= 20].sort_values("median", ascending=True)
+    y = np.arange(len(timing_view))
+    axes[1].hlines(y, timing_view["p25"], timing_view["p75"], color=COLORS["light"], linewidth=7)
+    axes[1].scatter(timing_view["median"], y, color=COLORS["blue"], s=42, zorder=3)
+    labels = timing_view["procedure_group"].str.replace("Affidamento diretto semplice", "Diretto semplice", regex=False)
+    labels = labels.str.replace("Adesione/accordo quadro", "Accordo quadro", regex=False)
+    labels = labels.str.replace("Altro/non disponibile", "Altro/n.d.", regex=False)
+    axes[1].set_yticks(y, [f"{label} (n={int(n):,})".replace(",", ".") for label, n in zip(labels, timing_view["n"])])
+    axes[1].set_xlabel("Giorni tra pubblicazione e aggiudicazione")
+    axes[1].set_title("Mediana e intervallo interquartile\nsolo coppie 0--730 giorni")
+    axes[1].grid(axis="x", alpha=0.18)
+    fig.suptitle("La gara mediana dura 14 giorni, ma solo metà delle date è utilizzabile", fontsize=14, y=0.97)
+    fig.subplots_adjust(top=0.80, bottom=0.12)
+    fig.text(0.01, -0.02, "Tempi descrittivi, non durata dell'intero procurement né del cantiere. Le date negative sono escluse, non corrette.", fontsize=8, color=COLORS["grey"])
+    save_figure(fig, "08_tempi_appalti")
+    return quality, timing
+
+
+def equity_tiers(regional: pd.DataFrame) -> pd.DataFrame:
+    frame = regional.copy()
+    labels = ["<20", "20--32,9", "33--39,9", "≥40"]
+    frame["coverage_tier"] = pd.cut(
+        frame["coverage_per_100"],
+        bins=[-np.inf, 20, 33, 40, np.inf],
+        right=False,
+        labels=labels,
+    )
+    tiers = (
+        frame.groupby("coverage_tier", observed=False)
+        .agg(
+            regions=("region", "size"),
+            estimated_children_0_2=("estimated_children_0_2", "sum"),
+            projects=("projects", "sum"),
+            concluded=("concluded", "sum"),
+            commissioning=("commissioning", "sum"),
+            total_funding_eur=("total_funding_eur", "sum"),
+            mature_funding_eur=("mature_funding_eur", "sum"),
+        )
+        .reset_index()
+    )
+    tiers["concluded_share"] = tiers["concluded"] / tiers["projects"]
+    tiers["commissioning_share"] = tiers["commissioning"] / tiers["projects"]
+    tiers["projects_per_100k_children"] = tiers["projects"] / tiers["estimated_children_0_2"] * 100_000
+    tiers["funding_per_child"] = tiers["total_funding_eur"] / tiers["estimated_children_0_2"]
+    tiers["mature_funding_per_child"] = tiers["mature_funding_eur"] / tiers["estimated_children_0_2"]
+    tiers["mature_funding_share"] = tiers["mature_funding_eur"] / tiers["total_funding_eur"]
+
+    x = np.arange(len(tiers))
+    fig, axes = plt.subplots(1, 2, figsize=(11.3, 5.1), gridspec_kw={"wspace": 0.34})
+    axes[0].bar(x, tiers["funding_per_child"], color=COLORS["light"], edgecolor=COLORS["blue"], label="Finanziamento associato")
+    axes[0].bar(x, tiers["mature_funding_per_child"], color=COLORS["blue"], label="Associato a conclusi/collaudo")
+    axes[0].set_xticks(x, tiers["coverage_tier"])
+    axes[0].set_xlabel("Copertura iniziale: posti ogni 100 bambini")
+    axes[0].set_ylabel("Euro per bambino 0--2 stimato")
+    axes[0].set_title("Intensità finanziaria assegnata e maturata")
+    axes[0].legend(frameon=False, fontsize=8.5)
+    axes[0].grid(axis="y", alpha=0.18)
+
+    width = 0.36
+    axes[1].bar(x - width / 2, tiers["commissioning_share"] * 100, width, color=COLORS["teal"], label="Quota progetti maturi")
+    axes[1].bar(x + width / 2, tiers["mature_funding_share"] * 100, width, color=COLORS["navy"], label="Quota fondi associata a maturi")
+    axes[1].set_xticks(x, tiers["coverage_tier"])
+    axes[1].set_xlabel("Copertura iniziale: posti ogni 100 bambini")
+    axes[1].set_ylabel("Quota (%)")
+    axes[1].set_title("Fattore di consegna amministrativa")
+    axes[1].legend(frameon=False, fontsize=8.5)
+    axes[1].grid(axis="y", alpha=0.18)
+    fig.suptitle("La perequazione finanziaria si attenua lungo la pipeline", fontsize=14)
+    fig.text(
+        0.01,
+        -0.02,
+        "Il valore 'maturato' è finanziamento associato a progetti conclusi o in collaudo: non è spesa, posto certificato o servizio aperto.",
+        fontsize=8,
+        color=COLORS["grey"],
+    )
+    save_figure(fig, "09_equita_consegna")
+    return tiers
+
+
+def kaplan_meier_curve(duration: pd.Series, event: pd.Series) -> pd.DataFrame:
+    data = pd.DataFrame({"duration": duration.astype(float), "event": event.astype(int)}).sort_values("duration")
+    survival = 1.0
+    rows = [{"day": 0.0, "survival": 1.0, "completion": 0.0, "at_risk": len(data), "events": 0}]
+    for day in np.sort(data.loc[data["event"] == 1, "duration"].unique()):
+        at_risk = int((data["duration"] >= day).sum())
+        events = int(((data["duration"] == day) & (data["event"] == 1)).sum())
+        survival *= 1 - events / at_risk
+        rows.append({"day": float(day), "survival": survival, "completion": 1 - survival, "at_risk": at_risk, "events": events})
+    return pd.DataFrame(rows)
+
+
+def completion_time_analysis(projects: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    frame = projects.copy()
+    frame["start_date"] = pd.to_datetime(frame["actual_start"], errors="coerce", utc=True).dt.tz_localize(None)
+    frame["end_date"] = pd.to_datetime(frame["actual_end"], errors="coerce", utc=True).dt.tz_localize(None)
+    frame = frame[frame["start_date"].between(pd.Timestamp("2021-01-01"), REFERENCE_DATE, inclusive="both")].copy()
+    frame["event"] = (frame["concluded"].eq(1) & frame["end_date"].notna() & frame["end_date"].le(REFERENCE_DATE)).astype(int)
+    frame["duration_days"] = np.where(
+        frame["event"].eq(1),
+        (frame["end_date"] - frame["start_date"]).dt.days,
+        (REFERENCE_DATE - frame["start_date"]).dt.days,
+    )
+    frame = frame[frame["duration_days"].ge(0)].copy()
+
+    curves = []
+    group_order = ["Nuova realizzazione", "Ampliamento", "Ristrutturazione/recupero", "Demolizione/ricostruzione", "Altro"]
+    for group_name, subset in [("Tutti", frame), *[(group, frame[frame["project_group"] == group]) for group in group_order]]:
+        curve = kaplan_meier_curve(subset["duration_days"], subset["event"])
+        curve["project_group"] = group_name
+        curve["n_total"] = len(subset)
+        curve["events_total"] = int(subset["event"].sum())
+        curves.append(curve)
+    curves_frame = pd.concat(curves, ignore_index=True)
+
+    milestones = []
+    for group_name in ["Tutti", *group_order]:
+        subset = frame if group_name == "Tutti" else frame[frame["project_group"] == group_name]
+        curve = curves_frame[curves_frame["project_group"] == group_name].sort_values("day")
+        for years, day in ((1, 365), (2, 730), (3, 1095), (4, 1460)):
+            prior = curve[curve["day"] <= day]
+            completion = 0.0 if prior.empty else float(prior.iloc[-1]["completion"])
+            milestones.append(
+                {
+                    "project_group": group_name,
+                    "years": years,
+                    "completion_probability": completion,
+                    "at_risk": int((subset["duration_days"] >= day).sum()),
+                    "n": len(subset),
+                    "events": int(subset["event"].sum()),
+                }
+            )
+    milestone_frame = pd.DataFrame(milestones)
+
+    cohort = (
+        projects[projects["start_year"].between(2021, 2026, inclusive="both")]
+        .groupby("start_year")
+        .agg(
+            projects=("cup", "size"),
+            concluded=("concluded", "sum"),
+            commissioning=("commissioning_or_concluded", "sum"),
+        )
+        .reset_index()
+    )
+    cohort["concluded_share"] = cohort["concluded"] / cohort["projects"]
+    cohort["commissioning_share"] = cohort["commissioning"] / cohort["projects"]
+
+    fig, ax = plt.subplots(figsize=(9.4, 6.2))
+    group_colors = {
+        "Nuova realizzazione": COLORS["blue"],
+        "Ampliamento": COLORS["green"],
+        "Ristrutturazione/recupero": COLORS["teal"],
+        "Demolizione/ricostruzione": COLORS["red"],
+        "Altro": COLORS["amber"],
+    }
+    for group in group_order:
+        curve = curves_frame[curves_frame["project_group"] == group]
+        if curve.empty:
+            continue
+        ax.step(curve["day"] / 365.25, curve["completion"] * 100, where="post", color=group_colors[group], label=group, linewidth=1.8)
+    ax.set_xlim(0, 4.1)
+    ax.set_ylim(0, 45)
+    ax.set_xlabel("Anni dall'avvio effettivo")
+    ax.set_ylabel("Probabilità cumulata di conclusione registrata (%)")
+    ax.set_title("Tempo alla conclusione registrata: stima Kaplan--Meier descrittiva")
+    ax.grid(alpha=0.18)
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
+    fig.text(
+        0.01,
+        -0.02,
+        f"Avvii dal 2021; n={len(frame):,}, eventi={int(frame['event'].sum()):,}. I progetti non conclusi al 13 giugno 2026 sono censurati a destra; non è una previsione.".replace(",", "."),
+        fontsize=8,
+        color=COLORS["grey"],
+    )
+    save_figure(fig, "10_tempo_conclusione")
+    return curves_frame, milestone_frame, cohort
+
+
+def composition_adjusted_regions(projects: pd.DataFrame) -> pd.DataFrame:
+    frame = projects[(projects["total_funding_eur"] > 0) & projects["start_year"].notna() & projects["region"].notna()].copy()
+    frame["log2_funding"] = np.log2(frame["total_funding_eur"] / 1_000_000)
+    frame["log2_tenders_plus1"] = np.log2(frame["tender_count"] + 1)
+    frame["start_year_c"] = frame["start_year"] - 2021
+    formula = (
+        "commissioning_or_concluded ~ log2_funding + "
+        "C(project_group, Treatment(reference='Nuova realizzazione')) + existing + "
+        "start_year_c + log2_tenders_plus1 + has_works_tender"
+    )
+    model = smf.glm(formula=formula, data=frame, family=sm.families.Binomial()).fit()
+    frame["expected_probability"] = model.predict(frame)
+    adjusted = (
+        frame.groupby("region")
+        .agg(
+            complete_cases=("cup", "size"),
+            actual_mature=("commissioning_or_concluded", "sum"),
+            expected_mature=("expected_probability", "sum"),
+            actual_share=("commissioning_or_concluded", "mean"),
+            expected_share=("expected_probability", "mean"),
+        )
+        .reset_index()
+    )
+    adjusted["composition_gap"] = adjusted["actual_share"] - adjusted["expected_share"]
+
+    view = adjusted.sort_values("composition_gap").reset_index(drop=True)
+    y = np.arange(len(view))
+    colors = np.where(view["composition_gap"].ge(0), COLORS["teal"], COLORS["red"])
+    fig, ax = plt.subplots(figsize=(8.5, 7.8))
+    ax.hlines(y, 0, view["composition_gap"] * 100, color=colors, linewidth=2.5)
+    ax.scatter(view["composition_gap"] * 100, y, color=colors, s=38)
+    ax.axvline(0, color=COLORS["grey"], linewidth=1)
+    ax.set_yticks(y, [f"{region} (n={int(n)})" for region, n in zip(view["region"], view["complete_cases"])])
+    ax.set_xlabel("Quota osservata meno quota attesa (punti percentuali)")
+    ax.set_title("Scarto regionale dopo l'aggiustamento per composizione dei progetti")
+    ax.grid(axis="x", alpha=0.18)
+    fig.text(
+        0.01,
+        -0.01,
+        "Valori attesi da un modello pooled di scala, tipo, progetto esistente, anno e gare. Residui descrittivi in-sample: non effetti regionali né graduatoria di performance.",
+        fontsize=8,
+        color=COLORS["grey"],
+    )
+    save_figure(fig, "11_regioni_aggiustate")
+    return adjusted
+
+
+def monitoring_priorities(projects: pd.DataFrame, limit: int = 15) -> pd.DataFrame:
+    priority = projects[projects["maturity"].isin(["Esecuzione lavori", "Fase non disponibile"])].copy()
+    priority = priority.sort_values(["total_funding_eur", "cup"], ascending=[False, True]).head(limit)
+    return priority[["cup", "region", "maturity", "total_funding_eur", "actual_start", "tender_count"]]
 
 
 def completeness(projects: pd.DataFrame, tenders: pd.DataFrame) -> pd.DataFrame:
@@ -624,6 +1023,15 @@ def make_tables(
     models: pd.DataFrame,
     sensitivity: pd.DataFrame,
     full_measure: pd.DataFrame,
+    procedure_mix: pd.DataFrame,
+    contract_mix: pd.DataFrame,
+    timing_quality: pd.DataFrame,
+    timing_stats: pd.DataFrame,
+    tiers: pd.DataFrame,
+    km_milestones: pd.DataFrame,
+    cohort: pd.DataFrame,
+    adjusted_regions: pd.DataFrame,
+    priorities: pd.DataFrame,
 ) -> None:
     concluded = int(projects["concluded"].sum())
     commissioning = int(projects["commissioning_or_concluded"].sum())
@@ -701,6 +1109,130 @@ def make_tables(
     ]
     write_table(TABLE_DIR / "sensitivity.tex", ["Campione", "N", "Esito", "Quota"], sensitivity_rows, "lrlr")
 
+    procedure_rows = [
+        [
+            row["procedure_group"],
+            f"{int(row['procedures']):,}".replace(",", "."),
+            f"{row['number_share']:.1%}",
+            f"{row['base_amount_eur']/1e6:.1f}",
+            f"{row['value_share']:.1%}",
+        ]
+        for _, row in procedure_mix.iterrows()
+    ]
+    write_table(
+        TABLE_DIR / "procurement_number_value.tex",
+        ["Modalità", "Righe", "Quota N", "Base mln €", "Quota valore"],
+        procedure_rows,
+        "lrrrr",
+    )
+
+    contract_rows = [
+        [
+            row["contract_group"],
+            f"{int(row['procedures']):,}".replace(",", "."),
+            f"{row['number_share']:.1%}",
+            f"{row['base_amount_eur']/1e6:.1f}",
+            f"{row['value_share']:.1%}",
+        ]
+        for _, row in contract_mix.iterrows()
+    ]
+    write_table(
+        TABLE_DIR / "contract_number_value.tex",
+        ["Tipo contratto", "Righe", "Quota N", "Base mln €", "Quota valore"],
+        contract_rows,
+        "lrrrr",
+    )
+
+    timing_quality_rows = [
+        [row["quality_group"], f"{int(row['procedures']):,}".replace(",", "."), f"{row['share']:.1%}"]
+        for _, row in timing_quality.iterrows()
+    ]
+    write_table(TABLE_DIR / "timing_quality.tex", ["Esito controllo date", "Righe", "Quota"], timing_quality_rows, "lrr")
+
+    timing_rows = [
+        [
+            row["procedure_group"],
+            f"{int(row['n']):,}".replace(",", "."),
+            f"{row['p25']:.0f}",
+            f"{row['median']:.0f}",
+            f"{row['p75']:.0f}",
+            f"{row['p90']:.0f}",
+        ]
+        for _, row in timing_stats.iterrows()
+    ]
+    write_table(TABLE_DIR / "procurement_timing.tex", ["Modalità", "N", "P25", "Mediana", "P75", "P90"], timing_rows, "lrrrrr")
+
+    tier_rows = [
+        [
+            row["coverage_tier"],
+            f"{int(row['regions'])}",
+            f"{int(row['projects']):,}".replace(",", "."),
+            f"{row['funding_per_child']:.0f}",
+            f"{row['mature_funding_per_child']:.0f}",
+            f"{row['commissioning_share']:.1%}",
+            f"{row['mature_funding_share']:.1%}",
+        ]
+        for _, row in tiers.iterrows()
+    ]
+    write_table(
+        TABLE_DIR / "equity_tiers.tex",
+        ["Copertura", "Regioni", "Progetti", "€/bambino", "€/bambino maturi", "Progetti maturi", "Fondi maturi"],
+        tier_rows,
+        "lrrrrrr",
+    )
+
+    km_rows = []
+    for group in ["Tutti", "Nuova realizzazione", "Ampliamento", "Ristrutturazione/recupero", "Demolizione/ricostruzione", "Altro"]:
+        subset = km_milestones[km_milestones["project_group"] == group]
+        row = [group, f"{int(subset.iloc[0]['n']):,}".replace(",", "."), f"{int(subset.iloc[0]['events']):,}".replace(",", ".")]
+        for years in (1, 2, 3, 4):
+            point = subset[subset["years"] == years].iloc[0]
+            row.append(f"{point['completion_probability']:.1%} ({int(point['at_risk']):,})".replace(",", "."))
+        km_rows.append(row)
+    write_table(
+        TABLE_DIR / "km_completion.tex",
+        ["Tipo", "N", "Eventi", "1 anno", "2 anni", "3 anni", "4 anni"],
+        km_rows,
+        "lrrrrrr",
+    )
+
+    cohort_rows = [
+        [
+            f"{int(row['start_year'])}",
+            f"{int(row['projects']):,}".replace(",", "."),
+            f"{int(row['concluded']):,}".replace(",", "."),
+            f"{row['concluded_share']:.1%}",
+            f"{row['commissioning_share']:.1%}",
+        ]
+        for _, row in cohort.iterrows()
+    ]
+    write_table(TABLE_DIR / "start_cohorts.tex", ["Avvio", "N", "Conclusi", "Quota conclusa", "Conclusi/collaudo"], cohort_rows, "lrrrr")
+
+    adjusted_rows = [
+        [
+            row["region"],
+            f"{int(row['complete_cases'])}",
+            f"{row['actual_share']:.1%}",
+            f"{row['expected_share']:.1%}",
+            f"{row['composition_gap']*100:+.1f}",
+        ]
+        for _, row in adjusted_regions.sort_values("composition_gap", ascending=False).iterrows()
+    ]
+    write_table(TABLE_DIR / "regional_adjusted.tex", ["Regione", "N", "Osservata", "Attesa", "Scarto p.p."], adjusted_rows, "lrrrr")
+
+    priority_rows = [
+        [
+            row["cup"],
+            row["region"],
+            row["maturity"],
+            f"{row['total_funding_eur']/1e6:.1f}",
+            text(row["actual_start"])[:10] or "n.d.",
+            f"{int(row['tender_count'])}",
+        ]
+        for _, row in priorities.iterrows()
+    ]
+    write_table(TABLE_DIR / "monitoring_priorities.tex", ["CUP", "Regione", "Stato", "Mln €", "Avvio", "Gare"], priority_rows, "lllrrr")
+
 
 def main() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -735,6 +1267,12 @@ def main() -> None:
     correlations = plot_coverage(regional)
     procurement = plot_procurement(projects, tenders)
     procurement.to_csv(GENERATED_DIR / "procurement_by_maturity.csv", index=False)
+    procedure_mix, contract_mix = procurement_number_value(tenders)
+    procedure_mix.to_csv(GENERATED_DIR / "procurement_procedure_number_value.csv", index=False)
+    contract_mix.to_csv(GENERATED_DIR / "procurement_contract_number_value.csv", index=False)
+    timing_quality, timing_stats = procurement_timing(tenders)
+    timing_quality.to_csv(GENERATED_DIR / "procurement_timing_quality.csv", index=False)
+    timing_stats.to_csv(GENERATED_DIR / "procurement_timing_stats.csv", index=False)
     completeness_frame = completeness(projects, tenders)
     completeness_frame.to_csv(GENERATED_DIR / "completeness.csv", index=False)
     models, fe_models, fit_summary = fit_models(projects, istat)
@@ -742,7 +1280,68 @@ def main() -> None:
     fe_models.to_csv(GENERATED_DIR / "models_region_fe_odds_ratios.csv", index=False)
     sensitivity = sensitivity_checks(projects, full_projects)
     sensitivity.to_csv(GENERATED_DIR / "sensitivity.csv", index=False)
-    make_tables(projects, tenders, pipeline, regional, completeness_frame, models, sensitivity, full_projects)
+    tiers = equity_tiers(regional)
+    tiers.to_csv(GENERATED_DIR / "equity_tiers.csv", index=False)
+    km_curves, km_milestones, cohort = completion_time_analysis(projects)
+    km_curves.to_csv(GENERATED_DIR / "km_curves.csv", index=False)
+    km_milestones.to_csv(GENERATED_DIR / "km_milestones.csv", index=False)
+    cohort.to_csv(GENERATED_DIR / "start_cohorts.csv", index=False)
+    adjusted_regions = composition_adjusted_regions(projects)
+    adjusted_regions.to_csv(GENERATED_DIR / "regional_composition_adjusted.csv", index=False)
+    priorities = monitoring_priorities(projects)
+    priorities.to_csv(GENERATED_DIR / "monitoring_priorities.csv", index=False)
+
+    if int(procedure_mix["procedures"].sum()) != len(tenders):
+        raise RuntimeError("Le classi di procedura non ricostruiscono il denominatore")
+    if int(contract_mix["procedures"].sum()) != len(tenders):
+        raise RuntimeError("Le classi di contratto non ricostruiscono il denominatore")
+    if int(timing_quality["procedures"].sum()) != len(tenders):
+        raise RuntimeError("Gli esiti del controllo date non ricostruiscono il denominatore")
+    if int(tiers["projects"].sum()) != len(projects) or int(tiers["regions"].sum()) != 20:
+        raise RuntimeError("Le fasce territoriali non ricostruiscono campione e regioni")
+    if adjusted_regions["region"].nunique() != 20:
+        raise RuntimeError("Il confronto aggiustato non copre tutte le regioni")
+
+    duration_frame = projects.copy()
+    duration_frame["start_date"] = pd.to_datetime(duration_frame["actual_start"], errors="coerce", utc=True).dt.tz_localize(None)
+    duration_frame["end_date"] = pd.to_datetime(duration_frame["actual_end"], errors="coerce", utc=True).dt.tz_localize(None)
+    completed_duration = (duration_frame.loc[duration_frame["concluded"].eq(1), "end_date"] - duration_frame.loc[duration_frame["concluded"].eq(1), "start_date"]).dt.days.dropna()
+    open_duration = (REFERENCE_DATE - duration_frame.loc[duration_frame["concluded"].eq(0), "start_date"]).dt.days.dropna()
+    duration_summary = {
+        "completed": {
+            "n": int(len(completed_duration)),
+            "p25_days": float(completed_duration.quantile(0.25)),
+            "median_days": float(completed_duration.median()),
+            "p75_days": float(completed_duration.quantile(0.75)),
+            "p90_days": float(completed_duration.quantile(0.90)),
+        },
+        "open_elapsed": {
+            "n": int(len(open_duration)),
+            "p25_days": float(open_duration.quantile(0.25)),
+            "median_days": float(open_duration.median()),
+            "p75_days": float(open_duration.quantile(0.75)),
+            "p90_days": float(open_duration.quantile(0.90)),
+        },
+    }
+    make_tables(
+        projects,
+        tenders,
+        pipeline,
+        regional,
+        completeness_frame,
+        models,
+        sensitivity,
+        full_projects,
+        procedure_mix,
+        contract_mix,
+        timing_quality,
+        timing_stats,
+        tiers,
+        km_milestones,
+        cohort,
+        adjusted_regions,
+        priorities,
+    )
 
     summary = {
         "source": {
@@ -775,6 +1374,19 @@ def main() -> None:
         "pipeline": pipeline.to_dict(orient="records"),
         "correlations": correlations,
         "model_fit": fit_summary,
+        "procurement": {
+            "procedure_number_value": procedure_mix.to_dict(orient="records"),
+            "contract_number_value": contract_mix.to_dict(orient="records"),
+            "timing_quality": timing_quality.to_dict(orient="records"),
+            "timing_stats": timing_stats.to_dict(orient="records"),
+        },
+        "delivery_equity": tiers.to_dict(orient="records"),
+        "time_to_completion": {
+            "recorded_duration": duration_summary,
+            "milestones": km_milestones.to_dict(orient="records"),
+            "start_cohorts": cohort.to_dict(orient="records"),
+        },
+        "regional_composition_adjusted": adjusted_regions.to_dict(orient="records"),
         "limitations": [
             "Nessuna variabile pubblica nel dataset misura i posti creati o certificati.",
             "Le associazioni tra appalti e avanzamento non hanno interpretazione causale.",

@@ -43,12 +43,41 @@ test("the desktop home keeps the measured reference grid without global scaling"
   ]);
 
   assert.match(home, /\.dashboard \{[\s\S]*?gap:10px;/);
-  assert.match(home, /\.mapPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:276px;/);
-  assert.match(home, /\.anomalyPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:276px;/);
+  assert.match(home, /\.mapPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:292px;/);
+  assert.match(home, /\.anomalyPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:292px;/);
   assert.match(home, /\.mapPanel \{[\s\S]*?width:calc\(100% \+ 9px\)/);
   assert.match(home, /\.anomalyPanel \{[\s\S]*?margin-left:10px/);
   assert.doesNotMatch(globals, /zoom:\s*calc\(100vw \/ 1280px\)/);
   assert.match(globals, /@media \(max-width: 900px\)[\s\S]*?\.header-search \{[\s\S]*?transform: none;/);
+});
+
+test("the home mobile rail has symmetric panels and readable unclipped data labels", async () => {
+  const [home, mapPanel] = await Promise.all([
+    source("../src/app/home.module.css"),
+    source("../src/components/home-map-panel.tsx"),
+  ]);
+
+  assert.match(
+    home,
+    /@media\(max-width:760px\)[\s\S]*?\.mapPanel,\.anomalyPanel\{width:100%;margin-left:0;flex:0 0 auto;align-self:stretch\}/,
+  );
+  assert.match(home, /\.summaryGrid article>span \{[\s\S]*?font-size:9px;/);
+  assert.match(home, /\.summaryGrid article>span \{[\s\S]*?white-space:normal;/);
+  assert.match(home, /\.panelHead h2,[\s\S]*?font-size:13px;/);
+  assert.match(home, /\.categoryPanel,\.benchmarkPanel,\.trendPanel \{ grid-column:span 4; height:208px; \}/);
+  assert.match(
+    home,
+    /\.anomalyRow span small\{[\s\S]*?white-space:normal;[\s\S]*?-webkit-line-clamp:2/,
+  );
+  assert.match(
+    home,
+    /\.benchmarkList li>span\{[\s\S]*?overflow:visible;[\s\S]*?white-space:normal/,
+  );
+  assert.match(
+    home,
+    /\.mapRanking>div strong\{[\s\S]*?overflow:visible;[\s\S]*?white-space:normal/,
+  );
+  assert.doesNotMatch(mapPanel, /RegionCrest|istatCodeOfRegion/);
 });
 
 test("the home supporting rail forms a balanced grid without empty auto-fit cells", async () => {

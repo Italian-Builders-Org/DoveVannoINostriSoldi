@@ -349,7 +349,7 @@ body > nav[aria-label="Sezioni della pagina"] {
 .nav-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22px;
+  grid-template-columns: minmax(0, 1fr) 24px;
   align-items: center;
   border-radius: 7px;
 }
@@ -379,7 +379,7 @@ body > nav[aria-label="Sezioni della pagina"] {
 .nav-item-toggle {
   display: grid;
   place-items: center;
-  width: 22px;
+  width: 24px;
   height: 32px;
   padding: 0;
   color: var(--color-neutral-600);
@@ -762,8 +762,15 @@ main { display: block; }
   }
   .nav-submenu-title { display: none; }
   .nav-item { grid-template-columns: minmax(0, 1fr) 44px; }
+  .nav-item > a { font-size: 12px; }
   .nav-item > a, .nav-item-toggle { min-height: 44px; }
   .nav-item-toggle { width: 44px; height: 44px; }
+  .sidebar-mission strong,
+  .sidebar-support-heading strong { max-width: none; font-size: 12px; }
+  .sidebar-mission p,
+  .sidebar-support p { font-size: 11px; }
+  .sidebar-mission a,
+  .sidebar-support a { min-height: 44px; font-size: 11px; }
   .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat-strip > div:nth-child(2n) { border-right: 0; }
   .stat-strip > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-neutral-200); }

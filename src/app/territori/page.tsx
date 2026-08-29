@@ -50,6 +50,12 @@ const METRIC_LABELS: Record<Metric, string> = {
   totale: "Totale",
 };
 
+const METRIC_ORDERING_LABELS: Record<Metric, string> = {
+  "per-abitante": "per abitante",
+  "per-km2": "per km²",
+  totale: "per importo totale",
+};
+
 type TerritoryView = "grafico" | "tabella";
 type PopulationFilter = "tutti" | "fino-5000" | "5000-20000" | "20000-100000" | "oltre-100000";
 type SurfaceFilter = "tutte" | "fino-10" | "10-50" | "50-200" | "oltre-200";
@@ -367,7 +373,7 @@ export default async function TerritoriesPage({
           <h2 className="panel-title">Tutte le {regions.length} regioni</h2>
           <div className="table-scroll" role="region" aria-label="Pagamenti di tutte le regioni; scorri orizzontalmente per vedere tutte le colonne" tabIndex={0}>
             <table className="table">
-              <caption className="table-caption">Pagamenti regionali per {METRIC_LABELS[metric].toLocaleLowerCase("it-IT")} · {year}</caption>
+              <caption className="table-caption">Pagamenti regionali {METRIC_ORDERING_LABELS[metric]} · {year}</caption>
               <thead>
                 <tr>
                   <th scope="col">Regione</th>
@@ -541,12 +547,12 @@ export default async function TerritoriesPage({
             Il perimetro comprende {integer(municipalityCoverage.withMovementsAndGeography)} Comuni con movimenti e superficie ISTAT disponibile: sono i Comuni con movimenti SIOPE e superficie ISTAT valida;
             {` `}esclude {integer(municipalityCoverage.withoutMovements)} senza movimenti e {integer(municipalityCoverage.withMovementsWithoutGeography)} senza superficie ISTAT abbinata.
           </span>
-          <span>{topMunicipalities.length > 0 ? `Mostriamo i primi ${topMunicipalities.length} per ${METRIC_LABELS[metric].toLocaleLowerCase("it-IT")}.` : "Modifica i filtri per ampliare il confronto."}</span>
+          <span>{topMunicipalities.length > 0 ? `Mostriamo i primi ${topMunicipalities.length} ${METRIC_ORDERING_LABELS[metric]}.` : "Modifica i filtri per ampliare il confronto."}</span>
         </div>
 
-        <div className="table-scroll" role="region" aria-label={`Comuni ordinati ${METRIC_LABELS[metric]}; scorri orizzontalmente per vedere tutte le colonne`} tabIndex={0}>
+        <div className="table-scroll" role="region" aria-label={`Comuni ordinati ${METRIC_ORDERING_LABELS[metric]}; scorri orizzontalmente per vedere tutte le colonne`} tabIndex={0}>
           <table className="table">
-            <caption className="table-caption">Comuni ordinati per {METRIC_LABELS[metric].toLocaleLowerCase("it-IT")} · {year}</caption>
+            <caption className="table-caption">Comuni ordinati {METRIC_ORDERING_LABELS[metric]} · {year}</caption>
             <thead>
               <tr>
                 <th scope="col">Comune</th>

@@ -121,6 +121,16 @@ test("territory municipality tooltip keeps unavailable values as n.d.", async ()
   assert.doesNotMatch(page, /municipality\.perCapita \?\? 0/);
 });
 
+test("territory municipality ranking uses grammatical ordering labels", async () => {
+  const page = await readFile(new URL("../src/app/territori/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /const METRIC_ORDERING_LABELS:[\s\S]*?"per-abitante": "per abitante"/);
+  assert.match(page, /const METRIC_ORDERING_LABELS:[\s\S]*?"per-km2": "per km²"/);
+  assert.match(page, /Mostriamo i primi \$\{topMunicipalities\.length\} \$\{METRIC_ORDERING_LABELS\[metric\]\}/);
+  assert.match(page, /<caption[^>]*>Pagamenti regionali \{METRIC_ORDERING_LABELS\[metric\]\}/);
+  assert.match(page, /<caption[^>]*>Comuni ordinati \{METRIC_ORDERING_LABELS\[metric\]\}/);
+  assert.doesNotMatch(page, /per \{METRIC_LABELS\[metric\]/);
+});
+
 test("municipality profile sheet follows the no-radius design rule", async () => {
   const css = await readFile(new URL("../src/app/enti/[codice]/scheda.module.css", import.meta.url), "utf8");
   assert.doesNotMatch(css, /border-radius\s*:/);

@@ -122,6 +122,22 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /aria-controls="dashboard-sidebar"/);
   assert.match(navigationComponent, /inert=\{mobileLayout && !mobileOpen \? true : undefined\}/);
   assert.match(navigationComponent, /isEventTargetWithin\(mobileToggleRef\.current, event\.target\)/);
+  // Collapsing one section must keep the mobile drawer open and preserve the
+  // native button focus; only navigation or the drawer close affordance owns
+  // closeNavigation.
+  assert.match(navigationComponent, /onMenuClose=\{closeMenu\}/);
+  assert.match(navigationComponent, /open\s*\n\s*\? onMenuClose\(\)/);
+  assert.doesNotMatch(navigationComponent, /open\s*\n\s*\? onClose\(\)/);
+  assert.match(globalsCss, /grid-template-columns: minmax\(0, 1fr\) 24px/);
+  assert.match(globalsCss, /\.nav-item-toggle \{[\s\S]*?width: 24px;/);
+  assert.match(
+    globalsCss,
+    /@media \(max-width: 900px\)[\s\S]*?\.sidebar-mission a,[\s\S]*?\.sidebar-support a \{ min-height: 44px; font-size: 11px; \}/,
+  );
+  assert.match(
+    globalsCss,
+    /@media \(max-width: 900px\)[\s\S]*?\.nav-item > a \{ font-size: 12px; \}/,
+  );
 });
 
 test("reference dashboard taxonomy keeps every canonical destination reachable", () => {

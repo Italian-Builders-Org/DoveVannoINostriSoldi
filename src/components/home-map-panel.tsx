@@ -5,9 +5,7 @@ import Link from "next/link";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ItalyRegionsMap, type MapMetric } from "@/components/italy-regions-map";
-import { RegionCrest } from "@/components/region-crest";
 import { compactEuro, exactEuro } from "@/lib/format";
-import { istatCodeOfRegion } from "@/lib/italy-regions";
 import type { SiopeProvincePoint, SiopeRegionPoint } from "@/lib/siope-snapshot";
 import styles from "@/app/home.module.css";
 
@@ -69,8 +67,8 @@ export function HomeMapPanel({
               <span>Classifica regioni</span>
               <span>{metric === "total" ? "Pagamenti" : "Pagamenti pro capite"}</span>
             </div>
-            {rankedRegions.map((region) => <div key={region.region}><RegionCrest className={styles.mapRankingCrest} regionCode={istatCodeOfRegion(region.region)} regionName={region.region} decorative /><strong title={region.region}>{region.region}</strong><span>{formatValue(region)}</span></div>)}
-            <div className={styles.mapRankingTotal}><i aria-hidden="true" /><strong>Italia</strong><span>{nationalValue}</span></div>
+            {rankedRegions.map((region) => <div key={region.region}><strong>{region.region}</strong><span>{formatValue(region)}</span></div>)}
+            <div className={styles.mapRankingTotal}><strong>Italia</strong><span>{nationalValue}</span></div>
             <small className={styles.mapScope}>SIOPE · {period}. Il totale Italia include {municipalitiesWithoutRegion} Comuni non regionalizzati ({compactEuro(paymentsWithoutRegion)}).</small>
             <Link href={`/territori?anno=${year}`}>Vedi tutte le regioni <HugeiconsIcon icon={ArrowRight01Icon} size={12} aria-hidden="true" /></Link>
           </div>

@@ -280,6 +280,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                 open={openHref === item.href}
                 menuTop={openMenu?.href === item.href ? openMenu.top : 64}
                 onOpen={openItem}
+                onMenuClose={closeMenu}
                 onClose={closeNavigation}
               />
             ))}
@@ -327,6 +328,7 @@ function NavigationItem({
   open,
   menuTop,
   onOpen,
+  onMenuClose,
   onClose,
 }: Readonly<{
   item: DashboardNavSection;
@@ -335,6 +337,7 @@ function NavigationItem({
   open: boolean;
   menuTop: number;
   onOpen: (href: string, top: number) => void;
+  onMenuClose: () => void;
   onClose: () => void;
 }>) {
   const activeSection = activeNavSection(pathname);
@@ -380,7 +383,7 @@ function NavigationItem({
             aria-controls={menuId}
             aria-label={`${open ? "Chiudi" : "Apri"} le pagine in ${item.label}`}
             onClick={(event) => open
-              ? onClose()
+              ? onMenuClose()
               : onOpen(item.href, getMenuTop(event.currentTarget.closest("li")!))}
           >
             <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />

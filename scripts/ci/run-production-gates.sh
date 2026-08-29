@@ -84,6 +84,10 @@ echo "::group::Browser editorial suite"
 npm run test:browser:editorial
 echo "::endgroup::"
 
+echo "::group::CSP Report-Only browser smoke"
+npm run test:csp:report-only
+echo "::endgroup::"
+
 echo "::group::Lighthouse budget"
 npm run test:lighthouse
 echo "::endgroup::"

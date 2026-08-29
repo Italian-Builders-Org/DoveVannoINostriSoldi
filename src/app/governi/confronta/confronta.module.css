@@ -100,18 +100,18 @@
   color: var(--color-neutral-300);
 }
 
-.whyWinner {
+.largestDifferences {
   padding: 16px;
   color: var(--color-text);
   background: #fff;
 }
 
-.whyWinner > strong {
+.largestDifferences > strong {
   font-size: 12px;
   text-transform: uppercase;
 }
 
-.whyWinner ul {
+.largestDifferences ul {
   display: grid;
   gap: 8px;
   margin: 12px 0 0;
@@ -119,7 +119,7 @@
   list-style: none;
 }
 
-.whyWinner li {
+.largestDifferences li {
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -128,7 +128,7 @@
   font-size: 12px;
 }
 
-.whyWinner b {
+.largestDifferences b {
   color: var(--color-accent-700);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -149,7 +149,7 @@
   border: 1px solid var(--color-neutral-300);
 }
 
-.scoreCards article[data-winner="true"] {
+.scoreCards article[data-higher-result="true"] {
   border-top: 5px solid var(--color-accent-700);
 }
 

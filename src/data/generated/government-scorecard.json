@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v2",
-  "generatedAt": "2026-08-29T08:41:26Z",
+  "methodologyVersion": "core-annual-v3",
+  "generatedAt": "2026-08-29T17:17:17Z",
   "sources": {
     "ameco": {
       "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
@@ -16,7 +16,7 @@
       "geography": "Italy, France, Germany and Spain",
       "referencePeriod": "annual, 1960-2027; the score uses 1995-2024 observations",
       "publication": "latest AMECO vintage, not the vintage available during each historical government",
-      "retrievedAt": "2026-08-29T08:41:26Z",
+      "retrievedAt": "2026-08-29T17:17:17Z",
       "bytes": 6181987,
       "sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005",
       "observedThrough": 2024,
@@ -32,9 +32,9 @@
       "geography": "Italian Republic",
       "referencePeriod": "17 January 1995 onward; the source page also lists earlier governments",
       "publication": "current institutional chronology",
-      "retrievedAt": "2026-08-29T08:41:26Z",
-      "bytes": 58976,
-      "sha256": "7cddc049725441129b331d0835d77d367ac6774b657329432a78dddfbb6503b2"
+      "retrievedAt": "2026-08-29T17:17:17Z",
+      "bytes": 58978,
+      "sha256": "909d6aceacb8b6f4e5b98a994d0bd00a5910d13c48c4ffe372bb42bf63faa4fd"
     }
   },
   "method": {
@@ -49,10 +49,10 @@
     "peerWeightBasisPoints": 5000,
     "robustScale": 1.4826,
     "winsorizedZ": 3,
-    "scoreStatus": "Core macroeconomico annuale contestualizzato; ogni governo ha una scheda, mentre il voto richiede almeno un intervallo annuale osservabile",
+    "scoreStatus": "Indice annuale dei risultati economici nel periodo; ogni governo ha una scheda, mentre il numero richiede almeno un intervallo annuale osservabile",
     "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
-    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. A one-year window is admissible but receives low attribution reliability; a zero-year window remains unscored until quarterly data are integrated.",
-    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government"
+    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. A one-year window is admissible but receives low data comparability; a zero-year window remains unscored until quarterly data are integrated.",
+    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government; attribution is always reported separately"
   },
   "indicators": [
     {

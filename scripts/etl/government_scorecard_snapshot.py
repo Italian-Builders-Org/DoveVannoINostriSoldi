@@ -37,6 +37,14 @@ MAX_AMECO_UNCOMPRESSED_BYTES = 80 * 1024 * 1024
 MAX_CHRONOLOGY_BYTES = 2 * 1024 * 1024
 COUNTRY_IDS = ("italy", "france", "germany", "spain")
 EXPECTED_YEARS = tuple(range(1960, 2028))
+INDICATOR_VALUE_RANGES = {
+    "real_compensation": (0, 1_000),
+    "unemployment": (0, 100),
+    "real_gdp_per_capita": (0, 1_000),
+    "debt_ratio": (0, 1_000),
+    "primary_balance": (-100, 100),
+    "investment_share": (0, 100),
+}
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 class SnapshotError(ValueError):
@@ -81,7 +89,7 @@ def validate_official_url(url: Any, host: str, path: str) -> str:
 
 def validate_spec(spec: dict[str, Any]) -> None:
     exact_keys(spec, {"schemaVersion", "methodologyVersion", "ameco", "governmentChronology", "method", "contexts", "measures"}, "source spec")
-    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v2":
+    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v3":
         fail("source spec: versione non supportata")
     ameco = require_dict(spec["ameco"], "ameco")
     chronology = require_dict(spec["governmentChronology"], "governmentChronology")
@@ -373,7 +381,7 @@ def build_snapshot(spec: dict[str, Any], ameco_payload: bytes, chronology_payloa
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
     exact_keys(snapshot, {"schemaVersion", "methodologyVersion", "generatedAt", "sources", "method", "indicators", "governments", "contexts", "measures", "caveats"}, "snapshot")
-    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v2":
+    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v3":
         fail("snapshot: versione non supportata")
     sources = require_dict(snapshot["sources"], "sources")
     if set(sources) != {"ameco", "governmentChronology"}:
@@ -386,6 +394,10 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
     if len(indicators) != 6 or sum(item["weightBasisPoints"] for item in indicators) != 10_000:
         fail("snapshot: paniere non valido")
     for item in indicators:
+        valid_range = INDICATOR_VALUE_RANGES.get(item.get("id"))
+        if valid_range is None:
+            fail("snapshot: indicatore inatteso")
+        minimum, maximum = valid_range
         countries = require_dict(item.get("countries"), f"{item.get('id')}.countries")
         if tuple(countries) != COUNTRY_IDS:
             fail(f"{item.get('id')}: paesi inattesi")
@@ -396,6 +408,8 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
                 value = point.get("value")
                 if value is not None and (not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value)):
                     fail(f"{item.get('id')}.{country_id}: valore non valido")
+                if value is not None and not minimum <= value <= maximum:
+                    fail(f"{item.get('id')}.{country_id}: valore fuori intervallo plausibile")
             if any(values[year - 1960].get("value") is None for year in range(1995, 2028)):
                 fail(f"{item.get('id')}.{country_id}: dato obbligatorio mancante dal 1995")
     governments = require_list(snapshot["governments"], "governments")

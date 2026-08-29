@@ -5,6 +5,7 @@ import { getGovernmentCurrentSignalsView } from "@/lib/government-current-signal
 import { getGovernmentScorecardView } from "@/lib/government-scorecard";
 import { CitizenScoreModel } from "./citizen-score-model";
 import { CurrentGovernmentOverview } from "./current-government-overview";
+import { GovernmentArchive } from "./government-archive";
 import { formatScore as score, sourceValue } from "./government-scorecard-format";
 import styles from "./governi.module.css";
 
@@ -33,24 +34,107 @@ export default function GovernmentsPage() {
         <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} />
       ) : (
         <div className="notice warning-notice">
-          <strong>{current.name}: voto non disponibile.</strong>
+          <strong>{current.name}: risultato non disponibile.</strong>
           <p>{current.calculation.status === "not-scored" ? current.calculation.reason : "Dati insufficienti."}</p>
         </div>
       )}
 
       <div className={styles.dataBoundary}>
-        <strong>Core al {data.sources.ameco.observedThrough} · costo della vita a {currentSignals.latestPeriod}</strong>
-        <span>Il Core usa sei indicatori annuali. I segnali mensili sono più recenti, ma restano separati dal voto storico.</span>
+        <strong>Risultati annuali al {data.sources.ameco.observedThrough} · prezzi a {currentSignals.latestPeriod}</strong>
+        <span>I sei indicatori annuali permettono lo storico. I prezzi mensili sono più recenti, ma non vengono sommati al numero.</span>
         <Link href={`/governi/${current.id}`}>Scheda completa di {current.name} →</Link>
       </div>
 
+      <section className={`panel ${styles.section}`} id="scenario" aria-labelledby="scenario-title">
+        <div className={styles.sectionHeading}>
+          <div>
+            <span className={styles.eyebrow}>Scenario Commissione europea</span>
+            <h2 id="scenario-title">Se le previsioni si realizzano</h2>
+          </div>
+          <p>Il 2025-2027 è una previsione AMECO, non un dato osservato e non un risultato anticipato.</p>
+        </div>
+        {forecast ? (
+          <div className={styles.forecastCompact}>
+            <div>
+              <span>Risultato osservato</span>
+              <strong>{currentScore ? score(currentScore.score) : "n.d."}<small>/100</small></strong>
+              <small>fino al {data.sources.ameco.observedThrough}</small>
+            </div>
+            <span className={styles.forecastArrow} aria-hidden="true">→</span>
+            <div>
+              <span>Scenario al {forecast.endYear}</span>
+              <strong>{score(forecast.score)}<small>/100</small></strong>
+              <small>se le stime si realizzano</small>
+            </div>
+            <ul>
+              {forecast.indicators.slice(0, 3).map((indicator) => (
+                <li key={indicator.id}><span>{indicator.label}</span><strong>{sourceValue(indicator.endValue, indicator.id)}</strong></li>
+              ))}
+            </ul>
+          </div>
+        ) : <p>Scenario non disponibile.</p>}
+      </section>
+
       <nav className={styles.pageJumps} aria-label="Sezioni della pagella">
+        <a href="#eredita-governo">Cosa ha ereditato</a>
+        <a href="#contesto-governo">Contesto</a>
         <a href="#azioni-governo">Cosa ha fatto</a>
-        <a href="#scenario">Previsione</a>
-        <Link href="/governi/confronta">Confronta due governi</Link>
-        <a href="#confronto-governi">Classifica completa</a>
+        <a href="#confronto-governi">Archivio governi</a>
+        <a href="#confronto-diretto">Confronta due governi</a>
         <a href="#metodo-dati">Metodo e dati mancanti</a>
       </nav>
+
+      <section className={`panel ${styles.section}`} id="eredita-governo" aria-labelledby="eredita-title">
+        <div className={styles.sectionHeading}>
+          <div>
+            <span className={styles.eyebrow}>Situazione di partenza</span>
+            <h2 id="eredita-title">Cosa ha ereditato il governo attuale</h2>
+          </div>
+          <p>La baseline descrive ciò che era già presente all’insediamento. Non diventa automaticamente merito o colpa del governo precedente.</p>
+        </div>
+        <div className={styles.inheritanceGrid}>
+          <article>
+            <span>Governo precedente</span>
+            {current.inheritance.previousGovernment ? (
+              <h3><Link href={`/governi/${current.inheritance.previousGovernment.id}`}>{current.inheritance.previousGovernment.name}</Link></h3>
+            ) : <h3>Inizio della serie comparabile</h3>}
+            <p>Baseline statistica: {current.inheritance.baselineYear}. Il dato annuale approssima la situazione disponibile all’insediamento.</p>
+          </article>
+          <article>
+            <span>Traiettoria precedente</span>
+            {current.inheritance.trend.status === "scored" ? (
+              <><h3>{score(current.inheritance.trend.score)}/100</h3><p>Andamento nei due anni precedenti, mostrato separatamente dal risultato del governo attuale.</p></>
+            ) : <><h3>Non calcolabile</h3><p>{current.inheritance.trend.reason}</p></>}
+          </article>
+          <article>
+            <span>Fattori già attivi</span>
+            <h3>{current.inheritance.activeContexts.length || "Nessuno registrato"}</h3>
+            {current.inheritance.activeContexts.length > 0
+              ? <ul>{current.inheritance.activeContexts.map((item) => <li key={item.id}>{item.label}</li>)}</ul>
+              : <p>Nessuno shock precedente ancora attivo nel registro.</p>}
+          </article>
+        </div>
+      </section>
+
+      <section className={`panel ${styles.section}`} id="contesto-governo" aria-labelledby="contesto-title">
+        <div className={styles.sectionHeading}>
+          <div>
+            <span className={styles.eyebrow}>Periodo economico e geopolitico</span>
+            <h2 id="contesto-title">In quale situazione ha operato</h2>
+          </div>
+          <p>Shock globali, decisioni europee e condizioni finanziarie sono mostrati come contesto, senza bonus o penalità manuali al risultato.</p>
+        </div>
+        <div className={styles.contextGrid}>
+          {current.contexts.map((item) => (
+            <article key={item.id}>
+              <span>{item.startYear}-{item.endYear}</span>
+              <h3>{item.label}</h3>
+              <p>{item.summary}</p>
+              <a href={item.sourceUrl} target="_blank" rel="noreferrer">Fonte del contesto <span aria-hidden="true">↗</span></a>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className={`panel ${styles.section}`} id="azioni-governo" aria-labelledby="azioni-title">
         <div className={styles.sectionHeading}>
@@ -75,97 +159,22 @@ export default function GovernmentsPage() {
             </article>
           ))}
         </div>
-        <details className={styles.inlineDetails}>
-          <summary>Vedi il contesto economico e geopolitico del mandato</summary>
-          <div className={styles.contextGrid}>
-            {current.contexts.map((item) => (
-              <article key={item.id}>
-                <span>{item.startYear}-{item.endYear}</span>
-                <h3>{item.label}</h3>
-                <p>{item.summary}</p>
-                <a href={item.sourceUrl} target="_blank" rel="noreferrer">Fonte del contesto <span aria-hidden="true">↗</span></a>
-              </article>
-            ))}
-          </div>
-        </details>
       </section>
 
-      <section className={`panel ${styles.section}`} id="scenario" aria-labelledby="scenario-title">
-        <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.eyebrow}>Scenario Commissione europea</span>
-            <h2 id="scenario-title">Se le previsioni si realizzano</h2>
-          </div>
-          <p>Il 2025-2027 è una previsione AMECO, non un dato osservato e non un voto anticipato.</p>
-        </div>
-        {forecast ? (
-          <div className={styles.forecastCompact}>
-            <div>
-              <span>Core osservato</span>
-              <strong>{currentScore ? score(currentScore.score) : "n.d."}<small>/100</small></strong>
-              <small>fino al {data.sources.ameco.observedThrough}</small>
-            </div>
-            <span className={styles.forecastArrow} aria-hidden="true">→</span>
-            <div>
-              <span>Scenario al {forecast.endYear}</span>
-              <strong>{score(forecast.score)}<small>/100</small></strong>
-              <small>se le stime si realizzano</small>
-            </div>
-            <ul>
-              {forecast.indicators.slice(0, 3).map((indicator) => (
-                <li key={indicator.id}><span>{indicator.label}</span><strong>{sourceValue(indicator.endValue, indicator.id)}</strong></li>
-              ))}
-            </ul>
-          </div>
-        ) : <p>Scenario non disponibile.</p>}
-      </section>
+      <GovernmentArchive id="confronto-governi" selectedGovernmentId={current.id} />
 
-      <details className={styles.explorer} id="confronto-governi">
-        <summary>
-          <span><small>Archivio dei governi</small><strong>Apri una scheda oppure confronta due governi</strong></span>
-          <b>Apri l’archivio</b>
-        </summary>
-        <div className={styles.explorerBody}>
-          <div className={styles.archiveIntro}>
-            <p className={styles.explorerIntro}>Ogni nome apre la scheda completa del governo. Le barre usano lo stesso paniere; “ND” indica che la finestra annuale non è sufficiente.</p>
-            <Link href="/governi/confronta">Sovrapponi i dati di due governi →</Link>
-          </div>
-          <ol className={styles.governmentBars}>
-            {[...data.governments].reverse().map((government) => (
-              <li key={government.id} data-current={government.status === "current" || undefined}>
-                <div className={styles.governmentBarLabel}>
-                  <Link href={`/governi/${government.id}`}>{government.name}</Link>
-                  <span>{government.startDate.slice(0, 4)}-{government.endDate?.slice(0, 4) ?? "oggi"}</span>
-                </div>
-                {government.calculation.status === "scored" ? (
-                  <>
-                    <span className={styles.governmentBar} aria-hidden="true"><i style={{ width: `${government.calculation.score}%` }} /></span>
-                    <strong>{score(government.calculation.score)}</strong>
-                    <small>Italia {score(government.calculation.observedScore)} · peer {score(government.calculation.relativeScore)}</small>
-                  </>
-                ) : (
-                  <><span className={styles.governmentBar} aria-hidden="true" /><strong>ND</strong><small>{government.calculation.reason}</small></>
-                )}
-              </li>
-            ))}
-          </ol>
-          <details className={styles.inlineDetails}>
-            <summary>Vedi anche il contesto economico prima del 1995</summary>
-            <div className={styles.timeline}>
-              {data.historicalContexts.map((item) => (
-                <article key={item.id}>
-                  <time>{item.startYear}-{item.endYear}</time>
-                  <div><h3>{item.label}</h3><p>{item.summary}</p><a href={item.sourceUrl} target="_blank" rel="noreferrer">Fonte <span aria-hidden="true">↗</span></a></div>
-                </article>
-              ))}
-            </div>
-          </details>
+      <section className={styles.comparisonCallout} id="confronto-diretto" aria-labelledby="confronto-title">
+        <div>
+          <span>Confronto diretto</span>
+          <h2 id="confronto-title">Scegli due governi e sovrapponi i dati</h2>
+          <p>Il confronto usa la stessa formula, mostra le traiettorie dei sei indicatori e non decreta un vincitore.</p>
         </div>
-      </details>
+        <Link href={`/governi/confronta?x=${current.id}`}>Apri il confronto</Link>
+      </section>
 
       <details className={styles.explorer} id="metodo-dati">
         <summary>
-          <span><small>Trasparenza</small><strong>Quali dati mancano e come viene calcolato il voto</strong></span>
+          <span><small>Trasparenza</small><strong>Quali dati mancano e come viene calcolato il risultato</strong></span>
           <b>Apri il metodo</b>
         </summary>
         <div className={styles.explorerBody}>
@@ -174,7 +183,7 @@ export default function GovernmentsPage() {
             <h2 id="metodo-title">Come leggiamo i confronti</h2>
             <ol>
               <li><strong>Andamento:</strong> misuriamo la variazione italiana tra inizio e fine della finestra.</li>
-              <li><strong>Peer:</strong> confrontiamo la stessa variazione con la mediana di Francia, Germania e Spagna.</li>
+              <li><strong>Italia rispetto ai peer:</strong> confrontiamo la variazione italiana con la mediana di Francia, Germania e Spagna. 50 significa andamento in linea; sopra 50 migliore, sotto 50 peggiore.</li>
               <li><strong>Core:</strong> 50% storia italiana e 50% confronto con i peer, con pesi fissi.</li>
             </ol>
           </section>
@@ -189,12 +198,32 @@ export default function GovernmentsPage() {
                 <div><a href={data.sources.ameco.landingUrl} target="_blank" rel="noreferrer">Dataset</a><a href={data.sources.ameco.termsUrl} target="_blank" rel="noreferrer">Riuso</a></div>
               </article>
               <article>
+                <div><strong>{currentSignals.source.owner}</strong><span>Aggiornamento mensile</span></div>
+                <p>Prezzi armonizzati · ultimo mese {currentSignals.latestPeriod} · controllo automatico settimanale, senza inventare nuovi dati fra due pubblicazioni</p>
+                <div><a href={currentSignals.source.landingUrl} target="_blank" rel="noreferrer">Dataset</a><a href={currentSignals.source.informationUrl} target="_blank" rel="noreferrer">Metodo</a></div>
+              </article>
+              <article>
                 <div><strong>{data.sources.governmentChronology.owner}</strong><span>Cronologia istituzionale</span></div>
                 <p>{data.sources.governmentChronology.title}</p>
                 <div><a href={data.sources.governmentChronology.pageUrl} target="_blank" rel="noreferrer">Cronologia</a></div>
               </article>
             </div>
           </section>
+        </div>
+      </details>
+
+      <details className={`${styles.explorer} ${styles.limitDetails}`}>
+        <summary>
+          <span><small>Avvertenze</small><strong>Cosa il risultato non dimostra</strong></span>
+          <b>Apri</b>
+        </summary>
+        <div className={styles.explorerBody}>
+          <ul className={styles.caveats}>
+            <li>Descrive ciò che è successo nel periodo, ma non prova che il governo abbia causato tutta la variazione.</li>
+            <li>Non assegna automaticamente al predecessore l’intera situazione ereditata.</li>
+            <li>Non considera efficace una misura solo perché è stata approvata.</li>
+            <li>I dati annuali approssimano i mesi esatti di insediamento e fine mandato.</li>
+          </ul>
         </div>
       </details>
     </main>

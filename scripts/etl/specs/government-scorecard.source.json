@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v2",
+  "methodologyVersion": "core-annual-v3",
   "ameco": {
     "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
     "title": "AMECO annual macro-economic database",
@@ -156,10 +156,10 @@
     "peerWeightBasisPoints": 5000,
     "robustScale": 1.4826,
     "winsorizedZ": 3,
-    "scoreStatus": "Core macroeconomico annuale contestualizzato; ogni governo ha una scheda, mentre il voto richiede almeno un intervallo annuale osservabile",
+    "scoreStatus": "Indice annuale dei risultati economici nel periodo; ogni governo ha una scheda, mentre il numero richiede almeno un intervallo annuale osservabile",
     "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
-    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. A one-year window is admissible but receives low attribution reliability; a zero-year window remains unscored until quarterly data are integrated.",
-    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government"
+    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. A one-year window is admissible but receives low data comparability; a zero-year window remains unscored until quarterly data are integrated.",
+    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government; attribution is always reported separately"
   },
   "contexts": [
     {

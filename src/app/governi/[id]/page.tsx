@@ -13,6 +13,7 @@ import {
   sourceValue,
 } from "../government-scorecard-format";
 import { GovernmentIndicatorChart } from "../government-indicator-chart";
+import { GovernmentArchive } from "../government-archive";
 import styles from "../governi.module.css";
 
 type GovernmentPageProps = {
@@ -61,6 +62,13 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
   const maximumContribution = calculation
     ? Math.max(...calculation.indicators.map((item) => Math.abs(item.contributionPoints)), 1)
     : 1;
+  const peerDirection = calculation
+    ? calculation.relativeScore > 50
+      ? "migliore della"
+      : calculation.relativeScore < 50
+        ? "peggiore della"
+        : "in linea con la"
+    : null;
 
   return (
     <main className="shell page">
@@ -78,22 +86,14 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
             {longDate(government.startDate)} · {government.endDate ? longDate(government.endDate) : "in carica"}
           </p>
         </div>
-        <span className={styles.reliability} data-grade={government.reliability.grade}>
-          Affidabilità {government.reliability.grade} · {government.reliability.label}
+        <span className={styles.comparability} data-grade={government.comparability.grade}>
+          Dati annuali · {government.comparability.label}
         </span>
       </header>
 
-      <section className={styles.assessmentPath} aria-label="Come viene valutato questo governo">
-        <article><span>1</span><strong>Eredità</strong><p>Punto di partenza e traiettoria ricevuta.</p></article>
-        <article><span>2</span><strong>Contesto</strong><p>Economia mondiale, geopolitica, banche ed Europa.</p></article>
-        <article><span>3</span><strong>Risposta</strong><p>Manovre e riforme realmente approvate.</p></article>
-        <article><span>4</span><strong>Risultati</strong><p>Cosa è cambiato durante il mandato e rispetto ai peer.</p></article>
-        <article><span>5</span><strong>Attribuzione</strong><p>Quanto è prudente collegare risultati e governo.</p></article>
-      </section>
-
       <section className={styles.detailScore} aria-labelledby="valutazione-sintesi">
         <div>
-          <span>Core macro provvisorio · 6 indicatori</span>
+          <span>Risultato economico nel periodo · 6 indicatori</span>
           {calculation ? (
             <><strong>{formatScore(calculation.score)}<small>/100</small></strong><b>{government.scoreLabel}</b></>
           ) : (
@@ -101,27 +101,44 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
           )}
         </div>
         <div>
-          <h2 id="valutazione-sintesi">Cosa significa</h2>
+          <span className={styles.metricLabel}>Italia rispetto ai peer</span>
           {calculation ? (
-            <p>
-              Il Core confronta il periodo {calculation.baselineYear}→{calculation.endYear} con finestre storiche della stessa durata
-              e con Francia, Germania e Spagna. Non è ancora il voto sul benessere del cittadino. {government.reliability.reason}
-            </p>
+            <>
+              <h2 id="valutazione-sintesi">{formatScore(calculation.relativeScore)}<small>/100</small></h2>
+              <strong>Andamento Italia {peerDirection} mediana dei peer</strong>
+              <p>50 indica un andamento in linea. Il numero valuta l’Italia rispetto a Francia, Germania e Spagna nello stesso periodo; non è il voto dei tre Paesi.</p>
+            </>
           ) : (
-            <p>{calculationReason} Eredità, contesto e decisioni restano comunque valutati e documentati qui sotto.</p>
+            <><h2 id="valutazione-sintesi">Non calcolabile</h2><p>{calculationReason}</p></>
           )}
-          <p className={styles.causalBoundary}>
-            Questo numero non include ancora risparmio familiare, costo della casa, NEET, natalità, migrazione dei laureati o ricchezza netta.
-            La scheda distingue inoltre ciò che è successo durante il mandato da ciò che può essere attribuito alle sue politiche.
-          </p>
         </div>
       </section>
 
-      <section className={styles.scoreLayers} aria-labelledby="tre-livelli">
-        <div><span>1</span><h2 id="tre-livelli">Benessere del cittadino</h2><p>Reddito, costi essenziali, lavoro, risparmio, casa e opportunità. Il paniere completo è in integrazione e oggi non riceve un voto.</p></div>
-        <div><span>2</span><h2>Performance nel contesto</h2><p>Andamento rispetto alla storia italiana e agli stessi anni nei peer. È il livello coperto, solo in parte, dal Core macro.</p></div>
-        <div><span>3</span><h2>Impatto delle politiche</h2><p>Una manovra riceve merito o colpa soltanto con una valutazione indipendente; altrimenti mostriamo atto, obiettivo e risultato senza causalità.</p></div>
-      </section>
+      {calculation && (
+        <section className={styles.topResultSummary} aria-label="Dati principali del periodo">
+          <dl className={`stat-strip ${styles.resultStrip}`}>
+            <div><dt>Andamento Italia</dt><dd>{formatScore(calculation.observedScore)}</dd><span className="stat-note">dal {calculation.baselineYear} al {calculation.endYear}</span></div>
+            <div><dt>Italia rispetto ai peer</dt><dd>{formatScore(calculation.relativeScore)}</dd><span className="stat-note">50 = andamento in linea</span></div>
+            <div><dt>Periodo osservato</dt><dd>{calculation.windowYears}</dd><span className="stat-note">{calculation.windowYears === 1 ? "anno · lettura indicativa" : "anni tra gli endpoint"}</span></div>
+          </dl>
+          <div className={styles.robustnessPanel}>
+            <div>
+              <span>Intervallo dopo {calculation.robustness.checks.length} stress test</span>
+              <strong>da {formatScore(calculation.robustness.minimumScore)} a {formatScore(calculation.robustness.maximumScore)}<small>/100</small></strong>
+            </div>
+            <div>
+              <span>Sensibilità</span>
+              <strong>{calculation.robustness.label}</strong>
+              <small>Scarto massimo ±{formatScore(calculation.robustness.maximumDeviation)} punti</small>
+            </div>
+            <div>
+              <span>Attribuzione al governo</span>
+              <strong>{government.attribution.label}</strong>
+              <small>{government.attribution.reason}</small>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className={`panel ${styles.section}`} aria-labelledby="eredita">
         <div className={styles.sectionHeading}>
@@ -170,7 +187,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
       <section className={`panel ${styles.section}`} aria-labelledby="contesto">
         <div className={styles.sectionHeading}>
           <div><span className={styles.eyebrow}>Periodo economico e geopolitico</span><h2 id="contesto">In quale situazione ha governato</h2></div>
-          <p>I confronti con paesi esposti allo stesso periodo aiutano a leggere gli shock comuni; il registro rende visibili quelli non catturati bene dal solo voto.</p>
+          <p>I confronti con paesi esposti allo stesso periodo aiutano a leggere gli shock comuni; il registro rende visibili quelli non catturati bene dal solo indice.</p>
         </div>
         <div className={styles.contextGrid}>
           {government.contexts.map((item) => (
@@ -210,11 +227,6 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         </div>
         {calculation ? (
           <>
-            <dl className={`stat-strip ${styles.resultStrip}`}>
-              <div><dt>Andamento osservato</dt><dd>{formatScore(calculation.observedScore)}</dd><span className="stat-note">Italia · {calculation.baselineYear}→{calculation.endYear}</span></div>
-              <div><dt>Rispetto ai peer</dt><dd>{formatScore(calculation.relativeScore)}</dd><span className="stat-note">Francia · Germania · Spagna</span></div>
-              <div><dt>Durata statistica</dt><dd>{calculation.windowYears}</dd><span className="stat-note">{calculation.windowYears === 1 ? "anno · lettura indicativa" : "anni tra gli endpoint"}</span></div>
-            </dl>
             <div className={styles.scoreBreakdown}>
               <div className={styles.breakdownHeading}>
                 <h3>Come i sei indicatori formano il numero</h3>
@@ -251,7 +263,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
                 <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">Inizio</th><th scope="col" className="num">Fine</th><th scope="col" className="num">Variazione</th><th scope="col" className="num">Italia vs peer</th><th scope="col" className="num">Indice /100</th></tr></thead>
                 <tbody>{calculation.indicators.map((indicator) => (
                   <tr key={indicator.id}>
-                    <th scope="row"><span className={styles.indicatorName}>{indicator.label}</span><small>{indicator.weightBasisPoints / 100}% del voto</small></th>
+                    <th scope="row"><span className={styles.indicatorName}>{indicator.label}</span><small>{indicator.weightBasisPoints / 100}% dell’indice</small></th>
                     <td className="num">{sourceValue(indicator.baselineValue, indicator.id)}</td>
                     <td className="num">{sourceValue(indicator.endValue, indicator.id)}</td>
                     <td className="num">{rawChangeLabel(indicator)}</td>
@@ -266,8 +278,8 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
               Il confronto assorbe parte degli shock comuni, ma non corregge ancora differenze di esposizione come dipendenza energetica, struttura industriale o spazio fiscale ereditato.
             </p>
             <div className={styles.whyGrid}>
-              <div><h3>Risultati che hanno alzato il voto</h3><ul className={styles.contributionList}>{positive.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>+{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul></div>
-              <div><h3>Risultati che lo hanno frenato</h3>{negative.length > 0 ? <ul className={styles.contributionList}>{negative.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul> : <p>Nessun indicatore sotto il valore neutro in questa finestra.</p>}</div>
+              <div><h3>Risultati che hanno alzato l’indice</h3><ul className={styles.contributionList}>{positive.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>+{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul></div>
+              <div><h3>Risultati che hanno abbassato l’indice</h3>{negative.length > 0 ? <ul className={styles.contributionList}>{negative.map((item) => <li key={item.id}><span><strong>{item.label}</strong><small>{rawChangeLabel(item)}</small></span><b>{item.contributionPoints.toLocaleString("it-IT")} pt</b></li>)}</ul> : <p>Nessun indicatore sotto il valore neutro in questa finestra.</p>}</div>
             </div>
           </>
         ) : <p className="notice">{calculationReason}</p>}
@@ -279,19 +291,76 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         )}
       </section>
 
-      <section className={styles.sources} aria-labelledby="limiti">
-        <div className={styles.sectionHeading}>
-          <div><span className={styles.eyebrow}>Confine dell’analisi</span><h2 id="limiti">Cosa questa scheda non dimostra</h2></div>
-          <p>Il risultato macro, il confronto col contesto e la valutazione delle singole politiche sono livelli distinti.</p>
+      <GovernmentArchive id="altri-governi" selectedGovernmentId={government.id} />
+
+      <section className={styles.comparisonCallout} aria-labelledby="confronta-governo">
+        <div>
+          <span>Confronto diretto</span>
+          <h2 id="confronta-governo">Confronta {government.name} con un altro governo</h2>
+          <p>Scegli il secondo governo e sovrapponi risultati, categorie e andamento dei sei indicatori.</p>
         </div>
-        <ul className={styles.caveats}>
-          <li>Non dimostra che il governo abbia causato l’intera variazione osservata.</li>
-          <li>Non attribuisce automaticamente al predecessore tutto ciò che era presente alla baseline.</li>
-          <li>Non trasforma una misura approvata in una misura efficace senza evidenza indipendente.</li>
-          <li>Per le finestre brevi, i dati annuali riducono fortemente l’affidabilità dell’attribuzione.</li>
-        </ul>
-        <p><Link href="/governi">Torna al confronto tra tutti i governi</Link></p>
+        <Link href={`/governi/confronta?x=${government.id}`}>Apri il confronto</Link>
       </section>
+
+      <section className={styles.explanationStack} aria-label="Spiegazioni del risultato">
+        <details className={styles.explorer}>
+          <summary>
+            <span><small>Metodo</small><strong>Come viene calcolato il risultato</strong></span>
+            <b>Apri</b>
+          </summary>
+          <div className={styles.explorerBody}>
+            <p className={styles.explorerIntro}>Il risultato combina l’andamento dell’Italia e il confronto con i peer. Le spiegazioni non precedono più i dati, ma restano verificabili qui.</p>
+            <div className={styles.assessmentPath} aria-label="Passaggi della valutazione">
+              <article><span>1</span><strong>Eredità</strong><p>Punto di partenza e traiettoria ricevuta.</p></article>
+              <article><span>2</span><strong>Contesto</strong><p>Economia mondiale, geopolitica, banche ed Europa.</p></article>
+              <article><span>3</span><strong>Risposta</strong><p>Manovre e riforme realmente approvate.</p></article>
+              <article><span>4</span><strong>Risultati</strong><p>Cosa è cambiato durante il mandato e rispetto ai peer.</p></article>
+              <article><span>5</span><strong>Attribuzione</strong><p>Quanto è prudente collegare risultati e governo.</p></article>
+            </div>
+            <div className={styles.scoreLayers}>
+              <div><span>1</span><h2>Benessere del cittadino</h2><p>Reddito, costi essenziali, lavoro, risparmio, casa e opportunità. Il paniere completo è in integrazione e oggi non riceve punti.</p></div>
+              <div><span>2</span><h2>Performance nel contesto</h2><p>Andamento rispetto alla storia italiana e agli stessi anni nei peer. È il livello coperto, solo in parte, dal Core macro.</p></div>
+              <div><span>3</span><h2>Impatto delle politiche</h2><p>Una manovra riceve merito o colpa soltanto con una valutazione indipendente; altrimenti mostriamo atto, obiettivo e risultato senza causalità.</p></div>
+            </div>
+          </div>
+        </details>
+
+        <details className={styles.explorer}>
+          <summary>
+            <span><small>Confronto internazionale</small><strong>Cosa significa “Italia rispetto ai peer”</strong></span>
+            <b>Apri</b>
+          </summary>
+          <div className={styles.explorerBody}>
+            <p className={styles.explorerIntro}>Non è una valutazione di Francia, Germania e Spagna e non è lo spread. Misura come sono variati in Italia i sei indicatori rispetto alla mediana degli stessi Paesi e degli stessi anni. Un risultato pari a 50 è in linea con i peer; sopra 50 indica un andamento relativo migliore, sotto 50 peggiore.</p>
+          </div>
+        </details>
+
+        <details className={styles.explorer}>
+          <summary>
+            <span><small>Precisione dei dati</small><strong>Perché questi dati sono indicativi</strong></span>
+            <b>Apri</b>
+          </summary>
+          <div className={styles.explorerBody}>
+            <p className={styles.explorerIntro}>{government.comparability.reason} La lettera tecnica non viene mostrata perché non aiuta a interpretare il risultato. “Indicativo” segnala una finestra breve o ancora aperta; “confrontabile” segnala un mandato concluso con una finestra più ampia. In entrambi i casi gli endpoint annuali approssimano i mesi esatti del mandato.</p>
+          </div>
+        </details>
+      </section>
+
+      <details className={`${styles.explorer} ${styles.limitDetails}`}>
+        <summary>
+          <span><small>Avvertenze</small><strong>Cosa i dati non dimostrano</strong></span>
+          <b>Apri</b>
+        </summary>
+        <div className={styles.explorerBody}>
+          <p className={styles.explorerIntro}>Il risultato macro, il confronto col contesto e la valutazione delle singole politiche sono livelli distinti.</p>
+          <ul className={styles.caveats}>
+            <li>Non dimostra che il governo abbia causato l’intera variazione osservata.</li>
+            <li>Non attribuisce automaticamente al predecessore tutto ciò che era presente alla baseline.</li>
+            <li>Non trasforma una misura approvata in una misura efficace senza evidenza indipendente.</li>
+            <li>Per le finestre brevi, i dati annuali riducono la precisione temporale del confronto.</li>
+          </ul>
+        </div>
+      </details>
     </main>
   );
 }

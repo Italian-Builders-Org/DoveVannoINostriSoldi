@@ -11,6 +11,15 @@ export const GOVERNMENT_SCORECARD_INDICATOR_IDS = [
 
 export const GOVERNMENT_SCORECARD_COUNTRY_IDS = ["italy", "france", "germany", "spain"] as const;
 
+const INDICATOR_VALUE_RANGES: Readonly<Record<typeof GOVERNMENT_SCORECARD_INDICATOR_IDS[number], readonly [number, number]>> = {
+  real_compensation: [0, 1_000],
+  unemployment: [0, 100],
+  real_gdp_per_capita: [0, 1_000],
+  debt_ratio: [0, 1_000],
+  primary_balance: [-100, 100],
+  investment_share: [0, 100],
+};
+
 const httpsUrl = z.url().refine((value) => new URL(value).protocol === "https:", "URL HTTPS atteso");
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
 const isoDate = z.iso.date();
@@ -140,7 +149,7 @@ function issue(context: z.RefinementCtx, message: string, path: PropertyKey[] = 
 
 export const governmentScorecardSnapshotSchema = z.object({
   schemaVersion: z.literal(1),
-  methodologyVersion: z.literal("core-annual-v2"),
+  methodologyVersion: z.literal("core-annual-v3"),
   generatedAt: utcTimestamp,
   sources: z.object({
     ameco: amecoSourceSchema,
@@ -177,6 +186,11 @@ export const governmentScorecardSnapshotSchema = z.object({
           issue(context, "dato obbligatorio mancante dal 1995", ["indicators", indicatorIndex, "countries", countryId, year - 1960]);
           break;
         }
+      }
+      const [minimum, maximum] = INDICATOR_VALUE_RANGES[indicator.id];
+      const invalidValue = points.findIndex((point) => point.value != null && (point.value < minimum || point.value > maximum));
+      if (invalidValue >= 0) {
+        issue(context, "valore fuori intervallo plausibile", ["indicators", indicatorIndex, "countries", countryId, invalidValue, "value"]);
       }
     });
   });

@@ -25,6 +25,7 @@ type IndicatorCalculation = Readonly<{
   relativeChange: number;
   historicalScore: number;
   relativeScore: number;
+  historicalWindowCount: number;
   score: number;
   contributionPoints: number;
   sourceCodes: GovernmentScorecardIndicator["sourceCodes"];
@@ -52,6 +53,17 @@ type ScoreCalculation = Readonly<{
     weightBasisPoints: number;
     score: number;
   }[];
+  robustness: Readonly<{
+    minimumScore: number;
+    maximumScore: number;
+    maximumDeviation: number;
+    label: "stabile" | "sensibile" | "molto sensibile";
+    checks: readonly Readonly<{
+      id: string;
+      label: string;
+      score: number;
+    }>[];
+  }>;
 }> | Readonly<{
   status: "not-scored";
   baselineYear: number;
@@ -145,23 +157,14 @@ function peerChange(indicator: GovernmentScorecardIndicator, startYear: number, 
   return median(changes as number[]);
 }
 
-function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: number, endYear: number): ScoreCalculation {
+function calculateIndicators(
+  snapshot: GovernmentScorecardSnapshot,
+  baselineYear: number,
+  endYear: number,
+  peers: readonly GovernmentScorecardCountryId[],
+) {
   const windowYears = endYear - baselineYear;
-  if (baselineYear < snapshot.method.firstScoreYear) {
-    return { status: "not-scored", baselineYear, endYear, windowYears, reason: "La serie completa del Core parte dal 1995." };
-  }
-  if (windowYears < snapshot.method.minimumWindowYears) {
-    return {
-      status: "not-scored",
-      baselineYear,
-      endYear,
-      windowYears,
-      reason: "I dati annuali non contengono ancora un intervallo osservabile per questo mandato: la scheda resta disponibile, il voto arriverà con le serie trimestrali.",
-    };
-  }
-  const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
-  try {
-    const indicators = snapshot.indicators.map((indicator): IndicatorCalculation => {
+  return snapshot.indicators.map((indicator): IndicatorCalculation => {
       const baselineValue = valueAt(indicator, "italy", baselineYear);
       const endValue = valueAt(indicator, "italy", endYear);
       const oriented = transformedChange(indicator, "italy", baselineYear, endYear);
@@ -172,6 +175,8 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
       const relativeWindows: number[] = [];
       for (let start = snapshot.method.firstScoreYear; start + windowYears <= snapshot.sources.ameco.observedThrough; start += 1) {
         const finish = start + windowYears;
+        // The target must not help define the distribution used to score itself.
+        if (start === baselineYear && finish === endYear) continue;
         const italy = transformedChange(indicator, "italy", start, finish);
         const peer = peerChange(indicator, start, finish, peers);
         if (italy != null && peer != null) {
@@ -210,12 +215,79 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
         relativeChange: relative,
         historicalScore: rounded(historicalScore),
         relativeScore: rounded(relativeScore),
+        historicalWindowCount: historicalWindows.length,
         score: rounded(score),
         contributionPoints: rounded((score - 50) * indicator.weightBasisPoints / 10_000, 2),
         sourceCodes: indicator.sourceCodes,
         series,
       };
     });
+}
+
+function weightedScore(indicators: readonly IndicatorCalculation[]) {
+  const weight = indicators.reduce((sum, indicator) => sum + indicator.weightBasisPoints, 0);
+  if (weight <= 0) throw new Error("pesi del paniere non validi");
+  return indicators.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints, 0) / weight;
+}
+
+function robustnessChecks(
+  snapshot: GovernmentScorecardSnapshot,
+  baselineYear: number,
+  endYear: number,
+  indicators: readonly IndicatorCalculation[],
+) {
+  const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
+  const checks = [
+    {
+      id: "equal-weights",
+      label: "Pesi uguali",
+      score: indicators.reduce((sum, indicator) => sum + indicator.score, 0) / indicators.length,
+    },
+    ...indicators.map((excluded) => ({
+      id: `without-indicator-${excluded.id}`,
+      label: `Senza ${excluded.label}`,
+      score: weightedScore(indicators.filter((indicator) => indicator.id !== excluded.id)),
+    })),
+    ...peers.map((excludedPeer) => ({
+      id: `without-peer-${excludedPeer}`,
+      label: `Senza ${excludedPeer === "france" ? "Francia" : excludedPeer === "germany" ? "Germania" : "Spagna"}`,
+      score: weightedScore(calculateIndicators(
+        snapshot,
+        baselineYear,
+        endYear,
+        peers.filter((peer) => peer !== excludedPeer),
+      )),
+    })),
+  ].map((check) => ({ ...check, score: rounded(check.score) }));
+  const baseScore = weightedScore(indicators);
+  const scores = [baseScore, ...checks.map((check) => check.score)];
+  const maximumDeviation = Math.max(...scores.map((score) => Math.abs(score - baseScore)));
+  return {
+    minimumScore: rounded(Math.min(...scores)),
+    maximumScore: rounded(Math.max(...scores)),
+    maximumDeviation: rounded(maximumDeviation),
+    label: maximumDeviation <= 5 ? "stabile" as const : maximumDeviation <= 10 ? "sensibile" as const : "molto sensibile" as const,
+    checks,
+  };
+}
+
+function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: number, endYear: number): ScoreCalculation {
+  const windowYears = endYear - baselineYear;
+  if (baselineYear < snapshot.method.firstScoreYear) {
+    return { status: "not-scored", baselineYear, endYear, windowYears, reason: "La serie completa del Core parte dal 1995." };
+  }
+  if (windowYears < snapshot.method.minimumWindowYears) {
+    return {
+      status: "not-scored",
+      baselineYear,
+      endYear,
+      windowYears,
+      reason: "I dati annuali non contengono ancora un intervallo osservabile per questo mandato: la scheda resta disponibile, il risultato arriverà con le serie trimestrali.",
+    };
+  }
+  const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
+  try {
+    const indicators = calculateIndicators(snapshot, baselineYear, endYear, peers);
     const observedScore = indicators.reduce((sum, indicator) => sum + indicator.historicalScore * indicator.weightBasisPoints / 10_000, 0);
     const relativeScore = indicators.reduce((sum, indicator) => sum + indicator.relativeScore * indicator.weightBasisPoints / 10_000, 0);
     const score = indicators.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints / 10_000, 0);
@@ -240,6 +312,7 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
       score: rounded(score),
       indicators,
       categories,
+      robustness: robustnessChecks(snapshot, baselineYear, endYear, indicators),
     };
   } catch (error) {
     return {
@@ -247,7 +320,7 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
       baselineYear,
       endYear,
       windowYears,
-      reason: error instanceof Error ? error.message : "Dati insufficienti per un voto difendibile.",
+      reason: error instanceof Error ? error.message : "Dati insufficienti per un risultato difendibile.",
     };
   }
 }
@@ -277,18 +350,23 @@ function governmentView(snapshot: GovernmentScorecardSnapshot, government: Gover
   const governmentEndYear = government.endDate ? Number(government.endDate.slice(0, 4)) : snapshot.sources.ameco.forecastThrough;
   const contexts = snapshot.contexts.filter((item) => item.startYear <= governmentEndYear && item.endYear >= startYear);
   const measures = snapshot.measures.filter((item) => item.government === government.name);
-  const reliability = calculation.status === "not-scored"
-    ? { grade: "ND" as const, label: "non valutabile", reason: calculation.reason }
+  const comparability = calculation.status === "not-scored"
+    ? { grade: "ND" as const, label: "dati non confrontabili", reason: calculation.reason }
     : calculation.windowYears === 1 || government.status === "current" || contexts.some((item) => item.kind === "external-shock" || item.kind === "financial-shock")
-      ? { grade: "C" as const, label: "attribuzione bassa", reason: calculation.windowYears === 1
-        ? "La finestra annuale permette un confronto indicativo, ma non isola con precisione i mesi del mandato né i ritardi delle politiche."
-        : "Serie annuali, possibili ritardi e shock rilevanti limitano l’attribuzione al governo." }
-      : { grade: "B" as const, label: "attribuzione prudente", reason: "Il confronto storico e con i peer aiuta, ma non crea un controfattuale causale." };
+      ? { grade: "C" as const, label: "dati indicativi", reason: calculation.windowYears === 1
+        ? "La finestra annuale non isola con precisione i mesi del mandato."
+        : "Serie annuali e shock rilevanti rendono il confronto meno preciso." }
+      : { grade: "B" as const, label: "dati confrontabili", reason: "Paniere e peer sono completi, ma gli endpoint annuali approssimano le date del mandato." };
   return {
     ...government,
     calculation,
     scoreLabel: calculation.status === "scored" ? scoreLabel(calculation.score) : null,
-    reliability,
+    comparability,
+    attribution: {
+      status: "not-estimated" as const,
+      label: "non stimata",
+      reason: "Il Core descrive risultati osservati: non identifica il contributo causale del governo.",
+    },
     contexts,
     measures,
   };
@@ -355,14 +433,6 @@ export function getGovernmentScorecardView() {
   if (!current) throw new GovernmentScorecardContractError(new Error("governo corrente assente"));
   const currentYears = endpointYears(current, snapshot.sources.ameco.observedThrough);
   const forecast = scoreForWindow(snapshot, currentYears.baselineYear, snapshot.sources.ameco.forecastThrough);
-  const ranked = governments
-    .filter((government) => government.status === "ended" && government.calculation.status === "scored")
-    .sort((left, right) => {
-      const leftScore = left.calculation.status === "scored" ? left.calculation.score : -1;
-      const rightScore = right.calculation.status === "scored" ? right.calculation.score : -1;
-      return rightScore - leftScore;
-    });
-  const ranks = new Map(ranked.map((government, index) => [government.id, index + 1]));
   return {
     ok: true as const,
     methodologyVersion: snapshot.methodologyVersion,
@@ -370,7 +440,7 @@ export function getGovernmentScorecardView() {
     method: snapshot.method,
     sources: snapshot.sources,
     current: { ...current, forecast },
-    governments: governments.map((government) => ({ ...government, rank: ranks.get(government.id) ?? null })),
+    governments,
     historicalContexts: snapshot.contexts.filter((item) => item.endYear < snapshot.method.firstScoreYear),
     caveats: snapshot.caveats,
     peerLabels: GOVERNMENT_SCORECARD_COUNTRY_IDS.filter((id) => id !== "italy").map((id) => ({

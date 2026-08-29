@@ -10,6 +10,7 @@ const citizenModel = await readFile(new URL("../src/app/governi/citizen-score-mo
 const currentOverview = await readFile(new URL("../src/app/governi/current-government-overview.tsx", import.meta.url), "utf8");
 const currentSignals = await readFile(new URL("../src/app/governi/current-government-signals.tsx", import.meta.url), "utf8");
 const indicatorChart = await readFile(new URL("../src/app/governi/government-indicator-chart.tsx", import.meta.url), "utf8");
+const governmentArchive = await readFile(new URL("../src/app/governi/government-archive.tsx", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/app/governi/governi.module.css", import.meta.url), "utf8");
 const overviewStyles = await readFile(new URL("../src/app/governi/current-government-overview.module.css", import.meta.url), "utf8");
 const navigation = await readFile(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
@@ -20,23 +21,32 @@ test("government scorecard is server-first and opens on the current government",
   assert.match(page, /Economia italiana: cosa sta migliorando e cosa no/);
   assert.match(page, /getGovernmentCurrentSignalsView/);
   assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} currentSignals=\{currentSignals\} \/>/);
-  assert.match(page, /Core al \{data\.sources\.ameco\.observedThrough\} · costo della vita a \{currentSignals\.latestPeriod\}/);
-  assert.match(page, /I segnali mensili sono più recenti, ma restano separati dal voto storico/);
+  assert.match(page, /Risultati annuali al \{data\.sources\.ameco\.observedThrough\} · prezzi a \{currentSignals\.latestPeriod\}/);
+  assert.match(page, /I sei indicatori annuali permettono lo storico/);
   assert.match(page, /<CitizenScoreModel \/>/);
   assert.ok(page.indexOf("<CurrentGovernmentOverview") < page.indexOf("<CitizenScoreModel"));
 });
 
-test("page keeps current actions first and makes forecasts, history and method progressive", () => {
-  const headings = ["Cosa ha fatto e cosa possiamo verificare", "Se le previsioni si realizzano", "Apri una scheda oppure confronta due governi", "Quali dati mancano e come viene calcolato il voto"];
+test("page keeps current data first, then inheritance, context, actions, archive, comparison and method", () => {
+  const headings = [
+    "Se le previsioni si realizzano",
+    "Cosa ha ereditato il governo attuale",
+    "In quale situazione ha operato",
+    "Cosa ha fatto e cosa possiamo verificare",
+    "<GovernmentArchive",
+    "Scegli due governi e sovrapponi i dati",
+    "Quali dati mancano e come viene calcolato il risultato",
+    "Cosa il risultato non dimostra",
+  ];
   let cursor = -1;
   for (const heading of headings) {
     const next = page.indexOf(heading);
     assert.ok(next > cursor, heading);
     cursor = next;
   }
-  assert.match(page, /<details className=\{styles\.explorer\} id="confronto-governi">/);
+  assert.match(page, /<GovernmentArchive id="confronto-governi" selectedGovernmentId=\{current\.id\} \/>/);
   assert.match(page, /<details className=\{styles\.explorer\} id="metodo-dati">/);
-  assert.match(page, /non un dato osservato e non un voto anticipato/);
+  assert.match(page, /non un dato osservato e non un risultato anticipato/);
   assert.doesNotMatch(page, /Il confronto con i peer non è lo spread/);
   assert.match(citizenModel, /Perché è fuori oggi:/);
   assert.match(citizenModel, /Perché resta diagnostico:/);
@@ -48,6 +58,8 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /Come sta andando con \{governmentName\}/);
   assert.match(currentOverview, /Indicatori migliorati/);
   assert.match(currentOverview, /Meglio dei peer/);
+  assert.match(currentOverview, /Intervallo stress test/);
+  assert.match(currentOverview, /Attribuzione al governo/);
   assert.match(currentOverview, /calculation\.indicators\.map/);
   assert.match(currentOverview, /<TrendSparkline indicator=\{indicator\} \/>/);
   assert.match(currentOverview, /Periodo del grafico/);
@@ -61,9 +73,9 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /<CurrentGovernmentSignals data=\{currentSignals\} \/>/);
 });
 
-test("current monthly signals explain cost of living without silently changing the score", () => {
+test("current monthly signals explain harmonised prices without silently changing the score", () => {
   assert.doesNotMatch(currentSignals, /^"use client"/);
-  assert.match(currentSignals, /Costo della vita dall’insediamento a oggi/);
+  assert.match(currentSignals, /Prezzi al consumo dall’insediamento a oggi/);
   assert.match(currentSignals, /La percentuale grande mostra quanto sono cambiati i prezzi da ottobre 2022/);
   assert.match(currentSignals, /Da ottobre 2022/);
   assert.match(currentSignals, /Ultimi 12 mesi/);
@@ -72,13 +84,14 @@ test("current monthly signals explain cost of living without silently changing t
   assert.match(currentSignals, /signal\.series\.map/);
   assert.match(currentSignals, /Mediana peer/);
   assert.match(currentSignals, /Questo non è un punto assegnato al governo/);
+  assert.match(currentSignals, /non misura il costo della vita della singola famiglia/);
   assert.match(currentSignals, /data\.source\.landingUrl/);
   assert.match(currentSignals, /role="img"/);
 });
 
 test("citizen model exposes ten source-backed indicators and explains every exclusion", () => {
-  assert.match(citizenModel, /Dieci dati candidati, oggi ancora fuori dal punteggio/);
-  assert.match(citizenModel, /Sette possono diventare indicatori di benessere/);
+  assert.match(citizenModel, /Dieci dati utili, con ruoli diversi/);
+  assert.match(citizenModel, /possono entrare nel risultato del cittadino/);
   assert.match(citizenModel, /indicator\.role === "score"/);
   assert.match(citizenModel, /indicator\.role === "diagnostic"/);
   assert.match(citizenModel, /sei indicatori macro del Core/);
@@ -90,15 +103,17 @@ test("page exposes raw values, peers, missing-score reasons and official sources
   assert.match(currentOverview, /baselineValue/);
   assert.match(currentOverview, /endValue/);
   assert.match(currentOverview, /relativeChange/);
-  assert.match(page, /government\.calculation\.reason/);
+  assert.match(governmentArchive, /government\.calculation\.reason/);
   assert.match(page, /data\.sources\.ameco\.landingUrl/);
   assert.match(page, /data\.sources\.governmentChronology\.pageUrl/);
+  assert.match(page, /currentSignals\.source\.landingUrl/);
+  assert.match(page, /controllo automatico settimanale/);
   assert.ok((page.match(/target="_blank"/g) ?? []).length >= 5);
 });
 
 test("every government links to a dedicated five-part assessment", () => {
-  assert.match(page, /href=\{`\/governi\/\$\{government\.id\}`\}/);
-  for (const heading of ["Cosa ha ereditato", "In quale situazione ha governato", "Cosa ha fatto per intervenire", "Risultati osservati e situazione lasciata", "Cosa questa scheda non dimostra"]) {
+  assert.match(governmentArchive, /href=\{`\/governi\/\$\{government\.id\}`\}/);
+  for (const heading of ["Cosa ha ereditato", "In quale situazione ha governato", "Cosa ha fatto per intervenire", "Risultati osservati e situazione lasciata", "Cosa i dati non dimostrano"]) {
     assert.match(detail, new RegExp(heading));
   }
   assert.match(detail, /Periodo economico e geopolitico/);
@@ -107,14 +122,16 @@ test("every government links to a dedicated five-part assessment", () => {
   assert.match(detail, /government\.contexts\.map/);
   assert.match(detail, /<GovernmentIndicatorChart indicators=\{calculation\.indicators\} \/>/);
   assert.match(detail, /Come i sei indicatori formano il numero/);
+  assert.match(detail, /Intervallo dopo \{calculation\.robustness\.checks\.length\} stress test/);
+  assert.match(detail, /government\.attribution\.label/);
   assert.match(detail, /dynamicParams = false/);
   assert.match(detail, /generateStaticParams/);
 });
 
 test("users can compare any two scored governments and open either detail", () => {
   assert.doesNotMatch(page, /Miglior risultato tra i governi conclusi e valutabili/);
-  assert.match(page, /Ogni nome apre la scheda completa del governo/);
-  assert.match(page, /href="\/governi\/confronta"/);
+  assert.match(governmentArchive, /Ogni nome apre la scheda completa del governo/);
+  assert.match(page, /href=\{`\/governi\/confronta\?x=\$\{current\.id\}`\}/);
   assert.match(comparison, /name="x"/);
   assert.match(comparison, /name="y"/);
   assert.match(comparison, /Dove differiscono di più/);

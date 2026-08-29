@@ -22,7 +22,7 @@ test("government scorecard snapshot validates its fixed basket and provenance", 
   assert.equal(parsed.sources.ameco.observedThrough, 2024);
   assert.equal(parsed.sources.ameco.forecastFrom, 2025);
   assert.equal(parsed.sources.ameco.forecastThrough, 2027);
-  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v2");
+  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v3");
   assert.equal(getGovernmentScorecardView().ok, true);
 });
 
@@ -31,6 +31,8 @@ test("runtime contract rejects weight, identity and coverage drift", () => {
   assertInvalid((value) => { value.indicators[1].id = value.indicators[0].id; }, /paniere indicatori/);
   assertInvalid((value) => { value.indicators[0].countries.italy[64].value = null; }, /dato obbligatorio/);
   assertInvalid((value) => { value.indicators[0].countries.italy[64].year = 2023; }, /anni non consecutivi/);
+  assertInvalid((value) => { value.indicators[0].countries.italy[64].value = 1_000_000; }, /intervallo plausibile/);
+  assertInvalid((value) => { value.indicators[1].countries.italy[64].value = -1; }, /intervallo plausibile/);
   assertInvalid((value) => { value.indicators[0].countries.italy.pop(); });
   assertInvalid((value) => { value.indicators[5].sourceCodes.italy.pop(); }, /codici serie/);
 });

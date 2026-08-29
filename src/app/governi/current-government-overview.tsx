@@ -26,6 +26,13 @@ type Calculation = Readonly<{
   endYear: number;
   score: number;
   indicators: readonly Indicator[];
+  robustness: Readonly<{
+    minimumScore: number;
+    maximumScore: number;
+    maximumDeviation: number;
+    label: string;
+    checks: readonly unknown[];
+  }>;
 }>;
 
 const INDICATOR_COPY: Readonly<Record<string, { label: string; group: string; question: string }>> = {
@@ -157,9 +164,11 @@ export function CurrentGovernmentOverview({
           </div>
           <div className={styles.legend} aria-label="Legenda dei mini grafici">
             <span><i data-series="italy" />Italia</span>
-            <span><i data-series="peer" />Mediana peer</span>
+            <span><i data-series="peer" />Mediana peer (Francia, Germania, Spagna)</span>
           </div>
         </div>
+
+        <p className={styles.summaryDefinition}>Il risultato combina per metà l’andamento dell’Italia rispetto alla propria storia e per metà l’andamento rispetto a Francia, Germania e Spagna negli stessi anni. Descrive il periodo, non prova da solo l’effetto del governo.</p>
 
         <dl className={styles.summaryStats}>
           <div>
@@ -171,8 +180,26 @@ export function CurrentGovernmentOverview({
             <dd>{aheadOfPeers}<small> su {calculation.indicators.length}</small></dd>
           </div>
           <div>
-            <dt>Core macro provvisorio</dt>
+            <dt>Risultato nel periodo</dt>
             <dd>{formatScore(calculation.score)}<small>/100</small></dd>
+          </div>
+        </dl>
+
+        <dl className={styles.robustnessStrip} aria-label="Controlli di robustezza e attribuzione">
+          <div>
+            <dt>Intervallo stress test</dt>
+            <dd>{formatScore(calculation.robustness.minimumScore)} a {formatScore(calculation.robustness.maximumScore)}</dd>
+            <small>{calculation.robustness.checks.length} prove su pesi, indicatori e peer</small>
+          </div>
+          <div>
+            <dt>Sensibilità</dt>
+            <dd>{calculation.robustness.label}</dd>
+            <small>scarto massimo ±{formatScore(calculation.robustness.maximumDeviation)} punti</small>
+          </div>
+          <div>
+            <dt>Attribuzione al governo</dt>
+            <dd>Non stimata</dd>
+            <small>il numero descrive il periodo, non prova causalità</small>
           </div>
         </dl>
 

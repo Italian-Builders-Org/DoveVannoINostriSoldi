@@ -10,9 +10,9 @@ export function CitizenScoreModel() {
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Il voto che stiamo costruendo</span>
-          <h2 id="paniere-cittadino">Dieci dati candidati, oggi ancora fuori dal punteggio</h2>
+          <h2 id="paniere-cittadino">Dieci dati utili, con ruoli diversi</h2>
         </div>
-        <p>Sette possono diventare indicatori di benessere; tre restano diagnostici. Per ciascuno mostriamo il limite da risolvere prima di assegnargli un peso.</p>
+        <p>{scored.length} possono entrare nel risultato del cittadino; {diagnostics.length} restano diagnostici perché non hanno causalità, copertura o verso abbastanza solidi.</p>
       </div>
 
       <div className={styles.citizenModelGrid}>

@@ -63,13 +63,14 @@ def ameco_zip(spec: dict[str, object], *, mutate_row=None, extra_member: tuple[s
                         mutate_row(indicator["id"], country_id, part["file"], row)
                     rows_by_file[part["file"]].append(row)
             else:
+                base = 10 if indicator["id"] == "unemployment" else 0 if indicator["id"] == "primary_balance" else 100
                 row = [
                     indicator["codeTemplate"].format(country=country_code),
                     country_name,
                     "fixture",
                     indicator["title"],
                     indicator["unit"],
-                    *values(missing_before=1995 if indicator["id"] == "primary_balance" else None),
+                    *values(missing_before=1995 if indicator["id"] == "primary_balance" else None, base=base),
                     "",
                 ]
                 if mutate_row:
@@ -164,6 +165,10 @@ class GovernmentScorecardSnapshotTests(unittest.TestCase):
         broken_value["indicators"][0]["countries"]["italy"][2024 - 1960]["value"] = None
         with self.assertRaisesRegex(ETL.SnapshotError, "dato obbligatorio"):
             ETL.validate_snapshot(broken_value)
+        absurd_value = copy.deepcopy(snapshot)
+        absurd_value["indicators"][0]["countries"]["italy"][2024 - 1960]["value"] = 1_000_000
+        with self.assertRaisesRegex(ETL.SnapshotError, "intervallo plausibile"):
+            ETL.validate_snapshot(absurd_value)
         orphan = copy.deepcopy(snapshot)
         orphan["measures"][0]["government"] = "Missing-I"
         with self.assertRaisesRegex(ETL.SnapshotError, "governo assente"):

@@ -60,7 +60,7 @@ export function CurrentGovernmentSignals({ data }: { data: GovernmentCurrentSign
       <div className={styles.liveHeading}>
         <div>
           <span>Dato mensile Eurostat · non entra nel voto</span>
-          <h2 id="costo-vita-attuale">Costo della vita dall’insediamento a oggi</h2>
+          <h2 id="costo-vita-attuale">Prezzi al consumo dall’insediamento a oggi</h2>
         </div>
         <div className={styles.liveMeta}>
           <p>Ultimo dato: <strong>{monthLabel(data.latestPeriod)}</strong>. La percentuale grande mostra quanto sono cambiati i prezzi da ottobre 2022.</p>
@@ -92,7 +92,7 @@ export function CurrentGovernmentSignals({ data }: { data: GovernmentCurrentSign
         ))}
       </div>
       <div className={styles.liveBoundary}>
-        <p><strong>Questo non è un punto assegnato al governo.</strong> Descrive i prezzi osservati nello stesso periodo e li confronta con Francia, Germania e Spagna.</p>
+        <p><strong>Questo non è un punto assegnato al governo.</strong> L’IPCA confronta i prezzi fra Paesi, ma non misura il costo della vita della singola famiglia.</p>
         <a href={data.source.landingUrl} target="_blank" rel="noreferrer">Eurostat · {data.source.datasetCode} <span aria-hidden="true">↗</span></a>
       </div>
     </section>

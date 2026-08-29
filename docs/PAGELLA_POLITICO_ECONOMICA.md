@@ -4,7 +4,7 @@
 
 Questa nota definisce la strategia e documenta la prima implementazione della
 pagella economica dei governi italiani. La pagina `/governi` calcola oggi un
-**Core macroeconomico annuale sperimentale** con dati AMECO reali, fonti
+**indice annuale sperimentale dei risultati economici nel periodo** con dati AMECO reali, fonti
 verificabili e limiti espliciti. Non va confuso con la futura pagella
 socio-economica completa né interpretato come una stima causale.
 
@@ -31,9 +31,9 @@ minuti:
 7. per il governo in carica, come sta andando finora e quali sono gli scenari dei
    successivi dodici-ventiquattro mesi.
 
-Il nome pubblico può essere **Pagella economica dei governi**. La definizione
-metodologica deve però restare **risultati economici osservati durante il
-governo**, per non suggerire un'attribuzione causale automatica.
+Il nome pubblico può essere **Pagella economica dei governi**. Il numero deve
+però chiamarsi **risultato economico osservato nel periodo**, per non suggerire
+un'attribuzione causale automatica.
 
 ## Principi non negoziabili
 
@@ -49,7 +49,7 @@ governo**, per non suggerire un'attribuzione causale automatica.
   rinormalizzati per far apparire completo un governo incompleto.
 - Ogni ricalcolo conserva versione del metodo, vintage dei dati e cronologia
   delle revisioni.
-- Il metodo viene congelato prima di calcolare la prima classifica pubblica.
+- Il metodo viene congelato prima di pubblicare il primo confronto fra governi.
 - Il governo in carica riceve soltanto un risultato **provvisorio** e distinto
   dalla previsione.
 
@@ -73,16 +73,16 @@ volta come presunto merito politico.
 ### I dieci dati da mostrare al cittadino
 
 La schermata principale deve ridurre centinaia di serie a dieci domande. Le
-prime sette formano il candidato **Score cittadino**; le ultime tre sono
+prime sei formano il candidato **Score cittadino**; le ultime quattro sono
 diagnostiche finché copertura e ritardi non consentono confronti equi tra
 governi.
 
 | # | Domanda | Indicatore | Fonte primaria | Uso proposto |
 | ---: | --- | --- | --- | --- |
-| 1 | Quanto resta davvero alle famiglie? | reddito disponibile reale per abitante | [Eurostat `nasa_10_ki`](https://ec.europa.eu/eurostat/databrowser/view/nasa_10_ki/default/table?lang=it) | voto |
+| 1 | Quanto resta davvero alle famiglie? | reddito disponibile reale per abitante | [Eurostat `nasq_10_ki`](https://ec.europa.eu/eurostat/databrowser/view/nasq_10_ki/default/table?lang=it) | voto |
 | 2 | Quanto pesano cibo, energia e casa? | IPCA delle spese essenziali rispetto al reddito | [Eurostat `prc_hicp_aind`](https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_aind/default/table?lang=it) | voto |
 | 3 | Quante persone lavorano davvero? | occupazione 20-64 anni | [Eurostat `lfsi_emp_a`](https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_a/default/table?lang=it) | voto |
-| 4 | Quanto reddito non viene assorbito dai consumi? | tasso di risparmio delle famiglie | [Eurostat `tec00131`](https://ec.europa.eu/eurostat/databrowser/view/tec00131/default/table?lang=it) | voto |
+| 4 | Quanto reddito non viene assorbito dai consumi? | tasso di risparmio delle famiglie | [Eurostat `nasq_10_ki`](https://ec.europa.eu/eurostat/databrowser/view/nasq_10_ki/default/table?lang=it) | diagnostico: verso ambiguo |
 | 5 | Quanti sono schiacciati dal costo della casa? | housing cost overburden, soglia 40% | [Eurostat `ilc_lvho07a`](https://ec.europa.eu/eurostat/databrowser/view/ilc_lvho07a/default/table?lang=it) | voto |
 | 6 | Quanti giovani sono senza lavoro e formazione? | NEET 15-29 anni | [Eurostat `edat_lfse_20`](https://ec.europa.eu/eurostat/databrowser/view/edat_lfse_20/default/table?lang=it) | voto |
 | 7 | Il lavoro crea più valore? | produttività reale per ora | [Eurostat `nama_10_lp_ulc`](https://ec.europa.eu/eurostat/databrowser/view/nama_10_lp_ulc/default/table?lang=it) | voto |
@@ -90,7 +90,7 @@ governi.
 | 9 | Il Paese trattiene e riporta capitale umano? | saldo dei laureati italiani 25-34 anni | [Istat, tavola 13](https://demo.istat.it/tavole/?l=it&t=apr4) | diagnostico: serie dal 2013 e solo Italia |
 | 10 | Famiglie diverse hanno davvero capacità di investire e rischiare? | ricchezza netta, debiti e attività finanziarie per fascia | [Banca d'Italia, conti distributivi](https://www.bancaditalia.it/statistiche/tematiche/conti-patrimoniali/conti-distributivi/) | diagnostico: copertura recente |
 
-Fecondità e migrazione dei laureati devono essere valutate e mostrate, ma non
+Risparmio, fecondità e migrazione dei laureati devono essere valutati e mostrati, ma non
 possono ricevere lo stesso peso di un indicatore trimestrale: dipendono da
 decisioni maturate in molti anni e, per i governi più vecchi, la copertura non è
 comparabile. Escluderle dalla schermata sarebbe sbagliato; trasformarle subito
@@ -105,10 +105,10 @@ finestra, regole sulle revisioni e assenza di doppio conteggio.
 
 | Indicatore | Frequenza che possiamo usare | Blocco da risolvere prima del voto |
 | --- | --- | --- |
-| reddito reale disponibile | trimestrale per il monitoraggio recente; annuale per la serie proposta | riconciliare le due frequenze e validare gli endpoint dei mandati |
+| reddito reale disponibile | trimestrale dal 2002 per Italia e peer | validare endpoint dei mandati, revisioni e medie su quattro trimestri |
 | spese essenziali | IPCA mensile dal 1996 | fissare categorie e pesi del paniere; non contare due volte l'inflazione già incorporata nel reddito reale |
 | occupazione | trimestrale; annuale per la serie proposta | gestire stagionalità e rotture; non duplicare la disoccupazione |
-| risparmio delle famiglie | trimestrale | neutralizzare picchi eccezionali, revisioni e differenze fra dato lordo e netto |
+| risparmio delle famiglie | trimestrale dal 2002 per Italia e peer | non esiste un verso sempre positivo: picchi possono indicare prudenza, restrizioni o insicurezza |
 | costo della casa | annuale | ritardo e discontinuità d'indagine impediscono un monitoraggio corrente omogeneo |
 | NEET | annuale nella serie proposta | verificare se la serie LFS trimestrale mantiene definizione e copertura storica sufficienti |
 | produttività oraria | annuale nella serie proposta; conti trimestrali come alternativa | scegliere una serie unica e non duplicare PIL e investimenti |
@@ -120,19 +120,33 @@ Per il governo in carica possiamo quindi costruire un **cruscotto corrente** pi�
 frequente del voto storico: inflazione, categorie essenziali, credito e tassi
 mensili; lavoro, reddito, risparmio, PIL e produttività trimestrali. Il voto fra
 governi resta invece sulla maggiore frequenza comune e validata. Non sommeremo
-una lettura mensile del presente a una classifica annuale del passato.
+una lettura mensile del presente a un confronto annuale del passato.
 
 Il primo modulo corrente implementato usa l'IPCA mensile Eurostat
 `prc_hicp_minr` per prezzi complessivi, alimentari e casa-acqua-energia. Mostra
 la variazione cumulata da ottobre 2022, il tasso degli ultimi dodici mesi e la
 mediana nello stesso periodo di Francia, Germania e Spagna. Questi segnali sono
-diagnostici: descrivono il costo della vita, ma non assegnano punti e non
-dimostrano da soli un effetto causale delle politiche del governo.
+diagnostici: descrivono l'andamento armonizzato dei prezzi, ma non assegnano
+punti e non misurano il costo della vita specifico di ogni famiglia.
 
 Un algoritmo perfetto e interamente causale non è ottenibile: manca il mondo
 controfattuale in cui lo stesso Paese, nello stesso momento, è governato da un
 altro esecutivo. Possiamo però rendere perfetti in senso tecnico provenienza,
 riproducibilità e formula; e rendere esplicita l'incertezza dell'attribuzione.
+
+L'audit del 29 agosto 2026 sulla API Eurostat ha verificato questa copertura
+trimestrale per Italia, Francia, Germania e Spagna:
+
+| Serie | Copertura verificata | Decisione |
+| --- | --- | --- |
+| reddito disponibile lordo reale per abitante, `nasq_10_ki`, `B6G_R_HAB_2010` | 2002-Q1–2026-Q1, 97 osservazioni per ciascun Paese | candidato prioritario al monitoraggio corrente e al paniere dal 2005 |
+| tasso di risparmio lordo, `nasq_10_ki`, `SRG_S14_S15` | 2002-Q1–2026-Q1, 97 osservazioni per ciascun Paese | diagnostico, senza verso positivo automatico |
+| occupazione 20-64, `lfsq_ergan` | Italia e Spagna complete; Francia e Germania hanno osservazioni mancanti | non entra finché rotture e buchi non sono gestiti senza imputazioni arbitrarie |
+| produttività reale per ora, `namq_10_lp_ulc`, `RLPR_HW` | 2002-Q1–2026-Q1 per l'Italia; peer fino a 2026-Q2 | candidato, usando soltanto l'ultimo trimestre comune |
+
+Questa verifica prova disponibilità e copertura, non autorizza ancora a sommare
+le serie al Core: servono adapter fail-closed, vintage, test sugli endpoint e
+controlli contro il doppio conteggio.
 
 ### Stabilità e capacità futura
 
@@ -151,12 +165,8 @@ confrontare il rischio sovrano mostreremo rendimento, differenza rispetto a un
 benchmark comune, spesa per interessi e condizioni del credito senza confondere
 queste misure con il reddito del cittadino.
 
-La prima ipotesi da sottoporre a sensibilità è:
-
-```text
-valutazione complessiva = 80% Score cittadino + 20% sostenibilità futura
-```
-
+Score cittadino e sostenibilità futura restano due moduli visibili e separati
+finché non esiste evidenza sufficiente per giustificare un rapporto di peso.
 I pesi interni non vengono congelati finché il paniere non supera l'audit di
 copertura e ridondanza. In particolare reddito, salari e consumi, oppure debito,
 interessi e spread, non devono contare più volte lo stesso fenomeno.
@@ -171,25 +181,19 @@ Per ogni indicatore costruiamo tre confronti verificabili:
    precedenti al mandato;
 3. scarto rispetto alla traiettoria italiana ereditata prima del mandato.
 
-La formula candidata per ogni indicatore è:
-
-```text
-indicatore_contestualizzato =
-  50% confronto con peer contemporanei e pre-selezionati +
-  30% rottura rispetto alla traiettoria ereditata +
-  20% confronto con finestre storiche italiane della stessa durata
-```
+La formula pubblicata resta intenzionalmente semplice: 50% confronto con
+finestre storiche italiane della stessa durata e 50% confronto con peer
+contemporanei. La traiettoria ereditata viene mostrata separatamente e non
+riceve un peso finché non supera test di pre-trend e stabilità.
 
 Le variabili usate per scegliere o pesare i peer devono esistere prima di vedere
 il risultato: dipendenza energetica, struttura industriale, apertura commerciale,
 debito e scadenze, condizioni bancarie, regime monetario e spazio fiscale. Se il
 controfattuale non supera i test di pre-trend, la pagina conserva il confronto
-descrittivo e abbassa l'affidabilità invece di forzare un aggiustamento.
+descrittivo e abbassa la comparabilità invece di forzare un aggiustamento.
 
-Il Core attualmente pubblicato **non implementa ancora questa formula**: usa 50%
-storia italiana e 50% mediana contemporanea di Francia, Germania e Spagna. La UI
-deve quindi chiamarlo sempre “Core macro provvisorio” e mostrare i grafici e i
-punti che lo compongono.
+La UI deve chiamarlo “risultato economico nel periodo”, mostrare i grafici e i
+punti che lo compongono e dichiarare l'attribuzione causale come non stimata.
 
 Inflazione, condizioni europee e globali e decisioni UE entrano in tre posti
 diversi, senza diventare bonus discrezionali:
@@ -241,7 +245,7 @@ a una classe di comparabilità:
 
 | Classe | Copertura attesa | Risultato pubblicabile |
 | --- | --- | --- |
-| A · completa | Indicativamente dal 2005, da confermare con l'audit | Voto complessivo, cinque aree, confronto europeo e affidabilità |
+| A · completa | Indicativamente dal 2005, da confermare con l'audit | Risultato completo, cinque aree, confronto europeo e comparabilità |
 | B · macro armonizzata | Indicativamente 1995-2004 | Voto macro separato, ottenuto da un paniere fisso più ristretto |
 | C · storica | Prima del 1995 | Nessun voto aggregato; serie, governi, regimi e shock nel loro contesto |
 | D · documentale | Copertura insufficiente o mandato troppo breve | Valutazione di eredità, contesto, decisioni e risultati disponibili; nessun aggregato artificiale |
@@ -256,14 +260,14 @@ PIL, non basta per produrre un voto economico complessivo.
   geopolitico, misure adottate, risultati disponibili e limiti di attribuzione.
 - Meno di quattro trimestri completi: nessun voto macro trimestrale, ma
   valutazione documentale completa delle decisioni e degli esiti osservabili.
-- Da quattro a sette trimestri: voto indicativo con affidabilità bassa.
+- Da quattro a sette trimestri: risultato indicativo con comparabilità bassa.
 - Da otto trimestri: voto standard, se il paniere della classe è completo.
 - Nel Core annuale provvisorio è sufficiente almeno un intervallo tra due
   osservazioni annuali. Una finestra di un anno è indicativa e riceve
-  affidabilità C; senza intervallo annuale non si forza un numero.
+  comparabilità C; senza intervallo annuale non si forza un numero.
 - Ogni classe usa un paniere obbligatorio fisso. Se manca un indicatore
-  obbligatorio, il governo mostra un risultato parziale ma non entra nella
-  classifica di quella classe.
+  obbligatorio, il governo mostra un risultato parziale ma non entra nel
+  confronto aggregato di quella classe.
 - I voti A e B non vengono mescolati nella stessa graduatoria; la classe C non
   produce un voto aggregato.
 
@@ -418,7 +422,7 @@ La scheda segue sempre cinque passaggi distinti:
 5. **Attribuzione**: forza dell'evidenza che collega una misura al risultato,
    ritardi plausibili e ciò che il dato non può dimostrare.
 
-Il voto macro sintetizza soltanto il quarto passaggio, corretto attraverso
+L'indice macro sintetizza soltanto il quarto passaggio, contestualizzato attraverso
 storia e peer. Eredità, contesto e risposta non diventano bonus discrezionali:
 servono a scegliere il confronto, spiegare il risultato e limitare le
 conclusioni causali. Le singole politiche possono ricevere una valutazione
@@ -429,7 +433,7 @@ separata quando esistono studi o stime indipendenti adeguate.
 Per ogni indicatore `i` e governo `g` calcoliamo la variazione tra finestra
 iniziale e finale. Usiamo:
 
-- variazione logaritmica annualizzata per livelli strettamente positivi;
+- variazione logaritmica cumulata per livelli strettamente positivi;
 - differenza in punti percentuali per tassi;
 - differenza in punti di PIL per debito e saldi pubblici.
 
@@ -440,17 +444,18 @@ risultato.
 ### 2. Confronto con la storia italiana
 
 La variazione viene confrontata con finestre storiche italiane della stessa
-durata. Usiamo mediana e deviazione assoluta mediana per ridurre l'effetto degli
-trasformato in un punteggio `0-100`.
+durata. La finestra valutata viene esclusa dalla distribuzione, così non
+contribuisce al proprio benchmark. Usiamo mediana e deviazione assoluta mediana
+robusta (`1,4826 × MAD`), limitiamo lo z-score a `±3` e lo trasformiamo in un
+punteggio `0-100` tramite la distribuzione normale standard.
 
 ### 3. Confronto internazionale
 
-Per la classe A il primo benchmark pubblico è:
+Il primo benchmark pubblico è:
 
 - Francia;
 - Germania;
 - Spagna;
-- area euro al netto dell'Italia, quando disponibile.
 
 Calcoliamo lo scarto fra la variazione italiana e quella del benchmark nello
 stesso periodo. Il confronto usa definizioni Eurostat/AMECO compatibili. Un
@@ -459,15 +464,15 @@ esclusivamente su caratteristiche precedenti al mandato.
 
 ### 4. Punteggio dell'indicatore
 
-Per la classe A:
+Per ogni indicatore del Core:
 
 ```text
 indicatore = 50% punteggio_storico + 50% punteggio_relativo_ai_peer
 ```
 
-Se il confronto internazionale o il paniere obbligatorio non sono affidabili,
-non viene pubblicato alcun voto aggregato. I dati disponibili restano visibili
-come storia, senza trasformare una copertura parziale in una classifica.
+Se il confronto internazionale o il paniere obbligatorio non sono completi,
+non viene pubblicato alcun risultato aggregato. I dati disponibili restano visibili
+come storia, senza trasformare una copertura parziale in un confronto.
 
 ### 5. Punteggio delle aree e totale
 
@@ -482,24 +487,23 @@ totale =
   15% capacita_futura
 ```
 
-Il voto non viene moltiplicato per un coefficiente politico di
-"controllabilità". Controllabilità, qualità e ritardi dei dati determinano un
-badge di affidabilità, non uno sconto matematico invisibile.
+Il risultato non viene moltiplicato per un coefficiente politico di
+"controllabilità". Comparabilità dei dati e attribuzione causale sono due campi
+separati: la prima descrive la precisione del confronto, la seconda resta “non
+stimata” finché non esiste una valutazione causale specifica.
 
 ### 6. Robustezza
 
-Prima della pubblicazione calcoliamo almeno questi scenari di peso:
+Per ogni governo vengono calcolate automaticamente dieci varianti:
 
-- base;
-- pesi uguali;
-- maggiore peso sociale;
-- maggiore peso alla crescita;
-- maggiore peso alla finanza pubblica;
-- maggiore peso agli investimenti futuri.
+- tutti gli indicatori con pesi uguali;
+- sei risultati, ciascuno senza uno degli indicatori;
+- tre risultati, ciascuno senza uno dei peer.
 
-La pagina mostra se il governo rimane nella stessa fascia oppure cambia molto al
-cambiare dei pesi. Se il risultato è instabile, questa informazione deve essere
-visibile accanto al voto.
+Il minimo e il massimo formano l'intervallo di stress. Lo scarto massimo dal
+risultato base produce un'etichetta esplicita: stabile fino a 5 punti, sensibile
+fra 5 e 10, molto sensibile oltre 10. Queste soglie descrivono la robustezza del
+numero e non l'affidabilità dell'attribuzione politica.
 
 ## Shock e contesto storico
 
@@ -609,7 +613,7 @@ ricalcolato a ogni nuovo snapshot e porta sempre le etichette:
 - `metodo v...`;
 - `vintage dati ...`.
 
-Non entra nella classifica definitiva dei governi conclusi.
+Non viene trattato come risultato definitivo di un governo concluso.
 
 ### Traiettoria dei prossimi 12-24 mesi
 
@@ -635,9 +639,9 @@ Mostra le misure approvate dal governo in carica, il loro stato e la valutazione
 indipendente disponibile. Il numero di decreti attuativi adottati misura capacità
 amministrativa, non crescita economica, e resta separato dal voto economico.
 
-## Prima implementazione: Core annuale v1
+## Implementazione corrente: Core annuale v3
 
-La prima versione pubblicabile usa un solo vintage coerente, **AMECO Spring
+La versione corrente usa un solo vintage coerente, **AMECO Spring
 2026**, e non finge di avere già il paniere trimestrale completo. Il Core
 annuale contiene:
 
@@ -647,18 +651,21 @@ annuale contiene:
 - debito/PIL e saldo primario/PIL, 10% ciascuno;
 - investimenti fissi lordi sul PIL, peso 15%.
 
-Il punteggio è calcolabile dal 1995 soltanto quando tutti i sei indicatori, i tre
+Il risultato è calcolabile dal 1995 soltanto quando tutti i sei indicatori, i tre
 peer e almeno un intervallo annuale tra gli endpoint sono presenti. Una finestra
-di un anno è pubblicata come indicativa con affidabilità C. Francia, Germania e
+di un anno è pubblicata come indicativa con comparabilità C. Francia, Germania e
 Spagna formano il benchmark; mediana e MAD robusto limitano la dipendenza dagli
-estremi. I governi anteriori al 2005 che superano le stesse regole sono inclusi.
+estremi. La finestra valutata non entra nel proprio benchmark e gli stress test
+sono pubblicati accanto al numero. I governi anteriori al 2005 che superano le
+stesse regole sono inclusi.
 
 Le osservazioni terminano al 2024. I valori AMECO 2025-2027 alimentano soltanto
 uno scenario separato e non il voto provvisorio. Poiché una serie annuale non
-può seguire esattamente il giorno del giuramento, la versione v1 usa l'anno di
+può seguire esattamente il giorno del giuramento, la versione v3 usa l'anno di
 inizio o fine soltanto quando il governo ne copre almeno metà; questa
-approssimazione impedisce un'affidabilità superiore a B e porta a C nei periodi
-con shock rilevanti o per il governo in carica.
+approssimazione impedisce una comparabilità superiore a B e porta a C nei
+periodi con shock rilevanti o per il governo in carica. L'attribuzione causale
+non viene mai dedotta da questo badge.
 
 La pipeline `scripts/etl/government_scorecard_snapshot.py` verifica URL, ZIP,
 dimensione, schema CSV, codici AMECO, copertura, paesi, pesi, cronologia, hash e
@@ -679,8 +686,7 @@ cruscotto corrente il primo flusso IPCA controlla ogni settimana se è disponibi
 un nuovo mese; la pubblicazione Eurostat resta mensile. Le prossime pipeline
 seguiranno il calendario della singola fonte: tassi bancari ogni mese; lavoro,
 reddito, risparmio e conti nazionali ogni trimestre; casa, demografia e
-migrazione ogni anno. Ogni nuova
-release genera un candidato validato e una proposta revisionabile, non una
+migrazione ogni anno. Ogni nuova release genera un candidato validato e una proposta revisionabile, non una
 pubblicazione cieca.
 
 ## Fotografia corrente da usare per validare il prototipo
@@ -743,21 +749,21 @@ prodotto un miglioramento misurabile.
 La prima pagina è implementata come sintesi leggibile prima della tabella. Mostra:
 
 - governo e periodo;
-- voto e classe di comparabilità;
+- risultato nel periodo e classe di comparabilità;
 - stato finale, provvisorio o non valutabile;
-- affidabilità A, B o C;
+- comparabilità A, B o C e intervallo degli stress test;
 - una frase su cosa è migliorato;
 - una frase su cosa è peggiorato;
 - il principale shock del periodo.
 
-In una fase successiva l'utente potrà filtrare per epoca e aprire classifiche
-soltanto all'interno della stessa classe di comparabilità.
+L'archivio non dichiara un vincitore: apre la scheda di ogni governo e il
+confronto sovrapposto fra due periodi scelti dall'utente.
 
-### Pagina `/governi/[governo]` (fase successiva)
+### Pagina `/governi/[governo]`
 
 Ordine consigliato:
 
-1. voto complessivo e affidabilità;
+1. risultato nel periodo, comparabilità e stress test;
 2. tre frasi: miglioramenti, peggioramenti, contesto;
 3. cinque aree con contributo al voto;
 4. Italia rispetto ai peer;
@@ -765,7 +771,7 @@ Ordine consigliato:
 6. misure economiche principali e stato di attuazione;
 7. shock ed eredità;
 8. previsione, solo per il governo in carica;
-9. sensibilità ai pesi;
+9. sensibilità a pesi, indicatori e peer;
 10. fonti, dataset, revisioni e formula;
 11. riquadro permanente **Cosa questo voto non dimostra**.
 
@@ -780,7 +786,7 @@ causale specifica.
 
 ### Livelli di approfondimento
 
-- **Subito comprensibile:** voto, cinque aree e tre frasi.
+- **Subito comprensibile:** risultato, intervallo di sensibilità e sei indicatori.
 - **Verificabile:** grafici, valori iniziali/finali, peer e misure.
 - **Auditabile:** formula, dati scaricabili, query API/MCP, vintage, hash e
   revisioni.

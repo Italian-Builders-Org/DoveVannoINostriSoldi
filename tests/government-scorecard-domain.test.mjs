@@ -23,6 +23,8 @@ test("current score reconciles six indicators, five categories and the 50/50 spl
   for (const indicator of calculation.indicators) {
     assert.ok(indicator.score >= 0 && indicator.score <= 100);
     close(indicator.score, (indicator.historicalScore + indicator.relativeScore) / 2);
+    const allSameDurationWindows = view.sources.ameco.observedThrough - view.method.firstScoreYear - calculation.windowYears + 1;
+    assert.equal(indicator.historicalWindowCount, allSameDurationWindows - 1, "the target window must not score itself");
     assert.equal(indicator.series.length, calculation.windowYears + 1);
     assert.equal(indicator.series[0].year, calculation.baselineYear);
     assert.equal(indicator.series.at(-1).year, calculation.endYear);
@@ -55,25 +57,47 @@ test("pre-2005 governments are included when the same Core is complete", () => {
 test("one-year annual windows are indicative while zero-year windows fail closed", () => {
   const notScored = view.governments.filter((government) => government.calculation.status === "not-scored");
   assert.ok(notScored.length > 0);
-  assert.ok(notScored.every((government) => government.rank === null));
   const oneYear = view.governments.filter((government) => government.calculation.status === "scored" && government.calculation.windowYears === 1);
   assert.ok(oneYear.length > 0);
-  assert.ok(oneYear.every((government) => government.reliability.grade === "C"));
-  const ranked = view.governments.filter((government) => government.rank != null);
-  assert.deepEqual([...ranked.map((government) => government.rank)].sort((a, b) => a - b), Array.from({ length: ranked.length }, (_, index) => index + 1));
-  assert.ok(ranked.every((government) => government.status === "ended" && government.calculation.status === "scored"));
-  assert.equal(view.current.rank, undefined);
-  assert.equal(view.governments.find((government) => government.status === "current")?.rank, null);
+  assert.ok(oneYear.every((government) => government.comparability.grade === "C"));
+  assert.ok(view.governments.every((government) => !("rank" in government)));
 });
 
 test("measures and shocks are contextual evidence and never score inputs", () => {
   assert.ok(view.current.measures.length >= 4);
   assert.ok(view.current.contexts.some((item) => item.id === "recovery-plan"));
-  assert.equal(view.current.reliability.grade, "C");
-  assert.match(view.current.reliability.reason, /non.*attribuzione|attribuzione/i);
+  assert.equal(view.current.comparability.grade, "C");
+  assert.equal(view.current.attribution.status, "not-estimated");
+  assert.match(view.current.attribution.reason, /non identifica.*causale/i);
   const indicatorKeys = Object.keys(view.current.calculation.indicators[0]);
   assert.ok(!indicatorKeys.includes("measures"));
   assert.ok(!indicatorKeys.includes("contexts"));
+});
+
+test("every published result exposes deterministic stress tests", () => {
+  const scored = view.governments.filter((government) => government.calculation.status === "scored");
+  assert.ok(scored.length > 0);
+  for (const government of scored) {
+    const { calculation } = government;
+    assert.equal(calculation.robustness.checks.length, 10);
+    assert.ok(calculation.robustness.minimumScore <= calculation.score);
+    assert.ok(calculation.robustness.maximumScore >= calculation.score);
+    assert.ok(calculation.robustness.maximumDeviation >= 0);
+    assert.ok(["stabile", "sensibile", "molto sensibile"].includes(calculation.robustness.label));
+    assert.ok(calculation.robustness.checks.every((check) => Number.isFinite(check.score) && check.score >= 0 && check.score <= 100));
+    assert.ok(calculation.robustness.checks.some((check) => check.id === "equal-weights"));
+    assert.equal(calculation.robustness.checks.filter((check) => check.id.startsWith("without-indicator-")).length, 6);
+    assert.equal(calculation.robustness.checks.filter((check) => check.id.startsWith("without-peer-")).length, 3);
+  }
+
+  const current = view.current.calculation;
+  assert.equal(current.status, "scored");
+  const equalWeights = current.robustness.checks.find((check) => check.id === "equal-weights");
+  close(equalWeights.score, current.indicators.reduce((sum, indicator) => sum + indicator.score, 0) / current.indicators.length);
+  const excluded = current.indicators[0];
+  const withoutExcluded = current.robustness.checks.find((check) => check.id === `without-indicator-${excluded.id}`);
+  const remaining = current.indicators.filter((indicator) => indicator.id !== excluded.id);
+  close(withoutExcluded.score, remaining.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints, 0) / remaining.reduce((sum, indicator) => sum + indicator.weightBasisPoints, 0));
 });
 
 test("every government has a sourced dossier of inheritance, context and measures", () => {

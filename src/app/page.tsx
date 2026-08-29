@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
 import {
   Alert02Icon, ArrowDown01Icon, ArrowRight01Icon,
@@ -57,6 +57,15 @@ function Sparkline({ values, tone = "blue" }: { values: readonly number[]; tone?
   return <svg className={styles.sparkline} viewBox="0 0 104 34" aria-hidden="true"><polyline className={styles[tone]} points={points(values)} /></svg>;
 }
 
+function SourceMark({ mark }: Readonly<{ mark: string }>) {
+  return (
+    <svg className={styles.sourceMarkSvg} viewBox="0 0 48 28" aria-hidden="true">
+      <path d="M2 4v20M5 4v20" />
+      <text x="10" y="19">{mark}</text>
+    </svg>
+  );
+}
+
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ anno?: string | string[] }> }) {
   const year = selectedYear((await searchParams).anno);
   const siope = getSiopeMunicipalSnapshot(year);
@@ -77,8 +86,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     const end = start + (bucket.value / bucketTotal) * 100;
     return `${CHART_COLORS[index]} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
   }).join(", ");
-  const rankedRegions = regionsByPerCapita(siope).slice(0, 10);
-  const benchmarkRegions = rankedRegions.slice(0, 7);
+  const rankedRegions = regionsByPerCapita(siope);
+  const benchmarkRegions = [...rankedRegions.slice(0, 5), ...rankedRegions.slice(-2)];
   const regionMax = Math.max(...benchmarkRegions.map((region) => region.perCapita ?? 0), 1);
   const anomalySignals = getHomeAnomalySignals();
   const extraSignalIds = new Set(["tax-expenditures", "off-budget-debt"]);
@@ -109,12 +118,12 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </header>
 
       <section className={styles.summaryGrid} aria-label="Indicatori principali">
-        <article><span><HugeiconsIcon icon={Money03Icon} size={15} /> Pagamenti comunali</span><strong>{compactEuro(siope.totalPaid)}</strong><small className={styles.positive}>flussi di cassa SIOPE {year}</small><Sparkline values={siope.monthly.map((point) => point.flow)} tone="green" /></article>
-        <article><span><HugeiconsIcon icon={Building03Icon} size={15} /> Comuni con pagamenti</span><strong>{integer(siope.coverage.withMovements)}</strong><small>su {integer(siope.coverage.activeSiopeMunicipalities)} Comuni SIOPE validi</small></article>
-        <article><span><HugeiconsIcon icon={Database01Icon} size={15} /> Contratti 2025</span><strong>{integer(anacCigSnapshot.population.records)}</strong><small>CIG unici nello snapshot annuale ANAC</small></article>
-        <article><span><HugeiconsIcon icon={UserMultiple02Icon} size={15} /> Popolazione associata</span><strong>{integer(siope.populationCovered)}</strong><small>denominatore dei Comuni inclusi nello snapshot</small></article>
-        <article className={styles.warningMetric}><span><HugeiconsIcon icon={Alert02Icon} size={15} /> Confronto ridotto · ANAC 2025</span><strong>{procurementReducedCompetition2025.totalBillion.toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €</strong><small>{procurementReducedCompetition2025.byValue.toLocaleString("it-IT")}% del valore delle procedure da 40.000 € in su; non spreco provato</small></article>
-        <article className={styles.warningMetric}><span><HugeiconsIcon icon={Alert02Icon} size={15} /> Segnali mostrati</span><strong>{integer(anomalyRows.length)}</strong><small>fenomeni documentati con perimetri distinti</small></article>
+        <article><span><HugeiconsIcon icon={Money03Icon} size={15} /> Pagamenti comunali</span><strong>{compactEuro(siope.totalPaid)}</strong><small className={styles.positive}>flussi di cassa SIOPE {year}</small><Sparkline values={siope.monthly.map((point) => point.flow)} tone="green" /><Link className={styles.summaryCardTarget} href={`/spese?anno=${year}`} aria-label={`Esplora i pagamenti comunali SIOPE ${year}`}><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
+        <article><span><HugeiconsIcon icon={Building03Icon} size={15} /> Comuni con pagamenti</span><strong>{integer(siope.coverage.withMovements)}</strong><small>su {integer(siope.coverage.activeSiopeMunicipalities)} Comuni SIOPE validi</small><Link className={styles.summaryCardTarget} href={`/territori?anno=${year}`} aria-label={`Esplora i Comuni con pagamenti nel ${year}`}><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
+        <article><span><HugeiconsIcon icon={Database01Icon} size={15} /> Contratti 2025</span><strong>{integer(anacCigSnapshot.population.records)}</strong><small>CIG unici nello snapshot annuale ANAC</small><Link className={styles.summaryCardTarget} href="/appalti" aria-label="Esplora i contratti pubblici ANAC 2025"><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
+        <article><span><HugeiconsIcon icon={UserMultiple02Icon} size={15} /> Popolazione associata</span><strong>{integer(siope.populationCovered)}</strong><small>denominatore dei Comuni inclusi nello snapshot</small><Link className={styles.summaryCardTarget} href={`/territori?anno=${year}`} aria-label={`Esplora la copertura territoriale SIOPE ${year}`}><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
+        <article className={styles.warningMetric}><span><HugeiconsIcon icon={Alert02Icon} size={15} /> Confronto ridotto · ANAC 2025</span><strong>{procurementReducedCompetition2025.totalBillion.toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €</strong><small>{procurementReducedCompetition2025.byValue.toLocaleString("it-IT")}% del valore delle procedure da 40.000 € in su; non spreco provato</small><Link className={styles.summaryCardTarget} href="/controlli" aria-label="Approfondisci il confronto ridotto ANAC 2025"><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
+        <article className={styles.warningMetric}><span><HugeiconsIcon icon={Alert02Icon} size={15} /> Segnali mostrati</span><strong>{integer(anomalyRows.length)}</strong><small>fenomeni documentati con perimetri distinti</small><Link className={styles.summaryCardTarget} href="/controlli" aria-label="Esplora tutti i segnali da approfondire"><HugeiconsIcon icon={ArrowRight01Icon} size={13} aria-hidden="true" /></Link></article>
       </section>
 
       <HomeMapPanel
@@ -156,8 +165,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className={`${styles.panel} ${styles.benchmarkPanel}`}>
         <div className={styles.panelHead}><h2>Regioni per pagamenti pro capite</h2></div>
         <div className={styles.metricSelect}>Spesa pro capite SIOPE</div>
-        <ul className={styles.benchmarkList}>{benchmarkRegions.map((region) => { const value = region.perCapita ?? 0; const below = siope.nationalPerCapita !== null && value < siope.nationalPerCapita; const regionCode = istatCodeOfRegion(region.region); return <li key={region.region}><RegionCrest className={styles.benchmarkCrest} regionCode={regionCode} regionName={region.region} decorative /><span>{region.region}</span><i><b data-below={below || undefined} style={{ width: `${Math.max(4, (value / regionMax) * 100)}%` }} /></i><strong>{exactEuro(value)}</strong></li>; })}</ul>
-        <Link className={styles.panelLink} href="/confronti">Vai al confronto completo <HugeiconsIcon icon={ArrowRight01Icon} size={12} /></Link>
+        <ul className={styles.benchmarkList}>{benchmarkRegions.map((region, index) => { const value = region.perCapita ?? 0; const below = siope.nationalPerCapita !== null && value < siope.nationalPerCapita; const regionCode = istatCodeOfRegion(region.region); return <Fragment key={region.region}>{index === 5 && siope.nationalPerCapita !== null ? <li className={styles.benchmarkAverage}><i aria-hidden="true" /><span>Media Italia</span><i /><strong>{exactEuro(siope.nationalPerCapita)}</strong></li> : null}<li><RegionCrest className={styles.benchmarkCrest} regionCode={regionCode} regionName={region.region} decorative /><span title={region.region}>{region.region}</span><i><b data-below={below || undefined} style={{ width: `${Math.max(4, (value / regionMax) * 100)}%` }} /></i><strong>{exactEuro(value)}</strong></li></Fragment>; })}</ul>
+        <Link className={styles.panelLink} href="/confronti">Esplora tutti i confronti <HugeiconsIcon icon={ArrowRight01Icon} size={8} /></Link>
       </section>
 
       <HomeTrendPanel monthly={siope.monthly} period={period} year={year} />
@@ -165,7 +174,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className={`${styles.panel} ${styles.sourcesPanel}`}>
         <div><h2>Da dove provengono i dati</h2><p>Le quattro fonti usate in questa panoramica; tutte le altre sono nel registro.</p></div>
         <div className={styles.sourceMarks}>
-          {homeSources.map(({ slug, mark, label, source }) => <Link key={slug} href={`/fonti#${slug}`} title={`${source.name} · ${source.owner}`}><b>{mark}</b><span>{label.split("\n").map((line) => <span key={line}>{line}</span>)}</span></Link>)}
+          {homeSources.map(({ slug, mark, label, source }) => <Link key={slug} href={`/fonti#${slug}`} title={`${source.name} · ${source.owner}`}><SourceMark mark={mark} /><span>{label.split("\n").map((line) => <span key={line}>{line}</span>)}</span></Link>)}
           <Link href="/fonti"><b>+{sourceCounts.total - homeSources.length}</b><span>altre fonti<br/>registrate</span></Link>
         </div>
       </section>

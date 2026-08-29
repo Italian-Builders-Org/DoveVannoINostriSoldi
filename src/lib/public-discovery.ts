@@ -5,7 +5,7 @@ type PublicPath = "/" | `/${string}`;
 /**
  * Canonical pages that search engines may index. This is deliberately
  * separate from the visual navigation: a page can remain public even when it
- * is not promoted in the header or footer.
+ * is not promoted in the header or sidebar.
  *
  * Dynamic entity, project and dataset pages are omitted until their complete
  * canonical URL sets can be enumerated without making sitemap generation

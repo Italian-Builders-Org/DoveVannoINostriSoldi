@@ -65,10 +65,10 @@
 .compact .mapColumn { position: relative; }
 .compact .map {
   width: 70%;
-  height: 234px;
-  max-height: 234px;
+  height: 215px;
+  max-height: 215px;
   margin-left: auto;
-  transform: translate(0, -10px) scale(1, 1.27);
+  transform: translateY(-2px) scaleY(1.02);
   transform-origin: top center;
 }
 .compact .detail { display: none; }
@@ -90,7 +90,7 @@
 /* The reference dashboard reads as a neutral national overview. Keep the
    keyboard/click selection semantics, but only draw the dark outline while a
    person is actively previewing a region. */
-.compact .hoverOutline { stroke-width: 1.35; }
+.compact .hoverOutline { stroke:#344daf; stroke-width: 1.25; }
 .compactDetail {
   position: absolute;
   left: 0;
@@ -115,12 +115,12 @@
   display: grid;
   gap: 3px;
   margin: 0;
-  font-size: 7px;
+  font-size: 8px;
 }
 .compact .compactLegend strong {
   margin-bottom: 3px;
   color: var(--color-neutral-600);
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 500;
 }
 .compact .compactLegend span {
@@ -134,7 +134,7 @@
 .compact .compactScope {
   margin-top: 3px;
   color: var(--color-neutral-700);
-  font-size: 6.5px;
+  font-size: 8px;
   line-height: 1.2;
 }
 

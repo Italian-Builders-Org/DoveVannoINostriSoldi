@@ -120,7 +120,7 @@ La gerarchia si costruisce con il fondo e una linea da 1px, non con l'ombra:
 
 ### Shell
 
-`.shell` dà a header, nav, main e footer la stessa misura: larghezza piena, `max-width: --max`, `padding-inline: --gutter`. È **fluida**: nessuna superficie ha una larghezza fissa, così la pagina non lascia mai spazio morto su un lato. Il gutter scende da 28px a 20px e poi a 14px sui breakpoint.
+`.shell` dà a header, nav e main la stessa misura: larghezza piena, `max-width: --max`, `padding-inline: --gutter`. È **fluida**: nessuna superficie ha una larghezza fissa, così la pagina non lascia mai spazio morto su un lato. Il gutter scende da 28px a 20px e poi a 14px sui breakpoint.
 
 ### Navigation
 

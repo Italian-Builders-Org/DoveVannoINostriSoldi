@@ -1,0 +1,64 @@
+.chart {
+  isolation: isolate;
+}
+
+.chart .hitArea {
+  cursor: pointer;
+  fill: transparent;
+  pointer-events: all;
+  outline: none;
+}
+
+.chart .point {
+  pointer-events: none;
+  transition: r 160ms ease, fill 160ms ease, stroke 160ms ease;
+}
+
+.chart .point[data-active="true"],
+.chart .point[data-selected="true"],
+.chart .hitArea:focus-visible + .point {
+  fill: #4d5f9f;
+  stroke: #fff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 0.75px #263252);
+}
+
+.chart .activeLabel {
+  fill: #263252;
+  font-weight: 650;
+}
+
+.chart .tooltip {
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.chart .tooltip rect {
+  fill: #111827;
+  stroke: rgba(255, 255, 255, .72);
+  stroke-width: .8;
+}
+
+.chart .tooltip text {
+  text-anchor: start;
+}
+
+.chart .tooltipMonth {
+  fill: #dbe2ef;
+  font-size: 8px;
+  font-weight: 550;
+}
+
+.chart .tooltipValue {
+  fill: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart .point,
+  .chart .tooltip {
+    transition: none;
+  }
+}

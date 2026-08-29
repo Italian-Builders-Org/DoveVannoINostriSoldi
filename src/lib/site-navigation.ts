@@ -1,7 +1,4 @@
-/**
- * Primary navigation and footer sitemap. One source so header submenus and the
- * footer map stay aligned.
- */
+/** Primary navigation, dashboard taxonomy and search discovery catalogue. */
 
 export type NavLink = Readonly<{
   href: string;
@@ -303,6 +300,7 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
     children: [
       { href: "/metodologia", label: "Metodologia", group: "Metodo e fonti" },
       { href: "/fonti", label: "Elenco fonti" },
+      { href: "/cerca", label: "Cerca nella piattaforma", group: "Strumenti" },
       { href: "/supporter", label: "Chi siamo", group: "Progetto" },
       { href: "/privacy", label: "Privacy" },
       { href: "/termini", label: "Termini" },
@@ -416,12 +414,6 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     ],
   },
 ] as const;
-
-/** Footer map: main sections only, in reading order; CSS balances them into columns. */
-export const FOOTER_SITEMAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] =
-  SITE_MAP_GROUPS.filter((group) => group.title !== "Home" && group.title !== "Legale");
-
-export const FOOTER_SITEMAP_COLUMNS = 4;
 
 type NavigationLocation = Readonly<{
   pathname: string;

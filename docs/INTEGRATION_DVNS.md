@@ -39,8 +39,8 @@ esempio dopo `{ href: "/controlli", label: "Segnali" }`:
 },
 ```
 
-(Opzionale, per coerenza footer) aggiungere la stessa voce anche nel gruppo
-`"Cosa controllare"` di `SITE_MAP_GROUPS`.
+Per la ricerca globale aggiungere la stessa voce anche al gruppo coerente di
+`SITE_MAP_GROUPS`; la navigazione visibile resta guidata da `DASHBOARD_NAV`.
 
 ## Patch 2 — `scripts/ci/generated-artifacts.json`
 

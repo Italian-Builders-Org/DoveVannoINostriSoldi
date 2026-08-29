@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
@@ -15,19 +15,32 @@ const { activeNavSection, isNavChildActive, DASHBOARD_NAV, PRIMARY_NAV } = await
 const { EDITORIAL_TOPICS } = await import("../src/lib/integrated-editorial.ts");
 const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
-test("site navigation exposes coesione asili in primary and footer maps", () => {
+async function pageRoutes(relativePath = "") {
+  const entries = await readdir(
+    new URL(`../src/app/${relativePath}`, import.meta.url),
+    { withFileTypes: true },
+  );
+  const routes = [];
+  for (const entry of entries) {
+    const childPath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      routes.push(...await pageRoutes(childPath));
+    } else if (entry.name === "page.tsx") {
+      routes.push(relativePath ? `/${relativePath}` : "/");
+    }
+  }
+  return routes;
+}
+
+test("site navigation exposes coesione asili without a duplicate global footer", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
   assert.match(navigationSource, /title: "Fondi e progetti"/);
-  assert.match(navigationSource, /FOOTER_SITEMAP_GROUPS/);
-  assert.match(navigationSource, /FOOTER_SITEMAP_COLUMNS = 4/);
-  assert.match(layoutSource, /SiteFooter/);
+  assert.doesNotMatch(navigationSource, /FOOTER_SITEMAP_GROUPS|FOOTER_SITEMAP_COLUMNS/);
+  assert.doesNotMatch(layoutSource, /SiteFooter|latestTerritorialCheckLabel/);
   assert.match(layoutSource, /GoogleAnalytics/);
   assert.match(globalsCss, /\.nav-submenu \{/);
   assert.doesNotMatch(globalsCss, /\.subnav-row \{/);
-  assert.match(globalsCss, /\.footer-sitemap-columns \{/);
-  assert.match(globalsCss, /column-count: 4/);
-  assert.match(globalsCss, /break-inside: avoid/);
-  assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
+  assert.doesNotMatch(globalsCss, /\.site-footer|\.footer-sitemap|\.footer-support/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });
 
@@ -38,6 +51,19 @@ test("dashboard navigation keeps flyout panels and no duplicate subnav bar", asy
   );
   assert.match(navigationComponent, /nav-submenu/);
   assert.doesNotMatch(navigationComponent, /subnav-row|nav\.subnav|activeNavSection/);
+});
+
+test("sidebar keeps the DVNS mark and exposes a real supporter route", async () => {
+  const navigationComponent = await readFile(
+    new URL("../src/components/navigation.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(navigationComponent, /src="\/brand\/dvns-mark-transparent\.svg"/);
+  assert.doesNotMatch(navigationComponent, /dvns-lv-mark\.svg/);
+  assert.match(navigationComponent, /className="sidebar-support"/);
+  assert.match(navigationComponent, /href="\/supporter"/);
+  assert.match(navigationComponent, /Sostieni il progetto/);
+  assert.match(globalsCss, /\.sidebar-support \{/);
 });
 
 test("a submenu can be opened without a pointer that can hover", async () => {
@@ -99,7 +125,9 @@ test("reference dashboard taxonomy keeps every canonical destination reachable",
     "Open Data",
     "Documentazione",
   ]);
+  assert.equal(DASHBOARD_NAV.length, 13);
   assert.deepEqual([...canonical].filter((href) => !dashboard.has(href)), []);
+  assert.ok(dashboard.has("/cerca"), "/cerca deve essere raggruppata in una sezione della sidebar");
   for (const href of [
     "/appalti/fornitori",
     "/incarichi/personale-organi",
@@ -121,6 +149,18 @@ test("every generated editorial page remains reachable from a sidebar section", 
     assert.ok(dashboard.has(href), `${href} deve essere raggiungibile dalla sidebar`);
   }
   assert.match(navigationSource, /href: "\/termini"/);
+});
+
+test("every local page route is grouped by one of the thirteen dashboard sections", async () => {
+  const dashboardHrefs = DASHBOARD_NAV.flatMap((section) => [
+    section.href,
+    ...(section.aliases ?? []),
+    ...(section.children ?? []).map((child) => child.href.split("?")[0]),
+  ]).filter((href) => href !== "/");
+  const missingRoutes = (await pageRoutes()).filter(
+    (route) => route !== "/" && !dashboardHrefs.some((href) => route === href || route.startsWith(`${href}/`)),
+  );
+  assert.deepEqual(missingRoutes, [], `route non raggruppate: ${missingRoutes.join(", ")}`);
 });
 
 test("navigation guards related targets before checking containment", async () => {
@@ -218,12 +258,11 @@ test("public legal pages do not expose a personal mailbox", async () => {
 });
 
 test("supporters page lists the current acknowledgements", async () => {
-  const [page, supporters, footer, site, globals] = await Promise.all([
+  const [page, supporters, navigationComponent, site] = await Promise.all([
     readFile(new URL("../src/app/supporter/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/lib/supporters.ts", import.meta.url), "utf8"),
-    readFile(new URL("../src/components/site-footer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/lib/site.ts", import.meta.url), "utf8"),
-    readFile(new URL("../src/app/globals.css", import.meta.url), "utf8"),
   ]);
   assert.match(supporters, /regolo\.ai/);
   assert.match(supporters, /mantoventure\.com/);
@@ -237,13 +276,9 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(page, /Mostriamo solo[\s\S]*nomi e messaggi pubblici/);
   assert.match(page, /BUY_ME_A_COFFEE_URL/);
   assert.match(page, /supporter\.href \?/);
-  assert.match(footer, /href="\/supporter"/);
-  assert.match(footer, /BUY_ME_A_COFFEE_URL/);
-  assert.match(footer, /Buy me an AI compute/);
+  assert.match(navigationComponent, /href="\/supporter"/);
+  assert.match(navigationComponent, /Sostieni il progetto/);
   assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
-  assert.match(globals, /\.footer-support \{/);
-  assert.match(globals, /\.footer-support-action \{/);
-  assert.doesNotMatch(footer, /cdnjs\.buymeacoffee\.com/);
   assert.match(navigationSource, /href: "\/supporter", label: "Chi ci sostiene"/);
 });
 

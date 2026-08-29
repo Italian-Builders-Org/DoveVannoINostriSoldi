@@ -48,11 +48,10 @@ test("partial MEF values are never presented as exact totals", async () => {
   assert.match(page, /righe oscurate/);
 });
 
-test("the global footer includes the latest MEF verification timestamp", async () => {
+test("the global layout does not duplicate source timestamps in a footer", async () => {
   const layout = await source("../src/app/layout.tsx");
 
-  assert.match(layout, /mefIrpefSourceMeta\.period\.observedAt/);
-  assert.match(layout, /Math\.max/);
+  assert.doesNotMatch(layout, /SiteFooter|mefIrpefSourceMeta|latestTerritorialCheck/);
 });
 
 test("the production deployment advertises HTTPS and a security contact", async () => {

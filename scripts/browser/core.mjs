@@ -15,7 +15,6 @@ import {
 const baseUrl = defaultBaseUrl();
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
-const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");
@@ -216,91 +215,35 @@ async function assertCohesionPathwayContrast(page, label) {
   assert.ok(state.paragraphContrast >= 4.5, `${label}: contrasto testo ${state.paragraphContrast}`);
 }
 
-async function assertInfoTooltips(page, label) {
-  for (const tooltipId of INFO_TOOLTIP_IDS) {
-    const selector = `button[aria-controls="${tooltipId}"]`;
-    const button = await page.$(selector);
-    assert.ok(button, `${label}: trigger ${tooltipId} assente`);
+async function assertHomeInteractions(page, label) {
+  const state = await page.evaluate(() => {
+    const trend = document.querySelector('svg[class*="trendChart"]');
+    const point = trend?.querySelector('circle[class*="hitArea"]');
+    const scale = trend ? trend.getBoundingClientRect().width / 460 : 0;
+    return {
+      cardLinks: document.querySelectorAll('a[class*="summaryCardTarget"]').length,
+      footerPresent: Boolean(document.querySelector("footer")),
+      trendPoints: trend?.querySelectorAll('circle[class*="hitArea"]').length ?? 0,
+      targetDiameter: point ? Number(point.getAttribute("r")) * 2 * scale : 0,
+    };
+  });
+  assert.equal(state.cardLinks, 6, `${label}: le sei card devono aprire dati di dettaglio`);
+  assert.equal(state.footerPresent, false, `${label}: footer globale inatteso`);
+  assert.ok(state.trendPoints > 1, `${label}: punti interattivi del trend assenti`);
+  assert.ok(state.targetDiameter >= 24, `${label}: target del trend troppo piccolo`);
 
-    await button.focus();
-    await page.waitForFunction(
-      (id) => {
-        const tooltip = document.getElementById(id);
-        if (
-          tooltip?.getAttribute("data-open") !== "true" ||
-          tooltip.getAttribute("data-positioned") !== "true" ||
-          getComputedStyle(tooltip).display === "none"
-        ) {
-          return false;
-        }
-        const rect = tooltip.getBoundingClientRect();
-        return rect.left >= -1 && rect.right <= window.innerWidth + 1;
-      },
-      { timeout: 2_000 },
-      tooltipId,
-    );
-
-    const openState = await page.$eval(selector, (trigger, id) => {
-      const tooltip = document.getElementById(id);
-      const triggerRect = trigger.getBoundingClientRect();
-      const tooltipRect = tooltip?.getBoundingClientRect();
-      return {
-        describedBy: trigger.getAttribute("aria-describedby"),
-        expanded: trigger.getAttribute("aria-expanded"),
-        bodyScrollWidth: document.body.scrollWidth,
-        clientWidth: document.documentElement.clientWidth,
-        innerWidth: window.innerWidth,
-        triggerRect: {
-          left: triggerRect.left,
-          right: triggerRect.right,
-        },
-        tooltipDisplay: tooltip ? getComputedStyle(tooltip).display : "missing",
-        tooltipVisibility: tooltip ? getComputedStyle(tooltip).visibility : "missing",
-        tooltipRect: tooltipRect
-          ? {
-              left: tooltipRect.left,
-              right: tooltipRect.right,
-              width: tooltipRect.width,
-            }
-          : null,
-      };
-    }, tooltipId);
-
-    assert.equal(openState.expanded, "true", `${label}: ${tooltipId} non risulta aperto`);
-    assert.equal(openState.describedBy, tooltipId, `${label}: descrizione ARIA assente`);
-    assert.equal(openState.tooltipDisplay, "block", `${label}: tooltip non visibile`);
-    assert.equal(openState.tooltipVisibility, "visible", `${label}: tooltip invisibile`);
-    assert.ok(openState.tooltipRect, `${label}: rettangolo tooltip assente`);
-    assert.ok(openState.tooltipRect.width > 0, `${label}: tooltip senza larghezza`);
-    assert.ok(openState.tooltipRect.left >= -1, `${label}: tooltip ${tooltipId} esce a sinistra`);
-    assert.ok(
-      openState.tooltipRect.right <= openState.innerWidth + 1,
-      `${label}: tooltip ${tooltipId} esce a destra`,
-    );
-    assert.ok(openState.triggerRect.left >= -1, `${label}: trigger ${tooltipId} esce a sinistra`);
-    assert.ok(
-      openState.triggerRect.right <= openState.innerWidth + 1,
-      `${label}: trigger ${tooltipId} esce a destra`,
-    );
-    assert.ok(
-      openState.bodyScrollWidth <= openState.clientWidth + 1,
-      `${label}: overflow mentre ${tooltipId} è aperto`,
-    );
-
-    await page.keyboard.press("Escape");
-    await page.waitForFunction(
-      (id) => document.getElementById(id)?.getAttribute("data-open") === "false",
-      { timeout: 2_000 },
-      tooltipId,
-    );
-    const closedState = await page.$eval(selector, (trigger) => ({
-      describedBy: trigger.getAttribute("aria-describedby"),
-      expanded: trigger.getAttribute("aria-expanded"),
-    }));
-    assert.equal(closedState.expanded, "false", `${label}: Escape non chiude ${tooltipId}`);
-    assert.equal(closedState.describedBy, null, `${label}: descrizione chiusa ancora esposta`);
-    await button.dispose();
-  }
+  const firstPoint = await page.$('svg[class*="trendChart"] circle[class*="hitArea"]');
+  assert.ok(firstPoint, `${label}: primo punto del trend assente`);
+  await page.$eval(
+    'svg[class*="trendChart"] circle[class*="hitArea"]',
+    (point) => point.focus(),
+  );
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(
+    () => document.querySelector('svg[class*="trendChart"] circle[aria-pressed="true"]'),
+    { timeout: 2_000 },
+  );
+  assert.ok(await page.$('[role="tooltip"]'), `${label}: dettaglio del mese selezionato assente`);
 }
 
 async function assertRegionalMapSelection(page, label) {
@@ -334,7 +277,7 @@ async function assertRegionalMapSelection(page, label) {
   assert.equal(previewName, "Lombardia", `${label}: hover non aggiorna l’anteprima`);
 
   const hoveredOutline = await page.$eval(mapSelector, (map) => {
-    const outlines = [...map.querySelectorAll('path[aria-hidden="true"]')];
+    const outlines = [...map.querySelectorAll('path[class*="outline"][aria-hidden="true"]')];
     return {
       outlineCount: outlines.length,
       overlayStroke: outlines.map((outline) => getComputedStyle(outline).stroke),
@@ -387,45 +330,31 @@ async function assertRegionalMapSelection(page, label) {
   for (const path of regionPaths) await path.dispose();
 }
 
-async function assertSpendingComposition(page, label, width) {
-  const selector = '[data-composition-state="ready"]';
-  await page.waitForSelector(selector);
-  const state = await page.$eval(selector, (root, viewportWidth) => {
-    const visual = root.querySelector('[aria-label^="Composizione di"]');
-    const map = document.querySelector('[data-region-map="true"]');
-    const municipalityHeading = [...document.querySelectorAll("h2")].find((heading) =>
-      heading.textContent?.includes("Comuni con più pagamenti per abitante"),
+async function assertSpendingComposition(page, label) {
+  const state = await page.evaluate(() => {
+    const heading = [...document.querySelectorAll("h2")].find((candidate) =>
+      candidate.textContent?.includes("Pagamenti per titolo contabile"),
     );
+    const panel = heading?.closest("section");
+    const donut = panel?.querySelector('div[class*="donut"]:not([class*="donutLayout"])');
+    const center = donut?.querySelector("span");
+    const donutRect = donut?.getBoundingClientRect();
+    const centerRect = center?.getBoundingClientRect();
     return {
-      legendButtons: root.querySelectorAll("ol button").length,
-      visualDisplay: visual ? getComputedStyle(visual).display : null,
-      visualHeight: visual?.getBoundingClientRect().height ?? 0,
-      hasMetadata: /Denominatore:.*Fonte:/s.test(root.textContent ?? ""),
-      compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
-      mapBeforeMunicipalities: Boolean(
-        map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
+      found: Boolean(panel && donut && center),
+      rows: panel?.querySelectorAll("ul > li").length ?? 0,
+      hasSourceAndPeriod: /SIOPE.*2026/s.test(panel?.textContent ?? ""),
+      centered: Boolean(
+        donutRect && centerRect &&
+        Math.abs((donutRect.left + donutRect.right) / 2 - (centerRect.left + centerRect.right) / 2) < 1 &&
+        Math.abs((donutRect.top + donutRect.bottom) / 2 - (centerRect.top + centerRect.bottom) / 2) < 2
       ),
-      shouldCollapse: viewportWidth <= 620,
     };
-  }, width);
-  assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
-  assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
-  assert.equal(state.compositionBeforeMap, true, `${label}: composizione dopo la mappa nel DOM`);
-  assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
-  assert.equal(state.visualDisplay === "none", state.shouldCollapse, `${label}: fallback mobile incoerente`);
-  if (!state.shouldCollapse) assert.ok(state.visualHeight >= 250, `${label}: geometria treemap non riservata`);
-
-  const firstLegendButton = `${selector} ol button`;
-  await page.focus(firstLegendButton);
-  await page.waitForSelector(`${selector} [role="tooltip"]`, { visible: true });
-  const describedBy = await page.$eval(firstLegendButton, (button) => button.getAttribute("aria-describedby"));
-  assert.ok(describedBy, `${label}: tooltip non collegato al controllo`);
-  await page.keyboard.press("Escape");
-  await page.waitForFunction((rootSelector) => !document.querySelector(`${rootSelector} [role="tooltip"]`), {}, selector);
-
-  await page.click(`${selector} details summary`);
-  const rows = await page.$$eval(`${selector} details tbody tr`, (items) => items.length);
-  assert.equal(rows, 6, `${label}: tabella equivalente incompleta`);
+  });
+  assert.equal(state.found, true, `${label}: composizione contabile assente`);
+  assert.equal(state.rows, 5, `${label}: macro-voci inattese`);
+  assert.equal(state.hasSourceAndPeriod, true, `${label}: periodo e fonte non vicini`);
+  assert.equal(state.centered, true, `${label}: totale non centrato nel grafico`);
 }
 
 async function assertTableKeyboardScroll(page, label) {
@@ -546,7 +475,10 @@ async function assertPrimaryDropdownOnly(page, label, { sectionLabel, childLabel
   const itemElement = await findPrimaryNavSection(page, sectionLabel);
   assert.ok(itemElement, `${label}: sezione ${sectionLabel} assente`);
 
-  await itemElement.hover();
+  await page.evaluate(() => new Promise((resolve) => window.setTimeout(resolve, 250)));
+  const toggle = await itemElement.$(".nav-item-toggle");
+  assert.ok(toggle, `${label}: pulsante tendina assente`);
+  await toggle.click();
   await assertSubmenuVisible(itemElement, page, label, childLabel);
 }
 
@@ -556,7 +488,12 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
   assert.ok(fromItem, `${label}: sezione ${fromLabel} assente`);
   assert.ok(toItem, `${label}: sezione ${toLabel} assente`);
 
-  await fromItem.hover();
+  await page.evaluate(() => new Promise((resolve) => window.setTimeout(resolve, 250)));
+  const fromToggle = await fromItem.$(".nav-item-toggle");
+  const toToggle = await toItem.$(".nav-item-toggle");
+  assert.ok(fromToggle, `${label}: pulsante ${fromLabel} assente`);
+  assert.ok(toToggle, `${label}: pulsante ${toLabel} assente`);
+  await fromToggle.click();
   await page.waitForFunction(
     (element) =>
       element.getAttribute("data-open") === "true" &&
@@ -565,7 +502,7 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
     fromItem,
   );
 
-  await toItem.hover();
+  await toToggle.click();
   await page.waitForFunction(
     (from, to) => {
       if (to.getAttribute("data-open") !== "true") return false;
@@ -586,6 +523,16 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
 }
 
 async function assertPrimaryDropdownTap(page, label, { sectionLabel, childLabel }) {
+  await page.evaluate(() => new Promise((resolve) => window.setTimeout(resolve, 250)));
+  const mobileToggle = await page.$(".mobile-menu-toggle");
+  assert.ok(mobileToggle, `${label}: apertura navigazione mobile assente`);
+  await mobileToggle.click();
+  await page.waitForSelector('#dashboard-sidebar[data-mobile-open="true"]', { timeout: 3_000 });
+  await page.waitForFunction(
+    () => document.querySelector("#dashboard-sidebar")?.getBoundingClientRect().left >= -1,
+    { timeout: 3_000 },
+  );
+
   const itemElement = await findPrimaryNavSection(page, sectionLabel);
   assert.ok(itemElement, `${label}: sezione ${sectionLabel} assente`);
 
@@ -604,8 +551,10 @@ async function assertPrimaryDropdownTap(page, label, { sectionLabel, childLabel 
   );
   await assertSubmenuVisible(itemElement, page, label, childLabel);
 
-  const navRowOpen = await page.$eval(".nav-row", (row) => row.getAttribute("data-menu-open"));
-  assert.equal(navRowOpen, "true", `${label}: data-menu-open non attivo`);
+  assert.ok(
+    await page.$('#dashboard-sidebar[data-mobile-open="true"]'),
+    `${label}: navigazione mobile non attiva`,
+  );
   await assertResponsiveShell(page, `${label} aperto`, 390);
 
   await page.keyboard.press("Escape");
@@ -732,6 +681,7 @@ try {
     pathname: "/imprese?metric=employees",
     width: 390,
     validate: async (page) => {
+      await page.waitForSelector('nav.primary-nav a[aria-current="page"]', { timeout: 3_000 });
       const currentLabels = await page.$$eval(
         'nav.primary-nav a[aria-current="page"]',
         (links) => links.map((link) => link.textContent?.trim()),
@@ -739,11 +689,13 @@ try {
       assert.deepEqual(currentLabels, ["Addetti"]);
 
       await assertPrimaryDropdownTap(page, "Atlante Imprese query navigation 390px", {
-        sectionLabel: "Imprese",
+        sectionLabel: "Fornitori e Beneficiari",
         childLabel: "Localizzazioni attive",
       });
 
-      const itemElement = await findPrimaryNavSection(page, "Imprese");
+      await page.click(".mobile-menu-toggle");
+      await page.waitForSelector('#dashboard-sidebar[data-mobile-open="true"]', { timeout: 3_000 });
+      const itemElement = await findPrimaryNavSection(page, "Fornitori e Beneficiari");
       assert.ok(itemElement, "Atlante Imprese query navigation 390px: sezione Imprese assente");
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Atlante Imprese query navigation 390px: pulsante tendina assente");
@@ -773,7 +725,7 @@ try {
         { timeout: 3_000 },
       );
       assert.equal(
-        await page.$eval(".nav-row", (row) => row.hasAttribute("data-menu-open")),
+        await page.$eval("#dashboard-sidebar", (sidebar) => sidebar.hasAttribute("data-mobile-open")),
         false,
         "Atlante Imprese query navigation 390px: menu rimasto aperto dopo la query",
       );
@@ -911,31 +863,31 @@ try {
     {
       pathname: "/controlli",
       label: "Controlli",
-      sectionLabel: "Cosa controllare",
-      childLabel: "Appalti",
+      sectionLabel: "Anomalie e Sprechi",
+      childLabel: "Segnali da approfondire",
     },
     {
       pathname: "/territori/irpef",
       label: "Territori IRPEF",
-      sectionLabel: "Territori",
+      sectionLabel: "Mappa della spesa",
       childLabel: "Redditi IRPEF",
     },
     {
       pathname: "/appalti",
       label: "Appalti",
-      sectionLabel: "Cosa controllare",
-      childLabel: "Incarichi",
+      sectionLabel: "Contratti e Gare",
+      childLabel: "Appalti",
     },
     {
       pathname: "/parlamento",
       label: "Parlamento",
-      sectionLabel: "Istituzioni",
+      sectionLabel: "Enti e Amministrazioni",
       childLabel: "Parlamento",
     },
     {
       pathname: "/debito",
       label: "Debito pubblico",
-      sectionLabel: "Soldi",
+      sectionLabel: "Spesa per Categoria",
       childLabel: "Debito pubblico",
     },
   ];
@@ -1080,8 +1032,8 @@ try {
     width: 1280,
     validate: async (page) => {
       await assertPrimaryDropdownExclusive(page, "Menu tendina esclusivo 1280px", {
-        fromLabel: "Istituzioni",
-        toLabel: "Enti e società",
+        fromLabel: "Enti e Amministrazioni",
+        toLabel: "Fornitori e Beneficiari",
       });
     },
   });
@@ -1253,30 +1205,18 @@ try {
     }
   }
 
-  for (const width of [320, 390]) {
-    const label = `Footer sitemap ${width}px`;
+  for (const width of [320, 390, 1280]) {
+    const label = `Navigazione completa senza footer ${width}px`;
     await runScenario(browser, {
       label,
       pathname: "/",
       width,
       validate: async (page) => {
-        const sitemap = await page.$(".footer-sitemap");
-        assert.ok(sitemap, `${label}: mappa del sito assente`);
-        const columns = await page.$(".footer-sitemap-columns");
-        assert.ok(columns, `${label}: contenitore dei gruppi assente`);
-        const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
-        assert.equal(groupCount, 9, `${label}: attesi 9 gruppi nella mappa`);
-        const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>
-          items.map((item) => item.textContent?.trim() ?? ""),
-        );
-        assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
-        assert.ok(headings.includes("Istituzioni"), `${label}: sezione Istituzioni assente`);
-        assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
-        assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
-        const text = await bodyText(page);
-        assertTextMatches(text, /Privacy/i, label);
-        assertTextMatches(text, /Termini/i, label);
-        assertTextMatches(text, /Chi ci sostiene/i, label);
+        assert.equal(await page.$(".site-footer"), null, `${label}: footer duplicato inatteso`);
+        assert.ok(await page.$("#dashboard-sidebar"), `${label}: sidebar assente`);
+        assert.ok(await page.$(".sidebar-support a[href='/supporter']"), `${label}: accesso sostenitori assente`);
+        assert.ok(await page.$("a[href='/privacy']"), `${label}: accesso privacy assente`);
+        assert.ok(await page.$("a[href='/supporto']"), `${label}: accesso supporto assente`);
         await assertResponsiveShell(page, label, width);
       },
     });
@@ -1529,13 +1469,13 @@ try {
   }
 
   for (const width of [320, 390, 768, 901, 1024, 1280]) {
-    const label = `Tooltip home ${width}px`;
+    const label = `Interazioni home ${width}px`;
     await runScenario(browser, {
       label,
       pathname: "/",
       width,
       validate: async (page) => {
-        await assertInfoTooltips(page, label);
+        await assertHomeInteractions(page, label);
       },
     });
     completed.push(label);
@@ -1547,7 +1487,7 @@ try {
       label,
       pathname: "/",
       width,
-      validate: async (page) => assertSpendingComposition(page, label, width),
+      validate: async (page) => assertSpendingComposition(page, label),
     });
     completed.push(label);
   }

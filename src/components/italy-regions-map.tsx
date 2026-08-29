@@ -115,7 +115,7 @@ export function ItalyRegionsMap({
   const displayedCode = selectionLocked ? selectedCode : hoveredCode ?? selectedCode;
   const selected = byCode.get(displayedCode);
   const navigableCodes: string[] = italyRegionGeometry.map(({ code }) => code);
-  const outlinedCodes = [selectedCode, hoveredCode].filter(
+  const outlinedCodes = (compact ? [hoveredCode] : [selectedCode, hoveredCode]).filter(
     (code, index, codes): code is string => code !== null && codes.indexOf(code) === index,
   );
 

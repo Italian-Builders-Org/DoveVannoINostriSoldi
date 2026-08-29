@@ -2,10 +2,11 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [homePage, mapPanel, trendPanel] = await Promise.all([
+const [homePage, mapPanel, trendPanel, trendStyles] = await Promise.all([
   readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
   readFile(new URL("../src/components/home-map-panel.tsx", import.meta.url), "utf8"),
   readFile(new URL("../src/components/home-trend-panel.tsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/components/home-trend-panel.module.css", import.meta.url), "utf8"),
 ]);
 
 test("home dashboard contains no decorative numeric series or invented severity", () => {
@@ -35,6 +36,13 @@ test("home trend toggles using only the committed SIOPE monthly series", () => {
   assert.match(trendPanel, /aria-label="Metrica del trend"/);
   assert.match(trendPanel, /const maximum = Math\.max\(\.\.\.values, 0\)/);
   assert.match(trendPanel, /aria-live="polite"/);
+  assert.match(trendPanel, /role="button"/);
+  assert.match(trendPanel, /tabIndex=\{isFocusable \? 0 : -1\}/);
+  assert.match(trendPanel, /ArrowRight/);
+  assert.match(trendPanel, /onPointerDown/);
+  assert.match(trendPanel, /aria-describedby=\{displayedIndex === index \? tooltipId/);
+  assert.match(trendPanel, /role="tooltip"/);
+  assert.match(trendStyles, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(trendPanel, /Math\.random|fetch\(|mock|fixture/i);
 });
 

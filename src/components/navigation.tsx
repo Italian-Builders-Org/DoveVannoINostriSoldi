@@ -12,6 +12,7 @@ import {
   ArrowRight01Icon,
   BookOpen01Icon,
   BuildingIcon,
+  Coffee02Icon,
   Cancel01Icon,
   ConstructionIcon,
   ContractsIcon,
@@ -95,6 +96,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     href: string;
     pathname: string;
     search: string | null;
+    top: number;
   } | null>(null);
   const openHref =
     openMenu?.pathname === pathname &&
@@ -108,7 +110,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     setMobileOpen(false);
   }, []);
   const openItem = useCallback(
-    (href: string) => setOpenMenu({ href, pathname, search: currentSearch }),
+    (href: string, top: number) => setOpenMenu({ href, pathname, search: currentSearch, top }),
     [currentSearch, pathname],
   );
 
@@ -204,7 +206,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
             <Image
               className="brand-mark"
-              src="/brand/dvns-lv-mark.svg"
+              src="/brand/dvns-mark-transparent.svg"
               width={38}
               height={38}
               alt=""
@@ -276,9 +278,9 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                 pathname={pathname}
                 currentSearch={currentSearch}
                 open={openHref === item.href}
+                menuTop={openMenu?.href === item.href ? openMenu.top : 64}
                 onOpen={openItem}
                 onClose={closeNavigation}
-                setOpenMenu={setOpenMenu}
               />
             ))}
           </ul>
@@ -292,6 +294,18 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
           </Link>
         </aside>
+
+        <section className="sidebar-support" aria-labelledby="sidebar-support-title">
+          <div className="sidebar-support-heading">
+            <HugeiconsIcon icon={Coffee02Icon} size={15} strokeWidth={1.8} aria-hidden="true" />
+            <strong id="sidebar-support-title">Sostieni il progetto</strong>
+          </div>
+          <p>Un aiuto concreto mantiene aperti dati e strumenti.</p>
+          <Link href="/supporter" onClick={closeNavigation}>
+            Scopri come sostenerci
+            <HugeiconsIcon icon={ArrowRight01Icon} size={13} strokeWidth={1.8} aria-hidden="true" />
+          </Link>
+        </section>
 
         <div className="sidebar-meta">
           <strong>DoveVannoINostriSoldi</strong>
@@ -321,25 +335,23 @@ function NavigationItem({
   pathname,
   currentSearch,
   open,
+  menuTop,
   onOpen,
   onClose,
-  setOpenMenu,
 }: Readonly<{
   item: DashboardNavSection;
   pathname: string;
   currentSearch: string | null;
   open: boolean;
-  onOpen: (href: string) => void;
+  menuTop: number;
+  onOpen: (href: string, top: number) => void;
   onClose: () => void;
-  setOpenMenu: React.Dispatch<React.SetStateAction<{
-    href: string;
-    pathname: string;
-    search: string | null;
-  } | null>>;
 }>) {
   const active = isNavSectionActive(pathname, item);
   const hasChildren = Boolean(item.children?.length);
   const menuId = submenuId(item.href);
+  const getMenuTop = (element: Element) =>
+    Math.max(64, Math.min(element.getBoundingClientRect().top - 8, window.innerHeight - 452));
 
   return (
     <li
@@ -350,7 +362,7 @@ function NavigationItem({
       data-utility-start={item.href === "/assistente" ? "true" : undefined}
       onFocusCapture={(event) => {
         if (hasChildren && !(event.target as HTMLElement).matches(".nav-item-toggle")) {
-          onOpen(item.href);
+          onOpen(item.href, getMenuTop(event.currentTarget));
         }
       }}
     >
@@ -371,14 +383,23 @@ function NavigationItem({
             aria-expanded={open}
             aria-controls={menuId}
             aria-label={`${open ? "Chiudi" : "Apri"} le pagine in ${item.label}`}
-            onClick={() =>
-              setOpenMenu(open ? null : { href: item.href, pathname, search: currentSearch })
-            }
+            onClick={(event) => open
+              ? onClose()
+              : onOpen(item.href, getMenuTop(event.currentTarget.closest("li")!))}
           >
             <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
           </button>
-          <div className="nav-submenu" id={menuId} role="region" aria-label={`Pagine in ${item.label}`}>
-            <strong className="nav-submenu-title">{item.label}<span>{item.children.length} pagine</span></strong>
+          <div
+            className="nav-submenu"
+            id={menuId}
+            role="region"
+            aria-label={`Pagine in ${item.label}`}
+            style={{ "--submenu-top": `${menuTop}px` } as React.CSSProperties}
+          >
+            <strong className="nav-submenu-title">
+              {item.label}
+              <span>Esplora tutte le {item.children.length} pagine</span>
+            </strong>
             <ul>
               {item.children.map((child) => (
                 <Fragment key={child.href}>

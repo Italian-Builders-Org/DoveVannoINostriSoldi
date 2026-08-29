@@ -137,7 +137,7 @@ export function HeaderSearch() {
         id="global-site-search"
         name="q"
         type="search"
-        placeholder="Cerca pagine, dati o enti"
+        placeholder="Cerca ente, fornitore, progetto, contratto…"
         autoComplete="off"
         value={query}
         maxLength={180}

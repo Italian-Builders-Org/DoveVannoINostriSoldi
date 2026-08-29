@@ -82,10 +82,10 @@ test("RegionCrest usa asset locali, label semantiche e fallback accessibile", as
   }
 });
 
-test("la mappa mantiene spazio visivo sotto PeriodSelector e le tabelle restano contenute", async () => {
+test("la mappa resta allineata alla griglia e le tabelle restano contenute", async () => {
   const homeCss = await readFile(join(projectRoot, "src/app/home.module.css"), "utf8");
   assert.ok(homeCss.includes(".mapStage"));
-  assert.ok(homeCss.includes("margin-top: var(--space-3)"));
+  assert.ok(homeCss.includes("margin-top: 0"));
   const home = await readFile(join(projectRoot, "src/app/page.tsx"), "utf8");
   assert.ok(home.includes("className={styles.mapStage}"));
   for (const cssPath of ["src/app/home.module.css", "src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {

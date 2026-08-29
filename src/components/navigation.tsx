@@ -7,11 +7,12 @@ import { Fragment, Suspense, useCallback, useEffect, useLayoutEffect, useRef, us
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   AiBrain02Icon,
+  Alert02Icon,
   ArrowDown01Icon,
   ArrowRight01Icon,
+  BookOpen01Icon,
   BuildingIcon,
   Cancel01Icon,
-  ChartAnalysisIcon,
   ConstructionIcon,
   ContractsIcon,
   Database01Icon,
@@ -19,6 +20,7 @@ import {
   GitCompareArrowsIcon,
   GithubIcon,
   Home02Icon,
+  Location01Icon,
   Menu04Icon,
   Money03Icon,
   Notification01Icon,
@@ -41,15 +43,17 @@ type NavigationContentProps = Readonly<{
 
 const NAV_ICONS = {
   overview: Home02Icon,
+  map: Location01Icon,
   spending: Money03Icon,
   institutions: BuildingIcon,
   business: Store01Icon,
   contracts: ContractsIcon,
   projects: ConstructionIcon,
-  controls: ChartAnalysisIcon,
+  controls: Alert02Icon,
   comparison: GitCompareArrowsIcon,
   reports: Notification01Icon,
   data: Database01Icon,
+  docs: BookOpen01Icon,
   assistant: AiBrain02Icon,
 } as const;
 
@@ -273,7 +277,6 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             <Link href="/supporter">Chi siamo</Link>
             <Link href="/metodologia">Metodologia</Link>
             <Link href="/privacy">Privacy</Link>
-            <Link href="/termini">Termini</Link>
             <Link href="/supporto">Contatti</Link>
           </div>
         </div>

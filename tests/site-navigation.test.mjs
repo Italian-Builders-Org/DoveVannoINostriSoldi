@@ -84,15 +84,18 @@ test("reference dashboard taxonomy keeps every canonical destination reachable",
 
   assert.deepEqual(DASHBOARD_NAV.map((section) => section.label), [
     "Panoramica",
-    "Spesa pubblica",
-    "Territori",
-    "Enti e imprese",
-    "Contratti e incarichi",
-    "Progetti e fondi",
-    "Segnali e verifiche",
-    "Dati e fonti",
-    "Assistente dati",
-    "Segnalazioni",
+    "Mappa della spesa",
+    "Enti e Amministrazioni",
+    "Fornitori e Beneficiari",
+    "Contratti e Gare",
+    "Progetti e Opere",
+    "Spesa per Categoria",
+    "Anomalie e Sprechi",
+    "Confronti e Benchmark",
+    "AI Insights",
+    "Segnalazioni dei cittadini",
+    "Open Data",
+    "Documentazione",
   ]);
   assert.deepEqual([...canonical].filter((href) => !dashboard.has(href)), []);
   for (const href of [
@@ -275,8 +278,11 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   const appalti = activeNavSection("/appalti");
   assert.equal(appalti?.href, "/appalti");
   assert.equal(isNavChildActive("/appalti", "/appalti", appalti.children), true);
-  assert.ok(appalti?.children?.some((child) => child.href === "/appalti/fornitori"));
   assert.ok(appalti?.children?.some((child) => child.href === "/incarichi"));
+
+  const fornitori = activeNavSection("/appalti/fornitori");
+  assert.equal(fornitori?.href, "/imprese");
+  assert.ok(fornitori?.children?.some((child) => child.href === "/appalti/fornitori"));
 
   const catalog = activeNavSection("/dati/vincitori");
   assert.equal(catalog?.href, "/dati");
@@ -287,7 +293,7 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   assert.equal(incarichi?.href, "/appalti");
 
   const stato = activeNavSection("/stato");
-  assert.equal(stato?.href, "/spese");
+  assert.equal(stato?.href, "/istituzioni");
   const debito = activeNavSection("/debito");
   assert.equal(debito?.href, "/spese");
   assert.ok(debito?.children?.some((child) => child.href === "/debito"));

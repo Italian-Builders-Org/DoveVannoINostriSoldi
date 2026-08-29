@@ -1,0 +1,214 @@
+.article,
+.archive {
+  padding-block: clamp(2rem, 5vw, 5rem);
+}
+
+.article {
+  max-width: 74rem;
+}
+
+.articleHeader,
+.archive > header {
+  max-width: 52rem;
+  margin-bottom: 3rem;
+}
+
+.eyebrow,
+.issueDate {
+  color: var(--color-neutral-600);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.articleHeader h1,
+.archive h1 {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  margin-block: 0.6rem 1rem;
+}
+
+.dek {
+  color: var(--color-neutral-700);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  line-height: 1.5;
+}
+
+.breadcrumb {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.publicationMeta {
+  border-block: 1px solid var(--color-neutral-300);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2rem;
+  padding-block: 1rem;
+}
+
+.publicationMeta dt {
+  color: var(--color-neutral-600);
+  font-size: 0.78rem;
+}
+
+.publicationMeta dd {
+  margin: 0.2rem 0 0;
+}
+
+.brief {
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-lg);
+  margin-block: 3rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.factGrid,
+.archiveGrid {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.25rem;
+}
+
+.factGrid article,
+.archiveGrid article {
+  background: var(--color-surface, white);
+  padding: 1.25rem;
+}
+
+.factGrid strong {
+  display: block;
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  line-height: 1.1;
+  margin-block: 0.8rem;
+}
+
+.factGrid small,
+.archiveGrid small,
+.homeTeaser small {
+  color: var(--color-neutral-600);
+  display: block;
+  line-height: 1.45;
+}
+
+.prose {
+  margin-inline: auto;
+  max-width: 48rem;
+}
+
+.proseSection,
+.evidence,
+.corrections {
+  margin-block: 3.5rem;
+}
+
+.proseSection h2,
+.evidence h2,
+.corrections h2,
+.figure h2 {
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  letter-spacing: -0.035em;
+}
+
+.proseSection p,
+.evidence p {
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.figure {
+  border-block: 1px solid var(--color-neutral-300);
+  margin-block: 4rem;
+  padding-block: 2rem;
+}
+
+.takeaway {
+  color: var(--color-neutral-700);
+  font-size: 1.08rem;
+}
+
+.timelineChart {
+  height: 24rem;
+  margin-block: 1.5rem;
+}
+
+.rankingChart {
+  height: 46rem;
+  margin-block: 1.5rem;
+}
+
+.figure figcaption {
+  color: var(--color-neutral-600);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.archive > section > h2 {
+  margin-bottom: 1.25rem;
+}
+
+.archiveGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.archiveGrid article {
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-lg);
+}
+
+.issueDate {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.readLink {
+  align-items: center;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+}
+
+.homeTeaser {
+  align-items: end;
+  display: flex;
+  gap: 2rem;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  padding: clamp(1.4rem, 4vw, 2.5rem);
+}
+
+.homeTeaser h2 {
+  font-size: clamp(1.7rem, 4vw, 2.7rem);
+  margin-block: 0.4rem 0.7rem;
+}
+
+@media (max-width: 720px) {
+  .publicationMeta,
+  .factGrid,
+  .archiveGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .homeTeaser {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .timelineChart {
+    height: 20rem;
+  }
+
+  .rankingChart {
+    height: 52rem;
+    margin-left: -0.8rem;
+  }
+}

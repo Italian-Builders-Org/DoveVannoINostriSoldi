@@ -30,8 +30,12 @@ export function HomeTrendPanel({
     [metric, monthly],
   );
   const plotted = chartPoints(values);
-  const maximum = values.at(-1) ?? 0;
+  const maximum = Math.max(...values, 0);
   const linePoints = plotted.map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const metricLabel = metric === "cumulative" ? "cumulato" : "mensile";
+  const accessibleSeries = monthly
+    .map((point, index) => `${point.label}: ${compactEuro(values[index] ?? 0)}`)
+    .join("; ");
 
   return (
     <section className={`${styles.panel} ${styles.trendPanel}`}>
@@ -42,7 +46,10 @@ export function HomeTrendPanel({
           <button type="button" aria-pressed={metric === "monthly"} onClick={() => setMetric("monthly")}>Mensile</button>
         </div>
       </div>
-      <svg className={styles.trendChart} viewBox="0 0 460 150" role="img" aria-label={`Pagamenti comunali SIOPE nel ${year}, andamento ${metric === "cumulative" ? "cumulato" : "mensile"}, ${period}`}>
+      <p className={styles.srOnly} role="status" aria-live="polite">
+        Andamento {metricLabel}. Valore massimo {compactEuro(maximum)}. {accessibleSeries}
+      </p>
+      <svg className={styles.trendChart} viewBox="0 0 460 150" role="img" aria-label={`Pagamenti comunali SIOPE nel ${year}, andamento ${metricLabel}, ${period}. ${accessibleSeries}`}>
         <defs><linearGradient id="home-trend-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#c8ced9" stopOpacity=".55"/><stop offset="1" stopColor="#f7f8fa" stopOpacity=".1"/></linearGradient></defs>
         <path className={styles.trendGrid} d="M36 20H450 M36 72H450 M36 124H450" />
         <polygon className={styles.trendFill} points={`36,124 ${linePoints} 450,124`} />

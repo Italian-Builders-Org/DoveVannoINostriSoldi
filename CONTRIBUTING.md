@@ -34,9 +34,11 @@ distinti.
 
 ## Verifica locale
 
-La CI è organizzata in quattro job paralleli (`static`, `node`, `etl`,
-`production`) aggregati da `CI / required`. Puoi riprodurre gli stessi gate
-localmente con i comandi stabili:
+La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
+`etl`, `production`) aggregati da `CI / required`. Il job `security` esegue la
+scansione Zizmor dei workflow ed è bloccante, ma non ha un equivalente locale
+fra i comandi npm. Puoi riprodurre gli altri gate localmente con i comandi
+stabili:
 
 ```bash
 npm ci
@@ -59,7 +61,7 @@ completa usata dalla CI.
 ### ETL e artifact verification
 
 ```bash
-npm run test:etl        # full ETL transformation/reconciliation test suite (214 tests)
+npm run test:etl        # full ETL transformation/reconciliation test suite (295 tests)
 npm run test:snapshots  # generated-artifact registry + offline artifact checks
 ```
 
@@ -68,12 +70,12 @@ contratti fail-closed) una sola volta.
 
 `test:snapshots` valida il registro degli artifact generati
 (`scripts/ci/generated-artifacts.json`), esegue i controlli offline `--check`
-uniche per ogni artifact, verifica la pulizia del worktree e rileva file
+unici per ogni artifact, verifica la pulizia del worktree e rileva file
 generati non registrati. Non riesegue la suite ETL.
 
 ### Limite di trust: PR vs fonti ufficiali
 
-Le pull request validano i dati versioneati **offline**: il registro dimostra
+Le pull request validano i dati versionati **offline**: il registro dimostra
 che ogni artifact è internamente valido senza contattare fonti esterne.
 
 I workflow pianificati o manuali (`*-refresh.yml`) sono responsabili di

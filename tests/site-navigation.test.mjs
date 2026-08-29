@@ -73,6 +73,8 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(globalsCss, /\.dashboard-sidebar\[data-mobile-open="true"\] \{ transform: translateX\(0\); \}/);
   assert.match(navigationComponent, /data-mobile-open=\{mobileOpen \? "true" : undefined\}/);
   assert.match(navigationComponent, /aria-controls="dashboard-sidebar"/);
+  assert.match(navigationComponent, /inert=\{mobileLayout && !mobileOpen \? true : undefined\}/);
+  assert.match(navigationComponent, /isEventTargetWithin\(mobileToggleRef\.current, event\.target\)/);
 });
 
 test("reference dashboard taxonomy keeps every canonical destination reachable", () => {
@@ -228,19 +230,13 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(supporters, /italianbuilders\.co/);
   assert.match(supporters, /modello GLM/);
   assert.match(supporters, /INDIVIDUAL_SUPPORTERS/);
-  assert.match(supporters, /Clodo76/);
-  assert.match(supporters, /github\.com\/Clodo76/);
-  assert.match(supporters, /500 ai compute/);
-  assert.match(supporters, /Aldo Colamartino/);
-  assert.match(supporters, /Francesco Cecchetti/);
-  assert.match(supporters, /HyDrogu/);
-  assert.match(supporters, /chochoichoy/);
-  assert.match(supporters, /Sostegni anonimi/);
   assert.match(page, /SITE_SUPPORTERS/);
   assert.match(page, /INDIVIDUAL_SUPPORTERS/);
+  assert.match(page, /unità compute acquistate, non importi/);
+  assert.match(page, /non è[\s\S]*una verifica dell&apos;identità reale/);
+  assert.match(page, /Mostriamo solo[\s\S]*nomi e messaggi pubblici/);
   assert.match(page, /BUY_ME_A_COFFEE_URL/);
   assert.match(page, /supporter\.href \?/);
-  assert.match(page, /contributi pubblici ricevuti/);
   assert.match(footer, /href="\/supporter"/);
   assert.match(footer, /BUY_ME_A_COFFEE_URL/);
   assert.match(footer, /Buy me an AI compute/);
@@ -283,6 +279,18 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   const fornitori = activeNavSection("/appalti/fornitori");
   assert.equal(fornitori?.href, "/imprese");
   assert.ok(fornitori?.children?.some((child) => child.href === "/appalti/fornitori"));
+
+  assert.equal(activeNavSection("/territori/confronto")?.href, "/confronti");
+  assert.equal(activeNavSection("/controlli/segnalazioni")?.href, "/supporto");
+  assert.equal(activeNavSection("/fonti/stato")?.href, "/dati");
+  assert.equal(activeNavSection("/fonti/copertura")?.href, "/dati");
+  assert.equal(activeNavSection("/fonti/catalogo")?.href, "/dati");
+
+  assert.equal(activeNavSection("/territori/confronto")?.href, "/confronti");
+  assert.equal(activeNavSection("/controlli/segnalazioni")?.href, "/supporto");
+  assert.equal(activeNavSection("/fonti/stato")?.href, "/dati");
+  assert.equal(activeNavSection("/fonti/copertura")?.href, "/dati");
+  assert.equal(activeNavSection("/fonti/catalogo")?.href, "/dati");
 
   const catalog = activeNavSection("/dati/vincitori");
   assert.equal(catalog?.href, "/dati");

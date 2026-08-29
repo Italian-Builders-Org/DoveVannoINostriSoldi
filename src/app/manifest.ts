@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Dove vanno i nostri soldi?",
     short_name: "Soldi pubblici",
     description:
-      "Dati pubblici italiani spiegati in modo semplice, con la fonte sempre a portata di mano.",
+      "Dati pubblici italiani spiegati in modo semplice, con la fonte sempre a portata di mano. Include un simulatore di riallocazione della Legge di Bilancio sullo stanziamento OpenBDAP, non sulla cassa.",
     start_url: "/",
     display: "standalone",
     background_color: "#f3f2f2",

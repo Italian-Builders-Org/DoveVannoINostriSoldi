@@ -33,6 +33,8 @@ test("home trend toggles using only the committed SIOPE monthly series", () => {
   assert.match(trendPanel, /point\.flow/);
   assert.doesNotMatch(trendPanel, /populationCovered|per-capita/);
   assert.match(trendPanel, /aria-label="Metrica del trend"/);
+  assert.match(trendPanel, /const maximum = Math\.max\(\.\.\.values, 0\)/);
+  assert.match(trendPanel, /aria-live="polite"/);
   assert.doesNotMatch(trendPanel, /Math\.random|fetch\(|mock|fixture/i);
 });
 

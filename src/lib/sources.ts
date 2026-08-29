@@ -71,7 +71,7 @@ export const publicSources: PublicSource[] = [
     coverage: "Pagamenti dello Stato, opere pubbliche per CUP e Conto Economico SSN 2024",
     format: "CKAN API · OData · CSV · open data",
     url: "https://bdap-opendata.rgs.mef.gov.it/content/api",
-    note: "Connettore attivo: pagamenti dello Stato, dataset MOP e snapshot del Conto Economico consuntivo 2024 degli enti SSN con voci contabili, costi del personale e servizi.",
+    note: "Connettore attivo: pagamenti dello Stato, dataset MOP, snapshot del Conto Economico consuntivo 2024 degli enti SSN con voci contabili, costi del personale e servizi, e serie storica dello stanziamento enacted per missione della Legge di Bilancio (dal 2017, tassonomia stabile).",
     joinKeys: ["CUP", "codice fiscale titolare", "codice ente RGS"],
   },
   {

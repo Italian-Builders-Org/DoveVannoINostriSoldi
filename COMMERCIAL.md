@@ -11,7 +11,7 @@ devi ottenere una licenza commerciale separata.
 
 La licenza commerciale è un accordo tra le parti: non è automatica.
 Per richiederla, apri una issue sul repository oppure contatta i
-maintainer indicati nel README.
+maintainer indicati in [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Cosa resta libero senza licenza commerciale
 

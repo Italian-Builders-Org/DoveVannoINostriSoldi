@@ -1676,6 +1676,110 @@ try {
     completed.push(label);
   }
 
+  for (const width of [390, 768, 1280]) {
+    const label = `Legge di Bilancio modifica→condivisione ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/spese/legge-di-bilancio",
+      width,
+      validate: async (page) => {
+        const treemapSelector = '[role="group"][aria-label^="Scegli una missione"]';
+        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 5_000 });
+        const treemapState = await page.$eval(treemapSelector, (root) => {
+          const bounds = root.getBoundingClientRect();
+          const tiles = [...root.querySelectorAll('g[role="button"]')];
+          const visibleTiles = tiles.filter((tile) => {
+            const rect = tile.querySelector("rect")?.getBoundingClientRect();
+            return Boolean(rect && rect.width > 1 && rect.height > 1);
+          });
+          return {
+            height: bounds.height,
+            tiles: tiles.length,
+            visibleTiles: visibleTiles.length,
+          };
+        });
+        assert.ok(treemapState.height >= 300, `${label}: il treemap non riserva spazio`);
+        assert.ok(treemapState.tiles >= 5, `${label}: il treemap non contiene abbastanza missioni`);
+        assert.equal(
+          treemapState.visibleTiles,
+          treemapState.tiles,
+          `${label}: uno o più riquadri del treemap sono vuoti`,
+        );
+
+        const sliderSelector = 'input[type="range"]';
+        await page.waitForSelector(sliderSelector, { timeout: 5_000 });
+        assert.equal(
+          await page.$eval(sliderSelector, (input) => Number(input.value)),
+          0,
+          `${label}: lo scenario dovrebbe partire da zero`,
+        );
+
+        // Tastiera: sposta lo slider di +5 punti (5 passi da 1), come premere «+5».
+        await page.focus(sliderSelector);
+        for (let step = 0; step < 5; step += 1) await page.keyboard.press("ArrowRight");
+        await page.waitForFunction(
+          (selector) => Number(document.querySelector(selector)?.value) === 5,
+          {},
+          sliderSelector,
+        );
+
+        await page.waitForFunction(
+          () =>
+            [...document.querySelectorAll("button")].some((button) =>
+              (button.textContent ?? "").includes("Condividi la tua finanziaria"),
+            ),
+          { timeout: 5_000 },
+        );
+        await page.evaluate(() => {
+          const button = [...document.querySelectorAll("button")].find((candidate) =>
+            (candidate.textContent ?? "").includes("Condividi la tua finanziaria"),
+          );
+          button?.click();
+        });
+
+        // Il link deve contenere già il piano appena toccato, non un istante dopo:
+        // niente window.location coinvolta, il dialog legge lo stato React corrente.
+        await page.waitForFunction(() => document.querySelector("dialog")?.open === true, {
+          timeout: 3_000,
+        });
+        const telegramPlanValue = await page.$eval('a[href*="t.me/share"]', (link) => {
+          const url = new URL(link.href);
+          const shared = new URL(url.searchParams.get("url") ?? "");
+          return shared.searchParams.get("piano");
+        });
+        assert.ok(
+          telegramPlanValue && telegramPlanValue.startsWith("v1:"),
+          `${label}: il link condiviso non contiene subito il piano toccato (${telegramPlanValue})`,
+        );
+
+        await assertResponsiveShell(page, `${label} dialog aperto`, width);
+        const dialogOverflow = await page.evaluate(() => {
+          const dialog = document.querySelector("dialog");
+          const rect = dialog?.getBoundingClientRect();
+          return rect ? rect.right <= window.innerWidth + 1 && rect.left >= -1 : false;
+        });
+        assert.ok(dialogOverflow, `${label}: il dialog di condivisione esce dal viewport`);
+
+        assert.equal(
+          await page.$eval("dialog", (element) => {
+            const labelId = element.getAttribute("aria-labelledby");
+            return Boolean(labelId && document.getElementById(labelId)?.textContent?.trim());
+          }),
+          true,
+          `${label}: il dialog non ha un nome accessibile`,
+        );
+
+        // Escape chiude il dialog: verifica che la modifica → condivisione sia
+        // navigabile da tastiera end-to-end, non solo col mouse.
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => document.querySelector("dialog")?.open === false, {
+          timeout: 3_000,
+        });
+      },
+    });
+    completed.push(label);
+  }
+
   console.log(JSON.stringify({
     baseUrl: baseUrl.origin,
     checks: completed,

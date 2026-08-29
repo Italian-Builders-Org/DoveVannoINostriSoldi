@@ -90,6 +90,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
   const sidebarRef = useRef<HTMLElement>(null);
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileLayout, setMobileLayout] = useState(false);
   const [openMenu, setOpenMenu] = useState<{
     href: string;
     pathname: string;
@@ -114,7 +115,12 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
   useEffect(() => {
     if (openHref === null && !mobileOpen) return;
     function dismissOutside(event: PointerEvent) {
-      if (!isEventTargetWithin(navigationRef.current, event.target)) closeNavigation();
+      if (
+        isEventTargetWithin(navigationRef.current, event.target)
+        || isEventTargetWithin(mobileToggleRef.current, event.target)
+      ) return;
+      closeNavigation();
+      if (mobileOpen) window.requestAnimationFrame(() => mobileToggleRef.current?.focus());
     }
     function dismissOnEscape(event: KeyboardEvent) {
       if (event.key === "Tab" && mobileOpen) {
@@ -150,6 +156,14 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
   }, [openHref, mobileOpen, closeNavigation]);
 
   useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px)");
+    const syncLayout = () => setMobileLayout(media.matches);
+    syncLayout();
+    media.addEventListener("change", syncLayout);
+    return () => media.removeEventListener("change", syncLayout);
+  }, []);
+
+  useEffect(() => {
     if (!mobileOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -170,7 +184,14 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             aria-expanded={mobileOpen}
             aria-controls="dashboard-sidebar"
             aria-label={mobileOpen ? "Chiudi la navigazione" : "Apri la navigazione"}
-            onClick={() => setMobileOpen((open) => !open)}
+            onClick={() => {
+              if (!mobileOpen) {
+                setMobileOpen(true);
+                return;
+              }
+              closeNavigation();
+              window.requestAnimationFrame(() => mobileToggleRef.current?.focus());
+            }}
           >
             <HugeiconsIcon
               icon={mobileOpen ? Cancel01Icon : Menu04Icon}
@@ -230,6 +251,8 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
         id="dashboard-sidebar"
         className="dashboard-sidebar"
         data-mobile-open={mobileOpen ? "true" : undefined}
+        aria-hidden={mobileLayout && !mobileOpen ? "true" : undefined}
+        inert={mobileLayout && !mobileOpen ? true : undefined}
       >
         <nav
           className="primary-nav"

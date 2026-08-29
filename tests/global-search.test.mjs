@@ -202,4 +202,12 @@ test("site search has no duplicate destinations and exposes useful Italian alias
   assert.ok(results.some((result) => result.href === "/incarichi"));
   assert.ok(results.some((result) => result.href === "/spese/consulenze"));
   assert.ok(searchSiteDocuments("pnrr").some((result) => result.href === "/coesione"));
+  assert.ok(
+    searchSiteDocuments("aggregati fornitori settori")
+      .some((result) => result.href === "/dati/vincitori"),
+  );
+  assert.ok(
+    searchSiteDocuments("legge bilancio missioni")
+      .some((result) => result.href === "/spese/legge-di-bilancio"),
+  );
 });

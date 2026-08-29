@@ -36,7 +36,7 @@ test("the home has one semantic dashboard title and a bounded KPI header", async
   assert.match(css, /\.summaryGrid \{[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\);/);
 });
 
-test("the desktop home keeps the reference grid without global scaling or asymmetric panel hacks", async () => {
+test("the desktop home keeps the measured reference grid without global scaling", async () => {
   const [home, globals] = await Promise.all([
     source("../src/app/home.module.css"),
     source("../src/app/globals.css"),
@@ -45,7 +45,8 @@ test("the desktop home keeps the reference grid without global scaling or asymme
   assert.match(home, /\.dashboard \{[\s\S]*?gap:10px;/);
   assert.match(home, /\.mapPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:276px;/);
   assert.match(home, /\.anomalyPanel \{[\s\S]*?grid-column:span 6;[\s\S]*?height:276px;/);
-  assert.doesNotMatch(home, /width:calc\(100% \+ 9px\)|margin-left:10px/);
+  assert.match(home, /\.mapPanel \{[\s\S]*?width:calc\(100% \+ 9px\)/);
+  assert.match(home, /\.anomalyPanel \{[\s\S]*?margin-left:10px/);
   assert.doesNotMatch(globals, /zoom:\s*calc\(100vw \/ 1280px\)/);
   assert.match(globals, /@media \(max-width: 900px\)[\s\S]*?\.header-search \{[\s\S]*?transform: none;/);
 });

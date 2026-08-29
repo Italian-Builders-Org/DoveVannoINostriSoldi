@@ -181,7 +181,12 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
                   </div>
                 </dl>
                 {result.rows.length > 0 && columns.length > 0 ? (
-                  <div className={`table-scroll ${styles.tableWrap}`} tabIndex={0}>
+                  <div
+                    className={`table-scroll ${styles.tableWrap}`}
+                    role="region"
+                    aria-label={`Prime ${integer(result.rows.length)} righe di ${configured.label}`}
+                    tabIndex={0}
+                  >
                     <table className="table">
                       <caption className={styles.visuallyHidden}>
                         Prime {integer(result.rows.length)} righe di {configured.label}

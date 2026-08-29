@@ -319,6 +319,7 @@ test("MCP query tool describes every input parameter for clients and directories
     "period",
     "sector",
     "band",
+    "years",
     "limit",
     "offset",
     "cursor",
@@ -672,6 +673,94 @@ test("MCP modern 2026 tool call exposes the same MEF domain result", async () =>
   assert.match(body, /mef_irpef_comunale/);
   assert.match(body, /ABANO TERME/);
   assert.match(body, /netTaxDeclared/);
+});
+
+test("MCP tool call exposes the Legge di Bilancio mission series with the years filter", async () => {
+  const packageId = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
+  const productCode = "LBF_SPE_CRU_AMPMA_001";
+  const expectedTitle =
+    "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato";
+  const csvHeader = [
+    "Esercizio Finanziario",
+    "Stato di Previsione",
+    "Amministrazione",
+    "Missione",
+    "Programma",
+    "Unità di voto 1° Livello",
+    "Unità di voto 2° Livello",
+    "Unità di voto 3° Livello",
+    "Macroaggregato",
+    "Legge di Bilancio CP A1",
+    "Legge di Bilancio CP A2",
+    "Legge di Bilancio CP A3",
+    "Legge di Bilancio CS A1",
+    "Legge di Bilancio CS A2",
+    "Legge di Bilancio CS A3",
+  ].join(";");
+  const csvRow = (year, cpA1) =>
+    [year, "01", "AMMINISTRAZIONE 01", "Istruzione", "", "", "", "", "FUNZIONAMENTO", cpA1, cpA1, cpA1, cpA1, cpA1, cpA1]
+      .map((value) => `"${value}"`)
+      .join(";");
+  const fixtureCsv = [csvHeader, csvRow(2023, "1100"), csvRow(2024, "1200")].join("\n");
+
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = new URL(input.toString());
+    if (url.pathname.endsWith("/package_search")) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          result: {
+            results: [
+              {
+                id: packageId,
+                name: "legge_di_bilancio_pubblicata_serie_storica",
+                title: expectedTitle,
+                notes: `Prodotto - [${productCode}]`,
+                metadata_modified: "2026-01-02T17:37:34.000000",
+                license_id: "cc-by",
+                license_title: "Creative Commons Attribution",
+                license_url: "http://www.opendefinition.org/licenses/cc-by",
+                resources: [
+                  {
+                    id: "32750",
+                    url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`,
+                    format: "csv",
+                    mimetype: "text/csv",
+                  },
+                ],
+              },
+            ],
+          },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }
+    if (url.pathname.endsWith(`${packageId}.csv`)) {
+      return new Response(fixtureCsv, { status: 200, headers: { "content-type": "text/csv" } });
+    }
+    throw new Error(`URL non atteso nel test: ${url.toString()}`);
+  };
+
+  try {
+    const response = await POST(request({}, JSON.stringify({
+      jsonrpc: "2.0",
+      id: 13,
+      method: "tools/call",
+      params: {
+        name: "query_dataset",
+        arguments: { dataset: "openbdap_legge_bilancio_storico", years: 2 },
+      },
+    })));
+    const body = await response.text();
+    assert.equal(response.status, 200);
+    assert.match(body, /openbdap_legge_bilancio_storico/);
+    assert.match(body, /"years":\[2023,2024\]/);
+    assert.match(body, /"missions":\["Istruzione"\]/);
+    assert.match(body, /yearOverYearDeltas/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("MCP endpoint reads the catalog resource with the modern protocol", async () => {

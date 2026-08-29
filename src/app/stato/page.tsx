@@ -299,8 +299,8 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Amministrazione</th>
-                    <th>Pagato</th>
+                    <th scope="col">Amministrazione</th>
+                    <th scope="col">Pagato</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -432,6 +432,16 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           Confronto descrittivo, anno per anno dal 2014, tra la spesa statale dell&apos;anno
           pre-elettorale e la media degli altri anni della stessa legislatura.{" "}
           <Link href="/stato/legislature">Apri il confronto →</Link>
+        </p>
+      </div>
+
+      <div className="notice">
+        <strong>E se la Legge di Bilancio la scrivessi tu?</strong>
+        <p>
+          Variazione anno su anno dello stanziamento pubblicato per missione nelle ultime Leggi
+          di Bilancio, con uno scenario ipotetico che puoi costruire tu, sempre distinto dal dato
+          reale.{" "}
+          <Link href="/spese/legge-di-bilancio">Scrivi la tua Legge di Bilancio →</Link>
         </p>
       </div>
     </>

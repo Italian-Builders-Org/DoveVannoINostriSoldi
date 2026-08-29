@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s · DoveVannoINostriSoldi",
   },
   description:
-    "Dati pubblici italiani spiegati in modo semplice, con la fonte sempre a portata di mano.",
+    "Dati pubblici italiani spiegati in modo semplice, con la fonte sempre a portata di mano. Include un simulatore di riallocazione della Legge di Bilancio sullo stanziamento OpenBDAP, non sulla cassa.",
 };
 
 export const viewport: Viewport = {

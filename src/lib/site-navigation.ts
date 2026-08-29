@@ -62,6 +62,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/spese/operative", label: "Spese operative" },
       { href: "/stato", label: "Amministrazioni centrali" },
       { href: "/debito", label: "Debito pubblico" },
+      { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],
   },
@@ -147,12 +148,11 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
     href: "/territori",
     label: "Mappa della spesa",
     icon: "map",
-    aliases: ["/territori/irpef", "/territori/fisco", "/territori/confronto"],
+    aliases: ["/territori/irpef", "/territori/fisco"],
     children: [
       { href: "/territori", label: "Panoramica territoriale" },
       { href: "/territori/irpef", label: "Redditi IRPEF" },
       { href: "/territori/fisco", label: "Entrate e spese" },
-      { href: "/territori/confronto", label: "Confronto Comuni" },
     ],
   },
   {
@@ -205,6 +205,7 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
       { href: "/incarichi/pnrr", label: "Consulenze e incarichi PNRR" },
       { href: "/incarichi/personale-organi", label: "Personale, staff e organi" },
       { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
+      { href: "/esplora", label: "Esplora relazioni", group: "Analisi trasversale" },
     ],
   },
   {
@@ -237,6 +238,7 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
       { href: "/spese/rimborsi", label: "Rimborsi spese" },
       { href: "/spese/capitoli-progetti", label: "Capitoli e progetti" },
       { href: "/spese/territoriale", label: "Spesa statale per territorio", group: "Stato e debito" },
+      { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/debito", label: "Debito pubblico" },
     ],
   },
@@ -269,11 +271,6 @@ export const DASHBOARD_NAV: readonly DashboardNavSection[] = [
     href: "/assistente",
     label: "AI Insights",
     icon: "assistant",
-    aliases: ["/esplora"],
-    children: [
-      { href: "/assistente", label: "Assistente dati" },
-      { href: "/esplora", label: "Esplora relazioni" },
-    ],
   },
   {
     href: "/supporto",
@@ -338,6 +335,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/operative", label: "Spese operative" },
       { href: "/stato", label: "Amministrazioni centrali" },
       { href: "/debito", label: "Debito pubblico" },
+      { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],
   },
@@ -477,11 +475,33 @@ export function isNavSectionActive(pathname: string, item: NavSection): boolean 
 }
 
 export function activeNavSection(pathname: string): NavSection | null {
-  if (parseNavigationLocation(pathname).pathname === "/") return null;
+  const location = parseNavigationLocation(pathname);
+  if (location.pathname === "/") return null;
+
+  function ownershipScore(item: NavSection): number {
+    const childSpecificity = Math.max(
+      0,
+      ...(item.children ?? [])
+        .filter((child) => hrefMatchesLocation(location, child.href))
+        .map((child) => {
+          const target = parseNavigationLocation(child.href);
+          return 10_000 + target.pathname.length * 10 + target.searchParams.size;
+        }),
+    );
+    if (childSpecificity > 0) return childSpecificity;
+    if (pathMatches(location.pathname, item.href)) return 1_000 + item.href.length;
+    return Math.max(
+      0,
+      ...(item.aliases ?? [])
+        .filter((alias) => pathMatches(location.pathname, alias))
+        .map((alias) => 100 + alias.length),
+    );
+  }
+
   return (
-    DASHBOARD_NAV.filter((item) => item.children && item.children.length > 0)
+    DASHBOARD_NAV
       .filter((item) => isNavSectionActive(pathname, item))
-      .sort((left, right) => right.href.length - left.href.length)[0] ?? null
+      .sort((left, right) => ownershipScore(right) - ownershipScore(left))[0] ?? null
   );
 }
 

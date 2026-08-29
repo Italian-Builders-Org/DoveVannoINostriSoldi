@@ -28,6 +28,7 @@
     "test:company-atlas": "node --experimental-strip-types --test tests/company-atlas.test.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:editorial": "node --experimental-strip-types scripts/browser/editorial.mjs",
+    "test:csp:report-only": "node scripts/browser/csp-report-only.mjs",
     "test:browser:e2e": "node scripts/browser/core.mjs",
     "test:browser:integrated": "node --experimental-strip-types scripts/browser/editorial.mjs",
     "test:lighthouse": "node scripts/lighthouse_budget.mjs",

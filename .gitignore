@@ -38,6 +38,7 @@ next-env.d.ts
 # Local browser QA artifacts
 /.playwright-cli/
 /output/
+/artifacts/
 
 # Local research notes
 /docs/research/PROJECT_AND_PRIORITIES_2026-08-24.md

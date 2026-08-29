@@ -843,6 +843,8 @@ main { display: block; }
   }
   .site-header { min-height: 64px; }
   .mobile-menu-toggle { display: grid; }
+  .mobile-menu-toggle,
+  .header-action-icon { width: 44px; height: 44px; }
   .brand-mark { width: 34px; height: 34px; }
   .brand-text small { display: none; }
   .header-search {
@@ -852,6 +854,8 @@ main { display: block; }
     padding-bottom: 10px;
     transform: none;
   }
+  .header-search input,
+  .header-search button { height: 44px; }
   .header-actions { grid-column: 3; grid-row: 1; }
   .header-action:not(.header-action-icon) { display: none; }
   .dashboard-sidebar {

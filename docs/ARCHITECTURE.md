@@ -1,5 +1,9 @@
 # Architettura
 
+## Decisioni architetturali
+
+- [ADR-001 — Dove conservare gli artefatti dati](architecture/ADR-001-generated-artifacts-storage.md)
+
 ## Obiettivo
 
 DoveVannoINostriSoldi deve poter rispondere a una domanda semplice: “dove sono andati questi soldi?”. Deve farlo senza perdere la complessità contabile necessaria a dare una risposta corretta.

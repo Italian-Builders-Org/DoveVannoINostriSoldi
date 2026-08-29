@@ -101,6 +101,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/spese/invalidita": ["invalidita", "inps", "pensioni", "prestazioni"],
   "/spese/consulenze": ["consulenze", "incarichi", "collaborazioni"],
   "/spese/territoriale": ["territorio", "regioni", "spesa statale"],
+  "/spese/legge-di-bilancio": ["legge di bilancio", "bilancio dello stato", "missioni di spesa", "legge bilancio missioni"],
   "/spese/operative": ["costi operativi", "funzionamento"],
   "/stato": ["amministrazioni centrali", "ministeri", "stato"],
   "/debito": ["debito", "debito pubblico", "maastricht", "interessi"],
@@ -146,6 +147,7 @@ const PUBLIC_DATASET_TITLES: Readonly<Record<string, string>> = {
 const integratedEntries = (integratedCatalog.datasets as readonly IntegratedSearchEntry[]).map(
   (dataset) => ({
     ...dataset,
+    catalogTitle: dataset.title,
     title: PUBLIC_DATASET_TITLES[dataset.id] ?? dataset.title,
   }),
 );
@@ -255,6 +257,7 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
       type: "dataset",
       aliases: unique([
         dataset.id,
+        dataset.catalogTitle,
         integratedDomainLabel(dataset.domain),
         dataset.authority,
       ]),

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v1",
-  "generatedAt": "2026-08-29T06:50:42Z",
+  "methodologyVersion": "core-annual-v2",
+  "generatedAt": "2026-08-29T08:41:26Z",
   "sources": {
     "ameco": {
       "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
@@ -16,7 +16,7 @@
       "geography": "Italy, France, Germany and Spain",
       "referencePeriod": "annual, 1960-2027; the score uses 1995-2024 observations",
       "publication": "latest AMECO vintage, not the vintage available during each historical government",
-      "retrievedAt": "2026-08-29T06:50:42Z",
+      "retrievedAt": "2026-08-29T08:41:26Z",
       "bytes": 6181987,
       "sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005",
       "observedThrough": 2024,
@@ -32,14 +32,14 @@
       "geography": "Italian Republic",
       "referencePeriod": "17 January 1995 onward; the source page also lists earlier governments",
       "publication": "current institutional chronology",
-      "retrievedAt": "2026-08-29T06:50:42Z",
+      "retrievedAt": "2026-08-29T08:41:26Z",
       "bytes": 58976,
       "sha256": "7cddc049725441129b331d0835d77d367ac6774b657329432a78dddfbb6503b2"
     }
   },
   "method": {
     "firstScoreYear": 1995,
-    "minimumWindowYears": 2,
+    "minimumWindowYears": 1,
     "peerCountryIds": [
       "france",
       "germany",
@@ -49,9 +49,9 @@
     "peerWeightBasisPoints": 5000,
     "robustScale": 1.4826,
     "winsorizedZ": 3,
-    "scoreStatus": "Core macroeconomico annuale; non è ancora la pagella socio-economica completa",
+    "scoreStatus": "Core macroeconomico annuale contestualizzato; ogni governo ha una scheda, mentre il voto richiede almeno un intervallo annuale osservabile",
     "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
-    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. This is an approximation and lowers attribution reliability.",
+    "endpointRule": "For annual observations, use the start/end calendar year only when the government held office for at least half of that year; otherwise use the adjacent year. A one-year window is admissible but receives low attribution reliability; a zero-year window remains unscored until quarterly data are integrated.",
     "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government"
   },
   "indicators": [
@@ -6960,6 +6960,33 @@
       "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
     },
     {
+      "id": "euro-introduction",
+      "label": "Introduzione dell'euro e cambio di regime monetario",
+      "startYear": 1999,
+      "endYear": 2002,
+      "kind": "regime",
+      "summary": "L'avvio dell'unione monetaria e poi delle banconote e monete in euro cambiarono il quadro di tassi, cambio e politica monetaria per l'Italia.",
+      "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
+    },
+    {
+      "id": "dot-com-slowdown",
+      "label": "Rallentamento mondiale e crisi dot-com",
+      "startYear": 2000,
+      "endYear": 2002,
+      "kind": "external-shock",
+      "summary": "La frenata internazionale, la correzione dei mercati tecnologici e le conseguenze economiche degli attentati del 2001 indebolirono commercio e investimenti.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2001/index.html"
+    },
+    {
+      "id": "global-expansion-oil",
+      "label": "Espansione mondiale e rincaro del petrolio",
+      "startYear": 2003,
+      "endYear": 2007,
+      "kind": "external-shock",
+      "summary": "La crescita mondiale sostenne la domanda estera, mentre l'aumento del prezzo del petrolio pesò sui paesi importatori di energia come l'Italia.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2005/index.html"
+    },
+    {
       "id": "global-financial-crisis",
       "label": "Crisi finanziaria globale",
       "startYear": 2008,
@@ -6976,6 +7003,33 @@
       "kind": "financial-shock",
       "summary": "Tensioni sui titoli sovrani, credito debole e consolidamento fiscale pesarono sull'area euro e sull'Italia.",
       "sourceUrl": "https://www.ecb.europa.eu/press/key/date/2012/html/sp120726.en.html"
+    },
+    {
+      "id": "ecb-purchase-programmes",
+      "label": "Tassi bassi e programmi di acquisto BCE",
+      "startYear": 2015,
+      "endYear": 2022,
+      "kind": "shared-policy-context",
+      "summary": "I programmi di acquisto e i tassi dell'area euro influenzarono costo del debito, credito e condizioni finanziarie senza essere decisioni del governo italiano.",
+      "sourceUrl": "https://www.ecb.europa.eu/mopo/implement/app/html/index.en.html"
+    },
+    {
+      "id": "italian-banking-stress",
+      "label": "Sofferenze bancarie e interventi sul sistema del credito",
+      "startYear": 2015,
+      "endYear": 2017,
+      "kind": "financial-shock",
+      "summary": "L'elevato stock di crediti deteriorati e alcune crisi bancarie condizionarono credito, investimenti e interventi pubblici; i problemi si erano accumulati negli anni precedenti.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2016/index.html"
+    },
+    {
+      "id": "trade-slowdown",
+      "label": "Rallentamento europeo e tensioni commerciali",
+      "startYear": 2018,
+      "endYear": 2019,
+      "kind": "external-shock",
+      "summary": "Il rallentamento del commercio mondiale e dell'industria europea frenò un'economia italiana già debole.",
+      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2019/index.html"
     },
     {
       "id": "pandemic",
@@ -7003,9 +7057,27 @@
       "kind": "shared-policy-context",
       "summary": "Finanziamenti e riforme europee attraversano più governi: l'origine, le revisioni e l'attuazione non vanno attribuite a un solo esecutivo.",
       "sourceUrl": "https://commission.europa.eu/business-economy-euro/economic-recovery/recovery-and-resilience-facility/country-pages/italys-recovery-and-resilience-plan_en"
+    },
+    {
+      "id": "ecb-rate-tightening",
+      "label": "Stretta monetaria della BCE",
+      "startYear": 2022,
+      "endYear": 2024,
+      "kind": "shared-policy-context",
+      "summary": "Il rialzo dei tassi deciso dalla BCE per contrastare l'inflazione aumentò il costo del credito e del rifinanziamento del debito nell'intera area euro.",
+      "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
     }
   ],
   "measures": [
+    {
+      "government": "Dini-I",
+      "title": "Riforma del sistema pensionistico",
+      "status": "enacted",
+      "act": "Legge 8 agosto 1995, n. 335",
+      "mechanism": "Introduzione graduale del metodo contributivo e revisione dei requisiti per contenere la spesa pensionistica nel lungo periodo.",
+      "evidence": "La riforma modifica regole e sostenibilità prospettica; gli effetti macro e distributivi maturano oltre la durata del governo.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1995-08-08;335"
+    },
     {
       "government": "Prodi-I",
       "title": "Manovra per la convergenza europea e introduzione dell'IRAP",
@@ -7016,6 +7088,33 @@
       "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446"
     },
     {
+      "government": "D'Alema-I",
+      "title": "Finanziaria 1999 e misure per stabilizzazione e sviluppo",
+      "status": "enacted",
+      "act": "Legge 23 dicembre 1998, n. 448",
+      "mechanism": "Interventi su entrate, spese e incentivi nel passaggio finale verso l'unione monetaria.",
+      "evidence": "L'atto documenta la risposta di bilancio; il Core non separa il suo effetto dal ciclo europeo e dalle decisioni maturate prima del cambio di governo.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1998-12-23;448"
+    },
+    {
+      "government": "D'Alema-II",
+      "title": "Avvio della legge finanziaria 2000",
+      "status": "implemented-across-governments",
+      "act": "Legge 23 dicembre 1999, n. 488",
+      "mechanism": "La manovra definì misure annuali di finanza pubblica e sviluppo entrate in attuazione durante un mandato di pochi mesi.",
+      "evidence": "La legge fu preparata durante il governo precedente e promulgata all'inizio del D'Alema-II: la responsabilità va condivisa e gli esiti eccedono il mandato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1999-12-23;488"
+    },
+    {
+      "government": "Amato-II",
+      "title": "Credito d'imposta per nuove assunzioni",
+      "status": "enacted",
+      "act": "Legge 23 dicembre 2000, n. 388, articolo 7",
+      "mechanism": "Incentivo fiscale ai datori di lavoro per incrementare l'occupazione, con maggiorazioni nelle aree svantaggiate.",
+      "evidence": "La platea e il costo sono osservabili nella legge; l'effetto netto sull'occupazione richiede una valutazione dedicata e non coincide con il dato aggregato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-12-23;388"
+    },
+    {
       "government": "Berlusconi-II",
       "title": "Riforma del mercato del lavoro",
       "status": "enacted",
@@ -7023,6 +7122,15 @@
       "mechanism": "Riordino dei contratti e dei servizi per l'impiego, con maggiore flessibilità nelle forme di lavoro.",
       "evidence": "La legge è osservabile; gli effetti su occupazione e qualità del lavoro richiedono valutazioni dedicate.",
       "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-09-10;276"
+    },
+    {
+      "government": "Berlusconi-III",
+      "title": "Piano d'azione per sviluppo e competitività",
+      "status": "implemented-across-governments",
+      "act": "Decreto-legge 14 marzo 2005, n. 35, convertito dalla legge 14 maggio 2005, n. 80",
+      "mechanism": "Misure su incentivi, procedure, investimenti e competitività avviate nel governo precedente e proseguite dopo il rimpasto.",
+      "evidence": "La continuità tra Berlusconi-II e III impedisce di attribuire gli effetti al solo esecutivo formalmente in carica nella fase finale.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2005-03-14;35"
     },
     {
       "government": "Prodi-II",
@@ -7052,6 +7160,15 @@
       "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2011-12-06;201"
     },
     {
+      "government": "Letta-I",
+      "title": "Abolizione della seconda rata IMU sulla prima casa e misure abitative",
+      "status": "enacted",
+      "act": "Decreto-legge 31 agosto 2013, n. 102",
+      "mechanism": "Riduzione del prelievo immobiliare sull'abitazione principale insieme a interventi su politiche abitative, enti locali e ammortizzatori.",
+      "evidence": "L'effetto sul reddito disponibile varia per famiglia e territorio; il costo e le coperture vanno distinti dall'andamento macro del mandato.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-08-31;102"
+    },
+    {
       "government": "Renzi-I",
       "title": "Riduzione IRPEF per i dipendenti e Jobs Act",
       "status": "enacted",
@@ -7059,6 +7176,15 @@
       "mechanism": "Aumento del reddito netto per una platea di lavoratori e riordino delle regole del mercato del lavoro.",
       "evidence": "Occupazione, salari e composizione dei contratti vanno letti insieme; il dato aggregato non prova l'effetto delle riforme.",
       "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2014-12-10;183"
+    },
+    {
+      "government": "Gentiloni-I",
+      "title": "Incentivo strutturale all'occupazione giovanile",
+      "status": "enacted",
+      "act": "Legge 27 dicembre 2017, n. 205",
+      "mechanism": "Esonero contributivo parziale per assunzioni stabili di giovani, inserito nella legge di bilancio 2018.",
+      "evidence": "La misura riduce il costo del lavoro per i beneficiari; occupazione aggiuntiva, sostituzione e durata dei contratti richiedono valutazioni specifiche.",
+      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2017-12-27;205"
     },
     {
       "government": "Conte-I",

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const page = await readFile(new URL("../src/app/governi/page.tsx", import.meta.url), "utf8");
+const detail = await readFile(new URL("../src/app/governi/[id]/page.tsx", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/app/governi/governi.module.css", import.meta.url), "utf8");
 const navigation = await readFile(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
 const discovery = await readFile(new URL("../src/lib/public-discovery.ts", import.meta.url), "utf8");
@@ -42,6 +43,19 @@ test("page exposes raw values, peers, missing-score reasons and official sources
   assert.match(page, /data\.sources\.governmentChronology\.pageUrl/);
   assert.ok((page.match(/target="_blank"/g) ?? []).length >= 7);
   assert.match(page, /SHA-256/);
+});
+
+test("every government links to a dedicated five-part assessment", () => {
+  assert.match(page, /href=\{`\/governi\/\$\{government\.id\}`\}/);
+  for (const heading of ["Cosa ha ereditato", "In quale situazione ha governato", "Cosa ha fatto per intervenire", "Risultati osservati e situazione lasciata", "Cosa questa scheda non dimostra"]) {
+    assert.match(detail, new RegExp(heading));
+  }
+  assert.match(detail, /Periodo economico e geopolitico/);
+  assert.match(detail, /government\.inheritance\.trend/);
+  assert.match(detail, /government\.measures\.map/);
+  assert.match(detail, /government\.contexts\.map/);
+  assert.match(detail, /dynamicParams = false/);
+  assert.match(detail, /generateStaticParams/);
 });
 
 test("page is discoverable under Institutions and its wide tables are keyboard scrollable", () => {

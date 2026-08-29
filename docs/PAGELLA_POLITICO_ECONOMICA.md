@@ -59,14 +59,17 @@ Vogliamo includere anche i governi precedenti al 2005 ogni volta che le fonti lo
 permettono. Non useremo però lo stesso voto per serie statistiche con qualità e
 copertura diverse.
 
-Ogni governo viene assegnato a una classe di comparabilità:
+Ogni governo riceve sempre una **scheda di valutazione**. La disponibilità dei
+dati decide quale parte della valutazione può diventare un numero, non se il
+governo merita o meno un approfondimento. Ogni esecutivo viene inoltre assegnato
+a una classe di comparabilità:
 
 | Classe | Copertura attesa | Risultato pubblicabile |
 | --- | --- | --- |
 | A · completa | Indicativamente dal 2005, da confermare con l'audit | Voto complessivo, cinque aree, confronto europeo e affidabilità |
 | B · macro armonizzata | Indicativamente 1995-2004 | Voto macro separato, ottenuto da un paniere fisso più ristretto |
 | C · storica | Prima del 1995 | Nessun voto aggregato; serie, governi, regimi e shock nel loro contesto |
-| D · contesto | Copertura insufficiente o mandato troppo breve | Nessun voto; cronologia, indicatori disponibili, shock e misure |
+| D · documentale | Copertura insufficiente o mandato troppo breve | Valutazione di eredità, contesto, decisioni e risultati disponibili; nessun aggregato artificiale |
 
 Le date sono indicative: sarà l'audit per indicatore a stabilire il primo governo
 valutabile in ogni classe. La disponibilità di una sola serie, per esempio il
@@ -74,18 +77,23 @@ PIL, non basta per produrre un voto economico complessivo.
 
 ### Regole minime di ammissibilità
 
-- Meno di quattro trimestri completi: nessun voto complessivo.
+- Tutti i governi hanno una pagina con situazione ereditata, periodo economico e
+  geopolitico, misure adottate, risultati disponibili e limiti di attribuzione.
+- Meno di quattro trimestri completi: nessun voto macro trimestrale, ma
+  valutazione documentale completa delle decisioni e degli esiti osservabili.
 - Da quattro a sette trimestri: voto indicativo con affidabilità bassa.
 - Da otto trimestri: voto standard, se il paniere della classe è completo.
-- Per serie soltanto annuali, un governo deve coprire almeno due anni completi.
+- Nel Core annuale provvisorio è sufficiente almeno un intervallo tra due
+  osservazioni annuali. Una finestra di un anno è indicativa e riceve
+  affidabilità C; senza intervallo annuale non si forza un numero.
 - Ogni classe usa un paniere obbligatorio fisso. Se manca un indicatore
   obbligatorio, il governo mostra un risultato parziale ma non entra nella
   classifica di quella classe.
 - I voti A e B non vengono mescolati nella stessa graduatoria; la classe C non
   produce un voto aggregato.
 
-In questo modo possiamo andare indietro nella storia senza fingere che gli
-indicatori disponibili per un governo degli anni Cinquanta formino la stessa
+In questo modo possiamo valutare ogni governo senza fingere che gli indicatori
+disponibili per un governo di pochi mesi o degli anni Cinquanta formino la stessa
 pagella dei dati trimestrali contemporanei.
 
 ## Cronologia e attribuzione temporale
@@ -219,6 +227,27 @@ esistente del progetto. Un aggiornamento non sostituisce l'ultimo snapshot
 valido finché schema, copertura, riconciliazioni e test non sono superati.
 
 ## Algoritmo del voto
+
+### La valutazione viene prima del voto
+
+La scheda segue sempre cinque passaggi distinti:
+
+1. **Eredità**: baseline, traiettoria dei periodi precedenti, debito, lavoro,
+   crescita e fattori già in corso all'insediamento.
+2. **Contesto economico e geopolitico**: ciclo internazionale, energia, guerre,
+   banche, BCE, Unione europea e shock documentati.
+3. **Risposta del governo**: atti approvati, dimensione finanziaria, attuazione,
+   meccanismo atteso e continuità con governi precedenti o successivi.
+4. **Risultati durante il mandato**: valori iniziali e finali, variazione,
+   confronto storico e confronto con paesi esposti allo stesso periodo.
+5. **Attribuzione**: forza dell'evidenza che collega una misura al risultato,
+   ritardi plausibili e ciò che il dato non può dimostrare.
+
+Il voto macro sintetizza soltanto il quarto passaggio, corretto attraverso
+storia e peer. Eredità, contesto e risposta non diventano bonus discrezionali:
+servono a scegliere il confronto, spiegare il risultato e limitare le
+conclusioni causali. Le singole politiche possono ricevere una valutazione
+separata quando esistono studi o stime indipendenti adeguate.
 
 ### 1. Variazione osservata
 
@@ -444,7 +473,8 @@ annuale contiene:
 - investimenti fissi lordi sul PIL, peso 15%.
 
 Il punteggio è calcolabile dal 1995 soltanto quando tutti i sei indicatori, i tre
-peer e almeno due anni tra gli endpoint sono presenti. Francia, Germania e
+peer e almeno un intervallo annuale tra gli endpoint sono presenti. Una finestra
+di un anno è pubblicata come indicativa con affidabilità C. Francia, Germania e
 Spagna formano il benchmark; mediana e MAD robusto limitano la dipendenza dagli
 estremi. I governi anteriori al 2005 che superano le stesse regole sono inclusi.
 
@@ -656,8 +686,9 @@ di ammissibilità.
 
 Costruire una pagella completa dal periodo in cui il paniere moderno supera
 l'audit; usare nel frattempo il Core annuale dal 1995 come risultato distinto;
-estendere all'indietro dati e contesto senza un voto aggregato; lasciare senza
-voto i governi per cui copertura o durata non reggono.
+pubblicare per ogni governo una scheda di eredità, contesto, risposta e risultati;
+lasciare senza aggregato soltanto le finestre in cui il dato non consente un
+numero difendibile.
 
 Per il governo in carica mostrare contemporaneamente, ma senza sommarli:
 

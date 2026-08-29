@@ -142,7 +142,13 @@ function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: num
     return { status: "not-scored", baselineYear, endYear, windowYears, reason: "La serie completa del Core parte dal 1995." };
   }
   if (windowYears < snapshot.method.minimumWindowYears) {
-    return { status: "not-scored", baselineYear, endYear, windowYears, reason: "Servono almeno due anni tra baseline e ultimo dato comune." };
+    return {
+      status: "not-scored",
+      baselineYear,
+      endYear,
+      windowYears,
+      reason: "I dati annuali non contengono ancora un intervallo osservabile per questo mandato: la scheda resta disponibile, il voto arriverà con le serie trimestrali.",
+    };
   }
   const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
   try {
@@ -253,8 +259,10 @@ function governmentView(snapshot: GovernmentScorecardSnapshot, government: Gover
   const measures = snapshot.measures.filter((item) => item.government === government.name);
   const reliability = calculation.status === "not-scored"
     ? { grade: "ND" as const, label: "non valutabile", reason: calculation.reason }
-    : government.status === "current" || contexts.some((item) => item.kind === "external-shock" || item.kind === "financial-shock")
-      ? { grade: "C" as const, label: "attribuzione bassa", reason: "Serie annuali, possibili ritardi e shock rilevanti limitano l’attribuzione al governo." }
+    : calculation.windowYears === 1 || government.status === "current" || contexts.some((item) => item.kind === "external-shock" || item.kind === "financial-shock")
+      ? { grade: "C" as const, label: "attribuzione bassa", reason: calculation.windowYears === 1
+        ? "La finestra annuale permette un confronto indicativo, ma non isola con precisione i mesi del mandato né i ritardi delle politiche."
+        : "Serie annuali, possibili ritardi e shock rilevanti limitano l’attribuzione al governo." }
       : { grade: "B" as const, label: "attribuzione prudente", reason: "Il confronto storico e con i peer aiuta, ma non crea un controfattuale causale." };
   return {
     ...government,
@@ -266,9 +274,63 @@ function governmentView(snapshot: GovernmentScorecardSnapshot, government: Gover
   };
 }
 
+function inheritedTrend(snapshot: GovernmentScorecardSnapshot, baselineYear: number): ScoreCalculation {
+  if (baselineYear <= snapshot.method.firstScoreYear) {
+    return {
+      status: "not-scored",
+      baselineYear,
+      endYear: baselineYear,
+      windowYears: 0,
+      reason: "La traiettoria precedente non è completa nel Core annuale dal 1995.",
+    };
+  }
+  const startYear = Math.max(snapshot.method.firstScoreYear, baselineYear - 2);
+  return scoreForWindow(snapshot, startYear, baselineYear);
+}
+
+function baselineIndicators(snapshot: GovernmentScorecardSnapshot, baselineYear: number) {
+  return snapshot.indicators.flatMap((indicator) => {
+    const value = valueAt(indicator, "italy", baselineYear);
+    if (value == null) return [];
+    return [{
+      id: indicator.id,
+      area: indicator.area,
+      label: indicator.label,
+      unit: indicator.unit,
+      value,
+      limitations: indicator.limitations,
+    }];
+  });
+}
+
 export function getGovernmentScorecardView() {
   const snapshot = getGovernmentScorecardSnapshot();
-  const governments = snapshot.governments.map((government) => governmentView(snapshot, government));
+  const baseGovernments = snapshot.governments.map((government) => governmentView(snapshot, government));
+  const governments = baseGovernments.map((government, index) => {
+    const previous = index > 0 ? baseGovernments[index - 1]! : null;
+    const successor = index + 1 < baseGovernments.length ? baseGovernments[index + 1]! : null;
+    const baselineYear = government.calculation.baselineYear;
+    const startYear = Number(government.startDate.slice(0, 4));
+    return {
+      ...government,
+      inheritance: {
+        previousGovernment: previous ? {
+          id: previous.id,
+          name: previous.name,
+          endDate: previous.endDate,
+        } : null,
+        baselineYear,
+        indicators: baselineIndicators(snapshot, baselineYear),
+        trend: inheritedTrend(snapshot, baselineYear),
+        activeContexts: snapshot.contexts.filter((item) => item.startYear < startYear && item.endYear >= startYear),
+      },
+      successorGovernment: successor ? {
+        id: successor.id,
+        name: successor.name,
+        startDate: successor.startDate,
+      } : null,
+    };
+  });
   const current = governments.find((government) => government.status === "current");
   if (!current) throw new GovernmentScorecardContractError(new Error("governo corrente assente"));
   const currentYears = endpointYears(current, snapshot.sources.ameco.observedThrough);
@@ -296,6 +358,12 @@ export function getGovernmentScorecardView() {
       label: id === "france" ? "Francia" : id === "germany" ? "Germania" : "Spagna",
     })),
   };
+}
+
+export function getGovernmentScorecardGovernmentView(id: string) {
+  const view = getGovernmentScorecardView();
+  if (view.current.id === id) return view.current;
+  return view.governments.find((government) => government.id === id);
 }
 
 export type GovernmentScorecardView = ReturnType<typeof getGovernmentScorecardView>;

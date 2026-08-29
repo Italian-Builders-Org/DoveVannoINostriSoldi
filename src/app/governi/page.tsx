@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { longDate } from "@/lib/format";
 import { getGovernmentScorecardView } from "@/lib/government-scorecard";
+import { formatScore as score, rawChangeLabel, signed, sourceValue } from "./government-scorecard-format";
 import styles from "./governi.module.css";
 
 export const revalidate = 86_400;
@@ -9,25 +10,6 @@ export const metadata: Metadata = {
   title: "Pagella economica dei governi italiani",
   description: "Risultati macroeconomici osservati durante i governi italiani, confronto con Francia, Germania e Spagna, contesto storico, misure e scenario corrente.",
 };
-
-function score(value: number) {
-  return value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-}
-
-function signed(value: number, digits = 1) {
-  const absolute = Math.abs(value).toLocaleString("it-IT", { minimumFractionDigits: digits, maximumFractionDigits: digits });
-  return `${value > 0 ? "+" : value < 0 ? "−" : ""}${absolute}`;
-}
-
-function rawChangeLabel(indicator: { id: string; rawChange: number }) {
-  if (indicator.id === "real_compensation" || indicator.id === "real_gdp_per_capita") return `${signed(indicator.rawChange)}%`;
-  return `${signed(indicator.rawChange)} punti`;
-}
-
-function sourceValue(value: number, indicatorId: string) {
-  const suffix = indicatorId === "real_compensation" ? " indice" : indicatorId === "real_gdp_per_capita" ? " mila € 2020" : "%";
-  return `${value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${suffix}`;
-}
 
 export default function GovernmentsPage() {
   const data = getGovernmentScorecardView();
@@ -53,9 +35,9 @@ export default function GovernmentsPage() {
       <div className={`notice warning-notice ${styles.methodNotice}`}>
         <strong>Questa è una prima pagella macro, non la classifica definitiva.</strong>
         <p>
-          Usa sei indicatori annuali AMECO dal 1995. I governi precedenti restano nella storia senza voto;
-          la pagella socio-economica completa richiederà serie trimestrali su redditi, occupazione, ore,
-          produttività e investimenti pubblici e privati separati.
+          Ogni governo ha una scheda su eredità, contesto, misure e risultati. Il Core usa ancora sei indicatori
+          annuali AMECO dal 1995: una finestra di un anno produce solo un voto indicativo con affidabilità C;
+          se non esiste neppure un intervallo annuale mostriamo la valutazione documentale in attesa delle serie trimestrali.
         </p>
       </div>
 
@@ -271,7 +253,7 @@ export default function GovernmentsPage() {
             <span className={styles.eyebrow}>Dal 1995, dati permettendo</span>
             <h2 id="tutti-governi">Tutti i governi nella serie comparabile</h2>
           </div>
-          <p>La posizione ordina solo i governi conclusi che superano la stessa regola minima; “prov.” identifica il governo in carica e ND evita falsa precisione.</p>
+          <p>La posizione ordina solo i governi conclusi con un intervallo osservabile; ogni nome apre la scheda con eredità, contesto, azioni e risultati. “prov.” identifica il governo in carica.</p>
         </div>
         <div className={styles.tableWrap} role="region" aria-label="Pagella macroeconomica dei governi dal 1995" tabIndex={0}>
           <table className="table">
@@ -279,7 +261,7 @@ export default function GovernmentsPage() {
             <tbody>
               {data.governments.map((government) => (
                 <tr key={government.id}>
-                  <th scope="row">{government.name}{government.status === "current" && <small> in carica</small>}</th>
+                  <th scope="row"><Link className={styles.governmentLink} href={`/governi/${government.id}`}>{government.name}</Link>{government.status === "current" && <small> in carica</small>}</th>
                   <td>{government.startDate.slice(0, 4)}-{government.endDate?.slice(0, 4) ?? "oggi"}</td>
                   {government.calculation.status === "scored" ? <>
                     <td className="num">{government.rank ?? "prov."}</td>
@@ -367,7 +349,7 @@ export default function GovernmentsPage() {
             <li>{data.method.missingDataRule}</li>
             <li>{data.method.endpointRule}</li>
             <li>{data.method.attributionRule}</li>
-            <li>I governi con meno di due anni tra gli endpoint annuali mostrano ND.</li>
+            <li>Una finestra annuale è indicativa e ha affidabilità C; senza un intervallo annuale il voto resta sospeso, ma la scheda del governo è comunque pubblicata.</li>
           </ul>
         </details>
         <p>Per formule, fonti candidate e roadmap della versione completa leggi la <Link href="/metodologia">metodologia generale</Link>.</p>

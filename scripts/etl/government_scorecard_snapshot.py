@@ -81,7 +81,7 @@ def validate_official_url(url: Any, host: str, path: str) -> str:
 
 def validate_spec(spec: dict[str, Any]) -> None:
     exact_keys(spec, {"schemaVersion", "methodologyVersion", "ameco", "governmentChronology", "method", "contexts", "measures"}, "source spec")
-    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v1":
+    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v2":
         fail("source spec: versione non supportata")
     ameco = require_dict(spec["ameco"], "ameco")
     chronology = require_dict(spec["governmentChronology"], "governmentChronology")
@@ -102,7 +102,7 @@ def validate_spec(spec: dict[str, Any]) -> None:
             fail("ameco.series: trasformazione non valida")
         ids.add(item["id"])
     method = require_dict(spec["method"], "method")
-    if method.get("firstScoreYear") != 1995 or method.get("minimumWindowYears") != 2:
+    if method.get("firstScoreYear") != 1995 or method.get("minimumWindowYears") != 1:
         fail("method: soglie non autorizzate")
     if method.get("historicalWeightBasisPoints") + method.get("peerWeightBasisPoints") != 10_000:
         fail("method: pesi storico/peer non validi")
@@ -373,7 +373,7 @@ def build_snapshot(spec: dict[str, Any], ameco_payload: bytes, chronology_payloa
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
     exact_keys(snapshot, {"schemaVersion", "methodologyVersion", "generatedAt", "sources", "method", "indicators", "governments", "contexts", "measures", "caveats"}, "snapshot")
-    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v1":
+    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v2":
         fail("snapshot: versione non supportata")
     sources = require_dict(snapshot["sources"], "sources")
     if set(sources) != {"ameco", "governmentChronology"}:

@@ -22,7 +22,7 @@ test("government scorecard snapshot validates its fixed basket and provenance", 
   assert.equal(parsed.sources.ameco.observedThrough, 2024);
   assert.equal(parsed.sources.ameco.forecastFrom, 2025);
   assert.equal(parsed.sources.ameco.forecastThrough, 2027);
-  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v1");
+  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v2");
   assert.equal(getGovernmentScorecardView().ok, true);
 });
 

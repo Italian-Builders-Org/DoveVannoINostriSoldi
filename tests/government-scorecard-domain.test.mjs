@@ -49,10 +49,13 @@ test("pre-2005 governments are included when the same Core is complete", () => {
   assert.ok(view.historicalContexts.some((item) => item.id === "first-oil-shock"));
 });
 
-test("short annual windows fail closed and rankings include scored governments only", () => {
+test("one-year annual windows are indicative while zero-year windows fail closed", () => {
   const notScored = view.governments.filter((government) => government.calculation.status === "not-scored");
   assert.ok(notScored.length > 0);
   assert.ok(notScored.every((government) => government.rank === null));
+  const oneYear = view.governments.filter((government) => government.calculation.status === "scored" && government.calculation.windowYears === 1);
+  assert.ok(oneYear.length > 0);
+  assert.ok(oneYear.every((government) => government.reliability.grade === "C"));
   const ranked = view.governments.filter((government) => government.rank != null);
   assert.deepEqual([...ranked.map((government) => government.rank)].sort((a, b) => a - b), Array.from({ length: ranked.length }, (_, index) => index + 1));
   assert.ok(ranked.every((government) => government.status === "ended" && government.calculation.status === "scored"));
@@ -70,11 +73,14 @@ test("measures and shocks are contextual evidence and never score inputs", () =>
   assert.ok(!indicatorKeys.includes("contexts"));
 });
 
-test("every scored government has at least one sourced economic measure", () => {
-  const scored = view.governments.filter((government) => government.calculation.status === "scored");
-  assert.ok(scored.length > 0);
-  assert.ok(scored.every((government) => government.measures.length > 0));
-  for (const government of scored) {
+test("every government has a sourced dossier of inheritance, context and measures", () => {
+  assert.ok(view.governments.every((government) => government.measures.length > 0));
+  assert.ok(view.governments.every((government) => government.contexts.length > 0));
+  assert.ok(view.governments.every((government) => government.inheritance.indicators.length > 0));
+  assert.equal(view.governments[0].inheritance.previousGovernment, null);
+  assert.equal(view.governments.at(-1).inheritance.previousGovernment.id, "draghi-i");
+  assert.equal(view.governments.at(-2).successorGovernment.id, "meloni-i");
+  for (const government of view.governments) {
     assert.ok(government.measures.every((measure) => measure.sourceUrl.startsWith("https://")));
   }
 });

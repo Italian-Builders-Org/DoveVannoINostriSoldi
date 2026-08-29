@@ -122,7 +122,7 @@ const measureSchema = z.object({
 
 const methodSchema = z.object({
   firstScoreYear: z.literal(1995),
-  minimumWindowYears: z.literal(2),
+  minimumWindowYears: z.literal(1),
   peerCountryIds: z.tuple([z.literal("france"), z.literal("germany"), z.literal("spain")]),
   historicalWeightBasisPoints: z.literal(5000),
   peerWeightBasisPoints: z.literal(5000),
@@ -140,7 +140,7 @@ function issue(context: z.RefinementCtx, message: string, path: PropertyKey[] = 
 
 export const governmentScorecardSnapshotSchema = z.object({
   schemaVersion: z.literal(1),
-  methodologyVersion: z.literal("core-annual-v1"),
+  methodologyVersion: z.literal("core-annual-v2"),
   generatedAt: utcTimestamp,
   sources: z.object({
     ameco: amecoSourceSchema,

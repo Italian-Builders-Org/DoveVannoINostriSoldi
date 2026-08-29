@@ -5,6 +5,7 @@ import {
   formatScore,
   rawChangeLabel,
 } from "../government-scorecard-format";
+import { GovernmentComparisonOverlay } from "./government-comparison-overlay";
 import styles from "./confronta.module.css";
 
 export const revalidate = 86_400;
@@ -25,14 +26,14 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
   const data = getGovernmentScorecardView();
   const candidates = data.governments.filter((government) => government.calculation.status === "scored");
   const current = candidates.find((government) => government.status === "current") ?? candidates.at(-1)!;
-  const historicalBest = candidates.find((government) => government.rank === 1) ?? candidates[0]!;
+  const previousGovernment = [...candidates].reverse().find((government) => government.status === "ended") ?? candidates[0]!;
 
   const requestedLeft = candidates.find((government) => government.id === first(params.x));
   const requestedRight = candidates.find((government) => government.id === first(params.y));
   const left = requestedLeft ?? current;
-  const rightFallback = historicalBest.id === left.id
+  const rightFallback = previousGovernment.id === left.id
     ? candidates.find((government) => government.id !== left.id)!
-    : historicalBest;
+    : previousGovernment;
   const right = requestedRight && requestedRight.id !== left.id ? requestedRight : rightFallback;
 
   if (left.calculation.status !== "scored" || right.calculation.status !== "scored") return null;
@@ -40,20 +41,14 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
   const leftCalculation = left.calculation;
   const rightCalculation = right.calculation;
   const scoreDifference = leftCalculation.score - rightCalculation.score;
-  const winner = Math.abs(scoreDifference) < 0.1 ? null : scoreDifference > 0 ? left : right;
-  const loser = winner?.id === left.id ? right : left;
-  const winnerCalculation = winner?.calculation.status === "scored" ? winner.calculation : null;
-  const loserCalculation = loser.calculation.status === "scored" ? loser.calculation : null;
+  const higherScoreGovernment = Math.abs(scoreDifference) < 0.1 ? null : scoreDifference > 0 ? left : right;
   const categoryComparisons = leftCalculation.categories.map((category) => {
     const other = rightCalculation.categories.find((item) => item.id === category.id)!;
     return { label: category.label, left: category.score, right: other.score, difference: category.score - other.score };
   });
-  const decisiveCategories = winnerCalculation && loserCalculation
-    ? winnerCalculation.categories.map((category) => {
-      const other = loserCalculation.categories.find((item) => item.id === category.id)!;
-      return { label: category.label, difference: category.score - other.score };
-      }).filter((category) => category.difference > 0).sort((a, b) => b.difference - a.difference).slice(0, 3)
-    : [];
+  const largestCategoryDifferences = [...categoryComparisons]
+    .sort((a, b) => Math.abs(b.difference) - Math.abs(a.difference))
+    .slice(0, 3);
 
   return (
     <main className="shell page">
@@ -66,7 +61,7 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
       <header className={`page-intro ${styles.intro}`}>
         <span className={styles.kicker}>Confronto diretto</span>
         <h1>Scegli due governi</h1>
-        <p>Stessa formula e stessi indicatori. Il confronto misura ciò che è cambiato nei rispettivi periodi, tenendo separata l’attribuzione politica.</p>
+        <p>Stessa formula e stessi indicatori. Scegli Governo X e Governo Y, poi sovrapponi le rispettive traiettorie economiche.</p>
       </header>
 
       <form className={styles.selector} action="/governi/confronta" method="get">
@@ -92,22 +87,22 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
 
       <section className={styles.verdict} aria-labelledby="esito-confronto">
         <div>
-          <span>Esito del Core macro</span>
-          <h2 id="esito-confronto">{winner ? `${winner.name} ha il risultato più alto` : "I due risultati sono equivalenti"}</h2>
+          <span>Distanza nel Core macro</span>
+          <h2 id="esito-confronto">{formatScore(Math.abs(scoreDifference))} punti tra i due periodi</h2>
           <p>
-            {winner && winnerCalculation && loserCalculation
-              ? `${formatScore(winnerCalculation.score)} contro ${formatScore(loserCalculation.score)}: ${formatScore(Math.abs(winnerCalculation.score - loserCalculation.score))} punti di differenza.`
+            {higherScoreGovernment
+              ? `${left.name} ${formatScore(leftCalculation.score)} · ${right.name} ${formatScore(rightCalculation.score)}. Il numero descrive i risultati osservati, non stabilisce quale governo sia stato migliore in assoluto.`
               : "La differenza è inferiore a un decimo di punto."}
           </p>
         </div>
-        {winner && decisiveCategories.length > 0 && (
+        {largestCategoryDifferences.length > 0 && (
           <div className={styles.whyWinner}>
-            <strong>Perché è davanti</strong>
+            <strong>Dove differiscono di più</strong>
             <ul>
-              {decisiveCategories.map((category) => (
+              {largestCategoryDifferences.map((category) => (
                 <li key={category.label}>
                   <span>{category.label}</span>
-                  <b>{category.difference >= 0 ? "+" : ""}{formatScore(category.difference)} pt</b>
+                  <b>{category.difference > 0 ? left.name : right.name} +{formatScore(Math.abs(category.difference))}</b>
                 </li>
               ))}
             </ul>
@@ -118,13 +113,13 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
       <section className={styles.scoreCards} aria-label="Risultati dei due governi">
         {[left, right].map((government) => {
           if (government.calculation.status !== "scored") return null;
-          const isWinner = winner?.id === government.id;
+          const hasHigherScore = higherScoreGovernment?.id === government.id;
           const strongest = [...government.calculation.indicators].sort((a, b) => b.contributionPoints - a.contributionPoints)[0]!;
           const weakest = [...government.calculation.indicators].sort((a, b) => a.contributionPoints - b.contributionPoints)[0]!;
           return (
-            <article key={government.id} data-winner={isWinner || undefined}>
+            <article key={government.id} data-winner={hasHigherScore || undefined}>
               <div className={styles.cardHeading}>
-                <div><span>{isWinner ? "Risultato più alto" : government.status === "current" ? "In carica · provvisorio" : `Posizione ${government.rank}`}</span><h2>{government.name}</h2></div>
+                <div><span>{government.status === "current" ? "In carica · provvisorio" : "Governo concluso"}</span><h2>{government.name}</h2></div>
                 <strong>{formatScore(government.calculation.score)}<small>/100</small></strong>
               </div>
               <dl>
@@ -142,6 +137,11 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
           );
         })}
       </section>
+
+      <GovernmentComparisonOverlay
+        left={{ name: left.name, indicators: leftCalculation.indicators }}
+        right={{ name: right.name, indicators: rightCalculation.indicators }}
+      />
 
       <section className={`panel ${styles.areaSection}`} aria-labelledby="aree-confronto">
         <div className={styles.sectionHeading}>
@@ -167,7 +167,7 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
         </div>
         <div className={styles.tableWrap} role="region" aria-label="Confronto dei sei indicatori" tabIndex={0}>
           <table className="table">
-            <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">{left.name}</th><th scope="col" className="num">Indice</th><th scope="col" className="num">{right.name}</th><th scope="col" className="num">Indice</th><th scope="col">Risultato migliore</th></tr></thead>
+            <thead><tr><th scope="col">Indicatore</th><th scope="col" className="num">{left.name}</th><th scope="col" className="num">Indice</th><th scope="col" className="num">{right.name}</th><th scope="col" className="num">Indice</th><th scope="col">Indice più alto</th></tr></thead>
             <tbody>
               {leftCalculation.indicators.map((indicator) => {
                 const other = rightCalculation.indicators.find((item) => item.id === indicator.id)!;
@@ -189,7 +189,7 @@ export default async function GovernmentComparisonPage({ searchParams }: { searc
 
       <aside className={styles.boundary}>
         <strong>Come leggere il risultato</strong>
-        <p>“Migliore” significa punteggio Core macro più alto nei dati disponibili. Non significa automaticamente miglior governo in assoluto né prova che tutte le variazioni siano state causate dalle sue decisioni. Periodo, shock, situazione ereditata e misure sono documentati nelle schede individuali.</p>
+        <p>Il confronto descrive la distanza tra due periodi economici. Non decreta il governo migliore e non prova che le variazioni siano state causate dalle sue decisioni. Periodo, shock, situazione ereditata e misure sono documentati nelle schede individuali.</p>
         <span>Dati osservati fino al {data.sources.ameco.observedThrough} · peer: Francia, Germania e Spagna</span>
       </aside>
     </main>

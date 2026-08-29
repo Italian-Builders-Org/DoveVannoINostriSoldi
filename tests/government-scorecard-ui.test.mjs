@@ -5,6 +5,7 @@ import test from "node:test";
 const page = await readFile(new URL("../src/app/governi/page.tsx", import.meta.url), "utf8");
 const detail = await readFile(new URL("../src/app/governi/[id]/page.tsx", import.meta.url), "utf8");
 const comparison = await readFile(new URL("../src/app/governi/confronta/page.tsx", import.meta.url), "utf8");
+const comparisonOverlay = await readFile(new URL("../src/app/governi/confronta/government-comparison-overlay.tsx", import.meta.url), "utf8");
 const citizenModel = await readFile(new URL("../src/app/governi/citizen-score-model.tsx", import.meta.url), "utf8");
 const currentOverview = await readFile(new URL("../src/app/governi/current-government-overview.tsx", import.meta.url), "utf8");
 const indicatorChart = await readFile(new URL("../src/app/governi/government-indicator-chart.tsx", import.meta.url), "utf8");
@@ -24,7 +25,7 @@ test("government scorecard is server-first and opens on the current government",
 });
 
 test("page keeps current actions first and makes forecasts, history and method progressive", () => {
-  const headings = ["Cosa ha fatto e cosa possiamo verificare", "Se le previsioni si realizzano", "Confronta il governo attuale con tutti i governi", "Quali dati mancano e come viene calcolato il voto"];
+  const headings = ["Cosa ha fatto e cosa possiamo verificare", "Se le previsioni si realizzano", "Apri una scheda oppure confronta due governi", "Quali dati mancano e come viene calcolato il voto"];
   let cursor = -1;
   for (const heading of headings) {
     const next = page.indexOf(heading);
@@ -90,15 +91,21 @@ test("every government links to a dedicated five-part assessment", () => {
 });
 
 test("users can compare any two scored governments and open either detail", () => {
-  assert.match(page, /Miglior risultato tra i governi conclusi e valutabili/);
+  assert.doesNotMatch(page, /Miglior risultato tra i governi conclusi e valutabili/);
+  assert.match(page, /Ogni nome apre la scheda completa del governo/);
   assert.match(page, /href="\/governi\/confronta"/);
   assert.match(comparison, /name="x"/);
   assert.match(comparison, /name="y"/);
-  assert.match(comparison, /Perché è davanti/);
+  assert.match(comparison, /Dove differiscono di più/);
   assert.match(comparison, /Dove nasce la differenza/);
   assert.match(comparison, /I dati, uno per uno/);
+  assert.match(comparison, /<GovernmentComparisonOverlay/);
   assert.match(comparison, /href=\{`\/governi\/\$\{government\.id\}`\}/);
-  assert.match(comparison, /“Migliore” significa punteggio Core macro più alto/);
+  assert.match(comparison, /Non decreta il governo migliore/);
+  assert.match(comparisonOverlay, /^"use client"/);
+  assert.match(comparisonOverlay, /Dati sovrapposti/);
+  assert.match(comparisonOverlay, /ReferenceLine y=\{0\}/);
+  assert.match(comparisonOverlay, /<ChartDataTable/);
 });
 
 test("government comparison chart is an isolated client component with accessible raw data", () => {

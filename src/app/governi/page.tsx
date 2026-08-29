@@ -18,11 +18,6 @@ export default function GovernmentsPage() {
   const current = data.current;
   const currentScore = current.calculation.status === "scored" ? current.calculation : null;
   const forecast = current.forecast.status === "scored" ? current.forecast : null;
-  const historicalBest = data.governments.find((government) => government.rank === 1);
-  const historicalBestScore = historicalBest?.calculation.status === "scored" ? historicalBest.calculation : null;
-  const historicalBestAreas = historicalBestScore
-    ? [...historicalBestScore.categories].sort((left, right) => right.score - left.score).slice(0, 2)
-    : [];
 
   return (
     <main className="shell page">
@@ -54,24 +49,6 @@ export default function GovernmentsPage() {
         <a href="#confronto-governi">Classifica completa</a>
         <a href="#metodo-dati">Metodo e dati mancanti</a>
       </nav>
-
-      {historicalBest && historicalBestScore && (
-        <section className={styles.comparisonLauncher} aria-labelledby="miglior-governo">
-          <div>
-            <span>Miglior risultato tra i governi conclusi e valutabili</span>
-            <h2 id="miglior-governo">{historicalBest.name}</h2>
-            <p>
-              Primo nel Core macro con <strong>{score(historicalBestScore.score)}/100</strong> nel periodo {historicalBestScore.baselineYear}→{historicalBestScore.endYear}.
-              Le aree più forti sono {historicalBestAreas.map((area) => `${area.label} (${score(area.score)})`).join(" e ")}.
-            </p>
-            <small>Affidabilità {historicalBest.reliability.grade} · {historicalBest.reliability.label}. È il miglior risultato nei dati disponibili, non una prova che ogni miglioramento sia stato causato dal governo.</small>
-          </div>
-          <div>
-            <Link className={styles.primaryAction} href="/governi/confronta">Scegli Governo X e Governo Y →</Link>
-            <Link className={styles.secondaryAction} href={`/governi/${historicalBest.id}`}>Perché è primo</Link>
-          </div>
-        </section>
-      )}
 
       <section className={`panel ${styles.section}`} id="azioni-governo" aria-labelledby="azioni-title">
         <div className={styles.sectionHeading}>
@@ -143,11 +120,14 @@ export default function GovernmentsPage() {
 
       <details className={styles.explorer} id="confronto-governi">
         <summary>
-          <span><small>Confronto storico</small><strong>Confronta il governo attuale con tutti i governi dal 1995</strong></span>
-          <b>Apri il confronto</b>
+          <span><small>Archivio dei governi</small><strong>Apri una scheda oppure confronta due governi</strong></span>
+          <b>Apri l’archivio</b>
         </summary>
         <div className={styles.explorerBody}>
-          <p className={styles.explorerIntro}>Stesso paniere e stessa formula. Le barre mostrano il Core macro provvisorio; “ND” indica che la finestra annuale non è sufficiente.</p>
+          <div className={styles.archiveIntro}>
+            <p className={styles.explorerIntro}>Ogni nome apre la scheda completa del governo. Le barre usano lo stesso paniere; “ND” indica che la finestra annuale non è sufficiente.</p>
+            <Link href="/governi/confronta">Sovrapponi i dati di due governi →</Link>
+          </div>
           <ol className={styles.governmentBars}>
             {[...data.governments].reverse().map((government) => (
               <li key={government.id} data-current={government.status === "current" || undefined}>

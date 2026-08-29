@@ -69,6 +69,11 @@
     padding: 13px;
   }
 
+  .selector {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
   .chart {
     height: 320px;
   }

@@ -85,18 +85,35 @@ def ameco_zip(spec: dict[str, object], *, mutate_row=None, extra_member: tuple[s
     return output.getvalue()
 
 
-def chronology_html() -> bytes:
-    return b"""<!doctype html><html><body>
-    <h1>I Governi nelle Legislature</h1>
-    <p>Governo Meloni</p><p>Governo Berlusconi II</p><p>Governo Dini</p>
-    </body></html>"""
+ITALIAN_MONTHS = (
+    "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+    "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre",
+)
+
+
+def chronology_html(spec: dict[str, object], *, newer_government: str | None = None) -> bytes:
+    lines = []
+    if newer_government:
+        lines.append(f"{newer_government} (dal 1 gennaio 2027 - in carica)")
+    for government in reversed(spec["governmentChronology"]["governments"]):
+        year, month, day = (int(part) for part in government["startDate"].split("-"))
+        if government["status"] == "current":
+            status = " - in carica"
+        else:
+            end_year, end_month, end_day = (int(part) for part in government["endDate"].split("-"))
+            status = f" al {end_day} {ITALIAN_MONTHS[end_month - 1]} {end_year}"
+        lines.append(f"{government['sourceLabel']} (dal {day} {ITALIAN_MONTHS[month - 1]} {year}{status})")
+    body = "<br />\n".join(lines)
+    return f"""<!doctype html><html><body>
+    <h1>I Governi nelle Legislature</h1><dl><dt>Legislature</dt><dd>{body}</dd></dl>
+    </body></html>""".encode()
 
 
 class GovernmentScorecardSnapshotTests(unittest.TestCase):
     def test_valid_inputs_build_a_reconciled_snapshot(self) -> None:
         spec = load_spec()
         ameco = ameco_zip(spec)
-        chronology = chronology_html()
+        chronology = chronology_html(spec)
         snapshot = ETL.build_snapshot(spec, ameco, chronology, "2026-08-29T08:00:00Z")
         ETL.validate_snapshot(snapshot)
         self.assertEqual(len(snapshot["indicators"]), 6)
@@ -153,14 +170,20 @@ class GovernmentScorecardSnapshotTests(unittest.TestCase):
         spec = load_spec()
         with self.assertRaisesRegex(ETL.SnapshotError, "pagina ufficiale"):
             ETL.extract_governments(spec, b"<html>unexpected</html>")
+        with self.assertRaisesRegex(ETL.SnapshotError, "fonte e specifica divergono"):
+            ETL.extract_governments(spec, chronology_html(spec, newer_government="Governo Nuovo"))
         altered = copy.deepcopy(spec)
-        altered["governmentChronology"]["governments"][-1]["name"] = "Unknown-I"
-        with self.assertRaisesRegex(ETL.SnapshotError, "governo corrente"):
-            ETL.validate_spec(altered)
+        altered["governmentChronology"]["governments"][-1]["sourceLabel"] = "Governo Sconosciuto"
+        with self.assertRaisesRegex(ETL.SnapshotError, "fonte e specifica divergono"):
+            ETL.extract_governments(altered, chronology_html(spec))
+        altered_end = copy.deepcopy(spec)
+        altered_end["governmentChronology"]["governments"][5]["endDate"] = "2004-04-23"
+        with self.assertRaisesRegex(ETL.SnapshotError, "data finale divergente"):
+            ETL.extract_governments(altered_end, chronology_html(spec))
 
     def test_runtime_validation_rejects_missing_required_year_and_measure_orphan(self) -> None:
         spec = load_spec()
-        snapshot = ETL.build_snapshot(spec, ameco_zip(spec), chronology_html(), "2026-08-29T08:00:00Z")
+        snapshot = ETL.build_snapshot(spec, ameco_zip(spec), chronology_html(spec), "2026-08-29T08:00:00Z")
         broken_value = copy.deepcopy(snapshot)
         broken_value["indicators"][0]["countries"]["italy"][2024 - 1960]["value"] = None
         with self.assertRaisesRegex(ETL.SnapshotError, "dato obbligatorio"):
@@ -173,6 +196,16 @@ class GovernmentScorecardSnapshotTests(unittest.TestCase):
         orphan["measures"][0]["government"] = "Missing-I"
         with self.assertRaisesRegex(ETL.SnapshotError, "governo assente"):
             ETL.validate_snapshot(orphan)
+
+    def test_forecast_gaps_do_not_invalidate_complete_observations(self) -> None:
+        spec = load_spec()
+        snapshot = ETL.build_snapshot(spec, ameco_zip(spec), chronology_html(spec), "2026-08-29T08:00:00Z")
+        for indicator in snapshot["indicators"]:
+            for points in indicator["countries"].values():
+                for point in points:
+                    if point["year"] >= snapshot["sources"]["ameco"]["forecastFrom"]:
+                        point["value"] = None
+        ETL.validate_snapshot(snapshot)
 
 
 if __name__ == "__main__":

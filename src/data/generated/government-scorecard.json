@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v3",
+  "methodologyVersion": "core-annual-v4",
   "generatedAt": "2026-08-29T17:17:17Z",
   "sources": {
     "ameco": {
@@ -6846,7 +6846,7 @@
       "id": "prodi-ii",
       "name": "Prodi-II",
       "startDate": "2006-05-17",
-      "endDate": "2008-05-08",
+      "endDate": "2008-05-06",
       "status": "ended"
     },
     {
@@ -6860,14 +6860,14 @@
       "id": "monti-i",
       "name": "Monti-I",
       "startDate": "2011-11-16",
-      "endDate": "2013-04-28",
+      "endDate": "2013-04-27",
       "status": "ended"
     },
     {
       "id": "letta-i",
       "name": "Letta-I",
       "startDate": "2013-04-28",
-      "endDate": "2014-02-22",
+      "endDate": "2014-02-21",
       "status": "ended"
     },
     {
@@ -6888,7 +6888,7 @@
       "id": "conte-i",
       "name": "Conte-I",
       "startDate": "2018-06-01",
-      "endDate": "2019-09-05",
+      "endDate": "2019-09-04",
       "status": "ended"
     },
     {

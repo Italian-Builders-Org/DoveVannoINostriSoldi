@@ -4,7 +4,7 @@ import { longDate } from "@/lib/format";
 import { getGovernmentCurrentSignalsView } from "@/lib/government-current-signals";
 import { getGovernmentScorecardView } from "@/lib/government-scorecard";
 import { CitizenScoreModel } from "./citizen-score-model";
-import { CurrentGovernmentOverview } from "./current-government-overview";
+import { CurrentGovernmentOverview, CurrentGovernmentPeerComparison } from "./current-government-overview";
 import { GovernmentArchive } from "./government-archive";
 import { formatScore as score, sourceValue } from "./government-scorecard-format";
 import styles from "./governi.module.css";
@@ -30,49 +30,54 @@ export default function GovernmentsPage() {
         <p>Dati osservati, confronto internazionale e misure del governo. Prima il presente; lo storico è disponibile su richiesta.</p>
       </header>
 
-      {currentScore ? (
-        <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} />
-      ) : (
-        <div className="notice warning-notice">
-          <strong>{current.name}: risultato non disponibile.</strong>
-          <p>{current.calculation.status === "not-scored" ? current.calculation.reason : "Dati insufficienti."}</p>
-        </div>
-      )}
-
-      <div className={styles.dataBoundary}>
-        <strong>Risultati annuali al {data.sources.ameco.observedThrough} · prezzi a {currentSignals.latestPeriod}</strong>
-        <span>I sei indicatori annuali permettono lo storico. I prezzi mensili sono più recenti, ma non vengono sommati al numero.</span>
-        <Link href={`/governi/${current.id}`}>Scheda completa di {current.name} →</Link>
-      </div>
-
-      <section className={`panel ${styles.section}`} id="scenario" aria-labelledby="scenario-title">
-        <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.eyebrow}>Scenario Commissione europea</span>
-            <h2 id="scenario-title">Se le previsioni si realizzano</h2>
+      <section aria-label="Dati del governo attualmente in carica">
+        {currentScore ? (
+          <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} />
+        ) : (
+          <div className="notice warning-notice">
+            <strong>{current.name}: risultato non disponibile.</strong>
+            <p>{current.calculation.status === "not-scored" ? current.calculation.reason : "Dati insufficienti."}</p>
           </div>
-          <p>Il 2025-2027 è una previsione AMECO, non un dato osservato e non un risultato anticipato.</p>
+        )}
+
+        <div className={styles.dataBoundary}>
+          <strong>Risultati annuali al {data.sources.ameco.observedThrough} · prezzi a {currentSignals.latestPeriod}</strong>
+          <span>I sei indicatori annuali permettono lo storico. I prezzi mensili sono più recenti, ma non vengono sommati al numero.</span>
+          <Link href={`/governi/${current.id}`}>Scheda completa di {current.name} →</Link>
         </div>
-        {forecast ? (
-          <div className={styles.forecastCompact}>
-            <div>
-              <span>Risultato osservato</span>
-              <strong>{currentScore ? score(currentScore.score) : "n.d."}<small>/100</small></strong>
-              <small>fino al {data.sources.ameco.observedThrough}</small>
-            </div>
-            <span className={styles.forecastArrow} aria-hidden="true">→</span>
-            <div>
-              <span>Scenario al {forecast.endYear}</span>
-              <strong>{score(forecast.score)}<small>/100</small></strong>
-              <small>se le stime si realizzano</small>
-            </div>
-            <ul>
-              {forecast.indicators.slice(0, 3).map((indicator) => (
-                <li key={indicator.id}><span>{indicator.label}</span><strong>{sourceValue(indicator.endValue, indicator.id)}</strong></li>
-              ))}
-            </ul>
+
+        <details className={styles.explorer} id="scenario">
+          <summary>
+            <span>
+              <small>Scenario Commissione europea</small>
+              <strong>{forecast ? `Se le previsioni si realizzano: ${score(forecast.score)}/100 nel ${forecast.endYear}` : "Previsioni non pubblicabili: copertura incompleta"}</strong>
+            </span>
+            <b aria-hidden="true">Apri lo scenario</b>
+          </summary>
+          <div className={styles.explorerBody}>
+            <p className={styles.explorerIntro}>Il 2025-2027 è una previsione AMECO, non un dato osservato e non un risultato anticipato.</p>
+            {forecast ? (
+              <div className={styles.forecastCompact}>
+                <div>
+                  <span>Risultato osservato</span>
+                  <strong>{currentScore ? score(currentScore.score) : "n.d."}<small>/100</small></strong>
+                  <small>fino al {data.sources.ameco.observedThrough}</small>
+                </div>
+                <span className={styles.forecastArrow} aria-hidden="true">→</span>
+                <div>
+                  <span>Scenario al {forecast.endYear}</span>
+                  <strong>{score(forecast.score)}<small>/100</small></strong>
+                  <small>se le stime si realizzano</small>
+                </div>
+                <ul>
+                  {forecast.indicators.slice(0, 3).map((indicator) => (
+                    <li key={indicator.id}><span>{indicator.label}</span><strong>{sourceValue(indicator.endValue, indicator.id)}</strong></li>
+                  ))}
+                </ul>
+              </div>
+            ) : <p>Scenario non disponibile.</p>}
           </div>
-        ) : <p>Scenario non disponibile.</p>}
+        </details>
       </section>
 
       <nav className={styles.pageJumps} aria-label="Sezioni della pagella">
@@ -172,10 +177,12 @@ export default function GovernmentsPage() {
         <Link href={`/governi/confronta?x=${current.id}`}>Apri il confronto</Link>
       </section>
 
+      {currentScore && <CurrentGovernmentPeerComparison indicators={currentScore.indicators} />}
+
       <details className={styles.explorer} id="metodo-dati">
         <summary>
           <span><small>Trasparenza</small><strong>Quali dati mancano e come viene calcolato il risultato</strong></span>
-          <b>Apri il metodo</b>
+          <b aria-hidden="true">Apri il metodo</b>
         </summary>
         <div className={styles.explorerBody}>
           <CitizenScoreModel />
@@ -215,7 +222,7 @@ export default function GovernmentsPage() {
       <details className={`${styles.explorer} ${styles.limitDetails}`}>
         <summary>
           <span><small>Avvertenze</small><strong>Cosa il risultato non dimostra</strong></span>
-          <b>Apri</b>
+          <b aria-hidden="true">Apri</b>
         </summary>
         <div className={styles.explorerBody}>
           <ul className={styles.caveats}>

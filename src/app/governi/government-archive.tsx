@@ -10,7 +10,7 @@ export function GovernmentArchive({ id, selectedGovernmentId }: { id: string; se
     <details className={styles.explorer} id={id}>
       <summary>
         <span><small>Archivio dei governi</small><strong>Apri la scheda di un altro governo</strong></span>
-        <b>Apri l’archivio</b>
+        <b aria-hidden="true">Apri l’archivio</b>
       </summary>
       <div className={styles.explorerBody}>
         <p className={styles.explorerIntro}>Ogni nome apre la scheda completa del governo. Le barre usano lo stesso paniere; “ND” indica che la finestra annuale non è sufficiente.</p>

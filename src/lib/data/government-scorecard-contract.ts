@@ -149,7 +149,7 @@ function issue(context: z.RefinementCtx, message: string, path: PropertyKey[] = 
 
 export const governmentScorecardSnapshotSchema = z.object({
   schemaVersion: z.literal(1),
-  methodologyVersion: z.literal("core-annual-v3"),
+  methodologyVersion: z.literal("core-annual-v4"),
   generatedAt: utcTimestamp,
   sources: z.object({
     ameco: amecoSourceSchema,
@@ -157,7 +157,7 @@ export const governmentScorecardSnapshotSchema = z.object({
   }).strict(),
   method: methodSchema,
   indicators: z.array(indicatorSchema).length(GOVERNMENT_SCORECARD_INDICATOR_IDS.length),
-  governments: z.array(governmentSchema).length(17),
+  governments: z.array(governmentSchema).min(17),
   contexts: z.array(contextSchema).min(8),
   measures: z.array(measureSchema).min(10),
   caveats: z.array(z.string().min(1)).min(4),
@@ -181,7 +181,7 @@ export const governmentScorecardSnapshotSchema = z.object({
       if (points.some((point, index) => point.year !== expectedYears[index])) {
         issue(context, "anni non consecutivi", ["indicators", indicatorIndex, "countries", countryId]);
       }
-      for (let year = snapshot.method.firstScoreYear; year <= snapshot.sources.ameco.forecastThrough; year += 1) {
+      for (let year = snapshot.method.firstScoreYear; year <= snapshot.sources.ameco.observedThrough; year += 1) {
         if (points[year - 1960]?.value == null) {
           issue(context, "dato obbligatorio mancante dal 1995", ["indicators", indicatorIndex, "countries", countryId, year - 1960]);
           break;
@@ -209,8 +209,8 @@ export const governmentScorecardSnapshotSchema = z.object({
     }
   });
   const current = snapshot.governments.filter((government) => government.status === "current");
-  if (current.length !== 1 || current[0]?.id !== "meloni-i" || current[0].startDate !== "2022-10-22") {
-    issue(context, "governo corrente inatteso", ["governments"]);
+  if (current.length !== 1 || current[0] !== snapshot.governments.at(-1)) {
+    issue(context, "governo corrente non univoco o non più recente", ["governments"]);
   }
   snapshot.measures.forEach((measure, index) => {
     if (!governmentNames.includes(measure.government)) issue(context, "misura senza governo", ["measures", index, "government"]);
@@ -224,6 +224,48 @@ export type GovernmentScorecardSnapshot = z.infer<typeof governmentScorecardSnap
 export type GovernmentScorecardIndicator = GovernmentScorecardSnapshot["indicators"][number];
 export type GovernmentScorecardGovernment = GovernmentScorecardSnapshot["governments"][number];
 export type GovernmentScorecardCountryId = keyof GovernmentScorecardIndicator["countries"];
+
+export type GovernmentScorecardForecastCoverage = Readonly<{
+  status: "complete" | "partial" | "missing";
+  fromYear: number;
+  throughYear: number;
+  availableCells: number;
+  requiredCells: number;
+}>;
+
+export function getGovernmentScorecardForecastCoverage(
+  snapshot: GovernmentScorecardSnapshot,
+): GovernmentScorecardForecastCoverage {
+  const { forecastFrom, forecastThrough } = snapshot.sources.ameco;
+  const forecastYears = forecastThrough - forecastFrom + 1;
+  const requiredCells = snapshot.indicators.length
+    * GOVERNMENT_SCORECARD_COUNTRY_IDS.length
+    * forecastYears;
+  const availableCells = snapshot.indicators.reduce(
+    (indicatorTotal, indicator) => indicatorTotal + GOVERNMENT_SCORECARD_COUNTRY_IDS.reduce(
+      (countryTotal, countryId) => countryTotal + indicator.countries[countryId].filter(
+        (point) => point.year >= forecastFrom
+          && point.year <= forecastThrough
+          && point.value != null,
+      ).length,
+      0,
+    ),
+    0,
+  );
+  const status = availableCells === 0
+    ? "missing" as const
+    : availableCells === requiredCells
+      ? "complete" as const
+      : "partial" as const;
+
+  return {
+    status,
+    fromYear: forecastFrom,
+    throughYear: forecastThrough,
+    availableCells,
+    requiredCells,
+  };
+}
 
 export function parseGovernmentScorecardSnapshot(input: unknown): GovernmentScorecardSnapshot {
   return governmentScorecardSnapshotSchema.parse(input);

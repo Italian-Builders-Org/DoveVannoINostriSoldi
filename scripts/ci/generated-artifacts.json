@@ -432,7 +432,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python3 scripts/etl/government_scorecard_snapshot.py --check",
+        "command": "python3 scripts/ci/check-government-scorecard-artifacts.py",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [

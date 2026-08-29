@@ -14,6 +14,8 @@ import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
+import { getGovernmentScorecardSnapshot } from "@/lib/government-scorecard";
+import { getGovernmentScorecardForecastCoverage } from "@/lib/data/government-scorecard-contract";
 
 export type SourceLatestData =
   | { kind: "date"; value: string }
@@ -28,7 +30,16 @@ function dated(value: string | null): SourceLatestData {
    time. Annual periods remain periods: they must not be converted into an
    invented day just to reuse date formatting. */
 const exhaustiveLatestDataBySlug = {
-  ameco: { kind: "period", label: "osservati 2024 · previsioni 2025-2027" },
+  ameco: (() => {
+    const snapshot = getGovernmentScorecardSnapshot();
+    const coverage = getGovernmentScorecardForecastCoverage(snapshot);
+    return {
+      kind: "period" as const,
+      label: coverage.status === "complete"
+        ? `osservati ${snapshot.sources.ameco.observedThrough} · previsioni complete ${coverage.fromYear}-${coverage.throughYear}`
+        : `osservati ${snapshot.sources.ameco.observedThrough} · previsioni non pubblicabili`,
+    };
+  })(),
   "governi-presidenza": { kind: "period", label: "governo in carica dal 2022" },
   bancaditalia: { kind: "date", value: getPublicDebtSnapshot().stock.referenceDate },
   eurostat: {

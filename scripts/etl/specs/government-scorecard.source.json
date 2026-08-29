@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v3",
+  "methodologyVersion": "core-annual-v4",
   "ameco": {
     "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
     "title": "AMECO annual macro-economic database",
@@ -129,23 +129,23 @@
     "allowedHost": "www.governo.it",
     "allowedPath": "/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
     "governments": [
-      {"id": "dini-i", "name": "Dini-I", "startDate": "1995-01-17", "endDate": "1996-05-17", "status": "ended"},
-      {"id": "prodi-i", "name": "Prodi-I", "startDate": "1996-05-17", "endDate": "1998-10-21", "status": "ended"},
-      {"id": "dalema-i", "name": "D'Alema-I", "startDate": "1998-10-21", "endDate": "1999-12-22", "status": "ended"},
-      {"id": "dalema-ii", "name": "D'Alema-II", "startDate": "1999-12-22", "endDate": "2000-04-25", "status": "ended"},
-      {"id": "amato-ii", "name": "Amato-II", "startDate": "2000-04-25", "endDate": "2001-06-11", "status": "ended"},
-      {"id": "berlusconi-ii", "name": "Berlusconi-II", "startDate": "2001-06-11", "endDate": "2005-04-23", "status": "ended"},
-      {"id": "berlusconi-iii", "name": "Berlusconi-III", "startDate": "2005-04-23", "endDate": "2006-05-17", "status": "ended"},
-      {"id": "prodi-ii", "name": "Prodi-II", "startDate": "2006-05-17", "endDate": "2008-05-08", "status": "ended"},
-      {"id": "berlusconi-iv", "name": "Berlusconi-IV", "startDate": "2008-05-08", "endDate": "2011-11-16", "status": "ended"},
-      {"id": "monti-i", "name": "Monti-I", "startDate": "2011-11-16", "endDate": "2013-04-28", "status": "ended"},
-      {"id": "letta-i", "name": "Letta-I", "startDate": "2013-04-28", "endDate": "2014-02-22", "status": "ended"},
-      {"id": "renzi-i", "name": "Renzi-I", "startDate": "2014-02-22", "endDate": "2016-12-12", "status": "ended"},
-      {"id": "gentiloni-i", "name": "Gentiloni-I", "startDate": "2016-12-12", "endDate": "2018-06-01", "status": "ended"},
-      {"id": "conte-i", "name": "Conte-I", "startDate": "2018-06-01", "endDate": "2019-09-05", "status": "ended"},
-      {"id": "conte-ii", "name": "Conte-II", "startDate": "2019-09-05", "endDate": "2021-02-13", "status": "ended"},
-      {"id": "draghi-i", "name": "Draghi-I", "startDate": "2021-02-13", "endDate": "2022-10-22", "status": "ended"},
-      {"id": "meloni-i", "name": "Meloni-I", "startDate": "2022-10-22", "endDate": null, "status": "current"}
+      {"id": "dini-i", "name": "Dini-I", "sourceLabel": "Governo Dini", "startDate": "1995-01-17", "endDate": "1996-05-17", "status": "ended"},
+      {"id": "prodi-i", "name": "Prodi-I", "sourceLabel": "Governo Prodi", "startDate": "1996-05-17", "endDate": "1998-10-21", "status": "ended"},
+      {"id": "dalema-i", "name": "D'Alema-I", "sourceLabel": "Governo D'Alema", "startDate": "1998-10-21", "endDate": "1999-12-22", "status": "ended"},
+      {"id": "dalema-ii", "name": "D'Alema-II", "sourceLabel": "Governo D'Alema II", "startDate": "1999-12-22", "endDate": "2000-04-25", "status": "ended"},
+      {"id": "amato-ii", "name": "Amato-II", "sourceLabel": "Governo Amato II", "startDate": "2000-04-25", "endDate": "2001-06-11", "status": "ended"},
+      {"id": "berlusconi-ii", "name": "Berlusconi-II", "sourceLabel": "Governo Berlusconi II", "startDate": "2001-06-11", "endDate": "2005-04-23", "status": "ended"},
+      {"id": "berlusconi-iii", "name": "Berlusconi-III", "sourceLabel": "Governo Berlusconi III", "startDate": "2005-04-23", "endDate": "2006-05-17", "status": "ended"},
+      {"id": "prodi-ii", "name": "Prodi-II", "sourceLabel": "Governo Prodi II", "startDate": "2006-05-17", "endDate": "2008-05-06", "status": "ended"},
+      {"id": "berlusconi-iv", "name": "Berlusconi-IV", "sourceLabel": "Governo Berlusconi IV", "startDate": "2008-05-08", "endDate": "2011-11-16", "status": "ended"},
+      {"id": "monti-i", "name": "Monti-I", "sourceLabel": "Governo Monti", "startDate": "2011-11-16", "endDate": "2013-04-27", "status": "ended"},
+      {"id": "letta-i", "name": "Letta-I", "sourceLabel": "Governo Letta", "startDate": "2013-04-28", "endDate": "2014-02-21", "status": "ended"},
+      {"id": "renzi-i", "name": "Renzi-I", "sourceLabel": "Governo Renzi", "startDate": "2014-02-22", "endDate": "2016-12-12", "status": "ended"},
+      {"id": "gentiloni-i", "name": "Gentiloni-I", "sourceLabel": "Governo Gentiloni", "startDate": "2016-12-12", "endDate": "2018-06-01", "status": "ended"},
+      {"id": "conte-i", "name": "Conte-I", "sourceLabel": "Giuseppe Conte", "startDate": "2018-06-01", "endDate": "2019-09-04", "status": "ended"},
+      {"id": "conte-ii", "name": "Conte-II", "sourceLabel": "Giuseppe Conte II", "startDate": "2019-09-05", "endDate": "2021-02-13", "status": "ended"},
+      {"id": "draghi-i", "name": "Draghi-I", "sourceLabel": "Mario Draghi", "startDate": "2021-02-13", "endDate": "2022-10-22", "status": "ended"},
+      {"id": "meloni-i", "name": "Meloni-I", "sourceLabel": "Governo Meloni", "startDate": "2022-10-22", "endDate": null, "status": "current"}
     ]
   },
   "method": {

@@ -424,7 +424,7 @@ La scheda segue sempre cinque passaggi distinti:
 
 L'indice macro sintetizza soltanto il quarto passaggio, contestualizzato attraverso
 storia e peer. Eredità, contesto e risposta non diventano bonus discrezionali:
-servono a scegliere il confronto, spiegare il risultato e limitare le
+servono a spiegare il risultato e limitare le
 conclusioni causali. Le singole politiche possono ricevere una valutazione
 separata quando esistono studi o stime indipendenti adeguate.
 
@@ -444,8 +444,9 @@ risultato.
 ### 2. Confronto con la storia italiana
 
 La variazione viene confrontata con finestre storiche italiane della stessa
-durata. La finestra valutata viene esclusa dalla distribuzione, così non
-contribuisce al proprio benchmark. Usiamo mediana e deviazione assoluta mediana
+durata. Escludiamo tutte le finestre che si sovrappongono per una durata positiva
+al periodo valutato, così gli stessi anni non contribuiscono al proprio benchmark.
+Usiamo mediana e deviazione assoluta mediana
 robusta (`1,4826 × MAD`), limitiamo lo z-score a `±3` e lo trasformiamo in un
 punteggio `0-100` tramite la distribuzione normale standard.
 
@@ -507,9 +508,9 @@ numero e non l'affidabilità dell'attribuzione politica.
 
 ## Shock e contesto storico
 
-Gli shock non producono sconti manuali al voto. Vengono usati per scegliere il
-confronto corretto, mostrare l'esposizione iniziale e spiegare i limiti
-dell'attribuzione.
+Gli shock non producono sconti manuali al voto. Nell'implementazione corrente il
+registro è descrittivo: non cambia peer, pesi o risultato. Mostra l'esposizione
+iniziale e rende espliciti i limiti dell'attribuzione.
 
 Il registro deve includere almeno:
 
@@ -633,13 +634,18 @@ agli indicatori previsti, ma deve essere chiamato previsione e non sommato al
 voto osservato. L'orizzonte è fisso a 12 o 24 mesi: non assumiamo una data futura
 di fine del governo.
 
+Nel prototipo annuale AMECO lo scenario viene pubblicato soltanto se sono
+presenti tutte le 72 celle richieste: sei indicatori, quattro paesi e tre anni
+2025-2027. Una copertura parziale non invalida i risultati osservati, ma rende la
+previsione non pubblicabile e viene dichiarata come tale nel registro fonti.
+
 ### Misure e stato di attuazione
 
 Mostra le misure approvate dal governo in carica, il loro stato e la valutazione
 indipendente disponibile. Il numero di decreti attuativi adottati misura capacità
 amministrativa, non crescita economica, e resta separato dal voto economico.
 
-## Implementazione corrente: Core annuale v3
+## Implementazione corrente: Core annuale v4
 
 La versione corrente usa un solo vintage coerente, **AMECO Spring
 2026**, e non finge di avere già il paniere trimestrale completo. Il Core
@@ -655,13 +661,13 @@ Il risultato è calcolabile dal 1995 soltanto quando tutti i sei indicatori, i t
 peer e almeno un intervallo annuale tra gli endpoint sono presenti. Una finestra
 di un anno è pubblicata come indicativa con comparabilità C. Francia, Germania e
 Spagna formano il benchmark; mediana e MAD robusto limitano la dipendenza dagli
-estremi. La finestra valutata non entra nel proprio benchmark e gli stress test
-sono pubblicati accanto al numero. I governi anteriori al 2005 che superano le
+estremi. Nessuna finestra storica sovrapposta al mandato entra nel suo benchmark
+e gli stress test sono pubblicati accanto al numero. I governi anteriori al 2005 che superano le
 stesse regole sono inclusi.
 
 Le osservazioni terminano al 2024. I valori AMECO 2025-2027 alimentano soltanto
 uno scenario separato e non il voto provvisorio. Poiché una serie annuale non
-può seguire esattamente il giorno del giuramento, la versione v3 usa l'anno di
+può seguire esattamente il giorno del giuramento, la versione v4 usa l'anno di
 inizio o fine soltanto quando il governo ne copre almeno metà; questa
 approssimazione impedisce una comparabilità superiore a B e porta a C nei
 periodi con shock rilevanti o per il governo in carica. L'attribuzione causale
@@ -669,9 +675,11 @@ non viene mai dedotta da questo badge.
 
 La pipeline `scripts/etl/government_scorecard_snapshot.py` verifica URL, ZIP,
 dimensione, schema CSV, codici AMECO, copertura, paesi, pesi, cronologia, hash e
-riconciliazioni prima di sostituire atomicamente lo snapshot. Il runtime applica
-un secondo contratto fail-closed. Il refresh schedulato apre una proposta di
-aggiornamento, senza pubblicare silenziosamente dati non validati.
+riconciliazioni prima di sostituire atomicamente lo snapshot. Nomi, ordine, date
+iniziali e finali dal 2001 e governo in carica devono coincidere con l'elenco ufficiale
+della Presidenza: un nuovo governo o un disallineamento bloccano il refresh. Il
+runtime applica un secondo contratto fail-closed. Il refresh schedulato apre una
+proposta di aggiornamento, senza pubblicare silenziosamente dati non validati.
 
 La pipeline `scripts/etl/government_current_signals.py` acquisisce invece il
 JSON-stat Eurostat e valida origine, query, identità del dataset, unità,
@@ -746,15 +754,19 @@ prodotto un miglioramento misurabile.
 
 ### Pagina `/governi`
 
-La prima pagina è implementata come sintesi leggibile prima della tabella. Mostra:
+La pagina segue una gerarchia unica, dal presente alla verifica:
 
-- governo e periodo;
-- risultato nel periodo e classe di comparabilità;
-- stato finale, provvisorio o non valutabile;
-- comparabilità A, B o C e intervallo degli stress test;
-- una frase su cosa è migliorato;
-- una frase su cosa è peggiorato;
-- il principale shock del periodo.
+1. governo attualmente in carica e micro-spiegazione della valutazione;
+2. dati osservati del governo attuale, prezzi mensili e scenario separato;
+3. situazione ereditata;
+4. contesto economico e geopolitico;
+5. misure adottate e prove disponibili;
+6. archivio degli altri governi;
+7. confronto diretto fra due governi e confronto dettagliato con i peer;
+8. formula, provenienza dei dati, dati ancora esclusi e disclaimer.
+
+La sigla tecnica di comparabilità non viene mostrata da sola. L'interfaccia usa
+invece etichette leggibili, periodo, stress test e limiti dell'attribuzione.
 
 L'archivio non dichiara un vincitore: apre la scheda di ogni governo e il
 confronto sovrapposto fra due periodi scelti dall'utente.

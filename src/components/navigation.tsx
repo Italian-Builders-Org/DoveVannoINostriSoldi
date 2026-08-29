@@ -180,11 +180,17 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                     else closeMenu();
                   }}
                   onFocusCapture={(event) => {
+                    const target = event.target as HTMLElement;
+                    if (target.parentElement === event.currentTarget) {
+                      target.scrollIntoView({ block: "nearest", inline: "nearest" });
+                    }
+                    const compactNavigation = window.matchMedia("(max-width: 1320px)").matches;
                     // The caret owns its toggle action. Opening here as well would
                     // make a real pointer click open on focus and close on click.
                     if (
                       hasChildren &&
-                      !(event.target as HTMLElement).matches(".nav-item-toggle")
+                      !compactNavigation &&
+                      !target.matches(".nav-item-toggle")
                     ) {
                       openItem(item.href);
                     }

@@ -4,7 +4,10 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const snapshot = JSON.parse(await readFile(new URL("../src/data/generated/government-scorecard.json", import.meta.url), "utf8"));
-const { parseGovernmentScorecardSnapshot } = await import("../src/lib/data/government-scorecard-contract.ts");
+const {
+  getGovernmentScorecardForecastCoverage,
+  parseGovernmentScorecardSnapshot,
+} = await import("../src/lib/data/government-scorecard-contract.ts");
 const { getGovernmentScorecardSnapshot, getGovernmentScorecardView } = await import("../src/lib/government-scorecard.ts");
 
 function assertInvalid(mutator, pattern) {
@@ -22,7 +25,7 @@ test("government scorecard snapshot validates its fixed basket and provenance", 
   assert.equal(parsed.sources.ameco.observedThrough, 2024);
   assert.equal(parsed.sources.ameco.forecastFrom, 2025);
   assert.equal(parsed.sources.ameco.forecastThrough, 2027);
-  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v3");
+  assert.equal(getGovernmentScorecardSnapshot().methodologyVersion, "core-annual-v4");
   assert.equal(getGovernmentScorecardView().ok, true);
 });
 
@@ -39,7 +42,7 @@ test("runtime contract rejects weight, identity and coverage drift", () => {
 
 test("runtime contract rejects malformed chronology, measures and official URLs", () => {
   assertInvalid((value) => { value.governments[16].status = "ended"; }, /stato governo|governo corrente/);
-  assertInvalid((value) => { value.governments[16].startDate = "2022-10-21"; }, /governo corrente/);
+  assertInvalid((value) => { value.governments[15].status = "current"; value.governments[15].endDate = null; }, /governo corrente/);
   assertInvalid((value) => { [value.governments[0], value.governments[1]] = [value.governments[1], value.governments[0]]; }, /governi non ordinati/);
   assertInvalid((value) => { value.measures[0].government = "Missing-I"; }, /misura senza governo/);
   assertInvalid((value) => { value.sources.ameco.downloadUrl = "https://example.test/ameco.zip"; });
@@ -52,4 +55,36 @@ test("runtime contract keeps observed and forecast cutoffs distinct", () => {
   assertInvalid((value) => { value.sources.ameco.forecastFrom = 2024; });
   assertInvalid((value) => { value.sources.ameco.forecastThrough = 2026; });
   assertInvalid((value) => { value.generatedAt = "2026-08-29"; });
+});
+
+test("forecast gaps do not invalidate complete observed data", () => {
+  const candidate = structuredClone(snapshot);
+  for (const indicator of candidate.indicators) {
+    for (const points of Object.values(indicator.countries)) {
+      for (const point of points) {
+        if (point.year >= candidate.sources.ameco.forecastFrom) point.value = null;
+      }
+    }
+  }
+  assert.doesNotThrow(() => parseGovernmentScorecardSnapshot(candidate));
+  assert.deepEqual(getGovernmentScorecardForecastCoverage(candidate), {
+    status: "missing",
+    fromYear: 2025,
+    throughYear: 2027,
+    availableCells: 0,
+    requiredCells: 72,
+  });
+});
+
+test("forecast coverage fails closed when even one advertised cell is missing", () => {
+  assert.equal(getGovernmentScorecardForecastCoverage(snapshot).status, "complete");
+  const candidate = structuredClone(snapshot);
+  candidate.indicators[0].countries.italy.find((point) => point.year === 2027).value = null;
+  assert.deepEqual(getGovernmentScorecardForecastCoverage(candidate), {
+    status: "partial",
+    fromYear: 2025,
+    throughYear: 2027,
+    availableCells: 71,
+    requiredCells: 72,
+  });
 });

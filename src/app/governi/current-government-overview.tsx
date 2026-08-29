@@ -188,18 +188,24 @@ export function CurrentGovernmentOverview({
         <dl className={styles.robustnessStrip} aria-label="Controlli di robustezza e attribuzione">
           <div>
             <dt>Intervallo stress test</dt>
-            <dd>{formatScore(calculation.robustness.minimumScore)} a {formatScore(calculation.robustness.maximumScore)}</dd>
-            <small>{calculation.robustness.checks.length} prove su pesi, indicatori e peer</small>
+            <dd>
+              {formatScore(calculation.robustness.minimumScore)} a {formatScore(calculation.robustness.maximumScore)}
+              <small>{calculation.robustness.checks.length} prove su pesi, indicatori e peer</small>
+            </dd>
           </div>
           <div>
             <dt>Sensibilità</dt>
-            <dd>{calculation.robustness.label}</dd>
-            <small>scarto massimo ±{formatScore(calculation.robustness.maximumDeviation)} punti</small>
+            <dd>
+              {calculation.robustness.label}
+              <small>scarto massimo ±{formatScore(calculation.robustness.maximumDeviation)} punti</small>
+            </dd>
           </div>
           <div>
             <dt>Attribuzione al governo</dt>
-            <dd>Non stimata</dd>
-            <small>il numero descrive il periodo, non prova causalità</small>
+            <dd>
+              Non stimata
+              <small>il numero descrive il periodo, non prova causalità</small>
+            </dd>
           </div>
         </dl>
 
@@ -246,7 +252,12 @@ export function CurrentGovernmentOverview({
       </section>
 
       <CurrentGovernmentSignals data={currentSignals} />
+    </>
+  );
+}
 
+export function CurrentGovernmentPeerComparison({ indicators }: { indicators: readonly Indicator[] }) {
+  return (
       <section className={styles.peerSection} aria-labelledby="confronto-peer">
         <div className={styles.peerHeading}>
           <div>
@@ -255,8 +266,7 @@ export function CurrentGovernmentOverview({
           </div>
           <p>Scegli un indicatore. Lo zero è il 2022; più in alto significa miglioramento.</p>
         </div>
-        <GovernmentIndicatorChart indicators={calculation.indicators} />
+        <GovernmentIndicatorChart indicators={indicators} />
       </section>
-    </>
   );
 }

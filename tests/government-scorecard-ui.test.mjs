@@ -68,9 +68,12 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /2020 = 100/);
   assert.match(currentOverview, /Mediana peer/);
   assert.match(currentOverview, /comparisonLabel\(indicator\)/);
-  assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{calculation\.indicators\} \/>/);
+  assert.match(currentOverview, /export function CurrentGovernmentPeerComparison/);
+  assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{indicators\} \/>/);
   assert.match(currentOverview, /role="img"/);
   assert.match(currentOverview, /<CurrentGovernmentSignals data=\{currentSignals\} \/>/);
+  assert.match(page, /<CurrentGovernmentPeerComparison indicators=\{currentScore\.indicators\} \/>/);
+  assert.ok(page.indexOf("Scegli due governi e sovrapponi i dati") < page.indexOf("<CurrentGovernmentPeerComparison"));
 });
 
 test("current monthly signals explain harmonised prices without silently changing the score", () => {

@@ -1,6 +1,7 @@
 import snapshotJson from "@/data/generated/government-scorecard.json";
 import {
   GOVERNMENT_SCORECARD_COUNTRY_IDS,
+  getGovernmentScorecardForecastCoverage,
   parseGovernmentScorecardSnapshot,
   type GovernmentScorecardCountryId,
   type GovernmentScorecardGovernment,
@@ -175,8 +176,9 @@ function calculateIndicators(
       const relativeWindows: number[] = [];
       for (let start = snapshot.method.firstScoreYear; start + windowYears <= snapshot.sources.ameco.observedThrough; start += 1) {
         const finish = start + windowYears;
-        // The target must not help define the distribution used to score itself.
-        if (start === baselineYear && finish === endYear) continue;
+        // No positive-duration overlap: the evaluated period must not help
+        // define the distribution used to score itself.
+        if (start < endYear && finish > baselineYear) continue;
         const italy = transformedChange(indicator, "italy", start, finish);
         const peer = peerChange(indicator, start, finish, peers);
         if (italy != null && peer != null) {
@@ -432,13 +434,23 @@ export function getGovernmentScorecardView() {
   const current = governments.find((government) => government.status === "current");
   if (!current) throw new GovernmentScorecardContractError(new Error("governo corrente assente"));
   const currentYears = endpointYears(current, snapshot.sources.ameco.observedThrough);
-  const forecast = scoreForWindow(snapshot, currentYears.baselineYear, snapshot.sources.ameco.forecastThrough);
+  const forecastCoverage = getGovernmentScorecardForecastCoverage(snapshot);
+  const forecast = forecastCoverage.status === "complete"
+    ? scoreForWindow(snapshot, currentYears.baselineYear, forecastCoverage.throughYear)
+    : {
+      status: "not-scored" as const,
+      baselineYear: currentYears.baselineYear,
+      endYear: forecastCoverage.throughYear,
+      windowYears: forecastCoverage.throughYear - currentYears.baselineYear,
+      reason: `Scenario non pubblicabile: copertura previsionale ${forecastCoverage.availableCells}/${forecastCoverage.requiredCells}.`,
+    };
   return {
     ok: true as const,
     methodologyVersion: snapshot.methodologyVersion,
     generatedAt: snapshot.generatedAt,
     method: snapshot.method,
     sources: snapshot.sources,
+    forecastCoverage,
     current: { ...current, forecast },
     governments,
     historicalContexts: snapshot.contexts.filter((item) => item.endYear < snapshot.method.firstScoreYear),

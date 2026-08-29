@@ -23,8 +23,12 @@ test("current score reconciles six indicators, five categories and the 50/50 spl
   for (const indicator of calculation.indicators) {
     assert.ok(indicator.score >= 0 && indicator.score <= 100);
     close(indicator.score, (indicator.historicalScore + indicator.relativeScore) / 2);
-    const allSameDurationWindows = view.sources.ameco.observedThrough - view.method.firstScoreYear - calculation.windowYears + 1;
-    assert.equal(indicator.historicalWindowCount, allSameDurationWindows - 1, "the target window must not score itself");
+    const eligibleWindows = [];
+    for (let start = view.method.firstScoreYear; start + calculation.windowYears <= view.sources.ameco.observedThrough; start += 1) {
+      const finish = start + calculation.windowYears;
+      if (!(start < calculation.endYear && finish > calculation.baselineYear)) eligibleWindows.push(start);
+    }
+    assert.equal(indicator.historicalWindowCount, eligibleWindows.length, "overlapping target years must not score themselves");
     assert.equal(indicator.series.length, calculation.windowYears + 1);
     assert.equal(indicator.series[0].year, calculation.baselineYear);
     assert.equal(indicator.series.at(-1).year, calculation.endYear);
@@ -41,6 +45,13 @@ test("forecast is a separate AMECO scenario through 2027", () => {
   assert.equal(forecast.baselineYear, observed.baselineYear);
   assert.ok(forecast.windowYears > observed.windowYears);
   assert.equal(view.sources.ameco.forecastFrom, observed.endYear + 1);
+  assert.deepEqual(view.forecastCoverage, {
+    status: "complete",
+    fromYear: 2025,
+    throughYear: 2027,
+    availableCells: 72,
+    requiredCells: 72,
+  });
 });
 
 test("pre-2005 governments are included when the same Core is complete", () => {

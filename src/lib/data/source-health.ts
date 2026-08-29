@@ -26,6 +26,7 @@ import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { getGovernmentScorecardSnapshot } from "@/lib/government-scorecard";
+import { getGovernmentScorecardForecastCoverage } from "@/lib/data/government-scorecard-contract";
 import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
@@ -576,6 +577,10 @@ function snapshotManagedGovernmentScorecard(
       .reduce((countryTotal, series) => countryTotal + series.filter((point) => point.value != null).length, 0),
     0,
   );
+  const forecastCoverage = getGovernmentScorecardForecastCoverage(snapshot);
+  const forecastDetail = forecastCoverage.status === "complete"
+    ? `previsioni complete ${forecastCoverage.fromYear}-${forecastCoverage.throughYear}`
+    : `scenario previsionale non pubblicabile · copertura ${forecastCoverage.availableCells}/${forecastCoverage.requiredCells}`;
 
   return {
     ...baseHealth(sourceId),
@@ -583,7 +588,7 @@ function snapshotManagedGovernmentScorecard(
     freshness: freshnessFor(sourceId, source.retrievedAt),
     latencyMs: null,
     detail: isAmeco
-      ? `Snapshot ${snapshot.sources.ameco.release} verificato · osservazioni fino al ${snapshot.sources.ameco.observedThrough} · previsioni ${snapshot.sources.ameco.forecastFrom}-${snapshot.sources.ameco.forecastThrough}.`
+      ? `Snapshot ${snapshot.sources.ameco.release} verificato · osservazioni fino al ${snapshot.sources.ameco.observedThrough} · ${forecastDetail}.`
       : `Cronologia ufficiale verificata · ${snapshot.governments.length} governi dal ${snapshot.governments.at(0)?.startDate.slice(0, 4)} · mandato corrente identificato esplicitamente.`,
     recordCount: isAmeco ? observationCount : snapshot.governments.length,
   };

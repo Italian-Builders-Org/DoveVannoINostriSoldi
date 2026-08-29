@@ -1197,6 +1197,13 @@
   border-color: var(--color-text);
 }
 
+@media (max-width: 640px) {
+  .pageJumps {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
 .measureGrid details {
   margin-top: 13px;
   padding-top: 10px;

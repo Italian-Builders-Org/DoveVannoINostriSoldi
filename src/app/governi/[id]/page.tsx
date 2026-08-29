@@ -306,7 +306,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         <details className={styles.explorer}>
           <summary>
             <span><small>Metodo</small><strong>Come viene calcolato il risultato</strong></span>
-            <b>Apri</b>
+            <b aria-hidden="true">Apri</b>
           </summary>
           <div className={styles.explorerBody}>
             <p className={styles.explorerIntro}>Il risultato combina l’andamento dell’Italia e il confronto con i peer. Le spiegazioni non precedono più i dati, ma restano verificabili qui.</p>
@@ -328,7 +328,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         <details className={styles.explorer}>
           <summary>
             <span><small>Confronto internazionale</small><strong>Cosa significa “Italia rispetto ai peer”</strong></span>
-            <b>Apri</b>
+            <b aria-hidden="true">Apri</b>
           </summary>
           <div className={styles.explorerBody}>
             <p className={styles.explorerIntro}>Non è una valutazione di Francia, Germania e Spagna e non è lo spread. Misura come sono variati in Italia i sei indicatori rispetto alla mediana degli stessi Paesi e degli stessi anni. Un risultato pari a 50 è in linea con i peer; sopra 50 indica un andamento relativo migliore, sotto 50 peggiore.</p>
@@ -338,7 +338,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         <details className={styles.explorer}>
           <summary>
             <span><small>Precisione dei dati</small><strong>Perché questi dati sono indicativi</strong></span>
-            <b>Apri</b>
+            <b aria-hidden="true">Apri</b>
           </summary>
           <div className={styles.explorerBody}>
             <p className={styles.explorerIntro}>{government.comparability.reason} La lettera tecnica non viene mostrata perché non aiuta a interpretare il risultato. “Indicativo” segnala una finestra breve o ancora aperta; “confrontabile” segnala un mandato concluso con una finestra più ampia. In entrambi i casi gli endpoint annuali approssimano i mesi esatti del mandato.</p>
@@ -349,7 +349,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
       <details className={`${styles.explorer} ${styles.limitDetails}`}>
         <summary>
           <span><small>Avvertenze</small><strong>Cosa i dati non dimostrano</strong></span>
-          <b>Apri</b>
+          <b aria-hidden="true">Apri</b>
         </summary>
         <div className={styles.explorerBody}>
           <p className={styles.explorerIntro}>Il risultato macro, il confronto col contesto e la valutazione delle singole politiche sono livelli distinti.</p>

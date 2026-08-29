@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import html
 import io
 import json
 import math
@@ -47,6 +48,22 @@ INDICATOR_VALUE_RANGES = {
 }
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+ITALIAN_MONTHS = {
+    "gennaio": 1,
+    "febbraio": 2,
+    "marzo": 3,
+    "aprile": 4,
+    "maggio": 5,
+    "giugno": 6,
+    "luglio": 7,
+    "agosto": 8,
+    "settembre": 9,
+    "ottobre": 10,
+    "novembre": 11,
+    "dicembre": 12,
+}
+
+
 class SnapshotError(ValueError):
     """Raised when an input or generated snapshot violates the contract."""
 
@@ -89,7 +106,7 @@ def validate_official_url(url: Any, host: str, path: str) -> str:
 
 def validate_spec(spec: dict[str, Any]) -> None:
     exact_keys(spec, {"schemaVersion", "methodologyVersion", "ameco", "governmentChronology", "method", "contexts", "measures"}, "source spec")
-    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v3":
+    if spec["schemaVersion"] != 1 or spec["methodologyVersion"] != "core-annual-v4":
         fail("source spec: versione non supportata")
     ameco = require_dict(spec["ameco"], "ameco")
     chronology = require_dict(spec["governmentChronology"], "governmentChronology")
@@ -115,19 +132,24 @@ def validate_spec(spec: dict[str, Any]) -> None:
     if method.get("historicalWeightBasisPoints") + method.get("peerWeightBasisPoints") != 10_000:
         fail("method: pesi storico/peer non validi")
     governments = require_list(chronology.get("governments"), "governmentChronology.governments")
-    if len(governments) != 17:
+    if len(governments) < 17:
         fail("governmentChronology: cronologia 1995+ incompleta")
     previous_start = ""
     for government in governments:
         item = require_dict(government, "governmentChronology.government")
-        exact_keys(item, {"id", "name", "startDate", "endDate", "status"}, "governmentChronology.government")
+        exact_keys(item, {"id", "name", "sourceLabel", "startDate", "endDate", "status"}, "governmentChronology.government")
+        if not isinstance(item["sourceLabel"], str) or not item["sourceLabel"].strip():
+            fail("governmentChronology: etichetta fonte mancante")
         if not ISO_DATE.fullmatch(item.get("startDate", "")) or item["startDate"] <= previous_start:
             fail("governmentChronology: date non valide o non ordinate")
         if item["endDate"] is not None and not ISO_DATE.fullmatch(item["endDate"]):
             fail("governmentChronology: data finale non valida")
+        if (item.get("status") == "current") != (item["endDate"] is None):
+            fail("governmentChronology: stato e data finale non coerenti")
         previous_start = item["startDate"]
-    if governments[-1] != {"id": "meloni-i", "name": "Meloni-I", "startDate": "2022-10-22", "endDate": None, "status": "current"}:
-        fail("governmentChronology: governo corrente inatteso")
+    current = [government for government in governments if government.get("status") == "current"]
+    if len(current) != 1 or current[0] is not governments[-1] or current[0].get("endDate") is not None:
+        fail("governmentChronology: governo corrente non univoco o non più recente")
     for collection in ("contexts", "measures"):
         values = require_list(spec[collection], collection)
         if not values:
@@ -305,15 +327,67 @@ def extract_ameco(spec: dict[str, Any], payload: bytes) -> list[dict[str, Any]]:
     return output
 
 
+def chronology_date(line: str, pattern: str) -> str | None:
+    match = re.search(pattern, line, re.IGNORECASE)
+    if not match:
+        return None
+    day, month_name, year = match.groups()
+    month = ITALIAN_MONTHS.get(month_name.lower())
+    if month is None:
+        fail("cronologia governi: mese italiano inatteso")
+    try:
+        return datetime(int(year), month, int(day)).date().isoformat()
+    except ValueError:
+        fail("cronologia governi: data ufficiale non valida")
+
+
+def chronology_start_date(line: str) -> str | None:
+    return chronology_date(line, r"\((?:dal\s+|dall')(\d{1,2})\s+([a-zà]+)\s+(\d{4})\b")
+
+
+def chronology_end_date(line: str) -> str | None:
+    return chronology_date(line, r"\bal\s+(\d{1,2})\s+([a-zà]+)\s+(\d{4})\b")
+
+
 def extract_governments(spec: dict[str, Any], payload: bytes) -> list[dict[str, Any]]:
     try:
         text = payload.decode("utf-8")
     except UnicodeDecodeError:
         fail("cronologia governi: HTML non UTF-8")
-    required_markers = ["I Governi nelle Legislature", "Governo Meloni", "Governo Berlusconi II", "Governo Dini"]
-    if any(marker not in text for marker in required_markers):
+    if "I Governi nelle Legislature" not in text:
         fail("cronologia governi: pagina ufficiale inattesa")
-    return spec["governmentChronology"]["governments"]
+    chronology = re.search(r"<dl\b[^>]*>(.*?)</dl>", text, re.IGNORECASE | re.DOTALL)
+    if chronology is None:
+        fail("cronologia governi: elenco ufficiale assente")
+    lines: list[str] = []
+    for block in re.findall(r"<dd\b[^>]*>(.*?)</dd>", chronology.group(1), re.IGNORECASE | re.DOTALL):
+        block = re.sub(r"<br\s*/?>", "\n", block, flags=re.IGNORECASE)
+        block = html.unescape(re.sub(r"<[^>]+>", " ", block))
+        lines.extend(" ".join(line.split()) for line in block.splitlines() if line.strip())
+
+    governments = spec["governmentChronology"]["governments"]
+    expected = list(reversed(governments))
+    official = lines[:len(expected)]
+    if len(official) != len(expected):
+        fail("cronologia governi: elenco ufficiale 1995+ incompleto")
+    for item, line in zip(expected, official, strict=True):
+        source_label = item["sourceLabel"]
+        official_label = line.split(" (", 1)[0].strip()
+        if official_label != source_label:
+            fail(f"cronologia governi: fonte e specifica divergono ({official_label!r} != {source_label!r})")
+        official_start = chronology_start_date(line)
+        if item["startDate"] >= "2001-01-01" and official_start != item["startDate"]:
+            fail(f"cronologia governi: data iniziale divergente per {source_label}")
+        official_end = chronology_end_date(line)
+        if item["startDate"] >= "2001-01-01" and item["status"] == "ended" and official_end != item["endDate"]:
+            fail(f"cronologia governi: data finale divergente per {source_label}")
+    if "in carica" not in official[0].lower() or expected[0]["status"] != "current":
+        fail("cronologia governi: governo corrente divergente")
+
+    return [
+        {key: item[key] for key in ("id", "name", "startDate", "endDate", "status")}
+        for item in governments
+    ]
 
 
 def build_snapshot(spec: dict[str, Any], ameco_payload: bytes, chronology_payload: bytes, retrieved_at: str) -> dict[str, Any]:
@@ -381,7 +455,7 @@ def build_snapshot(spec: dict[str, Any], ameco_payload: bytes, chronology_payloa
 
 def validate_snapshot(snapshot: dict[str, Any]) -> None:
     exact_keys(snapshot, {"schemaVersion", "methodologyVersion", "generatedAt", "sources", "method", "indicators", "governments", "contexts", "measures", "caveats"}, "snapshot")
-    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v3":
+    if snapshot["schemaVersion"] != 1 or snapshot["methodologyVersion"] != "core-annual-v4":
         fail("snapshot: versione non supportata")
     sources = require_dict(snapshot["sources"], "sources")
     if set(sources) != {"ameco", "governmentChronology"}:
@@ -410,10 +484,12 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
                     fail(f"{item.get('id')}.{country_id}: valore non valido")
                 if value is not None and not minimum <= value <= maximum:
                     fail(f"{item.get('id')}.{country_id}: valore fuori intervallo plausibile")
-            if any(values[year - 1960].get("value") is None for year in range(1995, 2028)):
+            observed_through = sources["ameco"].get("observedThrough")
+            if not isinstance(observed_through, int) or any(values[year - 1960].get("value") is None for year in range(1995, observed_through + 1)):
                 fail(f"{item.get('id')}.{country_id}: dato obbligatorio mancante dal 1995")
     governments = require_list(snapshot["governments"], "governments")
-    if len(governments) != 17 or sum(item.get("status") == "current" for item in governments) != 1:
+    current = [item for item in governments if item.get("status") == "current"]
+    if len(governments) < 17 or len(current) != 1 or current[0] is not governments[-1]:
         fail("snapshot: cronologia governi incompleta")
     government_names = {item["name"] for item in governments}
     for measure in require_list(snapshot["measures"], "measures"):

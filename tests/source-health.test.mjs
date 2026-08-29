@@ -110,6 +110,8 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.match(eurostat?.detail ?? "", /IPCA mensile fino a 2026-07/);
   assert.match(eurostat?.detail ?? "", /interessi e spesa totale 2025/);
   assert.equal(eurostat?.recordCount, 557);
+  const ameco = overview.find((entry) => entry.sourceId === "ameco");
+  assert.match(ameco?.detail ?? "", /previsioni complete 2025-2027/);
 });
 
 test("ISTAT health metadata fails closed on sidecar drift", () => {

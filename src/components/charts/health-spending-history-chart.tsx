@@ -241,7 +241,7 @@ export function HealthSpendingHistoryChart({
                   tickFormatter={formatAxisEuro}
                 />
                 <Tooltip
-                  animationDuration={120}
+                  isAnimationActive={false}
                   cursor={{ stroke: "var(--color-neutral-400)" }}
                   content={<TooltipContent seriesList={PRIMARY_SERIES} />}
                 />
@@ -310,7 +310,7 @@ export function HealthSpendingHistoryChart({
                   tickFormatter={formatAxisEuro}
                 />
                 <Tooltip
-                  animationDuration={120}
+                  isAnimationActive={false}
                   cursor={{ stroke: "var(--color-neutral-400)" }}
                   content={<TooltipContent seriesList={WORK_SERVICES_SERIES} />}
                 />

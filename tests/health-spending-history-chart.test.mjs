@@ -72,6 +72,7 @@ test("health spending trend chart preserves design tokens, accessibility and zer
 
   // No entrance animation
   assert.match(chartCode, /isAnimationActive=\{false\}/);
+  assert.doesNotMatch(chartCode, /animationDuration=/);
 
   // Explicit units formatting on Y axis and tooltips
   assert.match(chartCode, /tickFormatter=\{formatAxisEuro\}/);
@@ -93,6 +94,8 @@ test("health spending trend chart preserves design tokens, accessibility and zer
   assert.match(chartCss, /var\(--chart-quaternary\)/);
   assert.match(chartCss, /var\(--color-neutral-300\)/);
   assert.match(chartCss, /var\(--color-text\)/);
+  assert.match(chartCss, /var\(--color-on-strong\)/);
+  assert.match(chartCss, /var\(--color-on-strong-muted\)/);
   assert.match(chartCss, /@media \(max-width: 960px\)/);
   assert.match(chartCss, /@media \(max-width: 720px\)/);
 });

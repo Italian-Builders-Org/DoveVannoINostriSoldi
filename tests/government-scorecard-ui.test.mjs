@@ -69,11 +69,16 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /2020 = 100/);
   assert.match(currentOverview, /Mediana peer/);
   assert.match(currentOverview, /comparisonLabel\(indicator\)/);
+  assert.match(currentOverview, /Math\.abs\(value\) < MOVEMENT_EPSILON/);
+  assert.match(currentOverview, /label: "→ Stabile"/);
+  assert.match(currentOverview, /data-peer=\{peerPosition\}/);
   assert.match(currentOverview, /export function CurrentGovernmentPeerComparison/);
+  assert.match(currentOverview, /Lo zero è il \{baselineYear\}/);
   assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{indicators\} \/>/);
   assert.match(currentOverview, /role="img"/);
   assert.match(currentOverview, /<CurrentGovernmentSignals data=\{currentSignals\} \/>/);
-  assert.match(page, /<CurrentGovernmentPeerComparison indicators=\{currentScore\.indicators\} \/>/);
+  assert.match(page, /indicators=\{currentScore\.indicators\}/);
+  assert.match(page, /baselineYear=\{currentScore\.baselineYear\}/);
   assert.ok(page.indexOf("Scegli due governi e sovrapponi i dati") < page.indexOf("<CurrentGovernmentPeerComparison"));
 });
 

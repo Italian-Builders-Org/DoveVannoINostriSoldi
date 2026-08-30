@@ -431,6 +431,11 @@
   background: var(--color-accent-100);
 }
 
+.indicatorCard[data-result="flat"] .cardHeading > b {
+  color: var(--color-neutral-700);
+  background: var(--color-neutral-100);
+}
+
 .indicatorCard > p {
   min-height: 34px;
   margin: 10px 0 12px;
@@ -554,6 +559,10 @@
 
 .cardFooter > b[data-peer="behind"] {
   color: var(--color-accent-800);
+}
+
+.cardFooter > b[data-peer="aligned"] {
+  color: var(--color-neutral-700);
 }
 
 .peerSection {

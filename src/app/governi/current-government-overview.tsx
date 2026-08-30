@@ -71,6 +71,15 @@ const INDICATOR_COPY: Readonly<Record<string, { label: string; group: string; qu
   },
 };
 
+const MOVEMENT_EPSILON = 0.05;
+
+function movement(value: number) {
+  if (Math.abs(value) < MOVEMENT_EPSILON) return { state: "flat", label: "→ Stabile" } as const;
+  return value > 0
+    ? { state: "up", label: "↑ Migliora" } as const
+    : { state: "down", label: "↓ Peggiora" } as const;
+}
+
 function median(values: readonly number[]) {
   const sorted = [...values].sort((left, right) => left - right);
   return sorted[Math.floor(sorted.length / 2)] ?? 0;
@@ -165,8 +174,8 @@ export function CurrentGovernmentOverview({
   calculation: Calculation;
   currentSignals: GovernmentCurrentSignalsView;
 }) {
-  const improved = calculation.indicators.filter((indicator) => indicator.orientedChange > 0).length;
-  const aheadOfPeers = calculation.indicators.filter((indicator) => indicator.relativeChange > 0).length;
+  const improved = calculation.indicators.filter((indicator) => indicator.orientedChange >= MOVEMENT_EPSILON).length;
+  const aheadOfPeers = calculation.indicators.filter((indicator) => indicator.relativeChange >= MOVEMENT_EPSILON).length;
 
   return (
     <>
@@ -230,16 +239,18 @@ export function CurrentGovernmentOverview({
               group: "Economia",
               question: indicator.limitations,
             };
-            const improvedNow = indicator.orientedChange >= 0;
-            const peerAhead = indicator.relativeChange >= 0;
+            const trend = movement(indicator.orientedChange);
+            const peerPosition = Math.abs(indicator.relativeChange) < MOVEMENT_EPSILON
+              ? "aligned"
+              : indicator.relativeChange > 0 ? "ahead" : "behind";
             return (
-              <article className={styles.indicatorCard} key={indicator.id} data-result={improvedNow ? "up" : "down"}>
+              <article className={styles.indicatorCard} key={indicator.id} data-result={trend.state}>
                 <div className={styles.cardHeading}>
                   <div>
                     <span>{copy.group}</span>
                     <h3>{copy.label}</h3>
                   </div>
-                  <b>{improvedNow ? "↑ Migliora" : "↓ Peggiora"}</b>
+                  <b>{trend.label}</b>
                 </div>
                 <p>{copy.question}</p>
                 <div className={styles.valueRow}>
@@ -257,7 +268,7 @@ export function CurrentGovernmentOverview({
                 <TrendSparkline indicator={indicator} />
                 <div className={styles.cardFooter}>
                   <span>Era {sourceValue(indicator.baselineValue, indicator.id)}</span>
-                  <b data-peer={peerAhead ? "ahead" : "behind"}>{comparisonLabel(indicator)}</b>
+                  <b data-peer={peerPosition}>{comparisonLabel(indicator)}</b>
                 </div>
               </article>
             );
@@ -270,7 +281,13 @@ export function CurrentGovernmentOverview({
   );
 }
 
-export function CurrentGovernmentPeerComparison({ indicators }: { indicators: readonly Indicator[] }) {
+export function CurrentGovernmentPeerComparison({
+  indicators,
+  baselineYear,
+}: {
+  indicators: readonly Indicator[];
+  baselineYear: number;
+}) {
   return (
       <section className={styles.peerSection} aria-labelledby="confronto-peer">
         <div className={styles.peerHeading}>
@@ -278,7 +295,7 @@ export function CurrentGovernmentPeerComparison({ indicators }: { indicators: re
             <span>Italia contro economie nello stesso periodo</span>
             <h2 id="confronto-peer">Confronto con Francia, Germania e Spagna</h2>
           </div>
-          <p>Scegli un indicatore. Lo zero è il 2022; più in alto significa miglioramento.</p>
+          <p>Scegli un indicatore. Lo zero è il {baselineYear}; più in alto significa miglioramento.</p>
         </div>
         <GovernmentIndicatorChart indicators={indicators} />
       </section>

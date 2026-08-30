@@ -177,7 +177,12 @@ export default function GovernmentsPage() {
         <Link href={`/governi/confronta?x=${current.id}`}>Apri il confronto</Link>
       </section>
 
-      {currentScore && <CurrentGovernmentPeerComparison indicators={currentScore.indicators} />}
+      {currentScore && (
+        <CurrentGovernmentPeerComparison
+          indicators={currentScore.indicators}
+          baselineYear={currentScore.baselineYear}
+        />
+      )}
 
       <details className={styles.explorer} id="metodo-dati">
         <summary>

@@ -23,4 +23,6 @@ accesso a variabili d'ambiente, SSRF, injection, esposizione di dati non pubblic
 dipendenze compromesse e workflow GitHub con privilegi eccessivi.
 
 I problemi di qualità o interpretazione dei dati senza impatto di sicurezza
-vanno segnalati con una issue ordinaria, allegando la fonte ufficiale.
+vanno segnalati con una issue ordinaria, allegando la fonte ufficiale, oppure
+con il pulsante «Segnala un problema» del sito, che crea la stessa issue
+pubblica. Quel modulo non è un canale riservato: non usarlo per vulnerabilità.

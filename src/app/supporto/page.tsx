@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { PUBLIC_MCP_ENDPOINT, REPO_URL } from "@/lib/site";
 import styles from "../legal-page.module.css";
 
@@ -18,11 +19,24 @@ export default function SupportPage() {
       <section className="panel">
         <h2 className="panel-title">Problemi e richieste tecniche</h2>
         <p>
-          Apri una <a href={`${REPO_URL}/issues`}>issue pubblica su GitHub</a> indicando pagina o
-          endpoint, risultato atteso, risultato osservato, data e passaggi per riprodurlo. Non
-          inserire dati personali, credenziali o informazioni riservate. Per una vulnerabilità non
-          ancora corretta non aprire una issue: usa il{" "}
+          Il modo più rapido è il pulsante <ReportProblemButton variant="inline" /> presente in
+          ogni pagina: raccoglie tipo di problema, risultato osservato, risultato atteso, passaggi
+          per riprodurlo ed eventuale fonte ufficiale, allega pagina, data e ora, dimensione della
+          finestra e versione del browser, e crea una issue pubblica nel repository restituendone
+          il link. Se l&apos;invio automatico non è disponibile, il modulo propone il composer
+          GitHub già compilato.
+        </p>
+        <p>
+          In alternativa apri direttamente una <a href={`${REPO_URL}/issues`}>issue pubblica su
+          GitHub</a> indicando pagina o endpoint, risultato atteso, risultato osservato, data e
+          passaggi per riprodurlo. In entrambi i casi non inserire dati personali, credenziali o
+          informazioni riservate: le issue sono pubbliche. Per una vulnerabilità non
+          ancora corretta non usare né il modulo né una issue: usa il{" "}
           <a href={`${REPO_URL}/security/advisories/new`}>report privato GitHub</a>.
+        </p>
+        <p>
+          Per contestare un dato indica il link della fonte ufficiale con cui lo confronti. Un
+          valore diverso da quello atteso non dimostra da solo spreco, frode o responsabilità.
         </p>
       </section>
 

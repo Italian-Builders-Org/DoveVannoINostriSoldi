@@ -163,7 +163,7 @@ docs/               metodo, architettura, note legali
 
 ## Contribuire
 
-Segnalazioni utili: fonti mancanti, correzioni alle spiegazioni, qualità dei dati, accessibilità.
+Segnalazioni utili: fonti mancanti, correzioni alle spiegazioni, qualità dei dati, accessibilità. Dal sito puoi usare il pulsante «Segnala un problema», presente in ogni pagina: crea una issue pubblica già strutturata ([docs/SEGNALAZIONI.md](docs/SEGNALAZIONI.md)).
 
 Prima di una PR leggi [CONTRIBUTING.md](CONTRIBUTING.md).
 

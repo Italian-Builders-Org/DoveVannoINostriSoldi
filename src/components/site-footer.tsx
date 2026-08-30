@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Coffee02Icon, GithubIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { BUY_ME_A_COFFEE_URL, REPO_URL } from "@/lib/site";
 
@@ -74,6 +75,7 @@ export function SiteFooter({ latestTerritorialCheckLabel }: SiteFooterProps) {
         <nav className="footer-secondary-links" aria-label="Informazioni sul progetto">
           <Link href="/supporter">Chi ci sostiene</Link>
           <Link href="/supporto">Supporto</Link>
+          <ReportProblemButton variant="inline" />
           <Link href="/termini">Termini</Link>
         </nav>
       </div>

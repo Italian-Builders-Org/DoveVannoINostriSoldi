@@ -267,6 +267,12 @@ nav li a { text-decoration: none; }
 }
 .header-action-icon:hover { color: var(--color-accent-700); }
 
+/* Room for the fixed "Segnala un problema" control so it never hides the last
+   line of content or a footer link on narrow screens. */
+@media (max-width: 768px) {
+  body { padding-bottom: calc(44px + var(--space-6)); }
+}
+
 /* ── primary navigation ─────────────────────────────────────────────────── */
 
 .nav-row {

@@ -30,6 +30,7 @@
     "test:education-atlas": "node --experimental-strip-types --test tests/education-atlas.test.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:editorial": "node --experimental-strip-types scripts/browser/editorial.mjs",
+    "test:browser:report": "node scripts/browser/report.mjs",
     "test:csp:report-only": "node scripts/browser/csp-report-only.mjs",
     "test:browser:e2e": "node scripts/browser/core.mjs",
     "test:browser:integrated": "node --experimental-strip-types scripts/browser/editorial.mjs",

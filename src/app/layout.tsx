@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
+import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { SiteFooter } from "@/components/site-footer";
 import { mefIrpefSourceMeta } from "@/lib/data/mef-irpef-source";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
@@ -57,6 +58,7 @@ export default function RootLayout({
         <div id="contenuto-principale" tabIndex={-1}>{children}</div>
         <SectionNav />
         <SiteFooter latestTerritorialCheckLabel={latestTerritorialCheckLabel} />
+        <ReportProblemButton />
       </body>
     </html>
   );

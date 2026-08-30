@@ -55,6 +55,12 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.doesNotMatch(navigationComponent, /▾|Scorri →/);
   assert.match(navigationComponent, /event\.key === "Escape"/);
   assert.match(navigationComponent, /document\.addEventListener\("pointerdown", dismissOutside\)/);
+  assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-forward"/);
+  assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-backward"/);
+  assert.match(navigationComponent, /navigation\.scrollLeft = Math\.max\(0, Math\.min\(maxScrollLeft, nextScrollLeft\)\)/);
+  assert.match(globalsCss, /\.nav-scroll-control \{/);
+  assert.match(globalsCss, /@media \(max-width: 1320px\)[\s\S]*?\.nav-scroll-control \{ display: inline-flex; \}/);
+  assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.nav-scroll-control \{ display: none; \}/);
   // Open state carries the path it was opened on, so a completed navigation
   // closes the menu without a setState in an effect.
   assert.match(navigationComponent, /openMenu\?\.pathname === pathname/);

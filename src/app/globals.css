@@ -373,7 +373,23 @@ nav li a { text-decoration: none; }
   display: block;
 }
 
-.nav-scroll-hint { display: none; }
+.nav-scroll-control {
+  display: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 42px;
+  padding: 8px 0;
+  border: 0;
+  color: var(--color-neutral-600);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.nav-scroll-control:hover { color: var(--color-accent-700); }
 
 /* ── page shells ────────────────────────────────────────────────────────── */
 
@@ -718,7 +734,8 @@ main { display: block; }
     overflow-x: clip;
     overflow-y: visible;
   }
-  .nav-row[data-menu-open="true"] .nav-scroll-hint { display: none; }
+  .nav-scroll-control { display: inline-flex; }
+  .nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }
   .primary-nav {
     overflow-x: auto;
     scrollbar-width: none;
@@ -802,15 +819,12 @@ main { display: block; }
   .primary-nav { scrollbar-width: thin; }
   .primary-nav::-webkit-scrollbar { display: block; height: 3px; }
   .primary-nav::-webkit-scrollbar-thumb { background: var(--color-neutral-400); }
-  .nav-scroll-hint {
+  .nav-scroll-control {
     display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    flex: none;
-    color: var(--color-neutral-600);
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
+    min-width: 44px;
+  }
+  .nav-scroll-control-backward {
+    order: -1;
   }
   .footer-sitemap-columns {
     column-count: 2;

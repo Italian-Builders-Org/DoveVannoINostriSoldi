@@ -8,6 +8,7 @@ import { HeaderSearch } from "@/components/header-search";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
+  ArrowLeft01Icon,
   ArrowRight01Icon,
   GithubIcon,
 } from "@hugeicons/core-free-icons";
@@ -53,6 +54,10 @@ function NavigationSearchSync({
 function NavigationContent({ pathname, currentSearch }: NavigationContentProps) {
   const navigationRef = useRef<HTMLElement>(null);
   const activeLinkRef = useRef<HTMLAnchorElement>(null);
+  const [navigationScroll, setNavigationScroll] = useState({
+    backward: false,
+    forward: false,
+  });
   /**
    * Exactly one submenu may be open. Hover, focus and the caret all write the
    * same state so CSS never opens a second panel through :hover/:focus-within
@@ -78,6 +83,43 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     (href: string) => setOpenMenu({ href, pathname, search: currentSearch }),
     [currentSearch, pathname],
   );
+
+  const updateNavigationScroll = useCallback(() => {
+    const navigation = navigationRef.current;
+    if (!navigation) return;
+    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
+    const next = {
+      backward: navigation.scrollLeft > 4,
+      forward: navigation.scrollLeft < maxScrollLeft - 4,
+    };
+    setNavigationScroll((current) => (
+      current.backward === next.backward && current.forward === next.forward ? current : next
+    ));
+  }, []);
+
+  const scrollNavigation = useCallback((direction: "backward" | "forward") => {
+    const navigation = navigationRef.current;
+    if (!navigation) return;
+    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
+    const distance = Math.max(160, Math.round(navigation.clientWidth * 0.75));
+    const nextScrollLeft = navigation.scrollLeft + (direction === "forward" ? distance : -distance);
+    navigation.scrollLeft = Math.max(0, Math.min(maxScrollLeft, nextScrollLeft));
+  }, []);
+
+  useLayoutEffect(() => {
+    const navigation = navigationRef.current;
+    if (!navigation) return;
+    updateNavigationScroll();
+    navigation.addEventListener("scroll", updateNavigationScroll, { passive: true });
+    window.addEventListener("resize", updateNavigationScroll);
+    const resizeObserver = new ResizeObserver(updateNavigationScroll);
+    resizeObserver.observe(navigation);
+    return () => {
+      navigation.removeEventListener("scroll", updateNavigationScroll);
+      window.removeEventListener("resize", updateNavigationScroll);
+      resizeObserver.disconnect();
+    };
+  }, [updateNavigationScroll]);
 
   useEffect(() => {
     const navigation = navigationRef.current;
@@ -261,10 +303,28 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             })}
           </ul>
         </nav>
-        <span className="nav-scroll-hint" aria-hidden="true">
-          Scorri
-          <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={1.8} />
-        </span>
+        {navigationScroll.backward ? (
+          <button
+            type="button"
+            className="nav-scroll-control nav-scroll-control-backward"
+            aria-label="Scorri la navigazione verso sinistra"
+            onClick={() => scrollNavigation("backward")}
+          >
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+            <span aria-hidden="true">Indietro</span>
+          </button>
+        ) : null}
+        {navigationScroll.forward ? (
+          <button
+            type="button"
+            className="nav-scroll-control nav-scroll-control-forward"
+            aria-label="Scorri la navigazione verso destra"
+            onClick={() => scrollNavigation("forward")}
+          >
+            <span aria-hidden="true">Scorri</span>
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+          </button>
+        ) : null}
       </div>
     </header>
   );

@@ -23,6 +23,8 @@ const pageCode = readFileSync(storicoPagePath, "utf8");
 test("health spending trend chart defines the five canonical SSN CCE accounting series", () => {
   assert.match(chartCode, /export function HealthSpendingHistoryChart/);
   assert.match(chartCode, /export const HEALTH_SPENDING_SERIES/);
+  assert.match(chartCode, /export const PRIMARY_SERIES/);
+  assert.match(chartCode, /export const WORK_SERVICES_SERIES/);
 
   // All 5 voice codes
   assert.match(chartCode, /code:\s*"BZ9999"/);
@@ -39,11 +41,31 @@ test("health spending trend chart defines the five canonical SSN CCE accounting 
   assert.match(chartCode, /key:\s*"nonHealthcareWorkServices"/);
 });
 
+test("health spending trend chart separates macro aggregates and work services into distinct honest scales without dual axis", () => {
+  // Rejects misleading dual-axis patterns on a single chart
+  assert.doesNotMatch(chartCode, /yAxisId=["']right["']/);
+  assert.doesNotMatch(chartCode, /orientation=["']right["']/);
+
+  // Uses two synchronized panels with separate scales
+  assert.match(chartCode, /syncId="ssn-national-history"/);
+  assert.match(chartCode, /GRANDI AGGREGATI/);
+  assert.match(chartCode, /PRESTAZIONI DI LAVORO/);
+  assert.match(chartCode, /Scala assoluta da zero/);
+  assert.match(chartCode, /Scala dedicata/);
+
+  // Primary panel contains the 3 macro aggregates
+  assert.match(chartCode, /PRIMARY_SERIES/);
+  assert.match(chartCode, /panel:\s*"primary"/);
+
+  // Work services panel contains the 2 smaller series
+  assert.match(chartCode, /WORK_SERVICES_SERIES/);
+  assert.match(chartCode, /panel:\s*"workServices"/);
+});
 test("health spending trend chart preserves design tokens, accessibility and zero animation", () => {
   // Client directive for Recharts
   assert.match(chartCode, /^"use client";/);
 
-  // Accessibility contract
+  // Accessibility contract on both figures and chart containers
   assert.match(chartCode, /accessibilityLayer/);
   assert.match(chartCode, /role="img"/);
   assert.match(chartCode, /aria-label=/);
@@ -54,9 +76,12 @@ test("health spending trend chart preserves design tokens, accessibility and zer
   // Explicit units formatting on Y axis and tooltips
   assert.match(chartCode, /tickFormatter=\{formatAxisEuro\}/);
   assert.match(chartCode, /mld €/);
+  assert.match(chartCode, /mln €/);
 
   // Disclaimer note on nominal economic-accounting values without causality inference
   assert.match(chartCode, /Valori nominali a consuntivo in euro di competenza economica/);
+  assert.match(chartCode, /due grafici a scala separata/);
+  assert.match(chartCode, /doppio asse/);
   assert.match(chartCode, /non misura efficienza/);
   assert.match(chartCode, /dotazioni organiche/);
 
@@ -68,6 +93,7 @@ test("health spending trend chart preserves design tokens, accessibility and zer
   assert.match(chartCss, /var\(--chart-quaternary\)/);
   assert.match(chartCss, /var\(--color-neutral-300\)/);
   assert.match(chartCss, /var\(--color-text\)/);
+  assert.match(chartCss, /@media \(max-width: 960px\)/);
   assert.match(chartCss, /@media \(max-width: 720px\)/);
 });
 

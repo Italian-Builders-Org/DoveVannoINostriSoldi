@@ -12,6 +12,31 @@
   ],
   "artifacts": [
     {
+      "id": "anac-awardees-coverage",
+      "owner": "ANAC awardees and awards coverage contract",
+      "files": [
+        "src/data/generated/anac-awardees-coverage.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_awardees_coverage.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_awardees_coverage.py"
+      ],
+      "nodeTests": [
+        "tests/anac-awardees-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_awardees_coverage.py --awardees-input ... --awards-input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-awardees.source.json",
+      "trustModel": "Aggregate-only coverage manifest derived from two official, hash-pinned ANAC full snapshots. No fiscal identifier or company name is published."
+    },
+    {
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",
       "files": [

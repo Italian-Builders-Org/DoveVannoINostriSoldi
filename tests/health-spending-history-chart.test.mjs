@@ -98,6 +98,7 @@ test("health spending trend chart preserves design tokens, accessibility and zer
   assert.match(chartCss, /var\(--color-on-strong-muted\)/);
   assert.match(chartCss, /@media \(max-width: 960px\)/);
   assert.match(chartCss, /@media \(max-width: 720px\)/);
+  assert.match(chartCss, /max-width: calc\(100vw - 64px\)/);
 });
 
 test("storico page integrates the chart while preserving the exact table as accessible truth", () => {

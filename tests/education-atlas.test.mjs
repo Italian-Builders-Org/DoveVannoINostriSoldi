@@ -110,6 +110,14 @@ test("education trend and regional view keep missing territories explicit", () =
   assert.equal(national.regionPoints.find((region) => region.code === "04")?.value, null);
   assert.equal(national.regionPoints.filter((region) => region.value !== null).length, 18);
   assert.equal(national.trend.length, 3);
+  assert.deepEqual(
+    national.trend.map(({ period, periodLabel, value }) => ({ period, periodLabel, value })),
+    [
+      { period: "202223", periodLabel: "2022/23", value: 2_650_266 },
+      { period: "202324", periodLabel: "2023/24", value: 2_639_838 },
+      { period: "202425", periodLabel: "2024/25", value: 2_632_660 },
+    ],
+  );
   assert.equal(national.addressRanking.length, 14);
   assert.ok(national.pathwayBreakdown[0].value > 0);
 
@@ -183,4 +191,35 @@ test("education period choices stay visible and keyboard-operable", async () => 
   assert.doesNotMatch(component, /<select[\s\S]*?data-education-filter="period"/);
   assert.match(css, /\.periodOptions button \{[\s\S]*?min-height: 42px;/);
   assert.match(css, /\.periodOptions button:focus-visible/);
+});
+
+test("education trend exposes the year-over-year series as a chart with an exact data table", async () => {
+  const [page, chart, css] = await Promise.all([
+    readFile(new URL("../src/app/istruzione/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/istruzione/education-trend-chart.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/istruzione/education-trend-chart.module.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /import \{ EducationTrendChart \} from "\.\/education-trend-chart"/);
+  assert.match(page, /<EducationTrendChart data=\{view\.trend\} \/>/);
+  assert.match(chart, /^"use client";/);
+  assert.match(chart, /<LineChart/);
+  assert.match(chart, /data=\{chartData\}/);
+  assert.match(chart, /dataKey="periodLabel"/);
+  assert.match(chart, /dataKey="students"/);
+  assert.match(chart, /ChartDataTable/);
+  assert.match(chart, /Studenti osservati per anno scolastico/);
+  assert.match(chart, /exactStudentLabel\(point\.value\)/);
+  assert.match(chart, /value === null \? "n\.d\."/);
+  assert.match(chart, /percent\(share\)/);
+  assert.match(chart, /isAnimationActive=\{false\}/);
+  assert.match(chart, /role="img"/);
+  assert.match(chart, /periodRangeLabel\(chartData\)/);
+  assert.doesNotMatch(chart, /dal 2022\/23 al 2024\/25/);
+  assert.match(chart, /<Tooltip[\s\S]*content=\{<TooltipContent \/>\}/);
+  assert.match(chart, /rows=\{chartData\.map/);
+  assert.match(chart, /var\(--chart-primary\)/);
+  assert.match(css, /var\(--color-on-strong\)/);
+  assert.match(css, /\.chart \{[\s\S]*height: 240px;/);
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.chart \{[\s\S]*height: 220px;/);
 });

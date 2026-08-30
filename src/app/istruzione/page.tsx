@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CompanyAtlasMap } from "@/components/company-atlas-map";
 import { EducationAtlasFilters } from "@/components/education-atlas-filters";
+import { EducationTrendChart } from "./education-trend-chart";
 import { integer, longDate, percent } from "@/lib/format";
 import {
   EDUCATION_ATLAS_ALL,
@@ -216,15 +217,7 @@ export default async function EducationAtlasPage({
             </div>
             {hasTrendData ? (
               <>
-                <div className={styles.trendRail}>
-                  {view.trend.map((point) => (
-                    <div className={styles.trendPoint} key={point.period}>
-                      <span>{point.periodLabel}</span>
-                      <strong>{compactStudents(point.value)}</strong>
-                      <small>{genderShare(point.femaleCount, point.value)} ragazze</small>
-                    </div>
-                  ))}
-                </div>
+                <EducationTrendChart data={view.trend} />
                 <p className={styles.trendDelta}>
                   Ultimo confronto: <strong>{signedPercent(currentTrend?.value ?? null, previousTrend?.value ?? null)}</strong> rispetto all&apos;anno precedente.
                 </p>

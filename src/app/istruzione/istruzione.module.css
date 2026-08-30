@@ -87,18 +87,6 @@
 .attribution { margin: 14px 0 0; color: var(--color-neutral-600); font-size: 10px; line-height: 1.45; }
 .note { margin: 12px 0 0; color: var(--color-neutral-600); font-size: 11px; line-height: 1.45; }
 
-.trendRail {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--color-neutral-300);
-}
-.trendPoint { display: grid; gap: 3px; min-width: 0; padding: 10px 8px; background: var(--color-neutral-100); border-top: 3px solid var(--color-accent-300); }
-.trendPoint span { color: var(--color-neutral-600); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
-.trendPoint strong { color: var(--color-accent-900); font-size: 20px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-.trendPoint small { color: var(--color-neutral-600); font-size: 10px; }
 .trendDelta { margin: 12px 0 0; color: var(--color-neutral-700); font-size: 12px; }
 .trendDelta strong { color: var(--color-accent-700); }
 
@@ -125,10 +113,6 @@
   .heroMeta { align-items: flex-start; text-align: left; }
   .dashboardGrid { grid-template-columns: 1fr; }
   .dashboardGrid > .column:last-child { grid-column: auto; display: flex; }
-}
-
-@media (max-width: 480px) {
-  .trendRail { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 360px) {

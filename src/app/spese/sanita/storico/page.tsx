@@ -7,6 +7,7 @@ import {
   type SsnNationalHistory,
 } from "@/lib/ssn-national-history";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
+import { HealthSpendingHistoryChart } from "@/components/charts/health-spending-history-chart";
 import styles from "./storico.module.css";
 
 export const dynamic = "force-dynamic";
@@ -151,6 +152,7 @@ export default async function HealthSpendingHistoryPage() {
         <>
           <section className="panel">
             <h2 className="panel-title">2012-2024, valori di competenza economica</h2>
+            <HealthSpendingHistoryChart data={history!.years} />
             <HistoryTable history={history!} />
           </section>
           <ProvenanceList history={history!} />

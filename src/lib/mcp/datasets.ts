@@ -246,6 +246,15 @@ export async function queryPublicDataset(
       const { queryInpsCivilInvalidity } = await import("@/lib/inps-invalidity-snapshot");
       return jsonSafe(queryInpsCivilInvalidity({ year: query.year, region: query.region }));
     }
+    case "istat_pensioni_prestazioni":
+    case "istat_pensionati_persone": {
+      const { queryIstatPensions } = await import("@/lib/istat-pensions-snapshot");
+      const result = queryIstatPensions({ year: query.year });
+      const { pensionBenefits, pensioners, ...shared } = result;
+      return query.dataset === "istat_pensioni_prestazioni"
+        ? jsonSafe({ ...shared, dataset: query.dataset, pensionBenefits })
+        : jsonSafe({ ...shared, dataset: query.dataset, pensioners });
+    }
     case "cpt_finanza_regionale": {
       const { queryCptRegionalFiscal } = await import("@/lib/cpt-regional-fiscal-snapshot");
       return jsonSafe(queryCptRegionalFiscal({ year: query.year, region: query.region }));

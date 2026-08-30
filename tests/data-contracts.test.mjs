@@ -8,6 +8,7 @@ const { parseDelimitedRecords, parsePublicNumber } = await import(
 const { classifyFreshness } = await import("../src/lib/data/freshness.ts");
 const { SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
 const { publicSources } = await import("../src/lib/sources.ts");
+const { fetchOfficialSource } = await import("../src/lib/data/source-fetch.ts");
 
 test("semicolon parser preserves quoted delimiters and escaped quotes", () => {
   const csv = [
@@ -37,7 +38,7 @@ test("public number parser handles whitespace, decimal comma and empty values", 
 
 test("every registered source has a complete operational policy", () => {
   assert.equal(new Set(SOURCE_IDS).size, SOURCE_IDS.length);
-  assert.equal(SOURCE_IDS.length, 22);
+  assert.equal(SOURCE_IDS.length, 23);
   assert.deepEqual(
     [...publicSources.map((source) => source.slug)].sort(),
     [...SOURCE_IDS].sort(),
@@ -54,6 +55,16 @@ test("every registered source has a complete operational policy", () => {
     assert.ok(policy.maxRetries >= 0 && policy.maxRetries <= 2);
     assert.ok(policy.tags.includes(`source:${sourceId}`));
   }
+});
+
+test("ISTAT Casellario remains snapshot-only at runtime", async () => {
+  await assert.rejects(
+    fetchOfficialSource(
+      "istat-casellario-pensioni",
+      "https://esploradati.istat.it/SDMXWS/rest/data/IT1,46_813,1.0",
+    ),
+    /Host non consentito per la fonte istat-casellario-pensioni/,
+  );
 });
 
 test("freshness uses source thresholds without inventing missing ones", () => {

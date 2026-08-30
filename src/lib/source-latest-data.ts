@@ -2,6 +2,7 @@ import { consulentiSnapshot } from "@/lib/consulenti-snapshot";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
+import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { openCoesioneSnapshot } from "@/lib/opencoesione-snapshot";
@@ -74,6 +75,10 @@ const exhaustiveLatestDataBySlug = {
   },
   cpt: { kind: "period", label: String(cptRegionalFiscalSnapshot.defaultYear) },
   istat: { kind: "date", value: "2026-08-25" },
+  "istat-casellario-pensioni": {
+    kind: "period",
+    label: `${istatPensionsSnapshot.data.period.from}-${istatPensionsSnapshot.data.period.to}`,
+  },
   [MEF_IRPEF_SOURCE.id]: MEF_IRPEF_SOURCE.latestData,
 } satisfies Readonly<Record<SourceId, SourceLatestData>>;
 

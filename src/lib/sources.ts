@@ -99,6 +99,18 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["codice ISTAT Comune", "codice fiscale Comune", "anno"],
   },
   {
+    slug: "istat-casellario-pensioni",
+    name: "ISTAT · Casellario dei pensionati",
+    owner: "Istituto nazionale di statistica",
+    area: "Pensioni e pensionati",
+    cadence: "Annuale; ultimo periodo verificato 2022",
+    coverage: "Italia, 2012–2022; prestazioni pensionistiche e pensionati in due flussi distinti",
+    format: "SDMX-CSV · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/",
+    note: "I due dataflow ISTAT restano separati: pensioni misura prestazioni, pensionati misura persone. Gli importi sono lordi e non sono sommabili ai dati INPS di invalidità civile; la licenza della risposta SDMX resta non dichiarata finché non è provata dalla fonte.",
+    joinKeys: ["dataflow ISTAT", "anno", "categoria"],
+  },
+  {
     slug: "openbdap",
     name: "OpenBDAP",
     owner: "Ragioneria Generale dello Stato",

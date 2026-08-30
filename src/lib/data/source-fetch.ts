@@ -33,6 +33,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it"],
   cpt: ["politichecoesione.governo.it", "www.politichecoesione.governo.it"],
   istat: ["situas.istat.it", "situas-servizi.istat.it", "www.istat.it"],
+  // Snapshot-only: the SDMX payload is acquired and pinned by ETL, never fetched at runtime.
+  "istat-casellario-pensioni": [],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,
   siope: [
     "www.siope.it",

@@ -6,6 +6,7 @@
 
 - [Home](https://www.dovevannoinostrisoldi.com/): quadro dei pagamenti comunali, mappa e collegamenti alle fonti.
 - [Soldi](https://www.dovevannoinostrisoldi.com/spese): uscite di cassa dei Comuni da SIOPE, con serie temporali e voci contabili.
+- [Pensioni e pensionati](https://www.dovevannoinostrisoldi.com/spese/pensioni): serie ISTAT 2012–2022 del Casellario dei pensionati, con prestazioni e persone tenute separate, importi lordi nominali e fonti verificabili.
 - [Territori](https://www.dovevannoinostrisoldi.com/territori): confronti territoriali sui pagamenti comunali e collegamenti a CPT e MEF IRPEF.
 - [IRPEF territoriale](https://www.dovevannoinostrisoldi.com/territori/irpef): contribuenti, redditi, imposta netta dichiarata e addizionali MEF 2024 per Regione, Provincia e Comune.
 - [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato): pagamenti OpenBDAP per missione, amministrazione e categoria.
@@ -28,6 +29,7 @@
 - [API pagamenti comunali](https://www.dovevannoinostrisoldi.com/api/spese/comuni): pagamenti SIOPE dei Comuni, con periodo e filtri dichiarati.
 - [API distribuzione comunale](https://www.dovevannoinostrisoldi.com/api/spese/comuni/distribuzione): aggregati completi pesati per residenti e per Comune, pubblicati solo dopo un refresh raw verificato; non restituisce righe comunali.
 - [API spesa invalidità civile](https://www.dovevannoinostrisoldi.com/api/spese/invalidita): contabilità INPS separata da SIOPE; spesa nazionale e granularità regionale verificata.
+- [API pensioni](https://www.dovevannoinostrisoldi.com/api/spese/pensioni): snapshot ISTAT del Casellario dei pensionati, interrogabile per anno; pensioni, pensionati e invalidità civile restano perimetri distinti.
 - [API CPT](https://www.dovevannoinostrisoldi.com/api/territori/fisco): entrate, spese e saldo contabile nello stesso perimetro CPT.
 - [API MEF IRPEF](https://www.dovevannoinostrisoldi.com/api/territori/irpef): rilascio comunale 2024 paginato.
 

@@ -48,6 +48,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/spese",
   "/spese/consulenze",
   "/spese/invalidita",
+  "/spese/pensioni",
   "/spese/legge-di-bilancio",
   "/spese/operative",
   "/spese/sanita",
@@ -95,6 +96,7 @@ export const PUBLIC_NOINDEX_PATHS = [
 export const LLMS_DISCOVERY_PATHS = [
   "/",
   "/spese",
+  "/spese/pensioni",
   "/territori",
   "/territori/irpef",
   "/stato",

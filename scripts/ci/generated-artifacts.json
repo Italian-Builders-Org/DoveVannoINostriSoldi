@@ -680,6 +680,32 @@
       "trustModel": "The committed snapshot is derived from three official CC BY 4.0 aggregate releases. The offline check validates schema, provenance, exact 20-region and ATECO coverage, workforce all-bucket aggregation, null coverage, release totals, duplicate protection and the aggregate-only boundary; a future refresh must be reviewed before publication."
     },
     {
+      "id": "istat-pensions-2012-2022",
+      "owner": "ISTAT Casellario pensioni e pensionati 2012-2022",
+      "files": [
+        "src/data/generated/istat-pensions-2012-2022.data.json",
+        "src/data/generated/istat-pensions-2012-2022.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_pensions_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_pensions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-pensions.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_pensions_snapshot.py --pensions-input ... --pensioners-input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-pensions-2012-2022.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: i due response SDMX ufficiali sono acquisiti localmente e vincolati per URL, chiave, schema, byte e SHA-256; --check valida il bundle committato senza rete."
+    },
+    {
       "id": "istat-enterprise-turnover",
       "owner": "ISTAT aggregate enterprise turnover snapshot (Frame Territoriale Anticipato 2024)",
       "files": [

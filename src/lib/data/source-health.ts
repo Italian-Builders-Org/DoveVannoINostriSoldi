@@ -21,6 +21,7 @@ import pcmData from "@/data/generated/pcm-financial-2024.data.json";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
+import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
@@ -475,6 +476,24 @@ function snapshotManagedIstat(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatCasellarioPensioni(): SourceHealth {
+  const { data, metadata } = istatPensionsSnapshot;
+  const pensionBenefits = data.pensionBenefits.observations;
+  const pensioners = data.pensioners.observations;
+  const benefitsObservedAt = metadata.source.assets.pensionBenefits.observedAt;
+  const pensionersObservedAt = metadata.source.assets.pensioners.observedAt;
+  const observedAt = benefitsObservedAt === pensionersObservedAt ? benefitsObservedAt : null;
+  const artifact = metadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("istat-casellario-pensioni"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-casellario-pensioni", observedAt),
+    latencyMs: null,
+    detail: `Snapshot ISTAT Casellario dei pensionati verificato · dati ${data.period.from}-${data.period.to} · pensioni e pensionati separati · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
+    recordCount: pensionBenefits.length + pensioners.length,
+  };
+}
+
 function snapshotManagedMefParticipations(): SourceHealth {
   return {
     ...baseHealth("partecipazioni-pubbliche"),
@@ -612,6 +631,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedCpt(),
     snapshotManagedMefIrpef(),
     snapshotManagedIstat(),
+    snapshotManagedIstatCasellarioPensioni(),
     snapshotManagedOpenCoesione(),
     snapshotManagedPnrrChildcare(),
     snapshotManagedOpenCivitas(),
@@ -643,6 +663,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "mef-irpef": snapshotManagedMefIrpef,
   siope: probeSiope,
   istat: snapshotManagedIstat,
+  "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
   opencoesione: snapshotManagedOpenCoesione,
   italiadomani: snapshotManagedPnrrChildcare,
   opencivitas: snapshotManagedOpenCivitas,

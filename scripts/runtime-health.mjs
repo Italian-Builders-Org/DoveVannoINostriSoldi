@@ -37,6 +37,7 @@ const EXPECTED_SOURCE_IDS = [
   "mef-irpef",
   "siope",
   "istat",
+  "istat-casellario-pensioni",
   "opencoesione",
   "italiadomani",
   "opencivitas",

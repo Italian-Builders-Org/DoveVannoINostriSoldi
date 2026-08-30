@@ -11,6 +11,7 @@ export type SourceId =
   | "mef-irpef"
   | "siope"
   | "istat"
+  | "istat-casellario-pensioni"
   | "opencoesione"
   | "italiadomani"
   | "opencivitas"
@@ -218,6 +219,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat", "domain:territorial-geography"],
+  },
+  "istat-casellario-pensioni": {
+    id: "istat-casellario-pensioni",
+    label: "ISTAT · Casellario dei pensionati",
+    owner: "Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il Casellario dei pensionati pubblica serie annuali; lo snapshot resta bloccato sul periodo verificato e viene aggiornato solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-casellario-pensioni", "domain:social-benefits"],
   },
   opencoesione: {
     id: "opencoesione",

@@ -105,6 +105,12 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.match(istat?.detail ?? "", /generato il 2026-08-25/);
   assert.match(istat?.detail ?? "", /dati al 2026-08-25/);
   assert.match(istat?.detail ?? "", /7894 comuni/);
+  const istatPensions = overview.find((entry) => entry.sourceId === "istat-casellario-pensioni");
+  assert.equal(istatPensions?.reachability, "not-probed");
+  assert.equal(istatPensions?.recordCount, 99);
+  assert.equal(istatPensions?.freshness.sourceTimestamp, "2026-08-30T17:24:00+02:00");
+  assert.match(istatPensions?.detail ?? "", /pensioni e pensionati separati/);
+  assert.match(istatPensions?.detail ?? "", /check offline-source-lock-and-snapshot-contract/);
   const eurostat = overview.find((entry) => entry.sourceId === "eurostat");
   assert.equal(eurostat?.freshness.sourceTimestamp, "2025-12-31");
   assert.match(eurostat?.detail ?? "", /interessi e spesa totale 2025/);

@@ -38,6 +38,49 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
   const debt = datasetCatalog.find((dataset) => dataset.id === "debito_pubblico_italiano");
   assert.deepEqual(debt.filters, []);
   assert.deepEqual(debt.sourceIds, ["bancaditalia", "eurostat"]);
+  const pensionBenefits = datasetCatalog.find((dataset) => dataset.id === "istat_pensioni_prestazioni");
+  assert.deepEqual(pensionBenefits.sourceIds, ["istat-casellario-pensioni"]);
+  assert.deepEqual(pensionBenefits.filters, ["year"]);
+  assert.match(pensionBenefits.caveat, /denominatore.*prestazioni/i);
+  assert.match(pensionBenefits.caveat, /importi.*lordi/i);
+  assert.match(pensionBenefits.caveat, /non.*sommabile/i);
+  const pensioners = datasetCatalog.find((dataset) => dataset.id === "istat_pensionati_persone");
+  assert.deepEqual(pensioners.sourceIds, ["istat-casellario-pensioni"]);
+  assert.deepEqual(pensioners.filters, ["year"]);
+  assert.match(pensioners.caveat, /denominatore.*persone/i);
+  assert.match(pensioners.caveat, /importi.*lordi/i);
+  assert.match(pensioners.caveat, /non.*sommabile/i);
+});
+
+test("ISTAT pension MCP projections keep benefits and persons separate", async () => {
+  const benefits = await queryPublicDataset({
+    dataset: "istat_pensioni_prestazioni",
+    year: 2022,
+  });
+  assert.equal(benefits.dataset, "istat_pensioni_prestazioni");
+  assert.deepEqual(benefits.period, { from: 2012, to: 2022 });
+  assert.equal(benefits.pensionBenefits.length, 8);
+  assert.equal(benefits.pensionBenefits.every((row) => row.year === 2022), true);
+  assert.equal(Object.hasOwn(benefits, "pensioners"), false);
+
+  const pensioners = await queryPublicDataset({
+    dataset: "istat_pensionati_persone",
+    year: 2022,
+  });
+  assert.equal(pensioners.dataset, "istat_pensionati_persone");
+  assert.deepEqual(pensioners.period, { from: 2012, to: 2022 });
+  assert.equal(pensioners.pensioners.length, 1);
+  assert.equal(pensioners.pensioners[0].year, 2022);
+  assert.equal(Object.hasOwn(pensioners, "pensionBenefits"), false);
+
+  await assert.rejects(
+    queryPublicDataset({ dataset: "istat_pensioni_prestazioni", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+  await assert.rejects(
+    queryPublicDataset({ dataset: "istat_pensionati_persone", year: 2011 }),
+    /anno ISTAT pensioni.*intero tra 2012 e 2022/i,
+  );
 });
 
 test("public debt MCP reuses the shared view and accepts no filters", async () => {

@@ -24,6 +24,10 @@ test("annual CPT coverage remains a period instead of an invented date", () => {
     kind: "period",
     label: "IPCA 2026-07",
   });
+  assert.deepEqual(latestDataBySlug["istat-casellario-pensioni"], {
+    kind: "period",
+    label: "2012-2022",
+  });
 });
 
 test("latest-data registry is exhaustive and keeps MEF periods distinct", () => {

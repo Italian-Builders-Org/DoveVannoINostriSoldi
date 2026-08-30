@@ -688,6 +688,8 @@ main { display: block; }
 }
 
 .chart-data {
+  width: 100%;
+  min-width: 0;
   margin-top: var(--space-3);
   border-top: 1px solid var(--color-neutral-300);
 }
@@ -699,7 +701,11 @@ main { display: block; }
   color: var(--color-accent-700);
   font-weight: 700;
 }
-.chart-data .table-scroll { max-height: 360px; }
+.chart-data .table-scroll {
+  width: 100%;
+  min-width: 0;
+  max-height: 360px;
+}
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 

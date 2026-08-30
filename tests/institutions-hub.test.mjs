@@ -6,14 +6,15 @@ const page = fs.readFileSync(new URL("../src/app/istituzioni/page.tsx", import.m
 const css = fs.readFileSync(new URL("../src/app/istituzioni/istituzioni.module.css", import.meta.url), "utf8");
 const navigation = fs.readFileSync(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
 
-test("Institutions hub indexes four separate routes without a combined total", () => {
-  for (const route of ["/parlamento", "/palazzo-chigi", "/ministeri", "/regioni"]) {
+test("Institutions hub indexes five separate routes without a combined total", () => {
+  for (const route of ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"]) {
     assert.match(page, new RegExp(`href: "${route}"`));
     assert.match(navigation, new RegExp(`"${route}"`));
   }
   assert.match(navigation, /href: "\/istituzioni",\s*\n\s*label: "Istituzioni"/);
   assert.match(page, /Ogni percorso resta separato/);
-  assert.match(page, /Quattro conti distinti/);
+  assert.match(page, /<h1>Istituzioni pubbliche<\/h1>/);
+  assert.match(page, /Cinque percorsi, cinque confini/);
   assert.match(page, /I confronti restano dentro ogni fonte/);
   assert.doesNotMatch(page, /compactEuro|exactEuro|treemap/i);
   assert.doesNotMatch(page, /non li sommiamo|Sommarli produrrebbe/i);

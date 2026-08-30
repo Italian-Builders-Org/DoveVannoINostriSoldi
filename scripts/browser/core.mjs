@@ -701,6 +701,68 @@ const completed = [];
 try {
   browser = await launchBrowser();
 
+  for (const width of [390, 1280]) {
+    const label = `Pagella governi ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/governi",
+      width,
+      validate: async (page) => {
+        const text = await bodyText(page);
+        assertTextMatches(text, /Economia italiana: cosa sta migliorando e cosa no/i, label);
+        assertTextMatches(text, /Come sta andando con Meloni-I/i, label);
+        assertTextMatches(text, /AMECO/i, label);
+        assertTextMatches(text, /Eurostat/i, label);
+        assert.equal(
+          await page.$eval("body", (element) => getComputedStyle(element).fontFamily.includes("Geist")),
+          true,
+          `${label}: Geist non è applicato`,
+        );
+
+        const indicatorButton = await page.$('main button[aria-pressed="false"]');
+        assert.ok(indicatorButton, `${label}: selettore indicatori assente`);
+        assert.ok(
+          await indicatorButton.evaluate((element) => element.getBoundingClientRect().height >= 44),
+          `${label}: selettore indicatori sotto i 44px`,
+        );
+        await indicatorButton.click();
+
+        await page.evaluate(() => {
+          const summary = [...document.querySelectorAll("summary")].find(
+            (candidate) => candidate.textContent?.trim() === "Dati del grafico in tabella",
+          );
+          summary?.click();
+        });
+        assert.equal(
+          await page.$eval("details[open]", (details) => Boolean(details.querySelector("table"))),
+          true,
+          `${label}: i dati del grafico non sono consultabili in tabella`,
+        );
+      },
+    });
+    completed.push(label);
+  }
+
+  await runScenario(browser, {
+    label: "Confronto governi 390px",
+    pathname: "/governi/confronta",
+    width: 390,
+    validate: async (page) => {
+      await page.select('select[name="x"]', "prodi-i");
+      await page.select('select[name="y"]', "meloni-i");
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+        page.click('main button[type="submit"]'),
+      ]);
+      assert.equal(new URL(page.url()).searchParams.get("x"), "prodi-i");
+      assert.equal(new URL(page.url()).searchParams.get("y"), "meloni-i");
+      const text = await bodyText(page);
+      assertTextMatches(text, /Prodi-I/i, "Confronto governi 390px");
+      assertTextMatches(text, /Meloni-I/i, "Confronto governi 390px");
+    },
+  });
+  completed.push("Confronto governi 390px");
+
   for (const width of [320, 390, 768, 1280]) {
     const label = `Atlante Imprese ${width}px`;
     await runScenario(browser, {

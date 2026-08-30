@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
+import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { ssnCceSnapshot as data } from "@/lib/ssn-cce-snapshot";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
+import { SsnAccountingComparison } from "./ssn-accounting-comparison";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
@@ -48,6 +49,18 @@ export default function HealthSpendingPage() {
   const production = national.productionCosts;
   const personnelShare = share(national.personnelCost, production);
   const healthcareWorkShare = share(national.healthcareWorkServices, production);
+  const comparisonData = metricOrder.map((metric) => {
+    const definition = sourceMetric(metric);
+    return {
+      id: metric,
+      label: metricTitle[metric],
+      sourceLabel: definition.label,
+      code: definition.code,
+      valueCents: national[metric],
+      detailPresent: data.detailCoverage.present[metric],
+      detailMissing: data.detailCoverage.missing[metric],
+    };
+  });
 
   return (
     <main className="shell page">
@@ -94,49 +107,13 @@ export default function HealthSpendingPage() {
               Le voci contabili a confronto
             </h2>
             <p>
-              Aggregato nazionale ufficiale del dataset SSN_CCE_NAZ_VOCCN_001. Il dettaglio per ente
-              resta in una tabella separata.
+              Aggregato nazionale ufficiale del dataset SSN_CCE_NAZ_VOCCN_001. Il grafico confronta
+              gli importi; codici e copertura del dettaglio restano disponibili nella tabella.
             </p>
           </div>
           <span className="tag tag-neutral">2024 · consuntivo</span>
         </div>
-        <div className="table-scroll" role="region" aria-label="Voci contabili sanità 2024" tabIndex={0}>
-          <table className="table">
-            <caption className={styles.visuallyHidden}>Voci contabili del Conto Economico SSN 2024</caption>
-            <thead>
-              <tr>
-                <th scope="col">Voce</th>
-                <th scope="col">Codice fonte</th>
-                <th scope="col" className="num">Importo</th>
-                <th scope="col">Copertura</th>
-              </tr>
-            </thead>
-            <tbody>
-              {metricOrder.map((metric) => {
-                const definition = sourceMetric(metric);
-                return (
-                  <tr key={metric}>
-                    <th scope="row">
-                      <span className={styles.metricName}>{metricTitle[metric]}</span>
-                      <small>{definition.label}</small>
-                    </th>
-                    <td>
-                      <code>{definition.code}</code>
-                    </td>
-                    <td className="num">
-                      <strong>{compactEuro(euro(national[metric]))}</strong>
-                      <small>{exactEuro(euro(national[metric]))}</small>
-                    </td>
-                    <td>
-                      Copertura dettaglio: {integer(data.detailCoverage.present[metric])} enti con voce
-                      {" · "}{integer(data.detailCoverage.missing[metric])} senza riga
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <SsnAccountingComparison data={comparisonData} />
         <p className={styles.note}>
           “Acquisti di servizi” comprende più servizi sanitari e non sanitari, oltre alle sole
           prestazioni di lavoro. Gli importi nella tabella sono arrotondati solo nella

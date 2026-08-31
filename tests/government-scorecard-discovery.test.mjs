@@ -79,5 +79,5 @@ test("every published government has a dedicated page and is wired into the site
   assert.equal(new Set(governmentPaths).size, governmentPaths.length);
   assert.ok(governmentPaths.includes("/governi/meloni-i"));
   assert.match(sitemapSource, /getGovernmentScorecardPublicPaths/);
-  assert.match(sitemapSource, /publicSitemap\(PUBLIC_SITE_URL, getGovernmentScorecardPublicPaths\(\)\)/);
+  assert.match(sitemapSource, /\.\.\.getGovernmentScorecardPublicPaths\(\)/);
 });

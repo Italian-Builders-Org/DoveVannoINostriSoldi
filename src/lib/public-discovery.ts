@@ -9,8 +9,9 @@ type PublicPath = "/" | `/${string}`;
  *
  * Dynamic entity, project and dataset pages stay out of this static catalog
  * until their complete URL set can be enumerated from committed data. The
- * government scorecard pages are appended by `sitemap.ts` from the published
- * snapshot, not from request-time I/O.
+ * government scorecard pages and the municipal profile pages under `/enti/`
+ * are appended by `sitemap.ts` from the published snapshots, not from
+ * request-time I/O.
  */
 export const PUBLIC_INDEXABLE_PATHS = [
   "/",

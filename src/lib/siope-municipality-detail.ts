@@ -22,6 +22,7 @@ const EXPECTED_COLUMNS = [
   "totalCents",
   "titleCents",
 ] as const;
+const CANONICAL_IPA_CODE = /^[A-Za-z0-9_]+$/;
 
 export type SiopeMunicipalityTitle = Readonly<{
   code: string;
@@ -120,6 +121,7 @@ function validateArtifact(value: unknown, expectedYear: number): ValidatedArtifa
 
   if (!Array.isArray(artifact.municipalities)) throw new Error(`SIOPE dettaglio ${expectedYear}: righe attese`);
   const seen = new Set<string>();
+  const seenIpaCodes = new Set<string>();
   let withMovements = 0;
   let withPopulation = 0;
   let withRegion = 0;
@@ -135,7 +137,17 @@ function validateArtifact(value: unknown, expectedYear: number): ValidatedArtifa
     }
     seen.add(taxCode);
     const codiceIpa = optionalText(raw[1], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].codiceIpa`);
-    if (codiceIpa !== null) withIpaIdentifier += 1;
+    if (codiceIpa !== null) {
+      if (
+        codiceIpa !== codiceIpa.trim() ||
+        !CANONICAL_IPA_CODE.test(codiceIpa) ||
+        seenIpaCodes.has(codiceIpa)
+      ) {
+        throw new Error(`SIOPE dettaglio ${expectedYear}: Codice IPA non canonico o duplicato ${codiceIpa}`);
+      }
+      seenIpaCodes.add(codiceIpa);
+      withIpaIdentifier += 1;
+    }
     const name = text(raw[2], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].name`);
     const province = text(raw[3], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].province`);
     const region = optionalText(raw[4], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].region`);
@@ -332,3 +344,23 @@ export const siopeMunicipalityDetailCoverage = artifacts.map((artifact) => ({
   year: artifact.year,
   municipalities: artifact.rows.length,
 }));
+
+/**
+ * Public paths of the municipal profile pages, enumerated from the committed
+ * SIOPE detail snapshots without request-time I/O. The ETL publishes
+ * `codiceIpa` only when the official registries map the municipality's tax
+ * code to exactly one Codice IPA, so rows without an unambiguous Codice IPA
+ * carry `null` and are excluded here explicitly. Every identifier used below
+ * has already passed the fail-closed contract of `validateArtifact`.
+ */
+export function getMunicipalityEntityPublicPaths(): readonly `/enti/${string}`[] {
+  const codes = new Set<string>();
+  for (const artifact of artifacts) {
+    for (const row of artifact.rows) {
+      if (row[1] !== null) codes.add(row[1]);
+    }
+  }
+  return [...codes]
+    .sort((left, right) => left.localeCompare(right, "en"))
+    .map((code) => `/enti/${encodeURIComponent(code)}` as const);
+}

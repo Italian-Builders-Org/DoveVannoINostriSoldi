@@ -53,11 +53,13 @@
 }
 
 .tooltip {
-  max-width: 310px;
+  box-sizing: border-box;
+  max-width: min(310px, calc(100vw - 80px));
   padding: 10px 12px;
   border: 1px solid var(--color-neutral-400);
   color: var(--color-on-strong);
   background: var(--color-text);
+  overflow-wrap: anywhere;
   box-shadow: var(--shadow-md);
 }
 

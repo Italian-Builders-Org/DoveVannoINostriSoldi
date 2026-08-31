@@ -213,6 +213,7 @@ export function SsnAccountingComparison({
                   <Tooltip
                     cursor={{ fill: "var(--color-neutral-100)" }}
                     animationDuration={120}
+                    position={{ x: 8 }}
                     content={<TooltipContent />}
                   />
                   <Bar dataKey="value" fill="var(--chart-primary)" radius={0} isAnimationActive={false} />

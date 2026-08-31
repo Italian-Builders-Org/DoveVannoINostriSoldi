@@ -31,6 +31,7 @@ test("SSN accounting comparison offers a chart/table switch without losing the e
   assert.match(component, /layout="vertical"/);
   assert.match(component, /value: point\.valueCents \/ 100/);
   assert.match(component, /domain=\{\[0, "auto"\]\}/);
+  assert.match(component, /position=\{\{ x: 8 \}\}/);
   assert.match(component, /ChartDataTable/);
   assert.match(component, /Codice fonte/);
   assert.match(component, /Copertura dettaglio/);
@@ -46,5 +47,7 @@ test("SSN accounting comparison offers a chart/table switch without losing the e
   assert.match(css, /\.viewSelector button\[aria-selected="true"\]/);
   assert.match(css, /\.viewBlock > \[role="tabpanel"\][\s\S]*?min-width: 0/);
   assert.match(css, /\.viewBlock :global\(\.table-scroll\)[\s\S]*?min-width: 0/);
+  assert.match(css, /max-width: min\(310px, calc\(100vw - 80px\)\)/);
+  assert.match(css, /overflow-wrap: anywhere/);
   assert.match(css, /@media \(max-width: 620px\)/);
 });

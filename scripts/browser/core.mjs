@@ -11,6 +11,7 @@ import {
   scenarioIdFromLabel,
   waitForServer,
 } from "./harness.mjs";
+import { waitForStableNavigationTouchTarget } from "./navigation-touch-target.mjs";
 
 const baseUrl = defaultBaseUrl();
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
@@ -614,6 +615,7 @@ async function assertPrimaryDropdownTap(page, label, { sectionLabel, childLabel 
   const toggle = await itemElement.$(".nav-item-toggle");
   assert.ok(toggle, `${label}: pulsante tendina assente`);
 
+  await waitForStableNavigationTouchTarget(page, toggle);
   const toggleBox = await toggle.boundingBox();
   assert.ok(toggleBox, `${label}: pulsante tendina non visibile`);
   await page.touchscreen.tap(

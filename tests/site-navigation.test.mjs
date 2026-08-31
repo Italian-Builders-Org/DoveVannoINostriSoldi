@@ -8,6 +8,11 @@ const navigationSource = fs.readFileSync(
   new URL("../src/lib/site-navigation.ts", import.meta.url),
   "utf8",
 );
+const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs", import.meta.url), "utf8");
+const navigationTouchTargetSource = fs.readFileSync(
+  new URL("../scripts/browser/navigation-touch-target.mjs", import.meta.url),
+  "utf8",
+);
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
@@ -80,6 +85,14 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(globalsCss, /\.nav-row \{\n\s*position: relative;/);
   assert.match(navigationComponent, /data-menu-open=\{openHref \? "true" : undefined\}/);
   assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/);
+});
+
+test("mobile dropdown taps use stable, hit-testable navigation geometry", () => {
+  assert.match(navigationTouchTargetSource, /export async function waitForStableNavigationTouchTarget/);
+  assert.match(navigationTouchTargetSource, /window\.requestAnimationFrame/);
+  assert.match(navigationTouchTargetSource, /navigation\.scrollLeft/);
+  assert.match(browserCoreSource, /await waitForStableNavigationTouchTarget\(page, toggle\)/);
+  assert.match(browserCoreSource, /const toggleBox = await toggle\.boundingBox\(\)/);
 });
 
 test("navigation guards related targets before checking containment", async () => {

@@ -62,6 +62,31 @@
       "trustModel": "Aggregate-only readiness manifest derived from hash-pinned ANAC full snapshots. Conflicting award keys are measured and excluded from affected aggregates; no AUSA value, fiscal identifier, name, entity row, or procedure row is published."
     },
     {
+      "id": "anac-entity-procurement-page",
+      "owner": "ANAC per-entity procurement profiles and awardee drill-downs",
+      "files": [
+        "src/data/generated/anac-entity-procurement-page"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_entity_procurement_page.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_entity_procurement_page.py"
+      ],
+      "nodeTests": [
+        "tests/anac-entity-procurement-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_entity_procurement_page.py --cig ... --stations ... --awards ... --awardees ... --ipa ... --generated-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-entity-procurement-page.source.json",
+      "trustModel": "Public per-entity profiles derived from the existing hash-pinned ANAC contract plus a complete hash-pinned IPA snapshot. Entity joins require one checksum-valid tax code and one Codice IPA. Award values are exact decimals counted once per award; multi-operator or unresolved awards remain unattributed. Public shards contain entity tax codes and official awardee denominations, but no operator tax code, operator-tax-code hash, AUSA, role, or raw source row."
+    },
+    {
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",
       "files": [

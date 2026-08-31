@@ -9,6 +9,14 @@ const integratedSourceRuntimeFiles = [
   "src/data/generated/integrated/rows/*.jsonl.gz",
 ];
 
+const entityProcurementRuntimeFiles = [
+  "src/data/generated/anac-entity-procurement-page/meta.json",
+  "src/data/generated/anac-entity-procurement-page/entities/*.jsonl.gz",
+  "scripts/etl/specs/anac-entity-procurement-page.source.json",
+  "scripts/etl/specs/anac-entity-procurement.source.json",
+  "scripts/etl/specs/anac-awardees.source.json",
+];
+
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
 // scripts/styles; switching to nonces would also make static pages dynamic.
@@ -47,6 +55,8 @@ const nextConfig: NextConfig = {
     ];
   },
   outputFileTracingIncludes: {
+    "/enti/*": entityProcurementRuntimeFiles,
+    "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/dati": integratedSourceRuntimeFiles,
     "/dati/*": integratedSourceRuntimeFiles,
     "/api/dati/*": integratedSourceRuntimeFiles,

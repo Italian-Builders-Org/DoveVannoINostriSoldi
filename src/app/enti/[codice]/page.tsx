@@ -13,9 +13,11 @@ import {
   type IpaOrganizationStructure,
 } from "@/lib/ipa-structure";
 import { longDate } from "@/lib/format";
+import { getEntityProcurementPage } from "@/lib/data/anac-entity-procurement-page";
 import { getMunicipalityProfile } from "@/lib/municipality-profile";
 import { MunicipalityEconomics } from "./municipality-economics";
 import { MunicipalityInformation } from "./municipality-information";
+import { EntityProcurementSection } from "./entity-procurement-section";
 import styles from "./scheda.module.css";
 
 export const dynamic = "force-dynamic";
@@ -72,7 +74,10 @@ export default async function EntityPage({ params }: PageProps) {
   }
 
   if (!entity) notFound();
-  const municipalityProfile = await getMunicipalityProfile(entity);
+  const [municipalityProfile, procurementState] = await Promise.all([
+    getMunicipalityProfile(entity),
+    getEntityProcurementPage(entity),
+  ]);
 
   const responsible = responsibleLabel(
     entity.responsabile.titolo,
@@ -125,6 +130,9 @@ export default async function EntityPage({ params }: PageProps) {
       <div className={municipalityProfile ? styles.municipalityLayout : styles.split}>
         <div className={styles.main}>
           {municipalityProfile ? <MunicipalityEconomics profile={municipalityProfile} /> : null}
+          {municipalityProfile ? (
+            <EntityProcurementSection state={procurementState} />
+          ) : null}
 
           {!municipalityProfile ? <section className="panel">
             <h2 className="panel-title">Identità amministrativa</h2>
@@ -311,18 +319,20 @@ export default async function EntityPage({ params }: PageProps) {
           </section> : null}
 
           {!municipalityProfile ? (
-            <section className="panel">
-              <h2 className="panel-title">Dati economici · collegamenti in corso</h2>
-              <dl className={styles.definitions}>
-                <div><dt>Pagamenti e serie storiche</dt><dd>SIOPE / OpenBDAP</dd></div>
-                <div><dt>Contratti e fornitori</dt><dd>ANAC / BDNCP</dd></div>
-                <div><dt>Progetti, opere e PNRR</dt><dd>CUP / ReGiS / OpenCoesione</dd></div>
-                <div><dt>Consulenze e incarichi</dt><dd>Funzione Pubblica</dd></div>
-              </dl>
-              <p className={styles.note}>
-                Non pubblichiamo dati economici senza un collegamento esatto a una fonte ufficiale.
-              </p>
-            </section>
+            <>
+              <EntityProcurementSection state={procurementState} />
+              <section className="panel">
+                <h2 className="panel-title">Altri dati economici · collegamenti in corso</h2>
+                <dl className={styles.definitions}>
+                  <div><dt>Pagamenti e serie storiche</dt><dd>SIOPE / OpenBDAP</dd></div>
+                  <div><dt>Progetti, opere e PNRR</dt><dd>CUP / ReGiS / OpenCoesione</dd></div>
+                  <div><dt>Consulenze e incarichi</dt><dd>Funzione Pubblica</dd></div>
+                </dl>
+                <p className={styles.note}>
+                  Non pubblichiamo dati economici senza un collegamento esatto a una fonte ufficiale.
+                </p>
+              </section>
+            </>
           ) : null}
 
           {municipalityProfile ? (

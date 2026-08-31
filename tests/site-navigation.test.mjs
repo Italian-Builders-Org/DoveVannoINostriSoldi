@@ -95,6 +95,13 @@ test("mobile dropdown taps use stable, hit-testable navigation geometry", () => 
   assert.match(browserCoreSource, /const toggleBox = await toggle\.boundingBox\(\)/);
 });
 
+test("browser copy guard matches limit and offset as whole words", () => {
+  assert.match(
+    browserCoreSource,
+    /assert\.doesNotMatch\(text, \/API struttura\|Dataset UO\|Dataset AOO\|\\blimit\\b\|\\boffset\\b\/i\)/,
+  );
+});
+
 test("navigation guards related targets before checking containment", async () => {
   const navigationComponent = await readFile(
     new URL("../src/components/navigation.tsx", import.meta.url),

@@ -1231,7 +1231,7 @@ try {
           text.indexOf("Redditi e imposte dei residenti") < text.indexOf("Informazioni sul Comune e fonti"),
           `${label}: ordine cittadino inatteso`,
         );
-        assert.doesNotMatch(text, /API struttura|Dataset UO|Dataset AOO|limit|offset/i);
+        assert.doesNotMatch(text, /API struttura|Dataset UO|Dataset AOO|\blimit\b|\boffset\b/i);
 
         const summaryPresentation = await page.$eval("#dati-economici dl", (element) => ({
           background: getComputedStyle(element).backgroundColor,

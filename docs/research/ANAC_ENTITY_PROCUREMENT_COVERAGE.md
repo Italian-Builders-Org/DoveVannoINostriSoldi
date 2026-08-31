@@ -1,15 +1,21 @@
-# Readiness contract ANAC per enti e appalti
+# Contratto dati ANAC per pagina ente e appalti
 
-Questa slice definisce soltanto la readiness del dato ANAC per una futura
-analisi degli enti. Il consumer valida un manifest aggregate-only: non
-pubblica un indice per ente o procedura, non pubblica identificatori AUSA o
-codici fiscali e non aggiunge UI, route, API o MCP.
+Questa slice pubblica un profilo pubblico minimizzato per ogni ente IPA con
+codice fiscale valido e univoco, inclusi gli enti senza procedure nella coorte;
+i record ANAC compaiono soltanto quando l'identità è risolta. Il producer costruisce
+`src/data/generated/anac-entity-procurement-page/meta.json` e 256 shard
+`entities/{sha256(Codice_IPA).slice(0,2)}.jsonl.gz`; il loader server-only in
+`src/lib/data/anac-entity-procurement-page.ts` verifica hash, gzip, schema,
+provenienza e riconciliazioni prima di restituire un profilo.
+L'artifact corrente contiene 23.737 profili IPA, compresi quelli con zero
+procedure o aggiudicazioni nella coorte.
 
-Il manifest concreto è prodotto da
-`scripts/etl/anac_entity_procurement_coverage.py`. Il contratto TypeScript in
-`src/lib/data/anac-entity-procurement-contract.ts` ne verifica la forma e le
-partizioni. La fixture consumer è in
-`tests/anac-entity-procurement-contract.test.mjs`.
+La pagina riepilogativa integra la sezione nella scheda di ogni ente in
+`/enti/[codice]`. Il drill-down SSR è
+`/enti/[codice]/appalti`, con viste per sintesi, procedure, aggiudicazioni,
+operatori e dettaglio operatore. Non esiste una nuova API o MCP per questa
+slice. Il test consumer e i casi negativi sono in
+`tests/anac-entity-procurement-page.test.mjs`.
 
 ## Fonti e provenance
 
@@ -55,7 +61,7 @@ restano CC BY-SA 4.0, mentre il registro stazioni resta CC BY 4.0.
 
 Il perimetro è:
 
-- `distributionKind: full-snapshot`;
+- `distributionKind: sharded-public-profile`;
 - coorte `cig-2025-full`;
 - dodici `publicationMonths`, da 1 a 12;
 - `nationalPopulationClaim: not-asserted`;
@@ -76,9 +82,18 @@ mancati match restano nelle partizioni di coverage. La
 `denominazione_amministrazione_appaltante` e i campi di delega sono dati
 descrittivi, mai chiavi identitarie.
 
-Il manifest contiene solamente placeholder contrattuali (`ausa:<CODICE_AUSA>`
-e `cf:<CF_AMMINISTRAZIONE_APPALTANTE>`), conteggi e motivi di risoluzione.
-Non contiene valori AUSA, CF, nomi, righe raw o record per ente.
+Il join interno usa AUSA e CF soltanto per risolvere l'ente; il relativo valore
+AUSA non è pubblicato. L'artifact pagina pubblica il `codiceIpa` e il
+`codiceFiscaleEnte` provenienti da IPA per il controllo di identità, oltre alla
+denominazione canonica degli operatori economici. Il loader usa il CF per
+verificare il profilo corrente e lo scarta dal modello pubblico; i CF degli
+operatori, AUSA, righe raw e varianti nominali complete non sono pubblicati.
+
+Ogni profilo pagina contiene solo `summary`, `operators`, `procedures` e
+`awards`: le liste sono minimizzate e non sono record raw, non costituiscono un
+indice AUSA/CF e non contengono campi di pagamento. Le
+chiavi operatori sono riferimenti interni stabili (`op-######`) e non codici
+fiscali; `nameVariants` è soltanto il conteggio delle denominazioni osservate.
 
 ## Grane e importi
 
@@ -114,103 +129,93 @@ non è un pagamento né un prezzo unitario.
 
 ## Coverage e reconciliation
 
-Il manifest non espone records o summary entity-level. Espone soltanto cinque
-sezioni di conteggi:
-
-- `registry`: righe, AUSA, CF, distinzione tra CF italiano checksum-valid e CF
-  non standard e duplicazioni CF/AUSA;
-- `procedures`: righe raw/non-primary/primary, date e importo lotto;
-- `identity`: resolved/unresolved/conflict e motivi `via:*`;
-- `awards`: chiavi valide, importi, date, duplicati, conflitti amount/date e
-  award distinti;
-- `awardees`: chiavi valide, coppie distinte, duplicate esatti e coppie con
-  più righe.
-
-Il validator controlla le partizioni interne, inclusi:
-
-- raw CIG = non-primary + primary; i CIG osservati sono partizionati in
-  esattamente una riga primary, nessuna primary o più primary; i CIG primary
-  distinti coincidono con le procedure;
-- ogni status data/importo procedura copre le righe primary;
-- resolved + unresolved + conflict copre le procedure primary;
-- raw award e awardees sono riconciliati con le rispettive chiavi eleggibili;
-- i duplicati award distinguono righe identiche, righe non identiche, gruppi con
-  conflitto amount, gruppi con conflitto data e gruppi critici;
-- award coverage e cohort amount coincidono;
-- `awardPairsWithAwardees + awardPairsWithoutAwardees = awardPairsInCohort`;
-- importo lotto e importo aggiudicazione non sono confusi.
-
-Le nove metriche di `reconciliation` sono conteggi, non un join pubblicato:
+Il manifest della pagina espone coverage aggregate e totali nazionali dello
+snapshot, mentre gli shard espongono il profilo pubblico minimizzato di ogni
+ente IPA valido/univoco. Le chiavi esatte di `coverage` sono:
 
 ```text
-awardPairsTotal
-awardPairsInCohort
-awardPairsOutOfCohort
-awardPairsWithAwardees
-awardPairsWithoutAwardees
-awardeePairsTotal
-awardeePairsInCohort
-awardeePairsOutOfCohort
-awardeePairsWithoutAward
+ipaRows
+ipaRowsWithUniqueValidTaxCode
+ipaAmbiguousTaxCodes
+ipaCodes
+ipaRowsWithMissingOrInvalidTaxCode
+resolvedAnacEntityTaxCodes
+linkedEntityProfiles
+resolvedAnacEntityTaxCodesWithoutIpa
+awardeeRows = {
+  rawRows, ineligibleKeyRows, knownKeyRows, eligibleKeyRows,
+  outOfCohortRows, resolvedRows, unresolvedRows
+}
 ```
 
-Il validator impone le due partizioni in/out e la partizione con/senza
-aggiudicatari; inoltre riconcilia il totale delle coppie award con le righe
-award distinte e il totale delle coppie awardee con le coppie di join distinte.
+Il validator impone le partizioni IPA (`ipaRows = unique + missing/invalid`),
+la coerenza `ipaCodes = ipaRows`, l'assenza di codici fiscali ambigui e
+`linkedEntityProfiles = ipaRowsWithUniqueValidTaxCode = totals.entities`.
+Per gli aggiudicatari impone inoltre:
 
-## Risultato dello snapshot bloccato
+```text
+rawRows = ineligibleKeyRows + knownKeyRows
+knownKeyRows = eligibleKeyRows + outOfCohortRows
+eligibleKeyRows = resolvedRows + unresolvedRows
+```
 
-Il manifest osservato il `2026-08-30T21:30:00Z` misura:
+I totali del manifest riconciliano tutti i 256 shard e hanno le chiavi
+`entities`, `procedures`, `awards`, `operators`, `awardeeRelations`,
+`positiveAwards`, `awardValue`, `attributedAwardValue` e
+`unattributedAwardValue`. Ogni profilo riconcilia procedure, coppie
+CIG/identificativo, classi `single-operator`, `multipart`, `ambiguous` e
+`no-awardee`, ranking e somme decimali; un importo positivo è attribuito al
+ranking per valore soltanto quando esiste un singolo operatore risolto.
 
-- 48.040 stazioni AUSA nel registro, 46.755 con CF italiano 11/16
-  checksum-valid e 1.285 con identificativo ANAC non standard;
-- 1.453.920 CIG distinti osservati nei dodici file, di cui 1.453.918 con una
-  sola riga prevalente e 2 senza riga prevalente;
-- 1.038.129 procedure con identità ente risolta e 415.789 irrisolte: 414.423
-  perché la pubblicazione 2025 cade fuori dall'intervallo osservato per l'AUSA
-  nel registro corrente, 1.141 per identificativo registro non standard, 224
-  senza AUSA e CF e 1 senza una stazione attiva nel fallback CF; nessun nome è
-  stato usato per forzare il match;
-- 4.852.779 coppie award distinte nel parent, 1.284.202 nella coorte CIG 2025;
-- 1.272.304 award della coorte con almeno una coppia awardee e 11.898 senza;
-- 6.874 gruppi award duplicati (9.298 righe oltre la prima): 3 gruppi hanno
-  un conflitto critico, uno sull'importo e due sulla data;
-- 1.266.687 award della coorte con importo positivo, per una somma decimale
-  esatta di `366015359646.02162975511857770881`; l'unico importo conflittuale
-  è contato ma escluso dalla somma.
+Il controllo è fail-closed: un hash, una provenance, una partizione o una
+riconciliazione diversa rende l'artifact non disponibile, senza trasformare il
+profilo mancante in zeri.
 
-Questi sono conteggi di readiness cross-snapshot, non una stima della spesa
-nazionale corrente. In particolare, “fuori intervallo” segnala che il registro
-stazioni osservato oggi non dimostra la validità temporale per quella
-pubblicazione 2025: non dimostra che la procedura fosse invalida. La somma
-positiva non comprende importi zero, negativi, mancanti, invalidi o
-conflittuali e non sostituisce dati di pagamento.
+## Artifact e comportamento della pagina
+
+Il profilo è distribuito in 256 shard gzip JSONL, partizionati dai primi due
+caratteri dell'hash SHA-256 del `codiceIpa`. Il loader controlla bytes, hash,
+gzip, newline, chiavi esatte e limite di decompressione; la cache è limitata e
+ricontrolla il fingerprint del file per non mascherare una sostituzione dopo la
+prima lettura.
+
+La scheda `/enti/[codice]` mostra procedure, aggiudicazioni, valore dichiarato
+e operatori economici identificati. `/enti/[codice]/appalti` offre ranking per
+numero e valore attribuibile, liste paginabili da 25/50 righe e dettaglio
+operatore. Ogni CIG collega alla pagina ufficiale ANAC. Gli stati di assenza,
+identity drift o artifact non disponibile sono espliciti; non vengono mostrati
+zeri inventati.
+
+Il periodo è sempre CIG pubblicati nel 2025, tutti i dodici mesi, con snapshot
+cross-temporale tra IPA, CIG, aggiudicazioni e aggiudicatari. Il perimetro non è
+copertura nazionale corrente. Il valore è importo di aggiudicazione dichiarato,
+non pagamento. Non sono inclusi HHI, quote dei primi operatori, CPV o soglie.
 
 ## Privacy e test negativi
 
 Il contratto richiede:
 
 ```text
-aggregateOnly       = true
-containsRawRows     = false
-containsRawTaxIds   = false
-containsNames       = false
+containsEntityTaxIds       = true   # solo il CF pubblico dell'ente IPA
+containsOperatorTaxIds     = false
+containsOperatorTaxIdHashes = false
+containsOperatorNames      = true   # una denominazione canonica
+operatorNamesUsedAsKeys    = false
+containsAusa                = false
+containsRawRows             = false
 ```
 
-I test rifiutano URL non ufficiali, licenza stazioni alterata, source o parent
-hash/path incoerenti, resource ID o timestamp invalidi, mese CIG mancante o
-fuori ordine, scope diverso, identità o chiavi alterate, importi float o
-decimali non validi, status e reconciliation incoerenti, partizioni registry
-alterate, moltiplicazione per aggiudicatario, fusione dei due campi importo e
-tentativi di aggiungere un entity index o campi di identità. Quando l'artifact
-è registrato in `scripts/ci/generated-artifacts.json`, il test richiede che
-`src/data/generated/anac-entity-procurement-coverage.json` esista e ne valida
-il contenuto; in assenza di registrazione non viene simulata una pubblicazione.
+I test rifiutano URL non HTTPS, licenze o parent lock alterati, resource ID non
+riconciliati, timestamp o source-spec hash diversi, wire format IPA mancante,
+scope diverso, chiavi extra o private, CF ente non valido, CIG o identificativo
+aggiudicazione non canonici, date impossibili, status amount incoerenti, somme
+float, ranking o conteggi mutati, operatori orfani, duplicazioni e shard
+tampered. Verificano anche la presenza di `no-awardee` nel conteggio dei casi
+non attribuibili.
 
-La verifica è offline e non scarica le fonti. Il registry
-`scripts/ci/generated-artifacts.json` va aggiornato soltanto quando artifact e
-source spec producer sono presenti e referenziabili; prima di allora il
-consumer contract resta una readiness dependency, non un dataset pubblicato.
+La verifica è offline e non scarica le fonti. Quando l'artifact è registrato in
+`scripts/ci/generated-artifacts.json`, il test richiede il relativo
+`meta.json`, legge un profilo da uno shard e lo valida attraverso il loader.
 
 ## Limiti
 
@@ -219,5 +224,9 @@ consumer contract resta una readiness dependency, non un dataset pubblicato.
   corrente.
 - Una forma o un checksum validi non certificano l'identità giuridica.
 - Un importo dichiarato non dimostra pagamento, prezzo equo, spreco o illecito.
-- Questo manifest non abilita ancora pagina ente, ranking, HHI, lista fornitori
-  o lookup pubblico.
+- Un caso `multipart`, `ambiguous` o `no-awardee` resta nel totale delle
+  aggiudicazioni ma non riceve attribuzione individuale del valore.
+- Il codice fiscale dell'ente è usato per identity drift e non sostituisce una
+  verifica giuridica; i codici fiscali degli operatori non sono pubblicati.
+- La pagina non offre ricerca live, HHI, quota dei primi operatori, CPV o
+  soglie; non è una misura dei pagamenti.

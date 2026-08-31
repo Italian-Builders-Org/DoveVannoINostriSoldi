@@ -53,7 +53,7 @@
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.5",
-    "eslint": "^9.0.0",
+    "eslint": "^10.9.0",
     "eslint-config-next": "16.3.2",
     "impeccable": "3.6.0",
     "lighthouse": "^13.4.1",

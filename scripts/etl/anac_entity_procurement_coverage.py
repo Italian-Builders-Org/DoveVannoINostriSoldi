@@ -15,7 +15,6 @@ import io
 import json
 import re
 import sqlite3
-import sys
 import tempfile
 import unicodedata
 import zipfile
@@ -1748,18 +1747,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--check", action="store_true", help="verifica un artifact gia generato senza input di rete")
     args = parser.parse_args(argv)
-    try:
-        if args.check:
+    if args.check:
+        try:
             check_artifact(args.output or DEFAULT_OUTPUT, args.source_spec)
-            return 0
-        if not all((args.cig, args.stations, args.awards, args.awardees)):
-            parser.error("--cig, --stations, --awards e --awardees sono obbligatori senza --check")
+        except ContractError as exc:
+            parser.error(str(exc))
+            return 2
+        return 0
+    if not all((args.cig, args.stations, args.awards, args.awardees)):
+        parser.error("--cig, --stations, --awards e --awardees sono obbligatori senza --check")
+        return 2
+    try:
         manifest = audit(
             args.cig, args.stations, args.awards, args.awardees,
             observed_at=args.observed_at, generated_at=args.generated_at, source_spec=args.source_spec,
         )
     except ContractError as exc:
         parser.error(str(exc))
+        return 2
     encoded = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,7 +1,8 @@
 # Segnala un problema
 
-Il pulsante «Segnala un problema», presente in ogni pagina pubblica tramite il
-layout radice (`src/app/layout.tsx`) e nel footer, apre un dialog che raccoglie
+Il controllo globale è un'icona 44px in basso a destra (nome accessibile
+«Segnala un problema»). Lo stesso ingresso, con etichetta visibile, è nel
+footer e in `/supporto`. Apre un dialog che raccoglie
 una segnalazione strutturata e la trasforma in una issue pubblica del
 repository. Questa nota descrive il contratto, i limiti e le scelte di
 sicurezza, così che codice, `/supporto`, `/privacy` e `SECURITY.md` restino

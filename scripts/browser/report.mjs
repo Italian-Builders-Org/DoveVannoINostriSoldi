@@ -39,8 +39,10 @@ async function triggerGeometry(page, selector) {
       right: rect.right,
       top: rect.top,
       bottom: rect.bottom,
+      width: rect.width,
       height: rect.height,
       text: button.textContent?.trim() ?? "",
+      name: button.getAttribute("aria-label") ?? "",
       visible: style.display !== "none" && style.visibility !== "hidden" && rect.width > 0,
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
@@ -153,8 +155,10 @@ try {
         const label = `${width}px`;
         const trigger = await triggerGeometry(page, TRIGGER);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
-        assert.equal(trigger.text, "Segnala un problema", `${label}: nome del trigger`);
+        assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);
+        assert.equal(trigger.text, "Segnala un problema", `${label}: etichetta visivamente nascosta`);
         assert.ok(trigger.height >= 44, `${label}: area di tocco ${trigger.height}px < 44px`);
+        assert.ok(trigger.width <= 48, `${label}: il trigger globale deve restare un'icona (${trigger.width}px)`);
         assert.ok(trigger.left >= 0 && trigger.right <= trigger.innerWidth + 1, `${label}: trigger fuori viewport`);
         assert.ok(trigger.bottom <= trigger.innerHeight + 1, `${label}: trigger sotto il viewport`);
 

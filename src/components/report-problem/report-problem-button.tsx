@@ -49,10 +49,16 @@ export function ReportProblemButton({ variant = "floating" }: ReportProblemButto
         onClick={openDialog}
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-label="Segnala un problema"
+        title="Segnala un problema"
         data-report-problem-trigger={variant}
       >
-        <HugeiconsIcon icon={Flag02Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
-        Segnala un problema
+        <HugeiconsIcon icon={Flag02Icon} size={variant === "floating" ? 18 : 16} strokeWidth={1.8} aria-hidden="true" />
+        {variant === "floating" ? (
+          <span className={styles.visuallyHidden}>Segnala un problema</span>
+        ) : (
+          "Segnala un problema"
+        )}
       </button>
       {/* Portalled to <body>: the inline variant lives inside <p>, which cannot contain a <dialog>. */}
       {mounted ? createPortal(<ReportProblemDialog open={open} onClose={closeDialog} />, document.body) : null}

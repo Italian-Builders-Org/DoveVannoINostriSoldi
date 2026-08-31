@@ -195,6 +195,15 @@ function throwForTemporaryHttpFailure(response: Response, operation: string): vo
   }
 }
 
+// OpenBDAP has emitted both messages for the same missing-attachment failure:
+// the shorter form is the current live response, while the longer form is
+// retained for compatibility with older gateway responses. Other JSON errors
+// must remain fail-closed instead of silently switching to the snapshot.
+const KNOWN_CSV_ATTACHMENT_OUTAGE_MESSAGES = new Set([
+  "Cannot convert data to csv",
+  "Cannot convert data to csv. Attachment not found",
+]);
+
 function text(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const cleaned = value.trim();
@@ -365,7 +374,8 @@ async function fetchDatasetRows(
         };
         if (
           payload.success === false &&
-          payload.error?.message === "Cannot convert data to csv. Attachment not found"
+          typeof payload.error?.message === "string" &&
+          KNOWN_CSV_ATTACHMENT_OUTAGE_MESSAGES.has(payload.error.message)
         ) {
           throw new BudgetLawSourceTemporarilyUnavailableError(
             "OpenBDAP non ha reso disponibile l'allegato CSV richiesto",

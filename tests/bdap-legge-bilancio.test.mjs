@@ -545,7 +545,44 @@ test("the budget-law route falls back to the verified snapshot when OpenBDAP is 
   }
 });
 
-test("the known OpenBDAP attachment-conversion outage uses the snapshot", async () => {
+test("known OpenBDAP attachment-conversion outages use the snapshot", async () => {
+  const outageMessages = [
+    "Cannot convert data to csv",
+    "Cannot convert data to csv. Attachment not found",
+  ];
+
+  for (const message of outageMessages) {
+    resetBudgetLawMissionSeriesCacheForTests();
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async (input) => {
+      const url = new URL(input.toString());
+      if (url.pathname.endsWith("/package_search")) {
+        return new Response(
+          JSON.stringify({ success: true, result: { results: [packageFixture()] } }),
+          { headers: { "content-type": "application/json" } },
+        );
+      }
+      return new Response(
+        JSON.stringify({ success: false, error: { message } }),
+        { headers: { "content-type": "application/json" } },
+      );
+    };
+    try {
+      const response = await getBudgetLawRoute(
+        new NextRequest("https://example.test/api/spese/stato/legge-bilancio?anni=20"),
+      );
+      assert.equal(response.status, 200);
+      const body = await response.json();
+      assert.equal(body.dataMode, "snapshot");
+      assert.deepEqual(body.years, [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+    } finally {
+      globalThis.fetch = originalFetch;
+      resetBudgetLawMissionSeriesCacheForTests();
+    }
+  }
+});
+
+test("an unrelated OpenBDAP CSV JSON error fails closed", async () => {
   resetBudgetLawMissionSeriesCacheForTests();
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input) => {
@@ -559,19 +596,16 @@ test("the known OpenBDAP attachment-conversion outage uses the snapshot", async 
     return new Response(
       JSON.stringify({
         success: false,
-        error: { message: "Cannot convert data to csv. Attachment not found" },
+        error: { message: "Database unavailable while converting data to csv" },
       }),
       { headers: { "content-type": "application/json" } },
     );
   };
   try {
-    const response = await getBudgetLawRoute(
-      new NextRequest("https://example.test/api/spese/stato/legge-bilancio?anni=20"),
+    await assert.rejects(
+      getBudgetLawMissionSeries(),
+      /OpenBDAP non ha restituito un CSV per il dataset Legge di Bilancio/,
     );
-    assert.equal(response.status, 200);
-    const body = await response.json();
-    assert.equal(body.dataMode, "snapshot");
-    assert.deepEqual(body.years, [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
   } finally {
     globalThis.fetch = originalFetch;
     resetBudgetLawMissionSeriesCacheForTests();

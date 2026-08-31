@@ -9,8 +9,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useState } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import { ChartDataTable } from "@/components/charts/chart-data-table";
+import { compactEuro, exactEuro, integer } from "@/lib/format";
 import styles from "./ssn-accounting-comparison.module.css";
 
 export type SsnAccountingComparisonPoint = Readonly<{
@@ -28,25 +29,22 @@ type ChartPoint = SsnAccountingComparisonPoint & {
   axisLabel: string;
 };
 
-type View = "grafico" | "tabella";
+const VIEW_OPTIONS = [
+  {
+    id: "grafico",
+    label: "Grafico",
+    tabId: "ssn-accounting-chart-tab",
+    panelId: "ssn-accounting-chart-panel",
+  },
+  {
+    id: "tabella",
+    label: "Tabella",
+    tabId: "ssn-accounting-table-tab",
+    panelId: "ssn-accounting-table-panel",
+  },
+] as const;
 
-const exactEuro = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 2,
-  useGrouping: "always",
-});
-
-function compactEuro(value: number): string {
-  const absolute = Math.abs(value);
-  if (absolute >= 1_000_000_000) {
-    return `${(value / 1_000_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €`;
-  }
-  if (absolute >= 1_000_000) {
-    return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 0 })} mln €`;
-  }
-  return `${value.toLocaleString("it-IT", { maximumFractionDigits: 0 })} €`;
-}
+type View = (typeof VIEW_OPTIONS)[number]["id"];
 
 function axisLabel(label: string, maxLength = 34): string {
   return label.length > maxLength
@@ -69,7 +67,7 @@ function TooltipContent({
     <div className={styles.tooltip}>
       <span>{point.code}</span>
       <strong>{point.label}</strong>
-      <b>{exactEuro.format(point.value)}</b>
+      <b>{exactEuro(point.value)}</b>
     </div>
   );
 }
@@ -97,10 +95,10 @@ function ComparisonTable({ data }: { data: readonly SsnAccountingComparisonPoint
               <td><code>{point.code}</code></td>
               <td className="num">
                 <strong>{compactEuro(point.valueCents / 100)}</strong>
-                <small>{exactEuro.format(point.valueCents / 100)}</small>
+                <small>{exactEuro(point.valueCents / 100)}</small>
               </td>
               <td>
-                Copertura dettaglio: {point.detailPresent} enti con voce · {point.detailMissing} senza riga
+                Copertura dettaglio: {integer(point.detailPresent)} enti con voce · {integer(point.detailMissing)} senza riga
               </td>
             </tr>
           ))}
@@ -116,39 +114,72 @@ export function SsnAccountingComparison({
   data: readonly SsnAccountingComparisonPoint[];
 }) {
   const [view, setView] = useState<View>("grafico");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const chartData: ChartPoint[] = data.map((point) => ({
     ...point,
     value: point.valueCents / 100,
     axisLabel: axisLabel(point.label),
   }));
 
+  const selectView = (next: View, focus = false) => {
+    if (focus) {
+      const nextIndex = VIEW_OPTIONS.findIndex((option) => option.id === next);
+      tabRefs.current[nextIndex]?.focus();
+    }
+    setView(next);
+  };
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    const currentIndex = VIEW_OPTIONS.findIndex((option) => option.id === view);
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % VIEW_OPTIONS.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + VIEW_OPTIONS.length) % VIEW_OPTIONS.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = VIEW_OPTIONS.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    selectView(VIEW_OPTIONS[nextIndex].id, true);
+  };
+
   return (
     <div className={styles.viewBlock}>
-      <div className={styles.viewSelector} role="tablist" aria-label="Vista delle voci contabili">
-        <button
-          type="button"
-          role="tab"
-          id="ssn-accounting-chart-tab"
-          aria-selected={view === "grafico"}
-          aria-controls="ssn-accounting-chart-panel"
-          onClick={() => setView("grafico")}
-        >
-          Grafico
-        </button>
-        <button
-          type="button"
-          role="tab"
-          id="ssn-accounting-table-tab"
-          aria-selected={view === "tabella"}
-          aria-controls="ssn-accounting-table-panel"
-          onClick={() => setView("tabella")}
-        >
-          Tabella
-        </button>
+      <div
+        className={styles.viewSelector}
+        role="tablist"
+        aria-label="Vista delle voci contabili"
+        aria-orientation="horizontal"
+      >
+        {VIEW_OPTIONS.map((option, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={option.tabId}
+            aria-selected={view === option.id}
+            aria-controls={option.panelId}
+            tabIndex={view === option.id ? 0 : -1}
+            ref={(element) => { tabRefs.current[index] = element; }}
+            onClick={() => selectView(option.id)}
+            onKeyDown={handleTabKeyDown}
+            key={option.id}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
-      {view === "grafico" ? (
-        <div role="tabpanel" id="ssn-accounting-chart-panel" aria-labelledby="ssn-accounting-chart-tab">
+      <div
+        role="tabpanel"
+        id="ssn-accounting-chart-panel"
+        aria-labelledby="ssn-accounting-chart-tab"
+        hidden={view !== "grafico"}
+      >
+        {view === "grafico" ? (
           <figure className={styles.figure}>
             <div
               className={styles.chart}
@@ -167,6 +198,7 @@ export function SsnAccountingComparison({
                     type="number"
                     axisLine={false}
                     tickLine={false}
+                    domain={[0, "auto"]}
                     tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
                     tickFormatter={compactEuro}
                   />
@@ -188,23 +220,29 @@ export function SsnAccountingComparison({
               </ResponsiveContainer>
             </div>
             <figcaption className={styles.caption}>
-              Importi nazionali a consuntivo 2024, in euro di competenza economica. Le voci non sono parti di un unico totale: il grafico serve a confrontarne l&apos;ordine di grandezza.
+              Scala lineare da zero. Importi nazionali a consuntivo 2024, in euro di competenza economica.
+              Le voci non sono parti di un unico totale e quelle minori appaiono più corte: usa la
+              tabella per i valori esatti.
             </figcaption>
             <ChartDataTable
               label="Voci contabili sanità 2024: valori esatti"
               columns={["Importo"]}
               rows={chartData.map((point) => ({
                 label: `${point.label} (${point.code})`,
-                values: [exactEuro.format(point.value)],
+                values: [exactEuro(point.value)],
               }))}
             />
           </figure>
-        </div>
-      ) : (
-        <div role="tabpanel" id="ssn-accounting-table-panel" aria-labelledby="ssn-accounting-table-tab">
-          <ComparisonTable data={data} />
-        </div>
-      )}
+        ) : null}
+      </div>
+      <div
+        role="tabpanel"
+        id="ssn-accounting-table-panel"
+        aria-labelledby="ssn-accounting-table-tab"
+        hidden={view !== "tabella"}
+      >
+        {view === "tabella" ? <ComparisonTable data={data} /> : null}
+      </div>
     </div>
   );
 }

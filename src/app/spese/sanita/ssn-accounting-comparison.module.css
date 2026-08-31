@@ -4,6 +4,11 @@
   min-width: 0;
 }
 
+.viewBlock > [role="tabpanel"],
+.viewBlock :global(.table-scroll) {
+  min-width: 0;
+}
+
 .viewSelector {
   display: inline-flex;
   width: fit-content;

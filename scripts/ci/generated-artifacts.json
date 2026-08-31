@@ -37,6 +37,31 @@
       "trustModel": "Aggregate-only coverage manifest derived from two official, hash-pinned ANAC full snapshots. No fiscal identifier or company name is published."
     },
     {
+      "id": "anac-entity-procurement-coverage",
+      "owner": "ANAC contracting-authority and procurement readiness contract",
+      "files": [
+        "src/data/generated/anac-entity-procurement-coverage.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_entity_procurement_coverage.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_entity_procurement_coverage.py"
+      ],
+      "nodeTests": [
+        "tests/anac-entity-procurement-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_entity_procurement_coverage.py --cig ... --stations ... --awards ... --awardees ... --observed-at ... --generated-at ... --output src/data/generated/anac-entity-procurement-coverage.json",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "trustModel": "Aggregate-only readiness manifest derived from hash-pinned ANAC full snapshots. Conflicting award keys are measured and excluded from affected aggregates; no AUSA value, fiscal identifier, name, entity row, or procedure row is published."
+    },
+    {
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",
       "files": [

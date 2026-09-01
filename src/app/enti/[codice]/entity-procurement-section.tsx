@@ -2,10 +2,20 @@ import type { ReactElement } from "react";
 import Link from "next/link";
 import { integer } from "@/lib/format";
 import type {
+  AnacConcentrationMetric,
   AnacEntityProcurementPageState,
   AnacEntityProcurementPageView,
+  AnacExactRatio,
 } from "@/lib/data/anac-entity-procurement-page";
-import { countAnacAwardAttributions } from "@/lib/data/anac-entity-procurement-page";
+import {
+  ANAC_CONCENTRATION_MIN_OBSERVATIONS,
+  countAnacAwardAttributions,
+  anacConcentrationFractionIsReadable,
+  anacConcentrationRatioIsExact,
+  formatAnacConcentrationFraction,
+  formatAnacConcentrationHhi,
+  formatAnacConcentrationPercent,
+} from "@/lib/data/anac-entity-procurement-page";
 import styles from "./entity-procurement.module.css";
 
 const APPALTI_PATH = "/enti/:codice/appalti";
@@ -182,6 +192,124 @@ function Summary({ profile }: { profile: AnacEntityProcurementPageView }) {
   );
 }
 
+function withheldReason(metric: Extract<AnacConcentrationMetric, { status: "withheld" }>): string {
+  if (metric.reason === "zero-denominator") {
+    return metric.dimension === "value"
+      ? "Nessun importo attribuibile a un unico aggiudicatario nel perimetro."
+      : "Nessuna relazione operatore-aggiudicazione nel perimetro.";
+  }
+  return `Non pubblicato: ${integer(metric.observationCount)} osservazioni, sotto la soglia di ${integer(metric.minimumObservations)}.`;
+}
+
+function ConcentrationFigure({
+  href,
+  compact,
+  ratio,
+  asPercent,
+}: {
+  href: string;
+  compact: string;
+  ratio: AnacExactRatio;
+  asPercent: boolean;
+}) {
+  const exact = anacConcentrationRatioIsExact(ratio, asPercent);
+  const showFraction = !exact && anacConcentrationFractionIsReadable(ratio);
+  return (
+    <>
+      <dd>
+        <Link href={href}>{compact}</Link>
+      </dd>
+      {showFraction ? (
+        <dd className={styles.concentrationExact}>
+          <Link href={href}>esatto {formatAnacConcentrationFraction(ratio)}</Link>
+        </dd>
+      ) : null}
+    </>
+  );
+}
+
+function ConcentrationMetric({
+  metric,
+  codiceIpa,
+  heading,
+}: {
+  metric: AnacConcentrationMetric;
+  codiceIpa: string;
+  heading: "h3" | "h4";
+}): ReactElement {
+  const byValue = metric.dimension === "value";
+  const title = byValue ? "Per valore attribuibile" : "Per numero di aggiudicazioni";
+  const rankingHref = appaltiHref(codiceIpa, byValue ? "view=operators&metric=value" : "view=operators&metric=count");
+  const Heading = heading;
+  if (metric.status === "withheld") {
+    return (
+      <div className={styles.concentrationMetric}>
+        <Heading>{title}</Heading>
+        <p className={styles.note}>{withheldReason(metric)}</p>
+        <Link className="btn btn-secondary" href={rankingHref}>Apri la classifica →</Link>
+      </div>
+    );
+  }
+  const top1Href = appaltiHref(codiceIpa, "view=operator&operator=" + encodeURIComponent(metric.top1Ref));
+  const topLabel = metric.includedTop < 10 ? `Quota dei primi ${metric.includedTop}` : "Quota Top 10";
+  return (
+    <div className={styles.concentrationMetric}>
+      <Heading>{title}</Heading>
+      <p className={styles.note}>
+        {byValue
+          ? `${integer(metric.observationCount)} aggiudicazioni con un solo aggiudicatario risolto.`
+          : `${integer(metric.observationCount)} aggiudicazioni distinte; le quote usano le relazioni operatore-aggiudicazione.`}
+      </p>
+      <dl className={styles.concentrationStats}>
+        <div>
+          <dt>Quota Top 1</dt>
+          <ConcentrationFigure href={top1Href} compact={formatAnacConcentrationPercent(metric.top1Share)} ratio={metric.top1Share} asPercent />
+          <dd><Link href={top1Href}>{metric.top1Name}</Link></dd>
+        </div>
+        <div>
+          <dt>{topLabel}</dt>
+          <ConcentrationFigure href={rankingHref} compact={formatAnacConcentrationPercent(metric.top10Share)} ratio={metric.top10Share} asPercent />
+        </div>
+        <div>
+          <dt>HHI (0-10.000)</dt>
+          <ConcentrationFigure href={rankingHref} compact={formatAnacConcentrationHhi(metric.hhi10000)} ratio={metric.hhi10000} asPercent={false} />
+        </div>
+      </dl>
+    </div>
+  );
+}
+
+export function EntityProcurementConcentration({
+  profile,
+  heading = "h2",
+  className,
+}: {
+  profile: AnacEntityProcurementPageView;
+  heading?: "h2" | "h3";
+  className?: string;
+}): ReactElement {
+  const Heading = heading;
+  return (
+    <section className={[styles.concentration, className].filter(Boolean).join(" ")} aria-labelledby="anac-concentration-title">
+      <div className={styles.sectionHeading}>
+        <div>
+          <Heading className={heading === "h2" ? "panel-title" : undefined} id="anac-concentration-title">Concentrazione degli aggiudicatari</Heading>
+          <p>
+            Quote Top 1 / Top 10 e indice HHI, calcolati sul ranking già pubblicato. Segnali descrittivi: non indicano illecito, spreco o responsabilità. Soglia {ANAC_CONCENTRATION_MIN_OBSERVATIONS} osservazioni. Fuori da questa slice: CPV, soglie, bunching e benchmark.
+          </p>
+        </div>
+      </div>
+      <div className={styles.concentrationGrid}>
+        <ConcentrationMetric metric={profile.concentration.count} codiceIpa={profile.codiceIpa} heading={heading === "h2" ? "h3" : "h4"} />
+        <ConcentrationMetric metric={profile.concentration.value} codiceIpa={profile.codiceIpa} heading={heading === "h2" ? "h3" : "h4"} />
+      </div>
+      <p className={styles.note}>
+        HHI = somma dei quadrati delle quote percentuali, scala 0-10.000. Un valore non decimale esatto è mostrato troncato verso zero a due decimali (ellissi), non arrotondato. Ogni cifra apre i contratti che la producono.
+      </p>
+    </section>
+  );
+}
+
 function RankingTable({
   profile,
   byValue,
@@ -273,6 +401,7 @@ function Available({ profile }: { profile: AnacEntityProcurementPageView }) {
       <p className={styles.note} id="anac-operator-definition">
         Operatori economici unici identificati nelle relazioni pubblicate. Nei casi multipartiti o ambigui, il conteggio non attribuisce individualmente il valore; i codici fiscali degli operatori non sono pubblicati.
       </p>
+      <EntityProcurementConcentration profile={profile} heading="h3" />
       <RankingTable profile={profile} byValue={false} />
       <RankingTable profile={profile} byValue />
       <details className={styles.provenance}>

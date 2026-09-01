@@ -126,6 +126,95 @@
   font-weight: 400;
 }
 
+.concentration {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.concentrationGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.concentrationMetric {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.concentrationMetric h3,
+.concentrationMetric h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.concentrationMetric .btn {
+  width: fit-content;
+}
+
+.concentrationStats {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.concentrationStats > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding-top: var(--space-3);
+  border-top: 3px solid var(--color-accent-700);
+}
+
+.concentrationStats dt {
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.concentrationStats dd {
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.concentrationStats dd:first-of-type {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: var(--font-heading-weight);
+  line-height: 1.15;
+}
+
+.concentrationExact {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.concentrationStats dd a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: inherit;
+}
+
+.concentrationStats dd a:hover { color: var(--color-accent-800); }
+
+.concentration:global(.panel) {
+  margin-top: 0;
+  padding-top: var(--space-4);
+  border-top: 0;
+}
+
 .provenance {
   margin-top: var(--space-6);
   padding-top: var(--space-3);
@@ -166,5 +255,7 @@
   .sectionHeading .btn { width: fit-content; }
   .summary :global(.stat-value) { font-size: 21px; }
   .tableHint { display: block; }
+  .concentrationGrid { grid-template-columns: minmax(0, 1fr); }
+  .concentrationStats dd:first-of-type { font-size: 20px; }
   .provenance dl > div { grid-template-columns: minmax(0, 1fr); gap: 3px; }
 }

@@ -75,9 +75,14 @@ Applicando quel denominatore ai file correnti otteniamo 93,000670%, non quasi 95
 - Un affidamento diretto non prova uno spreco o un illecito.
 - I soli file CIG non bastano per misurare monopoli o fornitori ricorrenti. Serve un join verificato con aggiudicazioni e operatori economici.
 
-## Passo successivo: concentrazione dei fornitori
+## Passo successivo: confronti CPV e enti comparabili
 
-Il join corretto usa `cig + id_aggiudicazione` tra i dataset ufficiali `aggiudicazioni` e `aggiudicatari`. L'importo aggiudicato va contato una sola volta anche quando un raggruppamento temporaneo contiene più imprese. Per ente, periodo e gruppo CPV pubblicheremo soltanto gruppi con copertura dichiarata e almeno 30 osservazioni, insieme a quota del primo fornitore, quota dei primi cinque e indice HHI.
+Il join corretto usa `cig + id_aggiudicazione` tra i dataset ufficiali `aggiudicazioni` e `aggiudicatari`. L'importo aggiudicato va contato una sola volta anche quando un raggruppamento temporaneo contiene più imprese.
+
+Quote Top 1 / Top 10 e HHI per ente, sul ranking già pubblicato, sono in questa
+slice di #185. Restano fuori CPV, peer group, soglie e bunching. Per ente, periodo
+e gruppo CPV si pubblicheranno soltanto gruppi con copertura dichiarata e almeno
+30 osservazioni.
 
 La dispersione entro un gruppo CPV sarà chiamata `dispersione della dimensione economica dei lotti`. Pubblicheremo numerosità, mediana, percentili e ampiezza interquartile. Non useremo la parola prezzo senza quantità e unità confrontabili.
 

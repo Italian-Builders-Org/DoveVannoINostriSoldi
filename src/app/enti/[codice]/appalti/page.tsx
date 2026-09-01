@@ -11,7 +11,7 @@ import {
   type AnacEntityProcurementPageView,
 } from "@/lib/data/anac-entity-procurement-page";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
-import { EntityProcurementSection, EntityProcurementSourceDetails } from "../entity-procurement-section";
+import { EntityProcurementSection, EntityProcurementSourceDetails, EntityProcurementConcentration } from "../entity-procurement-section";
 import styles from "./appalti.module.css";
 
 type PageProps = {
@@ -428,7 +428,12 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
         <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
       </div>
-      {selectedView === "summary" ? <Summary profile={profile} codice={normalizedCode} /> : null}
+      {selectedView === "summary" ? (
+        <>
+          <Summary profile={profile} codice={normalizedCode} />
+          <EntityProcurementConcentration profile={profile} className="panel" />
+        </>
+      ) : null}
       {selectedView === "operators" ? <Operators profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} metric={metric} /> : null}
       {selectedView === "procedures" ? <Procedures profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
       {selectedView === "awards" ? <Awards profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
@@ -436,7 +441,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       <section className="panel" aria-labelledby="method-title">
         <h2 className="panel-title" id="method-title">Fonte e limiti</h2>
         <p className={styles.note}>Snapshot CIG pubblicati 2025, cross-temporale: non è copertura nazionale corrente. L&apos;importo di aggiudicazione è dichiarato e non è un pagamento. Il collegamento dell&apos;ente a IPA è stato verificato durante l&apos;ETL hash-pinned; non viene ricontrollato live a ogni visita. I codici fiscali degli aggiudicatari/operatori non sono pubblicati.</p>
-        <p className={styles.note}>Le righe sono pagine del profilo hash-pinned; i conflitti e i casi senza attribuzione restano indicati nella tabella.</p>
+        <p className={styles.note}>Le righe sono pagine del profilo hash-pinned; i conflitti e i casi senza attribuzione restano indicati nella tabella. Quote Top 1 / Top 10 e HHI sono descrittivi e non indicano illecito.</p>
         <dl className={styles.sourceList}>
           <div><dt>Generato</dt><dd>{profile.meta.generatedAt}</dd></div>
           <div><dt>Perimetro temporale</dt><dd>CIG pubblicati nel 2025 · tutti i mesi · snapshot cross-temporale</dd></div>

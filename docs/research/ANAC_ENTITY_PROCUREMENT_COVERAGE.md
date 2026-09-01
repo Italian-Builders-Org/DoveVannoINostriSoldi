@@ -180,8 +180,9 @@ ricontrolla il fingerprint del file per non mascherare una sostituzione dopo la
 prima lettura.
 
 La scheda `/enti/[codice]` mostra procedure, aggiudicazioni, valore dichiarato
-e operatori economici identificati. `/enti/[codice]/appalti` offre ranking per
-numero e valore attribuibile, liste paginabili da 25/50 righe e dettaglio
+e operatori economici identificati, più quote Top 1 / Top 10 e HHI quando la
+soglia di 30 osservazioni è soddisfatta. `/enti/[codice]/appalti` offre ranking
+per numero e valore attribuibile, liste paginabili da 25/50 righe e dettaglio
 operatore. Ogni CIG collega alla pagina ufficiale ANAC. Gli stati di assenza,
 identity drift o artifact non disponibile sono espliciti; non vengono mostrati
 zeri inventati.
@@ -189,7 +190,28 @@ zeri inventati.
 Il periodo è sempre CIG pubblicati nel 2025, tutti i dodici mesi, con snapshot
 cross-temporale tra IPA, CIG, aggiudicazioni e aggiudicatari. Il perimetro non è
 copertura nazionale corrente. Il valore è importo di aggiudicazione dichiarato,
-non pagamento. Non sono inclusi HHI, quote dei primi operatori, CPV o soglie.
+non pagamento.
+
+## Concentrazione (Top 1 / Top 10 e HHI)
+
+Le quote e l'HHI **non sono scritti negli shard**: il loader li deriva dal
+ranking già riconciliato, con aritmetica intera/decimale esatta. Non c'è una
+nuova API o un dataset MCP.
+
+- **Per numero:** quote sulle relazioni operatore–aggiudicazione
+  (`awardCount`), soglia di 30 aggiudicazioni distinte (`summary.awardCount`).
+- **Per valore:** quote sul valore attribuibile a un unico aggiudicatario
+  risolto, soglia di 30 aggiudicazioni così attribuite.
+- **Top 10:** primi `min(10, n)` operatori nello stesso ordine del ranking.
+- **HHI:** somma dei quadrati delle quote percentuali, scala 0–10.000, come
+  frazione ridotta. Un decimale non terminante non viene arrotondato: in pagina
+  è troncato verso zero a due decimali (ellissi); la frazione compare in chiaro
+  solo se è breve da leggere.
+- Sotto soglia o senza denominatore il dato è `withheld`, non uno zero
+  inventato. CPV, peer group, soglie e bunching restano fuori da questa slice.
+
+Concentrazione, affidamento diretto e vicinanza a una soglia restano segnali
+descrittivi: non indicano illecito.
 
 ## Privacy e test negativi
 
@@ -228,5 +250,6 @@ La verifica è offline e non scarica le fonti. Quando l'artifact è registrato i
   aggiudicazioni ma non riceve attribuzione individuale del valore.
 - Il codice fiscale dell'ente è usato per identity drift e non sostituisce una
   verifica giuridica; i codici fiscali degli operatori non sono pubblicati.
-- La pagina non offre ricerca live, HHI, quota dei primi operatori, CPV o
-  soglie; non è una misura dei pagamenti.
+- La pagina non offre ricerca live, CPV, soglie o bunching; non è una misura
+  dei pagamenti. Quote Top 1 / Top 10 e HHI sono pubblicati solo con almeno 30
+  osservazioni nel perimetro, come frazioni esatte, e restano descrittivi.

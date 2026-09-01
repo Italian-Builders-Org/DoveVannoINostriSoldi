@@ -363,6 +363,53 @@ class AnacEntityProcurementPageTest(unittest.TestCase):
             finally:
                 connection.close()
 
+    def test_concentration_withholds_small_fixture_and_matches_equal_operator_hhi(self) -> None:
+        profile = self.profile()
+        withheld = MODULE.derive_concentration(profile)
+        self.assertEqual(withheld["count"]["status"], "withheld")
+        self.assertEqual(withheld["count"]["reason"], "below-minimum-observations")
+        self.assertEqual(withheld["value"]["status"], "withheld")
+        operators = [
+            {
+                "ref": f"op-{index:06d}",
+                "name": f"Operatore {index:02d}",
+                "nameVariants": 0,
+                "awardCount": 1,
+                "attributedAwardCount": 1,
+                "attributedValue": "1",
+                "rankByCount": index,
+                "rankByValue": index,
+            }
+            for index in range(1, 31)
+        ]
+        equal = MODULE.derive_concentration({
+            "summary": {
+                "awardCount": 30,
+                "attributedAwardValue": "30",
+            },
+            "operators": operators,
+        })
+        self.assertEqual(equal["count"]["status"], "published")
+        self.assertEqual(equal["count"]["top1Share"], {"numerator": "1", "denominator": "30"})
+        self.assertEqual(equal["count"]["top10Share"], {"numerator": "1", "denominator": "3"})
+        self.assertEqual(equal["count"]["hhi10000"], {"numerator": "1000", "denominator": "3"})
+        self.assertEqual(equal["value"]["hhi10000"], equal["count"]["hhi10000"])
+        monopoly = MODULE.derive_concentration({
+            "summary": {"awardCount": 30, "attributedAwardValue": "30"},
+            "operators": [{
+                "ref": "op-000001",
+                "name": "Solo",
+                "nameVariants": 0,
+                "awardCount": 30,
+                "attributedAwardCount": 30,
+                "attributedValue": "30",
+                "rankByCount": 1,
+                "rankByValue": 1,
+            }],
+        })
+        self.assertEqual(monopoly["count"]["hhi10000"], {"numerator": "10000", "denominator": "1"})
+        self.assertEqual(monopoly["count"]["includedTop"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

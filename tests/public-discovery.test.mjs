@@ -117,10 +117,12 @@ test("robots permits public pages without blocking Next assets", () => {
   assert.deepEqual(robots.rules, {
     userAgent: "*",
     allow: "/",
-    disallow: "/api/",
+    disallow: ["/api/", "/enti/*/appalti"],
   });
   assert.equal(robots.sitemap, `${PUBLIC_SITE_URL}/sitemap.xml`);
   assert.equal(robots.rules.disallow.includes("/_next/"), false);
+  assert.equal(robots.rules.disallow.includes("/mcp"), false);
+  assert.equal(robots.rules.disallow.includes("/api/mcp"), false);
 });
 
 test("llms discovery paths are indexable and resolve to public pages", async () => {

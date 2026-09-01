@@ -130,7 +130,9 @@ export function publicRobots(siteUrl: string): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/api/",
+      // Unique entity procurement URLs miss the CDN on every hit. MCP and
+      // humans still reach them; crawlers should not enumerate them.
+      disallow: ["/api/", "/enti/*/appalti"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

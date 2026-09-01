@@ -356,12 +356,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
-  try {
-    const entity = await getIpaEntityByCode(normalizedCode);
-    return { title: "Appalti · " + (entity?.denominazione ?? normalizedCode) };
-  } catch {
-    return { title: "Appalti · " + normalizedCode };
-  }
+  return {
+    title: "Appalti · " + normalizedCode,
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function EntityProcurementPage({ params, searchParams }: PageProps) {

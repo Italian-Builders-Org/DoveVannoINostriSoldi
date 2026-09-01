@@ -52,7 +52,7 @@ Come usare questo file:
 
 | Iniziativa | Copertura | Implementabile | Effort | Issue / PR | Dove | Prossimo passo |
 |---|---|---|---|---|---|---|
-| Pensioni: aggiornamento oltre il 2022, distribuzione, cumuli | Verticale ISTAT 2012-2022 su `main` ([#153](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/153) chiusa, [#202](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/202) mergiata). Manca il post-2022 | Dipende dalla fonte | Fonte | [#214](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/214) segnalazione aperta (estendere dopo il 2022) | `/spese/pensioni` | Verificare se ISTAT/INPS pubblica tavole successive al 2022 su pensionati e cumuli, con lo stesso perimetro. Feedback: X-001, X-020, X-087, X-093. |
+| Pensioni: distribuzione, cumuli e Casellario ISTAT oltre il 2022 | ISTAT 2012-2022 e stock INPS al 1 gennaio 2026 su `main` ([#153](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/153) chiusa, [#202](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/202) e [#227](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/227) mergiate). [#214](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/214) chiusa: il post-2022 INPS c'è. I due perimetri restano distinti. Mancano distribuzione, cumuli e un Casellario ISTAT successivo al 2022 | Dipende dalla fonte | Fonte | Nessuna issue aperta dedicata | `/spese/pensioni` | Cercare tavole ufficiali su distribuzione territoriale e cumuli, senza sommare INPS e ISTAT. Feedback: X-001, X-020, X-087, X-093. |
 | Sanità: valori reali, demografia, outcome | Conto economico, serie storica e grafico contabile su `main` ([#207](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/207) mergiata). Demografia e outcome assenti | Dipende | Alto | PR [#207](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/207) mergiata: grafico contabile; non copre demografia/outcome | `/spese/sanita`, `/spese/sanita/storico` | Deflatore dichiarato, popolazione/anziani, un outcome ufficiale in verticale pilota. Feedback: X-009, X-021, X-022, X-035, A-003. |
 | Assistente guidato con guardrail | Assistente deterministico su `main`; niente LLM né voce | Sì | Alto | [#17](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/17) aperta | `/assistente`, `docs/ASSISTENTE.md` | Estendere intenti ed esempi. Privacy gate prima di qualsiasi modello generativo o voce. Feedback: X-005, X-015, X-016, X-102, T-010, T-027. |
 | Segnalazioni moderate e non accusatorie | Form pubblico su `main` ([#197](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/197) chiusa, [#201](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/201) mergiata). Manca la policy editoriale | Sì | Medio | [#19](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/19) aperta (registro community, non il form) | `ReportProblemDialog`, `/api/segnalazioni`, [SEGNALAZIONI.md](SEGNALAZIONI.md) | Separare issue pubblica GitHub da eventuale pubblicazione sul sito; rate limit durevole se l'abuso diventa reale. Feedback: X-029, A-085, T-026, A-006. |
@@ -95,13 +95,14 @@ Come usare questo file:
 
 | PR | Stato letto | Nota per la roadmap |
 |---|---|---|
+| [#219](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/219) HHI e Top 1/Top 10 sugli appalti ente | Aperta, in conflitto con `main` | Slice di [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185). Non mergiare finché rebase e `required` non sono verdi. |
 | [#211](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/211) ESLint 10 | Aperta | Dipendenza; `eslint-plugin-react` non è pronto. Non è una riga di prodotto. |
 
 ## Issue aperte senza riga sopra
 
-Tutte le issue aperte al 1 settembre 2026 sono in tabella, con due eccezioni gestite così:
+Tutte le issue aperte al 1 settembre 2026 sono in tabella, con queste eccezioni:
 
-- [#214](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/214) è una segnalazione sul form, collegata alla riga Pensioni.
+- [#220](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/220) è una segnalazione dal form (dettaglio IRPEF via MCP): triage, non una riga di roadmap.
 - Le segnalazioni future del form non diventano da sole righe di roadmap: prima triage.
 
 ## Definition of done per un connettore

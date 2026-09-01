@@ -27,9 +27,15 @@ test("readme shows current UI screenshots of the main public areas", async () =>
   for (const file of [
     "home.jpg",
     "territori.jpg",
-    "controlli.jpg",
+    "governi.jpg",
     "istruzione.jpg",
+    "imprese.jpg",
+    "controlli.jpg",
+    "dati.jpg",
     "confronto-territori.jpg",
+    "debito.jpg",
+    "sanita.jpg",
+    "mcp.jpg",
   ]) {
     assert.match(readme, new RegExp(`docs/readme/${file}`));
     await readFile(new URL(`../docs/readme/${file}`, import.meta.url));

@@ -10,36 +10,52 @@ Riunisce dati ufficiali sparsi su portali diversi. Ogni numero mostra **fonte**,
 
 Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
 
+Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
+
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
-| Territori | Cosa controllare |
+| Territori | Pagella dei governi |
 | --- | --- |
-| ![Territori: pagamenti comunali per regione e per Comune](docs/readme/territori.jpg) | ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) |
+| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
 
-| Atlante Istruzione | Confronto Comuni |
+| Atlante Istruzione | Atlante Imprese |
 | --- | --- |
-| ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Confronto Comuni: quattro profili OpenCivitas e tabella territoriale](docs/readme/confronto-territori.jpg) |
+| ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Atlante Imprese: imprese attive per Regione, settore ATECO e periodo](docs/readme/imprese.jpg) |
+
+| Cosa controllare | Catalogo dati |
+| --- | --- |
+| ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) | ![Catalogo dati: dataset integrati, filtri per evidenza e pubblicazione](docs/readme/dati.jpg) |
+
+| Confronto Comuni | Debito pubblico |
+| --- | --- |
+| ![Confronto Comuni: quattro profili OpenCivitas e perimetro 2022](docs/readme/confronto-territori.jpg) | ![Debito pubblico: stock, detentori e interessi da Banca d'Italia ed Eurostat](docs/readme/debito.jpg) |
+
+| Sanità | MCP |
+| --- | --- |
+| ![Sanità: voci del Conto economico SSN, personale e servizi](docs/readme/sanita.jpg) | ![Pagina MCP: endpoint pubblico, strumenti list_datasets e query_dataset](docs/readme/mcp.jpg) |
 
 ## Cosa trovi sul sito
 
 | Sezione | In sintesi |
 | --- | --- |
-| [Home](https://www.dovevannoinostrisoldi.com/) | Pagamenti dei Comuni, mappa regionale, andamento mensile |
+| [Home](https://www.dovevannoinostrisoldi.com/) | Pagamenti dei Comuni, mappa regionale, composizione della spesa |
 | [Imprese](https://www.dovevannoinostrisoldi.com/imprese) | Imprese attive, addetti, localizzazioni e fatturato aggregato (ISTAT) |
 | [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Studenti e percorsi della scuola secondaria di II grado per Regione (MIM) |
-| [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), mese per mese |
+| [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), sanità, invalidità, pensioni, debito e bilancio |
 | [Territori](https://www.dovevannoinostrisoldi.com/territori) | Confronti per Regione e Comune, profili OpenCivitas, CPT e IRPEF MEF |
 | [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione) | OpenCoesione e traccia PNRR asili (Italia Domani) |
 | [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato) | Pagamenti per funzione e amministrazione (OpenBDAP/RGS) |
 | [Debito pubblico](https://www.dovevannoinostrisoldi.com/debito) | Stock, detentori, scadenze e interessi (Banca d'Italia ed Eurostat) |
 | [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio) | Stanziamenti per missione e riallocazione ipotetica (OpenBDAP, competenza A1, non cassa) |
+| [Istituzioni](https://www.dovevannoinostrisoldi.com/istituzioni) | Parlamento, Palazzo Chigi, pagella dei governi, ministeri e regioni |
 | [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF |
-| [Istituzioni](https://www.dovevannoinostrisoldi.com/istituzioni) | Parlamento, sanità, invalidità e altri dossier |
-| [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, con limiti espliciti |
+| [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, appalti, incarichi e catalogo dati |
+| [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Domande testuali su snapshot verificati, senza modello generativo |
 | [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti e date di aggiornamento |
+| [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |
 
-Altre viste utili: [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [assistente](https://www.dovevannoinostrisoldi.com/assistente).
+Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni).
 
 ## Regole in breve
 
@@ -60,6 +76,9 @@ Limiti importanti:
 
 - ANAC CIG 2025: snapshot mensile verificato, non ricerca live per CIG o fornitore.
 - PNRR: perimetro asili e prima infanzia; non include i pagamenti ReGiS né tutto il Piano.
+- OpenCivitas 2022: Comuni a statuto ordinario (6.557 enti, 15 Regioni).
+- Pagella dei governi: descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
+- Assistente: intenti predefiniti, una domanda per volta; non risponde su un singolo Comune e non accetta richieste su frode o corruzione.
 - Contabilità diverse non si sommano (SIOPE, IRPEF, CPT, costi previsti, debiti).
 
 Registro integrato, copertura e caveat: [docs/INTEGRATED_SOURCE_LEDGER.md](docs/INTEGRATED_SOURCE_LEDGER.md).
@@ -130,6 +149,14 @@ npm run test:lighthouse
 ```
 
 Gli ultimi due richiedono il build di produzione su `http://127.0.0.1:3000`. Dettagli in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Screenshot del README
+
+```bash
+DVNS_BASE_URL=https://www.dovevannoinostrisoldi.com npm run readme:screenshots
+```
+
+Le catture finiscono in `docs/readme/`. In locale si può puntare a un `next start` sulla stessa porta usata per i test.
 
 ### Aggiornamento dati
 

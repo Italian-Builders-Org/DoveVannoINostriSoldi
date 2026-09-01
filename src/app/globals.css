@@ -834,6 +834,8 @@ main { display: block; }
   .brand { flex: 1; min-width: 0; }
   .brand-text strong { font-size: 19px; }
   .header-search { order: 3; width: 100%; }
+  /* Touch already pans the row. Extra Indietro/Scorri buttons steal space. */
+  .nav-scroll-control { display: none; }
   .footer-sitemap-columns {
     column-count: 2;
     column-gap: var(--space-4);
@@ -873,13 +875,6 @@ main { display: block; }
   .primary-nav { scrollbar-width: thin; }
   .primary-nav::-webkit-scrollbar { display: block; height: 3px; }
   .primary-nav::-webkit-scrollbar-thumb { background: var(--color-neutral-400); }
-  .nav-scroll-control {
-    display: inline-flex;
-    min-width: 44px;
-  }
-  .nav-scroll-control-backward {
-    order: -1;
-  }
   .footer-sitemap-columns {
     column-count: 2;
     column-gap: var(--space-4);

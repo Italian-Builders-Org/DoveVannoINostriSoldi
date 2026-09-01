@@ -66,6 +66,11 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(globalsCss, /\.nav-scroll-control \{/);
   assert.match(globalsCss, /@media \(max-width: 1320px\)[\s\S]*?\.nav-scroll-control \{ display: inline-flex; \}/);
   assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.nav-scroll-control \{ display: none; \}/);
+  assert.match(globalsCss, /@media \(max-width: 900px\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/);
+  assert.doesNotMatch(
+    globalsCss,
+    /@media \(max-width: 620px\)[\s\S]*?\.nav-scroll-control \{\s*display: inline-flex/,
+  );
   // Open state carries the path it was opened on, so a completed navigation
   // closes the menu without a setState in an effect.
   assert.match(navigationComponent, /openMenu\?\.pathname === pathname/);

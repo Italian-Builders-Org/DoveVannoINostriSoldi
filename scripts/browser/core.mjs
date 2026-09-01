@@ -79,6 +79,42 @@ async function assertResponsiveShell(page, label, width) {
   assert.equal(navigationState.notePresent, false, `${label}: nota fonti ridondante ancora presente`);
   assert.ok(navigationState.navigationLeft >= 0, `${label}: navigazione fuori viewport a sinistra`);
   assert.ok(navigationState.navigationRight <= width + 1, `${label}: navigazione fuori viewport a destra`);
+
+  const scrollControls = await page.evaluate(() =>
+    [...document.querySelectorAll(".nav-scroll-control")].map((element) => {
+      const style = window.getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return {
+        visible:
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          box.width > 0 &&
+          box.height > 0,
+      };
+    }),
+  );
+  if (width <= 900) {
+    assert.ok(
+      scrollControls.every((control) => !control.visible),
+      `${label}: Indietro/Scorri visibili su mobile`,
+    );
+    const navOverflow = await page.evaluate(() => {
+      const row = document.querySelector(".nav-row");
+      const navigation = document.querySelector(".primary-nav");
+      if (!navigation) return null;
+      return {
+        menuOpen: row?.getAttribute("data-menu-open") === "true",
+        overflowX: window.getComputedStyle(navigation).overflowX,
+      };
+    });
+    assert.ok(navOverflow, `${label}: navigazione primaria assente`);
+    if (!navOverflow.menuOpen) {
+      assert.ok(
+        navOverflow.overflowX === "auto" || navOverflow.overflowX === "scroll",
+        `${label}: la riga del menu non scorre al tocco`,
+      );
+    }
+  }
 }
 
 async function assertCohesionTracePanelContrast(page, label) {
@@ -1429,6 +1465,46 @@ try {
       completed.push(label);
     }
   }
+
+  await runScenario(browser, {
+    label: "Menu mobile senza Indietro/Scorri 390px",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const visibleScrollControls = await page.$$eval(".nav-scroll-control", (buttons) =>
+        buttons.filter((button) => {
+          const style = window.getComputedStyle(button);
+          const box = button.getBoundingClientRect();
+          return style.display !== "none" && box.width > 0 && box.height > 0;
+        }).length,
+      );
+      assert.equal(visibleScrollControls, 0, "Menu mobile: Indietro/Scorri ancora visibili");
+
+      const scrolled = await page.evaluate(() => {
+        const navigation = document.querySelector(".primary-nav");
+        if (!navigation) return null;
+        const before = navigation.scrollLeft;
+        navigation.scrollLeft = Math.min(
+          navigation.scrollWidth - navigation.clientWidth,
+          before + 120,
+        );
+        return {
+          before,
+          after: navigation.scrollLeft,
+          overflow: navigation.scrollWidth - navigation.clientWidth,
+        };
+      });
+      assert.ok(scrolled, "Menu mobile: navigazione primaria assente");
+      assert.ok(scrolled.overflow > 4, "Menu mobile: la riga non ha contenuto da scorrere");
+      assert.ok(scrolled.after > scrolled.before, "Menu mobile: lo scorrimento al tocco non sposta la riga");
+
+      await assertPrimaryDropdownTap(page, "Menu mobile senza Indietro/Scorri 390px", {
+        sectionLabel: "Soldi",
+        childLabel: "Debito pubblico",
+      });
+    },
+  });
+  completed.push("Menu mobile senza Indietro/Scorri 390px");
 
   for (const width of [320, 390, 768, 1024, 1280, 1600]) {
     const label = `Debito pubblico ${width}px`;

@@ -1,0 +1,68 @@
+name: Update data
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "ISTAT reference year (e.g. 2026)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install mapshaper
+        run: npm install -g mapshaper
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+
+      - name: Fetch ISTAT sources
+        run: ./scripts/fetch_sources.sh ${{ inputs.year }}
+
+      - name: Prepare comuni.geojson.prev
+        run: cp comuni.geojson comuni.geojson.prev
+
+      - name: Build comuni.geojson
+        run: .venv/bin/python -m scripts.build_comuni ${{ inputs.year }}
+
+      - name: Generate GeoJSON
+        run: ./generate_geojson.sh
+
+      - name: Generate TopoJSON
+        run: ./generate_topojson.sh
+
+      - name: Run tests
+        run: .venv/bin/pytest tests/
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update data to ISTAT ${{ inputs.year }} vintage"
+            git push
+          fi

@@ -4,9 +4,9 @@ import { publicSitemap } from "@/lib/public-discovery";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Municipality pages still enrich committed SIOPE data with live IPA at
-  // request time. Do not hand thousands of those dynamic URLs to crawlers
-  // until the profile route is entirely snapshot-first.
+  // Keep the high-cardinality municipality surface out of crawler discovery
+  // while the incident containment is being observed in production. Direct
+  // profile visits are snapshot-first and remain available.
   return publicSitemap(PUBLIC_SITE_URL, [
     ...getGovernmentScorecardPublicPaths(),
   ]);

@@ -69,9 +69,12 @@ npm run test:mcp:http
 echo "::endgroup::"
 
 echo "::group::MCP local load test"
+# Keep the throughput sample below the 60 requests/minute application limit:
+# the preceding protocol smoke intentionally shares the same local client IP.
+# The exact 60 + 1 limiter boundary is covered by the route unit suite.
 npm run test:mcp:load -- \
   --url "${BASE_URL}/api/mcp" \
-  --requests 60 \
+  --requests 40 \
   --concurrency 10 \
   --p95-ms 3000
 echo "::endgroup::"

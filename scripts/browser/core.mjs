@@ -644,6 +644,43 @@ async function activeLevel(page) {
   return page.$eval(ACTIVE_LEVEL, (link) => link.textContent?.trim());
 }
 
+async function stubSuccessfulHeaderSearch(page) {
+  await page.setRequestInterception(true);
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/search") {
+      void request.respond({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          query: "Roma",
+          groups: [{
+            type: "ente",
+            label: "Enti",
+            results: [{
+              id: "entity:c_h501",
+              href: "/enti/c_h501",
+              title: "Roma Capitale",
+              context: "Registro IPA",
+              type: "ente",
+              description: "Comune · c_h501",
+              match: { reason: "entity", label: "Nome dell'ente" },
+              score: 1900,
+            }],
+          }],
+          total: 1,
+          hasMore: false,
+          staticTotal: 0,
+          entityTotal: 1,
+          entitiesAvailable: true,
+        }),
+      });
+    } else {
+      void request.continue();
+    }
+  });
+}
+
 async function runScenario(browser, {
   expectedFailure = () => false,
   label,
@@ -1291,14 +1328,14 @@ try {
         await page.keyboard.press("Enter");
         assert.equal(await informationSummary.evaluate((element) => element.parentElement?.open), true);
 
-        const structureSummary = await page.$("details[data-structure-details] summary");
-        assert.ok(structureSummary, `${label}: struttura IPA espandibile assente`);
-        await structureSummary.focus();
-        await page.keyboard.press("Enter");
-        assert.equal(
-          await structureSummary.evaluate((element) => element.parentElement?.open),
-          true,
+        const informationText = await page.$eval(
+          "details[data-municipality-information]",
+          (element) => element.innerText,
         );
+        assert.match(informationText, /Profilo servito da snapshot verificati|Snapshot verificato durante l.ETL/i);
+        assert.match(informationText, /Uffici non inclusi nello snapshot locale/i);
+        assert.match(informationText, /nessuna chiamata IPA durante la visita/i);
+        assert.equal(await page.$("details[data-structure-details]"), null);
 
         const apiResponse = await page.evaluate(async () => {
           const response = await fetch("/api/enti/c_a783");
@@ -1319,9 +1356,14 @@ try {
     width: 390,
     validate: async (page) => {
       const text = await bodyText(page);
-      assertTextMatches(text, /Identità amministrativa/i, "Ente non comunale");
-      assertTextMatches(text, /Dati economici · collegamenti in corso/i, "Ente non comunale");
-      assertTextMatches(text, /Formato JSON/i, "Ente non comunale");
+      if (/Anagrafica IPA non disponibile/i.test(text)) {
+        assertTextMatches(text, /Indice PA non risponde/i, "Ente non comunale");
+        assertTextMatches(text, /Codice richiesto[\s\S]*agid/i, "Ente non comunale");
+      } else {
+        assertTextMatches(text, /Identità amministrativa/i, "Ente non comunale");
+        assertTextMatches(text, /Dati economici · collegamenti in corso/i, "Ente non comunale");
+        assertTextMatches(text, /Formato JSON/i, "Ente non comunale");
+      }
       assert.doesNotMatch(text, /Quanto ha pagato il Comune/i);
     },
   });
@@ -1790,6 +1832,7 @@ try {
       pathname: "/",
       width,
       validate: async (page) => {
+        await stubSuccessfulHeaderSearch(page);
         const input = await page.$("#global-site-search");
         assert.ok(input, `${label}: campo di ricerca assente`);
         await input.type("Roma");
@@ -1814,6 +1857,7 @@ try {
     pathname: "/",
     width: 390,
     validate: async (page) => {
+      await stubSuccessfulHeaderSearch(page);
       const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header Escape: campo assente");
       await input.type("Roma");

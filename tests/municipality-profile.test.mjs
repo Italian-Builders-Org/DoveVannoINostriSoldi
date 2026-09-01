@@ -107,6 +107,19 @@ test("ordinary-statute municipality joins every available source by exact identi
   );
 });
 
+test("committed SIOPE and ISTAT identity can serve a municipality without a live IPA cadastral field", async () => {
+  const profile = await getMunicipalityProfile(entity({
+    codiceIpa: "c_a783",
+    taxCode: "00074270620",
+    istatCode: "062008",
+    cadastralCode: null,
+  }), { allowCommittedIstatIdentity: true });
+  assert.ok(profile);
+  assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.openCivitas.status, "available");
+  assert.equal(profile.identifiers.istatCode, "062008");
+});
+
 test("special-statute municipality keeps national data and declares OpenCivitas out of scope", async () => {
   const profile = await getMunicipalityProfile(entity({
     codiceIpa: "c_g273",

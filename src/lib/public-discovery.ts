@@ -7,11 +7,10 @@ type PublicPath = "/" | `/${string}`;
  * separate from the visual navigation: a page can remain public even when it
  * is not promoted in the header or footer.
  *
- * Dynamic entity, project and dataset pages stay out of this static catalog
- * until their complete URL set can be enumerated from committed data. The
- * government scorecard pages and the municipal profile pages under `/enti/`
- * are appended by `sitemap.ts` from the published snapshots, not from
- * request-time I/O.
+ * Dynamic entity, project and dataset pages stay out of this static catalog.
+ * During the municipality crawl incident, the high-cardinality `/enti/`
+ * detail routes also stay outside the sitemap and robots crawl surface even
+ * though their identifiers are available in committed snapshots.
  */
 export const PUBLIC_INDEXABLE_PATHS = [
   "/",
@@ -130,7 +129,7 @@ export function publicRobots(siteUrl: string): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/api/",
+      disallow: ["/api/", "/enti/"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

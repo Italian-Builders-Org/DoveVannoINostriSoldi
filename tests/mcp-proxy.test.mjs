@@ -7,7 +7,29 @@ import { config, proxy } from "../src/proxy.ts";
 const { getRewrittenUrl, isRewrite } = proxyTesting;
 
 test("MCP compatibility proxy is scoped to the exact public presentation path", () => {
-  assert.deepEqual(config, { matcher: "/mcp" });
+  assert.deepEqual(config, { matcher: ["/mcp", "/enti/:path*"] });
+});
+
+test("entity proxy stops the observed ClaudeBot crawl before page rendering", async () => {
+  const blocked = await proxy(new NextRequest("https://example.test/enti/c_a783/appalti", {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (compatible; ClaudeBot/1.0; +claudebot@anthropic.com)",
+    },
+  }));
+  assert.equal(blocked.status, 403);
+  assert.equal(blocked.headers.get("cache-control"), "private, no-store");
+  assert.equal(blocked.headers.get("x-robots-tag"), "noindex, nofollow");
+
+  for (const userAgent of [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "Googlebot/2.1 (+http://www.google.com/bot.html)",
+    "Claude/1.0",
+  ]) {
+    const allowed = await proxy(new NextRequest("https://example.test/enti/c_a783/appalti", {
+      headers: { "User-Agent": userAgent },
+    }));
+    assert.equal(allowed.headers.get("x-middleware-next"), "1", userAgent);
+  }
 });
 
 test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical endpoint", async () => {

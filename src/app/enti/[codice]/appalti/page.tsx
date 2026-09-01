@@ -22,6 +22,8 @@ type PageProps = {
 export const dynamic = "force-dynamic";
 export const maxDuration = 15;
 
+const entityRobots = { index: false, follow: false } as const;
+
 type ProcurementView = "summary" | "operators" | "procedures" | "awards" | "operator";
 type RankingMetric = "count" | "value";
 
@@ -356,7 +358,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
   const municipality = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
-  return { title: "Appalti · " + (municipality?.name ?? normalizedCode) };
+  return {
+    title: "Appalti · " + (municipality?.name ?? normalizedCode),
+    robots: entityRobots,
+  };
 }
 
 export default async function EntityProcurementPage({ params, searchParams }: PageProps) {

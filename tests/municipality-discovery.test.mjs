@@ -13,6 +13,8 @@ const [{ getGovernmentScorecardPublicPaths }, { getMunicipalityEntityPublicPaths
   ]);
 
 const sitemapPath = new URL("../src/app/sitemap.ts", import.meta.url);
+const entityPagePath = new URL("../src/app/enti/[codice]/page.tsx", import.meta.url);
+const entityProcurementPagePath = new URL("../src/app/enti/[codice]/appalti/page.tsx", import.meta.url);
 const detailSnapshotPaths = [
   new URL("../src/data/generated/siope-municipal-detail-2024.json", import.meta.url),
   new URL("../src/data/generated/siope-municipal-detail-2025.json", import.meta.url),
@@ -43,7 +45,7 @@ async function committedMunicipalityPaths() {
     .map((code) => `/enti/${encodeURIComponent(code)}`);
 }
 
-test("municipal profile pages stay enumerable but are excluded from the sitemap while they require live IPA", async () => {
+test("municipal profile pages stay enumerable but are excluded from crawler discovery during containment", async () => {
   const municipalityPaths = await committedMunicipalityPaths();
   const generatedMunicipalityPaths = getMunicipalityEntityPublicPaths();
 
@@ -69,4 +71,10 @@ test("municipal profile pages stay enumerable but are excluded from the sitemap 
 
   const sitemapSource = await readFile(sitemapPath, "utf8");
   assert.doesNotMatch(sitemapSource, /getMunicipalityEntityPublicPaths/);
+
+  for (const pagePath of [entityPagePath, entityProcurementPagePath]) {
+    const pageSource = await readFile(pagePath, "utf8");
+    assert.match(pageSource, /robots:\s*entityRobots/);
+    assert.match(pageSource, /index:\s*false,\s*follow:\s*false/);
+  }
 });

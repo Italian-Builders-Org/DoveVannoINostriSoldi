@@ -826,6 +826,19 @@ test("MCP endpoint keeps stateless requests isolated under concurrency", async (
   assert.ok(bodies.every((body) => body.includes("query_dataset")));
 });
 
+test("MCP endpoint enforces the 60 requests per minute instance limit", async () => {
+  const headers = { "X-Forwarded-For": "203.0.113.60" };
+  for (let index = 0; index < 60; index += 1) {
+    const response = await POST(request(headers));
+    assert.equal(response.status, 200, `request ${index + 1}`);
+    await response.body?.cancel();
+  }
+
+  const limited = await POST(request(headers));
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("retry-after"), "60");
+});
+
 test("MCP tool input schema rejects out-of-range pagination", async () => {
   const response = await POST(request({}, JSON.stringify({
     jsonrpc: "2.0",

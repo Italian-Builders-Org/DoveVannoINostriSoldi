@@ -27,6 +27,8 @@ if (!loopback) {
   );
 }
 
+// Standalone default is the instance cap (60 POST/min per forwarded IP).
+// CI passes --requests 40 because the HTTP smoke already used ~10 POSTs.
 const requests = boundedInteger("requests", 60, 1, 500);
 const concurrency = boundedInteger("concurrency", 10, 1, 25);
 const p95BudgetMs = boundedInteger("p95-ms", 3_000, 100, 30_000);

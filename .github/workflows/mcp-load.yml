@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       requests:
-        description: Numero totale di richieste (massimo 500)
+        description: Numero totale di richieste (massimo 500; il limiter di istanza è 60 POST/min per IP)
         required: true
-        default: "100"
+        default: "40"
       concurrency:
         description: Concorrenza (massimo 25)
         required: true

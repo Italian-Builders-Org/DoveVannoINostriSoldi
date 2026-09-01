@@ -6,7 +6,7 @@ process.env.MCP_ALLOWED_HOSTS = [process.env.MCP_ALLOWED_HOSTS, "example.test"]
   .filter(Boolean)
   .join(",");
 
-const { GET, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
+const { GET, OPTIONS, POST, maxDuration, MCP_INSTANCE_POST_LIMIT } = await import("../src/app/api/mcp/route.ts");
 const { dvnsStarterPrompts } = await import("../src/lib/mcp/server.ts");
 const loader = await import("../src/lib/integrated-sources.ts");
 
@@ -259,6 +259,18 @@ test("MCP endpoint does not accept a loopback Host header on a public URL", asyn
 
 test("MCP route aborts before the Vercel 60-second runtime bill", () => {
   assert.equal(maxDuration, 15);
+});
+
+test("MCP route rate-limits a forwarded client after 60 POSTs in a minute", async () => {
+  const headers = { "x-forwarded-for": "203.0.113.88" };
+  for (let index = 0; index < MCP_INSTANCE_POST_LIMIT; index += 1) {
+    const response = await POST(request(headers));
+    assert.equal(response.status, 200, `request ${index + 1} should be allowed`);
+  }
+  const limited = await POST(request(headers));
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("retry-after"), "60");
+  assert.match(await limited.text(), /Troppe richieste/);
 });
 
 test("MCP endpoint rejects an oversized declared body", async () => {

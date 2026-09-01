@@ -5,7 +5,7 @@ import {
   IPA_ENTI_RESOURCE_ID,
   IPA_LICENSE,
 } from "@/lib/ipa";
-import { getMunicipalityProfile } from "@/lib/municipality-profile";
+import { getMunicipalityProfile, getMunicipalityProfileByIpaCode, municipalityEntityFromProfile } from "@/lib/municipality-profile";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +58,31 @@ export async function GET(_request: Request, context: RouteContext) {
       },
     );
   } catch (error) {
+    const municipalityProfile = await getMunicipalityProfileByIpaCode(normalized);
+    if (municipalityProfile) {
+      return NextResponse.json(
+        {
+          ok: true,
+          ipaLive: false,
+          source: {
+            name: "Indice PA non risponde; scheda da snapshot comunali",
+            owner: "Agenzia per l'Italia Digitale",
+            datasetUrl: IPA_ENTI_DATASET_URL,
+            resourceId: IPA_ENTI_RESOURCE_ID,
+            license: IPA_LICENSE,
+            cadence: "snapshot",
+          },
+          observedAt: new Date().toISOString(),
+          record: municipalityEntityFromProfile(municipalityProfile),
+          municipalityProfile,
+        },
+        {
+          headers: {
+            "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600",
+          },
+        },
+      );
+    }
     return NextResponse.json(
       {
         ok: false,

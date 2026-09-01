@@ -3,7 +3,7 @@ import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const [{ getMunicipalityProfile }, { getSiopeMunicipalityDetail }, { buildMunicipalitySpendingRows }] = await Promise.all([
+const [{ getMunicipalityProfile, getMunicipalityProfileByIpaCode }, { getSiopeMunicipalityDetail, getSiopeMunicipalityDetailByIpaCode }, { buildMunicipalitySpendingRows }] = await Promise.all([
   import("../src/lib/municipality-profile.ts"),
   import("../src/lib/siope-municipality-detail.ts"),
   import("../src/lib/municipality-spending-view.ts"),
@@ -82,6 +82,22 @@ test("citizen-facing main categories plus other categories reconcile with SIOPE 
   assert.equal(rows.length, 5);
   assert.equal(rows.at(-1).label, "Altre categorie");
   assert.equal(rows.reduce((sum, row) => sum + row.amountCents, 0), latest.totalCents);
+});
+
+test("snapshot IPA lookup reconstructs Benevento without live anagrafe codes", async () => {
+  const siope = getSiopeMunicipalityDetailByIpaCode("c_a783");
+  assert.ok(siope);
+  assert.equal(siope.taxCode, "00074270620");
+  assert.equal(getSiopeMunicipalityDetailByIpaCode("agid"), null);
+
+  const profile = await getMunicipalityProfileByIpaCode("c_a783");
+  assert.ok(profile);
+  assert.equal(profile.identifiers.codiceIpa, "c_a783");
+  assert.equal(profile.identifiers.taxCode, "00074270620");
+  assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.openCivitas.status, "available");
+  assert.equal(profile.pnrrChildcare.data.totalProjects, 3);
+  assert.ok(profile.siope.peerBenchmark);
 });
 
 test("ordinary-statute municipality joins every available source by exact identifiers", async () => {

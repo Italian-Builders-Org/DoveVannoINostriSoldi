@@ -204,6 +204,23 @@ const rowsByYearAndTaxCode = new Map(
   artifacts.map((artifact) => [artifact.year, new Map(artifact.rows.map((row) => [row[0], row]))]),
 );
 
+const taxCodeByIpa = new Map<string, string>();
+for (const artifact of artifacts) {
+  for (const row of artifact.rows) {
+    const ipa = row[1];
+    if (ipa && !taxCodeByIpa.has(ipa)) taxCodeByIpa.set(ipa, row[0]);
+  }
+}
+
+export function getSiopeMunicipalityDetailByIpaCode(rawCode: string): SiopeMunicipalityDetail | null {
+  const codiceIpa = rawCode.trim();
+  if (!CANONICAL_IPA_CODE.test(codiceIpa)) return null;
+  const taxCode = taxCodeByIpa.get(codiceIpa);
+  if (!taxCode) return null;
+  const detail = getSiopeMunicipalityDetail(taxCode);
+  return detail?.codiceIpa === codiceIpa ? detail : null;
+}
+
 export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalityDetail | null {
   const taxCode = rawTaxCode.trim();
   if (!/^\d{11}$/.test(taxCode)) return null;

@@ -6,6 +6,7 @@ import type { PnrrChildcareMeta } from "@/lib/data/pnrr-childcare-contract";
 import type { MefIrpefQueryResult, MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
 import {
   getSiopeMunicipalityDetail,
+  getSiopeMunicipalityDetailByIpaCode,
   getSiopeMunicipalityPeerObservations,
   type SiopeMunicipalityDetail,
 } from "@/lib/siope-municipality-detail";
@@ -160,13 +161,68 @@ function normalizedCadastralCode(value: string | null): string | null {
   return /^[A-Z][0-9]{3}$/.test(code) ? code : null;
 }
 
+function snapshotEntity(args: Readonly<{
+  codiceIpa: string;
+  denominazione: string;
+  taxCode: string;
+  istatCode: string | null;
+}>): IpaEntity {
+  return {
+    codiceIpa: args.codiceIpa,
+    denominazione: args.denominazione,
+    codiceFiscale: args.taxCode,
+    tipologia: null,
+    codiceCategoria: null,
+    codiceNatura: null,
+    codiceAteco: null,
+    inLiquidazione: null,
+    codiceMiur: null,
+    codiceIstat: null,
+    acronimo: null,
+    responsabile: { nome: null, cognome: null, titolo: null },
+    sede: {
+      codiceComuneIstat: args.istatCode,
+      codiceCatastaleComune: null,
+      cap: null,
+      indirizzo: null,
+    },
+    email: [],
+    sitoIstituzionale: null,
+    social: { facebook: null, linkedin: null, twitter: null, youtube: null },
+    dataAggiornamento: null,
+  };
+}
+
+export function municipalityEntityFromProfile(profile: MunicipalityProfile): IpaEntity {
+  return snapshotEntity({
+    codiceIpa: profile.identifiers.codiceIpa,
+    denominazione: profile.siope.data.name,
+    taxCode: profile.identifiers.taxCode,
+    istatCode: profile.identifiers.istatCode,
+  });
+}
+
+export async function getMunicipalityProfileByIpaCode(codiceIpa: string): Promise<MunicipalityProfile | null> {
+  const siope = getSiopeMunicipalityDetailByIpaCode(codiceIpa);
+  if (!siope?.codiceIpa || siope.codiceIpa !== codiceIpa) return null;
+  return getMunicipalityProfile(snapshotEntity({
+    codiceIpa,
+    denominazione: siope.name,
+    taxCode: siope.taxCode,
+    istatCode: siope.years[0]?.geography?.istatCode ?? null,
+  }));
+}
+
 export async function getMunicipalityProfile(entity: IpaEntity): Promise<MunicipalityProfile | null> {
   const taxCode = entity.codiceFiscale?.trim() ?? "";
   if (!/^\d{11}$/.test(taxCode)) return null;
   const siope = getSiopeMunicipalityDetail(taxCode);
   if (!siope || siope.codiceIpa !== entity.codiceIpa) return null;
-  const candidateIstatCode = normalizedIstatCode(entity.sede.codiceComuneIstat);
+  const ipaIstatCode = normalizedIstatCode(entity.sede.codiceComuneIstat);
   const cadastralCode = normalizedCadastralCode(entity.sede.codiceCatastaleComune);
+  const geographyIstatCode = siope.years[0]?.geography?.istatCode ?? null;
+  const candidateIstatCode = ipaIstatCode ?? (!cadastralCode ? geographyIstatCode : null);
+  const istatOnlyJoin = !cadastralCode && candidateIstatCode !== null && candidateIstatCode === geographyIstatCode;
 
   const [irpefModule, openCivitasModule, pnrrModule] = await Promise.all([
     import("@/lib/mef-irpef-snapshot"),
@@ -176,7 +232,7 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
 
   let irpef: MunicipalityProfile["irpef"];
   let istatCode: string | null = null;
-  if (!candidateIstatCode || !cadastralCode) {
+  if (!candidateIstatCode || (!cadastralCode && !istatOnlyJoin)) {
     irpef = unavailable(
       "not_found",
       "no_matching_record",
@@ -191,14 +247,18 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
         limit: 1,
       });
       const record = result.data[0];
-      if (
-        record?.territory.level !== "municipality" ||
-        record.territory.cadastralCode !== cadastralCode
-      ) {
+      const matched = record?.territory.level === "municipality" && (
+        cadastralCode
+          ? record.territory.cadastralCode === cadastralCode
+          : record.territory.code === candidateIstatCode
+      );
+      if (!matched) {
         irpef = unavailable(
           "not_found",
           "no_matching_record",
-          "I codici ISTAT e catastale IPA non riconciliano con lo stesso record MEF.",
+          cadastralCode
+            ? "I codici ISTAT e catastale IPA non riconciliano con lo stesso record MEF."
+            : "Il codice ISTAT geografico non riconcilia con lo stesso record MEF.",
         );
       } else {
         istatCode = candidateIstatCode;

@@ -13,8 +13,12 @@ import {
   type IpaOrganizationStructure,
 } from "@/lib/ipa-structure";
 import { longDate } from "@/lib/format";
-import { getEntityProcurementPage } from "@/lib/data/anac-entity-procurement-page";
-import { getMunicipalityProfile } from "@/lib/municipality-profile";
+import { getEntityProcurementPage, loadAnacEntityProcurementPage } from "@/lib/data/anac-entity-procurement-page";
+import {
+  getMunicipalityProfile,
+  getMunicipalityProfileByIpaCode,
+  municipalityEntityFromProfile,
+} from "@/lib/municipality-profile";
 import { MunicipalityEconomics } from "./municipality-economics";
 import { MunicipalityInformation } from "./municipality-information";
 import { EntityProcurementSection } from "./entity-procurement-section";
@@ -42,9 +46,10 @@ function responsibleLabel(
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { codice } = await params;
+  const normalizedCode = decodeURIComponent(codice);
 
   try {
-    const entity = await getIpaEntityByCode(decodeURIComponent(codice));
+    const entity = await getIpaEntityByCode(normalizedCode);
     if (!entity) return { title: "Ente non trovato" };
 
     return {
@@ -52,6 +57,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `Scheda pubblica dell'ente ${entity.denominazione}, Codice IPA ${entity.codiceIpa}.`,
     };
   } catch {
+    const profile = await getMunicipalityProfileByIpaCode(normalizedCode);
+    if (profile) {
+      return {
+        title: profile.siope.data.name,
+        description: `Scheda comunale di ${profile.siope.data.name}, Codice IPA ${profile.identifiers.codiceIpa}.`,
+      };
+    }
     return { title: "Ente" };
   }
 }
@@ -61,36 +73,58 @@ export default async function EntityPage({ params }: PageProps) {
   const normalizedCode = decodeURIComponent(codice);
 
   let entity;
+  let ipaReachable = true;
   let structure: IpaOrganizationStructure | null = null;
+  let snapshotProfile = null;
   try {
     entity = await getIpaEntityByCode(normalizedCode);
   } catch {
-    return (
-      <main className="shell page">
-        <div className="page-intro">
-          <h1>Anagrafica IPA non disponibile</h1>
-          <p>
-            Indice PA non risponde. I dati della scheda non sono cancellati: manca solo
-            l&apos;anagrafe live in questo momento.
-          </p>
-        </div>
-        <div className="notice warning-notice">
-          <strong>Codice richiesto</strong>
-          <p>{normalizedCode}</p>
-        </div>
-      </main>
-    );
+    ipaReachable = false;
+    entity = null;
   }
 
-  if (!entity) notFound();
-  try {
-    structure = await getIpaOrganizationStructure(normalizedCode);
-  } catch {
+  if (ipaReachable && !entity) notFound();
+
+  if (!entity) {
+    snapshotProfile = await getMunicipalityProfileByIpaCode(normalizedCode);
+    if (!snapshotProfile) {
+      return (
+        <main className="shell page">
+          <div className="page-intro">
+            <h1>Anagrafica IPA non disponibile</h1>
+            <p>
+              Indice PA non risponde. I dati della scheda non sono cancellati: manca solo
+              l&apos;anagrafe live in questo momento.
+            </p>
+          </div>
+          <div className="notice warning-notice">
+            <strong>Codice richiesto</strong>
+            <p>{normalizedCode}</p>
+          </div>
+        </main>
+      );
+    }
+    entity = municipalityEntityFromProfile(snapshotProfile);
+  }
+
+  if (!ipaReachable) {
     structure = null;
+  } else {
+    try {
+      structure = await getIpaOrganizationStructure(normalizedCode);
+    } catch {
+      structure = null;
+    }
   }
   const [municipalityProfile, procurementState] = await Promise.all([
-    getMunicipalityProfile(entity),
-    getEntityProcurementPage(entity),
+    snapshotProfile ? Promise.resolve(snapshotProfile) : getMunicipalityProfile(entity),
+    ipaReachable
+      ? getEntityProcurementPage(entity)
+      : loadAnacEntityProcurementPage({
+        codiceIpa: entity.codiceIpa,
+        currentEntityCf: entity.codiceFiscale,
+        verifyLiveFiscalCode: false,
+      }),
   ]);
 
   const responsible = responsibleLabel(
@@ -140,6 +174,16 @@ export default async function EntityPage({ params }: PageProps) {
           </a>
         )}
       </div>
+
+      {ipaReachable ? null : (
+        <div className="notice warning-notice">
+          <strong>Indice PA non risponde</strong>
+          <p>
+            Mostriamo i dati economici già in archivio. Contatti, uffici e anagrafe live non sono
+            stati ricontrollati in questo momento.
+          </p>
+        </div>
+      )}
 
       <div className={municipalityProfile ? styles.municipalityLayout : styles.split}>
         <div className={styles.main}>

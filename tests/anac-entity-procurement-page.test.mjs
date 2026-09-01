@@ -449,6 +449,8 @@ test("UI keeps scope, rankings, official CIG links and no later indicators", () 
   assert.match(detail, /maxDuration = 15/);
   const entityPage = readFileSync(new URL("../src/app/enti/[codice]/page.tsx", import.meta.url), "utf8");
   assert.match(entityPage, /Anagrafica IPA non disponibile/);
+  assert.match(entityPage, /getMunicipalityProfileByIpaCode/);
+  assert.match(entityPage, /Mostriamo i dati economici già in archivio/);
   assert.doesNotMatch(entityPage, /Impossibile interrogare la fonte IPA/);
   assert.match(detail, /entity\?\.denominazione \?\? normalizedCode/);
   assert.match(detail, /nameVariants > 1/);

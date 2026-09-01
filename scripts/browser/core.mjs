@@ -1291,14 +1291,19 @@ try {
         await page.keyboard.press("Enter");
         assert.equal(await informationSummary.evaluate((element) => element.parentElement?.open), true);
 
+        const ipaLive = !/Indice PA non risponde/i.test(text);
         const structureSummary = await page.$("details[data-structure-details] summary");
-        assert.ok(structureSummary, `${label}: struttura IPA espandibile assente`);
-        await structureSummary.focus();
-        await page.keyboard.press("Enter");
-        assert.equal(
-          await structureSummary.evaluate((element) => element.parentElement?.open),
-          true,
-        );
+        if (ipaLive) {
+          assert.ok(structureSummary, `${label}: struttura IPA espandibile assente`);
+          await structureSummary.focus();
+          await page.keyboard.press("Enter");
+          assert.equal(
+            await structureSummary.evaluate((element) => element.parentElement?.open),
+            true,
+          );
+        } else {
+          assert.match(text, /uffici non sono disponibili|anagrafe live/i);
+        }
 
         const apiResponse = await page.evaluate(async () => {
           const response = await fetch("/api/enti/c_a783");
@@ -1319,6 +1324,11 @@ try {
     width: 390,
     validate: async (page) => {
       const text = await bodyText(page);
+      if (/Anagrafica IPA non disponibile/i.test(text)) {
+        assertTextMatches(text, /Indice PA non risponde/i, "Ente non comunale");
+        assert.doesNotMatch(text, /Quanto ha pagato il Comune/i);
+        return;
+      }
       assertTextMatches(text, /Identità amministrativa/i, "Ente non comunale");
       assertTextMatches(text, /Dati economici · collegamenti in corso/i, "Ente non comunale");
       assertTextMatches(text, /Formato JSON/i, "Ente non comunale");

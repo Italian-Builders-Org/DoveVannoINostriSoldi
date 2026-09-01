@@ -4,9 +4,12 @@ Questo documento spiega chi mantiene DoveVannoINostriSoldi e come vengono prese
 le decisioni sul repository. L'obiettivo è proteggere correttezza, chiarezza e
 continuità del progetto senza aggiungere burocrazia inutile.
 
-Queste regole sono convenzioni operative applicate manualmente dai maintainer.
-Le impostazioni GitHub attuali non le garantiscono tutte: eventuali protezioni
-automatiche di `main` richiedono una modifica infrastrutturale separata.
+Queste regole sono convenzioni operative applicate dai maintainer. `main` è
+protetto dal ruleset `protect-main`: pull request obbligatoria, una
+approvazione di un maintainer diverso da chi ha fatto l'ultimo push,
+conversazioni risolte, check `required` verde, niente force push. Non c'è
+bypass permanente. Un'emergenza si gestisce modificando il ruleset, non
+saltando i check.
 
 ## Maintainer
 

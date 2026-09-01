@@ -71,7 +71,7 @@ const exhaustiveLatestDataBySlug = {
   pcm: { kind: "period", label: pcmMetadata.source.referencePeriod },
   inps: {
     kind: "period",
-    label: `spesa ${inpsCivilInvaliditySnapshot.spending.series.at(-1)!.year} · territori ${inpsCivilInvaliditySnapshot.regionalNewPensions.years.at(-1)}`,
+    label: `spesa ${inpsCivilInvaliditySnapshot.spending.series.at(-1)!.year} · territori ${inpsCivilInvaliditySnapshot.regionalNewPensions.years.at(-1)} · vigenti 2026`,
   },
   cpt: { kind: "period", label: String(cptRegionalFiscalSnapshot.defaultYear) },
   istat: { kind: "date", value: "2026-08-25" },

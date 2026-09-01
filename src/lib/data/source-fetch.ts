@@ -34,7 +34,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
     "www.anticorruzione.it",
     "anticorruzione.it",
   ],
-  inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it"],
+  inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it", "servizi2.inps.it"],
   cpt: ["politichecoesione.governo.it", "www.politichecoesione.governo.it"],
   istat: ["situas.istat.it", "situas-servizi.istat.it", "www.istat.it"],
   // Snapshot-only: the SDMX payload is acquired and pinned by ETL, never fetched at runtime.

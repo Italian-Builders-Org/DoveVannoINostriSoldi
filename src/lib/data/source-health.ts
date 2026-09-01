@@ -435,7 +435,7 @@ function snapshotManagedInps(): SourceHealth {
     freshness: freshnessFor("inps", latestSourceDate),
     latencyMs: null,
     detail:
-      "Snapshot verificato · spesa nazionale 2021-2025 · nuove pensioni per regione 2016-2024",
+      "Snapshot verificato · spesa nazionale 2021-2025 · nuove pensioni per regione 2016-2024 · pensioni vigenti INPS 2026",
     recordCount: regionalRecords + inpsCivilInvaliditySnapshot.spending.series.length,
   };
 }

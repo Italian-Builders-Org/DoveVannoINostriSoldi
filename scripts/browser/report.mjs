@@ -254,6 +254,61 @@ try {
 
   await runScenario(browser, {
     suite: "report",
+    label: "Segnala un problema: funzionalità senza passaggi su /spese/pensioni",
+    pathname: "/spese/pensioni",
+    width: 1280,
+    afterNavigate: async (page) => {
+      await interceptEndpoint(page, (payload) => {
+        assert.equal(payload.page.path, "/spese/pensioni", "il path della pagina viene allegato");
+        assert.equal(payload.category, "feature");
+        assert.equal(payload.steps, "", "i passaggi restano vuoti per una funzionalità");
+        assert.equal(payload.website, "", "honeypot vuoto");
+        return { status: 201, body: { ok: true, issue: { number: 4243, url: ISSUE_URL }, duplicate: false } };
+      });
+    },
+    validate: async (page) => {
+      const heading = await page.$eval("main h1", (node) => node.textContent?.trim() ?? "");
+      assert.match(heading, /Pensioni e pensionati/, "la pagina pensioni deve essere quella attesa");
+      assert.match(
+        await page.$eval("main", (node) => node.textContent ?? ""),
+        /Pensioni INPS vigenti/,
+      );
+      const inpsSource = await page.$(
+        'a[href="https://servizi2.inps.it/servizi/osservatoristatistici/6/37/o/388"]',
+      );
+      assert.ok(inpsSource, "la fonte INPS osservatorio 388 deve essere in pagina");
+
+      await openDialog(page, { label: "funzionalità su pensioni" });
+      await chooseCategory(page, "feature");
+      const reminder = await page.$eval("dialog[open]", (node) => node.textContent);
+      assert.match(reminder, /passaggi per riprodurre non servono/);
+      const stepsOptional = await page.evaluate(() => {
+        const label = Array.from(document.querySelectorAll("dialog[open] label"))
+          .find((node) => node.textContent?.includes("Passaggi per riprodurre"));
+        const field = label ? document.getElementById(label.getAttribute("for") ?? "") : null;
+        return {
+          optional: label?.textContent?.includes("facoltativi") ?? false,
+          required: field instanceof HTMLTextAreaElement ? field.required : null,
+        };
+      });
+      assert.equal(stepsOptional.optional, true, "l'etichetta deve dire che i passaggi sono facoltativi");
+      assert.equal(stepsOptional.required, false, "il campo passaggi non deve essere required");
+
+      await fillField(page, "Cosa è successo", "Vorrei filtrare le pensioni per gestione.");
+      await fillField(page, "Cosa ti aspettavi", "Un selettore per FPLD, pubblici e autonomi.");
+      await submit(page);
+      await page.waitForSelector('dialog[open] [role="status"]', { visible: true });
+      const success = await page.evaluate(() => {
+        const status = document.querySelector('dialog[open] [role="status"]');
+        return status?.textContent ?? "";
+      });
+      assert.match(success, /Segnalazione inviata/);
+      assert.match(success, /#4243/);
+    },
+  });
+
+  await runScenario(browser, {
+    suite: "report",
     label: "Segnala un problema: errore del provider conserva i dati e offre il fallback",
     pathname: "/supporto",
     width: 768,

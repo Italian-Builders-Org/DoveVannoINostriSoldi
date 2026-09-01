@@ -63,6 +63,16 @@ test("accetta la categoria nuova funzionalità e la mette nel titolo della issue
   assert.equal(draft.title, "[Segnalazione] Nuova funzionalità: /spese?anno=2025");
 });
 
+test("per una nuova funzionalità i passaggi per riprodurre non sono obbligatori", () => {
+  const result = parseReportRequest(validPayload({ category: "feature", steps: "   " }));
+  assert.equal(result.ok, true);
+  assert.equal(result.value.steps, "");
+  const draft = buildIssueDraft(result.value);
+  assert.match(draft.body, /## Passaggi per riprodurre\n```text\n\(non indicato\)\n```/);
+  assert.equal(parseReportRequest(validPayload({ category: "bug", steps: "   " })).ok, false);
+  assert.equal(parseReportRequest(validPayload({ category: "accessibilita", steps: "" })).ok, false);
+});
+
 test("rifiuta testi oltre i limiti e campi obbligatori vuoti", () => {
   const long = "x".repeat(REPORT_LIMITS.observedMax + 1);
   assert.equal(parseReportRequest(validPayload({ observed: long })).ok, false);

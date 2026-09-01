@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { queryInpsPensionsOsservatorio } from "@/lib/inps-pensions-snapshot";
 import { queryIstatPensions } from "@/lib/istat-pensions-snapshot";
 
 const CACHE_CONTROL = "public, max-age=3600, stale-while-revalidate=86400";
@@ -22,7 +23,10 @@ export function GET(request: NextRequest) {
   }
 
   try {
-    return Response.json(queryIstatPensions({ year }), {
+    return Response.json({
+      ...queryIstatPensions({ year }),
+      inpsOsservatorio: queryInpsPensionsOsservatorio(),
+    }, {
       headers: { "Cache-Control": CACHE_CONTROL },
     });
   } catch (error) {

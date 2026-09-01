@@ -246,6 +246,10 @@ export async function queryPublicDataset(
       const { queryInpsCivilInvalidity } = await import("@/lib/inps-invalidity-snapshot");
       return jsonSafe(queryInpsCivilInvalidity({ year: query.year, region: query.region }));
     }
+    case "inps_pensioni_vigenti": {
+      const { queryInpsPensionsOsservatorio } = await import("@/lib/inps-pensions-snapshot");
+      return jsonSafe(queryInpsPensionsOsservatorio());
+    }
     case "istat_pensioni_prestazioni":
     case "istat_pensionati_persone": {
       const { queryIstatPensions } = await import("@/lib/istat-pensions-snapshot");

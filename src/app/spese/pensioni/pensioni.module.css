@@ -141,6 +141,13 @@
 .sourceList span { color: var(--color-neutral-700); }
 .sourceList code { font-size: 11px; overflow-wrap: anywhere; }
 
+.shareLine {
+  display: grid;
+  grid-template-columns: minmax(72px, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+}
+
 .note {
   margin: var(--space-3) 0 0;
   max-width: 100ch;

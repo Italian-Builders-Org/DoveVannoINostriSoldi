@@ -284,6 +284,21 @@ test("se GitHub fallisce risponde 503 con fallback e non espone dettagli del pro
   }
 });
 
+test("un invio di funzionalità senza passaggi crea la issue", async () => {
+  const github = installGitHub();
+  try {
+    configure("1007");
+    const response = await POST(request(payload({ category: "feature", steps: "" })));
+    assert.equal(response.status, 201);
+    const created = github.created()[0].body;
+    assert.match(created.title, /^\[Segnalazione\] Nuova funzionalità: \/spese$/);
+    assert.match(created.body, /## Passaggi per riprodurre\n```text\n\(non indicato\)\n```/);
+  } finally {
+    github.restore();
+    unconfigure();
+  }
+});
+
 test("oltre il limite per indirizzo risponde 429 senza contattare GitHub", async () => {
   const github = installGitHub();
   try {

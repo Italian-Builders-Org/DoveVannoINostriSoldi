@@ -12,6 +12,8 @@ test("the pensions API returns the requested ISTAT year", async () => {
   const payload = await response.json();
   assert.equal(typeof payload, "object");
   assert.equal(payload === null, false);
+  assert.equal(payload.inpsOsservatorio.stock.pensionCount, 21_257_999);
+  assert.equal(payload.inpsOsservatorio.vintageCube.osservatorioId, "388");
 });
 
 test("the pensions API rejects non-canonical years", () => {

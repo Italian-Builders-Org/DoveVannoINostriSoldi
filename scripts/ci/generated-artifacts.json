@@ -187,6 +187,30 @@
       "trustModel": "Curated committed artifact with no Python generator. Validated by Node contract tests that assert structural and semantic invariants."
     },
     {
+      "id": "inps-pensions-osservatorio",
+      "owner": "INPS pensions osservatorio",
+      "files": [
+        "src/data/generated/inps-pensions-osservatorio.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/inps-pensions.test.mjs",
+        "tests/pensions-ui.test.mjs",
+        "tests/istat-pensions-route.test.mjs"
+      ],
+      "generator": {
+        "command": null,
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed artifact transcribed from the official INPS osservatorio brief and table 388 schema. Validated by Node contract tests that reconcile stock, categories, management groups and the 2012-2026 count series."
+    },
+    {
       "id": "integrated-catalog",
       "owner": "Integrated source release catalog",
       "files": [

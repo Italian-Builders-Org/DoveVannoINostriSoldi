@@ -7,15 +7,18 @@ const css = await readFile(new URL("../src/app/spese/pensioni/pensioni.module.cs
 const navigation = await readFile(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
 const search = await readFile(new URL("../src/lib/global-search.ts", import.meta.url), "utf8");
 
-test("the pensions page keeps the two ISTAT perimeters and the 2022 caveats visible", () => {
+test("the pensions page keeps INPS 2026 and ISTAT 2022 as distinct perimeters", () => {
   assert.match(page, /pensionBenefits/);
   assert.match(page, /pensioners/);
+  assert.match(page, /inpsPensionsOsservatorioSnapshot/);
   assert.match(page, /stock al 31 dicembre/);
   assert.match(page, /importi nominali/);
   assert.match(page, /tutti gli enti del Casellario/);
-  assert.match(page, /non è una fotografia INPS aggiornata/);
+  assert.match(page, /I numeri non si sommano/);
+  assert.match(page, /vintageCube\.url/);
+  assert.match(page, /Pensioni per anno di decorrenza/);
   assert.match(page, /href="\/spese\/invalidita"/);
-  assert.match(page, /non vanno sommati o confusi/);
+  assert.match(page, /non vanno sommati/);
 });
 
 test("the pensions page has an accessible text-first composition graphic", () => {

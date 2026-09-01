@@ -26,6 +26,11 @@ export const REPORT_CATEGORY_IDS = Object.freeze(
   Object.keys(REPORT_CATEGORIES) as [ReportCategory, ...ReportCategory[]],
 );
 
+/** Reproduction steps describe a defect. A feature request does not need them. */
+export function stepsRequiredFor(category: ReportCategory): boolean {
+  return category !== "feature";
+}
+
 export const REPORT_LIMITS = Object.freeze({
   observedMax: 2_000,
   expectedMax: 2_000,
@@ -118,7 +123,7 @@ export const reportRequestSchema = z
     category: z.enum(REPORT_CATEGORY_IDS),
     observed: boundedText(REPORT_LIMITS.observedMax, { required: true }),
     expected: boundedText(REPORT_LIMITS.expectedMax, { required: true }),
-    steps: boundedText(REPORT_LIMITS.stepsMax, { required: true }),
+    steps: boundedText(REPORT_LIMITS.stepsMax, { required: false }),
     sourceUrl: publicHttpsUrl.optional(),
     page: z.strictObject({
       path: sitePagePath,
@@ -139,6 +144,13 @@ export const reportRequestSchema = z
         code: "custom",
         path: ["sourceUrl"],
         message: "per contestare un dato indica il link di una fonte ufficiale",
+      });
+    }
+    if (stepsRequiredFor(value.category) && value.steps.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["steps"],
+        message: "campo obbligatorio",
       });
     }
   });

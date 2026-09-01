@@ -20,10 +20,12 @@ export default function SupportPage() {
         <h2 className="panel-title">Problemi e richieste tecniche</h2>
         <p>
           Il modo più rapido è il pulsante <ReportProblemButton variant="inline" /> presente in
-          ogni pagina: raccoglie tipo di problema, risultato osservato, risultato atteso, passaggi
-          per riprodurlo ed eventuale fonte ufficiale, allega pagina, data e ora, dimensione della
+          ogni pagina: raccoglie tipo di problema, risultato osservato, risultato atteso ed
+          eventuale fonte ufficiale, allega pagina, data e ora, dimensione della
           finestra e versione del browser, e crea una issue pubblica nel repository restituendone
-          il link. Se l&apos;invio automatico non è disponibile, il modulo propone il composer
+          il link. I passaggi per riprodurre sono obbligatori per un bug, un dato contestato o un
+          problema di accessibilità; per una nuova funzionalità puoi lasciarli vuoti. Se
+          l&apos;invio automatico non è disponibile, il modulo propone il composer
           GitHub già compilato.
         </p>
         <p>

@@ -8,6 +8,7 @@ import {
   REPORT_LIMITS,
   reportRequestSchema,
   SECURITY_ADVISORY_URL,
+  stepsRequiredFor,
   type ReportCategory,
   type ReportResponse,
 } from "@/lib/report/contract";
@@ -99,6 +100,7 @@ export function ReportProblemDialog({ open, onClose }: ReportProblemDialogProps)
   }, [open]);
 
   const sourceRequired = category === "dato";
+  const stepsRequired = stepsRequiredFor(category);
   const observedLeft = REPORT_LIMITS.observedMax - observed.length;
   const expectedLeft = REPORT_LIMITS.expectedMax - expected.length;
   const stepsLeft = REPORT_LIMITS.stepsMax - steps.length;
@@ -265,6 +267,13 @@ export function ReportProblemDialog({ open, onClose }: ReportProblemDialogProps)
             </p>
           ) : null}
 
+          {category === "feature" ? (
+            <p className={styles.hint}>
+              Per una nuova funzionalità i passaggi per riprodurre non servono. Descrivi cosa manca
+              e come dovrebbe funzionare.
+            </p>
+          ) : null}
+
           <TextField
             id={id("observed")}
             label={FIELD_LABELS.observed}
@@ -290,13 +299,19 @@ export function ReportProblemDialog({ open, onClose }: ReportProblemDialogProps)
           <TextField
             id={id("steps")}
             label={FIELD_LABELS.steps}
+            optionalLabel={stepsRequired ? undefined : "(facoltativi)"}
+            required={stepsRequired}
             value={steps}
             onChange={setSteps}
             max={REPORT_LIMITS.stepsMax}
             left={stepsLeft}
             error={errors.steps}
             disabled={sending}
-            placeholder={"1. Apri la pagina\n2. Seleziona…\n3. Osserva…"}
+            placeholder={
+              stepsRequired
+                ? "1. Apri la pagina\n2. Seleziona…\n3. Osserva…"
+                : "Se serve, indica dove vorresti vederla. Altrimenti lascia vuoto."
+            }
           />
 
           <div className={styles.field}>
@@ -379,6 +394,8 @@ export function ReportProblemDialog({ open, onClose }: ReportProblemDialogProps)
 type TextFieldProps = Readonly<{
   id: string;
   label: string;
+  optionalLabel?: string;
+  required?: boolean;
   value: string;
   onChange: (value: string) => void;
   max: number;
@@ -388,11 +405,26 @@ type TextFieldProps = Readonly<{
   placeholder: string;
 }>;
 
-function TextField({ id, label, value, onChange, max, left, error, disabled, placeholder }: TextFieldProps) {
+function TextField({
+  id,
+  label,
+  optionalLabel,
+  required = true,
+  value,
+  onChange,
+  max,
+  left,
+  error,
+  disabled,
+  placeholder,
+}: TextFieldProps) {
   const describedBy = [error ? `${id}-error` : null, `${id}-count`].filter(Boolean).join(" ");
   return (
     <div className={styles.field}>
-      <label htmlFor={id} className={styles.label}>{label}</label>
+      <label htmlFor={id} className={styles.label}>
+        {label}
+        {optionalLabel ? <span className={styles.optional}> {optionalLabel}</span> : null}
+      </label>
       <textarea
         id={id}
         className={styles.textarea}
@@ -400,9 +432,10 @@ function TextField({ id, label, value, onChange, max, left, error, disabled, pla
         onChange={(event) => onChange(event.target.value)}
         maxLength={max}
         rows={3}
-        required
+        required={required}
         disabled={disabled}
         placeholder={placeholder}
+        aria-required={required || undefined}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
       />

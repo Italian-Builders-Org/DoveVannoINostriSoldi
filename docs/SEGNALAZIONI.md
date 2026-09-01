@@ -28,7 +28,8 @@ Il client invia solo questi campi; qualsiasi chiave in più (`labels`,
 |---|---|
 | `clientKey` | UUID generato dal browser all'apertura del dialog; chiave di idempotenza. |
 | `category` | `bug`, `dato`, `accessibilita`, `feature`, `altro`. |
-| `observed`, `expected`, `steps` | Obbligatori, max 2 000 caratteri ciascuno dopo normalizzazione. |
+| `observed`, `expected` | Obbligatori, max 2 000 caratteri ciascuno dopo normalizzazione. |
+| `steps` | Max 2 000 caratteri. Obbligatorio per `bug`, `dato`, `accessibilita` e `altro`. Facoltativo per `feature`. |
 | `sourceUrl` | Facoltativo; obbligatorio per `dato`. Solo `https`, senza credenziali. |
 | `page.path` | Solo percorso relativo (`/…`) valido sul dominio canonico; il server compone l'URL. |
 | `page.title` | Max 200 caratteri. |

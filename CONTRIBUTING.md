@@ -112,7 +112,8 @@ senza obblighi AGPL vale quanto descritto in `COMMERCIAL.md`.
 
 ## Review e merge
 
-La CI verde è necessaria ma non sufficiente. La review valuta separatamente
-correttezza, semantica dei dati, accessibilità, sicurezza, performance e
-manutenibilità. I thread devono essere risolti con una modifica verificata o con
-una motivazione concreta. Non usare force-push sulle branch dei contributor.
+Il merge su `main` è consentito quando il check `required` è verde e i thread
+di review sono risolti. GitHub non chiede l'approve di un altro maintainer.
+La review umana resta utile su UI ampia, fonti nuove, workflow e sicurezza:
+valuta correttezza, semantica dei dati, accessibilità e manutenibilità oltre
+ciò che i test coprono. Non usare force-push sulle branch dei contributor.

@@ -4,9 +4,12 @@ Questo documento spiega chi mantiene DoveVannoINostriSoldi e come vengono prese
 le decisioni sul repository. L'obiettivo è proteggere correttezza, chiarezza e
 continuità del progetto senza aggiungere burocrazia inutile.
 
-Queste regole sono convenzioni operative applicate manualmente dai maintainer.
-Le impostazioni GitHub attuali non le garantiscono tutte: eventuali protezioni
-automatiche di `main` richiedono una modifica infrastrutturale separata.
+Queste regole sono convenzioni operative applicate dai maintainer. `main` è
+protetto dal ruleset `protect-main`: pull request obbligatoria, check
+`required` verde, conversazioni di review risolte, niente force push e niente
+cancellazione del branch. Non è richiesta l'approvazione di un altro
+maintainer. Non c'è bypass permanente. Un'emergenza si gestisce modificando il
+ruleset, non saltando i check.
 
 ## Maintainer
 
@@ -76,7 +79,9 @@ merge si ferma e la verifica ricomincia.
 
 ## Quando serve una review umana
 
-Non usiamo auto-merge per:
+GitHub non blocca il merge in attesa di una review reciproca. Il gate è il
+check `required`. Su questi cambiamenti i maintainer si chiedono comunque una
+lettura umana prima di integrare:
 
 - redesign o modifiche UI ampie;
 - nuove fonti o cambiamenti al significato dei dati;
@@ -84,13 +89,9 @@ Non usiamo auto-merge per:
 - policy di sicurezza bloccanti, inclusa una CSP bloccante;
 - licenze, privacy o condizioni di riuso.
 
-Questi cambiamenti richiedono l'approvazione esplicita di un maintainer che non
-sia l'autore. Un redesign ampio viene inoltre coordinato tra entrambi i
-maintainer prima del merge.
-
-Le PR tecniche piccole e indipendenti possono essere integrate dal maintainer
-responsabile dopo tutti i check, purché non abbiano commenti aperti, conflitti o
-modifiche concorrenti.
+Un redesign ampio viene coordinato tra entrambi i maintainer. Le PR tecniche
+piccole e indipendenti si integrano dopo il check `required`, purché non
+abbiano commenti aperti, conflitti o modifiche concorrenti.
 
 ## Requisiti per una nuova fonte pubblica
 

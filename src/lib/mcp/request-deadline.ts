@@ -82,7 +82,6 @@ export async function runMcpExchangeWithDeadline(
       controller.abort(new DOMException("MCP deadline exceeded", "TimeoutError"));
       void state.reader?.cancel("MCP deadline exceeded").catch(() => undefined);
     }, timeoutMs);
-    timer.unref?.();
   });
 
   const exchange = (async () => bufferedResponse(await fetcher(timedRequest), state))();

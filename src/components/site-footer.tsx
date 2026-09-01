@@ -12,6 +12,12 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { BUY_ME_A_COFFEE_URL, REPO_URL, SOCIAL_LINKS } from "@/lib/site";
+import { SITE_SUPPORTERS } from "@/lib/supporters";
+
+const MANTO_VENTURE = SITE_SUPPORTERS.find((supporter) => supporter.name === "Manto Venture");
+if (!MANTO_VENTURE?.href) {
+  throw new Error("Manto Venture deve avere un URL pubblico nel footer");
+}
 
 const SOCIAL_ICONS = {
   threads: ThreadsIcon,
@@ -106,6 +112,12 @@ export function SiteFooter({ latestTerritorialCheckLabel }: SiteFooterProps) {
           <a href="https://x.com/fragiannicola" target="_blank" rel="noreferrer">@fragiannicola</a>
           <span aria-hidden="true">·</span>
           <a href="https://x.com/dom_gag_96" target="_blank" rel="noreferrer">@dom_gag_96</a>
+          <span className="footer-backer">
+            <span className="footer-credit">Supportata da</span>
+            <a href={MANTO_VENTURE.href} target="_blank" rel="noreferrer">
+              {MANTO_VENTURE.name}
+            </a>
+          </span>
         </div>
         <nav className="footer-secondary-links" aria-label="Informazioni sul progetto">
           <Link href="/supporter">Chi ci sostiene</Link>

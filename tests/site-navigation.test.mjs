@@ -219,6 +219,10 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /href="\/supporter"/);
   assert.match(footer, /BUY_ME_A_COFFEE_URL/);
   assert.match(footer, /Buy me an AI compute/);
+  assert.match(footer, /SITE_SUPPORTERS/);
+  assert.match(footer, /Supportata da/);
+  assert.match(footer, /MANTO_VENTURE\.href/);
+  assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
   assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
   assert.match(site, /https:\/\/www\.threads\.com\/@dovevannoinostrisoldi/);
   assert.match(site, /https:\/\/www\.facebook\.com\/profile\.php\?id=61593922084084/);
@@ -232,6 +236,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(globals, /\.footer-support-action \{/);
   assert.match(globals, /\.footer-social \{/);
   assert.match(globals, /\.footer-social \.footer-link \{[\s\S]*?min-height:\s*44px/);
+  assert.match(globals, /\.footer-backer \{/);
   assert.doesNotMatch(footer, /cdnjs\.buymeacoffee\.com/);
   assert.match(navigationSource, /href: "\/supporter", label: "Chi ci sostiene"/);
 });

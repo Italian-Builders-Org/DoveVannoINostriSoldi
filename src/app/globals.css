@@ -459,6 +459,15 @@ main { display: block; }
 }
 .footer-makers a,
 .footer-secondary-links a { display: inline-flex; align-items: center; min-height: 32px; }
+.footer-backer {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-neutral-300);
+}
+.footer-backer a { min-height: 32px; }
 .footer-link {
   display: inline-flex;
   align-items: center;
@@ -836,6 +845,10 @@ main { display: block; }
   .footer-credits { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
   .footer-actions,
   .footer-secondary-links { justify-content: flex-start; }
+  .footer-backer {
+    padding-left: 0;
+    border-left: 0;
+  }
   .footer-support {
     flex-direction: column;
     align-items: flex-start;

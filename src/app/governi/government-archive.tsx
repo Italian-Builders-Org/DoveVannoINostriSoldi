@@ -3,7 +3,15 @@ import { getGovernmentScorecardView } from "@/lib/government-scorecard";
 import { formatScore } from "./government-scorecard-format";
 import styles from "./governi.module.css";
 
-export function GovernmentArchive({ id, selectedGovernmentId }: { id: string; selectedGovernmentId: string }) {
+export function GovernmentArchive({
+  id,
+  selectedGovernmentId,
+  ameco,
+}: {
+  id: string;
+  selectedGovernmentId: string;
+  ameco: Readonly<{ release: string; landingUrl: string }>;
+}) {
   const data = getGovernmentScorecardView();
 
   return (
@@ -13,7 +21,10 @@ export function GovernmentArchive({ id, selectedGovernmentId }: { id: string; se
         <b aria-hidden="true">Apri l’archivio</b>
       </summary>
       <div className={styles.explorerBody}>
-        <p className={styles.explorerIntro}>Ogni nome apre la scheda completa del governo. Le barre usano lo stesso paniere; “ND” indica che la finestra annuale non è sufficiente.</p>
+        <p className={styles.explorerIntro}>
+          Ogni nome apre la scheda completa del governo. Le barre e i numeri sono un indice calcolato da AMECO {ameco.release}, non un voto della Commissione. “ND” indica che la finestra annuale non è sufficiente.{" "}
+          <a href={ameco.landingUrl} target="_blank" rel="noreferrer">Fonte: AMECO <span aria-hidden="true">↗</span></a>
+        </p>
         <ol className={styles.governmentBars}>
           {[...data.governments].reverse().map((government) => (
             <li key={government.id} data-current={government.id === selectedGovernmentId || undefined}>

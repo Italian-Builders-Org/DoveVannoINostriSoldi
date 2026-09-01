@@ -102,16 +102,27 @@ export function CurrentGovernmentSignals({ data }: { data: GovernmentCurrentSign
               <span>{signal.latestAnnualRate > 0 ? "12 mesi: in aumento" : signal.latestAnnualRate < 0 ? "12 mesi: in calo" : "12 mesi: stabili"}</span>
             </div>
             <p>{signal.question}</p>
+            {signal.id === "housing-energy" ? (
+              <p className={styles.signalCaveat}>Include affitti e utenze. Il calo dal 2022 è trainato dall’energia, non solo dagli affitti.</p>
+            ) : null}
             <div className={styles.signalValues}>
-              <div><span>Da {monthLabel(data.startPeriod)} · %</span><strong>{signedPercent(signal.cumulativeChange)}</strong></div>
-              <div><span>Ultimi 12 mesi · %</span><strong>{signedPercent(signal.latestAnnualRate)}</strong></div>
+              <div>
+                <span>Da {monthLabel(data.startPeriod)} · %</span>
+                <strong>{signedPercent(signal.cumulativeChange)}</strong>
+                <small>Fonte: {data.source.owner} · {data.source.datasetCode}</small>
+              </div>
+              <div>
+                <span>Ultimi 12 mesi · %</span>
+                <strong>{signedPercent(signal.latestAnnualRate)}</strong>
+                <small>Fonte: {data.source.owner} · {data.source.datasetCode}</small>
+              </div>
             </div>
             <SignalChart signal={signal} startPeriod={data.startPeriod} latestPeriod={data.latestPeriod} source={data.source} />
             <div className={styles.signalPeer}>
               <span>Mediana peer: {signedPercent(signal.peerMedianCumulativeChange)}</span>
               <b>Italia {signedPoints(signal.cumulativeDistanceFromPeers)} vs peer</b>
             </div>
-            <small>Unità: variazione percentuale (%) dell’indice armonizzato. Fonte: <a href={data.source.landingUrl} target="_blank" rel="noreferrer">{data.source.owner} · {data.source.datasetCode}</a>. {signal.limitations}</small>
+            <small>Unità: variazione percentuale (%) dell’indice armonizzato, base 2025=100. Fonte: <a href={data.source.landingUrl} target="_blank" rel="noreferrer">{data.source.owner} · {data.source.datasetCode}</a>. {signal.limitations}</small>
           </article>
         ))}
       </div>

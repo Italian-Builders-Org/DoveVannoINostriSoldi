@@ -2,7 +2,7 @@ import type { GovernmentCurrentSignalsView } from "@/lib/government-current-sign
 import { ChartDataTable } from "@/components/charts/chart-data-table";
 import { CurrentGovernmentSignals } from "./current-government-signals";
 import { GovernmentIndicatorChart } from "./government-indicator-chart";
-import { formatScore, rawChangeLabel, relativeChangeLabel, sourceValue } from "./government-scorecard-format";
+import { formatScore, italySourceCodes, rawChangeLabel, relativeChangeLabel, sourceValue } from "./government-scorecard-format";
 import styles from "./current-government-overview.module.css";
 
 type CountryKey = "italy" | "france" | "germany" | "spain";
@@ -36,6 +36,12 @@ type Calculation = Readonly<{
     label: string;
     checks: readonly unknown[];
   }>;
+}>;
+
+export type AmecoCitation = Readonly<{
+  release: string;
+  landingUrl: string;
+  observedThrough: number;
 }>;
 
 const INDICATOR_COPY: Readonly<Record<string, { label: string; group: string; question: string }>> = {
@@ -94,6 +100,14 @@ function improvement(indicator: Indicator, point: Indicator["series"][number], c
     : direction * (point[country] - start);
 }
 
+function levelChange(indicator: Indicator, point: Indicator["series"][number], country: CountryKey) {
+  const start = indicator.series[0]?.[country];
+  if (start == null) return 0;
+  return indicator.transformation === "log-change"
+    ? 100 * (Math.log(point[country]) - Math.log(start))
+    : point[country] - start;
+}
+
 function sparklinePoints(values: readonly number[], minimum: number, maximum: number) {
   const range = maximum - minimum || 1;
   return values.map((value, index) => {
@@ -104,6 +118,12 @@ function sparklinePoints(values: readonly number[], minimum: number, maximum: nu
 }
 
 function TrendSparkline({ indicator }: { indicator: Indicator }) {
+  const italyLevel = indicator.series.map((point) => levelChange(indicator, point, "italy"));
+  const peersLevel = indicator.series.map((point) => median([
+    levelChange(indicator, point, "france"),
+    levelChange(indicator, point, "germany"),
+    levelChange(indicator, point, "spain"),
+  ]));
   const italy = indicator.series.map((point) => improvement(indicator, point, "italy"));
   const peers = indicator.series.map((point) => median([
     improvement(indicator, point, "france"),
@@ -116,7 +136,7 @@ function TrendSparkline({ indicator }: { indicator: Indicator }) {
 
   return (
     <>
-      <svg className={styles.sparkline} viewBox="0 0 240 64" role="img" aria-label={`${indicator.label}: andamento dal ${indicator.series[0]?.year} al ${indicator.series.at(-1)?.year}, Italia e mediana dei peer`}>
+      <svg className={styles.sparkline} viewBox="0 0 240 64" role="img" aria-label={`${indicator.label}: andamento dal ${indicator.series[0]?.year} al ${indicator.series.at(-1)?.year}, Italia e mediana dei peer. Nel grafico verso l’alto significa miglioramento.`}>
         <line x1="8" x2="232" y1={zeroY} y2={zeroY} className={styles.zeroLine} />
         <polyline points={sparklinePoints(peers, minimum, maximum)} className={styles.peerLine} />
         <polyline points={sparklinePoints(italy, minimum, maximum)} className={styles.italyLine} />
@@ -125,14 +145,15 @@ function TrendSparkline({ indicator }: { indicator: Indicator }) {
         <span>Periodo del grafico</span>
         <strong>{indicator.series[0]?.year} → {indicator.series.at(-1)?.year}</strong>
       </div>
+      <p className={styles.chartHint}>Nel grafico verso l’alto significa miglioramento, anche se il livello scende.</p>
       <ChartDataTable
-        label={`${indicator.label}: andamento annuale di Italia e mediana di Francia, Germania e Spagna`}
-        columns={["Italia · variazione", "Mediana peer · variazione"]}
+        label={`${indicator.label}: variazione di livello annuale di Italia e mediana di Francia, Germania e Spagna; stesso segno della variazione nel mandato`}
+        columns={["Italia · variazione di livello", "Mediana peer · variazione di livello"]}
         rows={indicator.series.map((point, index) => ({
           label: `Anno ${point.year}`,
           values: [
-            relativeChangeLabel({ relativeChange: italy[index] ?? 0, transformation: indicator.transformation }),
-            relativeChangeLabel({ relativeChange: peers[index] ?? 0, transformation: indicator.transformation }),
+            relativeChangeLabel({ relativeChange: italyLevel[index] ?? 0, transformation: indicator.transformation }),
+            relativeChangeLabel({ relativeChange: peersLevel[index] ?? 0, transformation: indicator.transformation }),
           ],
         }))}
       />
@@ -147,7 +168,11 @@ function comparisonLabel(indicator: Indicator) {
     maximumFractionDigits: 1,
   });
   if (Math.abs(indicator.relativeChange) < 0.05) return "In linea con i peer";
-  return `${indicator.relativeChange > 0 ? "Meglio" : "Peggio"} dei peer di ${distance}${suffix}`;
+  const peer = `${indicator.relativeChange > 0 ? "Meglio" : "Peggio"} dei peer di ${distance}${suffix}`;
+  if (indicator.orientedChange < -MOVEMENT_EPSILON && indicator.relativeChange > MOVEMENT_EPSILON) {
+    return `${peer}. Il livello italiano è sceso, i peer di più`;
+  }
+  return peer;
 }
 
 function currentValueLabel(indicator: Indicator) {
@@ -169,10 +194,12 @@ export function CurrentGovernmentOverview({
   governmentName,
   calculation,
   currentSignals,
+  ameco,
 }: {
   governmentName: string;
   calculation: Calculation;
   currentSignals: GovernmentCurrentSignalsView;
+  ameco: AmecoCitation;
 }) {
   const improved = calculation.indicators.filter((indicator) => indicator.orientedChange >= MOVEMENT_EPSILON).length;
   const aheadOfPeers = calculation.indicators.filter((indicator) => indicator.relativeChange >= MOVEMENT_EPSILON).length;
@@ -231,6 +258,10 @@ export function CurrentGovernmentOverview({
             </dd>
           </div>
         </dl>
+        <p className={styles.computedNote}>
+          Il risultato, lo stress test e i conteggi sui sei indicatori sono un indice calcolato dal sito con AMECO {ameco.release} (osservati al {ameco.observedThrough}). Non è un voto pubblicato dalla Commissione.{" "}
+          <a href={ameco.landingUrl} target="_blank" rel="noreferrer">Dataset AMECO <span aria-hidden="true">↗</span></a>
+        </p>
 
         <div className={styles.indicatorGrid}>
           {calculation.indicators.map((indicator) => {
@@ -270,6 +301,11 @@ export function CurrentGovernmentOverview({
                   <span>Era {sourceValue(indicator.baselineValue, indicator.id)}</span>
                   <b data-peer={peerPosition}>{comparisonLabel(indicator)}</b>
                 </div>
+                <p className={styles.sourceLine}>
+                  <a href={ameco.landingUrl} target="_blank" rel="noreferrer">
+                    Fonte: AMECO · {italySourceCodes(indicator.sourceCodes)} · {ameco.release}
+                  </a>
+                </p>
               </article>
             );
           })}

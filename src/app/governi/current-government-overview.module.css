@@ -149,8 +149,53 @@
   line-height: 1;
 }
 
-.signalValues > div + div strong {
-  font-size: clamp(20px, 2vw, 26px);
+.signalValues small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.35;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.signalCaveat {
+  min-height: 0 !important;
+  margin: -4px 0 12px !important;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.chartHint,
+.sourceLine,
+.computedNote {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.chartHint {
+  margin: -4px 0 8px;
+}
+
+.sourceLine {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.sourceLine a,
+.computedNote a {
+  font-weight: 750;
+}
+
+.computedNote {
+  padding: 12px 18px 0;
+  color: var(--color-neutral-300);
+}
+
+.computedNote a {
+  color: var(--color-accent-300);
 }
 
 .signalChart {
@@ -227,7 +272,6 @@
   color: var(--color-on-strong);
   font-size: 11px;
   font-weight: 800;
-  white-space: nowrap;
 }
 
 .summary {
@@ -621,7 +665,16 @@
   }
 
   .summaryStats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+  }
+
+  .summaryStats > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-700);
+  }
+
+  .summaryStats > div:last-child {
+    border-bottom: 0;
   }
 
   .robustnessStrip {
@@ -667,6 +720,52 @@
   .liveBoundary {
     align-items: start;
     flex-direction: column;
+  }
+
+  .signalValues {
+    grid-template-columns: 1fr;
+  }
+
+  .signalValues > div + div {
+    padding: 13px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--color-neutral-300);
+    text-align: left;
+  }
+
+  .signalCardHeading {
+    flex-wrap: wrap;
+  }
+
+  .signalCardHeading > span {
+    white-space: normal;
+  }
+
+  .valueRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .currentValue {
+    max-width: none;
+    padding: 13px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--color-neutral-200);
+    text-align: left;
+  }
+
+  .cardFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cardFooter > b {
+    text-align: left;
+  }
+
+  .computedNote {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .indicatorCard > p {

@@ -1185,7 +1185,6 @@
 
 .dataBoundary a {
   font-weight: 800;
-  white-space: nowrap;
 }
 
 .pageJumps {
@@ -1288,6 +1287,18 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.forecastSource {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.forecastSource a {
+  font-weight: 750;
 }
 
 .forecastCompact li {
@@ -1515,7 +1526,8 @@
     grid-template-columns: 1fr auto 1fr;
   }
 
-  .forecastCompact ul {
+  .forecastCompact ul,
+  .forecastSource {
     grid-column: 1 / -1;
   }
 
@@ -1646,7 +1658,16 @@
   }
 
   .governmentBars li {
-    grid-template-columns: minmax(120px, .8fr) minmax(120px, 1.2fr) 42px;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+
+  .governmentBar {
+    grid-column: 1 / -1;
+  }
+
+  .governmentBars li > small {
+    grid-column: 1 / -1;
   }
 
   .governmentBarLabel {

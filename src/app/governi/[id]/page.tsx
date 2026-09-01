@@ -297,7 +297,7 @@ export default async function GovernmentDetailPage({ params }: GovernmentPagePro
         )}
       </section>
 
-      <GovernmentArchive id="altri-governi" selectedGovernmentId={government.id} />
+      <GovernmentArchive id="altri-governi" selectedGovernmentId={government.id} ameco={sources.ameco} />
 
       <section className={styles.comparisonCallout} aria-labelledby="confronta-governo">
         <div>

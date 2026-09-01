@@ -22,7 +22,7 @@ test("government scorecard is server-first and opens on the current government",
   assert.doesNotMatch(page, /^"use client"/);
   assert.match(page, /Economia italiana: cosa sta migliorando e cosa no/);
   assert.match(page, /getGovernmentCurrentSignalsView/);
-  assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} currentSignals=\{currentSignals\} \/>/);
+  assert.match(page, /<CurrentGovernmentOverview governmentName=\{current\.name\} calculation=\{currentScore\} currentSignals=\{currentSignals\} ameco=\{data\.sources\.ameco\} \/>/);
   assert.match(page, /Risultati annuali al \{data\.sources\.ameco\.observedThrough\} · prezzi a \{currentSignals\.latestPeriod\}/);
   assert.match(page, /I sei indicatori annuali permettono lo storico/);
   assert.match(page, /<CitizenScoreModel \/>/);
@@ -46,7 +46,7 @@ test("page keeps current data first, then inheritance, context, actions, archive
     assert.ok(next > cursor, heading);
     cursor = next;
   }
-  assert.match(page, /<GovernmentArchive id="confronto-governi" selectedGovernmentId=\{current\.id\} \/>/);
+  assert.match(page, /<GovernmentArchive id="confronto-governi" selectedGovernmentId=\{current\.id\} ameco=\{data\.sources\.ameco\} \/>/);
   assert.match(page, /<details className=\{styles\.explorer\} id="metodo-dati">/);
   assert.match(page, /non un dato osservato e non un risultato anticipato/);
   assert.doesNotMatch(page, /Il confronto con i peer non è lo spread/);
@@ -77,7 +77,18 @@ test("current overview turns all six indicators into readable trends and peer co
   assert.match(currentOverview, /Lo zero è il \{baselineYear\}/);
   assert.match(currentOverview, /<GovernmentIndicatorChart indicators=\{indicators\} \/>/);
   assert.match(currentOverview, /role="img"/);
-  assert.match(currentOverview, /<CurrentGovernmentSignals data=\{currentSignals\} \/>/);
+  assert.match(currentOverview, /Fonte: AMECO/);
+  assert.match(currentOverview, /italySourceCodes\(indicator\.sourceCodes\)/);
+  assert.match(currentOverview, /indice calcolato dal sito/);
+  assert.match(currentOverview, /function levelChange/);
+  assert.match(currentOverview, /Italia · variazione di livello/);
+  assert.match(currentOverview, /Nel grafico verso l’alto significa miglioramento/);
+  assert.match(currentOverview, /Il livello italiano è sceso, i peer di più/);
+  assert.match(currentSignals, /Include affitti e utenze/);
+  assert.match(currentSignals, /Fonte: \{data\.source\.owner\}/);
+  assert.match(governmentArchive, /indice calcolato da AMECO/);
+  assert.match(page, /Previsione AMECO/);
+  assert.match(page, /Fonte: AMECO/);
   assert.match(page, /indicators=\{currentScore\.indicators\}/);
   assert.match(page, /baselineYear=\{currentScore\.baselineYear\}/);
   assert.ok(page.indexOf("Scegli due governi e sovrapponi i dati") < page.indexOf("<CurrentGovernmentPeerComparison"));
@@ -131,6 +142,7 @@ test("page exposes raw values, peers, missing-score reasons and official sources
 
 test("every government links to a dedicated five-part assessment", () => {
   assert.match(governmentArchive, /href=\{`\/governi\/\$\{government\.id\}`\}/);
+  assert.match(detail, /<GovernmentArchive id="altri-governi" selectedGovernmentId=\{government\.id\} ameco=\{sources\.ameco\} \/>/);
   for (const heading of ["Cosa ha ereditato", "In quale situazione ha governato", "Cosa ha fatto per intervenire", "Risultati osservati e situazione lasciata", "Cosa i dati non dimostrano"]) {
     assert.match(detail, new RegExp(heading));
   }
@@ -192,6 +204,9 @@ test("page is discoverable, progressive and responsive", () => {
   assert.match(overviewStyles, /\.indicatorGrid/);
   assert.match(overviewStyles, /\.liveGrid/);
   assert.match(overviewStyles, /@media \(max-width: 700px\)/);
+  assert.match(overviewStyles, /\.summaryStats \{[\s\S]*grid-template-columns: 1fr/);
+  assert.match(overviewStyles, /\.valueRow \{[\s\S]*flex-direction: column/);
+  assert.match(styles, /\.governmentBars li \{[\s\S]*grid-template-columns: 1fr auto/);
   assert.doesNotMatch(styles, /color-neutral-950/);
   assert.match(overviewStyles, /\.summary[\s\S]*background: var\(--color-text\)/);
   assert.doesNotMatch(`${styles}\n${overviewStyles}`, /font-size:\s*[89]px/);

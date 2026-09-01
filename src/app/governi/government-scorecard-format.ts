@@ -24,3 +24,7 @@ export function sourceValue(value: number, indicatorId: string) {
   const suffix = indicatorId === "real_compensation" ? " indice" : indicatorId === "real_gdp_per_capita" ? " mila € 2020" : "%";
   return `${value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${suffix}`;
 }
+
+export function italySourceCodes(sourceCodes: Readonly<Record<"italy", readonly string[]>>) {
+  return sourceCodes.italy.join(", ");
+}

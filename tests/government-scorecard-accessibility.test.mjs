@@ -37,6 +37,7 @@ test("current monthly signal charts expose a source-aware table and derive dates
 test("current overview mini charts have a keyboard-readable data table", () => {
   assert.match(currentOverview, /function TrendSparkline/);
   assert.match(currentOverview, /<ChartDataTable/);
-  assert.match(currentOverview, /Mediana peer · variazione/);
+  assert.match(currentOverview, /Mediana peer · variazione di livello/);
   assert.match(currentOverview, /relativeChangeLabel/);
+  assert.match(currentOverview, /levelChange/);
 });

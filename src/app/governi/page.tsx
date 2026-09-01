@@ -32,7 +32,7 @@ export default function GovernmentsPage() {
 
       <section aria-label="Dati del governo attualmente in carica">
         {currentScore ? (
-          <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} />
+          <CurrentGovernmentOverview governmentName={current.name} calculation={currentScore} currentSignals={currentSignals} ameco={data.sources.ameco} />
         ) : (
           <div className="notice warning-notice">
             <strong>{current.name}: risultato non disponibile.</strong>
@@ -61,19 +61,26 @@ export default function GovernmentsPage() {
                 <div>
                   <span>Risultato osservato</span>
                   <strong>{currentScore ? score(currentScore.score) : "n.d."}<small>/100</small></strong>
-                  <small>fino al {data.sources.ameco.observedThrough}</small>
+                  <small>Indice calcolato da AMECO fino al {data.sources.ameco.observedThrough}</small>
                 </div>
                 <span className={styles.forecastArrow} aria-hidden="true">→</span>
                 <div>
                   <span>Scenario al {forecast.endYear}</span>
                   <strong>{score(forecast.score)}<small>/100</small></strong>
-                  <small>se le stime si realizzano</small>
+                  <small>Previsione AMECO {data.sources.ameco.release}, non osservata</small>
                 </div>
                 <ul>
                   {forecast.indicators.slice(0, 3).map((indicator) => (
-                    <li key={indicator.id}><span>{indicator.label}</span><strong>{sourceValue(indicator.endValue, indicator.id)}</strong></li>
+                    <li key={indicator.id}>
+                      <span>{indicator.label}</span>
+                      <strong>{sourceValue(indicator.endValue, indicator.id)}</strong>
+                    </li>
                   ))}
                 </ul>
+                <p className={styles.forecastSource}>
+                  Fonte dei tre valori {forecast.endYear}: AMECO {data.sources.ameco.release}.{" "}
+                  <a href={data.sources.ameco.landingUrl} target="_blank" rel="noreferrer">Dataset AMECO <span aria-hidden="true">↗</span></a>
+                </p>
               </div>
             ) : <p>Scenario non disponibile.</p>}
           </div>
@@ -108,7 +115,11 @@ export default function GovernmentsPage() {
           <article>
             <span>Traiettoria precedente</span>
             {current.inheritance.trend.status === "scored" ? (
-              <><h3>{score(current.inheritance.trend.score)}/100</h3><p>Andamento nei due anni precedenti, mostrato separatamente dal risultato del governo attuale.</p></>
+              <>
+                <h3>{score(current.inheritance.trend.score)}/100</h3>
+                <p>Andamento nei due anni precedenti, mostrato separatamente dal risultato del governo attuale. Indice calcolato da AMECO {data.sources.ameco.release}, stessa formula.</p>
+                <p><a href={data.sources.ameco.landingUrl} target="_blank" rel="noreferrer">Fonte: AMECO <span aria-hidden="true">↗</span></a></p>
+              </>
             ) : <><h3>Non calcolabile</h3><p>{current.inheritance.trend.reason}</p></>}
           </article>
           <article>
@@ -166,7 +177,7 @@ export default function GovernmentsPage() {
         </div>
       </section>
 
-      <GovernmentArchive id="confronto-governi" selectedGovernmentId={current.id} />
+      <GovernmentArchive id="confronto-governi" selectedGovernmentId={current.id} ameco={data.sources.ameco} />
 
       <section className={styles.comparisonCallout} id="confronto-diretto" aria-labelledby="confronto-title">
         <div>

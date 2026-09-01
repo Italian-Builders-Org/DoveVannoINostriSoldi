@@ -8,7 +8,12 @@ export const maxDuration = 15;
 
 const MAX_REQUEST_BYTES = 1_000_000;
 const MCP_HANDLER_TIMEOUT_MS = 12_000;
-const mcpLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 60 });
+export const MCP_INSTANCE_POST_LIMIT = 60;
+export const MCP_INSTANCE_POST_WINDOW_MS = 60_000;
+const mcpLimiter = new SlidingWindowLimiter({
+  windowMs: MCP_INSTANCE_POST_WINDOW_MS,
+  max: MCP_INSTANCE_POST_LIMIT,
+});
 
 function reportMcpError(error: Error) {
   if (error.message.startsWith("Rejected inbound request")) return;

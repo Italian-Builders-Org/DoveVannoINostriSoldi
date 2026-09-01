@@ -69,9 +69,11 @@ npm run test:mcp:http
 echo "::endgroup::"
 
 echo "::group::MCP local load test"
+# Next sets X-Forwarded-For even on loopback, so the in-memory limiter (60 POST/min
+# per IP) is active here. Smoke already consumed ~10 POSTs on this instance.
 npm run test:mcp:load -- \
   --url "${BASE_URL}/api/mcp" \
-  --requests 60 \
+  --requests 40 \
   --concurrency 10 \
   --p95-ms 3000
 echo "::endgroup::"

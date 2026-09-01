@@ -14,10 +14,15 @@ import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { BUY_ME_A_COFFEE_URL, REPO_URL, SOCIAL_LINKS } from "@/lib/site";
 import { SITE_SUPPORTERS } from "@/lib/supporters";
 
-const MANTO_VENTURE = SITE_SUPPORTERS.find((supporter) => supporter.name === "Manto Venture");
-if (!MANTO_VENTURE?.href) {
-  throw new Error("Manto Venture deve avere un URL pubblico nel footer");
+function mantoVentureSupporter() {
+  const supporter = SITE_SUPPORTERS.find((item) => item.name === "Manto Venture");
+  if (!supporter?.href) {
+    throw new Error("Manto Venture deve avere un URL pubblico nel footer");
+  }
+  return supporter;
 }
+
+const MANTO_VENTURE = mantoVentureSupporter();
 
 const SOCIAL_ICONS = {
   threads: ThreadsIcon,

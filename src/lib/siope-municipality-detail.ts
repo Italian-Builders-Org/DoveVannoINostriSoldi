@@ -261,6 +261,16 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
   };
 }
 
+/** Resolve the latest committed municipal identity without request-time I/O. */
+export function getSiopeMunicipalityDetailByIpaCode(rawCode: string): SiopeMunicipalityDetail | null {
+  const code = rawCode.trim();
+  if (!CANONICAL_IPA_CODE.test(code)) return null;
+  const row = artifacts
+    .flatMap((artifact) => artifact.rows)
+    .find((candidate) => candidate[1] === code);
+  return row ? getSiopeMunicipalityDetail(row[0]) : null;
+}
+
 export type SiopeMunicipalityPeerObservation = Readonly<{
   taxCode: string;
   name: string;

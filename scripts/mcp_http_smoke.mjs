@@ -84,9 +84,17 @@ const sseGetResponse = await fetch(new URL("/mcp", baseUrl), {
   signal: AbortSignal.timeout(10_000),
 });
 assert.equal(sseGetResponse.status, 405);
-assert.equal(sseGetResponse.headers.get("allow"), "POST, OPTIONS");
+assert.equal(sseGetResponse.headers.get("allow"), "POST, OPTIONS, HEAD");
 assert.equal(sseGetResponse.headers.get("cache-control"), "private, no-store");
 assert.match(sseGetResponse.headers.get("content-type") ?? "", /application\/json/);
+
+const headResponse = await fetch(new URL("/mcp", baseUrl), {
+  method: "HEAD",
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(headResponse.status, 204);
+assert.equal(headResponse.headers.get("allow"), "POST, OPTIONS, HEAD");
+assert.equal(headResponse.headers.get("cache-control"), "private, no-store");
 
 const allowedPreflight = await fetch(new URL("/mcp", baseUrl), {
   method: "OPTIONS",

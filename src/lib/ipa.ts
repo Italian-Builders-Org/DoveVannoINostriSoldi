@@ -351,7 +351,10 @@ export async function getIpaCentralAdministrations(): Promise<IpaSearchResult> {
   return searchIpaEntities({ categoryCode: "C1", limit: 50 });
 }
 
-export async function getIpaEntityByCode(codiceIpa: string): Promise<IpaEntity | null> {
+export async function getIpaEntityByCode(
+  codiceIpa: string,
+  signal?: AbortSignal,
+): Promise<IpaEntity | null> {
   const normalized = codiceIpa.trim().slice(0, 100);
   if (!normalized) return null;
 
@@ -362,7 +365,7 @@ export async function getIpaEntityByCode(codiceIpa: string): Promise<IpaEntity |
 
   // Page and API lookups must not retry a 500: each extra attempt is billed
   // compute while crawlers and clients retry the same URL.
-  const result = await datastoreRequest(params, undefined, { maxRetries: 0, timeoutMs: 4_000 });
+  const result = await datastoreRequest(params, signal, { maxRetries: 0, timeoutMs: 4_000 });
   return result.records[0] ?? null;
 }
 

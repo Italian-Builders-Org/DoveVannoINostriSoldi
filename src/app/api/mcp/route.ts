@@ -1,6 +1,7 @@
 import { createMcpHandler } from "@modelcontextprotocol/server";
 import { createDvnsMcpServer } from "@/lib/mcp/server";
-import { SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
+import { runMcpExchangeWithDeadline } from "@/lib/mcp/request-deadline";
+import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export const maxDuration = 15;
 const MAX_REQUEST_BYTES = 1_000_000;
 const MCP_HANDLER_TIMEOUT_MS = 12_000;
 const mcpLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 60 });
+const mcpConcurrency = new ConcurrencyLimiter(8);
 
 function reportMcpError(error: Error) {
   if (error.message.startsWith("Rejected inbound request")) return;
@@ -17,6 +19,7 @@ function reportMcpError(error: Error) {
 
 const handler = createMcpHandler(createDvnsMcpServer, {
   legacy: "stateless",
+  responseMode: "json",
   onerror: reportMcpError,
 });
 
@@ -140,8 +143,34 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
   const chunks: Uint8Array[] = [];
   let total = 0;
 
+  const read = () => new Promise<ReadableStreamReadResult<Uint8Array>>((resolve, reject) => {
+    if (request.signal.aborted) {
+      reject(request.signal.reason);
+      return;
+    }
+    const onAbort = () => reject(request.signal.reason);
+    request.signal.addEventListener("abort", onAbort, { once: true });
+    reader.read().then(
+      (result) => {
+        request.signal.removeEventListener("abort", onAbort);
+        resolve(result);
+      },
+      (error) => {
+        request.signal.removeEventListener("abort", onAbort);
+        reject(error);
+      },
+    );
+  });
+
   while (true) {
-    const { done, value } = await reader.read();
+    let result: ReadableStreamReadResult<Uint8Array>;
+    try {
+      result = await read();
+    } catch (error) {
+      await reader.cancel(error).catch(() => undefined);
+      throw error;
+    }
+    const { done, value } = result;
     if (done) break;
     total += value.byteLength;
     if (total > MAX_REQUEST_BYTES) {
@@ -171,16 +200,6 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
 export async function POST(request: Request) {
   const rejected = validateRequest(request);
   if (rejected) return secureResponse(rejected, request);
-  let boundedRequest: Request | Response;
-  try {
-    boundedRequest = await requestWithBoundedBody(request);
-  } catch {
-    return secureResponse(Response.json(
-      { error: "Richiesta interrotta o non leggibile" },
-      { status: 400 },
-    ), request);
-  }
-  if (boundedRequest instanceof Response) return secureResponse(boundedRequest, request);
 
   const clientKey = clientAddress(request);
   if (clientKey && !mcpLimiter.consume(clientKey)) {
@@ -190,20 +209,36 @@ export async function POST(request: Request) {
     ), request);
   }
 
-  const timeout = AbortSignal.timeout(MCP_HANDLER_TIMEOUT_MS);
-  const callerSignal = boundedRequest.signal;
-  const signal = callerSignal.aborted ? callerSignal : AbortSignal.any([callerSignal, timeout]);
-  const timedRequest = new Request(boundedRequest, { signal });
+  const release = mcpConcurrency.tryAcquire();
+  if (!release) {
+    return secureResponse(Response.json(
+      { jsonrpc: "2.0", error: { code: -32000, message: "Server MCP occupato. Riprova tra pochi secondi." }, id: null },
+      { status: 503, headers: { "Retry-After": "5" } },
+    ), request);
+  }
+
   try {
-    return secureResponse(await handler.fetch(timedRequest), request);
-  } catch (error) {
-    if (timeout.aborted) {
-      return secureResponse(Response.json(
-        { jsonrpc: "2.0", error: { code: -32000, message: "Timeout della richiesta MCP" }, id: null },
-        { status: 504 },
-      ), request);
-    }
-    throw error;
+    const response = await runMcpExchangeWithDeadline(
+      request,
+      async (timedRequest) => {
+        let boundedRequest: Request | Response;
+        try {
+          boundedRequest = await requestWithBoundedBody(timedRequest);
+        } catch {
+          if (timedRequest.signal.aborted) throw timedRequest.signal.reason;
+          return Response.json(
+            { error: "Richiesta interrotta o non leggibile" },
+            { status: 400 },
+          );
+        }
+        if (boundedRequest instanceof Response) return boundedRequest;
+        return handler.fetch(boundedRequest);
+      },
+      MCP_HANDLER_TIMEOUT_MS,
+    );
+    return secureResponse(response, request);
+  } finally {
+    release();
   }
 }
 
@@ -227,6 +262,15 @@ export function GET(request: Request) {
 
   return secureResponse(Response.json(
     { error: "Questo server MCP usa Streamable HTTP tramite POST" },
-    { status: 405, headers: { Allow: "POST, OPTIONS" } },
+    { status: 405, headers: { Allow: "POST, OPTIONS, HEAD" } },
   ), request);
+}
+
+export function HEAD(request: Request) {
+  const rejected = validateRequest(request);
+  if (rejected) return secureResponse(rejected, request);
+  return secureResponse(new Response(null, {
+    status: 204,
+    headers: { Allow: "POST, OPTIONS, HEAD" },
+  }), request);
 }

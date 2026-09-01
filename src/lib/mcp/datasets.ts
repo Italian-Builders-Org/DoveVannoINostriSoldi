@@ -149,7 +149,7 @@ export async function queryPublicDataset(
     case "openbdap_opere_pubbliche": {
       const cup = requireText(query.cup, "cup");
       const { getPublicWorksByCup } = await import("@/lib/bdap-public-works");
-      return jsonSafe(await getPublicWorksByCup(cup));
+      return jsonSafe(await getPublicWorksByCup(cup, { signal: options.signal }));
     }
     case "openbdap_ssn_conto_economico": {
       const { querySsnCce } = await import("@/lib/ssn-cce-snapshot");
@@ -275,15 +275,15 @@ export async function queryPublicDataset(
     case "ipa_enti": {
       const { getIpaEntityByCode, searchIpaEntities } = await import("@/lib/ipa");
       if (query.code?.trim()) {
-        const record = await getIpaEntityByCode(query.code.trim());
+        const record = await getIpaEntityByCode(query.code.trim(), options.signal);
         return jsonSafe({ record, found: record !== null });
       }
-      return jsonSafe(await searchIpaEntities({ query: query.query, limit, offset }));
+      return jsonSafe(await searchIpaEntities({ query: query.query, limit, offset, signal: options.signal }));
     }
     case "ipa_struttura": {
       const code = requireText(query.code, "code");
       const { getIpaOrganizationStructure } = await import("@/lib/ipa-structure");
-      return jsonSafe(await getIpaOrganizationStructure(code, limit, offset));
+      return jsonSafe(await getIpaOrganizationStructure(code, limit, offset, { signal: options.signal }));
     }
     case "mef_partecipazioni": {
       const { mefParticipationsSnapshot } = await import("@/lib/mef-participations-snapshot");

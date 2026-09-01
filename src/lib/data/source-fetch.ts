@@ -224,7 +224,11 @@ export async function fetchOfficialSource(
       }
     }
 
-    await delay(RETRY_DELAY_MS * (attempt + 1));
+    await delay(
+      RETRY_DELAY_MS * (attempt + 1),
+      undefined,
+      callerSignal ? { signal: callerSignal } : undefined,
+    );
   }
 
   throw new SourceFetchError(`Impossibile interrogare la fonte ${sourceId}`, sourceId, lastError);

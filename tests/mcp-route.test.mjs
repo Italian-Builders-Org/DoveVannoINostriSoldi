@@ -6,7 +6,7 @@ process.env.MCP_ALLOWED_HOSTS = [process.env.MCP_ALLOWED_HOSTS, "example.test"]
   .filter(Boolean)
   .join(",");
 
-const { GET, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
+const { GET, HEAD, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
 const { dvnsStarterPrompts } = await import("../src/lib/mcp/server.ts");
 const loader = await import("../src/lib/integrated-sources.ts");
 
@@ -124,10 +124,18 @@ test("MCP endpoint rejects optional SSE GET without returning cacheable HTML", a
     headers: { Accept: "text/event-stream" },
   }));
   assert.equal(response.status, 405);
-  assert.equal(response.headers.get("allow"), "POST, OPTIONS");
+  assert.equal(response.headers.get("allow"), "POST, OPTIONS, HEAD");
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.equal(response.headers.get("content-type"), "application/json");
   assert.match(await response.text(), /Streamable HTTP tramite POST/);
+});
+
+test("MCP endpoint answers HEAD probes without starting a tool exchange", async () => {
+  const response = HEAD(new Request("https://example.test/api/mcp", { method: "HEAD" }));
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("allow"), "POST, OPTIONS, HEAD");
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.equal(await response.text(), "");
 });
 
 test("MCP endpoint enforces an explicit host allowlist", async () => {
@@ -811,7 +819,7 @@ test("MCP endpoint rejects a malformed modern envelope", async () => {
 
 test("MCP endpoint keeps stateless requests isolated under concurrency", async () => {
   const responses = await Promise.all(
-    Array.from({ length: 20 }, () => POST(request())),
+    Array.from({ length: 8 }, () => POST(request())),
   );
   assert.ok(responses.every((response) => response.status === 200));
   const bodies = await Promise.all(responses.map((response) => response.text()));

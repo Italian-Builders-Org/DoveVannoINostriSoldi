@@ -445,12 +445,13 @@ test("UI keeps scope, rankings, official CIG links and no later indicators", () 
   assert.match(detail, /metric: "value", pageSize: size/);
   assert.match(detail, /Perimetro temporale/);
   assert.match(detail, /verifyLiveFiscalCode: false/);
-  assert.match(detail, /Indice PA non risponde/);
+  assert.match(detail, /snapshot IPA verificato durante l'ETL/);
   assert.match(detail, /maxDuration = 15/);
+  assert.doesNotMatch(detail, /getIpaEntityByCode/);
   const entityPage = readFileSync(new URL("../src/app/enti/[codice]/page.tsx", import.meta.url), "utf8");
   assert.match(entityPage, /Anagrafica IPA non disponibile/);
   assert.doesNotMatch(entityPage, /Impossibile interrogare la fonte IPA/);
-  assert.match(detail, /entity\?\.denominazione \?\? normalizedCode/);
+  assert.match(detail, /getSiopeMunicipalityDetailByIpaCode/);
   assert.match(detail, /nameVariants > 1/);
   assert.match(`${section}\n${detail}`, /codici fiscali degli operatori/);
   assert.match(detail, /caption/);

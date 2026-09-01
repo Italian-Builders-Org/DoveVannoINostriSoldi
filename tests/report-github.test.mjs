@@ -5,9 +5,21 @@ import "./helpers/register-ts-alias.mjs";
 
 const { readGitHubAppConfig, ReportGitHubClient, signAppJwt, GitHubUnavailableError } =
   await import("../src/lib/report/github.ts");
-const { SlidingWindowLimiter, clientAddress } = await import("../src/lib/report/rate-limit.ts");
+const { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } = await import("../src/lib/report/rate-limit.ts");
 
 const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+
+test("concurrency limiter releases capacity exactly once", () => {
+  const limiter = new ConcurrencyLimiter(2);
+  const first = limiter.tryAcquire();
+  const second = limiter.tryAcquire();
+  assert.ok(first);
+  assert.ok(second);
+  assert.equal(limiter.tryAcquire(), null);
+  first();
+  first();
+  assert.ok(limiter.tryAcquire());
+});
 const PEM = privateKey.export({ type: "pkcs1", format: "pem" });
 const CONFIG = { appId: "123", installationId: "456", privateKeyPem: PEM };
 

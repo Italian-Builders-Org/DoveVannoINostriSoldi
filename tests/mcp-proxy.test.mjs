@@ -10,8 +10,8 @@ test("MCP compatibility proxy is scoped to the exact public presentation path", 
   assert.deepEqual(config, { matcher: "/mcp" });
 });
 
-test("MCP compatibility proxy rewrites POST and OPTIONS to the canonical endpoint", async () => {
-  for (const method of ["POST", "OPTIONS"]) {
+test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical endpoint", async () => {
+  for (const method of ["POST", "OPTIONS", "HEAD"]) {
     const response = await proxy(new NextRequest("https://example.test/mcp?client=test", { method }));
     assert.equal(isRewrite(response), true, method);
     assert.equal(getRewrittenUrl(response), "https://example.test/api/mcp?client=test", method);
@@ -28,7 +28,6 @@ test("MCP compatibility proxy rewrites POST and OPTIONS to the canonical endpoin
 test("MCP compatibility proxy preserves the human-facing page for safe methods", async () => {
   for (const [method, headers] of [
     ["GET", { Accept: "text/html" }],
-    ["HEAD", {}],
     ["PUT", {}],
   ]) {
     const response = await proxy(new NextRequest("https://example.test/mcp", { method, headers }));

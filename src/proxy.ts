@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
 
-const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS"]);
+const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 
 export function proxy(request: NextRequest) {
   const acceptsEventStream = request.headers

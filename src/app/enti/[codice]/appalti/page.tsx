@@ -7,11 +7,10 @@ import {
   clampEntityProcurementPage,
   countAnacAwardAttributions,
   decodeEntityProcurementRouteCode,
-  getEntityProcurementPage,
   loadAnacEntityProcurementPage,
   type AnacEntityProcurementPageView,
 } from "@/lib/data/anac-entity-procurement-page";
-import { getIpaEntityByCode } from "@/lib/ipa";
+import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { EntityProcurementSection, EntityProcurementSourceDetails } from "../entity-procurement-section";
 import styles from "./appalti.module.css";
 
@@ -356,44 +355,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
-  try {
-    const entity = await getIpaEntityByCode(normalizedCode);
-    return { title: "Appalti · " + (entity?.denominazione ?? normalizedCode) };
-  } catch {
-    return { title: "Appalti · " + normalizedCode };
-  }
+  const municipality = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
+  return { title: "Appalti · " + (municipality?.name ?? normalizedCode) };
 }
 
 export default async function EntityProcurementPage({ params, searchParams }: PageProps) {
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
-  let entity = null;
-  let ipaReachable = true;
-  try {
-    entity = await getIpaEntityByCode(normalizedCode);
-  } catch {
-    ipaReachable = false;
-  }
-  if (ipaReachable && !entity) notFound();
-  const state = entity
-    ? await getEntityProcurementPage(entity)
-    : await loadAnacEntityProcurementPage({
-      codiceIpa: normalizedCode,
-      currentEntityCf: null,
-      verifyLiveFiscalCode: false,
-    });
-  const heading = entity?.denominazione || normalizedCode;
+  const municipality = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
+  const state = await loadAnacEntityProcurementPage({
+    codiceIpa: normalizedCode,
+    currentEntityCf: null,
+    verifyLiveFiscalCode: false,
+  });
+  const heading = municipality?.name ?? normalizedCode;
   if (state.status !== "available") {
     return (
       <main className={"shell page " + styles.page}>
         <p><Link href={"/enti/" + encodeURIComponent(normalizedCode)}>← Torna alla scheda ente</Link></p>
-        {ipaReachable ? null : (
-          <div className="notice warning-notice">
-            <strong>Indice PA non risponde</strong>
-            <p>Mostriamo solo lo snapshot ANAC già in archivio. L&apos;identità fiscale live non è stata ricontrollata.</p>
-          </div>
-        )}
+        <div className="notice">
+          <strong>Profilo servito senza chiamate live</strong>
+          <p>{"L'identità è collegata allo snapshot IPA verificato durante l'ETL; questa visita non interroga Indice PA."}</p>
+        </div>
         <EntityProcurementSection state={state} />
       </main>
     );
@@ -416,12 +400,10 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <h1>Aggiudicazioni ANAC · {heading}</h1>
         <p>Procedure, aggiudicazioni e aggiudicatari collegati a questo ente.</p>
       </div>
-      {ipaReachable ? null : (
-        <div className="notice warning-notice">
-          <strong>Indice PA non risponde</strong>
-          <p>Mostriamo lo snapshot ANAC già in archivio. L&apos;identità fiscale live non è stata ricontrollata.</p>
-        </div>
-      )}
+      <div className="notice">
+        <strong>Profilo servito senza chiamate live</strong>
+        <p>{"L'identità è collegata allo snapshot IPA verificato durante l'ETL; questa visita non interroga Indice PA."}</p>
+      </div>
       {scopeLine()}
       <Views codice={normalizedCode} active={selectedView} operator={operatorRef} metric={metric} />
       {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} /> : null}
@@ -437,7 +419,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       {selectedView === "operator" && operatorRef ? <OperatorDetail profile={profile} codice={normalizedCode} operatorRef={operatorRef} currentPage={currentPage} size={size} /> : null}
       <section className="panel" aria-labelledby="method-title">
         <h2 className="panel-title" id="method-title">Fonte e limiti</h2>
-        <p className={styles.note}>Snapshot CIG pubblicati 2025, cross-temporale: non è copertura nazionale corrente. L&apos;importo di aggiudicazione è dichiarato e non è un pagamento. Il codice fiscale dell&apos;ente proviene da IPA ed è usato per controllare l&apos;identità; i codici fiscali degli aggiudicatari/operatori non sono pubblicati.</p>
+        <p className={styles.note}>Snapshot CIG pubblicati 2025, cross-temporale: non è copertura nazionale corrente. L&apos;importo di aggiudicazione è dichiarato e non è un pagamento. Il collegamento dell&apos;ente a IPA è stato verificato durante l&apos;ETL hash-pinned; non viene ricontrollato live a ogni visita. I codici fiscali degli aggiudicatari/operatori non sono pubblicati.</p>
         <p className={styles.note}>Le righe sono pagine del profilo hash-pinned; i conflitti e i casi senza attribuzione restano indicati nella tabella.</p>
         <dl className={styles.sourceList}>
           <div><dt>Generato</dt><dd>{profile.meta.generatedAt}</dd></div>

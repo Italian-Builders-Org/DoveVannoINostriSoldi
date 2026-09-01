@@ -42,11 +42,17 @@ type ODataRows = {
   };
 };
 
-async function jsonFrom(url: string, kind: "discovery" | "data", tags: string[]): Promise<unknown> {
+async function jsonFrom(
+  url: string,
+  kind: "discovery" | "data",
+  tags: string[],
+  signal?: AbortSignal,
+): Promise<unknown> {
   const response = await fetchOfficialSource("openbdap", url, {
     kind,
     headers: { Accept: "application/json" },
     tags: ["dataset:mop", ...tags],
+    signal,
   });
   if (!response.ok) throw new Error(`OpenBDAP MOP HTTP ${response.status}`);
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
@@ -56,13 +62,13 @@ async function jsonFrom(url: string, kind: "discovery" | "data", tags: string[])
   return response.json();
 }
 
-export async function discoverMopDataset(): Promise<{
+export async function discoverMopDataset(options: { signal?: AbortSignal } = {}): Promise<{
   metadata: MopDatasetMetadata;
   schema: MopSchemaContract;
 }> {
   const [metadataPayload, columnsPayload] = await Promise.all([
-    jsonFrom(METADATA_URL, "discovery", ["metadata:mop"]),
-    jsonFrom(COLUMNS_URL, "discovery", ["schema:mop"]),
+    jsonFrom(METADATA_URL, "discovery", ["metadata:mop"], options.signal),
+    jsonFrom(COLUMNS_URL, "discovery", ["schema:mop"], options.signal),
   ]);
   return {
     metadata: parseMopDatasetMetadata(metadataPayload),
@@ -70,10 +76,13 @@ export async function discoverMopDataset(): Promise<{
   };
 }
 
-export async function getPublicWorksByCup(rawCup: string): Promise<PublicWorksLookup> {
+export async function getPublicWorksByCup(
+  rawCup: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<PublicWorksLookup> {
   const cup = normalizeCup(rawCup);
   const observedAt = new Date().toISOString();
-  const { metadata, schema } = await discoverMopDataset();
+  const { metadata, schema } = await discoverMopDataset(options);
   const filter = `${schema.fields.cup} eq '${cup}'`;
   const query = new URLSearchParams({
     "$filter": filter,
@@ -81,7 +90,7 @@ export async function getPublicWorksByCup(rawCup: string): Promise<PublicWorksLo
     "$format": "json",
   });
   const endpoint = `${ODATA_BASE}/MdData('${ENCODED_DATASET_ID}')/DataRows?${query.toString()}`;
-  const payload = (await jsonFrom(endpoint, "data", [`cup:${cup}`])) as ODataRows;
+  const payload = (await jsonFrom(endpoint, "data", [`cup:${cup}`], options.signal)) as ODataRows;
   if (!Array.isArray(payload.d?.results)) throw new Error("OpenBDAP MOP: elenco risultati non valido");
   const works = payload.d.results.map((row) => normalizeMopRow(row, schema.fields, observedAt.slice(0, 10)));
   if (works.some((work) => work.cup !== cup)) throw new Error("OpenBDAP MOP: la risposta contiene un CUP diverso dalla ricerca");

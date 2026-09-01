@@ -54,3 +54,25 @@ export function clientAddress(request: Request): string | null {
   if (real && real.length <= 64 && /^[0-9a-f.:%]+$/iu.test(real)) return real.toLowerCase();
   return null;
 }
+
+/** Per-instance bulkhead for expensive handlers. Distributed WAF remains the outer layer. */
+export class ConcurrencyLimiter {
+  #active = 0;
+  readonly max: number;
+
+  constructor(max: number) {
+    if (!Number.isSafeInteger(max) || max < 1) throw new Error("Concurrency limit must be positive");
+    this.max = max;
+  }
+
+  tryAcquire(): (() => void) | null {
+    if (this.#active >= this.max) return null;
+    this.#active += 1;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      this.#active -= 1;
+    };
+  }
+}

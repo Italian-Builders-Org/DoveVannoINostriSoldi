@@ -986,12 +986,6 @@ try {
     pathname: "/imprese?metric=employees",
     width: 390,
     validate: async (page) => {
-      const currentLabels = await page.$$eval(
-        'nav.primary-nav a[aria-current="page"]',
-        (links) => links.map((link) => link.textContent?.trim()),
-      );
-      assert.deepEqual(currentLabels, ["Addetti"]);
-
       await assertPrimaryDropdownTap(page, "Atlante Imprese query navigation 390px", {
         sectionLabel: "Imprese",
         childLabel: "Localizzazioni attive",
@@ -1008,6 +1002,11 @@ try {
         "Atlante Imprese query navigation 390px",
         "Localizzazioni attive",
       );
+      const currentLabels = await page.$$eval(
+        '.nav-row > .nav-submenu a[aria-current="page"]',
+        (links) => links.map((link) => link.textContent?.trim()),
+      );
+      assert.deepEqual(currentLabels, ["Addetti"]);
       const localUnitsLink = await page.$(
         '.nav-row > .nav-submenu a[href="/imprese?metric=active_local_units"]',
       );
@@ -1017,19 +1016,30 @@ try {
         () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
         { timeout: 3_000 },
       );
-      await page.waitForFunction(
-        () => {
-          const current = document.querySelector(
-            'nav.primary-nav a[aria-current="page"]',
-          );
-          return current?.textContent?.trim() === "Localizzazioni attive";
-        },
-        { timeout: 3_000 },
-      );
       assert.equal(
         await page.$eval(".nav-row", (row) => row.hasAttribute("data-menu-open")),
         false,
         "Atlante Imprese query navigation 390px: menu rimasto aperto dopo la query",
+      );
+      const refreshedItem = await findPrimaryNavSection(page, "Imprese");
+      assert.ok(refreshedItem, "Atlante Imprese query navigation 390px: sezione Imprese assente dopo la query");
+      const reopenToggle = await refreshedItem.$(".nav-item-toggle");
+      assert.ok(reopenToggle, "Atlante Imprese query navigation 390px: pulsante tendina assente dopo la query");
+      await reopenToggle.click();
+      await assertSubmenuVisible(
+        refreshedItem,
+        page,
+        "Atlante Imprese query navigation 390px",
+        "Localizzazioni attive",
+      );
+      await page.waitForFunction(
+        () => {
+          const current = document.querySelector(
+            '.nav-row > .nav-submenu a[aria-current="page"]',
+          );
+          return current?.textContent?.trim() === "Localizzazioni attive";
+        },
+        { timeout: 3_000 },
       );
     },
   });

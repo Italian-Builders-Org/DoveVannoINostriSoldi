@@ -255,9 +255,13 @@ function RankingTable({
 function Available({ profile }: { profile: AnacEntityProcurementPageView }) {
   const attributionCounts = countAnacAwardAttributions(profile.awards);
   return (
-    <section className="panel" aria-labelledby="anac-procurement-title" id="dati-anac-aggiudicazioni">
-      <span className={styles.kicker}>ANAC · aggiudicazioni</span>
-      <h2 className="panel-title" id="anac-procurement-title">Contratti e aggiudicatari</h2>
+    <section className={`panel ${styles.alignedSection}`} aria-labelledby="anac-procurement-title" id="dati-anac-aggiudicazioni">
+      <div className={styles.sectionHeading}>
+        <div>
+          <span className={styles.kicker}>ANAC · aggiudicazioni</span>
+          <h2 className={styles.sectionTitle} id="anac-procurement-title">Contratti e aggiudicatari</h2>
+        </div>
+      </div>
       {scopeLine(profile)}
       <Summary profile={profile} />
       <p className={styles.note}>

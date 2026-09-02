@@ -12,6 +12,7 @@ import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,
 } from "@/lib/ipa";
+import { municipalityName } from "@/lib/municipality-name";
 import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import {
   PRIMARY_NAV,
@@ -420,6 +421,20 @@ const MUNICIPALITY_PREFIX =
 const METROPOLITAN_PREFIX =
   /^(?:citta metropolitana di|citta metropolitana della|citta metropolitana del|citta metropolitana dello)\s+/u;
 
+/** Dropped when matching the bare place name so "città di Milano" still hits the Comune. */
+const PLACE_QUERY_STOPWORDS = new Set([
+  "citta",
+  "comune",
+  "metropolitana",
+  "di",
+  "del",
+  "della",
+  "dello",
+  "dei",
+  "degli",
+  "delle",
+]);
+
 /**
  * Prefer the municipality when the user types a city name ("Milano", "Bologna").
  * IPA returns many agencies that contain the same token; without a place-name
@@ -433,13 +448,6 @@ export function classifyEntityPlace(entity: Pick<IpaEntity, "denominazione" | "t
     return { kind: "municipality", placeName: "roma" };
   }
 
-  if (MUNICIPALITY_PREFIX.test(normalizedName) || tipologia === "comune") {
-    return {
-      kind: "municipality",
-      placeName: normalizedName.replace(MUNICIPALITY_PREFIX, "").trim() || normalizedName,
-    };
-  }
-
   if (METROPOLITAN_PREFIX.test(normalizedName)) {
     return {
       kind: "metropolitan_city",
@@ -447,12 +455,25 @@ export function classifyEntityPlace(entity: Pick<IpaEntity, "denominazione" | "t
     };
   }
 
+  if (MUNICIPALITY_PREFIX.test(normalizedName) || tipologia === "comune") {
+    return {
+      kind: "municipality",
+      placeName: normalizedName.replace(MUNICIPALITY_PREFIX, "").trim() || normalizedName,
+    };
+  }
+
   return { kind: "other", placeName: normalizedName };
+}
+
+function placeQueryText(query: string): string {
+  const placeTokens = tokens(query).filter((token) => !PLACE_QUERY_STOPWORDS.has(token));
+  return placeTokens.join(" ");
 }
 
 function entityScore(entity: IpaEntity, query: string, match: FieldMatch): number {
   const place = classifyEntityPlace(entity);
-  const placeMatch = matchField(place.placeName, query, tokens(query));
+  const placeQuery = placeQueryText(query) || query;
+  const placeMatch = matchField(place.placeName, placeQuery, tokens(placeQuery));
   const base = 1_600 + match.quality * 100;
 
   if (placeMatch?.reason === "exact") {
@@ -475,21 +496,40 @@ function entityScore(entity: IpaEntity, query: string, match: FieldMatch): numbe
 
 function resultForEntity(entity: IpaEntity, query: string): SearchResult | null {
   const queryTokens = tokens(query);
+  const place = classifyEntityPlace(entity);
+  const placeQuery = placeQueryText(query);
+  const placeTokens = placeQuery ? tokens(placeQuery) : [];
+  const placeMatch = placeQuery
+    ? matchField(place.placeName, placeQuery, placeTokens)
+    : null;
+
   const fields = [entity.denominazione, entity.acronimo, entity.codiceIpa, entity.tipologia].filter(
     (value): value is string => Boolean(value),
   );
-  const match = fields.reduce<FieldMatch | null>((best, field) => {
-    const candidate = matchField(field, query, queryTokens);
-    return candidate && (!best || candidate.quality > best.quality) ? candidate : best;
+  const fieldMatch = fields.reduce<FieldMatch | null>((best, field) => {
+    const candidates = [
+      matchField(field, query, queryTokens),
+      placeQuery && placeQuery !== query ? matchField(field, placeQuery, placeTokens) : null,
+    ];
+    for (const candidate of candidates) {
+      if (candidate && (!best || candidate.quality > best.quality)) best = candidate;
+    }
+    return best;
   }, null);
+
+  // "città di Milano" does not token-match "COMUNE DI MILANO"; the bare place name does.
+  const match =
+    fieldMatch ??
+    (place.kind !== "other" && placeMatch ? placeMatch : null);
   if (!match) return null;
 
+  const isMunicipality = place.kind === "municipality";
   const description = [entity.tipologia, entity.codiceIpa].filter(Boolean).join(" · ") || null;
   return {
     id: `entity:${entity.codiceIpa}`,
     href: `/enti/${encodeURIComponent(entity.codiceIpa)}`,
-    title: entity.denominazione,
-    context: "Registro IPA",
+    title: isMunicipality ? municipalityName(entity.denominazione) : entity.denominazione,
+    context: isMunicipality ? "Comune · Registro IPA" : "Registro IPA",
     type: "ente",
     description,
     match: { reason: "entity", label: SEARCH_MATCH_LABELS.entity },

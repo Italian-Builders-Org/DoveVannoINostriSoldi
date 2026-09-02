@@ -8,6 +8,25 @@
   text-transform: uppercase;
 }
 
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.alignedSection {
+  border-top: 3px solid color-mix(in srgb, var(--color-accent-700) 55%, transparent);
+}
+
 .scopeLine {
   display: flex;
   flex-wrap: wrap;

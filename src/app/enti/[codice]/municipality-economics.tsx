@@ -77,9 +77,20 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
   const openCivitasMaximum = openCivitas
     ? Math.max(openCivitas.record.historicalSpendingCents, openCivitas.record.standardSpendingCents, 1)
     : 1;
+  const openCivitasPerCapitaMaximum = openCivitas
+    ? Math.max(openCivitas.record.historicalPerCapitaCents, openCivitas.record.standardPerCapitaCents, 1)
+    : 1;
 
   return (
     <>
+      <nav className={styles.sectionNav} aria-label="Sezioni della scheda comunale">
+        <a href="#dati-economici">Pagamenti</a>
+        <a href="#dati-opencivitas">Confronto</a>
+        <a href="#dati-pnrr-asili">PNRR</a>
+        <a href="#dati-irpef">IRPEF</a>
+        <a href="#dati-anac-aggiudicazioni">Appalti</a>
+      </nav>
+
       <section className={`panel ${styles.economicSection}`} aria-labelledby="siope-title" id="dati-economici">
         <div className={styles.sectionHeading}>
           <div>
@@ -162,23 +173,18 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
               <div><dt>Mediana dei pari</dt><dd>{exactEuro(peer.perSquareKmCents.median / 100)} / km²</dd></div>
               <div><dt>Fascia centrale</dt><dd>Da {exactEuro(peer.perSquareKmCents.p25 / 100)} a {exactEuro(peer.perSquareKmCents.p75 / 100)}</dd></div>
             </dl>
+            {peer.perCapitaCents && latestSiope.perCapitaCents !== null ? (
+              <dl className={styles.peerValues} aria-label="Confronto per abitante con Comuni simili">
+                <div><dt>Comune per abitante</dt><dd>{roundedEuro(latestSiope.perCapitaCents)}</dd></div>
+                <div><dt>Mediana pari / ab.</dt><dd>{roundedEuro(peer.perCapitaCents.median)}</dd></div>
+                <div>
+                  <dt>Fascia centrale / ab.</dt>
+                  <dd>Da {roundedEuro(peer.perCapitaCents.p25)} a {roundedEuro(peer.perCapitaCents.p75)}</dd>
+                </div>
+              </dl>
+            ) : null}
             <p className={styles.sourceNote}>Il confronto è descrittivo: non misura efficienza, qualità dei servizi o spesa necessaria.</p>
           </section>
-        ) : null}
-
-        {geography ? (
-          <details className={styles.territoryDetails}>
-            <summary>Caratteristiche del territorio</summary>
-            <dl>
-              <div><dt>Superficie</dt><dd>{decimal.format(geography.surfaceSquareKilometres)} km²</dd></div>
-              <div><dt>Densità</dt><dd>{geography.densityPerSquareKilometre === null ? "n.d." : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`}</dd></div>
-              <div><dt>Altimetria</dt><dd>{geography.altimetricZoneLabel ?? "n.d."}{geography.altitudeMetres === null ? "" : ` · ${integer(geography.altitudeMetres)} m`}</dd></div>
-              <div><dt>Urbanizzazione</dt><dd>{geography.degreeUrbanizationLabel ?? "n.d."}</dd></div>
-              <div><dt>Litoraneità</dt><dd>{geography.coastal ? "Comune litoraneo" : "Non litoraneo"}</dd></div>
-              <div><dt>Insularità</dt><dd>{geography.island ? "Comune isolano" : "Non isolano"}</dd></div>
-            </dl>
-            <p>Fonte: <a href="https://situas.istat.it/web/#/territorio" target="_blank" rel="noreferrer">ISTAT SITUAS ↗</a>, quadro territoriale al {geography.referenceDate}.</p>
-          </details>
         ) : null}
 
         {latestSiope.hasMovements ? (
@@ -263,31 +269,58 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
           </ul>
         </section>
 
-        <details className={styles.paymentHistory} data-payment-history>
-          <summary>Vedi importi esatti e periodi coperti</summary>
-          <div className={styles.historyTable} role="region" aria-label="Storico dei pagamenti comunali">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Anno</th>
-                  <th scope="col">Copertura</th>
-                  <th scope="col">Totale</th>
-                  <th scope="col">Per abitante</th>
-                  <th scope="col">Per km²</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.siope.data.years.map((year) => (
-                  <tr key={year.year}>
-                    <th scope="row">{year.year}</th>
-                    <td data-label="Copertura">{coverageText(year)}</td>
-                    <td data-label="Totale">{year.totalCents === null ? "Nessun movimento" : compactEuro(year.totalCents / 100)}</td>
-                    <td data-label="Per abitante">{year.perCapitaCents === null ? "Non disponibile" : exactEuro(year.perCapitaCents / 100)}</td>
-                    <td data-label="Per km²">{year.perSquareKmCents === null ? "Non disponibile" : exactEuro(year.perSquareKmCents / 100)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <details className={styles.secondarySection} data-siope-detail>
+          <summary>
+            <span>
+              <strong>Confronti e dettaglio territoriale</strong>
+              <em>Caratteristiche del territorio e importi esatti per anno</em>
+            </span>
+          </summary>
+          <div className={styles.secondaryContent}>
+            {geography ? (
+              <>
+                <h3>Caratteristiche del territorio</h3>
+                <dl className={styles.definitions}>
+                  <div><dt>Superficie</dt><dd>{decimal.format(geography.surfaceSquareKilometres)} km²</dd></div>
+                  <div><dt>Densità</dt><dd>{geography.densityPerSquareKilometre === null ? "n.d." : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`}</dd></div>
+                  <div><dt>Altimetria</dt><dd>{geography.altimetricZoneLabel ?? "n.d."}{geography.altitudeMetres === null ? "" : ` · ${integer(geography.altitudeMetres)} m`}</dd></div>
+                  <div><dt>Urbanizzazione</dt><dd>{geography.degreeUrbanizationLabel ?? "n.d."}</dd></div>
+                  <div><dt>Litoraneità</dt><dd>{geography.coastal ? "Comune litoraneo" : "Non litoraneo"}</dd></div>
+                  <div><dt>Insularità</dt><dd>{geography.island ? "Comune isolano" : "Non isolano"}</dd></div>
+                </dl>
+                <p className={styles.sourceNote}>
+                  Fonte: <a href="https://situas.istat.it/web/#/territorio" target="_blank" rel="noreferrer">ISTAT SITUAS ↗</a>, quadro territoriale al {geography.referenceDate}.
+                </p>
+              </>
+            ) : null}
+
+            <details className={styles.paymentHistory} data-payment-history>
+              <summary>Vedi importi esatti e periodi coperti</summary>
+              <div className={styles.historyTable} role="region" aria-label="Storico dei pagamenti comunali">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Anno</th>
+                      <th scope="col">Copertura</th>
+                      <th scope="col">Totale</th>
+                      <th scope="col">Per abitante</th>
+                      <th scope="col">Per km²</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {profile.siope.data.years.map((year) => (
+                      <tr key={year.year}>
+                        <th scope="row">{year.year}</th>
+                        <td data-label="Copertura">{coverageText(year)}</td>
+                        <td data-label="Totale">{year.totalCents === null ? "Nessun movimento" : compactEuro(year.totalCents / 100)}</td>
+                        <td data-label="Per abitante">{year.perCapitaCents === null ? "Non disponibile" : exactEuro(year.perCapitaCents / 100)}</td>
+                        <td data-label="Per km²">{year.perSquareKmCents === null ? "Non disponibile" : exactEuro(year.perSquareKmCents / 100)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
           </div>
         </details>
 
@@ -297,7 +330,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         </p>
       </section>
 
-      <section className={`panel ${styles.economicSection} ${styles.insightSection}`} aria-labelledby="opencivitas-title">
+      <section className={`panel ${styles.economicSection} ${styles.insightSection}`} aria-labelledby="opencivitas-title" id="dati-opencivitas">
         <div className={styles.sectionHeading}>
           <div>
             <span className={styles.sectionKicker}>OpenCivitas · fabbisogni e servizi</span>
@@ -343,6 +376,37 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                 ))}
               </ul>
             </div>
+            <div className={styles.benchmarkBlock}>
+              <h3>Spesa per abitante</h3>
+              <ul
+                className={styles.benchmarkChart}
+                aria-label={`Spesa per abitante storica e standard ${openCivitas.referenceYear}`}
+              >
+                {[
+                  {
+                    amountCents: openCivitas.record.historicalPerCapitaCents,
+                    key: "historical-pc",
+                    label: "Registrata / ab.",
+                  },
+                  {
+                    amountCents: openCivitas.record.standardPerCapitaCents,
+                    key: "standard-pc",
+                    label: "Riferimento / ab.",
+                  },
+                ].map((row) => (
+                  <li key={row.key}>
+                    <strong>{row.label}</strong>
+                    <span className={styles.benchmarkTrack} aria-hidden="true">
+                      <span
+                        className={row.key.startsWith("historical") ? styles.benchmarkHistorical : styles.benchmarkStandard}
+                        style={{ "--share": `${row.amountCents / openCivitasPerCapitaMaximum * 100}%` } as CSSProperties}
+                      />
+                    </span>
+                    <b>{roundedEuro(row.amountCents)}</b>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <dl className={styles.benchmarkFacts}>
               <div>
                 <dt>Differenza rispetto al valore di riferimento</dt>
@@ -360,6 +424,16 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                 <small>{openCivitas.record.serviceLevel === null ? "Indicatore non disponibile" : `Indicatore OpenCivitas: livello ${openCivitas.record.serviceLevel} su 10`}</small>
               </div>
             </dl>
+            <dl className={styles.metricGrid} aria-label="Livelli OpenCivitas">
+              <div>
+                <dt>Livello spesa</dt>
+                <dd>{openCivitas.record.spendingLevel === null ? "n.d." : `${openCivitas.record.spendingLevel} / 10`}</dd>
+              </div>
+              <div>
+                <dt>Livello servizi</dt>
+                <dd>{openCivitas.record.serviceLevel === null ? "n.d." : `${openCivitas.record.serviceLevel} / 10`}</dd>
+              </div>
+            </dl>
             <p className={styles.sourceNote}>
               Fonte: <a href={openCivitas.source.datasetUrl} target="_blank" rel="noreferrer">OpenCivitas ↗</a>.
               La differenza dalla spesa standard non dimostra uno spreco: va letta con servizi, costi e caratteristiche locali.
@@ -370,7 +444,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         )}
       </section>
 
-      <section className={`panel ${styles.economicSection} ${styles.insightSection}`} aria-labelledby="pnrr-title">
+      <section className={`panel ${styles.economicSection} ${styles.insightSection}`} aria-labelledby="pnrr-title" id="dati-pnrr-asili">
         <div className={styles.sectionHeading}>
           <div>
             <span className={styles.sectionKicker}>PNRR · asili e prima infanzia</span>
@@ -395,12 +469,18 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   <Link href={`/progetti/${encodeURIComponent(project.cup)}`}>{project.title}</Link>
                   <span>
                     CUP {project.cup}
+                    {project.phase ? ` · ${project.phase}` : ""}
                     {project.progress ? ` · ${project.progress}` : ""}
                     {project.totalFundingCents === null ? "" : ` · ${compactEuro(project.totalFundingCents / 100)}`}
                   </span>
                 </li>
               ))}
             </ul>
+            {pnrr.totalProjects > pnrr.projects.length ? (
+              <p className={styles.sourceNote}>
+                Elenco limitato ai primi {integer(pnrr.projects.length)} progetti; in totale ne risultano {integer(pnrr.totalProjects)}.
+              </p>
+            ) : null}
           </details>
         ) : (
           <p className={styles.emptyState}>
@@ -414,12 +494,16 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         </p>
       </section>
 
-      <details className={`panel ${styles.secondarySection}`} data-irpef-details>
+      <details className={`panel ${styles.secondarySection}`} data-irpef-details id="dati-irpef">
         <summary>
           <span>
             <small>MEF · dichiarazioni fiscali</small>
             <strong>Redditi e imposte dei residenti</strong>
-            <em>Contesto fiscale: non sono entrate o spese del Comune.</em>
+            <em>
+              {irpef
+                ? `${integer(irpef.record.taxpayers)} contribuenti · addizionale comunale ${compactEuro(amount(irpef.record.measures.municipalSurtaxDue) / 100)}`
+                : "Contesto fiscale: non sono entrate o spese del Comune."}
+            </em>
           </span>
           {irpef ? <span className="tag tag-neutral">Anno d’imposta {irpef.period.taxYear}</span> : null}
         </summary>
@@ -434,9 +518,19 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   {coverageLabel(irpef.record.measures.comprehensiveIncome) ? <small>{coverageLabel(irpef.record.measures.comprehensiveIncome)}</small> : null}
                 </div>
                 <div>
+                  <dt>Reddito imponibile</dt>
+                  <dd>{compactEuro(amount(irpef.record.measures.taxableIncome) / 100)}</dd>
+                  {coverageLabel(irpef.record.measures.taxableIncome) ? <small>{coverageLabel(irpef.record.measures.taxableIncome)}</small> : null}
+                </div>
+                <div>
                   <dt>Imposta netta dichiarata</dt>
                   <dd>{compactEuro(amount(irpef.record.measures.netTaxDeclared) / 100)}</dd>
                   {coverageLabel(irpef.record.measures.netTaxDeclared) ? <small>{coverageLabel(irpef.record.measures.netTaxDeclared)}</small> : null}
+                </div>
+                <div>
+                  <dt>Addizionale regionale dovuta</dt>
+                  <dd>{compactEuro(amount(irpef.record.measures.regionalSurtaxDue) / 100)}</dd>
+                  {coverageLabel(irpef.record.measures.regionalSurtaxDue) ? <small>{coverageLabel(irpef.record.measures.regionalSurtaxDue)}</small> : null}
                 </div>
                 <div>
                   <dt>Addizionale comunale dovuta</dt>
@@ -455,3 +549,4 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
     </>
   );
 }
+

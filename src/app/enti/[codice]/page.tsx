@@ -9,13 +9,14 @@ import {
   getIpaOrganizationStructure,
   type IpaOrganizationStructure,
 } from "@/lib/ipa-structure";
-import { longDate } from "@/lib/format";
+import { integer, longDate } from "@/lib/format";
 import {
   decodeEntityProcurementRouteCode,
   getEntityProcurementPage,
   loadAnacEntityProcurementPage,
 } from "@/lib/data/anac-entity-procurement-page";
 import { getMunicipalityProfile } from "@/lib/municipality-profile";
+import { municipalityName } from "@/lib/municipality-name";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { MunicipalityEconomics } from "./municipality-economics";
@@ -75,8 +76,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const municipality = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
   if (municipality) {
     return {
-      title: municipality.name,
-      description: `Scheda pubblica del Comune ${municipality.name}, Codice IPA ${normalizedCode}.`,
+      title: municipalityName(municipality.name),
+      description: `Scheda pubblica del Comune ${municipalityName(municipality.name)}, Codice IPA ${normalizedCode}.`,
       robots: entityRobots,
     };
   }
@@ -165,6 +166,11 @@ export default async function EntityPage({ params }: PageProps) {
     entity.responsabile.cognome,
   );
   const isMunicipality = municipalityProfile !== null;
+  const displayName = isMunicipality
+    ? municipalityName(municipalityProfile.siope.data.name || entity.denominazione)
+    : entity.denominazione;
+  const latestMunicipalityYear = municipalityProfile?.siope.data.years[0] ?? null;
+  const municipalityGeography = latestMunicipalityYear?.geography ?? null;
 
   return (
     <main className="shell page">
@@ -178,11 +184,23 @@ export default async function EntityPage({ params }: PageProps) {
 
       <div className={`${styles.head} ${styles.municipalityHead}`}>
         <div className="page-intro">
-          <h1>{entity.denominazione}</h1>
+          <h1>{displayName}</h1>
           {isMunicipality ? (
-            entity.dataAggiornamento ? (
-              <p>Informazioni sul Comune aggiornate al {longDate(entity.dataAggiornamento)}</p>
-            ) : null
+            <p>
+              {[
+                municipalityProfile.siope.data.province
+                  ? `Provincia di ${municipalityProfile.siope.data.province}`
+                  : null,
+                municipalityProfile.siope.data.region
+                  ? `Regione ${municipalityProfile.siope.data.region}`
+                  : null,
+                entity.dataAggiornamento
+                  ? `anagrafe aggiornata al ${longDate(entity.dataAggiornamento)}`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ") || "Scheda comunale da fonti ufficiali verificate"}
+            </p>
           ) : (
             <p>
               {entity.tipologia ?? "Ente pubblico"}
@@ -207,6 +225,42 @@ export default async function EntityPage({ params }: PageProps) {
           </a>
         ) : null}
       </div>
+
+      {isMunicipality && latestMunicipalityYear ? (
+        <dl className={styles.identityStrip} aria-label="Identità territoriale del Comune">
+          <div>
+            <dt>Popolazione</dt>
+            <dd>
+              {latestMunicipalityYear.population === null
+                ? "Non indicata"
+                : integer(latestMunicipalityYear.population)}
+            </dd>
+            {municipalityGeography?.populationYear ? (
+              <small>ISTAT {municipalityGeography.populationYear}</small>
+            ) : null}
+          </div>
+          <div>
+            <dt>Densità</dt>
+            <dd>
+              {municipalityGeography?.densityPerSquareKilometre == null
+                ? "n.d."
+                : `${integer(Math.round(municipalityGeography.densityPerSquareKilometre))} ab./km²`}
+            </dd>
+          </div>
+          <div>
+            <dt>Superficie</dt>
+            <dd>
+              {municipalityGeography
+                ? `${municipalityGeography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 2 })} km²`
+                : "n.d."}
+            </dd>
+          </div>
+          <div>
+            <dt>Codice IPA</dt>
+            <dd><code>{entity.codiceIpa}</code></dd>
+          </div>
+        </dl>
+      ) : null}
 
       {snapshotOnly ? (
         <div className="notice">

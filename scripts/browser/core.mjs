@@ -1312,6 +1312,9 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
+        const heading = await page.$eval("h1", (element) => element.textContent?.trim() ?? "");
+        assert.equal(heading, "Benevento", `${label}: titolo Comune non human-readable`);
+        assertTextMatches(text, /Pagamenti|Confronto|PNRR|IRPEF|Appalti/i, label);
         assertTextMatches(text, /SIOPE · pagamenti di cassa/i, label);
         assertTextMatches(text, /Quanto ha pagato il Comune/i, label);
         assertTextMatches(text, /Redditi e imposte dei residenti/i, label);
@@ -1321,14 +1324,14 @@ try {
         assertTextMatches(text, /Dati parziali/i, label);
         assertTextMatches(text, /Per cosa ha pagato il Comune/i, label);
         assertTextMatches(text, /Pagamenti registrati per anno/i, label);
-        assertTextMatches(text, /Vedi importi esatti e periodi coperti/i, label);
+        assertTextMatches(text, /Confronti e dettaglio territoriale/i, label);
         assertTextMatches(text, /Altre categorie/i, label);
         assertTextMatches(text, /Informazioni sul Comune e fonti/i, label);
         assert.ok(
           text.indexOf("Quanto ha pagato il Comune") < text.indexOf("Per cosa ha pagato il Comune") &&
           text.indexOf("Per cosa ha pagato il Comune") < text.indexOf("Pagamenti registrati per anno") &&
-          text.indexOf("Pagamenti registrati per anno") < text.indexOf("Vedi importi esatti e periodi coperti") &&
-          text.indexOf("Vedi importi esatti e periodi coperti") < text.indexOf("Spesa e servizi a confronto") &&
+          text.indexOf("Pagamenti registrati per anno") < text.indexOf("Confronti e dettaglio territoriale") &&
+          text.indexOf("Confronti e dettaglio territoriale") < text.indexOf("Spesa e servizi a confronto") &&
           text.indexOf("Spesa e servizi a confronto") < text.indexOf("Progetti PNRR per asili e prima infanzia") &&
           text.indexOf("Progetti PNRR per asili e prima infanzia") < text.indexOf("Redditi e imposte dei residenti") &&
           text.indexOf("Redditi e imposte dei residenti") < text.indexOf("Informazioni sul Comune e fonti"),
@@ -1354,6 +1357,18 @@ try {
         const openCivitasBars = await page.$$eval("[data-opencivitas-chart] > li", (rows) => rows.map((row) => row.textContent));
         assert.equal(openCivitasBars.length, 2);
         assert.match(openCivitasBars.join(" "), /Spesa registrata.*Valore di riferimento/is);
+
+        const detailSummary = await page.$("details[data-siope-detail] > summary");
+        assert.ok(detailSummary, `${label}: dettaglio territoriale assente`);
+        assert.equal(await detailSummary.evaluate((element) => element.parentElement?.open), false);
+        await detailSummary.focus();
+        await page.keyboard.press("Enter");
+        assert.equal(await detailSummary.evaluate((element) => element.parentElement?.open), true);
+        assertTextMatches(
+          await page.$eval("details[data-siope-detail]", (element) => element.innerText),
+          /Vedi importi esatti e periodi coperti/i,
+          label,
+        );
 
         const historySummary = await page.$("details[data-payment-history] > summary");
         assert.ok(historySummary, `${label}: storico espandibile assente`);
@@ -1469,6 +1484,11 @@ try {
         await firstEntityHrefFor("milano"),
         "/enti/c_f205",
         "Ricerca città: primo risultato non è COMUNE DI MILANO",
+      );
+      assert.equal(
+        await firstEntityHrefFor("città di milano"),
+        "/enti/c_f205",
+        "Ricerca città: «città di milano» non porta al Comune",
       );
       assert.equal(
         await firstEntityHrefFor("bologna"),

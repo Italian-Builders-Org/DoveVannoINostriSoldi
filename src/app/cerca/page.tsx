@@ -7,6 +7,7 @@ import {
   GLOBAL_SEARCH_MAX_QUERY_LENGTH,
   GLOBAL_SEARCH_MIN_QUERY_LENGTH,
   searchGlobal,
+  searchGlobalLocalFallback,
 } from "@/lib/global-search";
 import styles from "./cerca.module.css";
 
@@ -30,10 +31,14 @@ function first(value: string | string[] | undefined): string {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = first(params.q).trim().slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH);
-  const result =
-    query.length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH
-      ? await searchGlobal({ query, limit: GLOBAL_SEARCH_DEFAULT_LIMIT * 2 })
-      : null;
+  let result = null;
+  if (query.length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH) {
+    try {
+      result = await searchGlobal({ query, limit: GLOBAL_SEARCH_DEFAULT_LIMIT * 2 });
+    } catch {
+      result = searchGlobalLocalFallback({ query, limit: GLOBAL_SEARCH_DEFAULT_LIMIT * 2 });
+    }
+  }
 
   return (
     <main className="shell page">

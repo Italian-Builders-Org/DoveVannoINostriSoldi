@@ -19,6 +19,7 @@ test("la ricerca usa la query rifilata e riparte anche per variazioni di spaziat
     headerSearch,
     /const showDropdown = open && trimmedQuery\.length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH;/,
   );
+  assert.match(headerSearch, /const DEBOUNCE_MS = 400;/);
 
   for (const rawQuery of ["  Roma", "Roma  ", "  Roma  "]) {
     assert.equal(rawQuery.trim(), "Roma");

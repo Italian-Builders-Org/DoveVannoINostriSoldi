@@ -14,6 +14,7 @@ import {
 } from "@/lib/ipa";
 import { municipalityName } from "@/lib/municipality-name";
 import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
+import { isUpstreamOverloadedError } from "@/lib/data/source-fetch";
 import {
   PRIMARY_NAV,
   SITE_MAP_GROUPS,
@@ -606,6 +607,46 @@ function emptyResponse(query: string, entitiesAvailable = true): GlobalSearchRes
   };
 }
 
+/** Local-only search used when IPA must not be contacted again (overload/abort recovery). */
+export function searchGlobalLocalFallback(input: {
+  query: string;
+  limit?: number;
+}): GlobalSearchResponse {
+  const query = input.query.trim().slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH);
+  const normalizedQuery = normalizeSearchText(query);
+  if (normalizedQuery.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH) {
+    return emptyResponse(query, false);
+  }
+
+  const limit = safeLimit(input.limit);
+  const staticResults = searchSiteDocuments(query);
+  const entityLimit = Math.min(50, Math.max(limit * 3, 12));
+  const municipalityResults = rankEntitySearchResults(
+    getMunicipalitySearchEntities(),
+    normalizedQuery,
+  ).slice(0, entityLimit);
+
+  const byHref = new Map<string, SearchResult>();
+  for (const result of [...staticResults, ...municipalityResults]) {
+    const existing = byHref.get(result.href);
+    if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
+  }
+  const combined = [...byHref.values()].sort(compareResults);
+  const visible = combined.slice(0, limit);
+  const total = staticResults.length + municipalityResults.length;
+
+  return {
+    ok: true,
+    query,
+    groups: groupResults(visible),
+    total,
+    hasMore: total > visible.length,
+    staticTotal: staticResults.length,
+    entityTotal: municipalityResults.length,
+    entitiesAvailable: false,
+  };
+}
+
 function safeLimit(value: number | undefined): number {
   if (!Number.isFinite(value)) return GLOBAL_SEARCH_DEFAULT_LIMIT;
   return Math.min(Math.max(Math.trunc(value as number), 1), GLOBAL_SEARCH_MAX_LIMIT);
@@ -644,8 +685,10 @@ export async function searchGlobal(input: {
       });
     } catch (error) {
       if (input.signal?.aborted) throw input.signal.reason ?? error;
+      // 429/503: do not issue a second IPA call; fail closed to local municipalities.
+      if (isUpstreamOverloadedError(error)) throw error;
       // Keep the existing full-text adapter as a fail-safe when the optional
-      // SQL search endpoint is unavailable upstream.
+      // SQL search endpoint is unavailable upstream for other reasons.
       entitySearch = await searchIpaEntities({
         query: normalizedQuery,
         limit: entityLimit,

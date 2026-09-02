@@ -68,9 +68,11 @@ async function fetchRecords(
     headers: { Accept: "application/json" },
     tags: ["dataset:ipa-structure", `entity:${codiceIpa}`],
     signal,
+    maxRetries: 0,
+    timeoutMs: 4_000,
+    cacheMode: "no-store",
+    rejectHttpError: true,
   });
-
-  if (!response.ok) throw new Error(`IPA struttura upstream HTTP ${response.status}`);
 
   const payload = (await response.json()) as DatastoreResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {

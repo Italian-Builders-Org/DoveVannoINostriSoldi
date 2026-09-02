@@ -4,6 +4,7 @@ import {
   GLOBAL_SEARCH_MAX_LIMIT,
   GLOBAL_SEARCH_MIN_QUERY_LENGTH,
   searchGlobal,
+  searchGlobalLocalFallback,
 } from "@/lib/global-search";
 
 export const runtime = "nodejs";
@@ -32,6 +33,17 @@ function errorResponse(message: string, status = 400): Response {
   );
 }
 
+function searchJson(body: unknown): Response {
+  return Response.json(body, {
+    headers: {
+      // Search is interactive and backed by a changing public registry. Avoid
+      // replaying a stale empty prefix result from the browser or an edge cache.
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const query = params.get("q")?.trim() ?? "";
@@ -47,33 +59,24 @@ export async function GET(request: Request) {
     );
   }
   if (query.length > 0 && query.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH) {
-    return Response.json(
-      {
-        ok: true,
-        query,
-        groups: [],
-        total: 0,
-        hasMore: false,
-        staticTotal: 0,
-        entityTotal: 0,
-        entitiesAvailable: true,
-      },
-      {
-        headers: {
-          "Cache-Control": "no-store",
-          "X-Content-Type-Options": "nosniff",
-        },
-      },
-    );
+    return searchJson({
+      ok: true,
+      query,
+      groups: [],
+      total: 0,
+      hasMore: false,
+      staticTotal: 0,
+      entityTotal: 0,
+      entitiesAvailable: true,
+    });
   }
 
-  const result = await searchGlobal({ query, limit, signal: request.signal });
-  return Response.json(result, {
-    headers: {
-      // Search is interactive and backed by a changing public registry. Avoid
-      // replaying a stale empty prefix result from the browser or an edge cache.
-      "Cache-Control": "no-store",
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+  try {
+    const result = await searchGlobal({ query, limit, signal: request.signal });
+    return searchJson(result);
+  } catch (error) {
+    if (request.signal.aborted) throw error;
+    // Never let an unexpected IPA/runtime failure become HTTP 429/5xx here.
+    return searchJson(searchGlobalLocalFallback({ query, limit }));
+  }
 }

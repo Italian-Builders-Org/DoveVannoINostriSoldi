@@ -11,7 +11,7 @@ import {
   type SearchResult,
 } from "@/lib/global-search-contract";
 
-const DEBOUNCE_MS = 200;
+const DEBOUNCE_MS = 400;
 const SUGGESTION_LIMIT = 8;
 
 function flattenResults(response: GlobalSearchResponse | null): readonly SearchResult[] {

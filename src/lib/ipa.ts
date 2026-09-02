@@ -238,13 +238,12 @@ async function datastoreRequest(
     headers: { Accept: "application/json" },
     signal,
     tags: ["dataset:ipa-enti"],
-    maxRetries: fetchOptions.maxRetries,
-    timeoutMs: fetchOptions.timeoutMs,
+    maxRetries: fetchOptions.maxRetries ?? 0,
+    timeoutMs: fetchOptions.timeoutMs ?? 4_000,
+    // Interactive entity/search paths must not let upstream 429 become the page status.
+    cacheMode: "no-store",
+    rejectHttpError: true,
   });
-
-  if (!response.ok) {
-    throw new Error(`IPA upstream HTTP ${response.status}`);
-  }
 
   const payload = (await response.json()) as CkanDatastoreResponse;
 
@@ -336,11 +335,11 @@ export async function searchIpaEntitiesByPrefix(options: {
     headers: { Accept: "application/json" },
     signal: options.signal,
     tags: ["dataset:ipa-enti", "view:global-search"],
+    maxRetries: 0,
+    timeoutMs: 4_000,
+    cacheMode: "no-store",
+    rejectHttpError: true,
   });
-
-  if (!response.ok) {
-    throw new Error(`IPA SQL upstream HTTP ${response.status}`);
-  }
 
   const payload = (await response.json()) as CkanSqlResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {

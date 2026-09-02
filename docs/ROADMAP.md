@@ -4,7 +4,7 @@ Guida operativa per scegliere il prossimo lavoro. Non è un elenco di idee:
 ogni riga ha priorità, stato nel repo, issue o PR se esiste, e un prossimo
 passo concreto.
 
-Verificato sul repository il 1 settembre 2026 (issue e PR aperte lette da GitHub).
+Verificato sul repository il 2 settembre 2026 (issue e PR aperte lette da GitHub).
 I codici tipo `T-001` / `X-028` vengono dalla sintesi dei feedback community;
 non sono issue GitHub.
 
@@ -56,6 +56,7 @@ Come usare questo file:
 | Sanità: valori reali, demografia, outcome | Conto economico, serie storica e grafico contabile su `main` ([#207](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/207) mergiata). Demografia e outcome assenti | Dipende | Alto | PR [#207](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/207) mergiata: grafico contabile; non copre demografia/outcome | `/spese/sanita`, `/spese/sanita/storico` | Deflatore dichiarato, popolazione/anziani, un outcome ufficiale in verticale pilota. Feedback: X-009, X-021, X-022, X-035, A-003. |
 | Assistente guidato con guardrail | Assistente deterministico su `main`; niente LLM né voce | Sì | Alto | [#17](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/17) aperta | `/assistente`, `docs/ASSISTENTE.md` | Estendere intenti ed esempi. Privacy gate prima di qualsiasi modello generativo o voce. Feedback: X-005, X-015, X-016, X-102, T-010, T-027. |
 | Segnalazioni moderate e non accusatorie | Form pubblico su `main` ([#197](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/197) chiusa, [#201](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/201) mergiata). Manca la policy editoriale | Sì | Medio | [#19](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/19) aperta (registro community, non il form) | `ReportProblemDialog`, `/api/segnalazioni`, [SEGNALAZIONI.md](SEGNALAZIONI.md) | Separare issue pubblica GitHub da eventuale pubblicazione sul sito; rate limit durevole se l'abuso diventa reale. Feedback: X-029, A-085, T-026, A-006. |
+| Sintesi pubblica: cosa emerge, dove approfondire, cosa potremmo fare | `/controlli` espone segnali e confronti; manca una sintesi leggibile «dai dati → dove → cosa fare» | Sì | Alto | [#243](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/243) aperta | `/controlli` (o route dedicata), nav Segnali | Spec IA/UX; prima slice con ≥3 percorsi verificabili end-to-end; copy da priorità di verifica, non spreco/illecito automatici. Collegamento opzionale alle piste [#190](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/190)/[#193](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/193) solo dopo review umana. |
 | Report mensile e newsletter opt-in | Assente | Sì | Medio | Nessuna issue | Fuori dal codice | Titolare editoriale, consenso, template, archivio citabile. Feedback: T-002, T-014. |
 | Sitemap delle schede dinamiche | Sitemap di base su `main` ([#172](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/172)); schede comunali enumerate dagli snapshot SIOPE committati | Sì | Basso | [#209](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/209) risolta dalla PR collegata | `src/app/sitemap.ts` | Restano fuori gli enti non comunali: il loro insieme completo non è enumerabile dai dati committati. Feedback: T-030. |
 | Glossario e onboarding | Tooltip e `/metodologia` parziali | Sì | Medio | Nessuna issue dedicata | `/metodologia`, `InfoTooltip` | Glossario canonico e percorsi di primo utilizzo non bloccanti. Feedback: A-001, A-002, X-056, X-059. |
@@ -80,7 +81,7 @@ Come usare questo file:
 |---|---|---|---|---|---|
 | Home personalizzata | Assente | Sì | Alto | Nessuna | Preferenze locali prima di qualsiasi account. Feedback: X-013, X-058, T-028. |
 | Auth, API commerciali, funzioni a pagamento | MCP pubblico gratuito su `main` | Dipende da decisione | Alto | Nessuna | Separare dal dato pubblico gratuito. Feedback: T-022, A-010. |
-| Agenti di raccomandazione / piste investigative | Explorer relazioni su `main`; motori automatici no | Dipende | Alto | [#190](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/190), [#193](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/193) aperte | Solo percorsi conservativi con review umana. Niente tagli automatici. Feedback: T-024. |
+| Agenti di raccomandazione / piste investigative | Explorer relazioni su `main`; motori automatici no | Dipende | Alto | [#190](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/190), [#193](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/193) aperte; alimentano [#243](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/243) solo dopo review | Solo percorsi conservativi con review umana. Niente tagli automatici. Feedback: T-024. |
 | Contenuti video e post automatici | Fuori dal portale | Sì, ma non nel backlog prodotto | Medio | Nessuna | Workflow editoriale a parte; bozze sempre approvate. Feedback: X-002, X-004, T-025. |
 
 ## Fuori perimetro

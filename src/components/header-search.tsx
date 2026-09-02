@@ -53,16 +53,18 @@ export function HeaderSearch() {
       return;
     }
 
-    const cached = clientSearchCache.get(effectQuery);
-    if (cached) {
-      setResponse(cached);
-      setActiveIndex(-1);
-      setSearchError(false);
-      setLoading(false);
-      return;
-    }
-
     const timer = setTimeout(() => {
+      if (requestId !== requestIdRef.current) return;
+
+      const cached = clientSearchCache.get(effectQuery);
+      if (cached) {
+        setResponse(cached);
+        setActiveIndex(-1);
+        setSearchError(false);
+        setLoading(false);
+        return;
+      }
+
       const controller = new AbortController();
       abortRef.current = controller;
       setLoading(true);

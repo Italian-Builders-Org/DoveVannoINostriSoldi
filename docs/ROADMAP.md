@@ -43,7 +43,7 @@ Come usare questo file:
 
 | Iniziativa | Copertura | Implementabile | Effort | Issue / PR | Dove | Prossimo passo |
 |---|---|---|---|---|---|---|
-| Navigazione semplice e mobile stabile | Parziale su `main` ([#205](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/205) mergiata) | Sì | Medio | Nessuna issue aperta dedicata | `src/components/navigation.tsx`, `/controlli`, `/dati` | Test di comprensione e regressioni visive su route reali a 390, 768 e 1280 px. Feedback: X-028, X-047, T-005, T-019, T-020, T-032, T-034. |
+| Navigazione semplice e mobile stabile | Parziale su `main` ([#205](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/205) e [#235](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/235) mergiate) | Sì | Medio | Nessuna issue aperta dedicata | `src/components/navigation.tsx`, `/controlli`, `/dati` | Test di comprensione e regressioni visive su route reali a 390, 768 e 1280 px. Feedback: X-028, X-047, T-005, T-019, T-020, T-032, T-034. |
 | Freschezza uniforme e refresh automatico | Inventario snapshot committato; publisher del data bot su 8 fonti incluso Atlante Imprese | Sì | Alto | [#189](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/189) aperta | [SOURCE_SNAPSHOT_INVENTORY.md](SOURCE_SNAPSHOT_INVENTORY.md), [FRESHNESS_AND_REFRESH.md](FRESHNESS_AND_REFRESH.md) | Prossima slice: un'altra fonte ancora manuale, una alla volta. Il trimestre addetti dell'Atlante resta pinnato all'URL 2026-Q2. Feedback: T-001, T-024, X-117. |
 | Benchmark appalti davvero comparabili | Contratti ANAC parziali su `main` ([#204](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/204), [#208](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/208)) | Sì | Alto | [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185) aperta; [#183](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/183) TED, da valutare a parte | `/appalti`, `/confronti`, `docs/research/ANAC_*` | Unità, quantità e categoria comparabile; bloccare i confronti deboli. Feedback: X-072, X-077, X-091, T-004, A-004. |
 | Drill-down e confronto territoriale | Territori, IRPEF, OpenCivitas e schede ente già su `main` | Sì | Alto | [#130](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/130) aperta | `/territori`, `/enti/[codice]` | Completare Provincia/ASL dove la fonte lo consente; peer con denominatore coerente. Non inventare residui fiscali comunali. Feedback: X-019, X-066, X-097, X-104, T-012. |
@@ -97,7 +97,6 @@ Come usare questo file:
 |---|---|---|
 | [#219](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/219) HHI e Top 1/Top 10 sugli appalti ente | Aperta, in conflitto con `main` | Slice di [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185). Rebase e `required` restano a Roberto. |
 | [#211](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/211) ESLint 10 | Aperta | Dipendenza; `eslint-plugin-react` non è pronto. Non mergiare. |
-| [#235](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/235) menu mobile | Aperta, rebase su `main` | Nasconde Indietro/Scorri sotto i 900px. Merge quando `required` è verde. |
 
 ## Issue aperte senza riga sopra
 

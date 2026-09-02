@@ -995,7 +995,13 @@ try {
       assert.ok(itemElement, "Atlante Imprese query navigation 390px: sezione Imprese assente");
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Atlante Imprese query navigation 390px: pulsante tendina assente");
-      await toggle.click();
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const openBox = await toggle.boundingBox();
+      assert.ok(openBox, "Atlante Imprese query navigation 390px: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        openBox.x + openBox.width / 2,
+        openBox.y + openBox.height / 2,
+      );
       await assertSubmenuVisible(
         itemElement,
         page,
@@ -1016,16 +1022,22 @@ try {
         () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
         { timeout: 3_000 },
       );
-      assert.equal(
-        await page.$eval(".nav-row", (row) => row.hasAttribute("data-menu-open")),
-        false,
-        "Atlante Imprese query navigation 390px: menu rimasto aperto dopo la query",
+      await page.waitForFunction(
+        () => !document.querySelector(".nav-row")?.hasAttribute("data-menu-open"),
+        { timeout: 3_000 },
       );
+
       const refreshedItem = await findPrimaryNavSection(page, "Imprese");
       assert.ok(refreshedItem, "Atlante Imprese query navigation 390px: sezione Imprese assente dopo la query");
       const reopenToggle = await refreshedItem.$(".nav-item-toggle");
       assert.ok(reopenToggle, "Atlante Imprese query navigation 390px: pulsante tendina assente dopo la query");
-      await reopenToggle.click();
+      await waitForStableNavigationTouchTarget(page, reopenToggle);
+      const reopenBox = await reopenToggle.boundingBox();
+      assert.ok(reopenBox, "Atlante Imprese query navigation 390px: pulsante tendina non visibile dopo la query");
+      await page.touchscreen.tap(
+        reopenBox.x + reopenBox.width / 2,
+        reopenBox.y + reopenBox.height / 2,
+      );
       await assertSubmenuVisible(
         refreshedItem,
         page,

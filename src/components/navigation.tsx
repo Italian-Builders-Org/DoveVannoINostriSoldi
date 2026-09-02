@@ -70,29 +70,27 @@ function navMenuId(href: string) {
 }
 
 export function Navigation() {
-  const pathname = usePathname();
-  const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
-    <>
-      <Suspense fallback={null}>
-        <NavigationSearchSync onChange={setCurrentSearch} />
-      </Suspense>
-      <NavigationContent pathname={pathname} currentSearch={currentSearch} />
-    </>
+    <Suspense fallback={<NavigationFallback />}>
+      <NavigationWithSearch />
+    </Suspense>
   );
 }
 
-function NavigationSearchSync({
-  onChange,
-}: Readonly<{ onChange: (search: string) => void }>) {
+function NavigationFallback() {
+  const pathname = usePathname();
+  return <NavigationContent pathname={pathname} currentSearch={null} />;
+}
+
+function NavigationWithSearch() {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentSearch = searchParams.toString();
-
-  useLayoutEffect(() => {
-    onChange(currentSearch);
-  }, [currentSearch, onChange]);
-
-  return null;
+  return (
+    <NavigationContent
+      pathname={pathname}
+      currentSearch={searchParams.toString()}
+    />
+  );
 }
 
 function NavigationContent({ pathname, currentSearch }: NavigationContentProps) {

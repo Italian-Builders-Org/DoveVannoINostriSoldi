@@ -15,9 +15,19 @@ function appaltiHref(codiceIpa: string, query = "view=summary"): string {
 }
 
 function formatDecimalEuro(value: string): string {
-  const [whole, fraction = ""] = value.split(".");
-  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return grouped + (fraction ? "," + fraction : ",00") + " €";
+  const negative = value.startsWith("-");
+  const unsigned = negative ? value.slice(1) : value;
+  const [whole, rawFraction = ""] = unsigned.split(".");
+  const digits = `${rawFraction}000`.slice(0, 3);
+  let cents = Number(digits.slice(0, 2));
+  let wholeValue = BigInt(whole || "0");
+  if (Number(digits[2] ?? "0") >= 5) cents += 1;
+  if (cents >= 100) {
+    cents -= 100;
+    wholeValue += BigInt(1);
+  }
+  const grouped = wholeValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${negative ? "-" : ""}${grouped},${cents.toString().padStart(2, "0")} €`;
 }
 
 type SourceDetails = Readonly<{

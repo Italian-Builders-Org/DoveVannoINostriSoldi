@@ -13,6 +13,7 @@ import { longDate } from "@/lib/format";
 import {
   decodeEntityProcurementRouteCode,
   getEntityProcurementPage,
+  loadAnacEntityProcurementPage,
 } from "@/lib/data/anac-entity-procurement-page";
 import { getMunicipalityProfile } from "@/lib/municipality-profile";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
@@ -38,6 +39,33 @@ function responsibleLabel(
 ): string {
   const identity = [nome, cognome].filter(Boolean).join(" ");
   return [titolo, identity].filter(Boolean).join(", ") || "Non indicato da IPA";
+}
+
+function anacFallbackEntity(codiceIpa: string, codiceFiscale: string | null): IpaEntity {
+  return {
+    codiceIpa,
+    denominazione: `Ente ${codiceIpa}`,
+    codiceFiscale,
+    tipologia: "Ente pubblico",
+    codiceCategoria: null,
+    codiceNatura: null,
+    codiceAteco: null,
+    inLiquidazione: null,
+    codiceMiur: null,
+    codiceIstat: null,
+    acronimo: null,
+    responsabile: { nome: null, cognome: null, titolo: null },
+    sede: {
+      codiceComuneIstat: null,
+      codiceCatastaleComune: null,
+      cap: null,
+      indirizzo: null,
+    },
+    email: [],
+    sitoIstituzionale: null,
+    social: { facebook: null, linkedin: null, twitter: null, youtube: null },
+    dataAggiornamento: null,
+  };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -76,32 +104,44 @@ export default async function EntityPage({ params }: PageProps) {
   let entity: IpaEntity | null = municipalitySnapshot
     ? municipalitySnapshotEntity(municipalitySnapshot)
     : null;
-  const snapshotOnly = entity !== null;
+  let snapshotOnly = entity !== null;
+  let ipaUnavailable = false;
   let structure: IpaOrganizationStructure | null = null;
   if (!entity) {
     try {
       entity = await getIpaEntityByCode(normalizedCode);
     } catch {
-      return (
-        <main className="shell page">
-          <div className="page-intro">
-            <h1>Anagrafica IPA non disponibile</h1>
-            <p>
-              Indice PA non risponde. I dati della scheda non sono cancellati: manca solo
-              l&apos;anagrafe live in questo momento.
-            </p>
-          </div>
-          <div className="notice warning-notice">
-            <strong>Codice richiesto</strong>
-            <p>{normalizedCode}</p>
-          </div>
-        </main>
-      );
+      ipaUnavailable = true;
+      const anacOnly = await loadAnacEntityProcurementPage({
+        codiceIpa: normalizedCode,
+        currentEntityCf: null,
+        verifyLiveFiscalCode: false,
+      });
+      if (anacOnly.status === "available") {
+        entity = anacFallbackEntity(normalizedCode, null);
+        snapshotOnly = true;
+      } else {
+        return (
+          <main className="shell page">
+            <div className="page-intro">
+              <h1>Anagrafica IPA non disponibile</h1>
+              <p>
+                Indice PA non risponde. I dati della scheda non sono cancellati: manca solo
+                l&apos;anagrafe live in questo momento.
+              </p>
+            </div>
+            <div className="notice warning-notice">
+              <strong>Codice richiesto</strong>
+              <p>{normalizedCode}</p>
+            </div>
+          </main>
+        );
+      }
     }
   }
 
   if (!entity) notFound();
-  if (!snapshotOnly) {
+  if (!snapshotOnly && !ipaUnavailable) {
     try {
       structure = await getIpaOrganizationStructure(normalizedCode);
     } catch {
@@ -110,7 +150,13 @@ export default async function EntityPage({ params }: PageProps) {
   }
   const [municipalityProfile, procurementState] = await Promise.all([
     getMunicipalityProfile(entity, { allowCommittedIstatIdentity: snapshotOnly }),
-    getEntityProcurementPage(entity),
+    ipaUnavailable
+      ? loadAnacEntityProcurementPage({
+          codiceIpa: entity.codiceIpa,
+          currentEntityCf: entity.codiceFiscale,
+          verifyLiveFiscalCode: false,
+        })
+      : getEntityProcurementPage(entity),
   ]);
 
   const responsible = responsibleLabel(
@@ -164,10 +210,15 @@ export default async function EntityPage({ params }: PageProps) {
 
       {snapshotOnly ? (
         <div className="notice">
-          <strong>Profilo servito da snapshot verificati</strong>
+          <strong>
+            {ipaUnavailable
+              ? "Anagrafe IPA temporaneamente non disponibile"
+              : "Profilo servito da snapshot verificati"}
+          </strong>
           <p>
-            Questa visita non interroga Indice PA live; contatti e uffici correnti restano
-            consultabili nella fonte ufficiale.
+            {ipaUnavailable
+              ? "Mostriamo comunque i contratti ANAC collegati a questo codice IPA. Contatti e uffici restano consultabili nella fonte ufficiale."
+              : "Questa visita non interroga Indice PA live; contatti e uffici correnti restano consultabili nella fonte ufficiale."}
           </p>
         </div>
       ) : null}

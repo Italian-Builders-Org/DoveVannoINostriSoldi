@@ -310,11 +310,24 @@ export async function searchIpaEntitiesByPrefix(options: {
   }
 
   const predicates = queryTokens.map(tokenSearchPredicate).map((predicate) => `(${predicate})`);
+  // Prefer municipalities and metropolitan cities inside the bounded SQL window
+  // so alphabetical agency names do not crowd them out of the first page.
   const sql = [
     `SELECT *`,
     `FROM "${IPA_ENTI_RESOURCE_ID}"`,
     `WHERE ${predicates.join(" AND ")}`,
-    `ORDER BY lower("Denominazione_ente"), lower("Codice_IPA")`,
+    `ORDER BY`,
+    `  CASE`,
+    `    WHEN lower("Denominazione_ente") LIKE 'comune di %' THEN 0`,
+    `    WHEN lower("Denominazione_ente") LIKE 'comune del%' THEN 0`,
+    `    WHEN lower("Tipologia") = 'comune' THEN 0`,
+    `    WHEN lower("Denominazione_ente") LIKE 'citta'' metropolitana di %' THEN 1`,
+    `    WHEN lower("Denominazione_ente") LIKE 'città metropolitana di %' THEN 1`,
+    `    ELSE 2`,
+    `  END,`,
+    `  length("Denominazione_ente"),`,
+    `  lower("Denominazione_ente"),`,
+    `  lower("Codice_IPA")`,
     `LIMIT ${limit}`,
   ].join(" ");
   const sourceUrl = `${IPA_DATASTORE_SEARCH_SQL}?${new URLSearchParams({ sql }).toString()}`;

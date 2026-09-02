@@ -1436,6 +1436,68 @@ try {
   });
   completed.push("Ente non comunale layout leggibile 390px");
 
+  await runScenario(browser, {
+    label: "Ricerca città prioritizza il Comune 390px",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      async function firstEntityHrefFor(query) {
+        await page.goto(new URL("/", page.url()).toString(), {
+          waitUntil: "domcontentloaded",
+          timeout: 45_000,
+        });
+        const input = await page.waitForSelector("#global-site-search", { visible: true });
+        assert.ok(input, `Ricerca città (${query}): campo assente`);
+        await input.click();
+        await input.type(query, { delay: 20 });
+        await page.waitForFunction(
+          (expectedQuery) => {
+            const option = document.querySelector("a.header-search-option");
+            const field = document.querySelector("#global-site-search");
+            return Boolean(
+              field?.value === expectedQuery &&
+              option?.getAttribute("href")?.startsWith("/enti/"),
+            );
+          },
+          { timeout: 20_000 },
+          query,
+        );
+        return page.$eval("a.header-search-option", (element) => element.getAttribute("href"));
+      }
+
+      assert.equal(
+        await firstEntityHrefFor("milano"),
+        "/enti/c_f205",
+        "Ricerca città: primo risultato non è COMUNE DI MILANO",
+      );
+      assert.equal(
+        await firstEntityHrefFor("bologna"),
+        "/enti/c_a944",
+        "Ricerca città: primo risultato non è COMUNE DI BOLOGNA",
+      );
+    },
+  });
+  completed.push("Ricerca città prioritizza il Comune 390px");
+
+  await runScenario(browser, {
+    label: "Città metropolitana Milano scheda leggibile 390px",
+    pathname: "/enti/cmmi",
+    width: 390,
+    validate: async (page) => {
+      const text = await bodyText(page);
+      if (/Anagrafica IPA non disponibile/i.test(text)) {
+        assertTextMatches(text, /Codice richiesto[\s\S]*cmmi/i, "Città metropolitana Milano");
+        return;
+      }
+      assertTextMatches(text, /Citta.? Metropolitana di Milano/i, "Città metropolitana Milano");
+      assertTextMatches(text, /Informazioni sull'ente e fonti/i, "Città metropolitana Milano");
+      assert.doesNotMatch(text, /Identità amministrativa/i);
+      assert.doesNotMatch(text, /52\.591\.195,96629/);
+      assertTextMatches(text, /52\.591\.195,97\s*€|Valore dichiarato/i, "Città metropolitana Milano");
+    },
+  });
+  completed.push("Città metropolitana Milano scheda leggibile 390px");
+
   const dropdownRoutes = [
     {
       pathname: "/controlli",

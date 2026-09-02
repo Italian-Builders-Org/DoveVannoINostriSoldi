@@ -11,8 +11,18 @@ import {
   type SearchResult,
 } from "@/lib/global-search-contract";
 
-const DEBOUNCE_MS = 400;
+const DEBOUNCE_MS = 600;
 const SUGGESTION_LIMIT = 8;
+const CLIENT_SEARCH_CACHE_LIMIT = 24;
+
+const clientSearchCache = new Map<string, GlobalSearchResponse>();
+
+function rememberClientSearch(query: string, payload: GlobalSearchResponse): void {
+  clientSearchCache.set(query, payload);
+  if (clientSearchCache.size <= CLIENT_SEARCH_CACHE_LIMIT) return;
+  const oldest = clientSearchCache.keys().next().value;
+  if (oldest !== undefined) clientSearchCache.delete(oldest);
+}
 
 function flattenResults(response: GlobalSearchResponse | null): readonly SearchResult[] {
   return response?.groups.flatMap((group) => group.results) ?? [];
@@ -43,6 +53,15 @@ export function HeaderSearch() {
       return;
     }
 
+    const cached = clientSearchCache.get(effectQuery);
+    if (cached) {
+      setResponse(cached);
+      setActiveIndex(-1);
+      setSearchError(false);
+      setLoading(false);
+      return;
+    }
+
     const timer = setTimeout(() => {
       const controller = new AbortController();
       abortRef.current = controller;
@@ -57,6 +76,7 @@ export function HeaderSearch() {
         })
         .then((payload) => {
           if (requestId !== requestIdRef.current || payload.ok !== true) return;
+          rememberClientSearch(effectQuery, payload);
           setResponse(payload);
           setActiveIndex(-1);
           setSearchError(false);

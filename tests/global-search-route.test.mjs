@@ -1,3 +1,5 @@
+process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
+
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";

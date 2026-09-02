@@ -267,6 +267,7 @@ test("site search has no duplicate destinations and exposes useful Italian alias
 });
 
 test("municipal snapshot search finds major cities by keyword", async () => {
+  process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
   const { searchGlobal } = await import("../src/lib/global-search.ts");
   const fetchCalls = [];
   const originalFetch = globalThis.fetch;
@@ -292,7 +293,9 @@ test("municipal snapshot search finds major cities by keyword", async () => {
       ),
       "Bologna should be discoverable from the committed municipal snapshot",
     );
-    assert.ok(fetchCalls.length >= 4, "IPA SQL plus full-text fallback per query");
+    // One IPA SQL attempt per query; 5xx must not open the full-text adapter.
+    assert.equal(fetchCalls.length, 2);
+    assert.ok(fetchCalls.every((url) => url.includes("datastore_search_sql")));
   } finally {
     globalThis.fetch = originalFetch;
   }

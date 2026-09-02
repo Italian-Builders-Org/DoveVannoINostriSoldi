@@ -1,3 +1,5 @@
+import http from "node:http";
+import https from "node:https";
 import { setTimeout as delay } from "node:timers/promises";
 import { APP_USER_AGENT, IPA_USER_AGENT } from "@/lib/app-version";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
@@ -109,10 +111,95 @@ export class SourceFetchError extends Error {
 /** True when the upstream asked us to back off (do not issue a second IPA call). */
 export function isUpstreamOverloadedError(error: unknown): boolean {
   if (error instanceof SourceFetchError) {
-    return error.httpStatus === 429 || error.httpStatus === 503;
+    return (
+      error.httpStatus === 429
+      || error.httpStatus === 500
+      || error.httpStatus === 502
+      || error.httpStatus === 503
+      || error.httpStatus === 504
+    );
   }
   if (!(error instanceof Error)) return false;
-  return /\bHTTP (429|503)\b/.test(error.message);
+  return /\bHTTP (429|500|502|503|504)\b/.test(error.message);
+}
+
+/**
+ * Interactive `no-store` paths must not use Next's patched `fetch`: an upstream
+ * 429/5xx Response can still be associated with the App Router document status
+ * and surface as Vercel's "Too Many Requests" page even after we throw locally.
+ * Node's http(s) client keeps that status off the flight response.
+ *
+ * Tests that mock `globalThis.fetch` set `DVNS_SOURCE_FETCH_USE_GLOBAL=1`.
+ */
+function shouldBypassNextFetch(cacheMode: "revalidate" | "no-store"): boolean {
+  if (cacheMode !== "no-store") return false;
+  return process.env.DVNS_SOURCE_FETCH_USE_GLOBAL !== "1";
+}
+
+function fetchViaNodeHttp(
+  url: URL,
+  init: Readonly<{
+    method: string;
+    headers: Headers;
+    signal?: AbortSignal;
+  }>,
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    if (init.signal?.aborted) {
+      reject(init.signal.reason ?? new DOMException("The operation was aborted.", "AbortError"));
+      return;
+    }
+
+    const transport = url.protocol === "https:" ? https : http;
+    const requestHeaders: Record<string, string> = {};
+    init.headers.forEach((value, key) => {
+      requestHeaders[key] = value;
+    });
+
+    const req = transport.request(
+      url,
+      {
+        method: init.method,
+        headers: requestHeaders,
+      },
+      (incoming) => {
+        const chunks: Buffer[] = [];
+        incoming.on("data", (chunk: Buffer | string) => {
+          chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+        });
+        incoming.on("error", reject);
+        incoming.on("end", () => {
+          const headers = new Headers();
+          for (const [key, value] of Object.entries(incoming.headers)) {
+            if (value === undefined) continue;
+            if (Array.isArray(value)) {
+              for (const item of value) headers.append(key, item);
+            } else {
+              headers.set(key, value);
+            }
+          }
+          resolve(
+            new Response(Buffer.concat(chunks), {
+              status: incoming.statusCode ?? 0,
+              statusText: incoming.statusMessage,
+              headers,
+            }),
+          );
+        });
+      },
+    );
+
+    const onAbort = () => {
+      req.destroy();
+      reject(init.signal?.reason ?? new DOMException("The operation was aborted.", "AbortError"));
+    };
+    init.signal?.addEventListener("abort", onAbort, { once: true });
+    req.on("error", (error) => {
+      init.signal?.removeEventListener("abort", onAbort);
+      reject(error);
+    });
+    req.end();
+  });
 }
 
 function assertOfficialUrl(sourceId: SourceId, rawUrl: string): URL {
@@ -227,25 +314,35 @@ export async function fetchOfficialSource(
 
   let lastError: unknown;
 
+  const requestHeadersValue = requestHeaders(sourceId, headers);
+  const bypassNextFetch = shouldBypassNextFetch(cacheMode);
+
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     if (callerSignal?.aborted) throw callerSignal.reason;
 
     try {
-      const response = await fetch(url, {
-        ...requestOptions,
-        method,
-        headers: requestHeaders(sourceId, headers),
-        redirect: requestOptions.redirect ?? "error",
-        signal: composedSignal(callerSignal, timeoutMs),
-        ...(cacheMode === "no-store"
-          ? { cache: "no-store" as const }
-          : {
-              next: {
-                revalidate,
-                tags: cacheTags,
-              },
-            }),
-      });
+      const requestSignal = composedSignal(callerSignal, timeoutMs);
+      const response = bypassNextFetch
+        ? await fetchViaNodeHttp(url, {
+            method,
+            headers: requestHeadersValue,
+            signal: requestSignal,
+          })
+        : await fetch(url, {
+            ...requestOptions,
+            method,
+            headers: requestHeadersValue,
+            redirect: requestOptions.redirect ?? "error",
+            signal: requestSignal,
+            ...(cacheMode === "no-store"
+              ? { cache: "no-store" as const }
+              : {
+                  next: {
+                    revalidate,
+                    tags: cacheTags,
+                  },
+                }),
+          });
 
       if (!RETRYABLE_STATUS.has(response.status) || attempt === retries) {
         if (rejectHttpError && !response.ok) {

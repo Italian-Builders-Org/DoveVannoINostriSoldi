@@ -685,10 +685,10 @@ export async function searchGlobal(input: {
       });
     } catch (error) {
       if (input.signal?.aborted) throw input.signal.reason ?? error;
-      // 429/503: do not issue a second IPA call; fail closed to local municipalities.
+      // Overload/5xx: never open a second IPA adapter — it amplifies 429 pages.
       if (isUpstreamOverloadedError(error)) throw error;
-      // Keep the existing full-text adapter as a fail-safe when the optional
-      // SQL search endpoint is unavailable upstream for other reasons.
+      // Keep the existing full-text adapter only when the SQL endpoint itself
+      // rejects the query shape (non-HTTP contract failures stay local above).
       entitySearch = await searchIpaEntities({
         query: normalizedQuery,
         limit: entityLimit,

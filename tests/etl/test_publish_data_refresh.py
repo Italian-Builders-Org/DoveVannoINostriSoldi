@@ -31,6 +31,7 @@ class PublishDataRefreshTests(TestCase):
         self.assertEqual(
             set(publications),
             {
+                "company-atlas",
                 "consulenti-pubblici",
                 "government-scorecard",
                 "mef-participations",
@@ -43,6 +44,7 @@ class PublishDataRefreshTests(TestCase):
         self.assertEqual(
             {item["branch"] for item in publications.values()},
             {
+                "automation/data/company-atlas",
                 "automation/data/consulenti",
                 "automation/data/government-scorecard",
                 "automation/data/mef-participations",

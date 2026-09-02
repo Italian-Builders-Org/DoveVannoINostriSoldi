@@ -23,10 +23,10 @@ workflow scrive su `main`.
 ## Riepilogo
 
 - Artefatti nel registro: 34
-- PR automatica: 7 (data bot, branch `automation/data/*`, PR)
+- PR automatica: 8 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 21 (PR umana dopo revisione)
+- manuale: 20 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -71,7 +71,7 @@ La revisione e il merge restano umani.
 | `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_municipal_snapshot.py --check` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `vive-roma-restoration` | non dichiarato nello snapshot | 2026-08-22 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
-| `company-atlas` | 2026-08-11 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `node scripts/etl/company_atlas_snapshot.mjs --check` |
+| `company-atlas` | 2026-08-11 | 2026-08-26T00:00:00+02:00 | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |

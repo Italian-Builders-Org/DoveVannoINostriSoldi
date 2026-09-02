@@ -775,8 +775,19 @@
         "command": "node scripts/etl/company_atlas_snapshot.mjs",
         "requiresNetworkInput": true
       },
-      "refreshWorkflow": null,
-      "trustModel": "The committed snapshot is derived from three official CC BY 4.0 aggregate releases. The offline check validates schema, provenance, exact 20-region and ATECO coverage, workforce all-bucket aggregation, null coverage, release totals, duplicate protection and the aggregate-only boundary; a future refresh must be reviewed before publication."
+      "refreshWorkflow": ".github/workflows/company-atlas-refresh.yml",
+      "publication": {
+        "branch": "automation/data/company-atlas",
+        "commitTitle": "chore(data): refresh Atlante Imprese snapshot",
+        "prTitle": "data: refresh Atlante Imprese snapshot",
+        "upstreamUrl": "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
+        "upstreamUrls": [
+          "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
+          "https://opendata.marche.camcom.it/data/2026-Q2-Addetti-Localizzazioni-Attive-Italia.csv",
+          "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia-Valore-Produzione.json"
+        ]
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official CCIAA Marche / InfoCamere aggregate releases; review and PR-side validation govern publication. A new workforce quarter is not accepted until its URL and release totals are updated in the generator."
     },
     {
       "id": "istat-pensions-2012-2022",

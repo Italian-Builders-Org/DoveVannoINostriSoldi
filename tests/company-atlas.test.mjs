@@ -33,8 +33,8 @@ test("the generated company atlas snapshot is aggregate-only and schema-valid", 
   assert.equal(parsed.regions.length, 20);
   assert.ok(parsed.sectors.length >= 10);
   assert.equal(parsed.productionBands.length, 10);
-  assert.equal(parsed.observations.length, 12_880);
-  assert.equal(parsed.generatedAt, "2026-08-26T00:00:00+02:00");
+  assert.ok(parsed.observations.length >= 12_880);
+  assert.match(parsed.generatedAt, /^\d{4}-\d{2}-\d{2}T/);
 
   // Assert every region has valid 2-digit code and name
   for (const region of parsed.regions) {

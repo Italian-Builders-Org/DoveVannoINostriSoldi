@@ -42,6 +42,7 @@ VALID_COVERAGE = frozenset({"standalone", "etl-suite", "node-tests"})
 GENERATED_EXTENSIONS = frozenset({".json", ".jsonl", ".jsonl.gz", ".ts"})
 PUBLICATION_IDS = frozenset(
     {
+        "company-atlas",
         "consulenti-pubblici",
         "government-scorecard",
         "mef-participations",

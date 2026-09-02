@@ -70,27 +70,29 @@ function navMenuId(href: string) {
 }
 
 export function Navigation() {
+  const pathname = usePathname();
+  const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
-    <Suspense fallback={<NavigationFallback />}>
-      <NavigationWithSearch />
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <NavigationSearchSync onChange={setCurrentSearch} />
+      </Suspense>
+      <NavigationContent pathname={pathname} currentSearch={currentSearch} />
+    </>
   );
 }
 
-function NavigationFallback() {
-  const pathname = usePathname();
-  return <NavigationContent pathname={pathname} currentSearch={null} />;
-}
-
-function NavigationWithSearch() {
-  const pathname = usePathname();
+function NavigationSearchSync({
+  onChange,
+}: Readonly<{ onChange: (search: string) => void }>) {
   const searchParams = useSearchParams();
-  return (
-    <NavigationContent
-      pathname={pathname}
-      currentSearch={searchParams.toString()}
-    />
-  );
+  const currentSearch = searchParams.toString();
+
+  useLayoutEffect(() => {
+    onChange(currentSearch);
+  }, [currentSearch, onChange]);
+
+  return null;
 }
 
 function NavigationContent({ pathname, currentSearch }: NavigationContentProps) {
@@ -125,9 +127,13 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
       : null;
 
   const closeMenu = useCallback(() => setOpenMenu(null), []);
+  const liveSearch = useCallback(() => {
+    if (typeof window === "undefined") return currentSearch;
+    return window.location.search.replace(/^\?/, "");
+  }, [currentSearch]);
   const openItem = useCallback(
-    (href: string) => setOpenMenu({ href, pathname, search: currentSearch }),
-    [currentSearch, pathname],
+    (href: string) => setOpenMenu({ href, pathname, search: liveSearch() }),
+    [liveSearch, pathname],
   );
   const openSection = PRIMARY_NAV.find((item) => item.href === openHref && item.children?.length);
 
@@ -255,6 +261,9 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             closeMenu();
           }}
           onBlur={(event) => {
+            // Touch browsers blur/focus unpredictably around the caret; outside
+            // pointerdown and Escape already own dismiss there.
+            if (!canHover) return;
             if (isEventTargetWithin(navRowRef.current, event.relatedTarget)) return;
             closeMenu();
           }}
@@ -316,7 +325,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                           setOpenMenu(
                             open
                               ? null
-                              : { href: item.href, pathname, search: currentSearch },
+                              : { href: item.href, pathname, search: liveSearch() },
                           )
                         }
                       >

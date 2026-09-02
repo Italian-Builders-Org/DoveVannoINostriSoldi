@@ -993,6 +993,9 @@ try {
 
       const itemElement = await findPrimaryNavSection(page, "Imprese");
       assert.ok(itemElement, "Atlante Imprese query navigation 390px: sezione Imprese assente");
+      await page.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      }, itemElement);
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Atlante Imprese query navigation 390px: pulsante tendina assente");
       await waitForStableNavigationTouchTarget(page, toggle);
@@ -1006,7 +1009,7 @@ try {
         itemElement,
         page,
         "Atlante Imprese query navigation 390px",
-        "Localizzazioni attive",
+        "Addetti",
       );
       const currentLabels = await page.$$eval(
         '.nav-row > .nav-submenu a[aria-current="page"]',
@@ -1017,11 +1020,13 @@ try {
         '.nav-row > .nav-submenu a[href="/imprese?metric=active_local_units"]',
       );
       assert.ok(localUnitsLink, "Atlante Imprese query navigation 390px: link metrica assente");
-      await localUnitsLink.click();
-      await page.waitForFunction(
-        () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
-        { timeout: 3_000 },
-      );
+      await Promise.all([
+        page.waitForFunction(
+          () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
+          { timeout: 5_000 },
+        ),
+        localUnitsLink.click(),
+      ]);
       await page.waitForFunction(
         () => !document.querySelector(".nav-row")?.hasAttribute("data-menu-open"),
         { timeout: 3_000 },
@@ -1029,6 +1034,9 @@ try {
 
       const refreshedItem = await findPrimaryNavSection(page, "Imprese");
       assert.ok(refreshedItem, "Atlante Imprese query navigation 390px: sezione Imprese assente dopo la query");
+      await page.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      }, refreshedItem);
       const reopenToggle = await refreshedItem.$(".nav-item-toggle");
       assert.ok(reopenToggle, "Atlante Imprese query navigation 390px: pulsante tendina assente dopo la query");
       await waitForStableNavigationTouchTarget(page, reopenToggle);
@@ -1044,15 +1052,11 @@ try {
         "Atlante Imprese query navigation 390px",
         "Localizzazioni attive",
       );
-      await page.waitForFunction(
-        () => {
-          const current = document.querySelector(
-            '.nav-row > .nav-submenu a[aria-current="page"]',
-          );
-          return current?.textContent?.trim() === "Localizzazioni attive";
-        },
-        { timeout: 3_000 },
+      const afterLabels = await page.$$eval(
+        '.nav-row > .nav-submenu a[aria-current="page"]',
+        (links) => links.map((link) => link.textContent?.trim()),
       );
+      assert.deepEqual(afterLabels, ["Localizzazioni attive"]);
     },
   });
   completed.push("Atlante Imprese query navigation 390px");

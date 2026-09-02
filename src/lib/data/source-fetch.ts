@@ -22,6 +22,17 @@ type SourceFetchOptions = Omit<NextFetchOptions, "next" | "signal" | "cache"> & 
   maxRetries?: number;
   /** Cannot exceed the source policy. Floor is 1 second. */
   timeoutMs?: number;
+  /**
+   * `revalidate` (default) uses Next data cache tags.
+   * `no-store` is for interactive UI paths: avoids associating upstream 4xx/5xx
+   * (especially 429) with the document response in the App Router.
+   */
+  cacheMode?: "revalidate" | "no-store";
+  /**
+   * When true, non-OK HTTP statuses cancel the body and throw SourceFetchError
+   * instead of returning the Response. Prefer this for Server Components.
+   */
+  rejectHttpError?: boolean;
 };
 
 const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
@@ -79,17 +90,29 @@ const SOURCE_USER_AGENTS: Partial<Readonly<Record<SourceId, string>>> = {
 export class SourceFetchError extends Error {
   readonly sourceId: SourceId;
   readonly cause?: unknown;
+  readonly httpStatus?: number;
 
   constructor(
     message: string,
     sourceId: SourceId,
     cause?: unknown,
+    httpStatus?: number,
   ) {
     super(message);
     this.name = "SourceFetchError";
     this.sourceId = sourceId;
     this.cause = cause;
+    this.httpStatus = httpStatus;
   }
+}
+
+/** True when the upstream asked us to back off (do not issue a second IPA call). */
+export function isUpstreamOverloadedError(error: unknown): boolean {
+  if (error instanceof SourceFetchError) {
+    return error.httpStatus === 429 || error.httpStatus === 503;
+  }
+  if (!(error instanceof Error)) return false;
+  return /\bHTTP (429|503)\b/.test(error.message);
 }
 
 function assertOfficialUrl(sourceId: SourceId, rawUrl: string): URL {
@@ -171,6 +194,8 @@ export async function fetchOfficialSource(
   const cacheTags = [...new Set([...policy.tags, ...(options.tags ?? [])])];
   const requestedRevalidate = options.revalidateSeconds ?? revalidateFor(sourceId, kind);
   const revalidate = Math.max(1, Math.trunc(requestedRevalidate));
+  const cacheMode = options.cacheMode ?? "revalidate";
+  const rejectHttpError = options.rejectHttpError === true;
 
   const {
     kind: _kind,
@@ -178,6 +203,8 @@ export async function fetchOfficialSource(
     tags: _tags,
     maxRetries: _maxRetries,
     timeoutMs: _timeoutMs,
+    cacheMode: _cacheMode,
+    rejectHttpError: _rejectHttpError,
     signal: callerSignal,
     headers,
     ...requestOptions
@@ -187,6 +214,8 @@ export async function fetchOfficialSource(
   void _tags;
   void _maxRetries;
   void _timeoutMs;
+  void _cacheMode;
+  void _rejectHttpError;
 
   const method = (requestOptions.method ?? "GET").toUpperCase();
   if (method !== "GET" && method !== "HEAD") {
@@ -208,18 +237,33 @@ export async function fetchOfficialSource(
         headers: requestHeaders(sourceId, headers),
         redirect: requestOptions.redirect ?? "error",
         signal: composedSignal(callerSignal, timeoutMs),
-        next: {
-          revalidate,
-          tags: cacheTags,
-        },
+        ...(cacheMode === "no-store"
+          ? { cache: "no-store" as const }
+          : {
+              next: {
+                revalidate,
+                tags: cacheTags,
+              },
+            }),
       });
 
       if (!RETRYABLE_STATUS.has(response.status) || attempt === retries) {
+        if (rejectHttpError && !response.ok) {
+          const status = response.status;
+          await response.body?.cancel().catch(() => undefined);
+          throw new SourceFetchError(
+            `Fonte ${sourceId} HTTP ${status}`,
+            sourceId,
+            undefined,
+            status,
+          );
+        }
         return response;
       }
 
       await response.body?.cancel();
     } catch (error) {
+      if (error instanceof SourceFetchError) throw error;
       lastError = error;
       if (callerSignal?.aborted) throw callerSignal.reason;
       if (attempt === retries) {

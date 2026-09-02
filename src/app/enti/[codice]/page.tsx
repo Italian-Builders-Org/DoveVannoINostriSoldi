@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     const entity = await getIpaEntityByCode(normalizedCode);
-    if (!entity) return { title: "Ente non trovato" };
+    if (!entity) return { title: "Ente non trovato", robots: entityRobots };
 
     return {
       title: entity.denominazione,
@@ -92,7 +92,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       robots: entityRobots,
     };
   } catch {
-    return { title: "Ente", robots: entityRobots };
+    // Avoid a second live IPA round-trip on failure: the page body already
+    // handles snapshot/ANAC fallback without turning upstream 429 into metadata errors.
+    return {
+      title: `Ente ${normalizedCode}`,
+      robots: entityRobots,
+    };
   }
 }
 

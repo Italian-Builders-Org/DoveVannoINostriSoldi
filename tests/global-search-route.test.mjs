@@ -71,6 +71,31 @@ test("query vuota o di un carattere non chiama IPA", async () => {
   assert.equal(fetchCalls.length, 0);
 });
 
+test("su 429 IPA non ripete il fallback full-text e resta HTTP 200", async () => {
+  fetchCalls.length = 0;
+  globalThis.fetch = async (input, init = {}) => {
+    fetchCalls.push({ input: String(input), init });
+    return new Response("Too Many Requests", { status: 429 });
+  };
+
+  const response = await GET(request("?q=asl&limit=8"));
+  assert.equal(response.status, 200);
+  assertErrorHeaders(response);
+  const body = await response.json();
+  assert.equal(body.ok, true);
+  assert.equal(body.entitiesAvailable, false);
+  assert.equal(fetchCalls.length, 1, "un 429 non deve aprire il secondo adapter IPA");
+  assert.ok(fetchCalls[0].input.includes("datastore_search_sql"));
+
+  globalThis.fetch = async (input, init = {}) => {
+    fetchCalls.push({ input: String(input), init });
+    return new Response(JSON.stringify({ success: false }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+});
+
 test("il fallback IPA resta una risposta controllata e riceve il signal", async () => {
   fetchCalls.length = 0;
   const response = await GET(request("?q=Roma&limit=8"));

@@ -63,10 +63,8 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-forward"/);
   assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-backward"/);
   assert.match(navigationComponent, /useSyncExternalStore/);
-  assert.match(
-    navigationComponent,
-    /\(hover: hover\) and \(pointer: fine\) and \(min-width: 901px\)/,
-  );
+  assert.match(navigationComponent, /FINE_POINTER_HOVER_QUERY = "\(hover: hover\) and \(pointer: fine\)"/);
+  assert.match(navigationComponent, /MOUSE_NAV_SCROLL_CONTROLS_QUERY = `\$\{FINE_POINTER_HOVER_QUERY\} and \(min-width: 901px\)`/);
   assert.match(navigationComponent, /showScrollControls && navigationScroll\.forward/);
   assert.match(navigationComponent, /navigation\.scrollLeft = Math\.max\(0, Math\.min\(maxScrollLeft, nextScrollLeft\)\)/);
   assert.match(globalsCss, /\.nav-scroll-control \{/);
@@ -97,13 +95,20 @@ test("a submenu can be opened without a pointer that can hover", async () => {
     /\.nav-item-has-menu:hover \.nav-submenu|\.nav-item-has-menu:focus-within \.nav-submenu/,
   );
 
-  assert.match(globalsCss, /\.nav-item-has-menu\[data-open="true"\] \.nav-submenu/);
+  assert.match(globalsCss, /\.nav-row > \.nav-submenu/);
+  assert.match(globalsCss, /\.nav-menu-dismiss \{/);
   assert.match(globalsCss, /\.nav-item-toggle \{/);
   assert.match(globalsCss, /@media \(max-width: 1320px\)/);
-  // Below that break the row scrolls, so the panel must be anchored outside it.
+  // Below that break the row scrolls; the panel is a sibling, not inside it.
   assert.match(globalsCss, /\.nav-row \{\n\s*position: relative;/);
   assert.match(navigationComponent, /data-menu-open=\{openHref \? "true" : undefined\}/);
-  assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/);
+  assert.doesNotMatch(
+    globalsCss,
+    /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/,
+  );
+  assert.match(navigationComponent, /className="nav-menu-dismiss"/);
+  assert.match(navigationComponent, /navMenuId/);
+  assert.match(navigationComponent, /useFinePointerHover/);
 });
 
 test("mobile dropdown taps use stable, hit-testable navigation geometry", () => {
@@ -114,6 +119,8 @@ test("mobile dropdown taps use stable, hit-testable navigation geometry", () => 
   assert.match(browserCoreSource, /const toggleBox = await toggle\.boundingBox\(\)/);
   assert.match(browserCoreSource, /Menu touch senza Indietro\/Scorri 1024px/);
   assert.match(browserCoreSource, /touch: true/);
+  assert.match(browserCoreSource, /Menu mobile: tendina si chiude al tap fuori/);
+  assert.match(browserCoreSource, /Menu mobile: scrollLeft invariato all'apertura/);
 });
 
 test("browser copy guard matches limit and offset as whole words", () => {
@@ -134,10 +141,11 @@ test("navigation guards related targets before checking containment", async () =
   );
   assert.equal(
     navigationComponent.match(
-      /isEventTargetWithin\(navigationRef\.current, event\.relatedTarget\)/g,
+      /isEventTargetWithin\(navRowRef\.current, event\.relatedTarget\)/g,
     )?.length,
     2,
   );
+  assert.match(navigationComponent, /isEventTargetWithin\(navRowRef\.current, event\.target\)/);
   assert.match(navigationComponent, /event\.pointerType === "touch"\) return;/);
 });
 

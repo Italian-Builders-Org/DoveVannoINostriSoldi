@@ -203,3 +203,35 @@ test("site search has no duplicate destinations and exposes useful Italian alias
   assert.ok(results.some((result) => result.href === "/spese/consulenze"));
   assert.ok(searchSiteDocuments("pnrr").some((result) => result.href === "/coesione"));
 });
+
+test("municipal snapshot search finds major cities by keyword", async () => {
+  const { searchGlobal } = await import("../src/lib/global-search.ts");
+  const fetchCalls = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    fetchCalls.push(String(input));
+    return new Response("blocked", { status: 500 });
+  };
+
+  try {
+    const milano = await searchGlobal({ query: "milano", limit: 8 });
+    assert.equal(milano.entitiesAvailable, false);
+    assert.ok(
+      milano.groups.some((group) =>
+        group.results.some((result) => normalizeSearchText(result.title).includes("milano")),
+      ),
+      "Milano should be discoverable from the committed municipal snapshot",
+    );
+
+    const bologna = await searchGlobal({ query: "bologna", limit: 8 });
+    assert.ok(
+      bologna.groups.some((group) =>
+        group.results.some((result) => normalizeSearchText(result.title).includes("bologna")),
+      ),
+      "Bologna should be discoverable from the committed municipal snapshot",
+    );
+    assert.ok(fetchCalls.length >= 4, "IPA SQL plus full-text fallback per query");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

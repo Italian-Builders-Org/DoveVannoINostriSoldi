@@ -372,11 +372,20 @@ nav li a { text-decoration: none; }
   color: var(--color-text);
   background: var(--color-neutral-100);
 }
-/* Visibility is owned by React data-open alone. Opening also via :hover or
-   :focus-within let two panels stay visible when focus/data-open lagged behind
-   the pointer moving to the next section. */
-.nav-item-has-menu[data-open="true"] .nav-submenu {
+/* The open panel lives on the row, not inside the scrolling nav, so opening
+   it never changes overflow or scrollLeft. */
+.nav-row > .nav-submenu {
   display: block;
+  left: var(--nav-submenu-left, 0px);
+}
+.nav-menu-dismiss {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .nav-scroll-control {
@@ -775,10 +784,6 @@ main { display: block; }
 @media (max-width: 1320px) {
   .nav-item > a { padding-inline: 12px; }
   .nav-item-has-menu > a { padding-right: 4px; }
-  .nav-row[data-menu-open="true"] {
-    overflow-x: clip;
-    overflow-y: visible;
-  }
   .nav-scroll-control { display: inline-flex; }
   .nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }
   .primary-nav {
@@ -786,15 +791,7 @@ main { display: block; }
     scrollbar-width: none;
   }
   .primary-nav::-webkit-scrollbar { display: none; }
-  /* overflow-x: auto also clips vertically; release that while a panel is open
-     so the anchored submenu can extend below the scrolling row. */
-  .nav-row[data-menu-open="true"] .primary-nav { overflow: visible; }
-  /* A scrolling row cannot show a panel that hangs out of it. Anchoring the
-     panel to the row instead of to its own item puts it outside that scrolling
-     box, so it is neither clipped by it nor placed against the document. */
-  .nav-item-has-menu[data-open="true"] { position: static; }
-  .nav-item-has-menu[data-open="true"] .nav-submenu {
-    top: 100%;
+  .nav-row > .nav-submenu {
     left: 0;
     right: 0;
     width: auto;
@@ -874,7 +871,7 @@ main { display: block; }
 @media (max-width: 620px) {
   :root { --gutter: 14px; }
   body { font-size: 13.5px; }
-  .site-header { position: static; }
+  .site-header { position: relative; }
   .brand-mark { width: 38px; height: 38px; }
   .brand-text strong { font-size: 17px; }
   .header-action { padding-inline: 14px; }

@@ -1,5 +1,5 @@
 import { setTimeout as delay } from "node:timers/promises";
-import { APP_USER_AGENT } from "@/lib/app-version";
+import { APP_USER_AGENT, IPA_USER_AGENT } from "@/lib/app-version";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSourcePolicy, type SourceId } from "@/lib/data/source-policy";
@@ -71,6 +71,11 @@ const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 const RETRY_DELAY_MS = 300;
 const USER_AGENT = APP_USER_AGENT;
 
+const SOURCE_USER_AGENTS: Partial<Readonly<Record<SourceId, string>>> = {
+  ipa: IPA_USER_AGENT,
+  "ipa-struttura": IPA_USER_AGENT,
+};
+
 export class SourceFetchError extends Error {
   readonly sourceId: SourceId;
   readonly cause?: unknown;
@@ -125,7 +130,7 @@ function revalidateFor(sourceId: SourceId, kind: SourceFetchKind): number {
     : policy.dataRevalidateSeconds;
 }
 
-function requestHeaders(input: HeadersInit | undefined): Headers {
+function requestHeaders(sourceId: SourceId, input: HeadersInit | undefined): Headers {
   const headers = new Headers(input);
   if (!headers.has("Accept")) {
     headers.set(
@@ -133,7 +138,9 @@ function requestHeaders(input: HeadersInit | undefined): Headers {
       "application/json, text/csv;q=0.9, text/plain;q=0.8, */*;q=0.5",
     );
   }
-  if (!headers.has("User-Agent")) headers.set("User-Agent", USER_AGENT);
+  if (!headers.has("User-Agent")) {
+    headers.set("User-Agent", SOURCE_USER_AGENTS[sourceId] ?? USER_AGENT);
+  }
   return headers;
 }
 
@@ -198,7 +205,7 @@ export async function fetchOfficialSource(
       const response = await fetch(url, {
         ...requestOptions,
         method,
-        headers: requestHeaders(headers),
+        headers: requestHeaders(sourceId, headers),
         redirect: requestOptions.redirect ?? "error",
         signal: composedSignal(callerSignal, timeoutMs),
         next: {

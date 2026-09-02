@@ -581,17 +581,16 @@ async function findPrimaryNavSection(page, sectionLabel) {
 
 async function assertSubmenuVisible(itemElement, page, label, childLabel) {
   await page.waitForFunction(
-    (element) => {
-      const submenu = element.querySelector(".nav-submenu");
+    () => {
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
       if (!submenu) return false;
       const style = window.getComputedStyle(submenu);
       return style.display !== "none" && style.visibility !== "hidden";
     },
     { timeout: 3_000 },
-    itemElement,
   );
 
-  const childText = await itemElement.$eval(".nav-submenu", (element) => element.textContent ?? "");
+  const childText = await page.$eval(".nav-row > .nav-submenu", (element) => element.textContent ?? "");
   assert.match(childText, new RegExp(childLabel, "i"), `${label}: voce ${childLabel} assente in tendina`);
 }
 
@@ -614,11 +613,11 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
 
   await fromItem.hover();
   await page.waitForFunction(
-    (element) =>
-      element.getAttribute("data-open") === "true" &&
-      window.getComputedStyle(element.querySelector(".nav-submenu")).display !== "none",
+    () => {
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
+      return Boolean(submenu) && window.getComputedStyle(submenu).display !== "none";
+    },
     { timeout: 3_000 },
-    fromItem,
   );
 
   await toItem.hover();
@@ -626,16 +625,15 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
     (from, to) => {
       if (to.getAttribute("data-open") !== "true") return false;
       if (from.getAttribute("data-open") === "true") return false;
-      const fromDisplay = window.getComputedStyle(from.querySelector(".nav-submenu")).display;
-      const toDisplay = window.getComputedStyle(to.querySelector(".nav-submenu")).display;
-      return fromDisplay === "none" && toDisplay !== "none";
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
+      return Boolean(submenu) && window.getComputedStyle(submenu).display !== "none";
     },
     { timeout: 3_000 },
     fromItem,
     toItem,
   );
 
-  const visibleCount = await page.$$eval("nav.primary-nav .nav-submenu", (menus) =>
+  const visibleCount = await page.$$eval(".nav-row > .nav-submenu", (menus) =>
     menus.filter((menu) => window.getComputedStyle(menu).display !== "none").length,
   );
   assert.equal(visibleCount, 1, `${label}: atteso un solo sottomenu visibile, trovati ${visibleCount}`);
@@ -667,13 +665,8 @@ async function assertPrimaryDropdownTap(page, label, { sectionLabel, childLabel 
 
   await page.keyboard.press("Escape");
   await page.waitForFunction(
-    (element) => {
-      const submenu = element.querySelector(".nav-submenu");
-      if (!submenu) return false;
-      return window.getComputedStyle(submenu).display === "none";
-    },
+    () => !document.querySelector(".nav-row > .nav-submenu"),
     { timeout: 3_000 },
-    itemElement,
   );
 }
 
@@ -1015,8 +1008,8 @@ try {
         "Atlante Imprese query navigation 390px",
         "Localizzazioni attive",
       );
-      const localUnitsLink = await itemElement.$(
-        'a[href="/imprese?metric=active_local_units"]',
+      const localUnitsLink = await page.$(
+        '.nav-row > .nav-submenu a[href="/imprese?metric=active_local_units"]',
       );
       assert.ok(localUnitsLink, "Atlante Imprese query navigation 390px: link metrica assente");
       await localUnitsLink.click();
@@ -1459,7 +1452,7 @@ try {
         validate: async (page) => {
           assert.equal(await page.$("nav.subnav"), null, `${label}: subnav non attesa`);
           assert.equal(await page.$(".subnav-row"), null, `${label}: riga subnav non attesa`);
-          assert.ok(await page.$("nav.primary-nav .nav-submenu"), `${label}: markup tendina assente`);
+          assert.ok(await page.$(".nav-item-toggle"), `${label}: markup tendina assente`);
           if (width >= 1280) {
             await assertPrimaryDropdownOnly(page, label, {
               sectionLabel: route.sectionLabel,
@@ -1518,6 +1511,87 @@ try {
     },
   });
   completed.push("Menu mobile senza Indietro/Scorri 390px");
+
+  await runScenario(browser, {
+    label: "Menu mobile: tendina si chiude al tap fuori",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const itemElement = await findPrimaryNavSection(page, "Soldi");
+      assert.ok(itemElement, "Menu mobile chiusura: sezione Soldi assente");
+      const toggle = await itemElement.$(".nav-item-toggle");
+      assert.ok(toggle, "Menu mobile chiusura: pulsante tendina assente");
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const toggleBox = await toggle.boundingBox();
+      assert.ok(toggleBox, "Menu mobile chiusura: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        toggleBox.x + toggleBox.width / 2,
+        toggleBox.y + toggleBox.height / 2,
+      );
+      await assertSubmenuVisible(itemElement, page, "Menu mobile chiusura", "Debito pubblico");
+      assert.ok(await page.$(".nav-menu-dismiss"), "Menu mobile chiusura: strato di chiusura assente");
+
+      await page.touchscreen.tap(200, 720);
+      await page.waitForFunction(
+        () => !document.querySelector(".nav-row > .nav-submenu"),
+        { timeout: 3_000 },
+      );
+    },
+  });
+  completed.push("Menu mobile: tendina si chiude al tap fuori");
+
+  await runScenario(browser, {
+    label: "Menu mobile: scrollLeft invariato all'apertura",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const before = await page.evaluate(() => {
+        const navigation = document.querySelector(".primary-nav");
+        if (!navigation) return null;
+        navigation.scrollLeft = Math.min(
+          navigation.scrollWidth - navigation.clientWidth,
+          140,
+        );
+        return navigation.scrollLeft;
+      });
+      assert.ok(before !== null, "Menu mobile scroll: navigazione primaria assente");
+      assert.ok(before > 4, "Menu mobile scroll: la riga non si è spostata prima del tap");
+
+      const itemElement = await findPrimaryNavSection(page, "Soldi");
+      assert.ok(itemElement, "Menu mobile scroll: sezione Soldi assente");
+      const toggle = await itemElement.$(".nav-item-toggle");
+      assert.ok(toggle, "Menu mobile scroll: pulsante tendina assente");
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const toggleBox = await toggle.boundingBox();
+      assert.ok(toggleBox, "Menu mobile scroll: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        toggleBox.x + toggleBox.width / 2,
+        toggleBox.y + toggleBox.height / 2,
+      );
+      await assertSubmenuVisible(itemElement, page, "Menu mobile scroll", "Debito pubblico");
+
+      const after = await page.$eval(".primary-nav", (navigation) => navigation.scrollLeft);
+      assert.equal(after, before, "Menu mobile scroll: la riga si è spostata all'apertura della tendina");
+
+      const secondBox = await toggle.boundingBox();
+      assert.ok(secondBox, "Menu mobile scroll: pulsante tendina sparito dopo l'apertura");
+      await page.touchscreen.tap(
+        secondBox.x + secondBox.width / 2,
+        secondBox.y + secondBox.height / 2,
+      );
+      await page.waitForFunction(
+        () => !document.querySelector(".nav-row > .nav-submenu"),
+        { timeout: 3_000 },
+      );
+      const closedScroll = await page.$eval(".primary-nav", (navigation) => navigation.scrollLeft);
+      assert.equal(
+        closedScroll,
+        before,
+        "Menu mobile scroll: la riga si è spostata alla chiusura della tendina",
+      );
+    },
+  });
+  completed.push("Menu mobile: scrollLeft invariato all'apertura");
 
   await runScenario(browser, {
     label: "Menu touch senza Indietro/Scorri 1024px",

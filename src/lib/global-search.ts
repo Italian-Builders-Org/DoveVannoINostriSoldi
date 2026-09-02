@@ -12,6 +12,7 @@ import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,
 } from "@/lib/ipa";
+import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import {
   PRIMARY_NAV,
   SITE_MAP_GROUPS,
@@ -544,6 +545,12 @@ export async function searchGlobal(input: {
   } catch (error) {
     if (input.signal?.aborted) throw input.signal.reason ?? error;
     entitiesAvailable = false;
+    const snapshotResults = rankEntitySearchResults(
+      getMunicipalitySearchEntities(),
+      normalizedQuery,
+    ).slice(0, Math.min(50, Math.max(limit * 3, 12)));
+    entityTotal = snapshotResults.length;
+    entityResults = [...snapshotResults];
   }
 
   if (input.signal?.aborted) {

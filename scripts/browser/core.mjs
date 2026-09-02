@@ -1323,6 +1323,10 @@ try {
         assertTextMatches(text, /Da gennaio ad agosto 2026/i, label);
         assertTextMatches(text, /Dati parziali/i, label);
         assertTextMatches(text, /Per cosa ha pagato il Comune/i, label);
+        assertTextMatches(text, /Costi di funzionamento quotidiano/i, label);
+        assertTextMatches(text, /Valore tipico \(mediana\)/i, label);
+        assertTextMatches(text, /Scala OpenCivitas da 0 a 10/i, label);
+        assertTextMatches(text, /non dimostra spreco/i, label);
         assertTextMatches(text, /Pagamenti registrati per anno/i, label);
         assertTextMatches(text, /Confronti e dettaglio territoriale/i, label);
         assertTextMatches(text, /Altre categorie/i, label);

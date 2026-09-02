@@ -82,6 +82,10 @@ test("citizen-facing main categories plus other categories reconcile with SIOPE 
   assert.equal(rows.length, 5);
   assert.equal(rows.at(-1).label, "Altre categorie");
   assert.equal(rows.reduce((sum, row) => sum + row.amountCents, 0), latest.totalCents);
+  for (const row of rows) {
+    assert.ok(row.explanation.trim().length > 20, `${row.label} deve spiegare la voce`);
+  }
+  assert.match(rows[0].explanation, /funzionamento|opere|prestiti|conto terzi|classificare|finanziarie|anticipazioni/i);
 });
 
 test("ordinary-statute municipality joins every available source by exact identifiers", async () => {

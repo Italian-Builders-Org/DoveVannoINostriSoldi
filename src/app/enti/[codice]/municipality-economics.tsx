@@ -2,7 +2,11 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
 import type { MunicipalityProfile } from "@/lib/municipality-profile";
-import { buildMunicipalitySpendingRows } from "@/lib/municipality-spending-view";
+import {
+  buildMunicipalitySpendingRows,
+  explainMunicipalitySpendingTitle,
+  municipalitySpendingTitleLabel,
+} from "@/lib/municipality-spending-view";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import styles from "./scheda.module.css";
 
@@ -46,15 +50,18 @@ function servicesComparison(basisPoints: number): string {
   return `${percent(Math.abs(basisPoints) / 100)} ${basisPoints > 0 ? "in più" : "in meno"}`;
 }
 
-const titleExplanations: Readonly<Record<string, string>> = {
-  "0": "Pagamenti ancora da classificare nella voce contabile definitiva.",
-  "1": "Servizi, personale, acquisti e altre spese di funzionamento.",
-  "2": "Opere pubbliche, investimenti e acquisto di beni durevoli.",
-  "3": "Acquisizioni di partecipazioni, crediti e altre attività finanziarie.",
-  "4": "Restituzione della quota capitale di prestiti e mutui.",
-  "5": "Restituzione di anticipazioni ricevute dal tesoriere.",
-  "7": "Somme incassate o pagate per conto di terzi e partite di giro.",
-};
+function openCivitasLevelGuide(level: number | null, kind: "spending" | "services"): string {
+  if (level === null) {
+    return kind === "spending"
+      ? "Livello di spesa non pubblicato dalla fonte per questo Comune."
+      : "Livello dei servizi non pubblicato dalla fonte per questo Comune.";
+  }
+  const band = level <= 5 ? "nella metà bassa" : "nella metà alta";
+  if (kind === "spending") {
+    return `Scala OpenCivitas da 0 a 10: ${level} è ${band}. Non è un voto e non dimostra da solo spreco o virtù.`;
+  }
+  return `Scala OpenCivitas da 0 a 10: ${level} è ${band}. Misura un indicatore pubblicato, non la qualità percepita dei servizi.`;
+}
 
 function coverageText(year: MunicipalityProfile["siope"]["data"]["years"][number]): string {
   return year.completeness === "partial"
@@ -98,6 +105,11 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
             <h2 className={styles.sectionTitle} id="siope-title">Quanto ha pagato il Comune</h2>
           </div>
         </div>
+        <p className={styles.readingGuide} data-siope-reading-guide>
+          Qui trovi i pagamenti di cassa registrati da SIOPE: quanto è uscito dai conti del Comune nel periodo.
+          Non coincidono sempre con il servizio ricevuto sul territorio, perché un pagamento può riguardare
+          terzi, mutui o partite di giro.
+        </p>
 
         <dl className={styles.paymentSummary} aria-label={`Sintesi dei pagamenti ${latestSiope.year}`}>
           <div className={styles.paymentTotal}>
@@ -121,6 +133,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   ? "Non disponibile"
                   : roundedEuro(latestSiope.perCapitaCents)}
               </dd>
+              <small>Totale diviso per la popolazione ISTAT usata nella scheda</small>
             </div>
             <div>
               <dt>Per km²</dt>
@@ -129,7 +142,9 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   ? "Non disponibile"
                   : exactEuro(latestSiope.perSquareKmCents / 100)}
               </dd>
-              {geography ? <small>Superficie ISTAT {decimal.format(geography.surfaceSquareKilometres)} km²</small> : null}
+              {geography
+                ? <small>Superficie ISTAT {decimal.format(geography.surfaceSquareKilometres)} km²</small>
+                : <small>Normalizzazione sulla superficie del territorio</small>}
             </div>
             <div>
               <dt>Copertura</dt>
@@ -157,6 +172,10 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
               </div>
               <span className="tag tag-neutral">{peer.year}</span>
             </div>
+            <p className={styles.readingGuide} data-peer-reading-guide>
+              Il confronto mette questo Comune accanto ad altri con caratteristiche territoriali simili.
+              Serve a capire se i pagamenti sono insoliti nel gruppo, non a giudicare efficienza o qualità dei servizi.
+            </p>
             <div
               className={styles.peerTrack}
               style={{
@@ -169,20 +188,53 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
               <span aria-hidden="true"><i /><b /></span>
             </div>
             <dl className={styles.peerValues}>
-              <div><dt>Comune</dt><dd>{exactEuro(latestSiope.perSquareKmCents / 100)} / km²</dd></div>
-              <div><dt>Mediana dei pari</dt><dd>{exactEuro(peer.perSquareKmCents.median / 100)} / km²</dd></div>
-              <div><dt>Fascia centrale</dt><dd>Da {exactEuro(peer.perSquareKmCents.p25 / 100)} a {exactEuro(peer.perSquareKmCents.p75 / 100)}</dd></div>
+              <div>
+                <dt>Questo Comune</dt>
+                <dd>{exactEuro(latestSiope.perSquareKmCents / 100)} / km²</dd>
+              </div>
+              <div>
+                <dt>Valore tipico dei simili</dt>
+                <dd>{exactEuro(peer.perSquareKmCents.median / 100)} / km²</dd>
+                <small>Mediana dei pari</small>
+              </div>
+              <div>
+                <dt>Fascia centrale</dt>
+                <dd>Da {exactEuro(peer.perSquareKmCents.p25 / 100)} a {exactEuro(peer.perSquareKmCents.p75 / 100)}</dd>
+                <small>Metà centrale dei Comuni simili</small>
+              </div>
             </dl>
             {peer.perCapitaCents && latestSiope.perCapitaCents !== null ? (
               <dl className={styles.peerValues} aria-label="Confronto per abitante con Comuni simili">
-                <div><dt>Comune per abitante</dt><dd>{roundedEuro(latestSiope.perCapitaCents)}</dd></div>
-                <div><dt>Mediana pari / ab.</dt><dd>{roundedEuro(peer.perCapitaCents.median)}</dd></div>
                 <div>
-                  <dt>Fascia centrale / ab.</dt>
+                  <dt>Questo Comune / abitante</dt>
+                  <dd>{roundedEuro(latestSiope.perCapitaCents)}</dd>
+                </div>
+                <div>
+                  <dt>Valore tipico / abitante</dt>
+                  <dd>{roundedEuro(peer.perCapitaCents.median)}</dd>
+                  <small>Mediana dei pari</small>
+                </div>
+                <div>
+                  <dt>Fascia centrale / abitante</dt>
                   <dd>Da {roundedEuro(peer.perCapitaCents.p25)} a {roundedEuro(peer.perCapitaCents.p75)}</dd>
+                  <small>Dal 25° al 75° percentile</small>
                 </div>
               </dl>
             ) : null}
+            <ul className={styles.termGlossary} data-peer-glossary>
+              <li>
+                <strong>Valore tipico (mediana)</strong>
+                <span>È il Comune di mezzo nel gruppo: metà spende di meno, metà di più.</span>
+              </li>
+              <li>
+                <strong>Fascia centrale</strong>
+                <span>Intervallo in cui si colloca la metà centrale dei Comuni simili, escludendo i valori estremi.</span>
+              </li>
+              <li>
+                <strong>Per km² e per abitante</strong>
+                <span>Due letture diverse dello stesso totale. Usale insieme: una sola può fuorviare.</span>
+              </li>
+            </ul>
             <p className={styles.sourceNote}>Il confronto è descrittivo: non misura efficienza, qualità dei servizi o spesa necessaria.</p>
           </section>
         ) : null}
@@ -190,7 +242,10 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         {latestSiope.hasMovements ? (
           <div className={styles.spendingBreakdown}>
             <h3>Per cosa ha pagato il Comune</h3>
-            <p>Le categorie contabili mostrate compongono il totale registrato nel periodo.</p>
+            <p>
+              Le voci sotto sono categorie contabili SIOPE, riscritte in linguaggio comune.
+              Insieme compongono il totale registrato nel periodo.
+            </p>
             <div aria-label={`Principali pagamenti ${latestSiope.year} per categoria SIOPE`}>
               {spendingRows.map((title) => {
                 const share = latestSiope.totalCents
@@ -198,9 +253,12 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   : 0;
                 return (
                   <div className={styles.spendingRow} key={title.key}>
-                    <div>
-                      <strong>{title.label}</strong>
-                      <span>{percent(share)}</span>
+                    <div className={styles.spendingCopy}>
+                      <div className={styles.spendingHeading}>
+                        <strong>{title.label}</strong>
+                        <span>{percent(share)}</span>
+                      </div>
+                      <p>{title.explanation}</p>
                     </div>
                     <div className={styles.spendingTrack} aria-hidden="true">
                       <span style={{ "--share": `${share}%` } as CSSProperties} />
@@ -212,15 +270,20 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
             </div>
             <details className={styles.methodDetails} data-siope-titles>
               <summary>Cosa significano i Titoli SIOPE?</summary>
-              <p>I numeri sono codici contabili, non una graduatoria. Il Titolo 6 non appartiene alle uscite.</p>
+              <p>
+                I numeri sono codici contabili ufficiali, non una graduatoria di merito.
+                Il Titolo 6 non appartiene alle uscite.
+              </p>
               <dl>
                 {latestSiope.titles
                   .slice()
                   .sort((left, right) => Number(left.code) - Number(right.code))
                   .map((title) => (
                     <div key={title.code}>
-                      <dt>Titolo {title.code} · {title.label}</dt>
-                      <dd>{titleExplanations[title.code]}</dd>
+                      <dt>
+                        Titolo {title.code} · {municipalitySpendingTitleLabel(title.code, title.label)}
+                      </dt>
+                      <dd>{explainMunicipalitySpendingTitle(title.code)}</dd>
                     </div>
                   ))}
               </dl>
@@ -340,11 +403,17 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         </div>
         {openCivitas ? (
           <>
+            <p className={styles.readingGuide} data-opencivitas-reading-guide>
+              OpenCivitas confronta la spesa storica del Comune con un valore di riferimento (spesa standard)
+              calcolato sulle caratteristiche del territorio e sui servizi analizzati dalla fonte.
+              Una differenza in più o in meno non dimostra spreco: va letta insieme ai servizi e al contesto locale.
+            </p>
             <div className={styles.benchmarkBlock}>
               <h3>Spesa registrata e valore di riferimento</h3>
               <p>
-                La spesa standard è un valore di riferimento calcolato considerando le caratteristiche del Comune
-                e i servizi analizzati dalla fonte.
+                <strong>Spesa registrata</strong> è quanto risulta speso storicamente.
+                {" "}
+                <strong>Valore di riferimento</strong> è la stima OpenCivitas del fabbisogno standard per un Comune con caratteristiche simili.
               </p>
               <ul
                 className={styles.benchmarkChart}
@@ -378,6 +447,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
             </div>
             <div className={styles.benchmarkBlock}>
               <h3>Spesa per abitante</h3>
+              <p>Stessi due concetti, divisi per abitante: utile per confrontare Comuni di dimensioni diverse.</p>
               <ul
                 className={styles.benchmarkChart}
                 aria-label={`Spesa per abitante storica e standard ${openCivitas.referenceYear}`}
@@ -386,12 +456,12 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                   {
                     amountCents: openCivitas.record.historicalPerCapitaCents,
                     key: "historical-pc",
-                    label: "Registrata / ab.",
+                    label: "Spesa registrata per abitante",
                   },
                   {
                     amountCents: openCivitas.record.standardPerCapitaCents,
                     key: "standard-pc",
-                    label: "Riferimento / ab.",
+                    label: "Valore di riferimento per abitante",
                   },
                 ].map((row) => (
                   <li key={row.key}>
@@ -412,28 +482,45 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                 <dt>Differenza rispetto al valore di riferimento</dt>
                 <dd>{signedEuro(openCivitas.record.differenceCents)}</dd>
                 <small>{signedPerCapita(openCivitas.record.differencePerCapitaCents)}</small>
+                <p className={styles.metricExplain}>{openCivitas.methodology.differenceMeaning}</p>
               </div>
               <div>
                 <dt>Differenza per km²</dt>
                 <dd>{openCivitas.differencePerSquareKmCents === null ? "Non disponibile" : signedEuro(openCivitas.differencePerSquareKmCents)}</dd>
                 <small>Normalizzazione sulla superficie ISTAT {openCivitas.referenceYear}</small>
+                <p className={styles.metricExplain}>
+                  Stessa differenza di spesa, riportata sulla superficie del Comune. Utile insieme al dato per abitante.
+                </p>
               </div>
               <div>
                 <dt>Servizi rispetto a Comuni simili</dt>
                 <dd>{openCivitas.record.serviceDifferenceBasisPoints === null ? "Non valutabile" : servicesComparison(openCivitas.record.serviceDifferenceBasisPoints)}</dd>
                 <small>{openCivitas.record.serviceLevel === null ? "Indicatore non disponibile" : `Indicatore OpenCivitas: livello ${openCivitas.record.serviceLevel} su 10`}</small>
+                <p className={styles.metricExplain}>{openCivitas.methodology.serviceMeaning}</p>
               </div>
             </dl>
             <dl className={styles.metricGrid} aria-label="Livelli OpenCivitas">
               <div>
                 <dt>Livello spesa</dt>
                 <dd>{openCivitas.record.spendingLevel === null ? "n.d." : `${openCivitas.record.spendingLevel} / 10`}</dd>
+                <p className={styles.metricExplain}>{openCivitasLevelGuide(openCivitas.record.spendingLevel, "spending")}</p>
               </div>
               <div>
                 <dt>Livello servizi</dt>
                 <dd>{openCivitas.record.serviceLevel === null ? "n.d." : `${openCivitas.record.serviceLevel} / 10`}</dd>
+                <p className={styles.metricExplain}>{openCivitasLevelGuide(openCivitas.record.serviceLevel, "services")}</p>
               </div>
             </dl>
+            <ul className={styles.termGlossary} data-opencivitas-glossary>
+              <li>
+                <strong>Come leggerlo</strong>
+                <span>{openCivitas.methodology.rankingWarning}</span>
+              </li>
+              <li>
+                <strong>Copertura</strong>
+                <span>{openCivitas.methodology.coverageWarning}</span>
+              </li>
+            </ul>
             <p className={styles.sourceNote}>
               Fonte: <a href={openCivitas.source.datasetUrl} target="_blank" rel="noreferrer">OpenCivitas ↗</a>.
               La differenza dalla spesa standard non dimostra uno spreco: va letta con servizi, costi e caratteristiche locali.
@@ -452,6 +539,10 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
           </div>
           <span className="tag tag-neutral">Dati al {longDate(pnrr.referenceDate)}</span>
         </div>
+        <p className={styles.readingGuide}>
+          Elenco limitato agli interventi PNRR su asili e prima infanzia collegati a questo Comune.
+          L’importo finanziato non è necessariamente denaro già pagato.
+        </p>
         <dl className={styles.metricGrid}>
           <div><dt>Progetti collegati al Comune</dt><dd>{integer(pnrr.totalProjects)}</dd></div>
           <div>
@@ -508,6 +599,10 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
           {irpef ? <span className="tag tag-neutral">Anno d’imposta {irpef.period.taxYear}</span> : null}
         </summary>
         <div className={styles.secondaryContent}>
+          <p className={styles.readingGuide}>
+            Questi numeri descrivono le dichiarazioni dei residenti, non il bilancio del Comune.
+            L’addizionale comunale è un’imposta dichiarata: non è una stima dell’evasione.
+          </p>
           {irpef ? (
             <>
               <dl className={styles.metricGrid}>

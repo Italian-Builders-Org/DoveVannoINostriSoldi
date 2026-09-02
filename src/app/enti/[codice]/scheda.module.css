@@ -291,10 +291,63 @@
   gap: var(--space-3);
   margin: 0;
 }
+.peerValues + .peerValues { margin-top: var(--space-3); }
 .peerValues dt,
 .territoryDetails dt { color: var(--color-neutral-600); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
 .peerValues dd,
 .territoryDetails dd { margin: 4px 0 0; font-weight: 700; }
+.peerValues small {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.readingGuide {
+  max-width: 72ch;
+  margin: 0 0 var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.termGlossary {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+  list-style: none;
+}
+
+.termGlossary li {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.termGlossary strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.termGlossary span {
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.metricExplain {
+  max-width: 42ch;
+  margin: 6px 0 0;
+  color: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
 
 .territoryDetails {
   margin-top: var(--space-4);
@@ -344,30 +397,44 @@
 
 .spendingRow {
   display: grid;
-  grid-template-columns: minmax(150px, 1.2fr) minmax(120px, 1fr) minmax(90px, auto);
-  align-items: center;
+  grid-template-columns: minmax(180px, 1.45fr) minmax(100px, .9fr) minmax(90px, auto);
+  align-items: start;
   gap: var(--space-3);
-  padding: 10px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--color-neutral-200);
 }
 
-.spendingRow > div:first-child {
+.spendingCopy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.spendingHeading {
   display: flex;
   justify-content: space-between;
   gap: var(--space-2);
   min-width: 0;
 }
+
 .spendingRow strong { font-size: 13px; }
-.spendingRow span { color: var(--color-neutral-600); font-size: 12px; }
+.spendingHeading span { color: var(--color-neutral-600); font-size: 12px; flex: none; }
+.spendingCopy > p {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.45;
+}
 .spendingRow b {
   text-align: right;
   font-family: var(--font-heading);
   font-size: 15px;
   font-variant-numeric: tabular-nums;
+  padding-top: 1px;
 }
-
 .spendingTrack {
   height: 10px;
+  margin-top: 6px;
   overflow: hidden;
   background: var(--color-neutral-200);
 }
@@ -780,8 +847,18 @@
   .peerValues,
   .territoryDetails dl { grid-template-columns: minmax(0, 1fr); }
   .metricGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .spendingRow { grid-template-columns: minmax(0, 1fr) auto; }
-  .spendingTrack { grid-column: 1 / -1; grid-row: 2; }
+  .spendingRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "copy amount"
+      "track track";
+  }
+  .spendingCopy { grid-area: copy; }
+  .spendingRow > b { grid-area: amount; }
+  .spendingTrack {
+    grid-area: track;
+    margin-top: 0;
+  }
   .trendChart { gap: var(--space-2); }
   .trendChart li { grid-template-rows: auto 110px auto minmax(30px, auto); }
   .trendPlot > span { width: min(58px, 62%); }

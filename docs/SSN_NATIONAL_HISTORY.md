@@ -16,8 +16,9 @@ fonte per il dettaglio regionale e per ente.
   (`Anno di Riferimento`, `Codice Voce Contabile`, `Descrizione Voce Contabile`,
   `Data Aggiornamento`, `Importo Totale`).
 - **Licenza**: Creative Commons Attribution.
-- **Aggiornamento**: nessuno schedulato lato progetto; i dati sono richiesti in diretta a
-  OpenBDAP a ogni richiesta (`freshness: "live"`), non congelati in uno snapshot.
+- **Aggiornamento**: preferenza live su OpenBDAP a ogni richiesta; se la fonte è
+  temporaneamente non disponibile, fallback allo snapshot nazionale committed
+  (`freshness: "live"` con `dataMode: "live" | "snapshot"`).
 
 ## Budget e annullamento
 
@@ -28,14 +29,20 @@ il lavoro live oltre il limite della piattaforma. La deadline è stata estesa ri
 budget iniziale perché OpenBDAP può superare 25 secondi su una lettura completa; il segnale
 della richiesta API o MCP annulla anche i fetch già in corso.
 
-## Perché live e non uno snapshot come il 2024
+## Perché live con snapshot di fallback
 
 Lo snapshot 2024 esistente copre nazionale, regionale e 232 enti (76.124 righe sorgente),
 e per questo è congelato con hash verificato: rigenerarlo per 13 anni avrebbe richiesto
 scaricare e validare lo stesso volume per ciascun anno. Il solo aggregato nazionale è invece
-piccolo (poche decine di righe per anno) e interrogabile in diretta con lo stesso pattern di
-discovery già usato per la spesa dello Stato, senza introdurre un nuovo processo di ETL né
-toccare l'architettura a hash del 2024.
+piccolo (poche decine di righe per anno) e interrogabile in diretta.
+
+Quando OpenBDAP non rende disponibili i CSV annuali (errore noto di conversione allegato,
+timeout o rete), la pagina e l’API usano lo snapshot nazionale committed
+`src/data/generated/ssn-cce-national-history.json`, con lo stesso pattern della serie Legge di
+Bilancio. Il 2024 dello snapshot storico deve coincidere cifra per cifra con
+`ssn-cce-2024.json`. I valori 2012-2023 riproducono le etichette `compactEuro` di un render
+live verificato (osservazione 2026-08-28) finché non è di nuovo possibile pinare i centesimi
+esatti da CSV.
 
 ## Metriche
 

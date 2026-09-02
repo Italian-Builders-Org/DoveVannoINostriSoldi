@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 34
+- Artefatti nel registro: 35
 - PR automatica: 8 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 20 (PR umana dopo revisione)
+- manuale: 21 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -70,6 +70,7 @@ La revisione e il merge restano umani.
 | `rgs-state-budget-territorial-2023` | 2023 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall | nessuno | nessuno | manuale | suite ETL |
 | `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_municipal_snapshot.py --check` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
+| `ssn-cce-national-history` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `vive-roma-restoration` | non dichiarato nello snapshot | 2026-08-22 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `company-atlas` | 2026-08-11 | 2026-08-26T00:00:00+02:00 | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |

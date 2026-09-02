@@ -3,9 +3,12 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 import { runLiveOpenBdap } from "./helpers/live-openbdap.mjs";
 
-const { SSN_NATIONAL_HISTORY_YEARS, getSsnNationalHistory, nationalValuesFromRows } = await import(
-  "../src/lib/ssn-national-history.ts"
-);
+const {
+  SSN_NATIONAL_HISTORY_YEARS,
+  getSsnNationalHistory,
+  nationalValuesFromRows,
+  validateSsnNationalHistorySnapshot,
+} = await import("../src/lib/ssn-national-history.ts");
 const { ssnCceSnapshot } = await import("../src/lib/ssn-cce-snapshot.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
 
@@ -269,8 +272,9 @@ test("SSN national history fetches years with bounded concurrency and preserves 
   globalThis.fetch = stub.fetchStub;
   try {
     const started = performance.now();
-    const history = await getSsnNationalHistory({ deadlineMs: 2_000 });
+    const history = await getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false });
     const elapsed = performance.now() - started;
+    assert.equal(history.dataMode, "live");
     assert.deepEqual(history.years.map((entry) => entry.year), [...SSN_NATIONAL_HISTORY_YEARS]);
     assert.ok(stub.maxActive > 1, `expected concurrent year fetches, got ${stub.maxActive}`);
     assert.ok(stub.maxActive <= 4, `bounded concurrency exceeded: ${stub.maxActive}`);
@@ -286,7 +290,7 @@ test("SSN national history applies one global deadline and propagates abort to i
   globalThis.fetch = stub.fetchStub;
   try {
     await assert.rejects(
-      getSsnNationalHistory({ deadlineMs: 25 }),
+      getSsnNationalHistory({ deadlineMs: 25, allowSnapshot: false }),
       (error) => error?.name === "TimeoutError" || error?.name === "AbortError" || error?.message === "The operation was aborted",
     );
     assert.ok(stub.calls.length < 6, `deadline did not stop the cold path: ${stub.calls.length} calls`);
@@ -300,7 +304,7 @@ test("SSN national history returns compact per-year source provenance", async ()
   const stub = stubHistoryFetch();
   globalThis.fetch = stub.fetchStub;
   try {
-    const history = await getSsnNationalHistory({ deadlineMs: 2_000 });
+    const history = await getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false });
     for (const entry of history.years) {
       assert.equal(entry.provenance.packageId, packageResult(entry.year).id);
       assert.match(entry.provenance.packageUrl, /package_show\?id=/);
@@ -322,7 +326,7 @@ test("SSN national history rejects a 200 JSON error returned by the CSV dump", a
   globalThis.fetch = stub.fetchStub;
   try {
     await assert.rejects(
-      getSsnNationalHistory({ deadlineMs: 2_000 }),
+      getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false }),
       /errore JSON invece del CSV.*2018/i,
     );
   } finally {
@@ -336,13 +340,34 @@ test("SSN national history classifies only the known conversion outage as unavai
   globalThis.fetch = stub.fetchStub;
   try {
     await assert.rejects(
-      getSsnNationalHistory({ deadlineMs: 2_000 }),
+      getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false }),
       (error) => error?.name === "OpenBdapUnavailableError"
         && /CSV.*2018/i.test(error.message),
     );
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test("SSN national history falls back to the committed snapshot on CSV conversion outages", async () => {
+  const originalFetch = globalThis.fetch;
+  const stub = stubHistoryFetch({ conversionErrorYear: 2012 });
+  globalThis.fetch = stub.fetchStub;
+  try {
+    const history = await getSsnNationalHistory({ deadlineMs: 2_000 });
+    assert.equal(history.dataMode, "snapshot");
+    assert.equal(history.years.length, 13);
+    assert.deepEqual(history.years.at(-1).values, ssnCceSnapshot.national.values);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("the committed SSN national history snapshot reconciles with the locked 2024 artifact", () => {
+  const history = validateSsnNationalHistorySnapshot();
+  assert.equal(history.dataMode, "snapshot");
+  assert.deepEqual(history.years.map((entry) => entry.year), [...SSN_NATIONAL_HISTORY_YEARS]);
+  assert.deepEqual(history.years.at(-1).values, ssnCceSnapshot.national.values);
 });
 
 test("SSN national history fails closed when package license_id is missing", async () => {
@@ -364,7 +389,7 @@ test("SSN national history accepts OpenBDAP CSVs with one empty trailing delimit
   const stub = stubHistoryFetch({ trailingDelimiter: true });
   globalThis.fetch = stub.fetchStub;
   try {
-    const history = await getSsnNationalHistory({ deadlineMs: 2_000 });
+    const history = await getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false });
     assert.equal(history.years.length, SSN_NATIONAL_HISTORY_YEARS.length);
   } finally {
     globalThis.fetch = originalFetch;

@@ -1,10 +1,12 @@
+import nationalHistorySnapshotArtifact from "@/data/generated/ssn-cce-national-history.json";
 import { decodePublicDataText, parseDelimitedRows, type DelimitedRecord } from "@/lib/data/delimited";
 import {
   isOpenBdapCsvConversionError,
   OpenBdapUnavailableError,
 } from "@/lib/data/openbdap-response";
-import { fetchOfficialSource } from "@/lib/data/source-fetch";
+import { fetchOfficialSource, SourceFetchError } from "@/lib/data/source-fetch";
 import { SSN_CCE_METRICS, type SsnCceMetricId, type SsnCceValues } from "@/lib/data/ssn-cce-contract";
+import { ssnCceSnapshot } from "@/lib/ssn-cce-snapshot";
 
 const BDAP_BASE = "https://bdap-opendata.rgs.mef.gov.it";
 const BDAP_ACTION = `${BDAP_BASE}/SpodCkanApi/api/3/action`;
@@ -107,6 +109,11 @@ export type SsnNationalHistoryOptions = {
   deadlineMs?: number;
   /** Pin the observation clock in tests without changing source data. */
   now?: Date;
+  /**
+   * Prefer the committed offline snapshot when OpenBDAP is temporarily unavailable.
+   * Adapter contract tests that assert fail-closed live behaviour pass `false`.
+   */
+  allowSnapshot?: boolean;
 };
 
 function abortReason(signal: AbortSignal): unknown {
@@ -439,6 +446,7 @@ export type SsnNationalHistoryYear = {
 };
 
 export type SsnNationalHistory = {
+  dataMode: "live" | "snapshot";
   years: SsnNationalHistoryYear[];
   source: {
     owner: string;
@@ -449,6 +457,126 @@ export type SsnNationalHistory = {
     licenseUrl: string;
   };
 };
+
+function isAbortLike(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    (error.name === "AbortError" || error.name === "TimeoutError")
+  );
+}
+
+function isTemporarySourceFailure(error: unknown): boolean {
+  if (error instanceof OpenBdapUnavailableError) return true;
+  if (isAbortLike(error)) return true;
+  return (
+    error instanceof SourceFetchError &&
+    (error.message.startsWith("Errore di rete verso") ||
+      error.message.startsWith("Impossibile interrogare la fonte"))
+  );
+}
+
+function objectRecord(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Snapshot serie storica SSN: oggetto atteso");
+  }
+  return value as Record<string, unknown>;
+}
+
+function requireMetricValues(value: unknown, year: number): SsnCceValues {
+  const record = objectRecord(value);
+  const values = {} as SsnCceValues;
+  for (const metricId of SSN_CCE_METRICS) {
+    const amount = record[metricId];
+    if (!Number.isSafeInteger(amount) || (amount as number) <= 0) {
+      throw new Error(`Snapshot serie storica SSN: valore ${metricId} non valido per il ${year}`);
+    }
+    values[metricId] = amount as number;
+  }
+  return values;
+}
+
+/**
+ * Validates the committed offline national-history artifact. The 2024 row must
+ * match the independently hash-locked SSN CCE snapshot exactly.
+ */
+export function validateSsnNationalHistorySnapshot(value: unknown = nationalHistorySnapshotArtifact): SsnNationalHistory {
+  const candidate = objectRecord(value);
+  if (candidate.schemaVersion !== 1) {
+    throw new Error("Snapshot serie storica SSN: versione artefatto non valida");
+  }
+  const source = objectRecord(candidate.source);
+  if (
+    source.owner !== NATIONAL_HISTORY_SOURCE_OWNER ||
+    source.platform !== NATIONAL_HISTORY_SOURCE_PLATFORM ||
+    source.landingUrl !== "https://bdap-opendata.rgs.mef.gov.it" ||
+    source.license !== NATIONAL_HISTORY_LICENSE ||
+    typeof source.licenseUrl !== "string" ||
+    !NATIONAL_HISTORY_LICENSE_URLS.has(source.licenseUrl) ||
+    typeof source.observedAt !== "string" ||
+    Number.isNaN(Date.parse(source.observedAt))
+  ) {
+    throw new Error("Snapshot serie storica SSN: provenienza sorgente inattesa");
+  }
+  if (!Array.isArray(candidate.years) || candidate.years.length !== SSN_NATIONAL_HISTORY_YEARS.length) {
+    throw new Error("Snapshot serie storica SSN: copertura anni inattesa");
+  }
+
+  const years: SsnNationalHistoryYear[] = [];
+  for (const [index, rawYear] of candidate.years.entries()) {
+    const entry = objectRecord(rawYear);
+    const year = entry.year;
+    if (year !== SSN_NATIONAL_HISTORY_YEARS[index]) {
+      throw new Error(`Snapshot serie storica SSN: anno inatteso alla posizione ${index}`);
+    }
+    const provenance = objectRecord(entry.provenance);
+    const values = requireMetricValues(entry.values, year as number);
+    if (
+      typeof provenance.packageId !== "string" ||
+      provenance.packageName !== `spd_ssn_cce_naz_voccn_01_${year}` ||
+      typeof provenance.packageUrl !== "string" ||
+      typeof provenance.csvUrl !== "string" ||
+      typeof provenance.sourceDate !== "string" ||
+      typeof provenance.metadataModified !== "string" ||
+      typeof provenance.dataUpdatedAt !== "string" ||
+      typeof provenance.observedAt !== "string" ||
+      provenance.license !== NATIONAL_HISTORY_LICENSE ||
+      typeof provenance.licenseUrl !== "string" ||
+      !NATIONAL_HISTORY_LICENSE_URLS.has(provenance.licenseUrl)
+    ) {
+      throw new Error(`Snapshot serie storica SSN: provenienza ${year} inattesa`);
+    }
+    years.push({
+      year: year as number,
+      values,
+      provenance: provenance as SsnNationalHistoryYear["provenance"],
+    });
+  }
+
+  const year2024 = years.find((entry) => entry.year === 2024);
+  if (!year2024) throw new Error("Snapshot serie storica SSN: anno 2024 assente");
+  for (const metricId of SSN_CCE_METRICS) {
+    if (year2024.values[metricId] !== ssnCceSnapshot.national.values[metricId]) {
+      throw new Error(`Snapshot serie storica SSN: il 2024 non riconcilia su ${metricId}`);
+    }
+  }
+
+  return {
+    dataMode: "snapshot",
+    years,
+    source: {
+      owner: NATIONAL_HISTORY_SOURCE_OWNER,
+      platform: NATIONAL_HISTORY_SOURCE_PLATFORM,
+      landingUrl: "https://bdap-opendata.rgs.mef.gov.it",
+      observedAt: source.observedAt as string,
+      license: NATIONAL_HISTORY_LICENSE,
+      licenseUrl: source.licenseUrl as string,
+    },
+  };
+}
+
+function committedNationalHistorySnapshot(): SsnNationalHistory {
+  return validateSsnNationalHistorySnapshot();
+}
 
 async function mapBounded<T, R>(
   items: readonly T[],
@@ -482,12 +610,24 @@ async function mapBounded<T, R>(
 }
 
 /**
- * National-only SSN Conto Economico trend across SSN_NATIONAL_HISTORY_YEARS, fetched live
- * from OpenBDAP (not a locked snapshot like the single-year entity/regional detail). Reuses
- * the same 5 metrics already shown on /spese/sanita; does not touch that page's regional or
- * per-entity data, which remain limited to 2024.
+ * National-only SSN Conto Economico trend across SSN_NATIONAL_HISTORY_YEARS.
+ * Prefers a live OpenBDAP read; when the source is temporarily unavailable
+ * (CSV conversion outage, network, deadline), falls back to the committed
+ * offline snapshot — the same pattern as the Legge di Bilancio series.
  */
 export async function getSsnNationalHistory(
+  options: SsnNationalHistoryOptions = {},
+): Promise<SsnNationalHistory> {
+  try {
+    return await fetchLiveSsnNationalHistory(options);
+  } catch (error) {
+    if (options.allowSnapshot === false) throw error;
+    if (!isTemporarySourceFailure(error)) throw error;
+    return committedNationalHistorySnapshot();
+  }
+}
+
+async function fetchLiveSsnNationalHistory(
   options: SsnNationalHistoryOptions = {},
 ): Promise<SsnNationalHistory> {
   const requestedDeadline = options.deadlineMs ?? SSN_NATIONAL_HISTORY_DEADLINE_MS;
@@ -535,6 +675,7 @@ export async function getSsnNationalHistory(
   );
 
   return {
+    dataMode: "live",
     years,
     source: {
       owner: NATIONAL_HISTORY_SOURCE_OWNER,

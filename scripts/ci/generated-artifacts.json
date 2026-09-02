@@ -733,6 +733,28 @@
       "trustModel": "Source-lock: the upstream assets are pinned by SHA-256. The --check flag validates the committed artifact offline."
     },
     {
+      "id": "ssn-cce-national-history",
+      "owner": "SSN Conto Economico national history 2012-2024",
+      "files": [
+        "src/data/generated/ssn-cce-national-history.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/ssn-national-history.test.mjs"
+      ],
+      "generator": {
+        "command": "Prefer live OpenBDAP national CSV dumps; refresh the committed snapshot when a full live read succeeds and pin 2024 to ssn-cce-2024.json",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Runtime prefers live OpenBDAP national CSVs and uses this validated snapshot only when the source is temporarily unavailable. The 2024 row must match the hash-locked ssn-cce-2024 national totals."
+    },
+    {
       "id": "vive-roma-restoration",
       "owner": "VIVE Roma in moneta restoration",
       "files": [

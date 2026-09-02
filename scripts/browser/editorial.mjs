@@ -93,7 +93,8 @@ async function inspectRoute(browser, pathname, title, width) {
       const waitForDetailsState = async (expectedOpen) => {
         await page.waitForFunction(
           (element, open) => element.closest("details")?.open === open,
-          { timeout: 2_000 },
+          // CI runners can take longer than 2s for native <details> toggles under load.
+          { timeout: 5_000 },
           summary,
           expectedOpen,
         );

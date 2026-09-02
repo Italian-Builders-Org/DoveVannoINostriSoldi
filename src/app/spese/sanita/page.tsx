@@ -141,8 +141,11 @@ export default function HealthSpendingPage() {
             <thead>
               <tr>
                 <th scope="col">Territorio</th>
+                <th scope="col" className="num">Costi produzione</th>
                 <th scope="col" className="num">Personale</th>
-                <th scope="col" className="num">Prestazioni di lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro non sanitarie</th>
+                <th scope="col" className="num">Acquisti di servizi</th>
                 <th scope="col" className="num">Enti di dettaglio</th>
               </tr>
             </thead>
@@ -153,15 +156,21 @@ export default function HealthSpendingPage() {
                     {region.name}
                     <small>codice {region.code}</small>
                   </th>
+                  <td className="num">{compactEuro(euro(region.values.productionCosts))}</td>
                   <td className="num">{compactEuro(euro(region.values.personnelCost))}</td>
                   <td className="num">{compactEuro(euro(region.values.healthcareWorkServices))}</td>
+                  <td className="num">{compactEuro(euro(region.values.nonHealthcareWorkServices))}</td>
+                  <td className="num">{compactEuro(euro(region.values.purchasedServices))}</td>
                   <td className="num">{integer(region.detailEntityCount)}</td>
                 </tr>
               ))}
               <tr className={styles.totalRow}>
                 <th scope="row">Totale nazionale ufficiale</th>
+                <td className="num">{compactEuro(euro(national.productionCosts))}</td>
                 <td className="num">{compactEuro(euro(national.personnelCost))}</td>
                 <td className="num">{compactEuro(euro(national.healthcareWorkServices))}</td>
+                <td className="num">{compactEuro(euro(national.nonHealthcareWorkServices))}</td>
+                <td className="num">{compactEuro(euro(national.purchasedServices))}</td>
                 <td
                   className="num"
                   aria-label="Non applicabile: il totale nazionale è un aggregato, senza conteggio enti"
@@ -193,8 +202,11 @@ export default function HealthSpendingPage() {
               <tr>
                 <th scope="col">Ente</th>
                 <th scope="col">Territorio</th>
+                <th scope="col" className="num">Costi produzione</th>
                 <th scope="col" className="num">Personale</th>
-                <th scope="col" className="num">Prestazioni di lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro non sanitarie</th>
+                <th scope="col" className="num">Acquisti di servizi</th>
                 <th scope="col">Codici</th>
               </tr>
             </thead>
@@ -206,8 +218,11 @@ export default function HealthSpendingPage() {
                     <small>{entity.region}</small>
                   </th>
                   <td>{entity.region}</td>
+                  <td className="num">{entity.missing.productionCosts ? "n.d." : compactEuro(euro(entity.values.productionCosts))}</td>
                   <td className="num">{entity.missing.personnelCost ? "n.d." : compactEuro(euro(entity.values.personnelCost))}</td>
                   <td className="num">{entity.missing.healthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.healthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.nonHealthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.nonHealthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.purchasedServices ? "n.d." : compactEuro(euro(entity.values.purchasedServices))}</td>
                   <td>
                     <code>{entity.codeSsn}</code>
                     <small>BDAP {entity.codeBdap}</small>

@@ -62,11 +62,25 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /document\.addEventListener\("pointerdown", dismissOutside\)/);
   assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-forward"/);
   assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-backward"/);
+  assert.match(navigationComponent, /useSyncExternalStore/);
+  assert.match(
+    navigationComponent,
+    /\(hover: hover\) and \(pointer: fine\) and \(min-width: 901px\)/,
+  );
+  assert.match(navigationComponent, /showScrollControls && navigationScroll\.forward/);
   assert.match(navigationComponent, /navigation\.scrollLeft = Math\.max\(0, Math\.min\(maxScrollLeft, nextScrollLeft\)\)/);
   assert.match(globalsCss, /\.nav-scroll-control \{/);
   assert.match(globalsCss, /@media \(max-width: 1320px\)[\s\S]*?\.nav-scroll-control \{ display: inline-flex; \}/);
   assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.nav-scroll-control \{ display: none; \}/);
   assert.match(globalsCss, /@media \(max-width: 900px\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/);
+  assert.match(
+    globalsCss,
+    /@media \(max-width: 1320px\) and \(hover: none\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
+  );
+  assert.match(
+    globalsCss,
+    /@media \(max-width: 1320px\) and \(pointer: coarse\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
+  );
   assert.doesNotMatch(
     globalsCss,
     /@media \(max-width: 620px\)[\s\S]*?\.nav-scroll-control \{\s*display: inline-flex/,
@@ -98,6 +112,8 @@ test("mobile dropdown taps use stable, hit-testable navigation geometry", () => 
   assert.match(navigationTouchTargetSource, /navigation\.scrollLeft/);
   assert.match(browserCoreSource, /await waitForStableNavigationTouchTarget\(page, toggle\)/);
   assert.match(browserCoreSource, /const toggleBox = await toggle\.boundingBox\(\)/);
+  assert.match(browserCoreSource, /Menu touch senza Indietro\/Scorri 1024px/);
+  assert.match(browserCoreSource, /touch: true/);
 });
 
 test("browser copy guard matches limit and offset as whole words", () => {

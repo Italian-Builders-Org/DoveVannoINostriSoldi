@@ -3,7 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { HeaderSearch } from "@/components/header-search";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -24,6 +32,24 @@ type NavigationContentProps = Readonly<{
   pathname: string;
   currentSearch: string | null;
 }>;
+
+/** Mouse on a viewport wide enough that swipe is not the primary way to pan. */
+const MOUSE_NAV_SCROLL_CONTROLS_QUERY =
+  "(hover: hover) and (pointer: fine) and (min-width: 901px)";
+
+function subscribeMouseNavScrollControls(onChange: () => void) {
+  const media = window.matchMedia(MOUSE_NAV_SCROLL_CONTROLS_QUERY);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function useMouseNavScrollControls() {
+  return useSyncExternalStore(
+    subscribeMouseNavScrollControls,
+    () => window.matchMedia(MOUSE_NAV_SCROLL_CONTROLS_QUERY).matches,
+    () => false,
+  );
+}
 
 export function Navigation() {
   const pathname = usePathname();
@@ -58,6 +84,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     backward: false,
     forward: false,
   });
+  const showScrollControls = useMouseNavScrollControls();
   /**
    * Exactly one submenu may be open. Hover, focus and the caret all write the
    * same state so CSS never opens a second panel through :hover/:focus-within
@@ -303,7 +330,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             })}
           </ul>
         </nav>
-        {navigationScroll.backward ? (
+        {showScrollControls && navigationScroll.backward ? (
           <button
             type="button"
             className="nav-scroll-control nav-scroll-control-backward"
@@ -314,7 +341,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             <span aria-hidden="true">Indietro</span>
           </button>
         ) : null}
-        {navigationScroll.forward ? (
+        {showScrollControls && navigationScroll.forward ? (
           <button
             type="button"
             className="nav-scroll-control nav-scroll-control-forward"

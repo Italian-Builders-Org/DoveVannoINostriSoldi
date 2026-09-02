@@ -802,6 +802,14 @@ main { display: block; }
   }
 }
 
+@media (max-width: 1320px) and (hover: none) {
+  .nav-scroll-control { display: none; }
+}
+
+@media (max-width: 1320px) and (pointer: coarse) {
+  .nav-scroll-control { display: none; }
+}
+
 @media (max-width: 1000px) {
   :root { --gutter: 20px; }
   .header-search { width: 260px; }

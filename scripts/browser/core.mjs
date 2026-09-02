@@ -1417,7 +1417,7 @@ try {
   }
 
   await runScenario(browser, {
-    label: "Ente non comunale invariato 390px",
+    label: "Ente non comunale layout leggibile 390px",
     pathname: "/enti/agid",
     width: 390,
     validate: async (page) => {
@@ -1426,14 +1426,15 @@ try {
         assertTextMatches(text, /Indice PA non risponde/i, "Ente non comunale");
         assertTextMatches(text, /Codice richiesto[\s\S]*agid/i, "Ente non comunale");
       } else {
-        assertTextMatches(text, /Identità amministrativa/i, "Ente non comunale");
-        assertTextMatches(text, /Dati economici · collegamenti in corso/i, "Ente non comunale");
-        assertTextMatches(text, /Formato JSON/i, "Ente non comunale");
+        assert.doesNotMatch(text, /Identità amministrativa/i);
+        assert.doesNotMatch(text, /Dati economici · collegamenti in corso/i);
+        assertTextMatches(text, /Informazioni sull'ente e fonti/i, "Ente non comunale");
+        assertTextMatches(text, /Contratti e aggiudicatari|ANAC · aggiudicazioni/i, "Ente non comunale");
       }
       assert.doesNotMatch(text, /Quanto ha pagato il Comune/i);
     },
   });
-  completed.push("Ente non comunale invariato 390px");
+  completed.push("Ente non comunale layout leggibile 390px");
 
   const dropdownRoutes = [
     {

@@ -14,6 +14,18 @@ L'obiettivo operativo è diverso: **rilevare ogni nuovo rilascio ufficiale il pr
 6. Nessun endpoint interno di refresh accetta URL arbitrari.
 7. La cache è segmentata per source tag, in modo da invalidare una fonte senza svuotare tutto il sito.
 
+## Inventario degli snapshot
+
+L'elenco operativo degli snapshot committati è in
+[SOURCE_SNAPSHOT_INVENTORY.md](SOURCE_SNAPSHOT_INVENTORY.md): periodo nello
+snapshot, URL ufficiale, controlli, workflow, modo di aggiornamento e rollback.
+È generato dal registro `scripts/ci/generated-artifacts.json`. Un inventario
+stale fallisce la CI.
+
+Questo risponde a [#189](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/189)
+prima di automatizzare una fonte alla volta. Non sostituisce la tabella delle
+cadenze qui sotto.
+
 ## Componenti
 
 ### `source-policy.ts`

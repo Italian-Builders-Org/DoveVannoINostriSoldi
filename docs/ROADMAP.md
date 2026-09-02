@@ -44,7 +44,7 @@ Come usare questo file:
 | Iniziativa | Copertura | Implementabile | Effort | Issue / PR | Dove | Prossimo passo |
 |---|---|---|---|---|---|---|
 | Navigazione semplice e mobile stabile | Parziale su `main` ([#205](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/205) mergiata) | Sì | Medio | Nessuna issue aperta dedicata | `src/components/navigation.tsx`, `/controlli`, `/dati` | Test di comprensione e regressioni visive su route reali a 390, 768 e 1280 px. Feedback: X-028, X-047, T-005, T-019, T-020, T-032, T-034. |
-| Freschezza uniforme e refresh automatico | Policy e health parziali; refresh non è ancora un job periodico | Sì | Alto | [#189](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/189) aperta | [FRESHNESS_AND_REFRESH.md](FRESHNESS_AND_REFRESH.md) | Inventario fonte per fonte, fallimento visibile, timestamp pubblico. Non chiamare «live» un polling. Feedback: T-001, T-024, X-117. |
+| Freschezza uniforme e refresh automatico | Inventario snapshot committato; 7 fonti già in PR automatica del data bot; le altre restano rilevamento, cache o manuali | Sì | Alto | [#189](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/189) aperta | [SOURCE_SNAPSHOT_INVENTORY.md](SOURCE_SNAPSHOT_INVENTORY.md), [FRESHNESS_AND_REFRESH.md](FRESHNESS_AND_REFRESH.md) | Prossima slice: una sola fonte ancora manuale sul publisher (branch dedicato, PR, mai push su `main`). Feedback: T-001, T-024, X-117. |
 | Benchmark appalti davvero comparabili | Contratti ANAC parziali su `main` ([#204](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/204), [#208](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/208)) | Sì | Alto | [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185) aperta; [#183](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/183) TED, da valutare a parte | `/appalti`, `/confronti`, `docs/research/ANAC_*` | Unità, quantità e categoria comparabile; bloccare i confronti deboli. Feedback: X-072, X-077, X-091, T-004, A-004. |
 | Drill-down e confronto territoriale | Territori, IRPEF, OpenCivitas e schede ente già su `main` | Sì | Alto | [#130](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/130) aperta | `/territori`, `/enti/[codice]` | Completare Provincia/ASL dove la fonte lo consente; peer con denominatore coerente. Non inventare residui fiscali comunali. Feedback: X-019, X-066, X-097, X-104, T-012. |
 
@@ -97,6 +97,8 @@ Come usare questo file:
 |---|---|---|
 | [#219](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/219) HHI e Top 1/Top 10 sugli appalti ente | Aperta, in conflitto con `main` | Slice di [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185). Non mergiare finché rebase e `required` non sono verdi. |
 | [#211](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/211) ESLint 10 | Aperta | Dipendenza; `eslint-plugin-react` non è pronto. Non è una riga di prodotto. |
+| [#219](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/219) HHI appalti | Aperta, CI rossa | Slice successiva di [#185](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/185); rebase e `production` restano a Roberto. |
+| [#235](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/pull/235) menu mobile | Aperta, CI verde, branch indietro rispetto a `main` | Nasconde Indietro/Scorri sotto i 900px. Da rebase e merge. |
 
 ## Issue aperte senza riga sopra
 

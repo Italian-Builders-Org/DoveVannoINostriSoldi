@@ -70,9 +70,13 @@ npm run test:snapshots  # generated-artifact registry + offline artifact checks
 contratti fail-closed) una sola volta.
 
 `test:snapshots` valida il registro degli artifact generati
-(`scripts/ci/generated-artifacts.json`), esegue i controlli offline `--check`
-unici per ogni artifact, verifica la pulizia del worktree e rileva file
-generati non registrati. Non riesegue la suite ETL.
+(`scripts/ci/generated-artifacts.json`), controlla che
+[docs/SOURCE_SNAPSHOT_INVENTORY.md](docs/SOURCE_SNAPSHOT_INVENTORY.md) sia
+allineato al registro, esegue i controlli offline `--check` unici per ogni
+artifact, verifica la pulizia del worktree e rileva file generati non
+registrati. Non riesegue la suite ETL. Se il registro o un workflow di refresh
+cambiano, rigenera l'inventario con
+`python3 scripts/ci/source-snapshot-inventory.py --write`.
 
 ### Limite di trust: PR vs fonti ufficiali
 

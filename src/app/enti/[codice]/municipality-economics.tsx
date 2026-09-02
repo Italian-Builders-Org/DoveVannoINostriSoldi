@@ -549,4 +549,3 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
     </>
   );
 }
-

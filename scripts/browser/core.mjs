@@ -17,11 +17,6 @@ const baseUrl = defaultBaseUrl();
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
 const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
-/** Headless Chrome often reports hover:none; desktop menu hover needs a real mouse profile. */
-const DESKTOP_HOVER_MEDIA_FEATURES = [
-  { name: "hover", value: "hover" },
-  { name: "pointer", value: "fine" },
-];
 
 if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare il protocollo HTTP oppure HTTPS.");
@@ -1464,7 +1459,6 @@ try {
         label,
         pathname: route.pathname,
         width,
-        mediaFeatures: width >= 1280 ? DESKTOP_HOVER_MEDIA_FEATURES : undefined,
         validate: async (page) => {
           assert.equal(await page.$("nav.subnav"), null, `${label}: subnav non attesa`);
           assert.equal(await page.$(".subnav-row"), null, `${label}: riga subnav non attesa`);
@@ -1747,7 +1741,6 @@ try {
     label: "Menu tendina esclusivo 1280px",
     pathname: "/istituzioni",
     width: 1280,
-    mediaFeatures: DESKTOP_HOVER_MEDIA_FEATURES,
     validate: async (page) => {
       await assertPrimaryDropdownExclusive(page, "Menu tendina esclusivo 1280px", {
         fromLabel: "Istituzioni",

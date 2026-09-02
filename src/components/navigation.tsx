@@ -279,7 +279,10 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                     data-section-active={active ? "true" : undefined}
                     data-open={open ? "true" : undefined}
                     onPointerEnter={(event) => {
-                      if (!canHover || event.pointerType === "touch") return;
+                      // Touch uses the caret; mouse/pen transfer the single open slot.
+                      // Do not gate on matchMedia(hover): headless and some hybrids
+                      // report hover:none even when pointer events are mouse-like.
+                      if (event.pointerType === "touch") return;
                       if (hasChildren) openItem(item.href);
                       else closeMenu();
                     }}

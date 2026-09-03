@@ -269,6 +269,83 @@
   font-size: 15px;
 }
 
+.programList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.chapterTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.chapterTable th,
+.chapterTable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-neutral-300);
+  vertical-align: top;
+  text-align: left;
+}
+
+.chapterTable th.num,
+.chapterTable td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.chapterNumber {
+  display: block;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chapterKind {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.chapterDetail {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.tableNote {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.atNote {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.procurementBox {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-300);
+  border-top: 3px solid var(--color-neutral-800);
+  background: var(--color-neutral-50, #fafafa);
+}
+
 .follow {
   margin: 0;
   color: var(--color-neutral-700);

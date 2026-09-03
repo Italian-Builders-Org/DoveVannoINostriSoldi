@@ -17,29 +17,25 @@ test("controlli sintesi page keeps verification copy and no automatic guilt labe
   assert.match(page, /Cosa monitorare, dove approfondire/);
   assert.match(page, /buildControlliSintesiPathways/);
   assert.match(page, /buildAiStewardshipAgenda/);
+  assert.match(page, /buildAiInterventionMap/);
+  assert.match(page, /buildAiNextMoves/);
   assert.match(page, /agenda-ai/);
-  assert.match(page, /aiZone|aiHero|aiBrief/);
-  assert.match(page, /Cosa riguarda/);
-  assert.match(page, /Operazione/);
-  assert.match(page, /Effetto/);
+  assert.match(page, /mappa-interventi/);
+  assert.match(page, /ancora-da-fare/);
+  assert.match(page, /In pratica propone/);
+  assert.match(page, /aiZone|aiHero|aiBrief|aiProposal/);
   assert.match(page, /Regole AI/);
   assert.match(page, /aiStewardshipDisclosure/);
   assert.match(page, /Non attribuiamo sprechi, illeciti o responsabilità/);
   assert.doesNotMatch(page, /\b(frode|corrotto|colpevole|spreco accertato)\b/i);
   assert.doesNotMatch(lib, /—|–/);
   assert.match(lib, /OpenCivitas/);
-  assert.match(lib, /procurementComparisons/);
-  assert.match(lib, /rgsConsultingSnapshot/);
-  assert.match(lib, /centralScenarioBreakdown/);
-  assert.match(lib, /buildAiStewardshipAgenda/);
-  assert.match(lib, /aiStewardshipDisclosure/);
-  assert.match(lib, /Agenda gestita da agenti AI/);
-  assert.match(lib, /concerns:/);
-  assert.match(lib, /operation:/);
-  assert.match(lib, /effect:/);
-  assert.match(lib, /metric:/);
-  assert.match(lib, /bars:/);
-  assert.match(lib, /non dimostra uno spreco/i);
+  assert.match(lib, /proposal:/);
+  assert.match(lib, /buildAiNextMoves/);
+  assert.match(lib, /buildAiInterventionMap/);
+  assert.match(lib, /Cosa proporrebbe un agente AI/);
+  assert.match(lib, /mefParticipationsSnapshot/);
+  assert.match(lib, /opencoesioneOverview/);
   assert.match(nav, /\/controlli\/sintesi/);
   assert.match(nav, /label: "Sintesi"/);
 });
@@ -48,6 +44,8 @@ test("buildControlliSintesiPathways and AI agenda stay sourced and non-accusator
   const {
     buildControlliSintesiPathways,
     buildAiStewardshipAgenda,
+    buildAiInterventionMap,
+    buildAiNextMoves,
     aiStewardshipDisclosure,
   } = await import("../src/lib/controlli-sintesi.ts");
   const pathways = buildControlliSintesiPathways();
@@ -64,33 +62,43 @@ test("buildControlliSintesiPathways and AI agenda stay sourced and non-accusator
       /\b(corrotto|frode|colpevole|spreco accertato)\b/i,
     );
   }
-  assert.ok(pathways.some((pathway) => pathway.id === "opencivitas-outliers"));
-  assert.ok(pathways.some((pathway) => pathway.id === "anac-direct-awards"));
-  assert.ok(pathways.some((pathway) => pathway.id === "improvement-hypothesis"));
-  assert.ok(pathways.some((pathway) => pathway.id === "public-debt-interest"));
-  assert.ok(pathways.some((pathway) => pathway.id === "opencivitas-high-low"));
-  assert.ok(pathways.some((pathway) => pathway.id === "ssn-production-costs"));
 
   const agenda = buildAiStewardshipAgenda(pathways);
   assert.ok(agenda.length >= 5);
   assert.match(aiStewardshipDisclosure.badge, /agenti AI/i);
-  assert.match(aiStewardshipDisclosure.title, /Agenda gestita da agenti AI/);
-  assert.match(aiStewardshipDisclosure.lead, /separata di proposito|etichettata come AI/i);
+  assert.match(aiStewardshipDisclosure.title, /Cosa proporrebbe un agente AI/);
+  assert.match(aiStewardshipDisclosure.howToRead, /In pratica propone/i);
   for (const move of agenda) {
     assert.ok(move.metric.display.trim().length > 0, move.id);
     assert.ok(move.bars.length >= 2, move.id);
-    assert.ok(move.concerns.trim().length > 15, move.id);
+    assert.ok(move.concerns.trim().length > 20, move.id);
+    assert.match(move.proposal, /Propone/i, move.id);
     assert.ok(move.operation.trim().length > 30, move.id);
     assert.ok(move.effect.trim().length > 20, move.id);
-    assert.ok(move.chartCaption.trim().length > 10, move.id);
-    assert.match(move.operation, /L'agente|agente/i);
     assert.doesNotMatch(
-      `${move.title}\n${move.concerns}\n${move.operation}\n${move.effect}`,
+      `${move.title}\n${move.proposal}\n${move.concerns}\n${move.operation}\n${move.effect}`,
       /\b(corrotto|frode|colpevole|spreco accertato)\b/i,
     );
     assert.doesNotMatch(
-      `${move.concerns}\n${move.operation}\n${move.effect}\n${move.chartCaption}`,
+      `${move.proposal}\n${move.concerns}\n${move.operation}\n${move.effect}`,
       /—|–/,
     );
   }
+
+  const map = buildAiInterventionMap(agenda);
+  assert.equal(map.length, agenda.length);
+  assert.ok(map.every((step) => step.plain.includes("Propone") || /Propone/i.test(step.plain)));
+
+  const next = buildAiNextMoves();
+  assert.ok(next.length >= 6);
+  for (const move of next) {
+    assert.match(move.proposal, /Propone/i, move.id);
+    assert.match(move.deepenHref, /^\//);
+    assert.ok(move.sourceNote.trim().length > 5, move.id);
+    assert.doesNotMatch(`${move.title}\n${move.proposal}\n${move.effect}`, /—|–|\b(frode|corrotto)\b/i);
+  }
+  assert.ok(next.some((move) => move.id === "next-off-budget"));
+  assert.ok(next.some((move) => move.id === "next-pnrr-cohesion"));
+  assert.ok(next.some((move) => move.id === "next-participations"));
+  assert.ok(next.some((move) => move.id === "next-consip-gate"));
 });

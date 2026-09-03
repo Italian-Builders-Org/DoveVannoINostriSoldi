@@ -13,8 +13,11 @@ import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
 import { queryOpenCivitasSpendingOutliers } from "@/lib/opencivitas-outliers";
 import { summarizeOpenCivitasQuadrants } from "@/lib/opencivitas-quadrants";
 import { getPublicDebtView } from "@/lib/public-debt";
+import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
 import { rgsConsultingSnapshot } from "@/lib/rgs-consulting-snapshot";
 import { querySsnCce } from "@/lib/ssn-cce-snapshot";
+import { getEditorialTopic } from "@/lib/integrated-editorial";
+import opencoesioneOverview from "@/data/generated/opencoesione-overview.json";
 
 export type SintesiKind = "osservazione" | "screening" | "ipotesi";
 
@@ -44,11 +47,13 @@ export type AiStewardshipMove = Readonly<{
   id: string;
   priority: number;
   title: string;
-  /** What domain / object the move covers. */
+  /** Plain-language: what this is about. */
   concerns: string;
-  /** How the agent would operate. */
+  /** One sentence a non-expert can quote: what the agent proposes to do. */
+  proposal: string;
+  /** How the agent would operate, still plain language. */
   operation: string;
-  /** Expected orientation effect if humans follow up (not a guaranteed saving). */
+  /** What would change for citizens / public accounts (orientation, not a guarantee). */
   effect: string;
   why: string;
   basedOnPathwayIds: readonly string[];
@@ -61,6 +66,26 @@ export type AiStewardshipMove = Readonly<{
   }>;
   bars: readonly AiChartBar[];
   chartCaption: string;
+}>;
+
+export type AiInterventionMapStep = Readonly<{
+  order: number;
+  moveId: string;
+  label: string;
+  plain: string;
+}>;
+
+export type AiNextMove = Readonly<{
+  id: string;
+  title: string;
+  whyNow: string;
+  proposal: string;
+  effect: string;
+  metricLabel: string;
+  metricDisplay: string;
+  deepenHref: string;
+  deepenLabel: string;
+  sourceNote: string;
 }>;
 
 function signalById(id: string): AuditSignal {
@@ -473,55 +498,61 @@ export function buildAiStewardshipAgenda(
     {
       id: "ai-map-constraints",
       priority: 1,
-      title: "Mappare prima i vincoli di bilancio",
-      concerns: "Stock di debito pubblico, interessi annui e scadenze residue.",
+      title: "Prima di tutto: quanto costa il debito",
+      concerns:
+        "Il debito pubblico e quanto paghiamo ogni anno di interessi. È il punto di partenza: senza questo numero, ogni 'risparmio' rischia di essere una promessa vuota.",
+      proposal:
+        "Propone di mostrare sempre, in apertura di qualsiasi piano di revisione, tre cifre: quanto debito c'è, quanto paghiamo di interessi, quanto scade entro un anno.",
       operation:
-        "L'agente legge stock, interessi e quota in scadenza entro un anno e li dispone come vincoli prima di qualsiasi proposta su spese o entrate.",
+        "L'agente prende questi tre numeri dalle fonti ufficiali e li mette in cima. Solo dopo guarda le spese da rivedere.",
       effect:
-        "Definisce un perimetro sostenibile: le revisioni successive restano confrontabili con il costo del debito, senza presentarle come cassa libera.",
+        "Chi legge capisce subito il vincolo: non si presenta un taglio come soldi già in tasca se prima non si vede il costo del debito.",
       why: debt.observation,
       basedOnPathwayIds: ["public-debt-interest"],
       deepenHref: debt.deepenHref,
-      deepenLabel: "Apri il debito pubblico",
+      deepenLabel: "Vedi il debito pubblico",
       metric: {
-        label: "Interessi annui (Eurostat)",
+        label: "Interessi pagati in un anno",
         display: formatBillion(interestBillion, 1),
-        hint: `Scadenza ≤1 anno: ${(maturity.upToOneYearBasisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
+        hint: `Scade entro 1 anno: ${(maturity.upToOneYearBasisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 1 })}% del debito`,
       },
       bars: [
         {
-          label: "Fino a 1 anno",
+          label: "Scade entro 1 anno",
           value: maturity.upToOneYearBasisPoints,
           display: `${(maturity.upToOneYearBasisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
         },
         {
-          label: "Da 1 a 5 anni",
+          label: "Scade tra 1 e 5 anni",
           value: maturity.oneToFiveYearsBasisPoints,
           display: `${(maturity.oneToFiveYearsBasisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
         },
         {
-          label: "Oltre 5 anni",
+          label: "Scade oltre 5 anni",
           value: maturity.overFiveYearsBasisPoints,
           display: `${(maturity.overFiveYearsBasisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
         },
       ],
-      chartCaption: "Scadenze residue del debito (quote sul totale)",
+      chartCaption: "Quando torna a scadenza il debito (quote sul totale)",
     },
     {
       id: "ai-review-tax-expenditures",
       priority: 2,
-      title: "Ordinare le agevolazioni fiscali per revisione",
-      concerns: "Agevolazioni fiscali MEF con stima puntuale e onere Superbonus già censito.",
+      title: "Mettere in fila le agevolazioni fiscali che hanno una cifra",
+      concerns:
+        "Sconti e agevolazioni sulle tasse. Molte esistono sulla carta: l'agente guarda solo quelle a cui il MEF ha già messo un valore in euro.",
+      proposal:
+        "Propone una lista pubblica delle agevolazioni con stima in euro, da far valutare a persone (non all'AI) prima di cambiare le leggi.",
       operation:
-        "L'agente produce una coda delle sole misure con stima numerica, esclude quelle senza copertura e richiede una valutazione redistributiva umana prima di ipotesi normative.",
+        "Toglie dalla lista le misure senza numero. Tiene Superbonus e altre voci grandi come contesto, senza sommarle a casaccio.",
       effect:
-        "Il dibattito fiscale parte da una shortlist verificabile: meno rumore sulle misure senza cifra, più trasparenza su dove una revisione potrebbe incidere.",
+        "Il dibattito parte da 'queste misure costano circa X', non da slogan. Eventuali tagli restano una scelta politica umana.",
       why: tax.observation,
       basedOnPathwayIds: ["tax-expenditures", "superbonus"],
       deepenHref: tax.deepenHref,
-      deepenLabel: "Apri le agevolazioni",
+      deepenLabel: "Vedi le agevolazioni",
       metric: {
-        label: "Stima puntuale MEF",
+        label: "Agevolazioni con stima MEF",
         display: formatBillion(taxSignal.value, 1),
         hint: taxSignal.coverage,
       },
@@ -532,30 +563,33 @@ export function buildAiStewardshipAgenda(
           display: formatBillion(taxSignal.value, 1),
         },
         {
-          label: "Superbonus (onere cumulato)",
+          label: "Superbonus (costo accumulato)",
           value: superbonusSignal.value,
           display: formatBillion(superbonusSignal.value, 1),
         },
       ],
-      chartCaption: "Ordini di grandezza fiscali già in piattaforma (non sommare come un unico risparmio)",
+      chartCaption: "Due ordini di grandezza fiscali (non vanno sommati come un unico risparmio)",
     },
     {
       id: "ai-open-procurement",
       priority: 3,
-      title: "Aprire più concorrenza negli appalti",
-      concerns: "Affidamenti diretti ANAC e contratti a ridotta concorrenza sul valore.",
+      title: "Far concorrere di più chi vende allo Stato",
+      concerns:
+        "Appalti e affidamenti: quando una gara ha pochi concorrenti, o si compra 'in diretta' senza un confronto ampio.",
+      proposal:
+        "Propone di aprire più gare competitive e di spiegare per iscritto quando si sceglie invece un affidamento diretto o una procedura ristretta.",
       operation:
-        "L'agente segnala procedure vicino alla soglia e perimetri a ridotta concorrenza come code di verifica; propone di allargare la platea e di documentare le deroghe, senza attribuire illeciti.",
+        "Segnala dove gli affidamenti diretti sono molti sul numero di procedure, e dove c'è molto valore a ridotta concorrenza. Non accusa nessuno di reato.",
       effect:
-        "Più controlli mirati e più confronto competitivo dove i dati lo suggeriscono; l'esito resta amministrativo e umano, non una sentenza automatica.",
+        "Più fornitori in gara può far scendere i prezzi e alzare la qualità; il controllo resta umano.",
       why: `${anac.observation} ${competition.observation}`,
       basedOnPathwayIds: ["anac-direct-awards", "reduced-competition-value"],
       deepenHref: anac.deepenHref,
-      deepenLabel: "Apri gli appalti ANAC",
+      deepenLabel: "Vedi gli appalti",
       metric: {
-        label: "Affidamenti diretti (su n. procedure)",
+        label: "Affidamenti diretti (sul numero di procedure)",
         display: `${anac2025.byNumber.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
-        hint: `Sul valore: ${anac2025.byValue.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
+        hint: `Sul valore complessivo: ${anac2025.byValue.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
       },
       bars: [
         {
@@ -569,60 +603,66 @@ export function buildAiStewardshipAgenda(
           display: `${anac2025.byValue.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
         },
         {
-          label: "Ridotta concorrenza (valore)",
+          label: "Valore a ridotta concorrenza",
           value: Math.min(100, (reducedCompetition.value / anac2025.totalValueBillion) * 100),
           display: formatBillion(reducedCompetition.value, 1),
         },
       ],
-      chartCaption: "ANAC 2025: quote e perimetro a ridotta concorrenza (scale diverse, lettura descrittiva)",
+      chartCaption: "ANAC 2025: quanto pesano le procedure poco aperte (scale diverse, lettura semplice)",
     },
     {
       id: "ai-municipal-profiles",
       priority: 4,
-      title: "Priorità ai Comuni con profilo spesa alta / servizi bassi",
-      concerns: "Profili OpenCivitas dei Comuni: spesa storica alta rispetto a servizi bassi.",
+      title: "Guardare i Comuni che spendono tanto e offrono poco",
+      concerns:
+        "Bilanci comunali confrontati con un valore di riferimento e con il livello dei servizi (OpenCivitas).",
+      proposal:
+        "Propone di partire dai Comuni dove la spesa è alta e i servizi risultano bassi, chiedendo spiegazioni e confronti con Comuni simili prima di qualsiasi taglio.",
       operation:
-        "L'agente costruisce una coda di lettura sui Comuni del profilo spesa alta / servizi bassi e chiede il confronto con pari e con i livelli di servizio prima di ipotesi locali.",
+        "Prepara una coda di lettura: prima i dati, poi il confronto con pari, poi eventuali scelte locali. Non fa una classifica di 'cattivi amministratori'.",
       effect:
-        "Gli interventi locali partono dai casi dove spesa e servizi divergono di più, senza trasformare lo screening in una classifica di colpe.",
+        "Si interviene dove c'è più da capire; i cittadini vedono spesa e servizi insieme, non solo un totale.",
       why: oc.observation,
       basedOnPathwayIds: ["opencivitas-high-low", "opencivitas-outliers"],
       deepenHref: oc.deepenHref,
-      deepenLabel: "Apri il confronto OpenCivitas",
+      deepenLabel: "Confronta i Comuni",
       metric: {
-        label: "Comuni nel profilo",
+        label: "Comuni nel profilo spesa alta / servizi bassi",
         display: highLow.municipalities.toLocaleString("it-IT"),
-        hint: `su ${quadrants.completeMunicipalities.toLocaleString("it-IT")} con livelli completi`,
+        hint: `su ${quadrants.completeMunicipalities.toLocaleString("it-IT")} con dati completi`,
       },
       bars: [
         {
-          label: "Spesa alta / servizi bassi",
+          label: "Profilo da approfondire",
           value: highLow.municipalities,
           display: highLow.municipalities.toLocaleString("it-IT"),
         },
         {
-          label: "Altri profili completi",
+          label: "Altri Comuni con dati completi",
           value: otherMunicipalities,
           display: otherMunicipalities.toLocaleString("it-IT"),
         },
       ],
-      chartCaption: `OpenCivitas ${openCivitasSnapshot.referenceYear}: conteggio Comuni (profilo descrittivo)`,
+      chartCaption: `OpenCivitas ${openCivitasSnapshot.referenceYear}: quanti Comuni rientrano nel profilo`,
     },
     {
       id: "ai-health-mix",
       priority: 5,
-      title: "Riequilibrare il mix sanitario interno / esterno",
-      concerns: "Costi di produzione SSN, servizi acquistati e personale sanitario esterno.",
+      title: "Capire quanto la sanità compra fuori e quanto fa in casa",
+      concerns:
+        "Soldi della sanità pubblica: servizi comprati all'esterno e personale 'a gettone' o esterno.",
+      proposal:
+        "Propone simulazioni (non tagli automatici) per vedere cosa cambierebbe se una parte dei servizi esterni tornasse a personale stabile, dove ha senso clinico.",
       operation:
-        "L'agente monitora il peso dei servizi acquistati e della spesa per personale esterno, li confronta con le assunzioni stabili e propone solo simulazioni di riequilibrio.",
+        "Misura il peso dei servizi acquistati sui costi di produzione e la spesa per personale esterno. Confronta, non decide al posto dei medici o delle Regioni.",
       effect:
-        "Si vede dove il mix interno/esterno pesa di più; eventuali scelte restano cliniche e di bilancio, non tagli automatici ai servizi.",
+        "Si vede dove la dipendenza dall'esterno è più forte; le scelte restano sanitarie e politiche, non un taglio cieco.",
       why: ssn.observation,
       basedOnPathwayIds: ["ssn-production-costs", "healthcare-external-staff"],
       deepenHref: ssn.deepenHref,
-      deepenLabel: "Apri la sanità",
+      deepenLabel: "Vedi la sanità",
       metric: {
-        label: "Servizi acquistati sul costo di produzione",
+        label: "Quota di servizi acquistati",
         display: `${purchasedShare.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
         hint: `Personale esterno: ${formatBillion(healthcare.value, 3)}`,
       },
@@ -633,62 +673,221 @@ export function buildAiStewardshipAgenda(
           display: formatBillionFromCents(purchasedServicesCents),
         },
         {
-          label: "Resto dei costi di produzione",
+          label: "Altri costi di produzione",
           value: Math.max(0, productionCostsCents - purchasedServicesCents),
           display: formatBillionFromCents(Math.max(0, productionCostsCents - purchasedServicesCents)),
         },
       ],
-      chartCaption: "Composizione del costo di produzione SSN (aggregato nazionale selezionato)",
+      chartCaption: "Come si spezza il costo di produzione del SSN (dato nazionale)",
     },
     {
       id: "ai-consulting-and-collection",
       priority: 6,
-      title: "Rivedere consulenze ripetute e stock di riscossione",
-      concerns: "Pagamenti di consulenza RGS per amministrazione e stock nominale della riscossione.",
+      title: "Separare consulenze ripetute e crediti difficili da riscuotere",
+      concerns:
+        "Due cose diverse: soldi pagati per consulenze ai ministeri, e lo stock enorme di cartelle ancora da riscuotere (che non è denaro già disponibile).",
+      proposal:
+        "Propone di pubblicare ogni anno chi paga di più in consulenze e perché, e di trattare lo stock della riscossione come credito incerto, non come 'tesoretto'.",
       operation:
-        "L'agente confronta le amministrazioni con i pagamenti di consulenza più alti e tiene separato lo stock della riscossione dal gettito annuale, proponendo audit contabili e piani di recupero verificabili.",
+        "Confronta le amministrazioni con i pagamenti più alti per consulenze. Tiene la riscossione su un binario separato: piano di recupero realistico, senza confonderla con le entrate dell'anno.",
       effect:
-        "Si riduce la confusione tra flussi e stock: le consulenze si leggono per andamento, la riscossione resta un credito nominale da non trattare come tesoretto.",
+        "Meno confusione: si capisce cosa si compra con le consulenze e cosa, invece, è solo un credito nominale difficile da incassare.",
       why: `${consult.observation} ${collection.observation}`,
       basedOnPathwayIds: ["rgs-consulting", "collection-stock"],
       deepenHref: consult.deepenHref,
-      deepenLabel: "Apri le consulenze",
+      deepenLabel: "Vedi le consulenze",
       metric: {
-        label: "Stock riscossione (nominale)",
+        label: "Stock nominale della riscossione",
         display: formatBillion(collectionSignal.value, 1),
-        hint: "Non è un tesoretto disponibile",
+        hint: "Gran parte non è realisticamente recuperabile subito",
       },
       bars: consultTop.map((row) => ({
         label: shortAdminLabel(row.administration),
         value: row.paidCashCents / consultMax,
         display: formatMillionFromCents(row.paidCashCents),
       })),
-      chartCaption: `Top ${consultTop.length} amministrazioni per pagamenti di consulenza (${consultYear})`,
+      chartCaption: `Chi ha pagato di più in consulenze (${consultYear})`,
     },
     {
       id: "ai-publish-hypothesis",
       priority: 7,
-      title: "Pubblicare solo ipotesi con assunzioni esplicite",
-      concerns: "Scenario centrale di miglioramento e sue componenti dichiarate.",
+      title: "Dire in chiaro quanto si potrebbe migliorare (con le ipotesi)",
+      concerns:
+        "Uno scenario di miglioramento già calcolato sul sito: non è soldi in cassa, è un 'se facessimo X con queste assunzioni'.",
+      proposal:
+        `Propone di usare lo scenario centrale (${formatBillion(centralScenario.annualBillion, 2)} all'anno) solo come ordine di grandezza pubblico, sempre con le assunzioni visibili.`,
       operation:
-        `L'agente usa lo scenario centrale (${formatBillion(centralScenario.annualBillion, 2)}/anno) solo come ordine di grandezza, con assunzioni visibili, e vieta di presentarlo come risparmio già disponibile.`,
+        "Mostra le parti dello scenario (agevolazioni, appalti, sanità, debiti fuori bilancio). Vieta di presentarlo come risparmio già fatto.",
       effect:
-        "Il pubblico vede un'ipotesi di policy con formula e limiti: utile al dibattito, non confondibile con soldi già in cassa.",
+        "Cittadini e media discutono su numeri dichiarati, non su promesse senza formule.",
       why: scenario.observation,
       basedOnPathwayIds: ["improvement-hypothesis"],
       deepenHref: scenario.deepenHref,
-      deepenLabel: "Apri gli scenari",
+      deepenLabel: "Vedi gli scenari",
       metric: {
-        label: "Scenario centrale (ipotesi/anno)",
+        label: "Ipotesi scenario centrale / anno",
         display: formatBillion(centralScenario.annualBillion, 2),
-        hint: "Ipotesi di policy, non previsione",
+        hint: "Ipotesi di policy, non previsione e non cassa",
       },
       bars: centralScenarioBreakdown.map((row) => ({
         label: shortAdminLabel(row.label, 42),
         value: row.value / scenarioMax,
         display: formatBillion(row.value, 2),
       })),
-      chartCaption: "Scomposizione dello scenario centrale (quote assunte, non risparmi certi)",
+      chartCaption: "Di cosa è fatto lo scenario centrale (assunzioni, non soldi certi)",
+    },
+  ];
+}
+
+/** Visual reading order of the 7 AI moves for the intervention map. */
+export function buildAiInterventionMap(
+  agenda: readonly AiStewardshipMove[] = buildAiStewardshipAgenda(),
+): readonly AiInterventionMapStep[] {
+  return agenda.map((move) => ({
+    order: move.priority,
+    moveId: move.id,
+    label: move.title,
+    plain: move.proposal,
+  }));
+}
+
+/**
+ * Extra interventions grounded in platform data not yet in the 7-priority agenda.
+ * Built after an end-to-end pass of audit signals, cohesion, participations and editorial gates.
+ */
+export function buildAiNextMoves(): readonly AiNextMove[] {
+  const offBudget = signalById("off-budget-debt");
+  const pnrr = signalById("pnrr-beyond-2026");
+  const pathways = buildControlliSintesiPathways();
+  const offBudgetPath = pathways.find((row) => row.id === "off-budget-debt");
+  const pnrrPath = pathways.find((row) => row.id === "pnrr-beyond-2026");
+  const consip = getEditorialTopic("appalti", "consip-da-confrontare");
+  if (!consip) throw new Error("Topic editoriale consip-da-confrontare assente");
+
+  const publicCostBillion = opencoesioneOverview.totals.publicCostCents / 100_000_000_000;
+  const paymentsBillion = opencoesioneOverview.totals.paymentsCents / 100_000_000_000;
+  const participations = mefParticipationsSnapshot;
+
+  return [
+    {
+      id: "next-off-budget",
+      title: "Fermare i nuovi debiti fuori bilancio nei Comuni",
+      whyNow:
+        offBudgetPath?.observation
+        ?? `${new Intl.NumberFormat("it-IT", { maximumFractionDigits: 1 }).format(offBudget.value)} mln € di debiti fuori bilancio rilevati dalla Corte dei conti.`,
+      proposal:
+        "Propone di rafforzare i controlli sugli acquisti senza impegno preventivo e di pubblicare, per ogni Comune coinvolto, quanto nasce ancora fuori bilancio.",
+      effect:
+        "Meno passività 'sorpresa' nei bilanci locali; non è un recupero automatico dello stock già esistente.",
+      metricLabel: "Debiti fuori bilancio rilevati",
+      metricDisplay: `${new Intl.NumberFormat("it-IT", { maximumFractionDigits: 1 }).format(offBudget.value)} mln €`,
+      deepenHref: offBudgetPath?.deepenHref ?? "/controlli",
+      deepenLabel: "Vedi il segnale sui debiti fuori bilancio",
+      sourceNote: `${offBudget.source.institution} · ${offBudget.source.title} · ${offBudget.referenceDate}`,
+    },
+    {
+      id: "next-pnrr-cohesion",
+      title: "Tenere sotto controllo PNRR e fondi di coesione",
+      whyNow:
+        pnrrPath?.observation
+        ?? `Circa ${formatBillion(pnrr.value, 1)} di risorse PNRR previste oltre il 2026.`,
+      proposal:
+        "Propone una dashboard pubblica di scadenze e pagamenti: cosa è in corso, cosa è concluso, cosa è ancora da avviare, senza confondere ritardo e denaro perso.",
+      effect:
+        "Si vede se i progetti avanzano davvero; i cittadini possono chiedere conto sui tempi.",
+      metricLabel: "Costo pubblico progetti vs pagamenti (OpenCoesione)",
+      metricDisplay: `${formatBillion(publicCostBillion, 0)} costo · ${formatBillion(paymentsBillion, 0)} pagati`,
+      deepenHref: "/coesione",
+      deepenLabel: "Apri Coesione e PNRR",
+      sourceNote: `OpenCoesione overview · PNRR oltre 2026: ${formatBillion(pnrr.value, 1)} (${pnrr.referenceDate})`,
+    },
+    {
+      id: "next-participations",
+      title: "Fare luce sulle società partecipate",
+      whyNow: `Il MEF censisce ${participations.totals.participationRecords.toLocaleString("it-IT")} rapporti di partecipazione; ${participations.declaredEvidence.directAwardRecords.toLocaleString("it-IT")} dichiarano affidamenti diretti.`,
+      proposal:
+        "Propone di aggiornare e pubblicare l'elenco delle partecipate con i segnali dichiarati (affidamento diretto / controllo analogo) e di chiedere spiegazioni periodiche dove i due segnali coesistono.",
+      effect:
+        "Più trasparenza su chi controlla cosa; non è una sentenza di illegalità.",
+      metricLabel: "Partecipazioni censite (MEF)",
+      metricDisplay: participations.totals.participationRecords.toLocaleString("it-IT"),
+      deepenHref: "/partecipazioni",
+      deepenLabel: "Apri le partecipazioni",
+      sourceNote: `Rilevazione MEF ${participations.referenceYear} · ${participations.declaredEvidence.legalMeaning}`,
+    },
+    {
+      id: "next-appointments",
+      title: "Monitorare gli incarichi esterni (oltre le consulenze RGS)",
+      whyNow:
+        "In piattaforma c'è anche la serie nazionale degli incarichi (diversa dai soli pagamenti RGS per consulenze).",
+      proposal:
+        "Propone di confrontare anno su anno incarichi esterni e dipendente, evidenziando gli enti dove crescono di più assegnazioni e pagamenti, senza liste di nomi da giudicare.",
+      effect:
+        "Si capisce se lo Stato compra lavoro esterno in modo ripetuto o se rafforza capacità interne.",
+      metricLabel: "Pagina di dettaglio",
+      metricDisplay: "Incarichi",
+      deepenHref: "/incarichi",
+      deepenLabel: "Apri gli incarichi",
+      sourceNote: "Dataset consulenti/incarichi già in catalogo MCP",
+    },
+    {
+      id: "next-budget-law",
+      title: "Leggere la Legge di Bilancio missione per missione",
+      whyNow:
+        "I dati di stanziamento enacted per missione permettono di vedere cosa cresce o cala rispetto all'anno prima.",
+      proposal:
+        "Propone di ordinare le missioni per variazione annuale e di aprire un approfondimento pubblico dove le voci crescono di più, senza mescolare stanziamenti e pagamenti consuntivi.",
+      effect:
+        "Il dibattito sulla manovra parte da numeri confrontabili, non solo da titoli di giornale.",
+      metricLabel: "Pagina di dettaglio",
+      metricDisplay: "Legge di Bilancio",
+      deepenHref: "/spese/legge-di-bilancio",
+      deepenLabel: "Apri la Legge di Bilancio",
+      sourceNote: "Serie storica OpenBDAP legge di bilancio",
+    },
+    {
+      id: "next-territorial",
+      title: "Confrontare la spesa dello Stato sul territorio",
+      whyNow:
+        "Esistono già la spesa statale territorializzata (RGS) e i conti CPT regionali: oggi si possono leggere meglio insieme.",
+      proposal:
+        "Propone confronti pro capite e per missione a livelli non sommabili (Italia, macroaree, regioni), segnalando scostamenti da approfondire, non un 'residuo fiscale' inventato.",
+      effect:
+        "Si vede dove lo Stato spende di più o di meno per abitante, con i limiti del dato in chiaro.",
+      metricLabel: "Pagine di dettaglio",
+      metricDisplay: "Territoriale + CPT",
+      deepenHref: "/spese/territoriale",
+      deepenLabel: "Apri la spesa territorializzata",
+      sourceNote: "RGS spesa territoriale · CPT finanza regionale su /territori/fisco",
+    },
+    {
+      id: "next-invalidity",
+      title: "Seguire la spesa per invalidità civile regione per regione",
+      whyNow:
+        "I dati INPS su invalidità civile mostrano spesa e nuove pensioni per territorio.",
+      proposal:
+        "Propone di pubblicare l'andamento regionale e di approfondire dove crescono insieme spesa e nuove prestazioni, guardando servizi e controlli amministrativi, senza accusare i beneficiari.",
+      effect:
+        "Più chiarezza sulla qualità della spesa sociale; niente 'caccia' alle persone.",
+      metricLabel: "Pagina di dettaglio",
+      metricDisplay: "Invalidità INPS",
+      deepenHref: "/spese/invalidita",
+      deepenLabel: "Apri l'invalidità civile",
+      sourceNote: "Dataset INPS invalidità civile",
+    },
+    {
+      id: "next-consip-gate",
+      title: "Rendere confrontabili gli acquisti (prima di parlare di prezzi)",
+      whyNow: consip.hubSummary,
+      proposal:
+        "Propone di obbligare modello, SKU, quantità, periodo e IVA nei contratti candidati al confronto: senza questi campi non si pubblica alcun 'sovrapprezzo'.",
+      effect:
+        "Si sblocca un confronto prezzi futuro onesto; oggi si rende trasparente il buco informativo.",
+      metricLabel: "Contratti non ancora confrontabili",
+      metricDisplay: consip.primaryMetric,
+      deepenHref: "/dati",
+      deepenLabel: "Apri il catalogo dati (appalti)",
+      sourceNote: `${consip.title} · ${consip.status}`,
     },
   ];
 }
@@ -714,10 +913,12 @@ export const sintesiReadingOrder = [
 export const aiStewardshipDisclosure = {
   badge: "Sezione agenti AI · non ufficiale",
   kicker: "Capitolo distinto dai percorsi umani sopra",
-  title: "Agenda gestita da agenti AI",
-  subtitle: "Cosa farebbe un agente se dovesse orientare spese e leggi dello Stato",
+  title: "Cosa proporrebbe un agente AI",
+  subtitle: "In linguaggio semplice: sette mosse, poi una mappa, poi cosa manca ancora",
   lead:
-    "Questa fascia è separata di proposito: non è il continuo dei 15 percorsi. È un'agenda deterministica etichettata come AI, non parere del Governo, non modello live e non sostituto delle scelte democratiche. Ogni priorità usa solo i numeri già mostrati sopra.",
+    "Qui non continuiamo l'elenco dei percorsi. Qui un agente AI (regole fisse, non un robot che decide da solo) dice cosa farebbe se dovesse aiutare a orientare spese e leggi. Non è parere del Governo. Ogni proposta usa solo numeri già in piattaforma.",
+  howToRead:
+    "Per ogni priorità leggi prima 'In pratica propone', poi cosa riguarda, come lavora e che effetto avrebbe. I grafici sono il dato di supporto.",
   allowed: auditMethodology.aiUse.allowed,
   prohibited: auditMethodology.aiUse.prohibited,
 } as const;

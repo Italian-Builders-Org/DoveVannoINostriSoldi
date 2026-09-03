@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   aiStewardshipDisclosure,
+  buildAiInterventionMap,
+  buildAiNextMoves,
   buildAiStewardshipAgenda,
   buildControlliSintesiPathways,
   sintesiReadingOrder,
@@ -30,6 +32,8 @@ function barWidthPercent(bars: AiStewardshipMove["bars"], value: number): number
 export default function ControlliSintesiPage() {
   const pathways = buildControlliSintesiPathways();
   const aiAgenda = buildAiStewardshipAgenda(pathways);
+  const interventionMap = buildAiInterventionMap(aiAgenda);
+  const nextMoves = buildAiNextMoves();
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -148,6 +152,7 @@ export default function ControlliSintesiPage() {
           <h2 id="agenda-ai-title" className={styles.aiTitle}>{aiStewardshipDisclosure.title}</h2>
           <p className={styles.aiSubtitle}>{aiStewardshipDisclosure.subtitle}</p>
           <p className={styles.aiLead}>{aiStewardshipDisclosure.lead}</p>
+          <p className={styles.aiHowTo}>{aiStewardshipDisclosure.howToRead}</p>
         </header>
 
         <div className={styles.aiBody}>
@@ -193,17 +198,22 @@ export default function ControlliSintesiPage() {
                     <h3>{move.title}</h3>
                   </div>
 
+                  <p className={styles.aiProposal}>
+                    <span className={styles.aiProposalLabel}>In pratica propone</span>
+                    {move.proposal}
+                  </p>
+
                   <dl className={styles.aiBrief}>
                     <div>
                       <dt>Cosa riguarda</dt>
                       <dd>{move.concerns}</dd>
                     </div>
                     <div>
-                      <dt>Operazione</dt>
+                      <dt>Come lavora</dt>
                       <dd>{move.operation}</dd>
                     </div>
                     <div>
-                      <dt>Effetto</dt>
+                      <dt>Che effetto avrebbe</dt>
                       <dd>{move.effect}</dd>
                     </div>
                   </dl>
@@ -254,6 +264,73 @@ export default function ControlliSintesiPage() {
               );
             })}
           </ol>
+
+          <section className={styles.aiMap} aria-labelledby="ai-map-title" id="mappa-interventi">
+            <h3 id="ai-map-title" className={styles.aiBlockTitle}>Mappa degli interventi</h3>
+            <p className={styles.aiBlockLead}>
+              L&apos;ordine che seguirebbe l&apos;agente: dal vincolo del debito fino alle ipotesi
+              pubbliche. Tocca un passo per saltare alla priorità.
+            </p>
+            <ol className={styles.aiMapList}>
+              {interventionMap.map((step, index) => (
+                <li key={step.moveId}>
+                  <a href={`#${step.moveId}`} className={styles.aiMapStep}>
+                    <span className={styles.aiMapOrder}>{step.order}</span>
+                    <span className={styles.aiMapCopy}>
+                      <strong>{step.label}</strong>
+                      <span>{step.plain}</span>
+                    </span>
+                  </a>
+                  {index < interventionMap.length - 1 ? (
+                    <span className={styles.aiMapArrow} aria-hidden="true">↓</span>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className={styles.aiNext} aria-labelledby="ai-next-title" id="ancora-da-fare">
+            <h3 id="ai-next-title" className={styles.aiBlockTitle}>
+              Dopo la priorità 7: cosa potremmo ancora fare?
+            </h3>
+            <p className={styles.aiBlockLead}>
+              Check sui conti e sui dati già in piattaforma (debito, manovra, territori, fondi,
+              partecipate, incarichi, invalidità, confronti acquisti). Queste non sono nella lista
+              delle 7 priorità: sono le prossime mosse più utili, sempre con fonte e senza accuse.
+            </p>
+            <ol className={styles.aiNextList}>
+              {nextMoves.map((move, index) => (
+                <li key={move.id} className={styles.aiNextCard}>
+                  <span className={styles.aiNextIndex}>{String(index + 1).padStart(2, "0")}</span>
+                  <div className={styles.aiNextBody}>
+                    <h4>{move.title}</h4>
+                    <p className={styles.aiProposal}>
+                      <span className={styles.aiProposalLabel}>In pratica propone</span>
+                      {move.proposal}
+                    </p>
+                    <dl className={styles.aiNextMeta}>
+                      <div>
+                        <dt>Perché ora</dt>
+                        <dd>{move.whyNow}</dd>
+                      </div>
+                      <div>
+                        <dt>Che effetto avrebbe</dt>
+                        <dd>{move.effect}</dd>
+                      </div>
+                    </dl>
+                    <div className={styles.aiNextMetric}>
+                      <span>{move.metricLabel}</span>
+                      <strong>{move.metricDisplay}</strong>
+                    </div>
+                    <p className={styles.aiLinks}>
+                      <Link href={move.deepenHref}>{move.deepenLabel} →</Link>
+                      <span>{move.sourceNote}</span>
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
       </section>
 

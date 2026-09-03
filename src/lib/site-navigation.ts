@@ -95,12 +95,13 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/controlli",
     label: "Cosa controllare",
-    aliases: ["/appalti", "/incarichi", "/dati", "/trasparenza"],
+    aliases: ["/appalti", "/incarichi", "/dati", "/trasparenza", "/controlli/sintesi"],
     children: [
       { href: "/appalti", label: "Appalti" },
       { href: "/incarichi", label: "Incarichi" },
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },
+      { href: "/controlli/sintesi", label: "Sintesi" },
       { href: "/esplora", label: "Esplora relazioni" },
     ],
   },
@@ -195,6 +196,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },
+      { href: "/controlli/sintesi", label: "Sintesi" },
       { href: "/trasparenza", label: "Trasparenza e verifiche" },
     ],
   },

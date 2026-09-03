@@ -105,9 +105,10 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
     "sport",
     "giovani e sport",
     "sport e salute",
-    "milano cortina",
     "simico",
     "credito sportivo",
+    "olimpiadi invernali",
+    "giochi del mediterraneo",
   ],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [

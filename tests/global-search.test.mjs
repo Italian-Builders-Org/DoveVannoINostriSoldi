@@ -266,6 +266,24 @@ test("site search has no duplicate destinations and exposes useful Italian alias
   assert.ok(searchSiteDocuments("pnrr").some((result) => result.href === "/coesione"));
 });
 
+test("sport aliases stay discoverable without stealing city-name queries", () => {
+  assert.ok(searchSiteDocuments("sport").some((result) => result.href === "/spese/sport"));
+  assert.ok(searchSiteDocuments("simico").some((result) => result.href === "/spese/sport"));
+  assert.ok(
+    searchSiteDocuments("giochi del mediterraneo").some((result) => result.href === "/spese/sport"),
+  );
+  assert.equal(
+    searchSiteDocuments("milano").some((result) => result.href === "/spese/sport"),
+    false,
+    "bare «milano» must not rank the Sport page via event aliases",
+  );
+  assert.equal(
+    searchSiteDocuments("cortina").some((result) => result.href === "/spese/sport"),
+    false,
+    "bare «cortina» must not rank the Sport page via event aliases",
+  );
+});
+
 test("municipal snapshot search finds major cities by keyword", async () => {
   process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
   const { searchGlobal } = await import("../src/lib/global-search.ts");

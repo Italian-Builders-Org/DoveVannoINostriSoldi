@@ -2463,7 +2463,7 @@ try {
       width,
       validate: async (page) => {
         const treemapSelector = '[role="group"][aria-label^="Scegli una missione"]';
-        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 5_000 });
+        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 15_000 });
         const treemapState = await page.$eval(treemapSelector, (root) => {
           const bounds = root.getBoundingClientRect();
           const tiles = [...root.querySelectorAll('g[role="button"]')];

@@ -65,6 +65,21 @@ La validazione semantica resta responsabilità dell'adapter specifico.
 
 Espone observability separata dal dato economico. Per ora esegue probe reali soltanto sugli adapter attivi e maturi. Una fonte mappata ma non ancora integrata viene indicata come **non ancora sondata**, non come online/offline per supposizione.
 
+### Calendario dei documenti programmatici
+
+`/fonti/calendario` registra le principali pubblicazioni annuali del ciclo di
+bilancio con stato, data o finestra attesa, periodo di riferimento, URL
+ufficiale e `observedAt`. Il registro è curato e versionato: una finestra
+abituale non viene trasformata automaticamente in una scadenza o in un ritardo.
+
+La disponibilità documentale resta separata dall'integrazione dei dati. Il
+calendario non estrae importi o previsioni dai PDF e non considera i loro
+contenuti acquisiti dai dataset del sito finché non esistono un ETL, un hash e
+un contratto verificato dedicati.
+
+Questa prima superficie risponde alla
+[#260](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/260).
+
 ### `/api/internal/refresh-sources`
 
 Endpoint interno autenticato tramite `SOURCE_REFRESH_SECRET`.

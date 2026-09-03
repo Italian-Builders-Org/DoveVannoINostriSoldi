@@ -63,6 +63,15 @@ test("global search matches title words regardless of their order", () => {
   assert.equal(debt.match.reason, "title-tokens");
 });
 
+test("il calendario dei documenti è trovabile anche con le sigle sostituite", () => {
+  for (const query of ["DEF", "NADEF", "DPFP", "ddl bilancio"]) {
+    assert.ok(
+      searchSiteDocuments(query).some((result) => result.href === "/fonti/calendario"),
+      `calendario non trovato con ${query}`,
+    );
+  }
+});
+
 test("global search accepts incomplete tokens and the Jes prefix", () => {
   const results = rankSearchDocuments(
     [

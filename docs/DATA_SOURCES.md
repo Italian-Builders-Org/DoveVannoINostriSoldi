@@ -29,6 +29,9 @@ una riga non porta un URL puntuale, la UI usa il portale canonico dichiarato o
 segnala esplicitamente che l’URL non è disponibile. Ricevute e hash del dataset
 restano verificabili nel registro di copertura senza creare link circolari.
 
+Per aggiungere una nuova fonte in modo ripetibile (contributor o agente), usa
+[DATA_IMPORT_STANDARD.md](DATA_IMPORT_STANDARD.md).
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

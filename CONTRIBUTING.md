@@ -33,6 +33,14 @@ incoerenti, hash diversi, duplicati, importi non validi e riconciliazioni rotte.
 Le date di riferimento, pubblicazione, osservazione e verifica restano campi
 distinti.
 
+Per **nuove fonti tabular** il binario predefinito è il corpus integrato
+(headers + celle stringa + evidence + URL + hash), non un JSON ad hoc di pagina.
+Prima di scrivere codice segui
+[docs/DATA_IMPORT_STANDARD.md](docs/DATA_IMPORT_STANDARD.md): checklist di
+import, tre assi obbligatori (soldi, periodo, provenance) e decisione
+corpus vs snapshot tipizzato. Gli agenti usano la skill
+`.agents/skills/import-dvns-dataset/`.
+
 ## Verifica locale
 
 La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,

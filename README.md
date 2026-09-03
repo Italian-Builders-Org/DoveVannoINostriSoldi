@@ -22,13 +22,13 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 - Capire rapidamente che cosa il dato misura, e che cosa non misura.
 - Fare domande al catalogo dati e al server MCP in sola lettura.
 
-Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
+Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
 
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
 | Territori | Pagella dei governi |
 | --- | --- |
-| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
+| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella politico-economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
 
 | Atlante Istruzione | Atlante Imprese |
 | --- | --- |
@@ -98,7 +98,7 @@ Limiti importanti:
 - ANAC CIG 2025: snapshot mensile verificato, non ricerca live per CIG o fornitore.
 - PNRR: perimetro asili e prima infanzia; non include i pagamenti ReGiS né tutto il Piano.
 - OpenCivitas 2022: Comuni a statuto ordinario (6.557 enti, 15 Regioni).
-- Pagella dei governi: descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
+- [Pagella dei governi](docs/PAGELLA_POLITICO_ECONOMICA.md): descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
 - Assistente: intenti predefiniti, una domanda per volta; non risponde su un singolo Comune e non accetta richieste su frode o corruzione.
 - Contabilità diverse non si sommano (SIOPE, IRPEF, CPT, costi previsti, debiti).
 

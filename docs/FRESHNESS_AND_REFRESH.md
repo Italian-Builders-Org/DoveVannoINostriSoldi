@@ -171,6 +171,25 @@ commit. Hash, dimensioni e data di acquisizione già versionati vengono sostitui
 soltanto quando cambia il contenuto normalizzato o la versione upstream; una
 variazione semantica continua a richiedere l'intera validazione.
 
+### Pagella politico-economica dei governi
+
+Il workflow `government-scorecard-refresh.yml` controlla ogni martedì AMECO e
+le nove fonti Eurostat della pagina. È discovery settimanale: non trasforma una
+serie annuale o trimestrale in un dato settimanale.
+
+AMECO determina il voto soltanto fino all'ultimo anno comune osservato; le sue
+previsioni restano escluse. Eurostat aggiorna i grafici secondo la cadenza della
+singola serie. Ogni punto mantiene il proprio periodo e lo stato pubblicato
+(`observed`, `provisional` o `estimated`). Un cambiamento genera una PR dati
+separata dopo i controlli su filtri, paesi, periodi, unità, hash,
+riconciliazioni e contratto runtime. Un errore di rete o di schema conserva
+l'ultimo snapshot valido.
+
+Il contesto documentato non viene estratto automaticamente dalle notizie: è
+revisionato almeno ogni tre mesi, dopo eventi economici rilevanti e al cambio
+di governo. La procedura completa è in
+[PAGELLA_POLITICO_ECONOMICA.md](PAGELLA_POLITICO_ECONOMICA.md).
+
 ## Policy iniziali
 
 | Fonte | Cadenza sorgente | Discovery DoveVannoINostriSoldi | Dati |
@@ -188,6 +207,7 @@ variazione semantica continua a richiedere l'intera validazione.
 | Senato della Repubblica | su pubblicazione | 6 h | 12 h |
 | Banca d'Italia · debito pubblico | mensile, circa 45 giorni di ritardo | controllo giornaliero 06:17 UTC | snapshot versionato; stale oltre 75 giorni |
 | Eurostat · interessi e spesa totale | annuale | controllo giornaliero 06:17 UTC | snapshot versionato; warning oltre 540 giorni |
+| AMECO + Eurostat · pagella governi | da mensile ad annuale, secondo la serie | controllo settimanale martedì 07:37 UTC | snapshot versionato; pubblicazione tramite PR |
 
 Camera ha un riepilogo strutturato con data del documento. Senato resta documentale: i nuovi atti vengono collegati, ma i valori non sono pubblicati finché non superano una normalizzazione verificabile.
 

@@ -32,6 +32,41 @@ restano verificabili nel registro di copertura senza creare link circolari.
 Per aggiungere una nuova fonte in modo ripetibile (contributor o agente), usa
 [DATA_IMPORT_STANDARD.md](DATA_IMPORT_STANDARD.md).
 
+## Pagella politico-economica dei governi
+
+La pagina `/governi` combina due perimetri che non vanno confusi:
+
+- **voto:** sei serie annuali AMECO della Commissione europea, per Italia,
+  Francia, Germania e Spagna; il vintage Spring 2026 contiene osservazioni fino
+  al 2024 e previsioni dal 2025, ma il punteggio usa solo le osservazioni;
+- **lettura del mandato:** nove grafici AMECO/Eurostat, con frequenza annuale,
+  trimestrale o mensile, più un contesto curato da fonti istituzionali. Questi
+  dati non cambiano il voto.
+
+I dataset Eurostat sono `prc_hicp_minr`, `une_rt_m`, `lfsi_emp_q`,
+`namq_10_pc`, `gov_10dd_edpt1`, `gov_10q_ggdebt`, `gov_10q_ggnfa`,
+`namq_10_gdp` e `nama_10_pe`. Le query sono limitate a IT, FR, DE ed ES e i
+filtri di unità, settore, voce e destagionalizzazione sono bloccati nel source
+spec. Le risposte JSON-stat e lo ZIP CSV AMECO conservano byte, dimensione,
+data di acquisizione e SHA-256.
+
+Le serie non misurano la causalità delle decisioni di governo. Il confronto con
+gli altri tre paesi riduce alcuni shock comuni, ma non assegna meriti o colpe.
+Debito, saldo primario, investimenti, PIL, occupazione e prezzi mantengono unità
+e frequenze distinte; non vengono sommati. I valori mancanti non sono
+interpolati.
+
+Il riuso segue la [CC BY 4.0 della Commissione europea salvo diversa
+indicazione](https://commission.europa.eu/legal-notice_en) e la
+[policy di riuso Eurostat](https://ec.europa.eu/eurostat/web/main/help/copyright-notice),
+incluse le eccezioni dichiarate dalla fonte. Il refresh controlla le origini
+ogni settimana, mentre la pubblicazione effettiva segue la cadenza di ciascun
+dataset e passa sempre da una PR.
+
+Contratto, formule, ultimi periodi disponibili e procedura di manutenzione sono
+documentati in
+[PAGELLA_POLITICO_ECONOMICA.md](PAGELLA_POLITICO_ECONOMICA.md).
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

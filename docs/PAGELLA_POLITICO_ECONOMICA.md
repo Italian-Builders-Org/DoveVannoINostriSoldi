@@ -65,12 +65,25 @@ Ogni indicatore usa gli stessi quattro paesi, la stessa finestra temporale e la 
 
 ### Dati mostrati per capire il periodo
 
-I grafici aggiungono:
+La pagina mostra nove serie. La frequenza più alta serve a leggere cosa è
+successo dentro il mandato; non sostituisce le serie annuali AMECO usate nel
+voto.
 
-- inflazione mensile;
-- tasso di occupazione trimestrale;
-- debito pubblico per abitante annuale;
-- le sei serie annuali usate nel voto.
+| Grafico | Frequenza e fonte | Ultimo periodo nello snapshot | Entra nel voto |
+| --- | --- | --- | --- |
+| Inflazione armonizzata | mensile, Eurostat `prc_hicp_minr` | agosto 2026, stimato | no |
+| Retribuzione reale per dipendente | annuale, AMECO | 2024, osservato | sì |
+| Disoccupazione | mensile, Eurostat `une_rt_m` | luglio 2026 | no |
+| Occupazione | trimestrale, Eurostat `lfsi_emp_q` | primo trimestre 2026 | no |
+| PIL reale per abitante | trimestrale, Eurostat `namq_10_pc` | secondo trimestre 2026 | no |
+| Debito pubblico / PIL | trimestrale, Eurostat `gov_10q_ggdebt` | primo trimestre 2026 | no |
+| Debito pubblico per abitante | annuale, Eurostat `gov_10dd_edpt1` + `nama_10_pe` | 2025 | no |
+| Saldo primario / PIL | trimestrale, Eurostat `gov_10q_ggnfa` | primo trimestre 2026 | no |
+| Investimenti / PIL | trimestrale, Eurostat `namq_10_gdp` | secondo trimestre 2026 | no |
+
+“Stimato” e “provvisorio” sono stati pubblicati dalla fonte e vengono mostrati
+come tali. Questi punti aiutano a leggere il periodo, ma non entrano nel voto:
+il calcolo usa solo le osservazioni annuali AMECO descritte sopra.
 
 Il debito per abitante è calcolato solo quando Eurostat fornisce, per lo stesso paese e lo stesso anno, debito pubblico consolidato e popolazione. Non vengono interpolati valori mancanti.
 
@@ -98,6 +111,13 @@ Le date istituzionali non sono stimate:
 Il voto usa dati annuali. A ogni anno è associata la data di riferimento del 1º luglio. Un anno entra nella finestra del governo soltanto se quella data cade nel suo mandato. La variazione è calcolata fra il primo e l'ultimo anno assegnato; servono due estremi distinti.
 
 Questa regola è uguale per tutti e impedisce di scegliere manualmente gli anni più favorevoli.
+
+I grafici seguono una regola diversa perché possono essere mensili,
+trimestrali o annuali: iniziano dal periodo che contiene il giorno del
+giuramento e terminano all'ultimo periodo pubblicato o alla fine del mandato.
+Il primo punto può quindi includere alcuni giorni precedenti al giuramento; la
+pagina lo segnala esplicitamente. Questa scelta amplia soltanto il contesto
+visivo e non cambia il voto.
 
 ## Stati possibili
 
@@ -132,8 +152,13 @@ La storia serve a spiegare l'evoluzione del progetto. Solo il metodo descritto q
 ### Grafici aggiuntivi
 
 - **Eurostat `prc_hicp_minr`**: inflazione armonizzata mensile;
+- **Eurostat `une_rt_m`**: disoccupazione mensile destagionalizzata;
 - **Eurostat `lfsi_emp_q`**: tasso di occupazione trimestrale destagionalizzato;
+- **Eurostat `namq_10_pc`**: PIL reale trimestrale per abitante;
 - **Eurostat `gov_10dd_edpt1`**: debito pubblico consolidato;
+- **Eurostat `gov_10q_ggdebt`**: debito pubblico trimestrale in rapporto al PIL;
+- **Eurostat `gov_10q_ggnfa`**: saldo netto e interessi usati per ricavare il saldo primario trimestrale;
+- **Eurostat `namq_10_gdp`**: investimenti trimestrali in rapporto al PIL;
 - **Eurostat `nama_10_pe`**: popolazione annuale.
 
 ### Date e contesto
@@ -186,6 +211,27 @@ Quando giura un nuovo governo occorre:
 | `src/data/generated/government-scorecard-page.json` | nove grafici, fonti e contesto dei 17 governi | no |
 
 Il secondo file contiene l'impronta del primo. Se i due non appartengono allo stesso aggiornamento, la validazione fallisce.
+
+Il file della pagina è l'eccezione tipizzata prevista dallo
+[standard di import](DATA_IMPORT_STANDARD.md): le serie hanno frequenze e stati
+diversi, due indicatori sono derivati da componenti che devono riconciliare e
+ogni punto conserva fonte e hash. Non duplica un dataset già pubblicato nel
+corpus integrato. Il contratto TypeScript/Zod e l'ETL rifiutano campi, filtri,
+periodi o provenienze inattesi.
+
+I tre assi obbligatori sono trattati così:
+
+- **soldi:** quasi tutte le serie sono indici, tassi o rapporti; lo stock di
+  debito in milioni di euro viene usato soltanto per ricavare il valore pro
+  capite e non viene sommato a pagamenti, impegni o previsioni;
+- **periodo:** ogni punto conserva periodo di riferimento, frequenza e stato;
+- **provenienza:** titolare, URL di query e landing, condizioni di riuso, data
+  della fonte, acquisizione, dimensione e SHA-256 restano separati. Il controllo
+  di validità avviene durante la stessa acquisizione registrata.
+
+Nell'inventario generale il periodo `2024` della riga `government-scorecard`
+indica l'ultimo anno osservato del voto. Gli ultimi periodi dei nove grafici
+sono elencati nella tabella sopra e nel secondo artefatto.
 
 ## Verifica locale
 

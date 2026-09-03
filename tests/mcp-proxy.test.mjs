@@ -7,7 +7,7 @@ import { config, proxy } from "../src/proxy.ts";
 const { getRewrittenUrl, isRewrite } = proxyTesting;
 
 test("MCP compatibility proxy is scoped to the exact public presentation path", () => {
-  assert.deepEqual(config, { matcher: ["/mcp", "/enti/:path*"] });
+  assert.deepEqual(config, { matcher: ["/mcp", "/enti/:path*", "/api/:path*"] });
 });
 
 test("entity proxy stops the observed ClaudeBot crawl before page rendering", async () => {
@@ -45,6 +45,12 @@ test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical e
   }));
   assert.equal(isRewrite(eventStreamGet), true);
   assert.equal(getRewrittenUrl(eventStreamGet), "https://example.test/api/mcp");
+});
+
+test("API proxy continues ordinary requests", async () => {
+  const response = await proxy(new NextRequest("https://example.test/api/health"));
+  assert.equal(isRewrite(response), false);
+  assert.equal(response.headers.get("x-middleware-next"), "1");
 });
 
 test("MCP compatibility proxy preserves the human-facing page for safe methods", async () => {

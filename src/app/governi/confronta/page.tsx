@@ -6,6 +6,10 @@ import {
   getGovernmentScorecardV6View,
   isGovernmentScorecardV6GovernmentId,
 } from "@/lib/government-scorecard-governments";
+import type {
+  GovernmentScorecardV6ComparisonDetail,
+  GovernmentScorecardV6PageView,
+} from "@/lib/government-scorecard-page";
 
 import { GovernmentComparison } from "./government-comparison";
 
@@ -16,6 +20,28 @@ export const metadata: Metadata = {
 
 function firstQueryValue(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function comparisonDetail(
+  view: GovernmentScorecardV6PageView,
+  id: string,
+): GovernmentScorecardV6ComparisonDetail {
+  const option = view.compare.options.find((candidate) => candidate.id === id);
+  if (!option || view.charts.status !== "ready") {
+    throw new Error(`dettaglio confronto non disponibile per ${id}`);
+  }
+  return {
+    ...option,
+    chart_windows: view.charts.slides.map((chart) => ({
+      indicator_id: chart.indicator_id,
+      start_year: chart.mandate_window.start_year,
+      end_year: chart.mandate_window.end_year,
+      start_date: chart.mandate_window.start_date,
+      end_date: chart.mandate_window.end_date,
+      end_exclusive: chart.mandate_window.end_exclusive,
+    })),
+    context: view.context.slides,
+  };
 }
 
 export default async function GovernmentComparisonPage({
@@ -40,6 +66,14 @@ export default async function GovernmentComparisonPage({
     notFound();
   }
 
-  const view = getGovernmentScorecardV6View(leftId);
-  return <GovernmentComparison compare={view.compare} charts={view.charts} leftId={leftId} rightId={rightId} />;
+  const leftView = getGovernmentScorecardV6View(leftId);
+  const rightView = getGovernmentScorecardV6View(rightId);
+  return (
+    <GovernmentComparison
+      compare={leftView.compare}
+      charts={leftView.charts}
+      left={comparisonDetail(leftView, leftId)}
+      right={comparisonDetail(rightView, rightId)}
+    />
+  );
 }

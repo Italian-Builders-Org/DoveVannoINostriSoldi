@@ -568,8 +568,13 @@
           "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
           "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
           "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
           "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
           "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
           "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en"
         ]
       },

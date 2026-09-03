@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import legacyAnnualSnapshot from "@/data/generated/government-scorecard.json";
+import annualSnapshot from "@/data/generated/government-scorecard.json";
 import { GOVERNMENT_SCORECARD_V6_MANIFEST } from "@/lib/data/government-scorecard-contract";
 import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
 import {
@@ -90,7 +90,7 @@ const rawAnnualDatasetSchema = z.object({
   caveats: z.array(z.string().min(1)).min(3),
 }).strict();
 
-const annualDataset = rawAnnualDatasetSchema.parse(legacyAnnualSnapshot);
+const annualDataset = rawAnnualDatasetSchema.parse(annualSnapshot);
 const rawIndicatorById = new Map(annualDataset.indicators.map((indicator) => [indicator.id, indicator]));
 const COUNTRY_IDS = { IT: "italy", FR: "france", DE: "germany", ES: "spain" } as const;
 function rawValue(indicatorId: string, geography: keyof typeof COUNTRY_IDS, year: number): number | null {
@@ -238,7 +238,7 @@ function sourceInput() {
     raw_sha256: source.sha256,
     raw_bytes: source.bytes,
     limitations: [
-      "Gli endpoint annuali AMECO non ricostruiscono le condizioni economiche dentro l'anno.",
+      "I valori annuali iniziale e finale AMECO non descrivono ciò che accade dentro l'anno.",
       "Il vintage Spring 2026 classifica il 2025-2027 come previsione: questi anni non entrano nel voto.",
     ],
   };
@@ -266,10 +266,10 @@ function missingEndpointInputs(baselineYear: number | null, endYear: number | nu
 }
 
 function dataReason(missing: readonly string[], endpointPositive: boolean, scaleComplete: boolean): string {
-  if (!endpointPositive) return "La finestra annuale non produce endpoint distinti.";
-  if (missing.length > 0) return `Input AMECO obbligatori mancanti: ${missing.join(", ")}.`;
-  if (!scaleComplete) return "Scala storica obbligatoria incompleta.";
-  return "Definizione, unita' o stato osservativo non comparabile.";
+  if (!endpointPositive) return "La finestra annuale non contiene due anni distinti.";
+  if (missing.length > 0) return `Dati AMECO obbligatori mancanti: ${missing.join(", ")}.`;
+  if (!scaleComplete) return "La serie storica necessaria al confronto è incompleta.";
+  return "Definizione, unità o stato del dato non comparabile.";
 }
 
 export function getGovernmentScorecardV6Assessment(id: GovernmentScorecardV6GovernmentId) {
@@ -457,6 +457,15 @@ const CHART_FREQUENCY_LABELS = {
   monthly: "Mensile",
 } as const;
 
+function chartQualityNotes(upstreamStatus: string | null): string[] {
+  const flags = new Set(upstreamStatus ?? "");
+  return [
+    flags.has("b") ? "interruzione nella serie" : null,
+    flags.has("d") ? "definizione diversa" : null,
+    flags.has("u") ? "bassa affidabilità" : null,
+  ].filter((note): note is string => note !== null);
+}
+
 function buildTimeSeriesCharts(
   assessment: ReturnType<typeof getGovernmentScorecardV6Assessment>,
 ): GovernmentScorecardV6Ui["charts"] {
@@ -475,9 +484,9 @@ function buildTimeSeriesCharts(
       const completeEnd = Math.max(...years);
       const completeStartDate = dates[0]!;
       const completeEndDate = dates.at(-1)!;
-      const mandateStartDate = institutionalStartDate > completeStartDate ? institutionalStartDate : completeStartDate;
-      const preferredEndDate = institutionalEndDate < completeEndDate ? institutionalEndDate : completeEndDate;
-      const mandateEndDate = preferredEndDate < mandateStartDate ? mandateStartDate : preferredEndDate;
+      const mandateStartDate = institutionalStartDate;
+      const mandateEndDate = institutionalEndDate;
+      const mandateEndExclusive = assessment.government.end_exclusive !== null;
       const mandateStart = Number(mandateStartDate.slice(0, 4));
       const mandateEnd = Number(mandateEndDate.slice(0, 4));
       const firstPoint = indicator.geographies[0]?.points[0];
@@ -489,11 +498,23 @@ function buildTimeSeriesCharts(
         question: CHART_COPY[indicator.indicator_id].question,
         unit: CHART_COPY[indicator.indicator_id].unit,
         frequency: CHART_FREQUENCY_LABELS[indicator.frequency],
-        mandate_window: { start_year: mandateStart, end_year: mandateEnd, start_date: mandateStartDate, end_date: mandateEndDate },
-        complete_window: { start_year: completeStart, end_year: completeEnd, start_date: completeStartDate, end_date: completeEndDate },
+        mandate_window: {
+          start_year: mandateStart,
+          end_year: mandateEnd,
+          start_date: mandateStartDate,
+          end_date: mandateEndDate,
+          end_exclusive: mandateEndExclusive,
+        },
+        complete_window: {
+          start_year: completeStart,
+          end_year: completeEnd,
+          start_date: completeStartDate,
+          end_date: completeEndDate,
+          end_exclusive: false,
+        },
         note: indicator.usage === "score_and_context"
-          ? `Ogni punto è un'osservazione ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} della fonte: le linee uniscono soltanto periodi disponibili e non creano dati intermedi. Questa serie fa parte dei sei indicatori annuali del voto.`
-          : `Ogni punto è un'osservazione ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} della fonte; le linee uniscono solo i periodi disponibili.`,
+          ? `Ogni punto è un dato ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} pubblicato dalla fonte: le linee uniscono soltanto periodi disponibili e non creano dati intermedi. Questa serie fa parte dei sei indicatori annuali del voto.`
+          : `Ogni punto è un dato ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} pubblicato dalla fonte; le linee uniscono solo i periodi disponibili. Stime, dati provvisori, interruzioni, definizioni diverse o bassa affidabilità sono indicati accanto al numero.`,
         source: {
           owner: firstPoint.source_owner,
           url: firstPoint.source_url,
@@ -504,13 +525,17 @@ function buildTimeSeriesCharts(
         series: indicator.geographies.map((geography) => ({
           id: geography.geography,
           label: CHART_COUNTRY_LABELS[geography.geography],
-          points: geography.points.map((point) => ({
-            year: point.year,
-            period: point.period,
-            period_start: point.period_start,
-            value: point.value,
-            status: point.status,
-          })),
+          points: geography.points.map((point) => {
+            const qualityNotes = chartQualityNotes(point.upstream_status_or_null);
+            return {
+              year: point.year,
+              period: point.period,
+              period_start: point.period_start,
+              value: point.value,
+              status: point.status,
+              ...(qualityNotes.length > 0 ? { quality_notes: qualityNotes } : {}),
+            };
+          }),
         })),
       };
     }),
@@ -638,8 +663,6 @@ function buildSupplementalUi(
       current_government_id: assessment.government.id,
       options: GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS.map((id) => {
         const candidate = getGovernmentScorecardV6Assessment(id);
-        const charts = buildTimeSeriesCharts(candidate);
-        if (charts.status !== "ready") throw new Error(`grafici v6 non disponibili per ${id}`);
         const scoreDisplay = candidate.score_state === "scored_final" || candidate.score_state === "scored_provisional"
           ? calculateGovernmentScorecardV6(buildGovernmentScorecardV6Input(id)).display_score
           : null;
@@ -652,14 +675,6 @@ function buildSupplementalUi(
           start_date: candidate.government.start_date,
           end_date: candidate.government.end_exclusive,
           current: candidate.government.status === "current",
-          chart_windows: charts.slides.map((chart) => ({
-            indicator_id: chart.indicator_id,
-            start_year: chart.mandate_window.start_year,
-            end_year: chart.mandate_window.end_year,
-            start_date: chart.mandate_window.start_date,
-            end_date: chart.mandate_window.end_date,
-          })),
-          context: buildContextSlides(candidate),
         };
       }),
     },

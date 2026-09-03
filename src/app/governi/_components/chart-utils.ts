@@ -35,13 +35,64 @@ export function formatGovernmentChartPeriod(period: string): string {
   return period.replace("-Q", " T");
 }
 
+export function formatGovernmentChartPublicationStatus(
+  status: GovernmentChartPoint["status"],
+): string {
+  if (status === "provisional") return " · provvisorio";
+  if (status === "estimated") return " · stimato";
+  return "";
+}
+
+export function formatGovernmentChartPointStatus(
+  point: Pick<GovernmentChartPoint, "status" | "quality_notes">,
+): string {
+  const labels = [
+    formatGovernmentChartPublicationStatus(point.status).replace(/^ · /, ""),
+    ...(point.quality_notes ?? []),
+  ].filter(Boolean);
+  return labels.length === 0 ? "" : ` · ${labels.join(", ")}`;
+}
+
+export function hasGovernmentChartTrend(periods: readonly string[]): boolean {
+  return new Set(periods).size >= 2;
+}
+
+function governmentChartPeriodEndExclusive(
+  periodStart: string,
+  frequency: GovernmentScorecardV6ChartSlide["frequency"],
+): string {
+  const end = new Date(`${periodStart}T00:00:00Z`);
+  if (Number.isNaN(end.getTime())) throw new Error(`periodo del grafico non valido: ${periodStart}`);
+
+  if (frequency === "Annuale") end.setUTCFullYear(end.getUTCFullYear() + 1);
+  else if (frequency === "Trimestrale") end.setUTCMonth(end.getUTCMonth() + 3);
+  else end.setUTCMonth(end.getUTCMonth() + 1);
+
+  return end.toISOString().slice(0, 10);
+}
+
+export function isGovernmentChartStartBoundaryPeriod(
+  periodStart: string,
+  startDate: string,
+  frequency: GovernmentScorecardV6ChartSlide["frequency"],
+): boolean {
+  return periodStart <= startDate
+    && startDate < governmentChartPeriodEndExclusive(periodStart, frequency);
+}
+
 export function isGovernmentChartPointInWindow(
   periodStart: string,
   startDate: string,
   endDate: string,
   endExclusive: boolean,
+  frequency: GovernmentScorecardV6ChartSlide["frequency"] = "Mensile",
 ): boolean {
-  return periodStart >= startDate && (endExclusive ? periodStart < endDate : periodStart <= endDate);
+  if (isGovernmentChartStartBoundaryPeriod(periodStart, startDate, frequency)) return true;
+
+  const referenceDate = frequency === "Annuale"
+    ? `${periodStart.slice(0, 4)}-07-01`
+    : periodStart;
+  return referenceDate >= startDate && (endExclusive ? referenceDate < endDate : periodStart <= endDate);
 }
 
 export function splitGovernmentChartAtMissingPeriods(

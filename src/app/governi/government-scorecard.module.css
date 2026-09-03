@@ -5,12 +5,6 @@
   overflow-wrap: anywhere;
 }
 
-:global(body):has(.page) > :global(.site-header),
-:global(body):has(.page) > :global(.site-footer),
-:global(body):has(.page) > :global(button[data-report-problem-trigger="floating"]) {
-  display: none;
-}
-
 .hero {
   padding: clamp(18px, 4vw, 40px);
   color: var(--color-on-strong);
@@ -1140,9 +1134,15 @@
 
 .comparisonPageHeader a {
   width: fit-content;
-  color: var(--color-text);
-  font-size: 12px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  color: var(--color-on-strong);
+  background: var(--color-text);
+  font-size: 13px;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .comparisonPageHeader h1,
@@ -1300,7 +1300,8 @@
 
 .comparisonPlot {
   display: block;
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
   height: 220px;
   min-height: 220px;
   background: var(--color-neutral-100);
@@ -1309,20 +1310,9 @@
 .comparisonPlotViewport {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-200);
-  overscroll-behavior-inline: contain;
-  scrollbar-color: var(--color-neutral-500) var(--color-neutral-200);
-  scrollbar-width: thin;
-  touch-action: pan-x;
-}
-
-.comparisonScrollHint {
-  color: var(--color-neutral-600);
-  font-size: 11px;
-  font-weight: 700;
 }
 
 .comparisonChanges {

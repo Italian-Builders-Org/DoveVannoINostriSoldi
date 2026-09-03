@@ -72,10 +72,23 @@ class PublishDataRefreshTests(TestCase):
                 "scripts/etl/specs/government-scorecard-page.source.json",
             ],
         )
-        self.assertEqual(len(government["publication"]["upstreamUrls"]), 8)
-        self.assertIn(
-            government["publication"]["upstreamUrl"],
+        self.assertEqual(
             government["publication"]["upstreamUrls"],
+            [
+                "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+                "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+                "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+                "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
+                "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
+            ],
         )
         self.assertTrue(all(
             url.startswith("https://")

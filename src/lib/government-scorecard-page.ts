@@ -42,7 +42,7 @@ export type GovernmentScorecardV6Decision =
   | { score_state: "not_scored_data"; reason: string };
 
 const SHORT_MANDATE_REASON = "Mandato troppo breve per i dati annuali disponibili.";
-const FORECAST_REASON = "L'endpoint richiesto e' un forecast e non puo' entrare nel voto.";
+const FORECAST_REASON = "L'anno finale disponibile è una previsione e non può entrare nel voto.";
 
 function mandateDurationDays(input: VerifiedGovernmentScorecardV6Input): number {
   const { government } = input;
@@ -136,12 +136,14 @@ export type GovernmentScorecardV6ChartSlide = {
     end_year: number;
     start_date: string;
     end_date: string;
+    end_exclusive: boolean;
   };
   complete_window: {
     start_year: number;
     end_year: number;
     start_date: string;
     end_date: string;
+    end_exclusive: false;
   };
   note: string;
   source: GovernmentScorecardV6ChartSource;
@@ -153,7 +155,8 @@ export type GovernmentScorecardV6ChartSlide = {
       period: string;
       period_start: string;
       value: number;
-      status: "observed";
+      status: "observed" | "provisional" | "estimated";
+      quality_notes?: readonly string[];
     }[];
   }[];
 };
@@ -227,6 +230,29 @@ export type GovernmentScorecardV6ContextSlide = GovernmentScorecardV6ContextSour
   }[];
 };
 
+export type GovernmentScorecardV6CompareOption = {
+  id: string;
+  label: string;
+  href: string;
+  score_state: GovernmentScorecardV6ScoreState;
+  score_display: number | null;
+  start_date: string;
+  end_date: string | null;
+  current: boolean;
+};
+
+export type GovernmentScorecardV6ComparisonDetail = GovernmentScorecardV6CompareOption & {
+  chart_windows: readonly {
+    indicator_id: string;
+    start_year: number;
+    end_year: number;
+    start_date: string;
+    end_date: string;
+    end_exclusive: boolean;
+  }[];
+  context: readonly GovernmentScorecardV6ContextSlide[];
+};
+
 export type GovernmentScorecardV6Ui = {
   charts: GovernmentScorecardV6ChartCollection;
   context: {
@@ -237,30 +263,13 @@ export type GovernmentScorecardV6Ui = {
     status: "ready";
     message: string;
     current_government_id: string;
-    options: readonly {
-      id: string;
-      label: string;
-      href: string;
-      score_state: GovernmentScorecardV6ScoreState;
-      score_display: number | null;
-      start_date: string;
-      end_date: string | null;
-      current: boolean;
-      chart_windows: readonly {
-        indicator_id: string;
-        start_year: number;
-        end_year: number;
-        start_date: string;
-        end_date: string;
-      }[];
-      context: readonly GovernmentScorecardV6ContextSlide[];
-    }[];
+    options: readonly GovernmentScorecardV6CompareOption[];
   };
 };
 
 const EMPTY_CHARTS: GovernmentScorecardV6ChartCollection = {
   status: "empty",
-  message: "Nessuna serie grafica v6 verificata disponibile per questo archetipo.",
+  message: "Nessuna serie grafica verificata disponibile per questo governo.",
   slides: [],
 };
 const EMPTY_CONTEXT = {
@@ -269,7 +278,7 @@ const EMPTY_CONTEXT = {
 } as const;
 const EMPTY_COMPARE = {
   status: "ready",
-  message: "Nessun confronto v6 disponibile.",
+  message: "Nessun confronto disponibile.",
   current_government_id: "",
   options: [],
 } as const;
@@ -521,7 +530,7 @@ export type GovernmentScorecardV6ScoredView<TState extends ScoredState = ScoredS
       description: "Andamento economico relativo nel periodo";
     };
     stability: {
-      evidence_scope: "ticket-05-stress-suite-v6";
+      evidence_scope: "government-scorecard-stress-suite";
       operational_combined_width: number;
       method_audit_width: number;
       label: Exclude<StabilityLabel, null>;
@@ -609,7 +618,7 @@ export function buildScoredGovernmentScorecardV6View<TState extends ScoredState>
     },
     ...sensitivity,
     stability: {
-      evidence_scope: "ticket-05-stress-suite-v6",
+      evidence_scope: "government-scorecard-stress-suite",
       operational_combined_width: stress.operational_width,
       method_audit_width: stress.method_audit_width,
       label: stress.stability,

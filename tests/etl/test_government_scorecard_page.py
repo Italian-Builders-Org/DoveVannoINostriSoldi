@@ -19,6 +19,13 @@ class GovernmentScorecardPageTests(unittest.TestCase):
     def test_committed_snapshot_satisfies_offline_contract(self):
         MODULE.validate(self.snapshot)
 
+    def test_upstream_flags_remain_visible_as_publication_status(self):
+        self.assertEqual(MODULE._publication_status(None), "observed")
+        self.assertEqual(MODULE._publication_status("d"), "observed")
+        self.assertEqual(MODULE._publication_status("p"), "provisional")
+        self.assertEqual(MODULE._publication_status("e"), "estimated")
+        self.assertEqual(MODULE._publication_status("ep"), "estimated")
+
     def test_validation_rejects_interpolation_and_context_evidence_without_status(self):
         interpolated = copy.deepcopy(self.snapshot)
         interpolated["series"][0]["geographies"][0]["points"][0]["status"] = "interpolated"

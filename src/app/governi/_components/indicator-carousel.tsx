@@ -20,11 +20,14 @@ import {
 } from "./chart-geometry";
 import {
   formatGovernmentChartPeriod,
+  formatGovernmentChartPointStatus,
   formatGovernmentChartValue,
   GOVERNMENT_CHART_COLORS,
   GOVERNMENT_CHART_MARKERS,
   GOVERNMENT_CHART_PATTERNS,
+  hasGovernmentChartTrend,
   isGovernmentChartPointInWindow,
+  isGovernmentChartStartBoundaryPeriod,
   splitGovernmentChartAtMissingPeriods,
 } from "./chart-utils";
 import styles from "../government-scorecard.module.css";
@@ -57,16 +60,25 @@ function IndicatorChart({
       point.period_start,
       window.start_date,
       window.end_date,
-      scope === "mandate",
+      window.end_exclusive,
+      chart.frequency,
     )),
-  })), [chart.series, scope, window.end_date, window.start_date]);
+  })), [chart.frequency, chart.series, window.end_date, window.end_exclusive, window.start_date]);
   const periods = useMemo(() => [...new Set(visibleSeries.flatMap((series) => series.points.map((point) => point.period)))]
     .toSorted((left, right) => Date.parse(`${visibleSeries.flatMap((series) => series.points).find((point) => point.period === left)?.period_start}T00:00:00Z`)
       - Date.parse(`${visibleSeries.flatMap((series) => series.points).find((point) => point.period === right)?.period_start}T00:00:00Z`)), [visibleSeries]);
+  const startBoundaryPeriod = scope === "mandate"
+    ? visibleSeries.flatMap((series) => series.points).find((point) => isGovernmentChartStartBoundaryPeriod(
+      point.period_start,
+      window.start_date,
+      chart.frequency,
+    ))?.period ?? null
+    : null;
   const periodIndex = useMemo(() => new Map(periods.map((period, index) => [period, index])), [periods]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const activePeriod = selectedPeriod !== null && periods.includes(selectedPeriod) ? selectedPeriod : periods.at(-1) ?? null;
   const values = visibleSeries.flatMap((series) => series.points.map((point) => point.value));
+  const hasTrend = hasGovernmentChartTrend(periods);
   const rawMinimum = values.length > 0 ? Math.min(...values) : 0;
   const rawMaximum = values.length > 0 ? Math.max(...values) : 1;
   const padding = Math.max((rawMaximum - rawMinimum) * 0.12, Math.abs(rawMaximum || 1) * 0.015, 0.1);
@@ -118,7 +130,12 @@ function IndicatorChart({
   const summaries = visibleSeries.map((series) => {
     const first = series.points[0];
     const last = series.points.at(-1);
-    return { ...series, first, last, change: first && last ? last.value - first.value : null };
+    return {
+      ...series,
+      first,
+      last,
+      change: first && last && last.period_start > first.period_start ? last.value - first.value : null,
+    };
   });
 
   return (
@@ -138,6 +155,11 @@ function IndicatorChart({
           <p className={styles.chartMeta}>
             Valori: {chart.unit} · {chart.frequency === "Annuale" ? "un punto per ogni anno" : `un punto per ogni periodo ${chart.frequency.toLowerCase()}`}
           </p>
+          {startBoundaryPeriod === null ? null : (
+            <p className={styles.chartMeta}>
+              Periodo di insediamento: {formatGovernmentChartPeriod(startBoundaryPeriod)} · può includere giorni precedenti al giuramento.
+            </p>
+          )}
         </div>
       </header>
 
@@ -153,7 +175,11 @@ function IndicatorChart({
       <div className={styles.timeSeriesPlot} data-chart-plot="true">
         {values.length === 0 ? (
           <p className={styles.emptyState} role="status">
-            Nessuna osservazione disponibile nella finestra esatta di questo mandato.
+            Nessun dato pubblicato nella finestra esatta di questo mandato.
+          </p>
+        ) : !hasTrend ? (
+          <p className={styles.emptyState} role="status">
+            Un solo periodo pubblicato nel mandato non basta per mostrare un andamento. Puoi aprire la serie completa.
           </p>
         ) : <svg
           viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`}
@@ -165,7 +191,7 @@ function IndicatorChart({
           onKeyDown={onPlotKeyDown}
         >
           <desc id={descriptionId}>
-            {`${chart.question} Serie osservate dal ${periods[0]} al ${periods.at(-1)}. Usa freccia sinistra e destra per leggere un periodo.`}
+            {`${chart.question} Dati pubblicati dal ${periods[0]} al ${periods.at(-1)}. Usa freccia sinistra e destra per leggere un periodo.`}
           </desc>
           {ticks.map((tick) => {
             const tickY = y(tick);
@@ -220,7 +246,7 @@ function IndicatorChart({
             return (
               <span key={series.id}>
                 <i style={{ backgroundColor: GOVERNMENT_CHART_COLORS[series.id] }} aria-hidden="true" />
-                <b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}: {point ? formatGovernmentChartValue(point.value, chart.unit) : "n.d."}
+                <b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}: {point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "n.d."}
               </span>
             );
           })}
@@ -233,11 +259,11 @@ function IndicatorChart({
             <h4><span style={{ backgroundColor: GOVERNMENT_CHART_COLORS[series.id] }} aria-hidden="true" /><b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}</h4>
             {series.first && series.last && series.change !== null ? (
               <dl>
-                <div><dt>Inizio del periodo · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}</dd></div>
-                <div><dt>Fine del periodo · {formatGovernmentChartPeriod(series.last.period)}</dt><dd>{formatGovernmentChartValue(series.last.value, chart.unit)}</dd></div>
+                <div><dt>Inizio del periodo · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}{formatGovernmentChartPointStatus(series.first)}</dd></div>
+                <div><dt>Fine del periodo · {formatGovernmentChartPeriod(series.last.period)}</dt><dd>{formatGovernmentChartValue(series.last.value, chart.unit)}{formatGovernmentChartPointStatus(series.last)}</dd></div>
                 <div><dt>Variazione</dt><dd>{formatChange(series.change, chart.unit)}</dd></div>
               </dl>
-            ) : <p>Dati osservati non disponibili in questo intervallo.</p>}
+            ) : <p>Servono almeno due periodi pubblicati per calcolare una variazione.</p>}
           </article>
         ))}
       </div>
@@ -246,7 +272,7 @@ function IndicatorChart({
         <summary>Apri la tabella equivalente</summary>
         <div className={styles.tableRegion} role="region" aria-label={`Tabella di ${chart.title}`} tabIndex={0}>
           <table>
-            <caption>{chart.title}, dati {chart.frequency.toLowerCase()} osservati</caption>
+            <caption>{chart.title}, dati {chart.frequency.toLowerCase()} pubblicati</caption>
             <thead>
               <tr>
                 <th scope="col">Paese</th>
@@ -258,9 +284,10 @@ function IndicatorChart({
               {summaries.map((series) => (
                 <tr key={series.id}>
                   <th scope="row">{series.label}</th>
-                  {periods.map((period) => (
-                    <td key={period}>{series.points.find((point) => point.period === period) ? formatGovernmentChartValue(series.points.find((point) => point.period === period)!.value, chart.unit) : "n.d."}</td>
-                  ))}
+                  {periods.map((period) => {
+                    const point = series.points.find((candidate) => candidate.period === period);
+                    return <td key={period}>{point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "n.d."}</td>;
+                  })}
                   <td>{series.change === null ? "n.d." : formatChange(series.change, chart.unit)}</td>
                 </tr>
               ))}

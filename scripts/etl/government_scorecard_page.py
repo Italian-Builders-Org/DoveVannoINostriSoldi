@@ -22,6 +22,8 @@ CORE_PATH = ROOT / "src/data/generated/government-scorecard.json"
 CHRONOLOGY_PATH = ROOT / "scripts/etl/specs/government-scorecard-chronology.json"
 COUNTRIES = (("IT", "italy"), ("FR", "france"), ("DE", "germany"), ("ES", "spain"))
 SNAPSHOT_DATE = "2026-09-03"
+SCHEMA_VERSION = 4
+SNAPSHOT_VERSION = "government-scorecard-page-2026-09-03-r3"
 INDICATOR_ORDER = (
     "inflation",
     "real_compensation",
@@ -33,6 +35,14 @@ INDICATOR_ORDER = (
     "primary_balance",
     "investment_share",
 )
+AMECO_LABELS = {
+    "real_compensation": "Retribuzione reale per dipendente",
+    "unemployment": "Tasso di disoccupazione",
+    "real_gdp_per_capita": "PIL reale per abitante",
+    "debt_ratio": "Debito pubblico sul PIL",
+    "primary_balance": "Saldo primario sul PIL",
+    "investment_share": "Investimenti totali sul PIL",
+}
 CONTEXT_CATEGORIES = (
     "overview",
     "inheritance",
@@ -47,7 +57,7 @@ EUROSTAT_TERMS = "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
 
 
 class SupplementalSnapshotError(ValueError):
-    """Raised when source identity or normalized output does not satisfy M1."""
+    """Raised when source identity or normalized output violates the contract."""
 
 
 def _sha256(payload: bytes) -> str:
@@ -164,6 +174,15 @@ def _period_start(period: str) -> str:
     return f"{period}-01-01"
 
 
+def _publication_status(upstream_status: str | None) -> str:
+    flags = set(upstream_status or "")
+    if "e" in flags:
+        return "estimated"
+    if "p" in flags:
+        return "provisional"
+    return "observed"
+
+
 def _point(period: str, value: float, unit: str, frequency: str, source: dict[str, Any], upstream_status: str | None) -> dict[str, Any]:
     return {
         "year": int(period[:4]),
@@ -172,7 +191,7 @@ def _point(period: str, value: float, unit: str, frequency: str, source: dict[st
         "value": value,
         "unit": unit,
         "frequency": frequency,
-        "status": "observed",
+        "status": _publication_status(upstream_status),
         "upstream_status_or_null": upstream_status,
         "source_id": source["id"],
         "source_owner": source["owner"],
@@ -180,6 +199,10 @@ def _point(period: str, value: float, unit: str, frequency: str, source: dict[st
         "retrieved_at": source["retrieved_at"],
         "raw_sha256": source["raw_sha256"],
     }
+
+
+def _combined_status(*statuses: str | None) -> str | None:
+    return ";".join(filter(None, statuses)) or None
 
 
 def _eurostat_series(
@@ -207,7 +230,55 @@ def _eurostat_series(
         "label": label,
         "usage": "context_only",
         "frequency": frequency,
-        "latest_observed_period": max(point["period"] for geography in geographies for point in geography["points"]),
+        "latest_published_period": max(point["period"] for geography in geographies for point in geography["points"]),
+        "geographies": geographies,
+    }
+
+
+def _primary_balance_series(data: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
+    geographies = []
+    combined_hash = _canonical_hash([source["raw_sha256"], "B9+D41PAY"])
+    periods = sorted(_category_positions(data, "time"), key=_category_positions(data, "time").get)
+    for geography, _ in COUNTRIES:
+        points = []
+        for period in periods:
+            balance, balance_status = _jsonstat_value(
+                data,
+                {"freq": "Q", "unit": "PC_GDP", "s_adj": "NSA", "sector": "S13", "na_item": "B9", "geo": geography, "time": period},
+            )
+            interest, interest_status = _jsonstat_value(
+                data,
+                {"freq": "Q", "unit": "PC_GDP", "s_adj": "NSA", "sector": "S13", "na_item": "D41PAY", "geo": geography, "time": period},
+            )
+            if balance is None or interest is None:
+                continue
+            points.append({
+                **_point(period, round(balance + interest, 4), "percent of GDP", "quarterly", {
+                    **source,
+                    "id": "eurostat:gov_10q_ggnfa:primary-balance",
+                    "raw_sha256": combined_hash,
+                }, _combined_status(balance_status, interest_status)),
+                "derivation": {
+                    "formula": "net_lending_percent_gdp + interest_payable_percent_gdp",
+                    "net_lending_percent_gdp": balance,
+                    "interest_payable_percent_gdp": interest,
+                    "sector": "S13",
+                    "net_lending_item": "B9",
+                    "interest_item": "D41PAY",
+                },
+                "component_sources": [
+                    {"dataset_code": source["dataset_code"], "raw_sha256": source["raw_sha256"], "source_url": source["query_url"]},
+                ],
+            })
+        if not points:
+            raise SupplementalSnapshotError(f"no primary-balance observations: {geography}")
+        geographies.append({"geography": geography, "points": points})
+    return {
+        "indicator_id": "primary_balance",
+        "label": "Saldo primario sul PIL",
+        "usage": "context_only",
+        "frequency": "quarterly",
+        "latest_published_period": max(point["period"] for geography in geographies for point in geography["points"]),
         "geographies": geographies,
     }
 
@@ -243,10 +314,10 @@ def _ameco_series(core: dict[str, Any], source: dict[str, Any]) -> list[dict[str
             geographies.append({"geography": geography, "points": points})
         output.append({
             "indicator_id": raw["id"],
-            "label": raw["label"],
+            "label": AMECO_LABELS.get(raw["id"], raw["id"]),
             "usage": "score_and_context",
             "frequency": "annual",
-            "latest_observed_period": max(point["period"] for geography in geographies for point in geography["points"]),
+            "latest_published_period": max(point["period"] for geography in geographies for point in geography["points"]),
             "geographies": geographies,
         })
     return output
@@ -304,7 +375,7 @@ def _debt_per_capita_series(
         "label": "Debito pubblico per abitante",
         "usage": "context_only",
         "frequency": "annual",
-        "latest_observed_period": max(point["period"] for geography in geographies for point in geography["points"]),
+        "latest_published_period": max(point["period"] for geography in geographies for point in geography["points"]),
         "geographies": geographies,
     }
 
@@ -707,40 +778,75 @@ def _build_contexts(core: dict[str, Any], chronology: dict[str, Any], series: li
     return output
 
 
+def _contexts_for_snapshot(core: dict[str, Any], chronology: dict[str, Any], series: list[dict[str, Any]], retrieved_at: str) -> list[dict[str, Any]]:
+    if "measures" in core and "contexts" in core:
+        return _build_contexts(core, chronology, series, retrieved_at)
+    existing = _load(OUTPUT).get("contexts")
+    if not isinstance(existing, list):
+        raise SupplementalSnapshotError("existing context catalog missing")
+    return existing
+
+
 def build_snapshot(retrieved_at: str) -> dict[str, Any]:
     core = _load(CORE_PATH)
     chronology = _load(CHRONOLOGY_PATH)
     ameco = _ameco_source(core)
     inflation_data, inflation_payload, inflation_url = _fetch_eurostat("prc_hicp_minr", (("freq", "M"), ("unit", "RCH_A"), ("coicop18", "TOTAL")), "1996-01")
+    unemployment_data, unemployment_payload, unemployment_url = _fetch_eurostat("une_rt_m", (("freq", "M"), ("s_adj", "SA"), ("age", "TOTAL"), ("sex", "T"), ("unit", "PC_ACT")), "1997-01")
     employment_data, employment_payload, employment_url = _fetch_eurostat("lfsi_emp_q", (("freq", "Q"), ("indic_em", "EMP_LFS"), ("s_adj", "SA"), ("sex", "T"), ("age", "Y20-64"), ("unit", "PC_POP")), "2009-Q1")
+    real_gdp_per_capita_data, real_gdp_per_capita_payload, real_gdp_per_capita_url = _fetch_eurostat("namq_10_pc", (("freq", "Q"), ("unit", "CLV_I20_HAB"), ("s_adj", "NSA"), ("na_item", "B1GQ")), "1995-Q1")
     debt_data, debt_payload, debt_url = _fetch_eurostat("gov_10dd_edpt1", (("freq", "A"), ("unit", "MIO_EUR"), ("sector", "S13"), ("na_item", "GD")))
+    debt_ratio_data, debt_ratio_payload, debt_ratio_url = _fetch_eurostat("gov_10q_ggdebt", (("freq", "Q"), ("unit", "PC_GDP"), ("sector", "S13"), ("na_item", "GD")), "1995-Q1")
+    primary_balance_data, primary_balance_payload, primary_balance_url = _fetch_eurostat("gov_10q_ggnfa", (("freq", "Q"), ("unit", "PC_GDP"), ("s_adj", "NSA"), ("sector", "S13"), ("na_item", "B9"), ("na_item", "D41PAY")), "1995-Q1")
+    investment_share_data, investment_share_payload, investment_share_url = _fetch_eurostat("namq_10_gdp", (("freq", "Q"), ("unit", "PC_GDP"), ("s_adj", "SCA"), ("na_item", "P51G")), "1995-Q1")
     population_data, population_payload, population_url = _fetch_eurostat("nama_10_pe", (("freq", "A"), ("unit", "THS_PER"), ("na_item", "POP_NC")))
     inflation_source = _source("prc_hicp_minr", "HICP monthly annual rate of change", inflation_payload, inflation_url, inflation_data, retrieved_at)
+    unemployment_source = _source("une_rt_m", "Monthly unemployment rate", unemployment_payload, unemployment_url, unemployment_data, retrieved_at)
     employment_source = _source("lfsi_emp_q", "Quarterly seasonally adjusted employment rate", employment_payload, employment_url, employment_data, retrieved_at)
+    real_gdp_per_capita_source = _source("namq_10_pc", "Quarterly real GDP per capita", real_gdp_per_capita_payload, real_gdp_per_capita_url, real_gdp_per_capita_data, retrieved_at)
     debt_source = _source("gov_10dd_edpt1", "Government deficit/surplus, debt and associated data", debt_payload, debt_url, debt_data, retrieved_at)
+    debt_ratio_source = _source("gov_10q_ggdebt", "Quarterly general government gross debt", debt_ratio_payload, debt_ratio_url, debt_ratio_data, retrieved_at)
+    primary_balance_source = _source("gov_10q_ggnfa", "Quarterly government finance statistics", primary_balance_payload, primary_balance_url, primary_balance_data, retrieved_at)
+    investment_share_source = _source("namq_10_gdp", "Quarterly national accounts main GDP aggregates", investment_share_payload, investment_share_url, investment_share_data, retrieved_at)
     population_source = _source("nama_10_pe", "Population and employment by main activity", population_payload, population_url, population_data, retrieved_at)
 
     series = _ameco_series(core, ameco)
     series.extend([
         _eurostat_series("inflation", "Inflazione armonizzata", "annual rate of change, percent", inflation_data, inflation_source, {"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"}, "monthly"),
+        _eurostat_series("unemployment", "Tasso di disoccupazione", "percent of labour force", unemployment_data, unemployment_source, {"freq": "M", "s_adj": "SA", "age": "TOTAL", "sex": "T", "unit": "PC_ACT"}, "monthly"),
         _eurostat_series("employment_rate", "Tasso di occupazione 20–64", "percent of population aged 20–64", employment_data, employment_source, {"freq": "Q", "indic_em": "EMP_LFS", "s_adj": "SA", "sex": "T", "age": "Y20-64", "unit": "PC_POP"}, "quarterly"),
+        _eurostat_series("real_gdp_per_capita", "PIL reale per abitante", "chain linked volumes, index 2020=100 per inhabitant", real_gdp_per_capita_data, real_gdp_per_capita_source, {"freq": "Q", "unit": "CLV_I20_HAB", "s_adj": "NSA", "na_item": "B1GQ"}, "quarterly"),
+        _eurostat_series("debt_ratio", "Debito pubblico sul PIL", "percent of GDP", debt_ratio_data, debt_ratio_source, {"freq": "Q", "unit": "PC_GDP", "sector": "S13", "na_item": "GD"}, "quarterly"),
+        _primary_balance_series(primary_balance_data, primary_balance_source),
+        _eurostat_series("investment_share", "Investimenti totali sul PIL", "percent of GDP", investment_share_data, investment_share_source, {"freq": "Q", "unit": "PC_GDP", "s_adj": "SCA", "na_item": "P51G"}, "quarterly"),
     ])
     debt_per_capita = _debt_per_capita_series(debt_data, debt_source, population_data, population_source)
     series.append(debt_per_capita)
     by_id = {item["indicator_id"]: item for item in series}
     ordered_series = [by_id[indicator_id] for indicator_id in INDICATOR_ORDER]
     snapshot = {
-        "schema_version": 3,
-        "snapshot_version": "government-scorecard-page-2026-09-03-r2",
+        "schema_version": SCHEMA_VERSION,
+        "snapshot_version": SNAPSHOT_VERSION,
         "as_of_date": SNAPSHOT_DATE,
         "coverage": {
             "first_period": "1995",
-            "latest_observed_periods": [{"indicator_id": item["indicator_id"], "period": item["latest_observed_period"]} for item in ordered_series],
+            "latest_published_periods": [{"indicator_id": item["indicator_id"], "period": item["latest_published_period"]} for item in ordered_series],
             "missing_rule": "omit unavailable source observations; never interpolate",
         },
-        "sources": [ameco, inflation_source, employment_source, debt_source, population_source],
+        "sources": [
+            ameco,
+            inflation_source,
+            unemployment_source,
+            employment_source,
+            real_gdp_per_capita_source,
+            debt_source,
+            debt_ratio_source,
+            primary_balance_source,
+            investment_share_source,
+            population_source,
+        ],
         "series": ordered_series,
-        "contexts": _build_contexts(core, chronology, ordered_series, retrieved_at),
+        "contexts": _contexts_for_snapshot(core, chronology, ordered_series, retrieved_at),
         "score_contract": {"supplemental_score_impact": "none", "core_artifact_sha256": _sha256(CORE_PATH.read_bytes())},
     }
     validate(snapshot)
@@ -751,7 +857,7 @@ def validate(snapshot: dict[str, Any]) -> None:
     expected_keys = {"schema_version", "snapshot_version", "as_of_date", "coverage", "sources", "series", "contexts", "score_contract"}
     if set(snapshot) != expected_keys:
         raise SupplementalSnapshotError("unexpected snapshot fields")
-    if snapshot.get("schema_version") != 3 or snapshot.get("snapshot_version") != "government-scorecard-page-2026-09-03-r2":
+    if snapshot.get("schema_version") != SCHEMA_VERSION or snapshot.get("snapshot_version") != SNAPSHOT_VERSION:
         raise SupplementalSnapshotError("snapshot identity mismatch")
     if snapshot.get("score_contract") != {
         "supplemental_score_impact": "none",
@@ -770,16 +876,16 @@ def validate(snapshot: dict[str, Any]) -> None:
             for point in geography.get("points", []):
                 period_starts.append(point.get("period_start"))
                 all_periods.append(point.get("period"))
-                if point.get("status") != "observed" or point.get("frequency") != item["frequency"] or not str(point.get("period", "")).startswith(str(point.get("year"))):
-                    raise SupplementalSnapshotError("non-observed or synthetic point")
+                if point.get("status") not in {"observed", "provisional", "estimated"} or point.get("frequency") != item["frequency"] or not str(point.get("period", "")).startswith(str(point.get("year"))):
+                    raise SupplementalSnapshotError("unsupported publication status or synthetic point")
                 if not isinstance(point.get("value"), (int, float)) or not math.isfinite(point["value"]):
                     raise SupplementalSnapshotError("non-finite point")
                 if not isinstance(point.get("raw_sha256"), str) or len(point["raw_sha256"]) != 64:
                     raise SupplementalSnapshotError("point without source hash")
             if period_starts != sorted(set(period_starts)) or not period_starts:
                 raise SupplementalSnapshotError("unordered, duplicated or empty series")
-        if item.get("latest_observed_period") != max(all_periods):
-            raise SupplementalSnapshotError("latest observed period mismatch")
+        if item.get("latest_published_period") != max(all_periods):
+            raise SupplementalSnapshotError("latest published period mismatch")
     contexts = snapshot.get("contexts")
     if not isinstance(contexts, list) or len(contexts) != 17:
         raise SupplementalSnapshotError("context government coverage mismatch")
@@ -847,14 +953,9 @@ def main() -> None:
     retrieved_at = _timestamp(args.retrieved_at)
     if args.refresh_contexts:
         snapshot = _load(OUTPUT)
-        snapshot["schema_version"] = 3
-        snapshot["snapshot_version"] = "government-scorecard-page-2026-09-03-r2"
-        snapshot["contexts"] = _build_contexts(
-            _load(CORE_PATH),
-            _load(CHRONOLOGY_PATH),
-            snapshot["series"],
-            retrieved_at,
-        )
+        snapshot["schema_version"] = SCHEMA_VERSION
+        snapshot["snapshot_version"] = SNAPSHOT_VERSION
+        snapshot["contexts"] = _contexts_for_snapshot(_load(CORE_PATH), _load(CHRONOLOGY_PATH), snapshot["series"], retrieved_at)
     else:
         snapshot = build_snapshot(retrieved_at)
     validate(snapshot)

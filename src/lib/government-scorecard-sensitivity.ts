@@ -992,12 +992,12 @@ function separateDiagnostics(governmentId: string) {
     scale_leave_block_width: {
       width: null,
       complete: false as const,
-      reason: "La dimensione del blocco temporale non e' preregistrata nel manifest Ticket 05.",
+      reason: "La dimensione del blocco temporale non è preregistrata nel manifest metodologico.",
     },
     expanded_peer_width: {
       width: null,
       complete: false as const,
-      reason: "Lo snapshot runtime v6 non contiene un paniere peer allargato congelato.",
+      reason: "Lo snapshot corrente non contiene un gruppo di confronto allargato e congelato.",
     },
     drop_one_indicator_width: scoreSummary(dropIndicatorScores).width,
     drop_one_pillar_width: scoreSummary(dropPillarScores).width,
@@ -1081,7 +1081,7 @@ function operationalAudit(governmentId: string, base: number) {
   failures.push({
     axis: "vintage",
     configuration_id: "previous_vintage",
-    reason: "Snapshot AMECO precedente non congelato nel runtime v6.",
+    reason: "Un vintage AMECO precedente non è incluso nei dati pubblicati.",
   });
 
   const temporal = scoreSummary(temporalScores);
@@ -1112,7 +1112,7 @@ function operationalAudit(governmentId: string, base: number) {
     vintage: {
       delta: null,
       complete: false,
-      reason: "Snapshot AMECO precedente non congelato nel runtime v6.",
+      reason: "Un vintage AMECO precedente non è incluso nei dati pubblicati.",
     },
   };
 }

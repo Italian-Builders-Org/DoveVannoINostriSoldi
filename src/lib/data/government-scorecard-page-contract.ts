@@ -82,12 +82,12 @@ const sourceSchema = z.object({
 }).strict();
 
 const componentSourceSchema = z.object({
-  dataset_code: z.enum(["gov_10dd_edpt1", "nama_10_pe"]),
+  dataset_code: z.enum(["gov_10dd_edpt1", "gov_10q_ggnfa", "nama_10_pe"]),
   raw_sha256: sha256,
   source_url: dataUrl,
 }).strict();
 
-const derivationSchema = z.object({
+const debtPerCapitaDerivationSchema = z.object({
   formula: z.literal("debt_stock_mio_eur * 1000 / population_thousand"),
   debt_stock_mio_eur: z.number().finite().nonnegative(),
   population_thousand: z.number().finite().positive(),
@@ -98,6 +98,17 @@ const derivationSchema = z.object({
   population_item: z.literal("POP_NC"),
 }).strict();
 
+const primaryBalanceDerivationSchema = z.object({
+  formula: z.literal("net_lending_percent_gdp + interest_payable_percent_gdp"),
+  net_lending_percent_gdp: z.number().finite(),
+  interest_payable_percent_gdp: z.number().finite().nonnegative(),
+  sector: z.literal("S13"),
+  net_lending_item: z.literal("B9"),
+  interest_item: z.literal("D41PAY"),
+}).strict();
+
+const derivationSchema = z.union([debtPerCapitaDerivationSchema, primaryBalanceDerivationSchema]);
+
 const pointSchema = z.object({
   year: z.number().int().min(1995).max(2100),
   period: z.string().regex(/^\d{4}(?:-Q[1-4]|-(?:0[1-9]|1[0-2]))?$/),
@@ -105,7 +116,7 @@ const pointSchema = z.object({
   value: z.number().finite(),
   unit: z.string().min(1),
   frequency: z.enum(FREQUENCIES),
-  status: z.literal("observed"),
+  status: z.enum(["observed", "provisional", "estimated"]),
   upstream_status_or_null: z.string().min(1).nullable(),
   source_id: z.string().min(1),
   source_owner: z.string().min(1),
@@ -113,7 +124,7 @@ const pointSchema = z.object({
   retrieved_at: timestamp,
   raw_sha256: sha256,
   derivation: derivationSchema.optional(),
-  component_sources: z.tuple([componentSourceSchema, componentSourceSchema]).optional(),
+  component_sources: z.array(componentSourceSchema).min(1).max(2).optional(),
 }).strict();
 
 const seriesSchema = z.object({
@@ -121,7 +132,7 @@ const seriesSchema = z.object({
   label: z.string().min(1),
   usage: z.enum(["score_and_context", "context_only"]),
   frequency: z.enum(FREQUENCIES),
-  latest_observed_period: z.string().regex(/^\d{4}(?:-Q[1-4]|-(?:0[1-9]|1[0-2]))?$/),
+  latest_published_period: z.string().regex(/^\d{4}(?:-Q[1-4]|-(?:0[1-9]|1[0-2]))?$/),
   geographies: z.array(z.object({
     geography: z.enum(GEOGRAPHIES),
     points: z.array(pointSchema).min(1),
@@ -177,18 +188,18 @@ const emptyContextSlideSchema = z.object({
 const contextSlideSchema = z.discriminatedUnion("status", [readyContextSlideSchema, emptyContextSlideSchema]);
 
 export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
-  schema_version: z.literal(3),
-  snapshot_version: z.literal("government-scorecard-page-2026-09-03-r2"),
+  schema_version: z.literal(4),
+  snapshot_version: z.literal("government-scorecard-page-2026-09-03-r3"),
   as_of_date: z.literal("2026-09-03"),
   coverage: z.object({
     first_period: z.literal("1995"),
-    latest_observed_periods: z.array(z.object({
+    latest_published_periods: z.array(z.object({
       indicator_id: z.enum(GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS),
       period: z.string().min(4),
     }).strict()).length(9),
     missing_rule: z.literal("omit unavailable source observations; never interpolate"),
   }).strict(),
-  sources: z.array(sourceSchema).length(5),
+  sources: z.array(sourceSchema).length(10),
   series: z.array(seriesSchema).length(9),
   contexts: z.array(z.object({
     government_id: z.string().regex(/^[a-z0-9-]+$/),
@@ -203,8 +214,13 @@ export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
   const expectedSourceIds = [
     "ameco:2026-spring",
     "eurostat:prc_hicp_minr",
+    "eurostat:une_rt_m",
     "eurostat:lfsi_emp_q",
+    "eurostat:namq_10_pc",
     "eurostat:gov_10dd_edpt1",
+    "eurostat:gov_10q_ggdebt",
+    "eurostat:gov_10q_ggnfa",
+    "eurostat:namq_10_gdp",
     "eurostat:nama_10_pe",
   ];
   if (snapshot.sources.some((source, index) => source.id !== expectedSourceIds[index])) {
@@ -233,7 +249,7 @@ export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
         previousYear = point.year;
         previousPeriodStart = point.period_start;
         if (series.indicator_id === "debt_per_capita") {
-          if (!point.derivation || !point.component_sources) {
+          if (!point.derivation || point.derivation.formula !== "debt_stock_mio_eur * 1000 / population_thousand" || !point.component_sources || point.component_sources.length !== 2) {
             context.addIssue({ code: "custom", message: "debito per abitante privo di derivazione", path: ["series", seriesIndex, "geographies", geographyIndex, "points", pointIndex] });
             return;
           }
@@ -249,6 +265,20 @@ export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
             || point.raw_sha256 !== canonicalHash(point.component_sources.map((source) => source.raw_sha256))
           ) {
             context.addIssue({ code: "custom", message: "debito per abitante non riconciliato", path: ["series", seriesIndex, "geographies", geographyIndex, "points", pointIndex] });
+          }
+        } else if (series.indicator_id === "primary_balance") {
+          if (!point.derivation || point.derivation.formula !== "net_lending_percent_gdp + interest_payable_percent_gdp" || !point.component_sources || point.component_sources.length !== 1) {
+            context.addIssue({ code: "custom", message: "saldo primario privo di derivazione", path: ["series", seriesIndex, "geographies", geographyIndex, "points", pointIndex] });
+            return;
+          }
+          const expected = Math.round((point.derivation.net_lending_percent_gdp + point.derivation.interest_payable_percent_gdp) * 10_000) / 10_000;
+          if (
+            point.value !== expected
+            || point.component_sources[0].dataset_code !== "gov_10q_ggnfa"
+            || point.component_sources[0].raw_sha256 !== sourceById.get("eurostat:gov_10q_ggnfa")?.raw_sha256
+            || point.raw_sha256 !== canonicalHash([point.component_sources[0].raw_sha256, "B9+D41PAY"])
+          ) {
+            context.addIssue({ code: "custom", message: "saldo primario non riconciliato", path: ["series", seriesIndex, "geographies", geographyIndex, "points", pointIndex] });
           }
         } else if (point.derivation || point.component_sources) {
           context.addIssue({ code: "custom", message: "derivazione inattesa", path: ["series", seriesIndex, "geographies", geographyIndex, "points", pointIndex] });
@@ -270,8 +300,8 @@ export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
       .flatMap((geography) => geography.points.map((point) => point.period))
       .toSorted()
       .at(-1);
-    if (series.latest_observed_period !== latest) {
-      context.addIssue({ code: "custom", message: "ultimo periodo osservato divergente", path: ["series", seriesIndex, "latest_observed_period"] });
+    if (series.latest_published_period !== latest) {
+      context.addIssue({ code: "custom", message: "ultimo periodo pubblicato divergente", path: ["series", seriesIndex, "latest_published_period"] });
     }
   });
 

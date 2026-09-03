@@ -788,9 +788,8 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
-        assertTextMatches(text, /Economia italiana: cosa sta migliorando e cosa no/i, label);
-        assertTextMatches(text, /Come sta andando con Meloni-I/i, label);
-        assertTextMatches(text, /AMECO/i, label);
+        assertTextMatches(text, /Pagella politico-economica/i, label);
+        assertTextMatches(text, /Meloni I/i, label);
         assertTextMatches(text, /Eurostat/i, label);
         assert.equal(
           await page.$eval("body", (element) => getComputedStyle(element).fontFamily.includes("Geist")),
@@ -808,7 +807,7 @@ try {
 
         await page.evaluate(() => {
           const summary = [...document.querySelectorAll("summary")].find(
-            (candidate) => candidate.textContent?.trim() === "Dati del grafico in tabella",
+            (candidate) => candidate.textContent?.trim() === "Apri la tabella equivalente",
           );
           summary?.click();
         });
@@ -827,17 +826,17 @@ try {
     pathname: "/governi/confronta",
     width: 390,
     validate: async (page) => {
-      await page.select('select[name="x"]', "prodi-i");
-      await page.select('select[name="y"]', "meloni-i");
+      await page.select('select[name="sinistra"]', "prodi-i");
+      await page.select('select[name="destra"]', "meloni-i");
       await Promise.all([
         page.waitForNavigation({ waitUntil: "domcontentloaded" }),
         page.click('main button[type="submit"]'),
       ]);
-      assert.equal(new URL(page.url()).searchParams.get("x"), "prodi-i");
-      assert.equal(new URL(page.url()).searchParams.get("y"), "meloni-i");
+      assert.equal(new URL(page.url()).searchParams.get("sinistra"), "prodi-i");
+      assert.equal(new URL(page.url()).searchParams.get("destra"), "meloni-i");
       const text = await bodyText(page);
-      assertTextMatches(text, /Prodi-I/i, "Confronto governi 390px");
-      assertTextMatches(text, /Meloni-I/i, "Confronto governi 390px");
+      assertTextMatches(text, /Prodi I/i, "Confronto governi 390px");
+      assertTextMatches(text, /Meloni I/i, "Confronto governi 390px");
       assert.equal(
         await page.$("[data-higher-result]"),
         null,
@@ -857,12 +856,12 @@ try {
         const text = await bodyText(page);
         assert.equal(
           await page.$eval("main h1", (element) => element.textContent?.trim()),
-          "Meloni-I",
+          "Meloni I",
           `${label}: H1 della scheda assente`,
         );
-        assertTextMatches(text, /Commissione europea · AMECO/i, label);
-        assertTextMatches(text, /Cosa ha ereditato/i, label);
-        assertTextMatches(text, /Cosa i dati non dimostrano/i, label);
+        assertTextMatches(text, /Eurostat/i, label);
+        assertTextMatches(text, /Il mandato in breve/i, label);
+        assertTextMatches(text, /Geopolitica, shock e crisi/i, label);
 
         const indicatorButton = await page.$('main button[aria-pressed="false"]');
         assert.ok(indicatorButton, `${label}: selettore indicatori assente`);
@@ -870,7 +869,7 @@ try {
 
         await page.evaluate(() => {
           const summary = [...document.querySelectorAll("summary")].find(
-            (candidate) => candidate.textContent?.trim() === "Dati del grafico in tabella",
+            (candidate) => candidate.textContent?.trim() === "Apri la tabella equivalente",
           );
           summary?.click();
         });

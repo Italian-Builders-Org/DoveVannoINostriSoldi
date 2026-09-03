@@ -67,7 +67,9 @@ class PublishDataRefreshTests(TestCase):
             [
                 "scripts/etl/specs/government-scorecard.source.json",
                 "scripts/etl/specs/government-scorecard-methodology.json",
-                "scripts/etl/specs/government-current-signals.source.json",
+                "scripts/etl/specs/government-scorecard-chronology.json",
+                "scripts/etl/specs/government-scorecard-sensitivity.json",
+                "scripts/etl/specs/government-scorecard-page.source.json",
             ],
         )
         self.assertEqual(len(government["publication"]["upstreamUrls"]), 8)
@@ -75,13 +77,15 @@ class PublishDataRefreshTests(TestCase):
             government["publication"]["upstreamUrl"],
             government["publication"]["upstreamUrls"],
         )
+        self.assertTrue(all(
+            url.startswith("https://")
+            for url in government["publication"]["upstreamUrls"]
+        ))
         self.assertEqual(
-            government["publication"]["upstreamUrls"][3:],
+            government["files"],
             [
-                item["pageUrl"]
-                for item in json.loads(
-                    (ROOT / "scripts/etl/specs/government-scorecard.source.json").read_text()
-                )["governmentChronology"]["historicalPages"]
+                "src/data/generated/government-scorecard.json",
+                "src/data/generated/government-scorecard-page.json",
             ],
         )
 

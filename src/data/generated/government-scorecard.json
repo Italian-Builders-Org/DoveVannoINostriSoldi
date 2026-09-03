@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v4",
+  "schemaVersion": 2,
+  "methodologyVersion": "peer-relative-v6",
   "generatedAt": "2026-08-29T23:11:43Z",
   "sources": {
     "ameco": {
@@ -14,115 +14,24 @@
       "license": "CC BY 4.0 unless otherwise indicated",
       "cadence": "twice-yearly forecast releases",
       "geography": "Italy, France, Germany and Spain",
-      "referencePeriod": "annual, 1960-2027; the score uses 1995-2024 observations",
-      "publication": "latest AMECO vintage, not the vintage available during each historical government",
+      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+      "publication": "latest AMECO vintage; forecasts are stored for provenance but excluded from every score",
       "retrievedAt": "2026-08-29T23:11:43Z",
       "bytes": 6181987,
       "sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005",
       "observedThrough": 2024,
       "forecastFrom": 2025,
       "forecastThrough": 2027
-    },
-    "governmentChronology": {
-      "owner": "Presidenza del Consiglio dei Ministri",
-      "title": "I Governi nelle Legislature",
-      "pageUrl": "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
-      "termsUrl": "https://www.governo.it/it/note-legali",
-      "cadence": "on change of government",
-      "geography": "Italian Republic",
-      "referencePeriod": "17 January 1995 onward; the source page also lists earlier governments",
-      "publication": "current institutional chronology",
-      "historicalOwner": "Camera dei deputati · Portale storico",
-      "dateMeaning": "startDate ed endDate sono i confini istituzionali del governo pubblicati dalle fonti; endDate può coincidere con l'inizio del governo successivo e non indica necessariamente l'ultimo giorno in carica, una data di dimissioni o responsabilità causale",
-      "retrievedAt": "2026-08-29T23:11:43Z",
-      "bytes": 58978,
-      "sha256": "7cdbcf0a069dc877e205f13706cd23c2784fe700a141223d8e7c754e86d0ac41",
-      "historicalReceipts": [
-        {
-          "governmentId": "dini-i",
-          "sourceLabel": "Governo Dini",
-          "pageTitle": "I Governo Dini",
-          "pageUrl": "https://storia.camera.it/governi/i-governo-dini/Ministero%20del%20tesoro",
-          "startDate": "1995-01-17",
-          "endDate": "1996-05-17",
-          "retrievedAt": "2026-08-29T23:11:43Z",
-          "bytes": 33491,
-          "sha256": "8507d633f5198b51c849b6f0288f75f1bed3413b51b7c70fb32cadca83342a3c"
-        },
-        {
-          "governmentId": "prodi-i",
-          "sourceLabel": "Governo Prodi",
-          "pageTitle": "I Governo Prodi",
-          "pageUrl": "https://storia.camera.it/governi/i-governo-prodi/Ministero%20delle%20finanze",
-          "startDate": "1996-05-17",
-          "endDate": "1998-10-21",
-          "retrievedAt": "2026-08-29T23:11:43Z",
-          "bytes": 31629,
-          "sha256": "3b5995ebef3f0ca3ff383e3b87adae5b20ddc227de6c51ab6701855fca37900d"
-        },
-        {
-          "governmentId": "dalema-i",
-          "sourceLabel": "Governo D'Alema",
-          "pageTitle": "I Governo D'Alema",
-          "pageUrl": "https://storia.camera.it/governi/i-governo-d-alema/Presidenza%20del%20Consiglio%20-%20rapporti%20con%20il%20parlamento",
-          "startDate": "1998-10-21",
-          "endDate": "1999-12-22",
-          "retrievedAt": "2026-08-29T23:11:43Z",
-          "bytes": 28298,
-          "sha256": "89204e7539de300273de6ac6b37c04178f572846ddd77296b19ec8579dee6691"
-        },
-        {
-          "governmentId": "dalema-ii",
-          "sourceLabel": "Governo D'Alema II",
-          "pageTitle": "II Governo D'Alema",
-          "pageUrl": "https://storia.camera.it/governi/ii-governo-d-alema/Ministero%20dell%27interno",
-          "startDate": "1999-12-22",
-          "endDate": "2000-04-25",
-          "retrievedAt": "2026-08-29T23:11:43Z",
-          "bytes": 31722,
-          "sha256": "4fbf03c70087c4261454ab9450df49d6c9dba080b33e43c8e06713c8f877211e"
-        },
-        {
-          "governmentId": "amato-ii",
-          "sourceLabel": "Governo Amato II",
-          "pageTitle": "II Governo Amato",
-          "pageUrl": "https://storia.camera.it/governi/ii-governo-amato/Presidenza%20del%20Consiglio%20-%20affari%20regionali",
-          "startDate": "2000-04-25",
-          "endDate": "2001-06-10",
-          "retrievedAt": "2026-08-29T23:11:43Z",
-          "bytes": 27644,
-          "sha256": "dccc917c2e499eda7c705c0d74162d5164f62c9bff085d298bf37b00ed5fc0b6"
-        }
-      ]
     }
-  },
-  "method": {
-    "firstScoreYear": 1995,
-    "minimumWindowYears": 1,
-    "peerCountryIds": [
-      "france",
-      "germany",
-      "spain"
-    ],
-    "historicalWeightBasisPoints": 5000,
-    "peerWeightBasisPoints": 5000,
-    "robustScale": 1.4826,
-    "winsorizedZ": 3,
-    "scoreStatus": "Indice annuale dei risultati economici nel periodo; ogni governo ha una scheda, mentre il numero richiede almeno un intervallo annuale osservabile",
-    "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
-    "endpointRule": "Semestral approximation for annual data: for the starting endpoint use the prior year when the published start boundary is in January-June and the start year when it is in July-December; for the final endpoint use the prior year when the published end boundary is in January-June and the end year when it is in July-December. This minimizes, but cannot eliminate, months belonging to another government and does not provide daily precision. startDate and endDate are institutional boundaries published by the Presidency and Camera, not individual resignation dates and not evidence of causal responsibility.",
-    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government; attribution is always reported separately"
   },
   "indicators": [
     {
       "id": "real_compensation",
-      "area": "purchasing-power",
-      "label": "Retribuzione reale per dipendente",
-      "weightBasisPoints": 2500,
+      "sourceId": "ameco",
       "direction": "higher",
       "transformation": "log-change",
       "unit": "National currency: 2020 = 100",
-      "limitations": "Media per dipendente dell'intera economia; non misura distribuzione dei salari, ore lavorate o reddito familiare.",
+      "definition": "Real compensation per employee deflator private consumption: total economy",
       "sourceSeries": [
         {
           "file": "AMECO7.CSV",
@@ -131,9 +40,6 @@
           "unit": "National currency: 2020 = 100"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.3.1.0.0.RWCDC"
@@ -1249,13 +1155,11 @@
     },
     {
       "id": "unemployment",
-      "area": "labour",
-      "label": "Tasso di disoccupazione",
-      "weightBasisPoints": 2000,
+      "sourceId": "ameco",
       "direction": "lower",
       "transformation": "point-change",
       "unit": "Percentage of active population",
-      "limitations": "Non misura inattività, qualità del lavoro, ore lavorate o divari di genere e generazione.",
+      "definition": "Unemployment rate: total :- Member States: definition EUROSTAT",
       "sourceSeries": [
         {
           "file": "AMECO1.CSV",
@@ -1264,9 +1168,6 @@
           "unit": "Percentage of active population"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.1.0.0.0.ZUTN"
@@ -2382,13 +2283,11 @@
     },
     {
       "id": "real_gdp_per_capita",
-      "area": "growth",
-      "label": "PIL reale per abitante",
-      "weightBasisPoints": 2000,
+      "sourceId": "ameco",
       "direction": "higher",
       "transformation": "log-change",
       "unit": "1000 national currency, 2020 reference levels",
-      "limitations": "Misura produzione media reale, non distribuzione del reddito, benessere o sostenibilità.",
+      "definition": "Gross domestic product at 2020 reference levels per head of population",
       "sourceSeries": [
         {
           "file": "AMECO6.CSV",
@@ -2397,9 +2296,6 @@
           "unit": "1000 national currency, 2020 reference levels"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.1.1.0.0.RVGDP"
@@ -3515,13 +3411,11 @@
     },
     {
       "id": "debt_ratio",
-      "area": "public-finance",
-      "label": "Debito pubblico sul PIL",
-      "weightBasisPoints": 1000,
+      "sourceId": "ameco",
       "direction": "lower",
       "transformation": "point-change",
       "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
-      "limitations": "Il rapporto cambia sia per il debito sia per il PIL nominale e include effetti ereditati e stock-flow adjustment.",
+      "definition": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
       "sourceSeries": [
         {
           "file": "AMECO18.CSV",
@@ -3530,9 +3424,6 @@
           "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.1.0.319.0.UDGG"
@@ -4648,13 +4539,11 @@
     },
     {
       "id": "primary_balance",
-      "area": "public-finance",
-      "label": "Saldo primario sul PIL",
-      "weightBasisPoints": 1000,
+      "sourceId": "ameco",
       "direction": "higher",
       "transformation": "point-change",
       "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
-      "limitations": "Include il ciclo e misure una tantum; non è il saldo strutturale e la serie comparabile parte dal 1995.",
+      "definition": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
       "sourceSeries": [
         {
           "file": "AMECO16.CSV",
@@ -4663,9 +4552,6 @@
           "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.1.0.319.0.UBLGI"
@@ -5781,14 +5667,11 @@
     },
     {
       "id": "investment_share",
-      "area": "future-capacity",
-      "label": "Investimenti totali sul PIL",
-      "weightBasisPoints": 1500,
+      "sourceId": "ameco",
       "direction": "higher",
       "transformation": "point-change",
       "unit": "Percentage of GDP at current prices",
-      "limitations": "Aggrega investimenti pubblici e privati e non misura qualità, addizionalità o rendimento.",
-      "derived": "gross-fixed-capital-formation / gross-domestic-product * 100",
+      "definition": "Gross fixed capital formation at current prices divided by gross domestic product at current prices",
       "sourceSeries": [
         {
           "file": "AMECO3.CSV",
@@ -5803,9 +5686,6 @@
           "unit": "Mrd national currency"
         }
       ],
-      "sourceId": "ameco",
-      "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
-      "coverageNotes": "Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario.",
       "sourceCodes": {
         "italy": [
           "ITA.1.0.0.0.UIGT",
@@ -6924,469 +6804,9 @@
       }
     }
   ],
-  "governments": [
-    {
-      "id": "dini-i",
-      "name": "Dini-I",
-      "startDate": "1995-01-17",
-      "endDate": "1996-05-17",
-      "status": "ended"
-    },
-    {
-      "id": "prodi-i",
-      "name": "Prodi-I",
-      "startDate": "1996-05-17",
-      "endDate": "1998-10-21",
-      "status": "ended"
-    },
-    {
-      "id": "dalema-i",
-      "name": "D'Alema-I",
-      "startDate": "1998-10-21",
-      "endDate": "1999-12-22",
-      "status": "ended"
-    },
-    {
-      "id": "dalema-ii",
-      "name": "D'Alema-II",
-      "startDate": "1999-12-22",
-      "endDate": "2000-04-25",
-      "status": "ended"
-    },
-    {
-      "id": "amato-ii",
-      "name": "Amato-II",
-      "startDate": "2000-04-25",
-      "endDate": "2001-06-10",
-      "status": "ended"
-    },
-    {
-      "id": "berlusconi-ii",
-      "name": "Berlusconi-II",
-      "startDate": "2001-06-11",
-      "endDate": "2005-04-23",
-      "status": "ended"
-    },
-    {
-      "id": "berlusconi-iii",
-      "name": "Berlusconi-III",
-      "startDate": "2005-04-23",
-      "endDate": "2006-05-17",
-      "status": "ended"
-    },
-    {
-      "id": "prodi-ii",
-      "name": "Prodi-II",
-      "startDate": "2006-05-17",
-      "endDate": "2008-05-06",
-      "status": "ended"
-    },
-    {
-      "id": "berlusconi-iv",
-      "name": "Berlusconi-IV",
-      "startDate": "2008-05-08",
-      "endDate": "2011-11-16",
-      "status": "ended"
-    },
-    {
-      "id": "monti-i",
-      "name": "Monti-I",
-      "startDate": "2011-11-16",
-      "endDate": "2013-04-27",
-      "status": "ended"
-    },
-    {
-      "id": "letta-i",
-      "name": "Letta-I",
-      "startDate": "2013-04-28",
-      "endDate": "2014-02-21",
-      "status": "ended"
-    },
-    {
-      "id": "renzi-i",
-      "name": "Renzi-I",
-      "startDate": "2014-02-22",
-      "endDate": "2016-12-12",
-      "status": "ended"
-    },
-    {
-      "id": "gentiloni-i",
-      "name": "Gentiloni-I",
-      "startDate": "2016-12-12",
-      "endDate": "2018-06-01",
-      "status": "ended"
-    },
-    {
-      "id": "conte-i",
-      "name": "Conte-I",
-      "startDate": "2018-06-01",
-      "endDate": "2019-09-04",
-      "status": "ended"
-    },
-    {
-      "id": "conte-ii",
-      "name": "Conte-II",
-      "startDate": "2019-09-05",
-      "endDate": "2021-02-13",
-      "status": "ended"
-    },
-    {
-      "id": "draghi-i",
-      "name": "Draghi-I",
-      "startDate": "2021-02-13",
-      "endDate": "2022-10-22",
-      "status": "ended"
-    },
-    {
-      "id": "meloni-i",
-      "name": "Meloni-I",
-      "startDate": "2022-10-22",
-      "endDate": null,
-      "status": "current"
-    }
-  ],
-  "contexts": [
-    {
-      "id": "economic-miracle",
-      "label": "Miracolo economico e industrializzazione",
-      "startYear": 1958,
-      "endYear": 1963,
-      "kind": "regime",
-      "summary": "Rapida industrializzazione, migrazione interna e forte crescita della produttività cambiarono la struttura dell'economia.",
-      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
-    },
-    {
-      "id": "first-oil-shock",
-      "label": "Primo shock petrolifero",
-      "startYear": 1973,
-      "endYear": 1975,
-      "kind": "external-shock",
-      "summary": "Il rincaro del petrolio colpì prezzi, produzione e bilancia commerciale dei paesi importatori di energia.",
-      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
-    },
-    {
-      "id": "second-oil-shock",
-      "label": "Secondo shock petrolifero",
-      "startYear": 1979,
-      "endYear": 1982,
-      "kind": "external-shock",
-      "summary": "Nuove tensioni energetiche si sovrapposero all'inflazione e alla stretta monetaria internazionale.",
-      "sourceUrl": "https://www.bancaditalia.it/statistiche/tematiche/stat-storiche/stat-storiche-economia/index.html"
-    },
-    {
-      "id": "lira-crisis",
-      "label": "Crisi della lira e uscita dallo SME",
-      "startYear": 1992,
-      "endYear": 1993,
-      "kind": "financial-shock",
-      "summary": "Pressioni sui cambi e sui conti pubblici portarono alla svalutazione e all'uscita temporanea della lira dallo SME.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/1992/index.html"
-    },
-    {
-      "id": "euro-convergence",
-      "label": "Convergenza verso l'euro",
-      "startYear": 1995,
-      "endYear": 1998,
-      "kind": "regime",
-      "summary": "La preparazione all'unione monetaria condizionò bilancio pubblico, tassi e cambio.",
-      "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
-    },
-    {
-      "id": "euro-introduction",
-      "label": "Introduzione dell'euro e cambio di regime monetario",
-      "startYear": 1999,
-      "endYear": 2002,
-      "kind": "regime",
-      "summary": "L'avvio dell'unione monetaria e poi delle banconote e monete in euro cambiarono il quadro di tassi, cambio e politica monetaria per l'Italia.",
-      "sourceUrl": "https://www.ecb.europa.eu/euro/changeover/html/index.en.html"
-    },
-    {
-      "id": "dot-com-slowdown",
-      "label": "Rallentamento mondiale e crisi dot-com",
-      "startYear": 2000,
-      "endYear": 2002,
-      "kind": "external-shock",
-      "summary": "La frenata internazionale, la correzione dei mercati tecnologici e le conseguenze economiche degli attentati del 2001 indebolirono commercio e investimenti.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2001/index.html"
-    },
-    {
-      "id": "global-expansion-oil",
-      "label": "Espansione mondiale e rincaro del petrolio",
-      "startYear": 2003,
-      "endYear": 2007,
-      "kind": "external-shock",
-      "summary": "La crescita mondiale sostenne la domanda estera, mentre l'aumento del prezzo del petrolio pesò sui paesi importatori di energia come l'Italia.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2005/index.html"
-    },
-    {
-      "id": "global-financial-crisis",
-      "label": "Crisi finanziaria globale",
-      "startYear": 2008,
-      "endYear": 2009,
-      "kind": "external-shock",
-      "summary": "La crisi bancaria e finanziaria internazionale ridusse credito, commercio e produzione.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2008/index.html"
-    },
-    {
-      "id": "sovereign-debt-crisis",
-      "label": "Crisi dei debiti sovrani dell'area euro",
-      "startYear": 2010,
-      "endYear": 2013,
-      "kind": "financial-shock",
-      "summary": "Tensioni sui titoli sovrani, credito debole e consolidamento fiscale pesarono sull'area euro e sull'Italia.",
-      "sourceUrl": "https://www.ecb.europa.eu/press/key/date/2012/html/sp120726.en.html"
-    },
-    {
-      "id": "ecb-purchase-programmes",
-      "label": "Tassi bassi e programmi di acquisto BCE",
-      "startYear": 2015,
-      "endYear": 2022,
-      "kind": "shared-policy-context",
-      "summary": "I programmi di acquisto e i tassi dell'area euro influenzarono costo del debito, credito e condizioni finanziarie senza essere decisioni del governo italiano.",
-      "sourceUrl": "https://www.ecb.europa.eu/mopo/implement/app/html/index.en.html"
-    },
-    {
-      "id": "italian-banking-stress",
-      "label": "Sofferenze bancarie e interventi sul sistema del credito",
-      "startYear": 2015,
-      "endYear": 2017,
-      "kind": "financial-shock",
-      "summary": "L'elevato stock di crediti deteriorati e alcune crisi bancarie condizionarono credito, investimenti e interventi pubblici; i problemi si erano accumulati negli anni precedenti.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2016/index.html"
-    },
-    {
-      "id": "trade-slowdown",
-      "label": "Rallentamento europeo e tensioni commerciali",
-      "startYear": 2018,
-      "endYear": 2019,
-      "kind": "external-shock",
-      "summary": "Il rallentamento del commercio mondiale e dell'industria europea frenò un'economia italiana già debole.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2019/index.html"
-    },
-    {
-      "id": "pandemic",
-      "label": "Pandemia e restrizioni",
-      "startYear": 2020,
-      "endYear": 2021,
-      "kind": "external-shock",
-      "summary": "La pandemia produsse un arresto eccezionale dell'attività e una risposta fiscale e monetaria straordinaria.",
-      "sourceUrl": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/2020/index.html"
-    },
-    {
-      "id": "energy-inflation",
-      "label": "Energia, inflazione e guerra in Ucraina",
-      "startYear": 2021,
-      "endYear": 2023,
-      "kind": "external-shock",
-      "summary": "I prezzi energetici erano già in crescita nel 2021 e l'invasione russa aggravò lo shock nel 2022.",
-      "sourceUrl": "https://www.ecb.europa.eu/press/economic-bulletin/articles/2022/html/ecb.ebart202204_01~7b32d31b29.en.html"
-    },
-    {
-      "id": "recovery-plan",
-      "label": "NGEU e attuazione del PNRR",
-      "startYear": 2021,
-      "endYear": 2026,
-      "kind": "shared-policy-context",
-      "summary": "Finanziamenti e riforme europee attraversano più governi: l'origine, le revisioni e l'attuazione non vanno attribuite a un solo esecutivo.",
-      "sourceUrl": "https://commission.europa.eu/business-economy-euro/economic-recovery/recovery-and-resilience-facility/country-pages/italys-recovery-and-resilience-plan_en"
-    },
-    {
-      "id": "ecb-rate-tightening",
-      "label": "Stretta monetaria della BCE",
-      "startYear": 2022,
-      "endYear": 2024,
-      "kind": "shared-policy-context",
-      "summary": "Il rialzo dei tassi deciso dalla BCE per contrastare l'inflazione aumentò il costo del credito e del rifinanziamento del debito nell'intera area euro.",
-      "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
-    }
-  ],
-  "measures": [
-    {
-      "government": "Dini-I",
-      "title": "Riforma del sistema pensionistico",
-      "status": "enacted",
-      "act": "Legge 8 agosto 1995, n. 335",
-      "mechanism": "Introduzione graduale del metodo contributivo e revisione dei requisiti per contenere la spesa pensionistica nel lungo periodo.",
-      "evidence": "La riforma modifica regole e sostenibilità prospettica; gli effetti macro e distributivi maturano oltre la durata del governo.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1995-08-08;335"
-    },
-    {
-      "government": "Prodi-I",
-      "title": "Manovra per la convergenza europea e introduzione dell'IRAP",
-      "status": "enacted",
-      "act": "Legge 23 dicembre 1996, n. 662; decreto legislativo 15 dicembre 1997, n. 446",
-      "mechanism": "Correzione dei conti e riordino di tributi e contributi per sostenere la convergenza verso l'euro.",
-      "evidence": "La misura documenta una scelta fiscale; il punteggio macro non ne identifica l'effetto causale.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446"
-    },
-    {
-      "government": "D'Alema-I",
-      "title": "Finanziaria 1999 e misure per stabilizzazione e sviluppo",
-      "status": "enacted",
-      "act": "Legge 23 dicembre 1998, n. 448",
-      "mechanism": "Interventi su entrate, spese e incentivi nel passaggio finale verso l'unione monetaria.",
-      "evidence": "L'atto documenta la risposta di bilancio; il Core non separa il suo effetto dal ciclo europeo e dalle decisioni maturate prima del cambio di governo.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1998-12-23;448"
-    },
-    {
-      "government": "D'Alema-II",
-      "title": "Avvio della legge finanziaria 2000",
-      "status": "implemented-across-governments",
-      "act": "Legge 23 dicembre 1999, n. 488",
-      "mechanism": "La manovra definì misure annuali di finanza pubblica e sviluppo entrate in attuazione durante un mandato di pochi mesi.",
-      "evidence": "La legge fu preparata durante il governo precedente e promulgata all'inizio del D'Alema-II: la responsabilità va condivisa e gli esiti eccedono il mandato.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1999-12-23;488"
-    },
-    {
-      "government": "Amato-II",
-      "title": "Credito d'imposta per nuove assunzioni",
-      "status": "enacted",
-      "act": "Legge 23 dicembre 2000, n. 388, articolo 7",
-      "mechanism": "Incentivo fiscale ai datori di lavoro per incrementare l'occupazione, con maggiorazioni nelle aree svantaggiate.",
-      "evidence": "La platea e il costo sono osservabili nella legge; l'effetto netto sull'occupazione richiede una valutazione dedicata e non coincide con il dato aggregato.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-12-23;388"
-    },
-    {
-      "government": "Berlusconi-II",
-      "title": "Riforma del mercato del lavoro",
-      "status": "enacted",
-      "act": "Legge 14 febbraio 2003, n. 30; decreto legislativo 10 settembre 2003, n. 276",
-      "mechanism": "Riordino dei contratti e dei servizi per l'impiego, con maggiore flessibilità nelle forme di lavoro.",
-      "evidence": "La legge è osservabile; gli effetti su occupazione e qualità del lavoro richiedono valutazioni dedicate.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2003-09-10;276"
-    },
-    {
-      "government": "Berlusconi-III",
-      "title": "Piano d'azione per sviluppo e competitività",
-      "status": "implemented-across-governments",
-      "act": "Decreto-legge 14 marzo 2005, n. 35, convertito dalla legge 14 maggio 2005, n. 80",
-      "mechanism": "Misure su incentivi, procedure, investimenti e competitività avviate nel governo precedente e proseguite dopo il rimpasto.",
-      "evidence": "La continuità tra Berlusconi-II e III impedisce di attribuire gli effetti al solo esecutivo formalmente in carica nella fase finale.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2005-03-14;35"
-    },
-    {
-      "government": "Prodi-II",
-      "title": "Manovra 2007 e riduzione del disavanzo",
-      "status": "enacted",
-      "act": "Legge 27 dicembre 2006, n. 296",
-      "mechanism": "Interventi su entrate e spese con l'obiettivo di correggere i conti pubblici e finanziare misure sociali e di sviluppo.",
-      "evidence": "Il saldo osservato include ciclo, eredità e altre misure; non viene attribuito automaticamente alla legge.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2006-12-27;296"
-    },
-    {
-      "government": "Berlusconi-IV",
-      "title": "Misure anticrisi e successive correzioni di bilancio",
-      "status": "enacted",
-      "act": "Decreto-legge 29 novembre 2008, n. 185; decreto-legge 31 maggio 2010, n. 78",
-      "mechanism": "Sostegno a famiglie e imprese nella crisi globale seguito da una correzione dei conti pubblici.",
-      "evidence": "Crisi globale e crisi sovrana dominano il contesto: non si applicano sconti manuali al voto.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-29;185"
-    },
-    {
-      "government": "Monti-I",
-      "title": "Salva Italia e riforma pensionistica",
-      "status": "enacted",
-      "act": "Decreto-legge 6 dicembre 2011, n. 201",
-      "mechanism": "Consolidamento fiscale, revisione della previdenza e reintroduzione della tassazione immobiliare durante la crisi sovrana.",
-      "evidence": "La stabilizzazione finanziaria e i costi recessivi non sono riassumibili nel solo score macro.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2011-12-06;201"
-    },
-    {
-      "government": "Letta-I",
-      "title": "Abolizione della seconda rata IMU sulla prima casa e misure abitative",
-      "status": "enacted",
-      "act": "Decreto-legge 31 agosto 2013, n. 102",
-      "mechanism": "Riduzione del prelievo immobiliare sull'abitazione principale insieme a interventi su politiche abitative, enti locali e ammortizzatori.",
-      "evidence": "L'effetto sul reddito disponibile varia per famiglia e territorio; il costo e le coperture vanno distinti dall'andamento macro del mandato.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-08-31;102"
-    },
-    {
-      "government": "Renzi-I",
-      "title": "Riduzione IRPEF per i dipendenti e Jobs Act",
-      "status": "enacted",
-      "act": "Decreto-legge 24 aprile 2014, n. 66; legge 10 dicembre 2014, n. 183",
-      "mechanism": "Aumento del reddito netto per una platea di lavoratori e riordino delle regole del mercato del lavoro.",
-      "evidence": "Occupazione, salari e composizione dei contratti vanno letti insieme; il dato aggregato non prova l'effetto delle riforme.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2014-12-10;183"
-    },
-    {
-      "government": "Gentiloni-I",
-      "title": "Incentivo strutturale all'occupazione giovanile",
-      "status": "enacted",
-      "act": "Legge 27 dicembre 2017, n. 205",
-      "mechanism": "Esonero contributivo parziale per assunzioni stabili di giovani, inserito nella legge di bilancio 2018.",
-      "evidence": "La misura riduce il costo del lavoro per i beneficiari; occupazione aggiuntiva, sostituzione e durata dei contratti richiedono valutazioni specifiche.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2017-12-27;205"
-    },
-    {
-      "government": "Conte-I",
-      "title": "Reddito di cittadinanza e Quota 100",
-      "status": "enacted",
-      "act": "Decreto-legge 28 gennaio 2019, n. 4",
-      "mechanism": "Introduce un sostegno al reddito collegato a servizi per il lavoro e un canale pensionistico temporaneo con requisiti di età e contributi.",
-      "evidence": "Spesa, povertà, occupazione e pensionamenti richiedono indicatori distinti; il Core macro non valuta da solo efficacia e distribuzione.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2019-01-28;4"
-    },
-    {
-      "government": "Conte-II",
-      "title": "Misure pandemiche e Superbonus",
-      "status": "enacted",
-      "act": "Decreto-legge 19 maggio 2020, n. 34",
-      "mechanism": "Sostegni durante la pandemia e crediti d'imposta per l'edilizia e l'efficienza energetica.",
-      "evidence": "Lo shock Covid rende bassa l'attribuzione; costi e investimenti del Superbonus attraversano governi e anni successivi.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2020-05-19;34"
-    },
-    {
-      "government": "Draghi-I",
-      "title": "Governance e prima attuazione del PNRR",
-      "status": "implemented-across-governments",
-      "act": "Decreto-legge 31 maggio 2021, n. 77",
-      "mechanism": "Governance, procedure e riforme per realizzare il Piano nazionale di ripresa e resilienza.",
-      "evidence": "Il piano nasce nel quadro NGEU e la sua attuazione prosegue con il governo successivo.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2021-05-31;77"
-    },
-    {
-      "government": "Meloni-I",
-      "title": "Cuneo fiscale e IRPEF resi strutturali",
-      "status": "enacted",
-      "act": "Legge 30 dicembre 2024, n. 207",
-      "mechanism": "Bonus e detrazioni fiscali sostituiscono l'esonero contributivo temporaneo e stabilizzano tre aliquote IRPEF.",
-      "evidence": "Il dossier parlamentare quantifica minori entrate; il nesso con salari reali e crescita non è identificato dal dato macro.",
-      "sourceUrl": "https://documenti.camera.it/leg19/dossier/pdf/ID0011fvol4.pdf"
-    },
-    {
-      "government": "Meloni-I",
-      "title": "Restrizioni alla cessione dei crediti edilizi",
-      "status": "enacted",
-      "act": "Decreto-legge 16 febbraio 2023, n. 11",
-      "mechanism": "Limita nuove opzioni di sconto in fattura e cessione dei crediti per contenere l'esposizione futura dei conti pubblici.",
-      "evidence": "Riduce nuove maturazioni ma costi, investimenti e classificazione dei crediti già accumulati continuano negli anni successivi.",
-      "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-02-16;11"
-    },
-    {
-      "government": "Meloni-I",
-      "title": "Manovra 2026: IRPEF e incentivi agli investimenti",
-      "status": "enacted",
-      "act": "Legge 30 dicembre 2025, n. 199",
-      "mechanism": "Riduzione della seconda aliquota IRPEF e maggiorazione degli ammortamenti per nuovi beni strumentali.",
-      "evidence": "L'UPB valuta modesti gli effetti macro complessivi e segnala che una parte delle misure è temporanea.",
-      "sourceUrl": "https://www.upbilancio.it/it/attivita/pubblicazioni/focus-tematici/focus-tematici-anno-2026/focus-tematico-n-1-20-febbraio-2026-2026/"
-    },
-    {
-      "government": "Meloni-I",
-      "title": "Revisione e attuazione del PNRR",
-      "status": "implemented-across-governments",
-      "act": "PNRR italiano e successive decisioni di revisione dell'Unione europea",
-      "mechanism": "Realizzazione di riforme e investimenti finanziati da NGEU, con rimodulazioni durante il mandato.",
-      "evidence": "Risorse e riforme attraversano Draghi e Meloni: avanzamento e impatto non sono merito esclusivo di un solo governo.",
-      "sourceUrl": "https://commission.europa.eu/business-economy-euro/economic-recovery/recovery-and-resilience-facility/country-pages/italys-recovery-and-resilience-plan_en"
-    }
-  ],
   "caveats": [
-    "Il Core annuale non è la pagella socio-economica completa raccomandata per il periodo dal 2005.",
-    "I governi precedenti al 1995 sono mostrati come storia e contesto senza voto complessivo.",
-    "I valori 2025-2027 sono previsioni AMECO e non vengono mescolati con le osservazioni fino al 2024.",
-    "Il confronto descrive risultati durante un mandato e non identifica quanto sia stato causato dal governo.",
-    "La banca dati usa l'ultimo vintage AMECO: le serie storiche possono essere state riviste dopo i governi osservati."
+    "Il voto usa soltanto osservazioni annuali comuni ai quattro paesi; le previsioni sono escluse.",
+    "Il confronto descrive risultati durante un mandato e non dimostra quanto sia stato causato dal governo.",
+    "La banca dati usa l ultimo vintage AMECO: le serie storiche possono essere riviste."
   ]
 }

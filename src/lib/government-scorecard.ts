@@ -1,477 +1,211 @@
-import snapshotJson from "@/data/generated/government-scorecard.json";
 import {
-  GOVERNMENT_SCORECARD_COUNTRY_IDS,
-  getGovernmentScorecardForecastCoverage,
-  parseGovernmentScorecardSnapshot,
-  type GovernmentScorecardCountryId,
-  type GovernmentScorecardGovernment,
-  type GovernmentScorecardIndicator,
-  type GovernmentScorecardSnapshot,
+  GOVERNMENT_SCORECARD_V6_MANIFEST,
+  governmentScorecardV6ScaleKeySchema,
+  parseGovernmentScorecardV6Input,
+  type GovernmentScorecardV6ScaleKey,
 } from "@/lib/data/government-scorecard-contract";
 
-type IndicatorCalculation = Readonly<{
-  id: GovernmentScorecardIndicator["id"];
-  area: GovernmentScorecardIndicator["area"];
-  label: string;
-  unit: string;
-  limitations: string;
-  direction: GovernmentScorecardIndicator["direction"];
-  transformation: GovernmentScorecardIndicator["transformation"];
-  weightBasisPoints: number;
-  baselineValue: number;
-  endValue: number;
-  rawChange: number;
-  orientedChange: number;
-  peerMedianChange: number;
-  relativeChange: number;
-  historicalScore: number;
-  relativeScore: number;
-  historicalWindowCount: number;
-  score: number;
-  contributionPoints: number;
-  sourceCodes: GovernmentScorecardIndicator["sourceCodes"];
-  series: readonly Readonly<{
-    year: number;
-    italy: number;
-    france: number;
-    germany: number;
-    spain: number;
-  }>[];
-}>;
-
-type ScoreCalculation = Readonly<{
-  status: "scored";
-  baselineYear: number;
-  endYear: number;
-  windowYears: number;
-  observedScore: number;
-  relativeScore: number;
-  score: number;
-  indicators: readonly IndicatorCalculation[];
-  categories: readonly {
-    id: GovernmentScorecardIndicator["area"];
-    label: string;
-    weightBasisPoints: number;
-    score: number;
-  }[];
-  robustness: Readonly<{
-    minimumScore: number;
-    maximumScore: number;
-    maximumDeviation: number;
-    label: "stabile" | "sensibile" | "molto sensibile";
-    checks: readonly Readonly<{
-      id: string;
-      label: string;
-      score: number;
-    }>[];
-  }>;
-}> | Readonly<{
-  status: "not-scored";
-  baselineYear: number;
-  endYear: number;
-  windowYears: number;
-  reason: string;
-}>;
-
-const AREA_LABELS: Readonly<Record<GovernmentScorecardIndicator["area"], string>> = {
-  "purchasing-power": "Potere d’acquisto",
-  labour: "Lavoro",
-  growth: "Crescita",
-  "public-finance": "Finanza pubblica",
-  "future-capacity": "Capacità futura",
-};
-
-let cachedSnapshot: GovernmentScorecardSnapshot | undefined;
-
-export class GovernmentScorecardContractError extends Error {
-  constructor(cause: unknown) {
-    super("Lo snapshot della pagella economica non supera il contratto dati", { cause });
-    this.name = "GovernmentScorecardContractError";
+function finite(value: number, label: string): number {
+  if (!Number.isFinite(value)) {
+    throw new RangeError(`${label} deve essere finito`);
   }
+  return value;
 }
 
-export function getGovernmentScorecardSnapshot(): GovernmentScorecardSnapshot {
-  if (cachedSnapshot) return cachedSnapshot;
-  try {
-    cachedSnapshot = parseGovernmentScorecardSnapshot(snapshotJson);
-    return cachedSnapshot;
-  } catch (error) {
-    throw new GovernmentScorecardContractError(error);
+export function calculatePeerScoreV6(peerGap: number, scale: number): number {
+  finite(peerGap, "peer gap");
+  finite(scale, "scala");
+  if (scale <= 0) {
+    throw new RangeError("scala deve essere positiva");
   }
+  const { neutral_score: neutral, tanh_divisor: divisor } = GOVERNMENT_SCORECARD_V6_MANIFEST.formula;
+  return neutral * (1 + Math.tanh((peerGap / scale) / divisor));
 }
 
-export function getGovernmentScorecardPublicPaths() {
-  return getGovernmentScorecardSnapshot().governments.map(
-    (government) => `/governi/${government.id}` as const,
+function median(values: readonly number[]): number {
+  if (values.length === 0) {
+    throw new RangeError("mediana senza valori");
+  }
+  const ordered = values.map((value) => finite(value, "valore")).toSorted((left, right) => left - right);
+  const middle = Math.floor(ordered.length / 2);
+  return ordered.length % 2 === 0
+    ? (ordered[middle - 1] + ordered[middle]) / 2
+    : ordered[middle];
+}
+
+export function linearR7Quantile(values: readonly number[], probability: number): number {
+  finite(probability, "probabilità");
+  if (probability < 0 || probability > 1 || values.length === 0) {
+    throw new RangeError("quantile R-7 non valido");
+  }
+  const ordered = values.map((value) => finite(value, "valore")).toSorted((left, right) => left - right);
+  const position = (ordered.length - 1) * probability;
+  const lower = Math.floor(position);
+  const fraction = position - lower;
+  return ordered[lower] + fraction * (ordered[Math.min(lower + 1, ordered.length - 1)] - ordered[lower]);
+}
+
+export function calculateRobustScaleV6(values: readonly number[]): number {
+  if (values.length === 0) {
+    throw new RangeError("scala senza valori");
+  }
+  const checked = values.map((value) => finite(value, "gap di riferimento"));
+  const center = median(checked);
+  const epsilon = 1e-12 * Math.max(1, ...checked.map((value) => Math.abs(value)));
+  const mad = median(checked.map((value) => Math.abs(value - center)));
+  const madScale = GOVERNMENT_SCORECARD_V6_MANIFEST.scale.mad_multiplier * mad;
+  if (madScale > epsilon) {
+    return madScale;
+  }
+  const iqr = linearR7Quantile(checked, 0.75) - linearR7Quantile(checked, 0.25);
+  const iqrScale = iqr / GOVERNMENT_SCORECARD_V6_MANIFEST.scale.iqr_divisor;
+  if (iqrScale <= epsilon) {
+    throw new RangeError("dispersione nulla dopo MAD e IQR");
+  }
+  return iqrScale;
+}
+
+export function serializeScaleKeyV6(input: GovernmentScorecardV6ScaleKey): string {
+  const key = governmentScorecardV6ScaleKeySchema.parse(input);
+  return JSON.stringify([
+    key.indicator_id,
+    key.source_set_id,
+    key.temporal_operator_id,
+    key.duration_or_weight_pattern_id,
+    key.vintage_id,
+    key.peer_set_id,
+    key.peer_aggregation_id,
+    key.scale_estimator_id,
+    key.calibration_period_id,
+    key.methodology_version,
+  ]);
+}
+
+function transformedChange(
+  transformation: "log_change" | "point_change",
+  baseline: number,
+  end: number,
+): number {
+  return transformation === "log_change"
+    ? 100 * (Math.log(end) - Math.log(baseline))
+    : end - baseline;
+}
+
+export function calculateGovernmentScorecardV6(input: unknown) {
+  const frozen = parseGovernmentScorecardV6Input(input);
+  const manifest = GOVERNMENT_SCORECARD_V6_MANIFEST;
+  const observations = new Map(
+    frozen.observations.map((observation) => [
+      `${observation.indicator_id}:${observation.geography}`,
+      observation,
+    ]),
   );
-}
-
-function rounded(value: number, digits = 1) {
-  const factor = 10 ** digits;
-  return Math.round((value + Number.EPSILON) * factor) / factor;
-}
-
-function median(values: readonly number[]) {
-  if (values.length === 0) throw new Error("mediana senza osservazioni");
-  const sorted = [...values].sort((left, right) => left - right);
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 1 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2;
-}
-
-function robustScore(value: number, distribution: readonly number[], scale: number, cap: number) {
-  const center = median(distribution);
-  const mad = median(distribution.map((item) => Math.abs(item - center)));
-  if (mad === 0) throw new Error("dispersione storica nulla");
-  const z = Math.max(-cap, Math.min(cap, (value - center) / (scale * mad)));
-  return 100 * normalCdf(z);
-}
-
-// Abramowitz-Stegun 7.1.26: deterministic and sufficiently accurate for display scores.
-function normalCdf(value: number) {
-  const absolute = Math.abs(value);
-  const t = 1 / (1 + 0.2316419 * absolute);
-  const density = Math.exp(-(absolute * absolute) / 2) / Math.sqrt(2 * Math.PI);
-  const polynomial = t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
-  const positive = 1 - density * polynomial;
-  return value >= 0 ? positive : 1 - positive;
-}
-
-function valueAt(indicator: GovernmentScorecardIndicator, countryId: GovernmentScorecardCountryId, year: number) {
-  const point = indicator.countries[countryId][year - 1960];
-  return point?.year === year ? point.value : null;
-}
-
-function transformedChange(indicator: GovernmentScorecardIndicator, countryId: GovernmentScorecardCountryId, startYear: number, endYear: number) {
-  const start = valueAt(indicator, countryId, startYear);
-  const end = valueAt(indicator, countryId, endYear);
-  if (start == null || end == null) return null;
-  const direction = indicator.direction === "higher" ? 1 : -1;
-  if (indicator.transformation === "log-change") {
-    if (start <= 0 || end <= 0) return null;
-    return direction * 100 * (Math.log(end) - Math.log(start));
-  }
-  return direction * (end - start);
-}
-
-function rawChange(indicator: GovernmentScorecardIndicator, startValue: number, endValue: number) {
-  if (indicator.transformation === "log-change") return 100 * (Math.log(endValue) - Math.log(startValue));
-  return endValue - startValue;
-}
-
-function peerChange(indicator: GovernmentScorecardIndicator, startYear: number, endYear: number, peerIds: readonly GovernmentScorecardCountryId[]) {
-  const changes = peerIds.map((countryId) => transformedChange(indicator, countryId, startYear, endYear));
-  if (changes.some((value) => value == null)) return null;
-  return median(changes as number[]);
-}
-
-function calculateIndicators(
-  snapshot: GovernmentScorecardSnapshot,
-  baselineYear: number,
-  endYear: number,
-  peers: readonly GovernmentScorecardCountryId[],
-) {
-  const windowYears = endYear - baselineYear;
-  return snapshot.indicators.map((indicator): IndicatorCalculation => {
-      const baselineValue = valueAt(indicator, "italy", baselineYear);
-      const endValue = valueAt(indicator, "italy", endYear);
-      const oriented = transformedChange(indicator, "italy", baselineYear, endYear);
-      const peersNow = peerChange(indicator, baselineYear, endYear, peers);
-      if (baselineValue == null || endValue == null || oriented == null || peersNow == null) throw new Error(`dato mancante: ${indicator.id}`);
-
-      const historicalWindows: number[] = [];
-      const relativeWindows: number[] = [];
-      for (let start = snapshot.method.firstScoreYear; start + windowYears <= snapshot.sources.ameco.observedThrough; start += 1) {
-        const finish = start + windowYears;
-        // No positive-duration overlap: the evaluated period must not help
-        // define the distribution used to score itself.
-        if (start < endYear && finish > baselineYear) continue;
-        const italy = transformedChange(indicator, "italy", start, finish);
-        const peer = peerChange(indicator, start, finish, peers);
-        if (italy != null && peer != null) {
-          historicalWindows.push(italy);
-          relativeWindows.push(italy - peer);
-        }
+  const scales = new Map(frozen.scales.map((scale) => [scale.key.indicator_id, scale]));
+  const indicators = manifest.indicators.map((indicator) => {
+    const countryChanges = manifest.countries.map((geography) => {
+      const observation = observations.get(`${indicator.id}:${geography}`);
+      if (!observation) {
+        throw new Error("input validato privo di osservazione obbligatoria");
       }
-      if (historicalWindows.length < 10 || relativeWindows.length < 10) throw new Error(`confronti insufficienti: ${indicator.id}`);
-      const relative = oriented - peersNow;
-      const historicalScore = robustScore(oriented, historicalWindows, snapshot.method.robustScale, snapshot.method.winsorizedZ);
-      const relativeScore = robustScore(relative, relativeWindows, snapshot.method.robustScale, snapshot.method.winsorizedZ);
-      const score = historicalScore * snapshot.method.historicalWeightBasisPoints / 10_000
-        + relativeScore * snapshot.method.peerWeightBasisPoints / 10_000;
-      const series = Array.from({ length: windowYears + 1 }, (_, index) => baselineYear + index).map((year) => {
-        const italy = valueAt(indicator, "italy", year);
-        const france = valueAt(indicator, "france", year);
-        const germany = valueAt(indicator, "germany", year);
-        const spain = valueAt(indicator, "spain", year);
-        if (italy == null || france == null || germany == null || spain == null) throw new Error(`serie grafico incompleta: ${indicator.id}`);
-        return { year, italy, france, germany, spain };
-      });
+      const rawChange = transformedChange(
+        indicator.transformation,
+        observation.baseline.value_raw,
+        observation.end.value_raw,
+      );
       return {
-        id: indicator.id,
-        area: indicator.area,
-        label: indicator.label,
-        unit: indicator.unit,
-        limitations: indicator.limitations,
-        direction: indicator.direction,
-        transformation: indicator.transformation,
-        weightBasisPoints: indicator.weightBasisPoints,
-        baselineValue,
-        endValue,
-        rawChange: rawChange(indicator, baselineValue, endValue),
-        orientedChange: oriented,
-        peerMedianChange: peersNow,
-        relativeChange: relative,
-        historicalScore: rounded(historicalScore),
-        relativeScore: rounded(relativeScore),
-        historicalWindowCount: historicalWindows.length,
-        score: rounded(score),
-        contributionPoints: rounded((score - 50) * indicator.weightBasisPoints / 10_000, 2),
-        sourceCodes: indicator.sourceCodes,
-        series,
+        geography,
+        series_selectors: observation.series_selectors,
+        baseline_reference_period: observation.baseline.reference_period,
+        end_reference_period: observation.end.reference_period,
+        baseline_value: observation.baseline.value_raw,
+        end_value: observation.end.value_raw,
+        observed_or_forecast: "observed" as const,
+        raw_change: rawChange,
+        oriented_change: indicator.direction === "higher" ? rawChange : -rawChange,
       };
     });
-}
-
-function weightedScore(indicators: readonly IndicatorCalculation[]) {
-  const weight = indicators.reduce((sum, indicator) => sum + indicator.weightBasisPoints, 0);
-  if (weight <= 0) throw new Error("pesi del paniere non validi");
-  return indicators.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints, 0) / weight;
-}
-
-function robustnessChecks(
-  snapshot: GovernmentScorecardSnapshot,
-  baselineYear: number,
-  endYear: number,
-  indicators: readonly IndicatorCalculation[],
-) {
-  const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
-  const checks = [
-    {
-      id: "equal-weights",
-      label: "Pesi uguali",
-      score: indicators.reduce((sum, indicator) => sum + indicator.score, 0) / indicators.length,
-    },
-    ...indicators.map((excluded) => ({
-      id: `without-indicator-${excluded.id}`,
-      label: `Senza ${excluded.label}`,
-      score: weightedScore(indicators.filter((indicator) => indicator.id !== excluded.id)),
-    })),
-    ...peers.map((excludedPeer) => ({
-      id: `without-peer-${excludedPeer}`,
-      label: `Senza ${excludedPeer === "france" ? "Francia" : excludedPeer === "germany" ? "Germania" : "Spagna"}`,
-      score: weightedScore(calculateIndicators(
-        snapshot,
-        baselineYear,
-        endYear,
-        peers.filter((peer) => peer !== excludedPeer),
-      )),
-    })),
-  ].map((check) => ({ ...check, score: rounded(check.score) }));
-  const baseScore = weightedScore(indicators);
-  const scores = [baseScore, ...checks.map((check) => check.score)];
-  const maximumDeviation = Math.max(...scores.map((score) => Math.abs(score - baseScore)));
-  return {
-    minimumScore: rounded(Math.min(...scores)),
-    maximumScore: rounded(Math.max(...scores)),
-    maximumDeviation: rounded(maximumDeviation),
-    label: maximumDeviation <= 5 ? "stabile" as const : maximumDeviation <= 10 ? "sensibile" as const : "molto sensibile" as const,
-    checks,
-  };
-}
-
-function scoreForWindow(snapshot: GovernmentScorecardSnapshot, baselineYear: number, endYear: number): ScoreCalculation {
-  const windowYears = endYear - baselineYear;
-  if (baselineYear < snapshot.method.firstScoreYear) {
-    return { status: "not-scored", baselineYear, endYear, windowYears, reason: "La serie completa del Core parte dal 1995." };
-  }
-  if (windowYears < snapshot.method.minimumWindowYears) {
-    return {
-      status: "not-scored",
-      baselineYear,
-      endYear,
-      windowYears,
-      reason: "I dati annuali non contengono ancora un intervallo osservabile per questo mandato: la scheda resta disponibile, il risultato arriverà con le serie trimestrali.",
-    };
-  }
-  const peers = snapshot.method.peerCountryIds as readonly GovernmentScorecardCountryId[];
-  try {
-    const indicators = calculateIndicators(snapshot, baselineYear, endYear, peers);
-    const observedScore = indicators.reduce((sum, indicator) => sum + indicator.historicalScore * indicator.weightBasisPoints / 10_000, 0);
-    const relativeScore = indicators.reduce((sum, indicator) => sum + indicator.relativeScore * indicator.weightBasisPoints / 10_000, 0);
-    const score = indicators.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints / 10_000, 0);
-    const areas = [...new Set(indicators.map((indicator) => indicator.area))];
-    const categories = areas.map((area) => {
-      const members = indicators.filter((indicator) => indicator.area === area);
-      const weightBasisPoints = members.reduce((sum, indicator) => sum + indicator.weightBasisPoints, 0);
-      return {
-        id: area,
-        label: AREA_LABELS[area],
-        weightBasisPoints,
-        score: rounded(members.reduce((sum, indicator) => sum + indicator.score * indicator.weightBasisPoints, 0) / weightBasisPoints),
-      };
+    const italy = countryChanges.find((country) => country.geography === "IT");
+    const peers = manifest.peers.map((geography) => {
+      const country = countryChanges.find((candidate) => candidate.geography === geography);
+      if (!country) {
+        throw new Error("input validato privo di peer obbligatorio");
+      }
+      return country.oriented_change;
     });
+    const scaleInput = scales.get(indicator.id);
+    if (!italy || !scaleInput) {
+      throw new Error("input validato incompleto");
+    }
+    const peerMedian = median(peers);
+    const peerGap = italy.oriented_change - peerMedian;
+    const scale = calculateRobustScaleV6(scaleInput.windows.map((window) => window.peer_gap));
     return {
-      status: "scored",
-      baselineYear,
-      endYear,
-      windowYears,
-      observedScore: rounded(observedScore),
-      relativeScore: rounded(relativeScore),
-      score: rounded(score),
-      indicators,
-      categories,
-      robustness: robustnessChecks(snapshot, baselineYear, endYear, indicators),
-    };
-  } catch (error) {
-    return {
-      status: "not-scored",
-      baselineYear,
-      endYear,
-      windowYears,
-      reason: error instanceof Error ? error.message : "Dati insufficienti per un risultato difendibile.",
-    };
-  }
-}
-
-function endpointYears(government: GovernmentScorecardGovernment, observedThrough: number) {
-  const startYear = Number(government.startDate.slice(0, 4));
-  const startMonth = Number(government.startDate.slice(5, 7));
-  const baselineYear = startMonth >= 7 ? startYear : startYear - 1;
-  const endYear = government.endDate
-    ? Number(government.endDate.slice(0, 4)) - (Number(government.endDate.slice(5, 7)) >= 7 ? 0 : 1)
-    : observedThrough;
-  return { baselineYear, endYear };
-}
-
-function scoreLabel(score: number) {
-  if (score >= 80) return "molto positivo";
-  if (score >= 65) return "positivo";
-  if (score >= 50) return "misto";
-  if (score >= 35) return "debole";
-  return "molto debole";
-}
-
-function governmentView(snapshot: GovernmentScorecardSnapshot, government: GovernmentScorecardGovernment) {
-  const years = endpointYears(government, snapshot.sources.ameco.observedThrough);
-  const calculation = scoreForWindow(snapshot, years.baselineYear, years.endYear);
-  const startYear = Number(government.startDate.slice(0, 4));
-  const governmentEndYear = government.endDate ? Number(government.endDate.slice(0, 4)) : snapshot.sources.ameco.forecastThrough;
-  const contexts = snapshot.contexts.filter((item) => item.startYear <= governmentEndYear && item.endYear >= startYear);
-  const measures = snapshot.measures.filter((item) => item.government === government.name);
-  const comparability = calculation.status === "not-scored"
-    ? { grade: "ND" as const, label: "dati non confrontabili", reason: calculation.reason }
-    : calculation.windowYears === 1 || government.status === "current" || contexts.some((item) => item.kind === "external-shock" || item.kind === "financial-shock")
-      ? { grade: "C" as const, label: "dati indicativi", reason: calculation.windowYears === 1
-        ? "La finestra annuale non isola con precisione i mesi del mandato."
-        : "Serie annuali e shock rilevanti rendono il confronto meno preciso." }
-      : { grade: "B" as const, label: "dati confrontabili", reason: "Paniere e peer sono completi, ma gli endpoint annuali approssimano le date del mandato." };
-  return {
-    ...government,
-    calculation,
-    scoreLabel: calculation.status === "scored" ? scoreLabel(calculation.score) : null,
-    comparability,
-    attribution: {
-      status: "not-estimated" as const,
-      label: "non stimata",
-      reason: "Il Core descrive risultati osservati: non identifica il contributo causale del governo.",
-    },
-    contexts,
-    measures,
-  };
-}
-
-function inheritedTrend(snapshot: GovernmentScorecardSnapshot, baselineYear: number): ScoreCalculation {
-  if (baselineYear <= snapshot.method.firstScoreYear) {
-    return {
-      status: "not-scored",
-      baselineYear,
-      endYear: baselineYear,
-      windowYears: 0,
-      reason: "La traiettoria precedente non è completa nel Core annuale dal 1995.",
-    };
-  }
-  const startYear = Math.max(snapshot.method.firstScoreYear, baselineYear - 2);
-  return scoreForWindow(snapshot, startYear, baselineYear);
-}
-
-function baselineIndicators(snapshot: GovernmentScorecardSnapshot, baselineYear: number) {
-  return snapshot.indicators.flatMap((indicator) => {
-    const value = valueAt(indicator, "italy", baselineYear);
-    if (value == null) return [];
-    return [{
       id: indicator.id,
-      area: indicator.area,
-      label: indicator.label,
+      pillar_id: indicator.pillar_id,
+      direction: indicator.direction,
+      transformation: indicator.transformation,
       unit: indicator.unit,
-      value,
-      limitations: indicator.limitations,
-    }];
+      definition: indicator.definition,
+      source_series: indicator.source_series,
+      frequency: "annual" as const,
+      seasonal_adjustment: "not_applicable" as const,
+      country_changes: countryChanges,
+      peer_median: peerMedian,
+      peer_gap: peerGap,
+      scale,
+      scale_key: serializeScaleKeyV6(scaleInput.key),
+      score_raw: calculatePeerScoreV6(peerGap, scale),
+    };
   });
-}
-
-export function getGovernmentScorecardView() {
-  const snapshot = getGovernmentScorecardSnapshot();
-  const baseGovernments = snapshot.governments.map((government) => governmentView(snapshot, government));
-  const governments = baseGovernments.map((government, index) => {
-    const previous = index > 0 ? baseGovernments[index - 1]! : null;
-    const successor = index + 1 < baseGovernments.length ? baseGovernments[index + 1]! : null;
-    const baselineYear = government.calculation.baselineYear;
-    const startYear = Number(government.startDate.slice(0, 4));
+  const scoreByIndicator = new Map(indicators.map((indicator) => [indicator.id, indicator.score_raw]));
+  const pillars = manifest.pillars.map((pillar) => {
+    const internalWeight = pillar.indicators.reduce((sum, indicator) => sum + indicator.weight_basis_points, 0);
+    if (internalWeight !== 10_000) {
+      throw new Error(`pesi interni non riconciliati per ${pillar.id}`);
+    }
+    const scoreRaw = pillar.indicators.reduce((sum, member) => {
+      const score = scoreByIndicator.get(member.indicator_id);
+      if (score === undefined) {
+        throw new Error(`indicatore obbligatorio assente da ${pillar.id}`);
+      }
+      return sum + score * member.weight_basis_points / 10_000;
+    }, 0);
     return {
-      ...government,
-      inheritance: {
-        previousGovernment: previous ? {
-          id: previous.id,
-          name: previous.name,
-          endDate: previous.endDate,
-        } : null,
-        baselineYear,
-        indicators: baselineIndicators(snapshot, baselineYear),
-        trend: inheritedTrend(snapshot, baselineYear),
-        activeContexts: snapshot.contexts.filter((item) => item.startYear < startYear && item.endYear >= startYear),
-      },
-      successorGovernment: successor ? {
-        id: successor.id,
-        name: successor.name,
-        startDate: successor.startDate,
-      } : null,
+      id: pillar.id,
+      weight_basis_points: pillar.weight_basis_points,
+      score_raw: scoreRaw,
     };
   });
-  const current = governments.find((government) => government.status === "current");
-  if (!current) throw new GovernmentScorecardContractError(new Error("governo corrente assente"));
-  const currentYears = endpointYears(current, snapshot.sources.ameco.observedThrough);
-  const forecastCoverage = getGovernmentScorecardForecastCoverage(snapshot);
-  const forecast = forecastCoverage.status === "complete"
-    ? scoreForWindow(snapshot, currentYears.baselineYear, forecastCoverage.throughYear)
-    : {
-      status: "not-scored" as const,
-      baselineYear: currentYears.baselineYear,
-      endYear: forecastCoverage.throughYear,
-      windowYears: forecastCoverage.throughYear - currentYears.baselineYear,
-      reason: `Scenario non pubblicabile: copertura previsionale ${forecastCoverage.availableCells}/${forecastCoverage.requiredCells}.`,
+  const pillarWeight = pillars.reduce((sum, pillar) => sum + pillar.weight_basis_points, 0);
+  if (pillarWeight !== 10_000) {
+    throw new Error("pesi pilastro non riconciliati");
+  }
+  const scoreRaw = pillars.reduce(
+    (sum, pillar) => sum + pillar.score_raw * pillar.weight_basis_points / 10_000,
+    0,
+  );
+  const canonicalScales = manifest.indicators.map((indicator) => {
+    const scale = scales.get(indicator.id);
+    if (!scale) throw new Error(`scala obbligatoria assente per ${indicator.id}`);
+    return {
+      key: scale.key,
+      windows: scale.windows.toSorted((left, right) =>
+        left.start_year - right.start_year || left.end_year - right.end_year),
     };
+  });
   return {
-    ok: true as const,
-    methodologyVersion: snapshot.methodologyVersion,
-    generatedAt: snapshot.generatedAt,
-    method: snapshot.method,
-    sources: snapshot.sources,
-    forecastCoverage,
-    current: { ...current, forecast },
-    governments,
-    historicalContexts: snapshot.contexts.filter((item) => item.endYear < snapshot.method.firstScoreYear),
-    caveats: snapshot.caveats,
-    peerLabels: GOVERNMENT_SCORECARD_COUNTRY_IDS.filter((id) => id !== "italy").map((id) => ({
-      id,
-      label: id === "france" ? "Francia" : id === "germany" ? "Germania" : "Spagna",
-    })),
+    schema_version: frozen.schema_version,
+    snapshot_version: frozen.snapshot_version,
+    methodology_version: frozen.methodology_version,
+    as_of_date: frozen.as_of_date,
+    government: frozen.government,
+    source: frozen.source,
+    window: frozen.window,
+    stability: frozen.stability,
+    scales: canonicalScales,
+    indicators,
+    pillars,
+    score_raw: scoreRaw,
+    display_score: Math.floor(scoreRaw + 0.5),
   };
 }
-
-export function getGovernmentScorecardGovernmentView(id: string) {
-  const view = getGovernmentScorecardView();
-  if (view.current.id === id) return view.current;
-  return view.governments.find((government) => government.id === id);
-}
-
-export type GovernmentScorecardView = ReturnType<typeof getGovernmentScorecardView>;

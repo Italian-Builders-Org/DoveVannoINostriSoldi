@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "snapshotVersion": "government-scorecard-page-2026-09-03-r2",
+  "period": {
+    "frequencies": ["annual", "quarterly", "monthly"],
+    "firstPeriod": "1995",
+    "latestRule": "latest observed period available independently for each display series",
+    "missingRule": "omit unavailable source observations; never interpolate"
+  },
+  "geographies": ["IT", "FR", "DE", "ES"],
+  "sources": [
+    {
+      "datasetCode": "AMECO",
+      "role": "six score-bearing series",
+      "sourceArtifact": "src/data/generated/government-scorecard.json"
+    },
+    {
+      "datasetCode": "prc_hicp_minr",
+      "role": "monthly inflation",
+      "filters": {"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"}
+    },
+    {
+      "datasetCode": "lfsi_emp_q",
+      "role": "quarterly seasonally adjusted employment rate",
+      "filters": {"freq": "Q", "indic_em": "EMP_LFS", "s_adj": "SA", "unit": "PC_POP", "sex": "T", "age": "Y20-64"}
+    },
+    {
+      "datasetCode": "gov_10dd_edpt1",
+      "role": "general-government consolidated gross debt stock",
+      "filters": {"freq": "A", "unit": "MIO_EUR", "sector": "S13", "na_item": "GD"}
+    },
+    {
+      "datasetCode": "nama_10_pe",
+      "role": "annual population denominator",
+      "filters": {"freq": "A", "unit": "THS_PER", "na_item": "POP_NC"}
+    }
+  ],
+  "debtPerCapitaFormula": "debt_stock_mio_eur * 1000 / population_thousand",
+  "contextRule": "A single geopolitics, shocks and crises category contains only essential source-backed events with a documented economic channel; an empty category is allowed only after the verified catalog has been checked.",
+  "scoreImpact": "none"
+}

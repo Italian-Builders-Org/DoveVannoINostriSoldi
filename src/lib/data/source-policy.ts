@@ -85,12 +85,12 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
   },
   "governi-presidenza": {
     id: "governi-presidenza",
-    label: "Presidenza del Consiglio · governi nelle legislature",
-    owner: "Presidenza del Consiglio dei Ministri",
-    sourceUrl: "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+    label: "Presidenza della Repubblica · giuramenti dei governi",
+    owner: "Presidenza della Repubblica",
+    sourceUrl: "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
     cadence: "periodica",
     cadenceNote:
-      "La cronologia istituzionale cambia con l'insediamento di un nuovo governo; il controllo giornaliero valida contenuto e ordine prima di aggiornare lo snapshot.",
+      "La cronologia istituzionale cambia con il giuramento di un nuovo governo; il controllo giornaliero valida fonti Quirinale, contenuto e ordine prima di aggiornare il registro.",
     discoveryRevalidateSeconds: DAY,
     dataRevalidateSeconds: DAY,
     staleAfterSeconds: null,

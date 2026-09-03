@@ -1,105 +1,145 @@
 {
-  "schemaVersion": 1,
-  "methodologyVersion": "core-annual-v4",
-  "countryCodes": {
-    "italy": "ITA",
-    "france": "FRA",
-    "germany": "DEU",
-    "spain": "ESP"
+  "schema_version": 1,
+  "methodology_version": "peer-relative-v6",
+  "source": {
+    "source_id": "ameco",
+    "source_owner": "European Commission, Directorate-General for Economic and Financial Affairs",
+    "dataset_code": "AMECO",
+    "vintage": "Spring 2026 Economic Forecast",
+    "observed_through": 2024,
+    "forecast_from": 2025,
+    "forecast_through": 2027
   },
+  "countries": ["IT", "FR", "DE", "ES"],
+  "peers": ["FR", "DE", "ES"],
+  "peer_aggregator": "median",
+  "formula": {
+    "formula_id": "peer_gap_zero_centered_tanh",
+    "tanh_divisor": 2.0,
+    "neutral_score": 50,
+    "minimum_score": 0,
+    "maximum_score": 100,
+    "display_rounding": "half_up"
+  },
+  "scale": {
+    "scale_estimator_id": "mad_with_iqr_fallback",
+    "mad_multiplier": 1.4826,
+    "iqr_divisor": 1.349,
+    "quantile_method": "linear_r7",
+    "calibration_period_id": "1995+",
+    "first_score_year": 1995,
+    "minimum_rolling_windows": 20,
+    "minimum_disjoint_windows": 6
+  },
+  "scale_key_fields": [
+    "indicator_id",
+    "source_set_id",
+    "temporal_operator_id",
+    "duration_or_weight_pattern_id",
+    "vintage_id",
+    "peer_set_id",
+    "peer_aggregation_id",
+    "scale_estimator_id",
+    "calibration_period_id",
+    "methodology_version"
+  ],
+  "pillars": [
+    {
+      "id": "purchasing_power",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "real_compensation", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "labour",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "unemployment", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "growth",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "real_gdp_per_capita", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "public_finance",
+      "weight_basis_points": 2000,
+      "indicators": [
+        {"indicator_id": "debt_ratio", "weight_basis_points": 5000},
+        {"indicator_id": "primary_balance", "weight_basis_points": 5000}
+      ]
+    },
+    {
+      "id": "future_capacity",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "investment_share", "weight_basis_points": 10000}]
+    }
+  ],
   "indicators": [
     {
       "id": "real_compensation",
-      "area": "purchasing-power",
-      "label": "Retribuzione reale per dipendente",
-      "weightBasisPoints": 2500,
+      "pillar_id": "purchasing_power",
       "direction": "higher",
-      "transformation": "log-change",
+      "transformation": "log_change",
       "unit": "National currency: 2020 = 100",
-      "limitations": "Media per dipendente dell'intera economia; non misura distribuzione dei salari, ore lavorate o reddito familiare.",
-      "sourceSeries": [
-        {"file": "AMECO7.CSV", "codeTemplate": "{country}.3.1.0.0.RWCDC", "title": "Real compensation per employee deflator private consumption: total economy", "unit": "National currency: 2020 = 100"}
+      "definition": "Real compensation per employee deflator private consumption: total economy",
+      "source_series": [
+        {"file": "AMECO7.CSV", "selector_template": "{country}.3.1.0.0.RWCDC", "series_label": "Real compensation per employee deflator private consumption: total economy", "unit": "National currency: 2020 = 100"}
       ]
     },
     {
       "id": "unemployment",
-      "area": "labour",
-      "label": "Tasso di disoccupazione",
-      "weightBasisPoints": 2000,
+      "pillar_id": "labour",
       "direction": "lower",
-      "transformation": "point-change",
+      "transformation": "point_change",
       "unit": "Percentage of active population",
-      "limitations": "Non misura inattività, qualità del lavoro, ore lavorate o divari di genere e generazione.",
-      "sourceSeries": [
-        {"file": "AMECO1.CSV", "codeTemplate": "{country}.1.0.0.0.ZUTN", "title": "Unemployment rate: total :- Member States: definition EUROSTAT", "unit": "Percentage of active population"}
+      "definition": "Unemployment rate: total :- Member States: definition EUROSTAT",
+      "source_series": [
+        {"file": "AMECO1.CSV", "selector_template": "{country}.1.0.0.0.ZUTN", "series_label": "Unemployment rate: total :- Member States: definition EUROSTAT", "unit": "Percentage of active population"}
       ]
     },
     {
       "id": "real_gdp_per_capita",
-      "area": "growth",
-      "label": "PIL reale per abitante",
-      "weightBasisPoints": 2000,
+      "pillar_id": "growth",
       "direction": "higher",
-      "transformation": "log-change",
+      "transformation": "log_change",
       "unit": "1000 national currency, 2020 reference levels",
-      "limitations": "Misura produzione media reale, non distribuzione del reddito, benessere o sostenibilità.",
-      "sourceSeries": [
-        {"file": "AMECO6.CSV", "codeTemplate": "{country}.1.1.0.0.RVGDP", "title": "Gross domestic product at 2020 reference levels per head of population", "unit": "1000 national currency, 2020 reference levels"}
+      "definition": "Gross domestic product at 2020 reference levels per head of population",
+      "source_series": [
+        {"file": "AMECO6.CSV", "selector_template": "{country}.1.1.0.0.RVGDP", "series_label": "Gross domestic product at 2020 reference levels per head of population", "unit": "1000 national currency, 2020 reference levels"}
       ]
     },
     {
       "id": "debt_ratio",
-      "area": "public-finance",
-      "label": "Debito pubblico sul PIL",
-      "weightBasisPoints": 1000,
+      "pillar_id": "public_finance",
       "direction": "lower",
-      "transformation": "point-change",
+      "transformation": "point_change",
       "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
-      "limitations": "Il rapporto cambia sia per il debito sia per il PIL nominale e include effetti ereditati e stock-flow adjustment.",
-      "sourceSeries": [
-        {"file": "AMECO18.CSV", "codeTemplate": "{country}.1.0.319.0.UDGG", "title": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
+      "definition": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
+      "source_series": [
+        {"file": "AMECO18.CSV", "selector_template": "{country}.1.0.319.0.UDGG", "series_label": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
       ]
     },
     {
       "id": "primary_balance",
-      "area": "public-finance",
-      "label": "Saldo primario sul PIL",
-      "weightBasisPoints": 1000,
+      "pillar_id": "public_finance",
       "direction": "higher",
-      "transformation": "point-change",
+      "transformation": "point_change",
       "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
-      "limitations": "Include il ciclo e misure una tantum; non è il saldo strutturale e la serie comparabile parte dal 1995.",
-      "sourceSeries": [
-        {"file": "AMECO16.CSV", "codeTemplate": "{country}.1.0.319.0.UBLGI", "title": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
+      "definition": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
+      "source_series": [
+        {"file": "AMECO16.CSV", "selector_template": "{country}.1.0.319.0.UBLGI", "series_label": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
       ]
     },
     {
       "id": "investment_share",
-      "area": "future-capacity",
-      "label": "Investimenti totali sul PIL",
-      "weightBasisPoints": 1500,
+      "pillar_id": "future_capacity",
       "direction": "higher",
-      "transformation": "point-change",
-      "derived": "gross-fixed-capital-formation / gross-domestic-product * 100",
+      "transformation": "point_change",
       "unit": "Percentage of GDP at current prices",
-      "limitations": "Aggrega investimenti pubblici e privati e non misura qualità, addizionalità o rendimento.",
-      "sourceSeries": [
-        {"file": "AMECO3.CSV", "codeTemplate": "{country}.1.0.0.0.UIGT", "title": "Gross fixed capital formation at current prices: total economy", "unit": "Mrd national currency"},
-        {"file": "AMECO6.CSV", "codeTemplate": "{country}.1.0.0.0.UVGD", "title": "Gross domestic product at current prices", "unit": "Mrd national currency"}
+      "definition": "Gross fixed capital formation at current prices divided by gross domestic product at current prices",
+      "source_series": [
+        {"file": "AMECO3.CSV", "selector_template": "{country}.1.0.0.0.UIGT", "series_label": "Gross fixed capital formation at current prices: total economy", "unit": "Mrd national currency"},
+        {"file": "AMECO6.CSV", "selector_template": "{country}.1.0.0.0.UVGD", "series_label": "Gross domestic product at current prices", "unit": "Mrd national currency"}
       ]
     }
-  ],
-  "method": {
-    "firstScoreYear": 1995,
-    "minimumWindowYears": 1,
-    "peerCountryIds": ["france", "germany", "spain"],
-    "historicalWeightBasisPoints": 5000,
-    "peerWeightBasisPoints": 5000,
-    "robustScale": 1.4826,
-    "winsorizedZ": 3,
-    "scoreStatus": "Indice annuale dei risultati economici nel periodo; ogni governo ha una scheda, mentre il numero richiede almeno un intervallo annuale osservabile",
-    "missingDataRule": "No score when any mandatory indicator, peer or same-duration comparison window is missing",
-    "endpointRule": "Semestral approximation for annual data: for the starting endpoint use the prior year when the published start boundary is in January-June and the start year when it is in July-December; for the final endpoint use the prior year when the published end boundary is in January-June and the end year when it is in July-December. This minimizes, but cannot eliminate, months belonging to another government and does not provide daily precision. startDate and endDate are institutional boundaries published by the Presidency and Camera, not individual resignation dates and not evidence of causal responsibility.",
-    "attributionRule": "The score describes outcomes over annual endpoints and never estimates the causal effect of a government; attribution is always reported separately"
-  }
+  ]
 }

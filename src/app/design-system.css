@@ -97,6 +97,12 @@
   --chart-quaternary: var(--color-neutral-400);
   --chart-quinary: var(--color-accent-300);
   --chart-negative: var(--color-accent-700);
+  /* Country comparison palette. Shape and dash patterns remain redundant so
+     the lines stay distinguishable without relying on colour alone. */
+  --chart-country-italy: #0057b8;
+  --chart-country-france: #b4374b;
+  --chart-country-germany: #6847a8;
+  --chart-country-spain: #8a5a00;
   --chart-family-services: #cfc2f2;
   --chart-family-investment: #f2bdc7;
   --chart-family-pass-through: #f2d071;

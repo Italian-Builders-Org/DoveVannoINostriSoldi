@@ -1,379 +1,398 @@
 import { z } from "zod";
-import methodologyManifest from "../../../scripts/etl/specs/government-scorecard-methodology.json";
-import sourceSpec from "../../../scripts/etl/specs/government-scorecard.source.json";
 
-export const GOVERNMENT_SCORECARD_INDICATOR_IDS = [
+import canonicalManifest from "../../../scripts/etl/specs/government-scorecard-methodology.json";
+import {
+  GOVERNMENT_SCORECARD_V6_CHRONOLOGY,
+  GOVERNMENT_SCORECARD_V6_REGISTRY,
+} from "@/lib/government-scorecard-chronology";
+import { deriveAnnualStatisticalWindowV6, durationDaysV6 } from "@/lib/government-scorecard-temporal";
+
+const indicatorId = z.enum([
   "real_compensation",
   "unemployment",
   "real_gdp_per_capita",
   "debt_ratio",
   "primary_balance",
   "investment_share",
-] as const;
+]);
 
-export const GOVERNMENT_SCORECARD_COUNTRY_IDS = ["italy", "france", "germany", "spain"] as const;
-
-const INDICATOR_VALUE_RANGES: Readonly<Record<typeof GOVERNMENT_SCORECARD_INDICATOR_IDS[number], readonly [number, number]>> = {
-  real_compensation: [0, 1_000],
-  unemployment: [0, 100],
-  real_gdp_per_capita: [0, 1_000],
-  debt_ratio: [0, 1_000],
-  primary_balance: [-100, 100],
-  investment_share: [0, 100],
-};
-
-const httpsUrl = z.url().refine((value) => new URL(value).protocol === "https:", "URL HTTPS atteso");
-const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
-const isoDate = z.iso.date();
-const utcTimestamp = z.string()
-  .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/, "timestamp UTC atteso")
-  .refine((value) => Number.isFinite(Date.parse(value)), "timestamp UTC atteso");
-const finiteNumber = z.number().finite();
-const GOVERNMENT_DATE_BOUNDARY_MEANING = "startDate ed endDate sono i confini istituzionali del governo pubblicati dalle fonti; endDate può coincidere con l'inizio del governo successivo e non indica necessariamente l'ultimo giorno in carica, una data di dimissioni o responsabilità causale";
-const HISTORICAL_PAGE_ALLOWLIST = [
-  {
-    governmentId: "dini-i",
-    sourceLabel: "Governo Dini",
-    pageTitle: "I Governo Dini",
-    pageUrl: "https://storia.camera.it/governi/i-governo-dini/Ministero%20del%20tesoro",
-    startDate: "1995-01-17",
-    endDate: "1996-05-17",
-  },
-  {
-    governmentId: "prodi-i",
-    sourceLabel: "Governo Prodi",
-    pageTitle: "I Governo Prodi",
-    pageUrl: "https://storia.camera.it/governi/i-governo-prodi/Ministero%20delle%20finanze",
-    startDate: "1996-05-17",
-    endDate: "1998-10-21",
-  },
-  {
-    governmentId: "dalema-i",
-    sourceLabel: "Governo D'Alema",
-    pageTitle: "I Governo D'Alema",
-    pageUrl: "https://storia.camera.it/governi/i-governo-d-alema/Presidenza%20del%20Consiglio%20-%20rapporti%20con%20il%20parlamento",
-    startDate: "1998-10-21",
-    endDate: "1999-12-22",
-  },
-  {
-    governmentId: "dalema-ii",
-    sourceLabel: "Governo D'Alema II",
-    pageTitle: "II Governo D'Alema",
-    pageUrl: "https://storia.camera.it/governi/ii-governo-d-alema/Ministero%20dell%27interno",
-    startDate: "1999-12-22",
-    endDate: "2000-04-25",
-  },
-  {
-    governmentId: "amato-ii",
-    sourceLabel: "Governo Amato II",
-    pageTitle: "II Governo Amato",
-    pageUrl: "https://storia.camera.it/governi/ii-governo-amato/Presidenza%20del%20Consiglio%20-%20affari%20regionali",
-    startDate: "2000-04-25",
-    endDate: "2001-06-10",
-  },
-] as const;
-
-const amecoSourceSchema = z.object({
-  owner: z.literal("European Commission, Directorate-General for Economic and Financial Affairs"),
-  title: z.literal("AMECO annual macro-economic database"),
-  release: z.string().min(1),
-  releaseDate: isoDate,
-  landingUrl: httpsUrl.refine((value) => new URL(value).hostname === "economy-finance.ec.europa.eu"),
-  downloadUrl: httpsUrl.refine((value) => {
-    const url = new URL(value);
-    return url.hostname === "ec.europa.eu" && url.pathname === "/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip";
-  }, "URL AMECO ufficiale atteso"),
-  termsUrl: httpsUrl.refine((value) => new URL(value).hostname === "commission.europa.eu"),
-  license: z.literal("CC BY 4.0 unless otherwise indicated"),
-  cadence: z.string().min(1),
-  geography: z.string().min(1),
-  referencePeriod: z.string().min(1),
-  publication: z.string().min(1),
-  retrievedAt: utcTimestamp,
-  bytes: z.number().int().positive().safe(),
-  sha256,
-  observedThrough: z.literal(2024),
-  forecastFrom: z.literal(2025),
-  forecastThrough: z.literal(2027),
-}).strict();
-
-const chronologySourceSchema = z.object({
-  owner: z.literal("Presidenza del Consiglio dei Ministri"),
-  title: z.literal("I Governi nelle Legislature"),
-  pageUrl: httpsUrl.refine((value) => {
-    const url = new URL(value);
-    return url.hostname === "www.governo.it" && url.pathname === "/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192";
-  }, "URL cronologia ufficiale atteso"),
-  termsUrl: httpsUrl.refine((value) => new URL(value).hostname === "www.governo.it"),
-  cadence: z.string().min(1),
-  geography: z.string().min(1),
-  referencePeriod: z.string().min(1),
-  publication: z.string().min(1),
-  historicalOwner: z.literal("Camera dei deputati · Portale storico"),
-  dateMeaning: z.literal(GOVERNMENT_DATE_BOUNDARY_MEANING),
-  retrievedAt: utcTimestamp,
-  bytes: z.number().int().positive().safe(),
-  sha256,
-  historicalReceipts: z.array(z.object({
-    governmentId: z.string().regex(/^[a-z0-9-]+$/),
-    sourceLabel: z.string().min(1),
-    pageTitle: z.string().min(1),
-    pageUrl: httpsUrl,
-    startDate: isoDate,
-    endDate: isoDate,
-    retrievedAt: utcTimestamp,
-    bytes: z.number().int().positive().safe(),
-    sha256,
-  }).strict()).length(HISTORICAL_PAGE_ALLOWLIST.length),
-}).strict();
-
-const observationSchema = z.object({
-  year: z.number().int().min(1960).max(2027),
-  value: finiteNumber.nullable(),
-}).strict();
-
-const countrySeriesSchema = z.object({
-  italy: z.array(observationSchema).length(68),
-  france: z.array(observationSchema).length(68),
-  germany: z.array(observationSchema).length(68),
-  spain: z.array(observationSchema).length(68),
-}).strict();
-
-const sourceCodesSchema = z.object({
-  italy: z.array(z.string().min(1)).min(1).max(2),
-  france: z.array(z.string().min(1)).min(1).max(2),
-  germany: z.array(z.string().min(1)).min(1).max(2),
-  spain: z.array(z.string().min(1)).min(1).max(2),
-}).strict();
-
-const sourceSeriesSchema = z.array(z.object({
+const sourceSeriesSchema = z.object({
   file: z.string().min(1),
-  codeTemplate: z.string().min(1),
-  title: z.string().min(1),
+  selector_template: z.string().min(1),
+  series_label: z.string().min(1),
   unit: z.string().min(1),
-}).strict()).min(1).max(2);
+}).strict();
 
 const indicatorSchema = z.object({
-  id: z.enum(GOVERNMENT_SCORECARD_INDICATOR_IDS),
-  sourceId: z.literal("ameco"),
-  area: z.enum(["purchasing-power", "labour", "growth", "public-finance", "future-capacity"]),
-  label: z.string().min(1),
-  weightBasisPoints: z.number().int().positive().max(10_000),
+  id: indicatorId,
+  pillar_id: z.enum(["purchasing_power", "labour", "growth", "public_finance", "future_capacity"]),
   direction: z.enum(["higher", "lower"]),
-  transformation: z.enum(["log-change", "point-change"]),
+  transformation: z.enum(["log_change", "point_change"]),
   unit: z.string().min(1),
-  limitations: z.string().min(1),
-  referencePeriod: z.literal("annual, 1960-2027; observations through 2024; forecasts from 2025"),
-  coverageNotes: z.literal("Unavailable country-years remain explicit null values; 1995-2024 is mandatory for every country, while 2025-2027 is published only as a complete forecast scenario."),
-  sourceSeries: sourceSeriesSchema,
-  derived: z.string().min(1).optional(),
-  sourceCodes: sourceCodesSchema,
-  countries: countrySeriesSchema,
+  definition: z.string().min(1),
+  source_series: z.array(sourceSeriesSchema).min(1).max(2),
 }).strict();
 
-const governmentSchema = z.object({
-  id: z.string().regex(/^[a-z0-9-]+$/),
-  name: z.string().min(1),
-  startDate: isoDate,
-  endDate: isoDate.nullable(),
-  status: z.enum(["ended", "current"]),
+const pillarSchema = z.object({
+  id: z.enum(["purchasing_power", "labour", "growth", "public_finance", "future_capacity"]),
+  weight_basis_points: z.number().int().positive(),
+  indicators: z.array(z.object({
+    indicator_id: indicatorId,
+    weight_basis_points: z.number().int().positive(),
+  }).strict()).min(1).max(2),
 }).strict();
 
-const contextSchema = z.object({
-  id: z.string().regex(/^[a-z0-9-]+$/),
-  label: z.string().min(1),
-  startYear: z.number().int().min(1946).max(2027),
-  endYear: z.number().int().min(1946).max(2027),
-  kind: z.enum(["regime", "external-shock", "financial-shock", "shared-policy-context"]),
-  summary: z.string().min(1),
-  sourceUrl: httpsUrl,
+const scaleKeyField = z.enum([
+  "indicator_id",
+  "source_set_id",
+  "temporal_operator_id",
+  "duration_or_weight_pattern_id",
+  "vintage_id",
+  "peer_set_id",
+  "peer_aggregation_id",
+  "scale_estimator_id",
+  "calibration_period_id",
+  "methodology_version",
+]);
+
+export const governmentScorecardV6ManifestSchema = z.object({
+  schema_version: z.literal(1),
+  methodology_version: z.literal("peer-relative-v6"),
+  source: z.object({
+    source_id: z.literal("ameco"),
+    source_owner: z.literal("European Commission, Directorate-General for Economic and Financial Affairs"),
+    dataset_code: z.literal("AMECO"),
+    vintage: z.literal("Spring 2026 Economic Forecast"),
+    observed_through: z.literal(2024),
+    forecast_from: z.literal(2025),
+    forecast_through: z.literal(2027),
+  }).strict(),
+  countries: z.tuple([z.literal("IT"), z.literal("FR"), z.literal("DE"), z.literal("ES")]),
+  peers: z.tuple([z.literal("FR"), z.literal("DE"), z.literal("ES")]),
+  peer_aggregator: z.literal("median"),
+  formula: z.object({
+    formula_id: z.literal("peer_gap_zero_centered_tanh"),
+    tanh_divisor: z.literal(2),
+    neutral_score: z.literal(50),
+    minimum_score: z.literal(0),
+    maximum_score: z.literal(100),
+    display_rounding: z.literal("half_up"),
+  }).strict(),
+  scale: z.object({
+    scale_estimator_id: z.literal("mad_with_iqr_fallback"),
+    mad_multiplier: z.literal(1.4826),
+    iqr_divisor: z.literal(1.349),
+    quantile_method: z.literal("linear_r7"),
+    calibration_period_id: z.literal("1995+"),
+    first_score_year: z.literal(1995),
+    minimum_rolling_windows: z.literal(20),
+    minimum_disjoint_windows: z.literal(6),
+  }).strict(),
+  scale_key_fields: z.array(scaleKeyField).length(10),
+  pillars: z.array(pillarSchema).length(5),
+  indicators: z.array(indicatorSchema).length(6),
 }).strict();
 
-const measureSchema = z.object({
-  government: z.string().min(1),
-  title: z.string().min(1),
-  status: z.enum(["enacted", "implemented-across-governments"]),
-  act: z.string().min(1),
-  mechanism: z.string().min(1),
-  evidence: z.string().min(1),
-  sourceUrl: httpsUrl,
+export type GovernmentScorecardV6Manifest = z.infer<typeof governmentScorecardV6ManifestSchema>;
+
+export const governmentScorecardV6ScaleKeySchema = z.object({
+  indicator_id: indicatorId,
+  source_set_id: z.string().min(1),
+  temporal_operator_id: z.string().min(1),
+  duration_or_weight_pattern_id: z.string().min(1),
+  vintage_id: z.string().min(1),
+  peer_set_id: z.string().min(1),
+  peer_aggregation_id: z.string().min(1),
+  scale_estimator_id: z.string().min(1),
+  calibration_period_id: z.string().min(1),
+  methodology_version: z.literal("peer-relative-v6"),
 }).strict();
 
-const methodSchema = z.object({
-  firstScoreYear: z.literal(1995),
-  minimumWindowYears: z.literal(1),
-  peerCountryIds: z.tuple([z.literal("france"), z.literal("germany"), z.literal("spain")]),
-  historicalWeightBasisPoints: z.literal(5000),
-  peerWeightBasisPoints: z.literal(5000),
-  robustScale: z.literal(1.4826),
-  winsorizedZ: z.literal(3),
-  scoreStatus: z.string().min(1),
-  missingDataRule: z.string().min(1),
-  endpointRule: z.string().min(1),
-  attributionRule: z.string().min(1),
+export type GovernmentScorecardV6ScaleKey = z.infer<typeof governmentScorecardV6ScaleKeySchema>;
+
+const countryCode = z.enum(["IT", "FR", "DE", "ES"]);
+const finiteNumber = z.number().finite();
+const isoDate = z.iso.date();
+const httpsUrl = z.url().refine((value) => new URL(value).protocol === "https:", "URL HTTPS atteso");
+const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
+
+const endpointSchema = z.object({
+  reference_period: z.number().int(),
+  value_raw: finiteNumber,
+  observed_or_forecast: z.enum(["observed", "forecast"]),
+  status_flags_or_null: z.null(),
+}).strict();
+
+const frozenObservationSchema = z.object({
+  indicator_id: indicatorId,
+  geography: countryCode,
+  source_id: z.literal("ameco"),
+  dataset_code: z.literal("AMECO"),
+  series_selectors: z.array(z.string().min(1)).min(1).max(2),
+  definition: z.string().min(1),
+  unit: z.string().min(1),
+  frequency: z.literal("annual"),
+  seasonal_adjustment: z.literal("not_applicable"),
+  baseline: endpointSchema,
+  end: endpointSchema,
+}).strict();
+
+const scaleWindowSchema = z.object({
+  start_year: z.number().int(),
+  end_year: z.number().int(),
+  peer_gap: finiteNumber,
+}).strict();
+
+const frozenScaleSchema = z.object({
+  key: governmentScorecardV6ScaleKeySchema,
+  windows: z.array(scaleWindowSchema).min(20),
 }).strict();
 
 function issue(context: z.RefinementCtx, message: string, path: PropertyKey[] = []) {
   context.addIssue({ code: "custom", message, path });
 }
 
-export const governmentScorecardSnapshotSchema = z.object({
-  schemaVersion: z.literal(1),
-  methodologyVersion: z.literal("core-annual-v4"),
-  generatedAt: utcTimestamp,
-  sources: z.object({
-    ameco: amecoSourceSchema,
-    governmentChronology: chronologySourceSchema,
+function disjointWindowCapacity(windows: readonly { start_year: number; end_year: number }[]): number {
+  let capacity = 0;
+  let previousEnd: number | undefined;
+  for (const window of windows.toSorted((left, right) => left.end_year - right.end_year)) {
+    if (previousEnd === undefined || window.start_year >= previousEnd) {
+      capacity += 1;
+      previousEnd = window.end_year;
+    }
+  }
+  return capacity;
+}
+
+const COUNTRY_SERIES_CODES = { IT: "ITA", FR: "FRA", DE: "DEU", ES: "ESP" } as const;
+
+export const governmentScorecardV6InputSchema = z.object({
+  schema_version: z.literal(1),
+  snapshot_version: z.string().regex(/^[a-z0-9-]+-v6-(?:tracer|all)-1$/),
+  methodology_version: z.literal("peer-relative-v6"),
+  as_of_date: isoDate,
+  government: z.object({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    name: z.string().min(1),
+    start_date: isoDate,
+    end_date: isoDate.nullable(),
+    status: z.enum(["current", "ended"]),
+    source_owner: z.literal("Presidenza della Repubblica"),
+    source_url: httpsUrl,
+    source_locator: z.string().trim().min(30),
   }).strict(),
-  method: methodSchema,
-  indicators: z.array(indicatorSchema).length(GOVERNMENT_SCORECARD_INDICATOR_IDS.length),
-  governments: z.array(governmentSchema).min(17),
-  contexts: z.array(contextSchema).min(8),
-  measures: z.array(measureSchema).min(10),
-  caveats: z.array(z.string().min(1)).min(4),
-}).strict().superRefine((snapshot, context) => {
-  if (JSON.stringify(snapshot.method) !== JSON.stringify(methodologyManifest.method)) {
-    issue(context, "metodo divergente dal manifest versionato", ["method"]);
+  source: z.object({
+    source_id: z.literal("ameco"),
+    source_owner: z.string().min(1),
+    dataset_code: z.literal("AMECO"),
+    vintage: z.string().min(1),
+    published_at: z.literal("2026-06-03"),
+    upstream_updated_at: z.literal("2026-06-03"),
+    retrieved_at: z.literal("2026-08-29T23:11:43Z"),
+    observed_through: z.number().int(),
+    forecast_from: z.number().int(),
+    forecast_through: z.number().int(),
+    raw_url: z.literal("https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip"),
+    landing_url: z.literal("https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"),
+    reuse_url: z.literal("https://commission.europa.eu/legal-notice_en"),
+    license: z.literal("CC BY 4.0 unless otherwise indicated"),
+    raw_sha256: sha256.pipe(z.literal("b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005")),
+    raw_bytes: z.literal(6_181_987),
+    limitations: z.array(z.string().min(1)).min(1),
+  }).strict(),
+  window: z.object({
+    temporal_operator_id: z.literal("annual_endpoint"),
+    reference_date_rule: z.literal("july-1"),
+    assigned_years: z.array(z.number().int()).min(1),
+    first_year: z.number().int(),
+    last_year: z.number().int(),
+    baseline_year: z.number().int(),
+    end_year: z.number().int(),
+    observed_through: z.number().int(),
+    duration_or_weight_pattern_id: z.string().min(1),
+  }).strict(),
+  stability: z.object({
+    evidence_scope: z.string().min(1),
+    operational_combined_width: finiteNumber.nullable(),
+    method_audit_width: finiteNumber.nullable(),
+    label: z.enum(["Alta", "Media", "Bassa"]).nullable(),
+    source: z.string().min(1),
+  }).strict(),
+  observations: z.array(frozenObservationSchema).length(24),
+  scales: z.array(frozenScaleSchema).length(6),
+}).strict().superRefine((input, context) => {
+  const manifest = GOVERNMENT_SCORECARD_V6_MANIFEST;
+  const expectedGovernment = GOVERNMENT_SCORECARD_V6_CHRONOLOGY.find(
+    (government) => government.id === input.government.id,
+  );
+  if (
+    !expectedGovernment
+    || input.government.name !== expectedGovernment.name
+    || input.government.start_date !== expectedGovernment.start_date
+    || input.government.end_date !== expectedGovernment.end_exclusive
+    || input.government.status !== expectedGovernment.status
+    || input.government.source_owner !== expectedGovernment.source_owner
+    || input.government.source_url !== expectedGovernment.source_url
+    || input.government.source_locator !== expectedGovernment.source_locator
+  ) {
+    issue(context, "identita' o cronologia dello snapshot divergente", ["government"]);
   }
-  const indicatorIds = snapshot.indicators.map((indicator) => indicator.id);
-  if (new Set(indicatorIds).size !== GOVERNMENT_SCORECARD_INDICATOR_IDS.length || GOVERNMENT_SCORECARD_INDICATOR_IDS.some((id) => !indicatorIds.includes(id))) {
-    issue(context, "paniere indicatori incompleto o duplicato", ["indicators"]);
+  if (input.snapshot_version !== `${input.government.id}-v6-all-1`) {
+    issue(context, "versione snapshot incompatibile con il governo", ["snapshot_version"]);
   }
-  if (snapshot.indicators.reduce((sum, indicator) => sum + indicator.weightBasisPoints, 0) !== 10_000) {
-    issue(context, "pesi indicatori non riconciliati", ["indicators"]);
+  if (input.as_of_date !== GOVERNMENT_SCORECARD_V6_REGISTRY.asOfDate) {
+    issue(context, "as_of_date divergente dal registro congelato", ["as_of_date"]);
   }
-  const historicalReceipts = snapshot.sources.governmentChronology.historicalReceipts;
-  if (historicalReceipts.length !== HISTORICAL_PAGE_ALLOWLIST.length) {
-    issue(context, "ricevute Camera incomplete", ["sources", "governmentChronology", "historicalReceipts"]);
-  }
-  historicalReceipts.forEach((receipt, receiptIndex) => {
-    const expected = HISTORICAL_PAGE_ALLOWLIST[receiptIndex];
-    if (!expected || ["governmentId", "sourceLabel", "pageTitle", "pageUrl", "startDate", "endDate"]
-      .some((field) => receipt[field as keyof typeof receipt] !== expected[field as keyof typeof expected])) {
-      issue(context, "ricevuta Camera divergente dalla allowlist", ["sources", "governmentChronology", "historicalReceipts", receiptIndex]);
+  const expectedSource = manifest.source;
+  for (const field of ["source_id", "source_owner", "dataset_code", "vintage", "observed_through", "forecast_from", "forecast_through"] as const) {
+    if (input.source[field] !== expectedSource[field]) {
+      issue(context, `provenienza AMECO divergente: ${field}`, ["source", field]);
     }
-    if (receipt.retrievedAt !== snapshot.sources.governmentChronology.retrievedAt) {
-      issue(context, "timestamp ricevuta Camera divergente", ["sources", "governmentChronology", "historicalReceipts", receiptIndex, "retrievedAt"]);
+  }
+  if (input.source.forecast_from !== input.source.observed_through + 1 || input.source.forecast_through < input.source.forecast_from) {
+    issue(context, "confine osservato/forecast incoerente", ["source"]);
+  }
+  const institutionalEnd = input.government.end_date ?? input.as_of_date;
+  const mandateDurationDays = durationDaysV6(input.government.start_date, institutionalEnd);
+  if (mandateDurationDays < 365) {
+    issue(context, "durata istituzionale inferiore a 365 giorni", ["as_of_date"]);
+  }
+  const expectedWindow = expectedGovernment
+    ? deriveAnnualStatisticalWindowV6(expectedGovernment, input.source.observed_through, input.as_of_date)
+    : null;
+  if (
+    !expectedWindow
+    || expectedWindow.first_year === null
+    || expectedWindow.last_year === null
+    || expectedWindow.baseline_year === null
+    || expectedWindow.end_year === null
+    || input.window.reference_date_rule !== expectedWindow.reference_date_rule
+    || JSON.stringify(input.window.assigned_years) !== JSON.stringify(expectedWindow.assigned_years)
+    || input.window.first_year !== expectedWindow.first_year
+    || input.window.last_year !== expectedWindow.last_year
+    || input.window.baseline_year !== expectedWindow.baseline_year
+    || input.window.end_year !== expectedWindow.end_year
+    || input.window.observed_through !== expectedWindow.observed_through
+  ) {
+    issue(context, "finestra annuale divergente dalla cronologia", ["window"]);
+  }
+  const duration = input.window.end_year - input.window.baseline_year;
+  if (duration <= 0 || input.window.duration_or_weight_pattern_id !== `years:${duration}`) {
+    issue(context, "durata statistica incoerente", ["window"]);
+  }
+  if (input.window.end_year > input.source.observed_through) {
+    issue(context, "forecast nel periodo di voto", ["window", "end_year"]);
+  } else if (input.government.status === "current" && input.window.end_year < input.source.observed_through) {
+    issue(context, "ultimo endpoint comune osservato obbligatorio", ["window", "end_year"]);
+  }
+
+  const observations = new Map<string, typeof input.observations[number]>();
+  input.observations.forEach((observation, index) => {
+    const key = `${observation.indicator_id}:${observation.geography}`;
+    if (observations.has(key)) {
+      issue(context, "osservazione duplicata", ["observations", index]);
     }
+    observations.set(key, observation);
   });
-  const expectedYears = Array.from({ length: 68 }, (_, index) => 1960 + index);
-  snapshot.indicators.forEach((indicator, indicatorIndex) => {
-    const expectedIndicator = methodologyManifest.indicators[indicatorIndex];
-    if (!expectedIndicator || ["id", "area", "label", "weightBasisPoints", "direction", "transformation", "unit", "limitations"]
-      .some((field) => indicator[field as keyof typeof indicator] !== expectedIndicator[field as keyof typeof expectedIndicator])) {
-      issue(context, "indicatore divergente dal manifest versionato", ["indicators", indicatorIndex]);
-      return;
-    }
-    if (JSON.stringify(indicator.sourceSeries) !== JSON.stringify(expectedIndicator.sourceSeries)) {
-      issue(context, "provenienza delle serie divergente dal manifest versionato", ["indicators", indicatorIndex, "sourceSeries"]);
-    }
-    const expectedDerived = "derived" in expectedIndicator ? expectedIndicator.derived : undefined;
-    if (indicator.derived !== expectedDerived) {
-      issue(context, "formula derivata divergente dal manifest versionato", ["indicators", indicatorIndex, "derived"]);
-    }
-    GOVERNMENT_SCORECARD_COUNTRY_IDS.forEach((countryId) => {
-      const codes = indicator.sourceCodes[countryId];
-      const countryCode = methodologyManifest.countryCodes[countryId];
-      const expectedCodes = expectedIndicator.sourceSeries.map((source) => source.codeTemplate.replace("{country}", countryCode));
-      if (codes.length !== expectedCodes.length || codes.some((code, index) => code !== expectedCodes[index])) {
-        issue(context, "codici serie inattesi", ["indicators", indicatorIndex, "sourceCodes", countryId]);
+  manifest.indicators.forEach((indicator) => {
+    manifest.countries.forEach((geography) => {
+      const observation = observations.get(`${indicator.id}:${geography}`);
+      if (!observation) {
+        issue(context, "osservazione obbligatoria mancante", ["observations"]);
+        return;
       }
-      const points = indicator.countries[countryId];
-      if (points.some((point, index) => point.year !== expectedYears[index])) {
-        issue(context, "anni non consecutivi", ["indicators", indicatorIndex, "countries", countryId]);
+      const expectedSelectors = indicator.source_series.map((series) =>
+        series.selector_template.replace("{country}", COUNTRY_SERIES_CODES[geography]));
+      if (JSON.stringify(observation.series_selectors) !== JSON.stringify(expectedSelectors)) {
+        issue(context, "selettori AMECO incompatibili", ["observations"]);
       }
-      for (let year = snapshot.method.firstScoreYear; year <= snapshot.sources.ameco.observedThrough; year += 1) {
-        if (points[year - 1960]?.value == null) {
-          issue(context, "dato obbligatorio mancante dal 1995", ["indicators", indicatorIndex, "countries", countryId, year - 1960]);
-          break;
-        }
+      if (observation.definition !== indicator.definition || observation.unit !== indicator.unit) {
+        issue(context, "unità o definizione incompatibile", ["observations"]);
       }
-      const [minimum, maximum] = INDICATOR_VALUE_RANGES[indicator.id];
-      const invalidValue = points.findIndex((point) => point.value != null && (point.value < minimum || point.value > maximum));
-      if (invalidValue >= 0) {
-        issue(context, "valore fuori intervallo plausibile", ["indicators", indicatorIndex, "countries", countryId, invalidValue, "value"]);
+      if (observation.baseline.reference_period !== input.window.baseline_year || observation.end.reference_period !== input.window.end_year) {
+        issue(context, "periodo osservazione incoerente", ["observations"]);
+      }
+      if (observation.baseline.observed_or_forecast !== "observed" || observation.end.observed_or_forecast !== "observed") {
+        issue(context, "forecast non ammesso", ["observations"]);
+      }
+      if (indicator.transformation === "log_change" && (observation.baseline.value_raw <= 0 || observation.end.value_raw <= 0)) {
+        issue(context, "livello non positivo per log-change", ["observations"]);
       }
     });
   });
 
-  const governmentIds = snapshot.governments.map((government) => government.id);
-  const governmentNames = snapshot.governments.map((government) => government.name);
-  if (new Set(governmentIds).size !== snapshot.governments.length || new Set(governmentNames).size !== snapshot.governments.length) {
-    issue(context, "governi duplicati", ["governments"]);
+  const expectedScaleKeys = new Set<string>();
+  const actualScaleKeys = new Set<string>();
+  input.scales.forEach((scale, scaleIndex) => {
+    const serialized = JSON.stringify(scale.key);
+    if (actualScaleKeys.has(serialized)) {
+      issue(context, "chiave scala duplicata", ["scales", scaleIndex, "key"]);
+    }
+    actualScaleKeys.add(serialized);
+    const starts = new Set<number>();
+    scale.windows.forEach((window, windowIndex) => {
+      if (starts.has(window.start_year)) {
+        issue(context, "finestra scala duplicata", ["scales", scaleIndex, "windows", windowIndex]);
+      }
+      starts.add(window.start_year);
+      if (
+        window.start_year < manifest.scale.first_score_year
+        || window.end_year - window.start_year !== duration
+        || window.end_year > input.source.observed_through
+      ) {
+        issue(context, "finestra scala incompatibile", ["scales", scaleIndex, "windows", windowIndex]);
+      }
+    });
+    if (disjointWindowCapacity(scale.windows) < manifest.scale.minimum_disjoint_windows) {
+      issue(context, "capacità disgiunta insufficiente", ["scales", scaleIndex, "windows"]);
+    }
+  });
+  manifest.indicators.forEach((indicator) => {
+    const expected = {
+      indicator_id: indicator.id,
+      source_set_id: `ameco:${input.source.vintage}`,
+      temporal_operator_id: input.window.temporal_operator_id,
+      duration_or_weight_pattern_id: input.window.duration_or_weight_pattern_id,
+      vintage_id: input.source.vintage,
+      peer_set_id: manifest.peers.join("|"),
+      peer_aggregation_id: manifest.peer_aggregator,
+      scale_estimator_id: manifest.scale.scale_estimator_id,
+      calibration_period_id: manifest.scale.calibration_period_id,
+      methodology_version: manifest.methodology_version,
+    };
+    expectedScaleKeys.add(JSON.stringify(expected));
+  });
+  if (actualScaleKeys.size !== expectedScaleKeys.size || [...expectedScaleKeys].some((key) => !actualScaleKeys.has(key))) {
+    issue(context, "insieme delle scale incompleto o incompatibile", ["scales"]);
   }
-  snapshot.governments.forEach((government, index) => {
-    const expected = sourceSpec.governmentChronology.governments[index];
-    if (!expected || government.id !== expected.id || government.name !== expected.name
-      || government.startDate !== expected.startDate || government.endDate !== expected.endDate
-      || government.status !== expected.status) {
-      issue(context, "cronologia governi divergente dalla fonte versionata", ["governments", index]);
-    }
-    if (index > 0 && government.startDate <= snapshot.governments[index - 1]!.startDate) {
-      issue(context, "governi non ordinati", ["governments", index]);
-    }
-    if (government.status === "current" !== (government.endDate === null)) {
-      issue(context, "stato governo non coerente", ["governments", index]);
-    }
-  });
-  const current = snapshot.governments.filter((government) => government.status === "current");
-  if (current.length !== 1 || current[0] !== snapshot.governments.at(-1)) {
-    issue(context, "governo corrente non univoco o non più recente", ["governments"]);
-  }
-  snapshot.measures.forEach((measure, index) => {
-    if (!governmentNames.includes(measure.government)) issue(context, "misura senza governo", ["measures", index, "government"]);
-  });
-  snapshot.contexts.forEach((item, index) => {
-    if (item.endYear < item.startYear) issue(context, "finestra di contesto invertita", ["contexts", index]);
-  });
 });
 
-export type GovernmentScorecardSnapshot = z.infer<typeof governmentScorecardSnapshotSchema>;
-export type GovernmentScorecardIndicator = GovernmentScorecardSnapshot["indicators"][number];
-export type GovernmentScorecardGovernment = GovernmentScorecardSnapshot["governments"][number];
-export type GovernmentScorecardCountryId = keyof GovernmentScorecardIndicator["countries"];
+export type GovernmentScorecardV6Input = z.infer<typeof governmentScorecardV6InputSchema>;
 
-export type GovernmentScorecardForecastCoverage = Readonly<{
-  status: "complete" | "partial" | "missing";
-  fromYear: number;
-  throughYear: number;
-  availableCells: number;
-  requiredCells: number;
-}>;
-
-export function getGovernmentScorecardForecastCoverage(
-  snapshot: GovernmentScorecardSnapshot,
-): GovernmentScorecardForecastCoverage {
-  const { forecastFrom, forecastThrough } = snapshot.sources.ameco;
-  const forecastYears = forecastThrough - forecastFrom + 1;
-  const requiredCells = snapshot.indicators.length
-    * GOVERNMENT_SCORECARD_COUNTRY_IDS.length
-    * forecastYears;
-  const availableCells = snapshot.indicators.reduce(
-    (indicatorTotal, indicator) => indicatorTotal + GOVERNMENT_SCORECARD_COUNTRY_IDS.reduce(
-      (countryTotal, countryId) => countryTotal + indicator.countries[countryId].filter(
-        (point) => point.year >= forecastFrom
-          && point.year <= forecastThrough
-          && point.value != null,
-      ).length,
-      0,
-    ),
-    0,
-  );
-  const status = availableCells === 0
-    ? "missing" as const
-    : availableCells === requiredCells
-      ? "complete" as const
-      : "partial" as const;
-
-  return {
-    status,
-    fromYear: forecastFrom,
-    throughYear: forecastThrough,
-    availableCells,
-    requiredCells,
-  };
+export function parseGovernmentScorecardV6Input(input: unknown): GovernmentScorecardV6Input {
+  const result = governmentScorecardV6InputSchema.safeParse(input);
+  if (!result.success) {
+    throw new GovernmentScorecardV6ContractError("input AMECO v6 non valido", { cause: result.error });
+  }
+  return result.data;
 }
 
-export function parseGovernmentScorecardSnapshot(input: unknown): GovernmentScorecardSnapshot {
-  return governmentScorecardSnapshotSchema.parse(input);
+export class GovernmentScorecardV6ContractError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "GovernmentScorecardV6ContractError";
+  }
 }
+
+export function parseGovernmentScorecardV6Manifest(input: unknown): GovernmentScorecardV6Manifest {
+  const result = governmentScorecardV6ManifestSchema.safeParse(input);
+  if (!result.success) {
+    throw new GovernmentScorecardV6ContractError("manifest v6 non valido", { cause: result.error });
+  }
+  if (JSON.stringify(result.data) !== JSON.stringify(canonicalManifest)) {
+    throw new GovernmentScorecardV6ContractError("manifest v6 divergente dalla versione metodologica");
+  }
+  return result.data;
+}
+
+export const GOVERNMENT_SCORECARD_V6_MANIFEST = parseGovernmentScorecardV6Manifest(canonicalManifest);

@@ -7,7 +7,7 @@ import { PUBLIC_SITE_URL } from "../src/lib/site.ts";
 
 const [{ getGovernmentScorecardPublicPaths }, { getMunicipalityEntityPublicPaths }, { default: sitemap }] =
   await Promise.all([
-    import("../src/lib/government-scorecard.ts"),
+    import("../src/lib/government-scorecard-governments.ts"),
     import("../src/lib/siope-municipality-detail.ts"),
     import("../src/app/sitemap.ts"),
   ]);

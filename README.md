@@ -1,14 +1,26 @@
 # DoveVannoINostriSoldi
 
-Progetto civico open source per capire come vengono usati i soldi pubblici italiani.
+Progetto civico open source per capire, con dati ufficiali, come vengono usati i soldi pubblici italiani.
 
-Riunisce dati ufficiali sparsi su portali diversi. Ogni numero mostra **fonte**, **periodo** e **limiti**. Un valore insolito indica dove controllare meglio: non dimostra da solo uno spreco o un illecito.
+Riunisce fonti pubbliche sparse su portali diversi e le rende leggibili in un unico posto. Ogni numero mostra **fonte**, **periodo** e **limiti**. Un valore insolito indica dove controllare meglio: non dimostra da solo uno spreco o un illecito.
 
 **Sito:** [dovevannoinostrisoldi.com](https://www.dovevannoinostrisoldi.com)
 
 <a href="https://www.buymeacoffee.com/dovevannoinostrisoldi"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me an AI compute" height="32" width="114" /></a>
 
 Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
+
+## Perché esiste
+
+Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esistono già, ma spesso sono dispersi, difficili da confrontare o poco leggibili per chi non lavora tutti i giorni con dati pubblici. DoveVannoINostriSoldi prova a ridurre questa distanza: meno opacità, più contesto, più verificabilità.
+
+## Cosa puoi fare in 2 minuti
+
+- Vedere come spendono Comuni, Stato, sanità ed enti pubblici.
+- Confrontare territori, amministrazioni e serie storiche.
+- Aprire la fonte ufficiale dietro ogni numero.
+- Capire rapidamente che cosa il dato misura, e che cosa non misura.
+- Fare domande al catalogo dati e al server MCP in sola lettura.
 
 Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
 
@@ -56,6 +68,15 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |
 
 Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni).
+
+## Come leggere il progetto
+
+Non è un feed di accuse e non è un motore che inventa conclusioni. È uno strumento di lettura:
+
+- separa pagamenti, stanziamenti, costi previsti e stock di debito;
+- mostra quando una copertura è parziale;
+- espone caveat e perimetro di ogni fonte;
+- mantiene visibile il collegamento con l'origine ufficiale del dato.
 
 ## Regole in breve
 
@@ -191,6 +212,13 @@ docs/               metodo, architettura, note legali
 ## Contribuire
 
 Segnalazioni utili: fonti mancanti, correzioni alle spiegazioni, qualità dei dati, accessibilità. Dal sito puoi usare il pulsante «Segnala un problema», presente in ogni pagina: crea una issue pubblica già strutturata ([docs/SEGNALAZIONI.md](docs/SEGNALAZIONI.md)).
+
+Se vuoi contribuire anche senza scrivere codice, sono utili:
+
+- segnalazioni di fonti ufficiali mancanti;
+- controlli sui testi e sulla chiarezza delle spiegazioni;
+- verifiche su date, perimetri e limiti esposti nelle pagine;
+- feedback su accessibilità e leggibilità.
 
 Prima di una PR leggi [CONTRIBUTING.md](CONTRIBUTING.md).
 

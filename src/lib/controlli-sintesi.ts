@@ -44,10 +44,13 @@ export type AiStewardshipMove = Readonly<{
   id: string;
   priority: number;
   title: string;
-  /** One-line context for the card body. */
-  shortWhy: string;
+  /** What domain / object the move covers. */
+  concerns: string;
+  /** How the agent would operate. */
+  operation: string;
+  /** Expected orientation effect if humans follow up (not a guaranteed saving). */
+  effect: string;
   why: string;
-  agentWould: string;
   basedOnPathwayIds: readonly string[];
   deepenHref: string;
   deepenLabel: string;
@@ -471,10 +474,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-map-constraints",
       priority: 1,
       title: "Mappare prima i vincoli di bilancio",
-      shortWhy: "Prima i vincoli, poi le revisioni di spesa o di entrate.",
+      concerns: "Stock di debito pubblico, interessi annui e scadenze residue.",
+      operation:
+        "L'agente legge stock, interessi e quota in scadenza entro un anno e li dispone come vincoli prima di qualsiasi proposta su spese o entrate.",
+      effect:
+        "Definisce un perimetro sostenibile: le revisioni successive restano confrontabili con il costo del debito, senza presentarle come cassa libera.",
       why: debt.observation,
-      agentWould:
-        "Partirebbe da stock di debito, interessi e scadenze entro un anno per fissare il perimetro sostenibile.",
       basedOnPathwayIds: ["public-debt-interest"],
       deepenHref: debt.deepenHref,
       deepenLabel: "Apri il debito pubblico",
@@ -506,10 +511,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-review-tax-expenditures",
       priority: 2,
       title: "Ordinare le agevolazioni fiscali per revisione",
-      shortWhy: "Shortlist solo sulle misure con stima puntuale MEF.",
+      concerns: "Agevolazioni fiscali MEF con stima puntuale e onere Superbonus già censito.",
+      operation:
+        "L'agente produce una coda delle sole misure con stima numerica, esclude quelle senza copertura e richiede una valutazione redistributiva umana prima di ipotesi normative.",
+      effect:
+        "Il dibattito fiscale parte da una shortlist verificabile: meno rumore sulle misure senza cifra, più trasparenza su dove una revisione potrebbe incidere.",
       why: tax.observation,
-      agentWould:
-        "Produrrebbe una coda di misure con stima numerica e chiederebbe una valutazione redistributiva umana prima di ipotesi normative.",
       basedOnPathwayIds: ["tax-expenditures", "superbonus"],
       deepenHref: tax.deepenHref,
       deepenLabel: "Apri le agevolazioni",
@@ -536,10 +543,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-open-procurement",
       priority: 3,
       title: "Aprire più concorrenza negli appalti",
-      shortWhy: "Code di verifica su affidamenti diretti e ridotta concorrenza.",
+      concerns: "Affidamenti diretti ANAC e contratti a ridotta concorrenza sul valore.",
+      operation:
+        "L'agente segnala procedure vicino alla soglia e perimetri a ridotta concorrenza come code di verifica; propone di allargare la platea e di documentare le deroghe, senza attribuire illeciti.",
+      effect:
+        "Più controlli mirati e più confronto competitivo dove i dati lo suggeriscono; l'esito resta amministrativo e umano, non una sentenza automatica.",
       why: `${anac.observation} ${competition.observation}`,
-      agentWould:
-        "Segnalerebbe procedure vicino alla soglia e perimetri a ridotta concorrenza; proporrebbe più platea e deroghe documentate, senza attribuire illeciti.",
       basedOnPathwayIds: ["anac-direct-awards", "reduced-competition-value"],
       deepenHref: anac.deepenHref,
       deepenLabel: "Apri gli appalti ANAC",
@@ -571,10 +580,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-municipal-profiles",
       priority: 4,
       title: "Priorità ai Comuni con profilo spesa alta / servizi bassi",
-      shortWhy: "Coda di lettura sui profili OpenCivitas, non una classifica di colpe.",
+      concerns: "Profili OpenCivitas dei Comuni: spesa storica alta rispetto a servizi bassi.",
+      operation:
+        "L'agente costruisce una coda di lettura sui Comuni del profilo spesa alta / servizi bassi e chiede il confronto con pari e con i livelli di servizio prima di ipotesi locali.",
+      effect:
+        "Gli interventi locali partono dai casi dove spesa e servizi divergono di più, senza trasformare lo screening in una classifica di colpe.",
       why: oc.observation,
-      agentWould:
-        "Costruirebbe una coda sui Comuni spesa alta / servizi bassi e chiederebbe il confronto con pari prima di ipotesi locali.",
       basedOnPathwayIds: ["opencivitas-high-low", "opencivitas-outliers"],
       deepenHref: oc.deepenHref,
       deepenLabel: "Apri il confronto OpenCivitas",
@@ -601,10 +612,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-health-mix",
       priority: 5,
       title: "Riequilibrare il mix sanitario interno / esterno",
-      shortWhy: "Monitorare servizi acquistati e personale esterno con simulazioni, non tagli automatici.",
+      concerns: "Costi di produzione SSN, servizi acquistati e personale sanitario esterno.",
+      operation:
+        "L'agente monitora il peso dei servizi acquistati e della spesa per personale esterno, li confronta con le assunzioni stabili e propone solo simulazioni di riequilibrio.",
+      effect:
+        "Si vede dove il mix interno/esterno pesa di più; eventuali scelte restano cliniche e di bilancio, non tagli automatici ai servizi.",
       why: ssn.observation,
-      agentWould:
-        "Terrebbe sotto osservazione il peso dei servizi acquistati e della spesa per personale esterno; proporrebbe solo simulazioni.",
       basedOnPathwayIds: ["ssn-production-costs", "healthcare-external-staff"],
       deepenHref: ssn.deepenHref,
       deepenLabel: "Apri la sanità",
@@ -631,10 +644,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-consulting-and-collection",
       priority: 6,
       title: "Rivedere consulenze ripetute e stock di riscossione",
-      shortWhy: "Confrontare amministrazioni in alto e tenere lo stock separato dal gettito.",
+      concerns: "Pagamenti di consulenza RGS per amministrazione e stock nominale della riscossione.",
+      operation:
+        "L'agente confronta le amministrazioni con i pagamenti di consulenza più alti e tiene separato lo stock della riscossione dal gettito annuale, proponendo audit contabili e piani di recupero verificabili.",
+      effect:
+        "Si riduce la confusione tra flussi e stock: le consulenze si leggono per andamento, la riscossione resta un credito nominale da non trattare come tesoretto.",
       why: `${consult.observation} ${collection.observation}`,
-      agentWould:
-        "Confronterebbe le amministrazioni con i pagamenti di consulenza più alti e terrebbe separato lo stock della riscossione dal gettito annuale.",
       basedOnPathwayIds: ["rgs-consulting", "collection-stock"],
       deepenHref: consult.deepenHref,
       deepenLabel: "Apri le consulenze",
@@ -654,10 +669,12 @@ export function buildAiStewardshipAgenda(
       id: "ai-publish-hypothesis",
       priority: 7,
       title: "Pubblicare solo ipotesi con assunzioni esplicite",
-      shortWhy: "Lo scenario centrale è un ordine di grandezza, non cassa già disponibile.",
+      concerns: "Scenario centrale di miglioramento e sue componenti dichiarate.",
+      operation:
+        `L'agente usa lo scenario centrale (${formatBillion(centralScenario.annualBillion, 2)}/anno) solo come ordine di grandezza, con assunzioni visibili, e vieta di presentarlo come risparmio già disponibile.`,
+      effect:
+        "Il pubblico vede un'ipotesi di policy con formula e limiti: utile al dibattito, non confondibile con soldi già in cassa.",
       why: scenario.observation,
-      agentWould:
-        `Userebbe lo scenario centrale (${formatBillion(centralScenario.annualBillion, 2)}/anno) solo con assunzioni visibili. ${auditMethodology.scenarioMeaning}`,
       basedOnPathwayIds: ["improvement-hypothesis"],
       deepenHref: scenario.deepenHref,
       deepenLabel: "Apri gli scenari",
@@ -695,10 +712,12 @@ export const sintesiReadingOrder = [
 ] as const;
 
 export const aiStewardshipDisclosure = {
-  badge: "Proposta AI · non ufficiale",
-  title: "Se un agente AI dovesse gestire spese e leggi: cosa farebbe",
+  badge: "Sezione agenti AI · non ufficiale",
+  kicker: "Capitolo distinto dai percorsi umani sopra",
+  title: "Agenda gestita da agenti AI",
+  subtitle: "Cosa farebbe un agente se dovesse orientare spese e leggi dello Stato",
   lead:
-    "Agenda deterministica etichettata come AI: non è parere del Governo, non è un modello live e non sostituisce scelte democratiche. Ogni priorità usa solo i numeri dei percorsi sopra (fonte, periodo, limiti; niente accuse automatiche).",
+    "Questa fascia è separata di proposito: non è il continuo dei 15 percorsi. È un'agenda deterministica etichettata come AI, non parere del Governo, non modello live e non sostituto delle scelte democratiche. Ogni priorità usa solo i numeri già mostrati sopra.",
   allowed: auditMethodology.aiUse.allowed,
   prohibited: auditMethodology.aiUse.prohibited,
 } as const;

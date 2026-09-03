@@ -43,7 +43,7 @@ export default function ControlliSintesiPage() {
         </p>
         <p className={styles.leadLinks}>
           <Link href="/controlli">Elenco segnali →</Link>
-          <Link href="#agenda-ai">Agenda AI →</Link>
+          <Link href="#agenda-ai">Agenda agenti AI →</Link>
           <Link href="/metodologia">Come leggiamo i dati →</Link>
         </p>
       </div>
@@ -136,109 +136,125 @@ export default function ControlliSintesiPage() {
         </div>
       </section>
 
-      <section className={`panel ${styles.aiSection}`} aria-labelledby="agenda-ai-title" id="agenda-ai">
-        <header className={styles.aiHeader}>
+      <div className={styles.aiBreak} aria-hidden="true">
+        <span>Fine percorsi umani</span>
+        <span>Inizia agenda agenti AI</span>
+      </div>
+
+      <section className={styles.aiZone} aria-labelledby="agenda-ai-title" id="agenda-ai">
+        <header className={styles.aiHero}>
+          <p className={styles.aiKicker}>{aiStewardshipDisclosure.kicker}</p>
           <span className={styles.aiBadge}>{aiStewardshipDisclosure.badge}</span>
-          <h2 id="agenda-ai-title" className="panel-title">{aiStewardshipDisclosure.title}</h2>
-          <p>{aiStewardshipDisclosure.lead}</p>
+          <h2 id="agenda-ai-title" className={styles.aiTitle}>{aiStewardshipDisclosure.title}</h2>
+          <p className={styles.aiSubtitle}>{aiStewardshipDisclosure.subtitle}</p>
+          <p className={styles.aiLead}>{aiStewardshipDisclosure.lead}</p>
         </header>
 
-        <nav className={styles.aiRail} aria-label="Priorità agenda AI">
-          {aiAgenda.map((move) => (
-            <a key={move.id} href={`#${move.id}`} className={styles.aiRailItem}>
-              <span className={styles.aiRailNum}>{move.priority}</span>
-              <span className={styles.aiRailMetric}>{move.metric.display}</span>
-              <span className={styles.aiRailTitle}>{move.title}</span>
-            </a>
-          ))}
-        </nav>
+        <div className={styles.aiBody}>
+          <nav className={styles.aiRail} aria-label="Priorità agenda AI">
+            {aiAgenda.map((move) => (
+              <a key={move.id} href={`#${move.id}`} className={styles.aiRailItem}>
+                <span className={styles.aiRailNum}>{move.priority}</span>
+                <span className={styles.aiRailMetric}>{move.metric.display}</span>
+                <span className={styles.aiRailTitle}>{move.title}</span>
+              </a>
+            ))}
+          </nav>
 
-        <details className={styles.aiRulesDetails}>
-          <summary>Regole AI: cosa può e non può fare</summary>
-          <div className={styles.aiRules}>
-            <div>
-              <h3>Cosa può fare l&apos;AI qui</h3>
-              <ul>
-                {aiStewardshipDisclosure.allowed.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+          <details className={styles.aiRulesDetails}>
+            <summary>Regole AI: cosa può e non può fare</summary>
+            <div className={styles.aiRules}>
+              <div>
+                <h3>Cosa può fare l&apos;AI qui</h3>
+                <ul>
+                  {aiStewardshipDisclosure.allowed.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3>Cosa non può fare</h3>
+                <ul>
+                  {aiStewardshipDisclosure.prohibited.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div>
-              <h3>Cosa non può fare</h3>
-              <ul>
-                {aiStewardshipDisclosure.prohibited.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </details>
+          </details>
 
-        <ol className={styles.aiBoard}>
-          {aiAgenda.map((move) => {
-            const maxBar = Math.max(...move.bars.map((bar) => bar.value), Number.EPSILON);
-            return (
-              <li key={move.id} id={move.id} className={styles.aiCard}>
-                <div className={styles.aiCardTop}>
-                  <span className={styles.aiPriority}>Priorità {move.priority}</span>
-                  <h3>{move.title}</h3>
-                  <p className={styles.aiShortWhy}>{move.shortWhy}</p>
-                </div>
+          <ol className={styles.aiBoard}>
+            {aiAgenda.map((move) => {
+              const maxBar = Math.max(...move.bars.map((bar) => bar.value), Number.EPSILON);
+              return (
+                <li key={move.id} id={move.id} className={styles.aiCard}>
+                  <div className={styles.aiCardTop}>
+                    <span className={styles.aiPriority}>Priorità {move.priority}</span>
+                    <h3>{move.title}</h3>
+                  </div>
 
-                <div className={styles.aiMetric}>
-                  <span className={styles.aiMetricLabel}>{move.metric.label}</span>
-                  <strong className={styles.aiMetricValue}>{move.metric.display}</strong>
-                  {move.metric.hint ? (
-                    <span className={styles.aiMetricHint}>{move.metric.hint}</span>
-                  ) : null}
-                </div>
+                  <dl className={styles.aiBrief}>
+                    <div>
+                      <dt>Cosa riguarda</dt>
+                      <dd>{move.concerns}</dd>
+                    </div>
+                    <div>
+                      <dt>Operazione</dt>
+                      <dd>{move.operation}</dd>
+                    </div>
+                    <div>
+                      <dt>Effetto</dt>
+                      <dd>{move.effect}</dd>
+                    </div>
+                  </dl>
 
-                <figure className={styles.aiChart}>
-                  <figcaption>{move.chartCaption}</figcaption>
-                  <ul
-                    className={styles.aiBars}
-                    role="img"
-                    aria-label={move.chartCaption}
-                  >
-                    {move.bars.map((bar) => (
-                      <li key={`${move.id}-${bar.label}`}>
-                        <div className={styles.aiBarMeta}>
-                          <span>{bar.label}</span>
-                          <span>{bar.display}</span>
-                        </div>
-                        <div
-                          className={styles.aiBarTrack}
-                          aria-hidden="true"
-                        >
-                          <span
-                            className={styles.aiBarFill}
-                            style={{ width: `${barWidthPercent(move.bars, bar.value)}%` }}
-                            data-share={Math.round((bar.value / maxBar) * 100)}
-                          />
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </figure>
+                  <div className={styles.aiMetric}>
+                    <span className={styles.aiMetricLabel}>{move.metric.label}</span>
+                    <strong className={styles.aiMetricValue}>{move.metric.display}</strong>
+                    {move.metric.hint ? (
+                      <span className={styles.aiMetricHint}>{move.metric.hint}</span>
+                    ) : null}
+                  </div>
 
-                <div className={styles.aiCardBody}>
-                  <p className={styles.aiWould}>
-                    <span className={styles.aiWouldLabel}>L&apos;agente farebbe</span>
-                    {move.agentWould}
-                  </p>
-                  <details className={styles.aiWhyDetails}>
-                    <summary>Perché (dato completo)</summary>
-                    <p>{move.why}</p>
-                  </details>
-                  <p className={styles.aiLinks}>
-                    <Link href={move.deepenHref}>{move.deepenLabel} →</Link>
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+                  <figure className={styles.aiChart}>
+                    <figcaption>{move.chartCaption}</figcaption>
+                    <ul
+                      className={styles.aiBars}
+                      role="img"
+                      aria-label={move.chartCaption}
+                    >
+                      {move.bars.map((bar) => (
+                        <li key={`${move.id}-${bar.label}`}>
+                          <div className={styles.aiBarMeta}>
+                            <span>{bar.label}</span>
+                            <span>{bar.display}</span>
+                          </div>
+                          <div className={styles.aiBarTrack} aria-hidden="true">
+                            <span
+                              className={styles.aiBarFill}
+                              style={{ width: `${barWidthPercent(move.bars, bar.value)}%` }}
+                              data-share={Math.round((bar.value / maxBar) * 100)}
+                            />
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </figure>
+
+                  <div className={styles.aiCardBody}>
+                    <details className={styles.aiWhyDetails}>
+                      <summary>Dato di origine (osservazione)</summary>
+                      <p>{move.why}</p>
+                    </details>
+                    <p className={styles.aiLinks}>
+                      <Link href={move.deepenHref}>{move.deepenLabel} →</Link>
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </section>
 
       <section className={`panel ${styles.next}`} aria-labelledby="next-title">

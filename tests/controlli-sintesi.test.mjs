@@ -18,7 +18,10 @@ test("controlli sintesi page keeps verification copy and no automatic guilt labe
   assert.match(page, /buildControlliSintesiPathways/);
   assert.match(page, /buildAiStewardshipAgenda/);
   assert.match(page, /agenda-ai/);
-  assert.match(page, /aiBoard|aiMetric|aiBars|aiRail/);
+  assert.match(page, /aiZone|aiHero|aiBrief/);
+  assert.match(page, /Cosa riguarda/);
+  assert.match(page, /Operazione/);
+  assert.match(page, /Effetto/);
   assert.match(page, /Regole AI/);
   assert.match(page, /aiStewardshipDisclosure/);
   assert.match(page, /Non attribuiamo sprechi, illeciti o responsabilità/);
@@ -30,9 +33,12 @@ test("controlli sintesi page keeps verification copy and no automatic guilt labe
   assert.match(lib, /centralScenarioBreakdown/);
   assert.match(lib, /buildAiStewardshipAgenda/);
   assert.match(lib, /aiStewardshipDisclosure/);
+  assert.match(lib, /Agenda gestita da agenti AI/);
+  assert.match(lib, /concerns:/);
+  assert.match(lib, /operation:/);
+  assert.match(lib, /effect:/);
   assert.match(lib, /metric:/);
   assert.match(lib, /bars:/);
-  assert.match(lib, /Proposta AI/);
   assert.match(lib, /non dimostra uno spreco/i);
   assert.match(nav, /\/controlli\/sintesi/);
   assert.match(nav, /label: "Sintesi"/);
@@ -67,21 +73,24 @@ test("buildControlliSintesiPathways and AI agenda stay sourced and non-accusator
 
   const agenda = buildAiStewardshipAgenda(pathways);
   assert.ok(agenda.length >= 5);
-  assert.match(aiStewardshipDisclosure.badge, /Proposta AI/);
-  assert.match(aiStewardshipDisclosure.lead, /Agenda deterministica|esplicitamente basata su AI|etichettata come AI/i);
+  assert.match(aiStewardshipDisclosure.badge, /agenti AI/i);
+  assert.match(aiStewardshipDisclosure.title, /Agenda gestita da agenti AI/);
+  assert.match(aiStewardshipDisclosure.lead, /separata di proposito|etichettata come AI/i);
   for (const move of agenda) {
     assert.ok(move.metric.display.trim().length > 0, move.id);
     assert.ok(move.bars.length >= 2, move.id);
-    assert.ok(move.shortWhy.trim().length > 10, move.id);
+    assert.ok(move.concerns.trim().length > 15, move.id);
+    assert.ok(move.operation.trim().length > 30, move.id);
+    assert.ok(move.effect.trim().length > 20, move.id);
     assert.ok(move.chartCaption.trim().length > 10, move.id);
-    assert.ok(
-      /agente|Produrrebbe|Segnalerebbe|Costruirebbe|Monitorerebbe|Confronterebbe|Userebbe|Partirebbe|Terrebbe|L'agente/i.test(move.agentWould),
-      move.id,
-    );
+    assert.match(move.operation, /L'agente|agente/i);
     assert.doesNotMatch(
-      `${move.title}\n${move.agentWould}\n${move.shortWhy}`,
+      `${move.title}\n${move.concerns}\n${move.operation}\n${move.effect}`,
       /\b(corrotto|frode|colpevole|spreco accertato)\b/i,
     );
-    assert.doesNotMatch(`${move.shortWhy}\n${move.agentWould}\n${move.chartCaption}`, /—|–/);
+    assert.doesNotMatch(
+      `${move.concerns}\n${move.operation}\n${move.effect}\n${move.chartCaption}`,
+      /—|–/,
+    );
   }
 });

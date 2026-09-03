@@ -61,32 +61,32 @@ Campi **distinti** (non collassare in una sola “data aggiornamento”):
 
 Usare nell'ordine. Fermarsi al primo fallimento (fail-closed).
 
-1. **Issue**  
+1. **Issue**
    Aprire o collegare una issue con: titolare, URL, licenza, formato, geografia,
    periodo, frequenza, e cosa il dato *non* misura.
 
-2. **Acquisizione**  
+2. **Acquisizione**
    Scaricare solo da URL ufficiali. Conservare byte e hash. Nessuna stima o OCR
    “di comodo” senza dichiarazione esplicita in quarantena.
 
-3. **Classificazione nel corpus**  
+3. **Classificazione nel corpus**
    Elemento inventariato, famiglia/content class, disposizione
    (`publish` / quarantine). Vedi `source_corpus_intake.py` e
    `scripts/etl/specs/source-corpus-policy.json`.
 
-4. **Contratto di riga**  
+4. **Contratto di riga**
    Definire `headers` stabili. Celle = `string | null`. Aggiungere
    `evidenceLabel`, `sourceUrls`, eventuali `privateFields` / redazioni.
    Registrare il dataset in
    `scripts/etl/specs/integrated-curated-datasets.source.json` con
    `sourceMetadata` (holder, referencePeriod, dates, canonicalUrls) e caveats.
 
-5. **Proiezione e ricevute**  
+5. **Proiezione e ricevute**
    Generare chunk `*.part-NNNNN.jsonl.gz`, aggiornare catalogo, dataset-proof e
    release-proof. Chiudere le equazioni del ledger
    (`docs/INTEGRATED_SOURCE_LEDGER.md`).
 
-6. **Verifica offline**  
+6. **Verifica offline**
    ```bash
    python3 scripts/etl/source_corpus_intake.py --check
    npm run test:etl
@@ -94,14 +94,14 @@ Usare nell'ordine. Fermarsi al primo fallimento (fail-closed).
    ```
    Nessuna rete verso fonti esterne in questi gate.
 
-7. **Superfici prodotto**  
+7. **Superfici prodotto**
    - Catalogo `/dati/[dataset]` e API integrate via selettore condiviso.
    - MCP: riusare `selectIntegratedDataset` / catalogo esistente; non creare un
      secondo id parallelo “per comodità”.
    - UI editoriale: una vista che **filtra** le righe; copy senza giudizi di
      spreco/frode/efficienza.
 
-8. **PR**  
+8. **PR**
    Branch focalizzato, issue collegata, test eseguiti dichiarati, caveats in
    pagina o in `sourceMetadata`. Review: significato pubblicato, non solo codice.
 

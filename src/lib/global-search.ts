@@ -101,6 +101,14 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
   "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
   "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],
+  "/spese/sport": [
+    "sport",
+    "giovani e sport",
+    "sport e salute",
+    "milano cortina",
+    "simico",
+    "credito sportivo",
+  ],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [
     "pensioni",

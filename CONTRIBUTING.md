@@ -41,6 +41,11 @@ import, tre assi obbligatori (soldi, periodo, provenance) e decisione
 corpus vs snapshot tipizzato. Gli agenti usano la skill
 `.agents/skills/import-dvns-dataset/`.
 
+Una PR che aggiunge dati senza questo schema non è pronta al merge, anche se i
+test tecnici passano. Se manca uno dei campi obbligatori o la fonte non espone
+un perimetro verificabile, il contributo deve fermarsi a catalogazione, proof o
+documentazione del limite invece di inventare valori.
+
 ## Verifica locale
 
 La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
@@ -128,4 +133,7 @@ Il merge su `main` è consentito quando il check `required` è verde e i thread
 di review sono risolti. GitHub non chiede l'approve di un altro maintainer.
 La review umana resta utile su UI ampia, fonti nuove, workflow e sicurezza:
 valuta correttezza, semantica dei dati, accessibilità e manutenibilità oltre
-ciò che i test coprono. Non usare force-push sulle branch dei contributor.
+ciò che i test coprono. Per le PR dati, la review deve controllare anche
+aderenza allo schema comune di import, presenza di `soldi`/`periodo`/`provenance`
+e comportamento fail-closed del contratto. Non usare force-push sulle branch dei
+contributor.

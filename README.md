@@ -203,10 +203,30 @@ Per una nuova fonte, in issue indica: ente, URL ufficiale, licenza, formato, fre
 Richieste della community: [docs/COMMUNITY_FEEDBACK.md](docs/COMMUNITY_FEEDBACK.md).
 Coda di sviluppo con priorità e issue: [docs/ROADMAP.md](docs/ROADMAP.md).
 
-## Contributori
+## Fondatori
 
 - [@fragiannicola](https://x.com/fragiannicola)
 - [@dom_gag_96](https://x.com/dom_gag_96)
+
+## Contributors
+
+<!-- Grazie a tutti i contributori del progetto! -->
+
+<a href="https://github.com/metaforismo"><img src="https://avatars.githubusercontent.com/u/39646696?v=4" width="50" height="50" alt="metaforismo" style="border-radius:50%" /></a>
+<a href="https://github.com/dg996"><img src="https://avatars.githubusercontent.com/u/111145375?v=4" width="50" height="50" alt="dg996" style="border-radius:50%" /></a>
+<a href="https://github.com/sephmartin"><img src="https://avatars.githubusercontent.com/u/275498367?v=4" width="50" height="50" alt="sephmartin" style="border-radius:50%" /></a>
+<a href="https://github.com/lucaosti"><img src="https://avatars.githubusercontent.com/u/27920903?v=4" width="50" height="50" alt="lucaosti" style="border-radius:50%" /></a>
+<a href="https://github.com/rinocitarella"><img src="https://avatars.githubusercontent.com/u/42648964?v=4" width="50" height="50" alt="rinocitarella" style="border-radius:50%" /></a>
+<a href="https://github.com/Elgabor"><img src="https://avatars.githubusercontent.com/u/71511127?v=4" width="50" height="50" alt="Elgabor" style="border-radius:50%" /></a>
+<a href="https://github.com/marianimatteo-lexroom"><img src="https://avatars.githubusercontent.com/u/253467472?v=4" width="50" height="50" alt="marianimatteo-lexroom" style="border-radius:50%" /></a>
+<a href="https://github.com/nellicus"><img src="https://avatars.githubusercontent.com/u/8770097?v=4" width="50" height="50" alt="nellicus" style="border-radius:50%" /></a>
+<a href="https://github.com/Zer0codestuff"><img src="https://avatars.githubusercontent.com/u/105509672?v=4" width="50" height="50" alt="Zer0codestuff" style="border-radius:50%" /></a>
+<a href="https://github.com/calca"><img src="https://avatars.githubusercontent.com/u/78342?v=4" width="50" height="50" alt="calca" style="border-radius:50%" /></a>
+<a href="https://github.com/saliougaye"><img src="https://avatars.githubusercontent.com/u/72109418?v=4" width="50" height="50" alt="saliougaye" style="border-radius:50%" /></a>
+<a href="https://github.com/VoxamVox"><img src="https://avatars.githubusercontent.com/u/178662220?v=4" width="50" height="50" alt="VoxamVox" style="border-radius:50%" /></a>
+<a href="https://github.com/danielemeanti23"><img src="https://avatars.githubusercontent.com/u/76477634?v=4" width="50" height="50" alt="danielemeanti23" style="border-radius:50%" /></a>
+<a href="https://github.com/not-knope"><img src="https://avatars.githubusercontent.com/u/102312680?v=4" width="50" height="50" alt="not-knope" style="border-radius:50%" /></a>
+<a href="https://github.com/superpios"><img src="https://avatars.githubusercontent.com/u/122306526?v=4" width="50" height="50" alt="superpios" style="border-radius:50%" /></a>
 
 ## Licenza
 

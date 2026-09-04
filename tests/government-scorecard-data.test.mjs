@@ -44,6 +44,11 @@ test("the feature owns exactly two registered generated artifacts", () => {
     "src/data/generated/government-scorecard.json",
     "src/data/generated/government-scorecard-page.json",
   ]);
+  assert.deepEqual(artifact.offlineCheck, {
+    command: "python3 scripts/ci/check-government-scorecard-artifacts.py",
+    coveredBy: "standalone",
+  });
+  assert.ok(artifact.nodeTests.includes("tests/government-scorecard-downloads.test.mjs"));
   const generated = readdirSync(new URL("../src/data/generated/", import.meta.url))
     .filter((name) => name.startsWith("government-scorecard"))
     .sort();

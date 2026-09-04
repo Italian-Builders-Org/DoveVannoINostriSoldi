@@ -531,7 +531,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "npm run government-scorecard:verify",
+        "command": "python3 scripts/ci/check-government-scorecard-artifacts.py",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [

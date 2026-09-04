@@ -90,7 +90,7 @@ test("MEF IRPEF query keeps periods and semantic boundaries explicit", () => {
     taxYear: 2024,
     declarationYear: 2025,
     publishedAt: "2026-04-23",
-    observedAt: "2026-08-21T00:00:00Z",
+    observedAt: "2026-09-04T08:16:29Z",
     municipalityAssignmentDateRule: "domicilio fiscale al 31 dicembre dell'anno di presentazione della dichiarazione",
     surtaxDomicileDate: "2024-01-01",
   });
@@ -103,6 +103,12 @@ test("MEF IRPEF query keeps periods and semantic boundaries explicit", () => {
   assert.match(result.caveats.join(" "), /imposta netta dichiarata/i);
   assert.match(result.caveats.join(" "), /non è il gettito fiscale totale/i);
   assert.match(result.caveats.join(" "), /non vengono sottratti.*CPT/i);
+  assert.equal(result.query.detail, "summary");
+  assert.ok(result.data.every((row) => row.breakdowns === undefined));
+  assert.deepEqual(Object.keys(result.definitions), [
+    "taxpayers",
+    ...contract.MEF_IRPEF_SUMMARY_MEASURE_ORDER,
+  ]);
   assert.doesNotMatch(JSON.stringify(result), /ABANO TERME/);
 
   const originalName = result.data[0].territory.name;
@@ -160,6 +166,55 @@ test("MEF IRPEF query is bounded, stable and preserves suppressed values", () =>
   assert.ok(firstPage.data.length <= 100);
 });
 
+test("MEF IRPEF detail exposes income sources and reconciled bands without merging their semantics", () => {
+  const result = queryMefMunicipalIrpef({
+    level: "municipality",
+    code: "028001",
+    detail: "all",
+  });
+  const record = result.data[0];
+  assert.deepEqual(Object.keys(record.breakdowns.incomeSources), [
+    ...contract.MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER,
+  ]);
+  assert.deepEqual(Object.keys(record.breakdowns.incomeBands), [
+    ...contract.MEF_IRPEF_INCOME_BAND_MEASURE_ORDER,
+  ]);
+  assert.deepEqual(record.breakdowns.incomeBands.nonPositiveComprehensiveIncome, {
+    coverage: "complete",
+    frequency: 4,
+    amountCents: -1_185_700,
+  });
+
+  const bands = Object.values(record.breakdowns.incomeBands);
+  assert.equal(
+    bands.reduce((total, measure) => total + measure.frequency, 0),
+    record.measures.comprehensiveIncome.frequency,
+  );
+  assert.equal(
+    bands.reduce((total, measure) => total + measure.amountCents, 0),
+    record.measures.comprehensiveIncome.amountCents,
+  );
+  assert.ok(
+    Object.values(record.breakdowns.incomeSources)
+      .reduce((total, measure) => total + measure.frequency, 0) > record.taxpayers,
+  );
+  assert.match(result.caveats.join(" "), /stessa persona può comparire in più categorie/i);
+  assert.match(result.caveats.join(" "), /fascia non positiva può avere un ammontare negativo/i);
+  assert.equal(Object.keys(result.definitions).length, 1 + contract.MEF_IRPEF_MEASURE_ORDER.length);
+
+  assert.deepEqual(
+    result.national.unassigned.breakdowns.incomeSources.selfEmploymentIncome,
+    {
+      coverage: "partial",
+      knownFrequency: 0,
+      knownAmountCents: 0,
+      suppressedRows: 1,
+      suppressedFrequencyRows: 1,
+      suppressedAmountRows: 0,
+    },
+  );
+});
+
 test("MEF IRPEF query rejects unbounded, unsupported and unknown requests", () => {
   const invalid = (query, pattern) => assert.throws(
     () => queryMefMunicipalIrpef(query),
@@ -168,6 +223,7 @@ test("MEF IRPEF query rejects unbounded, unsupported and unknown requests", () =
   invalid({ year: 2023 }, /Anno d.imposta non disponibile/);
   invalid({ level: "municipality" }, /almeno/);
   invalid({ level: "municipality", query: "Roma", limit: 101 }, /limit/);
+  invalid({ detail: "everything" }, /dettaglio/);
   invalid({ level: "region", surprise: true }, /non supportati/);
   assert.throws(
     () => queryMefMunicipalIrpef({ level: "region", offset: 20 }),
@@ -180,14 +236,36 @@ test("MEF IRPEF query rejects unbounded, unsupported and unknown requests", () =
 });
 
 test("MEF IRPEF validator fails closed on suppression, aggregate and digest drift", () => {
-  const brokenRow = [...data.municipalities[0]];
-  brokenRow[16] = null;
+  const abanoIndex = data.municipalities.findIndex((row) => row[0] === "028001");
+  const brokenRow = [...data.municipalities[abanoIndex]];
+  const bandIndex = data.measureOrder.indexOf("comprehensiveIncome0To10000");
+  brokenRow[8 + bandIndex * 2] += 100;
   assert.throws(
     () => contract.validateMefIrpefData({
       ...data,
-      municipalities: [brokenRow, ...data.municipalities.slice(1)],
+      municipalities: [
+        ...data.municipalities.slice(0, abanoIndex),
+        brokenRow,
+        ...data.municipalities.slice(abanoIndex + 1),
+      ],
     }),
-    /entrambi presenti o entrambi oscurati/,
+    /ammontari completi delle fasce non riconciliano/,
+  );
+
+  const brokenSuppression = structuredClone(data);
+  const sourceIndex = data.measureOrder.indexOf("selfEmploymentIncome");
+  brokenSuppression.national.unassigned.measures[sourceIndex][2] = 0;
+  assert.throws(
+    () => contract.validateMefIrpefData(brokenSuppression),
+    /suppressedRows non riconcilia/,
+  );
+
+  const positiveNonPositiveBand = structuredClone(data);
+  const nonPositiveIndex = data.measureOrder.indexOf("nonPositiveComprehensiveIncome");
+  positiveNonPositiveBand.municipalities[abanoIndex][8 + nonPositiveIndex * 2] = 100;
+  assert.throws(
+    () => contract.validateMefIrpefData(positiveNonPositiveBand),
+    /ammontare non positivo atteso/,
   );
 
   assert.throws(

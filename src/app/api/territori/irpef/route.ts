@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import {
   MefIrpefQueryError,
   queryMefMunicipalIrpef,
+  type MefIrpefDetail,
   type MefIrpefLevel,
   type MefIrpefQuery,
 } from "@/lib/mef-irpef-snapshot";
@@ -17,6 +18,7 @@ const ALLOWED_PARAMS = new Set([
   "provincia",
   "codice",
   "q",
+  "dettaglio",
   "limite",
   "offset",
 ]);
@@ -25,6 +27,13 @@ const LEVELS: Readonly<Record<string, MefIrpefLevel>> = {
   regione: "region",
   provincia: "province",
   comune: "municipality",
+};
+
+const DETAILS: Readonly<Record<string, MefIrpefDetail>> = {
+  riepilogo: "summary",
+  "fonti-reddito": "income-sources",
+  "fasce-reddito": "income-bands",
+  tutto: "all",
 };
 
 function invalid(message: string): never {
@@ -54,6 +63,18 @@ function parseLevel(params: URLSearchParams): MefIrpefLevel | undefined {
   return level;
 }
 
+function parseDetail(params: URLSearchParams): MefIrpefDetail | undefined {
+  const value = singleValue(params, "dettaglio");
+  if (value === undefined) return undefined;
+  const detail = DETAILS[value];
+  if (!detail) {
+    invalid(
+      "Il parametro dettaglio deve essere riepilogo, fonti-reddito, fasce-reddito oppure tutto.",
+    );
+  }
+  return detail;
+}
+
 function parseQuery(params: URLSearchParams): MefIrpefQuery {
   for (const key of params.keys()) {
     if (!ALLOWED_PARAMS.has(key)) invalid(`Parametro non supportato: ${key}.`);
@@ -65,6 +86,7 @@ function parseQuery(params: URLSearchParams): MefIrpefQuery {
     province: singleValue(params, "provincia"),
     code: singleValue(params, "codice"),
     query: singleValue(params, "q"),
+    detail: parseDetail(params),
     limit: optionalInteger(params, "limite"),
     offset: optionalInteger(params, "offset"),
   };

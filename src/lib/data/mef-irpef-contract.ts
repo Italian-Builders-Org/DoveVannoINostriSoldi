@@ -1,14 +1,44 @@
 export const MEF_IRPEF_DATASET_ID = "mef_irpef_comunale" as const;
 export const MEF_IRPEF_TAX_YEAR = 2024 as const;
-export const MEF_IRPEF_MEASURE_ORDER = [
+export const MEF_IRPEF_SUMMARY_MEASURE_ORDER = [
   "comprehensiveIncome",
   "taxableIncome",
   "netTaxDeclared",
   "regionalSurtaxDue",
   "municipalSurtaxDue",
 ] as const;
+export const MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER = [
+  "buildingIncome",
+  "employmentIncome",
+  "pensionIncome",
+  "selfEmploymentIncome",
+  "ordinaryBusinessIncome",
+  "simplifiedBusinessIncome",
+  "participationIncome",
+] as const;
+export const MEF_IRPEF_INCOME_BAND_MEASURE_ORDER = [
+  "nonPositiveComprehensiveIncome",
+  "comprehensiveIncome0To10000",
+  "comprehensiveIncome10000To15000",
+  "comprehensiveIncome15000To26000",
+  "comprehensiveIncome26000To55000",
+  "comprehensiveIncome55000To75000",
+  "comprehensiveIncome75000To120000",
+  "comprehensiveIncomeOver120000",
+] as const;
+export const MEF_IRPEF_MEASURE_ORDER = [
+  ...MEF_IRPEF_SUMMARY_MEASURE_ORDER,
+  ...MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER,
+  ...MEF_IRPEF_INCOME_BAND_MEASURE_ORDER,
+] as const;
 
 export type MefIrpefMeasureKey = (typeof MEF_IRPEF_MEASURE_ORDER)[number];
+export type MefIrpefSummaryMeasureKey =
+  (typeof MEF_IRPEF_SUMMARY_MEASURE_ORDER)[number];
+export type MefIrpefIncomeSourceMeasureKey =
+  (typeof MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER)[number];
+export type MefIrpefIncomeBandMeasureKey =
+  (typeof MEF_IRPEF_INCOME_BAND_MEASURE_ORDER)[number];
 
 export type MefIrpefPackedMunicipality = readonly [
   istatCode: string,
@@ -28,12 +58,44 @@ export type MefIrpefPackedMunicipality = readonly [
   regionalSurtaxDueAmountCents: number | null,
   municipalSurtaxDueFrequency: number | null,
   municipalSurtaxDueAmountCents: number | null,
+  buildingIncomeFrequency: number | null,
+  buildingIncomeAmountCents: number | null,
+  employmentIncomeFrequency: number | null,
+  employmentIncomeAmountCents: number | null,
+  pensionIncomeFrequency: number | null,
+  pensionIncomeAmountCents: number | null,
+  selfEmploymentIncomeFrequency: number | null,
+  selfEmploymentIncomeAmountCents: number | null,
+  ordinaryBusinessIncomeFrequency: number | null,
+  ordinaryBusinessIncomeAmountCents: number | null,
+  simplifiedBusinessIncomeFrequency: number | null,
+  simplifiedBusinessIncomeAmountCents: number | null,
+  participationIncomeFrequency: number | null,
+  participationIncomeAmountCents: number | null,
+  nonPositiveComprehensiveIncomeFrequency: number | null,
+  nonPositiveComprehensiveIncomeAmountCents: number | null,
+  comprehensiveIncome0To10000Frequency: number | null,
+  comprehensiveIncome0To10000AmountCents: number | null,
+  comprehensiveIncome10000To15000Frequency: number | null,
+  comprehensiveIncome10000To15000AmountCents: number | null,
+  comprehensiveIncome15000To26000Frequency: number | null,
+  comprehensiveIncome15000To26000AmountCents: number | null,
+  comprehensiveIncome26000To55000Frequency: number | null,
+  comprehensiveIncome26000To55000AmountCents: number | null,
+  comprehensiveIncome55000To75000Frequency: number | null,
+  comprehensiveIncome55000To75000AmountCents: number | null,
+  comprehensiveIncome75000To120000Frequency: number | null,
+  comprehensiveIncome75000To120000AmountCents: number | null,
+  comprehensiveIncomeOver120000Frequency: number | null,
+  comprehensiveIncomeOver120000AmountCents: number | null,
 ];
 
 export type MefIrpefAggregateMeasure = readonly [
   knownFrequency: number,
   knownAmountCents: number,
   suppressedRows: number,
+  suppressedFrequencyRows: number,
+  suppressedAmountRows: number,
 ];
 
 export type MefIrpefStoredAggregate = Readonly<{
@@ -60,7 +122,7 @@ export type MefIrpefStoredNational = Readonly<{
 }>;
 
 export type MefIrpefSnapshotData = Readonly<{
-  schemaVersion: 1;
+  schemaVersion: 2;
   datasetId: typeof MEF_IRPEF_DATASET_ID;
   taxYear: typeof MEF_IRPEF_TAX_YEAR;
   measureOrder: typeof MEF_IRPEF_MEASURE_ORDER;
@@ -71,7 +133,7 @@ export type MefIrpefSnapshotData = Readonly<{
 }>;
 
 export type MefIrpefSnapshotMeta = Readonly<{
-  schemaVersion: 1;
+  schemaVersion: 2;
   datasetId: typeof MEF_IRPEF_DATASET_ID;
   period: Readonly<{
     taxYear: typeof MEF_IRPEF_TAX_YEAR;
@@ -120,6 +182,8 @@ export type MefIrpefSnapshotMeta = Readonly<{
     missingValues: string;
     amounts: string;
     aggregation: string;
+    incomeSources: string;
+    incomeBands: string;
     semanticWarning: string;
   }>;
   lockSha256: string;
@@ -141,8 +205,13 @@ export class MefIrpefContractError extends Error {
 
 type MutableAggregate = {
   taxpayers: number;
-  measures: Array<[number, number, number]>;
+  measures: Array<[number, number, number, number, number]>;
 };
+
+const SIGNED_AMOUNT_MEASURES = new Set<MefIrpefMeasureKey>([
+  "nonPositiveComprehensiveIncome",
+]);
+const MUNICIPALITY_TUPLE_SIZE = 7 + MEF_IRPEF_MEASURE_ORDER.length * 2;
 
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const ISO_INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
@@ -191,9 +260,22 @@ function safeInteger(value: unknown, label: string): number {
   return value as number;
 }
 
-function cents(value: unknown, label: string): number {
-  const parsed = safeInteger(value, label);
+function signedSafeInteger(value: unknown, label: string): number {
+  if (!Number.isSafeInteger(value)) fail(`${label}: intero sicuro atteso.`);
+  return value as number;
+}
+
+function cents(value: unknown, label: string, allowNegative = false): number {
+  const parsed = allowNegative ? signedSafeInteger(value, label) : safeInteger(value, label);
   if (parsed % 100 !== 0) fail(`${label}: il dato MEF deve mantenere la risoluzione di un euro.`);
+  return parsed;
+}
+
+function measureCents(value: unknown, key: MefIrpefMeasureKey, label: string): number {
+  const parsed = cents(value, label, SIGNED_AMOUNT_MEASURES.has(key));
+  if (SIGNED_AMOUNT_MEASURES.has(key) && parsed > 0) {
+    fail(`${label}: ammontare non positivo atteso.`);
+  }
   return parsed;
 }
 
@@ -227,21 +309,82 @@ function assertJsonValue(value: unknown, label: string): void {
   for (const [key, item] of Object.entries(parsed)) assertJsonValue(item, `${label}.${key}`);
 }
 
-function parseMeasureTriple(value: unknown, label: string): MefIrpefAggregateMeasure {
-  if (!Array.isArray(value) || value.length !== 3) fail(`${label}: tripla aggregata attesa.`);
-  return [
+function parseAggregateMeasure(
+  value: unknown,
+  key: MefIrpefMeasureKey,
+  label: string,
+): MefIrpefAggregateMeasure {
+  if (!Array.isArray(value) || value.length !== 5) fail(`${label}: quintupla aggregata attesa.`);
+  const parsed = [
     safeInteger(value[0], `${label}.knownFrequency`),
-    cents(value[1], `${label}.knownAmountCents`),
+    measureCents(value[1], key, `${label}.knownAmountCents`),
     safeInteger(value[2], `${label}.suppressedRows`),
-  ];
+    safeInteger(value[3], `${label}.suppressedFrequencyRows`),
+    safeInteger(value[4], `${label}.suppressedAmountRows`),
+  ] as const;
+  if (
+    parsed[2] < Math.max(parsed[3], parsed[4]) ||
+    parsed[2] > parsed[3] + parsed[4]
+  ) {
+    fail(`${label}: suppressedRows non riconcilia le celle soppresse.`);
+  }
+  return parsed;
 }
 
 function parseMeasures(value: unknown, label: string): readonly MefIrpefAggregateMeasure[] {
   if (!Array.isArray(value) || value.length !== MEF_IRPEF_MEASURE_ORDER.length) {
-    fail(`${label}: attese esattamente cinque metriche.`);
+    fail(`${label}: attese esattamente ${MEF_IRPEF_MEASURE_ORDER.length} metriche.`);
   }
-  return value.map((measure, index) =>
-    parseMeasureTriple(measure, `${label}.${MEF_IRPEF_MEASURE_ORDER[index]}`));
+  return value.map((measure, index) => {
+    const key = MEF_IRPEF_MEASURE_ORDER[index];
+    return parseAggregateMeasure(measure, key, `${label}.${key}`);
+  });
+}
+
+function packedMeasure(
+  row: MefIrpefPackedMunicipality,
+  key: MefIrpefMeasureKey,
+): readonly [number | null, number | null] {
+  const index = MEF_IRPEF_MEASURE_ORDER.indexOf(key);
+  return [row[7 + index * 2] as number | null, row[8 + index * 2] as number | null];
+}
+
+function assertIncomeBandReconciliation(
+  row: MefIrpefPackedMunicipality,
+  label: string,
+) {
+  const [comprehensiveFrequency, comprehensiveAmountCents] = packedMeasure(
+    row,
+    "comprehensiveIncome",
+  );
+  const bands = MEF_IRPEF_INCOME_BAND_MEASURE_ORDER.map((key) => packedMeasure(row, key));
+  const bandFrequencies = bands.map(([frequency]) => frequency);
+  const bandAmounts = bands.map(([, amount]) => amount);
+
+  if (comprehensiveFrequency !== null) {
+    const knownFrequency = bandFrequencies.reduce<number>(
+      (total, value) => total + (value ?? 0),
+      0,
+    );
+    signedSafeInteger(knownFrequency, `${label}.incomeBands.knownFrequency`);
+    if (knownFrequency > comprehensiveFrequency) {
+      fail(`${label}: le frequenze note delle fasce superano il reddito complessivo.`);
+    }
+    if (bandFrequencies.every((value) => value !== null) && knownFrequency !== comprehensiveFrequency) {
+      fail(`${label}: le frequenze complete delle fasce non riconciliano il reddito complessivo.`);
+    }
+  }
+
+  if (comprehensiveAmountCents !== null && bandAmounts.every((value) => value !== null)) {
+    const totalAmountCents = bandAmounts.reduce<number>(
+      (total, value) => total + (value ?? 0),
+      0,
+    );
+    signedSafeInteger(totalAmountCents, `${label}.incomeBands.amountCents`);
+    if (totalAmountCents !== comprehensiveAmountCents) {
+      fail(`${label}: gli ammontari completi delle fasce non riconciliano il reddito complessivo.`);
+    }
+  }
 }
 
 function parseAggregate(value: unknown, label: string): MefIrpefStoredAggregate {
@@ -255,7 +398,9 @@ function parseAggregate(value: unknown, label: string): MefIrpefStoredAggregate 
 
 function parseMunicipality(value: unknown, index: number): MefIrpefPackedMunicipality {
   const label = `data.municipalities[${index}]`;
-  if (!Array.isArray(value) || value.length !== 17) fail(`${label}: tupla di 17 campi attesa.`);
+  if (!Array.isArray(value) || value.length !== MUNICIPALITY_TUPLE_SIZE) {
+    fail(`${label}: tupla di ${MUNICIPALITY_TUPLE_SIZE} campi attesa.`);
+  }
 
   const result: unknown[] = [
     matchingText(value[0], ISTAT_MUNICIPALITY_PATTERN, `${label}.istatCode`),
@@ -270,24 +415,22 @@ function parseMunicipality(value: unknown, index: number): MefIrpefPackedMunicip
   for (let metricIndex = 0; metricIndex < MEF_IRPEF_MEASURE_ORDER.length; metricIndex += 1) {
     const frequency = value[7 + metricIndex * 2];
     const amount = value[8 + metricIndex * 2];
-    const metricLabel = `${label}.${MEF_IRPEF_MEASURE_ORDER[metricIndex]}`;
-    if ((frequency === null) !== (amount === null)) {
-      fail(`${metricLabel}: frequenza e importo devono essere entrambi presenti o entrambi oscurati.`);
-    }
-    if (frequency === null) {
-      result.push(null, null);
-    } else {
-      result.push(
-        safeInteger(frequency, `${metricLabel}.frequency`),
-        cents(amount, `${metricLabel}.amountCents`),
-      );
-    }
+    const key = MEF_IRPEF_MEASURE_ORDER[metricIndex];
+    const metricLabel = `${label}.${key}`;
+    result.push(
+      frequency === null ? null : safeInteger(frequency, `${metricLabel}.frequency`),
+      amount === null
+        ? null
+        : measureCents(amount, key, `${metricLabel}.amountCents`),
+    );
   }
 
   if ((result[0] as string).slice(0, 3) !== result[3]) {
     fail(`${label}: il codice provincia non coincide con le prime tre cifre ISTAT.`);
   }
-  return result as unknown as MefIrpefPackedMunicipality;
+  const municipality = result as unknown as MefIrpefPackedMunicipality;
+  assertIncomeBandReconciliation(municipality, label);
+  return municipality;
 }
 
 function parseProvince(value: unknown, index: number): MefIrpefStoredProvince {
@@ -329,7 +472,7 @@ function parseRegion(value: unknown, index: number): MefIrpefStoredRegion {
 function emptyAggregate(): MutableAggregate {
   return {
     taxpayers: 0,
-    measures: MEF_IRPEF_MEASURE_ORDER.map(() => [0, 0, 0]),
+    measures: MEF_IRPEF_MEASURE_ORDER.map(() => [0, 0, 0, 0, 0]),
   };
 }
 
@@ -339,10 +482,15 @@ function addMunicipality(target: MutableAggregate, row: MefIrpefPackedMunicipali
   for (let index = 0; index < MEF_IRPEF_MEASURE_ORDER.length; index += 1) {
     const frequency = row[7 + index * 2] as number | null;
     const amount = row[8 + index * 2] as number | null;
-    if (frequency === null || amount === null) {
-      target.measures[index][2] += 1;
+    if (frequency === null || amount === null) target.measures[index][2] += 1;
+    if (frequency === null) {
+      target.measures[index][3] += 1;
     } else {
       target.measures[index][0] += frequency;
+    }
+    if (amount === null) {
+      target.measures[index][4] += 1;
+    } else {
       target.measures[index][1] += amount;
     }
     if (!target.measures[index].every(Number.isSafeInteger)) {
@@ -357,6 +505,8 @@ function addStoredAggregate(target: MutableAggregate, source: MefIrpefStoredAggr
     target.measures[index][0] += measure[0];
     target.measures[index][1] += measure[1];
     target.measures[index][2] += measure[2];
+    target.measures[index][3] += measure[3];
+    target.measures[index][4] += measure[4];
   });
   if (
     !Number.isSafeInteger(target.taxpayers) ||
@@ -393,7 +543,7 @@ function parseMeta(value: unknown): MefIrpefSnapshotMeta {
     "dataArtifactBytes",
     "dataArtifactSha256",
   ], "meta");
-  if (meta.schemaVersion !== 1) fail("meta.schemaVersion: atteso 1.");
+  if (meta.schemaVersion !== 2) fail("meta.schemaVersion: atteso 2.");
   if (meta.datasetId !== MEF_IRPEF_DATASET_ID) fail("meta.datasetId non valido.");
 
   const period = record(meta.period, "meta.period");
@@ -510,6 +660,8 @@ function parseMeta(value: unknown): MefIrpefSnapshotMeta {
     "missingValues",
     "amounts",
     "aggregation",
+    "incomeSources",
+    "incomeBands",
     "semanticWarning",
   ], "meta.methodology");
   for (const [key, value] of Object.entries(methodology)) text(value, `meta.methodology.${key}`);
@@ -533,7 +685,7 @@ function parseData(value: unknown): MefIrpefSnapshotData {
     "regions",
     "national",
   ], "data");
-  if (data.schemaVersion !== 1) fail("data.schemaVersion: atteso 1.");
+  if (data.schemaVersion !== 2) fail("data.schemaVersion: atteso 2.");
   if (data.datasetId !== MEF_IRPEF_DATASET_ID) fail("data.datasetId non valido.");
   if (data.taxYear !== MEF_IRPEF_TAX_YEAR) fail("data.taxYear non valido.");
   if (
@@ -647,7 +799,7 @@ function parseData(value: unknown): MefIrpefSnapshotData {
   assertAggregateEqual(allSource, foldedAllSource, "Nazionale fonte completa");
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     datasetId: MEF_IRPEF_DATASET_ID,
     taxYear: MEF_IRPEF_TAX_YEAR,
     measureOrder: MEF_IRPEF_MEASURE_ORDER,

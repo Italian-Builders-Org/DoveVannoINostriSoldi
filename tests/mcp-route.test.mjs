@@ -324,6 +324,7 @@ test("MCP query tool describes every input parameter for clients and directories
     "region",
     "province",
     "level",
+    "detail",
     "code",
     "cup",
     "area",
@@ -681,6 +682,7 @@ test("MCP modern 2026 tool call exposes the same MEF domain result", async () =>
           year: 2024,
           level: "municipality",
           code: "028001",
+          detail: "all",
         },
       },
     }),
@@ -691,6 +693,10 @@ test("MCP modern 2026 tool call exposes the same MEF domain result", async () =>
   assert.match(body, /mef_irpef_comunale/);
   assert.match(body, /ABANO TERME/);
   assert.match(body, /netTaxDeclared/);
+  assert.match(body, /incomeSources/);
+  assert.match(body, /incomeBands/);
+  assert.match(body, /nonPositiveComprehensiveIncome/);
+  assert.match(body, /-1185700/);
 });
 
 test("MCP tool call exposes the Legge di Bilancio mission series with the years filter", async () => {
@@ -876,4 +882,26 @@ test("MCP tool responses stay below the wire-size budget", async () => {
   assert.equal(rpcEvent.result.isError, true);
   assert.equal(rpcEvent.result.structuredContent, undefined);
   assert.match(rpcEvent.result.content[0].text, /supera il limite di dimensione/i);
+
+  const irpefResponse = await POST(request({}, JSON.stringify({
+    jsonrpc: "2.0",
+    id: 14,
+    method: "tools/call",
+    params: {
+      name: "query_dataset",
+      arguments: {
+        dataset: "mef_irpef_comunale",
+        level: "municipality",
+        region: "Lazio",
+        detail: "all",
+        limit: 100,
+      },
+    },
+  })));
+  const irpefBody = await irpefResponse.text();
+  assert.equal(irpefResponse.status, 200);
+  assert.ok(new TextEncoder().encode(irpefBody).byteLength <= 750_000);
+  const irpefEvent = parseRpcEvent(irpefBody);
+  assert.notEqual(irpefEvent.result.isError, true);
+  assert.equal(irpefEvent.result.structuredContent.data.pagination.returned, 100);
 });

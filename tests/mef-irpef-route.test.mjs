@@ -31,12 +31,31 @@ test("MEF IRPEF route maps Italian filters and keeps suppression explicit", asyn
   assert.equal(payload.data[0].measures.municipalSurtaxDue.suppressedRows, 1);
 });
 
+test("MEF IRPEF route maps optional source and band detail without changing the default", async () => {
+  const detailed = get(
+    "?anno=2024&livello=comune&codice=028001&dettaglio=fasce-reddito",
+  );
+  const payload = await detailed.json();
+  assert.equal(detailed.status, 200);
+  assert.equal(payload.query.detail, "income-bands");
+  assert.equal(payload.data[0].breakdowns.incomeSources, undefined);
+  assert.equal(
+    payload.data[0].breakdowns.incomeBands.nonPositiveComprehensiveIncome.amountCents,
+    -1_185_700,
+  );
+
+  const summary = await get("?livello=comune&codice=028001").json();
+  assert.equal(summary.data[0].breakdowns, undefined);
+});
+
 test("MEF IRPEF route distinguishes invalid requests from missing territories", async () => {
   for (const search of [
     "?anno=2024foo",
     "?anno=2023",
     "?livello=comune",
     "?livello=comune&q=Roma&limite=101",
+    "?dettaglio=non-valido",
+    "?dettaglio=riepilogo&dettaglio=tutto",
     "?sconosciuto=1",
     "?q=Roma&q=Milano",
   ]) {

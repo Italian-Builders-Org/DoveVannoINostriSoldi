@@ -82,6 +82,9 @@ const querySchema = z.object({
   level: z.enum(["region", "province", "municipality"])
     .describe("Livello territoriale della risposta: region, province oppure municipality.")
     .optional(),
+  detail: z.enum(["summary", "income-sources", "income-bands", "all"])
+    .describe("Dettaglio IRPEF: summary, income-sources, income-bands oppure all.")
+    .optional(),
   code: z.string().max(100)
     .describe("Codice identificativo richiesto dal dataset, per esempio codice IPA o ISTAT.")
     .optional(),

@@ -325,6 +325,27 @@ test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => 
     suppressedRows: 1,
   });
   assert.match(result.caveats.join(" "), /non è il gettito fiscale totale/i);
+
+  const detailed = await queryPublicDataset({
+    dataset: "mef_irpef_comunale",
+    year: 2024,
+    level: "municipality",
+    code: "028001",
+    detail: "income-sources",
+  });
+  assert.ok(detailed.data[0].breakdowns.incomeSources.employmentIncome.amountCents > 0);
+  assert.equal(detailed.data[0].breakdowns.incomeBands, undefined);
+  assert.deepEqual(
+    detailed.national.unassigned.breakdowns.incomeSources.selfEmploymentIncome,
+    {
+      coverage: "partial",
+      knownFrequency: 0,
+      knownAmountCents: 0,
+      suppressedRows: 1,
+      suppressedFrequencyRows: 1,
+      suppressedAmountRows: 0,
+    },
+  );
   await assert.rejects(
     queryPublicDataset({
       dataset: "mef_irpef_comunale",
@@ -333,6 +354,10 @@ test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => 
       limit: 101,
     }),
     /limit/,
+  );
+  await assert.rejects(
+    queryPublicDataset({ dataset: "siope_comuni", detail: "all" }),
+    /Filtri non supportati.*detail/,
   );
 });
 

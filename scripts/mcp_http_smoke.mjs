@@ -177,6 +177,52 @@ assert.match(legacyDataset, /Imposta netta dichiarata/i);
 const legacyData = successfulMcpToolResult(legacyDataset, "mef_irpef_comunale").data;
 assert.equal(legacyData.level, "region");
 assert.equal(legacyData.pagination.returned, 20);
+assert.ok(legacyData.data.every((row) => row.breakdowns === undefined));
+
+const detailedIrpefDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 25,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: {
+      dataset: "mef_irpef_comunale",
+      year: 2024,
+      level: "municipality",
+      region: "Lombardia",
+      detail: "all",
+      limit: 100,
+    },
+  },
+});
+const detailedIrpefData = successfulMcpToolResult(
+  detailedIrpefDataset,
+  "mef_irpef_comunale",
+).data;
+assert.equal(detailedIrpefData.query.detail, "all");
+assert.equal(detailedIrpefData.pagination.returned, 100);
+assert.ok(detailedIrpefData.data.every((row) =>
+  Object.keys(row.breakdowns.incomeSources).length === 7
+  && Object.keys(row.breakdowns.incomeBands).length === 8
+));
+assert.ok(detailedIrpefData.data.every((row) => {
+  const measure = row.breakdowns.incomeBands.nonPositiveComprehensiveIncome;
+  return (measure.amountCents ?? measure.knownAmountCents) <= 0;
+}));
+assert.match(detailedIrpefData.caveats.join(" "), /non è il gettito fiscale totale/i);
+assert.match(detailedIrpefData.caveats.join(" "), /fonti di reddito si sovrappongono/i);
+
+const unsupportedDetailDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 26,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: { dataset: "siope_comuni", detail: "all" },
+  },
+});
+assert.match(unsupportedDetailDataset, /"isError":true/);
+assert.match(unsupportedDetailDataset, /Filtri non supportati[^\n]*detail/);
 
 const pnrrDataset = await mcpRequest({
   jsonrpc: "2.0",
@@ -358,6 +404,8 @@ console.log(JSON.stringify({
     "legacy-tools",
     "compatibility-tools",
     "legacy-query",
+    "irpef-detail-query-budget-caveats",
+    "unsupported-detail-filter",
     "integrated-query",
     "education-query-pagination-provenance",
     "modern-discovery",

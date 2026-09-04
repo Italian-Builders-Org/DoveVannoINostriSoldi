@@ -64,6 +64,7 @@ export type DatasetQuery = {
   region?: string;
   province?: string;
   level?: "region" | "province" | "municipality";
+  detail?: "summary" | "income-sources" | "income-bands" | "all";
   code?: string;
   cup?: string;
   area?: string;
@@ -146,6 +147,7 @@ const exampleQueries = {
     year: 2024,
     level: "municipality",
     query: "Abano",
+    detail: "income-bands",
     limit: 20,
   },
   ipa_enti: { dataset: "ipa_enti", query: "Agenzia per l'Italia Digitale", limit: 10 },
@@ -228,7 +230,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "istat_pensioni_prestazioni", title: "Pensioni ISTAT · prestazioni", summary: "Numero di prestazioni pensionistiche, importo lordo annuo e importo lordo medio per categoria, dal 2012 al 2022.", sourceIds: ["istat-casellario-pensioni"], freshness: "snapshot", filters: ["year"], caveat: "Il denominatore è il numero di prestazioni, non il numero di persone. Gli importi sono lordi e nominali, espressi in migliaia di euro per i totali e in euro per la media; i conteggi delle categorie riconciliano esattamente, mentre i relativi importi possono differire dal totale di 1-2 migliaia di euro per arrotondamento della fonte. Non è sommabile con pensionati né con CIVDIS/invalidità civile INPS." },
   { id: "istat_pensionati_persone", title: "Pensionati ISTAT · persone", summary: "Numero di persone pensionate, reddito pensionistico lordo annuo e media lorda, dal 2012 al 2022.", sourceIds: ["istat-casellario-pensioni"], freshness: "snapshot", filters: ["year"], caveat: "Il denominatore è il numero di persone pensionate, non il numero di prestazioni. Gli importi sono lordi e nominali, espressi in migliaia di euro per i totali e in euro per la media. Non è sommabile con le prestazioni pensionistiche né con CIVDIS/invalidità civile INPS; lo snapshot non è una serie INPS 2024." },
   { id: "cpt_finanza_regionale", title: "Entrate e spese pubbliche per territorio", summary: "Entrate, spese e saldo contabile territorializzato della PA consolidata CPT, con valori pro capite e per km² 2023.", sourceIds: ["cpt", "istat"], freshness: "snapshot", filters: ["year", "region"], caveat: "Il saldo è entrate meno spese nello stesso perimetro CPT PA. Le normalizzazioni ISTAT non misurano pressione fiscale, qualità dei servizi, merito politico o trasferimenti netti fra regioni e non sono il residuo fiscale di Banca d'Italia." },
-  { id: "mef_irpef_comunale", title: MEF_IRPEF_SOURCE.mcp.title, summary: MEF_IRPEF_SOURCE.mcp.summary, sourceIds: [MEF_IRPEF_SOURCE.id], freshness: "snapshot", filters: ["year", "level", "region", "province", "code", "query", "limit", "offset"], caveat: MEF_IRPEF_SOURCE.mcp.caveat },
+  { id: "mef_irpef_comunale", title: MEF_IRPEF_SOURCE.mcp.title, summary: MEF_IRPEF_SOURCE.mcp.summary, sourceIds: [MEF_IRPEF_SOURCE.id], freshness: "snapshot", filters: ["year", "level", "region", "province", "code", "query", "detail", "limit", "offset"], caveat: MEF_IRPEF_SOURCE.mcp.caveat },
   { id: "ipa_enti", title: "Enti pubblici IPA", summary: "Ricerca e scheda degli enti nell’Indice PA.", sourceIds: ["ipa"], freshness: "live", filters: ["query", "code", "limit", "offset"] },
   { id: "ipa_struttura", title: "Struttura organizzativa IPA", summary: "Unità organizzative e aree organizzative omogenee di un ente.", sourceIds: ["ipa-struttura"], freshness: "live", filters: ["code", "limit", "offset"] },
   { id: "mef_partecipazioni", title: "Partecipazioni pubbliche", summary: "Aggregati della rilevazione annuale MEF sulle partecipazioni pubbliche.", sourceIds: ["partecipazioni-pubbliche"], freshness: "snapshot", filters: [] },

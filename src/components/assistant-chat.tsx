@@ -5,6 +5,8 @@ import {
   ASSISTANT_EXAMPLES,
   ASSISTANT_MAX_PROMPT_CHARS,
   type AssistantResponse,
+  type AssistantAnswer,
+  type AssistantComparison,
 } from "@/lib/assistant/contracts";
 import styles from "@/app/assistente/assistant.module.css";
 
@@ -25,13 +27,25 @@ function isAssistantResponse(value: unknown): value is AssistantResponse {
   if (value.kind === "help") {
     return isText(value.message) && Array.isArray(value.examples) && value.examples.every(isText);
   }
-  if (value.kind !== "answer" || !isRecord(value.answer)) return false;
-  const { answer } = value;
+  if (value.kind === "comparison" && isRecord(value.comparison)) {
+    const { answers, change, caveats } = value.comparison;
+    return Array.isArray(answers) && answers.length === 2 && answers.every(isAnswer) &&
+      Array.isArray(caveats) && caveats.every(isText) &&
+      (change === null || (isRecord(change) && typeof change.euro === "number" &&
+        Number.isFinite(change.euro) && (change.percent === null ||
+          (typeof change.percent === "number" && Number.isFinite(change.percent)))));
+  }
+  return value.kind === "answer" && isAnswer(value.answer);
+}
+
+function isAnswer(answer: unknown): answer is AssistantAnswer {
+  if (!isRecord(answer)) return false;
   if (!isText(answer.dataset) || !isRecord(answer.period) || !isRecord(answer.observation) ||
       !isRecord(answer.source) || !Array.isArray(answer.caveats) || !Array.isArray(answer.facts)) {
     return false;
   }
-  if (!isText(answer.period.label) || !isText(answer.observation.label) ||
+  if (typeof answer.period.year !== "number" || !Number.isSafeInteger(answer.period.year) ||
+      !isText(answer.period.label) || !isText(answer.observation.label) ||
       typeof answer.observation.value !== "number" || !Number.isFinite(answer.observation.value) ||
       !isText(answer.observation.scope) || !isText(answer.source.owner) ||
       !isText(answer.source.url) || !answer.source.url.startsWith("https://") ||
@@ -57,6 +71,65 @@ function observedDate(value: string): string {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.valueOf())) return value;
   return new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "Europe/Rome" }).format(parsed);
+}
+
+function AnswerCard({ answer, comparison = false }: { answer: AssistantAnswer; comparison?: boolean }) {
+  const titleId = comparison ? `assistant-answer-${answer.period.year}` : "assistant-answer-title";
+  const Heading = comparison ? "h4" : "h3";
+  return (
+    <article className={styles.answer} aria-labelledby={titleId}>
+      <p className={styles.answerEyebrow}>Risposta verificata · {answer.dataset}</p>
+      <Heading id={titleId}>{answer.observation.label}</Heading>
+      <p className={styles.answerValue}>{euro(answer.observation.value)}</p>
+      <p className={styles.answerScope}>{answer.observation.scope} · {answer.period.label}</p>
+      <dl className={styles.facts}>
+        {answer.facts.map((item) => (
+          <div key={item.label}>
+            <dt>{item.label}</dt>
+            <dd>{factValue(item.value, item.unit)}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className={styles.sourceBox}>
+        <strong>Fonte</strong>
+        <a href={answer.source.url} target="_blank" rel="noreferrer">{answer.source.owner} ↗</a>
+        <small>Osservato il {observedDate(answer.source.observedAt)}</small>
+      </div>
+      <div className={styles.caveats}>
+        <strong>Da leggere con attenzione</strong>
+        <ul>{answer.caveats.map((caveat) => <li key={caveat}>{caveat}</li>)}</ul>
+      </div>
+    </article>
+  );
+}
+
+function ComparisonCard({ comparison }: { comparison: AssistantComparison }) {
+  const [before, after] = comparison.answers;
+  return (
+    <section className={styles.comparison} aria-labelledby="assistant-comparison-title">
+      <h3 id="assistant-comparison-title">Confronto pagamenti SIOPE dei Comuni</h3>
+      <p>{before.observation.scope} · {before.period.year} → {after.period.year}</p>
+      {comparison.change ? (
+        <dl className={styles.facts} aria-label="Variazione tra gli anni">
+          <div>
+            <dt>Differenza {after.period.year} meno {before.period.year}</dt>
+            <dd>{euro(comparison.change.euro)}</dd>
+          </div>
+          <div>
+            <dt>Variazione rispetto al {before.period.year}</dt>
+            <dd>{comparison.change.percent === null ? "Non calcolabile: base zero" : factValue(comparison.change.percent, "percent")}</dd>
+          </div>
+        </dl>
+      ) : null}
+      <div className={styles.caveats}>
+        <strong>Come leggere il confronto</strong>
+        <ul>{comparison.caveats.map((caveat) => <li key={caveat}>{caveat}</li>)}</ul>
+      </div>
+      <div className={styles.comparisonYears}>
+        {comparison.answers.map((answer) => <AnswerCard key={answer.period.year} answer={answer} comparison />)}
+      </div>
+    </section>
+  );
 }
 
 export function AssistantChat() {
@@ -92,7 +165,7 @@ export function AssistantChat() {
       <div className={styles.formHeader}>
         <div>
           <h2 id="assistant-form-title">Fai una domanda</h2>
-          <p>Rispondo con un solo dato aggregato, già verificato dall’adapter della fonte.</p>
+          <p>Rispondo con dati aggregati verificati e posso confrontare i pagamenti dei Comuni tra due anni.</p>
         </div>
         <span className="tag tag-neutral">Sola lettura</span>
       </div>
@@ -130,29 +203,9 @@ export function AssistantChat() {
 
       <div className={styles.result} aria-live="polite" aria-busy={loading}>
         {response?.ok && response.kind === "answer" ? (
-          <article className={styles.answer} aria-labelledby="assistant-answer-title">
-            <p className={styles.answerEyebrow}>Risposta verificata · {response.answer.dataset}</p>
-            <h3 id="assistant-answer-title">{response.answer.observation.label}</h3>
-            <p className={styles.answerValue}>{euro(response.answer.observation.value)}</p>
-            <p className={styles.answerScope}>{response.answer.observation.scope} · {response.answer.period.label}</p>
-            <dl className={styles.facts}>
-              {response.answer.facts.map((item) => (
-                <div key={item.label}>
-                  <dt>{item.label}</dt>
-                  <dd>{factValue(item.value, item.unit)}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className={styles.sourceBox}>
-              <strong>Fonte</strong>
-              <a href={response.answer.source.url} target="_blank" rel="noreferrer">{response.answer.source.owner} ↗</a>
-              <small>Osservato il {observedDate(response.answer.source.observedAt)}</small>
-            </div>
-            <div className={styles.caveats}>
-              <strong>Da leggere con attenzione</strong>
-              <ul>{response.answer.caveats.map((caveat) => <li key={caveat}>{caveat}</li>)}</ul>
-            </div>
-          </article>
+          <AnswerCard answer={response.answer} />
+        ) : response?.ok && response.kind === "comparison" ? (
+          <ComparisonCard comparison={response.comparison} />
         ) : response ? (
           <div className={styles.message} role={response.ok ? undefined : "alert"}>
             <strong>{response.kind === "help" ? "Posso aiutarti così" : "Richiesta non eseguita"}</strong>

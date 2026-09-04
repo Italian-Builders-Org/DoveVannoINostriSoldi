@@ -140,3 +140,17 @@ test("assistant API rate-limits malformed bodies before reading another payload"
   assert.equal(limited.status, 429);
   assert.equal(limited.headers.get("retry-after"), "60");
 });
+
+test("assistant API preserves both years and source receipts in a comparison", async () => {
+  const response = await POST(request({
+    body: JSON.stringify({ prompt: "Confronta i pagamenti dei Comuni tra 2024 e 2025" }),
+  }));
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("cache-control"), /no-store/);
+  const payload = await response.json();
+  assert.equal(payload.kind, "comparison");
+  assert.deepEqual(payload.comparison.answers.map((answer) => answer.period.year), [2024, 2025]);
+  assert.equal(payload.comparison.answers[1].observation.value, 114197852372.52);
+  assert.ok(payload.comparison.answers.every((answer) => answer.source.url.startsWith("https://")));
+  assert.ok(Number.isFinite(payload.comparison.change.euro));
+});

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
 import {
@@ -2608,6 +2609,24 @@ try {
           `${label}: stato busy non concluso`,
         );
       },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Assistente confronto annuale ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/assistente", width,
+      validate: (page) => inspectAssistantComparison(page),
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Assistente confronto parziale ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/assistente", width,
+      validate: (page) => inspectAssistantComparison(page, { partial: true }),
     });
     completed.push(label);
   }

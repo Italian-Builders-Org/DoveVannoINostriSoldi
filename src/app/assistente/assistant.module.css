@@ -58,7 +58,8 @@
 .empty { margin: 0; color: var(--color-neutral-600); }
 .answer { max-width: 78ch; }
 .answerEyebrow { margin: 0; color: var(--color-accent-700); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
-.answer h3 { margin: 5px 0 0; font-size: 21px; }
+.answer h3,
+.answer h4 { margin: 5px 0 0; font-size: 21px; }
 .answerValue { margin: 4px 0 0; font-family: var(--font-heading); font-size: clamp(28px, 5vw, 42px); font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
 .answerScope { margin: 4px 0 0; color: var(--color-neutral-700); }
 .facts {
@@ -89,3 +90,7 @@
   .form button { width: 100%; }
   .facts { grid-template-columns: minmax(0, 1fr); }
 }
+
+.comparison > h3 { margin: 0; }
+.comparisonYears { display: grid; gap: var(--space-6); margin-top: var(--space-6); }
+.comparisonYears .answer { min-width: 0; }

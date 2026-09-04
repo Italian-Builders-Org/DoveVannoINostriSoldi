@@ -3,6 +3,16 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 import { isTransientSourceError } from "./helpers/live-openbdap.mjs";
 
+test("live OpenBDAP classifies CSV outages without hiding contract or client errors", () => {
+  for (const status of [429, 500, 502, 503, 504]) {
+    assert.equal(isTransientSourceError(new Error(`OpenBDAP CSV HTTP ${status}`)), true);
+  }
+  for (const message of ["OpenBDAP CSV HTTP 400", "OpenBDAP CSV HTTP 401", "OpenBDAP CSV HTTP 403", "OpenBDAP CSV HTTP 404", "Header CSV divergente", "Expected OpenBDAP CSV HTTP 503"]) {
+    assert.equal(isTransientSourceError(new Error(message)), false);
+  }
+  assert.equal(isTransientSourceError(new assert.AssertionError({ message: "unexpected CSV contract" })), false);
+});
+
 const {
   isOpenBdapCsvConversionError,
   OpenBdapUnavailableError,

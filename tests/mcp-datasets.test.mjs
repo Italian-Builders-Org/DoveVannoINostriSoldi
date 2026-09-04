@@ -431,6 +431,32 @@ test("la proiezione MCP eurostat_cofog rifiuta filtri non dichiarati", async () 
   );
 });
 
+test("il dataset MCP inps_naspi dichiara fonte, filtri e caveat sulle due misure", () => {
+  const naspi = datasetCatalog.find((dataset) => dataset.id === "inps_naspi");
+  assert.deepEqual(naspi.sourceIds, ["inps-naspi"]);
+  assert.deepEqual(naspi.filters, ["table", "measure", "year", "territory"]);
+  assert.match(naspi.caveat, /misure diverse/);
+  assert.match(naspi.caveat, /NON euro/);
+  assert.match(naspi.caveat, /soppresse/);
+  assert.equal(naspi.freshness, "snapshot");
+});
+
+test("la proiezione MCP inps_naspi filtra per tabella, anno e territorio", async () => {
+  const result = await queryPublicDataset({ dataset: "inps_naspi", table: "beneficiari_02", year: 2022, territory: "ITF3" });
+  assert.equal(result.dataset, "inps_naspi");
+  assert.equal(result.observations.length, 2);
+  assert.equal(result.observations.every((row) => row.territorio === "ITF3"), true);
+  assert.equal(result.source.licenseId, "IODL-2.0");
+  assert.equal(result.caveats.length > 0, true);
+});
+
+test("la proiezione MCP inps_naspi rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "inps_naspi", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+});
+
 test("il dataset MCP istat_cofog dichiara fonte, filtri e caveat sul perimetro", () => {
   const cofog = datasetCatalog.find((dataset) => dataset.id === "istat_cofog");
   assert.deepEqual(cofog.sourceIds, ["istat-cofog"]);

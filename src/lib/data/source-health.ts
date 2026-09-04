@@ -24,6 +24,7 @@ import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
+import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -641,6 +642,19 @@ function snapshotManagedIstatCofog(): SourceHealth {
   };
 }
 
+function snapshotManagedInpsNaspi(): SourceHealth {
+  const artifact = inpsNaspiMetadata.integrity.dataArtifact;
+  const { observedObservations, suppressed } = inpsNaspiData.coverage;
+  return {
+    ...baseHealth("inps-naspi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-naspi", inpsNaspiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · NASpI beneficiari e trattamenti ${inpsNaspiData.period.from}-${inpsNaspiData.period.to} · ${inpsNaspiData.tables.length} tabelle SDMX, ${observedObservations.toLocaleString("it-IT")} osservazioni di cui ${suppressed} soppresse per privacy · riconciliazioni esatte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: observedObservations,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -683,6 +697,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedGovernmentInflation(),
     snapshotManagedEurostatCofog(),
     snapshotManagedIstatCofog(),
+    snapshotManagedInpsNaspi(),
   ];
 }
 
@@ -716,6 +731,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "eurostat-hicp": snapshotManagedGovernmentInflation,
   "eurostat-cofog": snapshotManagedEurostatCofog,
   "istat-cofog": snapshotManagedIstatCofog,
+  "inps-naspi": snapshotManagedInpsNaspi,
 } satisfies Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */

@@ -925,6 +925,32 @@
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 93_1227_DF_DCCN_TNA1_4 è acquisita con chiave completamente specificata (misura P3_D_W0_S13, prezzi correnti, edizione 2025M12) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati e undici partizioni dichiarate falliscono chiuse oltre la tolleranza di arrotondamento dichiarata. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
     },
     {
+      "id": "inps-naspi-2018-2022",
+      "owner": "INPS NASpI beneficiari e trattamenti 2018-2022",
+      "files": [
+        "src/data/generated/inps-naspi-2018-2022.data.json",
+        "src/data/generated/inps-naspi-2018-2022.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_naspi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_naspi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-naspi.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_naspi_snapshot.py --input-dir <cartella con le nove risposte SDMX-ML> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/inps-naspi-2018-2022.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: le nove risposte SDMX-ML ufficiali dei package dfb_st_naspi_* (IODL 2.0 verificata per package) sono acquisite localmente e vincolate per URL, byte, SHA-256 e istante di preparazione SDMX; --check valida il bundle committato senza rete. Le distribuzioni CSV e JSON della stessa fonte sono scartate e il motivo e' nel lock. Copertura piena, celle soppresse distinte dallo zero e tre riconciliazioni ESATTE (regioni sulle ripartizioni, province sulle regioni, taglio per sesso contro taglio per eta') falliscono chiuse."
+    },
+    {
       "id": "istat-enterprise-turnover",
       "owner": "ISTAT aggregate enterprise turnover snapshot (Frame Territoriale Anticipato 2024)",
       "files": [

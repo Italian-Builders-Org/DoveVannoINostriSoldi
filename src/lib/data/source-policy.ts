@@ -26,6 +26,7 @@ export type SourceId =
   | "eurostat-hicp"
   | "eurostat-cofog"
   | "istat-cofog"
+  | "inps-naspi"
   | "ameco"
   | "governi-presidenza";
 
@@ -431,6 +432,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-cofog", "domain:public-spending"],
+  },
+  "inps-naspi": {
+    id: "inps-naspi",
+    label: "INPS · NASpI beneficiari e trattamenti",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli osservatori NASpI sono pubblicati per anno sul portale open data; lo snapshot resta bloccato sui nove package verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-naspi", "domain:social-benefits"],
   },
 };
 

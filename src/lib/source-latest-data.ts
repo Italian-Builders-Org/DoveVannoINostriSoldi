@@ -4,6 +4,7 @@ import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
+import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
@@ -57,6 +58,10 @@ const exhaustiveLatestDataBySlug = {
   "istat-cofog": {
     kind: "period",
     label: `${istatCofogData.period.from}-${istatCofogData.period.to}`,
+  },
+  "inps-naspi": {
+    kind: "period",
+    label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,
   },
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),

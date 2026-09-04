@@ -266,6 +266,13 @@ export async function queryPublicDataset(
         ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
       });
     }
+    case "inps_naspi": {
+      const { queryInpsNaspi } = await import("@/lib/inps-naspi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsNaspi({ table: query.table, measure: query.measure, year: query.year, territory: query.territory }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

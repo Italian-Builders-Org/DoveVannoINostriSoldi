@@ -102,6 +102,19 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["territorio", "anno", "funzione COFOG", "edizione"],
   },
   {
+    slug: "inps-naspi",
+    name: "INPS · NASpI beneficiari e trattamenti",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    area: "Indennità di disoccupazione NASpI",
+    cadence: "Annuale; nove package SDMX verificati, preparati dalla fonte il 2024-12-17",
+    coverage:
+      "Italia per ripartizioni, regioni e province, 2018–2022; beneficiari e trattamenti per sesso, classe di età e durata teorica",
+    format: "SDMX-ML 2.1 · snapshot JSON verificato",
+    url: "https://opendata.inps.it/opendata",
+    note: "Beneficiari e trattamenti sono misure diverse — persone contro periodi di prestazione — e non vanno sommate. Sono conteggi, non euro: nessun confronto con la spesa per prestazioni o con SIOPE. È un flusso annuale, non lo stock di pensioni. Le celle soppresse per privacy restano nulle e non diventano zero.",
+    joinKeys: ["territorio", "anno", "sesso", "classe di età", "durata teorica"],
+  },
+  {
     slug: "siope",
     name: "SIOPE / SIOPE+",
     owner: "RGS · Banca d'Italia",

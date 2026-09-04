@@ -106,6 +106,12 @@ const querySchema = z.object({
   territory: z.string().max(8)
     .describe("Codice territoriale ISTAT, per esempio IT, ITF3 oppure ITCDE.")
     .optional(),
+  table: z.string().max(40)
+    .describe("Id della tabella pubblicata dal dataset selezionato, per esempio beneficiari_02.")
+    .optional(),
+  measure: z.string().max(20)
+    .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti.")
+    .optional(),
   cofog: z.string().max(8)
     .describe("Funzione COFOG: per Eurostat TOTAL o GF01…GF10; per ISTAT il totale G oppure una divisione da G010 a G100.")
     .optional(),

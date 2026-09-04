@@ -24,6 +24,7 @@ export const DATASET_IDS = [
   "inps_pensioni_vigenti",
   "istat_pensioni_prestazioni",
   "istat_cofog",
+  "istat_epea",
   "inps_naspi",
   "istat_pensionati_persone",
   "cpt_finanza_regionale",
@@ -78,6 +79,7 @@ export type DatasetQuery = {
   channel?: "convenzioni" | "mepa";
   period?: string;
   sector?: string;
+  cepa?: string;
   band?: string;
   years?: number;
   schoolType?: string;
@@ -143,6 +145,7 @@ const exampleQueries = {
   inps_pensioni_vigenti: { dataset: "inps_pensioni_vigenti" },
   istat_pensioni_prestazioni: { dataset: "istat_pensioni_prestazioni", year: 2022 },
   istat_cofog: { dataset: "istat_cofog", territory: "IT", year: 2023 },
+  istat_epea: { dataset: "istat_epea", year: 2022, sector: "S13_15", cepa: "CEPA1" },
   inps_naspi: { dataset: "inps_naspi", table: "beneficiari_02", year: 2022 },
   istat_pensionati_persone: { dataset: "istat_pensionati_persone", year: 2022 },
   cpt_finanza_regionale: { dataset: "cpt_finanza_regionale", year: 2023, region: "Calabria" },
@@ -229,6 +232,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "consip_ordini", title: "Acquisti Consip · ordini Convenzioni e MEPA", summary: "Righe ordinate su Convenzioni e MEPA 2024-2026 aggregate per regione e tipologia di amministrazione, con importi noti e celle soppresse dichiarate.", sourceIds: ["consip"], freshness: "snapshot", filters: ["year", "channel"], caveat: "Gli importi sono limiti inferiori: la fonte sopprime il valore in molte righe (nei file MEPA importo e numero ordini sono mutuamente esclusivi) e pubblica anche storni negativi. Ordinato non è pagato e Consip non è tutta la spesa per acquisti della PA: nessun confronto con ANAC o SIOPE è una riconciliazione." },
   { id: "eurostat_cofog", title: "Eurostat · spesa pubblica per funzione (COFOG)", summary: "Spesa delle Amministrazioni pubbliche per funzione COFOG dal 2014 al 2024, in milioni di euro e in quota di PIL, per UE27, area euro e trenta Stati.", sourceIds: ["eurostat-cofog"], freshness: "snapshot", filters: ["country", "year", "cofog"], caveat: "Competenza economica SEC 2010: non sono pagamenti di cassa, quindi nessun confronto con SIOPE è una riconciliazione e la spesa per funzione non misura efficienza o qualità del servizio. Il totale è quello pubblicato dalla fonte e differisce dalla somma delle dieci divisioni per solo arrotondamento. Le celle con flag «b» segnano una interruzione della serie storica e non sono confrontabili a cavallo; quelle con flag «p» sono provvisorie. Gli aggregati UE27 e area euro contengono già gli Stati membri e non vanno sommati a essi." },
   { id: "istat_cofog", title: "ISTAT · consumi finali della PA per funzione (COFOG)", summary: "Consumi finali delle Amministrazioni pubbliche per funzione COFOG dal 1995 al 2023, a prezzi correnti, per Italia, ripartizioni e regioni.", sourceIds: ["istat-cofog"], freshness: "snapshot", filters: ["territory", "year", "cofog"], caveat: "Sono i consumi finali (P3), NON la spesa pubblica totale: nel 2023 circa 383 miliardi contro i circa 1149 della spesa totale delle AP. Nessun confronto o somma con Eurostat COFOG, SIOPE o le missioni del bilancio è una riconciliazione. L\u2019edizione è una revisione e resta fissata: fra due edizioni cambiano centinaia di celle. Le aree composite (Nord, Centro-nord, Mezzogiorno, Trentino Alto Adige) contengono già le loro parti e non vanno sommate a esse. Il dato territoriale è territorio di erogazione contabile, non quanto riceve un cittadino, e non misura efficienza o qualità del servizio." },
+  { id: "istat_epea", title: "ISTAT · spesa per la protezione dell'ambiente (EPEA)", summary: "Conti della spesa per la protezione dell'ambiente, edizione 2025M2, anni 2016–2022, per settore istituzionale e classe CEPA.", sourceIds: ["istat-epea"], freshness: "snapshot", filters: ["year", "sector", "cepa"], caveat: "Contabilità SEC di competenza: non è cassa SIOPE. Non sommare né confrontare in silenzio con RGS, PNRR Missione 2 o SAD/SAF. TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono. Edizione 2025M2 fissata.", },
   { id: "inps_naspi", title: "INPS · NASpI beneficiari e trattamenti", summary: "Beneficiari e trattamenti NASpI dal 2018 al 2022 per ripartizione, regione e provincia, con sesso, classe di età e durata teorica, da nove tabelle SDMX.", sourceIds: ["inps-naspi"], freshness: "snapshot", filters: ["table", "measure", "year", "territory"], caveat: "Beneficiari e trattamenti sono misure diverse — persone contro periodi di prestazione — e non vanno sommate né confrontate. Sono conteggi, NON euro: nessuna somma con la spesa per prestazioni, con SIOPE o con i bilanci INPS. È un flusso annuale, non lo stock di pensioni vigenti o di invalidità civile già in piattaforma, e non è sommabile fra anni. Le celle soppresse per privacy restano nulle e non sono zeri osservati. Territorio, sesso, classe di età e durata sono dimensioni distinte e non denominatori intercambiabili. Il numero di beneficiari non dice nulla su adeguatezza o merito della prestazione." },
   { id: "inps_invalidita_civile", title: "Prestazioni INPS di invalidità civile", summary: "Spesa nazionale, stock di prestazioni e nuove pensioni di invalidità civile per regione.", sourceIds: ["inps"], freshness: "snapshot", filters: ["year", "region"], caveat: "Prestazioni, pensioni, spesa e nuove decorrenze sono misure diverse. I dati aggregati non provano frode e non consentono attribuzioni individuali." },
   { id: "inps_pensioni_vigenti", title: "Pensioni erogate dall'INPS", summary: "Stock di pensioni vigenti al 1 gennaio 2026, composizione per natura, categoria e gestione, e serie dei conteggi 2012-2026.", sourceIds: ["inps"], freshness: "snapshot", filters: [], caveat: "Perimetro solo INPS, inclusa la Gestione dipendenti pubblici ed esclusa Ex Inpgi. Stock, liquidazioni e tavola per anno di decorrenza restano misure diverse. Non è sommabile con il Casellario ISTAT né con la pagina Invalidità civile." },

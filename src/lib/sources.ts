@@ -100,6 +100,7 @@ export const publicSources: PublicSource[] = [
     url: "https://esploradati.istat.it/databrowser/",
     note: "Sono i consumi finali (P3) delle AP, non la spesa pubblica totale: nel 2023 valgono circa 383 miliardi contro i circa 1149 della spesa totale. Non è confrontabile con Eurostat COFOG né con SIOPE. Le aree composite contengono già le loro parti. Il dato territoriale è territorio di erogazione contabile, non «quanto riceve» un cittadino.",
     joinKeys: ["territorio", "anno", "funzione COFOG", "edizione"],
+  },
   { 
     slug: "istat-epea",
 name: "ISTAT · spesa per la protezione dell'ambiente (EPEA)",
@@ -113,8 +114,7 @@ url: "https://esploradati.istat.it/databrowser/",
 note: "Contabilità SEC di competenza, non cassa SIOPE. Non confrontabile in silenzio con RGS, PNRR Missione 2 o SAD/SAF. TOT_CEPA e totali settoriali non vanno sommati alle parti. Edizione 2025M2 fissata.",
 joinKeys: ["settore istituzionale", "classe CEPA", "anno", "edizione"],
 },
-  },
-  {
+{
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 
 import { z } from "zod";
 
@@ -41,7 +42,7 @@ const DOWNLOAD_DEFINITIONS = [
   },
   {
     id: "page-data",
-    filename: "government-scorecard-page-data.json",
+    filename: "government-scorecard-page-data.json.gz",
     category: "data",
     label: "Dati generali e contesto della pagina",
     description: "Serie dei grafici e contesto editoriale documentato; questi contenuti non cambiano il voto.",
@@ -63,6 +64,7 @@ const DOWNLOAD_DEFINITIONS = [
 ] as const;
 
 export type GovernmentScorecardDownloadId = (typeof DOWNLOAD_DEFINITIONS)[number]["id"];
+export const MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES = 4_500_000;
 
 const PAYLOADS: Record<GovernmentScorecardDownloadId, unknown> = {
   methodology,
@@ -78,11 +80,13 @@ const timestamp = z.string().regex(/^\d{4}-\d{2}-\d{2}T/);
 
 const downloadSchema = z.object({
   id: z.enum(DOWNLOAD_DEFINITIONS.map((download) => download.id)),
-  filename: z.string().regex(/^[a-z0-9-]+\.json$/),
+  filename: z.string().regex(/^[a-z0-9-]+\.json(?:\.gz)?$/),
   category: z.enum(["methodology", "chronology", "data", "provenance"]),
   label: z.string().min(1),
   description: z.string().min(1),
-  content_type: z.literal("application/json; charset=utf-8"),
+  format: z.literal("json"),
+  compression: z.enum(["none", "gzip"]),
+  content_type: z.enum(["application/json; charset=utf-8", "application/gzip"]),
   bytes: z.number().int().positive(),
   sha256,
   href: z.string().regex(/^\/api\/governi\/dati\/[a-z0-9-]+$/),
@@ -144,18 +148,67 @@ export function serializeGovernmentScorecardDownloadJson(payload: unknown): stri
   return serialize(payload);
 }
 
-function digest(body: string): string {
+type GovernmentScorecardDownloadBody = string | Uint8Array<ArrayBuffer>;
+
+function bodyBytes(body: GovernmentScorecardDownloadBody): number {
+  return typeof body === "string" ? Buffer.byteLength(body) : body.byteLength;
+}
+
+function digestBody(body: GovernmentScorecardDownloadBody): string {
   return createHash("sha256").update(body).digest("hex");
+}
+
+function deterministicGzip(body: string): Uint8Array<ArrayBuffer> {
+  const compressed = gzipSync(Buffer.from(body), { level: 9 });
+  compressed.writeUInt32LE(0, 4);
+  compressed[9] = 255;
+  return new Uint8Array(compressed);
+}
+
+export function assertGovernmentScorecardFunctionResponseSize(
+  bytes: number,
+  label: string,
+): void {
+  if (
+    !Number.isSafeInteger(bytes)
+    || bytes < 0
+    || bytes > MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES
+  ) {
+    throw new GovernmentScorecardDownloadContractError(
+      `${label}: risposta oltre il limite di 4.500.000 byte`,
+    );
+  }
+}
+
+function buildDownloadArtifact(definition: (typeof DOWNLOAD_DEFINITIONS)[number]) {
+  const json = serializeGovernmentScorecardDownloadJson(PAYLOADS[definition.id]);
+  const compression = definition.id === "page-data" ? "gzip" as const : "none" as const;
+  const body = compression === "gzip" ? deterministicGzip(json) : json;
+  const bytes = bodyBytes(body);
+  assertGovernmentScorecardFunctionResponseSize(bytes, definition.id);
+  return {
+    ...definition,
+    format: "json" as const,
+    compression,
+    contentType: compression === "gzip"
+      ? "application/gzip" as const
+      : "application/json; charset=utf-8" as const,
+    body,
+    bytes,
+    sha256: digestBody(body),
+  };
 }
 
 function downloadEntries() {
   return DOWNLOAD_DEFINITIONS.map((definition) => {
-    const body = serialize(PAYLOADS[definition.id]);
+    const artifact = buildDownloadArtifact(definition);
     return {
       ...definition,
-      content_type: "application/json; charset=utf-8" as const,
-      bytes: Buffer.byteLength(body),
-      sha256: digest(body),
+      format: artifact.format,
+      compression: artifact.compression,
+      content_type: artifact.contentType,
+      bytes: artifact.bytes,
+      sha256: artifact.sha256,
       href: `/api/governi/dati/${definition.id}`,
     };
   });
@@ -288,14 +341,7 @@ export function getGovernmentScorecardDownloadManifest(): GovernmentScorecardDow
 export function getGovernmentScorecardDownload(id: string) {
   const definition = DOWNLOAD_DEFINITIONS.find((candidate) => candidate.id === id);
   if (!definition) return null;
-  const body = serializeGovernmentScorecardDownloadJson(PAYLOADS[definition.id]);
-  return {
-    ...definition,
-    contentType: "application/json; charset=utf-8",
-    body,
-    bytes: Buffer.byteLength(body),
-    sha256: digest(body),
-  };
+  return buildDownloadArtifact(definition);
 }
 
 export function reconcileGovernmentScorecardPageProvenance() {

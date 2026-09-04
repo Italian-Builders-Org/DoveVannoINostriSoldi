@@ -24,20 +24,22 @@ Le fonti dei grafici e delle schede di contesto sono raggiungibili dalla pagina.
 
 Il link "Scarica i dati" apre `/api/governi/dati`, un manifest JSON aperto che elenca i soli artefatti necessari: manifest metodologico, cronologia, dati del voto, dati della pagina e ricevute di provenienza già disponibili.
 
-Ogni download è su allowlist chiusa: un identificatore ignoto restituisce 404. Ogni indicatore conserva fonte, serie o query, unità, frequenza, periodo, vintage, trasformazione, data di acquisizione e SHA-256.
+Ogni download è su allowlist chiusa: un identificatore ignoto restituisce 404. Ogni indicatore conserva fonte, serie o query, unità, frequenza, periodo, vintage, trasformazione, data di acquisizione e SHA-256. Il manifest dichiara per ciascun file formato JSON, compressione, byte e hash esatti della risposta scaricata.
 
 | Download | Contenuto |
 | --- | --- |
 | `/api/governi/dati/methodology` | manifest metodologico |
 | `/api/governi/dati/chronology` | cronologia istituzionale |
 | `/api/governi/dati/score-data` | dati annuali usati nel voto |
-| `/api/governi/dati/page-data` | dati generali dei grafici e contesto editoriale documentato |
+| `/api/governi/dati/page-data` | dati generali dei grafici e contesto editoriale documentato; download `government-scorecard-page-data.json.gz` compresso con gzip |
 | `/api/governi/dati/score-provenance` | ricevuta di provenienza dei dati del voto |
 | `/api/governi/dati/page-provenance` | ricevuta di provenienza dei dati della pagina |
 
 La validazione offline controlla snapshot congelati, calcolo, hash e catena valore mostrato → record → fonte. Il repository non conserva nuovi payload raw e quindi non dichiara che la validazione offline possa ricreare i byte originali delle fonti.
 
 Il refresh online resta separato: il workflow `government-scorecard-refresh.yml` interroga le fonti ufficiali, valida i nuovi payload e propone gli aggiornamenti tramite una PR dati.
+
+La Function rifiuta in modo fail-closed qualsiasi risposta oltre 4.500.000 byte. Soltanto `page-data` usa gzip per restare sotto questo limite: decomprimendo il file si ottiene esattamente il JSON canonico. Gli altri download restano JSON non compressi.
 
 ## Come leggere il voto
 

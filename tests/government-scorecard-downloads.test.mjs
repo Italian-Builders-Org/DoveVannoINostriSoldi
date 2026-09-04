@@ -1,13 +1,18 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { gunzipSync } from "node:zlib";
 
 import "./helpers/register-ts-alias.mjs";
 
 const {
+  MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES,
+  assertGovernmentScorecardFunctionResponseSize,
   getGovernmentScorecardDownload,
   getGovernmentScorecardDownloadManifest,
   reconcileGovernmentScorecardPageProvenance,
+  serializeGovernmentScorecardDownloadJson,
   validateGovernmentScorecardDownloadManifest,
 } = await import("../src/lib/government-scorecard-downloads.ts");
 const { GET: GETGovernmentScorecardDownloadManifest } = await import("../src/app/api/governi/dati/route.ts");
@@ -36,13 +41,65 @@ test("the public manifest exposes only the closed scorecard download contract", 
     [...new Set(manifest.downloads.map((download) => download.category))].sort(),
     ["chronology", "data", "methodology", "provenance"],
   );
-  assert.ok(manifest.downloads.every((download) => download.content_type === "application/json; charset=utf-8"));
+  assert.ok(manifest.downloads.every((download) => download.format === "json"));
+  assert.deepEqual(
+    manifest.downloads.map(({ id, compression }) => [id, compression]),
+    EXPECTED_DOWNLOAD_IDS.map((id) => [id, id === "page-data" ? "gzip" : "none"]),
+  );
+  assert.deepEqual(
+    manifest.downloads.map(({ id, content_type }) => [id, content_type]),
+    EXPECTED_DOWNLOAD_IDS.map((id) => [
+      id,
+      id === "page-data" ? "application/gzip" : "application/json; charset=utf-8",
+    ]),
+  );
   assert.ok(manifest.downloads.every((download) => download.href === `/api/governi/dati/${download.id}`));
   assert.ok(manifest.downloads.every((download) => download.bytes > 0));
   assert.ok(manifest.downloads.every((download) => /^[0-9a-f]{64}$/.test(download.sha256)));
   assert.equal(manifest.verification.offline.command, "npm run government-scorecard:verify");
   assert.match(manifest.verification.offline.scope, /snapshot/i);
   assert.match(manifest.verification.online.scope, /fonti ufficiali/i);
+});
+
+test("page-data is a deterministic gzip of the canonical JSON within the Function limit", () => {
+  const canonicalPageData = serializeGovernmentScorecardDownloadJson(JSON.parse(readFileSync(
+    new URL("../src/data/generated/government-scorecard-page.json", import.meta.url),
+    "utf8",
+  )));
+  const first = getGovernmentScorecardDownload("page-data");
+  const second = getGovernmentScorecardDownload("page-data");
+  const manifestEntry = getGovernmentScorecardDownloadManifest().downloads.find(
+    (download) => download.id === "page-data",
+  );
+
+  assert.ok(first);
+  assert.ok(second);
+  assert.ok(manifestEntry);
+  assert.equal(first.filename, "government-scorecard-page-data.json.gz");
+  assert.equal(first.contentType, "application/gzip");
+  assert.equal(first.format, "json");
+  assert.equal(first.compression, "gzip");
+  assert.ok(first.body instanceof Uint8Array);
+  assert.deepEqual(first.body, second.body);
+  assert.equal(gunzipSync(first.body).toString("utf8"), canonicalPageData);
+  assert.equal(first.bytes, first.body.byteLength);
+  assert.equal(first.sha256, createHash("sha256").update(first.body).digest("hex"));
+  assert.equal(manifestEntry.bytes, first.bytes);
+  assert.equal(manifestEntry.sha256, first.sha256);
+  assert.equal(manifestEntry.content_type, "application/gzip");
+  assert.ok(first.bytes <= MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES);
+});
+
+test("the Function response limit fails closed above 4,500,000 bytes", () => {
+  assert.equal(MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES, 4_500_000);
+  assert.doesNotThrow(() => assertGovernmentScorecardFunctionResponseSize(4_500_000, "boundary"));
+  assert.throws(
+    () => assertGovernmentScorecardFunctionResponseSize(4_500_001, "oversize"),
+    /4,?500,?000|limite|oversize/i,
+  );
+  for (const id of EXPECTED_DOWNLOAD_IDS) {
+    assert.ok(getGovernmentScorecardDownload(id).bytes <= MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES);
+  }
 });
 
 test("every score and chart indicator has complete reconstruction provenance", () => {
@@ -107,6 +164,8 @@ test("the manifest route returns the open index with attachment headers", async 
   assert.equal(response.headers.get("cache-control"), "public, max-age=3600, stale-while-revalidate=86400");
   assert.equal(response.headers.get("content-type"), "application/json; charset=utf-8");
   assert.equal(response.headers.get("content-disposition"), 'attachment; filename="government-scorecard-downloads.json"');
+  assert.equal(response.headers.get("content-length"), String(Buffer.byteLength(await response.clone().text())));
+  assert.ok(Number(response.headers.get("content-length")) <= MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.deepEqual(JSON.parse(await response.text()), getGovernmentScorecardDownloadManifest());
 });
@@ -125,7 +184,9 @@ test("registered downloads use attachment headers and exact bytes", async () => 
     assert.equal(response.headers.get("content-disposition"), `attachment; filename="${expected.filename}"`);
     assert.equal(response.headers.get("x-content-type-options"), "nosniff");
     assert.equal(response.headers.get("content-length"), String(expected.bytes));
-    assert.equal(await response.text(), expected.body);
+    assert.deepEqual(new Uint8Array(await response.arrayBuffer()), new Uint8Array(
+      typeof expected.body === "string" ? Buffer.from(expected.body) : expected.body,
+    ));
   }
 });
 
@@ -185,6 +246,9 @@ test("the canonical guide documents one offline verification command and the onl
   assert.match(packageJson.scripts["government-scorecard:verify"], /tests\/government-scorecard-/);
   assert.match(guide, /npm run government-scorecard:verify/);
   assert.match(guide, /\/api\/governi\/dati\/score-data/);
+  assert.match(guide, /government-scorecard-page-data\.json\.gz/);
+  assert.match(guide, /gzip/i);
+  assert.match(guide, /4[.]500[.]000 byte/);
   assert.match(guide, /validazione offline[\s\S]*snapshot congelati/i);
   assert.match(guide, /refresh online[\s\S]*fonti ufficiali/i);
   assert.match(guide, /non conserva[\s\S]*payload raw/i);

@@ -586,14 +586,17 @@ const readPersistentAggregate = unstable_cache(
   { revalidate: getSourcePolicy("openbdap").dataRevalidateSeconds, tags: ["openbdap-budget-law"] },
 );
 
-async function readFullMissionAggregate(): Promise<FullMissionAggregate> {
+async function readFullMissionAggregate(): Promise<{ aggregate: FullMissionAggregate; persistent: boolean }> {
   try {
-    return deserializeBudgetLawAggregate(await readPersistentAggregate());
+    return { aggregate: deserializeBudgetLawAggregate(await readPersistentAggregate()), persistent: true };
   } catch (error) {
     // Standalone Node tests/ETL have no Next cache context. Do not retry source failures.
     if (error instanceof Error
       && error.message.startsWith("Invariant: incrementalCache missing in unstable_cache")) {
-      return computeFullMissionAggregate(AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS));
+      return {
+        aggregate: await computeFullMissionAggregate(AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS)),
+        persistent: false,
+      };
     }
     throw error;
   }
@@ -609,7 +612,12 @@ function getFullMissionAggregate(): Promise<FullMissionAggregate> {
     return fullAggregateCache.promise;
   }
   const revalidateSeconds = getSourcePolicy("openbdap").dataRevalidateSeconds;
-  const promise = readFullMissionAggregate().catch((error: unknown) => {
+  const promise = readFullMissionAggregate().then(({ aggregate, persistent }) => {
+    // Next owns freshness (including stale-while-revalidate); do not extend it
+    // with a second six-hour TTL. Keep only the in-flight promise in this case.
+    if (persistent && fullAggregateCache?.promise === promise) fullAggregateCache = null;
+    return aggregate;
+  }).catch((error: unknown) => {
     if (fullAggregateCache?.promise === promise) fullAggregateCache = null;
     throw error;
   });

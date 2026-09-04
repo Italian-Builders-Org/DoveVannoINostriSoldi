@@ -51,6 +51,40 @@ test("persistent budget aggregate survives JSON without losing amounts, years or
   assert.ok(Buffer.byteLength(wire) < 1_000_000);
 });
 
+test("a warm process observes refreshed persistent aggregates without extending their TTL", async () => {
+  const originalCache = globalThis.__incrementalCache;
+  const originalFetch = globalThis.fetch;
+  resetBudgetLawMissionSeriesCacheForTests();
+  let reads = 0;
+  globalThis.fetch = async () => { throw new Error("Cache hit must not fetch a CSV"); };
+  globalThis.__incrementalCache = {
+    generateSimpleCacheKey: async (key) => key,
+    get: async () => {
+      reads += 1;
+      const aggregate = serializeBudgetLawAggregate({
+        dataset: normalizeBudgetLawPackage(packageFixture()),
+        acquiredAt: `2026-09-0${reads}T20:00:00Z`,
+        availableYears: [2023, 2024],
+        missionsByYear: new Map([[2023, new Set(["Istruzione"])], [2024, new Set(["Istruzione"])]]),
+        totalsByYearMission: new Map([["2023::Istruzione", 1700], ["2024::Istruzione", 1900 + reads]]),
+      });
+      return { isStale: false, value: { kind: "FETCH", data: { body: JSON.stringify(aggregate) } } };
+    },
+  };
+  try {
+    const first = await getBudgetLawMissionSeries({ windowYears: 2 });
+    const refreshed = await getBudgetLawMissionSeries({ windowYears: 2 });
+    assert.equal(reads, 2);
+    assert.notEqual(first.observedAt, refreshed.observedAt);
+    assert.notDeepEqual(first.allocations, refreshed.allocations);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalCache === undefined) delete globalThis.__incrementalCache;
+    else globalThis.__incrementalCache = originalCache;
+    resetBudgetLawMissionSeriesCacheForTests();
+  }
+});
+
 function packageFixture(overrides = {}) {
   return {
     id: packageId,

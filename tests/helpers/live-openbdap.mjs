@@ -37,10 +37,12 @@ export async function isOpenBdapReachable({ timeoutMs = 8_000 } = {}) {
 }
 
 export function isTransientSourceError(error) {
-  // The CSV endpoint can fail after the lightweight CKAN probe succeeds.
-  // Match only its explicit transient HTTP failures, never schema/assertion errors.
-  if (error instanceof Error && error.name === "Error"
-    && /^OpenBDAP CSV HTTP (?:429|5\d{2})(?: per l'anno \d{4})?$/.test(error.message)) return true;
+  // Discovery and CSV requests can fail after the lightweight probe succeeds.
+  // Match explicit transient HTTP failures, never schema/assertion errors.
+  if (error instanceof Error && error.name === "Error") {
+    if (/^OpenBDAP package_search HTTP (?:429|5\d{2})$/.test(error.message)) return true;
+    if (/^OpenBDAP CSV HTTP (?:429|5\d{2})(?: per l'anno \d{4})?$/.test(error.message)) return true;
+  }
   if (error?.name === "OpenBdapUnavailableError") return true;
   if (error?.name === "AbortError" || error?.name === "TimeoutError") return true;
   if (error?.name === "SourceFetchError") {

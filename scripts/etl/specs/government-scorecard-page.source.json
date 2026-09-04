@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 4,
+  "snapshotVersion": "government-scorecard-page-2026-09-03-r3",
+  "importDecision": {
+    "path": "typed-snapshot",
+    "duplicatesIntegratedDataset": false,
+    "reason": "The page needs strict mixed-frequency series, publication-status unions, component-level derivations, context evidence hashes and a fail-closed fingerprint linking the display snapshot to the score artifact. These source tables are not already published in the integrated corpus."
+  },
+  "semanticAxes": {
+    "money": {
+      "status": "limited",
+      "rule": "Most series are indices, rates or ratios. The only monetary input is general-government debt stock in MIO_EUR, used exclusively with same-year population to derive euros per inhabitant; it is never summed with payments, commitments or forecasts."
+    },
+    "period": {
+      "status": "declared",
+      "rule": "Every point carries reference period, period start, frequency and publication status; missing observations are omitted and never interpolated."
+    },
+    "provenance": {
+      "status": "declared",
+      "rule": "Every source records holder, query and landing URLs, reuse terms, upstream update, acquisition timestamp, byte size and SHA-256. Validation occurs during the recorded acquisition."
+    }
+  },
+  "sourceContract": {
+    "formats": ["AMECO CSV ZIP via the registered core artifact", "Eurostat JSON-stat 2.0"],
+    "hashRule": "SHA-256 is calculated from every acquired response and stored in the generated snapshot; derived points preserve component hashes.",
+    "schemaRule": "Dataset code, dimensions, filters, countries, periods, numeric values and publication flags are validated fail-closed.",
+    "license": {
+      "ameco": "CC BY 4.0 unless otherwise indicated",
+      "eurostat": "Free reuse with source acknowledgement, subject to the exceptions in the Eurostat copyright notice"
+    },
+    "termsUrls": [
+      "https://commission.europa.eu/legal-notice_en",
+      "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+    ]
+  },
+  "period": {
+    "frequencies": ["annual", "quarterly", "monthly"],
+    "firstPeriod": "1995",
+    "latestRule": "latest published period available independently for each display series, preserving observed, provisional and estimated status",
+    "missingRule": "omit unavailable source observations; never interpolate"
+  },
+  "geographies": ["IT", "FR", "DE", "ES"],
+  "sources": [
+    {
+      "datasetCode": "AMECO",
+      "role": "six score-bearing series",
+      "sourceArtifact": "src/data/generated/government-scorecard.json",
+      "landingUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"
+    },
+    {
+      "datasetCode": "prc_hicp_minr",
+      "role": "monthly inflation",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+      "filters": {"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"}
+    },
+    {
+      "datasetCode": "une_rt_m",
+      "role": "monthly unemployment rate",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
+      "filters": {"freq": "M", "s_adj": "SA", "age": "TOTAL", "unit": "PC_ACT", "sex": "T"}
+    },
+    {
+      "datasetCode": "lfsi_emp_q",
+      "role": "quarterly seasonally adjusted employment rate",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+      "filters": {"freq": "Q", "indic_em": "EMP_LFS", "s_adj": "SA", "unit": "PC_POP", "sex": "T", "age": "Y20-64"}
+    },
+    {
+      "datasetCode": "namq_10_pc",
+      "role": "quarterly real GDP per capita",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
+      "filters": {"freq": "Q", "unit": "CLV_I20_HAB", "s_adj": "NSA", "na_item": "B1GQ"}
+    },
+    {
+      "datasetCode": "gov_10dd_edpt1",
+      "role": "general-government consolidated gross debt stock",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+      "filters": {"freq": "A", "unit": "MIO_EUR", "sector": "S13", "na_item": "GD"}
+    },
+    {
+      "datasetCode": "gov_10q_ggdebt",
+      "role": "quarterly general-government debt ratio",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+      "filters": {"freq": "Q", "unit": "PC_GDP", "sector": "S13", "na_item": "GD"}
+    },
+    {
+      "datasetCode": "gov_10q_ggnfa",
+      "role": "quarterly primary balance derived from net lending plus interest payable",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+      "filters": {"freq": "Q", "unit": "PC_GDP", "s_adj": "NSA", "sector": "S13", "na_item": ["B9", "D41PAY"]}
+    },
+    {
+      "datasetCode": "namq_10_gdp",
+      "role": "quarterly investment share of GDP",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+      "filters": {"freq": "Q", "unit": "PC_GDP", "s_adj": "SCA", "na_item": "P51G"}
+    },
+    {
+      "datasetCode": "nama_10_pe",
+      "role": "annual population denominator",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
+      "filters": {"freq": "A", "unit": "THS_PER", "na_item": "POP_NC"}
+    }
+  ],
+  "derivations": {
+    "debtPerCapita": "debt_stock_mio_eur * 1000 / population_thousand",
+    "primaryBalance": "net_lending_percent_gdp + interest_payable_percent_gdp"
+  },
+  "contextRule": "A single geopolitics, shocks and crises category contains only essential source-backed events with a documented economic channel; an empty category is allowed only after the verified catalog has been checked.",
+  "scoreImpact": "none"
+}

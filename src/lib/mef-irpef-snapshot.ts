@@ -3,19 +3,26 @@ import mefIrpefDataJson from "@/data/generated/mef-irpef-2024.data.json";
 import mefIrpefMetaJson from "@/data/generated/mef-irpef-2024.meta.json";
 import {
   MEF_IRPEF_DATASET_ID,
+  MEF_IRPEF_INCOME_BAND_MEASURE_ORDER,
+  MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER,
   MEF_IRPEF_MEASURE_ORDER,
+  MEF_IRPEF_SUMMARY_MEASURE_ORDER,
   MEF_IRPEF_TAX_YEAR,
   type MefIrpefAggregateMeasure,
+  type MefIrpefIncomeBandMeasureKey,
+  type MefIrpefIncomeSourceMeasureKey,
   type MefIrpefMeasureKey,
   type MefIrpefPackedMunicipality,
   type MefIrpefSnapshotMeta,
   type MefIrpefStoredAggregate,
   type MefIrpefStoredProvince,
   type MefIrpefStoredRegion,
+  type MefIrpefSummaryMeasureKey,
   validateMefIrpefSnapshot,
 } from "@/lib/data/mef-irpef-contract";
 
 export type MefIrpefLevel = "region" | "province" | "municipality";
+export type MefIrpefDetail = "summary" | "income-sources" | "income-bands" | "all";
 
 export type MefIrpefQuery = Readonly<{
   year?: number;
@@ -24,6 +31,7 @@ export type MefIrpefQuery = Readonly<{
   province?: string;
   code?: string;
   query?: string;
+  detail?: MefIrpefDetail;
   limit?: number;
   offset?: number;
 }>;
@@ -39,13 +47,26 @@ export type ReportedMeasure =
       knownFrequency: number;
       knownAmountCents: number;
       suppressedRows: number;
+      suppressedFrequencyRows?: number;
+      suppressedAmountRows?: number;
     }>;
 
-export type MefIrpefMeasures = Readonly<Record<MefIrpefMeasureKey, ReportedMeasure>>;
+type MefIrpefMeasureGroup<Key extends MefIrpefMeasureKey> = Readonly<
+  Record<Key, ReportedMeasure>
+>;
+
+export type MefIrpefMeasures = MefIrpefMeasureGroup<MefIrpefSummaryMeasureKey>;
+export type MefIrpefIncomeSources = MefIrpefMeasureGroup<MefIrpefIncomeSourceMeasureKey>;
+export type MefIrpefIncomeBands = MefIrpefMeasureGroup<MefIrpefIncomeBandMeasureKey>;
+export type MefIrpefBreakdowns = Readonly<{
+  incomeSources?: MefIrpefIncomeSources;
+  incomeBands?: MefIrpefIncomeBands;
+}>;
 
 export type MefIrpefPublicAggregate = Readonly<{
   taxpayers: number;
   measures: MefIrpefMeasures;
+  breakdowns?: MefIrpefBreakdowns;
 }>;
 
 export type MefIrpefTerritoryRecord = Readonly<{
@@ -68,7 +89,13 @@ export type MefIrpefTerritoryRecord = Readonly<{
       }>;
   taxpayers: number;
   measures: MefIrpefMeasures;
+  breakdowns?: MefIrpefBreakdowns;
 }>;
+
+export type MefIrpefPublicDefinitions = Readonly<
+  Record<"taxpayers" | MefIrpefSummaryMeasureKey, string> &
+  Partial<Record<MefIrpefIncomeSourceMeasureKey | MefIrpefIncomeBandMeasureKey, string>>
+>;
 
 export type MefIrpefQueryResult = Readonly<{
   dataset: typeof MEF_IRPEF_DATASET_ID;
@@ -89,7 +116,7 @@ export type MefIrpefQueryResult = Readonly<{
     allSource: MefIrpefPublicAggregate;
   }>;
   coverage: MefIrpefSnapshotMeta["coverage"];
-  definitions: MefIrpefSnapshotMeta["definitions"];
+  definitions: MefIrpefPublicDefinitions;
   methodology: MefIrpefSnapshotMeta["methodology"];
   caveats: readonly string[];
   provenance: Readonly<{
@@ -121,6 +148,7 @@ type NormalizedQuery = Readonly<{
   province?: string;
   code?: string;
   query?: string;
+  detail: MefIrpefDetail;
   limit: number;
   offset: number;
 }>;
@@ -152,6 +180,10 @@ const CAVEATS = Object.freeze([
   "La riga Mancante/errata resta separata dagli aggregati territoriali e compare soltanto nella riconciliazione nazionale.",
   "Questi aggregati non dimostrano evasione, frode, responsabilità individuali o qualità dei servizi.",
 ]);
+const INCOME_SOURCE_CAVEAT =
+  "Le frequenze delle fonti di reddito si sovrappongono: la stessa persona può comparire in più categorie e non vanno sommate come contribuenti distinti.";
+const INCOME_BAND_CAVEAT =
+  "Le fasce di reddito complessivo sono disgiunte; la fascia non positiva può avere un ammontare negativo e le celle oscurate impediscono una riconciliazione completa.";
 
 function invalid(message: string): never {
   throw new MefIrpefQueryError("invalid_query", message);
@@ -207,7 +239,17 @@ function normalizeQuery(query: MefIrpefQuery | undefined): NormalizedQuery {
   if (typeof input !== "object" || input === null || Array.isArray(input)) {
     invalid("La query MEF IRPEF deve essere un oggetto.");
   }
-  const allowedKeys = new Set(["year", "level", "region", "province", "code", "query", "limit", "offset"]);
+  const allowedKeys = new Set([
+    "year",
+    "level",
+    "region",
+    "province",
+    "code",
+    "query",
+    "detail",
+    "limit",
+    "offset",
+  ]);
   const unsupportedKeys = Object.keys(input).filter((key) => !allowedKeys.has(key));
   if (unsupportedKeys.length > 0) {
     invalid(`Filtri MEF IRPEF non supportati: ${unsupportedKeys.join(", ")}.`);
@@ -221,6 +263,10 @@ function normalizeQuery(query: MefIrpefQuery | undefined): NormalizedQuery {
   const province = optionalText(input.province, "province", 3);
   const code = optionalText(input.code, "code", 6);
   const term = optionalText(input.query, "query", 100);
+  const detail = input.detail ?? "summary";
+  if (!(["summary", "income-sources", "income-bands", "all"] as const).includes(detail)) {
+    invalid("Il dettaglio deve essere summary, income-sources, income-bands oppure all.");
+  }
   const limit = boundedInteger(input.limit, 20, 1, 100, "limit");
   const offset = boundedInteger(input.offset, 0, 0, 100_000, "offset");
 
@@ -238,7 +284,7 @@ function normalizeQuery(query: MefIrpefQuery | undefined): NormalizedQuery {
     invalid("Per interrogare i Comuni indica almeno code, query, region oppure province.");
   }
 
-  return { year, level, region, province, code, query: term, limit, offset };
+  return { year, level, region, province, code, query: term, detail, limit, offset };
 }
 
 function normalizedSearch(value: string): string {
@@ -262,29 +308,72 @@ function toReportedMeasure(measure: MefIrpefAggregateMeasure): ReportedMeasure {
   if (measure[2] === 0) {
     return { coverage: "complete", frequency: measure[0], amountCents: measure[1] };
   }
-  return {
+  const reported: Extract<ReportedMeasure, { coverage: "partial" }> = {
     coverage: "partial",
     knownFrequency: measure[0],
     knownAmountCents: measure[1],
     suppressedRows: measure[2],
   };
+  if (measure[2] !== measure[3] || measure[2] !== measure[4]) {
+    return {
+      ...reported,
+      suppressedFrequencyRows: measure[3],
+      suppressedAmountRows: measure[4],
+    };
+  }
+  return reported;
 }
 
-function toMeasures(measures: readonly MefIrpefAggregateMeasure[]): MefIrpefMeasures {
+function toMeasureGroup<Key extends MefIrpefMeasureKey>(
+  measures: readonly MefIrpefAggregateMeasure[],
+  keys: readonly Key[],
+): MefIrpefMeasureGroup<Key> {
   return Object.fromEntries(
-    MEF_IRPEF_MEASURE_ORDER.map((key, index) => [key, toReportedMeasure(measures[index])]),
-  ) as MefIrpefMeasures;
+    keys.map((key) => {
+      const index = MEF_IRPEF_MEASURE_ORDER.indexOf(key);
+      return [key, toReportedMeasure(measures[index])];
+    }),
+  ) as MefIrpefMeasureGroup<Key>;
 }
 
-function toPublicAggregate(aggregate: MefIrpefStoredAggregate): MefIrpefPublicAggregate {
-  return { taxpayers: aggregate.taxpayers, measures: toMeasures(aggregate.measures) };
+function toBreakdowns(
+  measures: readonly MefIrpefAggregateMeasure[],
+  detail: MefIrpefDetail,
+): MefIrpefBreakdowns | undefined {
+  const incomeSources = detail === "income-sources" || detail === "all"
+    ? toMeasureGroup(measures, MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER)
+    : undefined;
+  const incomeBands = detail === "income-bands" || detail === "all"
+    ? toMeasureGroup(measures, MEF_IRPEF_INCOME_BAND_MEASURE_ORDER)
+    : undefined;
+  return incomeSources || incomeBands
+    ? {
+        ...(incomeSources ? { incomeSources } : {}),
+        ...(incomeBands ? { incomeBands } : {}),
+      }
+    : undefined;
 }
 
-function toPublicRecord(record: InternalRecord): MefIrpefTerritoryRecord {
+function toPublicAggregate(
+  aggregate: MefIrpefStoredAggregate,
+  detail: MefIrpefDetail,
+): MefIrpefPublicAggregate {
+  const breakdowns = toBreakdowns(aggregate.measures, detail);
+  return {
+    taxpayers: aggregate.taxpayers,
+    measures: toMeasureGroup(aggregate.measures, MEF_IRPEF_SUMMARY_MEASURE_ORDER),
+    ...(breakdowns ? { breakdowns } : {}),
+  };
+}
+
+function toPublicRecord(
+  record: InternalRecord,
+  detail: MefIrpefDetail,
+): MefIrpefTerritoryRecord {
   const territory = record.territory.level === "region"
     ? { ...record.territory, sourceNames: [...record.territory.sourceNames] }
     : { ...record.territory };
-  return { territory, ...toPublicAggregate(record.aggregate) };
+  return { territory, ...toPublicAggregate(record.aggregate, detail) };
 }
 
 function municipalityAggregate(row: MefIrpefPackedMunicipality): MefIrpefStoredAggregate {
@@ -293,9 +382,13 @@ function municipalityAggregate(row: MefIrpefPackedMunicipality): MefIrpefStoredA
     measures: MEF_IRPEF_MEASURE_ORDER.map((_, index) => {
       const frequency = row[7 + index * 2] as number | null;
       const amount = row[8 + index * 2] as number | null;
-      return frequency === null || amount === null
-        ? [0, 0, 1] as const
-        : [frequency, amount, 0] as const;
+      return [
+        frequency ?? 0,
+        amount ?? 0,
+        frequency === null || amount === null ? 1 : 0,
+        frequency === null ? 1 : 0,
+        amount === null ? 1 : 0,
+      ] as const;
     }),
   };
 }
@@ -359,8 +452,14 @@ const municipalitiesByCode = new Map(
   municipalityRecords.map((record) => [record.territory.code, record]),
 );
 
-function emptyAggregate(): { taxpayers: number; measures: Array<[number, number, number]> } {
-  return { taxpayers: 0, measures: MEF_IRPEF_MEASURE_ORDER.map(() => [0, 0, 0]) };
+function emptyAggregate(): {
+  taxpayers: number;
+  measures: Array<[number, number, number, number, number]>;
+} {
+  return {
+    taxpayers: 0,
+    measures: MEF_IRPEF_MEASURE_ORDER.map(() => [0, 0, 0, 0, 0]),
+  };
 }
 
 function foldAggregates(records: readonly InternalRecord[]): MefIrpefStoredAggregate {
@@ -371,9 +470,33 @@ function foldAggregates(records: readonly InternalRecord[]): MefIrpefStoredAggre
       result.measures[index][0] += measure[0];
       result.measures[index][1] += measure[1];
       result.measures[index][2] += measure[2];
+      result.measures[index][3] += measure[3];
+      result.measures[index][4] += measure[4];
     });
   }
   return result;
+}
+
+function selectedDefinitions(detail: MefIrpefDetail): MefIrpefPublicDefinitions {
+  const keys: MefIrpefMeasureKey[] = [...MEF_IRPEF_SUMMARY_MEASURE_ORDER];
+  if (detail === "income-sources" || detail === "all") {
+    keys.push(...MEF_IRPEF_INCOME_SOURCE_MEASURE_ORDER);
+  }
+  if (detail === "income-bands" || detail === "all") {
+    keys.push(...MEF_IRPEF_INCOME_BAND_MEASURE_ORDER);
+  }
+  return Object.fromEntries([
+    ["taxpayers", mefIrpefMetadata.definitions.taxpayers],
+    ...keys.map((key) => [key, mefIrpefMetadata.definitions[key]]),
+  ]) as MefIrpefPublicDefinitions;
+}
+
+function selectedCaveats(detail: MefIrpefDetail): readonly string[] {
+  return [
+    ...CAVEATS,
+    ...(detail === "income-sources" || detail === "all" ? [INCOME_SOURCE_CAVEAT] : []),
+    ...(detail === "income-bands" || detail === "all" ? [INCOME_BAND_CAVEAT] : []),
+  ];
 }
 
 function resolveRegionCode(value: string): string {
@@ -446,7 +569,7 @@ export function queryMefMunicipalIrpef(query?: MefIrpefQuery): MefIrpefQueryResu
     notFound(`Offset oltre i ${matches.length} risultati disponibili.`);
   }
   const page = matches.slice(normalized.offset, normalized.offset + normalized.limit);
-  const unassigned = toPublicAggregate(snapshot.national.unassigned);
+  const unassigned = toPublicAggregate(snapshot.national.unassigned, normalized.detail);
 
   return {
     dataset: MEF_IRPEF_DATASET_ID,
@@ -459,17 +582,17 @@ export function queryMefMunicipalIrpef(query?: MefIrpefQuery): MefIrpefQueryResu
       limit: normalized.limit,
       returned: page.length,
     },
-    matchedTotals: toPublicAggregate(foldAggregates(matches)),
-    data: page.map(toPublicRecord),
+    matchedTotals: toPublicAggregate(foldAggregates(matches), normalized.detail),
+    data: page.map((record) => toPublicRecord(record, normalized.detail)),
     national: {
-      assigned: toPublicAggregate(snapshot.national.assigned),
+      assigned: toPublicAggregate(snapshot.national.assigned, normalized.detail),
       unassigned: { label: "Mancante/errata", ...unassigned },
-      allSource: toPublicAggregate(snapshot.national.allSource),
+      allSource: toPublicAggregate(snapshot.national.allSource, normalized.detail),
     },
     coverage: mefIrpefMetadata.coverage,
-    definitions: mefIrpefMetadata.definitions,
+    definitions: selectedDefinitions(normalized.detail),
     methodology: mefIrpefMetadata.methodology,
-    caveats: CAVEATS,
+    caveats: selectedCaveats(normalized.detail),
     provenance: {
       source: mefIrpefMetadata.source,
       lockSha256: mefIrpefMetadata.lockSha256,

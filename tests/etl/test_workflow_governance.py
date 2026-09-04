@@ -8,7 +8,9 @@ WORKFLOWS = ROOT / ".github" / "workflows"
 
 class WorkflowGovernanceTests(unittest.TestCase):
     SOURCE_WORKFLOWS = {
+        "company-atlas-refresh.yml": "company-atlas",
         "consulenti-refresh.yml": "consulenti-pubblici",
+        "government-scorecard-refresh.yml": "government-scorecard",
         "opencivitas-refresh.yml": "opencivitas-2022",
         "opencoesione-refresh.yml": "opencoesione",
         "mef-participations-refresh.yml": "mef-participations",

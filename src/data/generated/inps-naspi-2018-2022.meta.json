@@ -1,0 +1,176 @@
+{
+  "datasetId": "inps-naspi",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 7312525,
+      "path": "src/data/generated/inps-naspi-2018-2022.data.json",
+      "sha256": "e55709eba8997216de2803023aeb95ed03d4c5e4f26b429f72451aa00d80765a"
+    },
+    "sourceLockSha256": "d8e9eaf120ffd80ecf1f24c91aa5381d9ba106270ef288ea868a6a92c0ff2d1b"
+  },
+  "observedAt": "2026-09-04",
+  "period": {
+    "from": 2018,
+    "to": 2022
+  },
+  "reconciliation": {
+    "checks": [
+      {
+        "comparisons": 105,
+        "id": "beneficiari-sesso-vs-eta",
+        "kind": "cross-table",
+        "mismatches": 0,
+        "note": "Stessa popolazione tagliata per sesso e per classe di eta': i totali devono coincidere.",
+        "part": "beneficiari_03",
+        "whole": "beneficiari_02"
+      },
+      {
+        "comparisons": 25,
+        "id": "ripartizioni-vs-regioni",
+        "kind": "territorial",
+        "mismatches": 0,
+        "note": "Le regioni sommano alla ripartizione che le contiene (prefisso NUTS di tre caratteri).",
+        "part": "beneficiari_02",
+        "whole": "beneficiari_01"
+      },
+      {
+        "comparisons": 105,
+        "id": "regioni-vs-province",
+        "kind": "territorial",
+        "mismatches": 0,
+        "note": "Le province sommano alla regione che le contiene (prefisso NUTS di quattro caratteri).",
+        "part": "beneficiari_04",
+        "whole": "beneficiari_02"
+      }
+    ],
+    "exact": true,
+    "note": "Le tabelle sono internamente esatte: nessuna tolleranza di arrotondamento e' necessaria e il contratto pretende l'uguaglianza. Verificato il 2026-09-04 su tutte le chiavi."
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Flusso annuale dalla dimensione TIME_PERIOD, mai dedotto dall'URL. Non è uno stock e non è sommabile fra anni.",
+      "referencePeriod": "2018-2022"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-04",
+      "canonicalUrls": [
+        "https://opendata.inps.it/opendata",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_01_inps_1_0/filesystem/Beneficiari NASPI per Ripartizioni, Classi di età e Sesso.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_02_inps_1_0/filesystem/Naspi Beneficiari per Regione e Sesso.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_03_inps_1_0/filesystem/NASPI Beneficiari per Regione e Classi di età.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_04_inps_1_0/filesystem/NASPI Beneficiari per Provincia.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_01_inps_1_0/filesystem/NASPI Trattamenti per Classi di età, Sesso e Durata teorica in mesi della prestazione.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_02_inps_1_0/filesystem/NASPI Trattamenti per Regione, Sesso e Durata teorica in mesi della prestazione.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_03_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Durata teorica in mesi della prestazione.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_04_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Sesso.xml",
+        "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_05_inps_1_0/filesystem/NASPI Trattamenti per Provincia e Durata teorica in mesi della prestazione.xml"
+      ],
+      "checkedAt": "2026-09-04",
+      "hashes": "SHA-256 per package in source.packages; artefatto in integrity.dataArtifact",
+      "holder": "INPS — Istituto Nazionale della Previdenza Sociale",
+      "license": "IODL-2.0",
+      "publicationPrepared": [
+        "2024-12-17T14:21:21",
+        "2024-12-17T14:26:09",
+        "2024-12-17T14:28:45",
+        "2024-12-17T14:30:47",
+        "2024-12-17T14:32:55",
+        "2024-12-17T14:34:32",
+        "2024-12-17T14:36:19",
+        "2024-12-17T14:37:48",
+        "2024-12-17T14:39:20"
+      ]
+    },
+    "soldi": {
+      "nature": "conteggi di persone (beneficiari) e di periodi di prestazione (trattamenti) NASpI: non sono euro, non sono spesa, non sono cassa",
+      "note": "Nessuna somma con la spesa per prestazioni, con SIOPE o con i bilanci INPS. Le due famiglie non si sommano fra loro.",
+      "unit": "nessuna — il dataset non contiene importi"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-04",
+      "checkedAt": "2026-09-04",
+      "note": "Nove risposte SDMX-ML scaricate dagli URL canonici del portale open data INPS."
+    },
+    "catalogApi": "https://opendata.inps.it/opendata/api/3/action/package_show",
+    "distributionChoice": {
+      "rejectedCsv": "La distribuzione CSV non contiene alcun byte di controllo: zero newline, record concatenati e riconoscibili solo dal token INPS:DFB_ST_. Non e' CSV valido e non viene ricomposta.",
+      "rejectedJson": "La distribuzione SDMX-JSON scrive le celle soppresse come underscore NUDO (\"observations\":{\"0\":[_,0]}), che rende il file JSON non valido: 212 celle in trattamenti_01 e 389 in trattamenti_03. Gli altri sette file sono validi solo perche' non hanno soppressioni. Il formato si rompe esattamente dove c'e' privacy da proteggere.",
+      "used": "SDMX-ML 2.1 GenericData"
+    },
+    "landingUrl": "https://opendata.inps.it/opendata",
+    "licenseId": "IODL-2.0",
+    "licenseNote": "Italian Open Data License 2.0, dichiarata dalla fonte per OGNI package pubblicato (license_id = https://www.dati.gov.it/content/italian-open-data-license-v20), verificata il 2026-09-04. Non estesa agli altri package del catalogo INPS.",
+    "owner": "INPS — Istituto Nazionale della Previdenza Sociale",
+    "packages": {
+      "beneficiari_01": {
+        "bytes": 74470,
+        "package": "dfb_st_naspi_beneficiari_01_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:21:21",
+        "sha256": "0e0d771ed2f9ddfea5faf9bcd9716ca2a9d944d77daa395e07f2929c7e10203e",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_01_inps_1_0/filesystem/Beneficiari NASPI per Ripartizioni, Classi di età e Sesso.xml"
+      },
+      "beneficiari_02": {
+        "bytes": 33425,
+        "package": "dfb_st_naspi_beneficiari_02_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:26:09",
+        "sha256": "e04e7ae9b6f86265e4b2d86b4887f24b5f29d33d3b35427651b73670940b934d",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_02_inps_1_0/filesystem/Naspi Beneficiari per Regione e Sesso.xml"
+      },
+      "beneficiari_03": {
+        "bytes": 147534,
+        "package": "dfb_st_naspi_beneficiari_03_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:28:45",
+        "sha256": "4381291588ab156d2c754bfda2d1bb3650b9b7d9119b2543fe4662820aab1d0b",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_03_inps_1_0/filesystem/NASPI Beneficiari per Regione e Classi di età.xml"
+      },
+      "beneficiari_04": {
+        "bytes": 76290,
+        "package": "dfb_st_naspi_beneficiari_04_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:30:47",
+        "sha256": "8e5b4112e076d74cd8884ba8402c3b8571011d84fc989056d76522b8f418d1a0",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_04_inps_1_0/filesystem/NASPI Beneficiari per Provincia.xml"
+      },
+      "trattamenti_01": {
+        "bytes": 1812702,
+        "package": "dfb_st_naspi_trattamenti_01_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:32:55",
+        "sha256": "da7e5da2e767688024cec61812346cdaa46dd6b5d736a5e573151ce448997bf6",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_01_inps_1_0/filesystem/NASPI Trattamenti per Classi di età, Sesso e Durata teorica in mesi della prestazione.xml"
+      },
+      "trattamenti_02": {
+        "bytes": 817640,
+        "package": "dfb_st_naspi_trattamenti_02_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:34:32",
+        "sha256": "6cff199dada6db8981645dca02fc22c7d1b5c38c039be5a5980167a8d29c4fee",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_02_inps_1_0/filesystem/NASPI Trattamenti per Regione, Sesso e Durata teorica in mesi della prestazione.xml"
+      },
+      "trattamenti_03": {
+        "bytes": 3569809,
+        "package": "dfb_st_naspi_trattamenti_03_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:36:19",
+        "sha256": "bc90d4746c951261c6e45decd399aedb96404f63f83b935057da266acdbd2be4",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_03_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Durata teorica in mesi della prestazione.xml"
+      },
+      "trattamenti_04": {
+        "bytes": 307609,
+        "package": "dfb_st_naspi_trattamenti_04_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:37:48",
+        "sha256": "de16b0f1f1398436a6ededf9bc22ad42b300e7e70d3d4939a1b89b6533caf6af",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_04_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Sesso.xml"
+      },
+      "trattamenti_05": {
+        "bytes": 1907832,
+        "package": "dfb_st_naspi_trattamenti_05_inps_1_0",
+        "sdmxPrepared": "2024-12-17T14:39:20",
+        "sha256": "010dc93c4854c01d7e3c5bce6393f309fb9eb56df210c0eb8b543a9142495da6",
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_05_inps_1_0/filesystem/NASPI Trattamenti per Provincia e Durata teorica in mesi della prestazione.xml"
+      }
+    },
+    "sdmxTestFlag": "Tutti e nove i messaggi dichiarano <Test>true</Test> nell'header SDMX. E' la convenzione della fonte su dati comunque pubblicati come open data, non un'anomalia del singolo file: lo registriamo senza interpretarlo."
+  }
+}

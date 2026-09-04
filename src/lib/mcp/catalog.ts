@@ -18,9 +18,14 @@ export const DATASET_IDS = [
   "opencoesione_progetti",
   "pnrr_asili",
   "anac_cig_snapshot",
+  "consip_ordini",
+  "eurostat_cofog",
   "inps_invalidita_civile",
   "inps_pensioni_vigenti",
   "istat_pensioni_prestazioni",
+  "istat_cofog",
+  "istat_epea",
+  "inps_naspi",
   "istat_pensionati_persone",
   "cpt_finanza_regionale",
   "mef_irpef_comunale",
@@ -61,12 +66,20 @@ export type DatasetQuery = {
   region?: string;
   province?: string;
   level?: "region" | "province" | "municipality";
+  detail?: "summary" | "income-sources" | "income-bands" | "all";
   code?: string;
   cup?: string;
   area?: string;
   chamber?: "camera" | "senato";
+  territory?: string;
+  table?: string;
+  measure?: string;
+  country?: string;
+  cofog?: string;
+  channel?: "convenzioni" | "mepa";
   period?: string;
   sector?: string;
+  cepa?: string;
   band?: string;
   years?: number;
   schoolType?: string;
@@ -126,9 +139,14 @@ const exampleQueries = {
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   pnrr_asili: { dataset: "pnrr_asili", region: "Lazio", limit: 20 },
   anac_cig_snapshot: { dataset: "anac_cig_snapshot", year: 2025 },
+  consip_ordini: { dataset: "consip_ordini", year: 2025, channel: "mepa" },
+  eurostat_cofog: { dataset: "eurostat_cofog", country: "IT", year: 2024 },
   inps_invalidita_civile: { dataset: "inps_invalidita_civile", year: 2023, region: "Calabria" },
   inps_pensioni_vigenti: { dataset: "inps_pensioni_vigenti" },
   istat_pensioni_prestazioni: { dataset: "istat_pensioni_prestazioni", year: 2022 },
+  istat_cofog: { dataset: "istat_cofog", territory: "IT", year: 2023 },
+  istat_epea: { dataset: "istat_epea", year: 2022, sector: "S13_15", cepa: "CEPA1" },
+  inps_naspi: { dataset: "inps_naspi", table: "beneficiari_02", year: 2022 },
   istat_pensionati_persone: { dataset: "istat_pensionati_persone", year: 2022 },
   cpt_finanza_regionale: { dataset: "cpt_finanza_regionale", year: 2023, region: "Calabria" },
   mef_irpef_comunale: {
@@ -136,6 +154,7 @@ const exampleQueries = {
     year: 2024,
     level: "municipality",
     query: "Abano",
+    detail: "income-bands",
     limit: 20,
   },
   ipa_enti: { dataset: "ipa_enti", query: "Agenzia per l'Italia Digitale", limit: 10 },
@@ -203,19 +222,24 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "openbdap_amministrazione", title: "Spesa di una amministrazione statale", summary: "Dettaglio OpenBDAP di una amministrazione per missione e categoria, con consuntivo annuale o rilascio mensile coerente.", sourceIds: ["openbdap"], freshness: "live", filters: ["code", "year", "month"], caveat: "Una query annuale senza mese preferisce il consuntivo; una query con mese resta sul rilascio mensile corrispondente." },
   { id: "openbdap_opere_pubbliche", title: "Opere pubbliche per CUP", summary: "Stato, date, costi e finanziamenti delle opere pubbliche MOP.", sourceIds: ["openbdap"], freshness: "live", filters: ["cup"], caveat: "I segnali di qualità o ritardo richiedono verifica e non provano uno spreco." },
   { id: "openbdap_ssn_conto_economico", title: "Conto Economico degli enti del SSN", summary: "Consuntivo 2024 OpenBDAP con aggregato nazionale, aggregati regionali e dettaglio di 232 enti; costo del personale, acquisti di servizi e voci ufficiali di consulenze, collaborazioni, interinale e altre prestazioni di lavoro.", sourceIds: ["openbdap"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Il nazionale e le Regioni provengono da dataset ufficiali distinti dal dettaglio enti; le 21 righe codeSsn=999 non sono esposte per evitare doppio conteggio. Le voci sono categorie contabili: non equivalgono a gettonisti, cooperative, organico o pagamenti di cassa e non consentono classifiche di efficienza o inferenze sulla qualità sanitaria." },
-  { id: "openbdap_ssn_storico_nazionale", title: "Serie storica nazionale del Conto Economico SSN", summary: "Costi della produzione, personale, prestazioni di lavoro e acquisti di servizi a livello nazionale, dal 2012 al 2024.", sourceIds: ["openbdap"], freshness: "live", filters: [], caveat: "Solo livello nazionale: il dettaglio regionale e per ente resta disponibile soltanto per il 2024 in openbdap_ssn_conto_economico. Voci di competenza economica, non pagamenti di cassa; non identificano gettonisti, cooperative o organico e non permettono classifiche di efficienza tra anni o Regioni." },
+  { id: "openbdap_ssn_storico_nazionale", title: "Serie storica nazionale del Conto Economico SSN", summary: "Costi della produzione, personale, prestazioni di lavoro e acquisti di servizi a livello nazionale, dal 2012 al 2024.", sourceIds: ["openbdap"], freshness: "live", filters: [], caveat: "Solo livello nazionale: il dettaglio regionale e per ente resta disponibile soltanto per il 2024 in openbdap_ssn_conto_economico. Preferisce la lettura live OpenBDAP e, se i CSV annuali non sono disponibili, usa lo snapshot nazionale committed (dataMode snapshot). Voci di competenza economica, non pagamenti di cassa; non identificano gettonisti, cooperative o organico e non permettono classifiche di efficienza tra anni o Regioni." },
   { id: "openbdap_spesa_legislature", title: "Spesa dello Stato per legislatura", summary: "Confronto descrittivo tra l'anno pre-elettorale e la media degli altri anni completi di ogni legislatura, sulla spesa OpenBDAP RGS per missione (2014-2025).", sourceIds: ["openbdap"], freshness: "live", filters: [], caveat: "Confronto puramente descrittivo, non un test di significatività statistica: due sole legislature complete osservate, la spesa statale cresce anche per motivi non elettorali (trend, inflazione) e il 2020-2021 include la spesa emergenziale COVID-19, dichiarata esplicitamente. Non implica causalità né intento elettorale, non copre spesa comunale, regionale o europea." },
   { id: "openbdap_legge_bilancio_storico", title: "Legge di Bilancio per missione, serie storica", summary: "Snapshot verificato degli stanziamenti di competenza pubblicati per missione nelle Leggi di Bilancio 2021-2026, con variazione anno su anno.", sourceIds: ["openbdap"], freshness: "snapshot", filters: ["years"], caveat: "È lo stanziamento enacted pubblicato dalla Legge di Bilancio (competenza, primo anno), non le misure della manovra né un pagamento osservato. L'MCP usa l'artifact verificato 2021-2026 per non avviare download live costosi; pagina e API dichiarano separatamente l'eventuale modalità live. Non isola un fondo, un bonus o un'aliquota specifici e include il rimborso lordo del debito pubblico, che domina la missione Debito pubblico." },
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
   { id: "pnrr_asili", title: "PNRR asili e prima infanzia", summary: "Progetti Italia Domani per CUP, localizzazioni, finanziamenti, gare e aggiudicatari.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "query", "region", "province", "limit", "offset"], caveat: "Il finanziamento PNRR non è un pagamento osservato; gare e aggiudicazioni sono livelli distinti." },
   { id: "anac_cig_snapshot", title: "Contratti pubblici ANAC · CIG 2025", summary: "Aggregati verificati sui dodici file mensili CIG 2025, con copertura, hash, procedure e fasce di importo.", sourceIds: ["anac"], freshness: "snapshot", filters: ["year"], caveat: "È uno strumento di screening aggregato: non prova spreco, illecito, corruzione o frazionamento e non consente ancora la ricerca live per CIG." },
+  { id: "consip_ordini", title: "Acquisti Consip · ordini Convenzioni e MEPA", summary: "Righe ordinate su Convenzioni e MEPA 2024-2026 aggregate per regione e tipologia di amministrazione, con importi noti e celle soppresse dichiarate.", sourceIds: ["consip"], freshness: "snapshot", filters: ["year", "channel"], caveat: "Gli importi sono limiti inferiori: la fonte sopprime il valore in molte righe (nei file MEPA importo e numero ordini sono mutuamente esclusivi) e pubblica anche storni negativi. Ordinato non è pagato e Consip non è tutta la spesa per acquisti della PA: nessun confronto con ANAC o SIOPE è una riconciliazione." },
+  { id: "eurostat_cofog", title: "Eurostat · spesa pubblica per funzione (COFOG)", summary: "Spesa delle Amministrazioni pubbliche per funzione COFOG dal 2014 al 2024, in milioni di euro e in quota di PIL, per UE27, area euro e trenta Stati.", sourceIds: ["eurostat-cofog"], freshness: "snapshot", filters: ["country", "year", "cofog"], caveat: "Competenza economica SEC 2010: non sono pagamenti di cassa, quindi nessun confronto con SIOPE è una riconciliazione e la spesa per funzione non misura efficienza o qualità del servizio. Il totale è quello pubblicato dalla fonte e differisce dalla somma delle dieci divisioni per solo arrotondamento. Le celle con flag «b» segnano una interruzione della serie storica e non sono confrontabili a cavallo; quelle con flag «p» sono provvisorie. Gli aggregati UE27 e area euro contengono già gli Stati membri e non vanno sommati a essi." },
+  { id: "istat_cofog", title: "ISTAT · consumi finali della PA per funzione (COFOG)", summary: "Consumi finali delle Amministrazioni pubbliche per funzione COFOG dal 1995 al 2023, a prezzi correnti, per Italia, ripartizioni e regioni.", sourceIds: ["istat-cofog"], freshness: "snapshot", filters: ["territory", "year", "cofog"], caveat: "Sono i consumi finali (P3), NON la spesa pubblica totale: nel 2023 circa 383 miliardi contro i circa 1149 della spesa totale delle AP. Nessun confronto o somma con Eurostat COFOG, SIOPE o le missioni del bilancio è una riconciliazione. L\u2019edizione è una revisione e resta fissata: fra due edizioni cambiano centinaia di celle. Le aree composite (Nord, Centro-nord, Mezzogiorno, Trentino Alto Adige) contengono già le loro parti e non vanno sommate a esse. Il dato territoriale è territorio di erogazione contabile, non quanto riceve un cittadino, e non misura efficienza o qualità del servizio." },
+  { id: "istat_epea", title: "ISTAT · spesa per la protezione dell'ambiente (EPEA)", summary: "Conti della spesa per la protezione dell'ambiente, edizione 2025M2, anni 2016–2022, per settore istituzionale e classe CEPA.", sourceIds: ["istat-epea"], freshness: "snapshot", filters: ["year", "sector", "cepa"], caveat: "Contabilità SEC di competenza: non è cassa SIOPE. Non sommare né confrontare in silenzio con RGS, PNRR Missione 2 o SAD/SAF. TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono. Edizione 2025M2 fissata.", },
+  { id: "inps_naspi", title: "INPS · NASpI beneficiari e trattamenti", summary: "Beneficiari e trattamenti NASpI dal 2018 al 2022 per ripartizione, regione e provincia, con sesso, classe di età e durata teorica, da nove tabelle SDMX.", sourceIds: ["inps-naspi"], freshness: "snapshot", filters: ["table", "measure", "year", "territory"], caveat: "Beneficiari e trattamenti sono misure diverse — persone contro periodi di prestazione — e non vanno sommate né confrontate. Sono conteggi, NON euro: nessuna somma con la spesa per prestazioni, con SIOPE o con i bilanci INPS. È un flusso annuale, non lo stock di pensioni vigenti o di invalidità civile già in piattaforma, e non è sommabile fra anni. Le celle soppresse per privacy restano nulle e non sono zeri osservati. Territorio, sesso, classe di età e durata sono dimensioni distinte e non denominatori intercambiabili. Il numero di beneficiari non dice nulla su adeguatezza o merito della prestazione." },
   { id: "inps_invalidita_civile", title: "Prestazioni INPS di invalidità civile", summary: "Spesa nazionale, stock di prestazioni e nuove pensioni di invalidità civile per regione.", sourceIds: ["inps"], freshness: "snapshot", filters: ["year", "region"], caveat: "Prestazioni, pensioni, spesa e nuove decorrenze sono misure diverse. I dati aggregati non provano frode e non consentono attribuzioni individuali." },
   { id: "inps_pensioni_vigenti", title: "Pensioni erogate dall'INPS", summary: "Stock di pensioni vigenti al 1 gennaio 2026, composizione per natura, categoria e gestione, e serie dei conteggi 2012-2026.", sourceIds: ["inps"], freshness: "snapshot", filters: [], caveat: "Perimetro solo INPS, inclusa la Gestione dipendenti pubblici ed esclusa Ex Inpgi. Stock, liquidazioni e tavola per anno di decorrenza restano misure diverse. Non è sommabile con il Casellario ISTAT né con la pagina Invalidità civile." },
   { id: "istat_pensioni_prestazioni", title: "Pensioni ISTAT · prestazioni", summary: "Numero di prestazioni pensionistiche, importo lordo annuo e importo lordo medio per categoria, dal 2012 al 2022.", sourceIds: ["istat-casellario-pensioni"], freshness: "snapshot", filters: ["year"], caveat: "Il denominatore è il numero di prestazioni, non il numero di persone. Gli importi sono lordi e nominali, espressi in migliaia di euro per i totali e in euro per la media; i conteggi delle categorie riconciliano esattamente, mentre i relativi importi possono differire dal totale di 1-2 migliaia di euro per arrotondamento della fonte. Non è sommabile con pensionati né con CIVDIS/invalidità civile INPS." },
   { id: "istat_pensionati_persone", title: "Pensionati ISTAT · persone", summary: "Numero di persone pensionate, reddito pensionistico lordo annuo e media lorda, dal 2012 al 2022.", sourceIds: ["istat-casellario-pensioni"], freshness: "snapshot", filters: ["year"], caveat: "Il denominatore è il numero di persone pensionate, non il numero di prestazioni. Gli importi sono lordi e nominali, espressi in migliaia di euro per i totali e in euro per la media. Non è sommabile con le prestazioni pensionistiche né con CIVDIS/invalidità civile INPS; lo snapshot non è una serie INPS 2024." },
   { id: "cpt_finanza_regionale", title: "Entrate e spese pubbliche per territorio", summary: "Entrate, spese e saldo contabile territorializzato della PA consolidata CPT, con valori pro capite e per km² 2023.", sourceIds: ["cpt", "istat"], freshness: "snapshot", filters: ["year", "region"], caveat: "Il saldo è entrate meno spese nello stesso perimetro CPT PA. Le normalizzazioni ISTAT non misurano pressione fiscale, qualità dei servizi, merito politico o trasferimenti netti fra regioni e non sono il residuo fiscale di Banca d'Italia." },
-  { id: "mef_irpef_comunale", title: MEF_IRPEF_SOURCE.mcp.title, summary: MEF_IRPEF_SOURCE.mcp.summary, sourceIds: [MEF_IRPEF_SOURCE.id], freshness: "snapshot", filters: ["year", "level", "region", "province", "code", "query", "limit", "offset"], caveat: MEF_IRPEF_SOURCE.mcp.caveat },
+  { id: "mef_irpef_comunale", title: MEF_IRPEF_SOURCE.mcp.title, summary: MEF_IRPEF_SOURCE.mcp.summary, sourceIds: [MEF_IRPEF_SOURCE.id], freshness: "snapshot", filters: ["year", "level", "region", "province", "code", "query", "detail", "limit", "offset"], caveat: MEF_IRPEF_SOURCE.mcp.caveat },
   { id: "ipa_enti", title: "Enti pubblici IPA", summary: "Ricerca e scheda degli enti nell’Indice PA.", sourceIds: ["ipa"], freshness: "live", filters: ["query", "code", "limit", "offset"] },
   { id: "ipa_struttura", title: "Struttura organizzativa IPA", summary: "Unità organizzative e aree organizzative omogenee di un ente.", sourceIds: ["ipa-struttura"], freshness: "live", filters: ["code", "limit", "offset"] },
   { id: "mef_partecipazioni", title: "Partecipazioni pubbliche", summary: "Aggregati della rilevazione annuale MEF sulle partecipazioni pubbliche.", sourceIds: ["partecipazioni-pubbliche"], freshness: "snapshot", filters: [] },

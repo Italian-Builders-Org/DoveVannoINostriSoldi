@@ -259,6 +259,38 @@ export async function queryPublicDataset(
         ? jsonSafe({ ...shared, dataset: query.dataset, pensionBenefits })
         : jsonSafe({ ...shared, dataset: query.dataset, pensioners });
     }
+    case "eurostat_cofog": {
+      const { queryEurostatCofog } = await import("@/lib/eurostat-cofog-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
+      });
+    }
+    case "inps_naspi": {
+      const { queryInpsNaspi } = await import("@/lib/inps-naspi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsNaspi({ table: query.table, measure: query.measure, year: query.year, territory: query.territory }),
+      });
+    }
+    case "istat_cofog": {
+      const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatCofog({ area: query.territory, year: query.year, function: query.cofog }),
+      });
+    }
+      case "istat_epea": {
+      const { queryIstatEpea } = await import("@/lib/istat-epea-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatEpea({ year: query.year, sector: query.sector, cepa: query.cepa }),
+      });
+    }
+    case "consip_ordini": {
+      const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
+      return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });
+    }
     case "cpt_finanza_regionale": {
       const { queryCptRegionalFiscal } = await import("@/lib/cpt-regional-fiscal-snapshot");
       return jsonSafe(queryCptRegionalFiscal({ year: query.year, region: query.region }));
@@ -272,6 +304,7 @@ export async function queryPublicDataset(
         province: query.province,
         code: query.code,
         query: query.query,
+        detail: query.detail,
         limit: query.limit,
         offset: query.offset,
       }));

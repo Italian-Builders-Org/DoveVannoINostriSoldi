@@ -141,6 +141,7 @@ export type AnacEntityProcurementPageView = Readonly<{
   operators: AnacEntityProcurementPageRecord["operators"];
   procedures: AnacEntityProcurementPageRecord["procedures"];
   awards: AnacEntityProcurementPageRecord["awards"];
+  concentration: AnacEntityProcurementConcentration;
   meta: AnacEntityProcurementPageMeta;
 }>;
 
@@ -186,6 +187,55 @@ export type AnacAwardAttributionCounts = Readonly<{
   ambiguous: number;
   noAwardee: number;
   notAttributed: number;
+}>;
+
+export const ANAC_CONCENTRATION_MIN_OBSERVATIONS = 30;
+export const ANAC_CONCENTRATION_TOP_K = 10;
+export const ANAC_CONCENTRATION_FORMULA = "sum-of-squared-percent-shares-0-10000" as const;
+/** Raw digit budget for showing the reduced fraction in the UI; longer exact values stay truncated. */
+export const ANAC_CONCENTRATION_READABLE_FRACTION_MAX_DIGITS = 18;
+
+export type AnacConcentrationDimension = "count" | "value";
+export type AnacConcentrationWithheldReason = "below-minimum-observations" | "zero-denominator";
+
+export type AnacExactRatio = Readonly<{
+  numerator: string;
+  denominator: string;
+}>;
+
+export type AnacPublishedConcentration = Readonly<{
+  status: "published";
+  dimension: AnacConcentrationDimension;
+  formula: typeof ANAC_CONCENTRATION_FORMULA;
+  observationCount: number;
+  minimumObservations: typeof ANAC_CONCENTRATION_MIN_OBSERVATIONS;
+  operatorCount: number;
+  includedTop: number;
+  top1Ref: string;
+  top1Name: string;
+  marketTotal: string;
+  top1Amount: string;
+  top10Amount: string;
+  top1Share: AnacExactRatio;
+  top10Share: AnacExactRatio;
+  hhi10000: AnacExactRatio;
+}>;
+
+export type AnacWithheldConcentration = Readonly<{
+  status: "withheld";
+  dimension: AnacConcentrationDimension;
+  formula: typeof ANAC_CONCENTRATION_FORMULA;
+  reason: AnacConcentrationWithheldReason;
+  observationCount: number;
+  minimumObservations: typeof ANAC_CONCENTRATION_MIN_OBSERVATIONS;
+  operatorCount: number;
+}>;
+
+export type AnacConcentrationMetric = AnacPublishedConcentration | AnacWithheldConcentration;
+
+export type AnacEntityProcurementConcentration = Readonly<{
+  count: AnacConcentrationMetric;
+  value: AnacConcentrationMetric;
 }>;
 
 /** Derive the public attribution caveat from the records, not copied summary counters. */
@@ -433,6 +483,230 @@ function compareDecimals(left: string, right: string): number {
   const scaledLeft = leftInteger * BigInt(10) ** BigInt(scale - leftScale);
   const scaledRight = rightInteger * BigInt(10) ** BigInt(scale - rightScale);
   return scaledLeft < scaledRight ? -1 : scaledLeft > scaledRight ? 1 : 0;
+}
+
+function gcd(left: bigint, right: bigint): bigint {
+  const zero = BigInt(0);
+  let x = left < zero ? -left : left;
+  let y = right < zero ? -right : right;
+  while (y !== zero) {
+    const remainder = x % y;
+    x = y;
+    y = remainder;
+  }
+  return x;
+}
+
+function reduceRatio(numerator: bigint, denominator: bigint): AnacExactRatio {
+  const zero = BigInt(0);
+  if (denominator <= zero) throw new Error("ANAC entity page: denominatore di concentrazione non valido.");
+  if (numerator < zero) throw new Error("ANAC entity page: numeratore di concentrazione negativo.");
+  if (numerator === zero) return { numerator: "0", denominator: "1" };
+  const divisor = gcd(numerator, denominator);
+  return { numerator: (numerator / divisor).toString(), denominator: (denominator / divisor).toString() };
+}
+
+function exactDecimalFromRatio(numerator: bigint, denominator: bigint): string | null {
+  const reduced = reduceRatio(numerator, denominator);
+  const numer = BigInt(reduced.numerator);
+  const denom = BigInt(reduced.denominator);
+  const zero = BigInt(0);
+  const two = BigInt(2);
+  const five = BigInt(5);
+  const ten = BigInt(10);
+  let rest = denom;
+  while (rest % two === zero) rest /= two;
+  while (rest % five === zero) rest /= five;
+  if (rest !== BigInt(1)) return null;
+  const integer = numer / denom;
+  let remainder = numer % denom;
+  if (remainder === zero) return integer.toString();
+  const digits: string[] = [];
+  while (remainder !== zero) {
+    remainder *= ten;
+    digits.push((remainder / denom).toString());
+    remainder %= denom;
+  }
+  return addDecimals(`${integer.toString()}.${digits.join("")}`, "0");
+}
+
+function scaledIntegers(values: readonly string[]): { integers: bigint[]; total: bigint } {
+  const parts = values.map((value) => decimalParts(value));
+  const scale = parts.reduce((maximum, [, valueScale]) => Math.max(maximum, valueScale), 0);
+  const ten = BigInt(10);
+  const zero = BigInt(0);
+  const integers = parts.map(([integer, valueScale]) => integer * (ten ** BigInt(scale - valueScale)));
+  const total = integers.reduce((sum, value) => sum + value, zero);
+  return { integers, total };
+}
+
+function sortOperatorsForConcentration(
+  operators: AnacEntityProcurementPageRecord["operators"],
+  dimension: AnacConcentrationDimension,
+): AnacEntityProcurementPageRecord["operators"] {
+  return [...operators]
+    .filter((operator) => dimension === "count" || operator.rankByValue !== null)
+    .sort((left, right) => {
+      const leftRank = dimension === "value" ? left.rankByValue ?? Number.MAX_SAFE_INTEGER : left.rankByCount;
+      const rightRank = dimension === "value" ? right.rankByValue ?? Number.MAX_SAFE_INTEGER : right.rankByCount;
+      return leftRank - rightRank || left.name.localeCompare(right.name, "it") || left.ref.localeCompare(right.ref);
+    });
+}
+
+function withheldConcentration(
+  dimension: AnacConcentrationDimension,
+  reason: AnacConcentrationWithheldReason,
+  observationCount: number,
+  operatorCount: number,
+): AnacWithheldConcentration {
+  return {
+    status: "withheld",
+    dimension,
+    formula: ANAC_CONCENTRATION_FORMULA,
+    reason,
+    observationCount,
+    minimumObservations: ANAC_CONCENTRATION_MIN_OBSERVATIONS,
+    operatorCount,
+  };
+}
+
+function publishedConcentration(
+  dimension: AnacConcentrationDimension,
+  operators: AnacEntityProcurementPageRecord["operators"],
+  weights: readonly string[],
+  observationCount: number,
+): AnacPublishedConcentration {
+  const { integers, total } = scaledIntegers(weights);
+  const zero = BigInt(0);
+  if (total <= zero) {
+    throw new Error("ANAC entity page: mercato di concentrazione vuoto.");
+  }
+  const includedTop = Math.min(ANAC_CONCENTRATION_TOP_K, operators.length);
+  const top1 = operators[0];
+  if (!top1) throw new Error("ANAC entity page: Top 1 senza operatore.");
+  const top1Integer = integers[0] ?? zero;
+  const top10Integer = integers.slice(0, includedTop).reduce((sum, value) => sum + value, zero);
+  const sumSquares = integers.reduce((sum, value) => sum + value * value, zero);
+  const top1Amount = weights[0] ?? "0";
+  const top10Amount = sumDecimals(weights.slice(0, includedTop));
+  return {
+    status: "published",
+    dimension,
+    formula: ANAC_CONCENTRATION_FORMULA,
+    observationCount,
+    minimumObservations: ANAC_CONCENTRATION_MIN_OBSERVATIONS,
+    operatorCount: operators.length,
+    includedTop,
+    top1Ref: top1.ref,
+    top1Name: top1.name,
+    marketTotal: dimension === "count" ? total.toString() : sumDecimals(weights),
+    top1Amount,
+    top10Amount,
+    top1Share: reduceRatio(top1Integer, total),
+    top10Share: reduceRatio(top10Integer, total),
+    hhi10000: reduceRatio(sumSquares * BigInt(10000), total * total),
+  };
+}
+
+function deriveCountConcentration(
+  operators: AnacEntityProcurementPageRecord["operators"],
+  awardCount: number,
+): AnacConcentrationMetric {
+  const ranked = sortOperatorsForConcentration(operators, "count");
+  if (awardCount < ANAC_CONCENTRATION_MIN_OBSERVATIONS) {
+    return withheldConcentration("count", "below-minimum-observations", awardCount, ranked.length);
+  }
+  if (ranked.length === 0) {
+    return withheldConcentration("count", "zero-denominator", awardCount, 0);
+  }
+  return publishedConcentration(
+    "count",
+    ranked,
+    ranked.map((operator) => String(operator.awardCount)),
+    awardCount,
+  );
+}
+
+function deriveValueConcentration(
+  operators: AnacEntityProcurementPageRecord["operators"],
+  attributedAwardValue: string,
+): AnacConcentrationMetric {
+  const ranked = sortOperatorsForConcentration(operators, "value");
+  const observationCount = ranked.reduce((sum, operator) => sum + operator.attributedAwardCount, 0);
+  if (observationCount < ANAC_CONCENTRATION_MIN_OBSERVATIONS) {
+    return withheldConcentration("value", "below-minimum-observations", observationCount, ranked.length);
+  }
+  const market = sumDecimals(ranked.map((operator) => operator.attributedValue));
+  if (market === "0" || compareDecimals(market, attributedAwardValue) !== 0) {
+    if (market === "0") return withheldConcentration("value", "zero-denominator", observationCount, ranked.length);
+    throw new Error("ANAC entity page: mercato valore di concentrazione non riconciliato.");
+  }
+  return publishedConcentration(
+    "value",
+    ranked,
+    ranked.map((operator) => operator.attributedValue),
+    observationCount,
+  );
+}
+
+/** Derive Top 1 / Top 10 shares and HHI from the already-reconciled ranking. */
+export function deriveAnacEntityProcurementConcentration(
+  record: Pick<AnacEntityProcurementPageRecord, "summary" | "operators">,
+): AnacEntityProcurementConcentration {
+  return {
+    count: deriveCountConcentration(record.operators, record.summary.awardCount),
+    value: deriveValueConcentration(record.operators, record.summary.attributedAwardValue),
+  };
+}
+
+function groupIntegerDigits(value: string): string {
+  const negative = value.startsWith("-");
+  const digits = negative ? value.slice(1) : value;
+  return `${negative ? "-" : ""}${digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+}
+
+function italianExactDecimal(value: string): string {
+  const [whole, fraction] = value.split(".");
+  return `${groupIntegerDigits(whole ?? "0")}${fraction ? `,${fraction}` : ""}`;
+}
+
+function formatTruncatedFixed(numerator: bigint, denominator: bigint, digits: number): string {
+  const scale = BigInt(10) ** BigInt(digits);
+  const scaled = (numerator * scale) / denominator;
+  const whole = scaled / scale;
+  const fraction = (scaled % scale).toString().padStart(digits, "0");
+  return `${groupIntegerDigits(whole.toString())},${fraction}`;
+}
+
+function ratioFractionText(ratio: AnacExactRatio): string {
+  return `${groupIntegerDigits(ratio.numerator)}/${groupIntegerDigits(ratio.denominator)}`;
+}
+
+/** Compact Italian percent. Non-terminating values are truncated toward zero, never rounded. */
+export function formatAnacConcentrationPercent(ratio: AnacExactRatio): string {
+  const percent = exactDecimalFromRatio(BigInt(ratio.numerator) * BigInt(100), BigInt(ratio.denominator));
+  if (percent !== null) return `${italianExactDecimal(percent)}%`;
+  return `${formatTruncatedFixed(BigInt(ratio.numerator) * BigInt(100), BigInt(ratio.denominator), 2)}…%`;
+}
+
+/** HHI on the 0–10.000 scale. Non-terminating values are truncated toward zero, never rounded. */
+export function formatAnacConcentrationHhi(ratio: AnacExactRatio): string {
+  const exact = exactDecimalFromRatio(BigInt(ratio.numerator), BigInt(ratio.denominator));
+  if (exact !== null) return italianExactDecimal(exact);
+  return `${formatTruncatedFixed(BigInt(ratio.numerator), BigInt(ratio.denominator), 2)}…`;
+}
+
+export function formatAnacConcentrationFraction(ratio: AnacExactRatio): string {
+  return ratioFractionText(ratio);
+}
+
+export function anacConcentrationRatioIsExact(ratio: AnacExactRatio, asPercent: boolean): boolean {
+  const numerator = asPercent ? BigInt(ratio.numerator) * BigInt(100) : BigInt(ratio.numerator);
+  return exactDecimalFromRatio(numerator, BigInt(ratio.denominator)) !== null;
+}
+
+export function anacConcentrationFractionIsReadable(ratio: AnacExactRatio): boolean {
+  return ratio.numerator.length + ratio.denominator.length <= ANAC_CONCENTRATION_READABLE_FRACTION_MAX_DIGITS;
 }
 
 function isPositiveAmountStatus(status: AnacAmountStatus): boolean {
@@ -1168,7 +1442,15 @@ export function safeEntityProcurementPageProfile(
 ): AnacEntityProcurementPageView {
   // codiceFiscaleEnte is intentionally discarded at the public/domain boundary.
   const { codiceIpa, summary, operators, procedures, awards } = record;
-  return { codiceIpa, summary, operators, procedures, awards, meta };
+  return {
+    codiceIpa,
+    summary,
+    operators,
+    procedures,
+    awards,
+    concentration: deriveAnacEntityProcurementConcentration(record),
+    meta,
+  };
 }
 
 export async function loadAnacEntityProcurementPage(

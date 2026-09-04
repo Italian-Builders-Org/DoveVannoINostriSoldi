@@ -42,6 +42,7 @@ VALID_COVERAGE = frozenset({"standalone", "etl-suite", "node-tests"})
 GENERATED_EXTENSIONS = frozenset({".json", ".jsonl", ".jsonl.gz", ".ts"})
 PUBLICATION_IDS = frozenset(
     {
+        "company-atlas",
         "consulenti-pubblici",
         "government-scorecard",
         "mef-participations",
@@ -536,6 +537,16 @@ def main() -> int:
     errors.extend(validate_schema(registry))
     errors.extend(validate_references(registry))
     errors.extend(detect_unregistered_files(registry))
+    inventory_check = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "ci" / "source-snapshot-inventory.py"), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if inventory_check.returncode != 0:
+        errors.append(
+            (inventory_check.stderr or inventory_check.stdout or "snapshot inventory is stale").strip()
+        )
 
     if errors:
         print(f"\n❌ Registry validation failed ({len(errors)} error(s)):\n", file=sys.stderr)

@@ -82,6 +82,9 @@ const querySchema = z.object({
   level: z.enum(["region", "province", "municipality"])
     .describe("Livello territoriale della risposta: region, province oppure municipality.")
     .optional(),
+  detail: z.enum(["summary", "income-sources", "income-bands", "all"])
+    .describe("Dettaglio IRPEF: summary, income-sources, income-bands oppure all.")
+    .optional(),
   code: z.string().max(100)
     .describe("Codice identificativo richiesto dal dataset, per esempio codice IPA o ISTAT.")
     .optional(),
@@ -93,6 +96,24 @@ const querySchema = z.object({
     .optional(),
   chamber: z.enum(["camera", "senato"])
     .describe("Ramo del Parlamento: camera oppure senato.")
+    .optional(),
+  channel: z.enum(["convenzioni", "mepa"])
+    .describe("Canale di acquisto Consip: convenzioni oppure mepa.")
+    .optional(),
+  country: z.string().max(12)
+    .describe("Codice paese o aggregato Eurostat, per esempio IT, DE oppure EU27_2020.")
+    .optional(),
+  territory: z.string().max(8)
+    .describe("Codice territoriale ISTAT, per esempio IT, ITF3 oppure ITCDE.")
+    .optional(),
+  table: z.string().max(40)
+    .describe("Id della tabella pubblicata dal dataset selezionato, per esempio beneficiari_02.")
+    .optional(),
+  measure: z.string().max(20)
+    .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti.")
+    .optional(),
+  cofog: z.string().max(8)
+    .describe("Funzione COFOG: per Eurostat TOTAL o GF01…GF10; per ISTAT il totale G oppure una divisione da G010 a G100.")
     .optional(),
   period: z.string().max(20)
     .describe("Periodo dichiarato dal dataset, per esempio 2026-07-31 o 2026-Q2.")

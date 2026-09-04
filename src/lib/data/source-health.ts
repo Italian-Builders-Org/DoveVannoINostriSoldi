@@ -23,13 +23,17 @@ import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
+import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
+import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
+import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
+import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
-import { getGovernmentScorecardSnapshot } from "@/lib/government-scorecard";
-import { getGovernmentScorecardForecastCoverage } from "@/lib/data/government-scorecard-contract";
-import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
+import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
 export type SourceIntegrationState = "active";
@@ -500,6 +504,18 @@ function snapshotManagedIstatCasellarioPensioni(): SourceHealth {
   };
 }
 
+function snapshotManagedConsip(): SourceHealth {
+  const artifact = consipOrdiniMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("consip"),
+    reachability: "not-probed",
+    freshness: freshnessFor("consip", consipOrdiniMetadata.suppression.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Consip ordini verificato · Convenzioni e MEPA ${consipOrdiniData.period.from}-${consipOrdiniData.period.to} · importi come limiti inferiori con soppressioni dichiarate · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
+    recordCount: consipOrdiniData.byRegion.length + consipOrdiniData.byAdministrationType.length,
+  };
+}
+
 function snapshotManagedMefParticipations(): SourceHealth {
   return {
     ...baseHealth("partecipazioni-pubbliche"),
@@ -583,50 +599,96 @@ function snapshotManagedPublicDebt(sourceId: "bancaditalia" | "eurostat"): Sourc
   };
 }
 
-function snapshotManagedGovernmentCurrentSignals(): SourceHealth {
-  const snapshot = getGovernmentCurrentSignalsSnapshot();
-  const recordCount = snapshot.indicators.reduce(
-    (total, indicator) => total + Object.values(indicator.countries)
-      .reduce((countryTotal, series) => countryTotal + series.length, 0),
+function snapshotManagedGovernmentInflation(): SourceHealth {
+  const snapshot = getGovernmentScorecardV6SupplementalSnapshot();
+  const inflation = snapshot.series.find((series) => series.indicator_id === "inflation");
+  if (!inflation) throw new Error("serie IPCA assente dalla pagella governi");
+  const latestPeriod = inflation.geographies
+    .find((geography) => geography.geography === "IT")
+    ?.points.at(-1)?.period;
+  const sourceId = inflation.geographies[0]?.points[0]?.source_id;
+  const source = snapshot.sources.find((candidate) => candidate.id === sourceId);
+  if (!latestPeriod || !source) throw new Error("provenienza IPCA incompleta nella pagella governi");
+  const recordCount = inflation.geographies.reduce(
+    (total, geography) => total + geography.points.length,
     0,
   );
   return {
     ...baseHealth("eurostat-hicp"),
     reachability: "not-probed",
-    freshness: freshnessFor("eurostat-hicp", snapshot.source.sourceUpdatedAt),
+    freshness: freshnessFor("eurostat-hicp", source.upstream_updated_at),
     latencyMs: null,
-    detail: `Snapshot ETL attivo · IPCA mensile fino a ${snapshot.source.referencePeriodThrough} (${snapshot.source.datasetCode}).`,
+    detail: `Snapshot ETL attivo · IPCA mensile fino a ${latestPeriod} (${source.dataset_code}).`,
     recordCount,
+  };
+}
+
+function snapshotManagedEurostatCofog(): SourceHealth {
+  const artifact = eurostatCofogMetadata.integrity.dataArtifact;
+  const { flagged, observedCells } = eurostatCofogData.coverage;
+  return {
+    ...baseHealth("eurostat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-cofog", eurostatCofogMetadata.coverage.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · copertura piena ${observedCells}/${observedCells} celle, ${flagged} con flag della fonte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatCofogData.observations.length,
+  };
+}
+
+function snapshotManagedIstatCofog(): SourceHealth {
+  const artifact = istatCofogMetadata.integrity.dataArtifact;
+  const { observedCells } = istatCofogData.coverage;
+  return {
+    ...baseHealth("istat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-cofog", istatCofogMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · consumi finali della PA per funzione ${istatCofogData.period.from}-${istatCofogData.period.to} (${istatCofogMetadata.source.dataflowId}, edizione ${istatCofogData.measure.edition}) · copertura piena ${observedCells} celle · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: istatCofogData.observations.length,
+  };
+}
+
+function snapshotManagedInpsNaspi(): SourceHealth {
+  const artifact = inpsNaspiMetadata.integrity.dataArtifact;
+  const { observedObservations, suppressed } = inpsNaspiData.coverage;
+  return {
+    ...baseHealth("inps-naspi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-naspi", inpsNaspiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · NASpI beneficiari e trattamenti ${inpsNaspiData.period.from}-${inpsNaspiData.period.to} · ${inpsNaspiData.tables.length} tabelle SDMX, ${observedObservations.toLocaleString("it-IT")} osservazioni di cui ${suppressed} soppresse per privacy · riconciliazioni esatte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: observedObservations,
+  };
+}
+
+function snapshotManagedIstatEpea(): SourceHealth {
+  const { source, edition, referencePeriod } = istatEpeaMetadata;
+  return {
+    ...baseHealth("istat-epea"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-epea", source.acquiredAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · EPEA protezione ambiente ${referencePeriod.from}-${referencePeriod.to} (edizione ${edition}, ${source.dataflowId}) · ${istatEpeaData.rows.length.toLocaleString("it-IT")} osservazioni · ${source.bytes.toLocaleString("it-IT")} byte CSV pinnato.`,
+    recordCount: istatEpeaData.rows.length,
   };
 }
 
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
-  const snapshot = getGovernmentScorecardSnapshot();
+  const snapshot = getGovernmentScorecardSourceSummary();
   const isAmeco = sourceId === "ameco";
-  const source = isAmeco
-    ? snapshot.sources.ameco
-    : snapshot.sources.governmentChronology;
-  const observationCount = snapshot.indicators.reduce(
-    (total, indicator) => total + Object.values(indicator.countries)
-      .reduce((countryTotal, series) => countryTotal + series.filter((point) => point.value != null).length, 0),
-    0,
-  );
-  const forecastCoverage = getGovernmentScorecardForecastCoverage(snapshot);
-  const forecastDetail = forecastCoverage.status === "complete"
-    ? `previsioni complete ${forecastCoverage.fromYear}-${forecastCoverage.throughYear}`
-    : `scenario previsionale non pubblicabile · copertura ${forecastCoverage.availableCells}/${forecastCoverage.requiredCells}`;
 
   return {
     ...baseHealth(sourceId),
     reachability: "not-probed",
-    freshness: freshnessFor(sourceId, source.retrievedAt),
+    freshness: freshnessFor(sourceId, isAmeco ? snapshot.retrievedAt : snapshot.chronologyVerifiedAt),
     latencyMs: null,
     detail: isAmeco
-      ? `Snapshot ${snapshot.sources.ameco.release} verificato · osservazioni fino al ${snapshot.sources.ameco.observedThrough} · ${forecastDetail}.`
-      : `Cronologia ufficiale verificata · ${snapshot.governments.length} governi dal ${snapshot.governments.at(0)?.startDate.slice(0, 4)} · mandato corrente identificato esplicitamente.`,
-    recordCount: isAmeco ? observationCount : snapshot.governments.length,
+      ? `Snapshot ${snapshot.release} verificato · osservazioni fino al ${snapshot.observedThrough} · previsioni ${snapshot.forecastFrom}-${snapshot.forecastThrough} escluse dal voto.`
+      : `Cronologia Quirinale verificata · ${snapshot.governmentCount} governi dal ${snapshot.firstGovernmentYear} · mandato corrente identificato esplicitamente.`,
+    recordCount: isAmeco ? snapshot.observedCells : snapshot.governmentCount,
   };
 }
 
@@ -638,6 +700,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedMefIrpef(),
     snapshotManagedIstat(),
     snapshotManagedIstatCasellarioPensioni(),
+    snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
     snapshotManagedPnrrChildcare(),
     snapshotManagedOpenCivitas(),
@@ -650,7 +713,11 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedGovernmentScorecard("governi-presidenza"),
     snapshotManagedPublicDebt("bancaditalia"),
     snapshotManagedPublicDebt("eurostat"),
-    snapshotManagedGovernmentCurrentSignals(),
+    snapshotManagedGovernmentInflation(),
+    snapshotManagedEurostatCofog(),
+    snapshotManagedIstatCofog(),
+    snapshotManagedIstatEpea(),
+    snapshotManagedInpsNaspi(),
   ];
 }
 
@@ -670,6 +737,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   siope: probeSiope,
   istat: snapshotManagedIstat,
   "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
+  consip: snapshotManagedConsip,
   opencoesione: snapshotManagedOpenCoesione,
   italiadomani: snapshotManagedPnrrChildcare,
   opencivitas: snapshotManagedOpenCivitas,
@@ -680,7 +748,11 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "partecipazioni-pubbliche": snapshotManagedMefParticipations,
   bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
   eurostat: () => snapshotManagedPublicDebt("eurostat"),
-  "eurostat-hicp": snapshotManagedGovernmentCurrentSignals,
+  "eurostat-hicp": snapshotManagedGovernmentInflation,
+  "eurostat-cofog": snapshotManagedEurostatCofog,
+  "istat-cofog": snapshotManagedIstatCofog,
+  "istat-epea": snapshotManagedIstatEpea,
+  "inps-naspi": snapshotManagedInpsNaspi,
 } satisfies Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */

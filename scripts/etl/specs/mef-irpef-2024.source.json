@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "datasetId": "mef_irpef_comunale",
   "taxYear": 2024,
   "declarationYear": 2025,
@@ -107,8 +107,51 @@
     "taxableIncome",
     "netTaxDeclared",
     "regionalSurtaxDue",
-    "municipalSurtaxDue"
+    "municipalSurtaxDue",
+    "buildingIncome",
+    "employmentIncome",
+    "pensionIncome",
+    "selfEmploymentIncome",
+    "ordinaryBusinessIncome",
+    "simplifiedBusinessIncome",
+    "participationIncome",
+    "nonPositiveComprehensiveIncome",
+    "comprehensiveIncome0To10000",
+    "comprehensiveIncome10000To15000",
+    "comprehensiveIncome15000To26000",
+    "comprehensiveIncome26000To55000",
+    "comprehensiveIncome55000To75000",
+    "comprehensiveIncome75000To120000",
+    "comprehensiveIncomeOver120000"
   ],
+  "measureGroups": {
+    "summary": [
+      "comprehensiveIncome",
+      "taxableIncome",
+      "netTaxDeclared",
+      "regionalSurtaxDue",
+      "municipalSurtaxDue"
+    ],
+    "incomeSources": [
+      "buildingIncome",
+      "employmentIncome",
+      "pensionIncome",
+      "selfEmploymentIncome",
+      "ordinaryBusinessIncome",
+      "simplifiedBusinessIncome",
+      "participationIncome"
+    ],
+    "incomeBands": [
+      "nonPositiveComprehensiveIncome",
+      "comprehensiveIncome0To10000",
+      "comprehensiveIncome10000To15000",
+      "comprehensiveIncome15000To26000",
+      "comprehensiveIncome26000To55000",
+      "comprehensiveIncome55000To75000",
+      "comprehensiveIncome75000To120000",
+      "comprehensiveIncomeOver120000"
+    ]
+  },
   "measures": {
     "comprehensiveIncome": {
       "frequencyHeader": "Reddito complessivo - Frequenza",
@@ -133,6 +176,81 @@
     "municipalSurtaxDue": {
       "frequencyHeader": "Addizionale comunale dovuta - Frequenza",
       "amountHeader": "Addizionale comunale dovuta - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "buildingIncome": {
+      "frequencyHeader": "Reddito da fabbricati - Frequenza",
+      "amountHeader": "Reddito da fabbricati - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "employmentIncome": {
+      "frequencyHeader": "Reddito da lavoro dipendente e assimilati - Frequenza",
+      "amountHeader": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "pensionIncome": {
+      "frequencyHeader": "Reddito da pensione - Frequenza",
+      "amountHeader": "Reddito da pensione - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "selfEmploymentIncome": {
+      "frequencyHeader": "Reddito da lavoro autonomo (comprensivo dei valori nulli) - Frequenza",
+      "amountHeader": "Reddito da lavoro autonomo (comprensivo dei valori nulli) - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "ordinaryBusinessIncome": {
+      "frequencyHeader": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria  (comprensivo dei valori nulli) - Frequenza",
+      "amountHeader": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria  (comprensivo dei valori nulli) - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "simplifiedBusinessIncome": {
+      "frequencyHeader": "Reddito di spettanza dell'imprenditore in contabilita' semplificata (comprensivo dei valori nulli) - Frequenza",
+      "amountHeader": "Reddito di spettanza dell'imprenditore in contabilita' semplificata (comprensivo dei valori nulli) - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "participationIncome": {
+      "frequencyHeader": "Reddito da partecipazione  (comprensivo dei valori nulli) - Frequenza",
+      "amountHeader": "Reddito da partecipazione  (comprensivo dei valori nulli) - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "nonPositiveComprehensiveIncome": {
+      "frequencyHeader": "Reddito complessivo minore o uguale a zero euro - Frequenza",
+      "amountHeader": "Reddito complessivo minore o uguale a zero euro - Ammontare in euro",
+      "allowNegativeAmount": true
+    },
+    "comprehensiveIncome0To10000": {
+      "frequencyHeader": "Reddito complessivo da 0 a 10000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 0 a 10000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncome10000To15000": {
+      "frequencyHeader": "Reddito complessivo da 10000 a 15000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 10000 a 15000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncome15000To26000": {
+      "frequencyHeader": "Reddito complessivo da 15000 a 26000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 15000 a 26000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncome26000To55000": {
+      "frequencyHeader": "Reddito complessivo da 26000 a 55000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 26000 a 55000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncome55000To75000": {
+      "frequencyHeader": "Reddito complessivo da 55000 a 75000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 55000 a 75000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncome75000To120000": {
+      "frequencyHeader": "Reddito complessivo da 75000 a 120000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo da 75000 a 120000 euro - Ammontare in euro",
+      "allowNegativeAmount": false
+    },
+    "comprehensiveIncomeOver120000": {
+      "frequencyHeader": "Reddito complessivo oltre 120000 euro - Frequenza",
+      "amountHeader": "Reddito complessivo oltre 120000 euro - Ammontare in euro",
       "allowNegativeAmount": false
     }
   },
@@ -178,9 +296,9 @@
     "algorithm": "sha256",
     "canonicalization": "UTF-8 JSON, sorted keys, compact separators, excluding integrity.lockSha256",
     "dataArtifact": {
-      "bytes": 1026780,
-      "sha256": "772613d3c32ff0bb33899bcaa206fe9c6db5e36d559a058d9541d8843c3c7ebd"
+      "bytes": 2578548,
+      "sha256": "ca54bc78ba33ba4dd61b411b51a237245646c6fd859c2c3ea30b567c463b13c3"
     },
-    "lockSha256": "0652bf0f7b548e9956fcdd791ec52846c733738a22562e713a15d2407952c342"
+    "lockSha256": "836c774944f19c9676f6ca2717078b4c33d2763a7feb8092ceaabc568cf65db5"
   }
 }

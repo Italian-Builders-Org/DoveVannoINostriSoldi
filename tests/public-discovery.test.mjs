@@ -91,10 +91,10 @@ test("all and only the statically generated editorial topics are in the sitemap 
 });
 
 test("sitemap exposes only canonical HTTPS public pages", async () => {
-  const scorecard = JSON.parse(
-    await readFile(path.join(repositoryRoot, "src", "data", "generated", "government-scorecard.json"), "utf8"),
+  const chronology = JSON.parse(
+    await readFile(path.join(repositoryRoot, "scripts", "etl", "specs", "government-scorecard-chronology.json"), "utf8"),
   );
-  const governmentPaths = scorecard.governments.map((government) => `/governi/${government.id}`);
+  const governmentPaths = chronology.governments.map((government) => `/governi/${government.id}`);
   const sitemap = publicSitemap(PUBLIC_SITE_URL, governmentPaths);
   assert.deepEqual(
     sitemap.map((entry) => entry.url),

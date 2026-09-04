@@ -1,3 +1,5 @@
+process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
+
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
@@ -10,10 +12,10 @@ globalThis.fetch = async (input, init = {}) => {
 };
 
 const {
-  IpaUpstreamHttpError,
   searchIpaEntities,
   searchIpaEntitiesByPrefix,
 } = await import("../src/lib/ipa.ts");
+const { SourceFetchError } = await import("../src/lib/data/source-fetch.ts");
 const { getIpaTypeDistribution } = await import("../src/lib/ipa-stats.ts");
 const { getIpaOrganizationStructure } = await import("../src/lib/ipa-structure.ts");
 const { SOURCE_HEALTH_ADAPTERS } = await import("../src/lib/data/source-health.ts");
@@ -45,14 +47,14 @@ test("entity datastore and prefix search make one call on HTTP 500", async () =>
   calls.length = 0;
   await assert.rejects(
     searchIpaEntities({ query: "Roma" }),
-    (error) => error instanceof IpaUpstreamHttpError && error.status === 500,
+    (error) => error instanceof SourceFetchError && error.httpStatus === 500,
   );
   assertOneCallPerUrl(1);
 
   calls.length = 0;
   await assert.rejects(
     searchIpaEntitiesByPrefix({ query: "Roma" }),
-    (error) => error instanceof IpaUpstreamHttpError && error.status === 500,
+    (error) => error instanceof SourceFetchError && error.httpStatus === 500,
   );
   assertOneCallPerUrl(1);
 });

@@ -12,6 +12,7 @@ export type SourceId =
   | "siope"
   | "istat"
   | "istat-casellario-pensioni"
+  | "consip"
   | "opencoesione"
   | "italiadomani"
   | "opencivitas"
@@ -23,6 +24,10 @@ export type SourceId =
   | "bancaditalia"
   | "eurostat"
   | "eurostat-hicp"
+  | "eurostat-cofog"
+  | "istat-cofog"
+  | "istat-epea"
+  | "inps-naspi"
   | "ameco"
   | "governi-presidenza";
 
@@ -84,12 +89,12 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
   },
   "governi-presidenza": {
     id: "governi-presidenza",
-    label: "Presidenza del Consiglio · governi nelle legislature",
-    owner: "Presidenza del Consiglio dei Ministri",
-    sourceUrl: "https://www.governo.it/it/i-governi-dal-1943-ad-oggi/i-governi-nelle-legislature/192",
+    label: "Presidenza della Repubblica · giuramenti dei governi",
+    owner: "Presidenza della Repubblica",
+    sourceUrl: "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
     cadence: "periodica",
     cadenceNote:
-      "La cronologia istituzionale cambia con l'insediamento di un nuovo governo; il controllo giornaliero valida contenuto e ordine prima di aggiornare lo snapshot.",
+      "La cronologia istituzionale cambia con il giuramento di un nuovo governo; il controllo giornaliero valida fonti Quirinale, contenuto e ordine prima di aggiornare il registro.",
     discoveryRevalidateSeconds: DAY,
     dataRevalidateSeconds: DAY,
     staleAfterSeconds: null,
@@ -234,6 +239,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-casellario-pensioni", "domain:social-benefits"],
+  },
+  consip: {
+    id: "consip",
+    label: "Consip · acquisti centralizzati",
+    owner: "Consip S.p.A. (società del MEF)",
+    sourceUrl: "https://dati.consip.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il portale open data Consip pubblica dump annuali per package; lo snapshot resta bloccato sui file verificati (hash e byte) e viene aggiornato solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:consip", "domain:public-procurement"],
   },
   opencoesione: {
     id: "opencoesione",
@@ -383,6 +403,66 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 2,
     tags: ["source:eurostat-hicp", "domain:government-scorecard"],
+  },
+  "eurostat-cofog": {
+    id: "eurostat-cofog",
+    label: "Eurostat · spesa per funzione (COFOG)",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti delle Amministrazioni pubbliche per funzione sono annuali e vengono rivisti: lo snapshot resta bloccato sui byte verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-cofog", "domain:public-spending"],
+  },
+  "istat-cofog": {
+    id: "istat-cofog",
+    label: "ISTAT · consumi finali della PA per funzione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti nazionali per funzione escono annualmente e vengono rivisti: lo snapshot fissa una edizione di rilascio e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-cofog", "domain:public-spending"],
+  },
+  "istat-epea": {
+    id: "istat-epea",
+    label: "ISTAT · spesa per la protezione dell'ambiente (EPEA)",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti EPEA escono annualmente e vengono rivisti: lo snapshot fissa l'edizione 2025M2 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-epea", "domain:public-spending"],
+  },
+  "inps-naspi": {
+    id: "inps-naspi",
+    label: "INPS · NASpI beneficiari e trattamenti",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli osservatori NASpI sono pubblicati per anno sul portale open data; lo snapshot resta bloccato sui nove package verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-naspi", "domain:social-benefits"],
   },
 };
 

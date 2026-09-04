@@ -1,0 +1,95 @@
+{
+  "coverage": {
+    "excludedYears": {
+      "2025": "Escluso: al 2026-09-03 la fonte pubblica il 2025 per il solo Lussemburgo (11 celle su 374). Il rilascio anticipato di un singolo Stato membro non è un confronto UE e non viene pubblicato."
+    },
+    "note": "Copertura piena e pretesa dal contratto: 4114 celle su 4114 per entrambe le unità, nessuna cella assente in nessun anno per nessuna geografia. Una lacuna futura deve fermare la build, non essere riempita per interpolazione.",
+    "observedAt": "2026-09-03"
+  },
+  "datasetId": "eurostat-cofog",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 409576,
+      "path": "src/data/generated/eurostat-cofog-2014-2024.data.json",
+      "sha256": "bd585887a85193aeb050474a5f2277c133fe14f9351af86391f3b6ba0e47be1d"
+    },
+    "sourceLockSha256": "c614d505bd47633c039001ca8a94faf1fb2891f479adc240da665bd3b14e845f"
+  },
+  "observedAt": "2026-09-03",
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "reconciliation": {
+    "maxGapAt": "EA19/2024",
+    "maxGapCents": 40000000,
+    "maxGapShareHundredths": 30,
+    "note": "Il totale pubblicato non è la somma delle divisioni: Eurostat arrotonda ogni cella a un decimale in modo indipendente. Lo scarto è misurato e limitato, mai corretto.",
+    "toleranceCents": 60000000,
+    "toleranceShareHundredths": 60
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Anno dalla dimensione time del dataset, mai dedotto dall'URL. Il 2025 è escluso perché la fonte lo pubblica per il solo Lussemburgo. Le celle con flag «b» segnano una interruzione della serie: a cavallo non sono confrontabili.",
+      "referencePeriod": "2014-2024"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-03",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024"
+      ],
+      "checkedAt": "2026-09-03",
+      "hashes": "SHA-256 per asset in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-07-21T11:00:00+0200"
+    },
+    "soldi": {
+      "nature": "spesa delle Amministrazioni pubbliche (S13) di competenza economica SEC 2010 — non è stanziamento, non è impegno, non è pagamento di cassa",
+      "note": "Accanto all'importo, la quota di PIL in centesimi di punto è il denominatore comparabile fra Stati. Il totale è quello della fonte e non la somma delle divisioni, da cui differisce per solo arrotondamento.",
+      "unit": "centesimi di euro"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-03",
+      "checkedAt": "2026-09-03",
+      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici il 2026-09-03 con estremi temporali espliciti (sinceTimePeriod/untilTimePeriod), così i byte sono deterministici e un hash diverso segnala una revisione della fonte, non il semplice avanzare del tempo."
+    },
+    "assets": {
+      "mio-eur": {
+        "bytes": 65553,
+        "sha256": "5de6234e61c800ac323c175dc28ada2e95763078d7780a0dd6e8cada0c240c88",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "unit": "MIO_EUR",
+        "unitLabel": "Million euro",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024"
+      },
+      "pc-gdp": {
+        "bytes": 51759,
+        "sha256": "7aedc43f93a894d4d8d601da774e23a497930c46276a2db5d7670b1a57612537",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "unit": "PC_GDP",
+        "unitLabel": "Percentage of gross domestic product (GDP)",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024"
+      }
+    },
+    "datasetCode": "gov_10a_exp",
+    "datasetLabel": "General government expenditure by function (COFOG)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice verificata il 2026-09-03: «licensed under the Creative Commons Attribution 4.0 International licence… provided you acknowledge the source and indicate any changes». Licenza del portale Eurostat, non estesa ad altri titolari.",
+    "owner": "Eurostat (Commissione europea)",
+    "structure": {
+      "agencyId": "ESTAT",
+      "id": "GOV_10A_EXP",
+      "version": "75.0"
+    },
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+  }
+}

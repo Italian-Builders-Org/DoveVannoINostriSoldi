@@ -109,9 +109,24 @@ const REGION_SOURCE_NAMES = Object.freeze({
 
 const LICENSE = "CC BY 4.0";
 const ATECO_VERSION = "ATECO 2025";
-const OBSERVED_AT = process.argv.find((arg) => arg.startsWith("--observed-at="))?.split("=", 2)[1]
+const OBSERVED_AT_OVERRIDE = process.argv.find((arg) => arg.startsWith("--observed-at="))?.split("=", 2)[1]
   ?? process.env.COMPANY_ATLAS_OBSERVED_AT
-  ?? new Date().toISOString();
+  ?? null;
+
+function latestSourceTimestamp(values) {
+  const timestamps = values
+    .map((value) => {
+      if (value == null || value === "") return null;
+      const parsed = Date.parse(value);
+      return Number.isNaN(parsed) ? null : new Date(parsed).toISOString();
+    })
+    .filter(Boolean)
+    .sort();
+  if (timestamps.length === 0) {
+    throw new Error("Nessuna data di aggiornamento fonte valida");
+  }
+  return timestamps[timestamps.length - 1];
+}
 
 function categoryCodes(dataset, dimensionId) {
   const category = dataset.dimension[dimensionId].category;
@@ -177,7 +192,7 @@ async function fetchText(url) {
   return response.text();
 }
 
-function sourceRecord({ id, label, url, updatedAt, cadence, coverage, caveat }) {
+function sourceRecord({ id, label, url, updatedAt, observedAt, cadence, coverage, caveat }) {
   return {
     id,
     label,
@@ -185,7 +200,7 @@ function sourceRecord({ id, label, url, updatedAt, cadence, coverage, caveat }) 
     publisher: "CCIAA Marche su dati InfoCamere",
     license: LICENSE,
     updatedAt,
-    observedAt: OBSERVED_AT,
+    observedAt,
     cadence,
     coverage,
     caveat,
@@ -582,9 +597,12 @@ export async function buildSnapshot() {
     expectedSectorCodes: active.sectors.map((sector) => sector.code),
   });
   const production = normalizeProductionValue(productionValue);
+  const generatedAt = OBSERVED_AT_OVERRIDE
+    ?? latestSourceTimestamp([active.updatedAt, workforce.updatedAt, production.updatedAt]);
+  const latestActivePeriod = active.periods.at(-1)?.id;
   const snapshot = {
     schemaVersion: 1,
-    generatedAt: OBSERVED_AT,
+    generatedAt,
     observationType: "aggregate",
     geographyVersion: "regioni ISTAT allineate ai codici territoriali usati dalla fonte",
     atecoVersion: ATECO_VERSION,
@@ -594,8 +612,11 @@ export async function buildSnapshot() {
         label: "Imprese attive · stock mensile",
         url: SOURCE_URLS.activeStock,
         updatedAt: active.updatedAt,
+        observedAt: generatedAt,
         cadence: "mensile",
-        coverage: "Sedi di impresa attive per regione, settore ATECO 2025 e mese; ultimo periodo 31/07/2026.",
+        coverage: latestActivePeriod
+          ? `Sedi di impresa attive per regione, settore ATECO 2025 e mese; ultimo periodo ${latestActivePeriod}.`
+          : "Sedi di impresa attive per regione, settore ATECO 2025 e mese.",
         caveat: "Conta sedi di impresa attive, non ricavi e non gruppi societari.",
       }),
       workforce: sourceRecord({
@@ -603,6 +624,7 @@ export async function buildSnapshot() {
         label: "Addetti e localizzazioni attive · trimestre",
         url: SOURCE_URLS.workforce,
         updatedAt: workforce.updatedAt,
+        observedAt: generatedAt,
         cadence: "trimestrale",
         coverage: "Tutte le righe sono bucket ATECO osservati distinti; la pipeline somma i bucket provinciali a regione × sezione ATECO senza scartare i livelli più specifici.",
         caveat: "Le posizioni previdenziali attive sono conteggiate nel trimestre precedente a quello indicato, a partire dalla fornitura INPS: il dato non rappresenta il livello di occupazione nel territorio e non è direttamente comparabile con ISTAT/ASIA. Le localizzazioni attive comprendono sedi di impresa e unità locali non cessate.",
@@ -612,6 +634,7 @@ export async function buildSnapshot() {
         label: "Fasce di valore della produzione · bilanci",
         url: SOURCE_URLS.productionValue,
         updatedAt: production.updatedAt,
+        observedAt: generatedAt,
         cadence: "annuale",
         coverage: "Numero di sedi attive obbligate al deposito del bilancio per fascia, regione e settore; periodo 31/12/2025.",
         caveat: "Il valore della produzione non è fatturato o ricavi esatti; la fonte lo deriva dai bilanci depositati.",

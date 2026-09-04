@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getGovernmentScorecardPublicPaths } from "@/lib/government-scorecard";
+import { getGovernmentScorecardPublicPaths } from "@/lib/government-scorecard-governments";
 import { publicSitemap } from "@/lib/public-discovery";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 

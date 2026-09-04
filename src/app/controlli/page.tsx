@@ -164,6 +164,10 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           Numeri presi da relazioni ufficiali, rivisti il {longDate(`${auditReviewedAt}T00:00:00Z`)}.
           Ogni numero dice una cosa precisa e mostra anche i suoi limiti.
         </p>
+        <p>
+          Per un quadro in tre passi (cosa emerge, dove approfondire, cosa si può migliorare) apri la{" "}
+          <Link href="/controlli/sintesi">Sintesi</Link>.
+        </p>
       </div>
 
       <nav className={styles.yearFilter} aria-label="Filtra i controlli per anno">

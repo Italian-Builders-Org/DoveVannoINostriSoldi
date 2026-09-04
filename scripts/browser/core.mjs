@@ -79,6 +79,43 @@ async function assertResponsiveShell(page, label, width) {
   assert.equal(navigationState.notePresent, false, `${label}: nota fonti ridondante ancora presente`);
   assert.ok(navigationState.navigationLeft >= 0, `${label}: navigazione fuori viewport a sinistra`);
   assert.ok(navigationState.navigationRight <= width + 1, `${label}: navigazione fuori viewport a destra`);
+
+  const scrollControls = await page.evaluate(() =>
+    [...document.querySelectorAll(".nav-scroll-control")].map((element) => {
+      const style = window.getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return {
+        visible:
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          box.width > 0 &&
+          box.height > 0,
+      };
+    }),
+  );
+  if (width <= 900) {
+    assert.equal(
+      scrollControls.length,
+      0,
+      `${label}: Indietro/Scorri ancora nel DOM su mobile`,
+    );
+    const navOverflow = await page.evaluate(() => {
+      const row = document.querySelector(".nav-row");
+      const navigation = document.querySelector(".primary-nav");
+      if (!navigation) return null;
+      return {
+        menuOpen: row?.getAttribute("data-menu-open") === "true",
+        overflowX: window.getComputedStyle(navigation).overflowX,
+      };
+    });
+    assert.ok(navOverflow, `${label}: navigazione primaria assente`);
+    if (!navOverflow.menuOpen) {
+      assert.ok(
+        navOverflow.overflowX === "auto" || navOverflow.overflowX === "scroll",
+        `${label}: la riga del menu non scorre al tocco`,
+      );
+    }
+  }
 }
 
 async function assertCohesionTracePanelContrast(page, label) {
@@ -528,6 +565,22 @@ async function bodyText(page) {
   return page.$eval("body", (body) => body.innerText);
 }
 
+async function assertGovernmentChartKeyboard(page, label) {
+  const selector = '[data-slide-id] svg[role="img"][tabindex="0"]';
+  const chart = await page.$(selector);
+  assert.ok(chart, `${label}: grafico navigabile da tastiera assente`);
+  await page.$eval(selector, (element) => element.focus());
+  assert.equal(
+    await page.$eval(selector, (element) => document.activeElement === element),
+    true,
+    `${label}: il grafico non riceve il focus`,
+  );
+  const currentPeriod = await page.$eval('[data-slide-id] [role="status"] strong', (element) => element.textContent);
+  await page.keyboard.press("ArrowLeft");
+  const previousPeriod = await page.$eval('[data-slide-id] [role="status"] strong', (element) => element.textContent);
+  assert.notEqual(previousPeriod, currentPeriod, `${label}: freccia sinistra non cambia il periodo letto`);
+}
+
 function assertTextMatches(text, pattern, label) {
   assert.ok(pattern.test(text), `${label}: testo atteso ${pattern} assente`);
 }
@@ -544,17 +597,16 @@ async function findPrimaryNavSection(page, sectionLabel) {
 
 async function assertSubmenuVisible(itemElement, page, label, childLabel) {
   await page.waitForFunction(
-    (element) => {
-      const submenu = element.querySelector(".nav-submenu");
+    () => {
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
       if (!submenu) return false;
       const style = window.getComputedStyle(submenu);
       return style.display !== "none" && style.visibility !== "hidden";
     },
     { timeout: 3_000 },
-    itemElement,
   );
 
-  const childText = await itemElement.$eval(".nav-submenu", (element) => element.textContent ?? "");
+  const childText = await page.$eval(".nav-row > .nav-submenu", (element) => element.textContent ?? "");
   assert.match(childText, new RegExp(childLabel, "i"), `${label}: voce ${childLabel} assente in tendina`);
 }
 
@@ -577,11 +629,11 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
 
   await fromItem.hover();
   await page.waitForFunction(
-    (element) =>
-      element.getAttribute("data-open") === "true" &&
-      window.getComputedStyle(element.querySelector(".nav-submenu")).display !== "none",
+    () => {
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
+      return Boolean(submenu) && window.getComputedStyle(submenu).display !== "none";
+    },
     { timeout: 3_000 },
-    fromItem,
   );
 
   await toItem.hover();
@@ -589,16 +641,15 @@ async function assertPrimaryDropdownExclusive(page, label, { fromLabel, toLabel 
     (from, to) => {
       if (to.getAttribute("data-open") !== "true") return false;
       if (from.getAttribute("data-open") === "true") return false;
-      const fromDisplay = window.getComputedStyle(from.querySelector(".nav-submenu")).display;
-      const toDisplay = window.getComputedStyle(to.querySelector(".nav-submenu")).display;
-      return fromDisplay === "none" && toDisplay !== "none";
+      const submenu = document.querySelector(".nav-row > .nav-submenu");
+      return Boolean(submenu) && window.getComputedStyle(submenu).display !== "none";
     },
     { timeout: 3_000 },
     fromItem,
     toItem,
   );
 
-  const visibleCount = await page.$$eval("nav.primary-nav .nav-submenu", (menus) =>
+  const visibleCount = await page.$$eval(".nav-row > .nav-submenu", (menus) =>
     menus.filter((menu) => window.getComputedStyle(menu).display !== "none").length,
   );
   assert.equal(visibleCount, 1, `${label}: atteso un solo sottomenu visibile, trovati ${visibleCount}`);
@@ -630,13 +681,8 @@ async function assertPrimaryDropdownTap(page, label, { sectionLabel, childLabel 
 
   await page.keyboard.press("Escape");
   await page.waitForFunction(
-    (element) => {
-      const submenu = element.querySelector(".nav-submenu");
-      if (!submenu) return false;
-      return window.getComputedStyle(submenu).display === "none";
-    },
+    () => !document.querySelector(".nav-row > .nav-submenu"),
     { timeout: 3_000 },
-    itemElement,
   );
 }
 
@@ -686,6 +732,7 @@ async function runScenario(browser, {
   label,
   mediaFeatures,
   pathname,
+  touch = false,
   validate,
   width,
 }) {
@@ -695,6 +742,15 @@ async function runScenario(browser, {
   let thrown;
 
   try {
+    if (touch) {
+      await page.setViewport({
+        width,
+        height: 900,
+        deviceScaleFactor: 1,
+        hasTouch: true,
+        isMobile: true,
+      });
+    }
     if (mediaFeatures) await page.emulateMediaFeatures(mediaFeatures);
     await navigate(page, { url: requestedUrl, label });
     await assertResponsiveShell(page, label, width);
@@ -740,7 +796,7 @@ const completed = [];
 try {
   browser = await launchBrowser();
 
-  for (const width of [390, 1280]) {
+  for (const width of [390, 768, 1280]) {
     const label = `Pagella governi ${width}px`;
     await runScenario(browser, {
       label,
@@ -748,9 +804,8 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
-        assertTextMatches(text, /Economia italiana: cosa sta migliorando e cosa no/i, label);
-        assertTextMatches(text, /Come sta andando con Meloni-I/i, label);
-        assertTextMatches(text, /AMECO/i, label);
+        assertTextMatches(text, /Pagella politico-economica/i, label);
+        assertTextMatches(text, /Meloni I/i, label);
         assertTextMatches(text, /Eurostat/i, label);
         assert.equal(
           await page.$eval("body", (element) => getComputedStyle(element).fontFamily.includes("Geist")),
@@ -765,10 +820,95 @@ try {
           `${label}: selettore indicatori sotto i 44px`,
         );
         await indicatorButton.click();
+        await assertGovernmentChartKeyboard(page, label);
+
+        const sourcesNavigationLink = await page.$(
+          'main nav[aria-label="Approfondimenti della pagella"] a[href="#dati-e-fonti"]',
+        );
+        assert.ok(sourcesNavigationLink, `${label}: collegamento Scarica i dati assente`);
+        await sourcesNavigationLink.evaluate((element) =>
+          element.scrollIntoView({ block: "center", inline: "center" }),
+        );
+        await sourcesNavigationLink.click();
+        await page.waitForFunction(() => window.location.hash === "#dati-e-fonti");
+        assert.equal(new URL(page.url()).hash, "#dati-e-fonti", `${label}: il collegamento Scarica i dati non aggiorna l'URL`);
+        const downloadsPanel = await page.$("section#dati-e-fonti");
+        assert.ok(downloadsPanel, `${label}: sezione Scarica i dati non raggiungibile`);
+        const primaryDownloads = await page.$$eval(
+          'section#dati-e-fonti > ul a[href^="/api/governi/dati/"]',
+          (links) => links.map((link) => ({
+            href: link.getAttribute("href"),
+            height: link.getBoundingClientRect().height,
+          })),
+        );
+        assert.deepEqual(
+          primaryDownloads.map((download) => download.href),
+          ["/api/governi/dati/score-data", "/api/governi/dati/page-data"],
+          `${label}: i due download principali non sono immediatamente visibili`,
+        );
+        assert.ok(
+          primaryDownloads.every((download) => download.height >= 44),
+          `${label}: un download principale ha un target inferiore a 44px`,
+        );
+        const technicalDownloads = await downloadsPanel.$("details");
+        assert.ok(technicalDownloads, `${label}: sezione dei file tecnici assente`);
+        assert.equal(
+          await technicalDownloads.evaluate((element) => element.hasAttribute("open")),
+          false,
+          `${label}: i file tecnici devono partire chiusi`,
+        );
+        await technicalDownloads.$eval("summary", (summary) => summary.click());
+        const directDownloads = await page.$$eval(
+          'a[href^="/api/governi/dati/"]',
+          (links) => links.map((link) => ({
+            href: link.getAttribute("href"),
+            filename: link.getAttribute("download"),
+            height: link.getBoundingClientRect().height,
+          })),
+        );
+        assert.deepEqual(
+          directDownloads.map((download) => download.href),
+          [
+            "/api/governi/dati/score-data",
+            "/api/governi/dati/page-data",
+            "/api/governi/dati/methodology",
+            "/api/governi/dati/chronology",
+            "/api/governi/dati/score-provenance",
+            "/api/governi/dati/page-provenance",
+          ],
+          `${label}: elenco dei download diretti divergente`,
+        );
+        assert.ok(
+          directDownloads.every((download) => download.filename),
+          `${label}: un download diretto non dichiara il nome file`,
+        );
+        assert.ok(
+          directDownloads.every((download) => download.height >= 44),
+          `${label}: un download diretto ha un target inferiore a 44px`,
+        );
+        await page.focus('a[href="/api/governi/dati/score-data"]');
+        assert.equal(
+          await page.evaluate(() => document.activeElement?.getAttribute("href")),
+          "/api/governi/dati/score-data",
+          `${label}: il primo download diretto non riceve il focus`,
+        );
+        const downloadLink = await page.$('a[href="/api/governi/dati"]');
+        assert.ok(downloadLink, `${label}: indice tecnico dei download assente`);
+        assert.equal(
+          await downloadLink.evaluate((element) => element.textContent?.trim()),
+          "Indice tecnico dei download",
+          `${label}: testo del link al manifest divergente`,
+        );
+        await downloadLink.evaluate((element) => element.focus());
+        assert.equal(
+          await page.evaluate(() => document.activeElement?.getAttribute("href")),
+          "/api/governi/dati",
+          `${label}: il link download non riceve il focus`,
+        );
 
         await page.evaluate(() => {
           const summary = [...document.querySelectorAll("summary")].find(
-            (candidate) => candidate.textContent?.trim() === "Dati del grafico in tabella",
+            (candidate) => candidate.textContent?.trim() === "Apri la tabella equivalente",
           );
           summary?.click();
         });
@@ -782,32 +922,35 @@ try {
     completed.push(label);
   }
 
-  await runScenario(browser, {
-    label: "Confronto governi 390px",
-    pathname: "/governi/confronta",
-    width: 390,
-    validate: async (page) => {
-      await page.select('select[name="x"]', "prodi-i");
-      await page.select('select[name="y"]', "meloni-i");
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.click('main button[type="submit"]'),
-      ]);
-      assert.equal(new URL(page.url()).searchParams.get("x"), "prodi-i");
-      assert.equal(new URL(page.url()).searchParams.get("y"), "meloni-i");
-      const text = await bodyText(page);
-      assertTextMatches(text, /Prodi-I/i, "Confronto governi 390px");
-      assertTextMatches(text, /Meloni-I/i, "Confronto governi 390px");
-      assert.equal(
-        await page.$("[data-higher-result]"),
-        null,
-        "Confronto governi 390px: evidenza da vincitore ancora presente",
-      );
-    },
-  });
-  completed.push("Confronto governi 390px");
+  for (const width of [390, 768, 1280]) {
+    const label = `Confronto governi ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/governi/confronta",
+      width,
+      validate: async (page) => {
+        await page.select('select[name="sinistra"]', "prodi-i");
+        await page.select('select[name="destra"]', "meloni-i");
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          page.click('main button[type="submit"]'),
+        ]);
+        assert.equal(new URL(page.url()).searchParams.get("sinistra"), "prodi-i");
+        assert.equal(new URL(page.url()).searchParams.get("destra"), "meloni-i");
+        const text = await bodyText(page);
+        assertTextMatches(text, /Prodi I/i, label);
+        assertTextMatches(text, /Meloni I/i, label);
+        assert.equal(
+          await page.$("[data-higher-result]"),
+          null,
+          `${label}: evidenza da vincitore ancora presente`,
+        );
+      },
+    });
+    completed.push(label);
+  }
 
-  for (const width of [390, 1280]) {
+  for (const width of [390, 768, 1280]) {
     const label = `Scheda governo Meloni-I ${width}px`;
     await runScenario(browser, {
       label,
@@ -817,20 +960,21 @@ try {
         const text = await bodyText(page);
         assert.equal(
           await page.$eval("main h1", (element) => element.textContent?.trim()),
-          "Meloni-I",
+          "Meloni I",
           `${label}: H1 della scheda assente`,
         );
-        assertTextMatches(text, /Commissione europea · AMECO/i, label);
-        assertTextMatches(text, /Cosa ha ereditato/i, label);
-        assertTextMatches(text, /Cosa i dati non dimostrano/i, label);
+        assertTextMatches(text, /Eurostat/i, label);
+        assertTextMatches(text, /Il mandato in breve/i, label);
+        assertTextMatches(text, /Geopolitica, shock e crisi/i, label);
 
         const indicatorButton = await page.$('main button[aria-pressed="false"]');
         assert.ok(indicatorButton, `${label}: selettore indicatori assente`);
         await indicatorButton.click();
+        await assertGovernmentChartKeyboard(page, label);
 
         await page.evaluate(() => {
           const summary = [...document.querySelectorAll("summary")].find(
-            (candidate) => candidate.textContent?.trim() === "Dati del grafico in tabella",
+            (candidate) => candidate.textContent?.trim() === "Apri la tabella equivalente",
           );
           summary?.click();
         });
@@ -842,6 +986,35 @@ try {
       },
     });
     completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    for (const state of [
+      {
+        id: "dalema-ii",
+        expected: /Mandato troppo breve per i dati annuali disponibili/i,
+        name: "mandato breve",
+      },
+      {
+        id: "dini-i",
+        expected: /Dati AMECO obbligatori incompleti/i,
+        name: "dati mancanti",
+      },
+    ]) {
+      const label = `Pagella governi ${state.name} ${width}px`;
+      await runScenario(browser, {
+        label,
+        pathname: `/governi/${state.id}`,
+        width,
+        validate: async (page) => {
+          const text = await bodyText(page);
+          assertTextMatches(text, /Voto non calcolabile/i, label);
+          assertTextMatches(text, state.expected, label);
+          assertTextMatches(text, /Cosa è successo/i, label);
+        },
+      });
+      completed.push(label);
+    }
   }
 
   for (const width of [320, 390, 768, 1280]) {
@@ -946,12 +1119,6 @@ try {
     pathname: "/imprese?metric=employees",
     width: 390,
     validate: async (page) => {
-      const currentLabels = await page.$$eval(
-        'nav.primary-nav a[aria-current="page"]',
-        (links) => links.map((link) => link.textContent?.trim()),
-      );
-      assert.deepEqual(currentLabels, ["Addetti"]);
-
       await assertPrimaryDropdownTap(page, "Atlante Imprese query navigation 390px", {
         sectionLabel: "Imprese",
         childLabel: "Localizzazioni attive",
@@ -959,38 +1126,70 @@ try {
 
       const itemElement = await findPrimaryNavSection(page, "Imprese");
       assert.ok(itemElement, "Atlante Imprese query navigation 390px: sezione Imprese assente");
+      await page.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      }, itemElement);
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Atlante Imprese query navigation 390px: pulsante tendina assente");
-      await toggle.click();
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const openBox = await toggle.boundingBox();
+      assert.ok(openBox, "Atlante Imprese query navigation 390px: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        openBox.x + openBox.width / 2,
+        openBox.y + openBox.height / 2,
+      );
       await assertSubmenuVisible(
         itemElement,
         page,
         "Atlante Imprese query navigation 390px",
-        "Localizzazioni attive",
+        "Addetti",
       );
-      const localUnitsLink = await itemElement.$(
-        'a[href="/imprese?metric=active_local_units"]',
+      const currentLabels = await page.$$eval(
+        '.nav-row > .nav-submenu a[aria-current="page"]',
+        (links) => links.map((link) => link.textContent?.trim()),
+      );
+      assert.deepEqual(currentLabels, ["Addetti"]);
+      const localUnitsLink = await page.$(
+        '.nav-row > .nav-submenu a[href="/imprese?metric=active_local_units"]',
       );
       assert.ok(localUnitsLink, "Atlante Imprese query navigation 390px: link metrica assente");
-      await localUnitsLink.click();
+      await Promise.all([
+        page.waitForFunction(
+          () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
+          { timeout: 5_000 },
+        ),
+        localUnitsLink.click(),
+      ]);
       await page.waitForFunction(
-        () => new URL(window.location.href).searchParams.get("metric") === "active_local_units",
+        () => !document.querySelector(".nav-row")?.hasAttribute("data-menu-open"),
         { timeout: 3_000 },
       );
-      await page.waitForFunction(
-        () => {
-          const current = document.querySelector(
-            'nav.primary-nav a[aria-current="page"]',
-          );
-          return current?.textContent?.trim() === "Localizzazioni attive";
-        },
-        { timeout: 3_000 },
+
+      const refreshedItem = await findPrimaryNavSection(page, "Imprese");
+      assert.ok(refreshedItem, "Atlante Imprese query navigation 390px: sezione Imprese assente dopo la query");
+      await page.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      }, refreshedItem);
+      const reopenToggle = await refreshedItem.$(".nav-item-toggle");
+      assert.ok(reopenToggle, "Atlante Imprese query navigation 390px: pulsante tendina assente dopo la query");
+      await waitForStableNavigationTouchTarget(page, reopenToggle);
+      const reopenBox = await reopenToggle.boundingBox();
+      assert.ok(reopenBox, "Atlante Imprese query navigation 390px: pulsante tendina non visibile dopo la query");
+      await page.touchscreen.tap(
+        reopenBox.x + reopenBox.width / 2,
+        reopenBox.y + reopenBox.height / 2,
       );
-      assert.equal(
-        await page.$eval(".nav-row", (row) => row.hasAttribute("data-menu-open")),
-        false,
-        "Atlante Imprese query navigation 390px: menu rimasto aperto dopo la query",
+      await assertSubmenuVisible(
+        refreshedItem,
+        page,
+        "Atlante Imprese query navigation 390px",
+        "Localizzazioni attive",
       );
+      const afterLabels = await page.$$eval(
+        '.nav-row > .nav-submenu a[aria-current="page"]',
+        (links) => links.map((link) => link.textContent?.trim()),
+      );
+      assert.deepEqual(afterLabels, ["Localizzazioni attive"]);
     },
   });
   completed.push("Atlante Imprese query navigation 390px");
@@ -1246,6 +1445,9 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
+        const heading = await page.$eval("h1", (element) => element.textContent?.trim() ?? "");
+        assert.equal(heading, "Benevento", `${label}: titolo Comune non human-readable`);
+        assertTextMatches(text, /Pagamenti|Confronto|PNRR|IRPEF|Appalti/i, label);
         assertTextMatches(text, /SIOPE · pagamenti di cassa/i, label);
         assertTextMatches(text, /Quanto ha pagato il Comune/i, label);
         assertTextMatches(text, /Redditi e imposte dei residenti/i, label);
@@ -1254,15 +1456,19 @@ try {
         assertTextMatches(text, /Da gennaio ad agosto 2026/i, label);
         assertTextMatches(text, /Dati parziali/i, label);
         assertTextMatches(text, /Per cosa ha pagato il Comune/i, label);
+        assertTextMatches(text, /Costi di funzionamento quotidiano/i, label);
+        assertTextMatches(text, /Valore tipico \(mediana\)/i, label);
+        assertTextMatches(text, /Scala OpenCivitas da 0 a 10/i, label);
+        assertTextMatches(text, /non dimostra spreco/i, label);
         assertTextMatches(text, /Pagamenti registrati per anno/i, label);
-        assertTextMatches(text, /Vedi importi esatti e periodi coperti/i, label);
+        assertTextMatches(text, /Confronti e dettaglio territoriale/i, label);
         assertTextMatches(text, /Altre categorie/i, label);
         assertTextMatches(text, /Informazioni sul Comune e fonti/i, label);
         assert.ok(
           text.indexOf("Quanto ha pagato il Comune") < text.indexOf("Per cosa ha pagato il Comune") &&
           text.indexOf("Per cosa ha pagato il Comune") < text.indexOf("Pagamenti registrati per anno") &&
-          text.indexOf("Pagamenti registrati per anno") < text.indexOf("Vedi importi esatti e periodi coperti") &&
-          text.indexOf("Vedi importi esatti e periodi coperti") < text.indexOf("Spesa e servizi a confronto") &&
+          text.indexOf("Pagamenti registrati per anno") < text.indexOf("Confronti e dettaglio territoriale") &&
+          text.indexOf("Confronti e dettaglio territoriale") < text.indexOf("Spesa e servizi a confronto") &&
           text.indexOf("Spesa e servizi a confronto") < text.indexOf("Progetti PNRR per asili e prima infanzia") &&
           text.indexOf("Progetti PNRR per asili e prima infanzia") < text.indexOf("Redditi e imposte dei residenti") &&
           text.indexOf("Redditi e imposte dei residenti") < text.indexOf("Informazioni sul Comune e fonti"),
@@ -1288,6 +1494,18 @@ try {
         const openCivitasBars = await page.$$eval("[data-opencivitas-chart] > li", (rows) => rows.map((row) => row.textContent));
         assert.equal(openCivitasBars.length, 2);
         assert.match(openCivitasBars.join(" "), /Spesa registrata.*Valore di riferimento/is);
+
+        const detailSummary = await page.$("details[data-siope-detail] > summary");
+        assert.ok(detailSummary, `${label}: dettaglio territoriale assente`);
+        assert.equal(await detailSummary.evaluate((element) => element.parentElement?.open), false);
+        await detailSummary.focus();
+        await page.keyboard.press("Enter");
+        assert.equal(await detailSummary.evaluate((element) => element.parentElement?.open), true);
+        assertTextMatches(
+          await page.$eval("details[data-siope-detail]", (element) => element.innerText),
+          /Vedi importi esatti e periodi coperti/i,
+          label,
+        );
 
         const historySummary = await page.$("details[data-payment-history] > summary");
         assert.ok(historySummary, `${label}: storico espandibile assente`);
@@ -1351,7 +1569,7 @@ try {
   }
 
   await runScenario(browser, {
-    label: "Ente non comunale invariato 390px",
+    label: "Ente non comunale layout leggibile 390px",
     pathname: "/enti/agid",
     width: 390,
     validate: async (page) => {
@@ -1360,14 +1578,82 @@ try {
         assertTextMatches(text, /Indice PA non risponde/i, "Ente non comunale");
         assertTextMatches(text, /Codice richiesto[\s\S]*agid/i, "Ente non comunale");
       } else {
-        assertTextMatches(text, /Identità amministrativa/i, "Ente non comunale");
-        assertTextMatches(text, /Dati economici · collegamenti in corso/i, "Ente non comunale");
-        assertTextMatches(text, /Formato JSON/i, "Ente non comunale");
+        assert.doesNotMatch(text, /Identità amministrativa/i);
+        assert.doesNotMatch(text, /Dati economici · collegamenti in corso/i);
+        assertTextMatches(text, /Informazioni sull'ente e fonti/i, "Ente non comunale");
+        assertTextMatches(text, /Contratti e aggiudicatari|ANAC · aggiudicazioni/i, "Ente non comunale");
       }
       assert.doesNotMatch(text, /Quanto ha pagato il Comune/i);
     },
   });
-  completed.push("Ente non comunale invariato 390px");
+  completed.push("Ente non comunale layout leggibile 390px");
+
+  await runScenario(browser, {
+    label: "Ricerca città prioritizza il Comune 390px",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      async function firstEntityHrefFor(query) {
+        await page.goto(new URL("/", page.url()).toString(), {
+          waitUntil: "domcontentloaded",
+          timeout: 45_000,
+        });
+        const input = await page.waitForSelector("#global-site-search", { visible: true });
+        assert.ok(input, `Ricerca città (${query}): campo assente`);
+        await input.click();
+        await input.type(query, { delay: 20 });
+        await page.waitForFunction(
+          (expectedQuery) => {
+            const option = document.querySelector("a.header-search-option");
+            const field = document.querySelector("#global-site-search");
+            return Boolean(
+              field?.value === expectedQuery &&
+              option?.getAttribute("href")?.startsWith("/enti/"),
+            );
+          },
+          { timeout: 20_000 },
+          query,
+        );
+        return page.$eval("a.header-search-option", (element) => element.getAttribute("href"));
+      }
+
+      assert.equal(
+        await firstEntityHrefFor("milano"),
+        "/enti/c_f205",
+        "Ricerca città: primo risultato non è COMUNE DI MILANO",
+      );
+      assert.equal(
+        await firstEntityHrefFor("città di milano"),
+        "/enti/c_f205",
+        "Ricerca città: «città di milano» non porta al Comune",
+      );
+      assert.equal(
+        await firstEntityHrefFor("bologna"),
+        "/enti/c_a944",
+        "Ricerca città: primo risultato non è COMUNE DI BOLOGNA",
+      );
+    },
+  });
+  completed.push("Ricerca città prioritizza il Comune 390px");
+
+  await runScenario(browser, {
+    label: "Città metropolitana Milano scheda leggibile 390px",
+    pathname: "/enti/cmmi",
+    width: 390,
+    validate: async (page) => {
+      const text = await bodyText(page);
+      if (/Anagrafica IPA non disponibile/i.test(text)) {
+        assertTextMatches(text, /Codice richiesto[\s\S]*cmmi/i, "Città metropolitana Milano");
+        return;
+      }
+      assertTextMatches(text, /Citta.? Metropolitana di Milano/i, "Città metropolitana Milano");
+      assertTextMatches(text, /Informazioni sull'ente e fonti/i, "Città metropolitana Milano");
+      assert.doesNotMatch(text, /Identità amministrativa/i);
+      assert.doesNotMatch(text, /52\.591\.195,96629/);
+      assertTextMatches(text, /52\.591\.195,97\s*€|Valore dichiarato/i, "Città metropolitana Milano");
+    },
+  });
+  completed.push("Città metropolitana Milano scheda leggibile 390px");
 
   const dropdownRoutes = [
     {
@@ -1412,7 +1698,7 @@ try {
         validate: async (page) => {
           assert.equal(await page.$("nav.subnav"), null, `${label}: subnav non attesa`);
           assert.equal(await page.$(".subnav-row"), null, `${label}: riga subnav non attesa`);
-          assert.ok(await page.$("nav.primary-nav .nav-submenu"), `${label}: markup tendina assente`);
+          assert.ok(await page.$(".nav-item-toggle"), `${label}: markup tendina assente`);
           if (width >= 1280) {
             await assertPrimaryDropdownOnly(page, label, {
               sectionLabel: route.sectionLabel,
@@ -1429,6 +1715,157 @@ try {
       completed.push(label);
     }
   }
+
+  await runScenario(browser, {
+    label: "Menu mobile senza Indietro/Scorri 390px",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const visibleScrollControls = await page.$$eval(".nav-scroll-control", (buttons) =>
+        buttons.filter((button) => {
+          const style = window.getComputedStyle(button);
+          const box = button.getBoundingClientRect();
+          return style.display !== "none" && box.width > 0 && box.height > 0;
+        }).length,
+      );
+      assert.equal(visibleScrollControls, 0, "Menu mobile: Indietro/Scorri ancora visibili");
+      const scrollControlCount = await page.$$eval(".nav-scroll-control", (buttons) => buttons.length);
+      assert.equal(scrollControlCount, 0, "Menu mobile: Indietro/Scorri ancora nel DOM");
+
+      const scrolled = await page.evaluate(() => {
+        const navigation = document.querySelector(".primary-nav");
+        if (!navigation) return null;
+        const before = navigation.scrollLeft;
+        navigation.scrollLeft = Math.min(
+          navigation.scrollWidth - navigation.clientWidth,
+          before + 120,
+        );
+        return {
+          before,
+          after: navigation.scrollLeft,
+          overflow: navigation.scrollWidth - navigation.clientWidth,
+        };
+      });
+      assert.ok(scrolled, "Menu mobile: navigazione primaria assente");
+      assert.ok(scrolled.overflow > 4, "Menu mobile: la riga non ha contenuto da scorrere");
+      assert.ok(scrolled.after > scrolled.before, "Menu mobile: lo scorrimento al tocco non sposta la riga");
+
+      await assertPrimaryDropdownTap(page, "Menu mobile senza Indietro/Scorri 390px", {
+        sectionLabel: "Soldi",
+        childLabel: "Debito pubblico",
+      });
+    },
+  });
+  completed.push("Menu mobile senza Indietro/Scorri 390px");
+
+  await runScenario(browser, {
+    label: "Menu mobile: tendina si chiude al tap fuori",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const itemElement = await findPrimaryNavSection(page, "Soldi");
+      assert.ok(itemElement, "Menu mobile chiusura: sezione Soldi assente");
+      const toggle = await itemElement.$(".nav-item-toggle");
+      assert.ok(toggle, "Menu mobile chiusura: pulsante tendina assente");
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const toggleBox = await toggle.boundingBox();
+      assert.ok(toggleBox, "Menu mobile chiusura: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        toggleBox.x + toggleBox.width / 2,
+        toggleBox.y + toggleBox.height / 2,
+      );
+      await assertSubmenuVisible(itemElement, page, "Menu mobile chiusura", "Debito pubblico");
+      assert.ok(await page.$(".nav-menu-dismiss"), "Menu mobile chiusura: strato di chiusura assente");
+
+      await page.touchscreen.tap(200, 720);
+      await page.waitForFunction(
+        () => !document.querySelector(".nav-row > .nav-submenu"),
+        { timeout: 3_000 },
+      );
+    },
+  });
+  completed.push("Menu mobile: tendina si chiude al tap fuori");
+
+  await runScenario(browser, {
+    label: "Menu mobile: scrollLeft invariato all'apertura",
+    pathname: "/",
+    width: 390,
+    validate: async (page) => {
+      const before = await page.evaluate(() => {
+        const navigation = document.querySelector(".primary-nav");
+        if (!navigation) return null;
+        navigation.scrollLeft = Math.min(
+          navigation.scrollWidth - navigation.clientWidth,
+          140,
+        );
+        return navigation.scrollLeft;
+      });
+      assert.ok(before !== null, "Menu mobile scroll: navigazione primaria assente");
+      assert.ok(before > 4, "Menu mobile scroll: la riga non si è spostata prima del tap");
+
+      const itemElement = await findPrimaryNavSection(page, "Soldi");
+      assert.ok(itemElement, "Menu mobile scroll: sezione Soldi assente");
+      const toggle = await itemElement.$(".nav-item-toggle");
+      assert.ok(toggle, "Menu mobile scroll: pulsante tendina assente");
+      await waitForStableNavigationTouchTarget(page, toggle);
+      const toggleBox = await toggle.boundingBox();
+      assert.ok(toggleBox, "Menu mobile scroll: pulsante tendina non visibile");
+      await page.touchscreen.tap(
+        toggleBox.x + toggleBox.width / 2,
+        toggleBox.y + toggleBox.height / 2,
+      );
+      await assertSubmenuVisible(itemElement, page, "Menu mobile scroll", "Debito pubblico");
+
+      const after = await page.$eval(".primary-nav", (navigation) => navigation.scrollLeft);
+      assert.equal(after, before, "Menu mobile scroll: la riga si è spostata all'apertura della tendina");
+
+      const secondBox = await toggle.boundingBox();
+      assert.ok(secondBox, "Menu mobile scroll: pulsante tendina sparito dopo l'apertura");
+      await page.touchscreen.tap(
+        secondBox.x + secondBox.width / 2,
+        secondBox.y + secondBox.height / 2,
+      );
+      await page.waitForFunction(
+        () => !document.querySelector(".nav-row > .nav-submenu"),
+        { timeout: 3_000 },
+      );
+      const closedScroll = await page.$eval(".primary-nav", (navigation) => navigation.scrollLeft);
+      assert.equal(
+        closedScroll,
+        before,
+        "Menu mobile scroll: la riga si è spostata alla chiusura della tendina",
+      );
+    },
+  });
+  completed.push("Menu mobile: scrollLeft invariato all'apertura");
+
+  await runScenario(browser, {
+    label: "Menu touch senza Indietro/Scorri 1024px",
+    pathname: "/",
+    width: 1024,
+    touch: true,
+    validate: async (page) => {
+      const scrollControlCount = await page.$$eval(".nav-scroll-control", (buttons) => buttons.length);
+      assert.equal(scrollControlCount, 0, "Menu touch 1024px: Indietro/Scorri ancora nel DOM");
+      const scrolled = await page.evaluate(() => {
+        const navigation = document.querySelector(".primary-nav");
+        if (!navigation) return null;
+        const before = navigation.scrollLeft;
+        navigation.scrollLeft = Math.min(
+          navigation.scrollWidth - navigation.clientWidth,
+          before + 120,
+        );
+        return {
+          after: navigation.scrollLeft,
+          overflow: navigation.scrollWidth - navigation.clientWidth,
+        };
+      });
+      assert.ok(scrolled, "Menu touch 1024px: navigazione primaria assente");
+      assert.ok(scrolled.overflow > 4, "Menu touch 1024px: la riga non ha contenuto da scorrere");
+      assert.ok(scrolled.after > 0, "Menu touch 1024px: lo scorrimento al tocco non sposta la riga");
+    },
+  });
+  completed.push("Menu touch senza Indietro/Scorri 1024px");
 
   for (const width of [320, 390, 768, 1024, 1280, 1600]) {
     const label = `Debito pubblico ${width}px`;
@@ -2159,7 +2596,7 @@ try {
       width,
       validate: async (page) => {
         const treemapSelector = '[role="group"][aria-label^="Scegli una missione"]';
-        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 5_000 });
+        await page.waitForSelector(`${treemapSelector} g[role="button"]`, { timeout: 15_000 });
         const treemapState = await page.$eval(treemapSelector, (root) => {
           const bounds = root.getBoundingClientRect();
           const tiles = [...root.querySelectorAll('g[role="button"]')];

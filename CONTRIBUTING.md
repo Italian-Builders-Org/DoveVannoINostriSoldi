@@ -33,6 +33,19 @@ incoerenti, hash diversi, duplicati, importi non validi e riconciliazioni rotte.
 Le date di riferimento, pubblicazione, osservazione e verifica restano campi
 distinti.
 
+Per **nuove fonti tabular** il binario predefinito è il corpus integrato
+(headers + celle stringa + evidence + URL + hash), non un JSON ad hoc di pagina.
+Prima di scrivere codice segui
+[docs/DATA_IMPORT_STANDARD.md](docs/DATA_IMPORT_STANDARD.md): checklist di
+import, tre assi obbligatori (soldi, periodo, provenance) e decisione
+corpus vs snapshot tipizzato. Gli agenti usano la skill
+`.agents/skills/import-dvns-dataset/`.
+
+Una PR che aggiunge dati senza questo schema non è pronta al merge, anche se i
+test tecnici passano. Se manca uno dei campi obbligatori o la fonte non espone
+un perimetro verificabile, il contributo deve fermarsi a catalogazione, proof o
+documentazione del limite invece di inventare valori.
+
 ## Verifica locale
 
 La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
@@ -70,9 +83,13 @@ npm run test:snapshots  # generated-artifact registry + offline artifact checks
 contratti fail-closed) una sola volta.
 
 `test:snapshots` valida il registro degli artifact generati
-(`scripts/ci/generated-artifacts.json`), esegue i controlli offline `--check`
-unici per ogni artifact, verifica la pulizia del worktree e rileva file
-generati non registrati. Non riesegue la suite ETL.
+(`scripts/ci/generated-artifacts.json`), controlla che
+[docs/SOURCE_SNAPSHOT_INVENTORY.md](docs/SOURCE_SNAPSHOT_INVENTORY.md) sia
+allineato al registro, esegue i controlli offline `--check` unici per ogni
+artifact, verifica la pulizia del worktree e rileva file generati non
+registrati. Non riesegue la suite ETL. Se il registro o un workflow di refresh
+cambiano, rigenera l'inventario con
+`python3 scripts/ci/source-snapshot-inventory.py --write`.
 
 ### Limite di trust: PR vs fonti ufficiali
 
@@ -116,4 +133,7 @@ Il merge su `main` è consentito quando il check `required` è verde e i thread
 di review sono risolti. GitHub non chiede l'approve di un altro maintainer.
 La review umana resta utile su UI ampia, fonti nuove, workflow e sicurezza:
 valuta correttezza, semantica dei dati, accessibilità e manutenibilità oltre
-ciò che i test coprono. Non usare force-push sulle branch dei contributor.
+ciò che i test coprono. Per le PR dati, la review deve controllare anche
+aderenza allo schema comune di import, presenza di `soldi`/`periodo`/`provenance`
+e comportamento fail-closed del contratto. Non usare force-push sulle branch dei
+contributor.

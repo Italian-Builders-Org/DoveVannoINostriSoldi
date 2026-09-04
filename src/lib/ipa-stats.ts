@@ -60,10 +60,6 @@ export async function getIpaTypeDistribution(
     ...ipaRuntimeFetchOptions(options),
   });
 
-  if (!response.ok) {
-    throw new Error(`IPA SQL upstream HTTP ${response.status}`);
-  }
-
   const payload = (await response.json()) as SqlResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {
     throw new Error("Risposta aggregata IPA non valida");

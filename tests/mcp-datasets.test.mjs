@@ -325,6 +325,27 @@ test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => 
     suppressedRows: 1,
   });
   assert.match(result.caveats.join(" "), /non è il gettito fiscale totale/i);
+
+  const detailed = await queryPublicDataset({
+    dataset: "mef_irpef_comunale",
+    year: 2024,
+    level: "municipality",
+    code: "028001",
+    detail: "income-sources",
+  });
+  assert.ok(detailed.data[0].breakdowns.incomeSources.employmentIncome.amountCents > 0);
+  assert.equal(detailed.data[0].breakdowns.incomeBands, undefined);
+  assert.deepEqual(
+    detailed.national.unassigned.breakdowns.incomeSources.selfEmploymentIncome,
+    {
+      coverage: "partial",
+      knownFrequency: 0,
+      knownAmountCents: 0,
+      suppressedRows: 1,
+      suppressedFrequencyRows: 1,
+      suppressedAmountRows: 0,
+    },
+  );
   await assert.rejects(
     queryPublicDataset({
       dataset: "mef_irpef_comunale",
@@ -333,6 +354,10 @@ test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => 
       limit: 101,
     }),
     /limit/,
+  );
+  await assert.rejects(
+    queryPublicDataset({ dataset: "siope_comuni", detail: "all" }),
+    /Filtri non supportati.*detail/,
   );
 });
 
@@ -354,5 +379,116 @@ test("ANAC snapshot rejects unavailable years instead of returning stale data", 
   await assert.rejects(
     queryPublicDataset({ dataset: "anac_cig_snapshot", year: 2024 }),
     /disponibile solo per il 2025/,
+  );
+});
+
+test("il dataset MCP consip_ordini dichiara fonte, filtri e caveat sui limiti", () => {
+  const consip = datasetCatalog.find((dataset) => dataset.id === "consip_ordini");
+  assert.deepEqual(consip.sourceIds, ["consip"]);
+  assert.deepEqual(consip.filters, ["year", "channel"]);
+  assert.match(consip.caveat, /limiti inferiori/i);
+  assert.match(consip.caveat, /ordinato non è pagato/i);
+  assert.equal(consip.freshness, "snapshot");
+});
+
+test("la proiezione MCP consip_ordini filtra per anno e canale e porta i caveat", async () => {
+  const result = await queryPublicDataset({ dataset: "consip_ordini", year: 2025, channel: "mepa" });
+  assert.equal(result.dataset, "consip_ordini");
+  assert.equal(result.totals.length, 1);
+  assert.equal(result.totals[0].year, 2025);
+  assert.equal(result.totals[0].channel, "mepa");
+  assert.equal(result.byRegion.every((row) => row.channel === "mepa"), true);
+  assert.equal(result.caveats.length > 0, true);
+  assert.equal(result.source.licenseId, "CC-BY-4.0");
+});
+
+test("il dataset MCP eurostat_cofog dichiara fonte, filtri e caveat sul perimetro", () => {
+  const cofog = datasetCatalog.find((dataset) => dataset.id === "eurostat_cofog");
+  assert.deepEqual(cofog.sourceIds, ["eurostat-cofog"]);
+  assert.deepEqual(cofog.filters, ["country", "year", "cofog"]);
+  assert.match(cofog.caveat, /non sono pagamenti di cassa/i);
+  assert.match(cofog.caveat, /non misura efficienza/i);
+  assert.match(cofog.caveat, /interruzione della serie/i);
+  assert.equal(cofog.freshness, "snapshot");
+});
+
+test("la proiezione MCP eurostat_cofog filtra per paese, anno e funzione", async () => {
+  const result = await queryPublicDataset({ dataset: "eurostat_cofog", country: "IT", year: 2024 });
+  assert.equal(result.dataset, "eurostat_cofog");
+  assert.equal(result.observations.length, 11);
+  assert.equal(result.observations.every((row) => row.geo === "IT" && row.year === 2024), true);
+  assert.equal(result.caveats.length > 0, true);
+  assert.equal(result.source.licenseId, "CC-BY-4.0");
+
+  const health = await queryPublicDataset({ dataset: "eurostat_cofog", country: "IT", cofog: "GF07" });
+  assert.equal(health.observations.every((row) => row.function === "GF07"), true);
+});
+
+test("la proiezione MCP eurostat_cofog rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "eurostat_cofog", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+});
+
+test("il dataset MCP inps_naspi dichiara fonte, filtri e caveat sulle due misure", () => {
+  const naspi = datasetCatalog.find((dataset) => dataset.id === "inps_naspi");
+  assert.deepEqual(naspi.sourceIds, ["inps-naspi"]);
+  assert.deepEqual(naspi.filters, ["table", "measure", "year", "territory"]);
+  assert.match(naspi.caveat, /misure diverse/);
+  assert.match(naspi.caveat, /NON euro/);
+  assert.match(naspi.caveat, /soppresse/);
+  assert.equal(naspi.freshness, "snapshot");
+});
+
+test("la proiezione MCP inps_naspi filtra per tabella, anno e territorio", async () => {
+  const result = await queryPublicDataset({ dataset: "inps_naspi", table: "beneficiari_02", year: 2022, territory: "ITF3" });
+  assert.equal(result.dataset, "inps_naspi");
+  assert.equal(result.observations.length, 2);
+  assert.equal(result.observations.every((row) => row.territorio === "ITF3"), true);
+  assert.equal(result.source.licenseId, "IODL-2.0");
+  assert.equal(result.caveats.length > 0, true);
+});
+
+test("la proiezione MCP inps_naspi rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "inps_naspi", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+});
+
+test("il dataset MCP istat_cofog dichiara fonte, filtri e caveat sul perimetro", () => {
+  const cofog = datasetCatalog.find((dataset) => dataset.id === "istat_cofog");
+  assert.deepEqual(cofog.sourceIds, ["istat-cofog"]);
+  assert.deepEqual(cofog.filters, ["territory", "year", "cofog"]);
+  assert.match(cofog.caveat, /NON la spesa pubblica totale/);
+  assert.match(cofog.caveat, /doppio conteggio|non vanno sommate/i);
+  assert.match(cofog.caveat, /revisione/);
+  assert.equal(cofog.freshness, "snapshot");
+});
+
+test("la proiezione MCP istat_cofog filtra per territorio, anno e funzione", async () => {
+  const result = await queryPublicDataset({ dataset: "istat_cofog", territory: "IT", year: 2023 });
+  assert.equal(result.dataset, "istat_cofog");
+  assert.equal(result.observations.length, 11);
+  assert.equal(result.observations.every((row) => row.area === "IT" && row.year === 2023), true);
+  assert.equal(result.caveats.length > 0, true);
+  assert.equal(result.source.licenseId, "not-declared");
+
+  const sanita = await queryPublicDataset({ dataset: "istat_cofog", territory: "ITF3", cofog: "G070" });
+  assert.equal(sanita.observations.every((row) => row.function === "G070"), true);
+});
+
+test("la proiezione MCP istat_cofog rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "istat_cofog", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+});
+
+test("la proiezione MCP consip_ordini rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "consip_ordini", region: "Lazio" }),
+    /Filtri non supportati/,
   );
 });

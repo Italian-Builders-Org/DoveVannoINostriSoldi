@@ -7,6 +7,7 @@ import {
   GLOBAL_SEARCH_MAX_QUERY_LENGTH,
   GLOBAL_SEARCH_MIN_QUERY_LENGTH,
   searchGlobal,
+  searchGlobalLocalFallback,
 } from "@/lib/global-search";
 import styles from "./cerca.module.css";
 
@@ -43,6 +44,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       });
     } catch {
       upstreamError = true;
+      result = searchGlobalLocalFallback({ query, limit: GLOBAL_SEARCH_DEFAULT_LIMIT * 2 });
     }
   }
 

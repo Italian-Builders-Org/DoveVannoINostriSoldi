@@ -12,7 +12,7 @@ import {
   type MefIrpefTerritoryRecord,
   type ReportedMeasure,
 } from "@/lib/mef-irpef-snapshot";
-import type { MefIrpefMeasureKey } from "@/lib/data/mef-irpef-contract";
+import type { MefIrpefSummaryMeasureKey } from "@/lib/data/mef-irpef-contract";
 import { municipalityName } from "@/lib/municipality-name";
 import {
   getMunicipalityGeographyByIstatCode,
@@ -40,7 +40,7 @@ const PARAM_BY_LEVEL: Readonly<Record<MefIrpefLevel, keyof typeof LEVEL_BY_PARAM
   municipality: "comune",
 };
 
-const METRIC_LABELS: Readonly<Record<MefIrpefMeasureKey, string>> = {
+const METRIC_LABELS: Readonly<Record<MefIrpefSummaryMeasureKey, string>> = {
   comprehensiveIncome: "Reddito complessivo",
   taxableIncome: "Reddito imponibile",
   netTaxDeclared: "Imposta netta dichiarata",
@@ -48,7 +48,7 @@ const METRIC_LABELS: Readonly<Record<MefIrpefMeasureKey, string>> = {
   municipalSurtaxDue: "Addizionale comunale dovuta",
 };
 
-const METRIC_KEYS = Object.keys(METRIC_LABELS) as MefIrpefMeasureKey[];
+const METRIC_KEYS = Object.keys(METRIC_LABELS) as MefIrpefSummaryMeasureKey[];
 
 type PageParams = Record<string, string | string[] | undefined>;
 

@@ -11,6 +11,8 @@ import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,
 } from "@/lib/ipa";
+import { municipalityName } from "@/lib/municipality-name";
+import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import {
   PRIMARY_NAV,
   SITE_MAP_GROUPS,
@@ -97,6 +99,15 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
   "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
   "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],
+  "/spese/sport": [
+    "sport",
+    "giovani e sport",
+    "sport e salute",
+    "simico",
+    "credito sportivo",
+    "olimpiadi invernali",
+    "giochi del mediterraneo",
+  ],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [
     "pensioni",
@@ -141,6 +152,16 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/mcp": ["model context protocol", "protocollo mcp", "api dati"],
   "/supporto": ["aiuto", "assistenza"],
   "/fonti": ["fonti", "sorgenti", "origine dati"],
+  "/fonti/calendario": [
+    "calendario finanza pubblica",
+    "documenti programmatici",
+    "dfp",
+    "def",
+    "dpfp",
+    "nadef",
+    "ddl bilancio",
+    "rapporto annuale",
+  ],
   "/fonti/stato": ["stato fonti", "aggiornamento fonti", "salute fonti"],
   "/fonti/copertura": ["copertura", "fonti integrate", "completezza"],
   "/fonti/catalogo": ["catalogo fonti", "identita fonti"],
@@ -406,27 +427,131 @@ function resultForDocument(document: SearchIndexDocument, query: string): Search
   };
 }
 
+type EntityPlaceKind = "municipality" | "metropolitan_city" | "other";
+
+type EntityPlace = Readonly<{
+  kind: EntityPlaceKind;
+  placeName: string;
+}>;
+
+const MUNICIPALITY_PREFIX =
+  /^(?:comune di|comune della|comune del|comune dello|comune dei|comune degli|comune delle)\s+/u;
+const METROPOLITAN_PREFIX =
+  /^(?:citta metropolitana di|citta metropolitana della|citta metropolitana del|citta metropolitana dello)\s+/u;
+
+/** Dropped when matching the bare place name so "città di Milano" still hits the Comune. */
+const PLACE_QUERY_STOPWORDS = new Set([
+  "citta",
+  "comune",
+  "metropolitana",
+  "di",
+  "del",
+  "della",
+  "dello",
+  "dei",
+  "degli",
+  "delle",
+]);
+
+/**
+ * Prefer the municipality when the user types a city name ("Milano", "Bologna").
+ * IPA returns many agencies that contain the same token; without a place-name
+ * boost those crowd out COMUNE DI … and CITTÀ METROPOLITANA DI ….
+ */
+export function classifyEntityPlace(entity: Pick<IpaEntity, "denominazione" | "tipologia">): EntityPlace {
+  const normalizedName = normalizeSearchText(entity.denominazione);
+  const tipologia = normalizeSearchText(entity.tipologia ?? "");
+
+  if (normalizedName === "roma capitale" || normalizedName.startsWith("roma capitale ")) {
+    return { kind: "municipality", placeName: "roma" };
+  }
+
+  if (METROPOLITAN_PREFIX.test(normalizedName)) {
+    return {
+      kind: "metropolitan_city",
+      placeName: normalizedName.replace(METROPOLITAN_PREFIX, "").trim() || normalizedName,
+    };
+  }
+
+  if (MUNICIPALITY_PREFIX.test(normalizedName) || tipologia === "comune") {
+    return {
+      kind: "municipality",
+      placeName: normalizedName.replace(MUNICIPALITY_PREFIX, "").trim() || normalizedName,
+    };
+  }
+
+  return { kind: "other", placeName: normalizedName };
+}
+
+function placeQueryText(query: string): string {
+  const placeTokens = tokens(query).filter((token) => !PLACE_QUERY_STOPWORDS.has(token));
+  return placeTokens.join(" ");
+}
+
+function entityScore(entity: IpaEntity, query: string, match: FieldMatch): number {
+  const place = classifyEntityPlace(entity);
+  const placeQuery = placeQueryText(query) || query;
+  const placeMatch = matchField(place.placeName, placeQuery, tokens(placeQuery));
+  const base = 1_600 + match.quality * 100;
+
+  if (placeMatch?.reason === "exact") {
+    if (place.kind === "municipality") return 9_200 + placeMatch.quality * 10;
+    if (place.kind === "metropolitan_city") return 8_600 + placeMatch.quality * 10;
+  }
+  if (placeMatch?.reason === "prefix") {
+    // Keep incomplete municipal prefixes below an exact metropolitan-city hit
+    // so "bologna" prefers Città Metropolitana di Bologna over COMUNE DI BOLOGNANO.
+    if (place.kind === "municipality") return 8_400 + placeMatch.quality * 10;
+    if (place.kind === "metropolitan_city") return 8_000 + placeMatch.quality * 10;
+  }
+  if (placeMatch && place.kind === "municipality") return 7_000 + placeMatch.quality * 100;
+  if (placeMatch && place.kind === "metropolitan_city") return 6_400 + placeMatch.quality * 100;
+
+  if (place.kind === "municipality") return base + 200;
+  if (place.kind === "metropolitan_city") return base + 100;
+  return base;
+}
+
 function resultForEntity(entity: IpaEntity, query: string): SearchResult | null {
   const queryTokens = tokens(query);
+  const place = classifyEntityPlace(entity);
+  const placeQuery = placeQueryText(query);
+  const placeTokens = placeQuery ? tokens(placeQuery) : [];
+  const placeMatch = placeQuery
+    ? matchField(place.placeName, placeQuery, placeTokens)
+    : null;
+
   const fields = [entity.denominazione, entity.acronimo, entity.codiceIpa, entity.tipologia].filter(
     (value): value is string => Boolean(value),
   );
-  const match = fields.reduce<FieldMatch | null>((best, field) => {
-    const candidate = matchField(field, query, queryTokens);
-    return candidate && (!best || candidate.quality > best.quality) ? candidate : best;
+  const fieldMatch = fields.reduce<FieldMatch | null>((best, field) => {
+    const candidates = [
+      matchField(field, query, queryTokens),
+      placeQuery && placeQuery !== query ? matchField(field, placeQuery, placeTokens) : null,
+    ];
+    for (const candidate of candidates) {
+      if (candidate && (!best || candidate.quality > best.quality)) best = candidate;
+    }
+    return best;
   }, null);
+
+  // "città di Milano" does not token-match "COMUNE DI MILANO"; the bare place name does.
+  const match =
+    fieldMatch ??
+    (place.kind !== "other" && placeMatch ? placeMatch : null);
   if (!match) return null;
 
+  const isMunicipality = place.kind === "municipality";
   const description = [entity.tipologia, entity.codiceIpa].filter(Boolean).join(" · ") || null;
   return {
     id: `entity:${entity.codiceIpa}`,
     href: `/enti/${encodeURIComponent(entity.codiceIpa)}`,
-    title: entity.denominazione,
-    context: "Registro IPA",
+    title: isMunicipality ? municipalityName(entity.denominazione) : entity.denominazione,
+    context: isMunicipality ? "Comune · Registro IPA" : "Registro IPA",
     type: "ente",
     description,
     match: { reason: "entity", label: SEARCH_MATCH_LABELS.entity },
-    score: 1_600 + match.quality * 100,
+    score: entityScore(entity, query, match),
   };
 }
 
@@ -499,6 +624,46 @@ function emptyResponse(query: string, entitiesAvailable = true): GlobalSearchRes
   };
 }
 
+/** Local-only search used when IPA must not be contacted again (overload/abort recovery). */
+export function searchGlobalLocalFallback(input: {
+  query: string;
+  limit?: number;
+}): GlobalSearchResponse {
+  const query = input.query.trim().slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH);
+  const normalizedQuery = normalizeSearchText(query);
+  if (normalizedQuery.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH) {
+    return emptyResponse(query, false);
+  }
+
+  const limit = safeLimit(input.limit);
+  const staticResults = searchSiteDocuments(query);
+  const entityLimit = Math.min(50, Math.max(limit * 3, 12));
+  const municipalityResults = rankEntitySearchResults(
+    getMunicipalitySearchEntities(),
+    normalizedQuery,
+  ).slice(0, entityLimit);
+
+  const byHref = new Map<string, SearchResult>();
+  for (const result of [...staticResults, ...municipalityResults]) {
+    const existing = byHref.get(result.href);
+    if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
+  }
+  const combined = [...byHref.values()].sort(compareResults);
+  const visible = combined.slice(0, limit);
+  const total = staticResults.length + municipalityResults.length;
+
+  return {
+    ok: true,
+    query,
+    groups: groupResults(visible),
+    total,
+    hasMore: total > visible.length,
+    staticTotal: staticResults.length,
+    entityTotal: municipalityResults.length,
+    entitiesAvailable: false,
+  };
+}
+
 function safeLimit(value: number | undefined): number {
   if (!Number.isFinite(value)) return GLOBAL_SEARCH_DEFAULT_LIMIT;
   return Math.min(Math.max(Math.trunc(value as number), 1), GLOBAL_SEARCH_MAX_LIMIT);
@@ -519,18 +684,33 @@ export async function searchGlobal(input: {
   let entityTotal = 0;
   let entityResults: SearchResult[] = [];
 
+  const entityLimit = Math.min(50, Math.max(limit * 3, 12));
+  // Always rank local municipal identities so "Milano" / "Bologna" surface the
+  // Comune even when the IPA SQL window is alphabetical and agency-heavy.
+  const municipalityResults = rankEntitySearchResults(
+    getMunicipalitySearchEntities(),
+    normalizedQuery,
+  ).slice(0, entityLimit);
+
   try {
-    const entityLimit = Math.min(50, Math.max(limit * 3, 12));
     const entitySearch = await searchIpaEntitiesByPrefix({
       query: normalizedQuery,
       limit: entityLimit,
       signal: input.signal,
     });
-    entityTotal = entitySearch.total;
-    entityResults = [...rankEntitySearchResults(entitySearch.records, normalizedQuery)];
+    const rankedIpa = rankEntitySearchResults(entitySearch.records, normalizedQuery);
+    const byHref = new Map<string, SearchResult>();
+    for (const result of [...municipalityResults, ...rankedIpa]) {
+      const existing = byHref.get(result.href);
+      if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
+    }
+    entityResults = [...byHref.values()].sort(compareResults);
+    entityTotal = Math.max(entitySearch.total, entityResults.length);
   } catch (error) {
     if (input.signal?.aborted) throw input.signal.reason ?? error;
     entitiesAvailable = false;
+    entityTotal = municipalityResults.length;
+    entityResults = [...municipalityResults];
   }
 
   if (input.signal?.aborted) {

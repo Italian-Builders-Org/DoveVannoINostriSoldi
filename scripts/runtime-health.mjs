@@ -38,6 +38,7 @@ const EXPECTED_SOURCE_IDS = [
   "siope",
   "istat",
   "istat-casellario-pensioni",
+  "consip",
   "opencoesione",
   "italiadomani",
   "opencivitas",
@@ -49,6 +50,10 @@ const EXPECTED_SOURCE_IDS = [
   "bancaditalia",
   "eurostat",
   "eurostat-hicp",
+  "eurostat-cofog",
+  "istat-cofog",
+  "istat-epea",
+  "inps-naspi",
   "ameco",
   "governi-presidenza",
 ];

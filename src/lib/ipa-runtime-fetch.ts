@@ -11,5 +11,7 @@ export function ipaRuntimeFetchOptions(options: IpaRuntimeFetchOptions = {}) {
     signal: options.signal,
     maxRetries: IPA_RUNTIME_MAX_RETRIES,
     timeoutMs: IPA_RUNTIME_TIMEOUT_MS,
+    cacheMode: "no-store",
+    rejectHttpError: true,
   } as const;
 }

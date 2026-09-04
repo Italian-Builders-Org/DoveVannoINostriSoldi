@@ -199,6 +199,134 @@ test("loader can skip the live fiscal-code check when IPA is unreachable", async
   }
 });
 
+test("concentration withholds below 30 observations and never invents a zero HHI", () => {
+  const withheld = loader.deriveAnacEntityProcurementConcentration({
+    summary: {
+      procedureCount: 1,
+      awardCount: 5,
+      awardValue: "1.201",
+      positiveAwardCount: 2,
+      awardeeCount: 2,
+      awardsWithStableAwardees: 2,
+      awardsWithoutStableAwardees: 3,
+      singleOperatorAwards: 1,
+      multipartOrAmbiguousAwards: 2,
+      attributedAwardValue: "1.2",
+      unattributedAwardValue: "0.001",
+    },
+    operators: [
+      { ref: "op-000001", name: "Operatore Uno", nameVariants: 0, awardCount: 2, attributedAwardCount: 1, attributedValue: "1.2", rankByCount: 1, rankByValue: 1 },
+      { ref: "op-000002", name: "Operatore Due", nameVariants: 0, awardCount: 1, attributedAwardCount: 0, attributedValue: "0", rankByCount: 2, rankByValue: null },
+    ],
+  });
+  assert.equal(withheld.count.status, "withheld");
+  assert.equal(withheld.value.status, "withheld");
+  if (withheld.count.status === "withheld") {
+    assert.equal(withheld.count.reason, "below-minimum-observations");
+    assert.equal(withheld.count.observationCount, 5);
+  }
+  if (withheld.value.status === "withheld") {
+    assert.equal(withheld.value.reason, "below-minimum-observations");
+    assert.equal(withheld.value.observationCount, 1);
+  }
+});
+
+test("concentration publishes exact Top 1, Top 10 and HHI on 30 equal operators", () => {
+  const operators = Array.from({ length: 30 }, (_, index) => {
+    const rank = index + 1;
+    const ref = `op-${String(rank).padStart(6, "0")}`;
+    return {
+      ref,
+      name: `Operatore ${String(rank).padStart(2, "0")}`,
+      nameVariants: 0,
+      awardCount: 1,
+      attributedAwardCount: 1,
+      attributedValue: "1",
+      rankByCount: rank,
+      rankByValue: rank,
+    };
+  });
+  const published = loader.deriveAnacEntityProcurementConcentration({
+    summary: {
+      procedureCount: 30,
+      awardCount: 30,
+      awardValue: "30",
+      positiveAwardCount: 30,
+      awardeeCount: 30,
+      awardsWithStableAwardees: 30,
+      awardsWithoutStableAwardees: 0,
+      singleOperatorAwards: 30,
+      multipartOrAmbiguousAwards: 0,
+      attributedAwardValue: "30",
+      unattributedAwardValue: "0",
+    },
+    operators,
+  });
+  assert.equal(published.count.status, "published");
+  assert.equal(published.value.status, "published");
+  if (published.count.status === "published" && published.value.status === "published") {
+    assert.deepEqual(published.count.top1Share, { numerator: "1", denominator: "30" });
+    assert.deepEqual(published.count.top10Share, { numerator: "1", denominator: "3" });
+    assert.deepEqual(published.count.hhi10000, { numerator: "1000", denominator: "3" });
+    assert.equal(published.count.includedTop, 10);
+    assert.equal(published.count.top1Ref, "op-000001");
+    assert.deepEqual(published.value.top1Share, { numerator: "1", denominator: "30" });
+    assert.deepEqual(published.value.hhi10000, { numerator: "1000", denominator: "3" });
+    assert.equal(loader.formatAnacConcentrationPercent(published.count.top10Share), "33,33…%");
+    assert.equal(loader.formatAnacConcentrationHhi(published.count.hhi10000), "333,33…");
+    assert.equal(loader.formatAnacConcentrationPercent(published.count.top1Share), "3,33…%");
+    assert.equal(loader.formatAnacConcentrationFraction(published.count.top10Share), "1/3");
+    assert.equal(loader.anacConcentrationRatioIsExact(published.count.top10Share, true), false);
+    assert.equal(loader.anacConcentrationFractionIsReadable(published.count.top10Share), true);
+  }
+});
+
+test("concentration of a single operator is an exact monopoly HHI of 10.000", () => {
+  const published = loader.deriveAnacEntityProcurementConcentration({
+    summary: {
+      procedureCount: 30,
+      awardCount: 30,
+      awardValue: "30",
+      positiveAwardCount: 30,
+      awardeeCount: 1,
+      awardsWithStableAwardees: 30,
+      awardsWithoutStableAwardees: 0,
+      singleOperatorAwards: 30,
+      multipartOrAmbiguousAwards: 0,
+      attributedAwardValue: "30",
+      unattributedAwardValue: "0",
+    },
+    operators: [
+      { ref: "op-000001", name: "Solo", nameVariants: 0, awardCount: 30, attributedAwardCount: 30, attributedValue: "30", rankByCount: 1, rankByValue: 1 },
+    ],
+  });
+  assert.equal(published.count.status, "published");
+  if (published.count.status === "published" && published.value.status === "published") {
+    assert.deepEqual(published.count.top1Share, { numerator: "1", denominator: "1" });
+    assert.deepEqual(published.count.top10Share, { numerator: "1", denominator: "1" });
+    assert.equal(published.count.includedTop, 1);
+    assert.deepEqual(published.count.hhi10000, { numerator: "10000", denominator: "1" });
+    assert.equal(loader.formatAnacConcentrationPercent(published.count.top1Share), "100%");
+    assert.equal(loader.formatAnacConcentrationHhi(published.count.hhi10000), "10.000");
+    assert.deepEqual(published.value.hhi10000, published.count.hhi10000);
+  }
+});
+
+test("loaded profile exposes withheld concentration without changing the shard schema", async () => {
+  const fixture = makeFixture();
+  try {
+    const result = await loader.loadAnacEntityProcurementPage({ codiceIpa: fixture.record.codiceIpa, currentEntityCf: fixture.record.codiceFiscaleEnte, rootDirectory: fixture.projectRoot });
+    assert.equal(result.status, "available");
+    if (result.status === "available") {
+      assert.equal(result.profile.concentration.count.status, "withheld");
+      assert.equal("codiceFiscaleEnte" in result.profile, false);
+      assert.equal("concentration" in fixture.record, false);
+    }
+  } finally {
+    cleanup(fixture);
+  }
+});
+
 test("loader fails closed on identity drift and shard tampering", async () => {
   const fixture = makeFixture();
   try {
@@ -415,7 +543,7 @@ test("registered real artifact is present and loadable when the registry claims 
   assert.equal(result.status, "available");
 });
 
-test("UI keeps scope, rankings, official CIG links and no later indicators", () => {
+test("UI keeps scope, rankings, official CIG links and concentration without later indicators", () => {
   const section = readFileSync(new URL("../src/app/enti/[codice]/entity-procurement-section.tsx", import.meta.url), "utf8");
   const detail = readFileSync(new URL("../src/app/enti/[codice]/appalti/page.tsx", import.meta.url), "utf8");
   assert.match(section, /Ranking per numero di aggiudicazioni/);
@@ -432,6 +560,12 @@ test("UI keeps scope, rankings, official CIG links and no later indicators", () 
   assert.match(section, /assetSha256/);
   assert.match(section, /nameVariants > 1/);
   assert.match(section, /snapshot cross-temporale/);
+  assert.match(section, /Concentrazione degli aggiudicatari/);
+  assert.match(section, /Quota Top 1/);
+  assert.match(section, /HHI \(0-10\.000\)/);
+  assert.match(section, /non indicano illecito/);
+  assert.match(section, /Fuori da questa slice: CPV, soglie, bunching e benchmark/);
+  assert.match(section, /troncato verso zero/);
   assert.match(detail, /dettaglio_cig/);
   assert.match(detail, /positive-exact-cent/);
   assert.match(detail, /nessun aggiudicatario pubblicato/);
@@ -453,10 +587,11 @@ test("UI keeps scope, rankings, official CIG links and no later indicators", () 
   assert.doesNotMatch(entityPage, /Impossibile interrogare la fonte IPA/);
   assert.match(detail, /getSiopeMunicipalityDetailByIpaCode/);
   assert.match(detail, /nameVariants > 1/);
+  assert.match(detail, /EntityProcurementConcentration/);
   assert.match(`${section}\n${detail}`, /codici fiscali degli operatori/);
   assert.match(detail, /caption/);
   assert.match(detail, /scope="col"/);
-  assert.doesNotMatch(`${section}\n${detail}`, /HHI|Top 1|Top 10 share|percentile|bunching|soglia applicabile|CPV/i);
+  assert.doesNotMatch(`${section}\n${detail}`, /percentile|soglia applicabile/i);
 });
 
 test("ANAC tables and pagination expose 44px keyboard/touch targets", () => {
@@ -465,6 +600,7 @@ test("ANAC tables and pagination expose 44px keyboard/touch targets", () => {
   assert.match(detailCss, /\.pageSize a\s*\{[\s\S]*?min-width:\s*44px[\s\S]*?min-height:\s*44px[\s\S]*?padding:\s*8px 10px/);
   assert.match(detailCss, /\.page :global\(\.table-scroll\) td a,\s*\.page :global\(\.table-scroll\) th a\s*\{[\s\S]*?min-width:\s*44px[\s\S]*?min-height:\s*44px/);
   assert.match(sectionCss, /\.ranking td a,\s*\.ranking th a\s*\{[\s\S]*?min-width:\s*44px[\s\S]*?min-height:\s*44px/);
+  assert.match(sectionCss, /\.concentrationStats dd a\s*\{[\s\S]*?min-width:\s*44px[\s\S]*?min-height:\s*44px/);
 });
 
 test("exact summary amounts wrap inside both KPI grids", () => {

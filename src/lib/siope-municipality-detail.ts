@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { IpaEntity } from "@/lib/ipa";
+
 import detail2024 from "@/data/generated/siope-municipal-detail-2024.json";
 import detail2025 from "@/data/generated/siope-municipal-detail-2025.json";
 import detail2026 from "@/data/generated/siope-municipal-detail.json";
@@ -377,4 +379,39 @@ export function getMunicipalityEntityPublicPaths(): readonly `/enti/${string}`[]
   return [...codes]
     .sort((left, right) => left.localeCompare(right, "en"))
     .map((code) => `/enti/${encodeURIComponent(code)}` as const);
+}
+
+/** Minimal IPA-compatible identities for offline municipal keyword search. */
+export function getMunicipalitySearchEntities(): readonly IpaEntity[] {
+  const latest = artifacts[0];
+  const byIpa = new Map<string, IpaEntity>();
+  for (const row of latest.rows) {
+    const codiceIpa = row[1];
+    if (!codiceIpa || byIpa.has(codiceIpa)) continue;
+    byIpa.set(codiceIpa, {
+      codiceIpa,
+      denominazione: row[2],
+      codiceFiscale: row[0],
+      tipologia: "Comune",
+      codiceCategoria: null,
+      codiceNatura: null,
+      codiceAteco: null,
+      inLiquidazione: null,
+      codiceMiur: null,
+      codiceIstat: null,
+      acronimo: null,
+      responsabile: { nome: null, cognome: null, titolo: null },
+      sede: {
+        codiceComuneIstat: null,
+        codiceCatastaleComune: null,
+        cap: null,
+        indirizzo: null,
+      },
+      email: [],
+      sitoIstituzionale: null,
+      social: { facebook: null, linkedin: null, twitter: null, youtube: null },
+      dataAggiornamento: null,
+    });
+  }
+  return [...byIpa.values()];
 }

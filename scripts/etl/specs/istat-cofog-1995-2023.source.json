@@ -1,0 +1,398 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-cofog",
+  "period": {
+    "from": 1995,
+    "to": 2023
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "apiPath": "/SDMXWS/rest/data/IT1,93_1227_DF_DCCN_TNA1_4,1.0/",
+    "dataflowId": "93_1227_DF_DCCN_TNA1_4",
+    "dataflowLabel": "Spesa per consumi finali della Pa per funzione di spesa",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non espone una licenza riusabile verificata. Come per istat-pensions-2012-2022.source.json non viene inferita alcuna licenza, e non se ne estende una da altri dataset ISTAT.",
+    "assets": {
+      "consumi-finali": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,93_1227_DF_DCCN_TNA1_4,1.0/A..P3_D_W0_S13.Z.Z..V.N.Z.2025M12",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 1018899,
+        "sha256": "4abd4c7b6d401b3458fd7f39a4d42ef86b00b46bdfbe7e582e6af27d10bbc43f"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-04",
+      "checkedAt": "2026-09-04",
+      "note": "Chiave SDMX completamente specificata: misura, valutazione ed edizione sono fissate nell'URL, quindi i byte sono deterministici e un hash diverso segnala una revisione della fonte, non l'avanzare del tempo."
+    }
+  },
+  "measure": {
+    "dataTypeAggr": "P3_D_W0_S13",
+    "meaning": "Spesa per consumi finali (P3) delle Amministrazioni pubbliche (S13). NON è la spesa totale delle AP: ne è una componente.",
+    "valuation": "V",
+    "valuationLabel": "prezzi correnti",
+    "valuationNote": "I valori concatenati (L_2020) sono una serie distinta e non vengono pubblicati in questa fetta: mescolarli sarebbe un errore di unità.",
+    "edition": "2025M12",
+    "editionNote": "Edizione di rilascio fissata. La contabilità nazionale viene rivista: fra l'edizione 2025M1 e la 2025M12, 337 delle 704 celle confrontabili cambiano valore, fino a 1348,7 milioni di euro sul totale Italia 2022. Le edizioni non vanno mai mescolate.",
+    "unit": "milioni di euro",
+    "unitEvidence": "L'edizione 2025M12 non porta gli attributi UNIT_MEAS/UNIT_MULT nella risposta. L'unità è quella dichiarata dalla fonte sulla STESSA serie nell'edizione 2025M1 (UNIT_MEAS=EURO, UNIT_MULT=6), verificata il 2026-09-04. Non è dedotta da altri dataset né dall'ordine di grandezza."
+  },
+  "expected": {
+    "years": [
+      1995,
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "functions": [
+      {
+        "code": "G",
+        "label": "Totale dei consumi finali della PA (tutte le funzioni COFOG)"
+      },
+      {
+        "code": "G010",
+        "label": "Servizi generali delle amministrazioni pubbliche"
+      },
+      {
+        "code": "G020",
+        "label": "Difesa"
+      },
+      {
+        "code": "G030",
+        "label": "Ordine pubblico e sicurezza"
+      },
+      {
+        "code": "G040",
+        "label": "Affari economici"
+      },
+      {
+        "code": "G050",
+        "label": "Protezione dell'ambiente"
+      },
+      {
+        "code": "G060",
+        "label": "Abitazioni e assetto territoriale"
+      },
+      {
+        "code": "G070",
+        "label": "Sanità"
+      },
+      {
+        "code": "G080",
+        "label": "Attività ricreative, culturali e di culto"
+      },
+      {
+        "code": "G090",
+        "label": "Istruzione"
+      },
+      {
+        "code": "G100",
+        "label": "Protezione sociale"
+      }
+    ],
+    "areas": [
+      {
+        "code": "IT",
+        "label": "Italia",
+        "kind": "country"
+      },
+      {
+        "code": "ITC",
+        "label": "Nord-ovest",
+        "kind": "macro"
+      },
+      {
+        "code": "ITC1",
+        "label": "Piemonte",
+        "kind": "region"
+      },
+      {
+        "code": "ITC2",
+        "label": "Valle d'Aosta / Vallée d'Aoste",
+        "kind": "region"
+      },
+      {
+        "code": "ITC3",
+        "label": "Liguria",
+        "kind": "region"
+      },
+      {
+        "code": "ITC4",
+        "label": "Lombardia",
+        "kind": "region"
+      },
+      {
+        "code": "ITCD",
+        "label": "Nord",
+        "kind": "composite"
+      },
+      {
+        "code": "ITCDE",
+        "label": "Centro-nord",
+        "kind": "composite"
+      },
+      {
+        "code": "ITD",
+        "label": "Nord-est",
+        "kind": "macro"
+      },
+      {
+        "code": "ITD1",
+        "label": "Provincia Autonoma Bolzano / Bozen",
+        "kind": "region"
+      },
+      {
+        "code": "ITD2",
+        "label": "Provincia Autonoma Trento",
+        "kind": "region"
+      },
+      {
+        "code": "ITD3",
+        "label": "Veneto",
+        "kind": "region"
+      },
+      {
+        "code": "ITD4",
+        "label": "Friuli-Venezia Giulia",
+        "kind": "region"
+      },
+      {
+        "code": "ITD5",
+        "label": "Emilia-Romagna",
+        "kind": "region"
+      },
+      {
+        "code": "ITDA",
+        "label": "Trentino Alto Adige / Südtirol",
+        "kind": "composite"
+      },
+      {
+        "code": "ITE",
+        "label": "Centro",
+        "kind": "macro"
+      },
+      {
+        "code": "ITE1",
+        "label": "Toscana",
+        "kind": "region"
+      },
+      {
+        "code": "ITE2",
+        "label": "Umbria",
+        "kind": "region"
+      },
+      {
+        "code": "ITE3",
+        "label": "Marche",
+        "kind": "region"
+      },
+      {
+        "code": "ITE4",
+        "label": "Lazio",
+        "kind": "region"
+      },
+      {
+        "code": "ITF",
+        "label": "Sud",
+        "kind": "macro"
+      },
+      {
+        "code": "ITF1",
+        "label": "Abruzzo",
+        "kind": "region"
+      },
+      {
+        "code": "ITF2",
+        "label": "Molise",
+        "kind": "region"
+      },
+      {
+        "code": "ITF3",
+        "label": "Campania",
+        "kind": "region"
+      },
+      {
+        "code": "ITF4",
+        "label": "Puglia",
+        "kind": "region"
+      },
+      {
+        "code": "ITF5",
+        "label": "Basilicata",
+        "kind": "region"
+      },
+      {
+        "code": "ITF6",
+        "label": "Calabria",
+        "kind": "region"
+      },
+      {
+        "code": "ITFG",
+        "label": "Mezzogiorno",
+        "kind": "composite"
+      },
+      {
+        "code": "ITG",
+        "label": "Isole",
+        "kind": "macro"
+      },
+      {
+        "code": "ITG1",
+        "label": "Sicilia",
+        "kind": "region"
+      },
+      {
+        "code": "ITG2",
+        "label": "Sardegna",
+        "kind": "region"
+      },
+      {
+        "code": "ITZ",
+        "label": "Extra-Regio",
+        "kind": "extra-regio"
+      }
+    ],
+    "rows": 10208,
+    "cells": 10208
+  },
+  "reconciliation": {
+    "toleranceTenths": 10,
+    "note": "La fonte pubblica valori con un decimale oppure senza: quelli interi sono arrotondati all'unità, non al decimo. La tolleranza di 1,0 milioni di euro è quindi empirica e conservativa: su tutte le partizioni lo scarto osservato non supera 0,6.",
+    "functionTotal": {
+      "whole": "G",
+      "parts": [
+        "G010",
+        "G020",
+        "G030",
+        "G040",
+        "G050",
+        "G060",
+        "G070",
+        "G080",
+        "G090",
+        "G100"
+      ]
+    },
+    "territorial": [
+      {
+        "whole": "IT",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ]
+      },
+      {
+        "whole": "ITCD",
+        "parts": [
+          "ITC",
+          "ITD"
+        ]
+      },
+      {
+        "whole": "ITCDE",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE"
+        ]
+      },
+      {
+        "whole": "ITFG",
+        "parts": [
+          "ITF",
+          "ITG"
+        ]
+      },
+      {
+        "whole": "ITDA",
+        "parts": [
+          "ITD1",
+          "ITD2"
+        ]
+      },
+      {
+        "whole": "ITC",
+        "parts": [
+          "ITC1",
+          "ITC2",
+          "ITC3",
+          "ITC4"
+        ]
+      },
+      {
+        "whole": "ITD",
+        "parts": [
+          "ITD1",
+          "ITD2",
+          "ITD3",
+          "ITD4",
+          "ITD5"
+        ]
+      },
+      {
+        "whole": "ITE",
+        "parts": [
+          "ITE1",
+          "ITE2",
+          "ITE3",
+          "ITE4"
+        ]
+      },
+      {
+        "whole": "ITF",
+        "parts": [
+          "ITF1",
+          "ITF2",
+          "ITF3",
+          "ITF4",
+          "ITF5",
+          "ITF6"
+        ]
+      },
+      {
+        "whole": "ITG",
+        "parts": [
+          "ITG1",
+          "ITG2"
+        ]
+      }
+    ]
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/istat-cofog-1995-2023.data.json",
+      "bytes": 739262,
+      "sha256": "670d56b735121f0bf763de9fc458a795bf2d71468a3ce9566c3fda49ff396ea5"
+    },
+    "lockSha256": "40c74263deee9c71db386d268120a4846835c59ac9ff80d69e4c7ae8b0a68063"
+  }
+}

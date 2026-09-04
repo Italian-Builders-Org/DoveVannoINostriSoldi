@@ -2,6 +2,11 @@ import { consulentiSnapshot } from "@/lib/consulenti-snapshot";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
+import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
+import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
+import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
+import { istatCofogData } from "@/lib/istat-cofog-snapshot";
+import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
@@ -14,9 +19,8 @@ import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
-import { getGovernmentCurrentSignalsSnapshot } from "@/lib/government-current-signals";
-import { getGovernmentScorecardSnapshot } from "@/lib/government-scorecard";
-import { getGovernmentScorecardForecastCoverage } from "@/lib/data/government-scorecard-contract";
+import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
 export type SourceLatestData =
   | { kind: "date"; value: string }
@@ -32,13 +36,10 @@ function dated(value: string | null): SourceLatestData {
    invented day just to reuse date formatting. */
 const exhaustiveLatestDataBySlug = {
   ameco: (() => {
-    const snapshot = getGovernmentScorecardSnapshot();
-    const coverage = getGovernmentScorecardForecastCoverage(snapshot);
+    const source = getGovernmentScorecardSourceSummary();
     return {
       kind: "period" as const,
-      label: coverage.status === "complete"
-        ? `osservati ${snapshot.sources.ameco.observedThrough} · previsioni complete ${coverage.fromYear}-${coverage.throughYear}`
-        : `osservati ${snapshot.sources.ameco.observedThrough} · previsioni non pubblicabili`,
+      label: `osservati ${source.observedThrough} · previsioni escluse ${source.forecastFrom}-${source.forecastThrough}`,
     };
   })(),
   "governi-presidenza": { kind: "period", label: "governo in carica dal 2022" },
@@ -46,7 +47,26 @@ const exhaustiveLatestDataBySlug = {
   eurostat: { kind: "period", label: String(getPublicDebtSnapshot().annualInterest.referenceYear) },
   "eurostat-hicp": {
     kind: "period",
-    label: `IPCA ${getGovernmentCurrentSignalsSnapshot().source.referencePeriodThrough}`,
+    label: `IPCA ${getGovernmentScorecardV6SupplementalSnapshot().series
+      .find((series) => series.indicator_id === "inflation")
+      ?.geographies.find((geography) => geography.geography === "IT")
+      ?.points.at(-1)?.period ?? "non disponibile"}`,
+  },
+  "eurostat-cofog": {
+    kind: "period",
+    label: `${eurostatCofogData.period.from}-${eurostatCofogData.period.to}`,
+  },
+  "istat-cofog": {
+    kind: "period",
+    label: `${istatCofogData.period.from}-${istatCofogData.period.to}`,
+  },
+  "istat-epea": {
+    kind: "period",
+    label: `${istatEpeaMetadata.referencePeriod.from}-${istatEpeaMetadata.referencePeriod.to}`,
+  },
+  "inps-naspi": {
+    kind: "period",
+    label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,
   },
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),
@@ -78,6 +98,10 @@ const exhaustiveLatestDataBySlug = {
   "istat-casellario-pensioni": {
     kind: "period",
     label: `${istatPensionsSnapshot.data.period.from}-${istatPensionsSnapshot.data.period.to}`,
+  },
+  consip: {
+    kind: "period",
+    label: `${consipOrdiniData.period.from}-${consipOrdiniData.period.to}`,
   },
   [MEF_IRPEF_SOURCE.id]: MEF_IRPEF_SOURCE.latestData,
 } satisfies Readonly<Record<SourceId, SourceLatestData>>;

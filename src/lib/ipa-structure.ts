@@ -74,8 +74,6 @@ async function fetchRecords(
     ...ipaRuntimeFetchOptions(options),
   });
 
-  if (!response.ok) throw new Error(`IPA struttura upstream HTTP ${response.status}`);
-
   const payload = (await response.json()) as DatastoreResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {
     throw new Error("Risposta struttura IPA non valida");

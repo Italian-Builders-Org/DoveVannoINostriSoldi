@@ -22,6 +22,7 @@
     "ci:action-pins": "node scripts/ci/check-action-pins.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:node": "node --experimental-strip-types --test tests/*.test.mjs",
+    "government-scorecard:verify": "python3 scripts/ci/check-government-scorecard-artifacts.py && node --experimental-strip-types --test tests/government-scorecard-*.test.mjs",
     "test:etl": "python3 -m unittest discover -s tests/etl -p 'test_*.py'",
     "test:snapshots": "python3 scripts/ci/validate-generated-artifacts.py --run-checks",
     "company-atlas:refresh": "node scripts/etl/company_atlas_snapshot.mjs",

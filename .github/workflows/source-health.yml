@@ -9,15 +9,21 @@ on:
 permissions:
   contents: read
 
+# cancel-in-progress: false — a probe that is already running, or already
+# waiting, is the observation we want. A newer schedule must never discard it.
 concurrency:
   group: source-health
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   probe:
     name: probe
     runs-on: ubuntu-24.04
-    environment: source-operations
+    # No environment gate on purpose: this job reads one public URL and uses no
+    # secret. The source-operations environment guards the data-bot credential
+    # that refresh workflows need to open pull requests; behind its required
+    # reviewers a scheduled run waits for a human, so an unattended monitor
+    # would never observe anything.
     timeout-minutes: 5
     env:
       CANONICAL_BASE_URL: https://www.dovevannoinostrisoldi.com

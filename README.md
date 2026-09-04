@@ -1,8 +1,8 @@
 # DoveVannoINostriSoldi
 
-Progetto civico open source per capire come vengono usati i soldi pubblici italiani.
+Progetto civico open source per capire, con dati ufficiali, come vengono usati i soldi pubblici italiani.
 
-Riunisce dati ufficiali sparsi su portali diversi. Ogni numero mostra **fonte**, **periodo** e **limiti**. Un valore insolito indica dove controllare meglio: non dimostra da solo uno spreco o un illecito.
+Riunisce fonti pubbliche sparse su portali diversi e le rende leggibili in un unico posto. Ogni numero mostra **fonte**, **periodo** e **limiti**. Un valore insolito indica dove controllare meglio: non dimostra da solo uno spreco o un illecito.
 
 **Sito:** [dovevannoinostrisoldi.com](https://www.dovevannoinostrisoldi.com)
 
@@ -10,13 +10,25 @@ Riunisce dati ufficiali sparsi su portali diversi. Ogni numero mostra **fonte**,
 
 Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
 
-Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
+## Perché esiste
+
+Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esistono già, ma spesso sono dispersi, difficili da confrontare o poco leggibili per chi non lavora tutti i giorni con dati pubblici. DoveVannoINostriSoldi prova a ridurre questa distanza: meno opacità, più contesto, più verificabilità.
+
+## Cosa puoi fare in 2 minuti
+
+- Vedere come spendono Comuni, Stato, sanità ed enti pubblici.
+- Confrontare territori, amministrazioni e serie storiche.
+- Aprire la fonte ufficiale dietro ogni numero.
+- Capire rapidamente che cosa il dato misura, e che cosa non misura.
+- Fare domande al catalogo dati e al server MCP in sola lettura.
+
+Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 32 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
 
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
 | Territori | Pagella dei governi |
 | --- | --- |
-| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
+| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella politico-economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
 
 | Atlante Istruzione | Atlante Imprese |
 | --- | --- |
@@ -51,11 +63,20 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF |
 | [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, appalti, incarichi e catalogo dati |
 | [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Domande testuali su snapshot verificati, senza modello generativo |
-| [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti e date di aggiornamento |
+| [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, date di aggiornamento e calendario dei documenti programmatici |
 | [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |
 
 Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni).
+
+## Come leggere il progetto
+
+Non è un feed di accuse e non è un motore che inventa conclusioni. È uno strumento di lettura:
+
+- separa pagamenti, stanziamenti, costi previsti e stock di debito;
+- mostra quando una copertura è parziale;
+- espone caveat e perimetro di ogni fonte;
+- mantiene visibile il collegamento con l'origine ufficiale del dato.
 
 ## Regole in breve
 
@@ -77,7 +98,7 @@ Limiti importanti:
 - ANAC CIG 2025: snapshot mensile verificato, non ricerca live per CIG o fornitore.
 - PNRR: perimetro asili e prima infanzia; non include i pagamenti ReGiS né tutto il Piano.
 - OpenCivitas 2022: Comuni a statuto ordinario (6.557 enti, 15 Regioni).
-- Pagella dei governi: descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
+- [Pagella dei governi](docs/PAGELLA_POLITICO_ECONOMICA.md): descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
 - Assistente: intenti predefiniti, una domanda per volta; non risponde su un singolo Comune e non accetta richieste su frode o corruzione.
 - Contabilità diverse non si sommano (SIOPE, IRPEF, CPT, costi previsti, debiti).
 
@@ -192,6 +213,13 @@ docs/               metodo, architettura, note legali
 
 Segnalazioni utili: fonti mancanti, correzioni alle spiegazioni, qualità dei dati, accessibilità. Dal sito puoi usare il pulsante «Segnala un problema», presente in ogni pagina: crea una issue pubblica già strutturata ([docs/SEGNALAZIONI.md](docs/SEGNALAZIONI.md)).
 
+Se vuoi contribuire anche senza scrivere codice, sono utili:
+
+- segnalazioni di fonti ufficiali mancanti;
+- controlli sui testi e sulla chiarezza delle spiegazioni;
+- verifiche su date, perimetri e limiti esposti nelle pagine;
+- feedback su accessibilità e leggibilità.
+
 Prima di una PR leggi [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Ruoli dei maintainer e regole di decisione: [GOVERNANCE.md](GOVERNANCE.md).
@@ -203,10 +231,30 @@ Per una nuova fonte, in issue indica: ente, URL ufficiale, licenza, formato, fre
 Richieste della community: [docs/COMMUNITY_FEEDBACK.md](docs/COMMUNITY_FEEDBACK.md).
 Coda di sviluppo con priorità e issue: [docs/ROADMAP.md](docs/ROADMAP.md).
 
-## Contributori
+## Fondatori
 
 - [@fragiannicola](https://x.com/fragiannicola)
 - [@dom_gag_96](https://x.com/dom_gag_96)
+
+## Contributors
+
+<!-- Grazie a tutti i contributori del progetto! -->
+
+<a href="https://github.com/metaforismo"><img src="https://avatars.githubusercontent.com/u/39646696?v=4" width="50" height="50" alt="metaforismo" style="border-radius:50%" /></a>
+<a href="https://github.com/dg996"><img src="https://avatars.githubusercontent.com/u/111145375?v=4" width="50" height="50" alt="dg996" style="border-radius:50%" /></a>
+<a href="https://github.com/sephmartin"><img src="https://avatars.githubusercontent.com/u/275498367?v=4" width="50" height="50" alt="sephmartin" style="border-radius:50%" /></a>
+<a href="https://github.com/lucaosti"><img src="https://avatars.githubusercontent.com/u/27920903?v=4" width="50" height="50" alt="lucaosti" style="border-radius:50%" /></a>
+<a href="https://github.com/rinocitarella"><img src="https://avatars.githubusercontent.com/u/42648964?v=4" width="50" height="50" alt="rinocitarella" style="border-radius:50%" /></a>
+<a href="https://github.com/Elgabor"><img src="https://avatars.githubusercontent.com/u/71511127?v=4" width="50" height="50" alt="Elgabor" style="border-radius:50%" /></a>
+<a href="https://github.com/marianimatteo-lexroom"><img src="https://avatars.githubusercontent.com/u/253467472?v=4" width="50" height="50" alt="marianimatteo-lexroom" style="border-radius:50%" /></a>
+<a href="https://github.com/nellicus"><img src="https://avatars.githubusercontent.com/u/8770097?v=4" width="50" height="50" alt="nellicus" style="border-radius:50%" /></a>
+<a href="https://github.com/Zer0codestuff"><img src="https://avatars.githubusercontent.com/u/105509672?v=4" width="50" height="50" alt="Zer0codestuff" style="border-radius:50%" /></a>
+<a href="https://github.com/calca"><img src="https://avatars.githubusercontent.com/u/78342?v=4" width="50" height="50" alt="calca" style="border-radius:50%" /></a>
+<a href="https://github.com/saliougaye"><img src="https://avatars.githubusercontent.com/u/72109418?v=4" width="50" height="50" alt="saliougaye" style="border-radius:50%" /></a>
+<a href="https://github.com/VoxamVox"><img src="https://avatars.githubusercontent.com/u/178662220?v=4" width="50" height="50" alt="VoxamVox" style="border-radius:50%" /></a>
+<a href="https://github.com/danielemeanti23"><img src="https://avatars.githubusercontent.com/u/76477634?v=4" width="50" height="50" alt="danielemeanti23" style="border-radius:50%" /></a>
+<a href="https://github.com/not-knope"><img src="https://avatars.githubusercontent.com/u/102312680?v=4" width="50" height="50" alt="not-knope" style="border-radius:50%" /></a>
+<a href="https://github.com/superpios"><img src="https://avatars.githubusercontent.com/u/122306526?v=4" width="50" height="50" alt="superpios" style="border-radius:50%" /></a>
 
 ## Licenza
 

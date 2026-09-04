@@ -657,6 +657,134 @@ def ranked(values: dict[str, Decimal | int], refs_to_names: Mapping[str, str]) -
     return ranks
 
 
+CONCENTRATION_MIN_OBSERVATIONS = 30
+CONCENTRATION_TOP_K = 10
+CONCENTRATION_FORMULA = "sum-of-squared-percent-shares-0-10000"
+
+
+def _gcd(left: int, right: int) -> int:
+    while right:
+        left, right = right, left % right
+    return abs(left)
+
+
+def _reduce_ratio(numerator: int, denominator: int) -> dict[str, str]:
+    if denominator <= 0 or numerator < 0:
+        raise ContractError("rapporto di concentrazione non valido")
+    if numerator == 0:
+        return {"numerator": "0", "denominator": "1"}
+    divisor = _gcd(numerator, denominator)
+    return {"numerator": str(numerator // divisor), "denominator": str(denominator // divisor)}
+
+
+def _withheld_concentration(
+    dimension: str, reason: str, observation_count: int, operator_count: int,
+) -> dict[str, object]:
+    return {
+        "status": "withheld",
+        "dimension": dimension,
+        "formula": CONCENTRATION_FORMULA,
+        "reason": reason,
+        "observationCount": observation_count,
+        "minimumObservations": CONCENTRATION_MIN_OBSERVATIONS,
+        "operatorCount": operator_count,
+    }
+
+
+def _sort_operators(operators: list[dict[str, object]], dimension: str) -> list[dict[str, object]]:
+    if dimension == "value":
+        selected = [item for item in operators if item.get("rankByValue") is not None]
+        return sorted(
+            selected,
+            key=lambda item: (int(item["rankByValue"]), str(item["name"]), str(item["ref"])),
+        )
+    return sorted(operators, key=lambda item: (int(item["rankByCount"]), str(item["name"]), str(item["ref"])))
+
+
+def _scaled_integers(values: list[Decimal]) -> tuple[list[int], int]:
+    scales = [max(0, -value.as_tuple().exponent) if value.as_tuple().exponent < 0 else 0 for value in values]
+    scale = max(scales, default=0)
+    integers = [int(value * (Decimal(10) ** scale)) for value in values]
+    return integers, sum(integers)
+
+
+def _published_concentration(
+    dimension: str,
+    operators: list[dict[str, object]],
+    weights: list[Decimal],
+    observation_count: int,
+    market_total: str,
+) -> dict[str, object]:
+    integers, total = _scaled_integers(weights)
+    if total <= 0:
+        raise ContractError("mercato di concentrazione vuoto")
+    included_top = min(CONCENTRATION_TOP_K, len(operators))
+    top1 = operators[0]
+    top1_integer = integers[0]
+    top10_integer = sum(integers[:included_top])
+    sum_squares = sum(value * value for value in integers)
+    top10_amount = sum(weights[:included_top], start=Decimal(0))
+    return {
+        "status": "published",
+        "dimension": dimension,
+        "formula": CONCENTRATION_FORMULA,
+        "observationCount": observation_count,
+        "minimumObservations": CONCENTRATION_MIN_OBSERVATIONS,
+        "operatorCount": len(operators),
+        "includedTop": included_top,
+        "top1Ref": top1["ref"],
+        "top1Name": top1["name"],
+        "marketTotal": market_total,
+        "top1Amount": decimal_text(weights[0]),
+        "top10Amount": decimal_text(top10_amount),
+        "top1Share": _reduce_ratio(top1_integer, total),
+        "top10Share": _reduce_ratio(top10_integer, total),
+        "hhi10000": _reduce_ratio(sum_squares * 10_000, total * total),
+    }
+
+
+def derive_concentration(record: Mapping[str, object]) -> dict[str, object]:
+    """Top 1 / Top 10 and HHI derived from the public ranking; never written to shards."""
+    summary = record["summary"]
+    operators = list(record["operators"])
+    if not isinstance(summary, Mapping):
+        raise ContractError("summary mancante per la concentrazione")
+
+    count_ranked = _sort_operators(operators, "count")
+    award_count = int(summary["awardCount"])
+    if award_count < CONCENTRATION_MIN_OBSERVATIONS:
+        count_metric: dict[str, object] = _withheld_concentration(
+            "count", "below-minimum-observations", award_count, len(count_ranked),
+        )
+    elif not count_ranked:
+        count_metric = _withheld_concentration("count", "zero-denominator", award_count, 0)
+    else:
+        weights = [Decimal(int(item["awardCount"])) for item in count_ranked]
+        count_metric = _published_concentration(
+            "count", count_ranked, weights, award_count, str(sum(int(item["awardCount"]) for item in count_ranked)),
+        )
+
+    value_ranked = _sort_operators(operators, "value")
+    observation_count = sum(int(item["attributedAwardCount"]) for item in value_ranked)
+    if observation_count < CONCENTRATION_MIN_OBSERVATIONS:
+        value_metric: dict[str, object] = _withheld_concentration(
+            "value", "below-minimum-observations", observation_count, len(value_ranked),
+        )
+    else:
+        market = sum((Decimal(str(item["attributedValue"])) for item in value_ranked), start=Decimal(0))
+        attributed = Decimal(str(summary["attributedAwardValue"]))
+        if market == 0:
+            value_metric = _withheld_concentration("value", "zero-denominator", observation_count, len(value_ranked))
+        elif market != attributed:
+            raise ContractError("mercato valore di concentrazione non riconciliato")
+        else:
+            weights = [Decimal(str(item["attributedValue"])) for item in value_ranked]
+            value_metric = _published_concentration(
+                "value", value_ranked, weights, observation_count, decimal_text(market),
+            )
+    return {"count": count_metric, "value": value_metric}
+
+
 def profile_record(
     connection: sqlite3.Connection, cf: str, codice_ipa: str,
 ) -> dict[str, object]:

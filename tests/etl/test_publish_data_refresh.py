@@ -31,6 +31,7 @@ class PublishDataRefreshTests(TestCase):
         self.assertEqual(
             set(publications),
             {
+                "company-atlas",
                 "consulenti-pubblici",
                 "government-scorecard",
                 "mef-participations",
@@ -43,6 +44,7 @@ class PublishDataRefreshTests(TestCase):
         self.assertEqual(
             {item["branch"] for item in publications.values()},
             {
+                "automation/data/company-atlas",
                 "automation/data/consulenti",
                 "automation/data/government-scorecard",
                 "automation/data/mef-participations",
@@ -65,21 +67,38 @@ class PublishDataRefreshTests(TestCase):
             [
                 "scripts/etl/specs/government-scorecard.source.json",
                 "scripts/etl/specs/government-scorecard-methodology.json",
-                "scripts/etl/specs/government-current-signals.source.json",
+                "scripts/etl/specs/government-scorecard-chronology.json",
+                "scripts/etl/specs/government-scorecard-sensitivity.json",
+                "scripts/etl/specs/government-scorecard-page.source.json",
             ],
         )
-        self.assertEqual(len(government["publication"]["upstreamUrls"]), 8)
-        self.assertIn(
-            government["publication"]["upstreamUrl"],
-            government["publication"]["upstreamUrls"],
-        )
         self.assertEqual(
-            government["publication"]["upstreamUrls"][3:],
+            government["publication"]["upstreamUrls"],
             [
-                item["pageUrl"]
-                for item in json.loads(
-                    (ROOT / "scripts/etl/specs/government-scorecard.source.json").read_text()
-                )["governmentChronology"]["historicalPages"]
+                "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+                "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+                "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+                "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
+                "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
+            ],
+        )
+        self.assertTrue(all(
+            url.startswith("https://")
+            for url in government["publication"]["upstreamUrls"]
+        ))
+        self.assertEqual(
+            government["files"],
+            [
+                "src/data/generated/government-scorecard.json",
+                "src/data/generated/government-scorecard-page.json",
             ],
         )
 

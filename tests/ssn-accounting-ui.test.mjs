@@ -16,6 +16,10 @@ test("SSN accounting comparison offers a chart/table switch without losing the e
   assert.match(page, /detailPresent: data\.detailCoverage\.present\[metric\]/);
   assert.match(page, /detailMissing: data\.detailCoverage\.missing\[metric\]/);
   assert.match(page, /grafico confronta\s*\n?\s*gli importi/);
+  assert.match(page, /region\.values\.productionCosts/);
+  assert.match(page, /region\.values\.purchasedServices/);
+  assert.match(page, /entity\.missing\.nonHealthcareWorkServices/);
+  assert.match(page, /entity\.values\.purchasedServices/);
   assert.match(component, /^"use client";/);
   assert.match(component, /role="tablist"/);
   assert.match(component, /aria-label="Vista delle voci contabili"/);

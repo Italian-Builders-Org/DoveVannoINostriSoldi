@@ -178,6 +178,7 @@ export default function SourcesPage() {
         <p>
           Se la fonte pubblica i dati una volta al mese, non sono in tempo reale. Mostriamo ultimo
           periodo, ultimo controllo e prossimo aggiornamento atteso.{" "}
+          <Link href="/fonti/calendario">Calendario documenti →</Link> ·{" "}
           <Link href="/fonti/stato">Stato delle fonti →</Link> ·{" "}
           <Link href="/metodologia">Metodo →</Link>
         </p>

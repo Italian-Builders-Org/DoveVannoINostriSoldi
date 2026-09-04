@@ -99,7 +99,9 @@ export const publicSources: PublicSource[] = [
     format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
     url: "https://esploradati.istat.it/databrowser/",
     note: "Sono i consumi finali (P3) delle AP, non la spesa pubblica totale: nel 2023 valgono circa 383 miliardi contro i circa 1149 della spesa totale. Non è confrontabile con Eurostat COFOG né con SIOPE. Le aree composite contengono già le loro parti. Il dato territoriale è territorio di erogazione contabile, non «quanto riceve» un cittadino.",
-    joinKeys: ["territorio", "anno", "funzione COFOG", "edizione"], {slug: "istat-epea",
+    joinKeys: ["territorio", "anno", "funzione COFOG", "edizione"],
+  { 
+    slug: "istat-epea",
 name: "ISTAT · spesa per la protezione dell'ambiente (EPEA)",
 owner: "ISTAT — Istituto nazionale di statistica",
 area: "Conti della spesa per la protezione dell'ambiente",

@@ -51,6 +51,5 @@ export const companyAtlasSources = {
   },
 } as const satisfies Record<CompanyAtlasSource["id"], CompanyAtlasSource>;
 
-export type CompanyAtlasSourceId = keyof typeof companyAtlasSources;
 
 export const companyAtlasSourceList: readonly CompanyAtlasSource[] = Object.freeze(Object.values(companyAtlasSources));

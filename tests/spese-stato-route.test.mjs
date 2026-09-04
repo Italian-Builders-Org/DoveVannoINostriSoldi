@@ -1,62 +1,57 @@
 import assert from "node:assert/strict";
+import { registerHooks } from "node:module";
 import test from "node:test";
+import { NextRequest } from "next/server.js";
 import "./helpers/register-ts-alias.mjs";
 
-const { parseReferencePeriod } = await import("../src/lib/data/reference-period.ts");
-
-test("year e month non sono parametri riconosciuti: restituiscono periodo vuoto", () => {
-  const result = parseReferencePeriod(new URLSearchParams("year=2025&month=8"));
-  assert.equal(result.ok, true);
-  assert.deepEqual(result.value, {});
+// Replace only the upstream adapter; exercise the real route and period parser.
+const adapterUrl = `data:text/javascript,${encodeURIComponent(`
+  export const calls = [];
+  export class StatePaymentPeriodUnavailableError extends Error {}
+  export async function getStateSpendingSnapshot(options) {
+    calls.push(options);
+    return { period: { year: options.year ?? 2026, month: options.month ?? 7 } };
+  }
+`)}`;
+const hook = registerHooks({
+  resolve(specifier, context, nextResolve) {
+    return specifier === "@/lib/bdap-payments"
+      ? { url: adapterUrl, shortCircuit: true }
+      : nextResolve(specifier, context);
+  },
 });
+const { GET } = await import("../src/app/api/spese/stato/route.ts");
+const { calls } = await import(adapterUrl);
+hook.deregister();
 
-test("anno e mese italiani vengono accettati", () => {
-  const result = parseReferencePeriod(new URLSearchParams("anno=2025&mese=8"));
-  assert.equal(result.ok, true);
-  assert.deepEqual(result.value, { year: 2025, month: 8 });
-});
+function request(query = "") {
+  return new NextRequest(`https://example.test/api/spese/stato${query}`);
+}
 
-test("mese senza anno viene rifiutato", () => {
-  const result = parseReferencePeriod(new URLSearchParams("mese=8"));
-  assert.equal(result.ok, false);
-  if (!result.ok) assert.match(result.error, /anno/i);
-});
-
-test("anno o mese non validi vengono rifiutati", () => {
-  for (const query of ["anno=2025x", "anno=1999", "anno=2025&mese=0", "anno=2025&mese=13"]) {
-    const result = parseReferencePeriod(new URLSearchParams(query));
-    assert.equal(result.ok, false, query);
+test("state spending route ignores English parameters and forwards the Italian period", async () => {
+  for (const [query, expected] of [
+    ["", {}],
+    ["?year=2025&month=8", {}],
+    ["?anno=2025&mese=8", { year: 2025, month: 8 }],
+  ]) {
+    const response = await GET(request(query));
+    assert.equal(response.status, 200);
+    const { signal, ...period } = calls.at(-1);
+    assert.deepEqual(period, expected);
+    assert.ok(signal instanceof AbortSignal);
+    assert.deepEqual((await response.json()).period, {
+      year: expected.year ?? 2026,
+      month: expected.month ?? 7,
+    });
   }
 });
 
-test("produzione: year/month ignorati, anno/mese filtrano", async (context) => {
-  const base = "https://www.dovevannoinostrisoldi.com/api/spese/stato";
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 30_000);
-  try {
-    const [latest, english, italian] = await Promise.all([
-      fetch(base, { signal: controller.signal }),
-      fetch(`${base}?year=2025&month=8`, { signal: controller.signal }),
-      fetch(`${base}?anno=2025&mese=8`, { signal: controller.signal }),
-    ]);
-    if (!latest.ok || !english.ok || !italian.ok) {
-      context.skip("endpoint produzione non raggiungibile");
-      return;
-    }
-    const latestPayload = await latest.json();
-    const englishPayload = await english.json();
-    const italianPayload = await italian.json();
-    assert.equal(latestPayload.ok, true);
-    assert.deepEqual(latestPayload.period, englishPayload.period);
-    assert.equal(italianPayload.period.year, 2025);
-    assert.equal(italianPayload.period.month, 8);
-  } catch (error) {
-    if (error?.name === "AbortError") {
-      context.skip("endpoint produzione non raggiungibile");
-      return;
-    }
-    throw error;
-  } finally {
-    clearTimeout(timer);
+test("state spending route rejects invalid periods before contacting the source", async () => {
+  const before = calls.length;
+  for (const query of ["mese=8", "anno=2025x", "anno=1999", "anno=2025&mese=0", "anno=2025&mese=13"]) {
+    const response = await GET(request(`?${query}`));
+    assert.equal(response.status, 400, query);
+    assert.equal((await response.json()).ok, false);
   }
+  assert.equal(calls.length, before);
 });

@@ -823,14 +823,9 @@ try {
         await indicatorButton.click();
         await assertGovernmentChartKeyboard(page, label);
 
-        const sourcesNavigationLink = await page.$(
+        await page.locator(
           'main nav[aria-label="Approfondimenti della pagella"] a[href="#dati-e-fonti"]',
-        );
-        assert.ok(sourcesNavigationLink, `${label}: collegamento Scarica i dati assente`);
-        await sourcesNavigationLink.evaluate((element) =>
-          element.scrollIntoView({ block: "center", inline: "center" }),
-        );
-        await sourcesNavigationLink.click();
+        ).click();
         await page.waitForFunction(() => window.location.hash === "#dati-e-fonti");
         assert.equal(new URL(page.url()).hash, "#dati-e-fonti", `${label}: il collegamento Scarica i dati non aggiorna l'URL`);
         const downloadsPanel = await page.$("section#dati-e-fonti");

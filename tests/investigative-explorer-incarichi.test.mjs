@@ -1,16 +1,14 @@
-// Contract test for the Investigative Explorer artifact (issue #105).
-// Runnable under `node --test`. Reads the generated artifact; if it is not
-// present (e.g. before `python scripts/etl/investigative_explorer_build.py`
-// ran) the test skips instead of failing.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ARTIFACT = join(
   process.cwd(),
   "src/data/generated/investigative-explorer-incarichi.json",
 );
+
+const data = JSON.parse(readFileSync(ARTIFACT, "utf8"));
 
 const REQUIRED = [
   "relation_type",
@@ -34,11 +32,6 @@ const EDGE_FIELDS = [
 ];
 
 test("artifact satisfies the published contract", () => {
-  if (!existsSync(ARTIFACT)) {
-    console.warn(`[skip] artifact assente: ${ARTIFACT}`);
-    return;
-  }
-  const data = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   assert.equal(data.schemaVersion, 1);
   assert.equal(data.transformVersion, 2);
   assert.equal(data.scope, "investigative-explorer-incarichi");
@@ -67,15 +60,11 @@ test("artifact satisfies the published contract", () => {
 });
 
 test("ogni arco riporta provenance e caveat", () => {
-  if (!existsSync(ARTIFACT)) return;
-  const data = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   assert.ok(data.source && typeof data.source === "object");
   assert.ok(data.methodology && typeof data.methodology.caveat === "string");
 });
 
 test("ogni arco ha id stabile e univoco (chiave React sicura)", () => {
-  if (!existsSync(ARTIFACT)) return;
-  const data = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   const ids = new Set();
   for (const rel of data.relations) {
     assert.ok(typeof rel.id === "string" && rel.id.length > 0, "arco senza id");
@@ -89,14 +78,12 @@ test("il meta file leggero rispecchia il conteggio senza archi", () => {
     process.cwd(),
     "src/data/generated/investigative-explorer-incarichi.meta.json",
   );
-  if (!existsSync(ARTIFACT) || !existsSync(META)) return;
-  const a = JSON.parse(readFileSync(ARTIFACT, "utf8"));
   const meta = JSON.parse(readFileSync(META, "utf8"));
-  assert.equal(meta.relationCount, a.relationCount);
-  assert.equal(meta.suspectDuplicates ?? 0, a.suspectDuplicates ?? 0);
+  assert.equal(meta.relationCount, data.relationCount);
+  assert.equal(meta.suspectDuplicates ?? 0, data.suspectDuplicates ?? 0);
   assert.ok(!("relations" in meta), "il meta non deve contenere gli archi");
   assert.ok(
-    JSON.stringify(meta).length < JSON.stringify(a).length / 50,
+    JSON.stringify(meta).length < JSON.stringify(data).length / 50,
     "il meta deve essere molto piu' leggero dell'artifact",
   );
 });

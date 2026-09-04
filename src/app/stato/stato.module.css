@@ -270,10 +270,6 @@
   background: var(--color-raised);
 }
 
-.chartBlockWide {
-  grid-column: 1 / -1;
-}
-
 .chartTitle {
   display: flex;
   align-items: flex-start;
@@ -527,10 +523,6 @@
 
   .fact {
     padding-left: 0;
-  }
-
-  .chartBlockWide {
-    grid-column: auto;
   }
 }
 

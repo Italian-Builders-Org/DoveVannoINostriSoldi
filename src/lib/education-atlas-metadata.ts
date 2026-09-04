@@ -44,10 +44,6 @@ export const educationAtlasSources = {
   },
 } as const satisfies Record<"students" | "registry", EducationAtlasSource>;
 
-export const educationAtlasSourceList: readonly EducationAtlasSource[] = Object.freeze(
-  Object.values(educationAtlasSources),
-);
-
 export const educationAtlasSourceFileManifest = validateEducationAtlasSourceFileManifest(sourceFileManifest);
 export const educationAtlasSourceFiles = educationAtlasSourceFileManifest.files;
 

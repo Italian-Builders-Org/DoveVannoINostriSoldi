@@ -859,10 +859,3 @@ export function assertIntegratedDatasetChunk(
   );
   return assertIntegratedDatasetRowRange(dataset, values, firstSourceRow, expectedRows);
 }
-
-export function assertIntegratedDatasetRows(
-  dataset: IntegratedDatasetCatalogEntry,
-  values: unknown[],
-): IntegratedPublicRow[] {
-  return assertIntegratedDatasetRowRange(dataset, values, 1, dataset.publicRows);
-}

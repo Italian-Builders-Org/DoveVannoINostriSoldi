@@ -89,12 +89,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.reuseNote {
-  margin: -8px 0 var(--space-3);
-  color: var(--color-neutral-600);
-  font-size: 12px;
-}
-
 .relatedLink {
   margin: var(--space-2) 0 0;
   font-size: 12px;
@@ -292,25 +286,8 @@
   line-height: 1.1;
 }
 
-.contractNotice h2,
 .unavailablePanel h2 {
   font-size: 18px;
-}
-
-.contractNotice p:last-child {
-  margin-bottom: 0;
-}
-
-.sourcePanel {
-  display: grid;
-  grid-template-columns: minmax(190px, .34fr) minmax(0, 1fr);
-  gap: var(--space-6);
-}
-
-.sourcePanel > div > p {
-  margin: var(--space-2) 0 0;
-  color: var(--color-neutral-700);
-  font-size: 13px;
 }
 
 .sourceMetadata {
@@ -342,15 +319,6 @@
   margin: 4px 0 0;
   overflow-wrap: anywhere;
   font-size: 13px;
-}
-
-.caveatPanel ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.caveatPanel li + li {
-  margin-top: var(--space-2);
 }
 
 .queryPanel {
@@ -501,7 +469,6 @@
 @media (max-width: 700px) {
   .datasetGrid,
   .queryPanel,
-  .sourcePanel,
   .sourceMetadata {
     grid-template-columns: minmax(0, 1fr);
   }

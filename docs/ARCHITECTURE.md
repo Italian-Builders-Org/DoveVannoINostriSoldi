@@ -1,149 +1,67 @@
 # Architettura
 
-## Decisioni architetturali
+DVNS rende leggibili i dati pubblici mantenendo fonte, periodo, perimetro e
+limiti contabili. È un'applicazione Next.js App Router: pagine server,
+componenti interattivi React, route HTTP e un endpoint MCP in sola lettura.
+Non richiede un database locale, Docker o un servizio di ingestione per avviarsi.
 
-- [ADR-001 — Dove conservare gli artefatti dati](architecture/ADR-001-generated-artifacts-storage.md)
+## Dove passa il dato
 
-## Obiettivo
+1. **Acquisizione**: `scripts/etl/` legge le fonti ufficiali. Source lock e
+   specifiche in `scripts/etl/specs/` definiscono input, licenze e perimetri.
+2. **Snapshot**: `src/data/generated/` contiene gli artifact versionati insieme
+   al codice. Il registro `scripts/ci/generated-artifacts.json` collega ciascun
+   gruppo a generatore, verifica offline e workflow di refresh.
+3. **Contratti**: `src/lib/data/*-contract.ts` e i contratti specifici degli
+   atlanti validano gli artifact prima del consumo. Controlli Python e
+   TypeScript proteggono confini diversi: trasformazione e pubblicazione.
+4. **Lettura e aggregazione**: i moduli in `src/lib/` espongono le viste usate da
+   pagine, API e adapter MCP. Le query pubbliche limitano filtri e paginazione.
+5. **Presentazione**: `src/app/` contiene pagine e API, `src/components/` i
+   componenti condivisi. Gli snapshot completi restano sul server; i Client
+   Component ricevono le serie e i metadati necessari alla visualizzazione.
 
-DoveVannoINostriSoldi deve poter rispondere a una domanda semplice: “dove sono andati questi soldi?”. Deve farlo senza perdere la complessità contabile necessaria a dare una risposta corretta.
+## Tre percorsi di lettura
 
-Per questo l'architettura è pensata in livelli separati.
+- **Snapshot tipizzati**, per esempio SIOPE, IRPEF, sanità e debito: un adapter
+  valida il dato versionato e fornisce aggregazioni coerenti a UI, API e MCP.
+  IRPEF riconcilia Comune → Provincia → Regione e mantiene le celle oscurate.
+- **Corpus integrato**: `integrated-sources.ts` verifica prove, catalogo e chunk
+  compressi. `integrated-public-view.ts` è il confine pubblico: applica
+  visibilità, cursori, limiti e cancellazione. `data/source-ledger/` lega gli
+  artifact a hash, ricevute e provenienza. Non aggirare questo percorso
+  importando direttamente i chunk in una route.
+- **Fonti live**, soprattutto IPA e OpenBDAP: `data/source-fetch.ts` e
+  `data/source-policy.ts` governano accesso e policy; gli adapter gestiscono
+  parsing e cache. Le route applicano budget e limiti di concorrenza. Un errore
+  della fonte deve restare visibile, senza trasformarsi in zero o successo.
 
-## 1. Source registry
+`src/lib/mcp/catalog.ts` descrive i dataset; `datasets.ts` li collega alle
+funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
+`OPTIONS /mcp` sono alias supportati; `GET /mcp` resta la pagina informativa.
+L'assistente in `src/lib/assistant/` usa intenti deterministici sugli snapshot.
 
-Il registro in `src/lib/sources.ts` descrive ogni fonte:
+## Invarianti
 
-- proprietario;
-- area;
-- URL ufficiale;
-- formato;
-- copertura;
-- frequenza;
-- stato di integrazione.
+- Pagamenti, stanziamenti, costi previsti e stock di debito sono misure diverse.
+- Zero, assenza di dato e valore oscurato restano distinti.
+- Date di riferimento, pubblicazione, osservazione e ingestione non si scambiano.
+- IPA, codice fiscale, CIG, CUP e ISTAT mantengono il significato della fonte.
+  Un nome simile non basta a stabilire l'identità di un ente.
+- Hash, licenza, copertura, duplicati e riconciliazioni fanno parte del contratto.
+  Un outlier non si elimina soltanto perché è insolito.
+- Un segnale non dimostra colpa, frode, spreco o causalità politica.
+- Cancellazione, timeout e cache condivise devono preservare l'isolamento dei
+  chiamanti e liberare gli slot anche in caso di errore.
 
-È il punto di partenza per provenance e monitoring.
+## Storage e verifica
 
-## 2. Acquisition
+La decisione attuale è [Git per gli artifact del prodotto](architecture/ADR-001-generated-artifacts-storage.md).
+PostgreSQL e object storage sono eventuali evoluzioni, non dipendenze presenti.
+Le credenziali dei refresh e dell'App GitHub per le segnalazioni sono soltanto
+server-side; l'avvio locale non le richiede.
 
-Ogni connettore deve:
-
-1. scaricare solo da endpoint o documenti ufficiali;
-2. rispettare rate limit, robots.txt e condizioni d'uso;
-3. conservare timestamp di osservazione e metadati HTTP utili;
-4. calcolare un hash del raw payload;
-5. evitare di riscaricare una versione identica;
-6. fallire in modo esplicito: dati vecchi sono preferibili a dati silenziosamente corrotti.
-
-Per sorgenti a file useremo job idempotenti. Per API useremo checkpoint e retry con backoff.
-
-## 3. Raw layer
-
-Il raw non viene “ripulito” in-place.
-
-Schema minimo:
-
-```text
-source_id
-source_record_id
-source_url
-source_published_at
-observed_at
-ingested_at
-content_type
-raw_hash
-raw_payload / object_uri
-```
-
-Questo rende ogni trasformazione riproducibile.
-
-## 4. Normalized layer
-
-Entità principali previste:
-
-```text
-public_entity
-organization_unit
-organization_identifier
-public_holding
-entrusted_service
-payment
-budget_measure
-procurement_procedure
-contract
-supplier
-public_project
-grant
-consultancy
-parliamentary_budget_item
-territory
-source_snapshot
-```
-
-Chiavi di dominio da mantenere:
-
-- Codice IPA;
-- codice fiscale / partita IVA quando pubblicabile e utile;
-- CIG;
-- CUP;
-- codici ISTAT territoriali;
-- identificativi nativi della fonte.
-
-Gli identificativi non vengono fusi in un singolo ID opaco: si mantiene una tabella di alias con tipo, fonte e validità temporale.
-
-Per le partecipazioni, amministrazione e società sono due organizzazioni collegate da `public_holding`: anno di rilevazione, partecipazione diretta/indiretta, quota e tipo di controllo appartengono alla relazione, non all'identità della società. Gli affidamenti dichiarati restano record `entrusted_service` datati. Codice IPA, codice fiscale, codice AUSA e REA rimangono schemi di identificazione distinti; i match fuzzy per denominazione non vengono promossi a fatto.
-
-## 5. Semantic layer
-
-Qui si calcolano:
-
-- aggregazioni temporali;
-- spesa per missione, programma e categoria;
-- confronti territoriali;
-- valori pro capite;
-- concentrazione dei fornitori;
-- indicatori di procedura;
-- serie storiche.
-
-Ogni metrica ha una `metric_version` e una definizione pubblica.
-
-## 6. Serving
-
-Next.js serve UI e API BFF. Con la prima vera ingestione persistente introdurremo PostgreSQL come datastore analitico-operativo; oggetti raw di grandi dimensioni potranno vivere in object storage.
-
-Il route handler `/api/mcp` espone gli stessi moduli di dominio tramite MCP Streamable HTTP. Il catalogo e gli adapter vivono in `src/lib/mcp/`: una nuova fonte viene registrata una volta e diventa interrogabile senza creare tool ad hoc o duplicare la normalizzazione. Tutti i tool pubblici sono read-only, con input limitati e paginazione.
-
-Per lo snapshot MEF IRPEF comunale, un source lock versionato governa il
-boundary Python. L'ETL produce un sidecar di metadati e un artefatto dati
-compattato, legati dall'hash dei byte canonici. Il contratto TypeScript valida
-entrambi e ricostruisce indipendentemente le somme Comune → Provincia → Regione
-prima di servire una query bounded. UI, API e MCP usano la stessa funzione di
-dominio; nessuno importa lo snapshot completo in un Client Component.
-
-Nessuna credenziale di ingestione deve essere esposta al browser.
-
-## 7. Freshness
-
-Ogni dataset ha tre tempi distinti:
-
-- `source_published_at`: quando la fonte dichiara di aver pubblicato il dato;
-- `observed_at`: quando il nostro sistema ha visto quella versione;
-- `ingested_at`: quando è stata acquisita con successo.
-
-La UI mostrerà almeno l'ultimo aggiornamento della fonte e l'ultima ingestione riuscita.
-
-## 8. Qualità
-
-Controlli minimi per batch:
-
-- schema validation;
-- numero record e variazione rispetto al batch precedente;
-- null rate sulle chiavi;
-- duplicati;
-- range degli importi;
-- continuità temporale;
-- referential integrity per CIG/CUP/ente;
-- checksum;
-- quarantine dei record non validi.
-
-Il sistema non deve eliminare record “strani” solo perché sono outlier: proprio gli outlier possono essere il dato interessante da verificare.
+Per setup, test mirati, build, browser e worktree vedi
+[CONTRIBUTING.md](../CONTRIBUTING.md). Per una nuova fonte parti dallo
+[standard di import](DATA_IMPORT_STANDARD.md); per significato e limiti dei dati
+vedi [principi legali ed etici](LEGAL_AND_ETHICS.md).

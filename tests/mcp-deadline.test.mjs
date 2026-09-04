@@ -3,13 +3,13 @@ import test from "node:test";
 
 const { runMcpExchangeWithDeadline } = await import("../src/lib/mcp/request-deadline.ts");
 
-test("MCP deadline closes a streaming exchange even when the handler never finishes", async () => {
+test("MCP deadline closes a streaming exchange even when the handler never finishes", { timeout: 2_000 }, async (context) => {
+  context.mock.timers.enable({ apis: ["setTimeout"] });
   let requestSignal;
   let streamCancelled = false;
   let timeoutEvents = 0;
-  const startedAt = Date.now();
 
-  const response = await runMcpExchangeWithDeadline(
+  const pending = runMcpExchangeWithDeadline(
     new Request("https://example.test/api/mcp", { method: "POST" }),
     async (request) => {
       requestSignal = request.signal;
@@ -29,7 +29,13 @@ test("MCP deadline closes a streaming exchange even when the handler never finis
     },
   );
 
-  const elapsedMs = Date.now() - startedAt;
+  // Let the response body acquire its reader before advancing the deadline.
+  await new Promise((resolve) => setImmediate(resolve));
+  context.mock.timers.tick(24);
+  assert.equal(requestSignal.aborted, false);
+  assert.equal(timeoutEvents, 0);
+  context.mock.timers.tick(1);
+  const response = await pending;
   assert.equal(response.status, 504);
   assert.deepEqual(await response.json(), {
     jsonrpc: "2.0",
@@ -39,7 +45,6 @@ test("MCP deadline closes a streaming exchange even when the handler never finis
   assert.equal(requestSignal.aborted, true);
   assert.equal(streamCancelled, true);
   assert.equal(timeoutEvents, 1);
-  assert.ok(elapsedMs < 250, `deadline returned after ${elapsedMs}ms`);
 });
 
 test("MCP deadline buffers a completed SSE response before returning it", async () => {

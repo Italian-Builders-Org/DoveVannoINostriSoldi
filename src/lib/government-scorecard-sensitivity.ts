@@ -558,24 +558,6 @@ function daysBetween(start: Date, end: Date): number {
   return (end.getTime() - start.getTime()) / 86_400_000;
 }
 
-export function annualOverlapWeightsV6(startDate: string, endDate: string) {
-  const start = parseDate(startDate);
-  const end = parseDate(endDate);
-  if (end <= start) throw new RangeError("lo stress temporale richiede un intervallo positivo");
-  const weights: { year: number; weight: number }[] = [];
-  for (let year = start.getUTCFullYear(); year <= end.getUTCFullYear(); year += 1) {
-    const yearStart = new Date(Date.UTC(year, 0, 1));
-    const yearEnd = new Date(Date.UTC(year + 1, 0, 1));
-    const overlapStart = start > yearStart ? start : yearStart;
-    const overlapEnd = end < yearEnd ? end : yearEnd;
-    const overlapDays = Math.max(0, daysBetween(overlapStart, overlapEnd));
-    if (overlapDays > 0) {
-      weights.push({ year, weight: overlapDays / daysBetween(yearStart, yearEnd) });
-    }
-  }
-  return weights;
-}
-
 export function weightPatternIdV6(weights: readonly { year: number; weight: number }[]): string {
   const values = weights
     .toSorted((left, right) => left.year - right.year)

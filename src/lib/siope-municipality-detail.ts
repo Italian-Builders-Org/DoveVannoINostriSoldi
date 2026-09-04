@@ -356,11 +356,6 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
   });
 }
 
-export const siopeMunicipalityDetailCoverage = artifacts.map((artifact) => ({
-  year: artifact.year,
-  municipalities: artifact.rows.length,
-}));
-
 /**
  * Public paths of the municipal profile pages, enumerated from the committed
  * SIOPE detail snapshots without request-time I/O. The ETL publishes

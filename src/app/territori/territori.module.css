@@ -72,17 +72,6 @@
   color: white;
 }
 
-.rankingGuide p {
-  margin: var(--space-2) 0 var(--space-3);
-  color: var(--color-neutral-700);
-  font-size: 13px;
-}
-
-.rankingGuide a {
-  font-size: 13px;
-  font-weight: 650;
-}
-
 .municipalityPanel {
   display: grid;
   gap: var(--space-4);
@@ -195,20 +184,6 @@
   text-align: center;
 }
 
-.split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 400px;
-  gap: var(--space-4);
-  align-items: start;
-}
-
-.aside {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
 .areaRow th,
 .areaRow td {
   background: var(--color-neutral-100);
@@ -279,7 +254,6 @@
 }
 
 @media (max-width: 1100px) {
-  .split { grid-template-columns: minmax(0, 1fr); }
   .municipalityFilters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

@@ -11,7 +11,6 @@ import {
 import { createCompanyAtlasObservationIndex } from "@/lib/company-atlas-index";
 
 export const COMPANY_ATLAS_ALL = "all" as const;
-export type CompanyAtlasSelection = typeof COMPANY_ATLAS_ALL;
 
 export const COMPANY_ATLAS_METRICS = [
   {

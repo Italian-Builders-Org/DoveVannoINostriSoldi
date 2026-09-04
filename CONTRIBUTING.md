@@ -25,6 +25,26 @@ Usa Node indicato da `.nvmrc` e installa le dipendenze con `npm ci`. Parti
 dall'ultimo `origin/main` e mantieni la PR focalizzata. Se la checkout principale
 contiene lavoro non tuo, usa un worktree isolato e non resettarla.
 
+Per i test ETL usa Python 3.12 e le stesse dipendenze della CI:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-etl.txt
+npm ci
+npm run dev -- --hostname 127.0.0.1 --port 3218
+```
+
+Il sito parte dagli snapshot versionati, senza database o credenziali. Alcune
+ricerche contattano IPA/OpenBDAP e possono mostrare errori della fonte quando
+la rete non è disponibile. Il build scarica Geist da Google Fonts.
+
+Ogni worktree deve avere `node_modules`, `.venv`, `.next` e porta propri.
+Non copiare segreti o condividere `.next` tra checkout. Per crearne uno:
+`git worktree add -b codex/nome-task /tmp/dvns-nome-task HEAD`, poi esegui
+il setup in quella directory. Per la mappa del codice leggi
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Contratti dati
 
 Ogni snapshot versionato deve avere un adapter fail-closed. Il contratto deve
@@ -50,37 +70,76 @@ documentazione del limite invece di inventare valori.
 
 La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
 `etl`, `production`) aggregati da `CI / required`. Il job `security` esegue la
-scansione Zizmor dei workflow ed è bloccante, ma non ha un equivalente locale
-fra i comandi npm. Puoi riprodurre gli altri gate localmente con i comandi
-stabili:
+scansione Zizmor dei workflow ed è bloccante. Per riprodurla usa Zizmor 1.29.0:
+`zizmor --persona auditor .github/workflows/`. Il job static include anche
+`actionlint` 1.7.12 e `npm run ci:action-pins`. I gate applicativi sono:
 
 ```bash
 npm ci
 npm run ci:static
 npm run test:node
-npm run test:etl
-npm run test:snapshots
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci npm run test:etl
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci npm run test:snapshots
 npm run build
+NEXT_PORT=3218 npm run test:production
 git diff --check
 ```
 
-`ci:static` esegue lint, typecheck, design:check e brand:check insieme.
+`ci:static` esegue lint, typecheck, design:check e brand:check.
+`typecheck` genera i tipi Next anche in una checkout appena installata.
 Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`
 (per esempio `PYTHON=python npm run test:node`): i test che attraversano il
 confine ETL usano quel nome, il default resta `python3`.
-I test browser e Lighthouse richiedono un server `next start` attivo su
-`127.0.0.1:3000`; vedi `scripts/ci/run-production-gates.sh` per l'orchestrazione
-completa usata dalla CI.
+`test:production` avvia il server dal build esistente, aspetta la readiness e
+lancia smoke/load MCP,
+browser core/editoriale/report, CSP e Lighthouse. Rifiuta una porta occupata e
+termina il proprio server anche se un gate fallisce. Il log è in
+`artifacts/production/next.log`; i fallimenti browser salvano screenshot e
+diagnostica in `artifacts/browser/`; Lighthouse scrive in `.lighthouseci/`.
+`NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
+browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
+`DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.
+
+### Feedback rapido
+
+```bash
+node --experimental-strip-types --test tests/global-search.test.mjs
+node --experimental-strip-types --test --test-name-pattern='deadline' tests/mcp-deadline.test.mjs
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_integrated_source_release.py'
+```
+
+Scegli i file dal dominio modificato; aggiungi i contratti e le route che lo
+consumano. I test Node usano `node:test` e gli ETL `unittest`, senza runner custom.
+Le query HTTP simulate sostituiscono l'adapter esterno; la suite produzione
+esercita invece il server reale. Un errore `listen EPERM` in un sandbox richiede
+loopback consentito, non la rimozione del test o del network guard.
+
+### Misure runtime
+
+`npm run bench:runtime` misura ricerca locale e sito, formattazione e alcuni
+percorsi di aggregazione sugli snapshot versionati. Produce JSONL con versione
+Node, corpus, query, mediana/min/max per batch e digest dell'output. Import e
+caricamento iniziale sono esclusi: tre warmup precedono sette campioni da almeno
+150 ms. I tempi sono per batch, non per singola query né per richiesta HTTP.
+
+Esegui baseline e patch in sequenza, con lo stesso Node e corpus e senza build
+o suite concorrenti. Confronta anche i digest e ripeti le misure rumorose.
+I digest non sostituiscono i test di correttezza. Questi numeri non misurano
+latenza delle fonti live, rete, rendering o cold start.
 
 ### ETL e artifact verification
 
 ```bash
-npm run test:etl        # full ETL transformation/reconciliation test suite (295 tests)
+npm run test:etl        # trasformazione, riconciliazione e contratti ETL
 npm run test:snapshots  # generated-artifact registry + offline artifact checks
 ```
 
 `test:etl` esegue l'intera suite di test Python (trasformazione, riconciliazione,
-contratti fail-closed) una sola volta.
+contratti fail-closed) una sola volta. La prova completa del corpus integrato
+(`check_committed`) appartiene a `CommittedReleaseProofTests` in
+`tests/etl/test_integrated_source_release.py`, insieme agli altri due gate di
+release. Il test Node `integrated-curated-datasets` mantiene il controllo
+indipendente del ledger; non rilancia la stessa prova Python.
 
 `test:snapshots` valida il registro degli artifact generati
 (`scripts/ci/generated-artifacts.json`), controlla che

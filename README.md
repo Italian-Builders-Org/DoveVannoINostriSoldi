@@ -160,16 +160,14 @@ Elenco e contratti: documentazione in `docs/` e catalogo su [/mcp](https://www.d
 ### Controlli prima di una modifica
 
 ```bash
-npm run lint
+npm run ci:static
 npm test
-npm run typecheck
-npm run design:check
 npm run build
-npm run test:browser:e2e
-npm run test:lighthouse
+NEXT_PORT=3218 npm run test:production
 ```
 
-Gli ultimi due richiedono il build di produzione su `http://127.0.0.1:3000`. Dettagli in [CONTRIBUTING.md](CONTRIBUTING.md).
+Il runner produzione avvia e termina il proprio server. Setup Python, test ETL,
+verifica snapshot e comandi mirati in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Screenshot del README
 

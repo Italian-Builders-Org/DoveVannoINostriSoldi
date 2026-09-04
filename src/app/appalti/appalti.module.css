@@ -95,50 +95,6 @@
   border-top: 3px solid var(--chart-primary);
 }
 
-.valuePanel {
-  display: grid;
-  gap: var(--space-5);
-}
-
-.valuePair {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-.valueCard {
-  display: grid;
-  gap: 4px;
-  padding-top: var(--space-4);
-  border-top: 3px solid var(--color-neutral-400);
-}
-
-.valueCard[data-emphasis="value"] {
-  border-top-color: var(--chart-primary);
-}
-
-.valueCard span {
-  color: var(--color-neutral-700);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
-.valueCard strong {
-  font-family: var(--font-heading);
-  font-size: 40px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: -.03em;
-  line-height: 1;
-}
-
-.valueCard small {
-  color: var(--color-neutral-700);
-  font-size: 12px;
-  line-height: 1.4;
-}
-
 .leadMeasure span {
   color: var(--color-neutral-700);
   font-size: 12px;
@@ -397,10 +353,6 @@
 
   .leadMeasurePair {
     max-width: 22rem;
-  }
-
-  .valuePair {
-    grid-template-columns: 1fr;
   }
 
   .sectionHeading {

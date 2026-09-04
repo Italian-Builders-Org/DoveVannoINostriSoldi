@@ -54,8 +54,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.phaseValues span,
-.missionList small {
+.phaseValues span {
   color: var(--color-neutral-600);
   font-size: 0.78rem;
 }

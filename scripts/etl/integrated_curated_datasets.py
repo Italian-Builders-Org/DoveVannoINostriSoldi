@@ -1382,63 +1382,6 @@ def decompress_public_row_chunk(
     return chunk
 
 
-def hash_pinned_source(
-    path: Path,
-    expected_bytes: int,
-    expected_sha256: str,
-    dataset_id: str,
-    *,
-    chunk_bytes: int = 1024 * 1024,
-) -> None:
-    """Verify a pinned regular file with bounded memory, including multi-GB archives."""
-
-    try:
-        metadata = path.lstat()
-    except OSError as error:
-        raise DatasetBuildError(f"sorgente illeggibile per {dataset_id}") from error
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
-        raise DatasetBuildError(f"sorgente non regolare per {dataset_id}")
-    if metadata.st_size != expected_bytes:
-        raise DatasetBuildError(f"dimensione sorgente divergente per {dataset_id}")
-    if chunk_bytes < 1:
-        raise DatasetBuildError("chunk streaming non valido")
-
-    descriptor = -1
-    digest = hashlib.sha256()
-    total = 0
-    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
-    try:
-        descriptor = os.open(path, flags)
-        opened = os.fstat(descriptor)
-        if (
-            not stat.S_ISREG(opened.st_mode)
-            or opened.st_size != expected_bytes
-            or (opened.st_dev, opened.st_ino) != (metadata.st_dev, metadata.st_ino)
-        ):
-            raise DatasetBuildError(f"sorgente cambiata prima della lettura per {dataset_id}")
-        with os.fdopen(descriptor, "rb") as handle:
-            descriptor = -1
-            while True:
-                chunk = handle.read(chunk_bytes)
-                if not chunk:
-                    break
-                total += len(chunk)
-                if total > expected_bytes:
-                    raise DatasetBuildError(f"dimensione sorgente divergente per {dataset_id}")
-                digest.update(chunk)
-    except DatasetBuildError:
-        raise
-    except OSError as error:
-        raise DatasetBuildError(f"sorgente illeggibile per {dataset_id}") from error
-    finally:
-        if descriptor >= 0:
-            os.close(descriptor)
-    if total != expected_bytes:
-        raise DatasetBuildError(f"dimensione sorgente divergente per {dataset_id}")
-    if digest.hexdigest() != expected_sha256:
-        raise DatasetBuildError(f"byte sorgente divergenti per {dataset_id}")
-
-
 @contextmanager
 def open_verified_pinned_source(
     path: Path,

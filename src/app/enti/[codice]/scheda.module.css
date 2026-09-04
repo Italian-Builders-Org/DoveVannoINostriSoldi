@@ -103,22 +103,7 @@
   margin-top: var(--space-3);
 }
 
-.split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: var(--space-4);
-  align-items: start;
-}
-
 .municipalityLayout { min-width: 0; }
-
-.main,
-.side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
 
 .definitions {
   display: grid;
@@ -284,18 +269,15 @@
   transform: translate(-50%, -50%);
 }
 
-.peerValues,
-.territoryDetails dl {
+.peerValues {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
   margin: 0;
 }
 .peerValues + .peerValues { margin-top: var(--space-3); }
-.peerValues dt,
-.territoryDetails dt { color: var(--color-neutral-600); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
-.peerValues dd,
-.territoryDetails dd { margin: 4px 0 0; font-weight: 700; }
+.peerValues dt { color: var(--color-neutral-600); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.peerValues dd { margin: 4px 0 0; font-weight: 700; }
 .peerValues small {
   display: block;
   margin-top: 4px;
@@ -348,15 +330,6 @@
   font-weight: 400;
   line-height: 1.45;
 }
-
-.territoryDetails {
-  margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-neutral-300);
-}
-.territoryDetails summary { cursor: pointer; font-weight: 700; }
-.territoryDetails dl { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-4); }
-.territoryDetails > p { margin: var(--space-3) 0 0; color: var(--color-neutral-600); font-size: 12px; }
 
 .partialStatus,
 .completeStatus {
@@ -788,9 +761,6 @@
 .informationContent .structureSummary { margin-bottom: 0; }
 
 .structureDetails { margin-top: var(--space-3); }
-.technicalDetails { margin-top: var(--space-4); }
-.technicalDetails[open] > summary { margin-bottom: var(--space-4); }
-.technicalDetails > summary,
 .structureDetails summary {
   width: fit-content;
   cursor: pointer;
@@ -799,24 +769,6 @@
   font-size: 13px;
 }
 .structureDetails[open] summary { margin-bottom: var(--space-3); }
-
-.sideList { margin: 0; }
-.sideList > div {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: 9px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
-  font-size: 12px;
-}
-.sideList > div:last-child { border-bottom: 0; }
-.sideList dt { flex: none; color: var(--color-neutral-600); }
-.sideList dd {
-  margin: 0;
-  text-align: right;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
 
 .actions {
   display: flex;
@@ -833,7 +785,6 @@
 }
 
 @media (max-width: 1000px) {
-  .split { grid-template-columns: minmax(0, 1fr); }
   .identityStrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -844,8 +795,7 @@
   .paymentSummary > div + div { border-left: 0; border-top: 1px solid var(--color-accent-200); }
   .paymentSummary > .paymentFacts { grid-template-columns: minmax(0, 1fr); }
   .paymentFacts > div + div { border-left: 0; border-top: 1px solid var(--color-accent-200); }
-  .peerValues,
-  .territoryDetails dl { grid-template-columns: minmax(0, 1fr); }
+  .peerValues { grid-template-columns: minmax(0, 1fr); }
   .metricGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .spendingRow {
     grid-template-columns: minmax(0, 1fr) auto;

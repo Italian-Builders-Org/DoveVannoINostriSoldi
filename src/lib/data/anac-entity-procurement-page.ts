@@ -1427,10 +1427,6 @@ function cachedShard(root: string, shard: AnacPageShardMeta): readonly AnacEntit
   return loaded.records;
 }
 
-export function assertAnacEntityProcurementPageMeta(value: unknown): AnacEntityProcurementPageMeta {
-  return validateMeta(value);
-}
-
 export function assertAnacEntityProcurementPageRecord(value: unknown, prefix = "00"): AnacEntityProcurementPageRecord {
   if (!PREFIX.test(prefix)) throw new Error("ANAC entity page: prefisso non valido.");
   return validateRecord(value, prefix);
@@ -1497,10 +1493,3 @@ export async function getEntityProcurementPage(
     rootDirectory: options.rootDirectory,
   });
 }
-
-export const ANAC_ENTITY_PROCUREMENT_PAGE_SCOPE = {
-  cohort: COHORT,
-  publicationMonths: MONTHS,
-  temporalAlignment: "cross-snapshot",
-  nationalPopulationClaim: "not-asserted",
-} as const;

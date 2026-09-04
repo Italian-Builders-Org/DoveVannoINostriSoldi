@@ -2,13 +2,12 @@
 # Production gate runner: starts next start, waits for HTTP readiness with a
 # bounded timeout, fails if Next terminates prematurely, runs all production
 # gates, and always cleans up the server process via trap.
-#
-# PR1.10: no fixed sleep — readiness is probed via a stable route.
 set -euo pipefail
+cd "$(dirname "$0")/../.."
 
 NEXT_HOST="127.0.0.1"
 NEXT_PORT="${NEXT_PORT:-3000}"
-LOG_FILE="${NEXT_LOG_FILE:-/tmp/dvns-next.log}"
+LOG_FILE="${NEXT_LOG_FILE:-artifacts/production/next.log}"
 READY_TIMEOUT="${READY_TIMEOUT:-90}"
 READY_PATH="/territori/irpef"
 BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
@@ -26,10 +25,30 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
+mkdir -p "$(dirname "$LOG_FILE")"
+
+# Fail before readiness probes can accidentally exercise another worktree.
+node --input-type=module - "$NEXT_HOST" "$NEXT_PORT" <<'JS'
+import { createServer } from "node:net";
+const [host, rawPort] = process.argv.slice(2);
+const port = Number(rawPort);
+if (!/^\d+$/.test(rawPort) || !Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error(`NEXT_PORT must be an integer from 1 to 65535: ${rawPort}`);
+}
+const server = createServer();
+server.once("error", (error) => {
+  console.error(`Cannot use ${host}:${port}: ${error.code}. Choose another NEXT_PORT.`);
+  process.exitCode = 1;
+});
+server.listen(port, host, () => server.close());
+JS
 
 echo "::group::Start next start"
 echo "Starting next start on ${NEXT_HOST}:${NEXT_PORT} (log: ${LOG_FILE})"
-npm run start -- --hostname "$NEXT_HOST" --port "$NEXT_PORT" > "$LOG_FILE" 2>&1 &
+node node_modules/next/dist/bin/next start --hostname "$NEXT_HOST" --port "$NEXT_PORT" > "$LOG_FILE" 2>&1 &
 server_pid=$!
 echo "Server PID: ${server_pid}"
 echo "::endgroup::"
@@ -45,7 +64,7 @@ while [ $SECONDS -lt $deadline ]; do
     echo "--- end server log ---" >&2
     exit 1
   fi
-  if curl -sf "${BASE_URL}${READY_PATH}" > /dev/null 2>&1; then
+  if curl --connect-timeout 2 --max-time 3 -sf "${BASE_URL}${READY_PATH}" > /dev/null 2>&1; then
     echo "Server ready at ${BASE_URL}${READY_PATH}"
     ready=1
     break

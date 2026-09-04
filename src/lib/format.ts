@@ -23,6 +23,33 @@ const integerFormatter = new Intl.NumberFormat("it-IT", {
   useGrouping: "always",
 });
 
+const billionsFormatter = new Intl.NumberFormat("it-IT", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+  useGrouping: "always",
+});
+const millionsFormatter = new Intl.NumberFormat("it-IT", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+  useGrouping: "always",
+});
+const percentFormatter = new Intl.NumberFormat("it-IT", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const longDateFormatter = new Intl.DateTimeFormat("it-IT", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Europe/Rome",
+});
+const shortDateFormatter = new Intl.DateTimeFormat("it-IT", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "Europe/Rome",
+});
+
 export function exactEuro(value: number): string {
   return euroFormatter.format(value);
 }
@@ -32,23 +59,7 @@ export function integer(value: number): string {
 }
 
 export function compactEuro(value: number): string {
-  const absolute = Math.abs(value);
-  if (absolute >= 1_000_000_000) {
-    /* Two decimals even when they are zeros, so a column of billions lines up. */
-    return `${(value / 1_000_000_000).toLocaleString("it-IT", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      useGrouping: "always",
-    })} mld €`;
-  }
-  if (absolute >= 1_000_000) {
-    return `${(value / 1_000_000).toLocaleString("it-IT", {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-      useGrouping: "always",
-    })} mln €`;
-  }
-  return euroFormatter.format(value);
+  return compactEuroLike(value, value);
 }
 
 /** Formats an integer-cent source value without changing its measurement unit. */
@@ -69,31 +80,20 @@ export function compactEuroFromCents(cents: number): string {
 export function compactEuroLike(value: number, reference: number): string {
   const scale = Math.abs(reference);
   if (scale >= 1_000_000_000) {
-    return `${(value / 1_000_000_000).toLocaleString("it-IT", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      useGrouping: "always",
-    })} mld €`;
+    return `${billionsFormatter.format(value / 1_000_000_000)} mld €`;
   }
   if (scale >= 1_000_000) {
-    return `${(value / 1_000_000).toLocaleString("it-IT", {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-      useGrouping: "always",
-    })} mln €`;
+    return `${millionsFormatter.format(value / 1_000_000)} mln €`;
   }
   return euroFormatter.format(value);
 }
 
 export function billions(value: number): string {
-  return (value / 1_000_000_000).toLocaleString("it-IT", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    useGrouping: "always",
-  });
+  return billionsFormatter.format(value / 1_000_000_000);
 }
 
 export function percent(value: number, digits = 1): string {
+  if (digits === 1) return `${percentFormatter.format(value)}%`;
   return `${value.toLocaleString("it-IT", {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
@@ -104,22 +104,12 @@ export function longDate(value: string | null | undefined): string {
   if (!value) return "non disponibile";
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return "non disponibile";
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Rome",
-  }).format(parsed);
+  return longDateFormatter.format(parsed);
 }
 
 export function shortDate(value: string | null | undefined): string {
   if (!value) return "non disponibile";
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return "non disponibile";
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Europe/Rome",
-  }).format(parsed);
+  return shortDateFormatter.format(parsed);
 }

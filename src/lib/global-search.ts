@@ -314,8 +314,7 @@ export function normalizeSearchText(value: string): string {
     .replace(/\s+/g, " ");
 }
 
-function tokens(value: string): readonly string[] {
-  const normalized = normalizeSearchText(value);
+function tokens(normalized: string): readonly string[] {
   return normalized ? normalized.split(" ") : [];
 }
 
@@ -370,27 +369,33 @@ function matchField(value: string, query: string, queryTokens: readonly string[]
   if (normalized.startsWith(query)) return { quality: 2, reason: "prefix" };
 
   const candidateTokens = tokens(normalized);
-  const qualities = queryTokens.map((queryToken) =>
-    Math.max(...candidateTokens.map((candidateToken) => tokenQuality(queryToken, candidateToken)), 0),
-  );
-  if (qualities.some((quality) => quality === 0)) return null;
-  if (qualities.some((quality) => quality === 0.5)) return { quality: 1.2, reason: "fuzzy" };
-  if (qualities.every((quality) => quality === 3)) return { quality: 1.8, reason: "tokens" };
-  if (qualities.every((quality) => quality >= 2)) return { quality: 1.6, reason: "tokens" };
+  let weakest = 3;
+  for (const queryToken of queryTokens) {
+    let best = 0;
+    for (const candidateToken of candidateTokens) {
+      best = Math.max(best, tokenQuality(queryToken, candidateToken));
+      if (best === 3) break;
+    }
+    if (best === 0) return null;
+    weakest = Math.min(weakest, best);
+  }
+  if (weakest === 0.5) return { quality: 1.2, reason: "fuzzy" };
+  if (weakest === 3) return { quality: 1.8, reason: "tokens" };
+  if (weakest >= 2) return { quality: 1.6, reason: "tokens" };
   return { quality: 1.4, reason: "tokens" };
 }
 
 function resultForDocument(document: SearchIndexDocument, query: string): SearchResult | null {
   const queryTokens = tokens(query);
   const titleMatch = matchField(document.title, query, queryTokens);
-  const aliasMatch = document.aliases.reduce<FieldMatch | null>(
+  const aliasMatch = titleMatch ? null : document.aliases.reduce<FieldMatch | null>(
     (best, alias) => {
       const match = matchField(alias, query, queryTokens);
       return match && (!best || match.quality > best.quality) ? match : best;
     },
     null,
   );
-  const descriptionMatch = document.description
+  const descriptionMatch = !titleMatch && !aliasMatch && document.description
     ? matchField(document.description, query, queryTokens)
     : null;
 

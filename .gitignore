@@ -50,6 +50,7 @@ next-env.d.ts
 /AGENTS.md
 
 # Python ETL
+/.venv/
 __pycache__/
 *.py[cod]
 

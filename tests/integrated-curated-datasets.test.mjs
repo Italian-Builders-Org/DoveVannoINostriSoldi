@@ -5,11 +5,9 @@ import {
   readdirSync,
 } from "node:fs";
 import { gunzipSync } from "node:zlib";
-import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
-import { PYTHON_BIN } from "./helpers/python.mjs";
 
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -544,18 +542,4 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
     expectedTotals,
   );
   assert.equal(sourceRows, publicRows + catalogOnlyRows + derivedOnlyRows);
-});
-
-test("the committed curated corpus passes source-free verification", () => {
-  const result = spawnSync(
-    PYTHON_BIN,
-    ["scripts/etl/integrated_curated_datasets.py", "check"],
-    { cwd: repositoryRoot, encoding: "utf8" },
-  );
-  assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.deepEqual(JSON.parse(result.stdout), {
-    action: "check",
-    sourceRequired: false,
-    status: "ok",
-  });
 });

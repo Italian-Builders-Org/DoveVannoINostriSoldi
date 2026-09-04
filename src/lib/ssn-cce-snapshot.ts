@@ -31,7 +31,6 @@ if (
 }
 
 export const ssnCceSnapshot = validateSsnCceSnapshot(rawSnapshot as SsnCceSnapshot);
-export const availableSsnCceYears = [ssnCceSnapshot.referenceYear] as const;
 
 export type SsnCceSourceDatasetHealth = Readonly<{
   datasetId: string;

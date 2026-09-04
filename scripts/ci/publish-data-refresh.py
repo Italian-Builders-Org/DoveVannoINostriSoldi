@@ -120,12 +120,6 @@ class RunContext:
 
 
 @dataclass(frozen=True)
-class Delta:
-    files: tuple[str, ...]
-    digest: str
-
-
-@dataclass(frozen=True)
 class BranchCommit:
     tip: str
     parent: str

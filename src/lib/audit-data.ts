@@ -406,34 +406,6 @@ export function getProcurementComparisonForYear(year: number): ProcurementCompar
   return year === 2023 || year === 2024 || year === 2025 ? procurementComparisons[year] : null;
 }
 
-export type ProcurementComparisonDisplay = {
-  requestedYear: number;
-  comparison: ProcurementComparison;
-  usedLatestAvailable: boolean;
-};
-
-/**
- * Resolve the ANAC comparison used by a compact summary card.
- *
- * The strict year lookup above remains nullable for API consumers: an absent
- * annual report must stay absent. A visual summary can instead show the most
- * recent verified report, provided it carries the report year so the reader
- * cannot mistake it for data from the selected period.
- */
-export function getProcurementComparisonForDisplay(year: number): ProcurementComparisonDisplay {
-  const comparison = getProcurementComparisonForYear(year);
-  if (comparison) {
-    return { requestedYear: year, comparison, usedLatestAvailable: false };
-  }
-
-  const latest = Object.values(procurementComparisons).reduce<ProcurementComparison | null>(
-    (current, candidate) => (current === null || candidate.year > current.year ? candidate : current),
-    null,
-  );
-  if (!latest) throw new Error("Nessun confronto ANAC verificato disponibile.");
-  return { requestedYear: year, comparison: latest, usedLatestAvailable: true };
-}
-
 export function parseAuditYearQuery(
   rawYear: string | null,
   currentYear = new Date().getUTCFullYear(),

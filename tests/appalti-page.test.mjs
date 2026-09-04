@@ -64,8 +64,6 @@ test("appalti page treats threshold concentrations as screening signals, not fin
   assert.match(pageSource, /thresholdBand\.strictContractDefinition/);
   assert.match(pageSource, /135\.000 €/);
   assert.match(stylesSource, /\.detailTable\s*\{[^}]*min-width:\s*0/);
-  assert.match(stylesSource, /\.valuePair/);
-  assert.match(stylesSource, /\.barAmount/);
   assert.doesNotMatch(pageSource, /93%|quasi 95%|sprechi accertati|fornitori?\s*:/i);
 });
 
@@ -74,7 +72,6 @@ test("appalti page keeps sources and methodology after the data sections", () =>
   const sourceStart = pageSource.indexOf("sources-title");
   assert.ok(dataStart >= 0);
   assert.ok(sourceStart > dataStart);
-  assert.equal(anacCigSnapshot.provenance.license, "CC BY-SA 4.0");
   assert.match(anacCigSnapshot.provenance.datasetUrl, /^https:\/\/dati\.anticorruzione\.it\//);
   assert.match(pageSource, /12 mesi completi/);
 });

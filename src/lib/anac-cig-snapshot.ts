@@ -109,7 +109,6 @@ export function assertAnacCigManifest(candidate: typeof rawManifest = rawManifes
 
 const manifest = assertAnacCigManifest();
 
-export const availableAnacCigYears = [manifest.referenceYear] as const;
 
 export const anacCigSnapshot = {
   ...manifest,

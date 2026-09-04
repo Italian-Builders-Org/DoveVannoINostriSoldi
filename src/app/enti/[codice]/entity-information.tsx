@@ -208,6 +208,3 @@ export function EntityInformation({
     </details>
   );
 }
-
-/** @deprecated Use EntityInformation */
-export const MunicipalityInformation = EntityInformation;

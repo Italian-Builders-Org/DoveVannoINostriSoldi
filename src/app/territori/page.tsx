@@ -17,7 +17,6 @@ import {
 } from "@/lib/siope-municipality-detail";
 import {
   aggregateEurosPerSquareKilometreCents,
-  centsPerSquareKilometreForCompleteCoverage,
   eurosPerSquareKilometreCents,
   getRegionGeography,
 } from "@/lib/municipality-geography";
@@ -383,7 +382,7 @@ export default async function TerritoriesPage({
                       0,
                     )
                   : null;
-                const areaPerSquareKmCents = centsPerSquareKilometreForCompleteCoverage(
+                const areaPerSquareKmCents = aggregateEurosPerSquareKilometreCents(
                   areaRegions.map((region) => ({
                     amountCents: Math.round(region.value * 100),
                     surfaceSquareMetres: region.geography?.surfaceSquareMetres ?? null,

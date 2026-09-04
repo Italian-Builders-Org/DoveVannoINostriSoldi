@@ -12,7 +12,6 @@ import {
 
 export const istatTurnoverSnapshot: IstatTurnoverSnapshot = validateIstatTurnoverSnapshot(rawSnapshot);
 
-export const ISTAT_TURNOVER_ALL = "ALL" as const;
 
 export type IstatMetricDefinition = Readonly<{
   id: IstatMetricId;

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "methodology_version": "peer-relative-v6",
+  "source": {
+    "source_id": "ameco",
+    "source_owner": "European Commission, Directorate-General for Economic and Financial Affairs",
+    "dataset_code": "AMECO",
+    "vintage": "Spring 2026 Economic Forecast",
+    "observed_through": 2024,
+    "forecast_from": 2025,
+    "forecast_through": 2027
+  },
+  "countries": ["IT", "FR", "DE", "ES"],
+  "peers": ["FR", "DE", "ES"],
+  "peer_aggregator": "median",
+  "formula": {
+    "formula_id": "peer_gap_zero_centered_tanh",
+    "tanh_divisor": 2.0,
+    "neutral_score": 50,
+    "minimum_score": 0,
+    "maximum_score": 100,
+    "display_rounding": "half_up"
+  },
+  "scale": {
+    "scale_estimator_id": "mad_with_iqr_fallback",
+    "mad_multiplier": 1.4826,
+    "iqr_divisor": 1.349,
+    "quantile_method": "linear_r7",
+    "calibration_period_id": "1995+",
+    "first_score_year": 1995,
+    "minimum_rolling_windows": 20,
+    "minimum_disjoint_windows": 6
+  },
+  "scale_key_fields": [
+    "indicator_id",
+    "source_set_id",
+    "temporal_operator_id",
+    "duration_or_weight_pattern_id",
+    "vintage_id",
+    "peer_set_id",
+    "peer_aggregation_id",
+    "scale_estimator_id",
+    "calibration_period_id",
+    "methodology_version"
+  ],
+  "pillars": [
+    {
+      "id": "purchasing_power",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "real_compensation", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "labour",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "unemployment", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "growth",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "real_gdp_per_capita", "weight_basis_points": 10000}]
+    },
+    {
+      "id": "public_finance",
+      "weight_basis_points": 2000,
+      "indicators": [
+        {"indicator_id": "debt_ratio", "weight_basis_points": 5000},
+        {"indicator_id": "primary_balance", "weight_basis_points": 5000}
+      ]
+    },
+    {
+      "id": "future_capacity",
+      "weight_basis_points": 2000,
+      "indicators": [{"indicator_id": "investment_share", "weight_basis_points": 10000}]
+    }
+  ],
+  "indicators": [
+    {
+      "id": "real_compensation",
+      "pillar_id": "purchasing_power",
+      "direction": "higher",
+      "transformation": "log_change",
+      "unit": "National currency: 2020 = 100",
+      "definition": "Real compensation per employee deflator private consumption: total economy",
+      "source_series": [
+        {"file": "AMECO7.CSV", "selector_template": "{country}.3.1.0.0.RWCDC", "series_label": "Real compensation per employee deflator private consumption: total economy", "unit": "National currency: 2020 = 100"}
+      ]
+    },
+    {
+      "id": "unemployment",
+      "pillar_id": "labour",
+      "direction": "lower",
+      "transformation": "point_change",
+      "unit": "Percentage of active population",
+      "definition": "Unemployment rate: total :- Member States: definition EUROSTAT",
+      "source_series": [
+        {"file": "AMECO1.CSV", "selector_template": "{country}.1.0.0.0.ZUTN", "series_label": "Unemployment rate: total :- Member States: definition EUROSTAT", "unit": "Percentage of active population"}
+      ]
+    },
+    {
+      "id": "real_gdp_per_capita",
+      "pillar_id": "growth",
+      "direction": "higher",
+      "transformation": "log_change",
+      "unit": "1000 national currency, 2020 reference levels",
+      "definition": "Gross domestic product at 2020 reference levels per head of population",
+      "source_series": [
+        {"file": "AMECO6.CSV", "selector_template": "{country}.1.1.0.0.RVGDP", "series_label": "Gross domestic product at 2020 reference levels per head of population", "unit": "1000 national currency, 2020 reference levels"}
+      ]
+    },
+    {
+      "id": "debt_ratio",
+      "pillar_id": "public_finance",
+      "direction": "lower",
+      "transformation": "point_change",
+      "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+      "definition": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
+      "source_series": [
+        {"file": "AMECO18.CSV", "selector_template": "{country}.1.0.319.0.UDGG", "series_label": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
+      ]
+    },
+    {
+      "id": "primary_balance",
+      "pillar_id": "public_finance",
+      "direction": "higher",
+      "transformation": "point_change",
+      "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+      "definition": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
+      "source_series": [
+        {"file": "AMECO16.CSV", "selector_template": "{country}.1.0.319.0.UBLGI", "series_label": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))", "unit": "Percentage of GDP at current prices (excessive deficit procedure)"}
+      ]
+    },
+    {
+      "id": "investment_share",
+      "pillar_id": "future_capacity",
+      "direction": "higher",
+      "transformation": "point_change",
+      "unit": "Percentage of GDP at current prices",
+      "definition": "Gross fixed capital formation at current prices divided by gross domestic product at current prices",
+      "source_series": [
+        {"file": "AMECO3.CSV", "selector_template": "{country}.1.0.0.0.UIGT", "series_label": "Gross fixed capital formation at current prices: total economy", "unit": "Mrd national currency"},
+        {"file": "AMECO6.CSV", "selector_template": "{country}.1.0.0.0.UVGD", "series_label": "Gross domestic product at current prices", "unit": "Mrd national currency"}
+      ]
+    }
+  ]
+}

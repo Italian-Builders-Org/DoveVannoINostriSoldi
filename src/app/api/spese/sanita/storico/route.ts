@@ -12,6 +12,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         ok: true,
+        dataMode: history.dataMode,
         source: {
           owner: history.source.owner,
           platform: history.source.platform,

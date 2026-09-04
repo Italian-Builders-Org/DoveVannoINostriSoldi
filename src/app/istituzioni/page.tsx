@@ -3,9 +3,9 @@ import Link from "next/link";
 import styles from "./istituzioni.module.css";
 
 export const metadata: Metadata = {
-  title: "Spese delle istituzioni",
+  title: "Istituzioni pubbliche",
   description:
-    "Quattro percorsi separati per Parlamento, Palazzo Chigi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
+    "Cinque percorsi separati per Parlamento, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
 };
 
 const dossiers = [
@@ -22,6 +22,13 @@ const dossiers = [
     period: "Rendiconto PCM 2024",
     description:
       "Soldi impegnati e soldi pagati dalla sola Presidenza del Consiglio, con file ufficiale scaricabile.",
+  },
+  {
+    href: "/governi",
+    title: "Pagella dei governi",
+    period: "Core macro dal 1995 · storia prima del 1995",
+    description:
+      "Risultati economici durante ogni governo, confronto europeo, contesto, misure e previsione corrente senza attribuire causalità automatica.",
   },
   {
     href: "/ministeri",
@@ -43,16 +50,16 @@ export default function InstitutionsPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Spese delle istituzioni</h1>
+        <h1>Istituzioni pubbliche</h1>
         <p>
-          Parlamento, Palazzo Chigi, Ministeri e Regioni hanno conti diversi.
+          Parlamento, Palazzo Chigi, governi, Ministeri e Regioni richiedono domande e dati diversi.
           Ogni percorso resta separato.
         </p>
       </div>
 
       <section aria-labelledby="percorsi-istituzionali">
         <div className={styles.sectionHeader}>
-          <h2 id="percorsi-istituzionali">Quattro conti, quattro confini</h2>
+          <h2 id="percorsi-istituzionali">Cinque percorsi, cinque confini</h2>
           <p>In ogni pagina trovi importi esatti o limiti di copertura, periodo e fonte ufficiale.</p>
         </div>
         <div className={styles.grid}>
@@ -70,7 +77,7 @@ export default function InstitutionsPage() {
       </section>
 
       <div className="notice">
-        <strong>Quattro conti distinti</strong>
+        <strong>Percorsi distinti</strong>
         <p>
           Anni, confini e regole contabili restano diversi. I confronti restano dentro ogni fonte
           e solo tra grandezze compatibili.

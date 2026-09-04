@@ -32,6 +32,7 @@ test("OpenBDAP annual release is an explicit consuntivo with no month", () => {
   assert.equal(dataset?.referenceYear, 2025);
   assert.equal(dataset?.referenceMonth, null);
   assert.equal(dataset?.productCode, "PBS_SPE_RND_MISS_001");
+  assert.equal(dataset?.csvUrl, `https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv?download=1`);
 });
 
 test("OpenBDAP monthly release keeps its reference month", () => {
@@ -49,6 +50,7 @@ test("OpenBDAP monthly release keeps its reference month", () => {
   assert.equal(dataset?.referenceYear, 2025);
   assert.equal(dataset?.referenceMonth, 12);
   assert.equal(dataset?.productCode, "PBS_SPE_M12_MISS_001");
+  assert.equal(dataset?.csvUrl, `https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv?download=1`);
 });
 
 test("OpenBDAP release validation rejects code, title, and perimeter drift", () => {
@@ -219,6 +221,60 @@ test("annual OpenBDAP queries prefer consuntivo and monthly queries stay monthly
       () => getStateSpendingSnapshot({ year: 2025, month: 12 }),
       /mese della riga NOVEMBRE non coincide con il rilascio DICEMBRE/,
     );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("OpenBDAP payments classify the known conversion outage and preserve the download query", async () => {
+  const originalFetch = globalThis.fetch;
+  const dumpUrls = [];
+  const dimensions = new Map([
+    ["PBS_SPE_RND_MISS_001", ["Pagamenti Bilancio dello Stato per Missione Consuntivo", "PBS_SPE_RND_MISS_001"]],
+    ["PBS_SPE_RND_MISAM_001", ["Pagamenti Bilancio dello Stato per Missione Amministrazione Consuntivo", "PBS_SPE_RND_MISAM_001"]],
+    ["PBS_SPE_RND_AMCE2_001", ["Pagamenti Bilancio dello Stato per Amministrazione Classificazione Economica II livello Consuntivo", "PBS_SPE_RND_AMCE2_001"]],
+  ]);
+
+  globalThis.fetch = async (input) => {
+    const url = new URL(input.toString());
+    if (url.pathname.endsWith("/package_search")) {
+      const code = url.searchParams.get("q");
+      const dimension = dimensions.get(code);
+      assert.ok(dimension, code);
+      const id = `12345678-1234-4abc-8def-${String([...dimensions.keys()].indexOf(code) + 1).padStart(12, "0")}`;
+      return new Response(JSON.stringify({
+        success: true,
+        result: {
+          results: [fixture({
+            id,
+            title: `2025 - ${dimension[0]}`,
+            code: dimension[1],
+            scope: "pagamenti Bilancio dello Stato per l'esercizio finanziario di riferimento",
+          })],
+        },
+      }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }
+
+    dumpUrls.push(url);
+    return new Response(JSON.stringify({
+      success: false,
+      error: { message: "Cannot convert data to csv" },
+    }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+
+  try {
+    await assert.rejects(
+      getStateSpendingSnapshot({ year: 2025 }),
+      (error) => error?.name === "OpenBdapUnavailableError",
+    );
+    assert.ok(dumpUrls.length > 0);
+    assert.ok(dumpUrls.every((url) => url.searchParams.get("download") === "1"));
   } finally {
     globalThis.fetch = originalFetch;
   }

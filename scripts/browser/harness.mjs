@@ -131,10 +131,23 @@ export async function waitForServer(
   throw new Error(`Server non pronto entro ${timeoutMs / 1_000}s: ${detail}`);
 }
 
-// Filters request failures that are expected Next.js behaviour and do not
-// affect the rendered route (cancelled speculative RSC prefetches and optional
-// location lookups). Kept identical to the previous core-suite semantics.
-function relevantRequestFailure(request) {
+// Filters request failures that are expected client behaviour and do not
+// affect the rendered route: cancelled speculative RSC prefetches, optional
+// location lookups, and superseded debounced searches.
+export function isExpectedAbortedSearchRequest({
+  errorText,
+  resourceType,
+  requestUrl,
+  baseOrigin,
+}) {
+  if (errorText !== "net::ERR_ABORTED" || resourceType !== "fetch") return false;
+
+  const url = new URL(requestUrl);
+  const isSearchEndpoint = url.pathname === "/api/enti" || url.pathname === "/api/search";
+  return url.origin === baseOrigin && isSearchEndpoint && Boolean(url.searchParams.get("q")?.trim());
+}
+
+function relevantRequestFailure(request, baseOrigin) {
   const failure = request.failure();
   const resourceType = request.resourceType();
   const requestUrl = request.url();
@@ -149,7 +162,13 @@ function relevantRequestFailure(request) {
     failure.errorText === "net::ERR_ABORTED" &&
     resourceType === "fetch" &&
     new URL(requestUrl).pathname === "/api/location";
-  if (cancelledNextPrefetch || cancelledLocationLookup) return null;
+  const cancelledSearchLookup = isExpectedAbortedSearchRequest({
+    errorText: failure.errorText,
+    resourceType,
+    requestUrl,
+    baseOrigin,
+  });
+  if (cancelledNextPrefetch || cancelledLocationLookup || cancelledSearchLookup) return null;
 
   return `${resourceType} ${requestUrl}: ${failure.errorText}`;
 }
@@ -173,7 +192,7 @@ export function installDiagnostics(page, { label, baseUrl = defaultBaseUrl() } =
     consoleErrors.push(`${message.text()}${suffix}`);
   });
   page.on("requestfailed", (request) => {
-    const failure = relevantRequestFailure(request);
+    const failure = relevantRequestFailure(request, baseUrl.origin);
     if (failure) requestFailures.push(failure);
   });
   page.on("response", (response) => {

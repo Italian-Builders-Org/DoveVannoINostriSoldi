@@ -3,6 +3,7 @@ import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 import "./helpers/register-ts-alias.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -31,7 +32,7 @@ test("distribution keeps an explicit region-null municipality national but not r
     "result = build_distribution(rows=rows, year=2026, latest_month=8, observed_at='2026-08-21T00:00:00+00:00', validators=validators)",
     "print(json.dumps(result))",
   ].join("\n");
-  const { stdout } = await execFileAsync("python3", ["-c", code], {
+  const { stdout } = await execFileAsync(PYTHON_BIN, ["-c", code], {
     cwd: new URL("..", import.meta.url),
   });
   const result = JSON.parse(stdout);

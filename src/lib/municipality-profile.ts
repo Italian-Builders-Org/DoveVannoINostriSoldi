@@ -160,7 +160,10 @@ function normalizedCadastralCode(value: string | null): string | null {
   return /^[A-Z][0-9]{3}$/.test(code) ? code : null;
 }
 
-export async function getMunicipalityProfile(entity: IpaEntity): Promise<MunicipalityProfile | null> {
+export async function getMunicipalityProfile(
+  entity: IpaEntity,
+  options: Readonly<{ allowCommittedIstatIdentity?: boolean }> = {},
+): Promise<MunicipalityProfile | null> {
   const taxCode = entity.codiceFiscale?.trim() ?? "";
   if (!/^\d{11}$/.test(taxCode)) return null;
   const siope = getSiopeMunicipalityDetail(taxCode);
@@ -176,7 +179,7 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
 
   let irpef: MunicipalityProfile["irpef"];
   let istatCode: string | null = null;
-  if (!candidateIstatCode || !cadastralCode) {
+  if (!candidateIstatCode || (!cadastralCode && !options.allowCommittedIstatIdentity)) {
     irpef = unavailable(
       "not_found",
       "no_matching_record",
@@ -193,7 +196,7 @@ export async function getMunicipalityProfile(entity: IpaEntity): Promise<Municip
       const record = result.data[0];
       if (
         record?.territory.level !== "municipality" ||
-        record.territory.cadastralCode !== cadastralCode
+        (cadastralCode !== null && record.territory.cadastralCode !== cadastralCode)
       ) {
         irpef = unavailable(
           "not_found",

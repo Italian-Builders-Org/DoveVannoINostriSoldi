@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "snapshotPath": "src/data/generated/education-atlas-snapshot.json",
+  "verifiedAt": "2026-08-27T00:00:00+02:00",
+  "files": [
+    {
+      "period": "202223",
+      "schoolType": "state",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2023-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDSTA20222320230831.csv",
+      "sha256": "c2647773df9fe5f9f4119b91801e051f2234f45cac53f70ee302deefb375d1c3",
+      "bytes": 6557649,
+      "rows": 62857
+    },
+    {
+      "period": "202223",
+      "schoolType": "state",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2023-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20222320230831.csv",
+      "sha256": "85d463505bba9e3e98acd62a34efa10a32ac5aca9912db406b38738b1bba6569",
+      "bytes": 13249087,
+      "rows": 51157
+    },
+    {
+      "period": "202223",
+      "schoolType": "paritaria",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2023-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDPAR20222320230831.csv",
+      "sha256": "ee2591d11541d96ba729c2513d621d2899ab550892a088e25e0b64f9a4faac2b",
+      "bytes": 794801,
+      "rows": 7786
+    },
+    {
+      "period": "202223",
+      "schoolType": "paritaria",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2023-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFEPAR20222320230831.csv",
+      "sha256": "b8ccca14b8a43b28206eeec98ca9d8276d24b38cb6d5e8c462b076f35940f16d",
+      "bytes": 2557123,
+      "rows": 11865
+    },
+    {
+      "period": "202324",
+      "schoolType": "state",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2024-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDSTA20232420240831.csv",
+      "sha256": "d520123732f8055ef7910a8274f71f6b2804bbe8a514d39636d4d4542edf377d",
+      "bytes": 6619455,
+      "rows": 63419
+    },
+    {
+      "period": "202324",
+      "schoolType": "state",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2024-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20232420240831.csv",
+      "sha256": "21455ecb7b7bb337da15ee7350802e27992635c92d06b894780ef5e5f926fc7d",
+      "bytes": 13235040,
+      "rows": 51077
+    },
+    {
+      "period": "202324",
+      "schoolType": "paritaria",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2024-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDPAR20232420240831.csv",
+      "sha256": "39aae1431107691a53aabe00b967309d77e643fa21d7d1633afd0f94095b98eb",
+      "bytes": 810457,
+      "rows": 7927
+    },
+    {
+      "period": "202324",
+      "schoolType": "paritaria",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2024-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFEPAR20232420240831.csv",
+      "sha256": "deb59392df8178d7fb6942e11d68632723433600cf7f093631b55a198d4487c1",
+      "bytes": 2524424,
+      "rows": 11654
+    },
+    {
+      "period": "202425",
+      "schoolType": "state",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2025-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDSTA20242520250831.csv",
+      "sha256": "f4463c8ea5ce605ed0cf68ae456165c62f2f6e376bc8579d2af1048d7fe119f6",
+      "bytes": 6697531,
+      "rows": 64102
+    },
+    {
+      "period": "202425",
+      "schoolType": "state",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2025-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20242520250831.csv",
+      "sha256": "91fac2ac891aa111ad448123e33a0118a854ce58237f985d21b1d7424f0be6fa",
+      "bytes": 13178615,
+      "rows": 50515
+    },
+    {
+      "period": "202425",
+      "schoolType": "paritaria",
+      "role": "students",
+      "publishedAt": "2026-02-23",
+      "dataAsOf": "2025-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ALUSECGRADOINDPAR20242520250831.csv",
+      "sha256": "e663fc6449950412ea242dc87e1caa8a96e740c47dc4aabb1669ab39d1a51860",
+      "bytes": 780940,
+      "rows": 7657
+    },
+    {
+      "period": "202425",
+      "schoolType": "paritaria",
+      "role": "registry",
+      "publishedAt": "2026-06-18",
+      "dataAsOf": "2025-08-31",
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFEPAR20242520250831.csv",
+      "sha256": "fd8ec418966aea01537f0816f3e8fc911391eae2c34063e9ca411f14e7ec0c9b",
+      "bytes": 2493951,
+      "rows": 11497
+    }
+  ]
+}

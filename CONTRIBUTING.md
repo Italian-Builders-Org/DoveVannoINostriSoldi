@@ -6,10 +6,14 @@ quando sono corretti sia il codice sia il significato pubblicato.
 
 ## Prima di scrivere codice
 
-Apri o collega una issue per cambiamenti sostanziali. Per una nuova fonte indica
+Apri o collega una issue per cambiamenti sostanziali. La coda di lavoro con
+priorità e issue collegate è in [docs/ROADMAP.md](docs/ROADMAP.md). Per una nuova fonte indica
 titolare, URL ufficiale, licenza specifica, formato, geografia, periodo di
 riferimento, data di pubblicazione e frequenza di aggiornamento. Spiega anche che
 cosa il dato non misura.
+
+Non aprire una issue pubblica per una vulnerabilità non ancora corretta. Segui
+[SECURITY.md](SECURITY.md) e usa il report privato.
 
 Non distribuire totali nazionali fra territori senza una geografia pubblicata
 dalla fonte. Non trasformare anomalie, differenze contabili o valori elevati in
@@ -29,11 +33,26 @@ incoerenti, hash diversi, duplicati, importi non validi e riconciliazioni rotte.
 Le date di riferimento, pubblicazione, osservazione e verifica restano campi
 distinti.
 
+Per **nuove fonti tabular** il binario predefinito è il corpus integrato
+(headers + celle stringa + evidence + URL + hash), non un JSON ad hoc di pagina.
+Prima di scrivere codice segui
+[docs/DATA_IMPORT_STANDARD.md](docs/DATA_IMPORT_STANDARD.md): checklist di
+import, tre assi obbligatori (soldi, periodo, provenance) e decisione
+corpus vs snapshot tipizzato. Gli agenti usano la skill
+`.agents/skills/import-dvns-dataset/`.
+
+Una PR che aggiunge dati senza questo schema non è pronta al merge, anche se i
+test tecnici passano. Se manca uno dei campi obbligatori o la fonte non espone
+un perimetro verificabile, il contributo deve fermarsi a catalogazione, proof o
+documentazione del limite invece di inventare valori.
+
 ## Verifica locale
 
-La CI è organizzata in quattro job paralleli (`static`, `node`, `etl`,
-`production`) aggregati da `CI / required`. Puoi riprodurre gli stessi gate
-localmente con i comandi stabili:
+La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
+`etl`, `production`) aggregati da `CI / required`. Il job `security` esegue la
+scansione Zizmor dei workflow ed è bloccante, ma non ha un equivalente locale
+fra i comandi npm. Puoi riprodurre gli altri gate localmente con i comandi
+stabili:
 
 ```bash
 npm ci
@@ -46,6 +65,9 @@ git diff --check
 ```
 
 `ci:static` esegue lint, typecheck, design:check e brand:check insieme.
+Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`
+(per esempio `PYTHON=python npm run test:node`): i test che attraversano il
+confine ETL usano quel nome, il default resta `python3`.
 I test browser e Lighthouse richiedono un server `next start` attivo su
 `127.0.0.1:3000`; vedi `scripts/ci/run-production-gates.sh` per l'orchestrazione
 completa usata dalla CI.
@@ -53,7 +75,7 @@ completa usata dalla CI.
 ### ETL e artifact verification
 
 ```bash
-npm run test:etl        # full ETL transformation/reconciliation test suite (214 tests)
+npm run test:etl        # full ETL transformation/reconciliation test suite (295 tests)
 npm run test:snapshots  # generated-artifact registry + offline artifact checks
 ```
 
@@ -61,13 +83,17 @@ npm run test:snapshots  # generated-artifact registry + offline artifact checks
 contratti fail-closed) una sola volta.
 
 `test:snapshots` valida il registro degli artifact generati
-(`scripts/ci/generated-artifacts.json`), esegue i controlli offline `--check`
-uniche per ogni artifact, verifica la pulizia del worktree e rileva file
-generati non registrati. Non riesegue la suite ETL.
+(`scripts/ci/generated-artifacts.json`), controlla che
+[docs/SOURCE_SNAPSHOT_INVENTORY.md](docs/SOURCE_SNAPSHOT_INVENTORY.md) sia
+allineato al registro, esegue i controlli offline `--check` unici per ogni
+artifact, verifica la pulizia del worktree e rileva file generati non
+registrati. Non riesegue la suite ETL. Se il registro o un workflow di refresh
+cambiano, rigenera l'inventario con
+`python3 scripts/ci/source-snapshot-inventory.py --write`.
 
 ### Limite di trust: PR vs fonti ufficiali
 
-Le pull request validano i dati versioneati **offline**: il registro dimostra
+Le pull request validano i dati versionati **offline**: il registro dimostra
 che ogni artifact è internamente valido senza contattare fonti esterne.
 
 I workflow pianificati o manuali (`*-refresh.yml`) sono responsabili di
@@ -103,7 +129,11 @@ senza obblighi AGPL vale quanto descritto in `COMMERCIAL.md`.
 
 ## Review e merge
 
-La CI verde è necessaria ma non sufficiente. La review valuta separatamente
-correttezza, semantica dei dati, accessibilità, sicurezza, performance e
-manutenibilità. I thread devono essere risolti con una modifica verificata o con
-una motivazione concreta. Non usare force-push sulle branch dei contributor.
+Il merge su `main` è consentito quando il check `required` è verde e i thread
+di review sono risolti. GitHub non chiede l'approve di un altro maintainer.
+La review umana resta utile su UI ampia, fonti nuove, workflow e sicurezza:
+valuta correttezza, semantica dei dati, accessibilità e manutenibilità oltre
+ciò che i test coprono. Per le PR dati, la review deve controllare anche
+aderenza allo schema comune di import, presenza di `soldi`/`periodo`/`provenance`
+e comportamento fail-closed del contratto. Non usare force-push sulle branch dei
+contributor.

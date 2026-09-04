@@ -53,6 +53,7 @@ async function fetchRecords(
   limit: number,
   offset: number,
   sortField: string,
+  signal?: AbortSignal,
 ) {
   const params = new URLSearchParams({
     resource_id: resourceId,
@@ -66,9 +67,12 @@ async function fetchRecords(
     kind: "data",
     headers: { Accept: "application/json" },
     tags: ["dataset:ipa-structure", `entity:${codiceIpa}`],
+    signal,
+    maxRetries: 0,
+    timeoutMs: 4_000,
+    cacheMode: "no-store",
+    rejectHttpError: true,
   });
-
-  if (!response.ok) throw new Error(`IPA struttura upstream HTTP ${response.status}`);
 
   const payload = (await response.json()) as DatastoreResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {
@@ -85,6 +89,7 @@ export async function getIpaOrganizationStructure(
   codiceIpa: string,
   limit = 250,
   offset = 0,
+  options: { signal?: AbortSignal } = {},
 ): Promise<IpaOrganizationStructure> {
   const normalized = codiceIpa.trim().slice(0, 100);
   if (!normalized) throw new Error("Codice IPA mancante");
@@ -92,8 +97,8 @@ export async function getIpaOrganizationStructure(
   const safeLimit = Math.min(Math.max(Math.trunc(limit), 1), 500);
   const safeOffset = Math.min(Math.max(Math.trunc(offset), 0), 100_000);
   const [units, areas] = await Promise.all([
-    fetchRecords(IPA_UO_RESOURCE_ID, normalized, safeLimit, safeOffset, "Descrizione_uo"),
-    fetchRecords(IPA_AOO_RESOURCE_ID, normalized, safeLimit, safeOffset, "Denominazione_aoo"),
+    fetchRecords(IPA_UO_RESOURCE_ID, normalized, safeLimit, safeOffset, "Descrizione_uo", options.signal),
+    fetchRecords(IPA_AOO_RESOURCE_ID, normalized, safeLimit, safeOffset, "Denominazione_aoo", options.signal),
   ]);
 
   const normalizedUnits = units.records

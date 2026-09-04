@@ -11,6 +11,10 @@ test("PNRR catalog is server-rendered, searchable, and semantically cautious", a
   assert.match(page, /finanziamento PNRR registrato/i);
   assert.match(page, /pista documentale su CUP, finanziamenti, gare e aggiudicatari/i);
   assert.match(page, /non contiene i pagamenti ReGiS/i);
+  assert.match(page, /Intero archivio:[\s\S]*?coverage\.uniqueProjects/);
+  assert.match(page, /submeasure\.code/);
+  assert.match(page, /longDate\(pnrrChildcareMeta\.referenceDate\)/);
+  assert.match(page, /pnrrChildcareMeta\.source\.landingUrl/);
   assert.equal(page.match(/<h1\b/g)?.length, 1);
   assert.match(page, /aria-label="Pagine dei risultati"/);
   assert.doesNotMatch(page, /heroMetric|kicker|01 ·|02 ·/);
@@ -34,6 +38,7 @@ test("PNRR layouts collapse every major grid on narrow screens", async () => {
     source("../src/app/progetti/[cup]/project.module.css"),
   ]);
   assert.match(catalogCss, /@media \(max-width: 650px\)[\s\S]*?grid-template-columns: 1fr;/);
+  assert.match(catalogCss, /@media \(max-width: 650px\)[\s\S]*?\.card \{[\s\S]*?min-height: auto;/);
   assert.match(projectCss, /@media \(max-width: 620px\)[\s\S]*?\.flowGrid \{[\s\S]*?grid-template-columns: 1fr;/);
   assert.match(projectCss, /overflow-wrap:\s+anywhere/);
 });

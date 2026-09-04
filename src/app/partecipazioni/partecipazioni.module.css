@@ -96,3 +96,17 @@
   color: var(--color-neutral-600);
   max-width: 100ch;
 }
+
+.tableHint {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .tableHint {
+    display: block;
+    margin: 0 0 var(--space-2);
+    color: var(--color-neutral-700);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}

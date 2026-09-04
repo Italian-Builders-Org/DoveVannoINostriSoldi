@@ -14,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = ROOT / "src/data/generated/istat-municipality-geography.json"
+DEFAULT_METADATA_OUTPUT = ROOT / "src/data/generated/istat-municipality-geography.meta.json"
 BASE_URL = "https://situas-servizi.istat.it/publish/reportspooljson"
 REFERENCE_DATES = {
     2022: "31/12/2022",
@@ -187,6 +188,27 @@ def build_snapshot() -> dict:
     }
 
 
+def build_metadata(snapshot: dict) -> dict:
+    latest = snapshot["years"][-1]
+    day, month, year = latest["referenceDate"].split("/")
+    return {
+        "schemaVersion": 1,
+        "datasetId": snapshot["datasetId"],
+        "generatedAt": snapshot["generatedAt"],
+        "availableYears": [item["year"] for item in snapshot["years"]],
+        "latest": {
+            "year": latest["year"],
+            "sourceTimestamp": f"{year}-{month}-{day}",
+            "municipalities": latest["municipalities"],
+        },
+    }
+
+
+def validate_metadata(snapshot: dict, metadata: object) -> None:
+    if metadata != build_metadata(snapshot):
+        raise SnapshotError("metadati health non coerenti con lo snapshot")
+
+
 def validate_snapshot(snapshot: object) -> None:
     if not isinstance(snapshot, dict) or snapshot.get("schemaVersion") != 1:
         raise SnapshotError("schemaVersion inattesa")
@@ -232,27 +254,43 @@ def validate_snapshot(snapshot: object) -> None:
                 raise SnapshotError(f"{year}: provenienza {report} non valida")
 
 
-def validate_committed(path: Path = DEFAULT_OUTPUT) -> None:
+def validate_committed(
+    path: Path = DEFAULT_OUTPUT,
+    metadata_path: Path | None = None,
+) -> None:
+    metadata_path = metadata_path or path.with_name(f"{path.stem}.meta.json")
     try:
         snapshot = json.loads(path.read_text(encoding="utf-8"))
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
-        raise SnapshotError(f"snapshot non leggibile: {path}") from error
+        raise SnapshotError("snapshot o metadati health non leggibili") from error
     validate_snapshot(snapshot)
+    validate_metadata(snapshot, metadata)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--metadata-output", type=Path, default=None)
     parser.add_argument("--validate-committed", action="store_true")
     args = parser.parse_args()
+    metadata_output = args.metadata_output or args.output.with_name(
+        f"{args.output.stem}.meta.json"
+    )
     if args.validate_committed:
-        validate_committed(args.output)
-        print(f"validated {args.output}")
+        validate_committed(args.output, metadata_output)
+        print(f"validated {args.output} and {metadata_output}")
         return
     snapshot = build_snapshot()
+    metadata = build_metadata(snapshot)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"wrote {args.output} ({sum(year['municipalities'] for year in snapshot['years'])} righe)")
+    metadata_output.parent.mkdir(parents=True, exist_ok=True)
+    metadata_output.write_text(json.dumps(metadata, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(
+        f"wrote {args.output} and {metadata_output} "
+        f"({sum(year['municipalities'] for year in snapshot['years'])} righe)"
+    )
 
 
 if __name__ == "__main__":

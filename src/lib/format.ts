@@ -51,6 +51,14 @@ export function compactEuro(value: number): string {
   return euroFormatter.format(value);
 }
 
+/** Formats an integer-cent source value without changing its measurement unit. */
+export function compactEuroFromCents(cents: number): string {
+  if (!Number.isSafeInteger(cents)) {
+    throw new Error("L'importo in centesimi deve essere un intero sicuro");
+  }
+  return compactEuro(cents / 100);
+}
+
 /**
  * Formats a value in the unit that suits `reference`.
  *

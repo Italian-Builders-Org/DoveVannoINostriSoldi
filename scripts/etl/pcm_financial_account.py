@@ -296,7 +296,7 @@ def build_snapshot(payload: bytes, source_url: str, acquired_at: str) -> tuple[d
             "headers": len(EXPECTED_HEADERS),
         },
         "dataArtifact": {
-            "path": str(DATA_PATH.relative_to(ROOT)),
+            "path": DATA_PATH.relative_to(ROOT).as_posix(),
             "bytes": len(data_bytes),
             "sha256": hashlib.sha256(data_bytes).hexdigest(),
         },

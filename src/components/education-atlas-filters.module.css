@@ -1,0 +1,98 @@
+.filters {
+  display: grid;
+  grid-template-columns: minmax(240px, .8fr) minmax(0, 2fr);
+  gap: var(--space-4);
+  padding: 18px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.filterIntro { min-width: 0; }
+.eyebrow {
+  color: var(--color-accent-700);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.filterIntro h2 { margin: 5px 0 4px; font-size: 20px; }
+.filterIntro p { margin: 0; color: var(--color-neutral-700); font-size: 12px; }
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+}
+.controlGrid label,
+.periodFieldset {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.controlGrid label > span,
+.periodFieldset legend {
+  color: var(--color-neutral-700);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.periodFieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.periodFieldset legend { padding: 0; }
+.periodOptions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-400);
+}
+.periodOptions button {
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 6px;
+  color: var(--color-neutral-700);
+  background: var(--color-raised);
+  border: 0;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.periodOptions button + button { border-left: 1px solid var(--color-neutral-300); }
+.periodOptions button:hover { color: var(--color-text); background: var(--color-neutral-100); }
+.periodOptions button[aria-pressed="true"] {
+  color: var(--color-raised);
+  background: var(--color-accent-700);
+}
+.periodOptions button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 0;
+}
+.controlGrid select {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 30px 9px 10px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-md);
+}
+.controlGrid select:hover { border-color: var(--color-neutral-500); }
+.controlGrid select:focus-visible { border-color: var(--color-accent); outline: 2px solid var(--focus-ring); outline-offset: 0; }
+
+@media (max-width: 1000px) {
+  .filters { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .controlGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 420px) {
+  .controlGrid { grid-template-columns: 1fr; }
+}

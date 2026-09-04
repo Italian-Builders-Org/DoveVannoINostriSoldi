@@ -25,7 +25,7 @@
 .tooltip .code {
   margin-bottom: 5px;
   color: var(--color-neutral-400);
-  font: 650 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 650 11px var(--font-mono);
 }
 
 .tooltip strong {

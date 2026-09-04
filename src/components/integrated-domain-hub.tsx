@@ -156,7 +156,12 @@ export default async function IntegratedDomainHub({
             <small>{integer(selected.length)} insiemi con stato, righe, fonti e limiti</small>
           </span>
         </summary>
-        <div className={`table-scroll ${styles.tableWrap}`} tabIndex={0}>
+        <div
+          className={`table-scroll ${styles.tableWrap}`}
+          role="region"
+          aria-label={`Registro tecnico degli insiemi in ${title}`}
+          tabIndex={0}
+        >
           <table className="table">
             <caption className={styles.visuallyHidden}>Registro tecnico degli insiemi in {title}</caption>
             <thead>

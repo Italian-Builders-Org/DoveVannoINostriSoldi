@@ -1,0 +1,3 @@
+_id,Codice_IPA,Denominazione_ente,Codice_fiscale_ente,Tipologia,Codice_Categoria,Codice_natura,Codice_ateco,Ente_in_liquidazione,Codice_MIUR,Codice_ISTAT,Acronimo,Nome_responsabile,Cognome_responsabile,Titolo_responsabile,Codice_comune_ISTAT,Codice_catastale_comune,CAP,Indirizzo,Mail1,Tipo_Mail1,Mail2,Tipo_Mail2,Mail3,Tipo_Mail3,Mail4,Tipo_Mail4,Mail5,Tipo_Mail5,Sito_istituzionale,Url_facebook,Url_linkedin,Url_twitter,Url_youtube,Data_aggiornamento
+1,synth-one,Synth Station One,12345678903,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2,synth-two,Synth Station Two,11111111115,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

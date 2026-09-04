@@ -2,7 +2,7 @@
 """Publish one approved generated-data refresh as a reviewed GitHub PR.
 
 The caller supplies only ``--artifact-id``.  Registry metadata owns the file
-allowlist, stable branch, titles, upstream URL, and workflow mapping.  This
+allowlist, stable branch, titles, upstream URL(s), and workflow mapping.  This
 module deliberately has no direct-main, merge, auto-merge, delete, force, or
 unauthenticated fallback path.
 """
@@ -48,6 +48,7 @@ class Publication:
     commit_title: str
     pr_title: str
     upstream_url: str
+    upstream_urls: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -184,6 +185,34 @@ def run_command(
     return result
 
 
+def _publication_upstream_urls(publication: Mapping[str, object], artifact_id: str) -> tuple[str, ...]:
+    primary = publication.get("upstreamUrl")
+    if not isinstance(primary, str) or not primary.strip():
+        raise PublishError(f"publication metadata incomplete for {artifact_id}")
+    configured = publication.get("upstreamUrls")
+    if configured is None:
+        candidates: Sequence[object] = (primary,)
+    elif isinstance(configured, list) and configured:
+        # Keep the singular field as the stable compatibility/primary value,
+        # then retain registry order while removing duplicates.
+        candidates = (primary, *configured)
+    else:
+        raise PublishError(f"publication.upstreamUrls must be a non-empty list for {artifact_id}")
+
+    result: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not isinstance(candidate, str) or not candidate.strip():
+            raise PublishError(f"publication upstream must be a non-empty HTTPS URL for {artifact_id}")
+        parsed = urlparse(candidate)
+        if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+            raise PublishError(f"publication upstream must be an HTTPS URL for {artifact_id}")
+        if candidate not in seen:
+            seen.add(candidate)
+            result.append(candidate)
+    return tuple(result)
+
+
 def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Artifact:
     try:
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
@@ -202,9 +231,7 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
         raise PublishError(f"publication metadata incomplete for {artifact_id}")
     if not BRANCH_RE.fullmatch(publication["branch"]):
         raise PublishError(f"invalid managed publication branch for {artifact_id}")
-    parsed = urlparse(publication["upstreamUrl"])
-    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
-        raise PublishError(f"publication upstream must be an HTTPS URL for {artifact_id}")
+    upstream_urls = _publication_upstream_urls(publication, artifact_id)
     if item.get("verificationMode") != "online-refresh":
         raise PublishError(f"artifact is not an online source refresh: {artifact_id}")
     if not item.get("refreshWorkflow") or not item.get("generator", {}).get("requiresNetworkInput"):
@@ -226,6 +253,7 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
             commit_title=publication["commitTitle"],
             pr_title=publication["prTitle"],
             upstream_url=publication["upstreamUrl"],
+            upstream_urls=upstream_urls,
         ),
     )
 
@@ -338,10 +366,15 @@ def provenance_body(
     validators = list(artifact.reconciliation_tests) + list(artifact.node_tests)
     validator_text = ", ".join(validators) if validators else "(registry offline check only)"
     files = "\n".join(f"- `{path}`" for path in artifact.files)
+    upstream_urls = artifact.publication.upstream_urls or (artifact.publication.upstream_url,)
+    upstream_details = ""
+    if len(upstream_urls) > 1:
+        upstream_details = "Upstreams:\n" + "\n".join(f"- {url}" for url in upstream_urls) + "\n"
     return (
         "<!-- dvns-data-refresh:v1 -->\n"
         f"Source artifact: `{artifact.artifact_id}`\n\n"
         f"Upstream: {artifact.publication.upstream_url}\n"
+        f"{upstream_details}"
         f"Base branch: `main`\n"
         f"Base SHA: `{base_sha}`\n"
         f"Candidate SHA: `{candidate_sha}`\n"
@@ -451,6 +484,17 @@ def _provenance_field(body: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
+def _provenance_list(body: str, label: str) -> tuple[str, ...]:
+    match = re.search(
+        rf"^{re.escape(label)}:\n(?P<items>(?:- [^\n]+\n?)+)",
+        body,
+        re.MULTILINE,
+    )
+    if not match:
+        return ()
+    return tuple(line[2:] for line in match.group("items").splitlines() if line.startswith("- "))
+
+
 def managed_pr_matches(
     pr: PullRequest, artifact: Artifact, branch: BranchCommit, expected_workflow_ref: str
 ) -> bool:
@@ -458,6 +502,8 @@ def managed_pr_matches(
     listed_files = tuple(re.findall(r"- `([^`]+)`", files_match.group("files"))) if files_match else ()
     validators = list(artifact.reconciliation_tests) + list(artifact.node_tests)
     validator_text = ", ".join(validators) if validators else "(registry offline check only)"
+    expected_upstreams = artifact.publication.upstream_urls or (artifact.publication.upstream_url,)
+    listed_upstreams = _provenance_list(pr.body, "Upstreams")
     run_trailer = branch.trailers.get("Data-Refresh-Run", "")
     workflow_run = _provenance_field(pr.body, "Workflow run")
     if workflow_run:
@@ -473,6 +519,7 @@ def managed_pr_matches(
         and "<!-- dvns-data-refresh:v1 -->" in pr.body
         and _provenance_field(pr.body, "Source artifact") == artifact.artifact_id
         and _provenance_field(pr.body, "Upstream") == artifact.publication.upstream_url
+        and listed_upstreams == (expected_upstreams if len(expected_upstreams) > 1 else ())
         and _provenance_field(pr.body, "Base SHA") == branch.parent
         and _provenance_field(pr.body, "Candidate SHA") == branch.tip
         and _provenance_field(pr.body, "Files SHA-256") == branch.trailers.get("Data-Refresh-Files-SHA256")

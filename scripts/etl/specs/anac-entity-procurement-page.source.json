@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-entity-procurement-page",
+  "distributionKind": "sharded-public-profile",
+  "observedAt": "2026-08-31T14:49:08Z",
+  "scope": {
+    "cohort": "cig-2025-full",
+    "publicationMonths": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "nationalPopulationClaim": "not-asserted",
+    "temporalAlignment": "cross-snapshot"
+  },
+  "parent": {
+    "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+    "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+  },
+  "ipa": {
+    "datasetPageUrl": "https://www.indicepa.gov.it/ipa-dati/dataset/enti",
+    "resourcePageUrl": "https://www.indicepa.gov.it/ipa-dati/dataset/enti/resource/d09adf99-dc10-4349-8c53-27b1e5aa97b6",
+    "resourceId": "d09adf99-dc10-4349-8c53-27b1e5aa97b6",
+    "downloadUrl": "https://indicepa.gov.it/ipa-dati/datastore/dump/d09adf99-dc10-4349-8c53-27b1e5aa97b6?bom=True",
+    "sourceLastModified": "2026-08-31T03:17:31.916802",
+    "metadataModifiedAt": "2026-08-31T03:17:56.925306",
+    "assetObservedAt": "2026-08-31T14:49:08Z",
+    "delimiter": ",",
+    "encoding": "utf-8-sig",
+    "bytes": 7484201,
+    "sha256": "40b78b3f4b8658a973c66c7691cb181ec20aa6c54ae25ea7257f26c11c135037",
+    "rows": 23738,
+    "headers": [
+      "_id", "Codice_IPA", "Denominazione_ente", "Codice_fiscale_ente", "Tipologia",
+      "Codice_Categoria", "Codice_natura", "Codice_ateco", "Ente_in_liquidazione",
+      "Codice_MIUR", "Codice_ISTAT", "Acronimo", "Nome_responsabile",
+      "Cognome_responsabile", "Titolo_responsabile", "Codice_comune_ISTAT",
+      "Codice_catastale_comune", "CAP", "Indirizzo", "Mail1", "Tipo_Mail1", "Mail2",
+      "Tipo_Mail2", "Mail3", "Tipo_Mail3", "Mail4", "Tipo_Mail4", "Mail5",
+      "Tipo_Mail5", "Sito_istituzionale", "Url_facebook", "Url_linkedin", "Url_twitter",
+      "Url_youtube", "Data_aggiornamento"
+    ],
+    "license": {
+      "name": "CC BY 4.0",
+      "url": "https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40"
+    }
+  },
+  "contract": {
+    "entityJoin": "exact-checksum-valid-tax-code-to-unique-codice-ipa",
+    "procedureKey": ["cig"],
+    "awardKey": ["cig", "id_aggiudicazione"],
+    "awardAmountAggregation": "once-per-distinct-award-pair",
+    "countRanking": "distinct-operator-award-pair",
+    "valueRanking": "single-resolved-operator-awards-only",
+    "operatorDisplayName": "most-frequent-normalized-denomination-then-lexical",
+    "shards": 256,
+    "shardRule": "first-two-hex-sha256-of-codice-ipa",
+    "compression": "deterministic-gzip-mtime-zero"
+  },
+  "privacy": {
+    "containsEntityTaxIds": true,
+    "containsOperatorTaxIds": false,
+    "containsOperatorTaxIdHashes": false,
+    "containsOperatorNames": true,
+    "operatorNamesUsedAsKeys": false,
+    "containsAusa": false,
+    "containsRawRows": false
+  }
+}

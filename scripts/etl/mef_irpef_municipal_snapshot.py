@@ -51,7 +51,39 @@ META_KEYS = (
     "dataArtifactBytes",
     "dataArtifactSha256",
 )
-MUNICIPALITY_TUPLE_SIZE = 17
+SUMMARY_MEASURE_KEYS = (
+    "comprehensiveIncome",
+    "taxableIncome",
+    "netTaxDeclared",
+    "regionalSurtaxDue",
+    "municipalSurtaxDue",
+)
+INCOME_SOURCE_MEASURE_KEYS = (
+    "buildingIncome",
+    "employmentIncome",
+    "pensionIncome",
+    "selfEmploymentIncome",
+    "ordinaryBusinessIncome",
+    "simplifiedBusinessIncome",
+    "participationIncome",
+)
+INCOME_BAND_MEASURE_KEYS = (
+    "nonPositiveComprehensiveIncome",
+    "comprehensiveIncome0To10000",
+    "comprehensiveIncome10000To15000",
+    "comprehensiveIncome15000To26000",
+    "comprehensiveIncome26000To55000",
+    "comprehensiveIncome55000To75000",
+    "comprehensiveIncome75000To120000",
+    "comprehensiveIncomeOver120000",
+)
+EXPECTED_MEASURE_ORDER = (
+    *SUMMARY_MEASURE_KEYS,
+    *INCOME_SOURCE_MEASURE_KEYS,
+    *INCOME_BAND_MEASURE_KEYS,
+)
+SIGNED_AMOUNT_MEASURE_KEYS = frozenset({"nonPositiveComprehensiveIncome"})
+MUNICIPALITY_TUPLE_SIZE = 7 + 2 * len(EXPECTED_MEASURE_ORDER)
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 NON_NEGATIVE_INTEGER = re.compile(r"^\d+$")
 SIGNED_INTEGER = re.compile(r"^-?\d+$")
@@ -90,6 +122,8 @@ class Aggregate:
     known_frequency: list[int] = field(default_factory=list)
     known_amount_cents: list[int] = field(default_factory=list)
     suppressed_rows: list[int] = field(default_factory=list)
+    suppressed_frequency_rows: list[int] = field(default_factory=list)
+    suppressed_amount_rows: list[int] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if not self.known_frequency:
@@ -98,22 +132,30 @@ class Aggregate:
             self.known_amount_cents = [0] * self.measure_count
         if not self.suppressed_rows:
             self.suppressed_rows = [0] * self.measure_count
+        if not self.suppressed_frequency_rows:
+            self.suppressed_frequency_rows = [0] * self.measure_count
+        if not self.suppressed_amount_rows:
+            self.suppressed_amount_rows = [0] * self.measure_count
 
     def add(self, record: SourceRecord) -> None:
         if len(record.measures) != self.measure_count:
             raise SnapshotError("Numero di misure incoerente durante l'aggregazione")
         self.taxpayers = safe_add(self.taxpayers, record.taxpayers, "contribuenti")
         for index, (frequency, amount_cents) in enumerate(record.measures):
-            if frequency is not None:
+            if frequency is None or amount_cents is None:
+                self.suppressed_rows[index] += 1
+            if frequency is None:
+                self.suppressed_frequency_rows[index] += 1
+            else:
                 self.known_frequency[index] = safe_add(
                     self.known_frequency[index], frequency, "frequenza aggregata"
                 )
-            if amount_cents is not None:
+            if amount_cents is None:
+                self.suppressed_amount_rows[index] += 1
+            else:
                 self.known_amount_cents[index] = safe_add(
                     self.known_amount_cents[index], amount_cents, "ammontare aggregato"
                 )
-            if frequency is None or amount_cents is None:
-                self.suppressed_rows[index] += 1
 
     def measures(self) -> list[list[int]]:
         return [
@@ -121,6 +163,8 @@ class Aggregate:
                 self.known_frequency[index],
                 self.known_amount_cents[index],
                 self.suppressed_rows[index],
+                self.suppressed_frequency_rows[index],
+                self.suppressed_amount_rows[index],
             ]
             for index in range(self.measure_count)
         ]
@@ -192,7 +236,7 @@ def validate_data_artifact_binding(lock: dict[str, object], payload: bytes) -> N
 
 
 def validate_lock(lock: dict[str, object]) -> None:
-    if lock.get("schemaVersion") != 1:
+    if lock.get("schemaVersion") != 2:
         raise SnapshotError("Versione source lock non supportata")
     if lock.get("datasetId") != "mef_irpef_comunale":
         raise SnapshotError("datasetId MEF non canonico")
@@ -221,21 +265,37 @@ def validate_lock(lock: dict[str, object]) -> None:
 
     measure_order = require_list(lock.get("measureOrder"), "measureOrder")
     measures = require_dict(lock.get("measures"), "measures")
-    expected_order = [
-        "comprehensiveIncome",
-        "taxableIncome",
-        "netTaxDeclared",
-        "regionalSurtaxDue",
-        "municipalSurtaxDue",
-    ]
+    expected_order = list(EXPECTED_MEASURE_ORDER)
     if measure_order != expected_order or set(measures) != set(expected_order):
         raise SnapshotError("Ordine delle misure MEF inatteso")
+    measure_groups = require_dict(lock.get("measureGroups"), "measureGroups")
+    expected_groups = {
+        "summary": list(SUMMARY_MEASURE_KEYS),
+        "incomeSources": list(INCOME_SOURCE_MEASURE_KEYS),
+        "incomeBands": list(INCOME_BAND_MEASURE_KEYS),
+    }
+    if measure_groups != expected_groups:
+        raise SnapshotError("Gruppi delle misure MEF inattesi")
+    allowed_negative_headers = require_list(
+        csv_contract.get("allowedNegativeAmountHeaders"),
+        "csv.allowedNegativeAmountHeaders",
+    )
+    expected_negative_headers: set[str] = set()
     for key in expected_order:
         measure = require_dict(measures[key], f"measures.{key}")
+        if set(measure) != {"frequencyHeader", "amountHeader", "allowNegativeAmount"}:
+            raise SnapshotError(f"Contratto della misura {key} inatteso")
         if measure.get("frequencyHeader") not in headers or measure.get("amountHeader") not in headers:
             raise SnapshotError(f"Header non trovato per la misura {key}")
-        if measure.get("allowNegativeAmount") is not False:
-            raise SnapshotError(f"La misura selezionata {key} deve essere non negativa")
+        expected_signed = key in SIGNED_AMOUNT_MEASURE_KEYS
+        if measure.get("allowNegativeAmount") is not expected_signed:
+            raise SnapshotError(f"Segno ammesso inatteso per la misura {key}")
+        if expected_signed:
+            expected_negative_headers.add(str(measure["amountHeader"]))
+    if set(allowed_negative_headers) != expected_negative_headers or len(
+        allowed_negative_headers
+    ) != len(expected_negative_headers):
+        raise SnapshotError("Header con ammontare negativo ammesso inattesi")
 
     regions = require_list(lock.get("regions"), "regions")
     region_codes = [require_dict(region, "regions[]").get("code") for region in regions]
@@ -471,13 +531,20 @@ def parse_csv_member(raw_csv: bytes, lock: dict[str, object]) -> list[SourceReco
                 row[header_index[amount_header]],
                 label=amount_header,
                 line_number=line_number,
-                allow_negative=False,
+                allow_negative=contract["allowNegativeAmount"] is True,
             )
-            if (frequency is None) != (amount_cents is None):
+            if key in SIGNED_AMOUNT_MEASURE_KEYS and (
+                amount_cents is not None and amount_cents > 0
+            ):
                 raise SnapshotError(
-                    f"Coppia frequenza/ammontare parzialmente oscurata alla riga {line_number}: {key}"
+                    f"{amount_header} deve essere non positivo alla riga {line_number}"
                 )
             parsed_measures.append((frequency, amount_cents))
+
+        validate_income_band_reconciliation(
+            tuple(parsed_measures),
+            label=f"riga sorgente {line_number}",
+        )
 
         is_residual = row[:7] == residual_identity
         if is_residual:
@@ -588,10 +655,13 @@ def combine_summaries(left: dict[str, object], right: dict[str, object]) -> dict
     for left_measure, right_measure in zip(left_measures, right_measures):
         left_tuple = require_list(left_measure, "left.measure")
         right_tuple = require_list(right_measure, "right.measure")
-        if len(left_tuple) != 3 or len(right_tuple) != 3:
-            raise SnapshotError("Tripla aggregata non valida")
+        if len(left_tuple) != 5 or len(right_tuple) != 5:
+            raise SnapshotError("Quintupla aggregata non valida")
         measures.append(
-            [safe_add(int(left_tuple[index]), int(right_tuple[index]), "totale nazionale") for index in range(3)]
+            [
+                safe_add(int(left_tuple[index]), int(right_tuple[index]), "totale nazionale")
+                for index in range(5)
+            ]
         )
     return {
         "taxpayers": safe_add(int(left["taxpayers"]), int(right["taxpayers"]), "contribuenti nazionali"),
@@ -663,7 +733,7 @@ def build_data(lock: dict[str, object], records: Sequence[SourceRecord]) -> dict
     all_source = combine_summaries(assigned_summary, unassigned_summary)
 
     data = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "datasetId": lock["datasetId"],
         "taxYear": lock["taxYear"],
         "measureOrder": measure_order,
@@ -688,26 +758,123 @@ def validate_nonnegative_integer(value: object, label: str) -> int:
     return value
 
 
-def validate_measures(value: object, label: str, measure_count: int) -> list[list[int]]:
+def validate_signed_integer(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or abs(value) > MAX_SAFE_INTEGER:
+        raise SnapshotError(f"{label} deve essere un intero sicuro")
+    return value
+
+
+def validate_amount_cents(value: object, label: str, *, allow_negative: bool) -> int:
+    parsed = (
+        validate_signed_integer(value, label)
+        if allow_negative
+        else validate_nonnegative_integer(value, label)
+    )
+    if parsed % 100 != 0:
+        raise SnapshotError(f"{label} deve mantenere la risoluzione di un euro")
+    return parsed
+
+
+def validate_measure_amount_cents(
+    value: object,
+    key: str,
+    label: str,
+    measure_contracts: dict[str, object],
+) -> int:
+    contract = require_dict(measure_contracts[key], f"measures.{key}")
+    parsed = validate_amount_cents(
+        value,
+        label,
+        allow_negative=contract["allowNegativeAmount"] is True,
+    )
+    if key in SIGNED_AMOUNT_MEASURE_KEYS and parsed > 0:
+        raise SnapshotError(f"{label} deve essere non positivo")
+    return parsed
+
+
+def validate_income_band_reconciliation(
+    measures: Sequence[MetricPair], *, label: str
+) -> None:
+    if len(measures) != len(EXPECTED_MEASURE_ORDER):
+        raise SnapshotError(f"{label}: numero di misure inatteso")
+    comprehensive = measures[EXPECTED_MEASURE_ORDER.index("comprehensiveIncome")]
+    bands = [measures[EXPECTED_MEASURE_ORDER.index(key)] for key in INCOME_BAND_MEASURE_KEYS]
+
+    comprehensive_frequency, comprehensive_amount_cents = comprehensive
+    band_frequencies = [frequency for frequency, _ in bands]
+    band_amounts = [amount for _, amount in bands]
+    if comprehensive_frequency is not None:
+        known_band_frequency = sum(value for value in band_frequencies if value is not None)
+        if known_band_frequency > comprehensive_frequency:
+            raise SnapshotError(
+                f"{label}: le frequenze note delle fasce superano il reddito complessivo"
+            )
+        if all(value is not None for value in band_frequencies) and (
+            known_band_frequency != comprehensive_frequency
+        ):
+            raise SnapshotError(
+                f"{label}: le frequenze complete delle fasce non riconciliano il reddito complessivo"
+            )
+    if comprehensive_amount_cents is not None and all(
+        value is not None for value in band_amounts
+    ):
+        band_amount_cents = sum(value for value in band_amounts if value is not None)
+        if band_amount_cents != comprehensive_amount_cents:
+            raise SnapshotError(
+                f"{label}: gli ammontari completi delle fasce non riconciliano il reddito complessivo"
+            )
+
+
+def validate_measures(
+    value: object,
+    label: str,
+    measure_order: Sequence[str],
+    measure_contracts: dict[str, object],
+) -> list[list[int]]:
     measures = require_list(value, label)
-    if len(measures) != measure_count:
-        raise SnapshotError(f"{label} deve contenere {measure_count} misure")
+    if len(measures) != len(measure_order):
+        raise SnapshotError(f"{label} deve contenere {len(measure_order)} misure")
     validated: list[list[int]] = []
-    for index, raw_measure in enumerate(measures):
+    for index, (key, raw_measure) in enumerate(zip(measure_order, measures, strict=True)):
         measure = require_list(raw_measure, f"{label}[{index}]")
-        if len(measure) != 3:
-            raise SnapshotError(f"{label}[{index}] deve essere una tripla")
+        if len(measure) != 5:
+            raise SnapshotError(f"{label}[{index}] deve essere una quintupla")
         validated.append(
             [
                 validate_nonnegative_integer(measure[0], f"{label}[{index}].knownFrequency"),
-                validate_nonnegative_integer(measure[1], f"{label}[{index}].knownAmountCents"),
-                validate_nonnegative_integer(measure[2], f"{label}[{index}].suppressedRows"),
+                validate_measure_amount_cents(
+                    measure[1],
+                    key,
+                    f"{label}[{index}].knownAmountCents",
+                    measure_contracts,
+                ),
+                validate_nonnegative_integer(
+                    measure[2], f"{label}[{index}].suppressedRows"
+                ),
+                validate_nonnegative_integer(
+                    measure[3], f"{label}[{index}].suppressedFrequencyRows"
+                ),
+                validate_nonnegative_integer(
+                    measure[4], f"{label}[{index}].suppressedAmountRows"
+                ),
             ]
         )
+        if not (
+            max(validated[-1][3], validated[-1][4])
+            <= validated[-1][2]
+            <= validated[-1][3] + validated[-1][4]
+        ):
+            raise SnapshotError(
+                f"{label}[{index}].suppressedRows non riconcilia le celle soppresse"
+            )
     return validated
 
 
-def record_from_municipality_tuple(value: object, measure_count: int) -> SourceRecord:
+def record_from_municipality_tuple(
+    value: object,
+    measure_order: Sequence[str],
+    measure_contracts: dict[str, object],
+) -> SourceRecord:
     row = require_list(value, "municipalities[]")
     if len(row) != MUNICIPALITY_TUPLE_SIZE:
         raise SnapshotError("Tuple comune MEF di dimensione inattesa")
@@ -726,18 +893,20 @@ def record_from_municipality_tuple(value: object, measure_count: int) -> SourceR
         raise SnapshotError("Codice regione non valido nel data artifact")
     taxpayers = validate_nonnegative_integer(row[6], "municipality.taxpayers")
     measures: list[MetricPair] = []
-    for index in range(measure_count):
+    for index, key in enumerate(measure_order):
         frequency = row[7 + index * 2]
         amount_cents = row[8 + index * 2]
         if frequency is not None:
             frequency = validate_nonnegative_integer(frequency, "municipality.frequency")
         if amount_cents is not None:
-            amount_cents = validate_nonnegative_integer(amount_cents, "municipality.amountCents")
-        if (frequency is None) != (amount_cents is None):
-            raise SnapshotError(
-                f"municipality.measures[{index}] deve avere frequenza e ammontare entrambi presenti o entrambi oscurati"
+            amount_cents = validate_measure_amount_cents(
+                amount_cents,
+                key,
+                "municipality.amountCents",
+                measure_contracts,
             )
         measures.append((frequency, amount_cents))
+    validate_income_band_reconciliation(measures, label=f"comune {municipality_code}")
     return SourceRecord(
         cadastral_code,
         municipality_code,
@@ -755,17 +924,21 @@ def record_from_municipality_tuple(value: object, measure_count: int) -> SourceR
 def validate_data(data: dict[str, object], lock: dict[str, object]) -> None:
     if tuple(data) != DATA_KEYS or set(data) != set(DATA_KEYS):
         raise SnapshotError("Chiavi top-level del data artifact inattese")
-    if data.get("schemaVersion") != 1 or data.get("datasetId") != lock.get("datasetId"):
+    if data.get("schemaVersion") != 2 or data.get("datasetId") != lock.get("datasetId"):
         raise SnapshotError("Identità del data artifact inattesa")
     if data.get("taxYear") != lock.get("taxYear") or data.get("measureOrder") != lock.get("measureOrder"):
         raise SnapshotError("Periodo o misure del data artifact inattesi")
 
-    measure_count = len(require_list(lock["measureOrder"], "measureOrder"))
+    measure_order = [str(value) for value in require_list(lock["measureOrder"], "measureOrder")]
+    measure_contracts = require_dict(lock["measures"], "measures")
     raw_municipalities = require_list(data["municipalities"], "municipalities")
     expected = require_dict(lock["expected"], "expected")
     if len(raw_municipalities) != expected.get("municipalities"):
         raise SnapshotError("Numero comuni nel data artifact inatteso")
-    records = [record_from_municipality_tuple(row, measure_count) for row in raw_municipalities]
+    records = [
+        record_from_municipality_tuple(row, measure_order, measure_contracts)
+        for row in raw_municipalities
+    ]
     codes = [record.municipality_code for record in records]
     cadastral_codes = [record.cadastral_code for record in records]
     if codes != sorted(codes) or len(codes) != len(set(codes)):
@@ -792,10 +965,18 @@ def validate_data(data: dict[str, object], lock: dict[str, object]) -> None:
     if tuple(unassigned) != ("label", "taxpayers", "measures") or unassigned.get("label") != "Mancante/errata":
         raise SnapshotError("Shape national.unassigned inattesa")
     validate_nonnegative_integer(unassigned.get("taxpayers"), "national.unassigned.taxpayers")
-    unassigned_measures = validate_measures(unassigned.get("measures"), "national.unassigned.measures", measure_count)
+    unassigned_measures = validate_measures(
+        unassigned.get("measures"),
+        "national.unassigned.measures",
+        measure_order,
+        measure_contracts,
+    )
     for measure in unassigned_measures:
-        if measure[2] > expected.get("unassignedRows", 0):
-            raise SnapshotError("suppressedRows non assegnate supera le righe sorgente")
+        if any(
+            value > expected.get("unassignedRows", 0)
+            for value in measure[2:]
+        ):
+            raise SnapshotError("soppressioni non assegnate superano le righe sorgente")
 
     all_source = require_dict(national["allSource"], "national.allSource")
     if tuple(all_source) != ("taxpayers", "measures"):
@@ -903,7 +1084,7 @@ def build_meta(
     definitions_document = require_dict(source["definitionsDocument"], "source.definitionsDocument")
     integrity = require_dict(lock["integrity"], "integrity")
     meta = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "datasetId": lock["datasetId"],
         "period": {
             "taxYear": lock["taxYear"],
@@ -959,12 +1140,29 @@ def build_meta(
             "netTaxDeclared": "Imposta netta dichiarata: imposta lorda meno detrazioni e crediti d'imposta; non è gettito riscosso o saldo versato.",
             "regionalSurtaxDue": "Addizionale regionale dovuta sul reddito imponibile addizionale, secondo domicilio fiscale al 1 gennaio 2024.",
             "municipalSurtaxDue": "Addizionale comunale dovuta sul reddito imponibile addizionale, secondo domicilio fiscale al 1 gennaio 2024.",
+            "buildingIncome": "Reddito imponibile dei fabbricati posseduti, inclusi i casi indicati dal MEF per immobili soggetti a IMU o cedolare secca.",
+            "employmentIncome": "Reddito da lavoro dipendente e redditi assimilati secondo la classificazione MEF.",
+            "pensionIncome": "Reddito da pensione dichiarato, esclusi i trattamenti pensionistici integrativi secondo la definizione MEF.",
+            "selfEmploymentIncome": "Reddito da lavoro autonomo, comprensivo dei valori nulli, determinato come compensi o proventi meno le spese collegate secondo la definizione MEF.",
+            "ordinaryBusinessIncome": "Reddito di spettanza dell'imprenditore in contabilità ordinaria, comprensivo dei valori nulli, secondo la definizione MEF.",
+            "simplifiedBusinessIncome": "Reddito di spettanza dell'imprenditore in contabilità semplificata, comprensivo dei valori nulli, secondo la definizione MEF.",
+            "participationIncome": "Reddito da partecipazione in società di persone, soggetti equiparati, imprese familiari o coniugali, comprensivo dei valori nulli, secondo la definizione MEF.",
+            "nonPositiveComprehensiveIncome": "Reddito complessivo minore o uguale a zero euro; l'ammontare aggregato può essere negativo.",
+            "comprehensiveIncome0To10000": "Reddito complessivo da 0 a 10.000 euro.",
+            "comprehensiveIncome10000To15000": "Reddito complessivo da 10.000 a 15.000 euro.",
+            "comprehensiveIncome15000To26000": "Reddito complessivo da 15.000 a 26.000 euro.",
+            "comprehensiveIncome26000To55000": "Reddito complessivo da 26.000 a 55.000 euro.",
+            "comprehensiveIncome55000To75000": "Reddito complessivo da 55.000 a 75.000 euro.",
+            "comprehensiveIncome75000To120000": "Reddito complessivo da 75.000 a 120.000 euro.",
+            "comprehensiveIncomeOver120000": "Reddito complessivo oltre 120.000 euro.",
         },
         "methodology": {
             "municipalityAssignment": "Il comune del dataset segue il domicilio fiscale al 31 dicembre dell'anno di dichiarazione; può differire dal domicilio usato per le addizionali.",
-            "missingValues": "Frequenze inferiori a 4 e ammontari collegati possono essere soppressi: null non significa zero e non viene imputato.",
-            "amounts": "Gli interi in euro della fonte sono convertiti esattamente in centesimi; le cinque misure selezionate sono non negative.",
-            "aggregation": "Ogni tripla è [frequenza nota, ammontare noto in centesimi, righe con almeno un elemento soppresso].",
+            "missingValues": "Frequenze inferiori a 4 e ammontari collegati possono essere soppressi: ogni cella vuota resta null, indipendentemente dall'altra cella della coppia, e non significa zero.",
+            "amounts": "Gli interi in euro della fonte sono convertiti esattamente in centesimi; la fascia di reddito complessivo non positivo può avere un ammontare negativo.",
+            "aggregation": "Ogni quintupla è [frequenza nota, ammontare noto in centesimi, righe con almeno una cella soppressa, righe con frequenza soppressa, righe con ammontare soppresso].",
+            "incomeSources": "Le frequenze delle fonti di reddito possono sovrapporsi perché uno stesso contribuente può dichiarare più tipi di reddito: non vanno sommate come persone distinte.",
+            "incomeBands": "Le otto fasce di reddito complessivo sono disgiunte; frequenze e ammontari riconciliano il reddito complessivo quando tutte le celle sono pubblicate.",
             "semanticWarning": "Non chiamare l'imposta netta gettito fiscale totale, non sottrarla alla spesa o al saldo CPT e non inferire evasione, frode o responsabilità individuali.",
         },
         "lockSha256": integrity["lockSha256"],

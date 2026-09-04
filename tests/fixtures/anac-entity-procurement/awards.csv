@@ -1,0 +1,12 @@
+cig;data_aggiudicazione_definitiva;esito;criterio_aggiudicazione;data_comunicazione_esito;numero_offerte_ammesse;numero_offerte_escluse;importo_aggiudicazione;ribasso_aggiudicazione;num_imprese_offerenti;flag_subappalto;id_aggiudicazione;cod_esito;num_imprese_richiedenti;asta_elettronica;num_imprese_invitate;massimo_ribasso;minimo_ribasso;FLAG_SCOMPUTO;COD_PRESTAZIONI_COMPRESE;PRESTAZIONI_COMPRESE;CIG_PROG_ESTERNA;DATA_INCARICO_PROG;DATA_CONS_PROG;COD_MODO_RIAGGIUDICAZIONE;MODO_RIAGGIUDICAZIONE;FLAG_PROC_ACCELERATA;N_MANIF_INTERESSE
+A000000001;2025-01-20;AGGIUDICATO;;;;;100.00;;;;1;;;;;;;;;;;;;;;;
+A000000001;2025-01-20;AGGIUDICATO;;;;;100.00;;;;1;;;;;;;;;;;;;;;;
+A000000001;2025-01-21;AGGIUDICATO;;;;;20.001;;;;2;;;;;;;;;;;;;;;;
+A000000002;;AGGIUDICATO;;;;;0;;;;1;;;;;;;;;;;;;;;;
+A000000003;1989-01-01;AGGIUDICATO;;;;;-5;;;;1;;;;;;;;;;;;;;;;
+A000000004;not-a-date;ND;;;;;;;;;1;;;;;;;;;;;;;;;;
+A000000005;2030-01-01;ND;;;;;12,34;;;;1;;;;;;;;;;;;;;;;
+A000000006;2025-06-20;AGGIUDICATO;;;;;10.10;;;;1;;;;;;;;;;;;;;;;
+A000000009;2025-09-20;AGGIUDICATO;;;;;10;;;;1;;;;;;;;;;;;;;;;
+A000000010;2025-10-20;ND;;;;;1;;;;-1;;;;;;;;;;;;;;;;
+BAD;2025-01-20;ND;;;;;1;;;;2;;;;;;;;;;;;;;;;

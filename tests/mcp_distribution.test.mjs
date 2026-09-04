@@ -48,4 +48,6 @@ test("distribution pages and docs keep one canonical MCP endpoint", async () => 
   assert.match(combined, /saldo CPT resta un saldo contabile territorializzato/i);
   assert.match(combined, /spreco, frode o qualità del servizio/i);
   assert.doesNotMatch(combined, /già (?:pubblicat[oa]|disponibile) (?:su|in) (?:ChatGPT|Claude|Manufact)/i);
+  assert.doesNotMatch(files[4], /window\.location\.origin|useSyncExternalStore/);
+  assert.match(files[4], /<code>\{PUBLIC_MCP_ENDPOINT\}<\/code>/);
 });

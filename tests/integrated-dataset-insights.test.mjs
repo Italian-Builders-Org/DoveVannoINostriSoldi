@@ -8,6 +8,9 @@ const {
   isInsightCapable,
   loadDatasetInsights,
   parseInsightAmount,
+  looksLikeAmountHeader,
+  amountColumnKeys,
+  formatIntegratedAmountCell,
 } = await import("../src/lib/integrated-dataset-insights.ts");
 
 test("detectInsightRoles finds recipient and amount columns", () => {
@@ -36,6 +39,32 @@ test("parseInsightAmount keeps null/empty distinct from zero", () => {
   assert.equal(parseInsightAmount("0"), 0);
   assert.equal(parseInsightAmount("1.234,56"), 1234.56);
   assert.equal(parseInsightAmount("1234.56"), 1234.56);
+});
+
+test("amount columns include canoni even when some cells are n.d.", () => {
+  assert.equal(looksLikeAmountHeader("canone_annuo_eur"), true);
+  assert.equal(looksLikeAmountHeader("canone_mq"), true);
+  assert.equal(looksLikeAmountHeader("costo_lordo_eur"), true);
+  assert.equal(looksLikeAmountHeader("euro_per_addetto"), true);
+  assert.equal(looksLikeAmountHeader("mq"), false);
+  assert.equal(looksLikeAmountHeader("anno"), false);
+  assert.equal(looksLikeAmountHeader("immobile"), false);
+
+  const keys = amountColumnKeys(
+    ["ente", "mq", "canone_annuo_eur", "anno"],
+    [
+      { cells: { ente: "MIMIT", mq: "99.80", canone_annuo_eur: "n.d.", anno: "2025" } },
+      { cells: { ente: "MIMIT", mq: "n.d.", canone_annuo_eur: "117361.93", anno: "2025" } },
+      { cells: { ente: "MIMIT", mq: "71", canone_annuo_eur: "0.00", anno: "2025" } },
+    ],
+  );
+  assert.equal(keys.has("canone_annuo_eur"), true);
+  assert.equal(keys.has("mq"), false);
+  assert.equal(keys.has("anno"), false);
+
+  assert.equal(formatIntegratedAmountCell("117361.93"), "117.361,93\u00a0€");
+  assert.equal(formatIntegratedAmountCell("0.00"), "0,00\u00a0€");
+  assert.equal(formatIntegratedAmountCell("n.d."), null);
 });
 
 test("aggregateRecipientInsights ranks companies and multi-service recurrence", () => {

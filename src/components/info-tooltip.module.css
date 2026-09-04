@@ -1,7 +1,11 @@
 .wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
+  width: 44px;
+  height: 44px;
   vertical-align: middle;
 }
 
@@ -18,25 +22,12 @@
   font-weight: 600;
   line-height: 1;
   cursor: help;
-  position: relative;
-  isolation: isolate;
-}
-.trigger::before {
-  content: "";
-  position: absolute;
-  inset: 12px;
-  border: 1px solid var(--color-neutral-400);
-  background: var(--color-raised);
-  z-index: -1;
 }
 .trigger:hover,
 .trigger[aria-expanded="true"] {
   color: var(--color-accent-700);
 }
-.trigger:hover::before,
-.trigger[aria-expanded="true"]::before {
-  border-color: var(--color-accent-700);
-}
+.trigger svg { display: block; }
 
 .tooltip {
   position: absolute;

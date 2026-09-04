@@ -60,6 +60,11 @@ ha una candidatura separata: un test riuscito nel client non equivale all'accett
 
 ## Starter prompt
 
+Sono esposti anche come capability MCP `prompts/list` (nomi: `confronta_pagamenti_comuni`,
+`catalogo_territoriale`, `irpef_netta_regionale`, `consuntivo_statale_missione`,
+`dati_calabria_limiti`). Questa lista è la fonte unica dei testi; client e reviewer li leggono
+tramite `prompts/get` senza copiarli dal documento.
+
 - `Confronta i pagamenti pro capite dei Comuni disponibili e mostrami fonte, anno e limiti.`
 - `Quali dataset territoriali posso interrogare? Non eseguire ancora una query.`
 - `Mostrami l'imposta netta dichiarata 2024 per le Regioni, distinguendola dal gettito totale.`

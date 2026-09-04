@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { queryCptRegionalFiscal } from "@/lib/cpt-regional-fiscal-snapshot";
 import { longDate } from "@/lib/format";
 import styles from "./fisco.module.css";
@@ -44,6 +45,12 @@ function signedFromCents(cents: number): string {
   if (cents > 0) return `+${value}`;
   if (cents < 0) return `−${value}`;
   return value;
+}
+
+function hasRegionalCrest(regionCode: string): boolean {
+  // CPT pubblica Trento e Bolzano come territori separati (21/22).
+  // Restano testuali: il codice 04 identifica la regione combinata.
+  return /^(?:0[1-9]|1\d|20)$/.test(regionCode);
 }
 
 export default async function RegionalFiscalPage({
@@ -174,7 +181,12 @@ export default async function RegionalFiscalPage({
             <tbody>
               {rows.map((row) => (
                 <tr key={row.regionCode} id={`regione-${row.regionCode}`}>
-                  <th scope="row">{row.region}</th>
+                  <th scope="row">
+                    {hasRegionalCrest(row.regionCode) ? (
+                      <RegionCrest regionCode={row.regionCode} regionName={row.region} decorative />
+                    ) : null}{" "}
+                    {row.region}
+                  </th>
                   <td className="num">{formatMetric(metricValue(row, "revenue"))}</td>
                   <td className="num">{formatMetric(metricValue(row, "expenditure"))}</td>
                   <td className="num">{formatMetric(metricValue(row, "balance"), true)}</td>
@@ -187,6 +199,8 @@ export default async function RegionalFiscalPage({
           </table>
         </div>
       </section>
+
+      <RegionCrestAttribution />
 
       <div className="notice">
         <strong>Come leggere il saldo</strong>

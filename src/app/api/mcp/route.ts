@@ -1,11 +1,16 @@
 import { createMcpHandler } from "@modelcontextprotocol/server";
 import { createDvnsMcpServer } from "@/lib/mcp/server";
+import { runMcpExchangeWithDeadline } from "@/lib/mcp/request-deadline";
+import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 15;
 
 const MAX_REQUEST_BYTES = 1_000_000;
+const MCP_HANDLER_TIMEOUT_MS = 12_000;
+const mcpLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 60 });
+const mcpConcurrency = new ConcurrencyLimiter(8);
 
 function reportMcpError(error: Error) {
   if (error.message.startsWith("Rejected inbound request")) return;
@@ -14,6 +19,7 @@ function reportMcpError(error: Error) {
 
 const handler = createMcpHandler(createDvnsMcpServer, {
   legacy: "stateless",
+  responseMode: "json",
   onerror: reportMcpError,
 });
 
@@ -46,13 +52,34 @@ function normalizedOrigin(value: string): string | null {
 }
 
 function allowedOrigins(request: Request): Set<string> {
+  const requestUrl = new URL(request.url);
+  const requestHost = normalizedHost(request.headers.get("host") ?? "");
+  const validatedHostOrigin = requestHost && requestHostAllowed(request)
+    ? `${requestUrl.protocol}//${requestHost}`
+    : null;
+  const requestOrigin = normalizedOrigin(request.headers.get("origin") ?? "");
+  const requestOriginUrl = requestOrigin ? new URL(requestOrigin) : null;
+  const requestUrlHost = normalizedHost(requestUrl.host);
+  const requestOriginHost = requestOriginUrl ? normalizedHost(requestOriginUrl.host) : null;
+  const equivalentLoopbackOrigin =
+    requestOriginUrl
+    && requestUrlHost
+    && requestOriginHost
+    && requestOriginUrl.protocol === requestUrl.protocol
+    && requestOriginUrl.port === requestUrl.port
+    && isLoopbackHost(requestUrlHost)
+    && isLoopbackHost(requestOriginHost)
+      ? requestOrigin
+      : null;
   const configured = (process.env.MCP_ALLOWED_ORIGINS ?? "")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean)
     .map(normalizedOrigin)
     .filter((value): value is string => value !== null);
-  return new Set([new URL(request.url).origin, ...configured]);
+  return new Set([requestUrl.origin, validatedHostOrigin, equivalentLoopbackOrigin, ...configured].filter(
+    (value): value is string => value !== null,
+  ));
 }
 
 function normalizedHost(value: string): string | null {
@@ -116,8 +143,34 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
   const chunks: Uint8Array[] = [];
   let total = 0;
 
+  const read = () => new Promise<ReadableStreamReadResult<Uint8Array>>((resolve, reject) => {
+    if (request.signal.aborted) {
+      reject(request.signal.reason);
+      return;
+    }
+    const onAbort = () => reject(request.signal.reason);
+    request.signal.addEventListener("abort", onAbort, { once: true });
+    reader.read().then(
+      (result) => {
+        request.signal.removeEventListener("abort", onAbort);
+        resolve(result);
+      },
+      (error) => {
+        request.signal.removeEventListener("abort", onAbort);
+        reject(error);
+      },
+    );
+  });
+
   while (true) {
-    const { done, value } = await reader.read();
+    let result: ReadableStreamReadResult<Uint8Array>;
+    try {
+      result = await read();
+    } catch (error) {
+      await reader.cancel(error).catch(() => undefined);
+      throw error;
+    }
+    const { done, value } = result;
     if (done) break;
     total += value.byteLength;
     if (total > MAX_REQUEST_BYTES) {
@@ -147,18 +200,46 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
 export async function POST(request: Request) {
   const rejected = validateRequest(request);
   if (rejected) return secureResponse(rejected, request);
-  let boundedRequest: Request | Response;
-  try {
-    boundedRequest = await requestWithBoundedBody(request);
-  } catch {
+
+  const clientKey = clientAddress(request);
+  if (clientKey && !mcpLimiter.consume(clientKey)) {
     return secureResponse(Response.json(
-      { error: "Richiesta interrotta o non leggibile" },
-      { status: 400 },
+      { jsonrpc: "2.0", error: { code: -32000, message: "Troppe richieste. Riprova tra un minuto." }, id: null },
+      { status: 429, headers: { "Retry-After": "60" } },
     ), request);
   }
-  if (boundedRequest instanceof Response) return secureResponse(boundedRequest, request);
 
-  return secureResponse(await handler.fetch(boundedRequest), request);
+  const release = mcpConcurrency.tryAcquire();
+  if (!release) {
+    return secureResponse(Response.json(
+      { jsonrpc: "2.0", error: { code: -32000, message: "Server MCP occupato. Riprova tra pochi secondi." }, id: null },
+      { status: 503, headers: { "Retry-After": "5" } },
+    ), request);
+  }
+
+  try {
+    const response = await runMcpExchangeWithDeadline(
+      request,
+      async (timedRequest) => {
+        let boundedRequest: Request | Response;
+        try {
+          boundedRequest = await requestWithBoundedBody(timedRequest);
+        } catch {
+          if (timedRequest.signal.aborted) throw timedRequest.signal.reason;
+          return Response.json(
+            { error: "Richiesta interrotta o non leggibile" },
+            { status: 400 },
+          );
+        }
+        if (boundedRequest instanceof Response) return boundedRequest;
+        return handler.fetch(boundedRequest);
+      },
+      MCP_HANDLER_TIMEOUT_MS,
+    );
+    return secureResponse(response, request);
+  } finally {
+    release();
+  }
 }
 
 export function OPTIONS(request: Request) {
@@ -173,4 +254,23 @@ export function OPTIONS(request: Request) {
   );
   response.headers.set("Access-Control-Max-Age", "600");
   return secureResponse(response, request);
+}
+
+export function GET(request: Request) {
+  const rejected = validateRequest(request);
+  if (rejected) return secureResponse(rejected, request);
+
+  return secureResponse(Response.json(
+    { error: "Questo server MCP usa Streamable HTTP tramite POST" },
+    { status: 405, headers: { Allow: "POST, OPTIONS, HEAD" } },
+  ), request);
+}
+
+export function HEAD(request: Request) {
+  const rejected = validateRequest(request);
+  if (rejected) return secureResponse(rejected, request);
+  return secureResponse(new Response(null, {
+    status: 204,
+    headers: { Allow: "POST, OPTIONS, HEAD" },
+  }), request);
 }

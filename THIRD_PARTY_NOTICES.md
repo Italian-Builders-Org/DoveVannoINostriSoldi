@@ -155,3 +155,23 @@ Attribution: `Banca d'Italia, Finanza pubblica: fabbisogno e debito. Selected se
 - **Changes:** five annual observations are converted from millions of euro to integer cents; the conversion does not add cent-level measurement precision and the interest share is derived with half-up rounding.
 
 Attribution: `Eurostat, Government revenue, expenditure and main aggregates. Data adapted by DoveVannoINostriSoldi.`
+
+## Atlante Imprese Italia aggregate data
+
+- **Works:** stock of active enterprises, active employees and local units, and production-value bands;
+- **Publisher:** Camera di Commercio delle Marche, using InfoCamere data;
+- **Sources:** [active enterprises](https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json), [employees and active local units](https://opendata.marche.camcom.it/data/2026-Q2-Addetti-Localizzazioni-Attive-Italia.csv), and [production-value bands](https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia-Valore-Produzione.json);
+- **License:** CC BY 4.0 as declared by the source pages;
+- **Changes:** JSON-stat and CSV releases are normalized to aggregate region × ATECO 2025 observations. Every workforce CSV row is a distinct observed ATECO bucket, so all rows (including more-specific classes and subcategories) are summed to the region × section grain; source-empty cells remain null. Production values remain bands. No names, company identifiers, addresses or exact turnover are included. Workforce addetti are active social-security positions from the preceding quarter, not a territorial employment level and not directly comparable with ISTAT/ASIA.
+
+Attribution: `Camera di Commercio delle Marche / InfoCamere, aggregate enterprise data, CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
+
+## ISTAT enterprise turnover data 2024 (Frame Territoriale Anticipato)
+
+- **Work:** `Stima anticipata dei dati economici delle imprese a livello territoriale - Il Registro Frame Territoriale Anticipato - Anno 2024` (Tavola 1 e Tavola 2);
+- **Publisher:** Istituto Nazionale di Statistica (ISTAT);
+- **Source:** https://www.istat.it/wp-content/uploads/2026/03/Tavole20marzo2026.zip, landing page https://www.istat.it/tavole-di-dati/stima-anticipata-dei-dati-economici-delle-imprese-a-livello-territoriale-il-registro-frame-territoriale-anticipato-anno-2024/; verified archive: 393392 bytes, SHA-256 `d774bcd5862467aa0a7529b8b972f3fd80f85f14f7993aaf355362596960ad04`;
+- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0), https://www.istat.it/dati/open-data/;
+- **Changes:** official release tables are extracted and normalized into structured aggregate regional observations and macro-sectors (`ALL`, `INDUSTRIA`, `SERVIZI`) classified under ATECO 2007 agg. 2022. Monetary amounts remain in thousands of euro. Total and macro-sector tables are published separately; small differences between their sums and the total are preserved and may reflect source rounding. The dataset covers local units of enterprises with at least 1 employee (Frame Territoriale Anticipato) and is not the complete universe of active business seats. No company names, identifiers, tax codes, VAT numbers or nominal turnovers are included.
+
+Attribution: `© Istituto Nazionale di Statistica (ISTAT), Stima anticipata dei dati economici delle imprese a livello territoriale - Anno 2024, CC BY 4.0. Adapted by DoveVannoINostriSoldi.`

@@ -13,6 +13,11 @@ READY_TIMEOUT="${READY_TIMEOUT:-90}"
 READY_PATH="/territori/irpef"
 BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
 
+# Next may represent an internal rewrite through `localhost` even when the
+# production-gate server is bound to 127.0.0.1. Keep browser CORS fail-closed
+# while explicitly allowing only this run-owned loopback origin.
+export MCP_ALLOWED_ORIGINS="${MCP_ALLOWED_ORIGINS:-$BASE_URL}"
+
 server_pid=""
 cleanup() {
   if [[ -n "$server_pid" ]] && kill -0 "$server_pid" 2>/dev/null; then
@@ -64,7 +69,14 @@ npm run test:mcp:http
 echo "::endgroup::"
 
 echo "::group::MCP local load test"
-npm run test:mcp:load -- --requests 60 --concurrency 10 --p95-ms 3000
+# Keep the throughput sample below the 60 requests/minute application limit:
+# the preceding protocol smoke intentionally shares the same local client IP.
+# The exact 60 + 1 limiter boundary is covered by the route unit suite.
+npm run test:mcp:load -- \
+  --url "${BASE_URL}/api/mcp" \
+  --requests 40 \
+  --concurrency 10 \
+  --p95-ms 3000
 echo "::endgroup::"
 
 echo "::group::Browser core suite"
@@ -73,6 +85,14 @@ echo "::endgroup::"
 
 echo "::group::Browser editorial suite"
 npm run test:browser:editorial
+echo "::endgroup::"
+
+echo "::group::Browser report suite"
+npm run test:browser:report
+echo "::endgroup::"
+
+echo "::group::CSP Report-Only browser smoke"
+npm run test:csp:report-only
 echo "::endgroup::"
 
 echo "::group::Lighthouse budget"

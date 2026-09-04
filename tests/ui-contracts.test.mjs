@@ -39,6 +39,14 @@ const controlsCss = await readFile(
   new URL("../src/app/controlli/controlli.module.css", import.meta.url),
   "utf8",
 );
+const participationsPage = await readFile(
+  new URL("../src/app/partecipazioni/page.tsx", import.meta.url),
+  "utf8",
+);
+const participationsCss = await readFile(
+  new URL("../src/app/partecipazioni/partecipazioni.module.css", import.meta.url),
+  "utf8",
+);
 
 test("the fiscal formula has one explicit screen-reader relationship", () => {
   const accessibleFormula =
@@ -132,4 +140,17 @@ test("the spending analysis explains the share without turning it into a merit r
   assert.match(spendingCss, /\.analysis \{/);
   assert.match(spendingCss, /@media \(max-width: 620px\)[\s\S]*?\.quantiles \{/);
   assert.match(spendingCss, /@media \(max-width: 420px\)[\s\S]*?table-layout: fixed/);
+});
+
+test("wide oversight tables disclose horizontal scrolling on mobile", () => {
+  assert.equal(controlsPage.match(/className=\{styles\.tableHint\}/g)?.length, 4);
+  assert.match(controlsPage, /aria-describedby="outlier-table-hint"/);
+  assert.match(controlsPage, /aria-describedby="sensitivity-table-hint"/);
+  assert.match(controlsPage, /aria-describedby="procurement-table-hint"/);
+  assert.match(controlsPage, /aria-describedby="scenario-table-hint"/);
+  assert.match(controlsCss, /\.tableHint \{\s*display: none;/);
+  assert.match(controlsCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
+  assert.match(participationsPage, /aria-describedby="participations-table-hint"/);
+  assert.match(participationsPage, /Freccia sinistra e Freccia destra/);
+  assert.match(participationsCss, /@media \(max-width: 620px\)[\s\S]*?\.tableHint \{[\s\S]*?display: block;/);
 });

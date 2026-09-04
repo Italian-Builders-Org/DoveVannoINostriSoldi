@@ -14,6 +14,18 @@ L'obiettivo operativo è diverso: **rilevare ogni nuovo rilascio ufficiale il pr
 6. Nessun endpoint interno di refresh accetta URL arbitrari.
 7. La cache è segmentata per source tag, in modo da invalidare una fonte senza svuotare tutto il sito.
 
+## Inventario degli snapshot
+
+L'elenco operativo degli snapshot committati è in
+[SOURCE_SNAPSHOT_INVENTORY.md](SOURCE_SNAPSHOT_INVENTORY.md): periodo nello
+snapshot, URL ufficiale, controlli, workflow, modo di aggiornamento e rollback.
+È generato dal registro `scripts/ci/generated-artifacts.json`. Un inventario
+stale fallisce la CI.
+
+Questo risponde a [#189](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/189)
+prima di automatizzare una fonte alla volta. Non sostituisce la tabella delle
+cadenze qui sotto.
+
 ## Componenti
 
 ### `source-policy.ts`
@@ -52,6 +64,21 @@ La validazione semantica resta responsabilità dell'adapter specifico.
 ### `/api/fonti/stato`
 
 Espone observability separata dal dato economico. Per ora esegue probe reali soltanto sugli adapter attivi e maturi. Una fonte mappata ma non ancora integrata viene indicata come **non ancora sondata**, non come online/offline per supposizione.
+
+### Calendario dei documenti programmatici
+
+`/fonti/calendario` registra le principali pubblicazioni annuali del ciclo di
+bilancio con stato, data o finestra attesa, periodo di riferimento, URL
+ufficiale e `observedAt`. Il registro è curato e versionato: una finestra
+abituale non viene trasformata automaticamente in una scadenza o in un ritardo.
+
+La disponibilità documentale resta separata dall'integrazione dei dati. Il
+calendario non estrae importi o previsioni dai PDF e non considera i loro
+contenuti acquisiti dai dataset del sito finché non esistono un ETL, un hash e
+un contratto verificato dedicati.
+
+Questa prima superficie risponde alla
+[#260](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/260).
 
 ### `/api/internal/refresh-sources`
 
@@ -144,6 +171,25 @@ commit. Hash, dimensioni e data di acquisizione già versionati vengono sostitui
 soltanto quando cambia il contenuto normalizzato o la versione upstream; una
 variazione semantica continua a richiedere l'intera validazione.
 
+### Pagella politico-economica dei governi
+
+Il workflow `government-scorecard-refresh.yml` controlla ogni martedì AMECO e
+le nove fonti Eurostat della pagina. È discovery settimanale: non trasforma una
+serie annuale o trimestrale in un dato settimanale.
+
+AMECO determina il voto soltanto fino all'ultimo anno comune osservato; le sue
+previsioni restano escluse. Eurostat aggiorna i grafici secondo la cadenza della
+singola serie. Ogni punto mantiene il proprio periodo e lo stato pubblicato
+(`observed`, `provisional` o `estimated`). Un cambiamento genera una PR dati
+separata dopo i controlli su filtri, paesi, periodi, unità, hash,
+riconciliazioni e contratto runtime. Un errore di rete o di schema conserva
+l'ultimo snapshot valido.
+
+Il contesto documentato non viene estratto automaticamente dalle notizie: è
+revisionato almeno ogni tre mesi, dopo eventi economici rilevanti e al cambio
+di governo. La procedura completa è in
+[PAGELLA_POLITICO_ECONOMICA.md](PAGELLA_POLITICO_ECONOMICA.md).
+
 ## Policy iniziali
 
 | Fonte | Cadenza sorgente | Discovery DoveVannoINostriSoldi | Dati |
@@ -161,6 +207,7 @@ variazione semantica continua a richiedere l'intera validazione.
 | Senato della Repubblica | su pubblicazione | 6 h | 12 h |
 | Banca d'Italia · debito pubblico | mensile, circa 45 giorni di ritardo | controllo giornaliero 06:17 UTC | snapshot versionato; stale oltre 75 giorni |
 | Eurostat · interessi e spesa totale | annuale | controllo giornaliero 06:17 UTC | snapshot versionato; warning oltre 540 giorni |
+| AMECO + Eurostat · pagella governi | da mensile ad annuale, secondo la serie | controllo settimanale martedì 07:37 UTC | snapshot versionato; pubblicazione tramite PR |
 
 Camera ha un riepilogo strutturato con data del documento. Senato resta documentale: i nuovi atti vengono collegati, ma i valori non sono pubblicati finché non superano una normalizzazione verificabile.
 

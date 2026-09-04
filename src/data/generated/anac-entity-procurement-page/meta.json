@@ -1,0 +1,2056 @@
+{
+  "contract": {
+    "awardAmountAggregation": "once-per-distinct-award-pair",
+    "awardKey": [
+      "cig",
+      "id_aggiudicazione"
+    ],
+    "compression": "deterministic-gzip-mtime-zero",
+    "countRanking": "distinct-operator-award-pair",
+    "entityJoin": "exact-checksum-valid-tax-code-to-unique-codice-ipa",
+    "operatorDisplayName": "most-frequent-normalized-denomination-then-lexical",
+    "procedureKey": [
+      "cig"
+    ],
+    "shardRule": "first-two-hex-sha256-of-codice-ipa",
+    "shards": 256,
+    "valueRanking": "single-resolved-operator-awards-only"
+  },
+  "coverage": {
+    "awardeeRows": {
+      "eligibleKeyRows": 827347,
+      "ineligibleKeyRows": 0,
+      "knownKeyRows": 5437334,
+      "outOfCohortRows": 4609987,
+      "rawRows": 5437334,
+      "resolvedRows": 810867,
+      "unresolvedRows": 16480
+    },
+    "ipaAmbiguousTaxCodes": 0,
+    "ipaCodes": 23738,
+    "ipaRows": 23738,
+    "ipaRowsWithMissingOrInvalidTaxCode": 1,
+    "ipaRowsWithUniqueValidTaxCode": 23737,
+    "linkedEntityProfiles": 23737,
+    "resolvedAnacEntityTaxCodes": 22527,
+    "resolvedAnacEntityTaxCodesWithoutIpa": 3465
+  },
+  "dataset": "anac-entity-procurement-page",
+  "distributionKind": "sharded-public-profile",
+  "generatedAt": "2026-08-31T15:30:00Z",
+  "limitations": [
+    "CIG, aggiudicazioni, aggiudicatari, stazioni e IPA sono snapshot cross-temporali",
+    "la copertura nazionale corrente non e dichiarata",
+    "il valore e importo di aggiudicazione dichiarato, non pagamento",
+    "gli award multi-operatore o con identita irrisolte restano nel totale ente ma non nel ranking per valore",
+    "ranking e drill-down sono descrittivi e non indicano illeciti"
+  ],
+  "observedAt": "2026-08-31T14:49:08Z",
+  "privacy": {
+    "containsAusa": false,
+    "containsEntityTaxIds": true,
+    "containsOperatorNames": true,
+    "containsOperatorTaxIdHashes": false,
+    "containsOperatorTaxIds": false,
+    "containsRawRows": false,
+    "operatorNamesUsedAsKeys": false
+  },
+  "provenance": {
+    "anacAssetObservedAt": {
+      "cig": [
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z"
+      ],
+      "stations": "2026-08-30T21:30:00Z"
+    },
+    "anacCatalogMetadataModifiedAt": null,
+    "anacCatalogObservedAt": "2026-08-30T21:30:00Z",
+    "awardees": {
+      "archiveBytes": 151222321,
+      "archiveSha256": "6908a361f581824ce144414116301234fc113230230634b0942b988f9173d60f",
+      "assetObservedAt": null,
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari",
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "ruolo",
+        "codice_fiscale",
+        "denominazione",
+        "tipo_soggetto",
+        "id_aggiudicazione"
+      ],
+      "license": {
+        "name": "CC BY-SA 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+      },
+      "member": {
+        "bytes": 800016719,
+        "crc32": "652c6c14",
+        "name": "aggiudicatari_csv.csv",
+        "sha256": "8cf5e7ebae4a1ac2d7b8fabcd4e1c63c26242dcb4b10564e7d80d8704d70ca2b"
+      },
+      "parentInputKey": "awardees",
+      "parentSpecPath": "scripts/etl/specs/anac-awardees.source.json",
+      "parentSpecSha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078",
+      "resourceId": "18033246-5cb4-453f-bee5-90da185cdc70",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari/resource/18033246-5cb4-453f-bee5-90da185cdc70",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicatari/filesystem/aggiudicatari_csv.zip",
+      "sourceLastModified": "2026-01-23"
+    },
+    "awards": {
+      "archiveBytes": 151402917,
+      "archiveSha256": "70f2e7ccad625f3db3d3a2285c65aaa8eac35bf70b25570774224ac869f8d631",
+      "assetObservedAt": null,
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni",
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "data_aggiudicazione_definitiva",
+        "esito",
+        "criterio_aggiudicazione",
+        "data_comunicazione_esito",
+        "numero_offerte_ammesse",
+        "numero_offerte_escluse",
+        "importo_aggiudicazione",
+        "ribasso_aggiudicazione",
+        "num_imprese_offerenti",
+        "flag_subappalto",
+        "id_aggiudicazione",
+        "cod_esito",
+        "num_imprese_richiedenti",
+        "asta_elettronica",
+        "num_imprese_invitate",
+        "massimo_ribasso",
+        "minimo_ribasso",
+        "FLAG_SCOMPUTO",
+        "COD_PRESTAZIONI_COMPRESE",
+        "PRESTAZIONI_COMPRESE",
+        "CIG_PROG_ESTERNA",
+        "DATA_INCARICO_PROG",
+        "DATA_CONS_PROG",
+        "COD_MODO_RIAGGIUDICAZIONE",
+        "MODO_RIAGGIUDICAZIONE",
+        "FLAG_PROC_ACCELERATA",
+        "N_MANIF_INTERESSE"
+      ],
+      "license": {
+        "name": "CC BY-SA 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+      },
+      "member": {
+        "bytes": 758859815,
+        "crc32": "d6b70d44",
+        "name": "aggiudicazioni_csv.csv",
+        "sha256": "90e7e5f7c7bc932d9721296b0c5bf1aba2236cbd4a377d90714ef09eb7874665"
+      },
+      "parentInputKey": "awards",
+      "parentSpecPath": "scripts/etl/specs/anac-awardees.source.json",
+      "parentSpecSha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078",
+      "resourceId": "5709b639-3626-483c-b485-106d7d448376",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni/resource/5709b639-3626-483c-b485-106d7d448376",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicazioni/filesystem/aggiudicazioni_csv.zip",
+      "sourceLastModified": "2026-01-15"
+    },
+    "ipa": {
+      "assetObservedAt": "2026-08-31T14:49:08Z",
+      "bytes": 7484201,
+      "datasetPageUrl": "https://www.indicepa.gov.it/ipa-dati/dataset/enti",
+      "delimiter": ",",
+      "downloadUrl": "https://indicepa.gov.it/ipa-dati/datastore/dump/d09adf99-dc10-4349-8c53-27b1e5aa97b6?bom=True",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "_id",
+        "Codice_IPA",
+        "Denominazione_ente",
+        "Codice_fiscale_ente",
+        "Tipologia",
+        "Codice_Categoria",
+        "Codice_natura",
+        "Codice_ateco",
+        "Ente_in_liquidazione",
+        "Codice_MIUR",
+        "Codice_ISTAT",
+        "Acronimo",
+        "Nome_responsabile",
+        "Cognome_responsabile",
+        "Titolo_responsabile",
+        "Codice_comune_ISTAT",
+        "Codice_catastale_comune",
+        "CAP",
+        "Indirizzo",
+        "Mail1",
+        "Tipo_Mail1",
+        "Mail2",
+        "Tipo_Mail2",
+        "Mail3",
+        "Tipo_Mail3",
+        "Mail4",
+        "Tipo_Mail4",
+        "Mail5",
+        "Tipo_Mail5",
+        "Sito_istituzionale",
+        "Url_facebook",
+        "Url_linkedin",
+        "Url_twitter",
+        "Url_youtube",
+        "Data_aggiornamento"
+      ],
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40"
+      },
+      "metadataModifiedAt": "2026-08-31T03:17:56.925306",
+      "resourceId": "d09adf99-dc10-4349-8c53-27b1e5aa97b6",
+      "resourcePageUrl": "https://www.indicepa.gov.it/ipa-dati/dataset/enti/resource/d09adf99-dc10-4349-8c53-27b1e5aa97b6",
+      "rows": 23738,
+      "sha256": "40b78b3f4b8658a973c66c7691cb181ec20aa6c54ae25ea7257f26c11c135037",
+      "sourceLastModified": "2026-08-31T03:17:31.916802"
+    },
+    "parentSourceSpec": {
+      "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+    },
+    "sourceSpec": {
+      "path": "scripts/etl/specs/anac-entity-procurement-page.source.json",
+      "sha256": "a87ab335ed1d4c2764633495bc3d06be377bdb1173a46a78b4d6e39439211001"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": {
+    "cohort": "cig-2025-full",
+    "nationalPopulationClaim": "not-asserted",
+    "publicationMonths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "temporalAlignment": "cross-snapshot"
+  },
+  "shards": [
+    {
+      "bytes": 270328,
+      "entities": 101,
+      "id": "00",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/00.jsonl.gz",
+      "sha256": "4b6e461aa133ea7ba311337929fbf96b39541db36f8e0ff88ffb411dce8a7865"
+    },
+    {
+      "bytes": 239481,
+      "entities": 98,
+      "id": "01",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/01.jsonl.gz",
+      "sha256": "18655df941ec8a46363e0d5e029f06c1023d35b6978d8a92f2674a51570f8576"
+    },
+    {
+      "bytes": 140696,
+      "entities": 94,
+      "id": "02",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/02.jsonl.gz",
+      "sha256": "7acd9a50a39dbce6cdc5002f882c7f5d6295e2178ed0a3a1217863864f84c07f"
+    },
+    {
+      "bytes": 96370,
+      "entities": 94,
+      "id": "03",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/03.jsonl.gz",
+      "sha256": "d8513bdad6c470f2146cdcb1e34908dfd1750af4ad0e105bca0034da3b5b46bf"
+    },
+    {
+      "bytes": 181124,
+      "entities": 86,
+      "id": "04",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/04.jsonl.gz",
+      "sha256": "e026f2513b952c7be35ff6d81d603f6775f422e06d0f4dc6bab250d57d751f4b"
+    },
+    {
+      "bytes": 121727,
+      "entities": 102,
+      "id": "05",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/05.jsonl.gz",
+      "sha256": "c232633b61a950647437225d3da71938ae65ac85bc6ad8af18d62a3c7077ce47"
+    },
+    {
+      "bytes": 79017,
+      "entities": 84,
+      "id": "06",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/06.jsonl.gz",
+      "sha256": "dd6021da7a3b31e8602f9784e56671a942234c03750ae0d504fe5d5ec4fadb5f"
+    },
+    {
+      "bytes": 94383,
+      "entities": 95,
+      "id": "07",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/07.jsonl.gz",
+      "sha256": "f600f911f2a2a71b0d8f77267195c292ff1e496af4e8734f7f69ecd2f5da0804"
+    },
+    {
+      "bytes": 188817,
+      "entities": 85,
+      "id": "08",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/08.jsonl.gz",
+      "sha256": "e5f1082acc796f78273801c529689a738daba98c5b145356edc40e00c36f035e"
+    },
+    {
+      "bytes": 128411,
+      "entities": 102,
+      "id": "09",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/09.jsonl.gz",
+      "sha256": "2f2d07ef8cb2b7ccaad6c81c37b4adf5c34c447abd70cc48b6da6077e3916289"
+    },
+    {
+      "bytes": 111225,
+      "entities": 92,
+      "id": "0a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0a.jsonl.gz",
+      "sha256": "8cd9192016e6555a334349f9bf13e615a3c5b67b842e0fb7d6e4888d958a68eb"
+    },
+    {
+      "bytes": 158409,
+      "entities": 99,
+      "id": "0b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0b.jsonl.gz",
+      "sha256": "b2cea41f2e7078fb28ff11542a277e968c3fe94b4f201d49700cdf82c3c5f86f"
+    },
+    {
+      "bytes": 107667,
+      "entities": 84,
+      "id": "0c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0c.jsonl.gz",
+      "sha256": "daa7065a8eed5b5180e466bbaa667a7c088dfe4832cd4e24f7a7c3e1a1ba58df"
+    },
+    {
+      "bytes": 109962,
+      "entities": 87,
+      "id": "0d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0d.jsonl.gz",
+      "sha256": "0b81cdc1db18db597276aaee88c711b68a75d1bd040a72b90b63e69d504c2f1e"
+    },
+    {
+      "bytes": 212559,
+      "entities": 97,
+      "id": "0e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0e.jsonl.gz",
+      "sha256": "bf9efc7dd469d47589ebf13711ff034d6ca5f4e0cced26043c9ef2fb421be355"
+    },
+    {
+      "bytes": 184098,
+      "entities": 99,
+      "id": "0f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/0f.jsonl.gz",
+      "sha256": "f72f7bad63c162e71f0728a50a350d7b3ee72dcc66a6c1f817b081dee500af76"
+    },
+    {
+      "bytes": 225153,
+      "entities": 92,
+      "id": "10",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/10.jsonl.gz",
+      "sha256": "cd1ea09fc53e7b6f1ce42f446732ffd32c9a2b135b725dbfea7e2a02f17fb6ff"
+    },
+    {
+      "bytes": 101046,
+      "entities": 86,
+      "id": "11",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/11.jsonl.gz",
+      "sha256": "edf37eaed5822f6d884885498fc1ab50df9a2c4e8dd1979404a3a2c2c78f1bfe"
+    },
+    {
+      "bytes": 246762,
+      "entities": 98,
+      "id": "12",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/12.jsonl.gz",
+      "sha256": "1f1afc990dbc0239a1da78515381421a769050c2b1b26f3d7820dd4976e4f806"
+    },
+    {
+      "bytes": 102077,
+      "entities": 92,
+      "id": "13",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/13.jsonl.gz",
+      "sha256": "9c63b5e3bceaab58c33ff360f0ce426a7a37322500026204e43279cd3f093a62"
+    },
+    {
+      "bytes": 187820,
+      "entities": 112,
+      "id": "14",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/14.jsonl.gz",
+      "sha256": "0de2d006795c0c59edbc48d11c099840e47efaa2d829f023c9a10cfd5ab179ab"
+    },
+    {
+      "bytes": 124867,
+      "entities": 107,
+      "id": "15",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/15.jsonl.gz",
+      "sha256": "bef0e27a7f5ff7bfe52acabf7d7dc80ecf87b0e68c2c5c16d3f8ecfa02d668aa"
+    },
+    {
+      "bytes": 126299,
+      "entities": 92,
+      "id": "16",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/16.jsonl.gz",
+      "sha256": "cd812e3dd6de609003d82266ffd77f084141b788570976b6b664e468fce6ff79"
+    },
+    {
+      "bytes": 213389,
+      "entities": 99,
+      "id": "17",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/17.jsonl.gz",
+      "sha256": "12a68541c572115b0e628310e2e59d1067517063a20d238885683f0f0787e1c7"
+    },
+    {
+      "bytes": 169250,
+      "entities": 99,
+      "id": "18",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/18.jsonl.gz",
+      "sha256": "eb0224ab5d65a94542f78fa35408a31b87a9dc1320332f3c5d73cd00b2c8c8b6"
+    },
+    {
+      "bytes": 171313,
+      "entities": 87,
+      "id": "19",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/19.jsonl.gz",
+      "sha256": "b32d7ddab9701c7d0af3aebdf54657942b89ce3c07bf57a7ef3fd61b6795e0c6"
+    },
+    {
+      "bytes": 179530,
+      "entities": 103,
+      "id": "1a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1a.jsonl.gz",
+      "sha256": "fbe593fe0b42119078c6e50cfee24c0aca95e04585fd2b18655fa420b8908590"
+    },
+    {
+      "bytes": 109752,
+      "entities": 102,
+      "id": "1b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1b.jsonl.gz",
+      "sha256": "c1c544025a0a3a6e20c065078a03d9bbeab0ca2d25572abbfce7dcba2acf702f"
+    },
+    {
+      "bytes": 77125,
+      "entities": 103,
+      "id": "1c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1c.jsonl.gz",
+      "sha256": "e6f4abe3630c8345e4bcd6ad2478d464d094ac2f58a0ef4fe864ab76c0c25291"
+    },
+    {
+      "bytes": 187574,
+      "entities": 111,
+      "id": "1d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1d.jsonl.gz",
+      "sha256": "64acd9e1904b76f9412b5723034e14de67ea27ccf07d20225b696e38249c8fd7"
+    },
+    {
+      "bytes": 152853,
+      "entities": 98,
+      "id": "1e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1e.jsonl.gz",
+      "sha256": "f266cb2d0fd761053a6b68fdd22e95e3e1e0aa1f4e54a2c051bc64b6ba4c3171"
+    },
+    {
+      "bytes": 114372,
+      "entities": 79,
+      "id": "1f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/1f.jsonl.gz",
+      "sha256": "a5a60f9531887de31cc721da8dcaa605ae83b59e71e12552ff9a56de7931f658"
+    },
+    {
+      "bytes": 181822,
+      "entities": 75,
+      "id": "20",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/20.jsonl.gz",
+      "sha256": "3442ae14776e1f35f8e92c01e0e35f4b9f33d5faf444e8c3c26ca789dbda3ded"
+    },
+    {
+      "bytes": 217615,
+      "entities": 88,
+      "id": "21",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/21.jsonl.gz",
+      "sha256": "4c7d0d5d34ddea95cb55129bbfa75fdeb28c473cd706cdcd70a1015bb0e411cd"
+    },
+    {
+      "bytes": 121883,
+      "entities": 85,
+      "id": "22",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/22.jsonl.gz",
+      "sha256": "e62f10562d5ea0d3865b3a618bd5242fc84c162d86ecc938d55c4309f71b59ed"
+    },
+    {
+      "bytes": 205085,
+      "entities": 102,
+      "id": "23",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/23.jsonl.gz",
+      "sha256": "11d6dcfae582a661e640f9491e187b2aad3175463870bec0642ba7b251fdc43f"
+    },
+    {
+      "bytes": 118324,
+      "entities": 90,
+      "id": "24",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/24.jsonl.gz",
+      "sha256": "bde020849155b1c1a8aa33a37e52af66c5639a767951b0ad17f0da2ae074e1ed"
+    },
+    {
+      "bytes": 106907,
+      "entities": 88,
+      "id": "25",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/25.jsonl.gz",
+      "sha256": "f04eca13ff6a60900d4f527a9c51d5fc450915f7d38fd9930fee3740e2685e6d"
+    },
+    {
+      "bytes": 309858,
+      "entities": 100,
+      "id": "26",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/26.jsonl.gz",
+      "sha256": "46d90ae267a83cf11817c7b1fc4d27e83ebcc884b2fcd80854e6020da51c8e24"
+    },
+    {
+      "bytes": 140305,
+      "entities": 95,
+      "id": "27",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/27.jsonl.gz",
+      "sha256": "2391634d336a76892ecef4a43565a8b136fa4f63826fff104b1cede6a2e4dad7"
+    },
+    {
+      "bytes": 223601,
+      "entities": 82,
+      "id": "28",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/28.jsonl.gz",
+      "sha256": "0bdb195a128a86df992f98f275c7a2b4affcc5c9e59bd24cf8cdc7360020e0ec"
+    },
+    {
+      "bytes": 119465,
+      "entities": 94,
+      "id": "29",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/29.jsonl.gz",
+      "sha256": "72479517176c6a30027202dbae1bdaa5a69bb19a4cacda38a5f9bb7ac7344e5b"
+    },
+    {
+      "bytes": 111234,
+      "entities": 100,
+      "id": "2a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2a.jsonl.gz",
+      "sha256": "1aeae49c3cca86c829bd164a8ba81bb4c2658817a538a7541d4650018da426f2"
+    },
+    {
+      "bytes": 193371,
+      "entities": 101,
+      "id": "2b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2b.jsonl.gz",
+      "sha256": "0e3e9fc6744d4d412cfa9d608d03c731f736274345a21a5f900b252f1c7cf8d9"
+    },
+    {
+      "bytes": 146861,
+      "entities": 113,
+      "id": "2c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2c.jsonl.gz",
+      "sha256": "4778dcf1fd23158fbbadd771b220e69807b1b6d8657533b5b85fd3ce945e59f6"
+    },
+    {
+      "bytes": 164784,
+      "entities": 95,
+      "id": "2d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2d.jsonl.gz",
+      "sha256": "d7ff36b8d51ac7dbea142717e88faa3d53b727e5d7e1ac96c7ed5aa38312168e"
+    },
+    {
+      "bytes": 105776,
+      "entities": 97,
+      "id": "2e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2e.jsonl.gz",
+      "sha256": "0f448f2c292964d2d4a8db7c2665abe51cd1414b894ff10d836ab6015d700fc2"
+    },
+    {
+      "bytes": 111684,
+      "entities": 70,
+      "id": "2f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/2f.jsonl.gz",
+      "sha256": "e26adcfa5b21b59dfbba2ee14dfd1dec998e87e6b6acdae4547ee2c40e8069fb"
+    },
+    {
+      "bytes": 198547,
+      "entities": 96,
+      "id": "30",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/30.jsonl.gz",
+      "sha256": "777016954d1b981a14f426290ab614a755fe4cb97cebfbb447cac0ffa9dea735"
+    },
+    {
+      "bytes": 120691,
+      "entities": 101,
+      "id": "31",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/31.jsonl.gz",
+      "sha256": "0665ef39c1d7a934b0666cf7c93fa2dfb62f008e945082bd178aa5671865987f"
+    },
+    {
+      "bytes": 139366,
+      "entities": 97,
+      "id": "32",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/32.jsonl.gz",
+      "sha256": "b271ef296b471c536273b6182e57ddeb706c917aa42c434595c6220a5e970fd1"
+    },
+    {
+      "bytes": 164758,
+      "entities": 101,
+      "id": "33",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/33.jsonl.gz",
+      "sha256": "bd164f7a4b22baf3c38ef07b742541da5d5f6b10f22a526b0249d90272425ab0"
+    },
+    {
+      "bytes": 92641,
+      "entities": 82,
+      "id": "34",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/34.jsonl.gz",
+      "sha256": "00c7457e89afdf294336bd121c189c1ccf12039a229d03beb044e5e1806490bf"
+    },
+    {
+      "bytes": 172403,
+      "entities": 95,
+      "id": "35",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/35.jsonl.gz",
+      "sha256": "2fe970abccbdbd8aa6abf12e81dc0165e946fe6951906ac85a7baa4e30c162a7"
+    },
+    {
+      "bytes": 155496,
+      "entities": 99,
+      "id": "36",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/36.jsonl.gz",
+      "sha256": "836289e6f78a8ddc3b80bbc220e70a7e09f84cff02d012f2337f567c51d8089c"
+    },
+    {
+      "bytes": 121394,
+      "entities": 85,
+      "id": "37",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/37.jsonl.gz",
+      "sha256": "04b7573818aca3d67b2dd980332f5a42f4aeddb69ebf18e813320f62103a68a4"
+    },
+    {
+      "bytes": 80230,
+      "entities": 91,
+      "id": "38",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/38.jsonl.gz",
+      "sha256": "2f3a15d9e304e2494917fd3adbad5badb0ec3ac8b9d0bc1ae369d43e7976916b"
+    },
+    {
+      "bytes": 145743,
+      "entities": 76,
+      "id": "39",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/39.jsonl.gz",
+      "sha256": "b9c3dc62ba3697f02444b679ae2cf4832e7846c4b6eef37ed5065988bb3db31c"
+    },
+    {
+      "bytes": 223383,
+      "entities": 108,
+      "id": "3a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3a.jsonl.gz",
+      "sha256": "28aa0311bc1b1a0931c48147d5a82e5f26eee5028f47550d66eaf2e846319bc9"
+    },
+    {
+      "bytes": 95398,
+      "entities": 91,
+      "id": "3b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3b.jsonl.gz",
+      "sha256": "6ca9e4a422b43ea4fb0b34a10052e32817dc709d023dc97d5e953eef4b703dc3"
+    },
+    {
+      "bytes": 150850,
+      "entities": 110,
+      "id": "3c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3c.jsonl.gz",
+      "sha256": "da547a3f717c439e4a00c883a725f95c96d5712c6d73095cb5576f3c5c3daca0"
+    },
+    {
+      "bytes": 178526,
+      "entities": 104,
+      "id": "3d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3d.jsonl.gz",
+      "sha256": "e205981e5c5d2906c3f11da2d53c722b67ec94fe9b11aa3ee3d3391b33b728ee"
+    },
+    {
+      "bytes": 109633,
+      "entities": 102,
+      "id": "3e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3e.jsonl.gz",
+      "sha256": "291483df2d3f17e16caa9780283a8c864537e33c41b3db80dd49e84444295250"
+    },
+    {
+      "bytes": 169099,
+      "entities": 96,
+      "id": "3f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/3f.jsonl.gz",
+      "sha256": "3f816772aeee09347be76fffd18d201c7e6e8145dcf3650b64ac2ef001a8d459"
+    },
+    {
+      "bytes": 115377,
+      "entities": 88,
+      "id": "40",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/40.jsonl.gz",
+      "sha256": "c4dc2dcae5566a79a26550706eef6469ff42c33ba4e622923eb15d71d63e30f1"
+    },
+    {
+      "bytes": 221963,
+      "entities": 77,
+      "id": "41",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/41.jsonl.gz",
+      "sha256": "74538b76e396245779c8cb0c4769a74c57c87b08a849afdf05f2b645ca1109e6"
+    },
+    {
+      "bytes": 119411,
+      "entities": 92,
+      "id": "42",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/42.jsonl.gz",
+      "sha256": "7b1061acc4f47315ed89b5146e6d36f293d2b0774b3213bf132022771c064cdd"
+    },
+    {
+      "bytes": 306278,
+      "entities": 91,
+      "id": "43",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/43.jsonl.gz",
+      "sha256": "2cc8b7a028ac84cc15a7f6974d062c47ee58142e584229a5c6e25b4cb99931b7"
+    },
+    {
+      "bytes": 170113,
+      "entities": 100,
+      "id": "44",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/44.jsonl.gz",
+      "sha256": "a0f8348634c38ed0625378ccf4cbe6a957484bd31bf69c8651d111fd8f1e5283"
+    },
+    {
+      "bytes": 101901,
+      "entities": 76,
+      "id": "45",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/45.jsonl.gz",
+      "sha256": "a19a7beb8cd5d2a48bc936109cb6c42e0d28a6f5f936162d66afb9ea3f639b54"
+    },
+    {
+      "bytes": 106435,
+      "entities": 75,
+      "id": "46",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/46.jsonl.gz",
+      "sha256": "ecc13006ded106a5f8d8ad7cd19a7393d9ecbbabd97eae5c573c231dbca57467"
+    },
+    {
+      "bytes": 180494,
+      "entities": 107,
+      "id": "47",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/47.jsonl.gz",
+      "sha256": "603457294535e269a23d65410c090851acf41af140cb5eed82eac695ef94b8af"
+    },
+    {
+      "bytes": 163328,
+      "entities": 102,
+      "id": "48",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/48.jsonl.gz",
+      "sha256": "c71d9f9b97f789b8322981e9cb69b29857bde2eeba91796aa17d9f9028880a2d"
+    },
+    {
+      "bytes": 138644,
+      "entities": 78,
+      "id": "49",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/49.jsonl.gz",
+      "sha256": "65ed17474863751575f1d528f6582ef41094e2f3a3ffa588a3518fd837dcfc99"
+    },
+    {
+      "bytes": 97374,
+      "entities": 101,
+      "id": "4a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4a.jsonl.gz",
+      "sha256": "b58e502e7e98c68788f00284678e212a25ac428f4a238bbf3bb0d851e1bdf7e2"
+    },
+    {
+      "bytes": 117261,
+      "entities": 100,
+      "id": "4b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4b.jsonl.gz",
+      "sha256": "dc971915a597f5d571a695c95fa9c7dd4b11137b1e955caa2a21ba60032ec654"
+    },
+    {
+      "bytes": 124798,
+      "entities": 85,
+      "id": "4c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4c.jsonl.gz",
+      "sha256": "3235d58db232cf7678f0282e5ec9faf304e024c3edaac3e17301f898caeee2d9"
+    },
+    {
+      "bytes": 145005,
+      "entities": 90,
+      "id": "4d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4d.jsonl.gz",
+      "sha256": "ab84669bdb0326d8ee7a733bdf32e2dac865949fde81636ff0fb278119a6f66e"
+    },
+    {
+      "bytes": 92925,
+      "entities": 87,
+      "id": "4e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4e.jsonl.gz",
+      "sha256": "91ab9858386264e652485b163c55218d20b5ed7eb36e281d0963e83a2e6c22d0"
+    },
+    {
+      "bytes": 171923,
+      "entities": 86,
+      "id": "4f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/4f.jsonl.gz",
+      "sha256": "93be2acd53d674942f511b2c69f84945557b011388778a5eb9a1d32a5b1cce0d"
+    },
+    {
+      "bytes": 117431,
+      "entities": 92,
+      "id": "50",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/50.jsonl.gz",
+      "sha256": "1c06556bdd571f95b229a4e73ff283b9f86c80ff8018ec2ece661ee5a0805126"
+    },
+    {
+      "bytes": 203888,
+      "entities": 104,
+      "id": "51",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/51.jsonl.gz",
+      "sha256": "90b61fb88f30007d502669eaa3cf120b9bdaf3a2eda2ef7668a014194f7c0b33"
+    },
+    {
+      "bytes": 249793,
+      "entities": 117,
+      "id": "52",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/52.jsonl.gz",
+      "sha256": "5d38c420beb441407ae8d95e693331143086d890b9317376816205f23a9f30cf"
+    },
+    {
+      "bytes": 167721,
+      "entities": 101,
+      "id": "53",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/53.jsonl.gz",
+      "sha256": "95c7402054178b3734ee3a59ff7e8c4aa15644865bb051b6fcad43625d6ac420"
+    },
+    {
+      "bytes": 113502,
+      "entities": 82,
+      "id": "54",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/54.jsonl.gz",
+      "sha256": "3df3d2b54b24c173eb36d272de8926f8c36716ec0c3d27b38dc2164181f9b0a3"
+    },
+    {
+      "bytes": 111669,
+      "entities": 85,
+      "id": "55",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/55.jsonl.gz",
+      "sha256": "10c1011bf6dc14f296b3e90850ac54ce08ebd6c51ef6f7128d52d759a5316473"
+    },
+    {
+      "bytes": 100712,
+      "entities": 105,
+      "id": "56",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/56.jsonl.gz",
+      "sha256": "7df9447721eaf78a31a81e0b429bef5fb544adf4174089c0dfcb0d09870e1b11"
+    },
+    {
+      "bytes": 111453,
+      "entities": 90,
+      "id": "57",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/57.jsonl.gz",
+      "sha256": "971933961c15f1f4eccc109070a9f28c8099d6f7e1a5fdfde998f5b542841855"
+    },
+    {
+      "bytes": 139615,
+      "entities": 95,
+      "id": "58",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/58.jsonl.gz",
+      "sha256": "37be4124d0bc8a928530c9426da30fb0f9c33b6671e8b64a9ebb03c9a15e45bd"
+    },
+    {
+      "bytes": 116315,
+      "entities": 99,
+      "id": "59",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/59.jsonl.gz",
+      "sha256": "5d78609a4e11bc89b4c64b4fd56451bc3ec05ab6f390aed8cb4e02094a743f27"
+    },
+    {
+      "bytes": 124261,
+      "entities": 88,
+      "id": "5a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5a.jsonl.gz",
+      "sha256": "dcf730fafe5f52c405125dadbc6c86246550ee71457ae12da59d637c666cfb90"
+    },
+    {
+      "bytes": 96803,
+      "entities": 76,
+      "id": "5b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5b.jsonl.gz",
+      "sha256": "ec8f570309cf44b6188fd41bb64cac75beeff2a7af7463822611044df7d1791d"
+    },
+    {
+      "bytes": 146561,
+      "entities": 82,
+      "id": "5c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5c.jsonl.gz",
+      "sha256": "ba6daafb0ffbe9a71e0dfad81c3b1a527e2bcfee13e0fd562468bbfdc9c6e7cd"
+    },
+    {
+      "bytes": 134085,
+      "entities": 92,
+      "id": "5d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5d.jsonl.gz",
+      "sha256": "e9c89a30b88a272eaaed09490e238d01b5f7d73ebb777167f0b586ab2fdf125e"
+    },
+    {
+      "bytes": 162933,
+      "entities": 89,
+      "id": "5e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5e.jsonl.gz",
+      "sha256": "406cfa26da7ee77143f5493ea7adb9c05b9ed8b9aa1f6868134a8d8425092cd9"
+    },
+    {
+      "bytes": 194894,
+      "entities": 86,
+      "id": "5f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/5f.jsonl.gz",
+      "sha256": "5c9976bf2cacc06ea8bd3ff495f0d263cb18f9b9a6d3793c772664aa78cce9cc"
+    },
+    {
+      "bytes": 279214,
+      "entities": 94,
+      "id": "60",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/60.jsonl.gz",
+      "sha256": "35d890603b9b4508015982a1fd4fb43a54c9a669a8d944e3a5109ee98e58dd87"
+    },
+    {
+      "bytes": 121551,
+      "entities": 77,
+      "id": "61",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/61.jsonl.gz",
+      "sha256": "8a68ff77e15f6f1b90c8ed1e519e88a42ca64af4ecede543ca20471f8d539735"
+    },
+    {
+      "bytes": 180544,
+      "entities": 94,
+      "id": "62",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/62.jsonl.gz",
+      "sha256": "f14c03c285c9f98b2119cc7295156f1039c099e3bea7ffb248b9b64658d7b460"
+    },
+    {
+      "bytes": 96150,
+      "entities": 99,
+      "id": "63",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/63.jsonl.gz",
+      "sha256": "b44a7b2cc710df6a0007eb1d5760a98cfe5d0b59586e54bf8978091cd684709d"
+    },
+    {
+      "bytes": 111615,
+      "entities": 92,
+      "id": "64",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/64.jsonl.gz",
+      "sha256": "fe2a73aac4da26d60b708ab38d3332ae7dfb4e64aa4f6e5cc2a4aed8145270bb"
+    },
+    {
+      "bytes": 161593,
+      "entities": 100,
+      "id": "65",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/65.jsonl.gz",
+      "sha256": "b690dec300c7cba4a0600a658cfedac297c0cc26ff6cd59d15c27663c0b8cd15"
+    },
+    {
+      "bytes": 150215,
+      "entities": 104,
+      "id": "66",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/66.jsonl.gz",
+      "sha256": "ff158c2571babd3e05a915aea97ad594321e27c35cd66d617f91f44539187b28"
+    },
+    {
+      "bytes": 96384,
+      "entities": 95,
+      "id": "67",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/67.jsonl.gz",
+      "sha256": "115c94e974c96d961d9511d55b107cb679c48b156034c0b762c59ba014ce8d56"
+    },
+    {
+      "bytes": 83231,
+      "entities": 76,
+      "id": "68",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/68.jsonl.gz",
+      "sha256": "5af00e5697b27412db1f5d5c4272396d656bc62c62b01d0401f81ecbbacfd0d5"
+    },
+    {
+      "bytes": 91575,
+      "entities": 77,
+      "id": "69",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/69.jsonl.gz",
+      "sha256": "07caf9e3173b7ee61a453bc7922ab278b965eb582e97ef2abbdc7cb57e943bb1"
+    },
+    {
+      "bytes": 243307,
+      "entities": 101,
+      "id": "6a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6a.jsonl.gz",
+      "sha256": "d4a8abc1866893f06294fd7b5c9c50a2fedddb100b2076d13d72a90d898272b7"
+    },
+    {
+      "bytes": 111729,
+      "entities": 82,
+      "id": "6b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6b.jsonl.gz",
+      "sha256": "7dd8d94b49177154852a01704bc7929ba0fc674dde55c84946bee3c1af5169dc"
+    },
+    {
+      "bytes": 171871,
+      "entities": 89,
+      "id": "6c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6c.jsonl.gz",
+      "sha256": "c3244c19377155a0e9731fbf4eaeafb51dbc247c0b6db23f4430ba0c82eb5438"
+    },
+    {
+      "bytes": 110281,
+      "entities": 83,
+      "id": "6d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6d.jsonl.gz",
+      "sha256": "b03cc15a6cc71ce93bdfe637787080ccfb46edac9e7299187d61e02beb8988f7"
+    },
+    {
+      "bytes": 163837,
+      "entities": 89,
+      "id": "6e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6e.jsonl.gz",
+      "sha256": "e8401a070e48a1a2404148a03cbe925b9e8b461f1d64b6b47f3e9bfa809144a7"
+    },
+    {
+      "bytes": 123741,
+      "entities": 87,
+      "id": "6f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/6f.jsonl.gz",
+      "sha256": "5fadcd506e7fffef5fabc463cf8a8cbbd99dd7e0e00bded0ba3fee54d30f512f"
+    },
+    {
+      "bytes": 85474,
+      "entities": 78,
+      "id": "70",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/70.jsonl.gz",
+      "sha256": "bd3e56dc1fcd65d64c87db75db88048fe6ca54446a77c5783b0072ac31d87803"
+    },
+    {
+      "bytes": 160998,
+      "entities": 100,
+      "id": "71",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/71.jsonl.gz",
+      "sha256": "ef277bdfa8a389e0a49a275e5d76844cdde463a1653d1a100d5f9409211db4e9"
+    },
+    {
+      "bytes": 131524,
+      "entities": 100,
+      "id": "72",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/72.jsonl.gz",
+      "sha256": "2dcf5531958ffe28029ca996b905cd09b409ea246bd13c971c25da5e91fb29ec"
+    },
+    {
+      "bytes": 84632,
+      "entities": 63,
+      "id": "73",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/73.jsonl.gz",
+      "sha256": "503ecaff8a7b7b850e22873cce5d8a57d3f44a4f5abfa874d9e51c5d6f3e148a"
+    },
+    {
+      "bytes": 166635,
+      "entities": 92,
+      "id": "74",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/74.jsonl.gz",
+      "sha256": "485f2a4b2f48077486bfdf071780899dc54c3b336312e620aa590a8dc848ffc4"
+    },
+    {
+      "bytes": 144750,
+      "entities": 105,
+      "id": "75",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/75.jsonl.gz",
+      "sha256": "ffbe85b9994eb6154ca1bb71b70a292ae599d1334148edb56ab9a830ed73db9e"
+    },
+    {
+      "bytes": 100485,
+      "entities": 113,
+      "id": "76",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/76.jsonl.gz",
+      "sha256": "9774e3c455bc81742061615bc1c79bdff776107f91650a5ebe00748c52800c90"
+    },
+    {
+      "bytes": 128063,
+      "entities": 76,
+      "id": "77",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/77.jsonl.gz",
+      "sha256": "1284ff674018f73dd5f4fed63a0d85d82bc5bef689ac6b039a259cca4a510ade"
+    },
+    {
+      "bytes": 181572,
+      "entities": 101,
+      "id": "78",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/78.jsonl.gz",
+      "sha256": "60deb6b5bb1faf6b5895ff48cb87e69d294b7420c36a511911902bb96b933bcf"
+    },
+    {
+      "bytes": 133119,
+      "entities": 88,
+      "id": "79",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/79.jsonl.gz",
+      "sha256": "719b9d2a80b38d1746424124bba698f6f8a2894e6dce2bc3efb60b380b30cbdf"
+    },
+    {
+      "bytes": 177329,
+      "entities": 84,
+      "id": "7a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7a.jsonl.gz",
+      "sha256": "ce7a26deb058b72cd569afe4465d70b6be2031fa9385a89b409f8440e24545df"
+    },
+    {
+      "bytes": 169683,
+      "entities": 114,
+      "id": "7b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7b.jsonl.gz",
+      "sha256": "03907914bc55a4c4ef127fd8d5544aa0aa8225940dba5f5833e25aeb93fcf82c"
+    },
+    {
+      "bytes": 253651,
+      "entities": 97,
+      "id": "7c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7c.jsonl.gz",
+      "sha256": "7add5540bc38f088f573e10839e23e68f3713e1f6f2d33664a0fa2947964208c"
+    },
+    {
+      "bytes": 204532,
+      "entities": 110,
+      "id": "7d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7d.jsonl.gz",
+      "sha256": "43574baf81e91220bc9dba8956be85a97de5744866c8920b354b103806cd65d4"
+    },
+    {
+      "bytes": 274738,
+      "entities": 103,
+      "id": "7e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7e.jsonl.gz",
+      "sha256": "fadfaab2da3695d067ce2ed628aeed186c3f2ea16d384bab79f21ecc47ba236c"
+    },
+    {
+      "bytes": 143806,
+      "entities": 96,
+      "id": "7f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/7f.jsonl.gz",
+      "sha256": "8236d5628c4688d02a146d5ebed2777ee211a79665714cff3b802c16290f230e"
+    },
+    {
+      "bytes": 118951,
+      "entities": 89,
+      "id": "80",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/80.jsonl.gz",
+      "sha256": "418978c4a3fc7fdf839b886da3daaf296a627921f4357db93c80fddb37aebdc9"
+    },
+    {
+      "bytes": 107206,
+      "entities": 88,
+      "id": "81",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/81.jsonl.gz",
+      "sha256": "f98f237374f489326074e5f7dcc6af12691db3b5b03c429b7b4ec3b2d01151ac"
+    },
+    {
+      "bytes": 194576,
+      "entities": 103,
+      "id": "82",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/82.jsonl.gz",
+      "sha256": "05a7610d4fba9f4411ea624c642473a32c0f92aec8740043a5756b8e5a733a01"
+    },
+    {
+      "bytes": 150436,
+      "entities": 88,
+      "id": "83",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/83.jsonl.gz",
+      "sha256": "1b74531e2ffed7e7edab0b423fd85c72b248cd8a86c0b0f04ce09d6bd3faae34"
+    },
+    {
+      "bytes": 156747,
+      "entities": 93,
+      "id": "84",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/84.jsonl.gz",
+      "sha256": "81602a5c162ed265e3721d752a091a1736bc4890dfeee989b6cb21af2f6ae94f"
+    },
+    {
+      "bytes": 84806,
+      "entities": 87,
+      "id": "85",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/85.jsonl.gz",
+      "sha256": "95267bd37efe121ac4ba0187c8526be26cc42c6c329c77427841c04a8eb121c3"
+    },
+    {
+      "bytes": 227467,
+      "entities": 85,
+      "id": "86",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/86.jsonl.gz",
+      "sha256": "3cee09ea79f3c7c513051c5efca10bc1e4bbe115899792459bb5624a30868590"
+    },
+    {
+      "bytes": 98599,
+      "entities": 75,
+      "id": "87",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/87.jsonl.gz",
+      "sha256": "71ac0067c7f5f1da467615e7baec6df26597b77659fd668bc5bac6efdf2b8f22"
+    },
+    {
+      "bytes": 235054,
+      "entities": 106,
+      "id": "88",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/88.jsonl.gz",
+      "sha256": "e11a4c8de5a1010a39e84c4a3233ecedcf1e6c62719eba29cda813ed4c4317d4"
+    },
+    {
+      "bytes": 183515,
+      "entities": 87,
+      "id": "89",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/89.jsonl.gz",
+      "sha256": "413defb110c6b2853cbcd6c30331c8b819f2a706671aef616f99331c3f9d31c2"
+    },
+    {
+      "bytes": 151466,
+      "entities": 90,
+      "id": "8a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8a.jsonl.gz",
+      "sha256": "e97a815abbd16ce704d97e6c5908098b1ec9dc83a009885ab0926af291aba04b"
+    },
+    {
+      "bytes": 120355,
+      "entities": 94,
+      "id": "8b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8b.jsonl.gz",
+      "sha256": "b8c6d1f435142cc651d6fbb1a07e377eb3530b4e34ff0d444a8f6356e2c5b4ce"
+    },
+    {
+      "bytes": 101364,
+      "entities": 84,
+      "id": "8c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8c.jsonl.gz",
+      "sha256": "ca941a5bd5c2249bc1e7b4e44c25811855e408e4861e7c25199c9d96f776bf85"
+    },
+    {
+      "bytes": 168715,
+      "entities": 77,
+      "id": "8d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8d.jsonl.gz",
+      "sha256": "52111f2ffb4277345da2cc2a98b1220bf68905035d9263a38e59a29eba867953"
+    },
+    {
+      "bytes": 94760,
+      "entities": 100,
+      "id": "8e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8e.jsonl.gz",
+      "sha256": "b723527c22642ae19336ec624c6a8263a437b6ee01982bfbc2606a5920f00159"
+    },
+    {
+      "bytes": 95698,
+      "entities": 90,
+      "id": "8f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/8f.jsonl.gz",
+      "sha256": "efd06b9b1f86e1333008b222d46db6bd90984f4e71169a6e6b2f081ae58f544d"
+    },
+    {
+      "bytes": 210201,
+      "entities": 109,
+      "id": "90",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/90.jsonl.gz",
+      "sha256": "fe91ce913d03c4b46e10522393f78fcb4bc7e530df010d9013857e3e8a089a15"
+    },
+    {
+      "bytes": 177382,
+      "entities": 99,
+      "id": "91",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/91.jsonl.gz",
+      "sha256": "be53e4c376588ac132f7f16989b455aeb98303d5585db88493acf4503a6d37ae"
+    },
+    {
+      "bytes": 159616,
+      "entities": 97,
+      "id": "92",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/92.jsonl.gz",
+      "sha256": "49745f7f4b3db0e6507c1dc8a9aff4ecd9b5bb6a8f7ddef1b6e3bf9f9283ad24"
+    },
+    {
+      "bytes": 224819,
+      "entities": 100,
+      "id": "93",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/93.jsonl.gz",
+      "sha256": "3819b561902dc33986e01463b02555f4f6204bc41cbfcf9db5a8986f8988c866"
+    },
+    {
+      "bytes": 80851,
+      "entities": 92,
+      "id": "94",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/94.jsonl.gz",
+      "sha256": "a32f29f17f885f8d1d77a31c236f1cc138adb365df376c726f75b6016380ae9c"
+    },
+    {
+      "bytes": 286119,
+      "entities": 102,
+      "id": "95",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/95.jsonl.gz",
+      "sha256": "5be7ab89a71852b217bd01b603137acea7c6ff8aa7c7daa5d17c0c07c952190c"
+    },
+    {
+      "bytes": 158564,
+      "entities": 92,
+      "id": "96",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/96.jsonl.gz",
+      "sha256": "363dcd618aa361053f64b24ae47e5088fa3f6c0b06c3a5284bf61cb017aaf9d8"
+    },
+    {
+      "bytes": 211593,
+      "entities": 90,
+      "id": "97",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/97.jsonl.gz",
+      "sha256": "d98f29ff4656862628a249c34b87a7a5b39abcf6d3e7ccc7857966e6be116d7f"
+    },
+    {
+      "bytes": 155067,
+      "entities": 97,
+      "id": "98",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/98.jsonl.gz",
+      "sha256": "a79202c4e02063d8464cf39fada3a6f8ed6642903c285c0ad2ff707bc5282a84"
+    },
+    {
+      "bytes": 82922,
+      "entities": 94,
+      "id": "99",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/99.jsonl.gz",
+      "sha256": "2f75bc9fb2e4facb78a5963cacd593492e77fe6474deb403d67a69607f1f940b"
+    },
+    {
+      "bytes": 214429,
+      "entities": 92,
+      "id": "9a",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9a.jsonl.gz",
+      "sha256": "7e0db7994cdfb34b149820179e836d560384a72701f17f085f2004b5cfcc40e3"
+    },
+    {
+      "bytes": 91114,
+      "entities": 82,
+      "id": "9b",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9b.jsonl.gz",
+      "sha256": "3ffa5e4e2a2e38b5338bc148f592c5beef88e25b03118f7020b8e8d2fa6e2879"
+    },
+    {
+      "bytes": 86097,
+      "entities": 88,
+      "id": "9c",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9c.jsonl.gz",
+      "sha256": "def98a6abda5616a85a8fb19635ce70907da3ceeebb0a35f996cf2e5cf76c0e4"
+    },
+    {
+      "bytes": 161456,
+      "entities": 91,
+      "id": "9d",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9d.jsonl.gz",
+      "sha256": "d64c64e91e7038c244dda8d920bb63248da2d6470996155bcc5cac3f7379c4bf"
+    },
+    {
+      "bytes": 169100,
+      "entities": 76,
+      "id": "9e",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9e.jsonl.gz",
+      "sha256": "163b3fcda670cc422ae6956a70fa19ad1de6bf08b97c1a83d52b406027eee644"
+    },
+    {
+      "bytes": 119153,
+      "entities": 105,
+      "id": "9f",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/9f.jsonl.gz",
+      "sha256": "5eeb31381491c1a8a3666a4441f0ee245bb69c44ad4eaa5ef7a1142602d03eb3"
+    },
+    {
+      "bytes": 65461,
+      "entities": 78,
+      "id": "a0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a0.jsonl.gz",
+      "sha256": "e8413d8c76d37b8df08d41d030c5a32ef39248f43836363c047b8b8ab26a685a"
+    },
+    {
+      "bytes": 128777,
+      "entities": 95,
+      "id": "a1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a1.jsonl.gz",
+      "sha256": "29e95c201289d9b69a747248507b9bb87a9c0c8a51855bec6837dc0c0dd8d93a"
+    },
+    {
+      "bytes": 128946,
+      "entities": 90,
+      "id": "a2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a2.jsonl.gz",
+      "sha256": "51aa647cec889fcb58f33e09f0a177450b16a35efb79fc50ceb8baa6353709f1"
+    },
+    {
+      "bytes": 101824,
+      "entities": 89,
+      "id": "a3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a3.jsonl.gz",
+      "sha256": "2e46639e5b047031ef5b097481f7b1cec365bf0427f5e92f0e4ad10dded23acd"
+    },
+    {
+      "bytes": 141297,
+      "entities": 103,
+      "id": "a4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a4.jsonl.gz",
+      "sha256": "260b0dcbec5a63fc19567e71d9ca9842ebf373bf2b9dba62e3901f5fed0fbaf7"
+    },
+    {
+      "bytes": 90748,
+      "entities": 96,
+      "id": "a5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a5.jsonl.gz",
+      "sha256": "8c82b58b30d42d4565e872fa30b8718f94863c93a2d044b9db1060592c8c947e"
+    },
+    {
+      "bytes": 112214,
+      "entities": 80,
+      "id": "a6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a6.jsonl.gz",
+      "sha256": "a79ca9c7e2a542717d3a90778bd63388af1d6434458b7812178afef2d2400687"
+    },
+    {
+      "bytes": 109707,
+      "entities": 100,
+      "id": "a7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a7.jsonl.gz",
+      "sha256": "173cdc1f7e41651e24a614ceaa8dca0ae7d3eb05e45141894de1d6800b17d77b"
+    },
+    {
+      "bytes": 97551,
+      "entities": 86,
+      "id": "a8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a8.jsonl.gz",
+      "sha256": "f8f88d00e8db6eb10a60543e562b9873577913fdcccb50578d4858c58eda44e3"
+    },
+    {
+      "bytes": 135331,
+      "entities": 87,
+      "id": "a9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/a9.jsonl.gz",
+      "sha256": "3e33453c8e3ab7af83adcaa022c58b91dd778b65bab209978362bcf97578fb3b"
+    },
+    {
+      "bytes": 112708,
+      "entities": 97,
+      "id": "aa",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/aa.jsonl.gz",
+      "sha256": "3265e8af3d397bf4d1cb48bdce46a286a63d6f46bd9feeb5c6eb2a81386de2fe"
+    },
+    {
+      "bytes": 108337,
+      "entities": 105,
+      "id": "ab",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ab.jsonl.gz",
+      "sha256": "d7043fc7387511b82c6a93e1b61c3247298bdeb8410e2e154583add0c35b7ffc"
+    },
+    {
+      "bytes": 119880,
+      "entities": 90,
+      "id": "ac",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ac.jsonl.gz",
+      "sha256": "e397e47315f31b47e6f93448cffa7f0c0e180ec9b2891fe7273c31055fdf27eb"
+    },
+    {
+      "bytes": 159472,
+      "entities": 80,
+      "id": "ad",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ad.jsonl.gz",
+      "sha256": "a87e55bc215ce807a7eafa2dbd03090d437e0cd2cc4d660e5137c06e904efd70"
+    },
+    {
+      "bytes": 144553,
+      "entities": 104,
+      "id": "ae",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ae.jsonl.gz",
+      "sha256": "6371f9e7d699fe831707bae25310915f113f4af10dd0f7a2e5da0b0808c92a89"
+    },
+    {
+      "bytes": 80734,
+      "entities": 73,
+      "id": "af",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/af.jsonl.gz",
+      "sha256": "cc7597cf15301cb318748bbadba25e2a7af42b7bef92fccdd91e88a3f1ee4ad0"
+    },
+    {
+      "bytes": 138842,
+      "entities": 97,
+      "id": "b0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b0.jsonl.gz",
+      "sha256": "e4efc9559134ac877f20dc68c85315b21ac2b9a164ad74b7d952c09e328e298e"
+    },
+    {
+      "bytes": 107128,
+      "entities": 85,
+      "id": "b1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b1.jsonl.gz",
+      "sha256": "05fa5a3406e2c1854d9c2884ac9974e131d67d0585e0debc672608f6e2069072"
+    },
+    {
+      "bytes": 293598,
+      "entities": 85,
+      "id": "b2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b2.jsonl.gz",
+      "sha256": "a46d0f528872e13f26e310f4666e4ede84c09fb6407a6a9f39150ac9731001e9"
+    },
+    {
+      "bytes": 165062,
+      "entities": 101,
+      "id": "b3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b3.jsonl.gz",
+      "sha256": "0dfd0cbb8385c2faefaf7b69dea06c6c8c2a99a85f65fb1f9a9eff8e89fe1cad"
+    },
+    {
+      "bytes": 181966,
+      "entities": 106,
+      "id": "b4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b4.jsonl.gz",
+      "sha256": "9016b0ca3b399d512b65605e3d41a6fb1cb5a2320bee9f63deedd5a313f4b0be"
+    },
+    {
+      "bytes": 109066,
+      "entities": 83,
+      "id": "b5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b5.jsonl.gz",
+      "sha256": "2237327fcfaeea318a61526fc1c5edd96c6237b86ed0a848155e658f7ec0e85d"
+    },
+    {
+      "bytes": 97786,
+      "entities": 88,
+      "id": "b6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b6.jsonl.gz",
+      "sha256": "c76b4bd860c6650876e7d0f977f74777ed07b1a419b7f57f9598ded676855a02"
+    },
+    {
+      "bytes": 87815,
+      "entities": 87,
+      "id": "b7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b7.jsonl.gz",
+      "sha256": "ce9565354e5264b847b1b827fdb2f345f491f50ae2d855922c16a6248c1c32e9"
+    },
+    {
+      "bytes": 156498,
+      "entities": 95,
+      "id": "b8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b8.jsonl.gz",
+      "sha256": "9f5d7391b393e1f8375753dc8419f514fca1634d407e4b7dcf6bc15e8dd0220f"
+    },
+    {
+      "bytes": 80474,
+      "entities": 86,
+      "id": "b9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/b9.jsonl.gz",
+      "sha256": "b4a10e992b62a637bf70415d449e6845ee897a8ad26c8befa56ec906302035ae"
+    },
+    {
+      "bytes": 156187,
+      "entities": 101,
+      "id": "ba",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ba.jsonl.gz",
+      "sha256": "a2e952673d4b22b53062b381907b0f14e3adfe0687193f0d5004f0ce587b129e"
+    },
+    {
+      "bytes": 282259,
+      "entities": 98,
+      "id": "bb",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/bb.jsonl.gz",
+      "sha256": "9456e985e97d097fac67c959f7ea036065646c47bdb640b2754a7afeb0a70531"
+    },
+    {
+      "bytes": 120806,
+      "entities": 99,
+      "id": "bc",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/bc.jsonl.gz",
+      "sha256": "305f7a6a7abdfe167522fad519c1624a2adbafc777b0f26522fe63570bb8b794"
+    },
+    {
+      "bytes": 204411,
+      "entities": 82,
+      "id": "bd",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/bd.jsonl.gz",
+      "sha256": "d0155f7861e61aa831782f0bff76a17b8e2f4f484c3d3049c61e33f009dfe475"
+    },
+    {
+      "bytes": 136656,
+      "entities": 86,
+      "id": "be",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/be.jsonl.gz",
+      "sha256": "a5101dd30575beb624f5cc7a3a318aa1463fb2c1b8f57ec6d15a160f4a19681e"
+    },
+    {
+      "bytes": 110858,
+      "entities": 89,
+      "id": "bf",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/bf.jsonl.gz",
+      "sha256": "bc15cca08c118b4d30fe32f269427bf66310126086eb66ce37aa415a65658903"
+    },
+    {
+      "bytes": 107230,
+      "entities": 84,
+      "id": "c0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c0.jsonl.gz",
+      "sha256": "e429eb3d5e80e6e85c6dc2840e5e497abfec55f5af0070d21629f96d5efe8a36"
+    },
+    {
+      "bytes": 129682,
+      "entities": 87,
+      "id": "c1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c1.jsonl.gz",
+      "sha256": "6d07cfabf3045bb09e7e1d10874dee5372afd49f64ca455af61b8cef0aa6921f"
+    },
+    {
+      "bytes": 134237,
+      "entities": 81,
+      "id": "c2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c2.jsonl.gz",
+      "sha256": "476f9d11c562a752caad3741f9976428f28dcd509e2c273cf8d53298e22b5897"
+    },
+    {
+      "bytes": 97465,
+      "entities": 83,
+      "id": "c3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c3.jsonl.gz",
+      "sha256": "4b3f3e8513c8c5911a07b6e422fddb963f378f064df5a2b203da6cdaa77f2a64"
+    },
+    {
+      "bytes": 210199,
+      "entities": 98,
+      "id": "c4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c4.jsonl.gz",
+      "sha256": "dcf6bb61e0025353a77f490ade83d9049d700f3e763c3153872bac0f60accd4b"
+    },
+    {
+      "bytes": 116752,
+      "entities": 88,
+      "id": "c5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c5.jsonl.gz",
+      "sha256": "e34be4bfb220542e3b709f2c463cf3aa6fd39ed7541c495928a80b1f7717929d"
+    },
+    {
+      "bytes": 141800,
+      "entities": 117,
+      "id": "c6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c6.jsonl.gz",
+      "sha256": "fd367bd98d7c3d3b156cf5e05b8643b2df24343ce17dbaca2af632f7dcc25ae3"
+    },
+    {
+      "bytes": 87316,
+      "entities": 77,
+      "id": "c7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c7.jsonl.gz",
+      "sha256": "e9048205ccd81c052991f4a3dd098f14bf0c8c8fa580e7f27259c43391b9594c"
+    },
+    {
+      "bytes": 147073,
+      "entities": 87,
+      "id": "c8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c8.jsonl.gz",
+      "sha256": "bf115851df5e476cc524803ae5cc05d2fe6a34b279238bd7df5c26267a8eb8c3"
+    },
+    {
+      "bytes": 128656,
+      "entities": 94,
+      "id": "c9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/c9.jsonl.gz",
+      "sha256": "786f366be1c903351135e94a7bc6d3616881a95785baeb84558af21a139c01c8"
+    },
+    {
+      "bytes": 275733,
+      "entities": 102,
+      "id": "ca",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ca.jsonl.gz",
+      "sha256": "14b6b6e69d2cb66c5be884b3a4cf9445a773c3603997bd06ef0485e70231c550"
+    },
+    {
+      "bytes": 164968,
+      "entities": 95,
+      "id": "cb",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/cb.jsonl.gz",
+      "sha256": "8df25910ed674f2c272591ec95f2a23e4f025f80565a470df3f8dd1970dba504"
+    },
+    {
+      "bytes": 264831,
+      "entities": 94,
+      "id": "cc",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/cc.jsonl.gz",
+      "sha256": "313a0db047d04a3215c17160b2909409b20e215b49d85375ac14feefd9d8799e"
+    },
+    {
+      "bytes": 119210,
+      "entities": 99,
+      "id": "cd",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/cd.jsonl.gz",
+      "sha256": "6c3f084f273841630dd9c2bf84d5f2201797d993bed8680142db2d59895edcf7"
+    },
+    {
+      "bytes": 120409,
+      "entities": 81,
+      "id": "ce",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ce.jsonl.gz",
+      "sha256": "d7530108f2c6d281b55f3bbd200083d66950da113bf3f0ac64e3faa9d126d956"
+    },
+    {
+      "bytes": 173667,
+      "entities": 96,
+      "id": "cf",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/cf.jsonl.gz",
+      "sha256": "3ed763ec23ebe6958ebfd72879959e105aac06f4414cd3a6626ee52df1382649"
+    },
+    {
+      "bytes": 108523,
+      "entities": 89,
+      "id": "d0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d0.jsonl.gz",
+      "sha256": "0ea32f366f1922cef8748c70552ff2d19d1d1a24eee8789c19de7611d5750650"
+    },
+    {
+      "bytes": 162012,
+      "entities": 90,
+      "id": "d1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d1.jsonl.gz",
+      "sha256": "fe6dcfb6496f580849fedaa31d2ee18698d6524d8b3ba50c160ff1b3d2ee9fc2"
+    },
+    {
+      "bytes": 123559,
+      "entities": 81,
+      "id": "d2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d2.jsonl.gz",
+      "sha256": "8f8aea6529948389c642a0e95765ec09b28cf188887c0c45e11a41da84727800"
+    },
+    {
+      "bytes": 150219,
+      "entities": 104,
+      "id": "d3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d3.jsonl.gz",
+      "sha256": "2ac1a1f5f76b6ebc204453ce8f1585d1cb2753dcf3b80a973e12e949e9943156"
+    },
+    {
+      "bytes": 191387,
+      "entities": 96,
+      "id": "d4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d4.jsonl.gz",
+      "sha256": "68d622c6bed1d7cdc67ef7ace851363b998b5bafe115e7172140fdf4a279c470"
+    },
+    {
+      "bytes": 272855,
+      "entities": 107,
+      "id": "d5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d5.jsonl.gz",
+      "sha256": "bcd7038703860ea1006b1830a62f418795d6223cde688af03cc40203e0182c03"
+    },
+    {
+      "bytes": 144830,
+      "entities": 100,
+      "id": "d6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d6.jsonl.gz",
+      "sha256": "fe2fd1c58cab0b233ac6f86a4198c220f58cc118d86df4304f36939658459010"
+    },
+    {
+      "bytes": 96462,
+      "entities": 97,
+      "id": "d7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d7.jsonl.gz",
+      "sha256": "c3a7958972958d831e2dcb93523dc93b8b0d2ac91d18672d04f0969b743ec293"
+    },
+    {
+      "bytes": 195270,
+      "entities": 88,
+      "id": "d8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d8.jsonl.gz",
+      "sha256": "c1a3744c58d5335372bc7a8f201783b5f24f984b7d4d00e1c0c4f99597b363ad"
+    },
+    {
+      "bytes": 152819,
+      "entities": 102,
+      "id": "d9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/d9.jsonl.gz",
+      "sha256": "ccf7fc67fe10ca2f9ac3162b7fea46051712548c32f354f88e8bf57d5087a836"
+    },
+    {
+      "bytes": 234535,
+      "entities": 113,
+      "id": "da",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/da.jsonl.gz",
+      "sha256": "576eeb20e173f2441638fecdfc105c455febce3f21c1c1ab92be1200210ba04f"
+    },
+    {
+      "bytes": 146470,
+      "entities": 91,
+      "id": "db",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/db.jsonl.gz",
+      "sha256": "a71b4c0a1303f6e3b341b1821249622e188308b7a0c9d0e4be9d30c12ae86cda"
+    },
+    {
+      "bytes": 136584,
+      "entities": 102,
+      "id": "dc",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/dc.jsonl.gz",
+      "sha256": "b90d224e556b788a90595cde3d03f2cf6f2f3f199c06194436a209d5d756055a"
+    },
+    {
+      "bytes": 177848,
+      "entities": 99,
+      "id": "dd",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/dd.jsonl.gz",
+      "sha256": "ec913e0005178115808847776874da4ddfceff96a81ea551dbe3f6a473e2e896"
+    },
+    {
+      "bytes": 153447,
+      "entities": 89,
+      "id": "de",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/de.jsonl.gz",
+      "sha256": "e4b20b0d905946b30a02738ce4b13d2d5685072fd8378d54ddc272b85a63fb80"
+    },
+    {
+      "bytes": 257737,
+      "entities": 105,
+      "id": "df",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/df.jsonl.gz",
+      "sha256": "bfd84d1aed4d836295e80f2b76c3b67e1df4ce27a1fd70ed025ad1cdef0146a2"
+    },
+    {
+      "bytes": 159262,
+      "entities": 99,
+      "id": "e0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e0.jsonl.gz",
+      "sha256": "ad1dfb9b8f54fce9f68d73e902b2c5a76ea216881405ba2031d1aa5d0ea004d8"
+    },
+    {
+      "bytes": 128064,
+      "entities": 83,
+      "id": "e1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e1.jsonl.gz",
+      "sha256": "e8d8856a8c377bde1db0504fd706d53c568178957c9510589a0bf05f571ce8d0"
+    },
+    {
+      "bytes": 162297,
+      "entities": 93,
+      "id": "e2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e2.jsonl.gz",
+      "sha256": "bc41dcb8518a679f9517df59ad3db310a28564931ca494eca61a55a5eb843f4f"
+    },
+    {
+      "bytes": 167767,
+      "entities": 98,
+      "id": "e3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e3.jsonl.gz",
+      "sha256": "aecefc95c840a86d4326ae250e82fbfa479c93d10f693e26bd0db082ce58c662"
+    },
+    {
+      "bytes": 138727,
+      "entities": 95,
+      "id": "e4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e4.jsonl.gz",
+      "sha256": "c87f3c58a2d821b79f1b50fd31aecebad95997efb3da07de9433f1620e5f7cb6"
+    },
+    {
+      "bytes": 124006,
+      "entities": 93,
+      "id": "e5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e5.jsonl.gz",
+      "sha256": "e46f0713de727ec9cc7dbe9d7852b03a07e47cbf7c758c94df7d3c683e311ae5"
+    },
+    {
+      "bytes": 173564,
+      "entities": 101,
+      "id": "e6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e6.jsonl.gz",
+      "sha256": "61d946455423b74f099cc9a616cc640b1bf4d53265e8bba61e2284b390be2fc2"
+    },
+    {
+      "bytes": 120725,
+      "entities": 84,
+      "id": "e7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e7.jsonl.gz",
+      "sha256": "d01ef75877f1dfac9db9fc31af3f90d4eb6f892655bdc840d948ad32d2040616"
+    },
+    {
+      "bytes": 123080,
+      "entities": 93,
+      "id": "e8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e8.jsonl.gz",
+      "sha256": "8b84cbbcc47bb4211f4c7507d27eb8cafb79feedbb13d7c35340463c8977ba92"
+    },
+    {
+      "bytes": 123049,
+      "entities": 87,
+      "id": "e9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/e9.jsonl.gz",
+      "sha256": "59f48e5d0eb1b343cc33a8cf6a90c010b74110de04ddec9926573b953bc24b64"
+    },
+    {
+      "bytes": 227761,
+      "entities": 77,
+      "id": "ea",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ea.jsonl.gz",
+      "sha256": "bcfc9fe83ae6b817b0918aae00c5f42b30bf187d8866e5849beb3be0d185cafc"
+    },
+    {
+      "bytes": 105148,
+      "entities": 76,
+      "id": "eb",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/eb.jsonl.gz",
+      "sha256": "d235c1b4f23fbf15b5c09fae64dec307640f541b0b461cfdbba42ed0f78a1b39"
+    },
+    {
+      "bytes": 98612,
+      "entities": 84,
+      "id": "ec",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ec.jsonl.gz",
+      "sha256": "7ad12bda0c2db6377dddd7eeb160ef707016c3e226078ba67bc88f757a940bdb"
+    },
+    {
+      "bytes": 141293,
+      "entities": 83,
+      "id": "ed",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ed.jsonl.gz",
+      "sha256": "d23ff0eb03f29a46797b8c69cbfea6965bc2b2f0bebb8ae4b1a651907449bc29"
+    },
+    {
+      "bytes": 200832,
+      "entities": 97,
+      "id": "ee",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ee.jsonl.gz",
+      "sha256": "44934f19566173849dc1e56c278b1feebc4b0a0175ec866a557b759c7d26d269"
+    },
+    {
+      "bytes": 128331,
+      "entities": 98,
+      "id": "ef",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ef.jsonl.gz",
+      "sha256": "7db1a8111b685d6a609efc048ab857841be5633e64b3df3404694806ff150d45"
+    },
+    {
+      "bytes": 142748,
+      "entities": 89,
+      "id": "f0",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f0.jsonl.gz",
+      "sha256": "f8c2adb12feb73c8288ed09d21cd2fd62df6327066eeb891ff93e5616597e97d"
+    },
+    {
+      "bytes": 87288,
+      "entities": 81,
+      "id": "f1",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f1.jsonl.gz",
+      "sha256": "f149393b45b201a0fa1027137a34543170c225e698284a8332acaaba25558a90"
+    },
+    {
+      "bytes": 144272,
+      "entities": 86,
+      "id": "f2",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f2.jsonl.gz",
+      "sha256": "76d17cbba62b9615fdbf5c283777db450b5cbd3ae1b5973f49c3721b87b22764"
+    },
+    {
+      "bytes": 93847,
+      "entities": 85,
+      "id": "f3",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f3.jsonl.gz",
+      "sha256": "e03e16cf9edb75da1b97074fed990a0ca4bead063bc71b84aa3ec12b8a9f9a1e"
+    },
+    {
+      "bytes": 121606,
+      "entities": 83,
+      "id": "f4",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f4.jsonl.gz",
+      "sha256": "235e1897cf5ad6bac83d576ba0e4605eaa76a8194ed18ebe34237d3d3c060f11"
+    },
+    {
+      "bytes": 120493,
+      "entities": 84,
+      "id": "f5",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f5.jsonl.gz",
+      "sha256": "387fbd708583dc811d14f677f50902ce07fce089383e5e6928bcb924056e3487"
+    },
+    {
+      "bytes": 218824,
+      "entities": 97,
+      "id": "f6",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f6.jsonl.gz",
+      "sha256": "7e7ee8529e24f1c043bde420f44280c4aef0cddc593cc4f1706da21dc308dd2f"
+    },
+    {
+      "bytes": 168077,
+      "entities": 100,
+      "id": "f7",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f7.jsonl.gz",
+      "sha256": "866d4e4a1ac92768fba1e8b576797e705ee41a41c548a0b1854616e36af19aa5"
+    },
+    {
+      "bytes": 262751,
+      "entities": 104,
+      "id": "f8",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f8.jsonl.gz",
+      "sha256": "141b5ae879e946f6745e8ffea8b3ff184cc63439ab4183d79999035ec74fd563"
+    },
+    {
+      "bytes": 153257,
+      "entities": 100,
+      "id": "f9",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/f9.jsonl.gz",
+      "sha256": "6c47a359ae7547f5cdf2c98c4cf4528aab8144df47bf37c4c25bfc7b527ad070"
+    },
+    {
+      "bytes": 95971,
+      "entities": 79,
+      "id": "fa",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/fa.jsonl.gz",
+      "sha256": "740d3699c08eea9f7777ef7e978147dcb1116a1d58b790420a328d68d145fd2a"
+    },
+    {
+      "bytes": 204448,
+      "entities": 94,
+      "id": "fb",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/fb.jsonl.gz",
+      "sha256": "5021393bc50d8936742b0b5e5eb798913e7a4a658929ac3c09efa028f9422e29"
+    },
+    {
+      "bytes": 96684,
+      "entities": 92,
+      "id": "fc",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/fc.jsonl.gz",
+      "sha256": "1a794ade60f2153f3a51d6c1f71a869e5a5ccf3c02f10aa300f344a05a9a9442"
+    },
+    {
+      "bytes": 152966,
+      "entities": 82,
+      "id": "fd",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/fd.jsonl.gz",
+      "sha256": "79933defd6dfd0a11a2590784192a8a82b56001775ad9b447f2b0871b6d08eb0"
+    },
+    {
+      "bytes": 91169,
+      "entities": 108,
+      "id": "fe",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/fe.jsonl.gz",
+      "sha256": "4339c9bfa6cab7b366ca30e3c6719ab20c19e1d650a152e170c013d1ee6a966d"
+    },
+    {
+      "bytes": 164303,
+      "entities": 108,
+      "id": "ff",
+      "path": "src/data/generated/anac-entity-procurement-page/entities/ff.jsonl.gz",
+      "sha256": "af794a900d7d6db0866cfb13ee93c6e0bbaf99ec7221a92e8b0aaf5a7ce1f65e"
+    }
+  ],
+  "sourceSpecSha256": "a87ab335ed1d4c2764633495bc3d06be377bdb1173a46a78b4d6e39439211001",
+  "totals": {
+    "attributedAwardValue": "182050736243.1476130538116207",
+    "awardValue": "199626031564.0317361911135957",
+    "awardeeRelations": 809673,
+    "awards": 816018,
+    "entities": 23737,
+    "operators": 507336,
+    "positiveAwards": 805299,
+    "procedures": 911558,
+    "unattributedAwardValue": "17575295320.884123137301975"
+  }
+}

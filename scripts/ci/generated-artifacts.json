@@ -12,6 +12,81 @@
   ],
   "artifacts": [
     {
+      "id": "anac-awardees-coverage",
+      "owner": "ANAC awardees and awards coverage contract",
+      "files": [
+        "src/data/generated/anac-awardees-coverage.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_awardees_coverage.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_awardees_coverage.py"
+      ],
+      "nodeTests": [
+        "tests/anac-awardees-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_awardees_coverage.py --awardees-input ... --awards-input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-awardees.source.json",
+      "trustModel": "Aggregate-only coverage manifest derived from two official, hash-pinned ANAC full snapshots. No fiscal identifier or company name is published."
+    },
+    {
+      "id": "anac-entity-procurement-coverage",
+      "owner": "ANAC contracting-authority and procurement readiness contract",
+      "files": [
+        "src/data/generated/anac-entity-procurement-coverage.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_entity_procurement_coverage.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_entity_procurement_coverage.py"
+      ],
+      "nodeTests": [
+        "tests/anac-entity-procurement-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_entity_procurement_coverage.py --cig ... --stations ... --awards ... --awardees ... --observed-at ... --generated-at ... --output src/data/generated/anac-entity-procurement-coverage.json",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "trustModel": "Aggregate-only readiness manifest derived from hash-pinned ANAC full snapshots. Conflicting award keys are measured and excluded from affected aggregates; no AUSA value, fiscal identifier, name, entity row, or procedure row is published."
+    },
+    {
+      "id": "anac-entity-procurement-page",
+      "owner": "ANAC per-entity procurement profiles and awardee drill-downs",
+      "files": [
+        "src/data/generated/anac-entity-procurement-page"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_entity_procurement_page.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_entity_procurement_page.py"
+      ],
+      "nodeTests": [
+        "tests/anac-entity-procurement-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_entity_procurement_page.py --cig ... --stations ... --awards ... --awardees ... --ipa ... --generated-at ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-entity-procurement-page.source.json",
+      "trustModel": "Public per-entity profiles derived from the existing hash-pinned ANAC contract plus a complete hash-pinned IPA snapshot. Entity joins require one checksum-valid tax code and one Codice IPA. Award values are exact decimals counted once per award; multi-operator or unresolved awards remain unattributed. Public shards contain entity tax codes and official awardee denominations, but no operator tax code, operator-tax-code hash, AUSA, role, or raw source row."
+    },
+    {
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",
       "files": [
@@ -112,6 +187,30 @@
       "trustModel": "Curated committed artifact with no Python generator. Validated by Node contract tests that assert structural and semantic invariants."
     },
     {
+      "id": "inps-pensions-osservatorio",
+      "owner": "INPS pensions osservatorio",
+      "files": [
+        "src/data/generated/inps-pensions-osservatorio.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/inps-pensions.test.mjs",
+        "tests/pensions-ui.test.mjs",
+        "tests/istat-pensions-route.test.mjs"
+      ],
+      "generator": {
+        "command": null,
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed artifact transcribed from the official INPS osservatorio brief and table 388 schema. Validated by Node contract tests that reconcile stock, categories, management groups and the 2012-2026 count series."
+    },
+    {
       "id": "integrated-catalog",
       "owner": "Integrated source release catalog",
       "files": [
@@ -163,7 +262,8 @@
       "id": "istat-municipality-geography",
       "owner": "ISTAT SITUAS municipal geography snapshot",
       "files": [
-        "src/data/generated/istat-municipality-geography.json"
+        "src/data/generated/istat-municipality-geography.json",
+        "src/data/generated/istat-municipality-geography.meta.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -263,6 +363,29 @@
         "upstreamUrl": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html"
       },
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
+    },
+    {
+      "id": "openbdap-budget-law",
+      "owner": "OpenBDAP budget-law mission series",
+      "files": [
+        "src/data/generated/openbdap-budget-law-missions.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/bdap-legge-bilancio.test.mjs"
+      ],
+      "generator": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --package-json ... --csv ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/openbdap-budget-law-missions.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Committed aggregate generated from the official catalog response and CSV, both identified by SHA-256. Runtime prefers live OpenBDAP data and uses this validated snapshot only when the source is unavailable."
     },
     {
       "id": "opencivitas-2022",
@@ -398,6 +521,65 @@
       "refreshWorkflow": ".github/workflows/pnrr-childcare-refresh.yml",
       "sourceSpec": "scripts/etl/specs/pnrr-childcare.source.json",
       "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
+    },
+    {
+      "id": "government-scorecard",
+      "owner": "European Commission, Eurostat and Presidency of the Republic government scorecard",
+      "files": [
+        "src/data/generated/government-scorecard.json",
+        "src/data/generated/government-scorecard-page.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/ci/check-government-scorecard-artifacts.py",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_government_scorecard_snapshot.py",
+        "tests/etl/test_government_scorecard_chronology.py",
+        "tests/etl/test_government_scorecard_page.py"
+      ],
+      "nodeTests": [
+        "tests/government-scorecard-data.test.mjs",
+        "tests/government-scorecard-calculation.test.mjs",
+        "tests/government-scorecard-page.test.mjs",
+        "tests/government-scorecard-downloads.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/government_scorecard_snapshot.py --retrieved-at <UTC timestamp> && python3 scripts/etl/government_scorecard_chronology.py && python3 scripts/etl/government_scorecard_page.py --refresh --retrieved-at <same UTC timestamp>",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/government-scorecard-refresh.yml",
+      "sourceSpec": "scripts/etl/specs/government-scorecard.source.json",
+      "sourceSpecs": [
+        "scripts/etl/specs/government-scorecard.source.json",
+        "scripts/etl/specs/government-scorecard-methodology.json",
+        "scripts/etl/specs/government-scorecard-chronology.json",
+        "scripts/etl/specs/government-scorecard-sensitivity.json",
+        "scripts/etl/specs/government-scorecard-page.source.json"
+      ],
+      "publication": {
+        "branch": "automation/data/government-scorecard",
+        "commitTitle": "chore(data): refresh government scorecard snapshot",
+        "prTitle": "data: refresh government scorecard snapshot",
+        "upstreamUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+        "upstreamUrls": [
+          "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+          "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+          "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+          "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
+          "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en"
+        ]
+      },
+      "trustModel": "Scheduled workflow creates a managed PR candidate from official AMECO, Eurostat and Presidency sources. ZIP, CSV and JSON-stat identity, filters, series codes, periods, countries, weights, government chronology, complete observations, hashes and runtime contracts fail closed before publication. Forecasts and documented context never affect the score."
     },
     {
       "id": "public-debt",
@@ -560,6 +742,28 @@
       "trustModel": "Source-lock: the upstream assets are pinned by SHA-256. The --check flag validates the committed artifact offline."
     },
     {
+      "id": "ssn-cce-national-history",
+      "owner": "SSN Conto Economico national history 2012-2024",
+      "files": [
+        "src/data/generated/ssn-cce-national-history.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/ssn-national-history.test.mjs"
+      ],
+      "generator": {
+        "command": "Prefer live OpenBDAP national CSV dumps; refresh the committed snapshot when a full live read succeeds and pin 2024 to ssn-cce-2024.json",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Runtime prefers live OpenBDAP national CSVs and uses this validated snapshot only when the source is temporarily unavailable. The 2024 row must match the hash-locked ssn-cce-2024 national totals."
+    },
+    {
       "id": "vive-roma-restoration",
       "owner": "VIVE Roma in moneta restoration",
       "files": [
@@ -581,6 +785,219 @@
       },
       "refreshWorkflow": null,
       "trustModel": "Curated committed artifact with no Python generator. Validated by the Node runtime contract in src/lib/vive-restoration-snapshot.ts."
+    },
+    {
+      "id": "company-atlas",
+      "owner": "Atlante Imprese Italia aggregate snapshot",
+      "files": [
+        "src/data/generated/company-atlas-snapshot.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "node scripts/etl/company_atlas_snapshot.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/company-atlas.test.mjs",
+        "tests/company-atlas-performance.test.mjs"
+      ],
+      "generator": {
+        "command": "node scripts/etl/company_atlas_snapshot.mjs",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": ".github/workflows/company-atlas-refresh.yml",
+      "publication": {
+        "branch": "automation/data/company-atlas",
+        "commitTitle": "chore(data): refresh Atlante Imprese snapshot",
+        "prTitle": "data: refresh Atlante Imprese snapshot",
+        "upstreamUrl": "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
+        "upstreamUrls": [
+          "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
+          "https://opendata.marche.camcom.it/data/2026-Q2-Addetti-Localizzazioni-Attive-Italia.csv",
+          "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia-Valore-Produzione.json"
+        ]
+      },
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official CCIAA Marche / InfoCamere aggregate releases; review and PR-side validation govern publication. A new workforce quarter is not accepted until its URL and release totals are updated in the generator."
+    },
+    {
+      "id": "istat-pensions-2012-2022",
+      "owner": "ISTAT Casellario pensioni e pensionati 2012-2022",
+      "files": [
+        "src/data/generated/istat-pensions-2012-2022.data.json",
+        "src/data/generated/istat-pensions-2012-2022.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_pensions_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_pensions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-pensions.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_pensions_snapshot.py --pensions-input ... --pensioners-input ... --observed-at ...",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-pensions-2012-2022.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: i due response SDMX ufficiali sono acquisiti localmente e vincolati per URL, chiave, schema, byte e SHA-256; --check valida il bundle committato senza rete."
+    },
+    {
+      "id": "consip-ordini-2024-2026",
+      "owner": "Consip ordini Convenzioni e MEPA 2024-2026",
+      "files": [
+        "src/data/generated/consip-ordini-2024-2026.data.json",
+        "src/data/generated/consip-ordini-2024-2026.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/consip_ordini_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_consip_ordini_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/consip-ordini.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/consip_ordini_snapshot.py --input-dir <cartella coi sei CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/consip-ordini-2024-2026.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
+    },
+    {
+      "id": "eurostat-cofog-2014-2024",
+      "owner": "Eurostat spesa pubblica per funzione COFOG 2014-2024",
+      "files": [
+        "src/data/generated/eurostat-cofog-2014-2024.data.json",
+        "src/data/generated/eurostat-cofog-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_cofog_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_cofog_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-cofog.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_cofog_snapshot.py --input-dir <cartella con le due risposte JSON-stat> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-cofog-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_exp (milioni di euro e quota di PIL, CC BY 4.0) sono acquisite localmente e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle committato senza rete. La copertura piena, l'assenza di duplicati e lo scarto fra totale pubblicato e somma delle divisioni entro la sola tolleranza di arrotondamento falliscono chiusi."
+    },
+    {
+      "id": "istat-cofog-1995-2023",
+      "owner": "ISTAT consumi finali della PA per funzione COFOG 1995-2023",
+      "files": [
+        "src/data/generated/istat-cofog-1995-2023.data.json",
+        "src/data/generated/istat-cofog-1995-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_cofog_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_cofog_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-cofog.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_cofog_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-cofog-1995-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 93_1227_DF_DCCN_TNA1_4 è acquisita con chiave completamente specificata (misura P3_D_W0_S13, prezzi correnti, edizione 2025M12) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati e undici partizioni dichiarate falliscono chiuse oltre la tolleranza di arrotondamento dichiarata. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
+    },
+    {
+      "id": "inps-naspi-2018-2022",
+      "owner": "INPS NASpI beneficiari e trattamenti 2018-2022",
+      "files": [
+        "src/data/generated/inps-naspi-2018-2022.data.json",
+        "src/data/generated/inps-naspi-2018-2022.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_naspi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_naspi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-naspi.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_naspi_snapshot.py --input-dir <cartella con le nove risposte SDMX-ML> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/inps-naspi-2018-2022.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: le nove risposte SDMX-ML ufficiali dei package dfb_st_naspi_* (IODL 2.0 verificata per package) sono acquisite localmente e vincolate per URL, byte, SHA-256 e istante di preparazione SDMX; --check valida il bundle committato senza rete. Le distribuzioni CSV e JSON della stessa fonte sono scartate e il motivo e' nel lock. Copertura piena, celle soppresse distinte dallo zero e tre riconciliazioni ESATTE (regioni sulle ripartizioni, province sulle regioni, taglio per sesso contro taglio per eta') falliscono chiuse."
+    },
+    {
+      "id": "istat-enterprise-turnover",
+      "owner": "ISTAT aggregate enterprise turnover snapshot (Frame Territoriale Anticipato 2024)",
+      "files": [
+        "src/data/generated/istat-enterprise-turnover-2024.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_enterprise_turnover.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_enterprise_turnover.py"
+      ],
+      "nodeTests": [
+        "tests/istat-enterprise-turnover.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_enterprise_turnover.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The committed snapshot is derived from the official ISTAT Frame Territoriale Anticipato 2024 release (CC BY 4.0). The offline check validates exact 20-region coverage, macro-sector totals and reconciliations, strict ATECO 2007 agg. 2022 taxonomy, unit invariants in thousands of euros, official Campania and national turnover parity, and zero nominal/company-level data."
+    },
+    {
+      "id": "education-atlas",
+      "owner": "Atlante Istruzione MIM aggregate snapshot",
+      "files": [
+        "src/data/generated/education-atlas-snapshot.json",
+        "src/data/generated/education-atlas-source-files.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/education_atlas_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_education_atlas_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/education-atlas.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/education_atlas_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "trustModel": "The committed snapshot and source-file manifest are derived from official MIM IODL 2.0 CSV releases. The offline check validates source hashes, schema, duplicate protection, school-code joins, regional coverage gaps, student/gender reconciliations and the aggregate-only boundary; fixture reconciliation tests cover malformed schemas, incoherent periods or roles, duplicate source URLs and orphan school codes before a future refresh is reviewed for publication."
     },
     {
       "id": "source-ledger-proofs",
@@ -611,6 +1028,31 @@
       },
       "refreshWorkflow": ".github/workflows/source-refresh.yml",
       "trustModel": "Integrity proofs derived from the committed source corpus. The standalone check requires input files; the ETL test suite validates the committed proofs."
+    },
+    {
+      "id": "investigative-explorer-incarichi",
+      "owner": "Investigative Explorer - slice incarichi (issue #105)",
+      "files": [
+        "src/data/generated/investigative-explorer-incarichi.json",
+        "src/data/generated/investigative-explorer-incarichi.meta.json",
+        "src/data/generated/investigative-explorer-incarichi.json.gz"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_investigative_explorer_incarichi.py"
+      ],
+      "nodeTests": [
+        "tests/investigative-explorer-incarichi.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/investigative_explorer_build.py --input <path-righe-integate-incarichi> --acquired <acquisitionDate> --output src/data/generated/investigative-explorer-incarichi.json",
+        "requiresNetworkInput": false
+      },
+      "trustModel": "Curated slice from committed integrated rows (incarichi-nominativi-shard); --check validates offline, no person auto-merge."
     }
   ]
 }

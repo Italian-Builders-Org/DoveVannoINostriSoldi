@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "openbdap_legge_bilancio_storico",
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "platform": "OpenBDAP",
+    "packageId": "e0be9f03-134b-446d-8e6c-cb5c14ddc11c",
+    "resourceId": "32750",
+    "productCode": "LBF_SPE_CRU_AMPMA_001",
+    "title": "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20",
+    "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e0be9f03-134b-446d-8e6c-cb5c14ddc11c.csv",
+    "license": "Creative Commons Attribution",
+    "licenseId": "cc-by",
+    "licenseUrl": "http://www.opendefinition.org/licenses/cc-by",
+    "observedAt": "2026-08-28T23:26:32.000Z",
+    "catalog": {
+      "bytes": 6283,
+      "sha256": "c29936b96b538c669f47f62319c051724cd10ce8105b38906eed85f06c696e0c"
+    },
+    "csv": {
+      "bytes": 3422462,
+      "sha256": "5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338",
+      "encoding": "cp1252",
+      "delimiter": ";",
+      "quoteChar": "\"",
+      "lineEnding": "CRLF",
+      "rowsIncludingHeader": 13876,
+      "columns": 15
+    }
+  },
+  "transformation": {
+    "measure": "Legge di Bilancio CP A1",
+    "unit": "euro",
+    "aggregation": "Somma per anno e missione su amministrazioni, programmi e macroaggregati",
+    "minimumStableMissionYear": 2017,
+    "years": [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+    "missionsPerYear": 34,
+    "allocations": 340,
+    "yearOverYearDeltas": 306
+  },
+  "expectedAnnualTotalsEur": {
+    "2017": 861047385808,
+    "2018": 852369824700,
+    "2019": 869498990905,
+    "2020": 897423599901,
+    "2021": 1060697407565,
+    "2022": 1093956278557,
+    "2023": 1183723964094,
+    "2024": 1215086092281,
+    "2025": 1199544721805,
+    "2026": 1253161463689
+  }
+}

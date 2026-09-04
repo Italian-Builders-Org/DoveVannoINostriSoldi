@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 2,
+  "methodologyVersion": "peer-relative-v6",
+  "methodologyManifest": "scripts/etl/specs/government-scorecard-methodology.json",
+  "ameco": {
+    "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
+    "title": "AMECO annual macro-economic database",
+    "release": "Spring 2026 Economic Forecast",
+    "releaseDate": "2026-06-03",
+    "landingUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+    "downloadUrl": "https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip",
+    "termsUrl": "https://commission.europa.eu/legal-notice_en",
+    "license": "CC BY 4.0 unless otherwise indicated",
+    "cadence": "twice-yearly forecast releases",
+    "geography": "Italy, France, Germany and Spain",
+    "referencePeriod": "annual, 1960-2027; observations through 2024; forecasts from 2025",
+    "publication": "latest AMECO vintage; forecasts are stored for provenance but excluded from every score",
+    "observedThrough": 2024,
+    "forecastFrom": 2025,
+    "forecastThrough": 2027,
+    "encoding": "latin-1",
+    "countries": {
+      "italy": {
+        "code": "ITA",
+        "label": "Italia"
+      },
+      "france": {
+        "code": "FRA",
+        "label": "Francia"
+      },
+      "germany": {
+        "code": "DEU",
+        "label": "Germania"
+      },
+      "spain": {
+        "code": "ESP",
+        "label": "Spagna"
+      }
+    },
+    "series": [
+      {
+        "id": "real_compensation",
+        "direction": "higher",
+        "transformation": "log-change",
+        "file": "AMECO7.CSV",
+        "codeTemplate": "{country}.3.1.0.0.RWCDC",
+        "title": "Real compensation per employee deflator private consumption: total economy",
+        "unit": "National currency: 2020 = 100"
+      },
+      {
+        "id": "unemployment",
+        "direction": "lower",
+        "transformation": "point-change",
+        "file": "AMECO1.CSV",
+        "codeTemplate": "{country}.1.0.0.0.ZUTN",
+        "title": "Unemployment rate: total :- Member States: definition EUROSTAT",
+        "unit": "Percentage of active population"
+      },
+      {
+        "id": "real_gdp_per_capita",
+        "direction": "higher",
+        "transformation": "log-change",
+        "file": "AMECO6.CSV",
+        "codeTemplate": "{country}.1.1.0.0.RVGDP",
+        "title": "Gross domestic product at 2020 reference levels per head of population",
+        "unit": "1000 national currency, 2020 reference levels"
+      },
+      {
+        "id": "debt_ratio",
+        "direction": "lower",
+        "transformation": "point-change",
+        "file": "AMECO18.CSV",
+        "codeTemplate": "{country}.1.0.319.0.UDGG",
+        "title": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
+        "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+      },
+      {
+        "id": "primary_balance",
+        "direction": "higher",
+        "transformation": "point-change",
+        "file": "AMECO16.CSV",
+        "codeTemplate": "{country}.1.0.319.0.UBLGI",
+        "title": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
+        "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+      },
+      {
+        "id": "investment_share",
+        "direction": "higher",
+        "transformation": "point-change",
+        "derived": "gross-fixed-capital-formation / gross-domestic-product * 100",
+        "numerator": {
+          "file": "AMECO3.CSV",
+          "codeTemplate": "{country}.1.0.0.0.UIGT",
+          "title": "Gross fixed capital formation at current prices: total economy",
+          "unit": "Mrd national currency"
+        },
+        "denominator": {
+          "file": "AMECO6.CSV",
+          "codeTemplate": "{country}.1.0.0.0.UVGD",
+          "title": "Gross domestic product at current prices",
+          "unit": "Mrd national currency"
+        },
+        "unit": "Percentage of GDP at current prices"
+      }
+    ]
+  }
+}

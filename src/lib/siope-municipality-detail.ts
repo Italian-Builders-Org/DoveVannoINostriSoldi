@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { IpaEntity } from "@/lib/ipa";
+
 import detail2024 from "@/data/generated/siope-municipal-detail-2024.json";
 import detail2025 from "@/data/generated/siope-municipal-detail-2025.json";
 import detail2026 from "@/data/generated/siope-municipal-detail.json";
@@ -7,7 +9,7 @@ import { partialMonthOf } from "@/lib/siope-calendar";
 import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import {
   eurosPerSquareKilometreCents,
-  getMunicipalityGeographyByTaxCode,
+  getMunicipalityGeographyByTaxCodeIfNameAgrees,
   type MunicipalityGeography,
 } from "@/lib/municipality-geography";
 
@@ -22,6 +24,7 @@ const EXPECTED_COLUMNS = [
   "totalCents",
   "titleCents",
 ] as const;
+const CANONICAL_IPA_CODE = /^[A-Za-z0-9_]+$/;
 
 export type SiopeMunicipalityTitle = Readonly<{
   code: string;
@@ -120,6 +123,7 @@ function validateArtifact(value: unknown, expectedYear: number): ValidatedArtifa
 
   if (!Array.isArray(artifact.municipalities)) throw new Error(`SIOPE dettaglio ${expectedYear}: righe attese`);
   const seen = new Set<string>();
+  const seenIpaCodes = new Set<string>();
   let withMovements = 0;
   let withPopulation = 0;
   let withRegion = 0;
@@ -135,7 +139,17 @@ function validateArtifact(value: unknown, expectedYear: number): ValidatedArtifa
     }
     seen.add(taxCode);
     const codiceIpa = optionalText(raw[1], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].codiceIpa`);
-    if (codiceIpa !== null) withIpaIdentifier += 1;
+    if (codiceIpa !== null) {
+      if (
+        codiceIpa !== codiceIpa.trim() ||
+        !CANONICAL_IPA_CODE.test(codiceIpa) ||
+        seenIpaCodes.has(codiceIpa)
+      ) {
+        throw new Error(`SIOPE dettaglio ${expectedYear}: Codice IPA non canonico o duplicato ${codiceIpa}`);
+      }
+      seenIpaCodes.add(codiceIpa);
+      withIpaIdentifier += 1;
+    }
     const name = text(raw[2], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].name`);
     const province = text(raw[3], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].province`);
     const region = optionalText(raw[4], `SIOPE dettaglio ${expectedYear}.municipalities[${index}].region`);
@@ -191,6 +205,12 @@ const artifacts = [
 const rowsByYearAndTaxCode = new Map(
   artifacts.map((artifact) => [artifact.year, new Map(artifact.rows.map((row) => [row[0], row]))]),
 );
+const taxCodeByIpaCode = new Map<string, string>();
+for (const artifact of artifacts) {
+  for (const row of artifact.rows) {
+    if (row[1] && !taxCodeByIpaCode.has(row[1])) taxCodeByIpaCode.set(row[1], row[0]);
+  }
+}
 
 export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalityDetail | null {
   const taxCode = rawTaxCode.trim();
@@ -208,7 +228,7 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
     region: identity[4],
     years: artifacts.map((artifact): SiopeMunicipalityYear => {
       const row = rowsByYearAndTaxCode.get(artifact.year)?.get(taxCode);
-      const geography = getMunicipalityGeographyByTaxCode(artifact.year, taxCode);
+      const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(artifact.year, taxCode, identity[2]);
       if (!row) {
         return {
           year: artifact.year,
@@ -249,6 +269,14 @@ export function getSiopeMunicipalityDetail(rawTaxCode: string): SiopeMunicipalit
   };
 }
 
+/** Resolve the latest committed municipal identity without request-time I/O. */
+export function getSiopeMunicipalityDetailByIpaCode(rawCode: string): SiopeMunicipalityDetail | null {
+  const code = rawCode.trim();
+  if (!CANONICAL_IPA_CODE.test(code)) return null;
+  const taxCode = taxCodeByIpaCode.get(code);
+  return taxCode ? getSiopeMunicipalityDetail(taxCode) : null;
+}
+
 export type SiopeMunicipalityPeerObservation = Readonly<{
   taxCode: string;
   name: string;
@@ -287,7 +315,7 @@ export function getSiopeMunicipalityPeerCoverage(year: number): SiopeMunicipalit
   let withMovementsAndGeography = 0;
   for (const row of artifact.rows) {
     const hasMovements = row[6] !== null;
-    const geography = getMunicipalityGeographyByTaxCode(year, row[0]);
+    const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(year, row[0], row[2]);
     const hasGeography = geography !== null;
     if (hasMovements) withMovements += 1;
     if (hasGeography) withGeography += 1;
@@ -309,7 +337,7 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
   const artifact = artifacts.find((item) => item.year === year);
   if (!artifact) return [];
   return artifact.rows.flatMap((row) => {
-    const geography = getMunicipalityGeographyByTaxCode(year, row[0]);
+    const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(year, row[0], row[2]);
     const perSquareKmCents = eurosPerSquareKilometreCents(
       row[6],
       geography?.surfaceSquareMetres ?? null,
@@ -332,3 +360,58 @@ export const siopeMunicipalityDetailCoverage = artifacts.map((artifact) => ({
   year: artifact.year,
   municipalities: artifact.rows.length,
 }));
+
+/**
+ * Public paths of the municipal profile pages, enumerated from the committed
+ * SIOPE detail snapshots without request-time I/O. The ETL publishes
+ * `codiceIpa` only when the official registries map the municipality's tax
+ * code to exactly one Codice IPA, so rows without an unambiguous Codice IPA
+ * carry `null` and are excluded here explicitly. Every identifier used below
+ * has already passed the fail-closed contract of `validateArtifact`.
+ */
+export function getMunicipalityEntityPublicPaths(): readonly `/enti/${string}`[] {
+  const codes = new Set<string>();
+  for (const artifact of artifacts) {
+    for (const row of artifact.rows) {
+      if (row[1] !== null) codes.add(row[1]);
+    }
+  }
+  return [...codes]
+    .sort((left, right) => left.localeCompare(right, "en"))
+    .map((code) => `/enti/${encodeURIComponent(code)}` as const);
+}
+
+/** Minimal IPA-compatible identities for offline municipal keyword search. */
+export function getMunicipalitySearchEntities(): readonly IpaEntity[] {
+  const latest = artifacts[0];
+  const byIpa = new Map<string, IpaEntity>();
+  for (const row of latest.rows) {
+    const codiceIpa = row[1];
+    if (!codiceIpa || byIpa.has(codiceIpa)) continue;
+    byIpa.set(codiceIpa, {
+      codiceIpa,
+      denominazione: row[2],
+      codiceFiscale: row[0],
+      tipologia: "Comune",
+      codiceCategoria: null,
+      codiceNatura: null,
+      codiceAteco: null,
+      inLiquidazione: null,
+      codiceMiur: null,
+      codiceIstat: null,
+      acronimo: null,
+      responsabile: { nome: null, cognome: null, titolo: null },
+      sede: {
+        codiceComuneIstat: null,
+        codiceCatastaleComune: null,
+        cap: null,
+        indirizzo: null,
+      },
+      email: [],
+      sitoIstituzionale: null,
+      social: { facebook: null, linkedin: null, twitter: null, youtube: null },
+      dataAggiornamento: null,
+    });
+  }
+  return [...byIpa.values()];
+}

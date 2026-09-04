@@ -16,9 +16,18 @@ test("annual CPT coverage remains a period instead of an invented date", () => {
   assert.deepEqual(latestDataBySlug.pcm, { kind: "period", label: "2024" });
   assert.deepEqual(latestDataBySlug.inps, {
     kind: "period",
-    label: "spesa 2025 · territori 2024",
+    label: "spesa 2025 · territori 2024 · vigenti 2026",
   });
   assert.deepEqual(latestDataBySlug.italiadomani, { kind: "date", value: "2026-06-13" });
+  assert.deepEqual(latestDataBySlug.eurostat, { kind: "period", label: "2025" });
+  assert.deepEqual(latestDataBySlug["eurostat-hicp"], {
+    kind: "period",
+    label: "IPCA 2026-08",
+  });
+  assert.deepEqual(latestDataBySlug["istat-casellario-pensioni"], {
+    kind: "period",
+    label: "2012-2022",
+  });
 });
 
 test("latest-data registry is exhaustive and keeps MEF periods distinct", () => {

@@ -42,7 +42,7 @@
 
 .figureHeader b {
   white-space: nowrap;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-body);
 }
 
 .chart {

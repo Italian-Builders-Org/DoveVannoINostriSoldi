@@ -1,0 +1,6 @@
+"cig";"data_aggiudicazione_definitiva";"esito";"criterio_aggiudicazione";"data_comunicazione_esito";"numero_offerte_ammesse";"numero_offerte_escluse";"importo_aggiudicazione";"ribasso_aggiudicazione";"num_imprese_offerenti";"flag_subappalto";"id_aggiudicazione";"cod_esito";"num_imprese_richiedenti";"asta_elettronica";"num_imprese_invitate";"massimo_ribasso";"minimo_ribasso";"FLAG_SCOMPUTO";"COD_PRESTAZIONI_COMPRESE";"PRESTAZIONI_COMPRESE";"CIG_PROG_ESTERNA";"DATA_INCARICO_PROG";"DATA_CONS_PROG";"COD_MODO_RIAGGIUDICAZIONE";"MODO_RIAGGIUDICAZIONE";"FLAG_PROC_ACCELERATA";"N_MANIF_INTERESSE"
+"A000000001";"2024-05-10";"AGGIUDICATA";;;;;"100.00";;;;"100";;;;;;;;;;;;;;;;
+"B000000002";"2025-01-01";"AGGIUDICATA";;;;;"200.00";;;;"200";;;;;;;;;;;;;;;;
+"C000000003";;"AGGIUDICATA";;;;;"300.00";;;;"300";;;;;;;;;;;;;;;;
+"F000000006";"2025-06-01";"AGGIUDICATA";;;;;"400.00";;;;"500";;;;;;;;;;;;;;;;
+"Z000000009";"2023-03-01";"AGGIUDICATA";;;;;"500.00";;;;"100";;;;;;;;;;;;;;;;

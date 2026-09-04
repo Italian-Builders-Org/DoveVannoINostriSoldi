@@ -82,6 +82,10 @@ test("citizen-facing main categories plus other categories reconcile with SIOPE 
   assert.equal(rows.length, 5);
   assert.equal(rows.at(-1).label, "Altre categorie");
   assert.equal(rows.reduce((sum, row) => sum + row.amountCents, 0), latest.totalCents);
+  for (const row of rows) {
+    assert.ok(row.explanation.trim().length > 20, `${row.label} deve spiegare la voce`);
+  }
+  assert.match(rows[0].explanation, /funzionamento|opere|prestiti|conto terzi|classificare|finanziarie|anticipazioni/i);
 });
 
 test("ordinary-statute municipality joins every available source by exact identifiers", async () => {
@@ -105,6 +109,19 @@ test("ordinary-statute municipality joins every available source by exact identi
     Buffer.byteLength(JSON.stringify(profile)) < 100_000,
     "municipalityProfile deve restare sotto il budget di 100 kB",
   );
+});
+
+test("committed SIOPE and ISTAT identity can serve a municipality without a live IPA cadastral field", async () => {
+  const profile = await getMunicipalityProfile(entity({
+    codiceIpa: "c_a783",
+    taxCode: "00074270620",
+    istatCode: "062008",
+    cadastralCode: null,
+  }), { allowCommittedIstatIdentity: true });
+  assert.ok(profile);
+  assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.openCivitas.status, "available");
+  assert.equal(profile.identifiers.istatCode, "062008");
 });
 
 test("special-statute municipality keeps national data and declares OpenCivitas out of scope", async () => {

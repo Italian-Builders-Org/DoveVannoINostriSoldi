@@ -1,0 +1,77 @@
+{
+  "manifest_version": 1,
+  "methodology_version": "peer-relative-v6",
+  "required_operational_axes": ["temporal", "peer", "vintage"],
+  "axes": {
+    "scale_normalizer_pairs": [
+      {"id": "mad_with_iqr_fallback+tanh", "order": 0, "value": {"scale_estimator": "mad_with_iqr_fallback", "normalizer": "tanh"}},
+      {"id": "mad_with_iqr_fallback+normal", "order": 1, "value": {"scale_estimator": "mad_with_iqr_fallback", "normalizer": "normal"}},
+      {"id": "mad_with_iqr_fallback+ecdf", "order": 2, "value": {"scale_estimator": "mad_with_iqr_fallback", "normalizer": "ecdf"}},
+      {"id": "iqr_r7+tanh", "order": 3, "value": {"scale_estimator": "iqr_r7", "normalizer": "tanh"}},
+      {"id": "iqr_r7+normal", "order": 4, "value": {"scale_estimator": "iqr_r7", "normalizer": "normal"}}
+    ],
+    "calibration_periods": [
+      {"id": "1995+", "order": 0, "value": 1995},
+      {"id": "2000+", "order": 1, "value": 2000}
+    ],
+    "peer_aggregations": [
+      {"id": "median", "order": 0, "value": "median"},
+      {"id": "mean", "order": 1, "value": "mean"}
+    ],
+    "public_finance_splits": [
+      {"id": "debt_50_primary_50", "order": 0, "value": {"debt_weight": 0.5}},
+      {"id": "debt_60_primary_40", "order": 1, "value": {"debt_weight": 0.6}},
+      {"id": "debt_40_primary_60", "order": 2, "value": {"debt_weight": 0.4}}
+    ],
+    "pillar_aggregations": [
+      {"id": "arithmetic", "order": 0, "value": "arithmetic"},
+      {"id": "geometric", "order": 1, "value": "geometric"}
+    ],
+    "pillar_weight_multipliers": [
+      {"id": "0.8", "order": 0, "value": 0.8},
+      {"id": "1.0", "order": 1, "value": 1.0},
+      {"id": "1.2", "order": 2, "value": 1.2}
+    ],
+    "coupled_data_variants": [
+      {"id": "baseline_+0_end_+0|all|median", "order": 0, "value": "baseline_+0_end_+0|all|median"},
+      {"id": "baseline_+0_end_+0|all|mean", "order": 1, "value": "baseline_+0_end_+0|all|mean"},
+      {"id": "baseline_+0_end_+0|without_FR|median", "order": 2, "value": "baseline_+0_end_+0|without_FR|median"},
+      {"id": "baseline_+0_end_+0|without_FR|mean", "order": 3, "value": "baseline_+0_end_+0|without_FR|mean"},
+      {"id": "baseline_+0_end_+0|without_DE|median", "order": 4, "value": "baseline_+0_end_+0|without_DE|median"},
+      {"id": "baseline_+0_end_+0|without_DE|mean", "order": 5, "value": "baseline_+0_end_+0|without_DE|mean"},
+      {"id": "baseline_+0_end_+0|without_ES|median", "order": 6, "value": "baseline_+0_end_+0|without_ES|median"},
+      {"id": "baseline_+0_end_+0|without_ES|mean", "order": 7, "value": "baseline_+0_end_+0|without_ES|mean"},
+      {"id": "baseline_+1_end_+1|all|median", "order": 8, "value": "baseline_+1_end_+1|all|median"},
+      {"id": "baseline_+1_end_+1|all|mean", "order": 9, "value": "baseline_+1_end_+1|all|mean"},
+      {"id": "baseline_+1_end_+1|without_FR|median", "order": 10, "value": "baseline_+1_end_+1|without_FR|median"},
+      {"id": "baseline_+1_end_+1|without_FR|mean", "order": 11, "value": "baseline_+1_end_+1|without_FR|mean"},
+      {"id": "baseline_+1_end_+1|without_DE|median", "order": 12, "value": "baseline_+1_end_+1|without_DE|median"},
+      {"id": "baseline_+1_end_+1|without_DE|mean", "order": 13, "value": "baseline_+1_end_+1|without_DE|mean"},
+      {"id": "baseline_+1_end_+1|without_ES|median", "order": 14, "value": "baseline_+1_end_+1|without_ES|median"},
+      {"id": "baseline_+1_end_+1|without_ES|mean", "order": 15, "value": "baseline_+1_end_+1|without_ES|mean"}
+    ]
+  },
+  "thresholds": {
+    "minimum_rolling_windows": 20,
+    "minimum_disjoint_windows": 6,
+    "temporal_badge_width": 10,
+    "peer_badge_width": 10,
+    "method_badge_width": 20,
+    "stability_high_max_width": 10,
+    "stability_medium_max_width": 20
+  },
+  "rejected_configurations": [
+    {"id": "iqr_r7+ecdf", "reason": "ECDF usa direttamente la distribuzione dei gap; duplicare IQR+ECDF sovrappeserebbe l'empirico."},
+    {"id": "2005+", "reason": "Il periodo 2005+ produce 19 finestre rolling per la durata minima e non supera il gate di 20."}
+  ],
+  "separate_diagnostics": [
+    "scale_jackknife_width",
+    "scale_leave_block_width",
+    "expanded_peer_width",
+    "drop_one_indicator_width",
+    "drop_one_pillar_width",
+    "indicator_correlation_matrix"
+  ],
+  "expected_method_configurations_per_government": 29160,
+  "expected_coupled_configurations": 233280
+}

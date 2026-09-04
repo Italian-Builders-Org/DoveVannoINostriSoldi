@@ -56,16 +56,48 @@ test("composition component keeps partial state, keyboard tooltip and exact tabl
   ]);
   assert.match(component, /kind: "partial"/);
   assert.match(component, /role="tooltip"/);
+  assert.match(component, /ref=\{compositionRef\}/);
+  assert.match(component, /data-positioned=\{tooltipPosition\?\.anchor === anchor \? "true" : "false"\}/);
+  assert.match(component, /onFocus=\{\(event\) => activate\(item\.id, event\)\}/);
+  assert.match(component, /aria-pressed=\{pinnedId === item\.id\}/);
   assert.match(component, /event\.key === "Escape"/);
   assert.match(component, /Dati esatti della composizione/);
   assert.match(component, /Ready composition must reconcile with its total/);
   assert.match(component, /Partial composition cannot exceed its canonical total/);
   assert.match(css, /aspect-ratio: 100 \/ 62/);
   assert.match(css, /\.visual \{[\s\S]*?width: 100%;[\s\S]*?min-width: 0;/);
+  assert.match(css, /\.composition \{[\s\S]*?position: relative;/);
+  assert.match(css, /\.tooltip \{[\s\S]*?position: absolute;[\s\S]*?pointer-events: none;[\s\S]*?visibility: hidden;/);
+  assert.match(css, /\.tooltip\[data-positioned="true"\] \{[\s\S]*?visibility: visible;/);
   assert.doesNotMatch(css, /\.visual \{[\s\S]*?min-height:\s*260px/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.visual \{ display: none; \}/);
   assert.match(css, /\.legendCopy \{[\s\S]*?display: flex;[\s\S]*?flex-direction: column;/);
   assert.match(component, /styles\.legendCopy/);
   assert.match(component, /styles\.legendLabel/);
   assert.match(component, /styles\.legendAmount/);
+  assert.match(component, /Più grande è il riquadro, maggiore è la quota sul totale/);
+  assert.match(component, /Più lunga è la barra, maggiore è la quota sul totale/);
+  assert.match(component, /rectangle\.width >= 42 && rectangle\.height >= 28/);
+  assert.match(component, /rectangle\.width >= 28 && rectangle\.height >= 21/);
+  assert.match(component, /data-label-mode=\{labelMode\}/);
+  assert.match(component, /title=\{`\$\{item\.label\}: \$\{exactEuro\(item\.valueEuro\)\}/);
+  assert.match(component, /item\.shortLabel \?\? item\.label/);
+  assert.match(css, /\.tileCopy b \{[\s\S]*?font-family: var\(--font-heading\);/);
+  assert.match(css, /\.visual \{[\s\S]*?height: clamp\(250px, 62cqw, 320px\);/);
+  assert.match(css, /\.tile\[data-label-mode="index"\] \{[\s\S]*?place-items: center;[\s\S]*?align-content: center;[\s\S]*?padding: 0;/);
+  assert.match(css, /\.tileIndex \{[\s\S]*?width: auto;[\s\S]*?height: auto;/);
+});
+
+test("home reading guidance is a compact accessible aside", async () => {
+  const [page, css] = await Promise.all([
+    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
+  assert.match(page, /<h2 id="reading-title" className="panel-title">Come leggere questi numeri<\/h2>/);
+  assert.match(page, /className=\{styles\.readingRules\}/);
+  assert.match(page, /href="\/metodologia"/);
+  assert.doesNotMatch(page, /panel-accent \$\{styles\.readingPanel\}/);
+  assert.match(css, /\.readingPanel \{[\s\S]*?grid-column: 1 \/ -1;[\s\S]*?background: var\(--color-neutral-100\);/);
+  assert.match(css, /\.readingRules \{[\s\S]*?display: grid;/);
 });

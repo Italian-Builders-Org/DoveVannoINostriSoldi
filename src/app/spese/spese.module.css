@@ -66,7 +66,7 @@
 .titleTrack i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 
 .titleList p {
@@ -170,12 +170,12 @@
 .monthList li > i {
   display: block;
   height: 10px;
-  background: var(--color-neutral-200);
+  background: var(--chart-data-track);
 }
 .monthList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 .monthList li > b {
   text-align: right;

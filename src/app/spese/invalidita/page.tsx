@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { inpsCivilInvaliditySnapshot as data } from "@/lib/inps-invalidity-snapshot";
+import { istatCodeOfRegion } from "@/lib/italy-regions";
 import styles from "./invalidita.module.css";
 
 export const metadata: Metadata = {
@@ -183,13 +185,21 @@ export default function CivilInvalidityPage() {
               </tr>
             </thead>
             <tbody>
-              {data.regionalNewPensions.regions.map((region) => (
-                <tr key={region.region}>
-                  <th scope="row">{region.region}</th>
-                  <td className="num">{integer(regionalValue(region, 2023) ?? 0)}</td>
-                  <td className="num">{integer(regionalValue(region, 2024) ?? 0)}</td>
-                </tr>
-              ))}
+              {data.regionalNewPensions.regions.map((region) => {
+                const regionCode = istatCodeOfRegion(region.region);
+                return (
+                  <tr key={region.region}>
+                    <th scope="row">
+                      {regionCode ? (
+                        <RegionCrest regionCode={regionCode} regionName={region.region} decorative />
+                      ) : null}{" "}
+                      {region.region}
+                    </th>
+                    <td className="num">{integer(regionalValue(region, 2023) ?? 0)}</td>
+                    <td className="num">{integer(regionalValue(region, 2024) ?? 0)}</td>
+                  </tr>
+                );
+              })}
               <tr>
                 <th scope="row">Totale della copertura</th>
                 <td className="num">
@@ -217,6 +227,8 @@ export default function CivilInvalidityPage() {
           standardizzazione almeno per età.
         </p>
       </section>
+
+      <RegionCrestAttribution />
 
       <div className={styles.columns}>
         <section className="panel">

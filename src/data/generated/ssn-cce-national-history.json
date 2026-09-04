@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "recovery": {
+    "method": "verified-production-render",
+    "observedAt": "2026-08-28T12:31:43.000Z",
+    "archiveUrl": "https://web.archive.org/web/20260828123143/https://www.dovevannoinostrisoldi.com/spese/sanita/storico",
+    "note": "OpenBDAP CSV dumps unavailable at commit time. Years 2012-2023 use cent values that reproduce compactEuro labels from a verified live render on 2026-08-28; 2024 uses hash-locked ssn-cce-2024 national cents."
+  },
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "platform": "OpenBDAP",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it",
+    "observedAt": "2026-08-28T12:31:43.000Z",
+    "license": "Creative Commons Attribution",
+    "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+  },
+  "years": [
+    {
+      "year": 2012,
+      "values": {
+        "productionCosts": 11564000000000,
+        "personnelCost": 3510000000000,
+        "healthcareWorkServices": 118000000000,
+        "nonHealthcareWorkServices": 29160000000,
+        "purchasedServices": 5633000000000
+      },
+      "provenance": {
+        "packageId": "8ce3148d-6aef-4d11-a099-025b134909ce",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2012",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=8ce3148d-6aef-4d11-a099-025b134909ce",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/8ce3148d-6aef-4d11-a099-025b134909ce.csv",
+        "sourceDate": "2019-07-17",
+        "metadataModified": "2019-07-17T12:34:17.000000",
+        "dataUpdatedAt": "2019-07-17",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2013,
+      "values": {
+        "productionCosts": 11518000000000,
+        "personnelCost": 3462000000000,
+        "healthcareWorkServices": 112000000000,
+        "nonHealthcareWorkServices": 27620000000,
+        "purchasedServices": 5625000000000
+      },
+      "provenance": {
+        "packageId": "dd041e90-e232-4635-bb46-e3336254fbad",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2013",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=dd041e90-e232-4635-bb46-e3336254fbad",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/dd041e90-e232-4635-bb46-e3336254fbad.csv",
+        "sourceDate": "2019-07-17",
+        "metadataModified": "2019-07-17T12:34:33.000000",
+        "dataUpdatedAt": "2019-07-17",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2014,
+      "values": {
+        "productionCosts": 11651000000000,
+        "personnelCost": 3431000000000,
+        "healthcareWorkServices": 114000000000,
+        "nonHealthcareWorkServices": 26670000000,
+        "purchasedServices": 5618000000000
+      },
+      "provenance": {
+        "packageId": "7933debe-f3bd-4924-b1b2-6517bd2a0e15",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2014",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=7933debe-f3bd-4924-b1b2-6517bd2a0e15",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/7933debe-f3bd-4924-b1b2-6517bd2a0e15.csv",
+        "sourceDate": "2019-07-17",
+        "metadataModified": "2019-07-17T12:34:53.000000",
+        "dataUpdatedAt": "2019-07-17",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2015,
+      "values": {
+        "productionCosts": 11756000000000,
+        "personnelCost": 3415000000000,
+        "healthcareWorkServices": 112000000000,
+        "nonHealthcareWorkServices": 24730000000,
+        "purchasedServices": 5626000000000
+      },
+      "provenance": {
+        "packageId": "a2ab7a8d-4f28-40bd-b948-7e5ac4b7eb73",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2015",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=a2ab7a8d-4f28-40bd-b948-7e5ac4b7eb73",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/a2ab7a8d-4f28-40bd-b948-7e5ac4b7eb73.csv",
+        "sourceDate": "2019-10-24",
+        "metadataModified": "2019-10-24T12:26:28.000000",
+        "dataUpdatedAt": "2019-10-24",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2016,
+      "values": {
+        "productionCosts": 11778000000000,
+        "personnelCost": 3388000000000,
+        "healthcareWorkServices": 111000000000,
+        "nonHealthcareWorkServices": 24320000000,
+        "purchasedServices": 5614000000000
+      },
+      "provenance": {
+        "packageId": "186bc88f-7521-4d88-b5d0-e58bf0dbb183",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2016",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=186bc88f-7521-4d88-b5d0-e58bf0dbb183",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/186bc88f-7521-4d88-b5d0-e58bf0dbb183.csv",
+        "sourceDate": "2019-09-17",
+        "metadataModified": "2019-09-17T16:00:19.000000",
+        "dataUpdatedAt": "2019-09-17",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2017,
+      "values": {
+        "productionCosts": 12037000000000,
+        "personnelCost": 3386000000000,
+        "healthcareWorkServices": 112000000000,
+        "nonHealthcareWorkServices": 23790000000,
+        "purchasedServices": 5665000000000
+      },
+      "provenance": {
+        "packageId": "cd806c31-0688-4be1-8e16-5b4f8afd7ad7",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2017",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=cd806c31-0688-4be1-8e16-5b4f8afd7ad7",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/cd806c31-0688-4be1-8e16-5b4f8afd7ad7.csv",
+        "sourceDate": "2019-09-17",
+        "metadataModified": "2019-09-17T15:02:40.000000",
+        "dataUpdatedAt": "2019-09-17",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2018,
+      "values": {
+        "productionCosts": 12289000000000,
+        "personnelCost": 3438000000000,
+        "healthcareWorkServices": 112000000000,
+        "nonHealthcareWorkServices": 23730000000,
+        "purchasedServices": 5756000000000
+      },
+      "provenance": {
+        "packageId": "05899d7e-c2ff-463c-b220-9a0a1d8d174d",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2018",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=05899d7e-c2ff-463c-b220-9a0a1d8d174d",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/05899d7e-c2ff-463c-b220-9a0a1d8d174d.csv",
+        "sourceDate": "2020-06-23",
+        "metadataModified": "2020-06-23T08:41:07.000000",
+        "dataUpdatedAt": "2020-06-23",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2019,
+      "values": {
+        "productionCosts": 12476000000000,
+        "personnelCost": 3497000000000,
+        "healthcareWorkServices": 116000000000,
+        "nonHealthcareWorkServices": 24450000000,
+        "purchasedServices": 5819000000000
+      },
+      "provenance": {
+        "packageId": "e2431345-581c-4c5f-85a5-8ebe9ed46f82",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2019",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=e2431345-581c-4c5f-85a5-8ebe9ed46f82",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e2431345-581c-4c5f-85a5-8ebe9ed46f82.csv",
+        "sourceDate": "2023-03-27",
+        "metadataModified": "2023-03-27T09:56:05.000000",
+        "dataUpdatedAt": "2023-03-27",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2020,
+      "values": {
+        "productionCosts": 13015000000000,
+        "personnelCost": 3624000000000,
+        "healthcareWorkServices": 155000000000,
+        "nonHealthcareWorkServices": 25260000000,
+        "purchasedServices": 5822000000000
+      },
+      "provenance": {
+        "packageId": "a78d4210-187b-48b1-84ee-ad8c19bb899e",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2020",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=a78d4210-187b-48b1-84ee-ad8c19bb899e",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/a78d4210-187b-48b1-84ee-ad8c19bb899e.csv",
+        "sourceDate": "2026-02-11",
+        "metadataModified": "2026-02-11T13:00:14.000000",
+        "dataUpdatedAt": "2026-02-11",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2021,
+      "values": {
+        "productionCosts": 13153000000000,
+        "personnelCost": 3609000000000,
+        "healthcareWorkServices": 202000000000,
+        "nonHealthcareWorkServices": 38570000000,
+        "purchasedServices": 5981000000000
+      },
+      "provenance": {
+        "packageId": "9b42fcab-45c6-4e41-a6a0-f64c2fb8606a",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2021",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=9b42fcab-45c6-4e41-a6a0-f64c2fb8606a",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/9b42fcab-45c6-4e41-a6a0-f64c2fb8606a.csv",
+        "sourceDate": "2026-02-11",
+        "metadataModified": "2026-02-11T13:00:44.000000",
+        "dataUpdatedAt": "2026-02-11",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2022,
+      "values": {
+        "productionCosts": 13959000000000,
+        "personnelCost": 3826000000000,
+        "healthcareWorkServices": 170000000000,
+        "nonHealthcareWorkServices": 34150000000,
+        "purchasedServices": 6282000000000
+      },
+      "provenance": {
+        "packageId": "4f70ec5b-5d65-4c2c-8ceb-2e066b56b213",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2022",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=4f70ec5b-5d65-4c2c-8ceb-2e066b56b213",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4f70ec5b-5d65-4c2c-8ceb-2e066b56b213.csv",
+        "sourceDate": "2025-04-08",
+        "metadataModified": "2025-04-08T16:03:23.000000",
+        "dataUpdatedAt": "2025-04-08",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2023,
+      "values": {
+        "productionCosts": 14317000000000,
+        "personnelCost": 3923000000000,
+        "healthcareWorkServices": 157000000000,
+        "nonHealthcareWorkServices": 26490000000,
+        "purchasedServices": 6358000000000
+      },
+      "provenance": {
+        "packageId": "c5ad6969-0b82-47b3-8749-b5d242ce9eba",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2023",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=c5ad6969-0b82-47b3-8749-b5d242ce9eba",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/c5ad6969-0b82-47b3-8749-b5d242ce9eba.csv",
+        "sourceDate": "2026-02-11",
+        "metadataModified": "2026-02-11T13:03:14.000000",
+        "dataUpdatedAt": "2026-02-11",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    },
+    {
+      "year": 2024,
+      "values": {
+        "healthcareWorkServices": 184360514664,
+        "nonHealthcareWorkServices": 23628458264,
+        "personnelCost": 4037827491649,
+        "productionCosts": 14919584274769,
+        "purchasedServices": 6626162783206
+      },
+      "provenance": {
+        "packageId": "92e83683-f285-40b7-956a-b2971724579d",
+        "packageName": "spd_ssn_cce_naz_voccn_01_2024",
+        "packageUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=92e83683-f285-40b7-956a-b2971724579d",
+        "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/92e83683-f285-40b7-956a-b2971724579d.csv",
+        "sourceDate": "2026-02-11",
+        "metadataModified": "2026-02-11T13:48:03.000000",
+        "dataUpdatedAt": "2026-02-11",
+        "sourceDescriptions": {
+          "productionCosts": "Totale costi della produzione (B)",
+          "personnelCost": "Totale Costo del personale",
+          "healthcareWorkServices": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+          "nonHealthcareWorkServices": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+          "purchasedServices": "B.2) Acquisti di servizi"
+        },
+        "observedAt": "2026-08-28T12:31:43.000Z",
+        "license": "Creative Commons Attribution",
+        "licenseUrl": "http://www.opendefinition.org/licenses/cc-by"
+      }
+    }
+  ]
+}

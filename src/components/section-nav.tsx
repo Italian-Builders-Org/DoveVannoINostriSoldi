@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { activeNavSection, isNavChildActive } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
 
@@ -14,6 +15,22 @@ import styles from "./section-nav.module.css";
  */
 export function SectionNav() {
   const pathname = usePathname();
+  return (
+    <Suspense fallback={<SectionNavContent pathname={pathname} currentSearch={null} />}>
+      <SectionNavWithSearchParams pathname={pathname} />
+    </Suspense>
+  );
+}
+
+function SectionNavWithSearchParams({ pathname }: Readonly<{ pathname: string }>) {
+  const searchParams = useSearchParams();
+  return <SectionNavContent pathname={pathname} currentSearch={searchParams.toString()} />;
+}
+
+function SectionNavContent({
+  pathname,
+  currentSearch,
+}: Readonly<{ pathname: string; currentSearch: string | null }>) {
   const section = activeNavSection(pathname);
   const pages = section?.children ?? [];
   if (pages.length < 2) return null;
@@ -28,7 +45,8 @@ export function SectionNav() {
       </p>
       <ul className={styles.links}>
         {pages.map((page) => {
-          const current = isNavChildActive(pathname, page.href, pages);
+          const current = currentSearch !== null
+            && isNavChildActive(pathname, page.href, pages, currentSearch);
           return (
             <li key={page.href}>
               {current ? (

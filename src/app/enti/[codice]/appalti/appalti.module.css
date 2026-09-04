@@ -1,0 +1,195 @@
+.page {
+  gap: var(--space-5);
+}
+
+.scopeLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.scopeLine strong { color: var(--color-text); }
+
+.views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.views a,
+.pageSize a,
+.pager a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--color-accent-800);
+  border: 1px solid var(--color-neutral-300);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.views a:hover,
+.views .activeView,
+.pageSize a:hover,
+.pager a:hover {
+  color: var(--color-text);
+  background: var(--color-accent-100);
+  border-color: var(--color-accent-300);
+}
+
+.pageSize {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.pageSize a {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 10px;
+  justify-content: center;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.summaryGrid a {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  padding-top: var(--space-3);
+  border-top: 3px solid var(--color-accent-700);
+}
+
+.summaryGrid span {
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.summaryGrid strong,
+.operatorFacts strong {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: var(--font-heading-weight);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.summaryGrid a:hover strong { color: var(--color-accent-800); }
+
+.note {
+  max-width: 90ch;
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.tableHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.table-scroll table { min-width: 660px; }
+.table-scroll td,
+.table-scroll th { font-variant-numeric: tabular-nums; }
+
+.page :global(.table-scroll) td a,
+.page :global(.table-scroll) th a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.pager span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 4px;
+}
+
+.pager span[aria-disabled="true"] { color: var(--color-neutral-500); }
+
+.operatorFacts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.operatorFacts > div {
+  display: grid;
+  gap: 4px;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.operatorFacts span {
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.sourceList {
+  display: grid;
+  gap: 0;
+  margin: var(--space-4) 0 0;
+}
+
+.sourceList > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.3fr) minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: 9px 0;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.sourceList dt { color: var(--color-neutral-600); font-size: 12px; font-weight: 650; }
+.sourceList dd { margin: 0; color: var(--color-neutral-700); font-size: 12px; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .summaryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .operatorFacts { grid-template-columns: minmax(0, 1fr); }
+  .tableHint { display: block; }
+  .sourceList > div { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+}
+
+@media (max-width: 390px) {
+  .summaryGrid { grid-template-columns: minmax(0, 1fr); }
+  .summaryGrid strong { font-size: 21px; }
+}

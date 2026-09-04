@@ -531,7 +531,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python3 scripts/ci/check-government-scorecard-artifacts.py",
+        "command": "npm run government-scorecard:verify",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
@@ -542,7 +542,8 @@
       "nodeTests": [
         "tests/government-scorecard-data.test.mjs",
         "tests/government-scorecard-calculation.test.mjs",
-        "tests/government-scorecard-page.test.mjs"
+        "tests/government-scorecard-page.test.mjs",
+        "tests/government-scorecard-downloads.test.mjs"
       ],
       "generator": {
         "command": "python3 scripts/etl/government_scorecard_snapshot.py --retrieved-at <UTC timestamp> && python3 scripts/etl/government_scorecard_chronology.py && python3 scripts/etl/government_scorecard_page.py --refresh --retrieved-at <same UTC timestamp>",

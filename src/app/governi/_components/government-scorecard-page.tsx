@@ -3,6 +3,7 @@ import {
   presentGovernmentScorecardV6View,
   type GovernmentScorecardV6PageView,
 } from "@/lib/government-scorecard-page";
+import { GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF } from "@/lib/government-scorecard-download-links";
 
 import { ContextCarousel } from "./context-carousel";
 import { IndicatorCarousel } from "./indicator-carousel";
@@ -228,6 +229,10 @@ function SourcesDetails({ view }: { view: GovernmentScorecardV6PageView }) {
       <p>
         Il voto usa la pubblicazione {view.source.dataset_code} della {view.source.source_owner};
         i grafici di contesto indicano accanto a ogni serie la propria fonte e data di aggiornamento.
+      </p>
+      <p className={styles.downloadLead}>
+        <a className={styles.downloadLink} href={GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF}>Scarica i dati</a>
+        <span>Manifest, cronologia, dati del voto, dati della pagina e ricevute di provenienza in JSON aperto.</span>
       </p>
       <ul>
         {view.sources.map((source) => <li key={source.id}><a href={source.url}>{source.label}</a></li>)}

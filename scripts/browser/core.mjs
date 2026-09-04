@@ -824,6 +824,26 @@ try {
 
         await page.evaluate(() => {
           const summary = [...document.querySelectorAll("summary")].find(
+            (candidate) => candidate.textContent?.trim() === "Dati, fonti e verifiche",
+          );
+          summary?.click();
+        });
+        const downloadLink = await page.$('a[href="/api/governi/dati"]');
+        assert.ok(downloadLink, `${label}: access point "Scarica i dati" assente`);
+        assert.equal(
+          await downloadLink.evaluate((element) => element.textContent?.trim()),
+          "Scarica i dati",
+          `${label}: testo del link download divergente`,
+        );
+        await downloadLink.evaluate((element) => element.focus());
+        assert.equal(
+          await page.evaluate(() => document.activeElement?.getAttribute("href")),
+          "/api/governi/dati",
+          `${label}: il link download non riceve il focus`,
+        );
+
+        await page.evaluate(() => {
+          const summary = [...document.querySelectorAll("summary")].find(
             (candidate) => candidate.textContent?.trim() === "Apri la tabella equivalente",
           );
           summary?.click();

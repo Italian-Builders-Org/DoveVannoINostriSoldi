@@ -189,6 +189,28 @@
   font-weight: 800;
 }
 
+.downloadLead {
+  display: grid;
+  gap: 2px;
+  margin: 12px 0;
+}
+
+.downloadLead span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  width: fit-content;
+  color: var(--color-text);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .emptyState,
 .contextEmpty {
   padding: 16px;

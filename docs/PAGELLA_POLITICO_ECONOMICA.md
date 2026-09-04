@@ -20,6 +20,25 @@ Ogni scheda contiene, nello stesso ordine:
 
 Le fonti dei grafici e delle schede di contesto sono raggiungibili dalla pagina.
 
+## Scarica i dati
+
+Il link "Scarica i dati" apre `/api/governi/dati`, un manifest JSON aperto che elenca i soli artefatti necessari: manifest metodologico, cronologia, dati del voto, dati della pagina e ricevute di provenienza già disponibili.
+
+Ogni download è su allowlist chiusa: un identificatore ignoto restituisce 404. Ogni indicatore conserva fonte, serie o query, unità, frequenza, periodo, vintage, trasformazione, data di acquisizione e SHA-256.
+
+| Download | Contenuto |
+| --- | --- |
+| `/api/governi/dati/methodology` | manifest metodologico |
+| `/api/governi/dati/chronology` | cronologia istituzionale |
+| `/api/governi/dati/score-data` | dati annuali usati nel voto |
+| `/api/governi/dati/page-data` | dati generali dei grafici e contesto editoriale documentato |
+| `/api/governi/dati/score-provenance` | ricevuta di provenienza dei dati del voto |
+| `/api/governi/dati/page-provenance` | ricevuta di provenienza dei dati della pagina |
+
+La validazione offline controlla snapshot congelati, calcolo, hash e catena valore mostrato → record → fonte. Il repository non conserva nuovi payload raw e quindi non dichiara che la validazione offline possa ricreare i byte originali delle fonti.
+
+Il refresh online resta separato: il workflow `government-scorecard-refresh.yml` interroga le fonti ufficiali, valida i nuovi payload e propone gli aggiornamenti tramite una PR dati.
+
 ## Come leggere il voto
 
 Il punto di riferimento è 50:
@@ -236,13 +255,10 @@ sono elencati nella tabella sopra e nel secondo artefatto.
 ## Verifica locale
 
 ```bash
-python3 scripts/ci/check-government-scorecard-artifacts.py
-python3 -m unittest \
-  tests/etl/test_government_scorecard_snapshot.py \
-  tests/etl/test_government_scorecard_chronology.py \
-  tests/etl/test_government_scorecard_page.py
-node --experimental-strip-types --test tests/government-scorecard-*.test.mjs
+npm run government-scorecard:verify
 npm run ci:static
+npm run test:etl
+npm run test:snapshots
 npm run build
 ```
 

@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-cofog",
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+    "apiPath": "/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp",
+    "datasetCode": "gov_10a_exp",
+    "datasetLabel": "General government expenditure by function (COFOG)",
+    "structure": {
+      "id": "GOV_10A_EXP",
+      "agencyId": "ESTAT",
+      "version": "75.0"
+    },
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice verificata il 2026-09-03: «licensed under the Creative Commons Attribution 4.0 International licence… provided you acknowledge the source and indicate any changes». Licenza del portale Eurostat, non estesa ad altri titolari.",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "assets": {
+      "mio-eur": {
+        "unit": "MIO_EUR",
+        "unitLabel": "Million euro",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 65553,
+        "sha256": "5de6234e61c800ac323c175dc28ada2e95763078d7780a0dd6e8cada0c240c88",
+        "sourceUpdated": "2026-07-21T11:00:00+0200"
+      },
+      "pc-gdp": {
+        "unit": "PC_GDP",
+        "unitLabel": "Percentage of gross domestic product (GDP)",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 51759,
+        "sha256": "7aedc43f93a894d4d8d601da774e23a497930c46276a2db5d7670b1a57612537",
+        "sourceUpdated": "2026-07-21T11:00:00+0200"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-03",
+      "checkedAt": "2026-09-03",
+      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici il 2026-09-03 con estremi temporali espliciti (sinceTimePeriod/untilTimePeriod), così i byte sono deterministici e un hash diverso segnala una revisione della fonte, non il semplice avanzare del tempo."
+    }
+  },
+  "expected": {
+    "years": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "units": [
+      "MIO_EUR",
+      "PC_GDP"
+    ],
+    "sector": "S13",
+    "naItem": "TE",
+    "functions": [
+      {
+        "code": "TOTAL",
+        "label": "Total"
+      },
+      {
+        "code": "GF01",
+        "label": "General public services"
+      },
+      {
+        "code": "GF02",
+        "label": "Defence"
+      },
+      {
+        "code": "GF03",
+        "label": "Public order and safety"
+      },
+      {
+        "code": "GF04",
+        "label": "Economic affairs"
+      },
+      {
+        "code": "GF05",
+        "label": "Environmental protection"
+      },
+      {
+        "code": "GF06",
+        "label": "Housing and community amenities"
+      },
+      {
+        "code": "GF07",
+        "label": "Health"
+      },
+      {
+        "code": "GF08",
+        "label": "Recreation, culture and religion"
+      },
+      {
+        "code": "GF09",
+        "label": "Education"
+      },
+      {
+        "code": "GF10",
+        "label": "Social protection"
+      }
+    ],
+    "geographies": [
+      {
+        "code": "EU27_2020",
+        "label": "European Union - 27 countries (from 2020)",
+        "kind": "aggregate"
+      },
+      {
+        "code": "EA21",
+        "label": "Euro area – 21 countries (from 2026)",
+        "kind": "aggregate"
+      },
+      {
+        "code": "EA20",
+        "label": "Euro area – 20 countries (2023-2025)",
+        "kind": "aggregate"
+      },
+      {
+        "code": "EA19",
+        "label": "Euro area - 19 countries  (2015-2022)",
+        "kind": "aggregate"
+      },
+      {
+        "code": "BE",
+        "label": "Belgium",
+        "kind": "country"
+      },
+      {
+        "code": "BG",
+        "label": "Bulgaria",
+        "kind": "country"
+      },
+      {
+        "code": "CZ",
+        "label": "Czechia",
+        "kind": "country"
+      },
+      {
+        "code": "DK",
+        "label": "Denmark",
+        "kind": "country"
+      },
+      {
+        "code": "DE",
+        "label": "Germany",
+        "kind": "country"
+      },
+      {
+        "code": "EE",
+        "label": "Estonia",
+        "kind": "country"
+      },
+      {
+        "code": "IE",
+        "label": "Ireland",
+        "kind": "country"
+      },
+      {
+        "code": "EL",
+        "label": "Greece",
+        "kind": "country"
+      },
+      {
+        "code": "ES",
+        "label": "Spain",
+        "kind": "country"
+      },
+      {
+        "code": "FR",
+        "label": "France",
+        "kind": "country"
+      },
+      {
+        "code": "HR",
+        "label": "Croatia",
+        "kind": "country"
+      },
+      {
+        "code": "IT",
+        "label": "Italy",
+        "kind": "country"
+      },
+      {
+        "code": "CY",
+        "label": "Cyprus",
+        "kind": "country"
+      },
+      {
+        "code": "LV",
+        "label": "Latvia",
+        "kind": "country"
+      },
+      {
+        "code": "LT",
+        "label": "Lithuania",
+        "kind": "country"
+      },
+      {
+        "code": "LU",
+        "label": "Luxembourg",
+        "kind": "country"
+      },
+      {
+        "code": "HU",
+        "label": "Hungary",
+        "kind": "country"
+      },
+      {
+        "code": "MT",
+        "label": "Malta",
+        "kind": "country"
+      },
+      {
+        "code": "NL",
+        "label": "Netherlands",
+        "kind": "country"
+      },
+      {
+        "code": "AT",
+        "label": "Austria",
+        "kind": "country"
+      },
+      {
+        "code": "PL",
+        "label": "Poland",
+        "kind": "country"
+      },
+      {
+        "code": "PT",
+        "label": "Portugal",
+        "kind": "country"
+      },
+      {
+        "code": "RO",
+        "label": "Romania",
+        "kind": "country"
+      },
+      {
+        "code": "SI",
+        "label": "Slovenia",
+        "kind": "country"
+      },
+      {
+        "code": "SK",
+        "label": "Slovakia",
+        "kind": "country"
+      },
+      {
+        "code": "FI",
+        "label": "Finland",
+        "kind": "country"
+      },
+      {
+        "code": "SE",
+        "label": "Sweden",
+        "kind": "country"
+      },
+      {
+        "code": "IS",
+        "label": "Iceland",
+        "kind": "country"
+      },
+      {
+        "code": "NO",
+        "label": "Norway",
+        "kind": "country"
+      },
+      {
+        "code": "CH",
+        "label": "Switzerland",
+        "kind": "country"
+      }
+    ],
+    "cellsPerUnit": 4114,
+    "sourceUpdated": "2026-07-21T11:00:00+0200"
+  },
+  "coverage": {
+    "observedAt": "2026-09-03",
+    "note": "Copertura piena e pretesa dal contratto: 4114 celle su 4114 per entrambe le unità, nessuna cella assente in nessun anno per nessuna geografia. Una lacuna futura deve fermare la build, non essere riempita per interpolazione.",
+    "excludedYears": {
+      "2025": "Escluso: al 2026-09-03 la fonte pubblica il 2025 per il solo Lussemburgo (11 celle su 374). Il rilascio anticipato di un singolo Stato membro non è un confronto UE e non viene pubblicato."
+    }
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-cofog-2014-2024.data.json",
+      "bytes": 409576,
+      "sha256": "bd585887a85193aeb050474a5f2277c133fe14f9351af86391f3b6ba0e47be1d"
+    },
+    "lockSha256": "c614d505bd47633c039001ca8a94faf1fb2891f479adc240da665bd3b14e845f"
+  }
+}

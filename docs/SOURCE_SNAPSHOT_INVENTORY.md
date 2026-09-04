@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 36
+- Artefatti nel registro: 38
 - PR automatica: 8 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 22 (PR umana dopo revisione)
+- manuale: 24 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -75,6 +75,8 @@ La revisione e il merge restano umani.
 | `company-atlas` | 2026-08-11 | 2026-08-26T00:00:00+02:00 | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |
 | `consip-ordini-2024-2026` | 2024-2026 | non dichiarato | https://dati.consip.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/consip_ordini_snapshot.py --check` |
+| `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-03 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |
+| `istat-cofog-1995-2023` | 1995-2023 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_cofog_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |
 | `source-ledger-proofs` | non dichiarato nello snapshot | 2026-08-23T00:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |

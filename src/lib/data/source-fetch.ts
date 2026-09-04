@@ -52,6 +52,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   istat: ["situas.istat.it", "situas-servizi.istat.it", "www.istat.it"],
   // Snapshot-only: the SDMX payload is acquired and pinned by ETL, never fetched at runtime.
   "istat-casellario-pensioni": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-cofog": [],
   // Snapshot-only: i CSV Consip sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   consip: [],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,
@@ -80,6 +82,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   bancaditalia: [],
   eurostat: [],
   "eurostat-hicp": [],
+  // Snapshot-only: le risposte JSON-stat sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "eurostat-cofog": [],
 };
 
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);

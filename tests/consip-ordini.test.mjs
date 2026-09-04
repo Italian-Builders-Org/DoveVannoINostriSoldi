@@ -16,8 +16,23 @@ test("il bundle Consip mantiene periodo, canali e provenienza ufficiale", () => 
   assert.deepEqual(validated.data.channels, ["convenzioni", "mepa"]);
   assert.equal(validated.data.totals.length, 6);
   assert.equal(validated.metadata.source.licenseId, "CC-BY-4.0");
-  assert.equal(validated.metadata.source.landingUrl.startsWith("https://dati.consip.it"), true);
+  assert.equal(validated.metadata.source.landingUrl.startsWith("https://dati.consip.it/"), true);
   assert.equal(Object.keys(validated.metadata.source.assets).length, 6);
+});
+
+test("un host che imita il dominio Consip viene rifiutato", () => {
+  // "https://dati.consip.it" senza barra finale e' prefisso letterale anche di
+  // "https://dati.consip.it.example.org": un controllo di provenienza che si
+  // fermasse li' direbbe ufficiale un host di terzi.
+  const spoofedLanding = structuredClone(consipOrdiniMetadata);
+  spoofedLanding.source.landingUrl = "https://dati.consip.it.example.org/";
+  assert.throws(() => validateConsipOrdiniBundle(consipOrdiniData, spoofedLanding));
+
+  const spoofedCanonical = structuredClone(consipOrdiniMetadata);
+  spoofedCanonical.semantics.provenance.canonicalUrls = [
+    "https://dati.consip.it.example.org/download/dataset/ordini-mepa-2025.csv",
+  ];
+  assert.throws(() => validateConsipOrdiniBundle(consipOrdiniData, spoofedCanonical));
 });
 
 test("i caveats dichiarano i limiti del dato invece di lasciarli dedurre", () => {

@@ -76,6 +76,32 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["periodo", "geo", "coicop18", "unità"],
   },
   {
+    slug: "eurostat-cofog",
+    name: "Eurostat · spesa pubblica per funzione (COFOG)",
+    owner: "Eurostat (Commissione europea)",
+    area: "Spesa delle Amministrazioni pubbliche per funzione",
+    cadence: "Annuale; rilascio verificato del 21 luglio 2026",
+    coverage:
+      "UE27, area euro e 30 Stati, 2014–2024; totale e dieci divisioni COFOG in milioni di euro e in quota di PIL",
+    format: "Statistics API · JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+    note: "Competenza economica SEC 2010, non pagamenti di cassa: non è confrontabile con SIOPE né sommabile alle missioni del bilancio dello Stato. La ripartizione per funzione non misura efficienza o qualità del servizio. Le celle con flag «b» segnano una interruzione della serie storica.",
+    joinKeys: ["geo", "anno", "funzione COFOG", "unità"],
+  },
+  {
+    slug: "istat-cofog",
+    name: "ISTAT · consumi finali della PA per funzione (COFOG)",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Consumi finali delle Amministrazioni pubbliche per funzione",
+    cadence: "Annuale, con edizioni di revisione; edizione fissata 2025M12",
+    coverage:
+      "Italia, ripartizioni e regioni, 1995–2023; totale e dieci divisioni COFOG a prezzi correnti",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Sono i consumi finali (P3) delle AP, non la spesa pubblica totale: nel 2023 valgono circa 383 miliardi contro i circa 1149 della spesa totale. Non è confrontabile con Eurostat COFOG né con SIOPE. Le aree composite contengono già le loro parti. Il dato territoriale è territorio di erogazione contabile, non «quanto riceve» un cittadino.",
+    joinKeys: ["territorio", "anno", "funzione COFOG", "edizione"],
+  },
+  {
     slug: "siope",
     name: "SIOPE / SIOPE+",
     owner: "RGS · Banca d'Italia",

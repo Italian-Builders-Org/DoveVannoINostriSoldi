@@ -9,6 +9,12 @@ import { z } from "zod";
  * dalla fonte). Il contratto blocca: identità inattesa, caveats assenti,
  * provenienza non ufficiale, licenza diversa da quella verificata sul catalogo,
  * riconciliazioni rotte fra aggregati e totali, e conteggi che non tornano.
+ *
+ * I prefissi di provenienza si chiudono con la barra: senza,
+ * "https://dati.consip.it" e' prefisso letterale anche di
+ * "https://dati.consip.it.example.org", e un host ostile passerebbe per
+ * ufficiale. L'hash del lock resta la difesa vera sui byte, ma il controllo
+ * di provenienza deve dire il vero da solo.
  */
 
 const nonNegativeInt = z.number().int().min(0);
@@ -75,7 +81,7 @@ export const consipOrdiniMetadataSchema = z
     source: z
       .object({
         owner: z.string().min(1),
-        landingUrl: z.string().refine((url) => url.startsWith("https://dati.consip.it"), "Landing URL Consip non ufficiale"),
+        landingUrl: z.string().refine((url) => url.startsWith("https://dati.consip.it/"), "Landing URL Consip non ufficiale"),
         licenseId: z.literal("CC-BY-4.0"),
         licenseNote: z.string().min(1),
         packages: z.record(z.string(), z.string().min(1)),
@@ -103,7 +109,7 @@ export const consipOrdiniMetadataSchema = z
         provenance: z
           .object({
             holder: z.string().min(1),
-            canonicalUrls: z.array(z.string().refine((url) => url.startsWith("https://dati.consip.it"), "URL non ufficiale")).min(1),
+            canonicalUrls: z.array(z.string().refine((url) => url.startsWith("https://dati.consip.it/"), "URL non ufficiale")).min(1),
             publicationDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
             acquisitionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
             checkedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

@@ -84,7 +84,7 @@ def load_source_spec(path: Path) -> dict[str, Any]:
     if spec["datasetId"] != "consip-ordini":
         raise SnapshotError("source lock: datasetId inatteso")
     landing = spec["source"].get("landingUrl", "")
-    if not landing.startswith("https://dati.consip.it"):
+    if not landing.startswith("https://dati.consip.it/"):
         raise SnapshotError("source lock: landing URL non ufficiale Consip")
     for name, asset in spec["source"]["assets"].items():
         if not str(asset.get("url", "")).startswith("https://dati.consip.it/download/dataset/"):

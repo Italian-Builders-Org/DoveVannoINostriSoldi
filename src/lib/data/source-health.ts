@@ -23,6 +23,8 @@ import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
+import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
+import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
@@ -613,6 +615,32 @@ function snapshotManagedGovernmentInflation(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatCofog(): SourceHealth {
+  const artifact = eurostatCofogMetadata.integrity.dataArtifact;
+  const { flagged, observedCells } = eurostatCofogData.coverage;
+  return {
+    ...baseHealth("eurostat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-cofog", eurostatCofogMetadata.coverage.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · copertura piena ${observedCells}/${observedCells} celle, ${flagged} con flag della fonte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatCofogData.observations.length,
+  };
+}
+
+function snapshotManagedIstatCofog(): SourceHealth {
+  const artifact = istatCofogMetadata.integrity.dataArtifact;
+  const { observedCells } = istatCofogData.coverage;
+  return {
+    ...baseHealth("istat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-cofog", istatCofogMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · consumi finali della PA per funzione ${istatCofogData.period.from}-${istatCofogData.period.to} (${istatCofogMetadata.source.dataflowId}, edizione ${istatCofogData.measure.edition}) · copertura piena ${observedCells} celle · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: istatCofogData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -653,6 +681,8 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedPublicDebt("bancaditalia"),
     snapshotManagedPublicDebt("eurostat"),
     snapshotManagedGovernmentInflation(),
+    snapshotManagedEurostatCofog(),
+    snapshotManagedIstatCofog(),
   ];
 }
 
@@ -684,6 +714,8 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
   eurostat: () => snapshotManagedPublicDebt("eurostat"),
   "eurostat-hicp": snapshotManagedGovernmentInflation,
+  "eurostat-cofog": snapshotManagedEurostatCofog,
+  "istat-cofog": snapshotManagedIstatCofog,
 } satisfies Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */

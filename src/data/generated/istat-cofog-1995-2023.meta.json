@@ -1,0 +1,225 @@
+{
+  "datasetId": "istat-cofog",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 739262,
+      "path": "src/data/generated/istat-cofog-1995-2023.data.json",
+      "sha256": "670d56b735121f0bf763de9fc458a795bf2d71468a3ce9566c3fda49ff396ea5"
+    },
+    "sourceLockSha256": "40c74263deee9c71db386d268120a4846835c59ac9ff80d69e4c7ae8b0a68063"
+  },
+  "measure": {
+    "dataTypeAggr": "P3_D_W0_S13",
+    "edition": "2025M12",
+    "editionNote": "Edizione di rilascio fissata. La contabilità nazionale viene rivista: fra l'edizione 2025M1 e la 2025M12, 337 delle 704 celle confrontabili cambiano valore, fino a 1348,7 milioni di euro sul totale Italia 2022. Le edizioni non vanno mai mescolate.",
+    "meaning": "Spesa per consumi finali (P3) delle Amministrazioni pubbliche (S13). NON è la spesa totale delle AP: ne è una componente.",
+    "unit": "milioni di euro",
+    "unitEvidence": "L'edizione 2025M12 non porta gli attributi UNIT_MEAS/UNIT_MULT nella risposta. L'unità è quella dichiarata dalla fonte sulla STESSA serie nell'edizione 2025M1 (UNIT_MEAS=EURO, UNIT_MULT=6), verificata il 2026-09-04. Non è dedotta da altri dataset né dall'ordine di grandezza.",
+    "valuation": "V",
+    "valuationLabel": "prezzi correnti",
+    "valuationNote": "I valori concatenati (L_2020) sono una serie distinta e non vengono pubblicati in questa fetta: mescolarli sarebbe un errore di unità."
+  },
+  "observedAt": "2026-09-04",
+  "period": {
+    "from": 1995,
+    "to": 2023
+  },
+  "reconciliation": {
+    "checks": [
+      {
+        "comparisons": 928,
+        "kind": "funzioni",
+        "maxGapAt": "ITD/2016",
+        "maxGapCents": 30000000,
+        "parts": [
+          "G010",
+          "G020",
+          "G030",
+          "G040",
+          "G050",
+          "G060",
+          "G070",
+          "G080",
+          "G090",
+          "G100"
+        ],
+        "whole": "G"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "2021/G",
+        "maxGapCents": 60000000,
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ],
+        "whole": "IT"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1995/G",
+        "maxGapCents": 10000000,
+        "parts": [
+          "ITC",
+          "ITD"
+        ],
+        "whole": "ITCD"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1995/G",
+        "maxGapCents": 10000000,
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE"
+        ],
+        "whole": "ITCDE"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1995/G010",
+        "maxGapCents": 10000000,
+        "parts": [
+          "ITF",
+          "ITG"
+        ],
+        "whole": "ITFG"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1995/G070",
+        "maxGapCents": 10000000,
+        "parts": [
+          "ITD1",
+          "ITD2"
+        ],
+        "whole": "ITDA"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1997/G080",
+        "maxGapCents": 20000000,
+        "parts": [
+          "ITC1",
+          "ITC2",
+          "ITC3",
+          "ITC4"
+        ],
+        "whole": "ITC"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "2013/G060",
+        "maxGapCents": 20000000,
+        "parts": [
+          "ITD1",
+          "ITD2",
+          "ITD3",
+          "ITD4",
+          "ITD5"
+        ],
+        "whole": "ITD"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "2000/G060",
+        "maxGapCents": 20000000,
+        "parts": [
+          "ITE1",
+          "ITE2",
+          "ITE3",
+          "ITE4"
+        ],
+        "whole": "ITE"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1997/G050",
+        "maxGapCents": 20000000,
+        "parts": [
+          "ITF1",
+          "ITF2",
+          "ITF3",
+          "ITF4",
+          "ITF5",
+          "ITF6"
+        ],
+        "whole": "ITF"
+      },
+      {
+        "comparisons": 319,
+        "kind": "territorio",
+        "maxGapAt": "1995/G080",
+        "maxGapCents": 10000000,
+        "parts": [
+          "ITG1",
+          "ITG2"
+        ],
+        "whole": "ITG"
+      }
+    ],
+    "maxGapCents": 60000000,
+    "note": "La fonte pubblica valori con un decimale oppure senza: quelli interi sono arrotondati all'unità, non al decimo. La tolleranza di 1,0 milioni di euro è quindi empirica e conservativa: su tutte le partizioni lo scarto osservato non supera 0,6.",
+    "toleranceCents": 100000000
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Edizione di rilascio fissata. La contabilità nazionale viene rivista: fra l'edizione 2025M1 e la 2025M12, 337 delle 704 celle confrontabili cambiano valore, fino a 1348,7 milioni di euro sul totale Italia 2022. Le edizioni non vanno mai mescolate.",
+      "referencePeriod": "1995-2023"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-04",
+      "canonicalUrls": [
+        "https://esploradati.istat.it/databrowser/",
+        "https://esploradati.istat.it/SDMXWS/rest/data/IT1,93_1227_DF_DCCN_TNA1_4,1.0/A..P3_D_W0_S13.Z.Z..V.N.Z.2025M12"
+      ],
+      "checkedAt": "2026-09-04",
+      "hashes": "SHA-256 per asset in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "ISTAT — Istituto nazionale di statistica",
+      "license": "not-declared",
+      "publicationEdition": "2025M12"
+    },
+    "soldi": {
+      "nature": "spesa per consumi finali (P3) delle Amministrazioni pubbliche (S13), contabilità nazionale a competenza economica — non è la spesa totale delle AP, non è cassa, non è stanziamento né impegno",
+      "note": "L'edizione 2025M12 non porta gli attributi UNIT_MEAS/UNIT_MULT nella risposta. L'unità è quella dichiarata dalla fonte sulla STESSA serie nell'edizione 2025M1 (UNIT_MEAS=EURO, UNIT_MULT=6), verificata il 2026-09-04. Non è dedotta da altri dataset né dall'ordine di grandezza.",
+      "unit": "centesimi di euro"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-04",
+      "checkedAt": "2026-09-04",
+      "note": "Chiave SDMX completamente specificata: misura, valutazione ed edizione sono fissate nell'URL, quindi i byte sono deterministici e un hash diverso segnala una revisione della fonte, non l'avanzare del tempo."
+    },
+    "assets": {
+      "consumi-finali": {
+        "bytes": 1018899,
+        "format": "SDMX-CSV 1.0.0",
+        "sha256": "4abd4c7b6d401b3458fd7f39a4d42ef86b00b46bdfbe7e582e6af27d10bbc43f",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,93_1227_DF_DCCN_TNA1_4,1.0/A..P3_D_W0_S13.Z.Z..V.N.Z.2025M12"
+      }
+    },
+    "dataflowId": "93_1227_DF_DCCN_TNA1_4",
+    "dataflowLabel": "Spesa per consumi finali della Pa per funzione di spesa",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non espone una licenza riusabile verificata. Come per istat-pensions-2012-2022.source.json non viene inferita alcuna licenza, e non se ne estende una da altri dataset ISTAT.",
+    "owner": "ISTAT — Istituto nazionale di statistica"
+  }
+}

@@ -872,6 +872,58 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "eurostat-cofog-2014-2024",
+      "owner": "Eurostat spesa pubblica per funzione COFOG 2014-2024",
+      "files": [
+        "src/data/generated/eurostat-cofog-2014-2024.data.json",
+        "src/data/generated/eurostat-cofog-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_cofog_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_cofog_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-cofog.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_cofog_snapshot.py --input-dir <cartella con le due risposte JSON-stat> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-cofog-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_exp (milioni di euro e quota di PIL, CC BY 4.0) sono acquisite localmente e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle committato senza rete. La copertura piena, l'assenza di duplicati e lo scarto fra totale pubblicato e somma delle divisioni entro la sola tolleranza di arrotondamento falliscono chiusi."
+    },
+    {
+      "id": "istat-cofog-1995-2023",
+      "owner": "ISTAT consumi finali della PA per funzione COFOG 1995-2023",
+      "files": [
+        "src/data/generated/istat-cofog-1995-2023.data.json",
+        "src/data/generated/istat-cofog-1995-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_cofog_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_cofog_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-cofog.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_cofog_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-cofog-1995-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 93_1227_DF_DCCN_TNA1_4 è acquisita con chiave completamente specificata (misura P3_D_W0_S13, prezzi correnti, edizione 2025M12) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati e undici partizioni dichiarate falliscono chiuse oltre la tolleranza di arrotondamento dichiarata. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
+    },
+    {
       "id": "istat-enterprise-turnover",
       "owner": "ISTAT aggregate enterprise turnover snapshot (Frame Territoriale Anticipato 2024)",
       "files": [

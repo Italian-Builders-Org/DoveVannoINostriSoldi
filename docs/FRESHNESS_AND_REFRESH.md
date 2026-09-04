@@ -139,6 +139,26 @@ La ricerca delle opere pubbliche non dipende da alias OData scritti a mano. Il c
 
 Il refresh orario invalida il tag OpenBDAP e la route `/api/opere`. Al primo accesso successivo vengono ricontrollati metadati e schema; i dati di una singola ricerca CUP hanno cache di 6 ore e possono essere serviti per altre 24 ore mentre avviene la riconvalida. La risposta espone separatamente data della fonte e momento del controllo della piattaforma.
 
+### OpenBDAP pagamenti Stato — verifica del ripristino
+
+Dopo un disservizio del dump CSV («Cannot convert data to csv») o un timeout dell'host,
+controllare prima la fonte e poi la produzione:
+
+```bash
+# Dump CSV atteso: intestazioni testuali, non JSON Dataset Error
+curl -sS 'https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/<package-uuid>.csv?download=1' | head
+
+# Produzione: ultimo rilascio disponibile (nessun filtro)
+curl -sS 'https://www.dovevannoinostrisoldi.com/api/spese/stato'
+
+# Produzione: periodo specifico — usare i nomi italiani anno/mese, non year/month
+curl -sS 'https://www.dovevannoinostrisoldi.com/api/spese/stato?anno=2025&mese=8'
+```
+
+`year` e `month` non sono parametri riconosciuti: se presenti soli, la route restituisce
+l'ultimo rilascio pubblicato (comportamento atteso, non un bug del filtro). Per scegliere
+un mese contabile usare sempre `anno` e, se serve, `mese` (1–12).
+
 ### MEF IRPEF comunale
 
 Il dataset è annuale e snapshot-managed. La pubblicazione della fonte, l'anno

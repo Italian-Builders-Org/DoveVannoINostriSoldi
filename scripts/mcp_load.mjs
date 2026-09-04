@@ -27,8 +27,10 @@ if (!loopback) {
   );
 }
 
-const requests = boundedInteger("requests", 60, 1, 500);
-const concurrency = boundedInteger("concurrency", 10, 1, 25);
+// The normal smoke/load default stays below the public 30 POST/min/IP cap.
+// Higher explicit values are still useful when testing an expected 429.
+const requests = boundedInteger("requests", 20, 1, 500);
+const concurrency = boundedInteger("concurrency", 6, 1, 25);
 const p95BudgetMs = boundedInteger("p95-ms", 3_000, 100, 30_000);
 const maxBytes = boundedInteger("max-bytes", 750_000, 10_000, 1_000_000);
 const durations = [];

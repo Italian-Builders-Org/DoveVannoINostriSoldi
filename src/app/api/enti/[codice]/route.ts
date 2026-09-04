@@ -9,14 +9,18 @@ import { decodeEntityProcurementRouteCode } from "@/lib/data/anac-entity-procure
 import { getMunicipalityProfile } from "@/lib/municipality-profile";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
+import { runWithRequestBudget } from "@/lib/search/request-budget";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 10;
+
+const IPA_ENTITY_REQUEST_TIMEOUT_MS = 6_000;
 
 type RouteContext = {
   params: Promise<{ codice: string }>;
 };
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
   const { codice } = await context.params;
   const normalized = decodeEntityProcurementRouteCode(codice);
 
@@ -25,11 +29,28 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   try {
-    const municipalitySnapshot = getSiopeMunicipalityDetailByIpaCode(normalized);
-    const snapshotEntity = municipalitySnapshot
-      ? municipalitySnapshotEntity(municipalitySnapshot)
-      : null;
-    const entity = snapshotEntity ?? await getIpaEntityByCode(normalized);
+    const outcome = await runWithRequestBudget(
+      request.signal,
+      IPA_ENTITY_REQUEST_TIMEOUT_MS,
+      async (signal) => {
+        const municipalitySnapshot = getSiopeMunicipalityDetailByIpaCode(normalized);
+        const snapshotEntity = municipalitySnapshot
+          ? municipalitySnapshotEntity(municipalitySnapshot)
+          : null;
+        const entity = snapshotEntity ?? await getIpaEntityByCode(normalized, signal);
+        return { municipalitySnapshot, snapshotEntity, entity };
+      },
+    );
+    if (outcome.timedOut) {
+      return NextResponse.json(
+        { ok: false, source: "Indice PA (IPA)", error: "La fonte IPA ha superato il tempo massimo." },
+        {
+          status: 504,
+          headers: { "Cache-Control": "private, no-store", "Retry-After": "10" },
+        },
+      );
+    }
+    const { municipalitySnapshot, snapshotEntity, entity } = outcome.value;
 
     if (!entity) {
       return NextResponse.json(
@@ -74,6 +95,7 @@ export async function GET(_request: Request, context: RouteContext) {
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,

@@ -1,16 +1,65 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const { SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
 const {
   getSnapshotManagedSourceHealth,
+  getSourceHealthOverview,
   orderSourceHealth,
   SOURCE_HEALTH_ADAPTERS,
   validateIstatMunicipalityGeographyMetadata,
 } = await import(
   "../src/lib/data/source-health.ts"
 );
+
+test("source status page uses the persistent five-minute health cache", () => {
+  const page = readFileSync("src/app/fonti/stato/page.tsx", "utf8");
+  const route = readFileSync("src/app/api/fonti/stato/route.ts", "utf8");
+  const cache = readFileSync("src/lib/data/cached-live-views.ts", "utf8");
+  assert.match(page, /getCachedSourceHealthOverview\(\)/);
+  assert.match(page, /Ultimo controllo delle fonti:/);
+  assert.doesNotMatch(page, /raggiungibili ora|Risponde ora\?|risponde in questo\s*\n?\s*momento/);
+  assert.match(route, /observedAt:\s*checkedAt/);
+  assert.doesNotMatch(route, /const observedAt = new Date\(\)\.toISOString\(\)/);
+  assert.match(cache, /SOURCE_HEALTH_CACHE_SECONDS = 300/);
+  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 6_000 \}\)/);
+  assert.match(cache, /return \{ checkedAt: new Date\(\)\.toISOString\(\), sources \}/);
+});
+
+test("source health applies one global deadline and aborts every live probe", async () => {
+  const originalFetch = globalThis.fetch;
+  const signals = [];
+  globalThis.fetch = async (_input, init = {}) => {
+    signals.push(init.signal);
+    return new Promise((resolve, reject) => {
+      // Keep a wide gap between the abort deadline and the synthetic upstream
+      // response. The full suite hashes multi-gigabyte fixtures in parallel,
+      // so a sub-100ms wall-clock assertion is scheduler-sensitive even when
+      // every request is correctly aborted.
+      const timer = setTimeout(() => resolve(new Response("upstream slow", { status: 503 })), 2_000);
+      const onAbort = () => {
+        clearTimeout(timer);
+        reject(init.signal.reason);
+      };
+      if (init.signal.aborted) onAbort();
+      else init.signal.addEventListener("abort", onAbort, { once: true });
+    });
+  };
+
+  try {
+    const started = performance.now();
+    const overview = await getSourceHealthOverview({ deadlineMs: 5 });
+    const elapsed = performance.now() - started;
+    assert.deepEqual(overview.map((entry) => entry.sourceId), SOURCE_IDS);
+    assert.ok(signals.length > 0);
+    assert.ok(signals.every((signal) => signal.aborted));
+    assert.ok(elapsed < 1_500, `global source-health deadline was cosmetic: ${elapsed}ms`);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
 
 function fakeLiveHealth(sourceId) {
   const policy = SOURCE_POLICIES[sourceId];

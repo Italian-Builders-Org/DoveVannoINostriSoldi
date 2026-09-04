@@ -65,6 +65,10 @@ export class ConcurrencyLimiter {
     this.max = max;
   }
 
+  get active(): number {
+    return this.#active;
+  }
+
   tryAcquire(): (() => void) | null {
     if (this.#active >= this.max) return null;
     this.#active += 1;

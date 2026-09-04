@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { compactEuro, longDate, percent } from "@/lib/format";
 import {
-  getSsnNationalHistory,
-  SSN_NATIONAL_HISTORY_DEADLINE_MS,
   type SsnNationalHistory,
 } from "@/lib/ssn-national-history";
+import { getCachedSsnNationalHistory } from "@/lib/data/cached-live-views";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { HealthSpendingHistoryChart } from "@/components/charts/health-spending-history-chart";
 import styles from "./storico.module.css";
@@ -120,7 +119,7 @@ export default async function HealthSpendingHistoryPage() {
   let errorMessage: string | null = null;
 
   try {
-    history = await getSsnNationalHistory({ signal: AbortSignal.timeout(SSN_NATIONAL_HISTORY_DEADLINE_MS) });
+    history = await getCachedSsnNationalHistory();
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
   }

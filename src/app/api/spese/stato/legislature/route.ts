@@ -1,12 +1,32 @@
 import { NextResponse } from "next/server";
-import { getLegislatureSpendingCycles } from "@/lib/state-spending-legislature";
+import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-live-views";
+import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
+const legislatureLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 6 });
+const legislatureConcurrency = new ConcurrencyLimiter(1);
+
 export async function GET(request: Request) {
+  const clientKey = clientAddress(request) ?? "unknown";
+  if (!legislatureLimiter.consume(clientKey)) {
+    return NextResponse.json(
+      { ok: false, source: "RGS / OpenBDAP", error: "Troppe richieste per la serie per legislature." },
+      { status: 429, headers: { "Cache-Control": "private, no-store", "Retry-After": "60" } },
+    );
+  }
+
+  const release = legislatureConcurrency.tryAcquire();
+  if (!release) {
+    return NextResponse.json(
+      { ok: false, source: "RGS / OpenBDAP", error: "Serie per legislature temporaneamente occupata." },
+      { status: 503, headers: { "Cache-Control": "private, no-store", "Retry-After": "5" } },
+    );
+  }
+
   try {
-    const cycles = await getLegislatureSpendingCycles({ signal: request.signal });
+    const cycles = await getCachedLegislatureSpendingCycles();
 
     return NextResponse.json(
       {
@@ -28,11 +48,12 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=21600",
+          "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=3600",
         },
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,
@@ -42,5 +63,7 @@ export async function GET(request: Request) {
       },
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
+  } finally {
+    release();
   }
 }

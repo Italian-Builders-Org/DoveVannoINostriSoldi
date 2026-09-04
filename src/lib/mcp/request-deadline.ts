@@ -1,11 +1,16 @@
 type McpFetch = (request: Request) => Promise<Response>;
+type JsonRpcId = string | number | null;
+type DeadlineOptions = Readonly<{
+  requestId?: () => JsonRpcId;
+  onTimeout?: () => void;
+}>;
 
-function timeoutResponse(): Response {
+function timeoutResponse(id: JsonRpcId): Response {
   return Response.json(
     {
       jsonrpc: "2.0",
       error: { code: -32000, message: "Timeout della richiesta MCP" },
-      id: null,
+      id,
     },
     { status: 504 },
   );
@@ -61,6 +66,7 @@ export async function runMcpExchangeWithDeadline(
   request: Request,
   fetcher: McpFetch,
   timeoutMs: number,
+  options: DeadlineOptions = {},
 ): Promise<Response> {
   const controller = new AbortController();
   const signal = request.signal.aborted
@@ -78,9 +84,21 @@ export async function runMcpExchangeWithDeadline(
       state.timedOut = true;
       // Settle the public result before abort listeners can reject the losing
       // handler promise; callers must deterministically receive the 504.
-      resolve(timeoutResponse());
-      controller.abort(new DOMException("MCP deadline exceeded", "TimeoutError"));
-      void state.reader?.cancel("MCP deadline exceeded").catch(() => undefined);
+      let requestId: JsonRpcId = null;
+      try {
+        requestId = options.requestId?.() ?? null;
+      } catch {
+        requestId = null;
+      }
+      resolve(timeoutResponse(requestId));
+      try {
+        options.onTimeout?.();
+      } catch {
+        // Operational telemetry must never prevent aborting an expired exchange.
+      } finally {
+        controller.abort(new DOMException("MCP deadline exceeded", "TimeoutError"));
+        void state.reader?.cancel("MCP deadline exceeded").catch(() => undefined);
+      }
     }, timeoutMs);
   });
 

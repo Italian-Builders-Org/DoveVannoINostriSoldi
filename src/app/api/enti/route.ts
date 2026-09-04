@@ -5,8 +5,12 @@ import {
   IPA_LICENSE,
   searchIpaEntities,
 } from "@/lib/ipa";
+import { runWithRequestBudget } from "@/lib/search/request-budget";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 10;
+
+const IPA_SEARCH_REQUEST_TIMEOUT_MS = 6_000;
 
 function integerParam(value: string | null, fallback: number): number {
   if (!value) return fallback;
@@ -20,7 +24,21 @@ export async function GET(request: NextRequest) {
   const offset = integerParam(request.nextUrl.searchParams.get("offset"), 0);
 
   try {
-    const result = await searchIpaEntities({ query, limit, offset });
+    const outcome = await runWithRequestBudget(
+      request.signal,
+      IPA_SEARCH_REQUEST_TIMEOUT_MS,
+      (signal) => searchIpaEntities({ query, limit, offset, signal }),
+    );
+    if (outcome.timedOut) {
+      return NextResponse.json(
+        { ok: false, source: "Indice PA (IPA)", error: "La fonte IPA ha superato il tempo massimo." },
+        {
+          status: 504,
+          headers: { "Cache-Control": "private, no-store", "Retry-After": "10" },
+        },
+      );
+    }
+    const result = outcome.value;
 
     return NextResponse.json(
       {
@@ -47,6 +65,7 @@ export async function GET(request: NextRequest) {
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,

@@ -19,11 +19,9 @@ import { getIpaTypeDistribution, type IpaTypeStat } from "@/lib/ipa-stats";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 10;
 
-export const metadata: Metadata = {
-  title: "Registro degli enti pubblici",
-  description: "Cerca enti pubblici nel registro IPA e consulta tipologia, sede e dati disponibili.",
-};
+const PAGE_DATA_BUDGET_MS = 6_000;
 
 type PageProps = {
   searchParams: Promise<{
@@ -33,6 +31,15 @@ type PageProps = {
 
 function first(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const query = first((await searchParams).q).trim();
+  return {
+    title: "Registro degli enti pubblici",
+    description: "Cerca enti pubblici nel registro IPA e consulta tipologia, sede e dati disponibili.",
+    ...(query ? { robots: { index: false, follow: false } } : {}),
+  };
 }
 
 function locationLabel(indirizzo: string | null, cap: string | null): string {
@@ -55,6 +62,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query = first(params.q).trim().slice(0, 180);
   const canSearch = query.length >= 2;
+  const signal = AbortSignal.timeout(PAGE_DATA_BUDGET_MS);
 
   let stats: Awaited<ReturnType<typeof getIpaRegistryStats>> | null = null;
   let distribution: IpaTypeStat[] = [];
@@ -64,9 +72,9 @@ export default async function EntiPage({ searchParams }: PageProps) {
   let upstreamError = false;
 
   const [statsResult, distributionResult, centralResult] = await Promise.allSettled([
-    getIpaRegistryStats(),
-    getIpaTypeDistribution(8),
-    getIpaCentralAdministrations(),
+    getIpaRegistryStats(signal),
+    getIpaTypeDistribution(8, { signal }),
+    getIpaCentralAdministrations(signal),
   ]);
 
   if (statsResult.status === "fulfilled") {
@@ -92,7 +100,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
   if (canSearch) {
     try {
-      result = await searchIpaEntities({ query, limit: 30 });
+      result = await searchIpaEntities({ query, limit: 30, signal });
       upstreamError = false;
     } catch {
       upstreamError = true;

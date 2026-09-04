@@ -6,6 +6,7 @@ const { runMcpExchangeWithDeadline } = await import("../src/lib/mcp/request-dead
 test("MCP deadline closes a streaming exchange even when the handler never finishes", async () => {
   let requestSignal;
   let streamCancelled = false;
+  let timeoutEvents = 0;
   const startedAt = Date.now();
 
   const response = await runMcpExchangeWithDeadline(
@@ -22,13 +23,22 @@ test("MCP deadline closes a streaming exchange even when the handler never finis
       }), { headers: { "Content-Type": "text/event-stream" } });
     },
     25,
+    {
+      requestId: () => "rpc-timeout-42",
+      onTimeout: () => { timeoutEvents += 1; },
+    },
   );
 
   const elapsedMs = Date.now() - startedAt;
   assert.equal(response.status, 504);
-  assert.match(await response.text(), /Timeout della richiesta MCP/);
+  assert.deepEqual(await response.json(), {
+    jsonrpc: "2.0",
+    error: { code: -32000, message: "Timeout della richiesta MCP" },
+    id: "rpc-timeout-42",
+  });
   assert.equal(requestSignal.aborted, true);
   assert.equal(streamCancelled, true);
+  assert.equal(timeoutEvents, 1);
   assert.ok(elapsedMs < 250, `deadline returned after ${elapsedMs}ms`);
 });
 

@@ -125,3 +125,18 @@ test("assistant API rejects malformed JSON and unsupported request fields", asyn
   assert.equal(payload.ok, false);
   assert.equal(payload.code, "invalid_request");
 });
+
+test("assistant API rate-limits malformed bodies before reading another payload", async () => {
+  const address = "198.51.100.240";
+  for (let index = 0; index < 30; index += 1) {
+    const malformed = await POST(request({
+      headers: { "X-Forwarded-For": address },
+      body: "{",
+    }));
+    assert.equal(malformed.status, 400, `payload malformato ${index + 1}`);
+  }
+
+  const limited = await POST(request({ headers: { "X-Forwarded-For": address } }));
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("retry-after"), "60");
+});

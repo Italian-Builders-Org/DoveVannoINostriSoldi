@@ -20,6 +20,11 @@ const chartCode = readFileSync(chartSourcePath, "utf8");
 const chartCss = readFileSync(chartCssPath, "utf8");
 const pageCode = readFileSync(storicoPagePath, "utf8");
 
+test("health spending history page uses the shared persistent OpenBDAP cache", () => {
+  assert.match(pageCode, /getCachedSsnNationalHistory\(\)/);
+  assert.match(pageCode, /export const maxDuration = 60/);
+});
+
 test("health spending trend chart defines the five canonical SSN CCE accounting series", () => {
   assert.match(chartCode, /export function HealthSpendingHistoryChart/);
   assert.match(chartCode, /export const HEALTH_SPENDING_SERIES/);

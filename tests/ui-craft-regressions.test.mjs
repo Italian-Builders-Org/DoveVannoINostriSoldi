@@ -248,7 +248,10 @@ test("secondary pages keep route identity and a restrained mobile heading", asyn
     source("../src/app/stato/stato.module.css"),
   ]);
 
-  assert.match(entities, /export const metadata: Metadata = \{[\s\S]*?title: "Registro degli enti pubblici"/);
+  assert.match(
+    entities,
+    /export async function generateMetadata\([\s\S]*?Promise<Metadata>[\s\S]*?title: "Registro degli enti pubblici"/,
+  );
   assert.match(stateCss, /@media \(max-width: 720px\) \{[\s\S]*?\.title \{[\s\S]*?font-size: clamp\(32px, 9vw, 42px\);/);
 });
 

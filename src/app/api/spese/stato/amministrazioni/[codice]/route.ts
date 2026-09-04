@@ -5,8 +5,24 @@ import {
   StatePaymentPeriodUnavailableError,
 } from "@/lib/bdap-payments";
 import { parseReferencePeriod } from "@/lib/data/reference-period";
+import { ConcurrencyLimiter } from "@/lib/report/rate-limit";
+import { runWithRequestBudget } from "@/lib/search/request-budget";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 15;
+
+const ADMIN_SPENDING_REQUEST_TIMEOUT_MS = 10_000;
+const administrationSpendingConcurrency = new ConcurrencyLimiter(3);
+
+function unavailable(message: string, status: number, retryAfter: string): Response {
+  return NextResponse.json(
+    { ok: false, source: "RGS / OpenBDAP", error: message },
+    {
+      status,
+      headers: { "Cache-Control": "private, no-store", "Retry-After": retryAfter },
+    },
+  );
+}
 
 type RouteContext = { params: Promise<{ codice: string }> };
 
@@ -21,11 +37,24 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
   const { codice } = await context.params;
 
+  const release = administrationSpendingConcurrency.tryAcquire();
+  if (!release) {
+    return unavailable("Dettaglio amministrazione temporaneamente occupato.", 503, "5");
+  }
+
   try {
-    const spending = await getStateAdministrationSpending(
-      decodeURIComponent(codice),
-      requestedPeriod.value,
+    const outcome = await runWithRequestBudget(
+      request.signal,
+      ADMIN_SPENDING_REQUEST_TIMEOUT_MS,
+      (signal) => getStateAdministrationSpending(
+        decodeURIComponent(codice),
+        { ...requestedPeriod.value, signal },
+      ),
     );
+    if (outcome.timedOut) {
+      return unavailable("La fonte OpenBDAP ha superato il tempo massimo.", 504, "10");
+    }
+    const spending = outcome.value;
 
     return NextResponse.json(
       {
@@ -49,6 +78,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     const notFound =
       error instanceof StateAdministrationNotFoundError ||
       error instanceof StatePaymentPeriodUnavailableError;
@@ -62,5 +92,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       },
       { status: notFound ? 404 : 503 },
     );
+  } finally {
+    release();
   }
 }

@@ -865,6 +865,22 @@ function committedBudgetLawSnapshot(requestedWindow: number): BudgetLawMissionSe
   return sliceBudgetLawSeries(series, requestedWindow, "snapshot");
 }
 
+/** Verified committed series for bounded machine clients that must not start a live CSV refresh. */
+export function getCommittedBudgetLawMissionSeries(
+  requestedWindow = DEFAULT_BUDGET_LAW_WINDOW_YEARS,
+): BudgetLawMissionSeries {
+  if (
+    !Number.isInteger(requestedWindow)
+    || requestedWindow < MIN_BUDGET_LAW_WINDOW_YEARS
+    || requestedWindow > MAX_BUDGET_LAW_WINDOW_YEARS
+  ) {
+    throw new BudgetLawInvalidWindowError(
+      `Finestra di anni non valida per la Legge di Bilancio: deve essere tra ${MIN_BUDGET_LAW_WINDOW_YEARS} e ${MAX_BUDGET_LAW_WINDOW_YEARS}`,
+    );
+  }
+  return committedBudgetLawSnapshot(requestedWindow);
+}
+
 /**
  * Reads the full OpenBDAP AMPMA historical series once, aggregates the
  * enacted competenza appropriation (CP A1) per year and mission across every

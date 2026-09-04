@@ -30,6 +30,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 15;
 
 const entityRobots = { index: false, follow: false } as const;
+const PAGE_DATA_BUDGET_MS = 6_000;
 
 type PageProps = {
   params: Promise<{ codice: string }>;
@@ -62,8 +63,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   try {
-    const entity = await getIpaEntityByCode(normalizedCode);
-    if (!entity) return { title: "Ente non trovato" };
+    const entity = await getIpaEntityByCode(normalizedCode, AbortSignal.timeout(4_000));
+    if (!entity) return { title: "Ente non trovato", robots: entityRobots };
 
     return {
       title: entity.denominazione,
@@ -79,6 +80,7 @@ export default async function EntityPage({ params }: PageProps) {
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
+  const signal = AbortSignal.timeout(PAGE_DATA_BUDGET_MS);
 
   const municipalitySnapshot = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
   let entity: IpaEntity | null = municipalitySnapshot
@@ -88,7 +90,7 @@ export default async function EntityPage({ params }: PageProps) {
   let structure: IpaOrganizationStructure | null = null;
   if (!entity) {
     try {
-      entity = await getIpaEntityByCode(normalizedCode);
+      entity = await getIpaEntityByCode(normalizedCode, signal);
     } catch {
       return (
         <main className="shell page">
@@ -111,7 +113,7 @@ export default async function EntityPage({ params }: PageProps) {
   if (!entity) notFound();
   if (!snapshotOnly) {
     try {
-      structure = await getIpaOrganizationStructure(normalizedCode);
+      structure = await getIpaOrganizationStructure(normalizedCode, 250, 0, { signal });
     } catch {
       structure = null;
     }

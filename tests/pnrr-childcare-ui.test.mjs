@@ -27,7 +27,8 @@ test("project trace labels observed, linked, derived and missing evidence", asyn
   }
   assert.match(page, /Pagamenti ReGiS/);
   assert.match(page, /non vengono attribuite a una procedura per approssimazione/i);
-  assert.match(page, /Promise\.race/);
+  assert.doesNotMatch(page, /Promise\.race/);
+  assert.match(page, /getPublicWorksByCup\(cup,\s*\{\s*signal:\s*AbortSignal\.timeout\(3_500\),?\s*\}\)/);
   assert.match(page, /3_500/);
   assert.equal(page.match(/<h1\b/g)?.length, 1);
 });

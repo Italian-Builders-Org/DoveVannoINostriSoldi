@@ -35,15 +35,9 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
 }
 
 async function optionalMop(cup: string): Promise<MopLookup | null> {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      getPublicWorksByCup(cup).catch(() => null),
-      new Promise<null>((resolve) => { timeout = setTimeout(() => resolve(null), 3_500); }),
-    ]);
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
+  return getPublicWorksByCup(cup, {
+    signal: AbortSignal.timeout(3_500),
+  }).catch(() => null);
 }
 
 function money(value: number | null): string {

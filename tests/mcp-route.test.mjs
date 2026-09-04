@@ -9,6 +9,7 @@ process.env.MCP_ALLOWED_HOSTS = [process.env.MCP_ALLOWED_HOSTS, "example.test"]
 const { GET, HEAD, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
 const { dvnsStarterPrompts } = await import("../src/lib/mcp/server.ts");
 const loader = await import("../src/lib/integrated-sources.ts");
+let requestAddressSequence = 1;
 
 const requestBody = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" });
 const expectedServerInfo = {
@@ -43,6 +44,7 @@ function request(headers = {}, body = requestBody) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json, text/event-stream",
+      "X-Forwarded-For": `203.0.113.${(requestAddressSequence++ % 200) + 1}`,
       ...headers,
     },
     body,
@@ -60,6 +62,31 @@ test("MCP endpoint rejects an untrusted browser origin", async () => {
   assert.equal(response.status, 403);
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+});
+
+test("MCP endpoint fails closed when the client address is unavailable", async () => {
+  const { POST: anonymousPost } = await import(
+    `../src/app/api/mcp/route.ts?anonymous-rate-limit=${Date.now()}`
+  );
+  const anonymousRequest = () => request({ "X-Forwarded-For": "not-an-address" }, JSON.stringify({
+    jsonrpc: "2.0",
+    id: "anonymous-rate-limit",
+    method: "tools/list",
+  }));
+
+  for (let index = 0; index < 30; index += 1) {
+    const response = await anonymousPost(anonymousRequest());
+    assert.equal(response.status, 200);
+  }
+
+  const limited = await anonymousPost(anonymousRequest());
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("retry-after"), "60");
+  assert.deepEqual(await limited.json(), {
+    jsonrpc: "2.0",
+    error: { code: -32000, message: "Troppe richieste. Riprova tra un minuto." },
+    id: null,
+  });
 });
 
 test("MCP endpoint answers browser preflight only for an allowed origin", async () => {
@@ -690,70 +717,9 @@ test("MCP modern 2026 tool call exposes the same MEF domain result", async () =>
 });
 
 test("MCP tool call exposes the Legge di Bilancio mission series with the years filter", async () => {
-  const packageId = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
-  const productCode = "LBF_SPE_CRU_AMPMA_001";
-  const expectedTitle =
-    "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato";
-  const csvHeader = [
-    "Esercizio Finanziario",
-    "Stato di Previsione",
-    "Amministrazione",
-    "Missione",
-    "Programma",
-    "Unità di voto 1° Livello",
-    "Unità di voto 2° Livello",
-    "Unità di voto 3° Livello",
-    "Macroaggregato",
-    "Legge di Bilancio CP A1",
-    "Legge di Bilancio CP A2",
-    "Legge di Bilancio CP A3",
-    "Legge di Bilancio CS A1",
-    "Legge di Bilancio CS A2",
-    "Legge di Bilancio CS A3",
-  ].join(";");
-  const csvRow = (year, cpA1) =>
-    [year, "01", "AMMINISTRAZIONE 01", "Istruzione", "", "", "", "", "FUNZIONAMENTO", cpA1, cpA1, cpA1, cpA1, cpA1, cpA1]
-      .map((value) => `"${value}"`)
-      .join(";");
-  const fixtureCsv = [csvHeader, csvRow(2023, "1100"), csvRow(2024, "1200")].join("\n");
-
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input) => {
-    const url = new URL(input.toString());
-    if (url.pathname.endsWith("/package_search")) {
-      return new Response(
-        JSON.stringify({
-          success: true,
-          result: {
-            results: [
-              {
-                id: packageId,
-                name: "legge_di_bilancio_pubblicata_serie_storica",
-                title: expectedTitle,
-                notes: `Prodotto - [${productCode}]`,
-                metadata_modified: "2026-01-02T17:37:34.000000",
-                license_id: "cc-by",
-                license_title: "Creative Commons Attribution",
-                license_url: "http://www.opendefinition.org/licenses/cc-by",
-                resources: [
-                  {
-                    id: "32750",
-                    url: `http://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/${packageId}.csv`,
-                    format: "csv",
-                    mimetype: "text/csv",
-                  },
-                ],
-              },
-            ],
-          },
-        }),
-        { status: 200, headers: { "content-type": "application/json" } },
-      );
-    }
-    if (url.pathname.endsWith(`${packageId}.csv`)) {
-      return new Response(fixtureCsv, { status: 200, headers: { "content-type": "text/csv" } });
-    }
-    throw new Error(`URL non atteso nel test: ${url.toString()}`);
+    throw new Error(`L'MCP snapshot non deve effettuare fetch live: ${input.toString()}`);
   };
 
   try {
@@ -769,8 +735,9 @@ test("MCP tool call exposes the Legge di Bilancio mission series with the years 
     const body = await response.text();
     assert.equal(response.status, 200);
     assert.match(body, /openbdap_legge_bilancio_storico/);
-    assert.match(body, /"years":\[2023,2024\]/);
-    assert.match(body, /"missions":\["Istruzione"\]/);
+    assert.match(body, /"dataMode":"snapshot"/);
+    assert.match(body, /"years":\[2025,2026\]/);
+    assert.match(body, /"missions":\[/);
     assert.match(body, /yearOverYearDeltas/);
   } finally {
     globalThis.fetch = originalFetch;
@@ -826,9 +793,59 @@ test("MCP endpoint keeps stateless requests isolated under concurrency", async (
   assert.ok(bodies.every((body) => body.includes("query_dataset")));
 });
 
-test("MCP endpoint enforces the 60 requests per minute instance limit", async () => {
-  const headers = { "X-Forwarded-For": "203.0.113.60" };
-  for (let index = 0; index < 60; index += 1) {
+test("MCP endpoint returns 503 and emits safe saturation telemetry at bulkhead capacity", async () => {
+  const controllers = Array.from({ length: 8 }, () => new AbortController());
+  const pending = controllers.map((controller) => POST(new Request("https://example.test/api/mcp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+    },
+    body: new ReadableStream({ start() {} }),
+    duplex: "half",
+    signal: controller.signal,
+  })));
+
+  await new Promise((resolve) => setImmediate(resolve));
+  const warnings = [];
+  const previousWarn = console.warn;
+  console.warn = (line) => warnings.push(line);
+  let overloaded;
+  try {
+    overloaded = await POST(request({
+      "MCP-Protocol-Version": "2026-07-28",
+      "MCP-Method": "tools/call",
+      "MCP-Name": "query_dataset",
+    }));
+  } finally {
+    console.warn = previousWarn;
+    for (const controller of controllers) controller.abort("test cleanup");
+    await Promise.allSettled(pending);
+  }
+
+  assert.equal(overloaded.status, 503);
+  assert.equal(overloaded.headers.get("retry-after"), "5");
+  assert.equal((await overloaded.json()).id, null);
+  assert.equal(warnings.length, 1);
+  const event = JSON.parse(warnings[0]);
+  assert.ok(Number.isSafeInteger(event.durationMs) && event.durationMs >= 0);
+  delete event.durationMs;
+  assert.deepEqual(event, {
+    event: "mcp_operational_limit",
+    outcome: "concurrency_limited",
+    status: 503,
+    protocol: "2026-07-28",
+    method: "tools/call",
+    tool: "query_dataset",
+    activeRequests: 8,
+    concurrencyLimit: 8,
+    saturated: true,
+  });
+});
+
+test("MCP endpoint enforces the WAF-aligned 30 requests per minute instance limit", async () => {
+  const headers = { "X-Forwarded-For": "198.51.100.60" };
+  for (let index = 0; index < 30; index += 1) {
     const response = await POST(request(headers));
     assert.equal(response.status, 200, `request ${index + 1}`);
     await response.body?.cancel();

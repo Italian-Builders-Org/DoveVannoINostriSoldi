@@ -1,5 +1,9 @@
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import { IPA_ENTI_RESOURCE_ID } from "@/lib/ipa";
+import {
+  ipaRuntimeFetchOptions,
+  type IpaRuntimeFetchOptions,
+} from "@/lib/ipa-runtime-fetch";
 
 const IPA_DATASTORE_SQL =
   "https://indicepa.gov.it/ipa-dati/api/3/action/datastore_search_sql";
@@ -30,7 +34,10 @@ function count(value: unknown): number {
   return 0;
 }
 
-export async function getIpaTypeDistribution(limit = 8): Promise<{
+export async function getIpaTypeDistribution(
+  limit = 8,
+  options: IpaRuntimeFetchOptions = {},
+): Promise<{
   records: IpaTypeStat[];
   observedAt: string;
   sourceUrl: string;
@@ -50,6 +57,7 @@ export async function getIpaTypeDistribution(limit = 8): Promise<{
     kind: "data",
     headers: { Accept: "application/json" },
     tags: ["dataset:ipa-enti", "view:ipa-types"],
+    ...ipaRuntimeFetchOptions(options),
   });
 
   if (!response.ok) {

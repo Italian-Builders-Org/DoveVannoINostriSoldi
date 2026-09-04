@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getSourceHealthOverview, type SourceHealth } from "@/lib/data/source-health";
+import type { SourceHealth } from "@/lib/data/source-health";
+import { getCachedSourceHealthOverview } from "@/lib/data/cached-live-views";
 import styles from "./stato.module.css";
 
 export const dynamic = "force-dynamic";
@@ -63,7 +64,7 @@ function freshnessClass(source: SourceHealth): string {
 }
 
 export default async function SourceStatusPage() {
-  const sources = await getSourceHealthOverview();
+  const { checkedAt, sources } = await getCachedSourceHealthOverview();
   const active = sources.filter((source) => source.integration === "active");
   const reachable = sources.filter((source) => source.reachability === "up");
   const unreachable = sources.filter((source) => source.reachability === "down");
@@ -83,8 +84,8 @@ export default async function SourceStatusPage() {
           <span className={styles.kicker}>STATO DELLE FONTI</span>
           <h1 className={styles.title}>Quando sono stati aggiornati i dati.</h1>
           <p className={styles.lead}>
-            Mostriamo tre cose diverse: se abbiamo collegato la fonte, se risponde in questo
-            momento e a quando risale il dato. Un sito temporaneamente irraggiungibile non rende
+            Mostriamo tre cose diverse: se abbiamo collegato la fonte, come risultava all&apos;ultimo
+            controllo e a quando risale il dato. Un sito temporaneamente irraggiungibile non rende
             falso l&apos;ultimo dato già acquisito.
           </p>
         </div>
@@ -100,7 +101,7 @@ export default async function SourceStatusPage() {
           </div>
           <div>
             <strong>{reachable.length}</strong>
-            <span>fonti raggiungibili ora</span>
+            <span>raggiungibili all&apos;ultimo controllo</span>
           </div>
           <div>
             <strong>{unreachable.length}</strong>
@@ -108,6 +109,8 @@ export default async function SourceStatusPage() {
           </div>
         </div>
       </header>
+
+      <p className={styles.footerNote}>Ultimo controllo delle fonti: {sourceDate(checkedAt)}.</p>
 
       <section className={styles.explainer}>
         <div>
@@ -132,7 +135,7 @@ export default async function SourceStatusPage() {
         <div className={styles.tableHeader}>
           <span>Fonte</span>
           <span>Collegamento</span>
-          <span>Risponde ora?</span>
+          <span>Ultimo controllo</span>
           <span>Data del dato</span>
         </div>
 

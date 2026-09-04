@@ -8,7 +8,6 @@ import {
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import { datasetCatalog } from "@/lib/mcp/catalog";
 import {
-  searchIpaEntities,
   searchIpaEntitiesByPrefix,
   type IpaEntity,
 } from "@/lib/ipa";
@@ -522,23 +521,11 @@ export async function searchGlobal(input: {
 
   try {
     const entityLimit = Math.min(50, Math.max(limit * 3, 12));
-    let entitySearch;
-    try {
-      entitySearch = await searchIpaEntitiesByPrefix({
-        query: normalizedQuery,
-        limit: entityLimit,
-        signal: input.signal,
-      });
-    } catch (error) {
-      if (input.signal?.aborted) throw input.signal.reason ?? error;
-      // Keep the existing full-text adapter as a fail-safe when the optional
-      // SQL search endpoint is unavailable upstream.
-      entitySearch = await searchIpaEntities({
-        query: normalizedQuery,
-        limit: entityLimit,
-        signal: input.signal,
-      });
-    }
+    const entitySearch = await searchIpaEntitiesByPrefix({
+      query: normalizedQuery,
+      limit: entityLimit,
+      signal: input.signal,
+    });
     entityTotal = entitySearch.total;
     entityResults = [...rankEntitySearchResults(entitySearch.records, normalizedQuery)];
   } catch (error) {

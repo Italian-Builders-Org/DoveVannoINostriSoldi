@@ -7,8 +7,12 @@ import {
   IPA_UO_RESOURCE_ID,
 } from "@/lib/ipa-structure";
 import { IPA_LICENSE } from "@/lib/ipa";
+import { runWithRequestBudget } from "@/lib/search/request-budget";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 10;
+
+const IPA_STRUCTURE_REQUEST_TIMEOUT_MS = 6_000;
 
 type RouteContext = {
   params: Promise<{ codice: string }>;
@@ -31,7 +35,21 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   try {
-    const structure = await getIpaOrganizationStructure(normalized, limit, offset);
+    const outcome = await runWithRequestBudget(
+      request.signal,
+      IPA_STRUCTURE_REQUEST_TIMEOUT_MS,
+      (signal) => getIpaOrganizationStructure(normalized, limit, offset, { signal }),
+    );
+    if (outcome.timedOut) {
+      return NextResponse.json(
+        { ok: false, source: "Indice PA (IPA) · struttura", error: "La fonte IPA ha superato il tempo massimo." },
+        {
+          status: 504,
+          headers: { "Cache-Control": "private, no-store", "Retry-After": "10" },
+        },
+      );
+    }
+    const structure = outcome.value;
     return NextResponse.json(
       {
         ok: true,
@@ -49,6 +67,7 @@ export async function GET(request: Request, context: RouteContext) {
       { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,

@@ -19,6 +19,7 @@ import {
 import styles from "./stato.module.css";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 15;
 
 const PAGE_DATA_BUDGET_MS = 8_000;
 

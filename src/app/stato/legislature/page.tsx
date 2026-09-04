@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import {
-  getLegislatureSpendingCycles,
   type LegislatureSpendingCycle,
 } from "@/lib/state-spending-legislature";
+import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-live-views";
 import styles from "./legislature.module.css";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export const metadata: Metadata = {
   title: "Spesa dello Stato per legislatura",
@@ -96,7 +97,7 @@ export default async function StateSpendingLegislaturePage() {
   let errorMessage: string | null = null;
 
   try {
-    cycles = await getLegislatureSpendingCycles();
+    cycles = await getCachedLegislatureSpendingCycles();
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
   }

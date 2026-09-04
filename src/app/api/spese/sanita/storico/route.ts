@@ -1,13 +1,32 @@
 import { NextResponse } from "next/server";
-import { getSsnNationalHistory } from "@/lib/ssn-national-history";
+import { getCachedSsnNationalHistory } from "@/lib/data/cached-live-views";
+import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const dynamic = "force-dynamic";
-// The adapter's 50s global deadline leaves a small serialization/framework margin.
 export const maxDuration = 60;
 
+const ssnHistoryLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 6 });
+const ssnHistoryConcurrency = new ConcurrencyLimiter(1);
+
 export async function GET(request: Request) {
+  const clientKey = clientAddress(request) ?? "unknown";
+  if (!ssnHistoryLimiter.consume(clientKey)) {
+    return NextResponse.json(
+      { ok: false, source: "RGS / OpenBDAP", error: "Troppe richieste per lo storico SSN." },
+      { status: 429, headers: { "Cache-Control": "private, no-store", "Retry-After": "60" } },
+    );
+  }
+
+  const release = ssnHistoryConcurrency.tryAcquire();
+  if (!release) {
+    return NextResponse.json(
+      { ok: false, source: "RGS / OpenBDAP", error: "Storico SSN temporaneamente occupato." },
+      { status: 503, headers: { "Cache-Control": "private, no-store", "Retry-After": "5" } },
+    );
+  }
+
   try {
-    const history = await getSsnNationalHistory({ signal: request.signal });
+    const history = await getCachedSsnNationalHistory();
 
     return NextResponse.json(
       {
@@ -27,11 +46,12 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400",
+          "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=3600",
         },
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,
@@ -41,5 +61,7 @@ export async function GET(request: Request) {
       },
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
+  } finally {
+    release();
   }
 }

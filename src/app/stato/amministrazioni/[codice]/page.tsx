@@ -12,6 +12,7 @@ import localStyles from "./amministrazione.module.css";
 import styles from "../../stato.module.css";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 15;
 
 export const metadata: Metadata = {
   title: "Spesa di una amministrazione dello Stato",
@@ -300,7 +301,7 @@ export default async function AdministrationPage({ params, searchParams }: PageP
     try {
       data = await getStateAdministrationSpending(decodeURIComponent(codice), {
         ...period.value,
-        signal: AbortSignal.timeout(12_000),
+        signal: AbortSignal.timeout(10_000),
       });
     } catch (error) {
       errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";

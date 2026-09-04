@@ -11,14 +11,18 @@ const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 20
 
 test("concurrency limiter releases capacity exactly once", () => {
   const limiter = new ConcurrencyLimiter(2);
+  assert.equal(limiter.active, 0);
   const first = limiter.tryAcquire();
   const second = limiter.tryAcquire();
   assert.ok(first);
   assert.ok(second);
+  assert.equal(limiter.active, 2);
   assert.equal(limiter.tryAcquire(), null);
   first();
   first();
+  assert.equal(limiter.active, 1);
   assert.ok(limiter.tryAcquire());
+  assert.equal(limiter.active, 2);
 });
 const PEM = privateKey.export({ type: "pkcs1", format: "pem" });
 const CONFIG = { appId: "123", installationId: "456", privateKeyPem: PEM };

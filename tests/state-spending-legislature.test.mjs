@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 import { runLiveOpenBdap } from "./helpers/live-openbdap.mjs";
@@ -7,6 +8,12 @@ const { LEGISLATURES, getLegislatureSpendingCycles, fullYearsWithinLegislature }
   "../src/lib/state-spending-legislature.ts"
 );
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
+
+test("legislature page uses the shared persistent OpenBDAP cache", () => {
+  const page = readFileSync("src/app/stato/legislature/page.tsx", "utf8");
+  assert.match(page, /getCachedLegislatureSpendingCycles\(\)/);
+  assert.match(page, /export const maxDuration = 60/);
+});
 
 test("legislature dates are chronological and complete legislatures have a known end", () => {
   for (let index = 1; index < LEGISLATURES.length; index += 1) {
@@ -79,13 +86,18 @@ test("legislature cycles load all annual totals in one bounded batch", async () 
 });
 
 test("legislature cycles enforce one global deadline even if a loader ignores abort", async () => {
+  let loaderSignal;
   await assert.rejects(
     getLegislatureSpendingCycles({
       deadlineMs: 20,
-      loadTotals: async () => new Promise(() => {}),
+      loadTotals: async (_years, options) => {
+        loaderSignal = options.signal;
+        return new Promise(() => {});
+      },
     }),
     /timeout|aborted/i,
   );
+  assert.equal(loaderSignal?.aborted, true);
 });
 
 test(

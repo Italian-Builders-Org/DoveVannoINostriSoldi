@@ -1,11 +1,32 @@
 import { NextResponse, type NextRequest } from "next/server.js";
 import { BudgetLawInvalidWindowError, getBudgetLawMissionSeries } from "@/lib/bdap-legge-bilancio";
+import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
+import { runWithRequestBudget } from "@/lib/search/request-budget";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 15;
 
 const ALLOWED_PARAMS = new Set(["anni"]);
+const BUDGET_LAW_REQUEST_TIMEOUT_MS = 12_000;
+const budgetLawLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 6 });
+const budgetLawConcurrency = new ConcurrencyLimiter(2);
 
 class InvalidQueryError extends Error {}
+
+function unavailable(message: string, status: number, retryAfter: string): Response {
+  return NextResponse.json(
+    { ok: false, source: "RGS / OpenBDAP", error: message },
+    {
+      status,
+      headers: {
+        "Cache-Control": "private, no-store",
+        "Retry-After": retryAfter,
+        "X-Content-Type-Options": "nosniff",
+      },
+    },
+  );
+}
 
 function windowYearsParam(request: NextRequest): number | undefined {
   for (const key of request.nextUrl.searchParams.keys()) {
@@ -29,11 +50,29 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const clientKey = clientAddress(request) ?? "unknown";
+  if (!budgetLawLimiter.consume(clientKey)) {
+    return unavailable("Troppe richieste per la Legge di Bilancio.", 429, "60");
+  }
+
+  const release = budgetLawConcurrency.tryAcquire();
+  if (!release) {
+    return unavailable("Serie della Legge di Bilancio temporaneamente occupata.", 503, "5");
+  }
+
   try {
-    const series = await getBudgetLawMissionSeries({
-      windowYears,
-      signal: request.signal,
-    });
+    const outcome = await runWithRequestBudget(
+      request.signal,
+      BUDGET_LAW_REQUEST_TIMEOUT_MS,
+      (signal) => getBudgetLawMissionSeries({
+        windowYears,
+        signal,
+      }),
+    );
+    if (outcome.timedOut) {
+      return unavailable("La fonte OpenBDAP ha superato il tempo massimo.", 504, "10");
+    }
+    const series = outcome.value;
 
     return NextResponse.json(
       {
@@ -52,6 +91,7 @@ export async function GET(request: NextRequest) {
       },
     );
   } catch (error) {
+    if (request.signal.aborted) throw error;
     const status = error instanceof BudgetLawInvalidWindowError ? 400 : 503;
     return NextResponse.json(
       {
@@ -66,5 +106,7 @@ export async function GET(request: NextRequest) {
       },
       { status, headers: { "Cache-Control": "private, no-store" } },
     );
+  } finally {
+    release();
   }
 }

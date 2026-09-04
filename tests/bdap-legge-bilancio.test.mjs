@@ -474,7 +474,7 @@ test("source-contract drift fails closed instead of being hidden by the snapshot
   }
 });
 
-test("openbdap_legge_bilancio_storico MCP dataset rejects unsupported filters and exposes the series", async () => {
+test("openbdap_legge_bilancio_storico MCP dataset rejects filters and exposes the verified snapshot without fetching", async () => {
   const fetchMock = installFetch(FIXTURE_CSV);
   try {
     await assert.rejects(
@@ -482,11 +482,22 @@ test("openbdap_legge_bilancio_storico MCP dataset rejects unsupported filters an
       /Filtri non supportati/,
     );
     const result = await queryPublicDataset({ dataset: "openbdap_legge_bilancio_storico", years: 2 });
-    assert.deepEqual(result.years, [2023, 2024]);
-    assert.deepEqual(result.missions, ["Istruzione"]);
+    assert.deepEqual(result.years, [2025, 2026]);
+    assert.equal(result.dataMode, "snapshot");
+    assert.equal(fetchMock.calls.length, 0);
   } finally {
     fetchMock.restore();
   }
+});
+
+test("public API preserves the shared aggregate cache while MCP is snapshot-only", () => {
+  const mcpSource = readFileSync("src/lib/mcp/datasets.ts", "utf8");
+  const routeSource = readFileSync("src/app/api/spese/stato/legge-bilancio/route.ts", "utf8");
+  const librarySource = readFileSync("src/lib/bdap-legge-bilancio.ts", "utf8");
+  assert.match(mcpSource, /getCommittedBudgetLawMissionSeries\(query\.years\)/);
+  assert.doesNotMatch(mcpSource, /getBudgetLawMissionSeries\(/);
+  assert.doesNotMatch(routeSource, /shared:\s*false/);
+  assert.match(librarySource, /waitForAggregate\(getFullMissionAggregate\(\), options\.signal\)/);
 });
 
 test("the budget-law route validates its query and never caches errors", async () => {

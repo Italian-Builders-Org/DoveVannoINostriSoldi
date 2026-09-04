@@ -5,8 +5,9 @@ const BDAP_PACKAGE_LIST =
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
   const startedAt = Date.now();
+  const signal = AbortSignal.any([request.signal, AbortSignal.timeout(8_000)]);
 
   try {
     const response = await fetch(BDAP_PACKAGE_LIST, {
@@ -15,7 +16,7 @@ export async function GET() {
         "User-Agent": "DoveVannoINostriSoldi/0.1 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)",
       },
       next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(8000),
+      signal,
     });
 
     if (!response.ok) {
@@ -41,6 +42,7 @@ export async function GET() {
       payload,
     });
   } catch (error) {
+    if (request.signal.aborted) throw error;
     return NextResponse.json(
       {
         ok: false,

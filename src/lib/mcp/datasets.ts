@@ -162,18 +162,18 @@ export async function queryPublicDataset(
       }));
     }
     case "openbdap_ssn_storico_nazionale": {
-      const { getSsnNationalHistory } = await import("@/lib/ssn-national-history");
-      return jsonSafe(await getSsnNationalHistory({ signal: options.signal }));
+      const { getMcpCachedSsnNationalHistory } = await import("@/lib/data/cached-live-views");
+      return jsonSafe(await getMcpCachedSsnNationalHistory({ signal: options.signal }));
     }
     case "openbdap_spesa_legislature": {
-      const { getLegislatureSpendingCycles } = await import("@/lib/state-spending-legislature");
-      return jsonSafe({ cycles: await getLegislatureSpendingCycles({ signal: options.signal }) });
+      const { getMcpCachedLegislatureSpendingCycles } = await import("@/lib/data/cached-live-views");
+      return jsonSafe({
+        cycles: await getMcpCachedLegislatureSpendingCycles({ signal: options.signal }),
+      });
     }
     case "openbdap_legge_bilancio_storico": {
-      const { getBudgetLawMissionSeries } = await import("@/lib/bdap-legge-bilancio");
-      return jsonSafe(
-        await getBudgetLawMissionSeries({ windowYears: query.years, signal: options.signal }),
-      );
+      const { getCommittedBudgetLawMissionSeries } = await import("@/lib/bdap-legge-bilancio");
+      return jsonSafe(getCommittedBudgetLawMissionSeries(query.years));
     }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");

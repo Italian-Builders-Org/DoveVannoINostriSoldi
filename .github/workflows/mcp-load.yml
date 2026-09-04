@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       requests:
-        description: Numero totale di richieste (massimo 500)
+        description: Numero totale di richieste (default sotto il cap di 30 POST/min/IP)
         required: true
-        default: "100"
+        default: "20"
       concurrency:
-        description: Concorrenza (massimo 25)
+        description: Concorrenza (default sotto il bulkhead applicativo di 8)
         required: true
-        default: "10"
+        default: "6"
       p95_ms:
         description: Budget p95 in millisecondi
         required: true

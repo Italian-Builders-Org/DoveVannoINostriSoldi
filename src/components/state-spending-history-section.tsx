@@ -5,6 +5,8 @@ import {
 } from "@/lib/bdap-history";
 import styles from "./state-spending-history-section.module.css";
 
+const PAGE_HISTORY_BUDGET_MS = 5_000;
+
 const observedAtFormatter = new Intl.DateTimeFormat("it-IT", {
   dateStyle: "medium",
   timeStyle: "short",
@@ -24,7 +26,10 @@ function compactEuro(value: number): string {
 
 async function loadHistory(): Promise<StateSpendingHistory | null> {
   try {
-    return await getStateSpendingHistory();
+    return await getStateSpendingHistory({
+      deadlineMs: PAGE_HISTORY_BUDGET_MS,
+      signal: AbortSignal.timeout(PAGE_HISTORY_BUDGET_MS),
+    });
   } catch {
     return null;
   }

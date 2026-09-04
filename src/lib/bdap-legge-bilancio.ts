@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache.js";
 import {
   decodePublicDataText,
   parseDelimitedRecords,
@@ -349,6 +350,8 @@ async function fetchDatasetRows(
 ): Promise<DelimitedRecord[]> {
   const response = await fetchOfficialSource("openbdap", dataset.csvUrl, {
     kind: "data",
+    // Cache the compact aggregate below, not this CSV exceeding Next's 2 MB limit.
+    cacheMode: "no-store",
     signal,
     headers: { Accept: "text/csv" },
     tags: [`dataset:${dataset.packageId}`, "product:legge-bilancio-ampma"],
@@ -548,6 +551,54 @@ async function computeFullMissionAggregate(signal: AbortSignal): Promise<FullMis
   };
 }
 
+// Next's Data Cache persists JSON, so Maps/Sets must be encoded explicitly.
+export function serializeBudgetLawAggregate(aggregate: FullMissionAggregate) {
+  return {
+    ...aggregate,
+    missionsByYear: [...aggregate.missionsByYear].map(([year, missions]) =>
+      [year, [...missions]] as [number, string[]]),
+    totalsByYearMission: [...aggregate.totalsByYearMission],
+  };
+}
+
+export function deserializeBudgetLawAggregate(
+  aggregate: ReturnType<typeof serializeBudgetLawAggregate>,
+): FullMissionAggregate {
+  return {
+    ...aggregate,
+    missionsByYear: new Map(aggregate.missionsByYear.map(([year, missions]) =>
+      [year, new Set(missions)])),
+    totalsByYearMission: new Map(aggregate.totalsByYearMission),
+  };
+}
+
+const readPersistentAggregate = unstable_cache(
+  async () => {
+    const aggregate = serializeBudgetLawAggregate(await computeFullMissionAggregate(
+      AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS),
+    ));
+    if (new TextEncoder().encode(JSON.stringify(aggregate)).byteLength > 1_000_000) {
+      throw new Error("Aggregato Legge di Bilancio troppo grande per la cache");
+    }
+    return aggregate;
+  },
+  ["budget-law-mission-aggregate-v1"],
+  { revalidate: getSourcePolicy("openbdap").dataRevalidateSeconds, tags: ["openbdap-budget-law"] },
+);
+
+async function readFullMissionAggregate(): Promise<FullMissionAggregate> {
+  try {
+    return deserializeBudgetLawAggregate(await readPersistentAggregate());
+  } catch (error) {
+    // Standalone Node tests/ETL have no Next cache context. Do not retry source failures.
+    if (error instanceof Error
+      && error.message.startsWith("Invariant: incrementalCache missing in unstable_cache")) {
+      return computeFullMissionAggregate(AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS));
+    }
+    throw error;
+  }
+}
+
 /**
  * Returns the cached aggregate, refreshing it when missing or expired. A
  * failed population is not cached, so the next call retries instead of
@@ -558,9 +609,7 @@ function getFullMissionAggregate(): Promise<FullMissionAggregate> {
     return fullAggregateCache.promise;
   }
   const revalidateSeconds = getSourcePolicy("openbdap").dataRevalidateSeconds;
-  const promise = computeFullMissionAggregate(
-    AbortSignal.timeout(FULL_AGGREGATE_DEADLINE_MS),
-  ).catch((error: unknown) => {
+  const promise = readFullMissionAggregate().catch((error: unknown) => {
     if (fullAggregateCache?.promise === promise) fullAggregateCache = null;
     throw error;
   });

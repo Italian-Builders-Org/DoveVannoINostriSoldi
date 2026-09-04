@@ -17,15 +17,32 @@ const {
 } = await import("../src/lib/government-scorecard-downloads.ts");
 const { GET: GETGovernmentScorecardDownloadManifest } = await import("../src/app/api/governi/dati/route.ts");
 const { GET: GETGovernmentScorecardDownload } = await import("../src/app/api/governi/dati/[download]/route.ts");
+const {
+  GOVERNMENT_SCORECARD_DOWNLOADS,
+  GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF,
+} = await import("../src/lib/government-scorecard-download-links.ts");
 
 const EXPECTED_DOWNLOAD_IDS = [
-  "methodology",
-  "chronology",
   "score-data",
   "page-data",
+  "methodology",
+  "chronology",
   "score-provenance",
   "page-provenance",
 ];
+
+test("the public download catalog offers one direct attachment link per artifact", () => {
+  assert.deepEqual(
+    GOVERNMENT_SCORECARD_DOWNLOADS.map((download) => download.id),
+    EXPECTED_DOWNLOAD_IDS,
+  );
+  assert.ok(GOVERNMENT_SCORECARD_DOWNLOADS.every(
+    (download) => download.href === `${GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF}/${download.id}`,
+  ));
+  assert.ok(GOVERNMENT_SCORECARD_DOWNLOADS.every((download) => download.filename.length > 0));
+  assert.ok(GOVERNMENT_SCORECARD_DOWNLOADS.every((download) => download.label.length > 0));
+  assert.ok(GOVERNMENT_SCORECARD_DOWNLOADS.every((download) => download.description.length > 0));
+});
 
 test("the public manifest exposes only the closed scorecard download contract", () => {
   const manifest = getGovernmentScorecardDownloadManifest();
@@ -215,24 +232,6 @@ test("offline reconciliation traces every displayed value and context item to fr
   assert.ok(result.displayed_values > 10_000);
   assert.ok(result.context_items > 100);
   assert.equal(result.source_receipts, 10);
-});
-
-test("Dati e fonti contains one compact keyboard-reachable download entry point", () => {
-  const component = readFileSync(
-    new URL("../src/app/governi/_components/government-scorecard-page.tsx", import.meta.url),
-    "utf8",
-  );
-  const styles = readFileSync(
-    new URL("../src/app/governi/government-scorecard.module.css", import.meta.url),
-    "utf8",
-  );
-
-  assert.match(component, /GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF/);
-  assert.doesNotMatch(component, /from "@\/lib\/government-scorecard-downloads"/);
-  assert.equal(component.match(/>Scarica i dati<\/a>/g)?.length, 1);
-  assert.match(component, /className=\{styles\.downloadLink\}/);
-  assert.match(styles, /\.downloadLink\s*\{[\s\S]*min-height:\s*44px/);
-  assert.match(styles, /\.downloadLead\s*\{[\s\S]*display:\s*grid/);
 });
 
 test("the canonical guide documents one offline verification command and the online refresh limit", () => {

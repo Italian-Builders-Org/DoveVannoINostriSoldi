@@ -189,13 +189,44 @@
   font-weight: 800;
 }
 
-.downloadLead {
+.downloadPanel {
   display: grid;
-  gap: 2px;
-  margin: 12px 0;
+  gap: 10px;
+  margin: 18px 0;
+  scroll-margin-top: 160px;
+  padding: 16px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-200);
 }
 
-.downloadLead span {
+.downloadPanel h3,
+.downloadPanel p {
+  margin: 0;
+}
+
+.downloadPanel > p {
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.downloadList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1px;
+  margin: 2px 0 0;
+  padding: 1px;
+  background: var(--color-neutral-200);
+  list-style: none;
+}
+
+.downloadList li {
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--color-raised);
+}
+
+.downloadList span {
+  display: block;
   color: var(--color-neutral-600);
   font-size: 12px;
 }
@@ -209,6 +240,32 @@
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.downloadManifest a {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.downloadTechnical {
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.downloadTechnical summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  width: fit-content;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.downloadTechnical .downloadList {
+  margin-top: 8px;
+}
+
+.downloadTechnical .downloadManifest {
+  margin-top: 10px;
 }
 
 .emptyState,
@@ -1491,6 +1548,10 @@
   }
 
   .hero nav {
+    margin-top: 8px;
+  }
+
+  .hero nav a:not(:last-child) {
     display: none;
   }
 

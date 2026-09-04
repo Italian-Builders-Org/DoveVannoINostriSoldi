@@ -12,58 +12,15 @@ import methodology from "../../scripts/etl/specs/government-scorecard-methodolog
 import pageProvenance from "../../scripts/etl/specs/government-scorecard-page.source.json";
 import scoreProvenance from "../../scripts/etl/specs/government-scorecard.source.json";
 import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
-import { GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF } from "@/lib/government-scorecard-download-links";
+import { GOVERNMENT_SCORECARD_DOWNLOADS } from "@/lib/government-scorecard-download-links";
 import {
   getGovernmentScorecardV6View,
   GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS,
 } from "@/lib/government-scorecard-governments";
 
-const DOWNLOAD_DEFINITIONS = [
-  {
-    id: "methodology",
-    filename: "government-scorecard-methodology.json",
-    category: "methodology",
-    label: "Manifest metodologico",
-    description: "Formula, indicatori, pesi, serie AMECO e trasformazioni del voto.",
-  },
-  {
-    id: "chronology",
-    filename: "government-scorecard-chronology.json",
-    category: "chronology",
-    label: "Cronologia dei governi",
-    description: "Date istituzionali, localizzatori e fonti della Presidenza della Repubblica.",
-  },
-  {
-    id: "score-data",
-    filename: "government-scorecard-data.json",
-    category: "data",
-    label: "Dati usati nel voto",
-    description: "Pannello annuale AMECO congelato usato dal calcolo, incluse le previsioni escluse dal voto.",
-  },
-  {
-    id: "page-data",
-    filename: "government-scorecard-page-data.json.gz",
-    category: "data",
-    label: "Dati generali e contesto della pagina",
-    description: "Serie dei grafici e contesto editoriale documentato; questi contenuti non cambiano il voto.",
-  },
-  {
-    id: "score-provenance",
-    filename: "government-scorecard-score-provenance.json",
-    category: "provenance",
-    label: "Ricevuta di provenienza del voto",
-    description: "Fonte, vintage, periodo, serie, licenza e regole di acquisizione del pannello AMECO.",
-  },
-  {
-    id: "page-provenance",
-    filename: "government-scorecard-page-provenance.json",
-    category: "provenance",
-    label: "Ricevuta di provenienza della pagina",
-    description: "Query, unità, frequenze, derivazioni e regole fail-closed delle serie di pagina.",
-  },
-] as const;
+const DOWNLOAD_DEFINITIONS = GOVERNMENT_SCORECARD_DOWNLOADS;
 
-export type GovernmentScorecardDownloadId = (typeof DOWNLOAD_DEFINITIONS)[number]["id"];
+type GovernmentScorecardDownloadId = (typeof DOWNLOAD_DEFINITIONS)[number]["id"];
 export const MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES = 4_500_000;
 
 const PAYLOADS: Record<GovernmentScorecardDownloadId, unknown> = {
@@ -187,7 +144,11 @@ function buildDownloadArtifact(definition: (typeof DOWNLOAD_DEFINITIONS)[number]
   const bytes = bodyBytes(body);
   assertGovernmentScorecardFunctionResponseSize(bytes, definition.id);
   return {
-    ...definition,
+    id: definition.id,
+    filename: definition.filename,
+    category: definition.category,
+    label: definition.label,
+    description: definition.description,
     format: "json" as const,
     compression,
     contentType: compression === "gzip"
@@ -203,13 +164,17 @@ function downloadEntries() {
   return DOWNLOAD_DEFINITIONS.map((definition) => {
     const artifact = buildDownloadArtifact(definition);
     return {
-      ...definition,
+      id: artifact.id,
+      filename: artifact.filename,
+      category: artifact.category,
+      label: artifact.label,
+      description: artifact.description,
       format: artifact.format,
       compression: artifact.compression,
       content_type: artifact.contentType,
       bytes: artifact.bytes,
       sha256: artifact.sha256,
-      href: `/api/governi/dati/${definition.id}`,
+      href: definition.href,
     };
   });
 }
@@ -452,9 +417,3 @@ export function reconcileGovernmentScorecardPageProvenance() {
     source_receipts: snapshot.sources.length,
   };
 }
-
-export const GOVERNMENT_SCORECARD_DOWNLOAD_LINKS = DOWNLOAD_DEFINITIONS.map(({ id, label }) => ({
-  id,
-  label,
-  href: `${GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF}/${id}`,
-}));

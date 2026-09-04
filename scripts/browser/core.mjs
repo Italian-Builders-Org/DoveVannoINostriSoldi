@@ -822,18 +822,82 @@ try {
         await indicatorButton.click();
         await assertGovernmentChartKeyboard(page, label);
 
-        await page.evaluate(() => {
-          const summary = [...document.querySelectorAll("summary")].find(
-            (candidate) => candidate.textContent?.trim() === "Dati, fonti e verifiche",
-          );
-          summary?.click();
-        });
+        const sourcesNavigationLink = await page.$(
+          'main nav[aria-label="Approfondimenti della pagella"] a[href="#dati-e-fonti"]',
+        );
+        assert.ok(sourcesNavigationLink, `${label}: collegamento Scarica i dati assente`);
+        await sourcesNavigationLink.evaluate((element) =>
+          element.scrollIntoView({ block: "center", inline: "center" }),
+        );
+        await sourcesNavigationLink.click();
+        await page.waitForFunction(() => window.location.hash === "#dati-e-fonti");
+        assert.equal(new URL(page.url()).hash, "#dati-e-fonti", `${label}: il collegamento Scarica i dati non aggiorna l'URL`);
+        const downloadsPanel = await page.$("section#dati-e-fonti");
+        assert.ok(downloadsPanel, `${label}: sezione Scarica i dati non raggiungibile`);
+        const primaryDownloads = await page.$$eval(
+          'section#dati-e-fonti > ul a[href^="/api/governi/dati/"]',
+          (links) => links.map((link) => ({
+            href: link.getAttribute("href"),
+            height: link.getBoundingClientRect().height,
+          })),
+        );
+        assert.deepEqual(
+          primaryDownloads.map((download) => download.href),
+          ["/api/governi/dati/score-data", "/api/governi/dati/page-data"],
+          `${label}: i due download principali non sono immediatamente visibili`,
+        );
+        assert.ok(
+          primaryDownloads.every((download) => download.height >= 44),
+          `${label}: un download principale ha un target inferiore a 44px`,
+        );
+        const technicalDownloads = await downloadsPanel.$("details");
+        assert.ok(technicalDownloads, `${label}: sezione dei file tecnici assente`);
+        assert.equal(
+          await technicalDownloads.evaluate((element) => element.hasAttribute("open")),
+          false,
+          `${label}: i file tecnici devono partire chiusi`,
+        );
+        await technicalDownloads.$eval("summary", (summary) => summary.click());
+        const directDownloads = await page.$$eval(
+          'a[href^="/api/governi/dati/"]',
+          (links) => links.map((link) => ({
+            href: link.getAttribute("href"),
+            filename: link.getAttribute("download"),
+            height: link.getBoundingClientRect().height,
+          })),
+        );
+        assert.deepEqual(
+          directDownloads.map((download) => download.href),
+          [
+            "/api/governi/dati/score-data",
+            "/api/governi/dati/page-data",
+            "/api/governi/dati/methodology",
+            "/api/governi/dati/chronology",
+            "/api/governi/dati/score-provenance",
+            "/api/governi/dati/page-provenance",
+          ],
+          `${label}: elenco dei download diretti divergente`,
+        );
+        assert.ok(
+          directDownloads.every((download) => download.filename),
+          `${label}: un download diretto non dichiara il nome file`,
+        );
+        assert.ok(
+          directDownloads.every((download) => download.height >= 44),
+          `${label}: un download diretto ha un target inferiore a 44px`,
+        );
+        await page.focus('a[href="/api/governi/dati/score-data"]');
+        assert.equal(
+          await page.evaluate(() => document.activeElement?.getAttribute("href")),
+          "/api/governi/dati/score-data",
+          `${label}: il primo download diretto non riceve il focus`,
+        );
         const downloadLink = await page.$('a[href="/api/governi/dati"]');
-        assert.ok(downloadLink, `${label}: access point "Scarica i dati" assente`);
+        assert.ok(downloadLink, `${label}: indice tecnico dei download assente`);
         assert.equal(
           await downloadLink.evaluate((element) => element.textContent?.trim()),
-          "Scarica i dati",
-          `${label}: testo del link download divergente`,
+          "Indice tecnico dei download",
+          `${label}: testo del link al manifest divergente`,
         );
         await downloadLink.evaluate((element) => element.focus());
         assert.equal(

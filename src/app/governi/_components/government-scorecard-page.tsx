@@ -3,7 +3,11 @@ import {
   presentGovernmentScorecardV6View,
   type GovernmentScorecardV6PageView,
 } from "@/lib/government-scorecard-page";
-import { GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF } from "@/lib/government-scorecard-download-links";
+import {
+  GOVERNMENT_SCORECARD_DOWNLOADS,
+  GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_FILENAME,
+  GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF,
+} from "@/lib/government-scorecard-download-links";
 
 import { ContextCarousel } from "./context-carousel";
 import { IndicatorCarousel } from "./indicator-carousel";
@@ -222,17 +226,67 @@ function MethodSection({ view }: { view: GovernmentScorecardV6PageView }) {
   );
 }
 
+function DownloadsPanel() {
+  const dataDownloads = GOVERNMENT_SCORECARD_DOWNLOADS.filter((download) => download.category === "data");
+  const verificationDownloads = GOVERNMENT_SCORECARD_DOWNLOADS.filter(
+    (download) => download.category !== "data",
+  );
+
+  return (
+    <section className={styles.downloadPanel} id="dati-e-fonti" aria-labelledby="download-title">
+      <h3 id="download-title">Scarica i dati</h3>
+      <p>Scegli i dati del voto oppure quelli usati nei grafici e nel contesto.</p>
+      <ul className={styles.downloadList}>
+        {dataDownloads.map((download) => (
+          <li key={download.id}>
+            <a
+              className={styles.downloadLink}
+              href={download.href}
+              download={download.filename}
+            >
+              {download.label}
+            </a>
+            <span>{download.description}</span>
+          </li>
+        ))}
+      </ul>
+      <details className={styles.downloadTechnical}>
+        <summary>File tecnici per verificare i dati</summary>
+        <ul className={styles.downloadList}>
+          {verificationDownloads.map((download) => (
+            <li key={download.id}>
+              <a
+                className={styles.downloadLink}
+                href={download.href}
+                download={download.filename}
+              >
+                {download.label}
+              </a>
+              <span>{download.description}</span>
+            </li>
+          ))}
+        </ul>
+        <p className={styles.downloadManifest}>
+          Per controllare dimensioni e SHA-256 usa l&apos;
+          <a
+            href={GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF}
+            download={GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_FILENAME}
+          >
+            Indice tecnico dei download
+          </a>.
+        </p>
+      </details>
+    </section>
+  );
+}
+
 function SourcesDetails({ view }: { view: GovernmentScorecardV6PageView }) {
   return (
-    <div className={styles.detailBody} id="dati-e-fonti">
+    <div className={styles.detailBody}>
       <h3>Dati e fonti</h3>
       <p>
         Il voto usa la pubblicazione {view.source.dataset_code} della {view.source.source_owner};
         i grafici di contesto indicano accanto a ogni serie la propria fonte e data di aggiornamento.
-      </p>
-      <p className={styles.downloadLead}>
-        <a className={styles.downloadLink} href={GOVERNMENT_SCORECARD_DOWNLOAD_MANIFEST_HREF}>Scarica i dati</a>
-        <span>Manifest, cronologia, dati del voto, dati della pagina e ricevute di provenienza in JSON aperto.</span>
       </p>
       <ul>
         {view.sources.map((source) => <li key={source.id}><a href={source.url}>{source.label}</a></li>)}
@@ -265,6 +319,7 @@ function CompareSection({ view }: { view: GovernmentScorecardV6PageView }) {
   return (
     <section className={styles.section} id="confronta">
       <ArchiveComparison compare={view.compare} />
+      <DownloadsPanel />
       <details className={styles.progressiveDetails}>
         <summary>Dati, fonti e verifiche</summary>
         <SourcesDetails view={view} />
@@ -312,7 +367,7 @@ export function GovernmentScorecardPage({ view }: { view: GovernmentScorecardV6P
           <a href="#grafici">Grafici</a>
           <a href="#contesto">Contesto</a>
           <a href="#metodo">Come viene calcolato</a>
-          <a href="#dati-e-fonti">Dati e fonti</a>
+          <a href="#dati-e-fonti">Scarica i dati</a>
         </nav>
       </header>
 

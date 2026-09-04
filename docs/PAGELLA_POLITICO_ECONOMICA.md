@@ -22,18 +22,18 @@ Le fonti dei grafici e delle schede di contesto sono raggiungibili dalla pagina.
 
 ## Scarica i dati
 
-Il link "Scarica i dati" apre `/api/governi/dati`, un manifest JSON aperto che elenca i soli artefatti necessari: manifest metodologico, cronologia, dati del voto, dati della pagina e ricevute di provenienza già disponibili.
+La voce "Scarica i dati" porta a due file principali: "Dati usati nel voto" per controllare il punteggio e "Dati di grafici e contesto" per ricostruire ciò che appare nella pagina. Metodo, cronologia e contratti di provenienza restano disponibili nel pannello espandibile "File tecnici per verificare i dati".
 
-Ogni download è su allowlist chiusa: un identificatore ignoto restituisce 404. Ogni indicatore conserva fonte, serie o query, unità, frequenza, periodo, vintage, trasformazione, data di acquisizione e SHA-256. Il manifest dichiara per ciascun file formato JSON, compressione, byte e hash esatti della risposta scaricata.
+Il link "Indice tecnico dei download" scarica il manifest `/api/governi/dati`, che dichiara per ciascun file formato, compressione, byte e SHA-256 esatti. Ogni download è su allowlist chiusa: un identificatore ignoto restituisce 404. Ogni indicatore conserva fonte, serie o query, unità, frequenza, periodo, vintage, trasformazione, data di acquisizione e SHA-256.
 
 | Download | Contenuto |
 | --- | --- |
-| `/api/governi/dati/methodology` | manifest metodologico |
-| `/api/governi/dati/chronology` | cronologia istituzionale |
 | `/api/governi/dati/score-data` | dati annuali usati nel voto |
 | `/api/governi/dati/page-data` | dati generali dei grafici e contesto editoriale documentato; download `government-scorecard-page-data.json.gz` compresso con gzip |
-| `/api/governi/dati/score-provenance` | ricevuta di provenienza dei dati del voto |
-| `/api/governi/dati/page-provenance` | ricevuta di provenienza dei dati della pagina |
+| `/api/governi/dati/methodology` | metodo di calcolo |
+| `/api/governi/dati/chronology` | cronologia istituzionale |
+| `/api/governi/dati/score-provenance` | contratto di provenienza dei dati del voto |
+| `/api/governi/dati/page-provenance` | contratto di provenienza dei dati della pagina |
 
 La validazione offline controlla snapshot congelati, calcolo, hash e catena valore mostrato → record → fonte. Il repository non conserva nuovi payload raw e quindi non dichiara che la validazione offline possa ricreare i byte originali delle fonti.
 

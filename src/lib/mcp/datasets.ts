@@ -149,7 +149,7 @@ export async function queryPublicDataset(
     case "openbdap_opere_pubbliche": {
       const cup = requireText(query.cup, "cup");
       const { getPublicWorksByCup } = await import("@/lib/bdap-public-works");
-      return jsonSafe(await getPublicWorksByCup(cup));
+      return jsonSafe(await getPublicWorksByCup(cup, { signal: options.signal }));
     }
     case "openbdap_ssn_conto_economico": {
       const { querySsnCce } = await import("@/lib/ssn-cce-snapshot");
@@ -168,6 +168,12 @@ export async function queryPublicDataset(
     case "openbdap_spesa_legislature": {
       const { getLegislatureSpendingCycles } = await import("@/lib/state-spending-legislature");
       return jsonSafe({ cycles: await getLegislatureSpendingCycles({ signal: options.signal }) });
+    }
+    case "openbdap_legge_bilancio_storico": {
+      const { getBudgetLawMissionSeries } = await import("@/lib/bdap-legge-bilancio");
+      return jsonSafe(
+        await getBudgetLawMissionSeries({ windowYears: query.years, signal: options.signal }),
+      );
     }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");
@@ -240,6 +246,44 @@ export async function queryPublicDataset(
       const { queryInpsCivilInvalidity } = await import("@/lib/inps-invalidity-snapshot");
       return jsonSafe(queryInpsCivilInvalidity({ year: query.year, region: query.region }));
     }
+    case "inps_pensioni_vigenti": {
+      const { queryInpsPensionsOsservatorio } = await import("@/lib/inps-pensions-snapshot");
+      return jsonSafe(queryInpsPensionsOsservatorio());
+    }
+    case "istat_pensioni_prestazioni":
+    case "istat_pensionati_persone": {
+      const { queryIstatPensions } = await import("@/lib/istat-pensions-snapshot");
+      const result = queryIstatPensions({ year: query.year });
+      const { pensionBenefits, pensioners, ...shared } = result;
+      return query.dataset === "istat_pensioni_prestazioni"
+        ? jsonSafe({ ...shared, dataset: query.dataset, pensionBenefits })
+        : jsonSafe({ ...shared, dataset: query.dataset, pensioners });
+    }
+    case "eurostat_cofog": {
+      const { queryEurostatCofog } = await import("@/lib/eurostat-cofog-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
+      });
+    }
+    case "inps_naspi": {
+      const { queryInpsNaspi } = await import("@/lib/inps-naspi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsNaspi({ table: query.table, measure: query.measure, year: query.year, territory: query.territory }),
+      });
+    }
+    case "istat_cofog": {
+      const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatCofog({ area: query.territory, year: query.year, function: query.cofog }),
+      });
+    }
+    case "consip_ordini": {
+      const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
+      return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });
+    }
     case "cpt_finanza_regionale": {
       const { queryCptRegionalFiscal } = await import("@/lib/cpt-regional-fiscal-snapshot");
       return jsonSafe(queryCptRegionalFiscal({ year: query.year, region: query.region }));
@@ -253,6 +297,7 @@ export async function queryPublicDataset(
         province: query.province,
         code: query.code,
         query: query.query,
+        detail: query.detail,
         limit: query.limit,
         offset: query.offset,
       }));
@@ -260,15 +305,15 @@ export async function queryPublicDataset(
     case "ipa_enti": {
       const { getIpaEntityByCode, searchIpaEntities } = await import("@/lib/ipa");
       if (query.code?.trim()) {
-        const record = await getIpaEntityByCode(query.code.trim());
+        const record = await getIpaEntityByCode(query.code.trim(), options.signal);
         return jsonSafe({ record, found: record !== null });
       }
-      return jsonSafe(await searchIpaEntities({ query: query.query, limit, offset }));
+      return jsonSafe(await searchIpaEntities({ query: query.query, limit, offset, signal: options.signal }));
     }
     case "ipa_struttura": {
       const code = requireText(query.code, "code");
       const { getIpaOrganizationStructure } = await import("@/lib/ipa-structure");
-      return jsonSafe(await getIpaOrganizationStructure(code, limit, offset));
+      return jsonSafe(await getIpaOrganizationStructure(code, limit, offset, { signal: options.signal }));
     }
     case "mef_partecipazioni": {
       const { mefParticipationsSnapshot } = await import("@/lib/mef-participations-snapshot");
@@ -343,6 +388,42 @@ export async function queryPublicDataset(
         offset: query.offset,
         cursor: query.cursor,
         signal: options.signal,
+      }));
+    }
+    case "company_active_enterprises":
+    case "company_workforce":
+    case "company_production_value_bands": {
+      const { queryCompanyAtlasDataset } = await import("@/lib/company-atlas");
+      return jsonSafe(queryCompanyAtlasDataset({
+        dataset: query.dataset,
+        period: query.period,
+        region: query.region,
+        sector: query.sector,
+        band: query.band,
+        limit,
+        offset,
+      }));
+    }
+    case "company_turnover_istat": {
+      const { queryIstatTurnoverDataset } = await import("@/lib/istat-turnover");
+      return jsonSafe(queryIstatTurnoverDataset({
+        period: query.period,
+        region: query.region,
+        sector: query.sector,
+        limit,
+        offset,
+      }));
+    }
+    case "education_students_by_pathway": {
+      const { queryEducationAtlasDataset } = await import("@/lib/education-atlas");
+      return jsonSafe(queryEducationAtlasDataset({
+        dataset: query.dataset,
+        period: query.period,
+        region: query.region,
+        schoolType: query.schoolType,
+        pathway: query.pathway,
+        limit,
+        offset,
       }));
     }
     default: {

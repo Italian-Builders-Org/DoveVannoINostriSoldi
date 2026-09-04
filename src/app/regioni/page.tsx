@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { compactEuro, exactEuro, longDate } from "@/lib/format";
 import { istatRegionsMetadata, istatRegionsSnapshot } from "@/lib/istat-regions-snapshot";
 import { siopeTitleCopy } from "@/lib/siope-titles";
@@ -23,6 +24,31 @@ const statusLabel = {
   special: "Regione a statuto speciale",
   "autonomous-province": "Provincia autonoma",
 } as const;
+
+const CREST_CODE_BY_ENTITY_ID: Record<string, string> = {
+  piemonte: "01",
+  "valle-aosta": "02",
+  lombardia: "03",
+  "trentino-alto-adige": "04",
+  "bolzano": "04",
+  trento: "04",
+  veneto: "05",
+  "friuli-venezia-giulia": "06",
+  liguria: "07",
+  "emilia-romagna": "08",
+  toscana: "09",
+  umbria: "10",
+  marche: "11",
+  lazio: "12",
+  abruzzo: "13",
+  molise: "14",
+  campania: "15",
+  puglia: "16",
+  basilicata: "17",
+  calabria: "18",
+  sicilia: "19",
+  sardegna: "20",
+};
 
 export default async function RegionsPage({
   searchParams,
@@ -161,7 +187,14 @@ export default async function RegionsPage({
             <tbody>
               {istatRegionsSnapshot.entities.map((entity) => (
                 <tr key={entity.id}>
-                  <th scope="row">{entity.label}</th>
+                  <th scope="row">
+                    <RegionCrest
+                      regionCode={CREST_CODE_BY_ENTITY_ID[entity.id] ?? null}
+                      regionName={entity.label}
+                      decorative
+                    />{" "}
+                    {entity.label}
+                  </th>
                   <td>{statusLabel[entity.status]}</td>
                   <td>{exactEuro(euro(entity.commitmentsCents))}</td>
                 </tr>
@@ -170,6 +203,8 @@ export default async function RegionsPage({
           </table>
         </div>
       </section>
+
+      <RegionCrestAttribution />
 
       <section className="panel" aria-labelledby="fonte-regioni">
         <h2 className="panel-title" id="fonte-regioni">Fonte e controlli</h2>

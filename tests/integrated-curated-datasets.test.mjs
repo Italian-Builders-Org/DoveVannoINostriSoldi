@@ -9,6 +9,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
+import { PYTHON_BIN } from "./helpers/python.mjs";
 
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -547,7 +548,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
 
 test("the committed curated corpus passes source-free verification", () => {
   const result = spawnSync(
-    "python3",
+    PYTHON_BIN,
     ["scripts/etl/integrated_curated_datasets.py", "check"],
     { cwd: repositoryRoot, encoding: "utf8" },
   );

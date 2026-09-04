@@ -1,0 +1,78 @@
+name: Runtime health
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-health
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: probe
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      CANONICAL_BASE_URL: https://www.dovevannoinostrisoldi.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22.23.2"
+
+      - name: Probe canonical runtime health
+        run: node scripts/runtime-health.mjs --output "$RUNNER_TEMP/runtime-health.json"
+
+      - name: Write runtime health summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "## Runtime health"
+            echo ""
+            node - "$RUNNER_TEMP/runtime-health.json" <<'NODE'
+          const fs = require("node:fs");
+
+          const file = process.argv[2];
+          if (!fs.existsSync(file)) {
+            console.log("_The health probe did not produce a JSON payload._");
+          } else {
+            try {
+              const payload = JSON.parse(fs.readFileSync(file, "utf8"));
+              const checks = Array.isArray(payload?.checks) ? payload.checks : [];
+              const passed = checks.filter((check) => check?.status === "pass").length;
+              const failed = checks.filter((check) => check?.status === "fail").length;
+              const warnings = Array.isArray(payload?.warnings) ? payload.warnings.length : 0;
+              const revision = checks.find((check) => check?.name === "health")?.revision;
+              console.log("| Field | Value |");
+              console.log("| --- | --- |");
+              console.log(`| Result | ${payload?.ok === true ? "pass" : "fail"} |`);
+              console.log(`| Checks | ${passed} pass, ${failed} fail, ${checks.length} total |`);
+              console.log(`| Warnings | ${warnings} |`);
+              console.log(`| Revision | ${/^[0-9a-f]{40}$/u.test(revision ?? "") ? revision : "unknown"} |`);
+            } catch {
+              console.log("_The health probe payload was not valid JSON._");
+            }
+          }
+          NODE
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload runtime health evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runtime-health
+          path: ${{ runner.temp }}/runtime-health.json
+          if-no-files-found: ignore
+          retention-days: 7

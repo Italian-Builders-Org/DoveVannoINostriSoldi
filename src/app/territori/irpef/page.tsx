@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
 import { HorizontalScrollRegion } from "@/components/horizontal-scroll-region";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import {
   MefIrpefQueryError,
@@ -11,7 +12,7 @@ import {
   type MefIrpefTerritoryRecord,
   type ReportedMeasure,
 } from "@/lib/mef-irpef-snapshot";
-import type { MefIrpefMeasureKey } from "@/lib/data/mef-irpef-contract";
+import type { MefIrpefSummaryMeasureKey } from "@/lib/data/mef-irpef-contract";
 import { municipalityName } from "@/lib/municipality-name";
 import {
   getMunicipalityGeographyByIstatCode,
@@ -39,7 +40,7 @@ const PARAM_BY_LEVEL: Readonly<Record<MefIrpefLevel, keyof typeof LEVEL_BY_PARAM
   municipality: "comune",
 };
 
-const METRIC_LABELS: Readonly<Record<MefIrpefMeasureKey, string>> = {
+const METRIC_LABELS: Readonly<Record<MefIrpefSummaryMeasureKey, string>> = {
   comprehensiveIncome: "Reddito complessivo",
   taxableIncome: "Reddito imponibile",
   netTaxDeclared: "Imposta netta dichiarata",
@@ -47,7 +48,7 @@ const METRIC_LABELS: Readonly<Record<MefIrpefMeasureKey, string>> = {
   municipalSurtaxDue: "Addizionale comunale dovuta",
 };
 
-const METRIC_KEYS = Object.keys(METRIC_LABELS) as MefIrpefMeasureKey[];
+const METRIC_KEYS = Object.keys(METRIC_LABELS) as MefIrpefSummaryMeasureKey[];
 
 type PageParams = Record<string, string | string[] | undefined>;
 
@@ -461,6 +462,13 @@ export default async function MefIrpefPage({
                   return (
                     <tr key={`${record.territory.level}:${record.territory.code}`}>
                       <th scope="row">
+                        {record.territory.level === "region" ? (
+                          <RegionCrest
+                            regionCode={record.territory.code}
+                            regionName={record.territory.name}
+                            decorative
+                          />
+                        ) : null}{" "}
                         {territoryName(record)}
                         {context ? <small>{context}</small> : null}
                       </th>
@@ -504,6 +512,8 @@ export default async function MefIrpefPage({
           </nav>
         ) : null}
       </section>
+
+      {displayLevel === "region" && !awaitingMunicipalityFilter ? <RegionCrestAttribution /> : null}
 
       <section className={`panel ${styles.methodology}`} aria-labelledby="irpef-method-title">
         <div>

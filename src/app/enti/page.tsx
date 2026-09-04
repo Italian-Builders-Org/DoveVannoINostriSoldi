@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
@@ -18,6 +19,11 @@ import { getIpaTypeDistribution, type IpaTypeStat } from "@/lib/ipa-stats";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Registro degli enti pubblici",
+  description: "Cerca enti pubblici nel registro IPA e consulta tipologia, sede e dati disponibili.",
+};
 
 type PageProps = {
   searchParams: Promise<{

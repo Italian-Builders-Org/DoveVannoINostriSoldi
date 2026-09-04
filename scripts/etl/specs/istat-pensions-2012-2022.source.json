@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-pensions",
+  "period": {
+    "from": 2012,
+    "to": 2022
+  },
+  "source": {
+    "owner": "Istat",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseStatus": "not-declared",
+    "licenseNote": "Il catalogo/risposta SDMX acquisita non espone una licenza riusabile verificata; non viene inferita alcuna licenza.",
+    "assets": {
+      "pensionBenefits": {
+        "id": "istat-pension-benefits-2012-2022",
+        "title": "Istat - Pensioni (Casellario dei pensionati)",
+        "dataflowId": "IT1,46_813,1.0",
+        "dsd": "DCAR_PENSIONI2",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,46_813,1.0/A.IT.P_NSNU+ANP_NS+AMEP_NS.ALL+OLSEN1+SURV+DISAB1+CIVDIS+NOCONT+COMP+WAR.TOTAL.9.9.TOTAL.99",
+        "queryKey": "A.IT.P_NSNU+ANP_NS+AMEP_NS.ALL+OLSEN1+SURV+DISAB1+CIVDIS+NOCONT+COMP+WAR.TOTAL.9.9.TOTAL.99",
+        "accept": "application/vnd.sdmx.data+csv;version=1.0.0",
+        "format": "SDMX-CSV 1.0.0",
+        "encoding": "UTF-8",
+        "delimiter": ",",
+        "lineEnding": "CRLF",
+        "bytes": 21835,
+        "sha256": "e6479f690a4030dfbab3a19b07b8822ffc5d553bfaa94b70165ea81c0d0b1325",
+        "rawHeaderSha256": "6314996849e1e4057a915ad2e569be3c304ec9a1b2ad76a57bc6ffce7ac7459e",
+        "rows": 264,
+        "referencePeriod": {
+          "from": 2012,
+          "to": 2022
+        },
+        "observedAt": "2026-08-30T17:24:00+02:00",
+        "columns": [
+          "DATAFLOW",
+          "FREQ",
+          "REF_AREA",
+          "DATA_TYPE",
+          "PENSION_TYPE",
+          "MONTHLY_AMOUNT_CLASS",
+          "PENSIONER_SECTOR_PUBPRIV",
+          "SEX",
+          "AGE",
+          "EX_PROF_STATUS",
+          "TIME_PERIOD",
+          "OBS_VALUE",
+          "OBS_STATUS",
+          "NOTE_DS",
+          "NOTE_REF_AREA",
+          "NOTE_DATA_TYPE",
+          "NOTE_PENSION_TYPE",
+          "NOTE_MONTHLY_AMOUNT_CLASS",
+          "NOTE_PENSIONER_SECTOR_PUBPRIV",
+          "NOTE_SEX",
+          "NOTE_AGE",
+          "NOTE_EX_PROF_STATUS",
+          "NOTE_TIME_PERIOD",
+          "BASE_PER",
+          "UNIT_MEAS",
+          "UNIT_MULT"
+        ]
+      },
+      "pensioners": {
+        "id": "istat-pensioners-2012-2022",
+        "title": "Istat - Pensionati (Casellario dei pensionati)",
+        "dataflowId": "IT1,46_812,1.0",
+        "dsd": "DCAR_PENSIONATI2",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,46_812,1.0/A.IT.P_RSNU+ANP_RS+AMEP_RS.ALL.TOTAL.9.TOTAL",
+        "queryKey": "A.IT.P_RSNU+ANP_RS+AMEP_RS.ALL.TOTAL.9.TOTAL",
+        "accept": "application/vnd.sdmx.data+csv;version=1.0.0",
+        "format": "SDMX-CSV 1.0.0",
+        "encoding": "UTF-8",
+        "delimiter": ",",
+        "lineEnding": "CRLF",
+        "bytes": 2685,
+        "sha256": "1d11b46a3cf52456766487b566d3a371a36b32d15c3a79a7631ef146716fbd72",
+        "rawHeaderSha256": "44a46feb3a8a987da32e6bfdc244ad7ed7877e76a31e37718dc92174b1f74cc9",
+        "rows": 33,
+        "referencePeriod": {
+          "from": 2012,
+          "to": 2022
+        },
+        "observedAt": "2026-08-30T17:24:00+02:00",
+        "columns": [
+          "DATAFLOW",
+          "FREQ",
+          "REF_AREA",
+          "DATA_TYPE",
+          "PENSION_TYPE",
+          "MONTHLY_AMOUNT_CLASS",
+          "SEX",
+          "AGE",
+          "TIME_PERIOD",
+          "OBS_VALUE",
+          "OBS_STATUS",
+          "NOTE_DS",
+          "NOTE_REF_AREA",
+          "NOTE_DATA_TYPE",
+          "NOTE_PENSION_TYPE",
+          "NOTE_MONTHLY_AMOUNT_CLASS",
+          "NOTE_SEX",
+          "NOTE_AGE",
+          "NOTE_TIME_PERIOD",
+          "BASE_PER",
+          "UNIT_MEAS",
+          "UNIT_MULT"
+        ]
+      }
+    }
+  },
+  "expected": {
+    "years": [
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "pensionCategories": [
+      "ALL",
+      "OLSEN1",
+      "SURV",
+      "DISAB1",
+      "CIVDIS",
+      "NOCONT",
+      "COMP",
+      "WAR"
+    ],
+    "pensionBenefitRows": 88,
+    "pensionerRows": 11
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/istat-pensions-2012-2022.data.json",
+      "bytes": 14934,
+      "sha256": "e16a56052b938511b28fec990ae2cd23a67911ffc2608c6fdd507afb00b6f181"
+    },
+    "lockSha256": "db086fd7ae3d0ae702d0b664e9a93e49dd295a8b222377152d0f17c41a6abee7"
+  }
+}

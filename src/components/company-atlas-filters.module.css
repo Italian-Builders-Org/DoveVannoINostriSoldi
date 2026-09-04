@@ -1,0 +1,61 @@
+.filters {
+  display: grid;
+  grid-template-columns: minmax(230px, .75fr) minmax(0, 2fr);
+  gap: var(--space-6);
+  align-items: end;
+  padding: 18px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+  border-top: 4px solid var(--color-accent-700);
+}
+
+.filterIntro { min-width: 0; }
+.eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-accent-700);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.filterIntro h2 { margin: 0; font-size: 20px; }
+.filterIntro p {
+  max-width: 34ch;
+  margin: 7px 0 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.controlGrid label { display: grid; gap: 5px; min-width: 0; }
+.controlGrid label > span {
+  color: var(--color-neutral-700);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.controlGrid select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 30px 8px 10px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 0;
+}
+.controlGrid select:focus-visible { border-color: var(--color-accent-700); }
+
+@media (max-width: 900px) {
+  .filters { grid-template-columns: 1fr; gap: var(--space-4); }
+  .filterIntro p { max-width: none; }
+}
+
+@media (max-width: 540px) {
+  .controlGrid { grid-template-columns: 1fr; }
+}

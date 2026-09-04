@@ -42,11 +42,11 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
     <div className={styles.provenanceRow}>
       <div>
         <strong>{datasetLabel(dataset)}</strong>
-        <small>{releaseLabel} · {dataset.productCode}</small>
+        <small>{releaseLabel} · <code>{dataset.productCode}</code></small>
       </div>
       <div>
         <span>{dataset.title}</span>
-        <small>Identificativo {dataset.packageId}</small>
+        <small>Identificativo <code>{dataset.packageId}</code></small>
       </div>
       <div className={styles.provenanceActions}>
         <a href={dataset.csvUrl} target="_blank" rel="noreferrer" aria-label={`Scarica il CSV RGS ${datasetLabel(dataset)} (si apre in una nuova scheda)`}>CSV RGS ↗</a>
@@ -57,7 +57,7 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
 }
 
 function AdministrationDashboard({ data }: { data: StateAdministrationSpending }) {
-  const maxPaymentMethod = data.paymentMethods[0]?.value ?? 0;
+  const maxPaymentMethod = Math.max(...data.paymentMethods.map((method) => method.value), 0);
   const identity = data.administration.identity;
   const isConsuntivo = data.period.releaseKind === "consuntivo";
   const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
@@ -229,7 +229,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <div><h2>Canali di pagamento</h2></div>
-          <p>Le modalità comprese da RGS nel totale pagato, ordinate dalla maggiore.</p>
+          <p>Le modalità comprese da RGS nel totale pagato. La barra più lunga corrisponde al canale con il totale maggiore.</p>
         </div>
         <div className={styles.methodList}>
           {data.paymentMethods.map((method) => {
@@ -238,7 +238,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
               <div className={styles.methodRow} key={method.code ?? method.label}>
                 <span>{method.label}</span>
                 <div className={styles.methodTrack} aria-hidden="true">
-                  <i style={{ width: `${Math.min(width, 100)}%` }} />
+                  <i style={{ width: `${width}%` }} />
                 </div>
                 <strong>{compactEuro(method.value)}</strong>
               </div>

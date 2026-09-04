@@ -34,10 +34,6 @@
   color: var(--color-neutral-700);
 }
 
-.metricName {
-  display: block;
-}
-
 .totalRow th,
 .totalRow td {
   border-top: 1px solid var(--color-neutral-400);

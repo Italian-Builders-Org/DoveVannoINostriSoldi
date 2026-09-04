@@ -3,6 +3,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+.scrollHint {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+}
+
+@media (min-width: 621px) {
+  .scrollHint { display: none; }
+}
+
 .principles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

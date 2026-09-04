@@ -24,8 +24,11 @@ export default function McpPage() {
         <h2 id="endpoint-title">Endpoint Streamable HTTP</h2>
         <McpEndpoint />
         <p>
-          Aggiungi questo indirizzo come server MCP remoto nel client compatibile. Il catalogo è
-          disponibile anche come risorsa <code>dvns://datasets</code>.
+          Copia l&apos;indirizzo qui sopra nel client MCP: è un endpoint tecnico e non una pagina da
+          aprire nel browser. Il catalogo è
+          disponibile anche come risorsa <code>dvns://datasets</code>. L&apos;indirizzo breve di
+          questa pagina, <code>/mcp</code>, accetta comunque le richieste MCP per compatibilità:
+          non è necessario indovinare un percorso diverso.
         </p>
       </section>
 
@@ -80,7 +83,7 @@ export default function McpPage() {
             <thead><tr><th scope="col">Dataset</th><th scope="col">Fonte</th><th scope="col">Aggiornamento</th><th scope="col">Filtri</th><th scope="col">Limiti</th></tr></thead>
             <tbody>
               {datasetCatalog.map((dataset) => (
-                <tr key={dataset.id}>
+                <tr id={`dataset-${dataset.id}`} key={dataset.id}>
                   <th scope="row">
                     <strong>{dataset.title}</strong>
                     <code className={styles.datasetId}>{dataset.id}</code>

@@ -72,7 +72,9 @@
   gap: var(--space-3);
   font-size: 13px;
 }
-.statusList li { grid-template-columns: minmax(0, 1fr) minmax(120px, 1.2fr) 300px; }
+.statusList li {
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 1.2fr) minmax(304px, .9fr);
+}
 .shareList li { grid-template-columns: minmax(0, 1fr) minmax(100px, 1fr) 62px; }
 
 .statusList li > span,
@@ -82,13 +84,13 @@
 .shareList li > i {
   display: block;
   height: 10px;
-  background: var(--color-neutral-200);
+  background: var(--chart-progress-track);
 }
 .statusList li > i > b,
 .shareList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-progress);
 }
 
 .statusList li > b,
@@ -132,6 +134,10 @@
 @media (max-width: 900px) {
   .tables { grid-template-columns: minmax(0, 1fr); }
   .tracePanel { grid-template-columns: minmax(0, 1fr); }
+  .statusList li {
+    grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr) minmax(240px, .9fr);
+  }
+  .statusList li > b { white-space: normal; }
 }
 
 @media (max-width: 620px) {

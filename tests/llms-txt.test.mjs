@@ -2,52 +2,30 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { test } from "node:test";
+import {
+  LLMS_DISCOVERY_PATHS,
+  PUBLIC_INDEXABLE_PATHS,
+} from "../src/lib/public-discovery.ts";
+import { PUBLIC_SITE_URL } from "../src/lib/site.ts";
 
 const llmsPath = new URL("../public/llms.txt", import.meta.url);
-const siteOrigin = "https://www.dovevannoinostrisoldi.com";
 
-const requiredLinks = [
-  "/",
-  "/spese",
-  "/territori",
-  "/territori/irpef",
-  "/stato",
-  "/coesione",
-  "/enti",
-  "/parlamento",
-  "/controlli",
-  "/fonti",
-  "/mcp",
+const requiredApiLinks = [
   "/api/mcp",
   "/api/spese/comuni",
   "/api/spese/comuni/distribuzione",
   "/api/spese/invalidita",
   "/api/territori/fisco",
   "/api/territori/irpef",
-  "/privacy",
-  "/supporter",
 ];
 
 const routeFiles = {
-  "/": "../src/app/page.tsx",
-  "/spese": "../src/app/spese/page.tsx",
-  "/territori": "../src/app/territori/page.tsx",
-  "/territori/irpef": "../src/app/territori/irpef/page.tsx",
-  "/stato": "../src/app/stato/page.tsx",
-  "/coesione": "../src/app/coesione/page.tsx",
-  "/enti": "../src/app/enti/page.tsx",
-  "/parlamento": "../src/app/parlamento/page.tsx",
-  "/controlli": "../src/app/controlli/page.tsx",
-  "/fonti": "../src/app/fonti/page.tsx",
-  "/mcp": "../src/app/mcp/page.tsx",
   "/api/mcp": "../src/app/api/mcp/route.ts",
   "/api/spese/comuni": "../src/app/api/spese/comuni/route.ts",
   "/api/spese/comuni/distribuzione": "../src/app/api/spese/comuni/distribuzione/route.ts",
   "/api/spese/invalidita": "../src/app/api/spese/invalidita/route.ts",
   "/api/territori/fisco": "../src/app/api/territori/fisco/route.ts",
   "/api/territori/irpef": "../src/app/api/territori/irpef/route.ts",
-  "/privacy": "../src/app/privacy/page.tsx",
-  "/supporter": "../src/app/supporter/page.tsx",
 };
 
 test("llms.txt is a complete, canonical static discovery surface", async () => {
@@ -62,15 +40,29 @@ test("llms.txt is a complete, canonical static discovery surface", async () => {
   assert.doesNotMatch(text, /localhost|127\.0\.0\.1|<dominio|\b(?:TODO|TBD)\b/i);
 
   const links = [...text.matchAll(/\]\((https?:\/\/[^)]+)\)/g)].map((match) => new URL(match[1]));
+  const requiredLinks = [...LLMS_DISCOVERY_PATHS, ...requiredApiLinks];
   assert.ok(links.length >= requiredLinks.length, "discovery file should expose the main public surfaces");
   assert.ok(links.every((link) => link.protocol === "https:"), "all links must be HTTPS");
+  assert.match(text, /\/api\/mcp\): endpoint canonico pubblico e read-only/);
+  assert.match(text, /\/mcp\): pagina informativa[\s\S]*`POST` e `OPTIONS` MCP[\s\S]*canonico resta `\/api\/mcp`/);
+
+  for (const link of links) {
+    if (link.origin !== PUBLIC_SITE_URL || link.pathname.startsWith("/api/")) continue;
+    assert.equal(
+      PUBLIC_INDEXABLE_PATHS.includes(link.pathname),
+      true,
+      `internal HTML link is missing from the sitemap catalog: ${link.pathname}`,
+    );
+  }
 
   for (const path of requiredLinks) {
     assert.equal(
-      links.some((link) => link.origin === siteOrigin && link.pathname === path),
+      links.some((link) => link.origin === PUBLIC_SITE_URL && link.pathname === path),
       true,
-      `missing canonical link: ${siteOrigin}${path}`,
+      `missing canonical link: ${PUBLIC_SITE_URL}${path}`,
     );
-    await access(new URL(routeFiles[path], import.meta.url), constants.R_OK);
+    if (requiredApiLinks.includes(path)) {
+      await access(new URL(routeFiles[path], import.meta.url), constants.R_OK);
+    }
   }
 });

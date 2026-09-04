@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
 import { cptRegionAnchorOf, groupRegionsByMacroArea, istatCodeOfRegion } from "@/lib/italy-regions";
@@ -417,6 +418,11 @@ export default async function TerritoriesPage({
                     return (
                       <tr key={region.region}>
                         <th scope="row">
+                          <RegionCrest
+                            regionCode={istatCodeOfRegion(region.region)}
+                            regionName={region.region}
+                            decorative
+                          />{" "}
                           {cptAnchor ? (
                             <Link
                               href={`/territori/fisco#${cptAnchor}`}
@@ -450,6 +456,8 @@ export default async function TerritoriesPage({
           </div>
         </section>}
       />
+
+      <RegionCrestAttribution />
 
       <details className={`panel ${styles.methodDetails}`}>
         <summary>Metodo, denominatori e copertura</summary>

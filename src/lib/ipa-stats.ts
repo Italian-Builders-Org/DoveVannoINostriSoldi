@@ -50,11 +50,11 @@ export async function getIpaTypeDistribution(limit = 8): Promise<{
     kind: "data",
     headers: { Accept: "application/json" },
     tags: ["dataset:ipa-enti", "view:ipa-types"],
+    maxRetries: 0,
+    timeoutMs: 4_000,
+    cacheMode: "no-store",
+    rejectHttpError: true,
   });
-
-  if (!response.ok) {
-    throw new Error(`IPA SQL upstream HTTP ${response.status}`);
-  }
 
   const payload = (await response.json()) as SqlResponse;
   if (!payload.success || !Array.isArray(payload.result?.records)) {

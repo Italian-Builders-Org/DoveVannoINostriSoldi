@@ -21,10 +21,18 @@ import pcmData from "@/data/generated/pcm-financial-2024.data.json";
 import { anacCigSnapshot } from "@/lib/anac-cig-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
+import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
+import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
+import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
+import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
+import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
+import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
 export type SourceIntegrationState = "active";
 export type SourceReachability = "up" | "down" | "not-probed";
@@ -75,6 +83,51 @@ function text(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const cleaned = value.trim();
   return cleaned || null;
+}
+
+type IstatMunicipalityGeographyMetadata = Readonly<{
+  schemaVersion: 1;
+  datasetId: "istat-municipality-geography";
+  generatedAt: string;
+  availableYears: number[];
+  latest: Readonly<{
+    year: number;
+    sourceTimestamp: string;
+    municipalities: number;
+  }>;
+}>;
+
+export function validateIstatMunicipalityGeographyMetadata(
+  value: unknown,
+): IstatMunicipalityGeographyMetadata {
+  const metadata = value as Partial<IstatMunicipalityGeographyMetadata>;
+  const years = metadata.availableYears;
+  const latest = metadata.latest;
+  const validIsoDate = (date: unknown) =>
+    typeof date === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/u.test(date) &&
+    !Number.isNaN(new Date(`${date}T00:00:00Z`).valueOf());
+
+  if (
+    metadata.schemaVersion !== 1 ||
+    metadata.datasetId !== "istat-municipality-geography" ||
+    typeof metadata.generatedAt !== "string" ||
+    Number.isNaN(new Date(metadata.generatedAt).valueOf()) ||
+    !Array.isArray(years) ||
+    years.length === 0 ||
+    !years.every((year, index) =>
+      Number.isSafeInteger(year) && (index === 0 || year > years[index - 1]!),
+    ) ||
+    !latest ||
+    latest.year !== years.at(-1) ||
+    !validIsoDate(latest.sourceTimestamp) ||
+    !Number.isSafeInteger(latest.municipalities) ||
+    latest.municipalities < 7_800
+  ) {
+    throw new Error("Metadati health ISTAT SITUAS non validi");
+  }
+
+  return metadata as IstatMunicipalityGeographyMetadata;
 }
 
 function freshnessFor(sourceId: SourceId, sourceTimestamp: string | null): Freshness {
@@ -385,7 +438,7 @@ function snapshotManagedInps(): SourceHealth {
     freshness: freshnessFor("inps", latestSourceDate),
     latencyMs: null,
     detail:
-      "Snapshot verificato · spesa nazionale 2021-2025 · nuove pensioni per regione 2016-2024",
+      "Snapshot verificato · spesa nazionale 2021-2025 · nuove pensioni per regione 2016-2024 · pensioni vigenti INPS 2026",
     recordCount: regionalRecords + inpsCivilInvaliditySnapshot.spending.series.length,
   };
 }
@@ -409,6 +462,50 @@ function snapshotManagedMefIrpef(): SourceHealth {
     latencyMs: null,
     detail: MEF_IRPEF_SOURCE.health.detail,
     recordCount: MEF_IRPEF_SOURCE.health.recordCount,
+  };
+}
+
+function snapshotManagedIstat(): SourceHealth {
+  const metadata = validateIstatMunicipalityGeographyMetadata(
+    istatMunicipalityGeographyMetadata,
+  );
+  return {
+    ...baseHealth("istat"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat", metadata.latest.sourceTimestamp),
+    latencyMs: null,
+    detail: `Snapshot SITUAS generato il ${metadata.generatedAt.slice(0, 10)} · dati al ${metadata.latest.sourceTimestamp} · geografia comunale ${metadata.latest.year} · ${metadata.latest.municipalities.toLocaleString("it-IT")} comuni · serie ${metadata.availableYears.at(0)}-${metadata.latest.year}`,
+    recordCount: metadata.latest.municipalities,
+  };
+}
+
+function snapshotManagedIstatCasellarioPensioni(): SourceHealth {
+  const { data, metadata } = istatPensionsSnapshot;
+  const pensionBenefits = data.pensionBenefits.observations;
+  const pensioners = data.pensioners.observations;
+  const benefitsObservedAt = metadata.source.assets.pensionBenefits.observedAt;
+  const pensionersObservedAt = metadata.source.assets.pensioners.observedAt;
+  const observedAt = benefitsObservedAt === pensionersObservedAt ? benefitsObservedAt : null;
+  const artifact = metadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("istat-casellario-pensioni"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-casellario-pensioni", observedAt),
+    latencyMs: null,
+    detail: `Snapshot ISTAT Casellario dei pensionati verificato · dati ${data.period.from}-${data.period.to} · pensioni e pensionati separati · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
+    recordCount: pensionBenefits.length + pensioners.length,
+  };
+}
+
+function snapshotManagedConsip(): SourceHealth {
+  const artifact = consipOrdiniMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("consip"),
+    reachability: "not-probed",
+    freshness: freshnessFor("consip", consipOrdiniMetadata.suppression.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Consip ordini verificato · Convenzioni e MEPA ${consipOrdiniData.period.from}-${consipOrdiniData.period.to} · importi come limiti inferiori con soppressioni dichiarate · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
+    recordCount: consipOrdiniData.byRegion.length + consipOrdiniData.byAdministrationType.length,
   };
 }
 
@@ -495,12 +592,96 @@ function snapshotManagedPublicDebt(sourceId: "bancaditalia" | "eurostat"): Sourc
   };
 }
 
+function snapshotManagedGovernmentInflation(): SourceHealth {
+  const snapshot = getGovernmentScorecardV6SupplementalSnapshot();
+  const inflation = snapshot.series.find((series) => series.indicator_id === "inflation");
+  if (!inflation) throw new Error("serie IPCA assente dalla pagella governi");
+  const latestPeriod = inflation.geographies
+    .find((geography) => geography.geography === "IT")
+    ?.points.at(-1)?.period;
+  const sourceId = inflation.geographies[0]?.points[0]?.source_id;
+  const source = snapshot.sources.find((candidate) => candidate.id === sourceId);
+  if (!latestPeriod || !source) throw new Error("provenienza IPCA incompleta nella pagella governi");
+  const recordCount = inflation.geographies.reduce(
+    (total, geography) => total + geography.points.length,
+    0,
+  );
+  return {
+    ...baseHealth("eurostat-hicp"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-hicp", source.upstream_updated_at),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · IPCA mensile fino a ${latestPeriod} (${source.dataset_code}).`,
+    recordCount,
+  };
+}
+
+function snapshotManagedEurostatCofog(): SourceHealth {
+  const artifact = eurostatCofogMetadata.integrity.dataArtifact;
+  const { flagged, observedCells } = eurostatCofogData.coverage;
+  return {
+    ...baseHealth("eurostat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-cofog", eurostatCofogMetadata.coverage.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · copertura piena ${observedCells}/${observedCells} celle, ${flagged} con flag della fonte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatCofogData.observations.length,
+  };
+}
+
+function snapshotManagedIstatCofog(): SourceHealth {
+  const artifact = istatCofogMetadata.integrity.dataArtifact;
+  const { observedCells } = istatCofogData.coverage;
+  return {
+    ...baseHealth("istat-cofog"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-cofog", istatCofogMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · consumi finali della PA per funzione ${istatCofogData.period.from}-${istatCofogData.period.to} (${istatCofogMetadata.source.dataflowId}, edizione ${istatCofogData.measure.edition}) · copertura piena ${observedCells} celle · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: istatCofogData.observations.length,
+  };
+}
+
+function snapshotManagedInpsNaspi(): SourceHealth {
+  const artifact = inpsNaspiMetadata.integrity.dataArtifact;
+  const { observedObservations, suppressed } = inpsNaspiData.coverage;
+  return {
+    ...baseHealth("inps-naspi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-naspi", inpsNaspiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · NASpI beneficiari e trattamenti ${inpsNaspiData.period.from}-${inpsNaspiData.period.to} · ${inpsNaspiData.tables.length} tabelle SDMX, ${observedObservations.toLocaleString("it-IT")} osservazioni di cui ${suppressed} soppresse per privacy · riconciliazioni esatte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: observedObservations,
+  };
+}
+
+function snapshotManagedGovernmentScorecard(
+  sourceId: "ameco" | "governi-presidenza",
+): SourceHealth {
+  const snapshot = getGovernmentScorecardSourceSummary();
+  const isAmeco = sourceId === "ameco";
+
+  return {
+    ...baseHealth(sourceId),
+    reachability: "not-probed",
+    freshness: freshnessFor(sourceId, isAmeco ? snapshot.retrievedAt : snapshot.chronologyVerifiedAt),
+    latencyMs: null,
+    detail: isAmeco
+      ? `Snapshot ${snapshot.release} verificato · osservazioni fino al ${snapshot.observedThrough} · previsioni ${snapshot.forecastFrom}-${snapshot.forecastThrough} escluse dal voto.`
+      : `Cronologia Quirinale verificata · ${snapshot.governmentCount} governi dal ${snapshot.firstGovernmentYear} · mandato corrente identificato esplicitamente.`,
+    recordCount: isAmeco ? snapshot.observedCells : snapshot.governmentCount,
+  };
+}
+
 export function getSnapshotManagedSourceHealth(): SourceHealth[] {
   return [
     snapshotManagedAnac(),
     snapshotManagedInps(),
     snapshotManagedCpt(),
     snapshotManagedMefIrpef(),
+    snapshotManagedIstat(),
+    snapshotManagedIstatCasellarioPensioni(),
+    snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
     snapshotManagedPnrrChildcare(),
     snapshotManagedOpenCivitas(),
@@ -509,10 +690,49 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedCamera(),
     snapshotManagedSenate(),
     snapshotManagedPcm(),
+    snapshotManagedGovernmentScorecard("ameco"),
+    snapshotManagedGovernmentScorecard("governi-presidenza"),
     snapshotManagedPublicDebt("bancaditalia"),
     snapshotManagedPublicDebt("eurostat"),
+    snapshotManagedGovernmentInflation(),
+    snapshotManagedEurostatCofog(),
+    snapshotManagedIstatCofog(),
+    snapshotManagedInpsNaspi(),
   ];
 }
+
+type SourceHealthAdapter = () => SourceHealth | Promise<SourceHealth>;
+
+/** One concrete health adapter for every source policy. */
+export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
+  ameco: () => snapshotManagedGovernmentScorecard("ameco"),
+  "governi-presidenza": () => snapshotManagedGovernmentScorecard("governi-presidenza"),
+  ipa: probeIpa,
+  "ipa-struttura": probeIpaStructure,
+  openbdap: probeOpenBdap,
+  anac: snapshotManagedAnac,
+  inps: snapshotManagedInps,
+  cpt: snapshotManagedCpt,
+  "mef-irpef": snapshotManagedMefIrpef,
+  siope: probeSiope,
+  istat: snapshotManagedIstat,
+  "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
+  consip: snapshotManagedConsip,
+  opencoesione: snapshotManagedOpenCoesione,
+  italiadomani: snapshotManagedPnrrChildcare,
+  opencivitas: snapshotManagedOpenCivitas,
+  consulenti: snapshotManagedConsulenti,
+  camera: snapshotManagedCamera,
+  senato: snapshotManagedSenate,
+  pcm: snapshotManagedPcm,
+  "partecipazioni-pubbliche": snapshotManagedMefParticipations,
+  bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
+  eurostat: () => snapshotManagedPublicDebt("eurostat"),
+  "eurostat-hicp": snapshotManagedGovernmentInflation,
+  "eurostat-cofog": snapshotManagedEurostatCofog,
+  "istat-cofog": snapshotManagedIstatCofog,
+  "inps-naspi": snapshotManagedInpsNaspi,
+} satisfies Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */
 export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealth[] {
@@ -525,17 +745,10 @@ export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealt
 }
 
 export async function getSourceHealthOverview(): Promise<SourceHealth[]> {
-  const [ipa, ipaStructure, openbdap, siope] = await Promise.all([
-    probeIpa(),
-    probeIpaStructure(),
-    probeOpenBdap(),
-    probeSiope(),
-  ]);
-  return orderSourceHealth([
-    ipa,
-    ipaStructure,
-    openbdap,
-    siope,
-    ...getSnapshotManagedSourceHealth(),
-  ]);
+  const entries = await Promise.all(SOURCE_IDS.map((sourceId) => {
+    const adapter = SOURCE_HEALTH_ADAPTERS[sourceId] as SourceHealthAdapter | undefined;
+    if (!adapter) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
+    return adapter();
+  }));
+  return orderSourceHealth(entries);
 }

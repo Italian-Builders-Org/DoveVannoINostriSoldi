@@ -85,11 +85,26 @@ export default function PrivacyPage() {
       </section>
 
       <section className="panel">
+        <h2 className="panel-title">Modulo «Segnala un problema»</h2>
+        <p>
+          Il modulo presente in ogni pagina crea una issue <strong>pubblica</strong> nel repository
+          GitHub del progetto. Oltre al testo che scrivi, allega il percorso e il titolo della
+          pagina, data e ora dell&apos;invio, la dimensione della finestra e la stringa del browser
+          (user agent), utili a riprodurre il problema. Non chiede nome o email e non accetta
+          allegati. L&apos;indirizzo IP è usato dal server solo in forma non reversibile e in
+          memoria per limitare gli invii ripetuti; non viene scritto nella issue né nei log
+          applicativi, che non registrano il contenuto della segnalazione. Il testo inviato è
+          conservato da GitHub secondo le sue condizioni: non inserire dati personali.
+        </p>
+      </section>
+
+      <section className="panel">
         <h2 className="panel-title">I tuoi diritti</h2>
         <p>
-          Puoi chiedere accesso, correzione, cancellazione, limitazione, portabilità quando
-          applicabile o opposizione tramite la pagina <a href="/supporto">Supporto</a>. Puoi anche
-          presentare reclamo al Garante per la protezione dei dati personali.
+          Un canale privato per accesso, correzione, cancellazione, limitazione, portabilità quando
+          applicabile o opposizione non è ancora indicato sul sito. Le issue GitHub sono pubbliche:
+          non inviare dati personali. Puoi presentare reclamo al Garante per la protezione dei dati
+          personali. La pagina <a href="/supporto">Supporto</a> resta per problemi tecnici del sito.
         </p>
       </section>
     </main>

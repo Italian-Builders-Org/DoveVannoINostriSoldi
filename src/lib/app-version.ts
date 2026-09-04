@@ -9,3 +9,6 @@ if (typeof packageVersion !== "string" || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
 export const APP_VERSION = packageVersion;
 export const APP_USER_AGENT =
   `DoveVannoINostriSoldi/${APP_VERSION} (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)`;
+/** Indice PA blocks our primary User-Agent at the gateway; keep this alias for IPA reads only. */
+export const IPA_USER_AGENT =
+  `OpenDataClient/${APP_VERSION} (github.com/Italian-Builders-Org)`;

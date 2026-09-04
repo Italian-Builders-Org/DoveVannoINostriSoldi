@@ -115,7 +115,11 @@ export default function ParticipationsPage() {
 
       <section className="panel">
         <h2 className="panel-title">Organizzazioni dichiarate da più amministrazioni</h2>
-        <div className="table-scroll" role="region" aria-label="Organizzazioni partecipate da più amministrazioni" tabIndex={0}>
+        <p className={styles.tableHint} id="participations-table-hint">
+          Scorri lateralmente per codice fiscale e numero di amministrazioni. Da tastiera usa
+          Freccia sinistra e Freccia destra.
+        </p>
+        <div className="table-scroll" role="region" aria-label="Organizzazioni partecipate da più amministrazioni" aria-describedby="participations-table-hint" tabIndex={0}>
           <table className="table">
             <thead>
               <tr>

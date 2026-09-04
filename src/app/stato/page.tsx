@@ -86,11 +86,11 @@ function SourceRow({ dataset }: { dataset: BdapDataset }) {
     <div className={styles.provenanceRow}>
       <div>
         <strong>{datasetLabel(dataset)}</strong>
-        <small>{releaseLabel} · {dataset.productCode}</small>
+        <small>{releaseLabel} · <code>{dataset.productCode}</code></small>
       </div>
       <div>
         <span>{dataset.title}</span>
-        <small>Identificativo {dataset.packageId}</small>
+        <small>Identificativo <code>{dataset.packageId}</code></small>
       </div>
       <div className={styles.provenanceActions}>
         <a href={dataset.csvUrl} target="_blank" rel="noreferrer" aria-label={`Scarica il CSV RGS ${datasetLabel(dataset)} (si apre in una nuova scheda)`}>CSV RGS ↗</a>
@@ -123,7 +123,7 @@ function StatePeriodSelector({ isConsuntivo }: { isConsuntivo: boolean }) {
 }
 
 function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
-  const maxPaymentMethod = snapshot.paymentMethods[0]?.value ?? 0;
+  const maxPaymentMethod = Math.max(...snapshot.paymentMethods.map((method) => method.value), 0);
   const sourceUpdatedAt = snapshot.sources.mission.metadataModified;
   const isConsuntivo = snapshot.period.releaseKind === "consuntivo";
   const totalPaidField = isConsuntivo ? "Totale pagato" : "Totale Pagato";
@@ -299,8 +299,8 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Amministrazione</th>
-                    <th>Pagato</th>
+                    <th scope="col">Amministrazione</th>
+                    <th scope="col">Pagato</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -369,7 +369,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
               <div className={styles.methodRow} key={method.code ?? method.label}>
                 <span>{method.label}</span>
                 <div className={styles.methodTrack} aria-hidden="true">
-                  <i style={{ width: `${Math.min(width, 100)}%` }} />
+                  <i style={{ width: `${width}%` }} />
                 </div>
                 <strong>{compactEuro(method.value)}</strong>
               </div>
@@ -432,6 +432,16 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           Confronto descrittivo, anno per anno dal 2014, tra la spesa statale dell&apos;anno
           pre-elettorale e la media degli altri anni della stessa legislatura.{" "}
           <Link href="/stato/legislature">Apri il confronto →</Link>
+        </p>
+      </div>
+
+      <div className="notice">
+        <strong>E se la Legge di Bilancio la scrivessi tu?</strong>
+        <p>
+          Variazione anno su anno dello stanziamento pubblicato per missione nelle ultime Leggi
+          di Bilancio, con uno scenario ipotetico che puoi costruire tu, sempre distinto dal dato
+          reale.{" "}
+          <Link href="/spese/legge-di-bilancio">Scrivi la tua Legge di Bilancio →</Link>
         </p>
       </div>
     </>

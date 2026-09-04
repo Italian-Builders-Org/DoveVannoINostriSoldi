@@ -5,7 +5,7 @@
 
 .dashboard {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr) 300px;
+  grid-template-columns: 360px minmax(0, 1fr);
   align-items: start;
   gap: var(--space-4);
   padding-block: var(--space-4) 0;
@@ -30,23 +30,98 @@
   min-width: 0;
 }
 
+/* Supporting modules sit in a shared two-by-two band. Keeping them in a
+   third vertical rail made the footer wait for the longest rail and left
+   large empty areas under the two shorter columns on laptop-sized screens. */
+.dashboard > .column:last-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+.dashboard > .column:last-child > :global(.panel) { height: 100%; }
+
 .panelHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title action"
+    "note action";
+  align-items: start;
+  column-gap: var(--space-2);
+  row-gap: var(--space-2);
+  min-height: 44px;
 }
 .panelHead :global(.panel-title),
 .panelHead > h2 {
+  grid-area: title;
   flex: 1 1 auto;
   min-width: 0;
-  margin-bottom: 0;
+  margin: 0;
+  line-height: 1.12;
 }
 
 .headNote {
+  grid-area: note;
+  min-width: 0;
   font-size: 12px;
   color: var(--color-neutral-600);
+}
+
+.panelHead > :global([data-info-tooltip]),
+.panelHead > :global(nav) {
+  grid-area: action;
+  align-self: start;
+}
+
+/* Keep each compact card on one internal rhythm. A flex panel can anchor its
+   action at the bottom when the responsive band gives sibling cards a shared
+   height, while a naturally sized card keeps the note and action together. */
+.rankPanel,
+.regionsPanel,
+.sourcePanel,
+.actionPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.rankPanel :global(.panel-title),
+.regionsPanel :global(.panel-title),
+.sourcePanel :global(.panel-title),
+.actionPanel :global(.panel-title) {
+  margin-bottom: 0;
+}
+.rankPanel .note,
+.sourcePanel .note,
+.actionPanel .note { margin: 0; }
+.rankPanel :global(.btn-block),
+.regionsPanel :global(.btn-block),
+.sourcePanel :global(.btn-block),
+.actionPanel :global(.btn-block) { margin-top: auto; }
+.actionPanel .factRows { margin-top: 0; }
+.actionPanel .ratioHead,
+.actionPanel .ratioTrack { margin-top: 0; }
+.periodSelector {
+  justify-self: stretch;
+  margin-bottom: 0;
+}
+
+.mapStage {
+  min-width: 0;
+  margin-top: var(--space-3);
+}
+
+.regionNameCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.regionNameCell > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* ── headline block ─────────────────────────────────────────────────────── */
@@ -220,12 +295,12 @@
 .monthList li > i {
   display: block;
   height: 10px;
-  background: var(--color-neutral-200);
+  background: var(--chart-data-track);
 }
 .monthList li > i > b {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 .monthList li > b {
   text-align: right;
@@ -276,12 +351,12 @@
 .ratioTrack {
   height: 10px;
   margin-top: 6px;
-  background: var(--color-neutral-200);
+  background: var(--chart-progress-track);
 }
 .ratioTrack i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-progress);
 }
 
 .note {
@@ -289,35 +364,235 @@
   font-size: 12px;
   color: var(--color-neutral-600);
 }
-
-.readingNote {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  color: var(--color-neutral-800);
+.anomalyGallery {
+  display: grid;
+  gap: 0;
+  margin: 0;
 }
+
+.anomalyItem {
+  --anomaly-accent: var(--chart-data-primary);
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 13px 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+.anomalyItem[data-signal="gdf-public-spending-fraud"] {
+  --anomaly-accent: var(--chart-category-blue);
+}
+.anomalyItem[data-signal="pnrr-beyond-2026"] {
+  --anomaly-accent: var(--chart-progress);
+}
+.anomalyItemHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.anomalyMarker {
+  min-width: 24px;
+  flex: none;
+  color: var(--anomaly-accent);
+  border-bottom: 2px solid currentColor;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  line-height: 1.6;
+  text-align: center;
+}
+.anomalyArea {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.anomalyItem h3 {
+  margin: 1px 0 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.anomalyValue {
+  display: block;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.03em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.anomalyBar {
+  display: block;
+  height: 6px;
+  margin-top: 2px;
+  background: var(--chart-data-track);
+}
+.anomalyBar i {
+  display: block;
+  height: 100%;
+  background: var(--anomaly-accent);
+}
+.anomalyMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 2px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.anomalyMeta span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.anomalyMeta a {
+  flex: none;
+  color: var(--anomaly-accent);
+  font-weight: 700;
+  text-align: end;
+}
+.anomalyCaveat,
+.anomalyFallback {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.anomalyCaveat {
+  color: var(--color-neutral-700);
+  font-weight: 700;
+}
+.anomalyFallback a {
+  font-weight: 700;
+}
+
+.readingPanel {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(150px, 0.8fr) minmax(150px, 0.8fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+  border-top: 2px solid var(--chart-category-blue);
+}
+.readingIntro { min-width: 0; }
+.readingKicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.readingPanel :global(.panel-title) {
+  margin: 0 0 6px;
+}
+.readingNote {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.readingRules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+}
+.readingRules > div {
+  min-width: 0;
+  padding-inline-start: var(--space-3);
+  border-inline-start: 1px solid var(--color-neutral-400);
+}
+.readingRules dt {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.readingRules dd {
+  margin: 3px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.readingLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  min-height: 44px;
+  margin: 0;
+  color: var(--chart-category-blue);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.readingLink:hover { color: var(--chart-category-blue); }
+.readingLink svg { flex: none; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 1320px) {
-  .dashboard { grid-template-columns: 360px minmax(0, 1fr); }
-  /* The right-hand rail becomes a full-width band of cards under the board. */
-  .dashboard > .column:last-child {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    align-items: start;
+  .dashboard > .column:last-child > :global(.panel) > :global(.btn-block) {
+    margin-top: 0;
   }
 }
 
 @media (max-width: 900px) {
   .dashboard { grid-template-columns: minmax(0, 1fr); }
-  .dashboard > .column:last-child { grid-column: auto; }
+  .dashboard > .column:last-child {
+    grid-column: auto;
+    display: flex;
+  }
+  .dashboard > .column:last-child > :global(.panel) { height: auto; }
+}
+
+@media (max-width: 1100px) {
+  .readingPanel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .readingIntro { grid-column: 1 / -1; }
+  .readingRules { grid-column: 1; }
+  .readingLink {
+    grid-column: 2;
+    justify-self: end;
+  }
 }
 
 @media (max-width: 620px) {
   .headline { font-size: 32px; }
   .mapStats { display: grid; grid-template-columns: 1fr 1fr; }
   .monthList li { grid-template-columns: 58px minmax(0, 1fr) 36px; }
+  .readingPanel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-3);
+  }
+  .readingIntro,
+  .readingRules,
+  .readingLink { grid-column: auto; }
+  .readingLink { justify-self: start; }
+}
+
+@media (max-width: 560px) {
+  .panelHead > :global(nav).periodSelector {
+    grid-area: 2 / 1 / auto / -1;
+    width: 100%;
+  }
 }
 
 @media (max-width: 420px) {

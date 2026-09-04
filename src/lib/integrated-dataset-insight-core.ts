@@ -23,8 +23,10 @@ const SERVICE_HEADERS = [
 
 const COUNT_HEADERS = ["n_aggiudicazioni", "n_atti", "n_enti"] as const;
 
-const AMOUNT_HEADER_SCORE =
-  /^(importo|valore|spesa|spese|pagato|impegnato|compenso|corrispettivo|ammontare|canone)/i;
+const AMOUNT_HEADER =
+  /^(importo|valore|spesa|spese|pagato|impegnato|residui|previsioni|compenso|corrispettivo|totale|ammontare|canone|costo|finanziamento|erogato|liquidato|euro)\b/i;
+const AMOUNT_UNIT_SUFFIX = /(?:^|_)(eur|euro)(?:_|$)/i;
+const AMOUNT_PLACEHOLDER = /^(n\.?d\.?|-|—|–|n\/a|na)$/i;
 const AMOUNT_VALUE = /^-?\d{1,3}(?:[.\s]\d{3})*(?:,\d+)?$|^-?\d+(?:[.,]\d+)?$/;
 
 export const INSIGHT_TOP_N = 8;
@@ -84,9 +86,50 @@ function preferredAmountHeader(headers: readonly string[]): string | null {
   ];
   const hit = pickFirst(headers, preferred);
   if (hit) return hit;
-  return (
-    headers.find((header) => AMOUNT_HEADER_SCORE.test(header.replace(/[_-]+/g, " ").trim())) ?? null
+  return headers.find((header) => looksLikeAmountHeader(header)) ?? null;
+}
+
+/** True when a public column name is an amount, including `*_eur` and canoni. */
+export function looksLikeAmountHeader(header: string): boolean {
+  const normalized = header.replace(/[_-]+/g, " ").trim();
+  return AMOUNT_HEADER.test(normalized) || AMOUNT_UNIT_SUFFIX.test(header);
+}
+
+function isAmountPlaceholder(value: string): boolean {
+  return AMOUNT_PLACEHOLDER.test(value.trim());
+}
+
+/**
+ * Columns whose header is monetary and whose visible cells are amounts or
+ * placeholders such as `n.d.`. A single non-numeric cell keeps the column as
+ * text, so years, mq and codes are never shown as euro.
+ */
+export function amountColumnKeys(
+  headers: readonly string[],
+  rows: readonly Readonly<{ cells: Readonly<Record<string, string | null>> }>[],
+): ReadonlySet<string> {
+  return new Set(
+    headers.filter((header) => {
+      if (!looksLikeAmountHeader(header)) return false;
+      let sawNumber = false;
+      for (const row of rows) {
+        const raw = row.cells[header];
+        if (raw == null) continue;
+        const trimmed = raw.trim();
+        if (trimmed === "" || isAmountPlaceholder(trimmed)) continue;
+        if (parseInsightAmount(trimmed) === null) return false;
+        sawNumber = true;
+      }
+      return sawNumber;
+    }),
   );
+}
+
+/** Formats a cell as euro, or null when the value is missing or not a number. */
+export function formatIntegratedAmountCell(value: string | null | undefined): string | null {
+  const parsed = parseInsightAmount(value);
+  if (parsed === null) return null;
+  return exactEuro(parsed);
 }
 
 /** Detects recipient / amount / service columns from public headers. */

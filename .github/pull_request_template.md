@@ -2,6 +2,9 @@
 
 Descrivi il risultato osservabile e il perimetro della PR.
 
+Maintainer responsabile della review e dell'integrazione, solo per cambiamenti
+sostanziali: `da assegnare`.
+
 ## Evidenza
 
 - [ ] Il diff è limitato al problema dichiarato.

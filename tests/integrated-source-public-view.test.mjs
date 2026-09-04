@@ -551,10 +551,10 @@ test("the dataset sheet puts insights and rows before collapsed provenance", asy
   assert.ok(rows < meta, "le righe devono precedere la provenienza");
   // The three value conventions travel with the cells they explain.
   assert.match(detail, /valueLegend/);
-  // An amount column is realigned only when no value on the page contradicts
-  // the header, so a text column is never turned into a number column.
-  assert.match(detail, /const AMOUNT_HEADER =/);
-  assert.match(detail, /\.every\(\(value\) => AMOUNT_VALUE\.test\(value\.trim\(\)\)\)/);
+  // Amount columns are classified in the shared helper so n.d. does not
+  // hide a canone/importo field, and new *_eur headers stay formatted.
+  assert.match(detail, /amountColumnKeys/);
+  assert.match(detail, /formatIntegratedAmountCell/);
   assert.doesNotMatch(detail, /Come leggere questa scheda/);
 });
 

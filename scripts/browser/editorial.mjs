@@ -19,6 +19,22 @@ function normalizeVisibleText(value) {
   return value.normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("it-IT");
 }
 
+async function waitForInteractiveHydration(page) {
+  // A native <details> can be toggled before React finishes hydrating and then
+  // reconciled back to its server state between Puppeteer input commands.
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(resolve, { timeout: 1_000 });
+          return;
+        }
+        setTimeout(resolve, 0);
+      });
+    });
+  }));
+}
+
 assert.ok(
   ["http:", "https:"].includes(baseUrl.protocol),
   "DVNS_BASE_URL non valido",
@@ -38,6 +54,7 @@ async function inspectRoute(browser, pathname, title, width) {
     // Use DOMContentLoaded + specific selector readiness instead of
     // networkidle0 (PR1.8): wait for the h1 that carries the title.
     await navigate(page, { url, label: `${pathname} ${width}px`, readySelector: "h1" });
+    await waitForInteractiveHydration(page);
 
     const label = `${pathname} ${width}px`;
     const expectedSummary = "che cosa non dimostra da solo";
@@ -73,33 +90,52 @@ async function inspectRoute(browser, pathname, title, width) {
           ),
         };
       });
+      const waitForDetailsState = async (expectedOpen) => {
+        await page.waitForFunction(
+          (element, open) => element.closest("details")?.open === open,
+          // CI runners can take longer than 2s for native <details> toggles under load.
+          { timeout: 5_000 },
+          summary,
+          expectedOpen,
+        );
+        return readDetailsState();
+      };
 
       let detailsState = await readDetailsState();
       assert.equal(detailsState.hasDetails, true, `${label}: summary senza details nativo`);
       assert.equal(detailsState.summaryVisible, true, `${label}: summary del confine non visibile`);
-      if (detailsState.open) await summary.click();
-      detailsState = await readDetailsState();
+      if (detailsState.open) {
+        await summary.click();
+        detailsState = await waitForDetailsState(false);
+      }
       assert.equal(detailsState.open, false, `${label}: confine nativo non chiuso inizialmente`);
 
       await summary.focus();
       const focused = await summary.evaluate((element) => document.activeElement === element);
       assert.equal(focused, true, `${label}: summary del confine non riceve il focus`);
       await page.keyboard.press("Enter");
-      detailsState = await readDetailsState();
+      try {
+        detailsState = await waitForDetailsState(true);
+      } catch {
+        detailsState = await readDetailsState();
+      }
       if (!detailsState.open || !detailsState.contentVisible) {
-        if (detailsState.open) await summary.click();
+        if (detailsState.open) {
+          await summary.click();
+          await waitForDetailsState(false);
+        }
         await summary.focus();
         await page.keyboard.press("Space");
-        detailsState = await readDetailsState();
+        detailsState = await waitForDetailsState(true);
       }
       assert.equal(detailsState.open, true, `${label}: apertura da tastiera del confine fallita`);
       assert.equal(detailsState.contentVisible, true, `${label}: contenuto del confine non visibile`);
 
       await summary.click();
-      detailsState = await readDetailsState();
+      detailsState = await waitForDetailsState(false);
       assert.equal(detailsState.open, false, `${label}: chiusura click del confine fallita`);
       await summary.click();
-      detailsState = await readDetailsState();
+      detailsState = await waitForDetailsState(true);
       assert.equal(detailsState.open, true, `${label}: riapertura click del confine fallita`);
       assert.equal(detailsState.contentVisible, true, `${label}: contenuto non visibile dopo riapertura`);
       nativeLimits = true;

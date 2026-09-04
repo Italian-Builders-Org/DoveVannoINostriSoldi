@@ -1,0 +1,632 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-entity-procurement-coverage",
+  "distributionKind": "full-snapshot",
+  "observedAt": "2026-08-30T21:30:00Z",
+  "generatedAt": "2026-08-30T22:03:55Z",
+  "scope": {
+    "cohort": "cig-2025-full",
+    "publicationMonths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "nationalPopulationClaim": "not-asserted",
+    "temporalAlignment": "cross-snapshot"
+  },
+  "contract": {
+    "stationIdentity": "codice_ausa",
+    "entityIdentity": "cf_amministrazione_appaltante",
+    "stationKey": "ausa:<CODICE_AUSA>",
+    "entityKey": "cf:<CF_AMMINISTRAZIONE_APPALTANTE>",
+    "procedureKey": [
+      "cig"
+    ],
+    "awardKey": [
+      "cig",
+      "id_aggiudicazione"
+    ],
+    "procedurePeriod": "data_pubblicazione",
+    "awardPeriod": "data_aggiudicazione_definitiva",
+    "procedureAmount": "importo_lotto",
+    "awardAmount": "importo_aggiudicazione",
+    "amountRepresentation": "exact-decimal",
+    "awardAmountAggregation": "once-per-distinct-award-pair",
+    "awardeeMultipartyPolicy": "awardee-rows-never-multiply-award-amount"
+  },
+  "privacy": {
+    "aggregateOnly": true,
+    "containsRawRows": false,
+    "containsRawTaxIds": false,
+    "containsNames": false
+  },
+  "inputs": {
+    "cig": [
+      {
+        "month": 1,
+        "fileName": "cig_csv_2025_01.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a1a4be23-11f5-4a95-93d0-5e3267ec6c3f",
+        "resourceId": "a1a4be23-11f5-4a95-93d0-5e3267ec6c3f",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_01.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 20798988,
+        "archiveSha256": "8133cd5ea2b592b4e48afa1eb0ec2db1a831f00a254de077518f8263818a371c",
+        "member": {
+          "name": "cig_csv_2025_01.csv",
+          "bytes": 91942157,
+          "sha256": "50437a1c63a320bcc3a5a8ad31d21788f95bdc223b4ffd6c85c035a8ed445492",
+          "crc32": "26a71daa"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 2,
+        "fileName": "cig_csv_2025_02.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a87a23dd-44a3-4b49-a7ad-b96566476979",
+        "resourceId": "a87a23dd-44a3-4b49-a7ad-b96566476979",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_02.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 21674004,
+        "archiveSha256": "ddeb33a5c46fd3f1c4f2988c73e28ca148628670848b8a2a86fd12bffd02045f",
+        "member": {
+          "name": "cig_csv_2025_02.csv",
+          "bytes": 96057335,
+          "sha256": "43fd4ea5ba66409e3377120cae47b93a3832aeb5d2c34ea1646eb6eee3b30160",
+          "crc32": "f7579a7a"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 3,
+        "fileName": "cig_csv_2025_03.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/dab282d9-f5c5-4595-9a9b-e17cdae7c98f",
+        "resourceId": "dab282d9-f5c5-4595-9a9b-e17cdae7c98f",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_03.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 22468395,
+        "archiveSha256": "231c2f7713af92c1aef4314a42ccafddb2914d5a6730d8159d13bd54590f3a1f",
+        "member": {
+          "name": "cig_csv_2025_03.csv",
+          "bytes": 99661342,
+          "sha256": "837d9f557ada6b571cfaa25fd2ffcc22d421be767375db3abc0b3ccc3f2e3787",
+          "crc32": "eb6bee0a"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 4,
+        "fileName": "cig_csv_2025_04.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a047f20f-84e4-48ac-8c54-f69127075d67",
+        "resourceId": "a047f20f-84e4-48ac-8c54-f69127075d67",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_04.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 23640461,
+        "archiveSha256": "2b8651f49312bca7e356a63b29dc47da5945dfbf7b78bed57ce9aaff54ba1055",
+        "member": {
+          "name": "cig_csv_2025_04.csv",
+          "bytes": 106370987,
+          "sha256": "9b70bda0f7d929d8451c455564de9fd46b29cf8fa254cb63ae650a89b3d13b13",
+          "crc32": "1a0ec9ff"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 5,
+        "fileName": "cig_csv_2025_05.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/28288080-14c7-45d1-8ff5-26e25fb4159a",
+        "resourceId": "28288080-14c7-45d1-8ff5-26e25fb4159a",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_05.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 23204302,
+        "archiveSha256": "8f4ef20c3d7a3bf43ff2181341b063e86abc10e0e09232cffd11d3e193aac7b4",
+        "member": {
+          "name": "cig_csv_2025_05.csv",
+          "bytes": 101914212,
+          "sha256": "908d9d045d86faba8d46bf3b00e67dc14e5e76bd999ad80b59ef207f1be9255c",
+          "crc32": "b5986e2d"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 6,
+        "fileName": "cig_csv_2025_06.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/039b8d17-756e-454b-a1a2-dda46237c6ea",
+        "resourceId": "039b8d17-756e-454b-a1a2-dda46237c6ea",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_06.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 22724612,
+        "archiveSha256": "9006c457b0604f7040a2826ba0294da55379f75cd2756dcf1ad93a90276ebf34",
+        "member": {
+          "name": "cig_csv_2025_06.csv",
+          "bytes": 103901086,
+          "sha256": "48a46f3a6c868a8ff9de89fd62c2c099693629a45fc04e1c16f220e69170eb4d",
+          "crc32": "72f60334"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 7,
+        "fileName": "cig_csv_2025_07.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/f99292f4-87a0-4e78-bf57-1c54bc4ba5ba",
+        "resourceId": "f99292f4-87a0-4e78-bf57-1c54bc4ba5ba",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_07.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 24551620,
+        "archiveSha256": "ad0c6265c81e78749d703e6a474e387e043ec69f2e5400264fcd4f91599315e8",
+        "member": {
+          "name": "cig_csv_2025_07.csv",
+          "bytes": 110285077,
+          "sha256": "155474089886a129ff10c3b1d9a6d65e5d514cafcf93b4e345c9d3268848c297",
+          "crc32": "98554424"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 8,
+        "fileName": "cig_csv_2025_08.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/fffb1c60-ff4e-43d4-b36f-1596eef7f079",
+        "resourceId": "fffb1c60-ff4e-43d4-b36f-1596eef7f079",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_08.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 14864424,
+        "archiveSha256": "c16e7aa06d6fb0e0880cf797e6d04fdedf37e076c2fd83563dc4f4973e6b539f",
+        "member": {
+          "name": "cig_csv_2025_08.csv",
+          "bytes": 66544151,
+          "sha256": "71d2db2b19f196559d2e26c97a1b915f72aa06de51a22eaef020b5a8147e014a",
+          "crc32": "d911f9ad"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 9,
+        "fileName": "cig_csv_2025_09.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/bd56cf08-e8a1-4b96-8c41-bfcdf05d3c9c",
+        "resourceId": "bd56cf08-e8a1-4b96-8c41-bfcdf05d3c9c",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_09.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 22343431,
+        "archiveSha256": "1b7d009a7120b92444f9ffc8d986a75bdd008cf86623721692e7f74bbf9ff154",
+        "member": {
+          "name": "cig_csv_2025_09.csv",
+          "bytes": 99338658,
+          "sha256": "e78f6f6c58af598e4d1b51a84c878909d8a0e4422e50a62b0f2a33bb0efed1e1",
+          "crc32": "1aa27778"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 10,
+        "fileName": "cig_csv_2025_10.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/12b9c75f-cc6c-43c7-aeb9-f73f262b3a23",
+        "resourceId": "12b9c75f-cc6c-43c7-aeb9-f73f262b3a23",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_10.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 25872938,
+        "archiveSha256": "6e7e467cbb008cc846ee096d3b8e1955fe338d3426a913f0750218bca52901d5",
+        "member": {
+          "name": "cig_csv_2025_10.csv",
+          "bytes": 115192784,
+          "sha256": "868d867d4276e32ca8f710cc79466e54b13b570f307b6de4c5745c636574576b",
+          "crc32": "e59d5a7c"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 11,
+        "fileName": "cig_csv_2025_11.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/8bc58a13-f600-4198-ad10-38738d4b4cc0",
+        "resourceId": "8bc58a13-f600-4198-ad10-38738d4b4cc0",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_11.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 21871608,
+        "archiveSha256": "cb40213cb6b294650099bf6a6ccd656d9139c374796c903302d17359accc2e60",
+        "member": {
+          "name": "cig_csv_2025_11.csv",
+          "bytes": 95809492,
+          "sha256": "1e1a7bfe9e13f821232bc2df967717f610ae6578d215b3e678bd515e9ad5250b",
+          "crc32": "bfb09e9b"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      },
+      {
+        "month": 12,
+        "fileName": "cig_csv_2025_12.zip",
+        "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+        "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/ebf0b0df-0ce0-4242-b297-a0b9c5cecac7",
+        "resourceId": "ebf0b0df-0ce0-4242-b297-a0b9c5cecac7",
+        "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_12.zip",
+        "sourceLastModified": "2026-01-16",
+        "assetObservedAt": "2026-08-30T21:30:00Z",
+        "archiveBytes": 32708524,
+        "archiveSha256": "6f696155e0b2ab4b2d608fe403e1bdc88a8a2c0d08812de325dd97ddedc6013a",
+        "member": {
+          "name": "cig_csv_2025_12.csv",
+          "bytes": 143461670,
+          "sha256": "f0446d010683fa031ead3eeb0beed7f1d5342a9c0be8294bf59c2cddbe8fcbb7",
+          "crc32": "8aa5d40e"
+        },
+        "license": {
+          "name": "CC BY-SA 4.0",
+          "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+        }
+      }
+    ],
+    "stations": {
+      "resourceName": "stazioni-appaltanti_csv",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti",
+      "datasetLegacyUuid": "d7ae6177-907f-4f3a-9773-20eafeccbd37",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/stazioni-appaltanti/filesystem/stazioni-appaltanti_csv.zip",
+      "sourceLastModified": "2026-08-06T07:31:40Z",
+      "assetObservedAt": "2026-08-30T21:30:00Z",
+      "archiveBytes": 3131101,
+      "catalogMetadataModifiedAt": "2020-07-20",
+      "archiveSha256": "b6cc397086747d7ec093df95b4a50cda7cffed6c4f6b698a9d17f6e33cd38240",
+      "member": {
+        "name": "stazioni-appaltanti_csv.csv",
+        "bytes": 12945255,
+        "sha256": "e6d95eb19ed7165d5a6770101f5014bf84f065192e906560fad56379ae3a19f2",
+        "crc32": "308d9af2"
+      },
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40"
+      }
+    },
+    "awards": {
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni/resource/5709b639-3626-483c-b485-106d7d448376",
+      "resourceId": "5709b639-3626-483c-b485-106d7d448376",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicazioni/filesystem/aggiudicazioni_csv.zip",
+      "sourceLastModified": "2026-01-15",
+      "archiveBytes": 151402917,
+      "archiveSha256": "70f2e7ccad625f3db3d3a2285c65aaa8eac35bf70b25570774224ac869f8d631",
+      "member": {
+        "name": "aggiudicazioni_csv.csv",
+        "bytes": 758859815,
+        "sha256": "90e7e5f7c7bc932d9721296b0c5bf1aba2236cbd4a377d90714ef09eb7874665",
+        "crc32": "d6b70d44"
+      },
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "data_aggiudicazione_definitiva",
+        "esito",
+        "criterio_aggiudicazione",
+        "data_comunicazione_esito",
+        "numero_offerte_ammesse",
+        "numero_offerte_escluse",
+        "importo_aggiudicazione",
+        "ribasso_aggiudicazione",
+        "num_imprese_offerenti",
+        "flag_subappalto",
+        "id_aggiudicazione",
+        "cod_esito",
+        "num_imprese_richiedenti",
+        "asta_elettronica",
+        "num_imprese_invitate",
+        "massimo_ribasso",
+        "minimo_ribasso",
+        "FLAG_SCOMPUTO",
+        "COD_PRESTAZIONI_COMPRESE",
+        "PRESTAZIONI_COMPRESE",
+        "CIG_PROG_ESTERNA",
+        "DATA_INCARICO_PROG",
+        "DATA_CONS_PROG",
+        "COD_MODO_RIAGGIUDICAZIONE",
+        "MODO_RIAGGIUDICAZIONE",
+        "FLAG_PROC_ACCELERATA",
+        "N_MANIF_INTERESSE"
+      ],
+      "parentSpecPath": "scripts/etl/specs/anac-awardees.source.json",
+      "parentSpecSha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078",
+      "parentInputKey": "awards",
+      "license": {
+        "name": "CC BY-SA 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+      }
+    },
+    "awardees": {
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari/resource/18033246-5cb4-453f-bee5-90da185cdc70",
+      "resourceId": "18033246-5cb4-453f-bee5-90da185cdc70",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicatari/filesystem/aggiudicatari_csv.zip",
+      "sourceLastModified": "2026-01-23",
+      "archiveBytes": 151222321,
+      "archiveSha256": "6908a361f581824ce144414116301234fc113230230634b0942b988f9173d60f",
+      "member": {
+        "name": "aggiudicatari_csv.csv",
+        "bytes": 800016719,
+        "sha256": "8cf5e7ebae4a1ac2d7b8fabcd4e1c63c26242dcb4b10564e7d80d8704d70ca2b",
+        "crc32": "652c6c14"
+      },
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "ruolo",
+        "codice_fiscale",
+        "denominazione",
+        "tipo_soggetto",
+        "id_aggiudicazione"
+      ],
+      "parentSpecPath": "scripts/etl/specs/anac-awardees.source.json",
+      "parentSpecSha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078",
+      "parentInputKey": "awardees",
+      "license": {
+        "name": "CC BY-SA 4.0",
+        "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+      }
+    }
+  },
+  "provenance": {
+    "catalogObservedAt": "2026-08-30T21:30:00Z",
+    "catalogMetadataModifiedAt": null,
+    "assetObservedAt": {
+      "cig": [
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z",
+        "2026-08-30T21:30:00Z"
+      ],
+      "stations": "2026-08-30T21:30:00Z"
+    },
+    "sourceSpec": {
+      "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+    },
+    "parentSpec": {
+      "path": "scripts/etl/specs/anac-awardees.source.json",
+      "sha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078",
+      "catalogObservedAt": "2026-08-30T18:30:00Z",
+      "catalogMetadataModifiedAt": "2026-08-06T08:13:37Z"
+    }
+  },
+  "coverage": {
+    "registry": {
+      "rowsTotal": 48040,
+      "rowsWithAusa": 48040,
+      "rowsWithCf": 48040,
+      "rowsWithEntityCf": 46755,
+      "rowsWithNonstandardCf": 1285,
+      "status:ATTIVO": 45202,
+      "status:CESSATO": 2838,
+      "status:(other)": 0,
+      "status:(missing)": 0,
+      "distinctAusa": 48040,
+      "distinctCf": 46755,
+      "cfWithMultipleAusa": 0
+    },
+    "procedures": {
+      "rawRows": 1475581,
+      "nonPrimaryRows": 21663,
+      "primaryRows": 1453918,
+      "distinctRawCigs": 1453920,
+      "cigsWithExactlyOnePrimary": 1453918,
+      "cigsWithoutPrimary": 2,
+      "cigsWithMultiplePrimary": 0,
+      "distinctCigs": 1453918,
+      "publicationDate:missing": 0,
+      "publicationDate:invalid": 0,
+      "publicationDate:before-1990": 0,
+      "publicationDate:future": 0,
+      "publicationDate:valid": 1453918,
+      "lotAmount:missing": 0,
+      "lotAmount:invalid": 1,
+      "lotAmount:negative": 1,
+      "lotAmount:zero": 8248,
+      "lotAmount:positive-exact-cent": 1424141,
+      "lotAmount:positive-subcent": 21527,
+      "lotAmount:conflicting": 0,
+      "identity:resolved": 1038129,
+      "identity:unresolved": 415789,
+      "identity:conflict": 0
+    },
+    "identity": {
+      "resolved": 1038129,
+      "unresolved": 415789,
+      "conflict": 0,
+      "via:ausa-and-cf": 1038128,
+      "via:ausa-only": 0,
+      "via:cf-fallback": 1,
+      "via:missing-both": 224,
+      "via:ausa-invalid": 0,
+      "via:ausa-not-in-registry": 0,
+      "via:ausa-cf-conflict": 0,
+      "via:cf-invalid": 0,
+      "via:cf-placeholder": 0,
+      "via:cf-not-in-registry": 0,
+      "via:ambiguous-cf": 0,
+      "via:registry-cf-nonstandard": 1141,
+      "via:ausa-without-entity-cf": 0,
+      "via:publication-date-unusable": 0,
+      "via:ausa-outside-registry-interval": 414423,
+      "via:cf-no-active-station": 1
+    },
+    "awards": {
+      "rawRows": 4862077,
+      "ineligibleKeyRows": 0,
+      "knownKeyRows": 4862077,
+      "duplicateKeyRows": 9298,
+      "exactDuplicateRows": 0,
+      "nonIdenticalDuplicateRows": 9298,
+      "distinctAwards": 4852779,
+      "duplicateKeyGroups": 6874,
+      "amountConflictGroups": 1,
+      "awardDateConflictGroups": 2,
+      "criticalConflictGroups": 3,
+      "conflictingAwardKeys": 3,
+      "id:missing": 0,
+      "id:missing-sentinel": 0,
+      "id:invalid": 0,
+      "id:known": 4862077,
+      "amount:missing": 23853,
+      "amount:invalid": 2,
+      "amount:negative": 368,
+      "amount:zero": 19067,
+      "amount:positive-exact-cent": 4617887,
+      "amount:positive-subcent": 200900,
+      "amount:conflicting": 0,
+      "awardDate:missing": 42479,
+      "awardDate:invalid": 0,
+      "awardDate:before-1990": 1112,
+      "awardDate:future": 815,
+      "awardDate:valid": 4817671
+    },
+    "awardees": {
+      "rawRows": 5437334,
+      "ineligibleKeyRows": 0,
+      "knownKeyRows": 5437334,
+      "distinctJoinPairs": 4822171,
+      "exactDuplicateRows": 276,
+      "pairsWithMultipleAwardeeRows": 257165,
+      "id:missing": 0,
+      "id:missing-sentinel": 0,
+      "id:invalid": 0,
+      "id:known": 5437334
+    }
+  },
+  "amounts": {
+    "procedureLot": {
+      "distinctRows": 1453918,
+      "statusRows": {
+        "missing": 0,
+        "invalid": 1,
+        "negative": 1,
+        "zero": 8248,
+        "positive-exact-cent": 1424141,
+        "positive-subcent": 21527,
+        "conflicting": 0
+      },
+      "positive-exact-centSum": "612729305534.76",
+      "positive-subcentSum": "11247353455.4819173338465104144",
+      "positiveRows": 1445668,
+      "positiveSum": "623976658990.2419173338465104144"
+    },
+    "awardRows": {
+      "distinctRows": 4852779,
+      "statusRows": {
+        "missing": 23831,
+        "invalid": 2,
+        "negative": 368,
+        "zero": 19062,
+        "positive-exact-cent": 4610293,
+        "positive-subcent": 199222,
+        "conflicting": 1
+      },
+      "positive-exact-centSum": "3790625087342.25",
+      "positive-subcentSum": "133980348552.15317705344220352863",
+      "positiveRows": 4809515,
+      "positiveSum": "3924605435894.40317705344220352863"
+    },
+    "awardContributionInCohort": {
+      "distinctRows": 1284202,
+      "statusRows": {
+        "missing": 10345,
+        "invalid": 2,
+        "negative": 1,
+        "zero": 7166,
+        "positive-exact-cent": 1243134,
+        "positive-subcent": 23553,
+        "conflicting": 1
+      },
+      "positive-exact-centSum": "356603789042.60",
+      "positive-subcentSum": "9411570603.42162975511857770881",
+      "positiveRows": 1266687,
+      "positiveSum": "366015359646.02162975511857770881"
+    },
+    "awardeeMultiplication": false,
+    "lotAndAwardAmountsAreDistinctFields": true
+  },
+  "reconciliation": {
+    "awardPairsTotal": 4852779,
+    "awardPairsInCohort": 1284202,
+    "awardPairsOutOfCohort": 3568577,
+    "awardPairsWithAwardees": 1272304,
+    "awardPairsWithoutAwardees": 11898,
+    "awardeePairsTotal": 4822171,
+    "awardeePairsInCohort": 1272460,
+    "awardeePairsOutOfCohort": 3549711,
+    "awardeePairsWithoutAward": 156
+  },
+  "sourceSpecSha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d",
+  "limitations": [
+    "full-snapshot cross-temporal: CIG, aggiudicazioni e aggiudicatari non sono una fotografia sincronizzata",
+    "nationalPopulationClaim non-asserted: il risultato non è una copertura nazionale corrente",
+    "nessuna inferenza di spreco, illecito, ranking o HHI in questo slice",
+    "denominazioni e deleghe sono conservate nella sorgente ma non sono chiavi dell'identita"
+  ]
+}

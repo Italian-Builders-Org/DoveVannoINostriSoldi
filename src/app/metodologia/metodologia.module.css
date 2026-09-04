@@ -8,7 +8,7 @@
 .index {
   display: block;
   margin-bottom: var(--space-3);
-  font: 600 11px var(--font-mono);
+  font: 600 11px var(--font-heading);
   letter-spacing: .08em;
   color: var(--color-accent-700);
 }

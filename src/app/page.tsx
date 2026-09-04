@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
+import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
-import { getProcurementComparisonForYear } from "@/lib/audit-data";
+import { getHomeAnomalySignals, type AuditSignal } from "@/lib/audit-data";
 import {
   billions,
   compactEuro,
@@ -19,6 +22,7 @@ import {
   HOME_SPENDING_BUCKETS,
   PASS_THROUGH_TITLE_CODE,
 } from "@/lib/siope-titles";
+import { istatCodeOfRegion } from "@/lib/italy-regions";
 import {
   availableSiopeYears,
   completedMonths,
@@ -36,6 +40,42 @@ const COMPOSITION_FAMILIES: CompositionFamily[] = [
   "financing",
   "other",
 ];
+
+const HOME_ANOMALY_PRESENTATION = {
+  "procurement-direct-awards-2025": {
+    title: "Affidamenti diretti",
+    period: "2025 · procedure da 40.000 € in su",
+  },
+  "gdf-public-spending-fraud": {
+    title: "Frodi accertate nei controlli",
+    period: "dal 1 gen 2025 al 31 mag 2026",
+  },
+  "pnrr-beyond-2026": {
+    title: "Risorse PNRR oltre il 2026",
+    period: "Previsione · febbraio 2026",
+  },
+} as const;
+
+function anomalyValue(signal: AuditSignal): string {
+  let formatted: string;
+  if (signal.unit === "percent") {
+    formatted = percent(signal.value);
+  } else if (signal.unit === "billion-euro") {
+    formatted = `${signal.value.toLocaleString("it-IT", {
+      maximumFractionDigits: 1,
+    })} mld €`;
+  } else if (signal.unit === "million-euro") {
+    formatted = `${signal.value.toLocaleString("it-IT", {
+      maximumFractionDigits: 1,
+    })} mln €`;
+  } else {
+    formatted = integer(signal.value);
+  }
+
+  if (signal.valueQualifier === "over") return `oltre ${formatted}`;
+  if (signal.valueQualifier === "about") return `circa ${formatted}`;
+  return formatted;
+}
 
 function selectedYear(value: string | string[] | undefined): number {
   const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
@@ -86,7 +126,7 @@ export default async function HomePage({
   const cohesionCommitted = (cohesionForYear?.commitmentsCents ?? 0) / 100;
   const cohesionRatio =
     cohesionCommitted > 0 ? (cohesionPaid / cohesionCommitted) * 100 : 0;
-  const procurement = getProcurementComparisonForYear(year);
+  const anomalySignals = getHomeAnomalySignals();
 
   return (
     <main className={`shell ${styles.dashboard}`}>
@@ -139,6 +179,7 @@ export default async function HomePage({
             state={{ kind: "ready", totalEuro: siope.totalPaid, items: buckets.map((bucket) => ({
               id: bucket.id,
               label: bucket.name,
+              shortLabel: bucket.shortName,
               valueEuro: bucket.value,
               explanation: bucket.explanation,
               family: bucket.family,
@@ -160,15 +201,56 @@ export default async function HomePage({
           </Link>
         </section>
 
+        <section className="panel">
+          <div className={styles.panelHead}>
+            <h2 className="panel-title">Mese per mese</h2>
+            <span className={styles.headNote}>miliardi di €</span>
+            <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
+              Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
+              Il mese in corso è grigio perché può ancora cambiare.
+            </InfoTooltip>
+          </div>
+          <ul className={styles.monthList}>
+            {siope.monthly.map((point) => {
+              const running = point.month === runningMonth;
+              return (
+                <li key={point.month}>
+                  <span>{point.label}</span>
+                  <i aria-hidden="true">
+                    <b
+                      className={running ? styles.running : undefined}
+                      style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
+                    />
+                  </i>
+                  <b className="num-tabular">{billions(point.flow)}</b>
+                </li>
+              );
+            })}
+          </ul>
+          {runningMonth === null ? (
+            <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
+          ) : (
+            <p className={styles.note}>
+              {siope.latestMonthLabel} è ancora in corso: il numero salirà.
+            </p>
+          )}
+        </section>
+
       </div>
 
       <div className={styles.column}>
-        <section className="panel">
+        <section className={`panel ${styles.mapPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Dove si spende di più, regione per regione</h2>
-            <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/" />
+            <PeriodSelector
+              activeYear={year}
+              years={availableSiopeYears}
+              pathname="/"
+              className={styles.periodSelector}
+            />
           </div>
 
+          <div className={styles.mapStage}>
           <ItalyRegionsMap
             regions={siope.regions}
             period={period}
@@ -210,6 +292,7 @@ export default async function HomePage({
               </div>
             }
           />
+          </div>
 
           <p className={styles.attribution}>
             Confini amministrativi a fini statistici:{" "}
@@ -228,7 +311,7 @@ export default async function HomePage({
           </p>
         </section>
 
-        <section className="panel">
+        <section className={`panel ${styles.regionsPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Le regioni con più pagamenti per abitante</h2>
             <span className={styles.headNote}>Comuni con sede nella regione</span>
@@ -245,7 +328,16 @@ export default async function HomePage({
               <tbody>
                 {topRegions.map((region) => (
                   <tr key={region.region}>
-                    <th scope="row">{region.region}</th>
+                    <th scope="row">
+                      <span className={styles.regionNameCell}>
+                        <RegionCrest
+                          regionCode={istatCodeOfRegion(region.region)}
+                          regionName={region.region}
+                          decorative
+                        />
+                        <span>{region.region}</span>
+                      </span>
+                    </th>
                     <td className="num">
                       {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
                     </td>
@@ -255,74 +347,16 @@ export default async function HomePage({
               </tbody>
             </table>
           </div>
+          <RegionCrestAttribution />
           <Link className="btn btn-block" href={`/territori?anno=${year}`}>
             Vedi tutte le regioni
           </Link>
         </section>
-      </div>
 
-      <div className={styles.column}>
-        <section className="panel">
+        <section className={`panel ${styles.sourcePanel}`}>
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Mese per mese</h2>
-            <span className={styles.headNote}>miliardi di €</span>
+            <h2 className="panel-title">Da dove arrivano i numeri</h2>
           </div>
-          <ul className={styles.monthList}>
-            {siope.monthly.map((point) => {
-              const running = point.month === runningMonth;
-              return (
-                <li key={point.month}>
-                  <span>{point.label}</span>
-                  <i aria-hidden="true">
-                    <b
-                      className={running ? styles.running : undefined}
-                      style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
-                    />
-                  </i>
-                  <b className="num-tabular">{billions(point.flow)}</b>
-                </li>
-              );
-            })}
-          </ul>
-          {runningMonth === null ? (
-            <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
-          ) : (
-            <p className={styles.note}>
-              {siope.latestMonthLabel} è ancora in corso: il numero salirà.
-            </p>
-          )}
-        </section>
-
-        <section className="panel">
-          <h2 className="panel-title">
-            I {topMunicipalities.length} Comuni con più pagamenti per abitante
-          </h2>
-          <ol className={styles.rankList}>
-            {topMunicipalities.map((municipality, index) => (
-              <li key={municipality.codiceFiscale}>
-                <span>{index + 1}</span>
-                <strong>
-                  {municipalityName(municipality.name)}
-                  <small>
-                    {municipality.population === null
-                      ? "popolazione non disponibile"
-                      : `${integer(municipality.population)} abitanti`}
-                  </small>
-                </strong>
-                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
-              </li>
-            ))}
-          </ol>
-          <p className={styles.note}>
-            Confronto pro capite; il totale resta nel dettaglio territoriale.
-          </p>
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi il confronto territoriale
-          </Link>
-        </section>
-
-        <section className="panel">
-          <h2 className="panel-title">Da dove arrivano i numeri</h2>
           <div className={styles.sourceList}>
             <article>
               <header>
@@ -363,9 +397,48 @@ export default async function HomePage({
             Vedi tutte le fonti
           </Link>
         </section>
+      </div>
 
-        <section className="panel">
-          <h2 className="panel-title">Fondi e progetti · OpenCoesione</h2>
+      <div className={styles.column}>
+        <section className={`panel ${styles.rankPanel}`}>
+          <div className={styles.panelHead}>
+            <h2 className="panel-title">
+              I {topMunicipalities.length} Comuni con più pagamenti per abitante
+            </h2>
+          </div>
+          <ol className={styles.rankList}>
+            {topMunicipalities.map((municipality, index) => (
+              <li key={municipality.codiceFiscale}>
+                <span>{index + 1}</span>
+                <strong>
+                  {municipalityName(municipality.name)}
+                  <small>
+                    {municipality.population === null
+                      ? "popolazione non disponibile"
+                      : `${integer(municipality.population)} abitanti`}
+                  </small>
+                </strong>
+                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.note}>
+            Confronto pro capite; il totale resta nel dettaglio territoriale.
+          </p>
+          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+            Vedi il confronto territoriale
+          </Link>
+        </section>
+
+        <section className={`panel ${styles.actionPanel}`}>
+          <div className={`${styles.panelHead} ${styles.compactHeader}`}>
+            <h2 className="panel-title">Fondi e progetti</h2>
+            <span className={styles.headNote}>OpenCoesione</span>
+            <InfoTooltip id="cohesion-ratio-tip" label="Che cosa confrontiamo?">
+              Gli impegni sono somme assegnate ai progetti; i pagamenti sono somme già erogate.
+              Il rapporto non indica da solo che i progetti siano conclusi.
+            </InfoTooltip>
+          </div>
           {cohesionForYear ? (
             <>
               <dl className={styles.factRows}>
@@ -379,7 +452,7 @@ export default async function HomePage({
                 </div>
               </dl>
               <div className={styles.ratioHead}>
-                <span>Pagamenti sugli impegni</span>
+                <span>Pagato rispetto agli impegni</span>
                 <b>{percent(cohesionRatio)}</b>
               </div>
               <div className={styles.ratioTrack} aria-hidden="true">
@@ -398,44 +471,92 @@ export default async function HomePage({
           </Link>
         </section>
 
-        <section className="panel">
-          <h2 className="panel-title">Segnali da controllare</h2>
-          {procurement ? (
-            <>
-              <dl className={styles.factRows}>
-                <div>
-                  <dt>Valore degli affidamenti diretti nel {procurement.year}</dt>
-                  <dd>{((procurement.totalValueBillion * procurement.byValue) / 100).toLocaleString("it-IT", {
-                    maximumFractionDigits: 1,
-                  })} mld €</dd>
-                </div>
-                <div>
-                  <dt>Quota sul valore dei contratti</dt>
-                  <dd>{percent(procurement.byValue)}</dd>
-                </div>
-              </dl>
-              <p className={styles.note}>
-                Relazione ANAC sul {procurement.year}. Segnale da approfondire con le fonti ufficiali.
-              </p>
-            </>
-          ) : (
-            <p className={styles.note}>
-              La relazione ANAC completa sul {year} arriverà quando sarà pubblicata.
+        <section className={`panel ${styles.actionPanel}`}>
+          <div className={`${styles.panelHead} ${styles.compactHeader}`}>
+            <h2 className="panel-title">Anomalie da approfondire</h2>
+            <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
+              Un valore insolito rispetto a enti simili o a una soglia statistica. È un segnale
+              statistico da verificare con le fonti, non una prova di spreco o illecito.
+            </InfoTooltip>
+          </div>
+          <div className={styles.anomalyGallery}>
+            {anomalySignals.map((signal, index) => {
+              const presentation = HOME_ANOMALY_PRESENTATION[signal.id as keyof typeof HOME_ANOMALY_PRESENTATION];
+              if (!presentation) return null;
+
+              return (
+                <article
+                  className={styles.anomalyItem}
+                  data-signal={signal.id}
+                  key={signal.id}
+                >
+                  <div className={styles.anomalyItemHead}>
+                    <span className={styles.anomalyMarker} aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className={styles.anomalyArea}>{signal.area}</span>
+                  </div>
+                  <h3>{presentation.title}</h3>
+                  <strong className={styles.anomalyValue}>{anomalyValue(signal)}</strong>
+                  {signal.unit === "percent" ? (
+                    <span
+                      className={styles.anomalyBar}
+                      role="img"
+                      aria-label={`${percent(signal.value)} delle procedure`}
+                    >
+                      <i style={{ width: `${Math.min(signal.value, 100)}%` }} />
+                    </span>
+                  ) : null}
+                  <p className={styles.anomalyMeta}>
+                    <span>{presentation.period}</span>
+                    <a
+                      href={signal.source.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`Fonte ${signal.source.institution}: ${signal.source.title}`}
+                    >
+                      {signal.source.institution} ↗
+                    </a>
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+          <p className={styles.anomalyCaveat}>Segnale da verificare, non prova.</p>
+          {anomalySignals.length < 3 ? (
+            <p className={styles.anomalyFallback}>
+              Mostriamo solo i segnali con fonte verificata. <Link href="/controlli">Esplora gli altri controlli</Link>.
             </p>
-          )}
+          ) : null}
           <Link className="btn btn-block" href="/controlli">
-            Vai ai controlli
+            Apri tutti i controlli
           </Link>
         </section>
 
-        <section className="panel panel-accent">
-          <h2 className="panel-title">Come leggere questi numeri</h2>
-          <p className={styles.readingNote}>
-            Qui vedi i pagamenti dei Comuni. Una cifra alta va letta con abitanti e con i servizi
-            che quel Comune gestisce.
-          </p>
-          <Link href="/metodologia">Come leggiamo i dati →</Link>
-        </section>
+        <aside className={styles.readingPanel} aria-labelledby="reading-title">
+          <div className={styles.readingIntro}>
+            <span className={styles.readingKicker}>Chiave di lettura</span>
+            <h2 id="reading-title" className="panel-title">Come leggere questi numeri</h2>
+            <p className={styles.readingNote}>
+              Il totale dice quanto è uscito; il valore per abitante aiuta a confrontare Comuni
+              diversi. Considera sempre anche la dimensione dell&apos;ente e i servizi che gestisce.
+            </p>
+          </div>
+          <dl className={styles.readingRules}>
+            <div>
+              <dt>Totale</dt>
+              <dd>Quanto è stato pagato</dd>
+            </div>
+            <div>
+              <dt>Per abitante</dt>
+              <dd>Un confronto più equo</dd>
+            </div>
+          </dl>
+          <Link className={styles.readingLink} href="/metodologia">
+            Come leggiamo i dati
+            <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
+          </Link>
+        </aside>
       </div>
     </main>
   );

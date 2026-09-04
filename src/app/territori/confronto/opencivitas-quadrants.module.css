@@ -1,0 +1,416 @@
+.module {
+  min-width: 0;
+}
+
+.header,
+.plotHeading,
+.detailHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.header {
+  margin-bottom: var(--space-5);
+}
+
+.kicker {
+  margin: 0 0 5px;
+  color: var(--color-accent-700);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.intro,
+.plotHeading p,
+.detailHeading p {
+  max-width: 72ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.coverage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
+  gap: 1px;
+  flex: none;
+  margin: 0;
+  background: var(--color-neutral-300);
+}
+
+.coverage > div {
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--color-neutral-100);
+}
+
+.coverage dt,
+.quadrantTotals dt {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.coverage dd {
+  margin: 3px 0 0;
+  font-size: 18px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.plotHeading {
+  align-items: end;
+  margin-bottom: var(--space-4);
+}
+
+.plotHeading h3,
+.detailHeading h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 16px;
+}
+
+.scaleNote,
+.completeTag {
+  flex: none;
+  margin: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chartFrame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.yAxisLabel {
+  align-self: center;
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-align: center;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.plotWrap {
+  min-width: 0;
+}
+
+.plot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(190px, auto));
+  min-width: 0;
+  border: 1px solid var(--color-neutral-400);
+}
+
+.quadrant {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: clamp(12px, 2.2vw, 24px);
+  overflow-wrap: normal;
+  word-break: normal;
+  border-right: 1px solid var(--color-neutral-400);
+  border-bottom: 1px solid var(--color-neutral-400);
+  background: var(--color-neutral-100);
+}
+
+.quadrant:nth-child(2n) {
+  border-right: 0;
+}
+
+.quadrant:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.quadrant[data-quadrant="low-high"] {
+  background: var(--color-positive-bg);
+}
+
+.quadrant[data-quadrant="high-high"] {
+  background: var(--color-accent-100);
+}
+
+.quadrant[data-quadrant="high-low"] {
+  background: var(--color-warning-bg);
+}
+
+.quadrantBands {
+  margin: 0 0 6px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.quadrant h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(15px, 2vw, 19px);
+  line-height: 1.2;
+}
+
+.quadrantDescription {
+  max-width: 34ch;
+  margin: 7px 0 0;
+  color: var(--color-neutral-800);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.count {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: auto 0 var(--space-3);
+  padding-top: var(--space-4);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.count strong {
+  font-size: clamp(24px, 3.8vw, 38px);
+  font-weight: 780;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+.count span {
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.quadrantTotals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.quadrantTotals > div {
+  min-width: 0;
+  padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, var(--color-neutral-900) 22%, transparent);
+}
+
+.quadrantTotals dd {
+  margin: 3px 0 0;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.xAxis {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-2);
+  margin-top: 7px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.xAxis span:nth-child(2) {
+  color: var(--color-neutral-700);
+  font-weight: 700;
+  text-align: center;
+}
+
+.xAxis span:last-child {
+  text-align: right;
+}
+
+.caption,
+.excluded,
+.provenance {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.caption {
+  display: block;
+  margin-top: var(--space-4);
+}
+
+.detail {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.detailHeading {
+  align-items: end;
+  margin-bottom: var(--space-3);
+}
+
+.tableScroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: var(--space-2);
+}
+
+.tableScroll:focus-visible {
+  outline-offset: 3px;
+}
+
+.table {
+  min-width: 760px;
+}
+
+.table caption {
+  padding: 0 0 8px;
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  text-align: left;
+}
+
+.table th:first-child {
+  min-width: 240px;
+}
+
+.table tfoot th,
+.table tfoot td {
+  padding-top: 12px;
+  border-top: 2px solid var(--color-neutral-400);
+  font-weight: 750;
+}
+
+.table th small {
+  max-width: 36ch;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.excluded {
+  margin: var(--space-3) 0 0;
+}
+
+.provenance {
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-200);
+  line-height: 1.5;
+}
+
+.provenance a {
+  overflow-wrap: anywhere;
+}
+
+.scrollInstruction {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+  .header,
+  .plotHeading,
+  .detailHeading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .coverage {
+    width: 100%;
+  }
+
+  .scaleNote,
+  .completeTag {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 520px) {
+  .chartFrame {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .yAxisLabel {
+    justify-self: start;
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .plot {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  .quadrant {
+    padding: 12px;
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-400);
+  }
+
+  .quadrant:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--color-neutral-400);
+  }
+
+  .quadrant:last-child {
+    border-bottom: 0;
+  }
+
+  .quadrantTotals {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .quadrantTotals > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .quadrantTotals dd {
+    text-align: right;
+  }
+
+  .count {
+    margin: var(--space-3) 0;
+    padding-top: 0;
+  }
+
+  .xAxis {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .xAxis span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    text-align: left;
+  }
+
+  .xAxis span:last-child {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}

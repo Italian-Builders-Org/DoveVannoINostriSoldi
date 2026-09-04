@@ -42,7 +42,9 @@ VALID_COVERAGE = frozenset({"standalone", "etl-suite", "node-tests"})
 GENERATED_EXTENSIONS = frozenset({".json", ".jsonl", ".jsonl.gz", ".ts"})
 PUBLICATION_IDS = frozenset(
     {
+        "company-atlas",
         "consulenti-pubblici",
+        "government-scorecard",
         "mef-participations",
         "opencivitas-2022",
         "opencoesione",
@@ -208,6 +210,17 @@ def validate_schema(registry: dict) -> list[str]:
                     errors.append(
                         f"{art_id}: publication.upstreamUrl must be an HTTPS URL without credentials."
                     )
+            upstreams = publication.get("upstreamUrls")
+            if upstreams is not None:
+                if not isinstance(upstreams, list) or not upstreams or any(not isinstance(value, str) or not value.strip() for value in upstreams):
+                    errors.append(f"{art_id}: publication.upstreamUrls must be a non-empty string array.")
+                else:
+                    if upstream not in upstreams or len(set(upstreams)) != len(upstreams):
+                        errors.append(f"{art_id}: publication.upstreamUrls must be unique and include upstreamUrl.")
+                    for value in upstreams:
+                        parsed = urlparse(value)
+                        if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+                            errors.append(f"{art_id}: publication.upstreamUrls contains an invalid HTTPS URL.")
 
             offline_spec = art.get("offlineCheck", {})
             generator_spec = art.get("generator", {})
@@ -236,6 +249,12 @@ def validate_schema(registry: dict) -> list[str]:
             errors.append(
                 f"{art_id}: verificationMode='source-lock' requires a non-empty 'sourceSpec'."
             )
+        specs = art.get("sourceSpecs")
+        if specs is not None:
+            if not isinstance(specs, list) or not specs or any(not isinstance(value, str) or not value for value in specs):
+                errors.append(f"{art_id}: 'sourceSpecs' must be a non-empty string array.")
+            elif len(set(specs)) != len(specs) or (spec and spec not in specs):
+                errors.append(f"{art_id}: 'sourceSpecs' must be unique and include sourceSpec.")
 
         # trustModel must be a non-empty string
         trust = art.get("trustModel")
@@ -319,10 +338,11 @@ def validate_references(registry: dict) -> list[str]:
                 errors.append(f"{art_id}: refresh workflow not found: {wf}")
 
         spec = art.get("sourceSpec")
-        if spec:
-            path = ROOT / spec
+        specs = art.get("sourceSpecs") or ([spec] if spec else [])
+        for source_spec in specs:
+            path = ROOT / source_spec
             if not path.exists():
-                errors.append(f"{art_id}: source spec not found: {spec}")
+                errors.append(f"{art_id}: source spec not found: {source_spec}")
 
     return errors
 
@@ -355,7 +375,7 @@ def detect_unregistered_files(registry: dict) -> list[str]:
             dirnames[:] = [d for d in dirnames if not d.startswith(".")]
             for fname in filenames:
                 full = Path(dirpath) / fname
-                rel = str(full.relative_to(ROOT))
+                rel = full.relative_to(ROOT).as_posix()
                 if rel in registered:
                     continue
 
@@ -517,6 +537,16 @@ def main() -> int:
     errors.extend(validate_schema(registry))
     errors.extend(validate_references(registry))
     errors.extend(detect_unregistered_files(registry))
+    inventory_check = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "ci" / "source-snapshot-inventory.py"), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if inventory_check.returncode != 0:
+        errors.append(
+            (inventory_check.stderr or inventory_check.stdout or "snapshot inventory is stale").strip()
+        )
 
     if errors:
         print(f"\n❌ Registry validation failed ({len(errors)} error(s)):\n", file=sys.stderr)

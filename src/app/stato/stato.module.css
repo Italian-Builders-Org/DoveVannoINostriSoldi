@@ -449,8 +449,13 @@
 .provenanceRow small {
   margin-top: 4px;
   color: var(--color-neutral-600);
-  font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 600 11px var(--font-body);
   overflow-wrap: anywhere;
+}
+
+.provenanceRow small code {
+  font-size: inherit;
+  color: inherit;
 }
 
 .provenanceActions {
@@ -535,7 +540,7 @@
   }
 
   .title {
-    font-size: clamp(40px, 13vw, 58px);
+    font-size: clamp(32px, 9vw, 42px);
   }
 
   .primaryMetric strong {

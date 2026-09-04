@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
+import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { ssnCceSnapshot as data } from "@/lib/ssn-cce-snapshot";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
+import { SsnAccountingComparison } from "./ssn-accounting-comparison";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
@@ -48,6 +49,18 @@ export default function HealthSpendingPage() {
   const production = national.productionCosts;
   const personnelShare = share(national.personnelCost, production);
   const healthcareWorkShare = share(national.healthcareWorkServices, production);
+  const comparisonData = metricOrder.map((metric) => {
+    const definition = sourceMetric(metric);
+    return {
+      id: metric,
+      label: metricTitle[metric],
+      sourceLabel: definition.label,
+      code: definition.code,
+      valueCents: national[metric],
+      detailPresent: data.detailCoverage.present[metric],
+      detailMissing: data.detailCoverage.missing[metric],
+    };
+  });
 
   return (
     <main className="shell page">
@@ -94,49 +107,13 @@ export default function HealthSpendingPage() {
               Le voci contabili a confronto
             </h2>
             <p>
-              Aggregato nazionale ufficiale del dataset SSN_CCE_NAZ_VOCCN_001. Il dettaglio per ente
-              resta in una tabella separata.
+              Aggregato nazionale ufficiale del dataset SSN_CCE_NAZ_VOCCN_001. Il grafico confronta
+              gli importi; codici e copertura del dettaglio restano disponibili nella tabella.
             </p>
           </div>
           <span className="tag tag-neutral">2024 · consuntivo</span>
         </div>
-        <div className="table-scroll" role="region" aria-label="Voci contabili sanità 2024" tabIndex={0}>
-          <table className="table">
-            <caption className={styles.visuallyHidden}>Voci contabili del Conto Economico SSN 2024</caption>
-            <thead>
-              <tr>
-                <th scope="col">Voce</th>
-                <th scope="col">Codice fonte</th>
-                <th scope="col" className="num">Importo</th>
-                <th scope="col">Copertura</th>
-              </tr>
-            </thead>
-            <tbody>
-              {metricOrder.map((metric) => {
-                const definition = sourceMetric(metric);
-                return (
-                  <tr key={metric}>
-                    <th scope="row">
-                      <span className={styles.metricName}>{metricTitle[metric]}</span>
-                      <small>{definition.label}</small>
-                    </th>
-                    <td>
-                      <code>{definition.code}</code>
-                    </td>
-                    <td className="num">
-                      <strong>{compactEuro(euro(national[metric]))}</strong>
-                      <small>{exactEuro(euro(national[metric]))}</small>
-                    </td>
-                    <td>
-                      Copertura dettaglio: {integer(data.detailCoverage.present[metric])} enti con voce
-                      {" · "}{integer(data.detailCoverage.missing[metric])} senza riga
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <SsnAccountingComparison data={comparisonData} />
         <p className={styles.note}>
           “Acquisti di servizi” comprende più servizi sanitari e non sanitari, oltre alle sole
           prestazioni di lavoro. Gli importi nella tabella sono arrotondati solo nella
@@ -164,8 +141,11 @@ export default function HealthSpendingPage() {
             <thead>
               <tr>
                 <th scope="col">Territorio</th>
+                <th scope="col" className="num">Costi produzione</th>
                 <th scope="col" className="num">Personale</th>
-                <th scope="col" className="num">Prestazioni di lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro non sanitarie</th>
+                <th scope="col" className="num">Acquisti di servizi</th>
                 <th scope="col" className="num">Enti di dettaglio</th>
               </tr>
             </thead>
@@ -176,15 +156,21 @@ export default function HealthSpendingPage() {
                     {region.name}
                     <small>codice {region.code}</small>
                   </th>
+                  <td className="num">{compactEuro(euro(region.values.productionCosts))}</td>
                   <td className="num">{compactEuro(euro(region.values.personnelCost))}</td>
                   <td className="num">{compactEuro(euro(region.values.healthcareWorkServices))}</td>
+                  <td className="num">{compactEuro(euro(region.values.nonHealthcareWorkServices))}</td>
+                  <td className="num">{compactEuro(euro(region.values.purchasedServices))}</td>
                   <td className="num">{integer(region.detailEntityCount)}</td>
                 </tr>
               ))}
               <tr className={styles.totalRow}>
                 <th scope="row">Totale nazionale ufficiale</th>
+                <td className="num">{compactEuro(euro(national.productionCosts))}</td>
                 <td className="num">{compactEuro(euro(national.personnelCost))}</td>
                 <td className="num">{compactEuro(euro(national.healthcareWorkServices))}</td>
+                <td className="num">{compactEuro(euro(national.nonHealthcareWorkServices))}</td>
+                <td className="num">{compactEuro(euro(national.purchasedServices))}</td>
                 <td
                   className="num"
                   aria-label="Non applicabile: il totale nazionale è un aggregato, senza conteggio enti"
@@ -216,8 +202,11 @@ export default function HealthSpendingPage() {
               <tr>
                 <th scope="col">Ente</th>
                 <th scope="col">Territorio</th>
+                <th scope="col" className="num">Costi produzione</th>
                 <th scope="col" className="num">Personale</th>
-                <th scope="col" className="num">Prestazioni di lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro sanitarie</th>
+                <th scope="col" className="num">Prestazioni lavoro non sanitarie</th>
+                <th scope="col" className="num">Acquisti di servizi</th>
                 <th scope="col">Codici</th>
               </tr>
             </thead>
@@ -229,8 +218,11 @@ export default function HealthSpendingPage() {
                     <small>{entity.region}</small>
                   </th>
                   <td>{entity.region}</td>
+                  <td className="num">{entity.missing.productionCosts ? "n.d." : compactEuro(euro(entity.values.productionCosts))}</td>
                   <td className="num">{entity.missing.personnelCost ? "n.d." : compactEuro(euro(entity.values.personnelCost))}</td>
                   <td className="num">{entity.missing.healthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.healthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.nonHealthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.nonHealthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.purchasedServices ? "n.d." : compactEuro(euro(entity.values.purchasedServices))}</td>
                   <td>
                     <code>{entity.codeSsn}</code>
                     <small>BDAP {entity.codeBdap}</small>

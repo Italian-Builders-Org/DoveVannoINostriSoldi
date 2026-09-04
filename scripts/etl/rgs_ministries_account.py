@@ -260,7 +260,7 @@ def build_snapshot(payload: bytes, acquired_at: str) -> tuple[dict, dict]:
         },
         "asset": {"bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest(), "encoding": "cp1252", "delimiter": ";"},
         "transformation": {"version": 1, "description": "41 colonne validate; 5.395 righe riconciliate e aggregate per Ministero e missione senza mescolare CP, RS e CS."},
-        "dataArtifact": {"path": str(DATA_PATH.relative_to(ROOT)), "bytes": len(data_bytes), "sha256": hashlib.sha256(data_bytes).hexdigest()},
+        "dataArtifact": {"path": DATA_PATH.relative_to(ROOT).as_posix(), "bytes": len(data_bytes), "sha256": hashlib.sha256(data_bytes).hexdigest()},
     }
     return data, meta
 

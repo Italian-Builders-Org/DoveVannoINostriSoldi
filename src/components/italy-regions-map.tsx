@@ -279,11 +279,11 @@ export function ItalyRegionsMap({
       <div className={styles.srOnly}>
         <table>
           <caption>Valori regionali esatti dei pagamenti comunali SIOPE</caption>
-          <thead><tr><th>Regione</th><th>Totale</th><th>Per abitante coperto</th><th>Comuni</th></tr></thead>
+          <thead><tr><th scope="col">Regione</th><th scope="col">Totale</th><th scope="col">Per abitante coperto</th><th scope="col">Comuni</th></tr></thead>
           <tbody>
             {regions.map((region) => (
               <tr key={region.region}>
-                <th>{region.region}</th>
+                <th scope="row">{region.region}</th>
                 <td>{exactEuro(region.value)}</td>
                 <td>{region.perCapita === null ? "Non disponibile" : exactEuro(region.perCapita)}</td>
                 <td>{integer(region.municipalities)}</td>

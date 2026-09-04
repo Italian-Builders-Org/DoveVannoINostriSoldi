@@ -6,7 +6,12 @@ import { DatasetInsightPanel } from "@/components/dataset-insight-panel";
 import Pagination from "@/components/pagination";
 import { integer } from "@/lib/format";
 import { relatedReadingForDataset } from "@/lib/integrated-catalog-views";
-import { isInsightCapable, loadDatasetInsights } from "@/lib/integrated-dataset-insights";
+import {
+  amountColumnKeys,
+  formatIntegratedAmountCell,
+  isInsightCapable,
+  loadDatasetInsights,
+} from "@/lib/integrated-dataset-insights";
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import {
   getIntegratedDataOverview,
@@ -65,28 +70,20 @@ function requestedOffset(search: Record<string, SearchValue>, limit: number): Se
   return undefined;
 }
 
-const AMOUNT_HEADER =
-  /^(importo|valore|spesa|spese|pagato|impegnato|residui|previsioni|compenso|corrispettivo|totale|ammontare)\b/i;
-const AMOUNT_VALUE = /^-?\d{1,3}(?:[.\s]\d{3})*(?:,\d+)?$|^-?\d+(?:[.,]\d+)?$/;
-
-function amountColumns(
-  headers: readonly string[],
-  rows: IntegratedDatasetResult["rows"],
-): ReadonlySet<string> {
-  return new Set(
-    headers.filter((header) => {
-      if (!AMOUNT_HEADER.test(header.replace(/[_-]+/g, " ").trim())) return false;
-      return rows
-        .map((row) => row.cells[header])
-        .filter((value): value is string => typeof value === "string" && value.trim() !== "")
-        .every((value) => AMOUNT_VALUE.test(value.trim()));
-    }),
-  );
-}
-
-function CellValue({ value }: { value: string | null }) {
+function CellValue({ value, amount }: { value: string | null; amount: boolean }) {
   if (value === null) return <span className={styles.missingValue}>Dato non pubblicato</span>;
   if (value === "") return <span className={styles.missingValue}>Dato non presente</span>;
+  if (amount) {
+    const formatted = formatIntegratedAmountCell(value);
+    if (formatted !== null) {
+      const trimmed = value.trim();
+      return (
+        <span className={trimmed === "0" || trimmed === "0.00" ? styles.exactZero : undefined}>
+          {formatted}
+        </span>
+      );
+    }
+  }
   if (value === "0") return <span className={styles.exactZero}>0</span>;
   return value;
 }
@@ -162,7 +159,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
   const firstVisible = result.pagination.scanStartSourceRow ?? 0;
   const lastVisible = result.pagination.scanEndSourceRow ?? 0;
   const hasNext = result.pagination.nextCursor !== null;
-  const amounts = amountColumns(dataset.headers, result.rows);
+  const amounts = amountColumnKeys(dataset.headers, result.rows);
   const currentPage = pageFromOffset(result.offset ?? 0, result.limit);
   const pageCount = pageCountFromTotal(dataset.publicRows, result.limit);
   const resultSummary = result.query === null
@@ -291,7 +288,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                 <table className="table">
                   <caption>
                     Valori pubblici esatti
-                    {amounts.size > 0 ? ". Colonne di importo allineate a destra." : "."}
+                    {amounts.size > 0 ? ". Importi in euro, allineati a destra." : "."}
                   </caption>
                   <thead>
                     <tr>
@@ -320,7 +317,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                             key={header}
                             className={amounts.has(header) ? `num ${styles.amountCell}` : undefined}
                           >
-                            <CellValue value={row.cells[header] ?? null} />
+                            <CellValue amount={amounts.has(header)} value={row.cells[header] ?? null} />
                           </td>
                         ))}
                         <td>

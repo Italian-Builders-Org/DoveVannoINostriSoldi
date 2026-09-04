@@ -1,0 +1,5 @@
+codice_fiscale;partita_iva;denominazione;codice_ausa;natura_giuridica_codice;natura_giuridica_descrizione;soggetto_estero;provincia_codice;provincia_nome;citta_codice;citta_nome;indirizzo_odonimo;cap;flag_inHouse;flag_partecipata;stato;data_inizio;data_fine
+12345678903;12345678903;SYNTH STATION ONE;0000000001;;;;;;;;;;;;ATTIVO;2020-01-01;
+11111111115;11111111115;SYNTH STATION TWO;0000000002;;;;;;;;;;;;ATTIVO;2020-01-01;
+12345678903;12345678903;SYNTH STATION THREE;0000000003;;;;;;;;;;;;CESSATO;2020-01-01;2025-12-31
+;;SYNTH STATION FOUR;0000000004;;;;;;;;;;;;ATTIVO;2020-01-01;

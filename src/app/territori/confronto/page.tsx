@@ -11,6 +11,7 @@ import {
   getMunicipalityGeographyByIstatCode,
   type MunicipalityGeography,
 } from "@/lib/municipality-geography";
+import { OpenCivitasQuadrants } from "./opencivitas-quadrants";
 import styles from "./confronto.module.css";
 
 export const metadata: Metadata = {
@@ -260,6 +261,13 @@ export default async function MunicipalComparisonPage({
           da servizi, costi locali o uso delle risorse. Il numero da solo non spiega il perché.
         </p>
       </div>
+
+      <OpenCivitasQuadrants
+        municipalities={openCivitasSnapshot.municipalities}
+        referenceYear={openCivitasSnapshot.referenceYear}
+        source={openCivitasSnapshot.source}
+        territorialScope={openCivitasSnapshot.coverage.territorialScope}
+      />
 
       <section className="panel" aria-labelledby="filters-title">
         <h2 className="panel-title" id="filters-title">

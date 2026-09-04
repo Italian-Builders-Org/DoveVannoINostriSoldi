@@ -1,15 +1,28 @@
 .composition {
+  position: relative;
   display: grid;
   gap: var(--space-3);
   min-width: 0;
+  overflow: visible;
   container-type: inline-size;
   container-name: composition;
 }
+.guide {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.guideMobile { display: none; }
 .visual {
   position: relative;
   width: 100%;
   min-width: 0;
   aspect-ratio: 100 / 62;
+  /* Reserve one stable canvas for every snapshot.  The container query keeps
+     wider single-column layouts proportional without letting the year-specific
+     labels change the height of the panel. */
+  height: clamp(250px, 62cqw, 320px);
   min-height: 250px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-400);
@@ -18,13 +31,14 @@
 .tile {
   position: absolute;
   display: grid;
-  place-items: center;
+  place-items: start;
+  align-content: start;
   min-width: 0;
   min-height: 0;
-  padding: var(--space-2);
+  padding: clamp(8px, 1.5cqw, var(--space-3));
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-text) 42%, transparent);
-  color: var(--color-text);
+  border: 2px solid var(--color-raised);
+  color: var(--color-on-strong);
   cursor: pointer;
 }
 .tile:hover,
@@ -33,18 +47,48 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-width: 16ch;
-  text-align: center;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
   line-height: 1.2;
 }
-.tileCopy b { font-size: clamp(11px, 1.1vw, 15px); line-height: 1.2; }
-.tileCopy strong { font-size: clamp(13px, 1.4vw, 19px); line-height: 1.15; font-variant-numeric: tabular-nums; }
-.tileIndex { font-weight: 800; line-height: 1; }
-.services { background: var(--chart-family-services); }
-.investment { background: var(--chart-family-investment); }
-.pass-through { background: var(--chart-family-pass-through); }
-.financing { background: var(--chart-family-financing); }
-.other { background: var(--chart-family-other); }
+.tileCopy b {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.tileCopy small {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.tileIndex {
+  display: grid;
+  place-items: center;
+  width: auto;
+  height: auto;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: var(--font-heading-weight);
+  line-height: 1;
+}
+/* Index-only tiles have no copy to establish a grid track.  Make the button
+   itself the centering context so the ordinal stays centered at every size. */
+.tile[data-label-mode="index"] {
+  place-items: center;
+  align-content: center;
+  padding: 0;
+}
+.services { background: var(--chart-category-blue); }
+.investment { background: var(--chart-category-purple); }
+.pass-through { background: var(--chart-category-amber); }
+.financing { background: var(--chart-category-teal); }
+.other { background: var(--chart-category-slate); }
 
 /* Single column in the home rail (~360px); two columns only when the
    composition surface itself is wide enough for readable labels. */
@@ -66,7 +110,7 @@
   align-items: start;
   gap: var(--space-2);
   width: 100%;
-  min-height: 48px;
+  min-height: 56px;
   padding: 8px;
   border: 1px solid transparent;
   background: transparent;
@@ -81,6 +125,7 @@
   align-self: stretch;
   min-height: 28px;
   margin-block: 2px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
 }
 /* Flex stack avoids Safari collapsing blockified phrasing inside <button>. */
 .legendCopy {
@@ -91,31 +136,52 @@
   padding-block: 1px;
 }
 .legendLabel {
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  font-weight: 700;
   line-height: 1.3;
   overflow-wrap: anywhere;
 }
 .legendAmount {
   color: var(--color-neutral-600);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.3;
 }
 .legendShare {
   padding-top: 1px;
-  font-size: 12px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
   line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 .mobileBar { display: none; }
-.tooltip { padding: var(--space-3); background: var(--color-neutral-900); color: var(--color-on-strong); }
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: block;
+  width: min(320px, calc(100vw - 2 * var(--gutter)), calc(100% - var(--space-2)));
+  max-width: calc(100vw - 2 * var(--gutter));
+  padding: var(--space-3);
+  background: var(--color-text);
+  color: var(--color-on-strong);
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  visibility: hidden;
+}
+.tooltip[data-positioned="true"] { visibility: visible; }
+.tooltip strong { display: block; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
 .tooltip span { display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
-.tooltip p { margin: 6px 0 0; color: var(--color-on-strong-muted); font-size: 12px; }
-.meta { margin: 0; color: var(--color-neutral-700); font-size: 11px; }
+.tooltip p { margin: 6px 0 0; color: var(--color-on-strong-muted); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.meta { margin: 0; color: var(--color-neutral-700); font-size: 12px; line-height: 1.5; }
 .partial { margin: 0; padding: var(--space-3); border: 1px solid var(--color-warning-border); background: var(--color-warning-bg); font-size: 12px; }
 .tableDetails summary { min-height: 44px; padding-block: 12px; font-weight: 600; cursor: pointer; }
 
 @media (max-width: 620px) {
+  .guideDesktop { display: none; }
+  .guideMobile { display: inline; }
   .visual { display: none; }
   .legend { grid-template-columns: minmax(0, 1fr); }
   .legend button { min-height: 52px; }

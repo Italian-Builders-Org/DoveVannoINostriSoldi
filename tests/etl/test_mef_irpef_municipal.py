@@ -45,6 +45,13 @@ class MefIrpefMunicipalTests(unittest.TestCase):
         for index in range(8, 52, 2):
             row[index] = "1"
             row[index + 1] = "1"
+        for key in MODULE.INCOME_BAND_MEASURE_KEYS:
+            contract = self.lock["measures"][key]
+            row[self.headers.index(contract["frequencyHeader"])] = "0"
+            row[self.headers.index(contract["amountHeader"])] = "0"
+        first_positive_band = self.lock["measures"]["comprehensiveIncome0To10000"]
+        row[self.headers.index(first_positive_band["frequencyHeader"])] = "1"
+        row[self.headers.index(first_positive_band["amountHeader"])] = "1"
         return row
 
     def residual_row(self):
@@ -53,6 +60,13 @@ class MefIrpefMunicipalTests(unittest.TestCase):
         for index in range(8, 52, 2):
             row[index] = "1"
             row[index + 1] = "1"
+        for key in MODULE.INCOME_BAND_MEASURE_KEYS:
+            contract = self.lock["measures"][key]
+            row[self.headers.index(contract["frequencyHeader"])] = "0"
+            row[self.headers.index(contract["amountHeader"])] = "0"
+        first_positive_band = self.lock["measures"]["comprehensiveIncome0To10000"]
+        row[self.headers.index(first_positive_band["frequencyHeader"])] = "1"
+        row[self.headers.index(first_positive_band["amountHeader"])] = "1"
         return row
 
     def fixture_csv(self, *rows):
@@ -62,7 +76,7 @@ class MefIrpefMunicipalTests(unittest.TestCase):
     def test_source_lock_is_self_verified_and_locks_all_headers(self):
         self.assertEqual(
             MODULE.canonical_lock_sha256(self.lock),
-            "0652bf0f7b548e9956fcdd791ec52846c733738a22562e713a15d2407952c342",
+            "836c774944f19c9676f6ca2717078b4c33d2763a7feb8092ceaabc568cf65db5",
         )
         self.assertEqual(len(self.headers), 52)
         self.assertEqual(len(set(self.headers)), 52)
@@ -73,30 +87,51 @@ class MefIrpefMunicipalTests(unittest.TestCase):
             self.lock["csv"]["normalizedHeaderSha256"],
         )
         expected_bytes, expected_sha256 = MODULE.expected_data_artifact(self.lock)
-        self.assertEqual(expected_bytes, 1026780)
+        self.assertEqual(expected_bytes, 2578548)
         self.assertEqual(
             expected_sha256,
-            "772613d3c32ff0bb33899bcaa206fe9c6db5e36d559a058d9541d8843c3c7ebd",
+            "ca54bc78ba33ba4dd61b411b51a237245646c6fd859c2c3ea30b567c463b13c3",
         )
+        self.assertEqual(self.lock["measureGroups"], {
+            "summary": list(MODULE.SUMMARY_MEASURE_KEYS),
+            "incomeSources": list(MODULE.INCOME_SOURCE_MEASURE_KEYS),
+            "incomeBands": list(MODULE.INCOME_BAND_MEASURE_KEYS),
+        })
 
-    def test_parser_accepts_negative_only_in_the_nonselected_nonpositive_band(self):
+    def test_parser_preserves_the_selected_nonpositive_band_as_signed_cents(self):
         row = self.assigned_row()
+        positive_band_amount = self.headers.index(
+            "Reddito complessivo da 0 a 10000 euro - Ammontare in euro"
+        )
+        row[positive_band_amount] = "11"
         lower_band_amount = self.headers.index(
             "Reddito complessivo minore o uguale a zero euro - Ammontare in euro"
         )
         row[lower_band_amount] = "-10"
         records = MODULE.parse_csv_member(self.fixture_csv(row), self.fixture_lock())
         self.assertEqual(len(records), 1)
-        self.assertEqual(records[0].measures[0], (1, 100))
+        index = self.lock["measureOrder"].index("nonPositiveComprehensiveIncome")
+        self.assertEqual(records[0].measures[index], (0, -1000))
 
-    def test_parser_rejects_negative_values_for_every_selected_measure(self):
+    def test_parser_rejects_negative_values_for_every_unsigned_measure(self):
         for measure_key in self.lock["measureOrder"]:
+            if measure_key in MODULE.SIGNED_AMOUNT_MEASURE_KEYS:
+                continue
             with self.subTest(measure=measure_key):
                 row = self.assigned_row()
                 amount_header = self.lock["measures"][measure_key]["amountHeader"]
                 row[self.headers.index(amount_header)] = "-1"
                 with self.assertRaisesRegex(MODULE.SnapshotError, "non valido"):
                     MODULE.parse_csv_member(self.fixture_csv(row), self.fixture_lock())
+
+    def test_parser_rejects_a_positive_amount_in_the_nonpositive_band(self):
+        row = self.assigned_row()
+        amount_header = self.lock["measures"]["nonPositiveComprehensiveIncome"][
+            "amountHeader"
+        ]
+        row[self.headers.index(amount_header)] = "1"
+        with self.assertRaisesRegex(MODULE.SnapshotError, "deve essere non positivo"):
+            MODULE.parse_csv_member(self.fixture_csv(row), self.fixture_lock())
 
     def test_parser_rejects_negative_taxpayers_and_frequencies(self):
         negative_taxpayers = self.assigned_row(taxpayers="-1")
@@ -146,26 +181,53 @@ class MefIrpefMunicipalTests(unittest.TestCase):
         lock = self.fixture_lock()
         records = MODULE.parse_csv_member(self.fixture_csv(row), lock)
         data = MODULE.build_data(lock, records)
-        self.assertIsNone(data["municipalities"][0][-2])
-        self.assertIsNone(data["municipalities"][0][-1])
-        self.assertEqual(data["national"]["assigned"]["measures"][-1], [0, 0, 1])
+        self.assertIsNone(data["municipalities"][0][15])
+        self.assertIsNone(data["municipalities"][0][16])
+        self.assertEqual(data["national"]["assigned"]["measures"][4], [0, 0, 1, 1, 1])
 
-    def test_selected_measure_rejects_half_suppressed_pairs(self):
+    def test_selected_measure_preserves_half_suppressed_pairs_independently(self):
         frequency_index = self.headers.index("Addizionale comunale dovuta - Frequenza")
         amount_index = self.headers.index("Addizionale comunale dovuta - Ammontare in euro")
-        for missing_index in (frequency_index, amount_index):
-            with self.subTest(missing_header=self.headers[missing_index]):
-                row = self.assigned_row()
-                row[missing_index] = ""
-                with self.assertRaisesRegex(MODULE.SnapshotError, "parzialmente oscurata"):
-                    MODULE.parse_csv_member(self.fixture_csv(row), self.fixture_lock())
+        frequency_missing = self.assigned_row()
+        frequency_missing[frequency_index] = ""
+        frequency_records = MODULE.parse_csv_member(
+            self.fixture_csv(frequency_missing), self.fixture_lock()
+        )
+        frequency_data = MODULE.build_data(self.fixture_lock(), frequency_records)
+        self.assertEqual(frequency_data["municipalities"][0][15:17], [None, 100])
+        self.assertEqual(
+            frequency_data["national"]["assigned"]["measures"][4],
+            [0, 100, 1, 1, 0],
+        )
 
-    def test_artifact_rejects_half_suppressed_measure_pairs(self):
-        data = json.loads(MODULE.DEFAULT_DATA_OUTPUT.read_text(encoding="utf-8"))
-        row = data["municipalities"][0]
-        row[7] = None
-        with self.assertRaisesRegex(MODULE.SnapshotError, "entrambi presenti o entrambi oscurati"):
-            MODULE.validate_data(data, self.lock)
+        amount_missing = self.assigned_row()
+        amount_missing[amount_index] = ""
+        amount_records = MODULE.parse_csv_member(
+            self.fixture_csv(amount_missing), self.fixture_lock()
+        )
+        amount_data = MODULE.build_data(self.fixture_lock(), amount_records)
+        self.assertEqual(amount_data["municipalities"][0][15:17], [1, None])
+        self.assertEqual(
+            amount_data["national"]["assigned"]["measures"][4],
+            [1, 0, 1, 0, 1],
+        )
+
+    def test_parser_rejects_broken_income_band_reconciliation(self):
+        frequency_row = self.assigned_row()
+        frequency_header = self.lock["measures"]["comprehensiveIncome0To10000"][
+            "frequencyHeader"
+        ]
+        frequency_row[self.headers.index(frequency_header)] = "2"
+        with self.assertRaisesRegex(MODULE.SnapshotError, "frequenze note delle fasce"):
+            MODULE.parse_csv_member(self.fixture_csv(frequency_row), self.fixture_lock())
+
+        amount_row = self.assigned_row()
+        amount_header = self.lock["measures"]["comprehensiveIncome0To10000"][
+            "amountHeader"
+        ]
+        amount_row[self.headers.index(amount_header)] = "2"
+        with self.assertRaisesRegex(MODULE.SnapshotError, "ammontari completi delle fasce"):
+            MODULE.parse_csv_member(self.fixture_csv(amount_row), self.fixture_lock())
 
     def test_residual_row_is_not_exposed_as_a_municipality(self):
         lock = copy.deepcopy(self.lock)
@@ -263,18 +325,21 @@ class MefIrpefMunicipalTests(unittest.TestCase):
         )
         self.assertEqual(tuple(data), MODULE.DATA_KEYS)
         self.assertEqual(tuple(meta), MODULE.META_KEYS)
-        self.assertEqual(meta["period"]["observedAt"], "2026-08-21T00:00:00Z")
+        self.assertEqual(meta["period"]["observedAt"], "2026-09-04T08:16:29Z")
         self.assertEqual(meta["coverage"]["municipalities"], 7896)
         self.assertEqual(meta["coverage"]["provinces"], 107)
         self.assertEqual(meta["coverage"]["regions"], 20)
         self.assertEqual(meta["coverage"]["taxpayers"]["unassigned"], 5305)
-        self.assertTrue(
-            all(
-                amount is None or amount >= 0
-                for municipality in data["municipalities"]
-                for amount in municipality[8::2]
-            )
-        )
+        signed_index = self.lock["measureOrder"].index("nonPositiveComprehensiveIncome")
+        self.assertTrue(any(
+            row[8 + signed_index * 2] is not None and row[8 + signed_index * 2] < 0
+            for row in data["municipalities"]
+        ))
+        self.assertTrue(all(
+            amount is None or index == signed_index or amount >= 0
+            for municipality in data["municipalities"]
+            for index, amount in enumerate(municipality[8::2])
+        ))
 
     def test_offline_check_rejects_tampered_data_even_when_json_is_canonical(self):
         with tempfile.TemporaryDirectory() as directory:

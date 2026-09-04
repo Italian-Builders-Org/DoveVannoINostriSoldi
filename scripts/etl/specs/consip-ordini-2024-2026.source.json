@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "consip-ordini",
+  "period": {
+    "from": 2024,
+    "to": 2026
+  },
+  "source": {
+    "owner": "Consip S.p.A. (società del MEF)",
+    "landingUrl": "https://dati.consip.it/",
+    "catalogApi": "https://dati.consip.it/api/3/action/package_search",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Licenza dichiarata per-package sul catalogo CKAN (license_id CC-BY-4.0 verificata su package_show il 2026-09-03); organizzazione titolare MEF.",
+    "packages": {
+      "convenzioni": "dataset-ordini-diretti-di-acquisto-in-convenzione",
+      "mepa": "dataset-ordini-diretti-di-acquisto-sul-mepa"
+    },
+    "assets": {
+      "convenzioni-2024": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2024.csv",
+        "bytes": 4003508,
+        "sha256": "c2ab590606a4ff561daa573f61704c1f7401cbf0a27f4c4a14d8f1b2e741884a",
+        "lastModified": "2026-03-19"
+      },
+      "convenzioni-2025": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2025.csv",
+        "bytes": 3277614,
+        "sha256": "21c13ae578dfb4d759077fecbdd89e7f40690032669eb14f58a6d16a3ec6c7c9",
+        "lastModified": "2026-03-19"
+      },
+      "convenzioni-2026": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2026.csv",
+        "bytes": 2269724,
+        "sha256": "28b4e09d32970eaf039312466c66b51007eb401a7af74d9d79a43e69d873f9a3",
+        "lastModified": "2026-03-19"
+      },
+      "mepa-2024": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2024.csv",
+        "bytes": 20764197,
+        "sha256": "3b9dfcfd3379054bbfa4cd6eaffa410165b6bb2c1201b03350baef535d4c44e2",
+        "lastModified": "2026-03-19"
+      },
+      "mepa-2025": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2025.csv",
+        "bytes": 19927093,
+        "sha256": "9f208c50b7c7d8be20238fba336b2698ac47c0e339013016dbebaf09efe1af5e",
+        "lastModified": "2026-03-19"
+      },
+      "mepa-2026": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2026.csv",
+        "bytes": 11467474,
+        "sha256": "8b5908c75fa0618ea10fef9872c147fb49800e67efe3c7e1c6d6aad79d2e7801",
+        "lastModified": "2026-03-19"
+      }
+    },
+    "encoding": "latin-1",
+    "decimalSeparator": ",",
+    "acquisition": {
+      "acquiredAt": "2026-09-03",
+      "checkedAt": "2026-09-03",
+      "note": "CSV scaricati dagli URL canonici il 2026-09-03; publicationDate per-asset = Last-Modified HTTP (2026-03-19)."
+    }
+  },
+  "expected": {
+    "years": [
+      2024,
+      2025,
+      2026
+    ],
+    "channels": [
+      "convenzioni",
+      "mepa"
+    ],
+    "columns": {
+      "convenzioni": [
+        "Anno_Riferimento",
+        "Tipologia_Amministrazione",
+        "Regione_PA",
+        "Provincia_PA",
+        "Sigla_provincia_PA",
+        "Regione_Fornitore",
+        "Convenzione",
+        "Lotto",
+        "bene_servizio",
+        "codice_CPV",
+        "descrizione_CPV",
+        "Numero_Ordini",
+        "Importo_Ordinato",
+        "N_PA",
+        "N_fornitori",
+        "N_PO"
+      ],
+      "mepa": [
+        "Anno_Riferimento",
+        "Tipologia_Amministrazione",
+        "Regione_PA",
+        "Provincia_PA",
+        "Sigla_provincia_PA",
+        "Regione_Fornitore",
+        "Bando_Mepa",
+        "Categoria_Abilitazione",
+        "bene_servizio",
+        "codice_CPV",
+        "descrizione_CPV",
+        "N_Ordini",
+        "Valore_economico_Ordini",
+        "N_PA",
+        "N_fornitori",
+        "N_PO"
+      ]
+    },
+    "amountColumn": {
+      "convenzioni": "Importo_Ordinato",
+      "mepa": "Valore_economico_Ordini"
+    },
+    "ordersColumn": {
+      "convenzioni": "Numero_Ordini",
+      "mepa": "N_Ordini"
+    },
+    "rows": {
+      "convenzioni-2024": 20578,
+      "convenzioni-2025": 17853,
+      "convenzioni-2026": 11328,
+      "mepa-2024": 124556,
+      "mepa-2025": 119195,
+      "mepa-2026": 69853
+    },
+    "maxRegions": 30
+  },
+  "suppression": {
+    "note": "La fonte sopprime i valori nelle celle: nei file MEPA importo e numero ordini sono mutuamente esclusivi per riga (verificato sul 2025: 108412 righe con solo importo, 10783 con solo conteggio, zero con entrambi); nei file convenzioni esistono righe con conteggi ma importo assente e righe di sola anagrafica. Gli importi aggregati sono quindi LIMITI INFERIORI e vanno pubblicati come tali.",
+    "observedAt": "2026-09-03"
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/consip-ordini-2024-2026.data.json",
+      "bytes": 67477,
+      "sha256": "7b6f81749552e4fd1bba7b9599a68b53a0366ed8ed1b7bc65478f7a3b83b084b"
+    },
+    "lockSha256": "e7e3e2ce13301e030da94448277ebb76b73b05d421bb88c84e4f9961ed78225f"
+  }
+}

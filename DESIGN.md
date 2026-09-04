@@ -79,7 +79,7 @@ Regione selezionata: contorno `--color-text` da 2px. Regione senza dato: `--colo
 
 ## 03 Typography
 
-Un'unica famiglia: **Archivo**, caricata con `next/font/google` e self-hosted. `--font-heading-weight: 800` per titoli ed etichette, 400–600 per il testo.
+Un'unica famiglia: **Geist**, caricata con `next/font/google` e self-hosted. `--font-heading-weight: 800` per titoli ed etichette, 400–600 per il testo. `--font-mono` è riservato a codice, identificativi e valori tecnici; etichette, testo editoriale e titoli usano sempre i token Geist.
 
 ### Ramp
 
@@ -146,7 +146,7 @@ Use: fotografia additiva dello stesso totale, categorie mutuamente esclusive, co
 
 ### Stat strip
 
-`.stat-strip`: una banda bianca divisa in colonne, ognuna con etichetta maiuscola piccola, valore in Archivo 800 e nota esplicativa. Etichetta, valore e nota sono `display: block` e stanno su righe separate — accostati sulla stessa riga il numero si attacca all'etichetta e diventa illeggibile. Quattro colonne su desktop, due sotto i 900px, una sotto i 620px.
+`.stat-strip`: una banda bianca divisa in colonne, ognuna con etichetta maiuscola piccola, valore in Geist 800 e nota esplicativa. Etichetta, valore e nota sono `display: block` e stanno su righe separate — accostati sulla stessa riga il numero si attacca all'etichetta e diventa illeggibile. Quattro colonne su desktop, due sotto i 900px, una sotto i 620px.
 
 ### Bar rows
 

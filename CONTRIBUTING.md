@@ -127,6 +127,35 @@ o suite concorrenti. Confronta anche i digest e ripeti le misure rumorose.
 I digest non sostituiscono i test di correttezza. Questi numeri non misurano
 latenza delle fonti live, rete, rendering o cold start.
 
+### Build Vercel senza lavoro duplicato
+
+`vercel.json` evita il download Chromium solo durante l'installazione Vercel:
+quel deployment esegue `next build`, mentre i test browser girano nel job
+`production` di GitHub Actions. `npm ci` locale e in CI conserva il download
+normale; TypeScript, audit delle dipendenze e tutti i gate restano attivi.
+
+L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
+attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
+Salta soltanto modifiche a documentazione Markdown, test e template di issue/PR.
+Non salta i dati sotto `docs/research/data`, le specifiche ETL, i workflow o
+percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
+Primo deployment, redeploy della stessa SHA, metadati mancanti e cronologia
+Git incompleta eseguono sempre il build. Le preview del codice restano attive.
+La CI GitHub continua a eseguire tutti i controlli anche se Vercel salta il build.
+
+Test mirato: `node --test tests/vercel-ignore-build.test.mjs`.
+Per verificare una decisione su due commit disponibili localmente:
+`VERCEL_GIT_PREVIOUS_SHA=SHA_PRECEDENTE VERCEL_GIT_COMMIT_SHA=SHA_ATTUALE node scripts/ci/vercel-ignore-build.mjs`.
+Il codice di uscita segue Vercel: **0 = skip, 1 = build**. Per un redeploy dovuto
+a sole impostazioni/variabili d'ambiente puoi disattivare “Use project's Ignore
+Build Step” nel dialogo Redeploy. Dopo un commit saltato, `/api/health` continua
+correttamente a indicare la revisione effettivamente distribuita.
+
+Per confrontare i costi usa durata × core della macchina Vercel e confronti
+sulla stessa revisione/cache; il tempo di un test in GitHub Actions non è una
+misura dei Build CPU Minutes di Vercel. Non disattivare controlli o observability
+per far scendere un benchmark.
+
 ### ETL e artifact verification
 
 ```bash

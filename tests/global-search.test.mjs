@@ -55,6 +55,12 @@ test("global search folds accents, case and punctuation into stable tokens", () 
   assert.equal(normalizeSearchText("Ministero_dell'Interno"), "ministero dell interno");
 });
 
+test("university and research spending is discoverable without entity-name aliases", () => {
+  for (const query of ["università", "ricerca e innovazione", "stanziamenti universita"]) {
+    assert.ok(searchSiteDocuments(query).some((result) => result.href === "/istruzione/universita-ricerca"));
+  }
+});
+
 test("global search matches title words regardless of their order", () => {
   const results = searchSiteDocuments("pubblico debito");
   const debt = results.find((result) => result.href === "/debito");

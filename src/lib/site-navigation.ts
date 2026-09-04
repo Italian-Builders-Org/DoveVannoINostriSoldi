@@ -29,7 +29,14 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
     ],
   },
-  { href: "/istruzione", label: "Istruzione" },
+  {
+    href: "/istruzione",
+    label: "Istruzione",
+    children: [
+      { href: "/istruzione", label: "Atlante della scuola" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
   {
     href: "/spese",
     label: "Soldi",
@@ -135,7 +142,13 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
     ],
   },
-  { title: "Istruzione", links: [{ href: "/istruzione", label: "Atlante Istruzione" }] },
+  {
+    title: "Istruzione",
+    links: [
+      { href: "/istruzione", label: "Atlante Istruzione" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
   {
     title: "Soldi",
     links: [

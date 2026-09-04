@@ -127,6 +127,9 @@ const querySchema = z.object({
   years: z.number().int().min(2).max(20)
     .describe("Numero di Leggi di Bilancio più recenti da restituire, da 2 a 20, solo per il dataset che lo dichiara.")
     .optional(),
+  mission: z.string().min(1).max(200)
+    .describe("Nome esatto della missione in openbdap_legge_bilancio_storico, per esempio Ricerca e innovazione oppure Istruzione universitaria e formazione post-universitaria.")
+    .optional(),
   schoolType: z.string().max(30)
     .describe("Tipo di scuola del dataset istruzione: state, paritaria oppure all.")
     .optional(),

@@ -928,6 +928,22 @@ function committedBudgetLawSnapshot(requestedWindow: number): BudgetLawMissionSe
   return sliceBudgetLawSeries(series, requestedWindow, "snapshot");
 }
 
+/** Exact mission selection preserves the source, years and accounting measure. */
+export function selectBudgetLawMission(
+  series: BudgetLawMissionSeries,
+  mission: string,
+): BudgetLawMissionSeries {
+  if (!series.missions.includes(mission)) {
+    throw new Error("Missione non disponibile: usa un nome esatto fra le missioni del dataset.");
+  }
+  return {
+    ...series,
+    missions: [mission],
+    allocations: series.allocations.filter((point) => point.mission === mission),
+    yearOverYearDeltas: series.yearOverYearDeltas.filter((point) => point.mission === mission),
+  };
+}
+
 /** Verified committed series for bounded machine clients that must not start a live CSV refresh. */
 export function getCommittedBudgetLawMissionSeries(
   requestedWindow = DEFAULT_BUDGET_LAW_WINDOW_YEARS,

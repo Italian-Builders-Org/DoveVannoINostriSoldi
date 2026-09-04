@@ -96,6 +96,7 @@ const SEARCH_MATCH_LABELS: Readonly<Record<SearchMatchReason, string>> = {
 /** Terms users reasonably use for the canonical routes already in the site map. */
 const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/": ["inizio"],
+  "/istruzione/universita-ricerca": ["universita", "ricerca e innovazione", "stanziamenti universita", "formazione post-universitaria"],
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
   "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
   "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],

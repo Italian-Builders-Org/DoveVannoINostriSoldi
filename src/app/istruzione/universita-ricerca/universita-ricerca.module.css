@@ -1,0 +1,90 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+
+.series {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.section {
+  min-width: 0;
+}
+
+.description {
+  min-height: 3em;
+  color: var(--color-neutral-700);
+}
+
+.chart {
+  margin: var(--space-4) 0 0;
+}
+
+.chart figcaption {
+  margin-bottom: var(--space-4);
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.bars {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.barLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  height: 10px;
+  background: var(--color-neutral-200);
+}
+
+.track span {
+  display: block;
+  height: 100%;
+  background: var(--color-accent-700);
+}
+
+.metadata {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.metadata dd {
+  margin: 0;
+}
+
+.metadata dt {
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.limits summary {
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .series {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .description {
+    min-height: 0;
+  }
+}

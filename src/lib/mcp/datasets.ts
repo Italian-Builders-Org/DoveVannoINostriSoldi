@@ -172,8 +172,9 @@ export async function queryPublicDataset(
       });
     }
     case "openbdap_legge_bilancio_storico": {
-      const { getCommittedBudgetLawMissionSeries } = await import("@/lib/bdap-legge-bilancio");
-      return jsonSafe(getCommittedBudgetLawMissionSeries(query.years));
+      const { getCommittedBudgetLawMissionSeries, selectBudgetLawMission } = await import("@/lib/bdap-legge-bilancio");
+      const series = getCommittedBudgetLawMissionSeries(query.years);
+      return jsonSafe(query.mission === undefined ? series : selectBudgetLawMission(series, query.mission));
     }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");

@@ -96,6 +96,7 @@ export default async function EducationAtlasPage({
           <span className="tag tag-accent">Solo dati aggregati</span>
           <span>Scuola secondaria di II grado · dal 2022/23 al 2024/25</span>
           <Link href="/metodologia">Come leggiamo i numeri →</Link>
+          <Link href="/istruzione/universita-ricerca">Università e Ricerca: stanziamenti →</Link>
         </div>
       </header>
 

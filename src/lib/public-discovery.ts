@@ -38,6 +38,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/incarichi/dettaglio",
   "/istituzioni",
   "/istruzione",
+  "/istruzione/universita-ricerca",
   "/mcp",
   "/metodologia",
   "/ministeri",

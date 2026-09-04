@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectUniversityResearch } from "./university-research.mjs";
 import {
   NAVIGATION_TIMEOUT_MS,
   closeBrowser,
@@ -1436,6 +1437,17 @@ try {
     },
   });
   completed.push("Atlante Istruzione deep-link filtri 1280px");
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Università e Ricerca ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/istruzione/universita-ricerca",
+      width,
+      validate: inspectUniversityResearch,
+    });
+    completed.push(label);
+  }
 
   for (const width of [390, 768, 1280]) {
     const label = `Scheda economica Benevento ${width}px`;

@@ -179,6 +179,27 @@ assert.equal(legacyData.level, "region");
 assert.equal(legacyData.pagination.returned, 20);
 assert.ok(legacyData.data.every((row) => row.breakdowns === undefined));
 
+for (const [index, mission] of [
+  "Istruzione universitaria e formazione post-universitaria",
+  "Ricerca e innovazione",
+].entries()) {
+  const response = await mcpRequest({
+    jsonrpc: "2.0", id: 40 + index, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "openbdap_legge_bilancio_storico", years: 10, mission } },
+  });
+  const { data } = successfulMcpToolResult(response, "openbdap_legge_bilancio_storico");
+  assert.deepEqual(data.missions, [mission]);
+  assert.equal(data.allocations.length, 10);
+  assert.equal(data.yearOverYearDeltas.length, 9);
+  assert.equal(data.dataMode, "snapshot");
+}
+const invalidMission = await mcpRequest({
+  jsonrpc: "2.0", id: 42, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "openbdap_legge_bilancio_storico", mission: "Ricerca" } },
+});
+assert.match(invalidMission, /"isError":true/);
+assert.match(invalidMission, /Missione non disponibile/);
+
 const detailedIrpefDataset = await mcpRequest({
   jsonrpc: "2.0",
   id: 25,

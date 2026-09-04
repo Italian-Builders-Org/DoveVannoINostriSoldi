@@ -193,3 +193,23 @@
   .summaryGrid { grid-template-columns: minmax(0, 1fr); }
   .summaryGrid strong { font-size: 21px; }
 }
+
+.selection {
+  margin: var(--space-4) 0;
+}
+
+.selection summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.selection a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.note code {
+  overflow-wrap: anywhere;
+}

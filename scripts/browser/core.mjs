@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
 import {
   NAVIGATION_TIMEOUT_MS,
@@ -1432,6 +1433,15 @@ try {
     },
   });
   completed.push("Atlante Istruzione deep-link filtri 1280px");
+
+  for (const width of [390, 768, 1280]) {
+    const label = `ANAC concentrazione e contratti ${width}px`;
+    await runScenario(browser, {
+      label, width, pathname: "/enti/c_h501/appalti?view=summary",
+      validate: inspectAnacConcentration,
+    });
+    completed.push(label);
+  }
 
   for (const width of [390, 768, 1280]) {
     const label = `Università e Ricerca ${width}px`;

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-epea",
+  "period": {
+    "from": 2016,
+    "to": 2022
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "apiPath": "/SDMXWS/rest/data/IT1,97_953,1.0/",
+    "dataflowId": "97_953",
+    "dataflowLabel": "Spese per la protezione dell'ambiente (EPEA)",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non espone una licenza riusabile verificata. Come per istat-cofog e istat-pensions non viene inferita alcuna licenza né estesa da altri dataset ISTAT.",
+    "assets": {
+      "epea-full": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,97_953,1.0/",
+        "accept": "application/vnd.sdmx.data+csv;version=1.0.0",
+        "format": "SDMX-CSV 1.0.0",
+        "encoding": "UTF-8",
+        "delimiter": ",",
+        "bytes": 890282,
+        "sha256": "07a30ae5d9abe9956bbfc00eafb1c01a12dbd7e1d6e1ebaa8fa32ca373748dcb",
+        "rows": 5656,
+        "referencePeriod": { "from": 2016, "to": 2022 },
+        "observedAt": "2026-09-04"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-04",
+      "checkedAt": "2026-09-04",
+      "note": "CSV acquisito con Accept application/vnd.sdmx.data+csv;version=1.0.0. EDITION=2025M2 presente su tutte le 5656 righe. Hash diverso = revisione fonte o cambio edition, non semplice scorrere del tempo."
+    }
+  },
+  "measure": {
+    "meaning": "Conti della spesa per la protezione dell'ambiente (EPEA). Contabilità SEC di competenza. NON è cassa SIOPE, NON è il bilancio dello Stato RGS, NON è PNRR Missione 2.",
+    "valuation": "V",
+    "valuationLabel": "prezzi correnti (come da VALUATION=V nel CSV)",
+    "edition": "2025M2",
+    "editionNote": "Edizione di rilascio fissata. Non mescolare con edizioni precedenti della stessa serie.",
+    "unit": "milioni di euro",
+    "unitEvidence": "UNIT_MEAS=EURO e UNIT_MULT=6 sulle righe che espongono gli attributi; allineato alla prassi ISTAT sui conti ambientali.",
+    "dimensionsPinned": [
+      "INSTITUTIONAL_SECTOR",
+      "CEPA_CLASS",
+      "DATA_TYPE_AGGR",
+      "TIME_PERIOD"
+    ],
+    "institutionalSectors": ["S1", "S13_15", "S14", "S1K", "S1K_ANC", "S1K_SPASEC", "S2"],
+    "cepaClasses": ["CEPA1", "CEPA2", "CEPA3", "CEPA4", "CEPA5", "CEPA6", "CEPA7_9", "TOT_CEPA"]
+  },
+  "expected": {
+    "years": [2016, 2017, 2018, 2019, 2020, 2021, 2022],
+    "edition": "2025M2",
+    "minRows": 5000,
+    "failClosed": [
+      "edition != 2025M2",
+      "sha256 mismatch",
+      "missing INSTITUTIONAL_SECTOR or CEPA_CLASS",
+      "UNIT_MULT present and not 6"
+    ]
+  },
+  "caveats": [
+    "EPEA ≠ RGS spese ambientali del bilancio dello Stato.",
+    "EPEA ≠ PNRR Missione 2.",
+    "EPEA ≠ SAD/SAF.",
+    "Non sommare settori istituzionali o classi CEPA senza verificare sovrapposizioni (es. totali vs componenti).",
+    "TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono."
+  ],
+  "outOfScope": ["rgs", "pnrr-missione-2", "sad", "saf", "ui-page-optional-followup"]
+}

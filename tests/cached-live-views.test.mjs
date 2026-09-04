@@ -85,7 +85,11 @@ test("MCP population has its own deadline shorter than the route deadline", asyn
     readMcpProcessCached(cache, undefined, (signal) => {
       populationSignal = signal;
       return new Promise((_resolve, reject) => {
-        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        const pendingIo = setTimeout(() => reject(new Error("population deadline was ignored")), 2_000);
+        signal.addEventListener("abort", () => {
+          clearTimeout(pendingIo);
+          reject(signal.reason);
+        }, { once: true });
       });
     }, 5),
     /timeout|aborted/i,

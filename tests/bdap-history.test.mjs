@@ -56,7 +56,13 @@ test("OpenBDAP history aborts every in-flight fetch at its global deadline", asy
     assert.ok(init.signal instanceof AbortSignal);
     upstreamSignals.push(init.signal);
     return await new Promise((_resolve, reject) => {
-      init.signal.addEventListener("abort", () => reject(init.signal.reason), { once: true });
+      // Like a real socket, keep Node alive while AbortSignal.timeout's
+      // unreferenced timer is pending (notably on the CI Node 22 runtime).
+      const pendingIo = setTimeout(() => reject(new Error("deadline did not cancel upstream")), 2_000);
+      init.signal.addEventListener("abort", () => {
+        clearTimeout(pendingIo);
+        reject(init.signal.reason);
+      }, { once: true });
     });
   };
 

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 39
+- Artefatti nel registro: 40
 - PR automatica: 8 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 25 (PR umana dopo revisione)
+- manuale: 26 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -77,6 +77,7 @@ La revisione e il merge restano umani.
 | `consip-ordini-2024-2026` | 2024-2026 | non dichiarato | https://dati.consip.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/consip_ordini_snapshot.py --check` |
 | `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-03 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |
 | `istat-cofog-1995-2023` | 1995-2023 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_cofog_snapshot.py --check` |
+| `istat-epea-2016-2022` | 2016-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |

@@ -925,6 +925,28 @@
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 93_1227_DF_DCCN_TNA1_4 è acquisita con chiave completamente specificata (misura P3_D_W0_S13, prezzi correnti, edizione 2025M12) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati e undici partizioni dichiarate falliscono chiuse oltre la tolleranza di arrotondamento dichiarata. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
     },
     {
+      "id": "istat-epea-2016-2022",
+      "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
+      "files": [
+        "src/data/generated/istat-epea-2016-2022.data.json",
+        "src/data/generated/istat-epea-2016-2022.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_epea_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/istat_epea_snapshot.py --csv <path/to/istat-epea-2016-2022.csv>",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-epea-2016-2022.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: risposta SDMX-CSV ufficiale del dataflow IT1,97_953,1.0 (edizione 2025M2, anni 2016-2022) vincolata per URL, Accept, byte e SHA-256; --check valida il bundle committato senza rete. Contabilita SEC di competenza: non e cassa SIOPE e non e confrontabile in silenzio con RGS, PNRR Missione 2 o SAD/SAF. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
+    },
+    {
       "id": "inps-naspi-2018-2022",
       "owner": "INPS NASpI beneficiari e trattamenti 2018-2022",
       "files": [

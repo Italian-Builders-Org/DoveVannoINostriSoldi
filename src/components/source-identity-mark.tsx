@@ -14,8 +14,10 @@ const labels: Record<SourceIdentity, string> = {
 
 /**
  * Compact, project-owned source identifiers for dense overview cards.
- * They intentionally avoid reproducing protected institutional trademarks;
- * the adjacent visible label and destination expose the full source identity.
+ *
+ * These are deliberately original geometric marks rather than reproductions
+ * of institutional logos. The adjacent label and linked source record carry
+ * the actual source name and owner.
  */
 export function SourceIdentityMark({ source, className }: SourceIdentityMarkProps) {
   const label = labels[source];
@@ -23,35 +25,38 @@ export function SourceIdentityMark({ source, className }: SourceIdentityMarkProp
   return (
     <svg
       className={className}
-      viewBox="0 0 68 30"
+      viewBox="0 0 52 26"
       aria-hidden="true"
       focusable="false"
       data-source-identity={source}
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       {source === "rgs" ? (
         <>
-          <circle cx="14" cy="15" r="9" />
-          <path d="M8 15h12M14 9v12" />
+          <path d="M3.5 4.5h11v17h-11z" />
+          <path d="M6.5 9h5M6.5 13h5M6.5 17h3.5" />
         </>
       ) : null}
       {source === "ipa" ? (
         <>
-          <path d="M5 12 14 6l9 6M7 13h14M9 14v8M14 14v8M19 14v8M6 23h17" />
+          <path d="m2.5 10 7-6 7 6M4.5 11h10M5.5 12v8M9.5 12v8M13.5 12v8M3.5 21h12" />
         </>
       ) : null}
       {source === "anac" ? (
         <>
-          <path d="m14 5 9 4v6c0 5-3.6 8.2-9 10-5.4-1.8-9-5-9-10V9l9-4Z" />
-          <path d="m10 15 3 3 6-7" />
+          <path d="m9.5 3 7 3v5c0 4-2.8 6.7-7 8-4.2-1.3-7-4-7-8V6l7-3Z" />
+          <path d="m6 10.5 2.3 2.3 4.7-5.2" />
         </>
       ) : null}
       {source === "istat" ? (
         <>
-          <path d="M6 22V14M11 22V9M16 22V12M21 22V6" />
-          <path d="M4 23h20" />
+          <path d="M3 20V12M7 20V8M11 20V11M15 20V5" />
+          <path d="M2 21.5h14" />
         </>
       ) : null}
-      <text x="29" y="19">{label}</text>
+      <text x="21" y="17">{label}</text>
     </svg>
   );
 }

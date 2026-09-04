@@ -87,6 +87,31 @@ test("sidebar keeps the DVNS mark and exposes a real supporter route", async () 
   assert.match(globalsCss, /\.sidebar-support \{/);
 });
 
+test("sidebar restores compact project metadata and legal contact links", () => {
+  assert.match(navigationComponentSource, /<footer className="sidebar-meta"/);
+  assert.match(navigationComponentSource, /<nav aria-label="Informazioni del sito">/);
+  for (const href of ["/supporter", "/metodologia", "/privacy", "/termini", "/supporto"]) {
+    assert.match(navigationComponentSource, new RegExp(`href="${href}"[\\s\\S]*?onClick=\\{closeNavigation\\}`));
+  }
+  assert.match(globalsCss, /\.sidebar-meta \{/);
+  assert.match(globalsCss, /\.sidebar-meta ul \{/);
+  assert.match(globalsCss, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(globalsCss, /\.sidebar-meta \{[\s\S]*?margin-top: auto;/);
+  assert.match(globalsCss, /@media \(min-width: 901px\) and \(max-width: 1100px\),[\s\S]*?\(min-width: 901px\) and \(max-height: 900px\)/);
+  assert.match(
+    globalsCss,
+    /@media \(max-width: 900px\)[\s\S]*?\.sidebar-meta a \{ min-height: 44px; font-size: 11px; \}/,
+  );
+  assert.doesNotMatch(globalsCss, /\.site-footer|\.footer-sitemap|\.footer-support/);
+});
+
+test("the GitHub mark stays geometrically centered in its circular action", () => {
+  assert.match(navigationComponentSource, /aria-label="Codice su GitHub, si apre in una nuova scheda"/);
+  const iconRule = globalsCss.match(/\.header-action-icon svg \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(iconRule, /display: block/);
+  assert.doesNotMatch(iconRule, /transform|translate/);
+});
+
 test("a submenu can be opened without a pointer that can hover", async () => {
   const navigationComponent = await readFile(
     new URL("../src/components/navigation.tsx", import.meta.url),

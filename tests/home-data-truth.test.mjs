@@ -55,7 +55,11 @@ test("home source marks resolve against the public source registry", () => {
   assert.match(homePage, /SourceIdentityMark/);
   assert.match(sourceIdentityMark, /data-source-identity=\{source\}/);
   assert.match(sourceIdentityMark, /"rgs" \| "ipa" \| "anac" \| "istat"/);
+  assert.match(sourceIdentityMark, /viewBox="0 0 52 26"/);
+  assert.match(sourceIdentityMark, /strokeLinecap="round"/);
   assert.doesNotMatch(sourceIdentityMark, /https?:\/\/|<img\b/);
+  assert.match(homePage, /SIOPE\\nPagamenti\\ncomunali/);
+  assert.match(homePage, /aria-label=\{`\$\{source\.name\}, pubblicata da \$\{source\.owner\}`\}/);
   assert.doesNotMatch(homePage, /OpenCoesione<br\/>Progetti/);
 });
 

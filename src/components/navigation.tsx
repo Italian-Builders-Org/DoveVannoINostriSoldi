@@ -308,6 +308,20 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
           </Link>
         </section>
 
+        <footer className="sidebar-meta" aria-labelledby="sidebar-meta-title">
+          <strong id="sidebar-meta-title">DoveVannoINostriSoldi</strong>
+          <span>© 2026 · Open source</span>
+          <nav aria-label="Informazioni del sito">
+            <ul>
+              <li><Link href="/supporter" onClick={closeNavigation}>Chi siamo</Link></li>
+              <li><Link href="/metodologia" onClick={closeNavigation}>Metodologia</Link></li>
+              <li><Link href="/privacy" onClick={closeNavigation}>Privacy</Link></li>
+              <li><Link href="/termini" onClick={closeNavigation}>Termini</Link></li>
+              <li><Link href="/supporto" onClick={closeNavigation}>Contatti</Link></li>
+            </ul>
+          </nav>
+        </footer>
+
       </aside>
       <button
         type="button"

@@ -22,10 +22,10 @@ import styles from "./home.module.css";
 
 const CHART_COLORS = ["#315edb", "#68a1ef", "#32b979", "#f2ad3d", "#536579"];
 const HOME_SOURCE_MARKS = [
-  { slug: "siope", mark: "rgs", label: "Comuni" },
-  { slug: "ipa", mark: "ipa", label: "Anagrafe PA" },
-  { slug: "anac", mark: "anac", label: "Contratti" },
-  { slug: "istat", mark: "istat", label: "Confini" },
+  { slug: "siope", mark: "rgs", label: "SIOPE\nPagamenti\ncomunali" },
+  { slug: "ipa", mark: "ipa", label: "Indice\ndelle PA" },
+  { slug: "anac", mark: "anac", label: "Contratti\npubblici" },
+  { slug: "istat", mark: "istat", label: "Confini\namministrativi" },
 ] as const;
 
 function selectedYear(value: string | string[] | undefined): number {
@@ -166,8 +166,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <section className={`${styles.panel} ${styles.sourcesPanel}`}>
         <div><h2>Da dove provengono i dati</h2><p>Le quattro fonti usate in questa panoramica; tutte le altre sono nel registro.</p></div>
         <div className={styles.sourceMarks}>
-          {homeSources.map(({ slug, mark, label, source }) => <Link key={slug} href={`/fonti#${slug}`} title={`${source.name} · ${source.owner}`}><SourceIdentityMark source={mark} className={styles.sourceMarkSvg} /><span>{label.split("\n").map((line) => <span key={line}>{line}</span>)}</span></Link>)}
-          <Link href="/fonti"><b>+{sourceCounts.total - homeSources.length}</b><span>altre fonti<br/>registrate</span></Link>
+          {homeSources.map(({ slug, mark, label, source }) => <Link key={slug} href={`/fonti#${slug}`} title={`${source.name} · ${source.owner}`} aria-label={`${source.name}, pubblicata da ${source.owner}`}><SourceIdentityMark source={mark} className={styles.sourceMarkSvg} /><span>{label.split("\n").map((line) => <span key={line}>{line}</span>)}</span></Link>)}
+          <Link href="/fonti" aria-label={`Apri il registro delle altre ${sourceCounts.total - homeSources.length} fonti`}><b>+{sourceCounts.total - homeSources.length}</b><span>altre fonti<br/>registrate</span></Link>
         </div>
       </section>
       <section className={`${styles.panel} ${styles.reportPanel}`}><HugeiconsIcon icon={Location01Icon} size={19} aria-hidden="true" /><div><h2>Segnala un’anomalia</h2><p>Aiutaci a migliorare la trasparenza.</p></div><Link href="/supporto">Fai una segnalazione <HugeiconsIcon icon={ArrowRight01Icon} size={12} aria-hidden="true" /></Link></section>

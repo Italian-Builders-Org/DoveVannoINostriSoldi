@@ -311,7 +311,7 @@ nav li a { text-decoration: none; }
   background: var(--color-neutral-900);
   border-radius: 50%;
 }
-.header-action-icon svg { width: 20px; height: 20px; transform: translateX(.5px); }
+.header-action-icon svg { display: block; width: 20px; height: 20px; }
 .header-action-icon:hover { color: var(--color-raised); background: var(--color-text); }
 
 .dashboard-sidebar {
@@ -528,6 +528,35 @@ body > nav[aria-label="Sezioni della pagina"] {
   border-color: var(--color-accent-300);
 }
 .sidebar-support a:active { transform: scale(.98); }
+.sidebar-meta {
+  display: grid;
+  gap: 3px;
+  margin-top: auto;
+  padding: 16px 8px 0;
+  font-size: 9px;
+  color: var(--color-neutral-600);
+}
+.sidebar-meta strong { color: var(--color-text); font-size: 10px; }
+.sidebar-meta > span { color: var(--color-neutral-600); }
+.sidebar-meta nav { margin-top: 7px; }
+.sidebar-meta ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sidebar-meta li { min-width: 0; }
+.sidebar-meta a {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+  color: var(--color-neutral-600);
+  overflow-wrap: anywhere;
+}
+.sidebar-meta a:hover { color: var(--color-text); }
 .sidebar-backdrop {
   display: none;
   position: fixed;
@@ -771,6 +800,12 @@ main { display: block; }
   .sidebar-support p { font-size: 11px; }
   .sidebar-mission a,
   .sidebar-support a { min-height: 44px; font-size: 11px; }
+  .sidebar-meta {
+    margin-top: 10px;
+    padding: 14px 8px 10px;
+  }
+  .sidebar-meta strong { font-size: 12px; }
+  .sidebar-meta a { min-height: 44px; font-size: 11px; }
   .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat-strip > div:nth-child(2n) { border-right: 0; }
   .stat-strip > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-neutral-200); }
@@ -798,9 +833,10 @@ main { display: block; }
   .brand-text { display: none; }
 }
 
-/* Keep the full navigation discoverable beside the 1024px content rail
+/* Keep the full navigation discoverable beside a narrow or short content rail
    without making the sidebar itself the dominant scrolling surface. */
-@media (min-width: 901px) and (max-width: 1100px) {
+@media (min-width: 901px) and (max-width: 1100px),
+       (min-width: 901px) and (max-height: 900px) {
   .dashboard-sidebar {
     padding: 7px 10px 9px;
   }
@@ -839,4 +875,12 @@ main { display: block; }
   .sidebar-support-heading strong { font-size: 9px; }
   .sidebar-support p { font-size: 8px; }
   .sidebar-support a { min-height: 26px; padding: 5px 6px; font-size: 7.5px; }
+  .sidebar-meta {
+    margin-top: auto;
+    padding: 2px 6px 0;
+    font-size: 8px;
+  }
+  .sidebar-meta strong { font-size: 9px; }
+  .sidebar-meta nav { margin-top: 3px; }
+  .sidebar-meta a { min-height: 24px; font-size: 8px; }
 }

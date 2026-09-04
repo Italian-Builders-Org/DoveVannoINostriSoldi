@@ -3,12 +3,11 @@ import test from "node:test";
 
 const { runWithRequestBudget } = await import("../src/lib/search/request-budget.ts");
 
-test("search request budget aborts unfinished work and returns a timeout verdict", async () => {
+test("search request budget aborts unfinished work and returns a timeout verdict", async (context) => {
+  context.mock.timers.enable({ apis: ["setTimeout"] });
   let observedSignal;
   let aborted = false;
-  const startedAt = Date.now();
-
-  const result = await runWithRequestBudget(
+  const pending = runWithRequestBudget(
     new AbortController().signal,
     25,
     async (signal) => {
@@ -22,10 +21,12 @@ test("search request budget aborts unfinished work and returns a timeout verdict
     },
   );
 
-  assert.deepEqual(result, { timedOut: true });
+  context.mock.timers.tick(24);
+  assert.equal(aborted, false);
+  context.mock.timers.tick(1);
+  assert.deepEqual(await pending, { timedOut: true });
   assert.equal(observedSignal.aborted, true);
   assert.equal(aborted, true);
-  assert.ok(Date.now() - startedAt < 250);
 });
 
 test("search request budget preserves caller cancellation", async () => {

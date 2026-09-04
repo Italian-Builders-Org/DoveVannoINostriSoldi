@@ -26,6 +26,7 @@ import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snap
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
+import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
@@ -655,6 +656,18 @@ function snapshotManagedInpsNaspi(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatEpea(): SourceHealth {
+  const { source, edition, referencePeriod } = istatEpeaMetadata;
+  return {
+    ...baseHealth("istat-epea"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-epea", source.acquiredAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · EPEA protezione ambiente ${referencePeriod.from}-${referencePeriod.to} (edizione ${edition}, ${source.dataflowId}) · ${istatEpeaData.rows.length.toLocaleString("it-IT")} osservazioni · ${source.bytes.toLocaleString("it-IT")} byte CSV pinnato.`,
+    recordCount: istatEpeaData.rows.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -697,6 +710,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedGovernmentInflation(),
     snapshotManagedEurostatCofog(),
     snapshotManagedIstatCofog(),
+    snapshotManagedIstatEpea(),
     snapshotManagedInpsNaspi(),
   ];
 }
@@ -731,6 +745,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "eurostat-hicp": snapshotManagedGovernmentInflation,
   "eurostat-cofog": snapshotManagedEurostatCofog,
   "istat-cofog": snapshotManagedIstatCofog,
+  "istat-epea": snapshotManagedIstatEpea,
   "inps-naspi": snapshotManagedInpsNaspi,
 } satisfies Record<SourceId, SourceHealthAdapter>);
 

@@ -6,6 +6,7 @@ import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
+import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
 import { openCivitasSnapshot } from "@/lib/opencivitas-snapshot";
@@ -58,6 +59,10 @@ const exhaustiveLatestDataBySlug = {
   "istat-cofog": {
     kind: "period",
     label: `${istatCofogData.period.from}-${istatCofogData.period.to}`,
+  },
+  "istat-epea": {
+    kind: "period",
+    label: `${istatEpeaMetadata.referencePeriod.from}-${istatEpeaMetadata.referencePeriod.to}`,
   },
   "inps-naspi": {
     kind: "period",

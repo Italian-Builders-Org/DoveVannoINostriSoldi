@@ -34,8 +34,10 @@ export const IstatEpeaMetaSchema = z.object({
   source: z.object({
     sha256: z.string().length(64),
     rows: z.number().int().positive(),
+    bytes: z.number().int().positive(),
     dataflowId: z.string(),
     url: z.string().url(),
+    acquiredAt: z.string().min(1),
   }),
   caveats: z.array(z.string()).min(1),
   issue: z.literal(86),

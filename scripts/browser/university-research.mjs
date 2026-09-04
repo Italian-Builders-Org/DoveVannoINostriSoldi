@@ -7,6 +7,10 @@ export async function inspectUniversityResearch(page) {
   assert.match(text, /enti non universitari/);
   assert.match(text, /non corretti per l’inflazione/);
   assert.equal(await page.$$eval("main figure li", (rows) => rows.length), 20);
+  if (page.viewport().width > 700) {
+    const chartTops = await page.$$eval("main figure", (charts) => charts.map((chart) => chart.getBoundingClientRect().top));
+    assert.ok(Math.abs(chartTops[0] - chartTops[1]) <= 1, "Le serie affiancate devono allineare gli anni");
+  }
 
   const tableSummary = await page.$(".chart-data > summary");
   await tableSummary.focus();

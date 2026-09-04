@@ -308,7 +308,7 @@ nav li a { text-decoration: none; }
 .nav-item > a {
   display: inline-flex;
   align-items: center;
-  padding: 14px 16px;
+  padding: 14px 14px;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -782,7 +782,7 @@ main { display: block; }
 /* The primary sections need about 1300px to sit flat. Below that the row
    scrolls inside itself rather than pushing the page sideways. */
 @media (max-width: 1320px) {
-  .nav-item > a { padding-inline: 12px; }
+  .nav-item > a { padding-inline: 10px; }
   .nav-item-has-menu > a { padding-right: 4px; }
   .nav-scroll-control { display: inline-flex; }
   .nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }

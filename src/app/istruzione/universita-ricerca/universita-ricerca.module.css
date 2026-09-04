@@ -16,16 +16,23 @@
 }
 
 .section {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
+  gap: var(--space-3);
   min-width: 0;
 }
 
+.section > p {
+  margin: 0;
+}
+
 .description {
-  min-height: 3em;
   color: var(--color-neutral-700);
 }
 
 .chart {
-  margin: var(--space-4) 0 0;
+  margin: 0;
 }
 
 .chart figcaption {
@@ -84,7 +91,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .description {
-    min-height: 0;
+  .section {
+    grid-template-rows: auto;
+    grid-row: auto;
   }
 }

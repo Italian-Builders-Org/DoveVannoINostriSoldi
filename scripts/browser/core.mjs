@@ -1766,6 +1766,10 @@ try {
         sectionLabel: "Soldi",
         childLabel: "Debito pubblico",
       });
+      await assertPrimaryDropdownTap(page, "Menu Istruzione 390px", {
+        sectionLabel: "Istruzione",
+        childLabel: "Università e Ricerca",
+      });
     },
   });
   completed.push("Menu mobile senza Indietro/Scorri 390px");
@@ -1779,6 +1783,9 @@ try {
       assert.ok(itemElement, "Menu mobile chiusura: sezione Soldi assente");
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Menu mobile chiusura: pulsante tendina assente");
+      await itemElement.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      });
       await waitForStableNavigationTouchTarget(page, toggle);
       const toggleBox = await toggle.boundingBox();
       assert.ok(toggleBox, "Menu mobile chiusura: pulsante tendina non visibile");

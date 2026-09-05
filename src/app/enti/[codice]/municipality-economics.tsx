@@ -8,6 +8,7 @@ import {
   municipalitySpendingTitleLabel,
 } from "@/lib/municipality-spending-view";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
+import { MunicipalityReceipts } from "./municipality-receipts";
 import styles from "./scheda.module.css";
 
 function amount(measure: ReportedMeasure): number {
@@ -92,6 +93,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
     <>
       <nav className={styles.sectionNav} aria-label="Sezioni della scheda comunale">
         <a href="#dati-economici">Pagamenti</a>
+        <a href="#dati-incassi">Incassi</a>
         <a href="#dati-opencivitas">Confronto</a>
         <a href="#dati-pnrr-asili">PNRR</a>
         <a href="#dati-irpef">IRPEF</a>
@@ -392,6 +394,8 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
           Questi dati mostrano quanto il Comune ha pagato, non necessariamente il territorio o il servizio che ne ha beneficiato.
         </p>
       </section>
+
+      <MunicipalityReceipts taxCode={profile.siope.data.taxCode} />
 
       <section className={`panel ${styles.economicSection} ${styles.insightSection}`} aria-labelledby="opencivitas-title" id="dati-opencivitas">
         <div className={styles.sectionHeading}>

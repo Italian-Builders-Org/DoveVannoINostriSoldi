@@ -42,6 +42,7 @@ async function inspectReport(page, width) {
       canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
       openGraphType: document.querySelector('meta[property="og:type"]')?.getAttribute("content"),
       author: document.querySelector('meta[name="author"]')?.getAttribute("content"),
+      sourceLinksValid: [...document.querySelectorAll('main a[href^="#report-source-"]')].every((link) => document.getElementById(link.hash.slice(1))),
     };
   });
 
@@ -61,6 +62,7 @@ async function inspectReport(page, width) {
   );
   assert.equal(state.openGraphType, "article", `${label}: Open Graph non è article`);
   assert.equal(state.author, "Redazione DVNS", `${label}: autore metadata errato`);
+  assert.equal(state.sourceLinksValid, true, `${label}: riferimento a fonte assente`);
 
   const firstSummary = await page.$("main figure details.chart-data > summary");
   assert.ok(firstSummary, `${label}: summary della tabella assente`);
@@ -108,7 +110,7 @@ assert.equal(missingResponse.status, 404, "Un mese sconosciuto deve restituire 4
 
 const browser = await launchBrowser();
 try {
-  for (const width of [390, 1280]) {
+  for (const width of [390, 768, 1280]) {
     await runScenario(browser, {
       label: `Archivio report ${width}px`,
       pathname: "/report",

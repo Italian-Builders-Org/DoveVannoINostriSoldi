@@ -110,6 +110,10 @@ echo "::group::Browser report suite"
 npm run test:browser:report
 echo "::endgroup::"
 
+echo "::group::Browser monthly reports suite"
+npm run test:browser:monthly-report
+echo "::endgroup::"
+
 echo "::group::CSP Report-Only browser smoke"
 npm run test:csp:report-only
 echo "::endgroup::"

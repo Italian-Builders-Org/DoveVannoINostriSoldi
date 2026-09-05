@@ -11,6 +11,13 @@ const { PUBLISHED_MONTHLY_REPORT_PATHS, PUBLIC_INDEXABLE_PATHS, LLMS_DISCOVERY_P
 
 const publishedUrl = new URL("../src/content/monthly-reports/published/2026-08.ts", import.meta.url);
 
+test("articolo Markdown coincide con la capsula e discovery copre ogni edizione", async () => {
+  const { monthlyReportMarkdown } = await import("../scripts/reports/export-monthly-report.mjs");
+  const report = monthlyReports.getPublished("2026-08");
+  assert.equal(await readFile(new URL("../docs/reports/2026-08.md", import.meta.url), "utf8"), monthlyReportMarkdown(report));
+  assert.deepEqual([...PUBLISHED_MONTHLY_REPORT_PATHS].sort(), monthlyReports.listPublished().map((r) => r.href).sort());
+});
+
 test("agosto 2026 è una capsula pubblicata, congelata e della lunghezza prevista", async () => {
   const reports = monthlyReports.listPublished();
   assert.equal(reports.length, 1);

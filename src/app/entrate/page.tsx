@@ -140,7 +140,7 @@ export default async function ReceiptsPage({ searchParams }: {
         </section>
       </div>
 
-      <section className="panel" aria-labelledby="receipts-municipalities-title" id="comuni-incassi">
+      <section className={`panel ${styles.anchorTarget}`} aria-labelledby="receipts-municipalities-title" id="comuni-incassi">
         <h2 className="panel-title" id="receipts-municipalities-title">Dettaglio comunale · {data.year}</h2>
         <p className={styles.note}>
           {filters.region ?? "Tutte le Regioni"}{filters.query ? ` · nome contenente “${filters.query}”` : ""}.

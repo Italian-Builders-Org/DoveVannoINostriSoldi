@@ -87,3 +87,10 @@
 @media (max-width: 540px) {
   .filters { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Keep linked section headings below the sticky tablet/desktop navigation. */
+.anchorTarget { scroll-margin-top: 14rem; }
+
+@media (max-width: 620px) {
+  .anchorTarget { scroll-margin-top: var(--space-4); }
+}

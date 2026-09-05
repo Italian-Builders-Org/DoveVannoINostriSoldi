@@ -19,7 +19,7 @@ export function MunicipalityReceipts({ taxCode }: { taxCode: string }) {
   const receipts = latest.receipts;
 
   return (
-    <section className={`panel ${styles.economicSection}`} id="dati-incassi" aria-labelledby="municipality-receipts-title">
+    <section className={`panel ${styles.economicSection} ${receiptsStyles.anchorTarget}`} id="dati-incassi" aria-labelledby="municipality-receipts-title">
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.sectionKicker}>SIOPE · incassi di cassa</span>

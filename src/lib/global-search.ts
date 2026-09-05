@@ -1,5 +1,6 @@
 import "server-only";
 
+import { papers } from "@/lib/papers";
 import integratedCatalog from "@/data/generated/integrated/catalog.json";
 import {
   EDITORIAL_TOPICS,
@@ -7,7 +8,6 @@ import {
 } from "@/lib/integrated-editorial";
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import { datasetCatalog } from "@/lib/mcp/catalog";
-import { papers } from "@/lib/papers";
 import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,

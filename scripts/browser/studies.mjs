@@ -14,8 +14,10 @@ try {
   for (const width of [390, 1440]) {
     await runScenario(browser, {
       label: `Studi: archivio, dettaglio e download a ${width}px`,
-      suite: "studies", pathname: "/studi", width,
+      suite: "studies", pathname: "/fonti", width,
       validate: async (page) => {
+        await page.click('footer a[href="/studi"]');
+        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Studi e working paper");
         assert.equal(await page.$eval("main h1", el => el.textContent), "Studi e working paper");
         await page.screenshot({ path: new URL(`archive-${width}.png`, evidence).pathname, fullPage: true });
         await page.click('main a[href="/studi/dai-fondi-ai-posti"]');

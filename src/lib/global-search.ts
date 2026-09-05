@@ -7,6 +7,7 @@ import {
 } from "@/lib/integrated-editorial";
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import { datasetCatalog } from "@/lib/mcp/catalog";
+import { papers } from "@/lib/papers";
 import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,
@@ -239,6 +240,18 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
         description: null,
       });
     }
+  }
+
+  for (const paper of papers.listPublished()) {
+    addDocument(documents, {
+      id: `paper:${paper.slug}`,
+      href: `/paper#${paper.slug}`,
+      title: paper.title,
+      context: "Paper e ricerca",
+      type: "pagina",
+      aliases: [...paper.authors, "working paper", "ricerca"],
+      description: paper.abstract,
+    });
   }
 
   for (const topic of EDITORIAL_TOPICS) {

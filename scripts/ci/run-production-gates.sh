@@ -83,6 +83,10 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+echo "::group::Browser papers suite"
+npm run test:browser:papers
+echo "::endgroup::"
+
 echo "::group::MCP HTTP smoke"
 npm run test:mcp:http
 echo "::endgroup::"

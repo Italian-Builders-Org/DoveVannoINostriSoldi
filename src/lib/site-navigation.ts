@@ -116,6 +116,10 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   },
   { href: "/assistente", label: "Assistente" },
   {
+    href: "/paper",
+    label: "Paper",
+  },
+  {
     href: "/fonti",
     label: "Fonti",
     aliases: ["/metodologia"],
@@ -230,6 +234,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   {
     title: "Fonti e metodo",
     links: [
+      { href: "/paper", label: "Paper e ricerca" },
       { href: "/fonti", label: "Elenco fonti" },
       { href: "/fonti/calendario", label: "Calendario documenti" },
       { href: "/fonti/stato", label: "Stato delle fonti" },

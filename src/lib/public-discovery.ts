@@ -14,6 +14,7 @@ type PublicPath = "/" | `/${string}`;
  */
 export const PUBLIC_INDEXABLE_PATHS = [
   "/",
+  "/paper",
   "/appalti",
   "/appalti/dettaglio",
   "/assistente",
@@ -100,6 +101,7 @@ export const PUBLIC_NOINDEX_PATHS = [
 /** Pages that the concise llms.txt overview must always expose. */
 export const LLMS_DISCOVERY_PATHS = [
   "/",
+  "/paper",
   "/spese",
   "/spese/ambiente",
   "/spese/pensioni",

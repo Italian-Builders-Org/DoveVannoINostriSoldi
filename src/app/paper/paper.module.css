@@ -1,0 +1,18 @@
+.page {
+  max-width: 64rem;
+  overflow-wrap: anywhere;
+}
+
+.page section > h2 {
+  margin-bottom: 1rem;
+}
+
+.page article + article,
+.method {
+  margin-top: 2rem;
+}
+
+.page p {
+  max-width: 70ch;
+  line-height: 1.65;
+}

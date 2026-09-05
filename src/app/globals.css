@@ -779,9 +779,9 @@ main { display: block; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
-/* The primary sections need about 1300px to sit flat. Below that the row
+/* The primary sections need about 1580px to sit flat. Below that the row
    scrolls inside itself rather than pushing the page sideways. */
-@media (max-width: 1320px) {
+@media (max-width: 1580px) {
   .nav-item > a { padding-inline: 10px; }
   .nav-item-has-menu > a { padding-right: 4px; }
   .nav-scroll-control { display: inline-flex; }
@@ -799,12 +799,21 @@ main { display: block; }
   }
 }
 
-@media (max-width: 1320px) and (hover: none) {
+@media (max-width: 1580px) and (hover: none) {
   .nav-scroll-control { display: none; }
 }
 
-@media (max-width: 1320px) and (pointer: coarse) {
+@media (max-width: 1580px) and (pointer: coarse) {
   .nav-scroll-control { display: none; }
+}
+
+/* Keep every section visible on laptop screens, including publications.
+   Touch layouts below 1100px retain their larger targets and swipe behavior. */
+@media (min-width: 1100px) and (max-width: 1580px) {
+  .primary-nav-list { gap: 0; }
+  .nav-item > a { padding-inline: 7px; font-size: 13px; }
+  .nav-item-has-menu > a { padding-right: 2px; }
+  .nav-item-toggle { min-width: 26px; padding-right: 4px; }
 }
 
 @media (max-width: 1000px) {

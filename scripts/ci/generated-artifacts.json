@@ -927,6 +927,32 @@
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 93_1227_DF_DCCN_TNA1_4 è acquisita con chiave completamente specificata (misura P3_D_W0_S13, prezzi correnti, edizione 2025M12) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati e undici partizioni dichiarate falliscono chiuse oltre la tolleranza di arrotondamento dichiarata. Nessuna licenza inferita: la risposta SDMX non ne espone una riusabile verificata."
     },
     {
+      "id": "istat-poverta-assoluta-2014-2024",
+      "owner": "ISTAT povertà assoluta 2014-2024 (serie corrente post-revisione)",
+      "files": [
+        "src/data/generated/istat-poverta-assoluta-2014-2024.data.json",
+        "src/data/generated/istat-poverta-assoluta-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-assoluta-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 34_727_DF_DCCV_POVERTA_1 è acquisita con chiave completamente specificata (nove delle undici dimensioni fissate letteralmente, REF_AREA e DATA_TYPE enumerate) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati, partizioni territoriali sui soli conteggi entro tolleranza empirica dichiarata e composizioni percentuali che chiudono a 100 falliscono chiuse. Il flag CL_FLAG «0» non è uno zero osservato: una cella flaggata resta null. Vale anche un'asserzione NEGATIVA: le incidenze non devono chiudere per somma fra territori, perché un tasso non si comporta così. Nessuna licenza inferita: la risposta SDMX non ne espone alcuna."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

@@ -115,6 +115,19 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["settore istituzionale", "classe CEPA", "anno", "edizione"],
   },
   {
+    slug: "istat-poverta",
+    name: "ISTAT · povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; serie corrente post-revisione fissata (34_727)",
+    coverage:
+      "Italia e ripartizioni, 2014–2024; incidenza, intensità, composizione e conteggi in migliaia",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "NON è spesa pubblica: non sommare né accostare a SIOPE, OpenBDAP o IRPEF. Incidenza, intensità e composizione sono misure diverse e non si sommano fra loro; solo i conteggi sono sommabili fra territori. Le aree composite (Nord, Mezzogiorno) contengono già le loro parti. Serie chiuse 34_201/34_202 (fino al 2013) e serie interrotta 34_728 non vanno mai giuntate. ISTAT non pubblica la povertà a livello comunale.",
+    joinKeys: ["territorio", "anno", "misura"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -27,6 +27,7 @@ export type SourceId =
   | "eurostat-cofog"
   | "istat-cofog"
   | "istat-epea"
+  | "istat-poverta"
   | "inps-naspi"
   | "ameco"
   | "governi-presidenza";
@@ -448,6 +449,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-epea", "domain:public-spending"],
+  },
+  "istat-poverta": {
+    id: "istat-poverta",
+    label: "ISTAT · povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli indicatori di povertà escono annualmente. Lo snapshot fissa la serie corrente post-revisione (34_727, dal 2014) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta", "domain:social-conditions"],
   },
   "inps-naspi": {
     id: "inps-naspi",

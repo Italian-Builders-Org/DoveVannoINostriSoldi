@@ -53,6 +53,7 @@ const EXPECTED_SOURCE_IDS = [
   "eurostat-cofog",
   "istat-cofog",
   "istat-epea",
+  "istat-poverta",
   "inps-naspi",
   "ameco",
   "governi-presidenza",

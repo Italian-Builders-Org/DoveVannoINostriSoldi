@@ -29,5 +29,3 @@ def source_urls(year: int) -> dict[str, str]:
         "registry": f"{core.SIOPE_BASE}/{core.SIOPE_REGISTRY_FILE}",
         "ipa": core.IPA_ADMINISTRATIONS_URL,
     }
-
-

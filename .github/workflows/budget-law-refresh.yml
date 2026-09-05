@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   refresh:
+    name: Refresh Legge di Bilancio snapshot
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: source-operations

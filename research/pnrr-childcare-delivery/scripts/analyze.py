@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 import re
+import subprocess
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -20,6 +21,7 @@ import statsmodels.formula.api as smf
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REPO_DIR = Path(__file__).resolve().parents[3]
 SOURCE_PATH = REPO_DIR / "src/data/generated/pnrr-childcare.data.json"
+SOURCE_COMMIT = "6dbbfc00db21a3f821fc58115c6a06d0b6fafec9"
 ISTAT_PATH = PROJECT_DIR / "data/istat_childcare_2023.csv"
 MANIFEST_PATH = PROJECT_DIR / "data/mcp_pnrr_manifest.json"
 GENERATED_DIR = PROJECT_DIR / "generated"
@@ -436,13 +438,13 @@ def plot_coverage(regional: pd.DataFrame) -> dict:
     axes[0].scatter(usable["coverage_per_100"], usable["commissioning_share"] * 100, s=sizes, color=COLORS["teal"], alpha=0.75, edgecolor="white")
     axes[0].set_xlabel("Posti autorizzati ogni 100 bambini, 2023/24")
     axes[0].set_ylabel("Progetti conclusi o in collaudo (%)")
-    axes[0].set_title(f"Copertura preesistente e avanzamento\nSpearman ρ={rho_comm:.2f}, p={p_comm:.3f}")
+    axes[0].set_title(f"Copertura 2023/24 e avanzamento\nSpearman ρ={rho_comm:.2f}, p={p_comm:.3f}")
     axes[0].grid(alpha=0.18)
 
     axes[1].scatter(usable["coverage_per_100"], usable["funding_per_child"], s=sizes, color=COLORS["blue"], alpha=0.75, edgecolor="white")
     axes[1].set_xlabel("Posti autorizzati ogni 100 bambini, 2023/24")
     axes[1].set_ylabel("Finanziamento associato per bambino 0–2 stimato (€)")
-    axes[1].set_title(f"Copertura preesistente e intensità finanziaria\nSpearman ρ={rho_fund:.2f}, p={p_fund:.3f}")
+    axes[1].set_title(f"Copertura 2023/24 e intensità finanziaria\nSpearman ρ={rho_fund:.2f}, p={p_fund:.3f}")
     axes[1].grid(alpha=0.18)
 
     for ax, y_col, scale in ((axes[0], "commissioning_share", 100), (axes[1], "funding_per_child", 1)):
@@ -606,7 +608,7 @@ def procurement_timing(tenders: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFram
     axes[0].barh(y_quality, quality_view["share"] * 100, color=list(reversed(quality_colors)))
     quality_labels = ["Date mancanti", "Ordine negativo", "0--730 giorni validi", ">730 giorni"]
     axes[0].set_yticks(y_quality, list(reversed(quality_labels)))
-    axes[0].set_xlim(0, 58)
+    axes[0].set_xlim(0, 75)
     axes[0].set_xlabel("Quota di tutte le righe (%)")
     axes[0].set_title("Validità della coppia di date")
     axes[0].grid(axis="x", alpha=0.18)
@@ -702,6 +704,9 @@ def kaplan_meier_curve(duration: pd.Series, event: pd.Series) -> pd.DataFrame:
         events = int(((data["duration"] == day) & (data["event"] == 1)).sum())
         survival *= 1 - events / at_risk
         rows.append({"day": float(day), "survival": survival, "completion": 1 - survival, "at_risk": at_risk, "events": events})
+    # Extend only to the observed follow-up, never beyond it.
+    if len(data) and float(data["duration"].max()) > rows[-1]["day"]:
+        rows.append({"day": float(data["duration"].max()), "survival": survival, "completion": 1 - survival, "at_risk": int((data["duration"] == data["duration"].max()).sum()), "events": 0})
     return pd.DataFrame(rows)
 
 
@@ -1236,11 +1241,18 @@ def make_tables(
 
 def main() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    actual_sha = sha256(SOURCE_PATH)
+    source_bytes = SOURCE_PATH.read_bytes() if SOURCE_PATH.exists() else b""
+    if hashlib.sha256(source_bytes).hexdigest() != manifest["local_snapshot_sha256"]:
+        # A new live snapshot must not silently rewrite a historical paper.
+        source_bytes = subprocess.check_output(
+            ["git", "show", f"{SOURCE_COMMIT}:src/data/generated/pnrr-childcare.data.json"],
+            cwd=REPO_DIR,
+        )
+    actual_sha = hashlib.sha256(source_bytes).hexdigest()
     if actual_sha != manifest["local_snapshot_sha256"]:
         raise RuntimeError(f"Hash snapshot inatteso: {actual_sha}")
 
-    payload = json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
+    payload = json.loads(source_bytes)
     full_projects, full_tenders = project_rows(payload)
     full_projects["maturity"] = pd.Categorical(full_projects["maturity"], categories=MATURITY_ORDER, ordered=True)
     if len(full_projects) != manifest["coverage"]["projects"]:

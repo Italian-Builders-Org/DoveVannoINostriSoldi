@@ -118,7 +118,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/fonti",
     label: "Fonti",
-    aliases: ["/metodologia"],
+    aliases: ["/metodologia", "/studi"],
     children: [
       { href: "/fonti", label: "Elenco fonti" },
       { href: "/fonti/calendario", label: "Calendario documenti" },
@@ -126,12 +126,14 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/fonti/copertura", label: "Copertura integrata" },
       { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
       { href: "/metodologia", label: "Metodo" },
+      { href: "/studi", label: "Studi e working paper" },
     ],
   },
 ] as const;
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
   { title: "Home", links: [{ href: "/", label: "Home" }] },
+  { title: "Studi", links: [{ href: "/studi", label: "Studi e working paper" }] },
   {
     title: "Imprese",
     links: [

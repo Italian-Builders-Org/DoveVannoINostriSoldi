@@ -1817,23 +1817,18 @@ try {
     pathname: "/",
     width: 390,
     validate: async (page) => {
-      const before = await page.evaluate(() => {
-        const navigation = document.querySelector(".primary-nav");
-        if (!navigation) return null;
-        navigation.scrollLeft = Math.min(
-          navigation.scrollWidth - navigation.clientWidth,
-          140,
-        );
-        return navigation.scrollLeft;
-      });
-      assert.ok(before !== null, "Menu mobile scroll: navigazione primaria assente");
-      assert.ok(before > 4, "Menu mobile scroll: la riga non si è spostata prima del tap");
-
       const itemElement = await findPrimaryNavSection(page, "Soldi");
       assert.ok(itemElement, "Menu mobile scroll: sezione Soldi assente");
       const toggle = await itemElement.$(".nav-item-toggle");
       assert.ok(toggle, "Menu mobile scroll: pulsante tendina assente");
+      // Locate the actual section: adding publications must not invalidate a
+      // fixed pixel offset that used to expose this caret.
+      await itemElement.evaluate((element) => {
+        element.scrollIntoView({ block: "nearest", inline: "center" });
+      });
       await waitForStableNavigationTouchTarget(page, toggle);
+      const before = await page.$eval(".primary-nav", (navigation) => navigation.scrollLeft);
+      assert.ok(before > 4, "Menu mobile scroll: la riga non si è spostata prima del tap");
       const toggleBox = await toggle.boundingBox();
       assert.ok(toggleBox, "Menu mobile scroll: pulsante tendina non visibile");
       await page.touchscreen.tap(

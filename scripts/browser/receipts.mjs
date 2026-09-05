@@ -1,5 +1,14 @@
 import assert from "node:assert/strict";
 
+async function assertHeadingVisible(page) {
+  await page.waitForFunction(() => {
+    const heading = document.getElementById("receipts-municipalities-title").getBoundingClientRect();
+    const header = document.querySelector(".site-header");
+    const bottom = getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0;
+    return heading.top >= bottom && heading.top < innerHeight;
+  }, { timeout: 3_000 });
+}
+
 export async function inspectReceipts(page) {
   const national = await page.$eval(".stat-strip", (element) => element.textContent);
   assert.match(national, /2026/);
@@ -19,15 +28,12 @@ export async function inspectReceipts(page) {
   const firstPage = await page.$$eval(`${rows} th`, (items) => items.map((item) => item.textContent));
   await Promise.all([page.waitForNavigation({ waitUntil: "networkidle0" }), page.click('a[rel="next"]')]);
   assert.equal(new URL(page.url()).searchParams.get("pagina"), "2");
-  const headingVisible = await page.evaluate(() => {
-    const heading = document.getElementById("receipts-municipalities-title").getBoundingClientRect();
-    const header = document.querySelector(".site-header");
-    const bottom = getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0;
-    return heading.top >= bottom && heading.top < innerHeight;
-  });
-  assert.ok(headingVisible, "Il titolo della sezione deve restare visibile dopo la paginazione");
+  await assertHeadingVisible(page);
   const secondPage = await page.$$eval(`${rows} th`, (items) => items.map((item) => item.textContent));
   assert.ok(secondPage.every((name) => !firstPage.includes(name)), "Pagine senza duplicati");
+  await Promise.all([page.waitForNavigation({ waitUntil: "networkidle0" }), page.click('a[rel="prev"]')]);
+  await assertHeadingVisible(page);
+  assert.deepEqual(await page.$$eval(`${rows} th`, (items) => items.map((item) => item.textContent)), firstPage);
   await page.type("#receipts-name", "zzzzComuneInesistentezzzz");
   await Promise.all([page.waitForNavigation({ waitUntil: "networkidle0" }), page.click('main form button[type="submit"]')]);
   assert.match(await page.$eval("#comuni-incassi", (element) => element.textContent), /Nessun Comune corrisponde/);

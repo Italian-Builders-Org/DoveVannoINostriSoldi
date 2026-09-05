@@ -163,9 +163,10 @@ export default async function ReceiptsPage({ searchParams }: {
           </div>
         ) : <p>{pagination.total === 0 ? "Nessun Comune corrisponde ai filtri scelti." : "Questa pagina non contiene Comuni."} <Link href={pageHref(1)}>Torna alla prima pagina della selezione</Link> oppure <Link href={receiptsPageHref({ year: data.year })}>azzera i filtri</Link>.</p>}
         <nav className={styles.pagination} aria-label="Pagine degli incassi comunali">
-          {currentPage > 1 ? <Link href={`${pageHref(currentPage - 1)}#comuni-incassi`} rel="prev">← Pagina precedente</Link> : <span />}
+          {/* Native navigation reapplies the anchor when only query parameters change. */}
+          {currentPage > 1 ? <a href={`${pageHref(currentPage - 1)}#comuni-incassi`} rel="prev">← Pagina precedente</a> : <span />}
           <span>Pagina {integer(currentPage)} di {integer(totalPages)} · {integer(pagination.returned)} Comuni mostrati</span>
-          {pagination.offset + pagination.returned < pagination.total ? <Link href={`${pageHref(currentPage + 1)}#comuni-incassi`} rel="next">Pagina successiva →</Link> : <span />}
+          {pagination.offset + pagination.returned < pagination.total ? <a href={`${pageHref(currentPage + 1)}#comuni-incassi`} rel="next">Pagina successiva →</a> : <span />}
         </nav>
         <p className={styles.note}>Per abitante: popolazione dell’anagrafica SIOPE, senza anno di riferimento dichiarato. Per km²: superficie ISTAT abbinata al Comune. La scheda è collegata solo quando è disponibile un identificativo IPA.</p>
       </section>

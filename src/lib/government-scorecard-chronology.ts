@@ -51,16 +51,26 @@ export const governmentScorecardV6ChronologyRegistrySchema = z.object({
   asOfDate: isoDate,
   eventDefinition: z.literal("Giuramento del Presidente del Consiglio e dei ministri nelle mani del Presidente della Repubblica"),
   constitutionalSourceUrl: z.literal("https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-i/articolo-93"),
-  governments: z.array(governmentSchema).length(EXPECTED_GOVERNMENTS.length),
+  governments: z.array(governmentSchema).min(EXPECTED_GOVERNMENTS.length),
 }).strict().superRefine((registry, context) => {
+  if (registry.verifiedAt < registry.asOfDate || new Set(registry.governments.map((government) => government.id)).size !== registry.governments.length) {
+    context.addIssue({ code: "custom", message: "date del registro o identita duplicate", path: ["governments"] });
+  }
   registry.governments.forEach((government, index) => {
     const expected = EXPECTED_GOVERNMENTS[index];
+    if (!expected) {
+      const source = new URL(government.sourceUrl);
+      if (source.protocol !== "https:" || source.host !== "www.quirinale.it" || source.username || source.password
+        || !source.pathname.startsWith("/it/notizie/") || source.pathname.length <= "/it/notizie/".length
+        || source.search || source.hash || government.startDate > registry.asOfDate) {
+        context.addIssue({ code: "custom", message: "nuovo giuramento: fonte o data non verificabile", path: ["governments", index] });
+      }
+    }
     if (
-      !expected
-      || government.id !== expected[0]
+      expected && (government.id !== expected[0]
       || government.name !== expected[1]
       || government.startDate !== expected[2]
-      || government.sourceUrl !== SOURCE_URLS[expected[3]]
+      || government.sourceUrl !== SOURCE_URLS[expected[3]])
     ) {
       context.addIssue({
         code: "custom",

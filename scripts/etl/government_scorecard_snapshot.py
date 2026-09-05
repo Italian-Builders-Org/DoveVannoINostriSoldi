@@ -10,6 +10,7 @@ import io
 import json
 import math
 import os
+import re
 import tempfile
 import urllib.parse
 import urllib.request
@@ -141,9 +142,17 @@ def validate_spec(spec: dict[str, Any]) -> dict[str, Any]:
         or ameco.get("encoding") != "latin-1"
     ):
         fail("ameco: metadati inattesi")
+    if (any(type(ameco.get(key)) is not int for key in ("observedThrough", "forecastFrom", "forecastThrough"))
+            or not 1995 <= ameco["observedThrough"] < ameco["forecastFrom"] <= ameco["forecastThrough"] <= 2100
+            or ameco["forecastFrom"] != ameco["observedThrough"] + 1
+            or ameco["release"] != method["source"]["vintage"]
+            or re.fullmatch(r"(?:Spring|Autumn) \d{4} Economic Forecast", ameco["release"]) is None):
+        fail("AMECO: observed and forecast periods or vintage diverge")
     countries = require_dict(ameco.get("countries"), "ameco.countries")
     if tuple((key, value.get("code")) for key, value in countries.items()) != COUNTRIES:
         fail("ameco.countries: set inatteso")
+    if [value.get("currencyCode") for value in countries.values()] != ["EURO-ITL", "EURO-FRF", "EURO-DEM", "EURO-ESP"]:
+        fail("ameco.countries: currency identity mismatch")
     source_items = require_list(ameco.get("series"), "ameco.series")
     method_items = require_list(method.get("indicators"), "method.indicators")
     if len(source_items) != 6 or len(method_items) != 6:
@@ -200,13 +209,13 @@ def safe_archive(payload: bytes) -> dict[str, bytes]:
     return members
 
 
-def ameco_rows(payload: bytes, encoding: str, label: str) -> dict[str, dict[str, str]]:
+def ameco_rows(payload: bytes, encoding: str, label: str, years=EXPECTED_YEARS) -> dict[str, dict[str, str]]:
     try:
         text = payload.decode(encoding)
     except (UnicodeDecodeError, LookupError):
         fail(f"{label}: encoding non valido")
     reader = csv.DictReader(io.StringIO(text, newline=""))
-    expected = ["CODE", "COUNTRY", "SUB-CHAPTER", "TITLE", "UNIT", *map(str, EXPECTED_YEARS), "Unnamed: 73"]
+    expected = ["CODE", "COUNTRY", "SUB-CHAPTER", "TITLE", "UNIT", *map(str, years), f"Unnamed: {len(years) + 5}"]
     if reader.fieldnames != expected:
         fail(f"{label}: intestazione CSV inattesa")
     rows: dict[str, dict[str, str]] = {}
@@ -240,8 +249,18 @@ def extract_indicators(spec: dict[str, Any], method: dict[str, Any], payload: by
         for item in configs
         for source in ([item["numerator"], item["denominator"]] if "derived" in item else [item])
     }
-    files = {name: ameco_rows(archive[name], ameco["encoding"], name) for name in needed_files}
+    years = tuple(range(1960, ameco["forecastThrough"] + 1))
+    files = {name: ameco_rows(archive[name], ameco["encoding"], name, years) for name in needed_files}
     method_by_id = {item["id"]: item for item in method["indicators"]}
+    def source_row(config, country_id, country_code):
+        code = config["codeTemplate"].format(country=country_code)
+        row = files[config["file"]].get(code)
+        expected_unit = config["rawUnitTemplate"].format(currency=ameco["countries"][country_id]["currencyCode"])
+        if (row is None or row["TITLE"] != config["title"] or row["UNIT"] != expected_unit
+                or row["COUNTRY"] != country_id.title()):
+            fail(f"AMECO: serie mancante o identita divergente {code}")
+        return code, row
+
     output: list[dict[str, Any]] = []
     for item in configs:
         method_item = method_by_id[item["id"]]
@@ -251,13 +270,9 @@ def extract_indicators(spec: dict[str, Any], method: dict[str, Any], payload: by
             values: list[dict[str, Any]] = []
             if "derived" in item:
                 left_config, right_config = item["numerator"], item["denominator"]
-                left_code = left_config["codeTemplate"].format(country=country_code)
-                right_code = right_config["codeTemplate"].format(country=country_code)
-                left_row = files[left_config["file"]].get(left_code)
-                right_row = files[right_config["file"]].get(right_code)
-                if left_row is None or right_row is None or left_row["TITLE"] != left_config["title"] or right_row["TITLE"] != right_config["title"]:
-                    fail(f"AMECO: serie derivata mancante {item['id']}.{country_id}")
-                for year in EXPECTED_YEARS:
+                left_code, left_row = source_row(left_config, country_id, country_code)
+                right_code, right_row = source_row(right_config, country_id, country_code)
+                for year in years:
                     left = decimal_value(left_row[str(year)], f"{left_code}.{year}")
                     right = decimal_value(right_row[str(year)], f"{right_code}.{year}")
                     if left is None or right is None:
@@ -269,11 +284,8 @@ def extract_indicators(spec: dict[str, Any], method: dict[str, Any], payload: by
                     values.append({"year": year, "value": value})
                 source_codes[country_id] = [left_code, right_code]
             else:
-                code = item["codeTemplate"].format(country=country_code)
-                row = files[item["file"]].get(code)
-                if row is None or row["TITLE"] != item["title"]:
-                    fail(f"AMECO: serie mancante {item['id']}.{country_id}")
-                values = [{"year": year, "value": decimal_value(row[str(year)], f"{code}.{year}")} for year in EXPECTED_YEARS]
+                code, row = source_row(item, country_id, country_code)
+                values = [{"year": year, "value": decimal_value(row[str(year)], f"{code}.{year}")} for year in years]
                 source_codes[country_id] = [code]
             countries[country_id] = values
         output.append({
@@ -328,7 +340,8 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
         fail("snapshot: versione non supportata")
     spec = load_json(DEFAULT_SPEC, "source spec")
     method = validate_spec(spec)
-    source = require_dict(require_dict(snapshot["sources"], "sources").get("ameco"), "sources.ameco")
+    exact_keys(require_dict(snapshot["sources"], "sources"), {"ameco"}, "sources")
+    source = require_dict(snapshot["sources"].get("ameco"), "sources.ameco")
     ameco = spec["ameco"]
     for field in (
         "owner", "title", "release", "releaseDate", "landingUrl", "downloadUrl", "termsUrl", "license",
@@ -336,8 +349,9 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
     ):
         if source.get(field) != ameco.get(field):
             fail(f"snapshot: metadato fonte divergente ({field})")
-    if not isinstance(source.get("bytes"), int) or source["bytes"] <= 0 or not isinstance(source.get("sha256"), str) or len(source["sha256"]) != 64:
+    if not isinstance(source.get("bytes"), int) or source["bytes"] <= 0 or not isinstance(source.get("sha256"), str) or re.fullmatch(r"[0-9a-f]{64}", source["sha256"]) is None:
         fail("snapshot: ricevuta AMECO non valida")
+    years = list(range(1960, source["forecastThrough"] + 1))
     indicators = require_list(snapshot["indicators"], "indicators")
     if [item.get("id") for item in indicators] != [item["id"] for item in method["indicators"]]:
         fail("snapshot: ordine indicatori divergente")
@@ -352,12 +366,15 @@ def validate_snapshot(snapshot: dict[str, Any]) -> None:
             or item["sourceSeries"] != source_series_from_method(expected)
         ):
             fail(f"snapshot: contratto indicatore divergente ({item['id']})")
+        expected_codes = {country: [source["selector_template"].format(country=code) for source in expected["source_series"]] for country, code in COUNTRIES}
+        if item["sourceCodes"] != expected_codes:
+            fail("snapshot: source series identity mismatch")
         minimum, maximum = VALUE_RANGES[item["id"]]
         countries = require_dict(item["countries"], f"{item['id']}.countries")
         if tuple(countries) != tuple(country_id for country_id, _ in COUNTRIES):
             fail(f"{item['id']}: paesi inattesi")
         for country_id, points in countries.items():
-            if len(points) != len(EXPECTED_YEARS) or [point.get("year") for point in points] != list(EXPECTED_YEARS):
+            if len(points) != len(years) or [point.get("year") for point in points] != years:
                 fail(f"{item['id']}.{country_id}: anni inattesi")
             for point in points:
                 value = point.get("value")

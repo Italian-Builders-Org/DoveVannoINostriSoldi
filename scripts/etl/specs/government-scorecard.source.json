@@ -22,19 +22,23 @@
     "countries": {
       "italy": {
         "code": "ITA",
-        "label": "Italia"
+        "label": "Italia",
+        "currencyCode": "EURO-ITL"
       },
       "france": {
         "code": "FRA",
-        "label": "Francia"
+        "label": "Francia",
+        "currencyCode": "EURO-FRF"
       },
       "germany": {
         "code": "DEU",
-        "label": "Germania"
+        "label": "Germania",
+        "currencyCode": "EURO-DEM"
       },
       "spain": {
         "code": "ESP",
-        "label": "Spagna"
+        "label": "Spagna",
+        "currencyCode": "EURO-ESP"
       }
     },
     "series": [
@@ -45,7 +49,8 @@
         "file": "AMECO7.CSV",
         "codeTemplate": "{country}.3.1.0.0.RWCDC",
         "title": "Real compensation per employee deflator private consumption: total economy",
-        "unit": "National currency: 2020 = 100"
+        "unit": "National currency: 2020 = 100",
+        "rawUnitTemplate": "(National currency: 2020 = 100)"
       },
       {
         "id": "unemployment",
@@ -54,7 +59,8 @@
         "file": "AMECO1.CSV",
         "codeTemplate": "{country}.1.0.0.0.ZUTN",
         "title": "Unemployment rate: total :- Member States: definition EUROSTAT",
-        "unit": "Percentage of active population"
+        "unit": "Percentage of active population",
+        "rawUnitTemplate": "(Percentage of active population)"
       },
       {
         "id": "real_gdp_per_capita",
@@ -63,7 +69,8 @@
         "file": "AMECO6.CSV",
         "codeTemplate": "{country}.1.1.0.0.RVGDP",
         "title": "Gross domestic product at 2020 reference levels per head of population",
-        "unit": "1000 national currency, 2020 reference levels"
+        "unit": "1000 national currency, 2020 reference levels",
+        "rawUnitTemplate": "1000 {currency}"
       },
       {
         "id": "debt_ratio",
@@ -72,7 +79,8 @@
         "file": "AMECO18.CSV",
         "codeTemplate": "{country}.1.0.319.0.UDGG",
         "title": "General government consolidated gross debt :- Excessive deficit procedure (based on ESA 2010)",
-        "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+        "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+        "rawUnitTemplate": "(Percentage of GDP at current prices (excessive deficit procedure))"
       },
       {
         "id": "primary_balance",
@@ -81,7 +89,8 @@
         "file": "AMECO16.CSV",
         "codeTemplate": "{country}.1.0.319.0.UBLGI",
         "title": "Net lending (+) or net borrowing (-) excluding interest: general government :- ESA 2010 (Including one-off proceeds relative to the allocation of mobile phone licences (UMTS))",
-        "unit": "Percentage of GDP at current prices (excessive deficit procedure)"
+        "unit": "Percentage of GDP at current prices (excessive deficit procedure)",
+        "rawUnitTemplate": "(Percentage of GDP at current prices (excessive deficit procedure))"
       },
       {
         "id": "investment_share",
@@ -92,13 +101,15 @@
           "file": "AMECO3.CSV",
           "codeTemplate": "{country}.1.0.0.0.UIGT",
           "title": "Gross fixed capital formation at current prices: total economy",
-          "unit": "Mrd national currency"
+          "unit": "Mrd national currency",
+          "rawUnitTemplate": "Mrd {currency}"
         },
         "denominator": {
           "file": "AMECO6.CSV",
           "codeTemplate": "{country}.1.0.0.0.UVGD",
           "title": "Gross domestic product at current prices",
-          "unit": "Mrd national currency"
+          "unit": "Mrd national currency",
+          "rawUnitTemplate": "Mrd {currency}"
         },
         "unit": "Percentage of GDP at current prices"
       }

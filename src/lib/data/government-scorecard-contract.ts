@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import sourceSpec from "../../../scripts/etl/specs/government-scorecard.source.json";
+import pageSpec from "../../../scripts/etl/specs/government-scorecard-page.source.json";
+
 import canonicalManifest from "../../../scripts/etl/specs/government-scorecard-methodology.json";
 import {
   GOVERNMENT_SCORECARD_V6_CHRONOLOGY,
@@ -62,10 +65,10 @@ export const governmentScorecardV6ManifestSchema = z.object({
     source_id: z.literal("ameco"),
     source_owner: z.literal("European Commission, Directorate-General for Economic and Financial Affairs"),
     dataset_code: z.literal("AMECO"),
-    vintage: z.literal("Spring 2026 Economic Forecast"),
-    observed_through: z.literal(2024),
-    forecast_from: z.literal(2025),
-    forecast_through: z.literal(2027),
+    vintage: z.literal(sourceSpec.ameco.release),
+    observed_through: z.literal(sourceSpec.ameco.observedThrough),
+    forecast_from: z.literal(sourceSpec.ameco.forecastFrom),
+    forecast_through: z.literal(sourceSpec.ameco.forecastThrough),
   }).strict(),
   countries: z.tuple([z.literal("IT"), z.literal("FR"), z.literal("DE"), z.literal("ES")]),
   peers: z.tuple([z.literal("FR"), z.literal("DE"), z.literal("ES")]),
@@ -186,9 +189,9 @@ export const governmentScorecardV6InputSchema = z.object({
     source_owner: z.string().min(1),
     dataset_code: z.literal("AMECO"),
     vintage: z.string().min(1),
-    published_at: z.literal("2026-06-03"),
-    upstream_updated_at: z.literal("2026-06-03"),
-    retrieved_at: z.literal("2026-08-29T23:11:43Z"),
+    published_at: z.literal(sourceSpec.ameco.releaseDate),
+    upstream_updated_at: z.literal(sourceSpec.ameco.releaseDate),
+    retrieved_at: z.literal(pageSpec.refreshPolicy.scoreAcquiredAt),
     observed_through: z.number().int(),
     forecast_from: z.number().int(),
     forecast_through: z.number().int(),
@@ -196,8 +199,8 @@ export const governmentScorecardV6InputSchema = z.object({
     landing_url: z.literal("https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"),
     reuse_url: z.literal("https://commission.europa.eu/legal-notice_en"),
     license: z.literal("CC BY 4.0 unless otherwise indicated"),
-    raw_sha256: sha256.pipe(z.literal("b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005")),
-    raw_bytes: z.literal(6_181_987),
+    raw_sha256: sha256.pipe(z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_sha256)),
+    raw_bytes: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_bytes),
     limitations: z.array(z.string().min(1)).min(1),
   }).strict(),
   window: z.object({

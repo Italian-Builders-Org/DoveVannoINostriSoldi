@@ -8,6 +8,7 @@ import datetime as dt
 import hashlib
 import json
 import math
+import re
 import os
 import tempfile
 import urllib.parse
@@ -94,7 +95,12 @@ def _fetch_eurostat(dataset: str, filters: tuple[tuple[str, str], ...], since_pe
     request = urllib.request.Request(url, headers={"User-Agent": "DoveVannoINostriSoldi/0.2 data-refresh"})
     try:
         with urllib.request.urlopen(request, timeout=45) as response:
-            payload = response.read()
+            final = urllib.parse.urlparse(response.geturl())
+            if final.scheme != "https" or final.netloc != "ec.europa.eu":
+                raise SupplementalSnapshotError("Eurostat redirect outside official origin")
+            payload = response.read(10 * 1024 * 1024 + 1)
+            if len(payload) > 10 * 1024 * 1024:
+                raise SupplementalSnapshotError("Eurostat response too large")
     except OSError as exc:
         raise SupplementalSnapshotError(f"Eurostat download failed: {dataset}") from exc
     try:
@@ -103,7 +109,50 @@ def _fetch_eurostat(dataset: str, filters: tuple[tuple[str, str], ...], since_pe
         raise SupplementalSnapshotError(f"Eurostat returned invalid JSON: {dataset}") from exc
     if not isinstance(data, dict) or "error" in data:
         raise SupplementalSnapshotError(f"Eurostat returned an error: {dataset}")
+    validate_jsonstat(data, filters)
     return data, payload, url
+
+
+def validate_jsonstat(data: dict[str, Any], filters: tuple[tuple[str, str], ...]) -> None:
+    """Validate the raw cube before selectors can silently discard schema drift."""
+    if data.get("version") != "2.0" or data.get("class") != "dataset" or data.get("source") != "ESTAT":
+        raise SupplementalSnapshotError("Eurostat schema/source identity mismatch")
+    expected = {"geo": [code for code, _ in COUNTRIES]}
+    for key, value in filters:
+        expected.setdefault(key, []).append(value)
+    dimensions, sizes = data.get("id"), data.get("size")
+    if (not isinstance(dimensions, list) or len(dimensions) != len(set(dimensions))
+            or set(dimensions) != set(expected) | {"time"}
+            or not isinstance(sizes, list) or len(sizes) != len(dimensions)):
+        raise SupplementalSnapshotError("Eurostat dimension drift")
+    for dimension, size in zip(dimensions, sizes, strict=True):
+        positions = _category_positions(data, dimension)
+        if type(size) is not int or not 0 < size <= 1_000_000 or any(type(index) is not int for index in positions.values()) or sorted(positions.values()) != list(range(size)):
+            raise SupplementalSnapshotError("Eurostat dimension size mismatch")
+        if dimension != "time" and set(positions) != set(expected[dimension]):
+            raise SupplementalSnapshotError(f"Eurostat filter/identity drift: {dimension}")
+        if dimension == "time":
+            pattern = {"A": r"\d{4}", "Q": r"\d{4}-Q[1-4]", "M": r"\d{4}-(?:0[1-9]|1[0-2])"}[expected["freq"][0]]
+            if any(re.fullmatch(pattern, period) is None for period in positions):
+                raise SupplementalSnapshotError("Eurostat period drift")
+    count = math.prod(sizes)
+    if count > 1_000_000:
+        raise SupplementalSnapshotError("Eurostat cube too large")
+    for field in ("value", "status"):
+        values = data.get(field, {} if field == "status" else None)
+        if isinstance(values, list):
+            if len(values) != count:
+                raise SupplementalSnapshotError("Eurostat incomplete cube")
+            values = dict(enumerate(values))
+        if not isinstance(values, dict) or any(not str(key).isdigit() or not 0 <= int(key) < count for key in values):
+            raise SupplementalSnapshotError("Eurostat malformed cube")
+        for value in values.values():
+            if field == "status":
+                if value is not None and not isinstance(value, str):
+                    raise SupplementalSnapshotError("Eurostat malformed status")
+                _publication_status(value)
+            elif value is not None and (type(value) not in (int, float) or not math.isfinite(value)):
+                raise SupplementalSnapshotError("Eurostat malformed value")
 
 
 def _category_positions(data: dict[str, Any], dimension: str) -> dict[str, int]:
@@ -176,6 +225,8 @@ def _period_start(period: str) -> str:
 
 def _publication_status(upstream_status: str | None) -> str:
     flags = set(upstream_status or "")
+    if flags - set("bdepnsuz;"):
+        raise SupplementalSnapshotError("unsupported or forecast Eurostat publication flag")
     if "e" in flags:
         return "estimated"
     if "p" in flags:
@@ -286,7 +337,7 @@ def _primary_balance_series(data: dict[str, Any], source: dict[str, Any]) -> dic
 def _ameco_source(core: dict[str, Any]) -> dict[str, Any]:
     raw = core["sources"]["ameco"]
     return {
-        "id": "ameco:2026-spring",
+        "id": f"ameco:{raw['release'].split()[1]}-{raw['release'].split()[0].lower()}",
         "owner": raw["owner"],
         "title": raw["title"],
         "dataset_code": "AMECO",
@@ -787,9 +838,9 @@ def _contexts_for_snapshot(core: dict[str, Any], chronology: dict[str, Any], ser
     return existing
 
 
-def build_snapshot(retrieved_at: str) -> dict[str, Any]:
-    core = _load(CORE_PATH)
-    chronology = _load(CHRONOLOGY_PATH)
+def build_snapshot(retrieved_at: str, *, core=None, chronology=None, existing=None, core_hash=None) -> dict[str, Any]:
+    core = core if core is not None else _load(CORE_PATH)
+    chronology = chronology if chronology is not None else _load(CHRONOLOGY_PATH)
     ameco = _ameco_source(core)
     inflation_data, inflation_payload, inflation_url = _fetch_eurostat("prc_hicp_minr", (("freq", "M"), ("unit", "RCH_A"), ("coicop18", "TOTAL")), "1996-01")
     unemployment_data, unemployment_payload, unemployment_url = _fetch_eurostat("une_rt_m", (("freq", "M"), ("s_adj", "SA"), ("age", "TOTAL"), ("sex", "T"), ("unit", "PC_ACT")), "1997-01")
@@ -827,7 +878,7 @@ def build_snapshot(retrieved_at: str) -> dict[str, Any]:
     snapshot = {
         "schema_version": SCHEMA_VERSION,
         "snapshot_version": SNAPSHOT_VERSION,
-        "as_of_date": SNAPSHOT_DATE,
+        "as_of_date": retrieved_at[:10],
         "coverage": {
             "first_period": "1995",
             "latest_published_periods": [{"indicator_id": item["indicator_id"], "period": item["latest_published_period"]} for item in ordered_series],
@@ -846,22 +897,27 @@ def build_snapshot(retrieved_at: str) -> dict[str, Any]:
             population_source,
         ],
         "series": ordered_series,
-        "contexts": _contexts_for_snapshot(core, chronology, ordered_series, retrieved_at),
-        "score_contract": {"supplemental_score_impact": "none", "core_artifact_sha256": _sha256(CORE_PATH.read_bytes())},
+        "contexts": existing["contexts"] if existing is not None else _contexts_for_snapshot(core, chronology, ordered_series, retrieved_at),
+        "score_contract": {"supplemental_score_impact": "none", "core_artifact_sha256": core_hash or _sha256(CORE_PATH.read_bytes())},
     }
-    validate(snapshot)
+    validate(snapshot, core_hash=core_hash, chronology=chronology)
     return snapshot
 
 
-def validate(snapshot: dict[str, Any]) -> None:
+def validate(snapshot: dict[str, Any], *, core_hash=None, chronology=None) -> None:
     expected_keys = {"schema_version", "snapshot_version", "as_of_date", "coverage", "sources", "series", "contexts", "score_contract"}
     if set(snapshot) != expected_keys:
         raise SupplementalSnapshotError("unexpected snapshot fields")
+    try:
+        if dt.date.fromisoformat(snapshot["as_of_date"]).isoformat() != snapshot["as_of_date"]:
+            raise ValueError
+    except (TypeError, ValueError) as exc:
+        raise SupplementalSnapshotError("invalid snapshot reference date") from exc
     if snapshot.get("schema_version") != SCHEMA_VERSION or snapshot.get("snapshot_version") != SNAPSHOT_VERSION:
         raise SupplementalSnapshotError("snapshot identity mismatch")
     if snapshot.get("score_contract") != {
         "supplemental_score_impact": "none",
-        "core_artifact_sha256": _sha256(CORE_PATH.read_bytes()),
+        "core_artifact_sha256": core_hash or _sha256(CORE_PATH.read_bytes()),
     }:
         raise SupplementalSnapshotError("page data must not affect the score and must reference the current core artifact")
     series = snapshot.get("series")
@@ -887,7 +943,8 @@ def validate(snapshot: dict[str, Any]) -> None:
         if item.get("latest_published_period") != max(all_periods):
             raise SupplementalSnapshotError("latest published period mismatch")
     contexts = snapshot.get("contexts")
-    if not isinstance(contexts, list) or len(contexts) != 17:
+    chronology = chronology if chronology is not None else _load(CHRONOLOGY_PATH)
+    if not isinstance(contexts, list) or [(item.get("government_id"), item.get("government_name")) for item in contexts] != [(item["id"], item["name"]) for item in chronology["governments"]]:
         raise SupplementalSnapshotError("context government coverage mismatch")
     for context in contexts:
         slides = context.get("slides", [])

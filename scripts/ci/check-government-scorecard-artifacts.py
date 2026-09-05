@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts" / "etl"))
 import government_scorecard_chronology  # noqa: E402
 import government_scorecard_page  # noqa: E402
 import government_scorecard_snapshot  # noqa: E402
+import government_scorecard_refresh  # noqa: E402
 
 
 def main() -> None:
@@ -31,7 +32,8 @@ def main() -> None:
     )
     government_scorecard_snapshot.validate_snapshot(scorecard)
     government_scorecard_chronology.validate_registry(chronology)
-    government_scorecard_page.validate(page)
+    policy = government_scorecard_refresh.load_policy(government_scorecard_refresh.POLICY_PATH)
+    government_scorecard_refresh.validate_release(scorecard, page, chronology, policy)
     print("ok: government scorecard core and page snapshots")
 
 

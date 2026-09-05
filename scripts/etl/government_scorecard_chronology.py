@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
+import urllib.parse
 import tempfile
 from datetime import date
 from pathlib import Path
@@ -77,32 +79,39 @@ def validate_registry(candidate: object) -> dict[str, Any]:
         raise RegistryValidationError("campi del registro v6 inattesi")
     if candidate.get("schemaVersion") != 1 or candidate.get("registryVersion") != "quirinale-government-oaths-v1":
         raise RegistryValidationError("versione del registro v6 inattesa")
-    if candidate.get("verifiedAt") != "2026-09-01" or candidate.get("asOfDate") != "2026-08-29":
-        raise RegistryValidationError("date congelate del registro v6 inattese")
     _iso_date(candidate["verifiedAt"], "verifiedAt")
     _iso_date(candidate["asOfDate"], "asOfDate")
+    if candidate["verifiedAt"] < candidate["asOfDate"]:
+        raise RegistryValidationError("registro verificato prima della data di riferimento")
     if candidate.get("eventDefinition") != "Giuramento del Presidente del Consiglio e dei ministri nelle mani del Presidente della Repubblica":
         raise RegistryValidationError("evento istituzionale inatteso")
     if candidate.get("constitutionalSourceUrl") != "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-i/articolo-93":
         raise RegistryValidationError("fonte costituzionale inattesa")
 
     governments = candidate.get("governments")
-    if not isinstance(governments, list) or len(governments) != len(EXPECTED_GOVERNMENTS):
-        raise RegistryValidationError("il registro deve contenere esattamente 17 governi")
+    if not isinstance(governments, list) or len(governments) < len(EXPECTED_GOVERNMENTS):
+        raise RegistryValidationError("il registro deve contenere almeno i 17 governi verificati")
     previous_start: str | None = None
-    for index, (government, expected) in enumerate(zip(governments, EXPECTED_GOVERNMENTS, strict=True)):
+    ids = set()
+    for index, government in enumerate(governments):
         if not isinstance(government, dict) or set(government) != GOVERNMENT_FIELDS:
             raise RegistryValidationError(f"governo {index}: campi mancanti o editoriali inattesi")
-        expected_id, expected_name, expected_start, source_key = expected
         start = _iso_date(government.get("startDate"), f"governo {index}.startDate")
-        if (
-            government.get("id") != expected_id
-            or government.get("name") != expected_name
-            or start != expected_start
-            or government.get("sourceOwner") != "Presidenza della Repubblica"
-            or government.get("sourceUrl") != SOURCE_URLS[source_key]
-        ):
-            raise RegistryValidationError(f"governo {index}: ID, nome, data o fonte divergente")
+        if index < len(EXPECTED_GOVERNMENTS):
+            expected_id, expected_name, expected_start, source_key = EXPECTED_GOVERNMENTS[index]
+            if (government.get("id"), government.get("name"), start, government.get("sourceUrl")) != (expected_id, expected_name, expected_start, SOURCE_URLS[source_key]):
+                raise RegistryValidationError(f"governo {index}: ID, nome, data o fonte divergente")
+        else:
+            url = urllib.parse.urlparse(government.get("sourceUrl", ""))
+            if (url.scheme != "https" or url.netloc != "www.quirinale.it"
+                    or not url.path.startswith("/it/notizie/") or len(url.path) <= len("/it/notizie/")
+                    or url.query or url.fragment or start > candidate["asOfDate"]):
+                raise RegistryValidationError("nuovo giuramento: fonte o data non verificabile")
+        if (government.get("sourceOwner") != "Presidenza della Repubblica"
+                or not isinstance(government.get("id"), str) or not re.fullmatch(r"[a-z0-9-]+", government["id"])
+                or government["id"] in ids or not isinstance(government.get("name"), str) or not government["name"].strip()):
+            raise RegistryValidationError("identita governo inattesa o duplicata")
+        ids.add(government["id"])
         locator = government.get("sourceLocator")
         if not isinstance(locator, str) or len(locator.strip()) < 30 or start[:4] not in locator:
             raise RegistryValidationError(f"governo {index}: locator Quirinale mancante")

@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
+import pageSpec from "../../../scripts/etl/specs/government-scorecard-page.source.json";
+
 import supplementalSnapshot from "@/data/generated/government-scorecard-page.json";
 import { GOVERNMENT_SCORECARD_V6_CHRONOLOGY } from "@/lib/government-scorecard-chronology";
 
@@ -190,7 +192,7 @@ const contextSlideSchema = z.discriminatedUnion("status", [readyContextSlideSche
 export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
   schema_version: z.literal(4),
   snapshot_version: z.literal("government-scorecard-page-2026-09-03-r3"),
-  as_of_date: z.literal("2026-09-03"),
+  as_of_date: z.iso.date(),
   coverage: z.object({
     first_period: z.literal("1995"),
     latest_published_periods: z.array(z.object({
@@ -205,24 +207,20 @@ export const governmentScorecardV6SupplementalSnapshotSchema = z.object({
     government_id: z.string().regex(/^[a-z0-9-]+$/),
     government_name: z.string().min(1),
     slides: z.array(contextSlideSchema).length(6),
-  }).strict()).length(17),
+  }).strict()).length(GOVERNMENT_SCORECARD_V6_CHRONOLOGY.length),
   score_contract: z.object({
     supplemental_score_impact: z.literal("none"),
-    core_artifact_sha256: z.literal("f814dfe6f5bf7f6c93f1c52282e0f1829835a797bc14d1d81d3d684a3a7f4894"),
+    core_artifact_sha256: z.literal(pageSpec.refreshPolicy.coreArtifactSha256),
   }).strict(),
 }).strict().superRefine((snapshot, context) => {
-  const expectedSourceIds = [
-    "ameco:2026-spring",
-    "eurostat:prc_hicp_minr",
-    "eurostat:une_rt_m",
-    "eurostat:lfsi_emp_q",
-    "eurostat:namq_10_pc",
-    "eurostat:gov_10dd_edpt1",
-    "eurostat:gov_10q_ggdebt",
-    "eurostat:gov_10q_ggnfa",
-    "eurostat:namq_10_gdp",
-    "eurostat:nama_10_pe",
-  ];
+  const expectedSourceIds = pageSpec.refreshPolicy.approvedSources.map((source) => source.id);
+  snapshot.sources.forEach((source, index) => {
+    const { retrieved_at, ...receipt } = source;
+    void retrieved_at;
+    if (canonicalHash(receipt) !== canonicalHash(pageSpec.refreshPolicy.approvedSources[index])) {
+      context.addIssue({ code: "custom", message: "ricevuta diversa dalla fonte approvata", path: ["sources", index] });
+    }
+  });
   if (snapshot.sources.some((source, index) => source.id !== expectedSourceIds[index])) {
     context.addIssue({ code: "custom", message: "registro fonti divergente", path: ["sources"] });
   }

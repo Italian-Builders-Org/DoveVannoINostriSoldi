@@ -107,5 +107,175 @@
     "primaryBalance": "net_lending_percent_gdp + interest_payable_percent_gdp"
   },
   "contextRule": "A single geopolitics, shocks and crises category contains only essential source-backed events with a documented economic channel; an empty category is allowed only after the verified catalog has been checked.",
-  "scoreImpact": "none"
+  "scoreImpact": "none",
+  "refreshPolicy": {
+    "contextReview": {
+      "reviewedAt": "2026-09-03",
+      "contextsSha256": "0f26fd970ae9e586acc3485ca9135aa68c5e77912e904b46e81669309aa59105",
+      "chronologySha256": "cd7c8b6ab9e54da4fc7a8604de2b29963a47664e245380416b9a44358966c01e"
+    },
+    "approvedSources": [
+      {
+        "id": "ameco:2026-spring",
+        "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
+        "title": "AMECO annual macro-economic database",
+        "dataset_code": "AMECO",
+        "source_version": "Spring 2026 Economic Forecast",
+        "query_url": "https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip",
+        "landing_url": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+        "terms_url": "https://commission.europa.eu/legal-notice_en",
+        "upstream_updated_at": "2026-06-03",
+        "raw_bytes": 6181987,
+        "raw_sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005"
+      },
+      {
+        "id": "eurostat:prc_hicp_minr",
+        "owner": "Eurostat",
+        "title": "HICP monthly annual rate of change",
+        "dataset_code": "prc_hicp_minr",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-09-01T23:00:00+0200",
+        "raw_bytes": 34093,
+        "raw_sha256": "956328f6b1faf0df194c7d875fcc99eb56d6b86336592e34c76f6233c1f0bd65"
+      },
+      {
+        "id": "eurostat:une_rt_m",
+        "owner": "Eurostat",
+        "title": "Monthly unemployment rate",
+        "dataset_code": "une_rt_m",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?lang=en&freq=M&s_adj=SA&age=TOTAL&sex=T&unit=PC_ACT&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1997-01",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-09-01T11:00:00+0200",
+        "raw_bytes": 30824,
+        "raw_sha256": "55c27931bf65ab8819cca2ae504c86a82f0d9886bc0bec094c224576998c1ff3"
+      },
+      {
+        "id": "eurostat:lfsi_emp_q",
+        "owner": "Eurostat",
+        "title": "Quarterly seasonally adjusted employment rate",
+        "dataset_code": "lfsi_emp_q",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/lfsi_emp_q?lang=en&freq=Q&indic_em=EMP_LFS&s_adj=SA&sex=T&age=Y20-64&unit=PC_POP&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2009-Q1",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-06-11T23:00:00+0200",
+        "raw_bytes": 9530,
+        "raw_sha256": "7e770c1467f45eabcda60daade28ad6f35eddfa678f956291ab05ff1fded9bcd"
+      },
+      {
+        "id": "eurostat:namq_10_pc",
+        "owner": "Eurostat",
+        "title": "Quarterly real GDP per capita",
+        "dataset_code": "namq_10_pc",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_pc?lang=en&freq=Q&unit=CLV_I20_HAB&s_adj=NSA&na_item=B1GQ&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-09-03T11:00:00+0200",
+        "raw_bytes": 14119,
+        "raw_sha256": "0487b09adc59e4b80c870f3c56feabf2efc47ca0fc15fdc1f46d0903a6da20b5"
+      },
+      {
+        "id": "eurostat:gov_10dd_edpt1",
+        "owner": "Eurostat",
+        "title": "Government deficit/surplus, debt and associated data",
+        "dataset_code": "gov_10dd_edpt1",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10dd_edpt1?lang=en&freq=A&unit=MIO_EUR&sector=S13&na_item=GD&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-04-22T11:00:00+0200",
+        "raw_bytes": 5348,
+        "raw_sha256": "54d543a133f589a32bcbd81e1c07e5226c5db7f9b65937d801a400a0dd45d962"
+      },
+      {
+        "id": "eurostat:gov_10q_ggdebt",
+        "owner": "Eurostat",
+        "title": "Quarterly general government gross debt",
+        "dataset_code": "gov_10q_ggdebt",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10q_ggdebt?lang=en&freq=Q&unit=PC_GDP&sector=S13&na_item=GD&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-07-21T11:00:00+0200",
+        "raw_bytes": 12246,
+        "raw_sha256": "6c885cdb3e49fb676364eec17a9796672f42569a7b5fa11d066e99d537394335"
+      },
+      {
+        "id": "eurostat:gov_10q_ggnfa",
+        "owner": "Eurostat",
+        "title": "Quarterly government finance statistics",
+        "dataset_code": "gov_10q_ggnfa",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10q_ggnfa?lang=en&freq=Q&unit=PC_GDP&s_adj=NSA&sector=S13&na_item=B9&na_item=D41PAY&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-07-21T11:00:00+0200",
+        "raw_bytes": 17310,
+        "raw_sha256": "7ccdd011fa8f9fcd2289bd35eb99602f2a01f4a32c4be5ae1bf2cfe7a5d1df4b"
+      },
+      {
+        "id": "eurostat:namq_10_gdp",
+        "owner": "Eurostat",
+        "title": "Quarterly national accounts main GDP aggregates",
+        "dataset_code": "namq_10_gdp",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?lang=en&freq=Q&unit=PC_GDP&s_adj=SCA&na_item=P51G&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-09-03T11:00:00+0200",
+        "raw_bytes": 13020,
+        "raw_sha256": "ad1fcf26cb8cfb4a2d18e3c676964e799606970b52ac196eb4215747e33eb820"
+      },
+      {
+        "id": "eurostat:nama_10_pe",
+        "owner": "Eurostat",
+        "title": "Population and employment by main activity",
+        "dataset_code": "nama_10_pe",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_pe?lang=en&freq=A&unit=THS_PER&na_item=POP_NC&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+        "upstream_updated_at": "2026-09-03T11:00:00+0200",
+        "raw_bytes": 5491,
+        "raw_sha256": "bcc55ecbb2f5410d93ea6c6d993fc3a94f581d4b52b7bf9318cef9e656fd358d"
+      }
+    ],
+    "approvedPeriods": [
+      {
+        "indicator_id": "inflation",
+        "period": "2026-08"
+      },
+      {
+        "indicator_id": "real_compensation",
+        "period": "2024"
+      },
+      {
+        "indicator_id": "unemployment",
+        "period": "2026-07"
+      },
+      {
+        "indicator_id": "employment_rate",
+        "period": "2026-Q1"
+      },
+      {
+        "indicator_id": "real_gdp_per_capita",
+        "period": "2026-Q2"
+      },
+      {
+        "indicator_id": "debt_ratio",
+        "period": "2026-Q1"
+      },
+      {
+        "indicator_id": "debt_per_capita",
+        "period": "2025"
+      },
+      {
+        "indicator_id": "primary_balance",
+        "period": "2026-Q1"
+      },
+      {
+        "indicator_id": "investment_share",
+        "period": "2026-Q2"
+      }
+    ],
+    "coreArtifactSha256": "f814dfe6f5bf7f6c93f1c52282e0f1829835a797bc14d1d81d3d684a3a7f4894",
+    "scoreAcquiredAt": "2026-08-29T23:11:43Z"
+  }
 }

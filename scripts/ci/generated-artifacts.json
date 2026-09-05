@@ -1032,6 +1032,32 @@
       "trustModel": "Source-lock: le nove risposte SDMX-ML ufficiali dei package dfb_st_naspi_* (IODL 2.0 verificata per package) sono acquisite localmente e vincolate per URL, byte, SHA-256 e istante di preparazione SDMX; --check valida il bundle committato senza rete. Le distribuzioni CSV e JSON della stessa fonte sono scartate e il motivo e' nel lock. Copertura piena, celle soppresse distinte dallo zero e tre riconciliazioni ESATTE (regioni sulle ripartizioni, province sulle regioni, taglio per sesso contro taglio per eta') falliscono chiuse."
     },
     {
+      "id": "mef-irpef-dettaglio-2017-2025",
+      "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
+      "files": [
+        "src/data/generated/mef-irpef-dettaglio-2017-2025.data.json",
+        "src/data/generated/mef-irpef-dettaglio-2017-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_mef_irpef_dettaglio_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/mef-irpef-dettaglio.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --input-dir <cartella coi 79 CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/mef-irpef-dettaglio-2017-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: i 79 CSV ufficiali del catalogo open data del Dipartimento delle Finanze (CC BY 3.0 IT verificata per dataset) sono acquisiti localmente e vincolati per URL, byte, SHA-256 e schema; lo schema e' pinnato PER FILE (18 schemi distinti) e --check valida il bundle committato senza rete. Celle vuote distinte dagli zeri con conteggio esatto, valori negativi ammessi col segno, due file elencati ma assenti dal catalogo e un rilascio pubblicato senza righe restano dichiarati: tutto questo fallisce chiuso se cambia."
+    },
+    {
       "id": "istat-enterprise-turnover",
       "owner": "ISTAT aggregate enterprise turnover snapshot (Frame Territoriale Anticipato 2024)",
       "files": [

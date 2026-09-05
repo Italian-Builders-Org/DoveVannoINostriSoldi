@@ -28,6 +28,7 @@ export const DATASET_IDS = [
   "istat_epea",
   "istat_poverta_assoluta",
   "inps_naspi",
+  "mef_irpef_dettaglio",
   "istat_pensionati_persone",
   "cpt_finanza_regionale",
   "mef_irpef_comunale",
@@ -76,6 +77,8 @@ export type DatasetQuery = {
   territory?: string;
   table?: string;
   measure?: string;
+  family?: string;
+  breakdown?: string;
   country?: string;
   cofog?: string;
   channel?: "convenzioni" | "mepa";
@@ -152,6 +155,7 @@ const exampleQueries = {
   istat_epea: { dataset: "istat_epea", year: 2022, sector: "S13_15", cepa: "CEPA1" },
   istat_poverta_assoluta: { dataset: "istat_poverta_assoluta", territory: "IT", year: 2024 },
   inps_naspi: { dataset: "inps_naspi", table: "beneficiari_02", year: 2022 },
+  mef_irpef_dettaglio: { dataset: "mef_irpef_dettaglio", family: "tipo_reddito", breakdown: "regione", year: 2025 },
   istat_pensionati_persone: { dataset: "istat_pensionati_persone", year: 2022 },
   cpt_finanza_regionale: { dataset: "cpt_finanza_regionale", year: 2023, region: "Calabria" },
   mef_irpef_comunale: {
@@ -241,6 +245,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "istat_epea", title: "ISTAT · spesa per la protezione dell'ambiente (EPEA)", summary: "Conti della spesa per la protezione dell'ambiente, edizione 2025M2, anni 2016–2022, per settore istituzionale e classe CEPA.", sourceIds: ["istat-epea"], freshness: "snapshot", filters: ["year", "sector", "cepa"], caveat: "Contabilità SEC di competenza: non è cassa SIOPE. Non sommare né confrontare in silenzio con RGS, PNRR Missione 2 o SAD/SAF. TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono. Edizione 2025M2 fissata.", },
   { id: "istat_poverta_assoluta", title: "ISTAT · povertà assoluta", summary: "Indicatori ufficiali di povertà assoluta, serie corrente post-revisione, anni 2014–2024, per Italia e ripartizioni: incidenza familiare e individuale, intensità, composizione percentuale e conteggi in migliaia di famiglie e individui.", sourceIds: ["istat-poverta"], freshness: "snapshot", filters: ["territory", "year", "measure"], caveat: "NON è spesa pubblica: sono incidenze, intensità e conteggi, mai sommabili né accostabili a SIOPE, OpenBDAP o IRPEF. Incidenza, intensità e composizione sono misure diverse con unità diverse e non si sommano fra loro; famiglie e individui sono denominatori distinti. Solo i conteggi sono sommabili fra territori: sommare le incidenze delle ripartizioni non dà il valore nazionale. Le aree composite Nord e Mezzogiorno contengono già le loro parti. È la serie corrente dal 2014: le serie 34_201/34_202 finiscono nel 2013 e la 34_728 è interrotta, non vanno mai giuntate. ISTAT non pubblica la povertà a livello comunale. Il dato non misura efficacia di una manovra né responsabilità di un governo.", },
   { id: "inps_naspi", title: "INPS · NASpI beneficiari e trattamenti", summary: "Beneficiari e trattamenti NASpI dal 2018 al 2022 per ripartizione, regione e provincia, con sesso, classe di età e durata teorica, da nove tabelle SDMX.", sourceIds: ["inps-naspi"], freshness: "snapshot", filters: ["table", "measure", "year", "territory"], caveat: "Beneficiari e trattamenti sono misure diverse — persone contro periodi di prestazione — e non vanno sommate né confrontate. Sono conteggi, NON euro: nessuna somma con la spesa per prestazioni, con SIOPE o con i bilanci INPS. È un flusso annuale, non lo stock di pensioni vigenti o di invalidità civile già in piattaforma, e non è sommabile fra anni. Le celle soppresse per privacy restano nulle e non sono zeri osservati. Territorio, sesso, classe di età e durata sono dimensioni distinte e non denominatori intercambiabili. Il numero di beneficiari non dice nulla su adeguatezza o merito della prestazione." },
+  { id: "mef_irpef_dettaglio", title: "MEF · dettaglio IRPEF per regione, età e sesso", summary: "Tipo di reddito, calcolo IRPEF e bonus dichiarati, incrociati con la classe di reddito complessivo, per regione, classe di età e sesso: dichiarazioni 2017-2025, anni di imposta 2016-2024. Il filtro year indica l’anno di dichiarazione.", sourceIds: ["mef-irpef-dettaglio"], freshness: "snapshot", filters: ["family", "breakdown", "year", "limit", "offset"], caveat: "Imposta e redditi DICHIARATI, non gettito riscosso: nessuna somma con SIOPE o con i bilanci pubblici. Frequenza, Ammontare in euro e Numero contribuenti sono tre nature distinte e non si sommano né si confrontano. Gli anni indicati sono anni di dichiarazione, non di imposta. La famiglia bonus misura due strumenti diversi sotto lo stesso nome — Bonus IRPEF fino al 2020, Trattamento integrativo dal 2022, entrambi nel 2021 — e le serie non sono concatenabili. Una cella vuota non è uno zero osservato. Le dimensioni non sono denominatori intercambiabili e i tagli non si sommano fra loro. Alcune misure esistono in un taglio e non in un altro nello stesso anno: l\u2019assenza è dichiarata, mai riempita." },
   { id: "inps_invalidita_civile", title: "Prestazioni INPS di invalidità civile", summary: "Spesa nazionale, stock di prestazioni e nuove pensioni di invalidità civile per regione.", sourceIds: ["inps"], freshness: "snapshot", filters: ["year", "region"], caveat: "Prestazioni, pensioni, spesa e nuove decorrenze sono misure diverse. I dati aggregati non provano frode e non consentono attribuzioni individuali." },
   { id: "inps_pensioni_vigenti", title: "Pensioni erogate dall'INPS", summary: "Stock di pensioni vigenti al 1 gennaio 2026, composizione per natura, categoria e gestione, e serie dei conteggi 2012-2026.", sourceIds: ["inps"], freshness: "snapshot", filters: [], caveat: "Perimetro solo INPS, inclusa la Gestione dipendenti pubblici ed esclusa Ex Inpgi. Stock, liquidazioni e tavola per anno di decorrenza restano misure diverse. Non è sommabile con il Casellario ISTAT né con la pagina Invalidità civile." },
   { id: "istat_pensioni_prestazioni", title: "Pensioni ISTAT · prestazioni", summary: "Numero di prestazioni pensionistiche, importo lordo annuo e importo lordo medio per categoria, dal 2012 al 2022.", sourceIds: ["istat-casellario-pensioni"], freshness: "snapshot", filters: ["year"], caveat: "Il denominatore è il numero di prestazioni, non il numero di persone. Gli importi sono lordi e nominali, espressi in migliaia di euro per i totali e in euro per la media; i conteggi delle categorie riconciliano esattamente, mentre i relativi importi possono differire dal totale di 1-2 migliaia di euro per arrotondamento della fonte. Non è sommabile con pensionati né con CIVDIS/invalidità civile INPS." },

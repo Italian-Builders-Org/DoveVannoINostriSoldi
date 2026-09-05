@@ -5,6 +5,7 @@ import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
+import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
@@ -72,6 +73,10 @@ const exhaustiveLatestDataBySlug = {
   "inps-naspi": {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,
+  },
+  "mef-irpef-dettaglio": {
+    kind: "period",
+    label: `${mefIrpefDettaglioData.taxPeriod.from}-${mefIrpefDettaglioData.taxPeriod.to} (anni di imposta)`,
   },
   siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),

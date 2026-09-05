@@ -360,6 +360,8 @@ test("MCP query tool describes every input parameter for clients and directories
     "country",
     "territory",
     "table",
+    "family",
+    "breakdown",
     "measure",
     "cofog",
     "period",

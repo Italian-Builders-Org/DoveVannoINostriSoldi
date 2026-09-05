@@ -55,6 +55,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-epea",
   "istat-poverta",
   "inps-naspi",
+  "mef-irpef-dettaglio",
   "ameco",
   "governi-presidenza",
 ];

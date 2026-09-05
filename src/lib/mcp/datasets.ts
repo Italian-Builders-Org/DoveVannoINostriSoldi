@@ -277,6 +277,13 @@ offset: query.offset,
         ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
       });
     }
+    case "mef_irpef_dettaglio": {
+      const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryMefIrpefDettaglio({ family: query.family, breakdown: query.breakdown, year: query.year, limit: query.limit, offset: query.offset }),
+      });
+    }
     case "inps_naspi": {
       const { queryInpsNaspi } = await import("@/lib/inps-naspi-snapshot");
       return jsonSafe({

@@ -100,6 +100,9 @@ def format_value(value: Any) -> str | None:
 def pick_period(payload: Any) -> str | None:
     if not isinstance(payload, dict):
         return None
+    tax_period = payload.get("taxPeriod")
+    if isinstance(tax_period, dict) and all(type(tax_period.get(key)) is int for key in ("from", "to")):
+        return f"{tax_period['from']}-{tax_period['to']} (anni di imposta)"
     years = payload.get("series", {}).get("years") if isinstance(payload.get("series"), dict) else None
     if isinstance(years, list) and years and all(isinstance(year, int) for year in years):
         return f"{min(years)}-{max(years)}"

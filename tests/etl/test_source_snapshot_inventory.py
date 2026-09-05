@@ -34,3 +34,8 @@ class SourceSnapshotInventoryTests(unittest.TestCase):
         self.assertEqual(module["pick_period"](payload), "2017-2026")
         self.assertEqual(module["pick_observed"](payload), "2026-09-05")
         self.assertIsNone(module["pick_period"]({"source": payload["source"]}))
+
+    def test_tax_period_takes_precedence_over_declaration_period(self):
+        module = runpy.run_path(str(SCRIPT))
+        payload = {"period": {"from": 2017, "to": 2025}, "taxPeriod": {"from": 2016, "to": 2024}}
+        self.assertEqual(module["pick_period"](payload), "2016-2024 (anni di imposta)")

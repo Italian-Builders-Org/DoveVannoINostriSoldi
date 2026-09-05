@@ -431,6 +431,34 @@ test("la proiezione MCP eurostat_cofog rifiuta filtri non dichiarati", async () 
   );
 });
 
+test("il dataset MCP mef_irpef_dettaglio dichiara fonte, filtri e caveat sulle nature", () => {
+  const irpef = datasetCatalog.find((dataset) => dataset.id === "mef_irpef_dettaglio");
+  assert.deepEqual(irpef.sourceIds, ["mef-irpef-dettaglio"]);
+  assert.deepEqual(irpef.filters, ["family", "breakdown", "year", "limit", "offset"]);
+  assert.match(irpef.caveat, /non gettito riscosso/i);
+  assert.match(irpef.caveat, /due strumenti diversi/);
+  assert.match(irpef.caveat, /non è uno zero/);
+  assert.equal(irpef.freshness, "snapshot");
+});
+
+test("la proiezione MCP mef_irpef_dettaglio filtra per famiglia, taglio e anno", async () => {
+  const result = await queryPublicDataset({
+    dataset: "mef_irpef_dettaglio", family: "tipo_reddito", breakdown: "regione", year: 2025,
+  });
+  assert.equal(result.dataset, "mef_irpef_dettaglio");
+  assert.equal(result.tables.length, 1);
+  assert.equal(result.tables[0].table.id, "REG_tipo_reddito_2025");
+  assert.equal(result.source.licenseId, "CC-BY-3.0-IT");
+  assert.equal(result.caveats.length > 0, true);
+});
+
+test("la proiezione MCP mef_irpef_dettaglio rifiuta filtri non dichiarati", async () => {
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "mef_irpef_dettaglio", region: "Lazio" }),
+    /Filtri non supportati/,
+  );
+});
+
 test("il dataset MCP inps_naspi dichiara fonte, filtri e caveat sulle due misure", () => {
   const naspi = datasetCatalog.find((dataset) => dataset.id === "inps_naspi");
   assert.deepEqual(naspi.sourceIds, ["inps-naspi"]);

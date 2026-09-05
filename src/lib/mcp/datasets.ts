@@ -63,6 +63,13 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "siope_entrate_comuni": {
+      const { querySiopeMunicipalReceipts } = await import("@/lib/siope-receipts");
+      return jsonSafe(querySiopeMunicipalReceipts({
+        year: query.year, region: query.region, code: query.code, query: query.query,
+        limit: query.limit, offset: query.offset,
+      }));
+    }
     case "siope_comuni": {
       const { availableSiopeYears, getSiopeMunicipalSnapshot } = await import("@/lib/siope-snapshot");
       const { getSiopeMunicipalityPeerObservations } = await import("@/lib/siope-municipality-detail");

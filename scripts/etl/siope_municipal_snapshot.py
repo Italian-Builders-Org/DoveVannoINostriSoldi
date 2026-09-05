@@ -18,20 +18,11 @@ region", not "all public money spent inside that territory".
 from __future__ import annotations
 
 import argparse
-import csv
-import hashlib
-import io
 import json
-import os
 import re
 import tempfile
-import time
-import urllib.request
-import zipfile
-from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
 
 SIOPE_BASE = "https://www.siope.it/documenti/siope2/open/last"
 SIOPE_REGISTRY_FILE = "SIOPE_ANAGRAFICHE.zip"
@@ -90,281 +81,52 @@ MONTH_NAMES = [
 ]
 
 
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
-
-
-def request(url: str, *, range_byte: bool = False):
-    headers = {"User-Agent": USER_AGENT, "Accept": "*/*"}
-    if range_byte:
-        headers["Range"] = "bytes=0-0"
-    return urllib.request.Request(url, headers=headers)
-
-
-def open_with_retry(url: str, *, timeout: int, range_byte: bool = False):
-    last_error: Exception | None = None
-    for attempt in range(MAX_ATTEMPTS):
-        try:
-            return urllib.request.urlopen(
-                request(url, range_byte=range_byte),
-                timeout=timeout,
-            )
-        except Exception as error:
-            last_error = error
-            if attempt + 1 < MAX_ATTEMPTS:
-                time.sleep(2 * (attempt + 1))
-    assert last_error is not None
-    raise last_error
-
-
-def remote_metadata(url: str) -> dict[str, str | None]:
-    """Read source validators without downloading the body."""
-    with open_with_retry(url, timeout=90, range_byte=True) as response:
-        response.read(1)
-        return {
-            "lastModified": response.headers.get("Last-Modified"),
-            "etag": response.headers.get("ETag"),
-            "contentRange": response.headers.get("Content-Range"),
-        }
-
-
-def download(url: str, destination: Path, *, timeout: int = 600) -> dict[str, str | None]:
-    tmp = destination.with_suffix(destination.suffix + ".part")
-    received = 0
-    digest = hashlib.sha256()
-    with open_with_retry(url, timeout=timeout) as response, tmp.open("wb") as handle:
-        while True:
-            chunk = response.read(CHUNK_SIZE)
-            if not chunk:
-                break
-            handle.write(chunk)
-            digest.update(chunk)
-            received += len(chunk)
-        metadata = {
-            "lastModified": response.headers.get("Last-Modified"),
-            "etag": response.headers.get("ETag"),
-            "sha256": digest.hexdigest(),
-        }
-
-    if received == 0:
-        tmp.unlink(missing_ok=True)
-        raise RuntimeError(f"Fonte vuota: {url}")
-
-    os.replace(tmp, destination)
-    print(f"downloaded {destination.name}: {received / 1_000_000:.1f} MB")
-    return metadata
-
-
-def zip_rows(path: Path, member_prefix: str) -> Iterable[list[str]]:
-    with zipfile.ZipFile(path) as archive:
-        member = next(
-            (
-                name
-                for name in archive.namelist()
-                if os.path.basename(name).upper().startswith(member_prefix.upper())
-            ),
-            None,
-        )
-        if member is None:
-            raise RuntimeError(f"{path.name}: membro {member_prefix!r} non trovato")
-
-        with archive.open(member) as binary:
-            text = io.TextIOWrapper(binary, encoding="latin-1", newline="")
-            yield from csv.reader(text)
-
-
-def normalize_header(value: str) -> str:
-    return re.sub(r"\s+", "_", value.lstrip("\ufeff").strip().lower())
-
-
-def parse_ipa_regions(path: Path) -> dict[str, str]:
-    raw = path.read_bytes()
-    text = raw.decode("utf-8-sig", errors="replace")
-    sample = text[:16_384]
-    try:
-        dialect = csv.Sniffer().sniff(sample, delimiters=";\t,|")
-        delimiter = dialect.delimiter
-    except csv.Error:
-        delimiter = "\t"
-
-    rows = csv.reader(io.StringIO(text), delimiter=delimiter)
-    try:
-        header = next(rows)
-    except StopIteration as error:
-        raise RuntimeError("Dataset IPA Amministrazioni vuoto") from error
-
-    index = {normalize_header(name): position for position, name in enumerate(header)}
-    cf_index = index.get("cf")
-    region_index = index.get("regione")
-    if cf_index is None or region_index is None:
-        raise RuntimeError(
-            f"Schema IPA inatteso: mancano cf/Regione (campi: {list(index)[:12]})"
-        )
-
-    candidates: dict[str, set[str]] = defaultdict(set)
-    for row in rows:
-        if len(row) <= max(cf_index, region_index):
-            continue
-        cf = row[cf_index].strip()
-        region = re.sub(r"\s+", " ", row[region_index].strip())
-        if cf and region:
-            candidates[cf].add(region)
-
-    return {
-        cf: next(iter(regions))
-        for cf, regions in candidates.items()
-        if len(regions) == 1
-    }
-
-
-def parse_ipa_municipality_identifiers(path: Path) -> dict[str, dict[str, str]]:
-    raw = path.read_bytes()
-    text = raw.decode("utf-8-sig", errors="replace")
-    sample = text[:16_384]
-    try:
-        dialect = csv.Sniffer().sniff(sample, delimiters=";\t,|")
-        delimiter = dialect.delimiter
-    except csv.Error:
-        delimiter = "\t"
-
-    rows = csv.reader(io.StringIO(text), delimiter=delimiter)
-    try:
-        header = next(rows)
-    except StopIteration as error:
-        raise RuntimeError("Dataset IPA Amministrazioni vuoto") from error
-    index = {normalize_header(name): position for position, name in enumerate(header)}
-    required = ("cf", "cod_amm")
-    if any(field not in index for field in required):
-        raise RuntimeError(f"Schema IPA inatteso: mancano identificativi {required}")
-
-    candidates: dict[str, set[str]] = defaultdict(set)
-    maximum = max(index[field] for field in required)
-    for row in rows:
-        if len(row) <= maximum:
-            continue
-        cf = row[index["cf"]].strip()
-        codice_ipa = row[index["cod_amm"]].strip()
-        if re.fullmatch(r"\d{11}", cf) and codice_ipa:
-            candidates[cf].add(codice_ipa)
-
-    return {
-        cf: {"codiceIpa": next(iter(values))}
-        for cf, values in candidates.items()
-        if len(values) == 1
-    }
-
-
-def parse_population(raw: str) -> int | None:
-    cleaned = raw.strip().replace(" ", "").replace(".", "")
-    if not cleaned:
-        return None
-    try:
-        value = float(cleaned.replace(",", "."))
-    except ValueError:
-        return None
-    # The official registry currently uses 00000001 for several municipalities
-    # with thousands of residents. Treat that sentinel as missing instead of
-    # creating multi-million-euro per-capita outliers.
-    if value <= 1:
-        return None
-    return round(value)
-
-
-def parse_siope_provinces(registry_zip: Path) -> dict[str, str]:
-    provinces: dict[str, str] = {}
-    for row in zip_rows(registry_zip, "ANAG_REG_PROV"):
-        if len(row) != 5:
-            raise RuntimeError("ANAG_REG_PROV: schema inatteso")
-        province_code = row[3].strip()
-        province_name = row[4].strip()
-        if not re.fullmatch(r"\d{3}", province_code) or not province_name:
-            raise RuntimeError("ANAG_REG_PROV: provincia non valida")
-        previous = provinces.get(province_code)
-        if previous is not None and previous != province_name:
-            raise RuntimeError(f"ANAG_REG_PROV: codice provincia duplicato {province_code}")
-        provinces[province_code] = province_name
-    if not provinces:
-        raise RuntimeError("ANAG_REG_PROV: nessuna provincia trovata")
-    return provinces
-
-
-def load_municipalities(
-    registry_zip: Path,
-    ipa_regions: dict[str, str],
-    year: int,
-    ipa_identifiers: dict[str, dict[str, str]] | None = None,
-) -> tuple[dict[str, dict], dict[str, dict], int]:
-    """Return municipalities whose SIOPE validity intersects the requested year."""
-    active: dict[str, dict] = {}
-    provinces = parse_siope_provinces(registry_zip)
-    period_start = date(year, 1, 1)
-    period_end = date(year, 12, 31)
-
-    for row in zip_rows(registry_zip, "ANAG_ENTI_SIOPE"):
-        if len(row) != 9:
-            continue
-        code, valid_from, valid_to, cf, name, _municipality, province_code, population, entity_type = (
-            value.strip() for value in row
-        )
-        if entity_type.upper() != "COMUNE":
-            continue
-        try:
-            valid_from_date = date.fromisoformat(valid_from)
-            valid_to_date = date.fromisoformat(valid_to)
-        except ValueError as error:
-            raise RuntimeError(f"ANAG_ENTI_SIOPE: validità non valida per il Comune {cf or code}")
-        if valid_from_date > valid_to_date:
-            raise RuntimeError(f"ANAG_ENTI_SIOPE: intervallo invertito per il Comune {cf or code}")
-        if valid_from_date > period_end or valid_to_date < period_start:
-            continue
-        if not code or not cf:
-            raise RuntimeError("ANAG_ENTI_SIOPE: Comune senza codice ente o codice fiscale")
-        region = ipa_regions.get(cf)
-        province = provinces.get(province_code)
-        if province is None:
-            raise RuntimeError(f"Provincia SIOPE sconosciuta per il Comune {cf}: {province_code}")
-        municipality = {
-            "key": cf,
-            "code": code,
-            "name": name or "Comune non indicato",
-            "cf": cf,
-            "region": region,
-            "province": province,
-            "population": parse_population(population),
-            "codiceIpa": (ipa_identifiers or {}).get(cf, {}).get("codiceIpa"),
-            "validFrom": valid_from,
-            "validTo": valid_to,
-        }
-        previous = active.get(code)
-        if previous is not None and previous["key"] != cf:
-            raise RuntimeError(
-                f"ANAG_ENTI_SIOPE: codice ente {code} associato a più codici fiscali"
-            )
-        if previous is None or municipality["validFrom"] > previous["validFrom"]:
-            active[code] = municipality
-
-    canonical: dict[str, dict] = {}
-    for municipality in active.values():
-        key = municipality["key"]
-        current = canonical.get(key)
-        if current is None or municipality["validFrom"] > current["validFrom"]:
-            canonical[key] = municipality.copy()
-
-    return active, canonical, len(canonical)
-
-
-def title_digit(code: str) -> str:
-    return next((character for character in code if character.isdigit()), "?")
-
-
-def euro(cents: int) -> float:
-    return round(cents / 100.0, 2)
-
-
-def per_capita(cents: int, population: int | None) -> float | None:
-    if not population:
-        return None
-    return round((cents / 100.0) / population, 2)
+try:
+    from .siope_municipal_core import (
+        utc_now,
+        request,
+        open_with_retry,
+        remote_metadata,
+        download,
+        zip_rows,
+        normalize_header,
+        parse_ipa_regions,
+        parse_ipa_municipality_identifiers,
+        parse_population,
+        parse_siope_provinces,
+        load_municipalities,
+        title_digit,
+        euro,
+        per_capita,
+        aggregate_cash,
+        build_regions,
+        build_monthly,
+        build_detail,
+        build_source,
+    )
+except ImportError:  # Direct CLI execution.
+    from siope_municipal_core import (
+        utc_now,
+        request,
+        open_with_retry,
+        remote_metadata,
+        download,
+        zip_rows,
+        normalize_header,
+        parse_ipa_regions,
+        parse_ipa_municipality_identifiers,
+        parse_population,
+        parse_siope_provinces,
+        load_municipalities,
+        title_digit,
+        euro,
+        per_capita,
+        aggregate_cash,
+        build_regions,
+        build_monthly,
+        build_detail,
+        build_source,
+    )
 
 
 def municipality_rankings(
@@ -604,94 +366,22 @@ def build_snapshot(
     ipa_path: Path,
     validators: dict[str, dict[str, str | None]],
 ) -> dict:
-    ipa_regions = parse_ipa_regions(ipa_path)
-    ipa_identifiers = parse_ipa_municipality_identifiers(ipa_path)
-    by_code, municipalities, active_siope_count = load_municipalities(
-        registry_zip,
-        ipa_regions,
-        year,
-        ipa_identifiers,
+    cash = aggregate_cash(
+        year=year, flow="uscite", titles=TITLE_LABELS,
+        movements_zip=movements_zip, registry_zip=registry_zip, ipa_path=ipa_path,
     )
-
-    municipality_cents: dict[str, int] = defaultdict(int)
-    municipality_title_cents: dict[str, dict[str, int]] = defaultdict(
-        lambda: defaultdict(int)
-    )
-    region_cents: dict[str, int] = defaultdict(int)
-    title_cents: dict[str, int] = defaultdict(int)
-    national_monthly = [0] * 12
-    observed_keys: set[str] = set()
-    months_seen: set[int] = set()
-
-    rows_total = 0
-    rows_included = 0
+    municipalities = cash.municipalities
+    active_siope_count = len(municipalities)
+    municipality_cents = cash.municipality_cents
+    municipality_title_cents = cash.municipality_title_cents
+    title_cents = cash.title_cents
+    national_monthly = cash.national_monthly
+    observed_keys = cash.observed_keys
+    latest_month = cash.latest_month
+    rows_total = cash.rows_total
+    rows_included = cash.rows_included
     malformed = 0
-
-    for row in zip_rows(movements_zip, f"USCITE_{year}"):
-        rows_total += 1
-        if len(row) != 5:
-            malformed += 1
-            continue
-        code, raw_year, raw_month, management_code, raw_amount = (
-            value.strip() for value in row
-        )
-        if raw_year != str(year):
-            continue
-        municipality = by_code.get(code)
-        if municipality is None:
-            continue
-        try:
-            month = int(raw_month)
-            cents = int(raw_amount)
-        except ValueError:
-            malformed += 1
-            continue
-        if not 1 <= month <= 12:
-            malformed += 1
-            continue
-
-        key = municipality["key"]
-        region = municipality["region"]
-        digit = title_digit(management_code)
-        municipality_cents[key] += cents
-        municipality_title_cents[key][digit] += cents
-        if region:
-            region_cents[region] += cents
-        title_cents[digit] += cents
-        national_monthly[month - 1] += cents
-        observed_keys.add(key)
-        months_seen.add(month)
-        rows_included += 1
-
-    if not months_seen:
-        raise RuntimeError(f"Nessun movimento comunale SIOPE trovato per il {year}")
-
-    latest_month = max(months_seen)
-    regions: list[dict] = []
-    for region, cents in region_cents.items():
-        keys = {
-            key
-            for key in observed_keys
-            if municipalities[key]["region"] == region
-        }
-        population_keys = {
-            key for key in keys if municipalities[key]["population"] is not None
-        }
-        population_values = [municipalities[key]["population"] for key in population_keys]
-        population = sum(population_values) if population_values else None
-        per_capita_cents = sum(municipality_cents[key] for key in population_keys)
-        regions.append(
-            {
-                "region": region,
-                "value": euro(cents),
-                "perCapitaValue": euro(per_capita_cents),
-                "population": population,
-                "perCapita": per_capita(per_capita_cents, population),
-                "municipalities": len(keys),
-                "municipalitiesWithPopulation": len(population_keys),
-            }
-        )
-    regions.sort(key=lambda item: item["value"], reverse=True)
+    regions = build_regions(cash)
 
     analysis_rows: list[dict] = []
     municipalities_with_movements: list[dict] = []
@@ -735,19 +425,7 @@ def build_snapshot(
         )
     ]
 
-    monthly: list[dict] = []
-    cumulative = 0
-    for month in sorted(months_seen):
-        cents = national_monthly[month - 1]
-        cumulative += cents
-        monthly.append(
-            {
-                "month": month,
-                "label": MONTH_NAMES[month - 1],
-                "flow": euro(cents),
-                "cumulative": euro(cumulative),
-            }
-        )
+    monthly = build_monthly(cash)
 
     observed_population = sum(
         municipalities[key]["population"] or 0 for key in observed_keys
@@ -779,73 +457,10 @@ def build_snapshot(
         validators=validators,
     )
 
-    detail_rows: list[list] = []
-    for key in sorted(municipalities):
-        municipality = municipalities[key]
-        has_movements = key in observed_keys
-        detail_rows.append(
-            [
-                municipality["cf"],
-                municipality["codiceIpa"],
-                municipality["name"],
-                municipality["province"],
-                municipality["region"],
-                municipality["population"],
-                municipality_cents[key] if has_movements else None,
-                [
-                    municipality_title_cents[key].get(code, 0)
-                    for code in DETAIL_TITLE_ORDER
-                ]
-                if has_movements
-                else None,
-            ]
-        )
-
-    detail = {
-        "schemaVersion": 1,
-        "scope": "municipality-detail",
-        "year": year,
-        "latestMonth": latest_month,
-        "generatedAt": observed_at,
-        "titleOrder": list(DETAIL_TITLE_ORDER),
-        "titleLabels": {code: TITLE_LABELS[code] for code in DETAIL_TITLE_ORDER},
-        "columns": [
-            "taxCode",
-            "codiceIpa",
-            "name",
-            "province",
-            "region",
-            "population",
-            "totalCents",
-            "titleCents",
-        ],
-        "coverage": {
-            "activeMunicipalities": len(municipalities),
-            "withMovements": len(observed_keys),
-            "withoutMovements": len(municipalities) - len(observed_keys),
-            "withPopulation": sum(
-                municipality["population"] is not None
-                for municipality in municipalities.values()
-            ),
-            "withRegion": sum(
-                municipality["region"] is not None
-                for municipality in municipalities.values()
-            ),
-            "withIpaIdentifier": sum(
-                municipality["codiceIpa"] is not None
-                for municipality in municipalities.values()
-            ),
-        },
-        "municipalities": detail_rows,
-        "methodology": {
-            "join": "codice fiscale del Comune nell'anagrafica SIOPE",
-            "absence": (
-                "totalCents e titleCents null indicano nessun movimento osservato; "
-                "zero indica un valore osservato"
-            ),
-            "amounts": "centesimi di euro interi; i Titoli riconciliano con il totale comunale",
-        },
-    }
+    detail = build_detail(
+        cash, year=year, observed_at=observed_at, titles=TITLE_LABELS,
+        scope="municipality-detail",
+    )
 
     return {
         "_municipalityDetail": detail,
@@ -887,22 +502,9 @@ def build_snapshot(
         "topMunicipalitiesByValue": top_municipalities_by_value,
         "topMunicipalitiesByPerCapita": top_municipalities_by_per_capita,
         "distribution": distribution,
-        "source": {
-            "siopeOwner": "Ragioneria Generale dello Stato · banca dati gestita da Banca d'Italia",
-            "siopeMovementsUrl": f"{SIOPE_BASE}/SIOPE_USCITE.{year}.zip",
-            "siopeRegistryUrl": f"{SIOPE_BASE}/{SIOPE_REGISTRY_FILE}",
-            "ipaUrl": IPA_ADMINISTRATIONS_URL,
-            "siopeMovementsLastModified": validators["movements"].get("lastModified"),
-            "siopeRegistryLastModified": validators["registry"].get("lastModified"),
-            "ipaLastModified": validators["ipa"].get("lastModified"),
-            "siopeMovementsEtag": validators["movements"].get("etag"),
-            "siopeRegistryEtag": validators["registry"].get("etag"),
-            "ipaEtag": validators["ipa"].get("etag"),
-            "siopeMovementsSha256": validators["movements"].get("sha256"),
-            "siopeRegistrySha256": validators["registry"].get("sha256"),
-            "ipaSha256": validators["ipa"].get("sha256"),
-            "observedAt": observed_at,
-        },
+        "source": build_source(
+            year=year, flow="uscite", validators=validators, observed_at=observed_at,
+        ),
         "methodology": {
             "measure": "pagamenti di cassa SIOPE dei Comuni",
             "periodicity": "movimenti mensili puri, sommati da gennaio all'ultimo mese disponibile",
@@ -1020,7 +622,7 @@ def main() -> int:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.detail_output.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="trasparenza-siope-") as temp_dir:
+    with tempfile.TemporaryDirectory(prefix=".siope-", dir=".") as temp_dir:
         temp = Path(temp_dir)
         movements = temp / f"SIOPE_USCITE.{args.year}.zip"
         registry = temp / SIOPE_REGISTRY_FILE

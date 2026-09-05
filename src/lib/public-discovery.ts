@@ -25,6 +25,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/dati",
   "/debito",
   "/enti",
+  "/entrate",
   "/esplora",
   "/fonti",
   "/fonti/calendario",
@@ -101,6 +102,7 @@ export const PUBLIC_NOINDEX_PATHS = [
 export const LLMS_DISCOVERY_PATHS = [
   "/",
   "/spese",
+  "/entrate",
   "/spese/ambiente",
   "/spese/pensioni",
   "/territori",

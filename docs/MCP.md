@@ -38,6 +38,19 @@ parziali sia, in `queryLimitations.regionAggregateCoverage`, i Comuni e l'import
 regionalizzabili. I quantili non vanno ricostruiti dai primi 100 e non sono classifiche di
 efficienza o spreco.
 
+`siope_entrate_comuni` espone gli **incassi di cassa** dei soli Comuni, 2024–2026, con
+`year`, `region`, `code` (codice fiscale o IPA esatto), `query` (nome), `limit` e `offset`.
+Usa lo stesso selettore di `/entrate` e `/api/entrate/comuni?anno=2025&regione=Lazio`:
+`national` conserva il contesto nazionale in euro, `selection` somma tutti i Comuni filtrati
+in centesimi e `municipalities` restituisce la pagina, non una classifica top-100.
+Il campo `period` dichiara la copertura parziale (in particolare il 2026); `null` negli importi
+comunali significa nessun movimento osservato, non zero. Fonti, hash e date di acquisizione
+restano espliciti. L’API REST accetta `anno`, `regione`, `codice`, `q`, `limit` e `offset`:
+anno predefinito 2026, massimo 100 righe, offset massimo 100.000. Parametri ignoti,
+duplicati o non validi restituiscono HTTP 400, senza ripiego silenzioso sull’ultimo anno.
+Non sono accertamenti né entrate di competenza, non si consolidano
+trasferimenti e partite di giro, non si calcola alcun saldo di bilancio o residuo fiscale.
+
 `openbdap_ssn_conto_economico` restituisce il dataset snapshot OpenBDAP `spd_ssn_cce_elb_voccn_01_2024`.
 Le voci `BA2080`, `BA1350`, `BA1750`, `BA0390` e `BZ9999` sono mantenute con codice e descrizione
 ufficiali; gli importi sono costi di competenza economica del Conto Economico consuntivo, non

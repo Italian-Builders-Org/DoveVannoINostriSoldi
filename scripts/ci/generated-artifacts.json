@@ -697,27 +697,37 @@
     },
     {
       "id": "siope-municipal",
-      "owner": "SIOPE municipal snapshot",
+      "owner": "SIOPE municipal cash payments and receipts (separate contracts, joint publication)",
       "files": [
         "src/data/generated/siope-municipal.json",
         "src/data/generated/siope-municipal-2024.json",
         "src/data/generated/siope-municipal-2025.json",
         "src/data/generated/siope-municipal-detail.json",
         "src/data/generated/siope-municipal-detail-2024.json",
-        "src/data/generated/siope-municipal-detail-2025.json"
+        "src/data/generated/siope-municipal-detail-2025.json",
+        "src/data/generated/siope-municipal-receipts-2024.json",
+        "src/data/generated/siope-municipal-receipts-detail-2024.json",
+        "src/data/generated/siope-municipal-receipts-2025.json",
+        "src/data/generated/siope-municipal-receipts-detail-2025.json",
+        "src/data/generated/siope-municipal-receipts-2026.json",
+        "src/data/generated/siope-municipal-receipts-detail-2026.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python scripts/etl/siope_municipal_snapshot.py --check",
+        "command": "python scripts/etl/siope_receipts_check.py --include-expenditure",
         "coveredBy": "standalone"
       },
-      "reconciliationTests": [],
+      "reconciliationTests": [
+        "tests/etl/test_siope_municipal_receipts.py"
+      ],
       "nodeTests": [
         "tests/siope-snapshot.test.mjs",
-        "tests/municipality-profile.test.mjs"
+        "tests/municipality-profile.test.mjs",
+        "tests/siope-etl-ranking.test.mjs",
+        "tests/siope-receipts.test.mjs"
       ],
       "generator": {
-        "command": "python scripts/etl/siope_municipal_snapshot.py --year ... --output ... --detail-output ...",
+        "command": "python scripts/etl/siope_municipal_snapshot.py --year ... --output ... --detail-output ...; python scripts/etl/siope_municipal_receipts_snapshot.py --year ...",
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/siope-refresh.yml",
@@ -727,7 +737,8 @@
         "prTitle": "data: refresh SIOPE municipal snapshot",
         "upstreamUrl": "https://www.siope.it/documenti/siope2/open/last"
       },
-      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot. Both COMUNE cash directions use shared strict ingestion and exact IPA joins for 2024-2026, but separate runtime contracts; every year and both streams must pass before joint publication. Receipt provenance distinguishes acquisition/validation from undeclared publication date and license.",
+      "sourceSpec": "scripts/etl/specs/siope-municipal-receipts.source.json"
     },
     {
       "id": "ssn-cce-2024",

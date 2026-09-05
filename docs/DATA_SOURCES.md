@@ -91,6 +91,21 @@ validi e 2 frammenti malformati che non vengono ricostruiti.
 
 Nelle graduatorie comunali, la Provincia viene dall'associazione tra `ANAG_ENTI_SIOPE` e `ANAG_REG_PROV` del registro ufficiale SIOPE. La Regione è quella della sede legale ottenuta tramite codice fiscale da IPA: non indica necessariamente il luogo fisico in cui ogni pagamento produce effetti.
 
+La pipeline tipizzata comprende ora **incassi e pagamenti COMUNE 2024-2026**, da ZIP distinti
+`https://www.siope.it/documenti/siope2/open/last/SIOPE_ENTRATE.<anno>.zip` e
+`SIOPE_USCITE.<anno>.zip`, con lo stesso registro `SIOPE_ANAGRAFICHE.zip` e il medesimo join
+esatto IPA su codice fiscale. Il core ETL è condiviso, gli artifact e i contratti runtime no.
+Gli incassi sono flussi mensili di cassa: **non accertamenti o entrate di competenza**.
+Non si calcolano saldi, residui fiscali o indicatori di efficienza; il 2026 può essere parziale.
+Assenza di movimento osservato (`null`) e valore osservato zero restano distinti.
+
+Il refresh è unico e **giornaliero alle 04:29 UTC**, non orario. Hash SHA-256 riguardano tutti
+i byte acquisiti; data di acquisizione e controllo sono distinte dai validator HTTP e da una
+data di pubblicazione non dichiarata (`publicationDate: null`). Per questi ZIP entrate la
+licenza non è verificata: `license: not-declared`, senza attribuire quella di altri dataset.
+Spec, vocabolario dei titoli, coperture e comandi offline sono descritti in
+[SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md).
+
 ### OpenBDAP
 **Titolare:** Ragioneria Generale dello Stato.  
 **Uso:** bilancio dello Stato, spesa, SIOPE, opere pubbliche, PNRR e altri domini.  

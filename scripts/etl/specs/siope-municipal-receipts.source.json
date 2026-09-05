@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "siope-municipal-receipts",
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/246",
+  "publication": "typed-snapshot",
+  "holder": "Ragioneria Generale dello Stato; banca dati gestita da Banca d'Italia",
+  "scope": "COMUNE",
+  "years": [2024, 2025, 2026],
+  "flow": "entrate",
+  "accountingBasis": "cash",
+  "unit": "EUR-cent",
+  "publicationDate": null,
+  "license": "not-declared",
+  "refreshCronUtc": "29 4 * * *",
+  "sources": {
+    "movements": {
+      "urlTemplate": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ENTRATE.{year}.zip",
+      "memberPrefixTemplate": "ENTRATE_{year}",
+      "encoding": "latin-1",
+      "delimiter": ",",
+      "hasHeader": false,
+      "columns": ["entityCode", "year", "month", "managementCode", "amountCents"],
+      "uniqueMunicipalKey": ["entityCode", "year", "month", "managementCode"],
+      "amountPattern": "-?[0-9]+",
+      "maximumAbsoluteCents": 9007199254740991
+    },
+    "registry": {
+      "url": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+      "municipalitiesMemberPrefix": "ANAG_ENTI_SIOPE",
+      "municipalitiesColumns": ["entityCode", "validFrom", "validTo", "taxCode", "name", "municipalityCode", "provinceCode", "population", "entityType"],
+      "provincesMemberPrefix": "ANAG_REG_PROV",
+      "provincesColumnCount": 5,
+      "classificationMemberPrefix": "ANAG_CODGEST_ENTRATE"
+    },
+    "ipa": {
+      "url": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+      "encoding": "utf-8-sig",
+      "requiredHeaders": ["cf", "regione", "cod_amm"],
+      "join": "Exact SIOPE tax code; unique IPA region and unique codice IPA independently, identical to expenditure. No fuzzy/name join."
+    }
+  },
+  "titleLabels": {
+    "0": "Incassi da regolarizzare",
+    "1": "Entrate correnti di natura tributaria, contributiva e perequativa",
+    "2": "Trasferimenti correnti",
+    "3": "Entrate extratributarie",
+    "4": "Entrate in conto capitale",
+    "5": "Entrate da riduzione di attività finanziarie",
+    "6": "Accensione prestiti",
+    "7": "Anticipazioni da istituto tesoriere/cassiere",
+    "9": "Entrate per conto terzi e partite di giro"
+  },
+  "provenance": {
+    "hashAlgorithm": "SHA-256",
+    "hashInput": "Every acquired byte, before ZIP/CSV decoding",
+    "snapshotHashFields": ["siopeMovementsSha256", "siopeRegistrySha256", "ipaSha256"],
+    "dates": "HTTP Last-Modified and ETag are validators, not declared publication dates. acquisitionDate/observedAt record acquisition; checkedAt records validation. Raw-input sidecars retain each file's acquisitionDate, byteSize, URL and SHA-256."
+  },
+  "semantics": {
+    "validity": "Registry validity intersects the requested calendar year, not only the current date.",
+    "absence": "No observed municipal movement: null total/title vector. Observed zero: integer zero, including all-zero observed months.",
+    "population": "Registry population <= 1 or unavailable is null; population reference date is not declared.",
+    "period": "Pure monthly flows; cumulative is their sum, not the difference of snapshots. Missing months are not imputed as zero; the current year can be partial.",
+    "geography": "Legal seat of the municipality, not the physical destination or origin of each transaction.",
+    "nonGoals": "Incasso is not accertamento or competenza. No cash balance, fiscal residual, efficiency, waste or quality claim; do not sum receipts and expenditure."
+  },
+  "failClosed": ["unexpected archive member/schema", "unexpected row year or month", "malformed municipal amount/code", "duplicate municipal movement key", "ambiguous registry validity", "unsafe integer sums", "missing or mismatched acquired-byte hash", "summary/detail/month/title/region/population reconciliation failure"]
+}

@@ -15,6 +15,7 @@ export const DATASET_IDS = [
   "openbdap_spesa_legislature",
   "openbdap_legge_bilancio_storico",
   "opencivitas_fabbisogni",
+  "opencivitas_fabbisogni_2021",
   "opencoesione_progetti",
   "pnrr_asili",
   "anac_cig_snapshot",

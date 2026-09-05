@@ -35,4 +35,6 @@ test("study is editorially separate from monthly reports and raw snapshots", asy
   assert.match(page, /non posti nido aperti/);
   assert.match(page, /non è una baseline pre-intervento/);
   assert.doesNotMatch(page, /href="\/report/);
+  const layout = await readFile(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /data-scroll-behavior="smooth"/);
 });

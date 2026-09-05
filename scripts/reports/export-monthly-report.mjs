@@ -19,7 +19,7 @@ export function monthlyReportMarkdown(report) {
     report.reviewers.length ? `Revisori e contributori: ${report.reviewers.join(", ")}.` : "",
     section(report.rubrics.nextMonth),
     report.corrections.length ? "## Correzioni\n\n" + report.corrections.map((c) => `${c.publishedOn}: ${c.explanation}`).join("\n\n") : "",
-  ].filter(Boolean).join("\n\n") + "\n";
+  ].filter(Boolean).join("\n\n").trimEnd() + "\n";
 }
 
 if (process.argv[1]?.endsWith("export-monthly-report.mjs")) {

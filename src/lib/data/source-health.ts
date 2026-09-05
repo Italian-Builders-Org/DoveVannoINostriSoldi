@@ -30,6 +30,7 @@ import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpe
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
+import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
@@ -702,6 +703,19 @@ function snapshotManagedIstatPoverta(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaRelativa(): SourceHealth {
+  const { source, period, observedAt } = istatPovertaRelativaMetadata;
+  const asset = Object.values(source.assets)[0];
+  return {
+    ...baseHealth("istat-poverta-relativa"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-relativa", observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · povertà relativa ${period.from}-${period.to} (serie corrente post-revisione, ${source.dataflowId}) · ${istatPovertaRelativaData.observations.length.toLocaleString("it-IT")} osservazioni su ${istatPovertaRelativaData.territories.length} territori e ${istatPovertaRelativaData.measures.length} misure · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Non è spesa pubblica e non si somma alla povertà assoluta.`,
+    recordCount: istatPovertaRelativaData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -746,6 +760,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatCofog(),
     snapshotManagedIstatEpea(),
     snapshotManagedIstatPoverta(),
+    snapshotManagedIstatPovertaRelativa(),
     snapshotManagedInpsNaspi(),
     snapshotManagedMefIrpefDettaglio(),
   ];
@@ -783,6 +798,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-cofog": snapshotManagedIstatCofog,
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
+  "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
 } satisfies Record<SourceId, SourceHealthAdapter>);

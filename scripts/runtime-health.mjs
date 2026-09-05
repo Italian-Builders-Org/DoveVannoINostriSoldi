@@ -54,6 +54,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-cofog",
   "istat-epea",
   "istat-poverta",
+  "istat-poverta-relativa",
   "inps-naspi",
   "mef-irpef-dettaglio",
   "ameco",

@@ -128,6 +128,19 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["territorio", "anno", "misura"],
   },
   {
+    slug: "istat-poverta-relativa",
+    name: "ISTAT · povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; serie corrente post-revisione fissata (34_727)",
+    coverage:
+      "Italia e ripartizioni, 2014–2024; incidenza, intensità, composizione e conteggi in migliaia",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "NON è spesa pubblica e NON è la povertà assoluta: la relativa misura la distanza dalla spesa media, l'assoluta un paniere di beni essenziali. Sono due definizioni diverse e non vanno sommate né confrontate come se fossero la stessa grandezza. Valgono gli stessi limiti dell'assoluta: incidenze non sommabili fra territori, aree composite che contengono le loro parti, nessun dettaglio comunale.",
+    joinKeys: ["territorio", "anno", "misura"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

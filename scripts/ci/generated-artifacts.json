@@ -967,7 +967,7 @@
       ],
       "verificationMode": "source-lock",
       "offlineCheck": {
-        "command": "python3 scripts/etl/istat_poverta_snapshot.py --check",
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --family assoluta --check",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
@@ -977,12 +977,38 @@
         "tests/istat-poverta.test.mjs"
       ],
       "generator": {
-        "command": "python3 scripts/etl/istat_poverta_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --family assoluta --input-dir <cartella con la risposta SDMX-CSV> --write",
         "requiresNetworkInput": true
       },
       "sourceSpec": "scripts/etl/specs/istat-poverta-assoluta-2014-2024.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 34_727_DF_DCCV_POVERTA_1 è acquisita con chiave completamente specificata (nove delle undici dimensioni fissate letteralmente, REF_AREA e DATA_TYPE enumerate) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati, partizioni territoriali sui soli conteggi entro tolleranza empirica dichiarata e composizioni percentuali che chiudono a 100 falliscono chiuse. Il flag CL_FLAG «0» non è uno zero osservato: una cella flaggata resta null. Vale anche un'asserzione NEGATIVA: le incidenze non devono chiudere per somma fra territori, perché un tasso non si comporta così. Nessuna licenza inferita: la risposta SDMX non ne espone alcuna."
+    },
+    {
+      "id": "istat-poverta-relativa-2014-2024",
+      "owner": "ISTAT povertà relativa 2014-2024 (serie corrente post-revisione)",
+      "files": [
+        "src/data/generated/istat-poverta-relativa-2014-2024.data.json",
+        "src/data/generated/istat-poverta-relativa-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --family relativa --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_poverta_snapshot.py --family relativa --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-relativa-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 34_727_DF_DCCV_POVERTA_1 è acquisita con le sette misure RELATIVE ed è con chiave completamente specificata (nove delle undici dimensioni fissate letteralmente, REF_AREA e DATA_TYPE enumerate) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati, partizioni territoriali sui soli conteggi entro tolleranza empirica dichiarata e composizioni percentuali che chiudono a 100 falliscono chiuse. Il flag CL_FLAG «0» non è uno zero osservato: una cella flaggata resta null. Vale anche un'asserzione NEGATIVA: le incidenze non devono chiudere per somma fra territori, perché un tasso non si comporta così. La famiglia relativa ha lock, byte e hash propri: il lock della famiglia assoluta non è riusabile. Nessuna licenza inferita: la risposta SDMX non ne espone alcuna."
     },
     {
       "id": "istat-epea-2016-2022",

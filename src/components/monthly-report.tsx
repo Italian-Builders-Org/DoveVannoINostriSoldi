@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight01Icon, Calendar03Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MonthlyReportFigure } from "@/components/monthly-report-figure";
-import { formatReportValue } from "@/lib/monthly-report-format";
+import { formatReportPeriod, formatReportValue } from "@/lib/monthly-report-format";
 import {
   MONTHLY_REPORT_SERIES,
   issueMonthLabel,
@@ -23,9 +23,13 @@ function TextSection({ section }: { section: ReportSection }) {
   return (
     <section className={styles.proseSection}>
       <h2>{section.title}</h2>
-      {section.paragraphs.map((paragraph, index) => <p key={`${section.title}-${index}`}>{paragraph.text}</p>)}
+      {section.paragraphs.map((paragraph, index) => <p key={`${section.title}-${index}`}>{paragraph.text} <SourceLinks ids={paragraph.evidenceIds} /></p>)}
     </section>
   );
+}
+
+function SourceLinks({ ids }: { ids: readonly string[] }) {
+  return <>{ids.map((id, index) => <span key={id}> <a href={`#report-source-${id}`}>Fonte{ids.length > 1 ? ` ${index + 1}` : ""}</a></span>)}</>;
 }
 
 export function MonthlyReportArticle({ report }: { report: PublishedMonthlyReport }) {
@@ -53,7 +57,7 @@ export function MonthlyReportArticle({ report }: { report: PublishedMonthlyRepor
           <div className={styles.factGrid}>
             {report.inBrief.map((id) => {
               const fact = facts.get(id)!;
-              return <article key={id}><h3>{fact.label}</h3><strong>{formatReportValue(fact.value)}</strong><p>{fact.plainLanguage}</p><small>{fact.caveat}</small></article>;
+              return <article key={id}><h3>{fact.label}</h3><strong>{formatReportValue(fact.value)}</strong><p>{fact.plainLanguage}</p><p><small>Periodo: {formatReportPeriod(fact.referencePeriod)}. Perimetro: {fact.perimeter}{fact.denominator ? ` Denominatore: ${fact.denominator}.` : ""}</small></p><small>{fact.caveat} <SourceLinks ids={fact.evidenceIds} /></small></article>;
             })}
           </div>
         </section>
@@ -69,8 +73,9 @@ export function MonthlyReportArticle({ report }: { report: PublishedMonthlyRepor
           <section className={styles.evidence} aria-labelledby="evidence-title">
             <h2 id="evidence-title">Schede delle fonti</h2>
             <ol>
-              {report.evidence.map((item) => <li key={item.id}><a href={item.publicUrl}>{item.publisher} · {item.title}</a><p>Dataset: {item.datasetId}. Verificato il {localDate(item.checkedOn)}. {item.perimeter} {item.caveat}</p></li>)}
+              {report.evidence.map((item) => <li key={item.id} id={`report-source-${item.id}`}><a href={item.publicUrl}>{item.publisher} · {item.title}</a><p>Dataset: {item.datasetId}. Periodo: {formatReportPeriod(item.referencePeriod)}. Verificato il {localDate(item.checkedOn)}. {item.perimeter} {item.caveat}</p><details><summary>Identità dello snapshot verificato</summary><p>Revisione Git: <code>{item.dataRevision}</code></p><p>SHA-256: <code>{item.artifactSha256}</code></p></details></li>)}
             </ol>
+            <p>Revisione del contenuto: {report.contentRevision}. {report.reviewers.length > 0 ? `Revisori e contributori: ${report.reviewers.join(", ")}.` : ""}</p>
           </section>
           <TextSection section={report.rubrics.nextMonth} />
           {report.corrections.length > 0 && <section className={styles.corrections}><h2>Correzioni</h2><ul>{report.corrections.map((entry) => <li key={`${entry.publishedOn}-${entry.explanation}`}>{localDate(entry.publishedOn)}: {entry.explanation}</li>)}</ul></section>}

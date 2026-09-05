@@ -30,6 +30,7 @@ export function parseReportArguments(argv) {
     const flag = argv[index];
     const value = argv[index + 1];
     if (!flag?.startsWith("--") || !value || value.startsWith("--")) fail("usa --month AAAA-MM --cutoff AAAA-MM-GG");
+    if (values.has(flag)) fail(`argomento duplicato: ${flag}`);
     values.set(flag, value);
   }
   const month = values.get("--month");
@@ -105,14 +106,15 @@ export function buildMonthlyReportDraft({ month, cutoff, snapshots, provenance }
         previous: count(prior),
         current: count(current),
         delta: count(delta),
-        change: percentage(prior === 0 ? 0 : Math.round((delta * 10_000) / prior)),
+        change: percentage(prior === 0 ? fail(`denominatore nullo per ${region.name}`) : Math.round((delta * 10_000) / prior)),
       },
     };
   }).sort((left, right) => left.values.delta.value - right.values.delta.value);
   const nationalCurrent = totalByPeriod(company, latest);
   const nationalPrior = totalByPeriod(company, previousYear);
   const nationalDelta = nationalCurrent - nationalPrior;
-  const strongestSignal = regionRows[0];
+  const strongestSignal = regionRows.reduce((strongest, row) =>
+    Math.abs(row.values.delta.value) > Math.abs(strongest.values.delta.value) ? row : strongest);
   const evidence = [evidenceFor(INPUTS.companies, {
     id: "company-active-stock",
     datasetId: "company_active_enterprises",

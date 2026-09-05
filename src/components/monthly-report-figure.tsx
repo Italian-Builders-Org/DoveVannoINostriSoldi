@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { ChartDataTable } from "@/components/charts/chart-data-table";
 import type { ReportFigure, ReportValue } from "@/lib/monthly-reports-contract";
-import { formatReportValue } from "@/lib/monthly-report-format";
+import { formatReportPeriod, formatReportValue } from "@/lib/monthly-report-format";
 import styles from "./monthly-report.module.css";
 
 const integer = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 0 });
@@ -68,8 +68,9 @@ export function MonthlyReportFigure({ figure }: { figure: ReportFigure }) {
         </ResponsiveContainer>
       </div>
       <figcaption>
-        {figure.caveat} Perimetro: {figure.perimeter}
+        {figure.caveat} Periodo: {formatReportPeriod(figure.referencePeriod)}. Perimetro: {figure.perimeter}
         {figure.denominator ? ` Denominatore: ${figure.denominator}.` : ""}
+        {figure.evidenceIds.map((id, index) => <span key={id}> <a href={`#report-source-${id}`}>Fonte{figure.evidenceIds.length > 1 ? ` ${index + 1}` : ""}</a></span>)}
       </figcaption>
       <ChartDataTable
         label={figure.title}

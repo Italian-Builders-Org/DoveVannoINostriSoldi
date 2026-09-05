@@ -5,6 +5,7 @@
 
 .article {
   max-width: 74rem;
+  overflow-wrap: anywhere;
 }
 
 .articleHeader,

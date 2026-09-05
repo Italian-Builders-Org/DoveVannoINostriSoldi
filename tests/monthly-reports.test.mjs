@@ -18,6 +18,14 @@ const {
   validatePublishedMonthlyReport,
 } = await import("../src/lib/monthly-reports-contract.ts");
 const { createMonthlyReportsCatalog } = await import("../src/lib/monthly-reports.ts");
+const { formatReportValue, formatReportPeriod } = await import("../src/lib/monthly-report-format.ts");
+
+test("formati editoriali mantengono centesimi e periodi parziali", () => {
+  assert.equal(formatReportValue({ kind: "money", cents: 12345, display: "exact" }).replace(/\s/g, " "), "123,45 €");
+  assert.equal(formatReportValue({ kind: "money", cents: 320724730000000, display: "compact" }), "3.207,25 miliardi €");
+  assert.equal(formatReportPeriod({ kind: "month", month: "2026-08", completeness: "partial" }), "agosto 2026 (parziale)");
+  assert.throws(() => parseReportArguments(["--month", "2026-08", "--month", "2026-07", "--cutoff", "2026-09-05"]));
+});
 
 const revision = "1".repeat(40);
 const sha256 = "2".repeat(64);
@@ -119,6 +127,16 @@ test("il contratto pubblicato accetta solo capsule complete e verificabili", () 
   noDenominator.facts[0].value = { kind: "percentage", basisPoints: 100 };
   noDenominator.facts[0].denominator = null;
   assert.throws(() => validatePublishedMonthlyReport(noDenominator), /denominatore obbligatorio/);
+
+  const tablePercentage = structuredClone(valid);
+  tablePercentage.figures[1].denominator = null;
+  assert.throws(() => validatePublishedMonthlyReport(tablePercentage), /denominatore/);
+
+  for (const kind of ["unknown", undefined]) {
+    const invalidPeriod = structuredClone(valid);
+    invalidPeriod.facts[0].referencePeriod = { kind };
+    assert.throws(() => validatePublishedMonthlyReport(invalidPeriod), /tipo di periodo/);
+  }
 
   const lateEvidence = structuredClone(valid);
   lateEvidence.evidence[0].checkedOn = "2026-09-06";

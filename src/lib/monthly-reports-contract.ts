@@ -180,29 +180,35 @@ function isSemanticDate(value: string): value is LocalDate {
 }
 
 function validateReferencePeriod(period: ReferencePeriod, owner: string): void {
+  invariant(period && ["date", "as-of", "month", "year", "range"].includes(period.kind), `${owner}: tipo di periodo non valido`);
   if (period.kind === "date" || period.kind === "as-of") {
     invariant(isSemanticDate(period.date), `${owner}: data di riferimento non valida`);
     return;
   }
   if (period.kind === "month") {
+    invariant(["complete", "partial"].includes(period.completeness), `${owner}: completezza assente`);
     invariant(YEAR_MONTH.test(period.month), `${owner}: mese di riferimento non valido`);
     return;
   }
   if (period.kind === "year") {
+    invariant(["complete", "partial"].includes(period.completeness), `${owner}: completezza assente`);
     invariant(Number.isInteger(period.year) && period.year >= 1900 && period.year <= 2200, `${owner}: anno non valido`);
     return;
   }
+  invariant(["complete", "partial"].includes(period.completeness), `${owner}: completezza assente`);
   invariant(isSemanticDate(period.from) && isSemanticDate(period.to), `${owner}: intervallo non valido`);
   invariant(period.from <= period.to, `${owner}: intervallo invertito`);
 }
 
 function validateValue(value: ReportValue, owner: string): void {
+  invariant(["count", "money", "percentage", "ratio", "text"].includes(value.kind), `${owner}: tipo di valore non valido`);
   if (value.kind === "count") {
     invariant(Number.isSafeInteger(value.value), `${owner}: conteggio non intero sicuro`);
     invariant(value.unit.trim().length > 0, `${owner}: unità del conteggio assente`);
     return;
   }
   if (value.kind === "money") {
+    invariant(["exact", "compact"].includes(value.display), `${owner}: formato importo non valido`);
     invariant(Number.isSafeInteger(value.cents), `${owner}: importo non espresso in centesimi sicuri`);
     return;
   }
@@ -318,6 +324,8 @@ export function validatePublishedMonthlyReport(report: PublishedMonthlyReport): 
 
   const figureIds = new Set<string>();
   for (const figure of report.figures) {
+    invariant(["time-series", "ranked-bars"].includes(figure.kind), `${figure.id}: tipo di figura non valido`);
+    invariant(figure.rows.length > 0, `${figure.id}: righe assenti`);
     invariant(figure.id.trim().length > 0 && !figureIds.has(figure.id), `${report.issueMonth}: figura duplicata o senza ID`);
     figureIds.add(figure.id);
     invariant(figure.title.trim().length > 0 && figure.takeaway.trim().length > 0 && figure.accessibleSummary.trim().length > 0, `${figure.id}: testo incompleto`);
@@ -344,7 +352,8 @@ export function validatePublishedMonthlyReport(report: PublishedMonthlyReport): 
       }
     }
     const visualSeries = figure.series.find((series) => series.id === figure.visualSeriesId)!;
-    if (visualSeries.format === "percentage" || visualSeries.format === "ratio") {
+    invariant(visualSeries.format !== "text" && !visualSeries.tableOnly, `${figure.id}: serie visuale non numerica o solo tabellare`);
+    if (figure.series.some((series) => series.format === "percentage" || series.format === "ratio")) {
       invariant(Boolean(figure.denominator?.trim()), `${figure.id}: denominatore obbligatorio`);
     }
   }

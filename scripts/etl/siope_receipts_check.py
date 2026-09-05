@@ -14,10 +14,10 @@ from pathlib import Path
 
 try:
     from . import siope_municipal_core as core
-    from .siope_municipal_receipts_snapshot import YEARS, TITLE_LABELS, paths_for_year, source_urls
+    from .siope_receipts_spec import YEARS, TITLE_LABELS, paths_for_year, source_urls
 except ImportError:
     import siope_municipal_core as core
-    from siope_municipal_receipts_snapshot import YEARS, TITLE_LABELS, paths_for_year, source_urls
+    from siope_receipts_spec import YEARS, TITLE_LABELS, paths_for_year, source_urls
 
 REGIONS = {
     "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna",

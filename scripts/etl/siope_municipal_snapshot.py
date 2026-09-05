@@ -129,6 +129,15 @@ except ImportError:  # Direct CLI execution.
     )
 
 
+# Keep the existing helper import surface available to callers of the old ETL.
+__all__ = [
+    "request", "open_with_retry", "zip_rows", "normalize_header",
+    "parse_ipa_regions", "parse_ipa_municipality_identifiers", "parse_population",
+    "parse_siope_provinces", "load_municipalities", "title_digit", "build_snapshot",
+    "municipality_rankings", "main",
+]
+
+
 def municipality_rankings(
     items: list[dict],
     limit: int = 100,

@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts" / "etl"))
 import siope_municipal_core as core
 import siope_municipal_receipts_snapshot as receipts
 import siope_municipal_snapshot as expenditure
+import siope_receipts_spec as spec
 from siope_receipts_check import check_committed_snapshots, validate_snapshot
 
 
@@ -276,16 +277,16 @@ class MunicipalReceiptsTests(unittest.TestCase):
                 self.assertIn(path.as_posix(), artifact["files"])
         self.assertEqual(artifact["publication"]["branch"], "automation/data/siope")
         self.assertIn("--include-expenditure", artifact["offlineCheck"]["command"])
-        self.assertEqual(receipts.SPEC["scope"], "COMUNE")
-        self.assertEqual(receipts.SPEC["license"], "not-declared")
-        sources = receipts.SPEC["sources"]
+        self.assertEqual(spec.SPEC["scope"], "COMUNE")
+        self.assertEqual(spec.SPEC["license"], "not-declared")
+        sources = spec.SPEC["sources"]
         for year in receipts.YEARS:
             urls = receipts.source_urls(year)
             self.assertEqual(sources["movements"]["urlTemplate"].format(year=year), urls["movements"])
             self.assertEqual(sources["registry"]["url"], urls["registry"])
             self.assertEqual(sources["ipa"]["url"], urls["ipa"])
         self.assertEqual(sources["movements"]["maximumAbsoluteCents"], core.MAX_SAFE_CENTS)
-        self.assertEqual(receipts.SPEC["refreshCronUtc"], "29 4 * * *")
+        self.assertEqual(spec.SPEC["refreshCronUtc"], "29 4 * * *")
         workflow = (ROOT / ".github/workflows/siope-refresh.yml").read_text()
         self.assertIn("npm ci --ignore-scripts", workflow)
         self.assertIn("tests/siope-receipts.test.mjs", workflow)

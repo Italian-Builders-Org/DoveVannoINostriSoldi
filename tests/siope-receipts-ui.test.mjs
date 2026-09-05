@@ -184,7 +184,7 @@ test("receipts discovery includes Soldi, footer, sitemap and llms without a clie
   assert.ok(SITE_MAP_GROUPS.find((group) => group.title === "Soldi").links.some((link) => link.href === "/entrate"));
   assert.ok(PUBLIC_INDEXABLE_PATHS.includes("/entrate"));
   assert.ok(LLMS_DISCOVERY_PATHS.includes("/entrate"));
-  assert.match(readFileSync(new URL("../public/llms.txt", import.meta.url), "utf8"), /https:\/\/www\.dovevannoinostrisoldi\.com\/entrate/);
+  assert.ok(readFileSync(new URL("../public/llms.txt", import.meta.url), "utf8").split(/\r?\n/).some((line) => line.startsWith("- [Incassi comunali](https://www.dovevannoinostrisoldi.com/entrate): ")));
   for (const path of ["../src/app/entrate/page.tsx", "../src/app/enti/[codice]/municipality-receipts.tsx"]) {
     const source = readFileSync(new URL(path, import.meta.url), "utf8");
     assert.doesNotMatch(source, /["']use client["']|\.json["']|JSON\.stringify/);

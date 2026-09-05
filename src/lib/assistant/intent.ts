@@ -35,9 +35,25 @@ function normalized(value: string): string {
     .trim();
 }
 
-function yearFrom(prompt: string): number | null {
-  const match = prompt.match(/\b(20\d{2}|21\d{2})\b/u);
-  return match ? Number(match[1]) : null;
+// Match the whole comparison: extra topics, months, territories or causal
+// clauses must never silently become a comparison of annual national totals.
+const COMPARISON = /^(?:come sono (?:cambiati|variati) i|confronta i) pagamenti (?:siope )?dei comuni(?: (?:in|della|del|dell) (.+?))? (?:tra (?:il )?(20\d{2}|21\d{2}) e (?:il )?(20\d{2}|21\d{2})|dal (20\d{2}|21\d{2}) al (20\d{2}|21\d{2}))$/u;
+
+function comparisonIntent(text: string): AssistantIntent | AssistantResponse {
+  const match = COMPARISON.exec(text);
+  const scope = match?.[1];
+  const region = scope ? REGION_PROMPT_ALIASES.get(scope) : undefined;
+  if (!match || (scope && scope !== "italia" && !region)) {
+    return assistantHelpResponse("Per confrontare due anni, prova: «Come sono cambiati i pagamenti dei Comuni in Calabria tra il 2024 e il 2025?». Posso confrontare soltanto lo stesso territorio e i pagamenti SIOPE complessivi.");
+  }
+  const years = [Number(match[2] ?? match[4]), Number(match[3] ?? match[5])].sort((a, b) => a - b);
+  if (years[0] === years[1]) {
+    return assistantHelpResponse("Indica due anni diversi per il confronto.");
+  }
+  const query = (year: number): DatasetQuery => region
+    ? { dataset: "siope_comuni", year, region }
+    : { dataset: "siope_comuni", year };
+  return { kind: "siope_comparison", queries: [query(years[0]), query(years[1])] };
 }
 
 function regionFrom(prompt: string): string | undefined {
@@ -84,14 +100,19 @@ export function parseAssistantIntent(prompt: string): AssistantIntent | Assistan
     return assistantHelpResponse();
   }
 
+  const years = [...text.matchAll(/\b\d{4}\b/gu)].map(([year]) => Number(year));
+  if (years.length > 1 || /\b(confronta|confronto|cambiati|variati|differenza)\b/u.test(text)) {
+    return comparisonIntent(text);
+  }
+
   if (UNSUPPORTED_PATTERNS.some((pattern) => pattern.test(text))) {
     return assistantHelpResponse(
       "Questa versione risponde a pochi confronti aggregati e verificabili; non produce classifiche, spiegazioni causali o dati per singolo Comune.",
     );
   }
 
-  const year = yearFrom(text);
-  if (year === null) {
+  const year = years[0];
+  if (year === undefined) {
     return assistantHelpResponse("Indica anche l’anno di riferimento, per esempio 2025.");
   }
 
@@ -135,5 +156,5 @@ export function parseAssistantIntent(prompt: string): AssistantIntent | Assistan
 }
 
 export function isAssistantIntent(value: AssistantIntent | AssistantResponse): value is AssistantIntent {
-  return value.kind === "dataset_query";
+  return value.kind === "dataset_query" || value.kind === "siope_comparison";
 }

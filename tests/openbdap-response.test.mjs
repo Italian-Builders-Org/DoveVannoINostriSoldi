@@ -1,7 +1,29 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-import { isTransientSourceError } from "./helpers/live-openbdap.mjs";
+import { isTransientSourceError, runLiveOpenBdap } from "./helpers/live-openbdap.mjs";
+
+test("live OpenBDAP handles discovery outages after a successful probe and propagates contract failures", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response("{}"));
+  const skipped = [];
+  const context = { skip: (reason) => skipped.push(reason) };
+  for (const status of [429, 500, 502, 503, 504]) {
+    await runLiveOpenBdap(context, async () => {
+      throw new Error(`OpenBDAP package_search HTTP ${status}`);
+    });
+  }
+  assert.equal(skipped.length, 5);
+  assert.ok(skipped.every((reason) => reason.includes("non raggiungibile")));
+  for (const error of [
+    ...[400, 401, 403, 404].map((status) => new Error(`OpenBDAP package_search HTTP ${status}`)),
+    new Error("OpenBDAP package_search HTTP 503: unexpected schema"),
+    new Error("Header CSV divergente"),
+    new assert.AssertionError({ message: "OpenBDAP package_search HTTP 503" }),
+  ]) {
+    await assert.rejects(runLiveOpenBdap(context, async () => { throw error; }), (actual) => actual === error);
+  }
+  assert.equal(skipped.length, 5);
+});
 
 test("live OpenBDAP classifies CSV outages without hiding contract or client errors", () => {
   for (const status of [429, 500, 502, 503, 504]) {

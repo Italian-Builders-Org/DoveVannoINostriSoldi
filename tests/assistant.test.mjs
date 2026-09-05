@@ -135,7 +135,7 @@ test("partial SIOPE totals are labelled as cumulative periods", async () => {
     { queryDataset: async () => ({ ...siope, year: 2026, latestMonth: 8 }) },
   );
   assert.equal(response.ok, true);
-  assert.equal(response.answer.period.label, "gennaio–agosto 2026");
+  assert.equal(response.answer.period.label, "gennaio–agosto 2026 · ultimo mese parziale");
 });
 
 test("regional and MEF answers preserve their explicit scope and semantic caveats", async () => {

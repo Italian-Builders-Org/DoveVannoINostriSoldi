@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { inspectEpea } from "./epea.mjs";
+import { inspectAssistantComparison } from "./assistant-comparison.mjs";
+import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
 import {
   NAVIGATION_TIMEOUT_MS,
@@ -1434,6 +1437,15 @@ try {
   completed.push("Atlante Istruzione deep-link filtri 1280px");
 
   for (const width of [390, 768, 1280]) {
+    const label = `ANAC concentrazione e contratti ${width}px`;
+    await runScenario(browser, {
+      label, width, pathname: "/enti/c_h501/appalti?view=summary",
+      validate: inspectAnacConcentration,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
     const label = `Università e Ricerca ${width}px`;
     await runScenario(browser, {
       label,
@@ -2602,6 +2614,24 @@ try {
     completed.push(label);
   }
 
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Assistente confronto annuale ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/assistente", width,
+      validate: (page) => inspectAssistantComparison(page),
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Assistente confronto parziale ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/assistente", width,
+      validate: (page) => inspectAssistantComparison(page, { partial: true }),
+    });
+    completed.push(label);
+  }
+
   for (const width of [390, 768, 1280]) {
     const label = `Legge di Bilancio modifica→condivisione ${width}px`;
     await runScenario(browser, {
@@ -2704,6 +2734,14 @@ try {
           timeout: 3_000,
         });
       },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Spesa ambientale EPEA ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/spese/ambiente", width, validate: inspectEpea,
     });
     completed.push(label);
   }

@@ -250,7 +250,9 @@ function ConcentrationMetric({
       </div>
     );
   }
-  const top1Href = appaltiHref(codiceIpa, "view=operator&operator=" + encodeURIComponent(metric.top1Ref));
+  const detailHref = (selection: "top1" | "top10" | "all") =>
+    appaltiHref(codiceIpa, `view=concentration&metric=${metric.dimension}&selection=${selection}`);
+  const top1Href = detailHref("top1");
   const topLabel = metric.includedTop < 10 ? `Quota dei primi ${metric.includedTop}` : "Quota Top 10";
   return (
     <div className={styles.concentrationMetric}>
@@ -268,11 +270,11 @@ function ConcentrationMetric({
         </div>
         <div>
           <dt>{topLabel}</dt>
-          <ConcentrationFigure href={rankingHref} compact={formatAnacConcentrationPercent(metric.top10Share)} ratio={metric.top10Share} asPercent />
+          <ConcentrationFigure href={detailHref("top10")} compact={formatAnacConcentrationPercent(metric.top10Share)} ratio={metric.top10Share} asPercent />
         </div>
         <div>
           <dt>HHI (0-10.000)</dt>
-          <ConcentrationFigure href={rankingHref} compact={formatAnacConcentrationHhi(metric.hhi10000)} ratio={metric.hhi10000} asPercent={false} />
+          <ConcentrationFigure href={detailHref("all")} compact={formatAnacConcentrationHhi(metric.hhi10000)} ratio={metric.hhi10000} asPercent={false} />
         </div>
       </dl>
     </div>

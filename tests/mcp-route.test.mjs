@@ -584,7 +584,7 @@ test("MCP endpoint executes a modern tool call with mirrored request headers", a
   assert.match(body, /SIOPE \/ SIOPE\+/);
 });
 
-test("MCP query cancellation reaches the bounded dataset loader", async () => {
+test("MCP query cancellation reaches the bounded dataset loader", async (t) => {
   loader.resetIntegratedDatasetLoaderDiagnosticsForTests();
   const controller = new AbortController();
   const meta = {
@@ -618,7 +618,15 @@ test("MCP query cancellation reaches the bounded dataset loader", async () => {
     signal: controller.signal,
   }));
 
-  const observationDeadline = Date.now() + 2_000;
+  t.after(async () => {
+    controller.abort("test cleanup");
+    const response = await pending;
+    if (!response.bodyUsed) await response.body?.cancel();
+  });
+
+  // Cold artifact validation can exceed two seconds under suite load. This
+  // measures cancellation after a load starts, not cold-start performance.
+  const observationDeadline = Date.now() + 10_000;
   while (true) {
     const diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
     if (diagnostics.activeLoads > 0 || diagnostics.completedChunkLoads > 0) break;

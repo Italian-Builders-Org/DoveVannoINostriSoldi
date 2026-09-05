@@ -49,6 +49,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/privacy",
   "/regioni",
   "/spese",
+  "/spese/ambiente",
   "/spese/consulenze",
   "/spese/invalidita",
   "/spese/pensioni",
@@ -100,6 +101,7 @@ export const PUBLIC_NOINDEX_PATHS = [
 export const LLMS_DISCOVERY_PATHS = [
   "/",
   "/spese",
+  "/spese/ambiente",
   "/spese/pensioni",
   "/territori",
   "/territori/irpef",

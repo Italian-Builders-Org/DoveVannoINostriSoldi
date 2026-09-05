@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "installCommand": "npm ci",
+  "installCommand": "PUPPETEER_SKIP_DOWNLOAD=true npm ci",
+  "ignoreCommand": "node scripts/ci/vercel-ignore-build.mjs",
   "headers": [
     {
       "source": "/(.*)",

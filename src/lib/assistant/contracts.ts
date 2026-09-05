@@ -7,6 +7,7 @@ export const ASSISTANT_EXAMPLES = Object.freeze([
   "Quanto hanno speso i Comuni in Calabria nel 2025?",
   "Quanto ha speso lo Stato nel 2025?",
   "Qual è l’imposta netta dichiarata in Calabria nel 2024?",
+  "Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?",
 ]);
 
 export type AssistantRequest = Readonly<{
@@ -17,6 +18,9 @@ export type AssistantIntent = Readonly<{
   kind: "dataset_query";
   query: DatasetQuery;
   description: string;
+}> | Readonly<{
+  kind: "siope_comparison";
+  queries: readonly [DatasetQuery, DatasetQuery];
 }>;
 
 export type AssistantFact = Readonly<{
@@ -54,6 +58,12 @@ export type AssistantHelpResponse = Readonly<{
   examples: readonly string[];
 }>;
 
+export type AssistantComparison = Readonly<{
+  answers: readonly [AssistantAnswer, AssistantAnswer];
+  change: Readonly<{ euro: number; percent: number | null }> | null;
+  caveats: readonly string[];
+}>;
+
 export type AssistantFailureResponse = Readonly<{
   ok: false;
   kind: "refusal" | "invalid_request" | "unavailable";
@@ -64,6 +74,7 @@ export type AssistantFailureResponse = Readonly<{
 
 export type AssistantResponse =
   | Readonly<{ ok: true; kind: "answer"; answer: AssistantAnswer }>
+  | Readonly<{ ok: true; kind: "comparison"; comparison: AssistantComparison }>
   | AssistantHelpResponse
   | AssistantFailureResponse;
 

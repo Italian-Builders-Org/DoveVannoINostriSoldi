@@ -1,3 +1,4 @@
+import pageSpec from "../scripts/etl/specs/government-scorecard-page.source.json" with { type: "json" };
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
@@ -119,17 +120,7 @@ test("the score artifact contains only the AMECO panel required by the current m
 test("page data preserve publication status, sources and the score-artifact link", () => {
   const snapshot = getGovernmentScorecardV6SupplementalSnapshot();
   const coreHash = createHash("sha256").update(readFileSync(corePath)).digest("hex");
-  const expectedLatestPeriods = new Map([
-    ["inflation", "2026-08"],
-    ["real_compensation", "2024"],
-    ["unemployment", "2026-07"],
-    ["employment_rate", "2026-Q1"],
-    ["real_gdp_per_capita", "2026-Q2"],
-    ["debt_ratio", "2026-Q1"],
-    ["debt_per_capita", "2025"],
-    ["primary_balance", "2026-Q1"],
-    ["investment_share", "2026-Q2"],
-  ]);
+  const expectedLatestPeriods = new Map(pageSpec.refreshPolicy.approvedPeriods.map((item) => [item.indicator_id, item.period]));
   assert.deepEqual(GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS, EXPECTED_INDICATORS);
   assert.equal(snapshot.score_contract.supplemental_score_impact, "none");
   assert.equal(snapshot.score_contract.core_artifact_sha256, coreHash);

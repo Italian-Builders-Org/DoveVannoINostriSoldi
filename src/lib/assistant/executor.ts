@@ -10,6 +10,8 @@ import {
   type AssistantResponse,
 } from "@/lib/assistant/contracts";
 import { isAssistantIntent, parseAssistantIntent } from "@/lib/assistant/intent";
+import { compareSiopeAnswers } from "@/lib/assistant/comparison";
+import { partialMonthOf } from "@/lib/siope-calendar";
 
 type QueryOptions = Readonly<{
   signal?: AbortSignal;
@@ -134,9 +136,14 @@ function sourceLink(value: unknown, label: string): Record<string, unknown> {
 function siopeAnswer(query: DatasetQuery, value: unknown): AssistantAnswer {
   const snapshot = record(value, "SIOPE risposta");
   const year = integer(snapshot.year, "SIOPE.year", 2000);
+  if (year !== query.year) throw new Error("SIOPE: anno diverso dalla richiesta");
   const latestMonth = integer(snapshot.latestMonth, "SIOPE.latestMonth", 1);
   if (latestMonth > 12) throw new Error("SIOPE.latestMonth fuori intervallo");
   const sourceRecord = record(snapshot.source, "SIOPE.source");
+  const provenance = source(sourceRecord.siopeOwner, sourceRecord.siopeMovementsUrl, sourceRecord.observedAt);
+  const periodLabel = partialMonthOf(year, latestMonth, provenance.observedAt) === null
+    ? cumulativeYearLabel(year, latestMonth)
+    : `gennaio–${monthLabel(latestMonth)} ${year} · ultimo mese parziale`;
   const coverage = record(snapshot.coverage, "SIOPE.coverage");
   const caveats = [
     "Sono pagamenti di cassa SIOPE dei Comuni, non tasse pagate dai residenti.",
@@ -148,6 +155,7 @@ function siopeAnswer(query: DatasetQuery, value: unknown): AssistantAnswer {
     const region = regions.length === 1 ? record(regions[0], "SIOPE.region") : null;
     if (!region) throw new Error("Aggregato regionale non disponibile");
     const regionName = text(region.region, "SIOPE.region.region");
+    if (regionName !== query.region) throw new Error("SIOPE: Regione diversa dalla richiesta");
     const regionValue = number(region.value, "SIOPE.region.value");
     const population = region.population === null
       ? null
@@ -158,14 +166,14 @@ function siopeAnswer(query: DatasetQuery, value: unknown): AssistantAnswer {
     if (share !== null) caveats.push("La quota regionale è calcolata sull’aggregato regionale abbinato a IPA, non sull’intero totale nazionale.");
     return {
       dataset: "siope_comuni",
-      period: period(year, latestMonth, cumulativeYearLabel(year, latestMonth)),
+      period: period(year, latestMonth, periodLabel),
       observation: {
         label: "Pagamenti SIOPE dei Comuni",
         value: regionValue,
         unit: "euro",
         scope: regionName,
       },
-      source: source(sourceRecord.siopeOwner, sourceRecord.siopeMovementsUrl, sourceRecord.observedAt),
+      source: provenance,
       caveats,
       facts: [
         fact("Comuni con movimenti nell’aggregato", municipalities, "count"),
@@ -183,14 +191,14 @@ function siopeAnswer(query: DatasetQuery, value: unknown): AssistantAnswer {
   const paymentsWithoutRegion = number(coverage.paymentsWithoutRegion, "SIOPE.coverage.paymentsWithoutRegion");
   return {
     dataset: "siope_comuni",
-    period: period(year, latestMonth, cumulativeYearLabel(year, latestMonth)),
+    period: period(year, latestMonth, periodLabel),
     observation: {
       label: "Pagamenti SIOPE dei Comuni",
       value: totalPaid,
       unit: "euro",
       scope: "Italia",
     },
-    source: source(sourceRecord.siopeOwner, sourceRecord.siopeMovementsUrl, sourceRecord.observedAt),
+    source: provenance,
     caveats: [
       ...caveats,
       `${withoutRegion} Comuni con movimenti (${paymentsWithoutRegion.toLocaleString("it-IT", { style: "currency", currency: "EUR" })}) non sono regionalizzati nel join IPA.`,
@@ -303,15 +311,15 @@ function buildAnswer(query: DatasetQuery, value: unknown): AssistantAnswer {
 
 async function queryWithTimeout(
   queryDataset: AssistantDatasetQuery,
-  query: DatasetQuery,
+  queries: readonly DatasetQuery[],
   options: AssistantExecutorOptions,
-): Promise<unknown> {
+): Promise<unknown[]> {
   const timeoutMs = Math.max(1_000, Math.min(options.timeoutMs ?? ASSISTANT_DEFAULT_TIMEOUT_MS, 15_000));
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   let removeParentListener: () => void = () => undefined;
 
-  const result = new Promise<unknown>((resolve, reject) => {
+  const result = new Promise<unknown[]>((resolve, reject) => {
     timer = setTimeout(() => {
       controller.abort();
       reject(new AssistantTimeoutError());
@@ -331,12 +339,13 @@ async function queryWithTimeout(
       removeParentListener = () => options.signal?.removeEventListener("abort", abortParent);
     }
 
-    queryDataset(query, { signal: controller.signal }).then(resolve, reject);
+    Promise.all(queries.map((query) => queryDataset(query, { signal: controller.signal }))).then(resolve, reject);
   });
 
   try {
     return await result;
   } finally {
+    controller.abort();
     if (timer !== undefined) clearTimeout(timer);
     removeParentListener();
   }
@@ -352,8 +361,19 @@ export async function executeAssistant(
 
   const queryDataset = options.queryDataset ?? queryPublicDataset;
   try {
-    const data = await queryWithTimeout(queryDataset, parsed.query, options);
-    return { ok: true, kind: "answer", answer: buildAnswer(parsed.query, data) };
+    const queries = parsed.kind === "siope_comparison" ? parsed.queries : [parsed.query];
+    const data = await queryWithTimeout(queryDataset, queries, options);
+    if (parsed.kind === "siope_comparison") {
+      return {
+        ok: true,
+        kind: "comparison",
+        comparison: compareSiopeAnswers([
+          buildAnswer(parsed.queries[0], data[0]),
+          buildAnswer(parsed.queries[1], data[1]),
+        ]),
+      };
+    }
+    return { ok: true, kind: "answer", answer: buildAnswer(parsed.query, data[0]) };
   } catch (error) {
     if (error instanceof AssistantTimeoutError) {
       return assistantFailure(

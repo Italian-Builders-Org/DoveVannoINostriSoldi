@@ -10,6 +10,11 @@ import {
   loadAnacEntityProcurementPage,
   type AnacEntityProcurementPageView,
 } from "@/lib/data/anac-entity-procurement-page";
+import {
+  selectAnacConcentrationAwards,
+  type AnacConcentrationDrilldown,
+  type AnacConcentrationSelection,
+} from "@/lib/data/anac-concentration-drilldown";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { EntityProcurementSection, EntityProcurementSourceDetails, EntityProcurementConcentration } from "../entity-procurement-section";
 import styles from "./appalti.module.css";
@@ -24,7 +29,7 @@ export const maxDuration = 15;
 
 const entityRobots = { index: false, follow: false } as const;
 
-type ProcurementView = "summary" | "operators" | "procedures" | "awards" | "operator";
+type ProcurementView = "summary" | "operators" | "procedures" | "awards" | "operator" | "concentration";
 type RankingMetric = "count" | "value";
 
 function first(value: string | string[] | undefined): string {
@@ -96,7 +101,7 @@ function totalRowsForView(
 }
 
 function view(value: string): ProcurementView {
-  return value === "operators" || value === "procedures" || value === "awards" || value === "operator"
+  return value === "operators" || value === "procedures" || value === "awards" || value === "operator" || value === "concentration"
     ? value
     : "summary";
 }
@@ -302,25 +307,28 @@ function Awards({
   currentPage,
   size,
   operator,
+  concentration,
 }: {
-  profile: AnacEntityProcurementPageView;
+  profile: Pick<AnacEntityProcurementPageView, "awards">;
   codice: string;
   currentPage: number;
   size: 25 | 50;
   operator?: string;
+  concentration?: AnacConcentrationDrilldown;
 }) {
-  const rows = [...profile.awards]
+  const selectedOperatorRefs = new Set(concentration?.operators.map((operator) => operator.ref));
+  const rows = [...(concentration?.awards ?? profile.awards)]
     .filter((award) => !operator || award.operatorRefs.includes(operator))
     .sort((left, right) => (right.awardedAt ?? "").localeCompare(left.awardedAt ?? "") || left.cig.localeCompare(right.cig) || left.awardId.localeCompare(right.awardId));
   const pageRows = rows.slice((currentPage - 1) * size, currentPage * size);
   return (
     <section className="panel" aria-labelledby="awards-title">
-      <h2 className="panel-title" id="awards-title">{operator ? "Aggiudicazioni dell’aggiudicatario" : "Aggiudicazioni pubblicate"}</h2>
+      <h2 className="panel-title" id="awards-title">{concentration ? "Aggiudicazioni incluse nell’indicatore" : operator ? "Aggiudicazioni dell’aggiudicatario" : "Aggiudicazioni pubblicate"}</h2>
       <div className="table-scroll" role="region" aria-label="Aggiudicazioni ANAC" tabIndex={0}>
         <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
         <table className="table">
           <caption>Aggiudicazioni distinte per coppia CIG e identificativo</caption>
-          <thead><tr><th scope="col">CIG</th><th scope="col">ID aggiudicazione</th><th scope="col">Data</th><th scope="col" className="num">Importo</th><th scope="col">Stato</th></tr></thead>
+          <thead><tr><th scope="col">CIG</th><th scope="col">ID aggiudicazione</th><th scope="col">Data</th><th scope="col" className="num">Importo</th><th scope="col">Stato</th>{concentration ? <th scope="col">Relazioni selezionate</th> : null}</tr></thead>
           <tbody>
             {pageRows.map((award) => (
               <tr key={award.cig + ":" + award.awardId}>
@@ -329,13 +337,46 @@ function Awards({
                 <td>{award.awardedAt ?? "non disponibile"}</td>
                 <td className="num">{formatDecimalEuro(award.amount)}</td>
                 <td>{awardStatusLabel(award)}</td>
+                {concentration ? <td>{award.operatorRefs.filter((ref) => selectedOperatorRefs.has(ref)).length}</td> : null}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ view: operator ? "operator" : "awards", operator }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={concentration ? { view: "concentration", metric: concentration.metric.dimension, selection: concentration.selection } : { view: operator ? "operator" : "awards", operator }} />
     </section>
+  );
+}
+
+function ConcentrationDetail({ detail, codice, currentPage, size }: {
+  detail: AnacConcentrationDrilldown;
+  codice: string;
+  currentPage: number;
+  size: 25 | 50;
+}) {
+  const byValue = detail.metric.dimension === "value";
+  const label = detail.selection === "top1" ? "Top 1" : detail.selection === "top10" ? "Top 10" : "HHI · perimetro completo";
+  return (
+    <>
+      <section className="panel" aria-labelledby="concentration-detail-title">
+        <h2 className="panel-title" id="concentration-detail-title">Contratti dell’indicatore · {label} · {byValue ? "valore" : "numero"}</h2>
+        <p>Operatori selezionati: {integer(detail.operators.length)} · Aggiudicazioni distinte: {integer(detail.awards.length)} · Relazioni operatore-aggiudicazione: {integer(detail.relationCount)} nell’intera selezione.</p>
+        <p>{byValue
+          ? "Solo importi positivi attribuiti a un unico aggiudicatario risolto. Sono esclusi importi non positivi, mancanti o in conflitto e casi multipartiti o ambigui."
+          : "Ogni aggiudicazione compare una sola volta. Se coinvolge più operatori selezionati, contribuisce con più relazioni al conteggio. Gli importi di questa vista non vanno sommati per ricostruire le quote per numero."}</p>
+        <p className={styles.note}>Peso della selezione: <strong>{byValue ? formatDecimalEuro(detail.weight) : integer(Number(detail.weight))}</strong> su {byValue ? formatDecimalEuro(detail.metric.marketTotal) : integer(Number(detail.metric.marketTotal))} {byValue ? "attribuibili" : "relazioni"} nel denominatore completo dell’ente.</p>
+        {byValue ? <p className={styles.note}>Importi esatti in euro (punto decimale): selezione <code>{detail.weight}</code>; denominatore <code>{detail.metric.marketTotal}</code>. Gli importi in tabella sono mostrati ai centesimi.</p> : null}
+        <p className={styles.note}>{detail.selection === "all" ? "La selezione HHI comprende tutte le quote del relativo perimetro; l’indice è la somma dei loro quadrati sulla scala da 0 a 10.000. " : ""}Questi indicatori descrittivi non indicano illecito.</p>
+        {detail.selection !== "all" ? (
+          <details className={styles.selection}>
+            <summary>Operatori nella selezione ({detail.operators.length})</summary>
+            <ul>{detail.operators.map((operator) => <li key={operator.ref}><Link href={href(codice, { view: "operator", operator: operator.ref })}>{operator.name}</Link></li>)}</ul>
+          </details>
+        ) : <p><Link href={href(codice, { view: "operators", metric: detail.metric.dimension })}>Consulta tutti gli operatori del perimetro →</Link></p>}
+        <Link className="btn btn-secondary" href={href(codice, { view: "summary" })}>← Torna agli indicatori</Link>
+      </section>
+      <Awards profile={{ awards: detail.awards }} codice={codice} currentPage={currentPage} size={size} concentration={detail} />
+    </>
   );
 }
 
@@ -404,9 +445,18 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
   const metric: RankingMetric = first(query.metric) === "value" ? "value" : "count";
   const operatorRef = first(query.operator) || undefined;
   const size = pageSize(first(query.pageSize));
+  let selection: AnacConcentrationSelection | undefined;
+  if (selectedView === "concentration") {
+    if (Object.entries(query).some(([key, value]) => !["view", "metric", "selection", "page", "pageSize"].includes(key) || Array.isArray(value))
+      || (query.metric !== "count" && query.metric !== "value")
+      || (query.selection !== "top1" && query.selection !== "top10" && query.selection !== "all")
+      || query.operator !== undefined) notFound();
+    selection = query.selection;
+  }
+  const concentration = selection ? selectAnacConcentrationAwards(profile, metric, selection) : null;
   const currentPage = clampEntityProcurementPage(
     first(query.page),
-    totalRowsForView(profile, selectedView, operatorRef, metric),
+    selectedView === "concentration" ? concentration?.awards.length ?? 0 : totalRowsForView(profile, selectedView, operatorRef, metric),
     size,
   );
   return (
@@ -425,8 +475,8 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} /> : null}
       <div className={styles.pageSize}>
         <span>Righe per pagina:</span>
-        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
-        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
+        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, selection, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
+        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, selection, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
       </div>
       {selectedView === "summary" ? (
         <>
@@ -437,6 +487,10 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       {selectedView === "operators" ? <Operators profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} metric={metric} /> : null}
       {selectedView === "procedures" ? <Procedures profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
       {selectedView === "awards" ? <Awards profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
+      {selectedView === "concentration" ? concentration
+        ? <ConcentrationDetail detail={concentration} codice={normalizedCode} currentPage={currentPage} size={size} />
+        : <div className="notice"><strong>Indicatore non pubblicato</strong><p>Il perimetro non soddisfa i requisiti di pubblicazione. Nessun valore viene trasformato in zero.</p></div>
+        : null}
       {selectedView === "operator" && operatorRef ? <OperatorDetail profile={profile} codice={normalizedCode} operatorRef={operatorRef} currentPage={currentPage} size={size} /> : null}
       <section className="panel" aria-labelledby="method-title">
         <h2 className="panel-title" id="method-title">Fonte e limiti</h2>

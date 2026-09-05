@@ -205,24 +205,99 @@ Il workflow:
 
 Nessun aggiornamento pubblica direttamente su `main`.
 
-### Cadenza editoriale
+### Frequenze e responsabilità
 
-- **Dati del voto:** verifica a ogni nuovo vintage AMECO e comunque almeno ogni sei mesi.
-- **Grafici Eurostat:** rilevazione automatica settimanale; revisione dei cambiamenti tramite PR.
-- **Contesto:** revisione almeno trimestrale, dopo eventi economici internazionali rilevanti e al cambio di governo.
-- **Cronologia:** aggiornamento al giuramento di un nuovo governo, usando una fonte della Presidenza della Repubblica.
+L'unico workflow `government-scorecard-refresh.yml` interroga AMECO e le nove
+query Eurostat ogni martedì, quindi più spesso del minimo semestrale. Si può
+avviare anche manualmente. Il log registra l'ora del controllo, l'esito e la
+scadenza del contesto; `retrieved_at` resta la data di acquisizione del payload,
+non quella dell'ultimo polling riuscito. Un controllo fallito non prova che i
+dati siano aggiornati: il manutentore responsabile delle fonti deve esaminare
+le run fallite e ripetere l'acquisizione entro il semestre.
 
-Il contesto non viene generato da notizie senza revisione. Un elemento nuovo richiede periodo, breve spiegazione del possibile canale economico, fonte autorevole e verifica umana.
+Il manutentore editoriale rivede contesto economico, europeo e internazionale
+entro tre mesi di calendario dalla revisione precedente e al cambio di governo.
+La ricevuta `refreshPolicy.contextReview` nel contratto di provenienza della
+pagina lega la data ai contenuti completi e al registro dei giuramenti tramite
+SHA-256. La ricevuta iniziale identifica il catalogo congelato del 3 settembre
+2026; questa modifica tecnica non aggiunge una nuova revisione editoriale.
+Alla scadenza, il workflow continua a osservare le serie ma blocca la
+pubblicazione e segnala la revisione necessaria. Non inventa contesto né aggiorna
+la data della revisione da solo. Anche una revisione senza cambiamenti richiede
+la registrazione esplicita della nuova data da parte del manutentore.
+
+### Aggiornamento manuale e errori
+
+Usare un checkout pulito e l'orchestratore del workflow, non una sequenza di
+write indipendenti dei singoli ETL:
+
+```bash
+python3 scripts/etl/government_scorecard_refresh.py --observe --retrieved-at <timestamp-UTC>
+```
+
+`--observe` controlla schema, identità, unità, flag e completezza e stampa le
+ricevute acquisite senza scrivere snapshot o candidati. Un nuovo payload non
+approvato resta bloccato: confrontare periodo, fonte, termini di riuso, hash e
+valori con il rilascio precedente prima di riportare le ricevute nel
+`refreshPolicy` di `government-scorecard-page.source.json`. Non approvare un
+hash soltanto perché è quello restituito dal download.
+
+Per un nuovo vintage AMECO aggiornare insieme source spec e manifest metodologico
+(vintage, anni osservati e anni di previsione). `scoreAcquiredAt` e
+`coreArtifactSha256` fissano esattamente l'acquisizione approvata. Una revisione
+storica richiede un confronto esplicito dei voti e l'aggiornamento motivato dei
+test di riferimento; non viene accettata silenziosamente dal polling.
+
+```bash
+python3 scripts/etl/government_scorecard_refresh.py --retrieved-at <timestamp-UTC>
+python3 scripts/ci/source-snapshot-inventory.py --write
+npm run government-scorecard:verify
+npm run test:etl
+npm run test:snapshots
+```
+
+Preparare nello stesso contributo le modifiche editoriali/metodologiche e gli
+snapshot che le applicano: non pubblicare un contratto nuovo con dati vecchi.
+Se cambia il periodo del voto, aggiornare l'inventario prima del refresh
+(l'inventario deriva dal source spec); il refresh ne controlla l'allineamento.
+I file immutati non vengono riscritti. Il manifest pubblico, i download e le
+ricevute sono derivati dai medesimi file validati, senza un secondo generatore.
+
+Timeout, payload parziale, cambiamento inatteso di schema, fonte, licenza,
+identità, periodo o hash interrompono il refresh. I dati sono preparati in
+memoria; un errore nella sostituzione locale o nella verifica finale ripristina
+i byte precedenti. La pubblicazione usa l'unico commit/candidato del publisher
+esistente: una run interrotta non raggiunge quel passo. L'atomicità pubblica è
+quella dell'albero Git, non una transazione fra file di un server in esecuzione.
+Non eseguire l'ETL nella directory di un'applicazione in servizio.
+
+Il publisher rimane limitato ai due artifact generati: cronologia, metodologia
+e approvazioni editoriali richiedono un contributo umano. Nessun commit o
+candidato viene prodotto se non cambia alcun dato. I log delle run conservano
+la prova dei controlli che non hanno prodotto modifiche.
 
 ### Cambio di governo
 
-Quando giura un nuovo governo occorre:
-
-1. aggiungere il nuovo giuramento al registro cronologico e verificare la fonte;
-2. chiudere automaticamente il mandato precedente con quella stessa data esclusiva;
-3. aggiungere il contesto iniziale del nuovo governo;
-4. rigenerare i due artefatti;
-5. eseguire test e controllo visivo prima della PR.
+1. Verificare il giuramento sulla notizia specifica della Presidenza della
+   Repubblica. Aggiungere al registro ID univoco, nome, data, URL e locator;
+   aggiornare `asOfDate` e `verifiedAt`. I 17 giuramenti già verificati sono
+   protetti; nuove voci sono ammesse solo in coda e in ordine temporale.
+2. Il modello chiude il mandato precedente alla data esclusiva del successore.
+   Nel catalogo `contexts` dello snapshot della pagina aggiornare la scheda
+   cronologica precedente e aggiungere le sei categorie del nuovo governo,
+   con fonti, periodo e canale economico. Una categoria vuota richiede comunque
+   la revisione del catalogo; non copiare automaticamente il contesto precedente.
+3. Ricalcolare gli hash degli elementi modificati con
+   `government_scorecard_page._canonical_hash` sull'evidenza (tutti i campi
+   eccetto `retrieved_at` e `evidence_sha256`), poi gli hash del catalogo e del
+   registro nella ricevuta `contextReview`. Registrare la data della revisione.
+   Date, nomi, fonti e confini del mandato devono riconciliare.
+4. Eseguire l'orchestratore e le verifiche sopra; aggiornare i test di riferimento
+   del governo diventato storico e aggiungere il nuovo caso. Verificare in browser
+   governo corrente, archivio, confronto e download.
+5. Il nuovo governo compare dal registro, ma resta senza voto finché non supera
+   durata minima e finestra annuale comune completa. Solo osservazioni AMECO
+   entrano nel calcolo; previsioni e serie di contesto non possono sostituirle.
 
 ## I due artefatti mantenuti
 

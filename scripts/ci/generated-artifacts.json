@@ -537,16 +537,18 @@
       "reconciliationTests": [
         "tests/etl/test_government_scorecard_snapshot.py",
         "tests/etl/test_government_scorecard_chronology.py",
-        "tests/etl/test_government_scorecard_page.py"
+        "tests/etl/test_government_scorecard_page.py",
+        "tests/etl/test_government_scorecard_refresh.py"
       ],
       "nodeTests": [
         "tests/government-scorecard-data.test.mjs",
         "tests/government-scorecard-calculation.test.mjs",
         "tests/government-scorecard-page.test.mjs",
-        "tests/government-scorecard-downloads.test.mjs"
+        "tests/government-scorecard-downloads.test.mjs",
+        "tests/government-scorecard-refresh.test.mjs"
       ],
       "generator": {
-        "command": "python3 scripts/etl/government_scorecard_snapshot.py --retrieved-at <UTC timestamp> && python3 scripts/etl/government_scorecard_chronology.py && python3 scripts/etl/government_scorecard_page.py --refresh --retrieved-at <same UTC timestamp>",
+        "command": "python3 scripts/etl/government_scorecard_refresh.py --retrieved-at <UTC timestamp>",
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/government-scorecard-refresh.yml",

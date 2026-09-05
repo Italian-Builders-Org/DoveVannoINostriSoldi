@@ -1,0 +1,103 @@
+.eyebrow,
+.note,
+.code {
+  color: var(--color-neutral-600);
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.filters label {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.filters label:first-child {
+  flex: 1 1 300px;
+}
+
+.filters select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+
+.summary h2 {
+  font-size: 18px;
+}
+
+.total {
+  margin-block: var(--space-3);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table caption {
+  text-align: left;
+  padding-block: var(--space-3);
+  color: var(--color-neutral-600);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table tbody th {
+  font-weight: 500;
+}
+
+.table td,
+.table th:last-child {
+  text-align: right;
+  padding-left: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.code {
+  display: block;
+}
+
+.bar {
+  display: block;
+  height: 6px;
+  margin-top: var(--space-2);
+  background: var(--color-neutral-100);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+}
+
+.provenance code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

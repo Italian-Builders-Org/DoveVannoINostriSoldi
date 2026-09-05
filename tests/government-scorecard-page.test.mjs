@@ -1,3 +1,4 @@
+import pageSpec from "../scripts/etl/specs/government-scorecard-page.source.json" with { type: "json" };
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -106,16 +107,7 @@ test("the current-government charts expose the latest reliable display data with
     ["primary_balance", "2022-Q4"],
     ["investment_share", "2022-Q4"],
   ]);
-  const latestByIndicator = new Map([
-    ["inflation", "2026-08"],
-    ["unemployment", "2026-07"],
-    ["employment_rate", "2026-Q1"],
-    ["real_gdp_per_capita", "2026-Q2"],
-    ["debt_ratio", "2026-Q1"],
-    ["debt_per_capita", "2025"],
-    ["primary_balance", "2026-Q1"],
-    ["investment_share", "2026-Q2"],
-  ]);
+  const latestByIndicator = new Map(pageSpec.refreshPolicy.approvedPeriods.map((item) => [item.indicator_id, item.period]));
   for (const slide of current.charts.slides) {
     const window = slide.mandate_window;
     const visibleCounts = slide.series.map((series) => series.points.filter((point) => isGovernmentChartPointInWindow(

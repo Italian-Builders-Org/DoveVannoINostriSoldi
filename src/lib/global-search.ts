@@ -109,6 +109,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
     "olimpiadi invernali",
     "giochi del mediterraneo",
   ],
+  "/spese/ambiente": ["ambiente", "clima", "epea", "istat", "rifiuti", "cepa"],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [
     "pensioni",

@@ -271,3 +271,20 @@ Stato attuale:
 - Debito pubblico: quattro ZIP BDS e una risposta JSON-stat Eurostat sono scaricati soltanto dal workflow dedicato; schema, serie, hash e riconciliazioni devono passare prima della sostituzione atomica dello snapshot.
 
 Non riscriviamo tutti gli adapter contemporaneamente soltanto per uniformità estetica: ogni migrazione deve mantenere gli stessi risultati e passare lint, typecheck, design gate e build.
+
+## Pagella dei governi: ciclo di aggiornamento
+
+Il workflow settimanale `government-scorecard-refresh.yml` usa
+`government_scorecard_refresh.py` e il publisher dati comune. Controlla tutte
+le serie più spesso del minimo semestrale, conserva le ricevute immutate e
+non produce un candidato per il solo passaggio del tempo. La revisione del
+contesto scade dopo tre mesi di calendario e diventa obbligatoria al cambio di
+governo: una ricevuta lega data, catalogo e cronologia. La scadenza o un drift
+inatteso blocca la pubblicazione mantenendo l'ultimo rilascio valido.
+
+Il manutentore fonti segue errori di acquisizione e contratti; il manutentore
+editoriale revisiona contesto e giuramenti. Il workflow non sostituisce queste
+responsabilità. La [procedura della Pagella](PAGELLA_POLITICO_ECONOMICA.md#aggiornamento-manuale-e-errori)
+descrive osservazione senza write, approvazione degli hash, cambio di vintage,
+aggiornamento del registro e rollback. Le date della fonte, dell'acquisizione,
+del polling e della revisione editoriale restano distinte.

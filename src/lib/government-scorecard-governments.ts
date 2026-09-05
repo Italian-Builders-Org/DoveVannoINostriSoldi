@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import sourceSpec from "../../scripts/etl/specs/government-scorecard.source.json";
+import pageSpec from "../../scripts/etl/specs/government-scorecard-page.source.json";
+
 import annualSnapshot from "@/data/generated/government-scorecard.json";
 import { GOVERNMENT_SCORECARD_V6_MANIFEST } from "@/lib/data/government-scorecard-contract";
 import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
@@ -21,25 +24,7 @@ import {
 import { getGovernmentScorecardV6Sensitivity } from "@/lib/government-scorecard-sensitivity";
 import { deriveAnnualStatisticalWindowV6, durationDaysV6 } from "@/lib/government-scorecard-temporal";
 
-export const GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS = [
-  "dini-i",
-  "prodi-i",
-  "dalema-i",
-  "dalema-ii",
-  "amato-ii",
-  "berlusconi-ii",
-  "berlusconi-iii",
-  "prodi-ii",
-  "berlusconi-iv",
-  "monti-i",
-  "letta-i",
-  "renzi-i",
-  "gentiloni-i",
-  "conte-i",
-  "conte-ii",
-  "draghi-i",
-  "meloni-i",
-] as const;
+export const GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS = GOVERNMENT_SCORECARD_V6_CHRONOLOGY.map((government) => government.id);
 
 export type GovernmentScorecardV6GovernmentId = (typeof GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS)[number];
 
@@ -72,18 +57,18 @@ const rawAnnualDatasetSchema = z.object({
   sources: z.object({
     ameco: z.object({
       owner: z.literal("European Commission, Directorate-General for Economic and Financial Affairs"),
-      release: z.literal("Spring 2026 Economic Forecast"),
-      releaseDate: z.literal("2026-06-03"),
+      release: z.literal(sourceSpec.ameco.release),
+      releaseDate: z.literal(sourceSpec.ameco.releaseDate),
       landingUrl: z.literal("https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"),
       downloadUrl: z.literal("https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip"),
       termsUrl: z.literal("https://commission.europa.eu/legal-notice_en"),
       license: z.literal("CC BY 4.0 unless otherwise indicated"),
-      retrievedAt: z.literal("2026-08-29T23:11:43Z"),
-      bytes: z.literal(6_181_987),
-      sha256: z.literal("b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005"),
-      observedThrough: z.literal(2024),
-      forecastFrom: z.literal(2025),
-      forecastThrough: z.literal(2027),
+      retrievedAt: z.literal(pageSpec.refreshPolicy.scoreAcquiredAt),
+      bytes: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_bytes),
+      sha256: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_sha256),
+      observedThrough: z.literal(sourceSpec.ameco.observedThrough),
+      forecastFrom: z.literal(sourceSpec.ameco.forecastFrom),
+      forecastThrough: z.literal(sourceSpec.ameco.forecastThrough),
     }),
   }).strict(),
   indicators: z.array(rawIndicatorSchema).length(6),
@@ -239,7 +224,7 @@ function sourceInput() {
     raw_bytes: source.bytes,
     limitations: [
       "I valori annuali iniziale e finale AMECO non descrivono ciò che accade dentro l'anno.",
-      "Il vintage Spring 2026 classifica il 2025-2027 come previsione: questi anni non entrano nel voto.",
+      `Il vintage ${source.release} classifica il ${source.forecastFrom}-${source.forecastThrough} come previsione: questi anni non entrano nel voto.`,
     ],
   };
 }

@@ -35,14 +35,12 @@ jobs:
       - name: Refresh official inputs atomically
         run: |
           snapshot_retrieved_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          python3 scripts/etl/government_scorecard_snapshot.py --retrieved-at "$snapshot_retrieved_at"
-          python3 scripts/etl/government_scorecard_chronology.py
-          python3 scripts/etl/government_scorecard_page.py --refresh --retrieved-at "$snapshot_retrieved_at"
+          python3 scripts/etl/government_scorecard_refresh.py --retrieved-at "$snapshot_retrieved_at"
       - name: Validate generated contract and score
         run: |
-          python3 -m unittest tests/etl/test_government_scorecard_snapshot.py tests/etl/test_government_scorecard_chronology.py tests/etl/test_government_scorecard_page.py
-          python3 scripts/ci/check-government-scorecard-artifacts.py
-          node --experimental-strip-types --test tests/government-scorecard-data.test.mjs tests/government-scorecard-calculation.test.mjs tests/government-scorecard-page.test.mjs
+          python3 -m unittest tests/etl/test_government_scorecard_snapshot.py tests/etl/test_government_scorecard_chronology.py tests/etl/test_government_scorecard_page.py tests/etl/test_government_scorecard_refresh.py
+          npm run government-scorecard:verify
+          python3 scripts/ci/source-snapshot-inventory.py --check
           git diff --check
       - name: Publish generated data
         uses: ./.github/actions/publish-data-refresh

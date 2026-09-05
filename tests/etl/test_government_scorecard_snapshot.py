@@ -56,7 +56,7 @@ def ameco_zip(
                     country_id.title(),
                     "fixture",
                     part["title"],
-                    part["unit"],
+                    part["rawUnitTemplate"].format(currency=country["currencyCode"]),
                     *values(base=base),
                     "",
                 ]
@@ -94,6 +94,7 @@ class GovernmentScorecardSnapshotTests(unittest.TestCase):
 
     def test_source_spec_rejects_origin_country_and_method_drift(self) -> None:
         mutations = [
+            lambda value: value["ameco"].__setitem__("license", "other license"),
             lambda value: value["ameco"].__setitem__("downloadUrl", "https://example.test/ameco.zip"),
             lambda value: value["ameco"]["countries"]["italy"].__setitem__("code", "XXX"),
             lambda value: value["ameco"]["series"][0].__setitem__("direction", "lower"),

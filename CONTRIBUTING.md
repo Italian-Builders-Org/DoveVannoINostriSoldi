@@ -215,6 +215,11 @@ Inviando una pull request accetti che il tuo contributo sia incluso nel progetto
 sotto GNU Affero GPL v3 (vedi `LICENSE`). Per usi proprietari o commerciali
 senza obblighi AGPL vale quanto descritto in `COMMERCIAL.md`.
 
+## Picchi e capacità
+
+Per eventi mediatici, code di build, stime di traffico e gestione degli incidenti
+vedi [Capacità, picchi e rilasci](docs/CAPACITY_AND_INCIDENTS.md).
+
 ## Review e merge
 
 Il merge su `main` è consentito quando il check `required` è verde e i thread

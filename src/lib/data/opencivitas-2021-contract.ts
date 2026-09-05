@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 const LANDING_URL = "https://www.opencivitas.it/it/open-data";
 const DATASET_URL =
@@ -232,7 +234,7 @@ export function assertOpenCivitas2021Snapshot(value: unknown): OpenCivitas2021Sn
   const observedAt = isoTimestamp(sourceRecord.observedAt, "snapshot.source.observedAt");
   if (generatedAt !== observedAt) throw new Error("snapshot: generatedAt e observedAt devono coincidere");
   const methodologyRecord = object(record.methodology, "snapshot.methodology");
-  return {
+  const snapshot: OpenCivitas2021Snapshot = {
     schemaVersion: 1,
     transformVersion: 1,
     scope: "ordinary-statute-municipalities-total-services-fc70-2021",
@@ -274,4 +276,22 @@ export function assertOpenCivitas2021Snapshot(value: unknown): OpenCivitas2021Sn
       yearSeparationWarning: text(methodologyRecord.yearSeparationWarning, "snapshot.methodology.yearSeparationWarning"),
     },
   };
+  const semantic = structuredClone(record);
+  delete semantic.generatedAt;
+  delete (semantic.source as Record<string, unknown>).observedAt;
+  if (createHash("sha256").update(canonicalJson(semantic)).digest("hex") !== "bab851fd276d3568269f641cd62a85065a0be7366ae11538973917586f2c8234") {
+    throw new Error("snapshot: SHA-256 semantico diverso dal rilascio verificato");
+  }
+  return snapshot;
+}
+
+
+// Stable across Python and JavaScript for this integer-only historical artifact.
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (value !== null && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
 }

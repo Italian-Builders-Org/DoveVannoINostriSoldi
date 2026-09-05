@@ -45,3 +45,15 @@ test("OpenCivitas 2021 ETL validates the committed snapshot offline", () => {
   assert.equal(checked.status, 0, checked.stderr);
   assert.match(checked.stdout, /Snapshot OpenCivitas valido/);
 });
+
+test("OpenCivitas 2021 pins coherent amounts and metadata to the historical release", () => {
+  for (const mutate of [
+    (s) => { s.municipalityRows[0][4] += 100; s.municipalityRows[0][6] += 100; },
+    (s) => { s.source.license = "Unverified"; },
+    (s) => { s.municipalityRows[0][10] += 1; },
+  ]) {
+    const snapshot = committedSnapshot();
+    mutate(snapshot);
+    assert.throws(() => assertOpenCivitas2021Snapshot(snapshot), /SHA-256 semantico/);
+  }
+});

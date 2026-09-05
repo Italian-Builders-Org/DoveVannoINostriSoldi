@@ -41,10 +41,9 @@ USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builder
 TRANSIENT_HTTP = {408, 425, 429, 500, 502, 503, 504}
 MAX_RETRIES = 2
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
-# Count is taken from the official files. A hard 6557 would silently
-# force the 2022 FC80 perimeter onto FC70.
-MIN_MUNICIPALITIES = 6_000
-MAX_MUNICIPALITIES = 7_200
+# Exact coverage of the hash-pinned FC70 release, distinct from FC80 (6557).
+MIN_MUNICIPALITIES = 6_565
+MAX_MUNICIPALITIES = 6_565
 LOCKED_SHA256 = {
     "data": "0d7732aade6e584281416ba80564d42823da2a9a4b62f62d1184c2e86ba74c60",
     "entities": "ef1a547c281b0f47ed9b5d6fd17b8919eff3ad5eaae163ed2bf108ba02eca83b",
@@ -511,6 +510,11 @@ def validate_snapshot(snapshot: object) -> None:
     coverage = snapshot.get("coverage")
     if not isinstance(coverage, dict) or coverage.get("municipalities") != len(rows):
         raise StructuralError("Snapshot: copertura non riconciliata")
+
+    # The immutable historical release is pinned independently of acquisition time.
+    payload = json.dumps(semantic_view(snapshot), sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    if hashlib.sha256(payload).hexdigest() != "bab851fd276d3568269f641cd62a85065a0be7366ae11538973917586f2c8234":
+        raise StructuralError("Snapshot: SHA-256 semantico diverso dal rilascio verificato")
 
 
 def semantic_view(snapshot: dict) -> dict:

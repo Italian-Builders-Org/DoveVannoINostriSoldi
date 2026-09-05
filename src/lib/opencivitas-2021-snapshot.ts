@@ -1,3 +1,4 @@
+import "server-only";
 import snapshotJson from "@/data/generated/opencivitas-2021.json";
 import {
   assertOpenCivitas2021Snapshot,
@@ -19,8 +20,8 @@ export function queryOpenCivitas2021(filters: {
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100) {
     throw new Error("limit deve essere un intero tra 1 e 100.");
   }
-  if (!Number.isSafeInteger(offset) || offset < 0) {
-    throw new Error("offset deve essere un intero >= 0.");
+  if (!Number.isSafeInteger(offset) || offset < 0 || offset > 100_000) {
+    throw new Error("offset deve essere un intero tra 0 e 100000.");
   }
   if (filters.region === undefined && filters.code === undefined) {
     throw new Error(
@@ -29,6 +30,9 @@ export function queryOpenCivitas2021(filters: {
   }
 
   const regionInput = filters.region?.trim();
+  if (regionInput !== undefined && !regionInput) {
+    throw new Error("La regione non può essere vuota.");
+  }
   const region = regionInput ? resolveOpenCivitasRegionName(regionInput) : null;
   if (regionInput && !region) {
     throw new Error(`Regione OpenCivitas non riconosciuta: ${regionInput}.`);

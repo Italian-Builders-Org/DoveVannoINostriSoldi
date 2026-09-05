@@ -437,14 +437,15 @@
       },
       "reconciliationTests": [],
       "nodeTests": [
-        "tests/opencivitas-2021-contract.test.mjs"
+        "tests/opencivitas-2021-contract.test.mjs",
+        "tests/opencivitas-2021-route.test.mjs"
       ],
       "generator": {
         "command": "python scripts/etl/opencivitas_2021_snapshot.py --data-zip 2021_Ind_FC70TOT_1_csv.zip --entities-zip Metadati_Enti_2021_xlsx.zip --indicators-zip 2021_Metadati_Ind_FC70TOT_1_xlsx.zip",
         "requiresNetworkInput": false
       },
       "refreshWorkflow": null,
-      "trustModel": "ZIP ufficiali FC70TOT 2021 vincolati per SHA-256 dichiarati in issue 282. Contratto distinto da FC80TOT 2022. Check offline senza rete. Nessun refresh condiviso con il 2022."
+      "trustModel": "ZIP ufficiali FC70TOT 2021 vincolati per SHA-256 dichiarati in issue 282. Contratto distinto da FC80TOT 2022. Digest semantico verificato da Python e TypeScript, esclusi solo i timestamp di acquisizione. Check offline senza rete. Nessun refresh condiviso con il 2022."
     },
     {
       "id": "opencoesione",

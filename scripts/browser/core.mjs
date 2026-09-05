@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectEpea } from "./epea.mjs";
 import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
@@ -2733,6 +2734,14 @@ try {
           timeout: 3_000,
         });
       },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Spesa ambientale EPEA ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/spese/ambiente", width, validate: inspectEpea,
     });
     completed.push(label);
   }

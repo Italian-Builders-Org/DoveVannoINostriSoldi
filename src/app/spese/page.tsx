@@ -126,6 +126,7 @@ export default async function MoneyPage({
           <Link href="/spese/invalidita">invalidità INPS</Link>,{" "}
           <Link href="/spese/sanita">sanità</Link>,{" "}
           <Link href="/spese/sport">sport</Link>,{" "}
+          <Link href="/spese/ambiente">protezione dell’ambiente</Link>,{" "}
           <Link href="/stato">Stato</Link>,{" "}
           <Link href="/parlamento">Parlamento</Link>.
         </p>

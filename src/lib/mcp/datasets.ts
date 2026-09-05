@@ -209,6 +209,18 @@ export async function queryPublicDataset(
         provenance: openCivitasSnapshot.source,
       });
     }
+    case "opencivitas_fabbisogni_2021": {
+      const { queryOpenCivitas2021 } = await import("@/lib/opencivitas-2021-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70TOT è disponibile per il 2021. Il 2022 resta sul dataset opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2021({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencoesione_progetti": {
       const {
         deriveOpenCoesioneDimension,

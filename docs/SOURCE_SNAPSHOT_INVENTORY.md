@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 43
+- Artefatti nel registro: 44
 - PR automatica: 9 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 28 (PR umana dopo revisione)
+- manuale: 29 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -59,6 +59,7 @@ La revisione e il merge restano umani.
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
+| `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
 | `opencoesione` | 2026-04-30 | 2026-08-20T08:51:13+00:00 | https://opencoesione.gov.it/it/api/aggregati/ | `17 */6 * * *` | `.github/workflows/opencoesione-refresh.yml` | PR automatica | `python scripts/etl/opencoesione_snapshot.py --check` |
 | `parliament` | non dichiarato nello snapshot | 2026-08-20T14:00:00.000Z | non dichiarato nel registro | `37 */6 * * *` | `.github/workflows/parliament-sources.yml` | solo rilevamento | `python scripts/etl/parliament_sources.py --check` |
 | `pcm-financial-2024` | 2024 | 2026-08-22T16:54:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/pcm_financial_account.py --check` |

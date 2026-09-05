@@ -28,6 +28,7 @@ export type SourceId =
   | "istat-cofog"
   | "istat-epea"
   | "istat-poverta"
+  | "istat-poverta-relativa"
   | "inps-naspi"
   | "mef-irpef-dettaglio"
   | "ameco"
@@ -465,6 +466,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta", "domain:social-conditions"],
+  },
+  "istat-poverta-relativa": {
+    id: "istat-poverta-relativa",
+    label: "ISTAT · povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli indicatori di povertà escono annualmente. Lo snapshot fissa la serie corrente post-revisione (34_727, dal 2014) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-relativa", "domain:social-conditions"],
   },
   "inps-naspi": {
     id: "inps-naspi",

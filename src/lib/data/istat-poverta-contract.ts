@@ -1,13 +1,19 @@
 import { z } from "zod";
 
 /**
- * Contratto fail-closed per lo snapshot ISTAT della povertà assoluta (34_727).
+ * Contratto fail-closed per gli snapshot ISTAT della povertà (34_727).
+ *
+ * Un solo motore, due famiglie: **assoluta** e **relativa**. Vivono nello stesso
+ * dataflow ma non sono lo stesso dato, quindi ognuna ha id, lock, artefatti e
+ * contratto runtime propri; qui si condivide solo la macchina, e la guardia di
+ * famiglia rifiuta una misura dell'altra famiglia — mescolarle metterebbe due
+ * definizioni diverse di povertà sullo stesso asse.
  *
  * Cinque proprietà della fonte sono pretese qui, non lasciate alla pagina:
  *
- * - il dataset NON contiene importi. È l'unico snapshot di spesa pubblica in cui
- *   l'asse `soldi` è dichiarato assente invece che ricostruito, e il contratto
- *   vincola l'unità a dirlo esplicitamente;
+ * - il dataset NON contiene importi. È l'unico caso in cui l'asse `soldi` è
+ *   dichiarato assente invece che ricostruito, e il contratto vincola l'unità a
+ *   dirlo esplicitamente;
  * - misure di natura diversa non condividono un'unità: tassi, composizioni
  *   percentuali e conteggi in migliaia restano tipizzati separatamente, e solo i
  *   conteggi possono dichiararsi sommabili fra territori;
@@ -34,6 +40,22 @@ const nonNegativeInt = z.number().int().min(0);
 const measureKind = z.enum(["rate", "composition", "count"]);
 const territoryKind = z.enum(["country", "macro", "composite"]);
 
+const COMPOSITION_TOTAL_TENTHS = 1_000;
+const COMPOSITION_TOLERANCE_TENTHS = 2;
+
+export type PovertaFamilyConfig = Readonly<{
+  /** Id del dataset, distinto per famiglia. */
+  datasetId: string;
+  /** Token che ogni misura della famiglia deve contenere. */
+  token: "POVASS" | "POVREL";
+  /** Token dell'altra famiglia: nessuna misura può portarlo. */
+  otherToken: "POVASS" | "POVREL";
+  /** Etichetta leggibile, usata nei messaggi di errore. */
+  label: string;
+  /** Percorso dell'artefatto dati, vincolato nel metadata. */
+  artifactPath: string;
+}>;
+
 const observationSchema = z
   .object({
     measure: z.string().min(3).max(24),
@@ -54,25 +76,6 @@ const territorySchema = z
   })
   .strict();
 
-const measureSchema = z
-  .object({
-    code: z.string().min(3).max(24),
-    label: z.string().min(1),
-    kind: measureKind,
-    unit: z.enum(["percentuale", "migliaia"]),
-    subject: z.enum(["famiglie", "individui"]),
-    summableAcrossTerritories: z.boolean(),
-  })
-  .strict()
-  .refine(
-    (measure) => measure.kind === "count" || !measure.summableAcrossTerritories,
-    "Solo i conteggi possono essere dichiarati sommabili fra territori",
-  )
-  .refine(
-    (measure) => !measure.code.includes("POVREL"),
-    "Le misure di povertà relativa appartengono a un dataset distinto (Fetta B)",
-  );
-
 const reconciliationCheckSchema = z
   .object({
     kind: z.enum(["territorio", "composizione"]),
@@ -85,133 +88,177 @@ const reconciliationCheckSchema = z
   })
   .strict();
 
-export const istatPovertaDataSchema = z
-  .object({
-    schemaVersion: z.literal(1),
-    datasetId: z.literal("istat-poverta-assoluta"),
-    period: z.object({ from: z.literal(2014), to: z.literal(2024) }).strict(),
-    caveats: z.array(z.string().min(1)).min(1),
-    scale: z.object({ factor: z.literal(10), note: z.string().min(1) }).strict(),
-    measures: z.array(measureSchema).length(7),
-    territories: z.array(territorySchema).length(8),
-    observations: z.array(observationSchema).min(1),
-    flags: z
-      .object({
-        attribute: z.literal("OBS_STATUS"),
-        // Vincolato: è il punto in cui è facile sbagliare codelist e leggere «0»
-        // come uno zero osservato.
-        codelist: z.literal("CL_FLAG"),
-        note: z.string().min(1),
-        flaggedCells: nonNegativeInt,
-      })
-      .strict(),
-    coverage: z
-      .object({ expectedCells: z.number().int().positive(), observedCells: z.number().int().positive() })
-      .strict(),
-    reconciliation: z
-      .object({
-        note: z.string().min(1),
-        toleranceTenths: z.number().int().positive(),
-        maxGapTenths: nonNegativeInt,
-        checks: z.array(reconciliationCheckSchema).min(1),
-        notSummable: z
-          .array(z.object({ measure: z.string().min(3), assertion: z.string().min(1) }).strict())
-          .min(1),
-      })
-      .strict(),
-  })
-  .strict();
+function measureSchemaFor(config: PovertaFamilyConfig) {
+  return z
+    .object({
+      code: z.string().min(3).max(24),
+      label: z.string().min(1),
+      kind: measureKind,
+      unit: z.enum(["percentuale", "migliaia"]),
+      subject: z.enum(["famiglie", "individui"]),
+      summableAcrossTerritories: z.boolean(),
+    })
+    .strict()
+    .refine(
+      (measure) => measure.kind === "count" || !measure.summableAcrossTerritories,
+      "Solo i conteggi possono essere dichiarati sommabili fra territori",
+    )
+    .refine(
+      (measure) => !measure.code.includes(config.otherToken),
+      `Le misure dell'altra famiglia appartengono a un dataset distinto, non a ${config.datasetId}`,
+    )
+    .refine(
+      (measure) => measure.code.includes(config.token),
+      `Ogni misura deve appartenere alla famiglia ${config.label}`,
+    );
+}
 
-export const istatPovertaMetadataSchema = z
-  .object({
-    schemaVersion: z.literal(1),
-    datasetId: z.literal("istat-poverta-assoluta"),
-    period: z.object({ from: z.literal(2014), to: z.literal(2024) }).strict(),
-    observedAt: isoDate,
-    source: z
-      .object({
-        owner: z.string().min(1),
-        landingUrl: officialUrl("Landing URL ISTAT non ufficiale"),
-        dataflowId: z.literal("34_727_DF_DCCV_POVERTA_1"),
-        dataflowLabel: z.string().min(1),
-        // La risposta SDMX non espone alcuna licenza e non se ne inferisce una:
-        // il contratto lo pretende esplicito.
-        licenseId: z.literal("not-declared"),
-        licenseNote: z.string().min(1),
-        seriesNote: z.string().min(1),
-        acquisition: z.object({ acquiredAt: isoDate, checkedAt: isoDate, note: z.string().min(1) }).strict(),
-        assets: z.record(
-          z.string(),
-          z
+function dataSchemaFor(config: PovertaFamilyConfig) {
+  return z
+    .object({
+      schemaVersion: z.literal(1),
+      datasetId: z.literal(config.datasetId),
+      period: z.object({ from: z.literal(2014), to: z.literal(2024) }).strict(),
+      caveats: z.array(z.string().min(1)).min(1),
+      scale: z.object({ factor: z.literal(10), note: z.string().min(1) }).strict(),
+      measures: z.array(measureSchemaFor(config)).length(7),
+      territories: z.array(territorySchema).length(8),
+      observations: z.array(observationSchema).min(1),
+      flags: z
+        .object({
+          attribute: z.literal("OBS_STATUS"),
+          // Vincolato: è il punto in cui è facile sbagliare codelist e leggere «0»
+          // come uno zero osservato.
+          codelist: z.literal("CL_FLAG"),
+          note: z.string().min(1),
+          flaggedCells: nonNegativeInt,
+        })
+        .strict(),
+      coverage: z
+        .object({ expectedCells: z.number().int().positive(), observedCells: z.number().int().positive() })
+        .strict(),
+      reconciliation: z
+        .object({
+          note: z.string().min(1),
+          toleranceTenths: z.number().int().positive(),
+          maxGapTenths: nonNegativeInt,
+          checks: z.array(reconciliationCheckSchema).min(1),
+          notSummable: z
+            .array(z.object({ measure: z.string().min(3), assertion: z.string().min(1) }).strict())
+            .min(1),
+        })
+        .strict(),
+    })
+    .strict();
+}
+
+function metadataSchemaFor(config: PovertaFamilyConfig) {
+  return z
+    .object({
+      schemaVersion: z.literal(1),
+      datasetId: z.literal(config.datasetId),
+      period: z.object({ from: z.literal(2014), to: z.literal(2024) }).strict(),
+      observedAt: isoDate,
+      source: z
+        .object({
+          owner: z.string().min(1),
+          landingUrl: officialUrl("Landing URL ISTAT non ufficiale"),
+          dataflowId: z.literal("34_727_DF_DCCV_POVERTA_1"),
+          dataflowLabel: z.string().min(1),
+          // La risposta SDMX non espone alcuna licenza e non se ne inferisce una:
+          // il contratto lo pretende esplicito.
+          licenseId: z.literal("not-declared"),
+          licenseNote: z.string().min(1),
+          seriesNote: z.string().min(1),
+          acquisition: z.object({ acquiredAt: isoDate, checkedAt: isoDate, note: z.string().min(1) }).strict(),
+          assets: z.record(
+            z.string(),
+            z
+              .object({
+                url: officialUrl("URL asset ISTAT non ufficiale"),
+                format: z.literal("SDMX-CSV 1.0.0"),
+                bytes: z.number().int().positive(),
+                sha256,
+              })
+              .strict(),
+          ),
+        })
+        .strict(),
+      measures: z.array(measureSchemaFor(config)).length(7),
+      reconciliation: z.record(z.string(), z.unknown()),
+      // I tre assi semantici obbligatori dello standard di import (#264).
+      semantics: z
+        .object({
+          soldi: z
             .object({
-              url: officialUrl("URL asset ISTAT non ufficiale"),
-              format: z.literal("SDMX-CSV 1.0.0"),
-              bytes: z.number().int().positive(),
-              sha256,
+              // L'asse è dichiarato ASSENTE. Un'unità monetaria qui sarebbe una
+              // invenzione: il dataset non contiene importi.
+              unit: z.literal("nessuna — il dataset non contiene importi"),
+              nature: z.string().min(1),
+              note: z.string().min(1),
             })
             .strict(),
-        ),
-      })
-      .strict(),
-    measures: z.array(measureSchema).length(7),
-    reconciliation: z.record(z.string(), z.unknown()),
-    // I tre assi semantici obbligatori dello standard di import (#264).
-    semantics: z
-      .object({
-        soldi: z
-          .object({
-            // L'asse è dichiarato ASSENTE. Un'unità monetaria qui sarebbe una
-            // invenzione: il dataset non contiene importi.
-            unit: z.literal("nessuna — il dataset non contiene importi"),
-            nature: z.string().min(1),
-            note: z.string().min(1),
-          })
-          .strict(),
-        periodo: z.object({ referencePeriod: z.literal("2014-2024"), note: z.string().min(1) }).strict(),
-        provenance: z
-          .object({
-            holder: z.string().min(1),
-            canonicalUrls: z.array(officialUrl("URL non ufficiale")).min(1),
-            acquisitionDate: isoDate,
-            checkedAt: isoDate,
-            license: z.literal("not-declared"),
-            hashes: z.string().min(1),
-          })
-          .strict(),
-      })
-      .strict(),
-    integrity: z
-      .object({
-        algorithm: z.literal("sha256"),
-        canonicalization: z.string().min(1),
-        dataArtifact: z
-          .object({
-            path: z.literal("src/data/generated/istat-poverta-assoluta-2014-2024.data.json"),
-            bytes: z.number().int().positive(),
-            sha256,
-          })
-          .strict(),
-        sourceLockSha256: sha256,
-      })
-      .strict(),
-  })
-  .strict();
+          periodo: z.object({ referencePeriod: z.literal("2014-2024"), note: z.string().min(1) }).strict(),
+          provenance: z
+            .object({
+              holder: z.string().min(1),
+              canonicalUrls: z.array(officialUrl("URL non ufficiale")).min(1),
+              acquisitionDate: isoDate,
+              checkedAt: isoDate,
+              license: z.literal("not-declared"),
+              hashes: z.string().min(1),
+            })
+            .strict(),
+        })
+        .strict(),
+      integrity: z
+        .object({
+          algorithm: z.literal("sha256"),
+          canonicalization: z.string().min(1),
+          dataArtifact: z
+            .object({ path: z.literal(config.artifactPath), bytes: z.number().int().positive(), sha256 })
+            .strict(),
+          sourceLockSha256: sha256,
+        })
+        .strict(),
+    })
+    .strict();
+}
 
-export type IstatPovertaData = z.infer<typeof istatPovertaDataSchema>;
-export type IstatPovertaMetadata = z.infer<typeof istatPovertaMetadataSchema>;
+export const ISTAT_POVERTA_ASSOLUTA: PovertaFamilyConfig = {
+  datasetId: "istat-poverta-assoluta",
+  token: "POVASS",
+  otherToken: "POVREL",
+  label: "povertà assoluta",
+  artifactPath: "src/data/generated/istat-poverta-assoluta-2014-2024.data.json",
+};
+
+export const ISTAT_POVERTA_RELATIVA: PovertaFamilyConfig = {
+  datasetId: "istat-poverta-relativa",
+  token: "POVREL",
+  otherToken: "POVASS",
+  label: "povertà relativa",
+  artifactPath: "src/data/generated/istat-poverta-relativa-2014-2024.data.json",
+};
+
+// I tipi sono strutturalmente identici fra le due famiglie: si inferiscono dalla
+// forma prodotta dalla factory e valgono per entrambe.
+export type IstatPovertaData = z.infer<ReturnType<typeof dataSchemaFor>>;
+export type IstatPovertaMetadata = z.infer<ReturnType<typeof metadataSchemaFor>>;
 export type IstatPovertaObservation = z.infer<typeof observationSchema>;
 export type IstatPovertaTerritory = z.infer<typeof territorySchema>;
-export type IstatPovertaMeasure = z.infer<typeof measureSchema>;
+export type IstatPovertaMeasure = IstatPovertaData["measures"][number];
 
-const COMPOSITION_TOTAL_TENTHS = 1_000;
-const COMPOSITION_TOLERANCE_TENTHS = 2;
+function reconcile(data: IstatPovertaData, config: PovertaFamilyConfig): void {
+  const fail = (message: string) => {
+    throw new Error(`Snapshot ${config.label}: ${message}`);
+  };
 
-function reconcile(data: IstatPovertaData): void {
   if (data.coverage.observedCells !== data.coverage.expectedCells) {
-    throw new Error("Snapshot povertà assoluta: copertura incompleta, il bundle non è pubblicabile.");
+    fail("copertura incompleta, il bundle non è pubblicabile.");
   }
   if (data.observations.length !== data.coverage.expectedCells) {
-    throw new Error("Snapshot povertà assoluta: osservazioni e copertura dichiarata non coincidono.");
+    fail("osservazioni e copertura dichiarata non coincidono.");
   }
 
   const territories = new Map(data.territories.map((entry) => [entry.code, entry]));
@@ -221,29 +268,25 @@ function reconcile(data: IstatPovertaData): void {
 
   for (const observation of data.observations) {
     const key = `${observation.measure}/${observation.territory}/${observation.year}`;
-    if (byCell.has(key)) throw new Error(`Snapshot povertà assoluta: osservazione duplicata ${key}.`);
+    if (byCell.has(key)) fail(`osservazione duplicata ${key}.`);
     if (!territories.has(observation.territory) || !measures.has(observation.measure)) {
-      throw new Error(`Snapshot povertà assoluta: codice fuori anagrafica in ${key}.`);
+      fail(`codice fuori anagrafica in ${key}.`);
     }
     if (observation.valueTenths === null) flagged += 1;
     byCell.set(key, observation.valueTenths);
   }
 
   if (flagged !== data.flags.flaggedCells) {
-    throw new Error("Snapshot povertà assoluta: il conteggio delle celle flaggate non corrisponde.");
+    fail("il conteggio delle celle flaggate non corrisponde.");
   }
 
   // Un composito senza le sue parti non è verificabile e non va pubblicato come
   // se lo fosse.
   for (const territory of data.territories) {
     if (territory.kind !== "composite") continue;
-    if (!territory.parts?.length) {
-      throw new Error(`Snapshot povertà assoluta: il composito ${territory.code} non dichiara le sue parti.`);
-    }
-    for (const part of territory.parts) {
-      if (!territories.has(part)) {
-        throw new Error(`Snapshot povertà assoluta: il composito ${territory.code} cita una parte sconosciuta.`);
-      }
+    if (!territory.parts?.length) fail(`il composito ${territory.code} non dichiara le sue parti.`);
+    for (const part of territory.parts ?? []) {
+      if (!territories.has(part)) fail(`il composito ${territory.code} cita una parte sconosciuta.`);
     }
   }
 
@@ -266,9 +309,7 @@ function reconcile(data: IstatPovertaData): void {
 
       if (check.kind === "composizione") {
         if (Math.abs(summed - COMPOSITION_TOTAL_TENTHS) > COMPOSITION_TOLERANCE_TENTHS) {
-          throw new Error(
-            `Snapshot povertà assoluta: la composizione ${check.measure} non chiude a 100 nel ${year}.`,
-          );
+          fail(`la composizione ${check.measure} non chiude a 100 nel ${year}.`);
         }
         continue;
       }
@@ -276,9 +317,7 @@ function reconcile(data: IstatPovertaData): void {
       const total = cell(check.measure, check.whole, year);
       if (total === undefined || total === null) continue;
       if (Math.abs(total - summed) > data.reconciliation.toleranceTenths) {
-        throw new Error(
-          `Snapshot povertà assoluta: la partizione ${check.whole} si scosta oltre la tolleranza dichiarata.`,
-        );
+        fail(`la partizione ${check.whole} si scosta oltre la tolleranza dichiarata.`);
       }
     }
   }
@@ -287,11 +326,9 @@ function reconcile(data: IstatPovertaData): void {
   // avrebbe cambiato natura sotto la stessa etichetta e il bundle si ferma.
   for (const entry of data.reconciliation.notSummable) {
     const measure = measures.get(entry.measure);
-    if (!measure) {
-      throw new Error(`Snapshot povertà assoluta: ${entry.measure} non è fra le misure pubblicate.`);
-    }
-    if (measure.kind !== "rate") {
-      throw new Error(`Snapshot povertà assoluta: ${entry.measure} non è un tasso e non va asserito non sommabile.`);
+    if (!measure) fail(`${entry.measure} non è fra le misure pubblicate.`);
+    if (measure && measure.kind !== "rate") {
+      fail(`${entry.measure} non è un tasso e non va asserito non sommabile.`);
     }
     const base = data.territories.filter((item) => item.kind === "macro").map((item) => item.code);
     for (const year of years) {
@@ -306,29 +343,36 @@ function reconcile(data: IstatPovertaData): void {
       }
       if (!complete) continue;
       if (Math.abs(national - summed) <= data.reconciliation.toleranceTenths) {
-        throw new Error(
-          `Snapshot povertà assoluta: nel ${year} la somma delle ripartizioni di ${entry.measure} coincide ` +
-            "con il valore nazionale. Un tasso non si comporta così: la misura è stata classificata male.",
+        fail(
+          `nel ${year} la somma delle ripartizioni di ${entry.measure} coincide con il valore ` +
+            "nazionale. Un tasso non si comporta così: la misura è stata classificata male.",
         );
       }
     }
   }
 }
 
-export function validateIstatPovertaBundle(
-  data: unknown,
-  metadata: unknown,
-): { data: IstatPovertaData; metadata: IstatPovertaMetadata } {
-  const parsedData = istatPovertaDataSchema.parse(data);
-  const parsedMetadata = istatPovertaMetadataSchema.parse(metadata);
-  if (parsedMetadata.period.from !== parsedData.period.from || parsedMetadata.period.to !== parsedData.period.to) {
-    throw new Error("Snapshot povertà assoluta: il periodo dei metadati non è quello del dato.");
-  }
-  const dataMeasures = parsedData.measures.map((entry) => entry.code).sort().join(",");
-  const metaMeasures = parsedMetadata.measures.map((entry) => entry.code).sort().join(",");
-  if (dataMeasures !== metaMeasures) {
-    throw new Error("Snapshot povertà assoluta: le misure dichiarate nei metadati non sono quelle del dato.");
-  }
-  reconcile(parsedData);
-  return { data: parsedData, metadata: parsedMetadata };
+export function createIstatPovertaValidator(config: PovertaFamilyConfig) {
+  const dataSchema = dataSchemaFor(config);
+  const metadataSchema = metadataSchemaFor(config);
+  return function validate(
+    data: unknown,
+    metadata: unknown,
+  ): { data: IstatPovertaData; metadata: IstatPovertaMetadata } {
+    const parsedData = dataSchema.parse(data) as IstatPovertaData;
+    const parsedMetadata = metadataSchema.parse(metadata) as IstatPovertaMetadata;
+    if (parsedMetadata.period.from !== parsedData.period.from || parsedMetadata.period.to !== parsedData.period.to) {
+      throw new Error(`Snapshot ${config.label}: il periodo dei metadati non è quello del dato.`);
+    }
+    const dataMeasures = parsedData.measures.map((entry) => entry.code).sort().join(",");
+    const metaMeasures = parsedMetadata.measures.map((entry) => entry.code).sort().join(",");
+    if (dataMeasures !== metaMeasures) {
+      throw new Error(`Snapshot ${config.label}: le misure dei metadati non sono quelle del dato.`);
+    }
+    reconcile(parsedData, config);
+    return { data: parsedData, metadata: parsedMetadata };
+  };
 }
+
+export const validateIstatPovertaBundle = createIstatPovertaValidator(ISTAT_POVERTA_ASSOLUTA);
+export const validateIstatPovertaRelativaBundle = createIstatPovertaValidator(ISTAT_POVERTA_RELATIVA);

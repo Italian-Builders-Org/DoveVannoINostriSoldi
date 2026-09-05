@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Build the hash-pinned ISTAT absolute-poverty snapshot (34_727, principali indicatori).
+"""Build the hash-pinned ISTAT poverty snapshots (34_727, principali indicatori).
+
+One engine, two families: `--family assoluta` and `--family relativa`.  They live
+in the same dataflow but are NOT the same dato: each has its own source lock, its
+own bytes and SHA-256, its own artifacts, its own dataset id and its own runtime
+contract.  Only the machinery is shared, and the family guard refuses a measure of
+the other family outright — mixing them would put two different definitions of
+poverty on the same axis.
 
 The input is the SDMX-CSV response of the ISTAT dataflow 34_727_DF_DCCV_POVERTA_1
 for a FULLY specified key: of the eleven dimensions, nine have a single value in
@@ -44,39 +51,66 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SPEC = ROOT / "scripts/etl/specs/istat-poverta-assoluta-2014-2024.source.json"
-DEFAULT_DATA = ROOT / "src/data/generated/istat-poverta-assoluta-2014-2024.data.json"
-DEFAULT_META = ROOT / "src/data/generated/istat-poverta-assoluta-2014-2024.meta.json"
+# Le due famiglie vivono nello stesso dataflow ma NON sono lo stesso dato: id,
+# lock, artefatti e contratti restano separati. Qui si condivide solo il motore.
+FAMILIES: dict[str, dict[str, str]] = {
+    "assoluta": {
+        "datasetId": "istat-poverta-assoluta",
+        "slug": "poverta-assoluta",
+        "token": "POVASS",
+        "otherToken": "POVREL",
+        "label": "povertà assoluta",
+        "otherLabel": "povertà relativa",
+    },
+    "relativa": {
+        "datasetId": "istat-poverta-relativa",
+        "slug": "poverta-relativa",
+        "token": "POVREL",
+        "otherToken": "POVASS",
+        "label": "povertà relativa",
+        "otherLabel": "povertà assoluta",
+    },
+}
 
-DATASET_ID = "istat-poverta-assoluta"
+
+def family_paths(family: dict[str, str]) -> tuple[Path, Path, Path]:
+    stem = f"istat-{family['slug']}-2014-2024"
+    return (
+        ROOT / f"scripts/etl/specs/{stem}.source.json",
+        ROOT / f"src/data/generated/{stem}.data.json",
+        ROOT / f"src/data/generated/{stem}.meta.json",
+    )
+
+
 # Trailing slash on purpose: without it "https://esploradati.istat.it" is also a
 # literal prefix of "https://esploradati.istat.it.example.org".
 OFFICIAL_PREFIX = "https://esploradati.istat.it/"
 
-INPUT_FILENAME = "poverta-assoluta.csv"
 
-CAVEATS = (
-    "Non è spesa pubblica. Sono incidenze, intensità e conteggi di famiglie e individui: "
-    "non vanno sommati né accostati a SIOPE, OpenBDAP o all'IRPEF dichiarata, e non misurano "
-    "quanto lo Stato spende contro la povertà.",
-    "Incidenza, intensità e composizione percentuale sono misure diverse con unità diverse: "
-    "non si sommano fra loro e non stanno sullo stesso asse.",
-    "Famiglie e individui sono denominatori distinti e non intercambiabili: l'incidenza "
-    "familiare e quella individuale non sono la stessa grandezza.",
-    "Le incidenze e le intensità NON sono sommabili fra territori: solo i conteggi in migliaia "
-    "lo sono. Sommare le percentuali delle ripartizioni non dà il valore nazionale.",
-    "Le aree composite (Nord = Nord-ovest + Nord-est, Mezzogiorno = Sud + Isole) contengono già "
-    "le aree che le compongono: sommarle alle loro parti è un doppio conteggio.",
-    "È la serie corrente post-revisione, che parte dal 2014. Le serie 34_201 e 34_202 si fermano "
-    "al 2013 e la serie interrotta 34_728 copre il 1997-2021: sono serie distinte e non vanno "
-    "mai giuntate a questa.",
-    "Una cella con flag non è uno zero osservato: il flag «0» della fonte significa che il dato "
-    "non raggiunge la metà della cifra minima considerata, cioè un valore positivo sotto la "
-    "soglia di arrotondamento.",
-    "ISTAT non pubblica la povertà a livello comunale, ed è un'indagine campionaria: per la "
-    "povertà assoluta il dettaglio territoriale si ferma alle ripartizioni.",
-    "Il dato non dice nulla su efficacia di una manovra, merito o responsabilità di un governo.",
-)
+def caveats(family: dict[str, str]) -> tuple[str, ...]:
+    return (
+        "Non è spesa pubblica. Sono incidenze, intensità e conteggi di famiglie e individui: "
+        "non vanno sommati né accostati a SIOPE, OpenBDAP o all'IRPEF dichiarata, e non misurano "
+        "quanto lo Stato spende contro la povertà.",
+        "Incidenza, intensità e composizione percentuale sono misure diverse con unità diverse: "
+        "non si sommano fra loro e non stanno sullo stesso asse.",
+        "Famiglie e individui sono denominatori distinti e non intercambiabili: l'incidenza "
+        "familiare e quella individuale non sono la stessa grandezza.",
+        "Le incidenze e le intensità NON sono sommabili fra territori: solo i conteggi in migliaia "
+        "lo sono. Sommare le percentuali delle ripartizioni non dà il valore nazionale.",
+        "Le aree composite (Nord = Nord-ovest + Nord-est, Mezzogiorno = Sud + Isole) contengono già "
+        "le aree che le compongono: sommarle alle loro parti è un doppio conteggio.",
+        "È la serie corrente post-revisione, che parte dal 2014. Le serie 34_201 e 34_202 si fermano "
+        "al 2013 e la serie interrotta 34_728 copre il 1997-2021: sono serie distinte e non vanno "
+        "mai giuntate a questa.",
+        "Una cella con flag non è uno zero osservato: il flag «0» della fonte significa che il dato "
+        "non raggiunge la metà della cifra minima considerata, cioè un valore positivo sotto la "
+        "soglia di arrotondamento.",
+        "ISTAT non pubblica la povertà a livello comunale, ed è un'indagine campionaria. Questa "
+        f"fetta si ferma alle ripartizioni: per la {family['label']} il dettaglio territoriale "
+        "pubblicato in questo dataflow non scende sotto quel livello.",
+        "Il dato non dice nulla su efficacia di una manovra, merito o responsabilità di un governo.",
+    )
 
 
 class SnapshotError(ValueError):
@@ -97,7 +131,7 @@ def canonical_lock_sha256(lock: dict[str, Any]) -> str:
     return sha256_bytes(canonical_bytes(stripped))
 
 
-def load_source_spec(path: Path) -> dict[str, Any]:
+def load_source_spec(path: Path, dataset_id: str) -> dict[str, Any]:
     try:
         spec = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -108,8 +142,8 @@ def load_source_spec(path: Path) -> dict[str, Any]:
                 "expected", "reconciliation", "integrity"):
         if key not in spec:
             raise SnapshotError(f"source lock: campo {key} mancante")
-    if spec["datasetId"] != DATASET_ID:
-        raise SnapshotError("source lock: datasetId inatteso")
+    if spec["datasetId"] != dataset_id:
+        raise SnapshotError(f"source lock: datasetId inatteso, atteso {dataset_id}")
     # La licenza NON viene inferita: la risposta SDMX non espone alcun campo di
     # licenza, e un lock che ne dichiarasse una sarebbe sospetto.
     if spec["source"].get("licenseId") != "not-declared":
@@ -335,7 +369,7 @@ def _reconcile(cells: dict[Cell, int | None], spec: dict[str, Any]) -> dict[str,
             "maxGapTenths": worst_overall, "checks": checks, "notSummable": negative}
 
 
-def build_data(payload: bytes, spec: dict[str, Any]) -> dict[str, Any]:
+def build_data(payload: bytes, spec: dict[str, Any], family: dict[str, str]) -> dict[str, Any]:
     cells = _read_rows(payload, spec)
     observations = [
         {"measure": measure, "territory": territory, "year": year, "valueTenths": value}
@@ -343,9 +377,9 @@ def build_data(payload: bytes, spec: dict[str, Any]) -> dict[str, Any]:
     ]
     return {
         "schemaVersion": 1,
-        "datasetId": DATASET_ID,
+        "datasetId": family["datasetId"],
         "period": dict(spec["period"]),
-        "caveats": list(CAVEATS),
+        "caveats": list(caveats(family)),
         "scale": {
             "factor": spec["measure"]["scale"],
             "note": spec["measure"]["scaleNote"],
@@ -364,12 +398,12 @@ def build_data(payload: bytes, spec: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def validate_snapshot(data: dict[str, Any]) -> None:
+def validate_snapshot(data: dict[str, Any], family: dict[str, str]) -> None:
     for key in ("schemaVersion", "datasetId", "period", "caveats", "scale", "measures",
                 "territories", "observations", "flags", "coverage", "reconciliation"):
         if key not in data:
             raise SnapshotError(f"data artifact: campo {key} mancante")
-    if data["datasetId"] != DATASET_ID or data["schemaVersion"] != 1:
+    if data["datasetId"] != family["datasetId"] or data["schemaVersion"] != 1:
         raise SnapshotError("data artifact: identità inattesa")
     if not data["caveats"]:
         raise SnapshotError("data artifact: caveats assenti — i limiti del dato fanno parte del dato")
@@ -404,10 +438,14 @@ def validate_snapshot(data: dict[str, Any]) -> None:
             raise SnapshotError(f"data artifact: composito {territory['code']} senza le sue parti")
     # Nessuna misura relativa può entrare in questa fetta: sarebbe un altro dataset.
     for measure in data["measures"]:
-        if "POVREL" in measure["code"]:
+        if family["otherToken"] in measure["code"]:
             raise SnapshotError(
-                f"data artifact: {measure['code']} è una misura di povertà relativa e non "
-                "appartiene a questo dataset (è la Fetta B, id e artefatti separati)"
+                f"data artifact: {measure['code']} è una misura di {family['otherLabel']} e non "
+                f"appartiene a questo dataset ({family['datasetId']}): sono id e artefatti separati"
+            )
+        if family["token"] not in measure["code"]:
+            raise SnapshotError(
+                f"data artifact: {measure['code']} non appartiene alla famiglia {family['label']}"
             )
         if measure["kind"] not in {"rate", "composition", "count"}:
             raise SnapshotError(f"data artifact: kind inatteso per {measure['code']}")
@@ -418,11 +456,11 @@ def validate_snapshot(data: dict[str, Any]) -> None:
             )
 
 
-def build_metadata(spec: dict[str, Any], data_bytes: bytes, data: dict[str, Any]) -> dict[str, Any]:
+def build_metadata(spec: dict[str, Any], data_bytes: bytes, data: dict[str, Any], family: dict[str, str]) -> dict[str, Any]:
     source = spec["source"]
     return {
         "schemaVersion": 1,
-        "datasetId": DATASET_ID,
+        "datasetId": family["datasetId"],
         "period": dict(spec["period"]),
         "observedAt": source["acquisition"]["checkedAt"],
         "source": {
@@ -480,13 +518,13 @@ def build_metadata(spec: dict[str, Any], data_bytes: bytes, data: dict[str, Any]
     }
 
 
-def _check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
-    spec = load_source_spec(spec_path)
+def _check(spec_path: Path, data_path: Path, meta_path: Path, family: dict[str, str]) -> None:
+    spec = load_source_spec(spec_path, family["datasetId"])
     if spec["integrity"]["lockSha256"] != canonical_lock_sha256(spec):
         raise SnapshotError("lockSha256 non corrisponde al contenuto del lock")
     data_bytes = data_path.read_bytes()
     data = json.loads(data_bytes.decode("utf-8"))
-    validate_snapshot(data)
+    validate_snapshot(data, family)
     if data["period"] != spec["period"]:
         raise SnapshotError("data artifact: periodo divergente dal lock")
     metadata = json.loads(meta_path.read_text(encoding="utf-8"))
@@ -499,49 +537,58 @@ def _check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--spec", type=Path, default=DEFAULT_SPEC)
-    parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
-    parser.add_argument("--meta", type=Path, default=DEFAULT_META)
+    parser.add_argument("--family", choices=sorted(FAMILIES), required=True,
+                        help="famiglia di misure da costruire: assoluta oppure relativa")
+    parser.add_argument("--spec", type=Path)
+    parser.add_argument("--data", type=Path)
+    parser.add_argument("--meta", type=Path)
     parser.add_argument("--input-dir", type=Path, help="cartella con la risposta SDMX-CSV")
     parser.add_argument("--check", action="store_true", help="valida gli artefatti committati senza rete")
     parser.add_argument("--write", action="store_true", help="scrive artefatti e integrity nel lock")
     args = parser.parse_args()
 
+    family = FAMILIES[args.family]
+    default_spec, default_data, default_meta = family_paths(family)
+    spec_path = args.spec or default_spec
+    data_path = args.data or default_data
+    meta_path = args.meta or default_meta
+    dataset_id = family["datasetId"]
+
     try:
         if args.check:
-            _check(args.spec, args.data, args.meta)
-            print("istat-poverta-assoluta: lock, data e meta coerenti")
+            _check(spec_path, data_path, meta_path, family)
+            print(f"{dataset_id}: lock, data e meta coerenti")
             return 0
         if not args.input_dir:
             raise SnapshotError("serve --input-dir con la risposta SDMX-CSV, oppure --check")
-        spec = load_source_spec(args.spec)
+        spec = load_source_spec(spec_path, dataset_id)
         _, asset = next(iter(spec["source"]["assets"].items()))
-        path = args.input_dir / INPUT_FILENAME
+        path = args.input_dir / f"{family['slug']}.csv"
         if not path.is_file():
             raise SnapshotError(f"input mancante: {path}")
         payload = path.read_bytes()
         if sha256_bytes(payload) != asset["sha256"] or len(payload) != asset["bytes"]:
             raise SnapshotError(f"input {path.name}: byte diversi da quelli vincolati nel lock")
-        data = build_data(payload, spec)
-        validate_snapshot(data)
+        data = build_data(payload, spec, family)
+        validate_snapshot(data, family)
         data_bytes = canonical_bytes(data)
         if not args.write:
             print(
-                f"istat-poverta-assoluta: build ok ({len(data['observations'])} osservazioni, "
+                f"{dataset_id}: build ok ({len(data['observations'])} osservazioni, "
                 f"{len(data_bytes)} byte) — usa --write per salvare"
             )
             return 0
-        args.data.write_text(data_bytes.decode("utf-8"), encoding="utf-8")
+        data_path.write_text(data_bytes.decode("utf-8"), encoding="utf-8")
         spec["integrity"]["dataArtifact"]["bytes"] = len(data_bytes)
         spec["integrity"]["dataArtifact"]["sha256"] = sha256_bytes(data_bytes)
         spec["integrity"]["lockSha256"] = canonical_lock_sha256(spec)
-        args.spec.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        metadata = build_metadata(spec, data_bytes, data)
-        args.meta.write_text(json.dumps(metadata, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-        print(f"istat-poverta-assoluta: scritti {args.data.name} e {args.meta.name}, lock aggiornato")
+        spec_path.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        metadata = build_metadata(spec, data_bytes, data, family)
+        meta_path.write_text(json.dumps(metadata, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        print(f"{dataset_id}: scritti {data_path.name} e {meta_path.name}, lock aggiornato")
         return 0
     except SnapshotError as error:
-        print(f"istat-poverta-assoluta: {error}", file=sys.stderr)
+        print(f"{dataset_id}: {error}", file=sys.stderr)
         return 1
 
 

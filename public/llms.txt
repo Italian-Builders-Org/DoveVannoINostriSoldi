@@ -36,6 +36,10 @@
 
 ## Dataset e fonti
 
+La sezione [Paper e ricerca](https://www.dovevannoinostrisoldi.com/paper) raccoglie
+gli studi pubblicati con metodi, limiti e materiali riproducibili. Le bozze non
+sono incluse nel catalogo pubblico; la pubblicazione non ha una cadenza fissa.
+
 Il catalogo MCP è la fonte più compatta per identificativi e filtri. Comprende SIOPE, OpenBDAP,
 OpenCoesione, ANAC, INPS, CPT, MEF IRPEF, MIM, IPA, partecipazioni MEF, Consulenti Pubblici,
 Parlamento e registro delle fonti. Le pagine [Fonti](https://www.dovevannoinostrisoldi.com/fonti)

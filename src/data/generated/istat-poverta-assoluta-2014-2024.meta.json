@@ -1,0 +1,250 @@
+{
+  "datasetId": "istat-poverta-assoluta",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 54574,
+      "path": "src/data/generated/istat-poverta-assoluta-2014-2024.data.json",
+      "sha256": "bd5c9c8070ac7b63ef4da864353879446b81510286bbcc6d91dcac4bf4916e76"
+    },
+    "sourceLockSha256": "cd0cb4695f79a0609814ede22bb5b7d8c8b03bb20c6a9eaeba33338bd41d0774"
+  },
+  "measures": [
+    {
+      "code": "INCID_POVASS_FAM",
+      "kind": "rate",
+      "label": "incidenza di povertà assoluta familiare (% di famiglie in poverta assoluta)",
+      "subject": "famiglie",
+      "summableAcrossTerritories": false,
+      "unit": "percentuale"
+    },
+    {
+      "code": "INCID_POVASS_INDIV",
+      "kind": "rate",
+      "label": "incidenza di povertà assoluta individuale (% di persone che vivono in famiglie in povertà assoluta sui residenti)",
+      "subject": "individui",
+      "summableAcrossTerritories": false,
+      "unit": "percentuale"
+    },
+    {
+      "code": "INTENS_POVASS_FAM",
+      "kind": "rate",
+      "label": "intensità di povertà assoluta familiare (differenza % dalla soglia di povertà)",
+      "subject": "famiglie",
+      "summableAcrossTerritories": false,
+      "unit": "percentuale"
+    },
+    {
+      "code": "FAM_POVASS",
+      "kind": "composition",
+      "label": "famiglie in povertà assoluta (composizione % per area di residenza)",
+      "subject": "famiglie",
+      "summableAcrossTerritories": false,
+      "unit": "percentuale"
+    },
+    {
+      "code": "INDIV_POVASS",
+      "kind": "composition",
+      "label": "individui in povertà assoluta (composizione % per area di residenza)",
+      "subject": "individui",
+      "summableAcrossTerritories": false,
+      "unit": "percentuale"
+    },
+    {
+      "code": "FAM_POVASS_VAL",
+      "kind": "count",
+      "label": "famiglie in povertà assoluta (migliaia)",
+      "subject": "famiglie",
+      "summableAcrossTerritories": true,
+      "unit": "migliaia"
+    },
+    {
+      "code": "INDIV_POVASS_VAL",
+      "kind": "count",
+      "label": "individui in povertà assoluta (migliaia)",
+      "subject": "individui",
+      "summableAcrossTerritories": true,
+      "unit": "migliaia"
+    }
+  ],
+  "observedAt": "2026-09-05",
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "reconciliation": {
+    "checks": [
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "FAM_POVASS_VAL/2016",
+        "maxGapTenths": 10,
+        "measure": "FAM_POVASS_VAL",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ],
+        "whole": "IT"
+      },
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "FAM_POVASS_VAL/2014",
+        "maxGapTenths": 10,
+        "measure": "FAM_POVASS_VAL",
+        "parts": [
+          "ITC",
+          "ITD"
+        ],
+        "whole": "ITCD"
+      },
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "FAM_POVASS_VAL/2014",
+        "maxGapTenths": 10,
+        "measure": "FAM_POVASS_VAL",
+        "parts": [
+          "ITF",
+          "ITG"
+        ],
+        "whole": "ITFG"
+      },
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "INDIV_POVASS_VAL/2014",
+        "maxGapTenths": 10,
+        "measure": "INDIV_POVASS_VAL",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ],
+        "whole": "IT"
+      },
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "INDIV_POVASS_VAL/2016",
+        "maxGapTenths": 10,
+        "measure": "INDIV_POVASS_VAL",
+        "parts": [
+          "ITC",
+          "ITD"
+        ],
+        "whole": "ITCD"
+      },
+      {
+        "comparisons": 11,
+        "kind": "territorio",
+        "maxGapAt": "INDIV_POVASS_VAL/2020",
+        "maxGapTenths": 10,
+        "measure": "INDIV_POVASS_VAL",
+        "parts": [
+          "ITF",
+          "ITG"
+        ],
+        "whole": "ITFG"
+      },
+      {
+        "comparisons": 11,
+        "kind": "composizione",
+        "maxGapAt": "2017",
+        "maxGapTenths": 1,
+        "measure": "FAM_POVASS",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ],
+        "whole": "100%"
+      },
+      {
+        "comparisons": 11,
+        "kind": "composizione",
+        "maxGapAt": "2014",
+        "maxGapTenths": 1,
+        "measure": "INDIV_POVASS",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ],
+        "whole": "100%"
+      }
+    ],
+    "maxGapTenths": 10,
+    "notSummable": [
+      {
+        "assertion": "somma delle ripartizioni != valore nazionale",
+        "measure": "INCID_POVASS_FAM"
+      },
+      {
+        "assertion": "somma delle ripartizioni != valore nazionale",
+        "measure": "INCID_POVASS_INDIV"
+      },
+      {
+        "assertion": "somma delle ripartizioni != valore nazionale",
+        "measure": "INTENS_POVASS_FAM"
+      }
+    ],
+    "note": "Solo le misure di conteggio sono sommabili fra territori. La tolleranza è EMPIRICA: la fonte pubblica i conteggi in migliaia arrotondate all'unità, quindi una partizione a cinque parti può discostarsi di qualche unità di migliaia senza che nulla sia sbagliato. Le percentuali non vengono riconciliate per somma perché non sono sommabili: sommarle è l'errore che il dataset deve rendere impossibile, ed è verificato come test negativo. Le composizioni percentuali chiudono invece a 100 sulle cinque ripartizioni base.",
+    "toleranceTenths": 10
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "34_727 è la serie corrente post-revisione. I dataflow 34_201 (indicatori di povertà assoluta) e 34_202 (relativa) sono serie CHIUSE che si fermano al 2013 e non vanno usati come indicatore corrente; 34_728 sono le serie interrotte 1997-2021 e non va mai giuntato a questa. Le famiglie 34_178 e 34_198 non sono acquisibili: tutti i loro membri rispondono HTTP 404 «doesn't contain a mapping set».",
+      "referencePeriod": "2014-2024"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-05",
+      "canonicalUrls": [
+        "https://esploradati.istat.it/databrowser/",
+        "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_1,1.0/A.IT+ITC+ITCD+ITD+ITE+ITF+ITFG+ITG.FAM_POVASS+FAM_POVASS_VAL+INCID_POVASS_FAM+INCID_POVASS_INDIV+INDIV_POVASS+INDIV_POVASS_VAL+INTENS_POVASS_FAM.ALL.TOT.HH.TOTAL.99.ALL.9.TOTAL"
+      ],
+      "checkedAt": "2026-09-05",
+      "hashes": "SHA-256 per asset in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "ISTAT — Istituto nazionale di statistica",
+      "license": "not-declared"
+    },
+    "soldi": {
+      "nature": "incidenze e intensità in percentuale e conteggi di famiglie e individui in migliaia: non sono euro, non sono spesa pubblica, non sono cassa né competenza",
+      "note": "L'asse soldi è dichiarato ASSENTE, non ricostruito. Nessuna somma né accostamento con SIOPE, OpenBDAP o mef_irpef: misurano un'altra cosa.",
+      "unit": "nessuna — il dataset non contiene importi"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-05",
+      "checkedAt": "2026-09-05",
+      "note": "Chiave SDMX completamente specificata: delle 11 dimensioni del dataflow nove hanno un solo valore in questa tabella e sono fissate letteralmente (POVERTY_LINES=ALL, NUMBER_HOUSEHOLD_COMP=TOT, HOUSEHOLD_TYPOLOGY=HH, AGE_REFERENCE_PERSON=TOTAL, EDU_LEV_REFPERS=99, LABPROF_STATUS_B_REF=ALL, SEX=9, AGE=TOTAL, FREQ=A); REF_AREA e DATA_TYPE sono enumerate. I byte sono quindi deterministici e un hash diverso segnala una revisione della fonte, non l'avanzare del tempo. Byte identici riacquisiti il 2026-09-05 da rete diversa."
+    },
+    "assets": {
+      "poverta-assoluta": {
+        "bytes": 71951,
+        "format": "SDMX-CSV 1.0.0",
+        "sha256": "91c43775c511b3eb4620e4b60ee1369980bf99220faf7808fe49746b4f5a80a0",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_1,1.0/A.IT+ITC+ITCD+ITD+ITE+ITF+ITFG+ITG.FAM_POVASS+FAM_POVASS_VAL+INCID_POVASS_FAM+INCID_POVASS_INDIV+INDIV_POVASS+INDIV_POVASS_VAL+INTENS_POVASS_FAM.ALL.TOT.HH.TOTAL.99.ALL.9.TOTAL"
+      }
+    },
+    "dataflowId": "34_727_DF_DCCV_POVERTA_1",
+    "dataflowLabel": "Povertà nuove serie — Principali indicatori",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX-CSV non espone alcun campo di licenza. Come per istat-cofog e per il Casellario pensioni non viene inferita alcuna licenza e non se ne estende una da altri dataset ISTAT.",
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "seriesNote": "34_727 è la serie corrente post-revisione. I dataflow 34_201 (indicatori di povertà assoluta) e 34_202 (relativa) sono serie CHIUSE che si fermano al 2013 e non vanno usati come indicatore corrente; 34_728 sono le serie interrotte 1997-2021 e non va mai giuntato a questa. Le famiglie 34_178 e 34_198 non sono acquisibili: tutti i loro membri rispondono HTTP 404 «doesn't contain a mapping set»."
+  }
+}

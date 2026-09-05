@@ -288,6 +288,13 @@ export async function queryPublicDataset(
         ...queryIstatEpea({ year: query.year, sector: query.sector, cepa: query.cepa }),
       });
     }
+    case "istat_poverta_assoluta": {
+      const { queryIstatPovertaAssoluta } = await import("@/lib/istat-poverta-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaAssoluta({ territory: query.territory, year: query.year, measure: query.measure }),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

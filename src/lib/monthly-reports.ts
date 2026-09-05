@@ -11,10 +11,18 @@ export type MonthlyReportsCatalog = Readonly<{
   getPublished(issueMonth: string): PublishedMonthlyReport | null;
 }>;
 
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === "object") {
+    for (const child of Object.values(value)) deepFreeze(child);
+    Object.freeze(value);
+  }
+  return value;
+}
+
 export function createMonthlyReportsCatalog(
   issues: readonly PublishedMonthlyReport[],
 ): MonthlyReportsCatalog {
-  const validated = issues.map(validatePublishedMonthlyReport);
+  const validated = issues.map((issue) => deepFreeze(validatePublishedMonthlyReport(structuredClone(issue))));
   const issueMonths = validated.map((issue) => issue.issueMonth);
   if (new Set(issueMonths).size !== issueMonths.length) {
     throw new Error("Report mensile non valido: edizioni duplicate nel catalogo");
@@ -25,7 +33,7 @@ export function createMonthlyReportsCatalog(
   const byMonth = new Map<string, PublishedMonthlyReport>(
     ordered.map((issue) => [issue.issueMonth, issue]),
   );
-  const summaries = ordered.map(monthlyReportSummary);
+  const summaries = deepFreeze(ordered.map(monthlyReportSummary));
 
   return Object.freeze({
     listPublished: () => summaries,

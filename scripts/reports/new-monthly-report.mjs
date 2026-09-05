@@ -51,14 +51,20 @@ function checkedDate(timestamp) {
 function totalByPeriod(snapshot, period) {
   return snapshot.observations
     .filter((row) => row.sourceId === "active-stock" && row.metric === "active_enterprises" && row.period === period)
-    .reduce((sum, row) => sum + (row.value ?? 0), 0);
+    .reduce((sum, row) => sum + stockValue(row), 0);
+}
+
+function stockValue(row) {
+  if (!Number.isSafeInteger(row.value) || row.value < 0) fail("stock imprese mancante o non valido: non può essere convertito in zero");
+  return row.value;
 }
 
 function regionTotals(snapshot, period) {
   const totals = new Map(snapshot.regions.map((region) => [region.code, 0]));
   for (const row of snapshot.observations) {
     if (row.sourceId !== "active-stock" || row.metric !== "active_enterprises" || row.period !== period) continue;
-    totals.set(row.geographyCode, (totals.get(row.geographyCode) ?? 0) + (row.value ?? 0));
+    if (!totals.has(row.geographyCode)) fail(`regione sconosciuta: ${row.geographyCode}`);
+    totals.set(row.geographyCode, totals.get(row.geographyCode) + stockValue(row));
   }
   return totals;
 }
@@ -75,6 +81,7 @@ function evidenceFor(path, details, provenance) {
 }
 
 export function buildMonthlyReportDraft({ month, cutoff, snapshots, provenance }) {
+  parseReportArguments(["--month", month, "--cutoff", cutoff]);
   const company = snapshots.companies;
   const companySource = company?.sources?.["active-stock"];
   if (!companySource || companySource.updatedAt > cutoff || checkedDate(companySource.observedAt) > cutoff) {

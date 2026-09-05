@@ -110,6 +110,13 @@ test("il generatore non sovrascrive e non registra né pubblica la bozza", () =>
   }
 });
 
+test("il generatore non trasforma stock mancanti in zero", () => {
+  const companies = structuredClone(companySnapshot);
+  const row = companies.observations.find((item) => item.sourceId === "active-stock" && item.metric === "active_enterprises");
+  row.value = null;
+  assert.throws(() => buildMonthlyReportDraft({ month: "2026-08", cutoff: "2026-09-05", snapshots: { companies }, provenance }), /non può essere convertito in zero/);
+});
+
 test("il contratto pubblicato accetta solo capsule complete e verificabili", () => {
   const valid = publishedReport();
   assert.equal(validatePublishedMonthlyReport(valid), valid);
@@ -163,6 +170,10 @@ test("catalogo pubblico ordina le edizioni e non conosce le bozze", () => {
   assert.equal(catalog.getPublished("2026-08")?.title, "Imprese e territori");
   assert.equal(catalog.getPublished("draft"), null);
   assert.deepEqual(Object.keys(catalog).sort(), ["getPublished", "listPublished"]);
+  august.title = "Mutazione esterna";
+  assert.equal(catalog.getPublished("2026-08").title, "Imprese e territori");
+  assert.throws(() => { catalog.getPublished("2026-08").title = "Mutazione"; }, TypeError);
+  assert.throws(() => { catalog.listPublished().pop(); }, TypeError);
 });
 
 test("il registry pubblico non importa bozze o snapshot correnti", () => {

@@ -109,6 +109,12 @@ const querySchema = z.object({
   table: z.string().max(40)
     .describe("Id della tabella pubblicata dal dataset selezionato, per esempio beneficiari_02.")
     .optional(),
+  family: z.string().max(20)
+    .describe("Famiglia di misure del dataset selezionato, per esempio tipo_reddito o bonus_irpef.")
+    .optional(),
+  breakdown: z.string().max(20)
+    .describe("Taglio dimensionale del dataset selezionato, per esempio regione, classeEta o sesso.")
+    .optional(),
   measure: z.string().max(20)
     .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti.")
     .optional(),

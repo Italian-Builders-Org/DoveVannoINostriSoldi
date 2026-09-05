@@ -26,6 +26,7 @@ import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
@@ -675,6 +676,19 @@ function snapshotManagedIstatEpea(): SourceHealth {
   };
 }
 
+function snapshotManagedMefIrpefDettaglio(): SourceHealth {
+  const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
+  const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
+  return {
+    ...baseHealth("mef-irpef-dettaglio"),
+    reachability: "not-probed",
+    freshness: freshnessFor("mef-irpef-dettaglio", mefIrpefDettaglioMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · dettaglio IRPEF dichiarazioni ${mefIrpefDettaglioData.period.from}-${mefIrpefDettaglioData.period.to}, anni di imposta ${mefIrpefDettaglioData.taxPeriod.from}-${mefIrpefDettaglioData.taxPeriod.to} · ${observedFiles} file su nove famiglie, ${observedRows.toLocaleString("it-IT")} righe e ${emptyCells.toLocaleString("it-IT")} celle vuote distinte dagli zeri · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: observedRows,
+  };
+}
+
 function snapshotManagedIstatPoverta(): SourceHealth {
   const { source, period, observedAt } = istatPovertaMetadata;
   const asset = Object.values(source.assets)[0];
@@ -733,6 +747,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatEpea(),
     snapshotManagedIstatPoverta(),
     snapshotManagedInpsNaspi(),
+    snapshotManagedMefIrpefDettaglio(),
   ];
 }
 
@@ -769,6 +784,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
   "inps-naspi": snapshotManagedInpsNaspi,
+  "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
 } satisfies Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */

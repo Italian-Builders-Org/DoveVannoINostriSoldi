@@ -29,6 +29,7 @@ export type SourceId =
   | "istat-epea"
   | "istat-poverta"
   | "inps-naspi"
+  | "mef-irpef-dettaglio"
   | "ameco"
   | "governi-presidenza";
 
@@ -479,6 +480,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-naspi", "domain:social-benefits"],
+  },
+  "mef-irpef-dettaglio": {
+    id: "mef-irpef-dettaglio",
+    label: "MEF \u00b7 dettaglio IRPEF per regione, et\u00e0 e sesso",
+    owner: "MEF - Dipartimento delle Finanze",
+    sourceUrl: "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+    cadence: "annuale",
+    cadenceNote:
+      "Il catalogo pubblica un file per anno di imposta e famiglia; lo snapshot resta bloccato sui 79 file verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-irpef-dettaglio", "domain:taxation"],
   },
 };
 

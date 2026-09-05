@@ -1,0 +1,3339 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef-irpef-dettaglio",
+  "period": {
+    "from": 2017,
+    "to": 2025
+  },
+  "source": {
+    "owner": "MEF - Dipartimento delle Finanze",
+    "landingUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+    "licenseId": "CC-BY-3.0-IT",
+    "licenseNote": "Licenza dichiarata PER DATASET nel catalogo: 124 schede, 124 link a http://creativecommons.org/licenses/by/3.0/it/. Il link e' reso come immagine (ccby.png dentro un <a>), quindi un'estrazione testuale del catalogo vede il campo vuoto e porterebbe a marcarla not-declared per errore. Verificata sul markup il 2026-09-05.",
+    "encoding": "utf-8",
+    "delimiter": ";",
+    "thousandsSeparator": ".",
+    "numberNote": "I valori sono interi con il punto come separatore delle migliaia e NESSUN decimale (verificato su tutte le 686426 celle): la conversione e' esatta. Una virgola decimale in un rilascio futuro e' una deriva e deve fermare la build.",
+    "acquisition": {
+      "acquiredAt": "2026-09-05",
+      "checkedAt": "2026-09-05",
+      "note": "79 CSV scaricati dagli URL canonici del catalogo open data del Dipartimento delle Finanze."
+    },
+    "missingFiles": {
+      "cla_anno_calcolo_irpef_2018.csv": "Elencato nel catalogo ma HTTP 404 al 2026-09-05: anno assente e dichiarato, nessuna imputazione.",
+      "cla_anno_bonus_irpef_2018.csv": "Elencato nel catalogo ma HTTP 404 al 2026-09-05: anno assente e dichiarato, nessuna imputazione."
+    },
+    "emptyReleases": {
+      "REG_bonus_irpef_2024.csv": "Pubblicato dal catalogo con la sola intestazione e nessuna riga di dati (512 byte) al 2026-09-05: rilascio vuoto dichiarato, mai interpretato come assenza di fenomeno ne' come zeri."
+    },
+    "catalogReceipt": {
+      "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+      "sha256": "44e1df25552a76d9f8088460c64d8d661928a6695e9bbd45c0b0286adca7dcad",
+      "bytes": 1083183,
+      "acquiredAt": "2026-09-05",
+      "note": "Anno di dichiarazione, anno di imposta e data pubblicazione letti dalle schede del catalogo; non inferiti dal nome del CSV."
+    }
+  },
+  "instruments": {
+    "bonus": {
+      "label": "Bonus IRPEF",
+      "years": "2017-2021"
+    },
+    "trattamento": {
+      "label": "Trattamento integrativo",
+      "years": "2021-2025"
+    },
+    "note": "Gli anni qui indicati sono anni di dichiarazione: 2021 si riferisce all'anno di imposta 2020 e contiene Bonus IRPEF e Trattamento integrativo. Le due misure non sono concatenabili in una serie unica."
+  },
+  "expected": {
+    "schemas": {
+      "seb94457b11": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s862eade231": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento erogato dal sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento erogato dal sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione  - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione  - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s0970fcf42f": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sddd7cd3dec": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito complessivo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Oneri deducibili - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Oneri deducibili - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito imponibile - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito imponibile - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta lorda - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta lorda - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Detrazioni d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Detrazioni d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta netta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta netta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Differenza - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Differenza - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Acconti versati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Acconti versati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a credito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a credito - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a debito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a debito - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s7e676f6941": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sbdddc8d0b1": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Regione"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sa167687fac": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sbc52a129b4": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "seaa68bb14d": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sc818e4ab72": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito complessivo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Oneri deducibili - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Oneri deducibili - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito imponibile - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito imponibile - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta lorda - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta lorda - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Detrazioni d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Detrazioni d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta netta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta netta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Differenza - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Differenza - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Acconti versati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Acconti versati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a credito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a credito - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a debito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a debito - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s898e6edec8": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sec424c3df1": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Classi di eta'"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s18f9901975": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s8c5068038a": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Bonus spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus fruibile in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Bonus da restituire - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Bonus da restituire - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s721290656b": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Trattamento spettante - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento spettante - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento erogato dal Sostituto d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Trattamento riconosciuto in dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Restituzione trattamento non spettante  - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sde8da9d6c8": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito complessivo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito complessivo al netto della cedolare secca - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Deduzione per abitazione principale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Oneri deducibili - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Oneri deducibili - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito imponibile - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito imponibile - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta lorda - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta lorda - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Detrazioni d'imposta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Detrazioni d'imposta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Imposta netta - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Imposta netta - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Crediti d'imposta e ritenute - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Differenza - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Differenza - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Eccedenza d'imposta risultante dalla precedente dichiarazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Acconti versati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Acconti versati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a credito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a credito - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Irpef a debito - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Irpef a debito - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "sd042d7a5b1": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      },
+      "s53bc7c836b": {
+        "dimensions": [
+          "Classi di reddito complessivo in euro",
+          "Sesso"
+        ],
+        "measures": [
+          {
+            "name": "Numero contribuenti",
+            "nature": "conteggio"
+          },
+          {
+            "name": "Reddito dominicale - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito dominicale - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito agrario - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito agrario - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di allevamento e produzione di vegetali - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da fabbricati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da fabbricati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro dipendente e assimilati - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da pensione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da pensione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi assimilati al lavoro dipendente - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da lavoro autonomo - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo provvigioni e redditi diversi da Mod. 770 - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di spettanza dell'imprenditore in contabilita' semplificata - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Perdita da partecipazione - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Perdita da partecipazione - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Plusvalenze di natura finanziaria - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Reddito di capitale (sez. IA e IB) - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Redditi diversi - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Redditi diversi - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Altri redditi da lavoro autonomo e redditi da recupero start up - Ammontare in euro",
+            "nature": "ammontare"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Frequenza",
+            "nature": "frequenza"
+          },
+          {
+            "name": "Tassazione separata con opzione tassazione ordinaria - Ammontare in euro",
+            "nature": "ammontare"
+          }
+        ]
+      }
+    },
+    "tables": {
+      "REG_bonus_irpef_2017": {
+        "file": "REG_bonus_irpef_2017.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2017,
+        "schemaId": "seb94457b11",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 338,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2017.csv",
+        "bytes": 57751,
+        "sha256": "c044449e318f1967f00dcc1918d25cc7a62be2f43e1400164eea1461e99e9675",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "REG_bonus_irpef_2018": {
+        "file": "REG_bonus_irpef_2018.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2018,
+        "schemaId": "seb94457b11",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 354,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2018.csv",
+        "bytes": 57795,
+        "sha256": "fef358f1013d0e4df361f63fc14ceed1bed571d63e8a57f1865a3aa314eed15f",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "REG_bonus_irpef_2019": {
+        "file": "REG_bonus_irpef_2019.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2019,
+        "schemaId": "seb94457b11",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 374,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2019.csv",
+        "bytes": 56702,
+        "sha256": "78ea923cf944bb7d7b36d5372b4f5a96419213bbe58a4b756f12986be36b1f44",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "REG_bonus_irpef_2020": {
+        "file": "REG_bonus_irpef_2020.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2020,
+        "schemaId": "seb94457b11",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 400,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2020.csv",
+        "bytes": 57294,
+        "sha256": "cf350a86cc37263a358249da8d7eb6046dbc7a6eb0fe0cbcab0141f169eb3bf0",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "REG_bonus_irpef_2021": {
+        "file": "REG_bonus_irpef_2021.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2021,
+        "schemaId": "s862eade231",
+        "instruments": [
+          "bonus",
+          "trattamento"
+        ],
+        "rows": 748,
+        "columns": 19,
+        "emptyCells": 930,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2021.csv",
+        "bytes": 85073,
+        "sha256": "525fffa2b19785fe22b35eb76c313aceb28289f5c28b5498e799152c089f0729",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "REG_bonus_irpef_2022": {
+        "file": "REG_bonus_irpef_2022.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2022,
+        "schemaId": "s0970fcf42f",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 332,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2022.csv",
+        "bytes": 57667,
+        "sha256": "60c94aedb931dec298fa0e68bd6a4a71177c65e01ed886f60cb727ee42de6b35",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "REG_bonus_irpef_2023": {
+        "file": "REG_bonus_irpef_2023.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2023,
+        "schemaId": "s0970fcf42f",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 346,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2023.csv",
+        "bytes": 56579,
+        "sha256": "b3f135ded3929e3ab278783a760485f8da2113fbb26909ae2eab807942de62a1",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "REG_bonus_irpef_2024": {
+        "file": "REG_bonus_irpef_2024.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2024,
+        "schemaId": "s0970fcf42f",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 0,
+        "columns": 11,
+        "emptyCells": 0,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2024.csv",
+        "bytes": 512,
+        "sha256": "4e2112c83debec207fd42b69797c41797cde2afc2b1f7aa80d10543c6e37936d",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "REG_bonus_irpef_2025": {
+        "file": "REG_bonus_irpef_2025.csv",
+        "family": "bonus_irpef",
+        "breakdown": "regione",
+        "year": 2025,
+        "schemaId": "s0970fcf42f",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 748,
+        "columns": 11,
+        "emptyCells": 412,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2025.csv",
+        "bytes": 56385,
+        "sha256": "fbc1d682928b7fc2717403472bacc7b93fee80916c99f9b1132ef041c0b732c3",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "REG_calcolo_irpef_2017": {
+        "file": "REG_calcolo_irpef_2017.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2017,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 540,
+        "negativeCells": 509,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2017.csv",
+        "bytes": 194696,
+        "sha256": "bae8338bc1c0b4c36327937be498c7ce6e7a7722d7710e07450d5b1308b139f3",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "REG_calcolo_irpef_2018": {
+        "file": "REG_calcolo_irpef_2018.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2018,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 456,
+        "negativeCells": 513,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2018.csv",
+        "bytes": 194767,
+        "sha256": "8cef175e4286e1c434756084add6c81b43e70347b507aa4d8fefdc589bd9f1c1",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "REG_calcolo_irpef_2019": {
+        "file": "REG_calcolo_irpef_2019.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2019,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 360,
+        "negativeCells": 517,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2019.csv",
+        "bytes": 193578,
+        "sha256": "fdfe4557f0ab536f246bece9f979956dbf62d16f1f60bfeeb5f07449ef13fa02",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "REG_calcolo_irpef_2020": {
+        "file": "REG_calcolo_irpef_2020.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2020,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 492,
+        "negativeCells": 504,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2020.csv",
+        "bytes": 193777,
+        "sha256": "10786ccfde0fd55e914423e63e1da00bf00390bc2fc9863f22a3f39632fecfa1",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "REG_calcolo_irpef_2021": {
+        "file": "REG_calcolo_irpef_2021.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2021,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 446,
+        "negativeCells": 523,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2021.csv",
+        "bytes": 193335,
+        "sha256": "2b8eaf2f61be8eac1c2b507973130df65e0fe8fa8077da9d2b5dfba9ff51687e",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "REG_calcolo_irpef_2022": {
+        "file": "REG_calcolo_irpef_2022.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2022,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 372,
+        "negativeCells": 526,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2022.csv",
+        "bytes": 193954,
+        "sha256": "30c396a713eb1ebd486e5783993eec38c16ec5e5d9c3db7decf77e45ff3214af",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "REG_calcolo_irpef_2023": {
+        "file": "REG_calcolo_irpef_2023.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2023,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 248,
+        "negativeCells": 526,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2023.csv",
+        "bytes": 194809,
+        "sha256": "b20ebb9d723b1ca477de5658b492292559afdb22c65b1b5068405690cc83d5fd",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "REG_calcolo_irpef_2024": {
+        "file": "REG_calcolo_irpef_2024.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2024,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 364,
+        "negativeCells": 521,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2024.csv",
+        "bytes": 194624,
+        "sha256": "b0ac92afd86082279838b8f4a120615ad643e93bba8088c34674c588a925ad0b",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "REG_calcolo_irpef_2025": {
+        "file": "REG_calcolo_irpef_2025.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "regione",
+        "year": 2025,
+        "schemaId": "sddd7cd3dec",
+        "instruments": [],
+        "rows": 748,
+        "columns": 31,
+        "emptyCells": 460,
+        "negativeCells": 527,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2025.csv",
+        "bytes": 194125,
+        "sha256": "39236db2f8c71fca75e7db97c8f927cde3ea5aa4bdf0c63f86a2c5ed8f461bfe",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "REG_tipo_reddito_2017": {
+        "file": "REG_tipo_reddito_2017.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2017,
+        "schemaId": "s7e676f6941",
+        "instruments": [],
+        "rows": 748,
+        "columns": 43,
+        "emptyCells": 2394,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2017.csv",
+        "bytes": 207346,
+        "sha256": "2b4f372891dab2cf458bfaa6b3a7e4b0a69487d93c6056cc45728be8122ef796",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "REG_tipo_reddito_2018": {
+        "file": "REG_tipo_reddito_2018.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2018,
+        "schemaId": "s7e676f6941",
+        "instruments": [],
+        "rows": 748,
+        "columns": 43,
+        "emptyCells": 2014,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2018.csv",
+        "bytes": 208731,
+        "sha256": "3ac2efa8c54ad7c9fb5db4ad99728021cc1371ffe1b8304d3491357d4db879b0",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "REG_tipo_reddito_2019": {
+        "file": "REG_tipo_reddito_2019.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2019,
+        "schemaId": "sbdddc8d0b1",
+        "instruments": [],
+        "rows": 748,
+        "columns": 41,
+        "emptyCells": 2366,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2019.csv",
+        "bytes": 194372,
+        "sha256": "3394342aa9e8e23070c7b2e3a2fe2caaabb5c5ac11e5d6cc3b48bd8ae5d6688e",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "REG_tipo_reddito_2020": {
+        "file": "REG_tipo_reddito_2020.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2020,
+        "schemaId": "s7e676f6941",
+        "instruments": [],
+        "rows": 748,
+        "columns": 43,
+        "emptyCells": 3248,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2020.csv",
+        "bytes": 195259,
+        "sha256": "f2f71d8a23cb25f0b474467d83030b61bf50a78d85c0e3a22a0e9f39eddfc4d2",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "REG_tipo_reddito_2021": {
+        "file": "REG_tipo_reddito_2021.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2021,
+        "schemaId": "s7e676f6941",
+        "instruments": [],
+        "rows": 748,
+        "columns": 43,
+        "emptyCells": 3112,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2021.csv",
+        "bytes": 195000,
+        "sha256": "7e8f736518fafcca31322af2236d16d09350d9c0ef500b9c85df4c5e8c4bacb1",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "REG_tipo_reddito_2022": {
+        "file": "REG_tipo_reddito_2022.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2022,
+        "schemaId": "s7e676f6941",
+        "instruments": [],
+        "rows": 748,
+        "columns": 43,
+        "emptyCells": 3182,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2022.csv",
+        "bytes": 194882,
+        "sha256": "92c1f64dabd7c4c7c8d1378bcdabcf030aa5253c088fdbf123ce194ba2f813fc",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "REG_tipo_reddito_2023": {
+        "file": "REG_tipo_reddito_2023.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2023,
+        "schemaId": "sbdddc8d0b1",
+        "instruments": [],
+        "rows": 748,
+        "columns": 41,
+        "emptyCells": 2324,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2023.csv",
+        "bytes": 192110,
+        "sha256": "d5791a9840521362a588ddf226f00d5a4f6bfd8336818caf3f2201c62fbcc29d",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "REG_tipo_reddito_2024": {
+        "file": "REG_tipo_reddito_2024.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2024,
+        "schemaId": "sbdddc8d0b1",
+        "instruments": [],
+        "rows": 748,
+        "columns": 41,
+        "emptyCells": 2436,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2024.csv",
+        "bytes": 191255,
+        "sha256": "2e39ae301a91080ea5dc601689b5e424c1b282dca4a7ac617c97c302bfd4e51f",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "REG_tipo_reddito_2025": {
+        "file": "REG_tipo_reddito_2025.csv",
+        "family": "tipo_reddito",
+        "breakdown": "regione",
+        "year": 2025,
+        "schemaId": "sbdddc8d0b1",
+        "instruments": [],
+        "rows": 748,
+        "columns": 41,
+        "emptyCells": 2590,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2025.csv",
+        "bytes": 190370,
+        "sha256": "7a31be66b19c0932d26675e8e948cc413ff8ed807e214b80c03fb7c406d50643",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "cla_anno_bonus_irpef_2017": {
+        "file": "cla_anno_bonus_irpef_2017.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2017,
+        "schemaId": "sa167687fac",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 108,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2017.csv",
+        "bytes": 12733,
+        "sha256": "fdfd4a9b7884fd3d595f8c17febf2380774b0965f8e2fc45ce9f65c6657cc9db",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "cla_anno_bonus_irpef_2019": {
+        "file": "cla_anno_bonus_irpef_2019.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2019,
+        "schemaId": "sa167687fac",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 130,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2019.csv",
+        "bytes": 12551,
+        "sha256": "05d9cd48ebaf73cd7f6a460fc67989d4ce4fcf6effb8f34671cb2643428129f3",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "cla_anno_bonus_irpef_2020": {
+        "file": "cla_anno_bonus_irpef_2020.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2020,
+        "schemaId": "sa167687fac",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 118,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2020.csv",
+        "bytes": 12732,
+        "sha256": "9cb0f5cb4f5506bbefa9fcda3ff7b19a3aaf6b24100b7cf3b81ec976d256aafc",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "cla_anno_bonus_irpef_2021": {
+        "file": "cla_anno_bonus_irpef_2021.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2021,
+        "schemaId": "sbc52a129b4",
+        "instruments": [
+          "bonus",
+          "trattamento"
+        ],
+        "rows": 170,
+        "columns": 19,
+        "emptyCells": 280,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2021.csv",
+        "bytes": 19272,
+        "sha256": "63c9c2b144e36f4aafeccc8a98d4707b46ae2ef4007d6e49e317e587558630da",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "cla_anno_bonus_irpef_2022": {
+        "file": "cla_anno_bonus_irpef_2022.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2022,
+        "schemaId": "seaa68bb14d",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 146,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2022.csv",
+        "bytes": 12815,
+        "sha256": "d718c0268a6d74563bae60d819ed476bffa699bce2e3ea0d91241045ab1c553a",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "cla_anno_bonus_irpef_2023": {
+        "file": "cla_anno_bonus_irpef_2023.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2023,
+        "schemaId": "seaa68bb14d",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 118,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2023.csv",
+        "bytes": 12651,
+        "sha256": "4e9129a14e9936abe1f404b944494582fa8c95ee54279d2dfce7e1271ae750fa",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "cla_anno_bonus_irpef_2024": {
+        "file": "cla_anno_bonus_irpef_2024.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2024,
+        "schemaId": "seaa68bb14d",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 128,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2024.csv",
+        "bytes": 12628,
+        "sha256": "75bcf109892ed1b781223b13489de86a720acbd8067a101036a07cf4afa2bf7a",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "cla_anno_bonus_irpef_2025": {
+        "file": "cla_anno_bonus_irpef_2025.csv",
+        "family": "bonus_irpef",
+        "breakdown": "classeEta",
+        "year": 2025,
+        "schemaId": "seaa68bb14d",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 170,
+        "columns": 11,
+        "emptyCells": 120,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2025.csv",
+        "bytes": 12642,
+        "sha256": "27134583bf30a32a8671128be9ef991e373981fb7c836efadd5968d8c92f02a9",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "cla_anno_calcolo_irpef_2017": {
+        "file": "cla_anno_calcolo_irpef_2017.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2017,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 350,
+        "negativeCells": 90,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2017.csv",
+        "bytes": 43857,
+        "sha256": "a085e2bb1a34d9cd07409ddff956f54a736514a4fb3263446669569971fd11c8",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "cla_anno_calcolo_irpef_2019": {
+        "file": "cla_anno_calcolo_irpef_2019.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2019,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 456,
+        "negativeCells": 86,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2019.csv",
+        "bytes": 43065,
+        "sha256": "c4e514081726bffd6f50807c103be4f508a3f3af8abd8fc3a4e53e417e9bfe19",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "cla_anno_calcolo_irpef_2020": {
+        "file": "cla_anno_calcolo_irpef_2020.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2020,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 336,
+        "negativeCells": 85,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2020.csv",
+        "bytes": 43596,
+        "sha256": "16c1ebc009f2febeed541196ae27084e7cce3f0dac2457a6d6fbf4530f5dd9f4",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "cla_anno_calcolo_irpef_2021": {
+        "file": "cla_anno_calcolo_irpef_2021.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2021,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 388,
+        "negativeCells": 91,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2021.csv",
+        "bytes": 43270,
+        "sha256": "9a4895a0af1d253562ccc881c3a11cbd9b616c74586bac91504671bee8a7100a",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "cla_anno_calcolo_irpef_2022": {
+        "file": "cla_anno_calcolo_irpef_2022.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2022,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 502,
+        "negativeCells": 93,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2022.csv",
+        "bytes": 42995,
+        "sha256": "dfd916560140c2e06ea4896a01ff48fb0fd6bfbbed5385646d379b83fff270ad",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "cla_anno_calcolo_irpef_2023": {
+        "file": "cla_anno_calcolo_irpef_2023.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2023,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 444,
+        "negativeCells": 95,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2023.csv",
+        "bytes": 43278,
+        "sha256": "cc6b08e92136bdac986fa580ab12e802bf48d5fd0892451366b49784d802622c",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "cla_anno_calcolo_irpef_2024": {
+        "file": "cla_anno_calcolo_irpef_2024.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2024,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 426,
+        "negativeCells": 98,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2024.csv",
+        "bytes": 43390,
+        "sha256": "772b1ccc95b8a665a5bdf5496801586cd9b8a6e9ee82d1b5befc7d9aacd11b89",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "cla_anno_calcolo_irpef_2025": {
+        "file": "cla_anno_calcolo_irpef_2025.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "classeEta",
+        "year": 2025,
+        "schemaId": "sc818e4ab72",
+        "instruments": [],
+        "rows": 170,
+        "columns": 31,
+        "emptyCells": 376,
+        "negativeCells": 100,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2025.csv",
+        "bytes": 43719,
+        "sha256": "0c143cc8f9046f4a6043582f1a7f8de70590dc981582ad24e8407610b3873547",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "cla_anno_tipo_reddito_2017": {
+        "file": "cla_anno_tipo_reddito_2017.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2017,
+        "schemaId": "s898e6edec8",
+        "instruments": [],
+        "rows": 170,
+        "columns": 43,
+        "emptyCells": 820,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2017.csv",
+        "bytes": 46982,
+        "sha256": "ac55cd90ce889c3fa20dbf72e793d5393ce240f13e02bbc06df1d45a7d6ccbe5",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "cla_anno_tipo_reddito_2018": {
+        "file": "cla_anno_tipo_reddito_2018.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2018,
+        "schemaId": "s898e6edec8",
+        "instruments": [],
+        "rows": 170,
+        "columns": 43,
+        "emptyCells": 758,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2018.csv",
+        "bytes": 47279,
+        "sha256": "33c934567bb053eb6d19a421549029918e403c02816f5b1b5118f8cc426beca0",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "cla_anno_tipo_reddito_2019": {
+        "file": "cla_anno_tipo_reddito_2019.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2019,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 724,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2019.csv",
+        "bytes": 44362,
+        "sha256": "c1dc4f6c03903b0c7a2527179124e17e70275c212d8c761804f661483155d9d2",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "cla_anno_tipo_reddito_2020": {
+        "file": "cla_anno_tipo_reddito_2020.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2020,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 824,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2020.csv",
+        "bytes": 43766,
+        "sha256": "d3bea7cb38e0cf3fccccbd597a45e0d5a99bbe5f98055eba0c6281a08ce1a3a1",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "cla_anno_tipo_reddito_2021": {
+        "file": "cla_anno_tipo_reddito_2021.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2021,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 774,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2021.csv",
+        "bytes": 43639,
+        "sha256": "7bdf1c2f90bae30d6ce47b72039e877997506e760c21d80c25ce62a05c57069d",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "cla_anno_tipo_reddito_2022": {
+        "file": "cla_anno_tipo_reddito_2022.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2022,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 834,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2022.csv",
+        "bytes": 43696,
+        "sha256": "1ea39aa3d629c037d1908e69119a3bfa6598caba4d58c3a0625fd87e7b5948fc",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "cla_anno_tipo_reddito_2023": {
+        "file": "cla_anno_tipo_reddito_2023.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2023,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 814,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2023.csv",
+        "bytes": 43873,
+        "sha256": "3c400d5fb887a9c198d5c15ffc08f6c5f7431a39643133889a3b9e8319a12db9",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "cla_anno_tipo_reddito_2024": {
+        "file": "cla_anno_tipo_reddito_2024.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2024,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 860,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2024.csv",
+        "bytes": 43654,
+        "sha256": "c4a4aaab0f552f9e5d250dd29ee52427b28cc32f0dcbc24fc56ced270ff1c074",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "cla_anno_tipo_reddito_2025": {
+        "file": "cla_anno_tipo_reddito_2025.csv",
+        "family": "tipo_reddito",
+        "breakdown": "classeEta",
+        "year": 2025,
+        "schemaId": "sec424c3df1",
+        "instruments": [],
+        "rows": 170,
+        "columns": 41,
+        "emptyCells": 818,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2025.csv",
+        "bytes": 43480,
+        "sha256": "fca1ae6bb5d3dd5bb15084f5b3da67c27bae04f7270c6bd6ef3e0bdc50024224",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "sesso_bonus_irpef_2017": {
+        "file": "sesso_bonus_irpef_2017.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2017,
+        "schemaId": "s18f9901975",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 8,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2017.csv",
+        "bytes": 6257,
+        "sha256": "3ed4745ccd678765e8b630ae717109a6f7ef05b678ce47f5921bf4a0cf2c52ca",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "sesso_bonus_irpef_2018": {
+        "file": "sesso_bonus_irpef_2018.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2018,
+        "schemaId": "s18f9901975",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 10,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2018.csv",
+        "bytes": 6271,
+        "sha256": "eeebe1b5c5f6ed2225bb3210c9d2609d7da603502608f9662fef1a0f16a8a09f",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "sesso_bonus_irpef_2019": {
+        "file": "sesso_bonus_irpef_2019.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2019,
+        "schemaId": "s18f9901975",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 24,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2019.csv",
+        "bytes": 6131,
+        "sha256": "ac25e2d31f1781b7c77128ac4be6937feab22f346c1e31f7a931c0d1b7c9e2c1",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "sesso_bonus_irpef_2020": {
+        "file": "sesso_bonus_irpef_2020.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2020,
+        "schemaId": "s18f9901975",
+        "instruments": [
+          "bonus"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 26,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2020.csv",
+        "bytes": 6182,
+        "sha256": "27580f1d1ed1778adaeea54327318eff3278db568405f64859bdf4ee51fa6abe",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "sesso_bonus_irpef_2021": {
+        "file": "sesso_bonus_irpef_2021.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2021,
+        "schemaId": "s8c5068038a",
+        "instruments": [
+          "bonus",
+          "trattamento"
+        ],
+        "rows": 68,
+        "columns": 19,
+        "emptyCells": 32,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2021.csv",
+        "bytes": 9960,
+        "sha256": "57889eff7b4ecffe625b43b9e1b862c727c86f1dedae134fc726a2d25580e4bb",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "sesso_bonus_irpef_2022": {
+        "file": "sesso_bonus_irpef_2022.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2022,
+        "schemaId": "s721290656b",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 20,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2022.csv",
+        "bytes": 6315,
+        "sha256": "b01b7d40f0d6fffbdb49c5872de27a5125f518b70beb153506707c214ef956f8",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "sesso_bonus_irpef_2023": {
+        "file": "sesso_bonus_irpef_2023.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2023,
+        "schemaId": "s721290656b",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 20,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2023.csv",
+        "bytes": 6186,
+        "sha256": "0b044a1e33a7194c4a89c74a6d0e7e919bb7958ec22607eba0c0e91aea490bcb",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "sesso_bonus_irpef_2024": {
+        "file": "sesso_bonus_irpef_2024.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2024,
+        "schemaId": "s721290656b",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 32,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2024.csv",
+        "bytes": 6151,
+        "sha256": "e0cd5d59800d808e923a194a19ab635b5eb60fa363e0129e1e571ca7142c0fa2",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "sesso_bonus_irpef_2025": {
+        "file": "sesso_bonus_irpef_2025.csv",
+        "family": "bonus_irpef",
+        "breakdown": "sesso",
+        "year": 2025,
+        "schemaId": "s721290656b",
+        "instruments": [
+          "trattamento"
+        ],
+        "rows": 68,
+        "columns": 11,
+        "emptyCells": 38,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2025.csv",
+        "bytes": 6142,
+        "sha256": "88ec9f9aaded07611b7144f31808832ed64321abf70a162624b6ef947f1a6989",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "sesso_calcolo_irpef_2017": {
+        "file": "sesso_calcolo_irpef_2017.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2017,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 14,
+        "negativeCells": 49,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2017.csv",
+        "bytes": 22076,
+        "sha256": "e7ba313f644529cc0e2b2ab818d5185c924717ee3d331380dbfa87cc7d4366ae",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "sesso_calcolo_irpef_2018": {
+        "file": "sesso_calcolo_irpef_2018.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2018,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 4,
+        "negativeCells": 49,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2018.csv",
+        "bytes": 22178,
+        "sha256": "a578aa5193cbd2c22d0095481c9ec155c5b324826a99166f823f21c0f4b22b32",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "sesso_calcolo_irpef_2019": {
+        "file": "sesso_calcolo_irpef_2019.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2019,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 4,
+        "negativeCells": 50,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2019.csv",
+        "bytes": 22023,
+        "sha256": "c8b0c4ec80da9e1abcdff1015289c3f104971980dd635d2d90750a999008bfa2",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "sesso_calcolo_irpef_2020": {
+        "file": "sesso_calcolo_irpef_2020.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2020,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 8,
+        "negativeCells": 51,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2020.csv",
+        "bytes": 22088,
+        "sha256": "19fc4f51160c0f54a824975569d57d381327618f2e9116cc7b19f4d02bdaa573",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "sesso_calcolo_irpef_2021": {
+        "file": "sesso_calcolo_irpef_2021.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2021,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 8,
+        "negativeCells": 51,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2021.csv",
+        "bytes": 22038,
+        "sha256": "22a301b9c8ec31c59a2e7e4ced13d1920754a9996a134a16eaf78b6812334fb1",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "sesso_calcolo_irpef_2022": {
+        "file": "sesso_calcolo_irpef_2022.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2022,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 4,
+        "negativeCells": 51,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2022.csv",
+        "bytes": 22073,
+        "sha256": "f339d3954a302693fb585dcad80b20b372e27b1fbeb2e8f6e056224d9406bc58",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "sesso_calcolo_irpef_2023": {
+        "file": "sesso_calcolo_irpef_2023.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2023,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 8,
+        "negativeCells": 51,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2023.csv",
+        "bytes": 22036,
+        "sha256": "e66f5819d8171ef3f9468677d7353e78a809d13bf622fbd0be7823dcdffd4e4e",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "sesso_calcolo_irpef_2024": {
+        "file": "sesso_calcolo_irpef_2024.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2024,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 8,
+        "negativeCells": 53,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2024.csv",
+        "bytes": 22044,
+        "sha256": "61f9c510ca948f3785658597724faa74026620ae51542037f839f5792aa80d1a",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "sesso_calcolo_irpef_2025": {
+        "file": "sesso_calcolo_irpef_2025.csv",
+        "family": "calcolo_irpef",
+        "breakdown": "sesso",
+        "year": 2025,
+        "schemaId": "sde8da9d6c8",
+        "instruments": [],
+        "rows": 68,
+        "columns": 31,
+        "emptyCells": 16,
+        "negativeCells": 54,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2025.csv",
+        "bytes": 22029,
+        "sha256": "5a7149df51aa0afa11c70344e674613fdf6e4c442264144e13cec075f3c0d07f",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      },
+      "sesso_tipo_reddito_2017": {
+        "file": "sesso_tipo_reddito_2017.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2017,
+        "schemaId": "sd042d7a5b1",
+        "instruments": [],
+        "rows": 68,
+        "columns": 43,
+        "emptyCells": 30,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2017.csv",
+        "bytes": 26428,
+        "sha256": "779d77ce041a25639d23497ea549403b3ba100b2abb17df8b0d1d878c8db4fb2",
+        "taxYear": 2016,
+        "publicationDate": "2018-03-28"
+      },
+      "sesso_tipo_reddito_2018": {
+        "file": "sesso_tipo_reddito_2018.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2018,
+        "schemaId": "sd042d7a5b1",
+        "instruments": [],
+        "rows": 68,
+        "columns": 43,
+        "emptyCells": 30,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2018.csv",
+        "bytes": 26531,
+        "sha256": "a6c822ab4f655e468357f334a9f61c27061256d1efe74117cf1ff3881c375d7b",
+        "taxYear": 2017,
+        "publicationDate": "2019-03-28"
+      },
+      "sesso_tipo_reddito_2019": {
+        "file": "sesso_tipo_reddito_2019.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2019,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 44,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2019.csv",
+        "bytes": 24738,
+        "sha256": "8be1557efcf53c47a6865e737592483674810e47b822bf6e81eedc2f3a38fa75",
+        "taxYear": 2018,
+        "publicationDate": "2020-04-23"
+      },
+      "sesso_tipo_reddito_2020": {
+        "file": "sesso_tipo_reddito_2020.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2020,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 34,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2020.csv",
+        "bytes": 24643,
+        "sha256": "95682bb5f0a2a2671823e95fbf122bbcae0e788985c79c70368ef53dda62ed0a",
+        "taxYear": 2019,
+        "publicationDate": "2021-05-27"
+      },
+      "sesso_tipo_reddito_2021": {
+        "file": "sesso_tipo_reddito_2021.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2021,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 42,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2021.csv",
+        "bytes": 24517,
+        "sha256": "aab03e63f761cdfc43c6e8e22b62698dcaa2b7e28d2cb43d8e6bd55e7d260b7b",
+        "taxYear": 2020,
+        "publicationDate": "2022-04-13"
+      },
+      "sesso_tipo_reddito_2022": {
+        "file": "sesso_tipo_reddito_2022.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2022,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 34,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2022.csv",
+        "bytes": 24537,
+        "sha256": "a39f20cf0701d03cbf3bfef6d85eaa76cd06bc19ee0867580a2598309cdbf94d",
+        "taxYear": 2021,
+        "publicationDate": "2023-04-20"
+      },
+      "sesso_tipo_reddito_2023": {
+        "file": "sesso_tipo_reddito_2023.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2023,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 80,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2023.csv",
+        "bytes": 24348,
+        "sha256": "7efdbad3991f42d1053f17c2dc6d12c315adede918f0dc1fd87ead822a118212",
+        "taxYear": 2022,
+        "publicationDate": "2024-04-23"
+      },
+      "sesso_tipo_reddito_2024": {
+        "file": "sesso_tipo_reddito_2024.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2024,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 100,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2024.csv",
+        "bytes": 24209,
+        "sha256": "6fb81aa3c90a062928beb2bbbed8160107eff9e14c4458dcd472ae093a101292",
+        "taxYear": 2023,
+        "publicationDate": "2025-04-16"
+      },
+      "sesso_tipo_reddito_2025": {
+        "file": "sesso_tipo_reddito_2025.csv",
+        "family": "tipo_reddito",
+        "breakdown": "sesso",
+        "year": 2025,
+        "schemaId": "s53bc7c836b",
+        "instruments": [],
+        "rows": 68,
+        "columns": 41,
+        "emptyCells": 80,
+        "negativeCells": 0,
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2025.csv",
+        "bytes": 24231,
+        "sha256": "3f3a5545dae47e00f88620526c300572367323869366b651ff94a6fac299f7aa",
+        "taxYear": 2024,
+        "publicationDate": "2026-04-23"
+      }
+    },
+    "rows": 25534,
+    "files": 79
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/mef-irpef-dettaglio-2017-2025.data.json",
+      "bytes": 5444337,
+      "sha256": "9284293a0d19d7b92fdd326e918f981e3dd147693786e1831659ef1615ec18f0"
+    },
+    "lockSha256": "7be55cf0d582e5e26c9a9f121f1a33a45d068d3e49a18ba4208d3a4b23007887"
+  },
+  "periodBasis": "declaration-year",
+  "taxPeriod": {
+    "from": 2016,
+    "to": 2024
+  }
+}

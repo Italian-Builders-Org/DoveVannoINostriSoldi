@@ -450,10 +450,11 @@ test("getBudgetLawMissionSeries never labels a gap as a year-over-year change", 
 test("the committed fallback snapshot is complete, consecutive and reconciled", () => {
   const artifact = validateBudgetLawSnapshotArtifact(COMMITTED_SNAPSHOT);
   const series = artifact.series;
-  assert.deepEqual(series.years, [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+  assert.deepEqual(series.years, SOURCE_SPEC.transformation.years);
+  assert.equal(series.years[0], 2017);
   assert.equal(series.missions.length, 34);
-  assert.equal(series.allocations.length, 340);
-  assert.equal(series.yearOverYearDeltas.length, 306);
+  assert.equal(series.allocations.length, SOURCE_SPEC.transformation.allocations);
+  assert.equal(series.yearOverYearDeltas.length, SOURCE_SPEC.transformation.yearOverYearDeltas);
   assert.match(COMMITTED_SNAPSHOT.source.catalogSha256, /^sha256:[0-9a-f]{64}$/);
   assert.match(COMMITTED_SNAPSHOT.source.csvSha256, /^sha256:[0-9a-f]{64}$/);
   assert.equal(

@@ -1,3 +1,4 @@
+import runpy
 import subprocess
 import sys
 import unittest
@@ -26,3 +27,10 @@ class SourceSnapshotInventoryTests(unittest.TestCase):
         self.assertIn("`siope-municipal`", text)
         self.assertIn("workflow scrive su `main`", text)
         self.assertNotRegex(text, r"[—–]")
+
+    def test_reference_period_is_distinct_from_nested_observation_date(self):
+        module = runpy.run_path(str(SCRIPT))
+        payload = {"series": {"years": [2017, 2026]}, "source": {"observedAt": "2026-09-05"}}
+        self.assertEqual(module["pick_period"](payload), "2017-2026")
+        self.assertEqual(module["pick_observed"](payload), "2026-09-05")
+        self.assertIsNone(module["pick_period"]({"source": payload["source"]}))

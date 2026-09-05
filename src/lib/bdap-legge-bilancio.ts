@@ -6,6 +6,7 @@ import {
 import { fetchOfficialSource, SourceFetchError } from "@/lib/data/source-fetch";
 import { getSourcePolicy } from "@/lib/data/source-policy";
 import { parseOpenBdapAmount } from "@/lib/data/bdap-payment-contract";
+import budgetLawSourceLock from "../../scripts/etl/specs/openbdap-budget-law-missions.source.json";
 import budgetLawSnapshotArtifact from "@/data/generated/openbdap-budget-law-missions.json";
 
 const BDAP_BASE = "https://bdap-opendata.rgs.mef.gov.it";
@@ -22,26 +23,8 @@ const EXPECTED_TITLE =
   "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato";
 const SNAPSHOT_PACKAGE_ID = "e0be9f03-134b-446d-8e6c-cb5c14ddc11c";
 const SNAPSHOT_RESOURCE_ID = "32750";
-const SNAPSHOT_CATALOG_SHA256 =
-  "sha256:c29936b96b538c669f47f62319c051724cd10ce8105b38906eed85f06c696e0c";
-const SNAPSHOT_CSV_SHA256 =
-  "sha256:5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338";
-const SNAPSHOT_CATALOG_BYTES = 6_283;
-const SNAPSHOT_CSV_BYTES = 3_422_462;
 const SNAPSHOT_CATALOG_URL =
   `${BDAP_ACTION}/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20`;
-const SNAPSHOT_ANNUAL_TOTALS_EUR = new Map<number, number>([
-  [2017, 861_047_385_808],
-  [2018, 852_369_824_700],
-  [2019, 869_498_990_905],
-  [2020, 897_423_599_901],
-  [2021, 1_060_697_407_565],
-  [2022, 1_093_956_278_557],
-  [2023, 1_183_723_964_094],
-  [2024, 1_215_086_092_281],
-  [2025, 1_199_544_721_805],
-  [2026, 1_253_161_463_689],
-]);
 
 /**
  * The RGS mission taxonomy was reworded in 2017 (e.g. "Diritti sociali
@@ -524,7 +507,15 @@ let fullAggregateCache: { promise: Promise<FullMissionAggregate>; expiresAt: num
 async function computeFullMissionAggregate(signal: AbortSignal): Promise<FullMissionAggregate> {
   const dataset = await discoverBudgetLawMissionDataset(signal);
   const records = await fetchDatasetRows(dataset, signal);
+  return aggregateBudgetLawRecords(dataset, records, new Date().toISOString());
+}
 
+/** Shared pure transformation for runtime and offline refresh candidates. */
+export function aggregateBudgetLawRecords(
+  dataset: BudgetLawMissionDataset,
+  records: DelimitedRecord[],
+  acquiredAt: string,
+): FullMissionAggregate {
   const totalsByYearMission = new Map<string, number>();
   const missionsByYear = new Map<number, Set<string>>();
 
@@ -543,7 +534,7 @@ async function computeFullMissionAggregate(signal: AbortSignal): Promise<FullMis
   const availableYears = [...missionsByYear.keys()].sort((left, right) => left - right);
   return {
     dataset,
-    acquiredAt: new Date().toISOString(),
+    acquiredAt,
     availableYears,
     missionsByYear,
     totalsByYearMission,
@@ -868,7 +859,28 @@ type BudgetLawSnapshotArtifact = {
   series: BudgetLawMissionSeries;
 };
 
-export function validateBudgetLawSnapshotArtifact(value: unknown): BudgetLawSnapshotArtifact {
+export function validateBudgetLawSnapshotArtifact(
+  value: unknown,
+  lock: typeof budgetLawSourceLock = budgetLawSourceLock,
+): BudgetLawSnapshotArtifact {
+  if (lock.schemaVersion !== 1 || lock.datasetId !== "openbdap_legge_bilancio_storico"
+    || lock.source.packageId !== SNAPSHOT_PACKAGE_ID || lock.source.resourceId !== SNAPSHOT_RESOURCE_ID
+    || lock.source.productCode !== PRODUCT_CODE || lock.source.title !== EXPECTED_TITLE
+    || lock.source.catalogUrl !== SNAPSHOT_CATALOG_URL
+    || lock.source.csvUrl !== `${BDAP_DUMP}/${SNAPSHOT_PACKAGE_ID}.csv`
+    || lock.source.license !== "Creative Commons Attribution" || lock.source.licenseId !== "cc-by"
+    || lock.source.licenseUrl !== "http://www.opendefinition.org/licenses/cc-by"
+    || lock.transformation.measure !== ENACTED_AMOUNT_FIELD || lock.transformation.unit !== "euro"
+    || lock.transformation.minimumStableMissionYear !== MIN_STABLE_MISSION_YEAR
+    || ![lock.source.catalog, lock.source.csv].every((asset) =>
+      /^[a-f0-9]{64}$/.test(asset.sha256) && Number.isSafeInteger(asset.bytes) && asset.bytes > 0)) {
+    throw new Error("Snapshot Legge di Bilancio: source lock non valido");
+  }
+  const annualTotals = new Map(Object.entries(lock.expectedAnnualTotalsEur).map(([year, total]) => [Number(year), total]));
+  if ([...annualTotals].some(([year, total]) => !Number.isInteger(year) || year < MIN_STABLE_MISSION_YEAR
+    || !Number.isSafeInteger(total) || total <= 0)) {
+    throw new Error("Snapshot Legge di Bilancio: totali del lock non validi");
+  }
   const candidate = objectRecord(value);
   if (candidate.schemaVersion !== 1) {
     throw new Error("Snapshot Legge di Bilancio: versione artefatto non valida");
@@ -880,11 +892,11 @@ export function validateBudgetLawSnapshotArtifact(value: unknown): BudgetLawSnap
     source.title !== EXPECTED_TITLE ||
     source.license !== "Creative Commons Attribution" ||
     source.licenseUrl !== "http://www.opendefinition.org/licenses/cc-by" ||
-    source.catalogSha256 !== SNAPSHOT_CATALOG_SHA256 ||
-    source.catalogBytes !== SNAPSHOT_CATALOG_BYTES ||
+    source.catalogSha256 !== `sha256:${lock.source.catalog.sha256}` ||
+    source.catalogBytes !== lock.source.catalog.bytes ||
     source.csvUrl !== `${BDAP_DUMP}/${SNAPSHOT_PACKAGE_ID}.csv` ||
-    source.csvSha256 !== SNAPSHOT_CSV_SHA256 ||
-    source.csvBytes !== SNAPSHOT_CSV_BYTES ||
+    source.csvSha256 !== `sha256:${lock.source.csv.sha256}` ||
+    source.csvBytes !== lock.source.csv.bytes ||
     source.encoding !== "cp1252" ||
     source.delimiter !== ";" ||
     source.quoteChar !== '"' ||
@@ -898,12 +910,22 @@ export function validateBudgetLawSnapshotArtifact(value: unknown): BudgetLawSnap
   const series = validateBudgetLawMissionSeries(candidate.series, {
     expectedDataMode: "snapshot",
   });
-  if (series.observedAt !== source.observedAt) {
+  if (JSON.stringify(series.years) !== JSON.stringify(lock.transformation.years)
+    || series.missions.length !== lock.transformation.missionsPerYear
+    || series.allocations.length !== lock.transformation.allocations
+    || series.yearOverYearDeltas.length !== lock.transformation.yearOverYearDeltas
+    || lock.source.csv.columns !== 15 || !Number.isSafeInteger(lock.source.csv.rowsIncludingHeader)
+    || lock.source.csv.rowsIncludingHeader <= 1
+    || lock.source.csv.encoding !== "cp1252" || lock.source.csv.delimiter !== ";"
+    || lock.source.csv.quoteChar !== '"' || lock.source.csv.lineEnding !== "CRLF") {
+    throw new Error("Snapshot Legge di Bilancio: trasformazione non coerente con il lock");
+  }
+  if (series.observedAt !== source.observedAt || series.observedAt !== lock.source.observedAt) {
     throw new Error("Snapshot Legge di Bilancio: date di acquisizione non coerenti");
   }
   if (
-    series.years.length !== SNAPSHOT_ANNUAL_TOTALS_EUR.size ||
-    series.years.some((year) => !SNAPSHOT_ANNUAL_TOTALS_EUR.has(year))
+    series.years.length !== annualTotals.size ||
+    series.years.some((year) => !annualTotals.has(year))
   ) {
     throw new Error("Snapshot Legge di Bilancio: copertura sorgente inattesa");
   }
@@ -911,7 +933,7 @@ export function validateBudgetLawSnapshotArtifact(value: unknown): BudgetLawSnap
     const total = series.allocations
       .filter((row) => row.year === year)
       .reduce((sum, row) => sum + row.amountEur, 0);
-    if (!Number.isSafeInteger(total) || total !== SNAPSHOT_ANNUAL_TOTALS_EUR.get(year)) {
+    if (!Number.isSafeInteger(total) || total !== annualTotals.get(year)) {
       throw new Error(`Snapshot Legge di Bilancio: totale ${year} non riconciliato`);
     }
   }
@@ -1006,6 +1028,13 @@ export async function getBudgetLawMissionSeries(
     if (!options.signal?.aborted && !isTemporarySourceFailure(error)) throw error;
     return committedBudgetLawSnapshot(requestedWindow);
   }
+  return budgetLawSeriesFromAggregate(aggregate, requestedWindow);
+}
+
+export function budgetLawSeriesFromAggregate(
+  aggregate: FullMissionAggregate,
+  requestedWindow: number,
+): BudgetLawMissionSeries {
   const { dataset, acquiredAt, availableYears, missionsByYear, totalsByYearMission } = aggregate;
 
   const consecutiveYears = latestConsecutiveYears(availableYears);

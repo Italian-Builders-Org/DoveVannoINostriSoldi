@@ -368,24 +368,33 @@
       "id": "openbdap-budget-law",
       "owner": "OpenBDAP budget-law mission series",
       "files": [
-        "src/data/generated/openbdap-budget-law-missions.json"
+        "src/data/generated/openbdap-budget-law-missions.json",
+        "scripts/etl/specs/openbdap-budget-law-missions.source.json",
+        "docs/SOURCE_SNAPSHOT_INVENTORY.md"
       ],
-      "verificationMode": "source-lock",
+      "verificationMode": "online-refresh",
       "offlineCheck": {
         "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [],
       "nodeTests": [
-        "tests/bdap-legge-bilancio.test.mjs"
+        "tests/bdap-legge-bilancio.test.mjs",
+        "tests/bdap-budget-law-refresh.test.mjs"
       ],
       "generator": {
-        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --package-json ... --csv ... --observed-at ...",
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_refresh.mjs",
         "requiresNetworkInput": true
       },
       "sourceSpec": "scripts/etl/specs/openbdap-budget-law-missions.source.json",
-      "refreshWorkflow": null,
-      "trustModel": "Committed aggregate generated from the official catalog response and CSV, both identified by SHA-256. Runtime prefers live OpenBDAP data and uses this validated snapshot only when the source is unavailable."
+      "refreshWorkflow": ".github/workflows/budget-law-refresh.yml",
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate containing the snapshot and its exact reviewed source lock. Official bytes, identity, licence, complete year/mission coverage and reconciliation are validated before publication. No direct main updates; schema or taxonomy drift requires manual review.",
+      "publication": {
+        "branch": "automation/data/budget-law",
+        "commitTitle": "chore(data): refresh Legge di Bilancio snapshot",
+        "prTitle": "data: refresh Legge di Bilancio snapshot",
+        "upstreamUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20"
+      }
     },
     {
       "id": "opencivitas-2022",

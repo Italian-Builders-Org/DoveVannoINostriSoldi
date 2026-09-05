@@ -21,6 +21,22 @@ SPEC.loader.exec_module(publisher)
 
 
 class PublishDataRefreshTests(TestCase):
+    def test_budget_publication_is_limited_to_snapshot_lock_and_generated_inventory(self) -> None:
+        from dataclasses import replace
+        artifact = publisher.load_artifact("openbdap-budget-law")
+        expected = {
+            "src/data/generated/openbdap-budget-law-missions.json",
+            "scripts/etl/specs/openbdap-budget-law-missions.source.json",
+            "docs/SOURCE_SNAPSHOT_INVENTORY.md",
+        }
+        self.assertEqual(publisher.allowlisted_paths(artifact), expected)
+        for path in ("src/lib/bdap-legge-bilancio.ts", "scripts/etl/specs/other.json", "docs/ROADMAP.md"):
+            with self.assertRaises(publisher.PublishError):
+                publisher.allowlisted_paths(replace(artifact, files=(path,)))
+        other = publisher.load_artifact("company-atlas")
+        with self.assertRaises(publisher.PublishError):
+            publisher.allowlisted_paths(replace(other, files=("scripts/etl/specs/openbdap-budget-law-missions.source.json",)))
+
     def test_registry_has_only_managed_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
         publications = {
@@ -35,6 +51,7 @@ class PublishDataRefreshTests(TestCase):
                 "consulenti-pubblici",
                 "government-scorecard",
                 "mef-participations",
+                "openbdap-budget-law",
                 "opencivitas-2022",
                 "opencoesione",
                 "public-debt",
@@ -48,6 +65,7 @@ class PublishDataRefreshTests(TestCase):
                 "automation/data/consulenti",
                 "automation/data/government-scorecard",
                 "automation/data/mef-participations",
+                "automation/data/budget-law",
                 "automation/data/opencivitas",
                 "automation/data/opencoesione",
                 "automation/data/public-debt",

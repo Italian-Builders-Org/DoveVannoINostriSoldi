@@ -276,7 +276,12 @@ def allowlisted_paths(artifact: Artifact) -> set[str]:
     root = (ROOT / "src/data/generated").resolve()
     for path in normalized:
         resolved = (ROOT / path).resolve()
-        if resolved != root and root not in resolved.parents:
+        reviewed_budget_metadata = (
+            artifact.artifact_id == "openbdap-budget-law"
+            and path in {"scripts/etl/specs/openbdap-budget-law-missions.source.json", "docs/SOURCE_SNAPSHOT_INVENTORY.md"}
+            and resolved == ROOT / path
+        )
+        if resolved != root and root not in resolved.parents and not reviewed_budget_metadata:
             raise PublishError(f"generated file escapes the generated-data root: {path}")
         if (ROOT / path).is_symlink():
             raise PublishError(f"generated file must not be a symlink: {path}")

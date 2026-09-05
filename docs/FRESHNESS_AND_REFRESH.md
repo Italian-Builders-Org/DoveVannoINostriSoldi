@@ -288,3 +288,52 @@ responsabilità. La [procedura della Pagella](PAGELLA_POLITICO_ECONOMICA.md#aggi
 descrive osservazione senza write, approvazione degli hash, cambio di vintage,
 aggiornamento del registro e rollback. Le date della fonte, dell'acquisizione,
 del polling e della revisione editoriale restano distinte.
+
+## Legge di Bilancio: refresh dello snapshot
+
+La #189 aggiunge `budget-law-refresh.yml`: controllo mensile il giorno 5 alle
+06:43 UTC, più avvio manuale. È la frequenza del controllo DVNS, non una
+promessa di rilascio mensile RGS. Il workflow legge soltanto il prodotto
+OpenBDAP `LBF_SPE_CRU_AMPMA_001`, passando da `source-fetch.ts` con allowlist,
+timeout e limiti di byte. Non usa il fallback del sito per dichiarare riuscito
+un aggiornamento.
+
+Il candidato conserva gli anni dal 2017 e tutte le missioni dello snapshot
+pubblicato. Può accettare un nuovo anno consecutivo e revisioni degli importi;
+cambiamenti di identità, licenza, schema, tassonomia o copertura richiedono
+revisione manuale. Le righe precedenti al 2017 non entrano nella vista
+comparabile. Il dato resta lo stanziamento di competenza CP A1, in euro:
+non si somma a cassa, A2/A3 o ad altre misure.
+
+La trasformazione pura è condivisa con il runtime; il contratto verifica
+snapshot e source lock, hash dei byte ufficiali, matrice anno/missione e
+totali. A fonte invariata non cambiano i file né la data di acquisizione.
+L’inventario generato espone periodo e osservazione anche quando sono annidati
+nella serie o nei metadati della fonte.
+
+Il publisher esistente può proporre, per questa sola fonte, tre percorsi:
+`src/data/generated/openbdap-budget-law-missions.json`,
+`scripts/etl/specs/openbdap-budget-law-missions.source.json` e
+`docs/SOURCE_SNAPSHOT_INVENTORY.md`. Il lock e l’inventario sono eccezioni
+esatte all’allowlist degli artifact generati: non consentono modifiche a
+codice, altri lock o altri documenti. Restano il digest dei file, i trailer
+del bot, la validazione offline e la gestione della branch dedicata
+`automation/data/budget-law`. La PR è revisionabile; nessun merge automatico.
+
+Setup: environment `source-operations`, `DATA_BOT_APP_CLIENT_ID` e
+`DATA_BOT_APP_PRIVATE_KEY`, già usati dagli altri refresh. Un errore upstream,
+un contratto non rispettato o credenziali assenti fanno fallire il job;
+lo snapshot pubblicato resta quello precedente. Per il rollback, chiudere
+la proposta o revertire il relativo merge.
+
+Comandi locali dalla root con Node 22 e dipendenze installate:
+
+```bash
+node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_refresh.mjs
+python3 scripts/ci/source-snapshot-inventory.py --write
+node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check
+node --experimental-strip-types --test tests/bdap-legge-bilancio.test.mjs tests/bdap-budget-law-refresh.test.mjs
+```
+
+Il primo comando contatta la fonte ufficiale e scrive soltanto un candidato
+locale se cambia. Nessun comando locale qui pubblica una PR o avvia un merge.

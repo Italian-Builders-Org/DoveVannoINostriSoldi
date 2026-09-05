@@ -46,6 +46,7 @@ PUBLICATION_IDS = frozenset(
         "consulenti-pubblici",
         "government-scorecard",
         "mef-participations",
+        "openbdap-budget-law",
         "opencivitas-2022",
         "opencoesione",
         "public-debt",

@@ -100,6 +100,9 @@ def format_value(value: Any) -> str | None:
 def pick_period(payload: Any) -> str | None:
     if not isinstance(payload, dict):
         return None
+    years = payload.get("series", {}).get("years") if isinstance(payload.get("series"), dict) else None
+    if isinstance(years, list) and years and all(isinstance(year, int) for year in years):
+        return f"{min(years)}-{max(years)}"
     for key in (
         "referenceDate",
         "referencePeriod",
@@ -158,6 +161,11 @@ def pick_observed(payload: Any) -> str | None:
         formatted = format_value(payload.get(key))
         if formatted:
             return formatted
+    source = payload.get("source")
+    if isinstance(source, dict):
+        observed = pick_observed(source)
+        if observed:
+            return observed
     sources = payload.get("sources")
     if isinstance(sources, dict):
         for source in sources.values():

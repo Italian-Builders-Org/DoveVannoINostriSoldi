@@ -176,7 +176,13 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
           </div>
         </div>
       </header>
-      <aside className="desktop-sidebar" data-collapsed={collapsed} aria-label="Menu del sito">
+      <aside className="desktop-sidebar" data-collapsed={collapsed} aria-label="Menu del sito"
+        onBlurCapture={(event) => {
+          // CSS can hide the focused control before the media change callback.
+          if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
+            mobileTriggerRef.current?.focus();
+          }
+        }}>
         <div className="sidebar-toolbar">
           <span className="sidebar-heading">Esplora</span>
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}

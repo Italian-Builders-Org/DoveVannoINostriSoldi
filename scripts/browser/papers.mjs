@@ -35,6 +35,32 @@ try {
         assert.equal(state.pdf, "/studi/dai-fondi-ai-posti/v1.3/dai-fondi-ai-posti.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
+        const nav = await page.$$eval(".primary-nav-list > li", (items) => items.map((item) => ({
+          top: item.getBoundingClientRect().top,
+          icons: item.querySelectorAll(":scope > a > svg").length,
+        })));
+        assert.equal(new Set(nav.map((item) => Math.round(item.top))).size, 1, "La navigazione deve restare su una riga");
+        assert.ok(nav.every((item) => item.icons === 1), "Ogni sezione deve avere un'icona coerente");
+        const navLabels = await page.$$eval('.nav-item > a', (links) => links.map((link) => link.textContent.trim()));
+        assert.deepEqual(navLabels.slice(0, 5), ['Home', 'Imprese', 'Istruzione', 'Soldi', 'Territori']);
+        assert.deepEqual(navLabels.slice(-2), ['Report mensili', 'Studi']);
+        assert.equal(await page.evaluate(() => {
+          const container = document.querySelector('.primary-nav').getBoundingClientRect();
+          const active = document.querySelector('.nav-item > a[data-section-active="true"]').getBoundingClientRect();
+          return active.left >= container.left - 1 && active.right <= container.right + 1;
+        }), true, 'La sezione attiva deve essere visibile anche su mobile');
+        if (width === 1280) {
+          const backward = await page.$('.nav-scroll-control-backward');
+          await backward.focus();
+          await page.keyboard.press('Enter');
+          await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
+          await page.click('.nav-scroll-control-forward');
+          await page.waitForFunction(() => {
+            const container = document.querySelector('.primary-nav');
+            const last = container.querySelector('li:last-child');
+            return last.getBoundingClientRect().right <= container.getBoundingClientRect().right + 1;
+          });
+        }
         const details = await page.$("main details summary");
         await details.focus();
         await page.keyboard.press("Enter");

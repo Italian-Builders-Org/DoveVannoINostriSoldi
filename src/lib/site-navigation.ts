@@ -20,8 +20,6 @@ export type NavSection = Readonly<{
 
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home", icon: "home" },
-  { href: "/report", label: "Report mensili", icon: "news" },
-  { href: "/studi", label: "Studi", icon: "research", aliases: ["/paper"] },
   {
     href: "/imprese",
     label: "Imprese",
@@ -143,6 +141,8 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/metodologia", label: "Metodo" },
     ],
   },
+  { href: "/report", label: "Report mensili", icon: "news" },
+  { href: "/studi", label: "Studi", icon: "research", aliases: ["/paper"] },
 ] as const;
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [

@@ -10,7 +10,7 @@ const date = new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "UT
 export const metadata: Metadata = {
   title: "Paper di ricerca",
   description,
-  alternates: { canonical: "/studi" },
+  alternates: { canonical: `${PUBLIC_SITE_URL}/studi` },
   openGraph: { type: "website", title: "Paper di ricerca", description, url: `${PUBLIC_SITE_URL}/studi`, locale: "it_IT" },
 };
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { childcareStudy as study } from "@/lib/studies";
+import { PUBLIC_SITE_URL } from "@/lib/site";
 import styles from "../studies.module.css";
 
 const count = (n: number) => new Intl.NumberFormat("it-IT", { useGrouping: "always" }).format(n);
@@ -8,8 +9,8 @@ const pct = (n: number) => new Intl.NumberFormat("it-IT", { style: "percent", ma
 export const metadata: Metadata = {
   title: `${study.title} · Studi`,
   description: study.description,
-  alternates: { canonical: study.path },
-  openGraph: { type: "article", title: study.title, description: study.description, url: study.path, modifiedTime: study.revisedAt },
+  alternates: { canonical: `${PUBLIC_SITE_URL}${study.path}` },
+  openGraph: { type: "article", title: study.title, description: study.description, url: `${PUBLIC_SITE_URL}${study.path}`, modifiedTime: study.revisedAt },
 };
 
 export default function ChildcareStudyPage() {

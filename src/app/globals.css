@@ -281,11 +281,12 @@ nav li a { text-decoration: none; }
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: 0;
   border-bottom: 1px solid var(--color-neutral-300);
 }
 
 .primary-nav {
+  flex: 1;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -399,9 +400,9 @@ nav li a { text-decoration: none; }
   flex: none;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  width: 36px;
   min-height: 42px;
-  padding: 8px 0;
+  padding: 8px;
   border: 0;
   color: var(--color-neutral-600);
   background: transparent;
@@ -411,6 +412,9 @@ nav li a { text-decoration: none; }
   cursor: pointer;
 }
 .nav-scroll-control:hover { color: var(--color-accent-700); }
+.nav-scroll-control:disabled { opacity: .3; cursor: default; color: var(--color-neutral-600); }
+.nav-scroll-control-backward { order: -1; border-right: 1px solid var(--color-neutral-300); }
+.nav-scroll-control-forward { border-left: 1px solid var(--color-neutral-300); }
 
 /* ── page shells ────────────────────────────────────────────────────────── */
 
@@ -827,21 +831,6 @@ main { display: block; }
    Touch layouts below 1100px retain their larger targets and swipe behavior. */
 @media (min-width: 1100px) and (max-width: 1580px) {
   .primary-nav-list { gap: 0; }
-  .nav-item > a { padding-inline: 7px; font-size: 13px; }
-  .nav-item-has-menu > a { padding-right: 2px; }
-  .nav-item-toggle { min-width: 26px; padding-right: 4px; }
-}
-
-/* Two balanced rows keep every desktop section visible with its icon.
-   Smaller viewports retain the single swipeable navigation row. */
-@media (min-width: 1280px) {
-  .primary-nav { width: 100%; }
-  .primary-nav-list {
-    display: grid;
-    grid-template-columns: repeat(var(--nav-columns), minmax(0, 1fr));
-    gap: 0;
-  }
-  .nav-item { justify-content: center; }
   .nav-item > a { padding-inline: 7px; font-size: 13px; }
   .nav-item-has-menu > a { padding-right: 2px; }
   .nav-item-toggle { min-width: 26px; padding-right: 4px; }

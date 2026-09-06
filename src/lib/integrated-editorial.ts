@@ -681,6 +681,46 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
         label: "Metadati OpenCUP",
         catalogBoundary: "Descrive file, campi e acquisizione; non contiene ulteriori progetti da sommare al censimento.",
       },
+      {
+        id: "siope-inventario-enti",
+        label: "Inventario SIOPE degli enti",
+        columns: [
+          { key: "entityType", label: "Tipo di ente" },
+          { key: "year", label: "Anno" },
+          { key: "registryRows", label: "Righe anagrafiche" },
+          { key: "coverageStatus", label: "Copertura" },
+        ],
+      },
+      {
+        id: "siope-uscite-province",
+        label: "Pagamenti SIOPE delle Province",
+        columns: [
+          { key: "entityName", label: "Ente" },
+          { key: "year", label: "Anno" },
+          { key: "month", label: "Mese" },
+          { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
+        id: "siope-uscite-regioni",
+        label: "Pagamenti SIOPE delle Regioni",
+        columns: [
+          { key: "entityName", label: "Ente" },
+          { key: "year", label: "Anno" },
+          { key: "month", label: "Mese" },
+          { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
+        id: "siope-uscite-citta-metropolitane",
+        label: "Pagamenti SIOPE delle Città metropolitane",
+        columns: [
+          { key: "entityName", label: "Ente" },
+          { key: "year", label: "Anno" },
+          { key: "month", label: "Mese" },
+          { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
     ],
   },
   {

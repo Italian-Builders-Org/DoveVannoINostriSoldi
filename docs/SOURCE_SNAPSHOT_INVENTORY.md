@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 44
+- Artefatti nel registro: 45
 - PR automatica: 9 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 29 (PR umana dopo revisione)
+- manuale: 30 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -51,7 +51,7 @@ La revisione e il merge restano umani.
 | `indire-pnrr-assignments` | aggiornamento aprile 2026 | 2026-08-23 | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/indire_pnrr_assignments.py --validate-committed` |
 | `inps-civil-invalidity` | non dichiarato nello snapshot | 2026-08-20T22:30:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `inps-pensions-osservatorio` | non dichiarato nello snapshot | 2026-09-01T12:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
-| `integrated-catalog` | non dichiarato nello snapshot | 2026-08-23T00:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
+| `integrated-catalog` | non dichiarato nello snapshot | 2026-09-06T08:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `integrated-rows` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `istat-municipality-geography` | 31/12/2022 | 2026-08-25T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_municipality_geography.py --validate-committed` |
 | `istat-regions-2024` | 2024 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_regions_account.py --validate-committed` |
@@ -69,6 +69,7 @@ La revisione e il merge restano umani.
 | `rgs-consulting-payments` | non dichiarato nello snapshot | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `rgs-ministries-2025` | 2025 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/rgs_ministries_account.py --validate-committed` |
 | `rgs-state-budget-territorial-2023` | 2023 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall | nessuno | nessuno | manuale | suite ETL |
+| `siope-nonmunicipal` | 2024-2026 | 2026-09-06T08:00:00+00:00 | https://www.siope.it/documenti/siope2/open/last | nessuno | nessuno | manuale | `python3 scripts/etl/siope_nonmunicipal.py --check` |
 | `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_receipts_check.py --include-expenditure` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `ssn-cce-national-history` | non dichiarato nello snapshot | 2026-08-28T12:31:43.000Z | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
@@ -85,7 +86,7 @@ La revisione e il merge restano umani.
 | `mef-irpef-dettaglio-2017-2025` | 2016-2024 (anni di imposta) | 2026-09-05 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes | nessuno | nessuno | manuale | `python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |
-| `source-ledger-proofs` | non dichiarato nello snapshot | 2026-08-23T00:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
+| `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-06T08:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
 
 ## Prossimo passo

@@ -106,6 +106,16 @@ licenza non è verificata: `license: not-declared`, senza attribuire quella di a
 Spec, vocabolario dei titoli, coperture e comandi offline sono descritti in
 [SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md).
 
+Province, Regioni comprese le Province autonome e Città metropolitane usano gli stessi ZIP
+ufficiali delle uscite, ma una proiezione separata con comparti rispettivamente `PRO`, `REG`
+e `PRO`. Il censimento include tutti i tipi SIOPE, mentre i pagamenti pubblicati sono solo
+dei tre perimetri territoriali. Le identità sono unite a IPA esclusivamente per codice fiscale
+esatto e intervallo temporale; zero osservato, assenza di movimenti e errore di join restano
+distinti. File, hash, provenienza, release e comando di rigenerazione sono in
+[SIOPE_NON_MUNICIPAL.md](SIOPE_NON_MUNICIPAL.md).
+L'acquisizione e la pubblicazione di queste proiezioni sono manuali: la cadenza dei file
+ufficiali non modifica né sostituisce il refresh giornaliero dei flussi comunali.
+
 ### OpenBDAP
 **Titolare:** Ragioneria Generale dello Stato.  
 **Uso:** bilancio dello Stato, spesa, SIOPE, opere pubbliche, PNRR e altri domini.  

@@ -175,6 +175,40 @@
   padding-block: calc(var(--space-4) + var(--space-1));
 }
 
+.yearPicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+.yearPicker select { min-height: 44px; }
+
+.periodMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+
+.periodMeta p {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.monthlySection { margin: var(--space-4) 0; }
+.monthlySection h3 { margin: 0 0 var(--space-3); font-size: 14px; }
+.monthlySection caption { color: var(--color-neutral-600); font-size: 12px; text-align: left; }
+
+.sourceLine {
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
 .insightSection { border-top: 3px solid var(--color-accent-200); }
 .insightSection .sectionKicker { color: var(--color-accent-800); }
 

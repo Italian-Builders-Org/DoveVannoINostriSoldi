@@ -21,6 +21,7 @@ export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
   participations: "Partecipazioni pubbliche",
   "state-accounts": "Conti dello Stato",
   projects: "Progetti",
+  "public-spending": "Pagamenti della Pubblica amministrazione",
   "candidate-batches": "Working set contabilizzati",
 };
 

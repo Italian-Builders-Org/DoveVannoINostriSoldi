@@ -19,7 +19,9 @@ import { getMunicipalityProfile } from "@/lib/municipality-profile";
 import { municipalityName } from "@/lib/municipality-name";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
+import { getSiopeNonMunicipalEntityByIpaCode } from "@/lib/siope-nonmunicipal";
 import { MunicipalityEconomics } from "./municipality-economics";
+import { NonMunicipalEconomics } from "./nonmunicipal-economics";
 import { EntityInformation } from "./entity-information";
 import { EntityProcurementSection } from "./entity-procurement-section";
 import styles from "./scheda.module.css";
@@ -30,8 +32,12 @@ export const maxDuration = 15;
 const entityRobots = { index: false, follow: false } as const;
 const PAGE_DATA_BUDGET_MS = 6_000;
 
-type PageProps = {
+type RouteParams = {
   params: Promise<{ codice: string }>;
+};
+
+type PageProps = RouteParams & {
+  searchParams: Promise<{ siopeAnno?: string | string[] }>;
 };
 
 function responsibleLabel(
@@ -70,7 +76,7 @@ function anacFallbackEntity(codiceIpa: string, codiceFiscale: string | null): Ip
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: RouteParams): Promise<Metadata> {
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) return { title: "Ente non trovato", robots: entityRobots };
@@ -79,6 +85,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: municipalityName(municipality.name),
       description: `Scheda pubblica del Comune ${municipalityName(municipality.name)}, Codice IPA ${normalizedCode}.`,
+      robots: entityRobots,
+    };
+  }
+  const nonMunicipal = getSiopeNonMunicipalEntityByIpaCode(normalizedCode);
+  if (nonMunicipal) {
+    return {
+      title: nonMunicipal.entityName,
+      description: `Scheda SIOPE dell'ente ${nonMunicipal.entityName}, Codice IPA ${normalizedCode}.`,
       robots: entityRobots,
     };
   }
@@ -102,16 +116,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function EntityPage({ params }: PageProps) {
-  const { codice } = await params;
+export default async function EntityPage({ params, searchParams }: PageProps) {
+  const [{ codice }, search] = await Promise.all([params, searchParams]);
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
   const signal = AbortSignal.timeout(PAGE_DATA_BUDGET_MS);
 
   const municipalitySnapshot = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
+  const nonMunicipalSnapshot = getSiopeNonMunicipalEntityByIpaCode(normalizedCode);
   let entity: IpaEntity | null = municipalitySnapshot
     ? municipalitySnapshotEntity(municipalitySnapshot)
-    : null;
+    : nonMunicipalSnapshot
+      ? { ...anacFallbackEntity(normalizedCode, nonMunicipalSnapshot.taxCode), denominazione: nonMunicipalSnapshot.entityName, tipologia: nonMunicipalSnapshot.entityType }
+      : null;
   let snapshotOnly = entity !== null;
   let ipaUnavailable = false;
   let structure: IpaOrganizationStructure | null = null;
@@ -173,9 +190,10 @@ export default async function EntityPage({ params }: PageProps) {
     entity.responsabile.cognome,
   );
   const isMunicipality = municipalityProfile !== null;
+  const isNonMunicipal = nonMunicipalSnapshot !== null;
   const displayName = isMunicipality
     ? municipalityName(municipalityProfile.siope.data.name || entity.denominazione)
-    : entity.denominazione;
+    : nonMunicipalSnapshot?.entityName ?? entity.denominazione;
   const latestMunicipalityYear = municipalityProfile?.siope.data.years[0] ?? null;
   const municipalityGeography = latestMunicipalityYear?.geography ?? null;
 
@@ -186,7 +204,7 @@ export default async function EntityPage({ params }: PageProps) {
         <span aria-hidden="true">/</span>
         <Link href="/enti">Enti e società</Link>
         <span aria-hidden="true">/</span>
-        <span>{isMunicipality ? "Scheda comunale" : "Scheda ente"}</span>
+        <span>{isMunicipality ? "Scheda comunale" : isNonMunicipal ? "Scheda SIOPE" : "Scheda ente"}</span>
       </nav>
 
       <div className={`${styles.head} ${styles.municipalityHead}`}>
@@ -279,13 +297,16 @@ export default async function EntityPage({ params }: PageProps) {
           <p>
             {ipaUnavailable
               ? "Mostriamo comunque i contratti ANAC collegati a questo codice IPA. Contatti e uffici restano consultabili nella fonte ufficiale."
-              : "Questa visita non interroga Indice PA live; contatti e uffici correnti restano consultabili nella fonte ufficiale."}
+              : isNonMunicipal
+                ? "Identità e pagamenti vengono dal rilascio SIOPE verificato; contatti e uffici correnti restano consultabili nella fonte IPA ufficiale."
+                : "Questa visita non interroga Indice PA live; contatti e uffici correnti restano consultabili nella fonte ufficiale."}
           </p>
         </div>
       ) : null}
 
       <div className={styles.municipalityLayout}>
         {isMunicipality ? <MunicipalityEconomics profile={municipalityProfile} /> : null}
+        {nonMunicipalSnapshot ? <NonMunicipalEconomics entity={nonMunicipalSnapshot} year={Number(Array.isArray(search.siopeAnno) ? search.siopeAnno[0] : search.siopeAnno) || nonMunicipalSnapshot.years[0].year} /> : null}
         <EntityProcurementSection state={procurementState} />
         <EntityInformation
           entity={entity}

@@ -147,9 +147,10 @@ SOURCE_METADATA_KEYS = {
     "holder", "referencePeriod", "publicationDate", "acquisitionDate",
     "checkedAt", "updateFrequency", "canonicalUrls",
 }
-SOURCE_METADATA_OVERRIDE_KEYS = SOURCE_METADATA_KEYS - {
-    "publicationDate", "acquisitionDate", "checkedAt", "updateFrequency",
-}
+# A source can be acquired or rechecked independently from the rest of the
+# curated corpus.  Keeping these fields overridable records that provenance
+# without forcing an unrelated catalog-wide metadata rewrite.
+SOURCE_METADATA_OVERRIDE_KEYS = SOURCE_METADATA_KEYS
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 PUBLIC_ROW_CHUNK_ROWS = 1_000
 PUBLIC_ROW_CHUNK_MAX_RAW_BYTES = 2 * 1024 * 1024
@@ -671,6 +672,16 @@ def validate_source_metadata(
                 override["referencePeriod"],
                 f"sourceMetadata.overrides.{dataset_id}.referencePeriod",
             )
+        for key in ("publicationDate", "acquisitionDate", "checkedAt"):
+            if key in override and (
+                override[key] is not None
+                and (not isinstance(override[key], str) or DATE_RE.fullmatch(override[key]) is None)
+            ):
+                raise DatasetBuildError(
+                    f"sourceMetadata.overrides.{dataset_id}.{key} non e una data ISO"
+                )
+        if "updateFrequency" in override and override["updateFrequency"] is not None:
+            require_text(override["updateFrequency"], f"sourceMetadata.overrides.{dataset_id}.updateFrequency")
         if "canonicalUrls" in override:
             override_urls = require_list(
                 override["canonicalUrls"],

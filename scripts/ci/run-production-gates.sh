@@ -114,6 +114,10 @@ echo "::group::Browser report suite"
 npm run test:browser:report
 echo "::endgroup::"
 
+echo "::group::Browser studies suite"
+node scripts/browser/studies.mjs
+echo "::endgroup::"
+
 echo "::group::CSP Report-Only browser smoke"
 npm run test:csp:report-only
 echo "::endgroup::"

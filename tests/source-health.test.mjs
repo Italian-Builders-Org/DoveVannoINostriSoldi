@@ -189,6 +189,38 @@ test("ISTAT health metadata fails closed on sidecar drift", () => {
   );
 });
 
+test("SIOPE health probes both cash flows and never hides missing or stale receipts", async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  try {
+    globalThis.fetch = async (url, init) => {
+      calls.push(String(url));
+      assert.equal(new Headers(init.headers).get("range"), "bytes=0-0");
+      return new Response("x", { status: 206, headers: {
+        "last-modified": String(url).includes("ENTRATE")
+          ? "Mon, 10 Aug 2026 00:00:00 GMT" : "Thu, 27 Aug 2026 00:00:00 GMT",
+      } });
+    };
+    const healthy = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(healthy.reachability, "up");
+    assert.ok(calls.some((url) => url.includes("SIOPE_ENTRATE.")));
+    assert.ok(calls.some((url) => url.includes("SIOPE_USCITE.")));
+    assert.match(healthy.freshness.sourceTimestamp, /2026-08-10|10 Aug 2026/);
+    assert.match(healthy.detail, /incassi e pagamenti/);
+    globalThis.fetch = async (url) => new Response("x", {
+      status: String(url).includes("ENTRATE") ? 404 : 206,
+    });
+    const unavailable = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(unavailable.reachability, "down");
+    assert.match(unavailable.detail, /entrate HTTP 404/);
+    globalThis.fetch = async () => new Response("x", { status: 206 });
+    const undated = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(undated.freshness.sourceTimestamp, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("source health registry fails closed when an adapter is omitted", () => {
   const incomplete = getSnapshotManagedSourceHealth().filter(
     (entry) => entry.sourceId !== "anac",

@@ -63,6 +63,29 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "siope_inventario_enti":
+    case "siope_province":
+    case "siope_regioni":
+    case "siope_citta_metropolitane": {
+      const canonicalDatasetId = {
+        siope_inventario_enti: "siope-inventario-enti",
+        siope_province: "siope-uscite-province",
+        siope_regioni: "siope-uscite-regioni",
+        siope_citta_metropolitane: "siope-uscite-citta-metropolitane",
+      } as const;
+      const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectIntegratedDataset({
+        datasetId: canonicalDatasetId[query.dataset], q: query.query, limit,
+        offset: query.offset, cursor: query.cursor, signal: options.signal,
+      }));
+    }
+    case "siope_entrate_comuni": {
+      const { querySiopeMunicipalReceipts } = await import("@/lib/siope-receipts");
+      return jsonSafe(querySiopeMunicipalReceipts({
+        year: query.year, region: query.region, code: query.code, query: query.query,
+        limit: query.limit, offset: query.offset,
+      }));
+    }
     case "siope_comuni": {
       const { availableSiopeYears, getSiopeMunicipalSnapshot } = await import("@/lib/siope-snapshot");
       const { getSiopeMunicipalityPeerObservations } = await import("@/lib/siope-municipality-detail");

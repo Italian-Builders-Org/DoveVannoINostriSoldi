@@ -39,3 +39,14 @@ class SourceSnapshotInventoryTests(unittest.TestCase):
         module = runpy.run_path(str(SCRIPT))
         payload = {"period": {"from": 2017, "to": 2025}, "taxPeriod": {"from": 2016, "to": 2024}}
         self.assertEqual(module["pick_period"](payload), "2016-2024 (anni di imposta)")
+
+    def test_compact_entity_snapshot_exposes_its_years_and_acquisition(self):
+        module = runpy.run_path(str(SCRIPT))
+        payload = {
+            "entities": [
+                {"years": [{"year": 2024, "provenance": {"acquisitionDate": "2026-09-06T08:00:00+00:00"}}]},
+                {"years": [{"year": 2026, "provenance": {"acquisitionDate": "2026-09-06T08:00:00+00:00"}}]},
+            ]
+        }
+        self.assertEqual(module["pick_period"](payload), "2024-2026")
+        self.assertEqual(module["pick_observed"](payload), "2026-09-06T08:00:00+00:00")

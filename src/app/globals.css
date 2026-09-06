@@ -35,7 +35,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a { color: var(--color-accent-700); text-decoration: none; }
-a:hover { color: var(--color-accent-800); }
+/* `.btn` keeps its own hover colors: a global accent-800 here would erase
+   white label text on filled primary buttons (same hue as the hover fill). */
+a:not(.btn):hover { color: var(--color-accent-800); }
 button, input, select, textarea { font: inherit; }
 code { font: 500 .92em var(--font-mono); color: var(--color-neutral-700); }
 img, svg { display: block; max-width: 100%; }
@@ -775,6 +777,23 @@ main { display: block; }
   width: 100%;
   min-width: 0;
   max-height: 360px;
+}
+.table-caption {
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-neutral-700);
+  font-weight: 700;
+  text-align: left;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */

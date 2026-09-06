@@ -17,7 +17,7 @@ const SOURCE_PATHS: Readonly<Partial<Record<SourceId, readonly string[]>>> = {
   ipa: ["/enti", "/territori"],
   "ipa-struttura": ["/enti"],
   openbdap: ["/stato", "/api/spese/stato", "/api/opere"],
-  siope: ["/", "/spese", "/territori"],
+  siope: ["/", "/spese", "/entrate", "/api/entrate/comuni", "/territori"],
   cpt: ["/territori", "/territori/fisco", "/api/territori/fisco"],
   opencoesione: ["/", "/coesione"],
   opencivitas: ["/territori", "/territori/confronto", "/api/spese/comuni/fabbisogni"],

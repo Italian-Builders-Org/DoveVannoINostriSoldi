@@ -111,9 +111,10 @@ export default function McpPage() {
                     {dataset.freshness === "live"
                       ? "Fonte ufficiale interrogabile, con cache"
                       : "Snapshot verificato"}
+                    {dataset.publicationCadence ? <small>Acquisizione e pubblicazione: {dataset.publicationCadence}</small> : null}
                     {dataset.sources.length > 0 ? (
                       <small>
-                        Cadenza: {[...new Set(dataset.sources.map((source) => source.cadence))].join(" · ")}
+                        Cadenza delle fonti: {[...new Set(dataset.sources.map((source) => source.cadence))].join(" · ")}
                       </small>
                     ) : null}
                   </td>

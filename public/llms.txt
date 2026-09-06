@@ -6,6 +6,7 @@
 
 - [Home](https://www.dovevannoinostrisoldi.com/): quadro dei pagamenti comunali, mappa e collegamenti alle fonti.
 - [Soldi](https://www.dovevannoinostrisoldi.com/spese): uscite di cassa dei Comuni da SIOPE, con serie temporali e voci contabili.
+- [Incassi comunali](https://www.dovevannoinostrisoldi.com/entrate): incassi di cassa SIOPE 2024–2026, con periodo osservato e stato completo o parziale espliciti, aggregati nazionali e regionali e dettaglio comunale paginato; non accertamenti né entrate di competenza, nessun saldo o classifica.
 - [Protezione dell’ambiente](https://www.dovevannoinostrisoldi.com/spese/ambiente): conti ISTAT EPEA 2016-2022, settori e classi CEPA separati, prezzi correnti, edizione 2025M2. Non è cassa SIOPE.
 - [Pensioni e pensionati](https://www.dovevannoinostrisoldi.com/spese/pensioni): serie ISTAT 2012–2022 del Casellario dei pensionati, con prestazioni e persone tenute separate, importi lordi nominali e fonti verificabili.
 - [Territori](https://www.dovevannoinostrisoldi.com/territori): confronti territoriali sui pagamenti comunali e collegamenti a CPT e MEF IRPEF.

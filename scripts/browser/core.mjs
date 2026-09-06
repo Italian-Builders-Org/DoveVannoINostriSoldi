@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
@@ -2742,6 +2743,14 @@ try {
     const label = `Spesa ambientale EPEA ${width}px`;
     await runScenario(browser, {
       label, pathname: "/spese/ambiente", width, validate: inspectEpea,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Incassi comunali SIOPE ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/entrate", width, validate: inspectReceipts,
     });
     completed.push(label);
   }

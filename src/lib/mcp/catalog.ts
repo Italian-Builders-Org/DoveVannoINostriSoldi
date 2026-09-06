@@ -7,6 +7,7 @@ import { publicSources } from "@/lib/sources";
 
 export const DATASET_IDS = [
   "siope_comuni",
+  "siope_entrate_comuni",
   "openbdap_spesa_stato",
   "openbdap_amministrazione",
   "openbdap_opere_pubbliche",
@@ -135,6 +136,7 @@ const sourceById = new Map(publicSources.map((source) => [source.slug, source]))
 
 const exampleQueries = {
   siope_comuni: { dataset: "siope_comuni", year: 2025, region: "Calabria" },
+  siope_entrate_comuni: { dataset: "siope_entrate_comuni", year: 2025, region: "Calabria", limit: 20 },
   openbdap_spesa_stato: { dataset: "openbdap_spesa_stato", year: 2026, month: 6 },
   openbdap_amministrazione: { dataset: "openbdap_amministrazione", code: "2", year: 2026 },
   openbdap_opere_pubbliche: { dataset: "openbdap_opere_pubbliche", cup: "I39B05000060005" },
@@ -228,6 +230,7 @@ const COMPANY_ATLAS_SOURCES: DatasetDescriptor["sources"] = Object.values(compan
 }));
 
 const datasetDescriptors: DatasetDescriptorInput[] = [
+  { id: "siope_entrate_comuni", title: "Incassi dei Comuni", summary: "Incassi di cassa SIOPE 2024–2026, aggregati nazionali e regionali e dettaglio comunale completo paginato per codice fiscale o IPA.", sourceIds: ["siope", "ipa", "istat"], freshness: "snapshot", filters: ["year", "region", "code", "query", "limit", "offset"], caveat: "Incasso non è accertamento né entrata di competenza. Il 2026 può essere parziale: verificare period. Nessun saldo di bilancio, residuo fiscale o ranking di efficienza o spreco. national resta nazionale anche con filtri; selection riassume tutti i Comuni selezionati, non soltanto la pagina. Importi nazionali in euro, campi Cents in centesimi. Gli incassi senza Regione IPA restano nel totale nazionale; trasferimenti e partite di giro non sono consolidati." },
   { id: "siope_comuni", title: "Pagamenti dei Comuni", summary: "Pagamenti di cassa SIOPE, serie mensile, titoli, regioni e principali Comuni, con normalizzazione territoriale ISTAT.", sourceIds: ["siope", "ipa", "istat"], freshness: "snapshot", filters: ["year", "region"], caveat: "I totali nazionali includono gli enti riconosciuti come Comuni in SIOPE; gli aggregati regionali coprono soltanto quelli abbinati tramite IPA e dichiarano conteggi e importi non regionalizzabili. Il campo distribution completo è disponibile solo nella risposta nazionale; le liste comunali contengono i primi 100 nazionali per totale, pro capite o km². Le normalizzazioni sono descrittive e non misurano efficienza, qualità o fabbisogno." },
   { id: "openbdap_spesa_stato", title: "Spesa dello Stato", summary: "Pagamenti dello Stato per missione, amministrazione e categoria economica; la query annuale preferisce il consuntivo ufficiale.", sourceIds: ["openbdap"], freshness: "live", filters: ["year", "month"], caveat: "I rilasci mensili sono cumulati dal 1° gennaio al mese indicato; il consuntivo annuale è una serie distinta e non viene mescolato con i mesi." },
   { id: "openbdap_amministrazione", title: "Spesa di una amministrazione statale", summary: "Dettaglio OpenBDAP di una amministrazione per missione e categoria, con consuntivo annuale o rilascio mensile coerente.", sourceIds: ["openbdap"], freshness: "live", filters: ["code", "year", "month"], caveat: "Una query annuale senza mese preferisce il consuntivo; una query con mese resta sul rilascio mensile corrispondente." },

@@ -1,4 +1,4 @@
-# SIOPE · pagamenti di cassa dei Comuni
+# SIOPE · pagamenti e incassi di cassa dei Comuni
 
 DoveVannoINostriSoldi usa la fonte primaria `siope.it` per il primo dataset territoriale operativo. OpenBDAP resta una fonte RGS importante per altri domini, ma non è il trasporto usato da questa pipeline.
 
@@ -18,11 +18,19 @@ Questa distinzione è parte del contratto del dato e deve restare visibile nella
 
 ## Fonti
 
-La pipeline usa tre file ufficiali:
+La pipeline usa file ufficiali distinti per direzione e le stesse anagrafiche:
 
-1. `SIOPE_USCITE.<anno>.zip`: movimenti nazionali di uscita;
-2. `SIOPE_ANAGRAFICHE.zip`: anagrafiche degli enti e delle Province SIOPE;
-3. `amministrazioni.txt` di Indice PA: join del codice fiscale dell'ente alla regione della sede amministrativa.
+1. `https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.<anno>.zip`: movimenti nazionali di uscita;
+2. `https://www.siope.it/documenti/siope2/open/last/SIOPE_ENTRATE.<anno>.zip`: movimenti nazionali di incasso;
+3. `https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip`: anagrafiche degli enti, delle Province e delle codifiche SIOPE;
+4. [amministrazioni.txt di Indice PA](https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt): join del codice fiscale dell'ente alla regione della sede amministrativa e al codice IPA.
+
+Entrambe le direzioni includono **soltanto COMUNE, anni 2024, 2025 e 2026**.
+`uscite` e `entrate` condividono acquisizione, parsing, validità anagrafica, join e aggregazione
+in `scripts/etl/siope_municipal_core.py`, non gli artifact o i contratti runtime.
+Gli entry point restano `siope_municipal_snapshot.py` e `siope_municipal_receipts_snapshot.py`.
+La spec entrate è `scripts/etl/specs/siope-municipal-receipts.source.json`; lo snapshot tipizzato
+è l'eccezione approvata in #246 per mantenere lo stesso modello SIOPE esistente.
 
 Il file annuale SIOPE contiene movimenti mensili puri. Non è una successione di snapshot cumulativi: per questo il grafico mensile non calcola differenze tra rilasci. Il cumulato visualizzato da DoveVannoINostriSoldi è semplicemente la somma progressiva dei flussi mensili.
 
@@ -64,15 +72,65 @@ Il benchmark della scheda comunale esclude il Comune osservato. Parte da pari ne
 Scaricare il file nazionale a ogni richiesta web sarebbe costoso e fragile. La pipeline è quindi separata dal rendering:
 
 1. GitHub Actions controlla i validator HTTP delle fonti;
-2. se `Last-Modified` non è cambiato e lo snapshot esiste, termina senza scaricare i file grandi;
+2. se `Last-Modified` ed eventuale `ETag` non sono cambiati e la coppia di artifact è valida, evita il download dei file grandi;
 3. quando cambia una fonte, scarica e valida i dataset;
-4. genera `src/data/generated/siope-municipal.json`;
-5. riconcilia automaticamente totali mensili, regionali e headline;
-6. committa soltanto lo snapshot validato.
+4. genera separatamente riepilogo e dettaglio di entrate e uscite per il 2024, 2025 e 2026;
+5. riconcilia automaticamente totali mensili, titoli, regioni, popolazione e dettaglio comunale;
+6. pubblica tutti gli artifact validati nello stesso candidato di refresh gestito dal data bot,
+   con artifact-id `siope-municipal`, senza un secondo bot o push diretto su `main`.
 
-Il workflow è programmato ogni ora. **La frequenza del controllo non viene presentata come frequenza di pubblicazione del dato**: la piattaforma cambia soltanto quando cambia la fonte ufficiale.
+Il workflow è programmato **ogni giorno alle 04:29 UTC** (`29 4 * * *`). **La frequenza del controllo non viene presentata come frequenza di pubblicazione del dato**: la piattaforma cambia soltanto quando cambia la fonte ufficiale.
 
-## Contratto generato
+L'artifact-id `siope-municipal` possiede tutti i dodici file (due flussi, tre annualità,
+riepilogo e dettaglio). La riga dell'inventario generato riporta il periodo e l'osservazione
+del primo file uscite; le date effettive di ogni flusso si leggono nei rispettivi snapshot.
+Le date e l'ultimo mese non vanno presunti coincidenti: negli artifact iniziali le entrate
+2026 arrivano a settembre, le uscite già pubblicate ad agosto e restano invariate.
+
+## Contratto entrate e provenienza
+
+I sei nuovi file sono `siope-municipal-receipts-2024.json`, `-2025.json`, `-2026.json`
+e `siope-municipal-receipts-detail-2024.json`, `-2025.json`, `-2026.json`, tutti sotto
+`src/data/generated/`. Il riepilogo usa `schemaVersion: 1`, `scope: municipal-receipts`,
+`flow: entrate`, `unit: EUR`, `accountingBasis: cash`; espone `totalCollected`,
+`receiptsWithPopulation`, flussi/cumulati mensili, regioni, titoli e copertura.
+Il dettaglio usa `scope: municipal-receipts-detail`, `unit: EUR-cent` e tutte le righe COMUNE
+valide nell'anno, non una graduatoria. Le otto colonne coincidono con quelle delle uscite:
+`taxCode`, `codiceIpa`, `name`, `province`, `region`, `population`, `totalCents`, `titleCents`.
+Il vettore entrate contiene i titoli **0, 1, 2, 3, 4, 5, 6, 7, 9**, verificati nei movimenti
+ufficiali; il vocabolario non viene ricavato dai titoli di spesa.
+
+L'incasso è un movimento di cassa, **non un accertamento né un'entrata di competenza**.
+Entrate e uscite non vengono sottratte o sommate: non si producono saldo di cassa,
+residuo fiscale o giudizi di efficienza. Gli incassi del 2026 possono essere parziali;
+anche i mesi presenti possono essere ancora in aggiornamento. Un mese assente non è
+inventato come zero. Nel dettaglio, totale e titoli `null` significano nessun movimento
+osservato; una riga osservata a zero rimane zero. La popolazione sentinella `1` resta `null`,
+come per le uscite. Regione e codice IPA vengono risolti indipendentemente sul codice
+fiscale esatto: conflitti non sono sciolti per nome o per maggioranza.
+`receiptsWithoutRegion` riconcilia i Comuni osservati ma non regionalizzabili.
+
+Ogni byte ricevuto di ZIP e IPA è hashed SHA-256 prima del parsing. Il riepilogo conserva
+URL canonici, hash, `ETag` e `Last-Modified`; questi ultimi sono validator HTTP, **non date
+ufficiali di pubblicazione**. `publicationDate` resta `null`, `license` è `not-declared`:
+nessuna licenza viene estesa da altri dataset. `acquisitionDate`/`observedAt` registrano il
+completamento dell'acquisizione dei tre input, `checkedAt` la validazione; il dettaglio
+condivide `generatedAt` con `source.observedAt`. Le ricevute raw per singolo input includono
+URL, timestamp di acquisizione, dimensione e hash. Non si versionano i ZIP nel repository.
+Per rigenerare da byte già acquisiti e ricevute `<file>.metadata.json` verificate:
+
+```bash
+python3 scripts/etl/siope_municipal_receipts_snapshot.py --year 2024 --input-dir <directory-raw>
+python3 scripts/etl/siope_municipal_receipts_snapshot.py --check
+python3 scripts/etl/siope_receipts_check.py --include-expenditure
+```
+
+L'ultimo comando controlla tutte le annualità entrate e i riepiloghi uscite per lo stesso
+artifact-id; i gate Node verificano inoltre contratti runtime e dettagli comunali delle
+uscite. Schema, periodo, duplicati, centesimi non validi o fuori intervallo sicuro e
+riconciliazioni divergenti interrompono il refresh, senza saltare righe comunali malformate.
+
+## Contratto uscite generato
 
 Lo snapshot contiene:
 

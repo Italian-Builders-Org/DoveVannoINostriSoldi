@@ -18,6 +18,8 @@ import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import parliamentManifest from "@/data/generated/parliament-source-manifest.json";
 import pcmMetadata from "@/data/generated/pcm-financial-2024.meta.json";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import { getSiopeMunicipalReceiptsSnapshot } from "@/lib/siope-receipts";
+import { siopeReceiptsPeriod } from "@/lib/data/siope-receipts-contract";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
@@ -83,7 +85,16 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: `${mefIrpefDettaglioData.taxPeriod.from}-${mefIrpefDettaglioData.taxPeriod.to} (anni di imposta)`,
   },
-  siope: dated(siopeMunicipalSnapshot.source.siopeMovementsLastModified),
+  siope: {
+    kind: "period",
+    label: ([
+      ["incassi", getSiopeMunicipalReceiptsSnapshot()],
+      ["pagamenti", siopeMunicipalSnapshot],
+    ] as const).map(([label, snapshot]) => {
+      const period = siopeReceiptsPeriod(snapshot);
+      return `${label} ${period.year} gennaio–${snapshot.latestMonthLabel}${period.completeness === "partial" ? " · parziale" : ""}`;
+    }).join("; "),
+  },
   ipa: dated(siopeMunicipalSnapshot.source.ipaLastModified),
   "ipa-struttura": null,
   openbdap: null,

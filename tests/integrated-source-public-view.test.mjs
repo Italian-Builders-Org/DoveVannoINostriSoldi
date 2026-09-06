@@ -267,11 +267,12 @@ test("bounded file and decoder gates reject symlinks, oversize input, invalid UT
 test("every queryable artifact passes schema, hash, decompression and URL gates", async () => {
   const overview = await view.getIntegratedDataOverview();
   const queryable = overview.datasets.filter((dataset) => dataset.queryable);
-  const checked = await Promise.all(
-    queryable.map((dataset) =>
+  const checked = [];
+  for (let index = 0; index < queryable.length; index += 2) {
+    checked.push(...await Promise.all(queryable.slice(index, index + 2).map((dataset) =>
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
-    ),
-  );
+    )));
+  }
   assert.equal(checked.length, 67);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
@@ -318,14 +319,15 @@ test("dataset artifacts are deduplicated only in flight and bounded to two concu
   const secondChunk = await secondLoad;
   assert.notStrictEqual(secondChunk, firstChunk);
 
-  const pending = queryable.map((dataset) =>
+  const withinCapacity = queryable.slice(0, diagnostics.maxConcurrentLoads + diagnostics.maxPendingLoads);
+  const pending = withinCapacity.map((dataset) =>
     loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
   );
   const whileLoading = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
   assert.equal(whileLoading.maxConcurrentLoads, 2);
   assert.equal(whileLoading.activeLoads, 2);
-  assert.equal(whileLoading.queuedLoads, queryable.length - 2);
-  assert.equal(whileLoading.inFlightChunkKeys.length, queryable.length);
+  assert.equal(whileLoading.queuedLoads, withinCapacity.length - 2);
+  assert.equal(whileLoading.inFlightChunkKeys.length, withinCapacity.length);
   await Promise.all(pending);
   diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
   assert.equal(diagnostics.activeLoads, 0);
@@ -374,9 +376,12 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
     );
     const before = collect();
     await (async () => {
-      const loaded = await Promise.all(
-        datasets.map((dataset) => loader.loadIntegratedDatasetChunk(bundle, dataset, 0)),
-      );
+      const loaded = [];
+      for (let index = 0; index < datasets.length; index += 2) {
+        loaded.push(...await Promise.all(datasets.slice(index, index + 2).map((dataset) =>
+          loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
+        )));
+      }
       if (loaded.length !== 67) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));

@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -955,6 +955,14 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/appalti/ted",
+    title: "Avvisi TED con committenti in Italia",
+    description: "Avvisi europei con almeno un committente in Italia, con ricerca e collegamenti ai documenti ufficiali.",
+    datasets: [
+      { id: "ted-avvisi-italia-2026-08", label: "Avvisi pubblicati ad agosto 2026" },
+    ],
+  },
   {
     surface: "/enti",
     title: "Scuole statali nel Comune",

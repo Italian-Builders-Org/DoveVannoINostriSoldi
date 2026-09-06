@@ -74,7 +74,7 @@ export default async function TedPage({ searchParams }: { searchParams: Promise<
                 <time dateTime={notice.date}>{longDate(notice.date)}</time>
                 <span>Avviso {notice.number}</span>
               </div>
-              <h3><a href={notice.url} rel="noreferrer" target="_blank">{notice.title}<span className="sr-only"> — apri l’avviso ufficiale TED in una nuova scheda</span></a></h3>
+              <h3><a href={notice.url} rel="noreferrer" target="_blank">{notice.title}<span className="sr-only">. Apri l’avviso ufficiale TED in una nuova scheda</span></a></h3>
               <p lang={notice.buyerLanguage === "eng" ? "en" : "it"}>{notice.buyers.join(" · ")}</p>
               <p className={styles.codes}>CPV: {notice.cpvs.join(" · ")}</p>
               {notice.countries.length > 1 ? <p>Committenti di più paesi: {notice.countries.join(", ")}. Il perimetro include almeno un committente in Italia.</p> : null}

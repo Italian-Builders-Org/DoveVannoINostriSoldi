@@ -313,17 +313,17 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                       ref={active ? activeLinkRef : undefined}
                       onClick={closeMenu}
                     >
-                    {item.icon === "news" ? (
-                      <HugeiconsIcon
-                        icon={News01Icon}
-                        size={17}
-                        strokeWidth={1.8}
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                    {item.label}
-                  </Link>
-                  {hasChildren ? (
+                      {item.icon === "news" ? (
+                        <HugeiconsIcon
+                          icon={News01Icon}
+                          size={17}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                      {item.label}
+                    </Link>
+                    {hasChildren ? (
                       <button
                         type="button"
                         className="nav-item-toggle"

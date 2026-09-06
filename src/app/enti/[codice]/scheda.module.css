@@ -712,6 +712,10 @@
   font-size: 13px;
   font-weight: 650;
 }
+.schoolNotesSummary {
+  min-height: 44px;
+  padding-block: var(--space-3);
+}
 .methodDetails > p {
   max-width: 72ch;
   margin: var(--space-3) 0;

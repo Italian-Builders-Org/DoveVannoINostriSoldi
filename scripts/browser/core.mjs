@@ -1358,6 +1358,7 @@ try {
         assert.equal(apiResponse.body.municipalityProfile.schoolServices.status, "available");
         assert.equal(apiResponse.body.municipalityProfile.schoolServices.data.schoolSites, 49);
         assert.equal(await page.$eval("#dati-scuole [data-school-sites]", (node) => node.textContent), "49");
+        assert.ok(await page.$eval("#dati-scuole summary", (node) => node.getBoundingClientRect().height >= 44));
         await page.focus("#dati-scuole summary");
         await page.keyboard.press("Enter");
         assert.equal(await page.$eval("#dati-scuole details", (node) => node.open), true);

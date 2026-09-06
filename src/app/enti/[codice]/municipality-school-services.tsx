@@ -35,7 +35,7 @@ export function MunicipalitySchools({ services }: { services: MunicipalitySchool
             </p>
           ) : null}
           <details className={styles.methodDetails}>
-            <summary>Come leggere il conteggio</summary>
+            <summary className={styles.schoolNotesSummary}>Come leggere il conteggio</summary>
             <p className={styles.readingGuide}>
               Ogni codice scuola compare una sola volta. La fonte distingue i codici indicati come sede
               da altri codici dell’anagrafe: per questo Comune questi ultimi sono {integer(data.otherRegistryCodes)}.

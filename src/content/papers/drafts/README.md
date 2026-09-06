@@ -1,13 +1,13 @@
 # Paper in preparazione
 
-Il primo candidato è **Dai fondi ai posti**, sulla consegna degli asili nido PNRR.
-La ricerca resta nel task “Analizza grafici e dati del paper” e nella branch
-`codex/paper-dati-spesa`. Questo archivio non ne copia dati, PDF o risultati.
+Questa cartella raccoglie appunti editoriali non pubblicati. Nessun contenuto
+qui presente deve entrare nelle route, nella ricerca o nella sitemap.
 
-Nessun contenuto di questa cartella deve entrare nelle route, nella ricerca o
-nella sitemap. Il titolo e l'identità finale degli autori restano da approvare.
-
-Per pubblicare: revisione umana del testo e dell'analisi, PDF versionato con
-SHA-256, materiali riproducibili su URL pubblico e scheda nel registry published.
+Per pubblicare uno studio servono revisione del testo e dell'analisi, autori
+identificati, limiti espliciti, PDF versionato con SHA-256, materiali
+riproducibili su un URL pubblico e una scheda nel registro `published`.
 Conservare gli artefatti precedenti e documentare pubblicamente le correzioni.
 Non dichiarare peer review accademica senza una procedura realmente completata.
+
+*Dai fondi ai posti* è già pubblicato: i materiali sono in
+`research/pnrr-childcare-delivery` e la scheda è nel registro `published`.

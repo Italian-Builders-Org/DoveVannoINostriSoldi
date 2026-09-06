@@ -39,6 +39,20 @@ test("agosto 2026 è una capsula pubblicata, congelata e della lunghezza previst
   assert.doesNotMatch(source, /data\/generated|content\/monthly-reports\/drafts|\/Users\/|localhost|fetch\s*\(/);
 });
 
+test("il racconto territoriale coincide con gli stock e le variazioni congelate", () => {
+  const report = monthlyReports.getPublished("2026-08");
+  const rows = report.figures[1].rows;
+  const growing = rows.filter((row) => row.values.delta.value > 0);
+  assert.equal(growing.length, 6);
+  assert.match(report.rubrics.territories.paragraphs[1].text, /^Sei regioni mostrano/);
+  for (const row of rows) {
+    const { previous, current, delta, change } = row.values;
+    assert.equal(current.value - previous.value, delta.value);
+    assert.equal(Math.round(delta.value / previous.value * 10000), change.basisPoints);
+  }
+  assert.equal(report.publication.publishedOn, "2026-09-06");
+});
+
 test("bozze, mesi sconosciuti e dati correnti restano fuori dal pubblico", async () => {
   assert.equal(monthlyReports.getPublished("2026-09"), null);
   const drafts = await readdir(new URL("../src/content/monthly-reports/drafts/", import.meta.url));

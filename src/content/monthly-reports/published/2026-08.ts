@@ -12,7 +12,7 @@ export const monthlyReport202608 = {
     "dati pubblici"
   ],
   "publication": {
-    "publishedOn": "2026-09-10",
+    "publishedOn": "2026-09-06",
     "dataCutoff": "2026-09-05"
   },
   "contentRevision": 1,
@@ -177,7 +177,7 @@ export const monthlyReport202608 = {
           "evidenceIds": ["company-active-stock"]
         },
         {
-          "text": "Nove regioni mostrano invece una variazione positiva. Il Lazio registra l'aumento assoluto maggiore, con 1.769 sedi in più, mentre Valle d'Aosta e Trentino-Alto Adige hanno gli incrementi percentuali più alti, rispettivamente 0,76% e 0,73%. Valori assoluti e percentuali rispondono a domande diverse: il primo misura quante unità cambiano, il secondo rapporta la differenza alla dimensione iniziale della stessa regione.",
+          "text": "Sei regioni mostrano invece una variazione positiva. Il Lazio registra l'aumento assoluto maggiore, con 1.769 sedi in più, mentre Valle d'Aosta e Trentino-Alto Adige hanno gli incrementi percentuali più alti, rispettivamente 0,76% e 0,73%. Valori assoluti e percentuali rispondono a domande diverse: il primo misura quante unità cambiano, il secondo rapporta la differenza alla dimensione iniziale della stessa regione.",
           "evidenceIds": ["company-active-stock"]
         },
         {

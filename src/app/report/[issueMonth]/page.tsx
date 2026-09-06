@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: ReportPageProps): Promise<Met
       siteName: "DoveVannoINostriSoldi",
       locale: "it_IT",
       authors: [MONTHLY_REPORT_SERIES.byline],
-      publishedTime: `${report.publication.publishedOn}T08:00:00+02:00`,
+      publishedTime: report.publication.publishedOn,
     },
   };
 }

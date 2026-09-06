@@ -41,6 +41,7 @@ async function inspectReport(page, width) {
       currentLinks,
       canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
       openGraphType: document.querySelector('meta[property="og:type"]')?.getAttribute("content"),
+      publishedOn: document.querySelector('meta[property="article:published_time"]')?.getAttribute("content"),
       author: document.querySelector('meta[name="author"]')?.getAttribute("content"),
       sourceLinksValid: [...document.querySelectorAll('main a[href^="#report-source-"]')].every((link) => document.getElementById(link.hash.slice(1))),
     };
@@ -60,6 +61,7 @@ async function inspectReport(page, width) {
     "https://www.dovevannoinostrisoldi.com/report/2026-08",
     `${label}: canonical errato`,
   );
+  assert.equal(state.publishedOn, "2026-09-06", `${label}: data di pubblicazione errata`);
   assert.equal(state.openGraphType, "article", `${label}: Open Graph non è article`);
   assert.equal(state.author, "Redazione DVNS", `${label}: autore metadata errato`);
   assert.equal(state.sourceLinksValid, true, `${label}: riferimento a fonte assente`);

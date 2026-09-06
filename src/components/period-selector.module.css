@@ -36,7 +36,10 @@
   color: var(--color-raised);
   background: var(--color-accent-700);
 }
-.wrapper a[aria-current="page"]:hover { background: var(--color-accent-800); }
+.wrapper a[aria-current="page"]:hover {
+  color: var(--color-on-strong);
+  background: var(--color-accent-800);
+}
 
 @media (max-width: 560px) {
   .wrapper {

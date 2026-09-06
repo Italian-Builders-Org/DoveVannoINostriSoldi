@@ -42,7 +42,7 @@ try {
         assert.equal(new Set(nav.map((item) => Math.round(item.top))).size, 1, "La navigazione deve restare su una riga");
         assert.ok(nav.every((item) => item.icons === 1), "Ogni sezione deve avere un'icona coerente");
         const navLabels = await page.$$eval('.nav-item > a', (links) => links.map((link) => link.textContent.trim()));
-        assert.deepEqual(navLabels.slice(0, 5), ['Home', 'Imprese', 'Istruzione', 'Soldi', 'Territori']);
+        assert.deepEqual(navLabels.slice(0, 6), ['Home', 'Imprese', 'Istruzione', 'Povertà', 'Soldi', 'Territori']);
         assert.deepEqual(navLabels.slice(-2), ['Report mensili', 'Studi']);
         assert.equal(await page.evaluate(() => {
           const container = document.querySelector('.primary-nav').getBoundingClientRect();

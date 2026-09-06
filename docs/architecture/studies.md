@@ -29,7 +29,7 @@ Grafico e tabella web leggono i medesimi aggregati dell'analisi.
   `export_web.py` accetta un asset esistente soltanto se i byte coincidono;
   una modifica richiede una nuova versione.
 - Una nuova estrazione non deve riscrivere uno studio storico.
-- Working paper non significa peer review. Verifica umana e approvazione
+- Pubblicazione sul sito non significa peer review. Verifica umana e approvazione
   editoriale sono distinte dai test tecnici.
 
 ## Controlli

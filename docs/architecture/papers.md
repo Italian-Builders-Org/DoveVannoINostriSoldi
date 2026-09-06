@@ -20,7 +20,7 @@ Ogni scheda ha un'ancora stabile `/studi#slug`, abstract e limiti in HTML,
 autori, data, versione e link al PDF e ai materiali riproducibili. Uno studio
 può avere anche una pagina HTML dedicata tramite `webPath`. Il PDF non è
 l'unica spiegazione accessibile. Le bozze non hanno route pubbliche e un
-working paper non attesta una revisione scientifica esterna.
+paper di ricerca non attesta una revisione scientifica esterna.
 
 ## Versioni e provenienza
 
@@ -29,7 +29,7 @@ revisione usare un PDF con URL versionata distinta, conservare le versioni
 precedenti e documentare le correzioni nei materiali pubblici. Non sostituire
 silenziosamente il PDF a parità di versione.
 
-La versione 1.3 di *Dai fondi ai posti* modifica soltanto la tipografia del PDF:
+La versione 1.3 di *Dai fondi ai posti* modifica tipografia e denominazione del PDF:
 nessun riquadro colorato nelle note e nessun cambiamento ai risultati. I
 materiali sono collegati a un commit preciso, non al contenuto mutevole di
 `main`. Il percorso scientifico è descritto in [studies.md](studies.md).
@@ -41,3 +41,8 @@ materiali sono collegati a un commit preciso, non al contenuto mutevole di
 `npm run test:browser:papers` controlla redirect, archivio popolato, canonical,
 navigazione attiva, tastiera e viewport 390/768/1280 px. Il runner di produzione
 include anche il percorso archivio → dettaglio e il checksum del PDF scaricato.
+
+Prima della pubblicazione verificare domanda e contributo, coerenza del campione,
+misure e denominatori, riproducibilità, sensibilità, confronto con la letteratura
+e limiti delle conclusioni. I test tecnici non certificano il valore scientifico
+e non sostituiscono una peer review esterna. Le bozze restano fuori dal catalogo.

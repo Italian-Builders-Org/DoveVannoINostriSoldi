@@ -35,43 +35,10 @@ try {
         assert.equal(state.pdf, "/studi/dai-fondi-ai-posti/v1.3/dai-fondi-ai-posti.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
-        const nav = await page.$$eval(".primary-nav-list > li", (items) => items.map((item) => ({
-          top: item.getBoundingClientRect().top,
-          icons: item.querySelectorAll(":scope > a > svg").length,
-        })));
-        assert.equal(new Set(nav.map((item) => Math.round(item.top))).size, 1, "La navigazione deve restare su una riga");
-        assert.ok(nav.every((item) => item.icons === 1), "Ogni sezione deve avere un'icona coerente");
-        const navLabels = await page.$$eval('.nav-item > a', (links) => links.map((link) => link.textContent.trim()));
+        const navLabels = await page.$$eval('#desktop-navigation .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
         assert.deepEqual(navLabels.slice(0, 5), ['Home', 'Imprese', 'Istruzione', 'Soldi', 'Territori']);
         assert.deepEqual(navLabels.slice(-2), ['Report mensili', 'Studi']);
-        assert.equal(await page.evaluate(() => {
-          const container = document.querySelector('.primary-nav').getBoundingClientRect();
-          const active = document.querySelector('.nav-item > a[data-section-active="true"]').getBoundingClientRect();
-          return active.left >= container.left - 1 && active.right <= container.right + 1;
-        }), true, 'La sezione attiva deve essere visibile anche su mobile');
-        if (width === 1280) {
-          const mouseControls = await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches);
-          if (mouseControls) {
-            const backward = await page.$('.nav-scroll-control-backward');
-            assert.ok(backward, 'Le frecce devono essere presenti con un puntatore mouse');
-            await backward.focus();
-            await page.keyboard.press('Enter');
-            await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
-            await page.click('.nav-scroll-control-forward');
-          } else {
-            assert.equal((await page.$$('.nav-scroll-control')).length, 0, 'Senza puntatore mouse le frecce non devono occupare spazio');
-            const first = await page.$('.nav-item:first-child > a');
-            await first.focus();
-            await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
-            const last = await page.$('.nav-item:last-child > a');
-            await last.focus();
-          }
-          await page.waitForFunction(() => {
-            const container = document.querySelector('.primary-nav');
-            const last = container.querySelector('li:last-child');
-            return last.getBoundingClientRect().right <= container.getBoundingClientRect().right + 1;
-          });
-        }
+        assert.equal(await page.$$eval('#desktop-navigation .nav-item > a > svg', (icons) => icons.length), navLabels.length);
         const details = await page.$("main details summary");
         await details.focus();
         await page.keyboard.press("Enter");

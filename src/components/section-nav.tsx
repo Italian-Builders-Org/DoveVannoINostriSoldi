@@ -6,13 +6,7 @@ import { Suspense } from "react";
 import { activeNavSection, isNavChildActive } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
 
-/**
- * The other pages of the section the reader is in, at the end of the page.
- *
- * The header dropdowns are the way in from anywhere; this is the way onward
- * once a page has been read, and it is the only one that needs no hover, so a
- * phone reaches every page of a section without going back to the menu.
- */
+/** Related pages remain available after reading the current section. */
 export function SectionNav() {
   const pathname = usePathname();
   return (

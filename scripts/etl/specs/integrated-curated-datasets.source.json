@@ -18,6 +18,20 @@
       "canonicalUrls": []
     },
     "overrides": {
+      "mim-scuole-statali-comuni": {
+        "holder": "Ministero dell'Istruzione e del Merito",
+        "referencePeriod": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://dati.istruzione.it/opendata/approfondimenti/dizionario/",
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20262720260901.csv",
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT",
+          "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.zip"
+        ]
+      },
       "istat-misura-comune-vecchiaia": {
         "holder": "Istituto nazionale di statistica (ISTAT)",
         "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
@@ -301,6 +315,46 @@
     }
   },
   "datasets": [
+    {
+      "id": "mim-scuole-statali-comuni",
+      "title": "Scuole statali · sedi per Comune",
+      "domain": "education",
+      "relativePath": "mim-scuole-statali-comuni.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Conteggio DVNS dei codici scuola unici dell’anagrafe MIM: SEDESCOLASTICA=SI per le sedi, NO per gli altri codici. Non è una misura monetaria e non va sommata alla spesa pubblica.",
+        "Unità: codici scolastici censiti come sedi. I punti di servizio non sono edifici distinti, posti disponibili, qualità didattica o accessibilità misurata.",
+        "Copertura: sole scuole statali; Aosta, Trento e Bolzano sono esclusi dal file MIM. Scuole paritarie, asili nido e altre anagrafi restano fuori perimetro.",
+        "Uno zero conta nessun codice marcato SI fra i record presenti per quel Comune. Un Comune senza record resta assente; nessuno dei due casi prova che il servizio non esista.",
+        "50273 codici sorgente = 39713 sedi SI + 10560 altri codici NO; 6648 Comuni con record, di cui 6518 con almeno una sede SI. Il corpus conta le 6648 righe della proiezione comunale, non i record originali.",
+        "Raccordo esatto per codice catastale e regione con l’anagrafe MEF comunale 2024: tutti i codici MIM sono riconciliati a un solo codice ISTAT. Nessun confronto di nomi o dato fiscale entra nel conteggio.",
+        "Licenza dell’anagrafe MIM: IODL 2.0. Il raccordo dei codici usa MEF – Dipartimento delle Finanze, CC BY 3.0 IT, con attribuzione separata; le condizioni di una fonte non sono estese all’altra.",
+        "La scheda MIM riporta pubblicazione del dataset al 18 giugno 2026, mentre il CSV 2026/27 dichiara dati al 1° settembre 2026. La data di pubblicazione della specifica distribuzione non è dichiarata."
+      ],
+      "expected": {
+        "bytes": 357029,
+        "sha256": "aad5f83980537066fbdec346cdee05fadc45f8c0c79fc9b085d756581f8c4653",
+        "rows": 6648,
+        "columns": 8,
+        "headers": [
+          "Anno scolastico",
+          "Codice ISTAT comune",
+          "Codice catastale",
+          "Comune",
+          "Provincia",
+          "Regione",
+          "Sedi scolastiche statali",
+          "Altri codici anagrafici"
+        ]
+      }
+    },
     {
       "id": "istat-misura-comune-vecchiaia",
       "title": "A misura di Comune · Indice di vecchiaia",

@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.822\.506/);
-  assert.match(coverageText, /840\.160/);
+  assert.match(coverageText, /13\.829\.154/);
+  assert.match(coverageText, /846\.808/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -185,7 +185,7 @@ async function driveCatalog(page, directory) {
   const priorityLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 87, "/dati: attesa solo la vista priorità");
+  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 88, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
   await screenshot(page, directory, "catalog.png");
 
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 87);
+  assert.equal(links.length, 88);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -231,6 +231,15 @@ async function driveCatalog(page, directory) {
     await screenshot(page, directory, `${datasetId}.png`);
     await writeFile(resolve(directory, `${datasetId}.json`), `${JSON.stringify(municipal, null, 2)}\n`);
   }
+  actions.push(await goto(page, "/dati/mim-scuole-statali-comuni?q=062008&limit=5", "Scuole statali · sedi per Comune"));
+  const schools = await (await request("/api/dati/mim-scuole-statali-comuni?q=062008&limit=5")).json();
+  assert.equal(schools.rows.length, 1);
+  assert.equal(schools.rows[0].cells["Sedi scolastiche statali"], "49");
+  const schoolCells = await page.$$eval("tbody tr:first-child td", (nodes) => nodes.map((node) => node.textContent.trim()));
+  assert.deepEqual(schoolCells.slice(0, schools.dataset.headers.length), schools.dataset.headers.map((header) => schools.rows[0].cells[header]));
+  assert.match(await page.$eval("main", (node) => node.textContent), /IODL 2.0/);
+  await screenshot(page, directory, "mim-scuole-statali-comuni.png");
+  await writeFile(resolve(directory, "mim-scuole-statali-comuni.json"), `${JSON.stringify(schools, null, 2)}\n`);
   return { actions, datasetLinks: links.length, renderedRows, apiRows: api.rows.length };
 }
 
@@ -322,8 +331,11 @@ async function driveHubs(page, directory) {
     assert.ok(await page.$(`a[href="${href}"]`));
     links.add(href);
   }
-  await screenshot(page, directory, "contesto-demografico.png");
-  assert.equal(links.size, 87);
+  const schoolsHref = "/dati/mim-scuole-statali-comuni";
+  assert.ok(await page.$(`a[href="${schoolsHref}"]`));
+  links.add(schoolsHref);
+  await screenshot(page, directory, "contesto-territoriale.png");
+  assert.equal(links.size, 88);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

@@ -469,6 +469,17 @@ Altre fonti da valutare nella fase 2:
 - serie storica OpenCivitas 2015-2022 e singole funzioni comunali;
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
+### MIM · scuole statali per Comune
+
+Il CSV ufficiale 2026/27 al 1 settembre 2026, licenza IODL 2.0, fornisce
+50.273 codici scuola. La proiezione conta 39.713 codici marcati come sedi in
+6.648 Comuni e conserva separatamente gli altri codici. Il raccordo catastale /
+ISTAT usa le identità MEF verificate (CC BY 3.0 IT), senza confronto dei nomi.
+La scheda Comune distingue zero osservato, nessun record e territori esclusi
+(Aosta, Trento, Bolzano); il conteggio non misura qualità o accessibilità.
+Dati interrogabili anche in `/dati/mim-scuole-statali-comuni`, API e MCP.
+[Contratto, fonte, licenze e riproduzione](MIM_SCHOOL_SERVICES.md).
+
 ### ISTAT A misura di Comune
 
 Il corpus integra tre indicatori demografici comunali del sistema sperimentale

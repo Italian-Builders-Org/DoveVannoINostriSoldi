@@ -41,6 +41,7 @@ export async function inspectTedNotices(page) {
   await search(page, "548051-2026");
   assert.equal(new URL(page.url()).searchParams.has("cursor"), false);
   assert.equal(await page.$$eval(notices, (rows) => rows.length), 1);
+  assert.equal(await page.$eval('main [role="status"]', (node) => node.textContent), "1 avviso mostrato su 1 corrispondenza.");
   const text = await page.$eval(notices, (node) => node.innerText);
   assert.match(text, /SWE, ITA/);
   assert.match(text, /European Food Safety Authority/);

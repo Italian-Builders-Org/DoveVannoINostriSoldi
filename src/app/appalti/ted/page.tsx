@@ -64,7 +64,7 @@ export default async function TedPage({ searchParams }: { searchParams: Promise<
         </form>
         {queryError ? <p role="alert" className="notice">{queryError} Sono mostrati i primi avvisi.</p> : null}
         <p className={styles.results} role="status">
-          {result.notices.length === 0 ? "Nessun avviso corrisponde alla ricerca in questo mese." : `${integer(result.notices.length)} avvisi mostrati${result.matchedRows !== null && result.query ? ` su ${integer(result.matchedRows)} corrispondenze` : ""}.`}
+          {result.notices.length === 0 ? "Nessun avviso corrisponde alla ricerca in questo mese." : `${integer(result.notices.length)} ${result.notices.length === 1 ? "avviso mostrato" : "avvisi mostrati"}${result.matchedRows !== null && result.query ? ` su ${integer(result.matchedRows)} ${result.matchedRows === 1 ? "corrispondenza" : "corrispondenze"}` : ""}.`}
         </p>
         <ol className={styles.notices} aria-label="Avvisi TED">
           {result.notices.map((notice) => (

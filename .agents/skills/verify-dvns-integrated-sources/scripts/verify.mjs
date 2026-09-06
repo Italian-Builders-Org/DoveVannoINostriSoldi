@@ -324,7 +324,8 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(links.size, 84);
+  assert.equal(links.size, 85);
+  assert.ok(links.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
   for (const suffix of ["vecchiaia", "dipendenza-anziani", "dipendenza-strutturale"]) {
     const href = `/dati/istat-misura-comune-${suffix}`;

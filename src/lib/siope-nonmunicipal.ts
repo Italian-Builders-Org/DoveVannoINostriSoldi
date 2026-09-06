@@ -124,6 +124,13 @@ assertSiopeNonMunicipalDetail(detail);
 
 export const siopeNonMunicipalReleaseId = detail.releaseId;
 export const siopeNonMunicipalEntities = detail.entities;
+
+export function getSiopeNonMunicipalTypeLabel(entity: SiopeNonMunicipalEntity): string {
+  if (entity.entityType === "CITTA_METROP") return "Città metropolitana";
+  if (entity.entityType === "PROVINCIA") return "Provincia";
+  return /^provincia autonoma\b/i.test(entity.entityName) ? "Provincia autonoma" : "Regione";
+}
+
 export function getSiopeNonMunicipalEntityByIpaCode(codiceIpa: string): SiopeNonMunicipalEntity | null {
   return detail.entities.find((entity) => entity.codiceIpa === codiceIpa.trim()) ?? null;
 }

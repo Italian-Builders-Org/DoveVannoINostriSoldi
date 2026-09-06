@@ -5,6 +5,12 @@ import "./helpers/register-ts-alias.mjs";
 
 const detail = await import("../src/lib/siope-nonmunicipal.ts");
 
+test("non-municipal SIOPE labels distinguish autonomous provinces within the regional compartment", () => {
+  for (const [code, label] of [["r_lazio", "Regione"], ["p_TN", "Provincia autonoma"], ["p_bz", "Provincia autonoma"], ["p_AN", "Provincia"], ["cmbo", "Città metropolitana"]]) {
+    assert.equal(detail.getSiopeNonMunicipalTypeLabel(detail.getSiopeNonMunicipalEntityByIpaCode(code)), label);
+  }
+});
+
 test("non-municipal SIOPE year selection reports unavailable, malformed and repeated parameters", () => {
   const entity = detail.getSiopeNonMunicipalEntityByIpaCode("r_lazio");
   const select = (value) => detail.selectSiopeNonMunicipalYear(entity, value);

@@ -16,7 +16,7 @@ import {
   type IpaSearchResult,
 } from "@/lib/ipa";
 import { getIpaTypeDistribution, type IpaTypeStat } from "@/lib/ipa-stats";
-import { findSiopeNonMunicipalEntities } from "@/lib/siope-nonmunicipal";
+import { findSiopeNonMunicipalEntities, getSiopeNonMunicipalTypeLabel } from "@/lib/siope-nonmunicipal";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
@@ -271,7 +271,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                 <tbody>{nonMunicipalEntities.map((entity) => (
                   <tr key={entity.codiceIpa}>
                     <th scope="row"><Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>{entity.entityName}</Link></th>
-                    <td>{entity.entityType === "CITTA_METROP" ? "Città metropolitana" : entity.entityType === "REGIONE" ? "Regione o Provincia autonoma" : "Provincia"}</td>
+                    <td>{getSiopeNonMunicipalTypeLabel(entity)}</td>
                     <td><code>{entity.codiceIpa}</code></td>
                   </tr>
                 ))}</tbody>

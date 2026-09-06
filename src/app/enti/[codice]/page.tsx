@@ -19,7 +19,7 @@ import { getMunicipalityProfile } from "@/lib/municipality-profile";
 import { municipalityName } from "@/lib/municipality-name";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
-import { getSiopeNonMunicipalEntityByIpaCode } from "@/lib/siope-nonmunicipal";
+import { getSiopeNonMunicipalEntityByIpaCode, getSiopeNonMunicipalTypeLabel } from "@/lib/siope-nonmunicipal";
 import { MunicipalityEconomics } from "./municipality-economics";
 import { NonMunicipalEconomics } from "./nonmunicipal-economics";
 import { EntityInformation } from "./entity-information";
@@ -127,7 +127,7 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
   let entity: IpaEntity | null = municipalitySnapshot
     ? municipalitySnapshotEntity(municipalitySnapshot)
     : nonMunicipalSnapshot
-      ? { ...anacFallbackEntity(normalizedCode, nonMunicipalSnapshot.taxCode), denominazione: nonMunicipalSnapshot.entityName, tipologia: nonMunicipalSnapshot.entityType }
+      ? { ...anacFallbackEntity(normalizedCode, nonMunicipalSnapshot.taxCode), denominazione: nonMunicipalSnapshot.entityName, tipologia: getSiopeNonMunicipalTypeLabel(nonMunicipalSnapshot) }
       : null;
   let snapshotOnly = entity !== null;
   let ipaUnavailable = false;

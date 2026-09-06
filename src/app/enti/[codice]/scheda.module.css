@@ -224,6 +224,7 @@
   min-width: 0;
   padding: var(--space-4);
 }
+.singlePaymentSummary { grid-template-columns: minmax(0, 1fr); }
 .paymentSummary > div + div { border-left: 1px solid var(--color-accent-200); }
 
 .paymentSummary dt {

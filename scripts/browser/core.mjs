@@ -1602,6 +1602,8 @@ try {
           assert.match(text, /non spesa consolidata nel territorio/);
           assert.equal(await page.$eval("#siope-anno", (element) => element.value), "2025");
           assert.equal(await page.$$eval('[aria-label="Importi mensili dei pagamenti SIOPE 2025"] tbody tr', (rows) => rows.length), 12);
+          const totalWidthRatio = await page.$eval("#pagamenti-siope dl", (element) => element.firstElementChild.getBoundingClientRect().width / element.getBoundingClientRect().width);
+          assert.ok(totalWidthRatio > 0.9, `${label}: il totale deve usare la larghezza del riepilogo`);
           await page.select("#siope-anno", "2026");
           await Promise.all([
             page.waitForNavigation({ waitUntil: "domcontentloaded" }),

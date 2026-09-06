@@ -2297,7 +2297,7 @@ try {
 
         // Il link deve contenere già il piano appena toccato, non un istante dopo:
         // niente window.location coinvolta, il dialog legge lo stato React corrente.
-        await page.waitForFunction(() => document.querySelector("dialog")?.open === true, {
+        await page.waitForFunction(() => document.querySelector('dialog:has(a[href*="t.me/share"])')?.open === true, {
           timeout: 3_000,
         });
         const telegramPlanValue = await page.$eval('a[href*="t.me/share"]', (link) => {
@@ -2312,14 +2312,14 @@ try {
 
         await assertResponsiveShell(page, `${label} dialog aperto`, width);
         const dialogOverflow = await page.evaluate(() => {
-          const dialog = document.querySelector("dialog");
+          const dialog = document.querySelector('dialog:has(a[href*="t.me/share"])');
           const rect = dialog?.getBoundingClientRect();
           return rect ? rect.right <= window.innerWidth + 1 && rect.left >= -1 : false;
         });
         assert.ok(dialogOverflow, `${label}: il dialog di condivisione esce dal viewport`);
 
         assert.equal(
-          await page.$eval("dialog", (element) => {
+          await page.$eval('dialog:has(a[href*="t.me/share"])', (element) => {
             const labelId = element.getAttribute("aria-labelledby");
             return Boolean(labelId && document.getElementById(labelId)?.textContent?.trim());
           }),
@@ -2330,7 +2330,7 @@ try {
         // Escape chiude il dialog: verifica che la modifica → condivisione sia
         // navigabile da tastiera end-to-end, non solo col mouse.
         await page.keyboard.press("Escape");
-        await page.waitForFunction(() => document.querySelector("dialog")?.open === false, {
+        await page.waitForFunction(() => document.querySelector('dialog:has(a[href*="t.me/share"])')?.open === false, {
           timeout: 3_000,
         });
       },

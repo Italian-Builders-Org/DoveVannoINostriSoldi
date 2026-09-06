@@ -24,8 +24,8 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   assert.equal(release.archiveReceipt.entries, 51_303);
   assert.equal(release.sourceCatalog.identities, 34_071);
   assert.equal(release.sourceCatalog.quarantined, 1_493);
-  assert.equal(release.datasets.sourceRows, 13_829_154);
-  assert.equal(release.datasets.publicRows, 846_808);
+  assert.equal(release.datasets.sourceRows, 13_831_979);
+  assert.equal(release.datasets.publicRows, 849_633);
   assert.equal(release.datasets.catalogOnlyRows, 12_979_505);
   assert.equal(release.datasets.derivedOnlyRows, 2_841);
 
@@ -37,13 +37,13 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   );
 });
 
-test("all 88 datasets remain visible and only catalog dispositions decide row access", async () => {
+test("all 89 datasets remain visible and only catalog dispositions decide row access", async () => {
   const overview = await view.getIntegratedDataOverview();
   assert.equal(overview.complete, true);
-  assert.equal(overview.datasets.length, 88);
-  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 66);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), 13_829_154);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), 846_808);
+  assert.equal(overview.datasets.length, 89);
+  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 67);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), 13_831_979);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), 849_633);
   assert.ok(overview.datasets.every((dataset) => dataset.sourceMetadata.holder.length > 0));
   assert.ok(overview.datasets.every((dataset) => /^\d{4}-\d{2}-\d{2}$/.test(dataset.sourceMetadata.checkedAt)));
   assert.ok(overview.datasets.every((dataset) => dataset.provenanceHref === `/fonti/copertura#dataset-${dataset.id}`));
@@ -267,15 +267,16 @@ test("bounded file and decoder gates reject symlinks, oversize input, invalid UT
 test("every queryable artifact passes schema, hash, decompression and URL gates", async () => {
   const overview = await view.getIntegratedDataOverview();
   const queryable = overview.datasets.filter((dataset) => dataset.queryable);
-  const checked = await Promise.all(
-    queryable.map((dataset) =>
+  const checked = [];
+  for (let index = 0; index < queryable.length; index += 2) {
+    checked.push(...await Promise.all(queryable.slice(index, index + 2).map((dataset) =>
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
-    ),
-  );
-  assert.equal(checked.length, 66);
+    )));
+  }
+  assert.equal(checked.length, 67);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
-    846_808,
+    849_633,
   );
   assert.ok(checked.every((result) => result.rows.length === 1));
 });
@@ -318,14 +319,15 @@ test("dataset artifacts are deduplicated only in flight and bounded to two concu
   const secondChunk = await secondLoad;
   assert.notStrictEqual(secondChunk, firstChunk);
 
-  const pending = queryable.map((dataset) =>
+  const withinCapacity = queryable.slice(0, diagnostics.maxConcurrentLoads + diagnostics.maxPendingLoads);
+  const pending = withinCapacity.map((dataset) =>
     loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
   );
   const whileLoading = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
   assert.equal(whileLoading.maxConcurrentLoads, 2);
   assert.equal(whileLoading.activeLoads, 2);
-  assert.equal(whileLoading.queuedLoads, queryable.length - 2);
-  assert.equal(whileLoading.inFlightChunkKeys.length, queryable.length);
+  assert.equal(whileLoading.queuedLoads, withinCapacity.length - 2);
+  assert.equal(whileLoading.inFlightChunkKeys.length, withinCapacity.length);
   await Promise.all(pending);
   diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
   assert.equal(diagnostics.activeLoads, 0);
@@ -374,10 +376,13 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
     );
     const before = collect();
     await (async () => {
-      const loaded = await Promise.all(
-        datasets.map((dataset) => loader.loadIntegratedDatasetChunk(bundle, dataset, 0)),
-      );
-      if (loaded.length !== 66) throw new Error("Unexpected queryable dataset count");
+      const loaded = [];
+      for (let index = 0; index < datasets.length; index += 2) {
+        loaded.push(...await Promise.all(datasets.slice(index, index + 2).map((dataset) =>
+          loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
+        )));
+      }
+      if (loaded.length !== 67) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();

@@ -234,6 +234,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     links: [
       { href: "/appalti", label: "Appalti" },
       { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
+      { href: "/appalti/ted", label: "Avvisi TED" },
       { href: "/incarichi", label: "Incarichi" },
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
       { href: "/dati", label: "Catalogo dati" },

@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.829\.154/);
-  assert.match(coverageText, /846\.808/);
+  assert.match(coverageText, /13\.831\.979/);
+  assert.match(coverageText, /849\.633/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -185,7 +185,7 @@ async function driveCatalog(page, directory) {
   const priorityLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 88, "/dati: attesa solo la vista priorità");
+  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 89, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
   await screenshot(page, directory, "catalog.png");
 
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 88);
+  assert.equal(links.length, 89);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -324,7 +324,8 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(links.size, 84);
+  assert.equal(links.size, 85);
+  assert.ok(links.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
   for (const suffix of ["vecchiaia", "dipendenza-anziani", "dipendenza-strutturale"]) {
     const href = `/dati/istat-misura-comune-${suffix}`;
@@ -334,8 +335,11 @@ async function driveHubs(page, directory) {
   const schoolsHref = "/dati/mim-scuole-statali-comuni";
   assert.ok(await page.$(`a[href="${schoolsHref}"]`));
   links.add(schoolsHref);
+  const tedHref = "/dati/ted-avvisi-italia-2026-08";
+  assert.ok(await page.$(`a[href="${tedHref}"]`));
+  links.add(tedHref);
   await screenshot(page, directory, "contesto-territoriale.png");
-  assert.equal(links.size, 88);
+  assert.equal(links.size, 89);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

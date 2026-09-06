@@ -128,3 +128,12 @@ Un adapter non deve accettare URL arbitrari, SQL, percorsi file o nomi di funzio
 Le fonti live possono essere indisponibili o lente. In quel caso il tool restituisce un errore esplicito e non sostituisce il dato con valori simulati. I limiti e le date di riferimento delle singole fonti restano quelli documentati nel catalogo del portale.
 
 Il route handler abortisce la richiesta dopo 12 secondi e dichiara `maxDuration` 15, così un client che ritenta dopo un timeout non brucia 60 secondi di compute a colpo. Un limitatore in memoria (30 POST al minuto per IP, solo se `X-Forwarded-For` è presente) e un bulkhead da 8 richieste frenano i burst sulla stessa istanza: non sono un tetto globale. Su Vercel è attiva una regola WAF equivalente per `POST /api/mcp` e `POST /mcp`; `HEAD` e `OPTIONS` restano esclusi per non rompere discovery e preflight. I test di carico ordinari usano concorrenza 6 e restano sotto il cap, mentre il limite esatto `30 + 1` è verificato dalla suite della route. La configurazione segue la [documentazione WAF ufficiale](https://vercel.com/docs/vercel-firewall/vercel-waf/custom-rules).
+
+### Avvisi TED con committenti in Italia
+
+`query_dataset` con `dataset: "spesa_pa_dettaglio"`,
+`code: "ted-avvisi-italia-2026-08"`, `query` e `limit` espone lo stesso
+archivio mensile di `/appalti/ted` e `/api/dati/ted-avvisi-italia-2026-08`.
+2.825 avvisi pubblicati ad agosto 2026; nessuna misura monetaria o join ANAC.
+Fonte, data di pubblicazione per riga, acquisizione, paesi e limiti restano
+nel risultato. [Contratto TED](TED_NOTICES.md).

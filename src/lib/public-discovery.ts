@@ -21,6 +21,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/",
   "/appalti",
   "/appalti/dettaglio",
+  "/appalti/ted",
   "/assistente",
   "/coesione",
   "/coesione/asili",

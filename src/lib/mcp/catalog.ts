@@ -319,7 +319,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     id: "spesa_pa_dettaglio",
     title: "Dettaglio integrato della spesa pubblica",
     summary:
-      `Accesso uniforme ai ${INTEGRATED_CORPUS_CONTRACT.datasets} dataset integrati su affidamenti, fornitori, incarichi, consulenze, personale, spese operative, trasparenza, benchmark, contesto demografico ISTAT A misura di Comune e sedi scolastiche statali MIM.`,
+      `Accesso uniforme ai ${INTEGRATED_CORPUS_CONTRACT.datasets} dataset integrati su affidamenti, fornitori, incarichi, consulenze, personale, spese operative, trasparenza, benchmark, contesto demografico ISTAT A misura di Comune, sedi scolastiche statali MIM e avvisi TED con committenti in Italia.`,
     sourceIds: [],
     freshness: "snapshot",
     filters: ["code", "query", "limit", "cursor", "offset"],

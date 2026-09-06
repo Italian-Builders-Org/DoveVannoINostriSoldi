@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
+import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
@@ -2389,6 +2390,14 @@ try {
     const label = `Incassi comunali SIOPE ${width}px`;
     await runScenario(browser, {
       label, pathname: "/entrate", width, validate: inspectReceipts,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Avvisi TED ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/appalti", width, validate: inspectTedNotices,
     });
     completed.push(label);
   }

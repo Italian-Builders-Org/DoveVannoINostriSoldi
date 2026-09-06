@@ -262,6 +262,9 @@ function publicationNote(dataset: IntegratedDatasetCatalogEntry): string {
 }
 
 function reuseNote(dataset: IntegratedDatasetCatalogEntry): string {
+  if (dataset.licenseStatus === "verified-open-eu-reuse") {
+    return "Riuso degli avvisi GUUE consentito dalla nota TED, salvo diversa indicazione (decisione 2011/833/UE); metadati SIMAP CC0 1.0.";
+  }
   if (dataset.licenseStatus === "verified-open-iodl-2.0") {
     return "Riuso verificato: Italian Open Data License (IODL) 2.0.";
   }

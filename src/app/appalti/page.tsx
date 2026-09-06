@@ -86,6 +86,8 @@ export default function AppaltiPage() {
         </p>
       </div>
 
+      <p><Link href="/appalti/ted">Avvisi europei TED con committenti in Italia</Link> · Pubblicazioni di agosto 2026, in un perimetro distinto dai CIG ANAC.</p>
+
       <section className="stat-strip" aria-label="Numeri principali del perimetro ANAC">
         <div>
           <span className="stat-label">CIG unici</span>

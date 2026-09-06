@@ -43,6 +43,12 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     ],
   },
   {
+    href: "/poverta",
+    label: "Povertà",
+    icon: "map",
+    children: [{ href: "/poverta", label: "Assoluta e relativa" }],
+  },
+  {
     href: "/spese",
     label: "Soldi",
     icon: "money",

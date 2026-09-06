@@ -535,6 +535,21 @@ async function assertTableKeyboardScroll(page, label) {
 }
 
 async function assertHealthSpendingTables(page, label) {
+  const beds = await page.$eval("#posti-letto", (section) => section.innerText);
+  assertTextMatches(beds, /212\.768 posti letto/, label);
+  assertTextMatches(beds, /1° gennaio 2023/, label);
+  assertTextMatches(beds, /riferiscono invece al 2024/, label);
+  assertTextMatches(beds, /IODL 2\.0/, label);
+  assert.equal(await page.$eval("#posti-letto details", (details) => details.open), false);
+  await page.focus("#posti-letto summary");
+  await page.keyboard.press("Enter");
+  assert.equal(await page.$eval("#posti-letto details", (details) => details.open), true);
+  assert.equal(await page.$$eval("#posti-letto tbody tr", (rows) => rows.length), 21);
+  const tableText = await page.$eval("#posti-letto table", (table) => table.innerText);
+  assertTextMatches(tableText, /Bolzano/, label);
+  assertTextMatches(tableText, /Trento/, label);
+  assert.doesNotMatch(tableText, /€/);
+  assert.ok(await page.$('#posti-letto a[href="/dati/salute-posti-letto-2023"]'));
   const selector = '[role="region"].table-scroll';
   const tableStates = await page.$$eval(selector, (regions) =>
     regions.map((region) => ({
@@ -545,7 +560,7 @@ async function assertHealthSpendingTables(page, label) {
     })),
   );
 
-  assert.equal(tableStates.length, 3, `${label}: sono attese tre tabelle`);
+  assert.equal(tableStates.length, 4, `${label}: sono attese quattro tabelle`);
   for (const [index, state] of tableStates.entries()) {
     assert.equal(state.hasTable, true, `${label}: tabella ${index + 1} assente`);
     assert.equal(state.tabIndex, 0, `${label}: tabella ${index + 1} non raggiungibile da tastiera`);

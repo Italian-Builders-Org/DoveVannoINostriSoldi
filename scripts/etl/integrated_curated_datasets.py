@@ -834,6 +834,8 @@ def validate_spec(spec: dict[str, Any]) -> list[dict[str, Any]]:
         }:
             if data_kind in {"delimited", "delimited-edge-split"}:
                 parse_delimiter(item.get("delimiter"), f"datasets[{index}].delimiter")
+                if item.get("encoding", "utf-8-sig") not in {"utf-8-sig", "latin-1"}:
+                    raise DatasetBuildError(f"encoding non supportato per {dataset_id}")
             headers = require_list(expected.get("headers"), f"datasets[{index}].expected.headers")
             if not headers or any(not isinstance(header, str) or not header for header in headers):
                 raise DatasetBuildError(f"header non validi per {dataset_id}")
@@ -2213,7 +2215,7 @@ def parse_dataset(source_root: Path, item: dict[str, Any]) -> ParsedDataset:
                 ])
         else:
             try:
-                text = payload.decode("utf-8-sig")
+                text = payload.decode(item.get("encoding", "utf-8-sig"))
             except UnicodeDecodeError as error:
                 raise DatasetBuildError(f"encoding inatteso per {item['id']}") from error
             delimiter = parse_delimiter(item["delimiter"], f"{item['id']}.delimiter")

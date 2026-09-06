@@ -12,6 +12,7 @@ export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
   appointments: "Incarichi nominativi",
   personnel: "Personale e organi",
   operations: "Spese operative",
+  health: "Dotazione sanitaria",
   transparency: "Trasparenza",
   oversight: "Controlli e atti",
   benchmarks: "Benchmark",

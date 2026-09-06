@@ -30,6 +30,13 @@ test("annual CPT coverage remains a period instead of an invented date", () => {
   });
 });
 
+test("SIOPE latest coverage names both cash flows without inventing a publication date", () => {
+  assert.equal(latestDataBySlug.siope.kind, "period");
+  assert.match(latestDataBySlug.siope.label, /incassi 2026/);
+  assert.match(latestDataBySlug.siope.label, /pagamenti 2026/);
+  assert.match(latestDataBySlug.siope.label, /parziale/);
+});
+
 test("latest-data registry is exhaustive and keeps MEF periods distinct", () => {
   assert.deepEqual(Object.keys(latestDataBySlug).sort(), [...SOURCE_IDS].sort());
   assert.deepEqual(

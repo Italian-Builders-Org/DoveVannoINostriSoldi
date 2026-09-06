@@ -40,9 +40,10 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/spese",
     label: "Soldi",
-    aliases: ["/stato"],
+    aliases: ["/stato", "/entrate"],
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
+      { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/sanita", label: "Sanità" },
       { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
       { href: "/spese/sport", label: "Sport" },
@@ -156,6 +157,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Soldi",
     links: [
       { href: "/spese", label: "Pagamenti comunali" },
+      { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/sanita", label: "Sanità" },
       { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
       { href: "/spese/sport", label: "Sport" },

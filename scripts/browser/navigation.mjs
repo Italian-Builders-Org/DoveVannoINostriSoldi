@@ -126,6 +126,24 @@ try {
     });
   }
 
+  for (const width of [1100, 1180, 1280, 1440, 1600]) await runScenario(browser, {
+    label: `Sidebar e mappa home ${width}px`, pathname: '/', width, suite: 'navigation',
+    validate: async (page) => {
+      for (const compact of [false, true]) {
+        if (compact) await page.click('.sidebar-collapse');
+        await assertFits(page);
+        const map = await page.$('[data-region-map="true"]');
+        const geometry = await map.evaluate((node) => {
+          const panel = node.closest('.panel');
+          const box = panel.getBoundingClientRect();
+          return { right: box.right, viewport: innerWidth, scroll: panel.scrollWidth, client: panel.clientWidth };
+        });
+        assert.ok(geometry.right <= geometry.viewport + 1 && geometry.scroll <= geometry.client + 1, JSON.stringify(geometry));
+        await page.screenshot({path:`artifacts/browser/sidebar-home-${width}-${compact ? 'compact' : 'expanded'}.png`});
+      }
+    },
+  });
+
   // Route aliases, nested pages and query-backed children keep their identity.
   for (const [pathname, label] of [['/controlli','Cosa controllare'], ['/territori/irpef','Territori'], ['/appalti','Cosa controllare'], ['/parlamento','Istituzioni'], ['/debito','Soldi'], ['/paper','Studi'], ['/report/2026-08','Report mensili']]) {
     for (const width of [390, 1280]) await runScenario(browser, {

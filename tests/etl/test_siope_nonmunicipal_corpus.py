@@ -4,9 +4,8 @@ import hashlib
 import json
 import sys
 import tempfile
-import unittest
 from pathlib import Path
-from unittest import mock
+from unittest import TestCase, mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "etl"))
@@ -40,7 +39,7 @@ def dataset(identifier: str, path: str, payload: bytes) -> dict:
     }
 
 
-class SiopeNonMunicipalCorpusTests(unittest.TestCase):
+class SiopeNonMunicipalCorpusTests(TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name) / "repository"; self.root.mkdir(parents=True)
@@ -151,7 +150,7 @@ class SiopeNonMunicipalCorpusTests(unittest.TestCase):
         self.assertEqual(self.catalog.read_bytes(), catalog_payload)
 
 
-class SiopeCompletePromotionTests(unittest.TestCase):
+class SiopeCompletePromotionTests(TestCase):
     def test_refresh_uses_the_reviewed_contract_and_seals_real_provenance(self) -> None:
         import shutil
         from test_siope_nonmunicipal import SiopeNonMunicipalTests

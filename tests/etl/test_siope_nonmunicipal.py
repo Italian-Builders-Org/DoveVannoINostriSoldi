@@ -5,10 +5,9 @@ import hashlib
 import json
 import sys
 import tempfile
-import unittest
 import zipfile
 from pathlib import Path
-from unittest import mock
+from unittest import TestCase, mock
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT / "scripts" / "etl") not in sys.path:
@@ -24,7 +23,7 @@ def zipped(path: Path, members: dict[str, list[list[str]]]) -> None:
             archive.writestr(name, text.encode("latin-1"))
 
 
-class SiopeNonMunicipalTests(unittest.TestCase):
+class SiopeNonMunicipalTests(TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)

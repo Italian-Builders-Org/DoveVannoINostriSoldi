@@ -39,6 +39,13 @@ try {
           overflow: document.documentElement.scrollWidth > innerWidth + 1,
           canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
           rows: document.querySelectorAll("main tbody tr").length,
+          figureWidth: document.querySelector("main figure").getBoundingClientRect().width,
+          sectionWidth: document.querySelector("main figure").closest("section").getBoundingClientRect().width,
+          labelLines: [...document.querySelectorAll("main tbody th")].map((cell) => {
+            const range = document.createRange();
+            range.selectNodeContents(cell);
+            return range.getClientRects().length;
+          }),
           download: document.querySelector('main a[download]')?.getAttribute("href"),
         }));
         assert.equal(state.headings, 1);
@@ -47,6 +54,8 @@ try {
         assert.match(state.body, /13 giugno 2026/);
         assert.match(state.canonical, /\/studi\/dai-fondi-ai-posti$/);
         assert.equal(state.rows, 7);
+        assert.ok(Math.abs(state.figureWidth - state.sectionWidth) < 2, "Il grafico usa la larghezza della sezione");
+        assert.ok(state.labelLines.every((lines) => lines === 1), "Le modalità non si spezzano nelle celle");
         const response = await fetch(new URL(state.download, baseUrl));
         assert.equal(response.status, 200);
         assert.match(response.headers.get("content-type"), /application\/pdf/);

@@ -62,6 +62,8 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/spese/territoriale",
   "/stato",
   "/stato/legislature",
+  "/studi",
+  "/studi/dai-fondi-ai-posti",
   "/supporter",
   "/supporto",
   "/termini",

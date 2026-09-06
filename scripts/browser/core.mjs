@@ -2192,7 +2192,7 @@ try {
         const columns = await page.$(".footer-sitemap-columns");
         assert.ok(columns, `${label}: contenitore dei gruppi assente`);
         const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
-        assert.equal(groupCount, 10, `${label}: attesi 10 gruppi nella mappa`);
+        assert.equal(groupCount, 11, `${label}: attesi 11 gruppi nella mappa, inclusi gli studi`);
         const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>
           items.map((item) => item.textContent?.trim() ?? ""),
         );
@@ -2200,8 +2200,10 @@ try {
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
         assert.ok(headings.includes("Istituzioni"), `${label}: sezione Istituzioni assente`);
         assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
+        assert.ok(headings.includes("Studi"), `${label}: sezione Studi assente`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
         const requiredFooterLinks = [
+          [".footer-sitemap a[href='/studi']", "Studi e working paper"],
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-secondary-links a[href='/termini']", "Termini"],
           [".footer-secondary-links a[href='/supporter']", "Chi ci sostiene"],

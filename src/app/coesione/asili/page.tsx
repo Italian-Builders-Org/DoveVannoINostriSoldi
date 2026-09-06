@@ -72,6 +72,7 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
             Cerca un asilo, una scuola dell’infanzia o un servizio educativo. Ogni risultato separa
             finanziamento, gara e aggiudicazione, con il collegamento esatto alla fonte.
           </p>
+          <p><a href="/studi/dai-fondi-ai-posti">Leggi lo studio: dai fondi ai posti</a> · Analisi storica al 13 giugno 2026, distinta dai dati aggiornati di questa pagina.</p>
         </div>
       </div>
 

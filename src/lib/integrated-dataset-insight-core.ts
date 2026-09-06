@@ -92,6 +92,7 @@ function preferredAmountHeader(headers: readonly string[]): string | null {
 /** True when a public column name is an amount, including `*_eur` and canoni. */
 export function looksLikeAmountHeader(header: string): boolean {
   const normalized = header.replace(/[_-]+/g, " ").trim();
+  if (/^totale posti letto$/i.test(normalized)) return false;
   return AMOUNT_HEADER.test(normalized) || AMOUNT_UNIT_SUFFIX.test(header);
 }
 

@@ -4,6 +4,7 @@ import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { ssnCceSnapshot as data } from "@/lib/ssn-cce-snapshot";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { SsnAccountingComparison } from "./ssn-accounting-comparison";
+import HospitalBeds from "./hospital-beds";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
@@ -120,6 +121,8 @@ export default function HealthSpendingPage() {
           visualizzazione; l&apos;artefatto conserva centesimi interi.
         </p>
       </section>
+
+      <HospitalBeds />
 
       <section className="panel" aria-labelledby="regions-title">
         <div className={styles.sectionHead}>

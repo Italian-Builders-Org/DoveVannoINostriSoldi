@@ -8,6 +8,7 @@ import {
 } from "@/lib/integrated-editorial";
 import { integratedDomainLabel } from "@/lib/integrated-domains";
 import { datasetCatalog } from "@/lib/mcp/catalog";
+import { monthlyReports } from "@/lib/monthly-reports";
 import {
   searchIpaEntitiesByPrefix,
   type IpaEntity,
@@ -270,6 +271,18 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
         ...topic.datasets.map((dataset) => dataset.id),
       ]),
       description: `${topic.description} ${topic.introduction}`,
+    });
+  }
+
+  for (const report of monthlyReports.listPublished()) {
+    addDocument(documents, {
+      id: `report:${report.issueMonth}`,
+      href: report.href,
+      title: report.title,
+      context: "Report mensili",
+      type: "pagina",
+      aliases: unique([report.issueLabel, ...report.keywords]),
+      description: `${report.dek} ${report.teaser}`,
     });
   }
 

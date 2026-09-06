@@ -7,6 +7,7 @@ import test from "node:test";
 import { EDITORIAL_TOPICS } from "../src/lib/integrated-editorial.ts";
 import {
   LLMS_DISCOVERY_PATHS,
+  PUBLISHED_MONTHLY_REPORT_PATHS,
   PUBLIC_INDEXABLE_PATHS,
   PUBLIC_NOINDEX_PATHS,
   PUBLIC_REDIRECT_PATHS,
@@ -61,7 +62,7 @@ test("the public discovery catalog is canonical, unique and complete for static 
   const catalogStaticPages = [
     ...PUBLIC_INDEXABLE_PATHS.filter((routePath) => !EDITORIAL_TOPICS.some(
       (topic) => routePath === `/${topic.section}/${topic.slug}`,
-    )),
+    ) && !PUBLISHED_MONTHLY_REPORT_PATHS.includes(routePath)),
     ...PUBLIC_NOINDEX_PATHS,
     ...PUBLIC_REDIRECT_PATHS,
   ]
@@ -90,6 +91,15 @@ test("all and only the statically generated editorial topics are in the sitemap 
     .slice()
     .sort();
   assert.deepEqual(actual, expected);
+});
+
+test("published monthly report editions are explicit and use the static dynamic route", async () => {
+  assert.equal(new Set(PUBLISHED_MONTHLY_REPORT_PATHS).size, PUBLISHED_MONTHLY_REPORT_PATHS.length);
+  for (const reportPath of PUBLISHED_MONTHLY_REPORT_PATHS) {
+    assert.equal(PUBLIC_INDEXABLE_PATHS.includes(reportPath), true);
+    assert.match(reportPath, /^\/report\/\d{4}-(0[1-9]|1[0-2])$/);
+  }
+  await access(path.join(appRoot, "report", "[issueMonth]", "page.tsx"), constants.R_OK);
 });
 
 test("sitemap exposes only canonical HTTPS public pages", async () => {
@@ -129,7 +139,9 @@ test("robots permits public pages without blocking Next assets", () => {
 test("llms discovery paths are indexable and resolve to public pages", async () => {
   for (const routePath of LLMS_DISCOVERY_PATHS) {
     assert.equal(PUBLIC_INDEXABLE_PATHS.includes(routePath), true);
-    const pagePath = routePath === "/"
+    const pagePath = PUBLISHED_MONTHLY_REPORT_PATHS.includes(routePath)
+      ? path.join(appRoot, "report", "[issueMonth]", "page.tsx")
+      : routePath === "/"
       ? path.join(appRoot, "page.tsx")
       : path.join(appRoot, routePath.slice(1), "page.tsx");
     await access(pagePath, constants.R_OK);

@@ -114,6 +114,10 @@ echo "::group::Browser report suite"
 npm run test:browser:report
 echo "::endgroup::"
 
+echo "::group::Browser monthly reports suite"
+npm run test:browser:monthly-report
+echo "::endgroup::"
+
 echo "::group::Browser studies suite"
 node scripts/browser/studies.mjs
 echo "::endgroup::"

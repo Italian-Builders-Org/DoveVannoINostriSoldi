@@ -3,6 +3,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
+import { LatestMonthlyReportTeaser } from "@/components/monthly-report";
 import { PeriodSelector } from "@/components/period-selector";
 import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
@@ -17,6 +18,7 @@ import {
   percent,
 } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
+import { monthlyReports } from "@/lib/monthly-reports";
 import { openCoesioneSnapshot as cohesion } from "@/lib/opencoesione-snapshot";
 import {
   HOME_SPENDING_BUCKETS,
@@ -127,6 +129,7 @@ export default async function HomePage({
   const cohesionRatio =
     cohesionCommitted > 0 ? (cohesionPaid / cohesionCommitted) * 100 : 0;
   const anomalySignals = getHomeAnomalySignals();
+  const latestMonthlyReport = monthlyReports.listPublished()[0];
 
   return (
     <main className={`shell ${styles.dashboard}`}>
@@ -400,6 +403,7 @@ export default async function HomePage({
       </div>
 
       <div className={styles.column}>
+        {latestMonthlyReport ? <LatestMonthlyReportTeaser report={latestMonthlyReport} /> : null}
         <section className={`panel ${styles.rankPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">

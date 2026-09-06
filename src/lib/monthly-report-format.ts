@@ -17,17 +17,25 @@ export function formatReportPeriod(period: ReferencePeriod): string {
   return new Intl.DateTimeFormat("it-IT", { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${period.month}-01T00:00:00Z`)) + partial;
 }
 
-export function formatReportValue(value: ReportValue): string {
-  if (value.kind === "count") return `${integer.format(value.value)} ${value.unit}`;
+export function formatReportValueParts(value: ReportValue): { amount: string; unit: string } {
+  if (value.kind === "count") return { amount: integer.format(value.value), unit: value.unit };
   if (value.kind === "money") {
     const euros = value.cents / 100;
     if (value.display === "compact" && Math.abs(euros) >= 1_000_000) {
       const billions = Math.abs(euros) >= 1_000_000_000;
-      return `${(euros / (billions ? 1_000_000_000 : 1_000_000)).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" })} ${billions ? "miliardi" : "milioni"} €`;
+      return {
+        amount: (euros / (billions ? 1_000_000_000 : 1_000_000)).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" }),
+        unit: `${billions ? "miliardi" : "milioni"} €`,
+      };
     }
-    return money.format(euros);
+    return { amount: money.format(euros), unit: "" };
   }
-  if (value.kind === "percentage") return `${(value.basisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 2 })}%`;
-  if (value.kind === "ratio") return `${Number(value.decimal).toLocaleString("it-IT")} ${value.unit}`;
-  return value.text;
+  if (value.kind === "percentage") return { amount: `${(value.basisPoints / 100).toLocaleString("it-IT", { maximumFractionDigits: 2 })}%`, unit: "" };
+  if (value.kind === "ratio") return { amount: Number(value.decimal).toLocaleString("it-IT"), unit: value.unit };
+  return { amount: value.text, unit: "" };
+}
+
+export function formatReportValue(value: ReportValue): string {
+  const { amount, unit } = formatReportValueParts(value);
+  return unit ? `${amount} ${unit}` : amount;
 }

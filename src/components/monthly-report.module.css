@@ -10,8 +10,15 @@
 
 .articleHeader,
 .archive > header {
-  max-width: 52rem;
   margin-bottom: 3rem;
+}
+
+.archive > header {
+  max-width: 52rem;
+}
+
+.articleHeader .dek {
+  max-width: 70ch;
 }
 
 .eyebrow,
@@ -91,6 +98,14 @@
   margin-block: 0.8rem;
 }
 
+.factUnit {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 0.4rem;
+}
+
 .factGrid small,
 .archiveGrid small,
 .homeTeaser small {
@@ -127,6 +142,7 @@
 .figure {
   border-block: 1px solid var(--color-neutral-300);
   margin-block: 4rem;
+  margin-inline: 0;
   padding-block: 2rem;
 }
 
@@ -149,6 +165,10 @@
   color: var(--color-neutral-600);
   line-height: 1.55;
   margin-bottom: 1rem;
+}
+
+.figure th {
+  white-space: nowrap;
 }
 
 .archive > section > h2 {
@@ -210,6 +230,5 @@
 
   .rankingChart {
     height: 52rem;
-    margin-left: -0.8rem;
   }
 }

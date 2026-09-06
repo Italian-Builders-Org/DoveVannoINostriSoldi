@@ -21,6 +21,9 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
 from zipfile import BadZipFile, ZipFile
 
+from monetary import AmountError, AmountRangeError, MoneyPolicy, decimal_to_cents
+from monetary import MAX_SAFE_CENTS as MAX_SAFE_INTEGER
+
 REFERENCE_YEAR = 2022
 PUBLISHED_AT = "2025-08-07"
 LANDING_URL = "https://www.opencivitas.it/it/open-data"
@@ -35,8 +38,16 @@ OFFICIAL_HOSTS = {"docs.opencivitas.it", "www.opencivitas.it", "opencivitas.it"}
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 TRANSIENT_HTTP = {408, 425, 429, 500, 502, 503, 504}
 MAX_RETRIES = 2
-MAX_SAFE_INTEGER = 9_007_199_254_740_991
 EXPECTED_MUNICIPALITIES = 6_557
+DECIMAL_RE = re.compile(r"-?\d+(?:,\d+)?")
+MONEY_POLICY = MoneyPolicy(
+    pattern=DECIMAL_RE,
+    decimal_separator=",",
+    unit="euros",
+    allow_negative=True,
+    rounding="half_up",
+    strip_whitespace=True,
+)
 
 SELECTED_INDICATORS = {
     "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
@@ -275,7 +286,7 @@ def decimal_value(value: str, field: str, *, required: bool = True) -> Decimal |
         if required:
             raise StructuralError(f"{field}: valore numerico mancante")
         return None
-    if not re.fullmatch(r"-?\d+(?:,\d+)?", cleaned):
+    if not DECIMAL_RE.fullmatch(cleaned):
         raise StructuralError(f"{field}: formato numerico italiano inatteso")
     try:
         parsed = Decimal(cleaned.replace(",", "."))
@@ -287,10 +298,12 @@ def decimal_value(value: str, field: str, *, required: bool = True) -> Decimal |
 
 
 def cents(value: Decimal, field: str) -> int:
-    result = int((value * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-    if abs(result) > MAX_SAFE_INTEGER:
-        raise StructuralError(f"{field}: importo oltre il limite sicuro JavaScript")
-    return result
+    try:
+        return decimal_to_cents(value, MONEY_POLICY)
+    except AmountRangeError as error:
+        raise StructuralError(f"{field}: importo oltre il limite sicuro JavaScript") from error
+    except AmountError as error:
+        raise StructuralError(f"{field}: importo non valido") from error
 
 
 def basis_points(value: Decimal, field: str) -> int:

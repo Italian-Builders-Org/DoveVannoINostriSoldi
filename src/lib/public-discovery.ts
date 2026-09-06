@@ -45,6 +45,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/istituzioni",
   "/istruzione",
   "/istruzione/universita-ricerca",
+  "/poverta",
   "/mcp",
   "/metodologia",
   "/ministeri",

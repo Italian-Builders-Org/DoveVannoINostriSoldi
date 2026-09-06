@@ -1,0 +1,1143 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-bes-economico",
+  "period": {
+    "from": 2004,
+    "to": 2024
+  },
+  "periodNote": "Il periodo complessivo NON vale per ogni indicatore: ciascuno dichiara il proprio from/to in expected.indicators. Un unico 2004-2024 sarebbe falso per quattro misure su cinque.",
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "apiPath": "/SDMXWS/rest/data/IT1,DF_BES_TERRIT_4,1.0/",
+    "dataflowId": "DF_BES_TERRIT_4",
+    "dataflowLabel": "Bes dei territori — Benessere economico",
+    "dataStructure": "BES_TERRIT v1.1",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX-CSV non espone alcun campo di licenza. Come per istat-cofog e per i due dataset di poverta non viene inferita alcuna licenza ne estesa da altri dataset ISTAT.",
+    "assets": {
+      "bes-economico": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_4,1.0/A..BES_04.04BEC001P+04BEC002P+04BEC005P+04BEC006P+04BEC009P.F+M+T.2025",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 2107955,
+        "sha256": "2711ded27eba1d05d82be7c7c556118987f84e2e3a4ecc8a6316217dece23e41"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-06",
+      "checkedAt": "2026-09-06",
+      "note": "FREQ, DOMAIN ed EDITION fissati letteralmente; DATA_TYPE e SEX enumerati. REF_AREA e lasciata aperta nella chiave e l'anagrafica dei 139 territori e vincolata in expected.territories: l'ETL fallisce chiuso su qualunque codice fuori elenco, e un territorio in piu cambia i byte e quindi l'hash."
+    }
+  },
+  "measure": {
+    "scale": 10,
+    "scaleNote": "Valori memorizzati come interi moltiplicati per 10: la fonte pubblica con al piu un decimale, quindi la conversione resta esatta e nessun float entra nell'artefatto.",
+    "domain": "BES_04",
+    "domainLabel": "Benessere economico",
+    "edition": "2025",
+    "editionNote": "Edizione unica in questo dataflow, ma la dimensione EDITION esiste e resta fissata: le edizioni BES sono revisioni e non vanno mescolate."
+  },
+  "expected": {
+    "cells": 19592,
+    "flagged": 122,
+    "flagMarker": {
+      "attribute": "OBS_STATUS",
+      "codelist": "CL_FLAG",
+      "note": "OBS_STATUS e vincolato a CL_FLAG, non a CL_OBS_STATUS. Il codice «g» significa «il fenomeno esiste, ma i dati non si conoscono per qualsiasi ragione»: la cella resta null e non diventa mai zero.",
+      "knownValues": {
+        "g": "il fenomeno esiste, ma i dati non si conoscono per qualsiasi ragione",
+        "c": "dato oscurato per la tutela del segreto statistico",
+        "n": "dato statisticamente non significativo",
+        "u": "dato indisponibile o incerto"
+      }
+    },
+    "indicators": [
+      {
+        "code": "04BEC001P",
+        "label": "Reddito medio disponibile pro capite",
+        "unit": "EURO",
+        "sexes": [
+          "T"
+        ],
+        "from": 2021,
+        "to": 2023,
+        "observations": 355,
+        "flagged": 0,
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "04BEC002P",
+        "label": "Retribuzione media annua dei lavoratori dipendenti",
+        "unit": "EURO",
+        "sexes": [
+          "F",
+          "M",
+          "T"
+        ],
+        "from": 2008,
+        "to": 2023,
+        "observations": 6308,
+        "flagged": 119,
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "04BEC005P",
+        "label": "Importo medio annuo pro-capite dei redditi pensionistici",
+        "unit": "EURO",
+        "sexes": [
+          "F",
+          "M",
+          "T"
+        ],
+        "from": 2011,
+        "to": 2023,
+        "observations": 5160,
+        "flagged": 0,
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "04BEC006P",
+        "label": "Pensionati con reddito pensionistico di basso importo",
+        "unit": "VAL_PERC",
+        "sexes": [
+          "F",
+          "M",
+          "T"
+        ],
+        "from": 2011,
+        "to": 2023,
+        "observations": 5060,
+        "flagged": 0,
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "04BEC009P",
+        "label": "Tasso di ingresso in sofferenza dei prestiti bancari alle famiglie",
+        "unit": "VAL_PERC",
+        "sexes": [
+          "T"
+        ],
+        "from": 2004,
+        "to": 2024,
+        "observations": 2709,
+        "flagged": 3,
+        "summableAcrossTerritories": false
+      }
+    ],
+    "territories": [
+      {
+        "code": "IT",
+        "label": "Italia",
+        "kind": "country",
+        "depth": 0,
+        "parent": null
+      },
+      {
+        "code": "IT108",
+        "label": "Monza e della Brianza",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "IT109",
+        "label": "Fermo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE3"
+      },
+      {
+        "code": "IT110",
+        "label": "Barletta-Andria-Trani",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "IT111",
+        "label": "Sud Sardegna",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITC",
+        "label": "Nord-ovest",
+        "kind": "ripartizione",
+        "depth": 1,
+        "parent": "IT"
+      },
+      {
+        "code": "ITC1",
+        "label": "Piemonte",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITC"
+      },
+      {
+        "code": "ITC11",
+        "label": "Torino",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC12",
+        "label": "Vercelli",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC13",
+        "label": "Biella",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC14",
+        "label": "Verbano-Cusio-Ossola",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC15",
+        "label": "Novara",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC16",
+        "label": "Cuneo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC17",
+        "label": "Asti",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC18",
+        "label": "Alessandria",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC1"
+      },
+      {
+        "code": "ITC2",
+        "label": "Valle d'Aosta / Vallée d'Aoste",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITC"
+      },
+      {
+        "code": "ITC20",
+        "label": "Valle d'Aosta / Vallée d'Aoste",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC2"
+      },
+      {
+        "code": "ITC3",
+        "label": "Liguria",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITC"
+      },
+      {
+        "code": "ITC31",
+        "label": "Imperia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC3"
+      },
+      {
+        "code": "ITC32",
+        "label": "Savona",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC3"
+      },
+      {
+        "code": "ITC33",
+        "label": "Genova",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC3"
+      },
+      {
+        "code": "ITC34",
+        "label": "La Spezia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC3"
+      },
+      {
+        "code": "ITC4",
+        "label": "Lombardia",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITC"
+      },
+      {
+        "code": "ITC41",
+        "label": "Varese",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC42",
+        "label": "Como",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC43",
+        "label": "Lecco",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC44",
+        "label": "Sondrio",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC45",
+        "label": "Milano",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC46",
+        "label": "Bergamo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC47",
+        "label": "Brescia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC48",
+        "label": "Pavia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC49",
+        "label": "Lodi",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC4A",
+        "label": "Cremona",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITC4B",
+        "label": "Mantova",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITC4"
+      },
+      {
+        "code": "ITCD",
+        "label": "Nord",
+        "kind": "composite",
+        "depth": 1,
+        "parent": "IT",
+        "parts": [
+          "ITC",
+          "ITD"
+        ]
+      },
+      {
+        "code": "ITD",
+        "label": "Nord-est",
+        "kind": "ripartizione",
+        "depth": 1,
+        "parent": "IT"
+      },
+      {
+        "code": "ITD10",
+        "label": "Bolzano / Bozen",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": null,
+        "parentOutsideDataset": "ITD1"
+      },
+      {
+        "code": "ITD20",
+        "label": "Trento",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": null,
+        "parentOutsideDataset": "ITD2"
+      },
+      {
+        "code": "ITD3",
+        "label": "Veneto",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITD"
+      },
+      {
+        "code": "ITD31",
+        "label": "Verona",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD32",
+        "label": "Vicenza",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD33",
+        "label": "Belluno",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD34",
+        "label": "Treviso",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD35",
+        "label": "Venezia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD36",
+        "label": "Padova",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD37",
+        "label": "Rovigo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD3"
+      },
+      {
+        "code": "ITD4",
+        "label": "Friuli-Venezia Giulia",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITD"
+      },
+      {
+        "code": "ITD41",
+        "label": "Pordenone",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD4"
+      },
+      {
+        "code": "ITD42",
+        "label": "Udine",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD4"
+      },
+      {
+        "code": "ITD43",
+        "label": "Gorizia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD4"
+      },
+      {
+        "code": "ITD44",
+        "label": "Trieste",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD4"
+      },
+      {
+        "code": "ITD5",
+        "label": "Emilia-Romagna",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITD"
+      },
+      {
+        "code": "ITD51",
+        "label": "Piacenza",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD52",
+        "label": "Parma",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD53",
+        "label": "Reggio nell'Emilia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD54",
+        "label": "Modena",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD55",
+        "label": "Bologna",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD56",
+        "label": "Ferrara",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD57",
+        "label": "Ravenna",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD58",
+        "label": "Forlì-Cesena",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITD59",
+        "label": "Rimini",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITD5"
+      },
+      {
+        "code": "ITDA",
+        "label": "Trentino Alto Adige / Südtirol",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITD"
+      },
+      {
+        "code": "ITE",
+        "label": "Centro",
+        "kind": "ripartizione",
+        "depth": 1,
+        "parent": "IT"
+      },
+      {
+        "code": "ITE1",
+        "label": "Toscana",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITE"
+      },
+      {
+        "code": "ITE11",
+        "label": "Massa-Carrara",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE12",
+        "label": "Lucca",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE13",
+        "label": "Pistoia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE14",
+        "label": "Firenze",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE15",
+        "label": "Prato",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE16",
+        "label": "Livorno",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE17",
+        "label": "Pisa",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE18",
+        "label": "Arezzo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE19",
+        "label": "Siena",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE1A",
+        "label": "Grosseto",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE1"
+      },
+      {
+        "code": "ITE2",
+        "label": "Umbria",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITE"
+      },
+      {
+        "code": "ITE21",
+        "label": "Perugia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE2"
+      },
+      {
+        "code": "ITE22",
+        "label": "Terni",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE2"
+      },
+      {
+        "code": "ITE3",
+        "label": "Marche",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITE"
+      },
+      {
+        "code": "ITE31",
+        "label": "Pesaro e Urbino",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE3"
+      },
+      {
+        "code": "ITE32",
+        "label": "Ancona",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE3"
+      },
+      {
+        "code": "ITE33",
+        "label": "Macerata",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE3"
+      },
+      {
+        "code": "ITE34",
+        "label": "Ascoli Piceno",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE3"
+      },
+      {
+        "code": "ITE4",
+        "label": "Lazio",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITE"
+      },
+      {
+        "code": "ITE41",
+        "label": "Viterbo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE4"
+      },
+      {
+        "code": "ITE42",
+        "label": "Rieti",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE4"
+      },
+      {
+        "code": "ITE43",
+        "label": "Roma",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE4"
+      },
+      {
+        "code": "ITE44",
+        "label": "Latina",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE4"
+      },
+      {
+        "code": "ITE45",
+        "label": "Frosinone",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITE4"
+      },
+      {
+        "code": "ITF",
+        "label": "Sud",
+        "kind": "ripartizione",
+        "depth": 1,
+        "parent": "IT"
+      },
+      {
+        "code": "ITF1",
+        "label": "Abruzzo",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF11",
+        "label": "L'Aquila",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF1"
+      },
+      {
+        "code": "ITF12",
+        "label": "Teramo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF1"
+      },
+      {
+        "code": "ITF13",
+        "label": "Pescara",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF1"
+      },
+      {
+        "code": "ITF14",
+        "label": "Chieti",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF1"
+      },
+      {
+        "code": "ITF2",
+        "label": "Molise",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF21",
+        "label": "Isernia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF2"
+      },
+      {
+        "code": "ITF22",
+        "label": "Campobasso",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF2"
+      },
+      {
+        "code": "ITF3",
+        "label": "Campania",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF31",
+        "label": "Caserta",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF3"
+      },
+      {
+        "code": "ITF32",
+        "label": "Benevento",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF3"
+      },
+      {
+        "code": "ITF33",
+        "label": "Napoli",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF3"
+      },
+      {
+        "code": "ITF34",
+        "label": "Avellino",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF3"
+      },
+      {
+        "code": "ITF35",
+        "label": "Salerno",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF3"
+      },
+      {
+        "code": "ITF4",
+        "label": "Puglia",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF41",
+        "label": "Foggia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "ITF42",
+        "label": "Bari",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "ITF43",
+        "label": "Taranto",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "ITF44",
+        "label": "Brindisi",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "ITF45",
+        "label": "Lecce",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF4"
+      },
+      {
+        "code": "ITF5",
+        "label": "Basilicata",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF51",
+        "label": "Potenza",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF5"
+      },
+      {
+        "code": "ITF52",
+        "label": "Matera",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF5"
+      },
+      {
+        "code": "ITF6",
+        "label": "Calabria",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITF"
+      },
+      {
+        "code": "ITF61",
+        "label": "Cosenza",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF6"
+      },
+      {
+        "code": "ITF62",
+        "label": "Crotone",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF6"
+      },
+      {
+        "code": "ITF63",
+        "label": "Catanzaro",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF6"
+      },
+      {
+        "code": "ITF64",
+        "label": "Vibo Valentia",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF6"
+      },
+      {
+        "code": "ITF65",
+        "label": "Reggio di Calabria",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITF6"
+      },
+      {
+        "code": "ITFG",
+        "label": "Mezzogiorno",
+        "kind": "composite",
+        "depth": 1,
+        "parent": "IT",
+        "parts": [
+          "ITF",
+          "ITG"
+        ]
+      },
+      {
+        "code": "ITG",
+        "label": "Isole",
+        "kind": "ripartizione",
+        "depth": 1,
+        "parent": "IT"
+      },
+      {
+        "code": "ITG1",
+        "label": "Sicilia",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITG"
+      },
+      {
+        "code": "ITG11",
+        "label": "Trapani",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG12",
+        "label": "Palermo",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG13",
+        "label": "Messina",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG14",
+        "label": "Agrigento",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG15",
+        "label": "Caltanissetta",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG16",
+        "label": "Enna",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG17",
+        "label": "Catania",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG18",
+        "label": "Ragusa",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG19",
+        "label": "Siracusa",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG1"
+      },
+      {
+        "code": "ITG2",
+        "label": "Sardegna",
+        "kind": "regione",
+        "depth": 2,
+        "parent": "ITG"
+      },
+      {
+        "code": "ITG25",
+        "label": "Sassari",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG26",
+        "label": "Nuoro",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG27",
+        "label": "Cagliari",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG28",
+        "label": "Oristano",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG29",
+        "label": "Olbia-Tempio",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG2A",
+        "label": "Ogliastra",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG2B",
+        "label": "Medio Campidano",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      },
+      {
+        "code": "ITG2C",
+        "label": "Carbonia-Iglesias",
+        "kind": "provincia",
+        "depth": 3,
+        "parent": "ITG2"
+      }
+    ],
+    "fixedDimensions": {
+      "FREQ": "A",
+      "DOMAIN": "BES_04",
+      "EDITION": "2025"
+    },
+    "sexes": [
+      "F",
+      "M",
+      "T"
+    ]
+  },
+  "reconciliation": {
+    "note": "Nessuna misura e un conteggio: sono tutte medie pro capite o percentuali, quindi le partizioni territoriali NON sono verificabili per somma e il contratto non finge di poterlo fare. L'invariante propria delle medie e che il totale stia fra i due sessi.",
+    "totalBetweenSexes": {
+      "total": "T",
+      "parts": [
+        "F",
+        "M"
+      ],
+      "note": "Per ogni indicatore, territorio e anno con tutte e tre le modalita, il valore T deve stare nell'intervallo [min(F,M), max(F,M)]. Verificato su 5113 terne senza violazioni all'acquisizione."
+    },
+    "territorialSum": false
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/istat-bes-economico-2004-2024.data.json",
+      "bytes": 1723972,
+      "sha256": "71f84814aaa93c7ee8e8c68c02af5eb5bf50f93e3489c35609c9d8a586ef66bb"
+    },
+    "lockSha256": "17e0ac5c62c0fbc160e926be6473077a48cfbff096a445785204c84514754e9f"
+  }
+}

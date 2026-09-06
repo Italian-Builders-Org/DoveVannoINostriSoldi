@@ -29,6 +29,7 @@ export type SourceId =
   | "istat-epea"
   | "istat-poverta"
   | "istat-poverta-relativa"
+  | "istat-bes-economico"
   | "inps-naspi"
   | "mef-irpef-dettaglio"
   | "ameco"
@@ -481,6 +482,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta-relativa", "domain:social-conditions"],
+  },
+  "istat-bes-economico": {
+    id: "istat-bes-economico",
+    label: "ISTAT · BES dei territori, benessere economico",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il BES dei territori esce annualmente e viene rivisto per edizioni: lo snapshot fissa l'edizione 2025 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-economico", "domain:social-conditions"],
   },
   "inps-naspi": {
     id: "inps-naspi",

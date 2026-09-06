@@ -51,6 +51,21 @@ duplicati o non validi restituiscono HTTP 400, senza ripiego silenzioso sull’u
 Non sono accertamenti né entrate di competenza, non si consolidano
 trasferimenti e partite di giro, non si calcola alcun saldo di bilancio o residuo fiscale.
 
+I dataset `siope_inventario_enti`, `siope_province`, `siope_regioni` e
+`siope_citta_metropolitane` espongono rispettivamente il censimento SIOPE di tutti i tipi
+di ente e i pagamenti di cassa 2024–2026 di Province, Regioni incluse le Province autonome,
+e Città metropolitane. I tre perimetri contabili restano separati: Province e Città
+metropolitane usano il comparto `PRO`, Regioni il comparto `REG`. I pagamenti sono righe
+mensili tipizzate con centesimi interi, provenienza e join esatto codice fiscale→IPA; le
+voci accettano soltanto `query`, `limit`, `offset` e `cursor`. L'inventario è census-only:
+ASL e altri tipi censiti non vengono presentati come pagamenti disponibili. La copertura
+2026 è quella effettivamente presente nel file nazionale e può essere parziale; assenza di
+movimenti e zero osservato restano distinti. Non sono disponibili dati sanitari, aggregati
+territoriali consolidati, confronti pro capite o ranking.
+Per queste quattro nuove proiezioni acquisizione e pubblicazione sono manuali. La cadenza
+dichiarata accanto a ogni fonte descrive il file ufficiale, non un refresh automatico del
+prodotto; le informazioni di freschezza dei flussi comunali restano invariate.
+
 `openbdap_ssn_conto_economico` restituisce il dataset snapshot OpenBDAP `spd_ssn_cce_elb_voccn_01_2024`.
 Le voci `BA2080`, `BA1350`, `BA1750`, `BA0390` e `BZ9999` sono mantenute con codice e descrizione
 ufficiali; gli importi sono costi di competenza economica del Conto Economico consuntivo, non

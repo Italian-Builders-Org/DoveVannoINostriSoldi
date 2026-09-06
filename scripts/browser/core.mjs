@@ -1588,6 +1588,54 @@ try {
     completed.push(label);
   }
 
+  for (const width of [390, 768, 1280]) {
+    for (const [code, heading] of [["r_lazio", /regione/i], ["p_AN", /provincia/i], ["cmbo", /città metropolitana/i]]) {
+      const label = `Pagamenti SIOPE ${code} ${width}px`;
+      await runScenario(browser, {
+        label,
+        pathname: `/enti/${code}?siopeAnno=2025`,
+        width,
+        validate: async (page) => {
+          const text = await page.$eval("#pagamenti-siope", (element) => element.innerText);
+          assert.match(text, heading);
+          assert.match(text, /Annualità completa e revisionabile/);
+          assert.match(text, /non spesa consolidata nel territorio/);
+          assert.equal(await page.$eval("#siope-anno", (element) => element.value), "2025");
+          assert.equal(await page.$$eval('[aria-label="Importi mensili dei pagamenti SIOPE 2025"] tbody tr', (rows) => rows.length), 12);
+          const totalWidthRatio = await page.$eval("#pagamenti-siope dl", (element) => element.firstElementChild.getBoundingClientRect().width / element.getBoundingClientRect().width);
+          assert.ok(totalWidthRatio > 0.9, `${label}: il totale deve usare la larghezza del riepilogo`);
+          await page.select("#siope-anno", "2026");
+          await Promise.all([
+            page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+            page.click('#pagamenti-siope button[type="submit"]'),
+          ]);
+          assert.match(await page.$eval("#pagamenti-siope", (element) => element.innerText), /Periodo parziale e revisionabile/);
+          assert.equal(new URL(page.url()).searchParams.get("siopeAnno"), "2026");
+        },
+      });
+      completed.push(label);
+    }
+  }
+
+  for (const [query, expected] of [
+    ["siopeAnno=2024", /Fuori dal periodo di validità dell'ente/],
+    ["siopeAnno=abc", /Anno SIOPE non disponibile.*mostriamo 2026/],
+    ["siopeAnno=2025&siopeAnno=2024", /Anno SIOPE non disponibile.*mostriamo 2026/],
+  ]) {
+    const label = `SIOPE annualità esplicita ${query}`;
+    await runScenario(browser, {
+      label,
+      pathname: `/enti/1ZLO0OIB?${query}`,
+      width: 390,
+      validate: async (page) => {
+        const text = await page.$eval("#pagamenti-siope", (element) => element.innerText);
+        assert.match(text, expected);
+        if (query === "siopeAnno=2024") assert.doesNotMatch(text, /Totale pagato nel periodo/i);
+      },
+    });
+    completed.push(label);
+  }
+
   await runScenario(browser, {
     label: "Ente non comunale layout leggibile 390px",
     pathname: "/enti/agid",

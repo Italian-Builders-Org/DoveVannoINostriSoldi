@@ -8,7 +8,7 @@ public-spending release.
 - Build the exact checkout with `npm run build`.
 - Launch a new `next start` instance on a unique loopback port.
 - Record its PID and use a new `.verification-artifacts` run directory.
-- Run the skill doctor and require 79 datasets, 13.321.128 source rows, 338.782
+- Run the skill doctor and require 83 datasets, 13.797.799 source rows, 815.453
   public rows, 34.071 source identities and a complete release.
 - Never drive a pre-existing dev server or a port not owned by the captured PID.
 

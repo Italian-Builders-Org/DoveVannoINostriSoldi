@@ -16,6 +16,7 @@ import {
   type IpaSearchResult,
 } from "@/lib/ipa";
 import { getIpaTypeDistribution, type IpaTypeStat } from "@/lib/ipa-stats";
+import { findSiopeNonMunicipalEntities, getSiopeNonMunicipalTypeLabel } from "@/lib/siope-nonmunicipal";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
@@ -62,6 +63,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query = first(params.q).trim().slice(0, 180);
   const canSearch = query.length >= 2;
+  const nonMunicipalEntities = findSiopeNonMunicipalEntities(canSearch ? query : "");
   const signal = AbortSignal.timeout(PAGE_DATA_BUDGET_MS);
 
   let stats: Awaited<ReturnType<typeof getIpaRegistryStats>> | null = null;
@@ -248,6 +250,34 @@ export default async function EntiPage({ searchParams }: PageProps) {
               La ricerca non ha trovato corrispondenze nel registro IPA.
             </p>
           )}
+        </section>
+      )}
+
+      {(!query || canSearch) && (
+        <section className="panel" aria-labelledby="siope-territoriali-title">
+          <div className={styles.resultsHead}>
+            <h2 className="panel-title" id="siope-territoriali-title">
+              {query ? "Enti territoriali SIOPE pubblicati" : "Province, Regioni e Città metropolitane SIOPE"}
+            </h2>
+            <span>{integer(nonMunicipalEntities.length)} {query ? "corrispondenze" : "enti con dettaglio di cassa"}</span>
+          </div>
+          <p className={styles.note}>
+            Elenco dal rilascio SIOPE verificato. La ricerca per nome o codice IPA usa lo stesso campo del registro; resta disponibile anche se IPA non risponde.
+          </p>
+          {nonMunicipalEntities.length > 0 ? (
+            <div className="table-scroll" role="region" aria-label="Enti territoriali SIOPE pubblicati" tabIndex={0}>
+              <table className="table">
+                <thead><tr><th scope="col">Ente</th><th scope="col">Tipologia SIOPE</th><th scope="col">Codice IPA</th></tr></thead>
+                <tbody>{nonMunicipalEntities.map((entity) => (
+                  <tr key={entity.codiceIpa}>
+                    <th scope="row"><Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>{entity.entityName}</Link></th>
+                    <td>{getSiopeNonMunicipalTypeLabel(entity)}</td>
+                    <td><code>{entity.codiceIpa}</code></td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+          ) : <p className={styles.note}>Nessun ente territoriale SIOPE corrisponde alla ricerca.</p>}
         </section>
       )}
 

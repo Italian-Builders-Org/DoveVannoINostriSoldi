@@ -262,6 +262,9 @@ function publicationNote(dataset: IntegratedDatasetCatalogEntry): string {
 }
 
 function reuseNote(dataset: IntegratedDatasetCatalogEntry): string {
+  if (dataset.licenseStatus === "verified-open-iodl-2.0") {
+    return "Riuso verificato: Italian Open Data License (IODL) 2.0.";
+  }
   if (dataset.licenseStatus === "verified-open-cc-by-4.0") {
     return "Riuso verificato: CC BY 4.0.";
   }

@@ -18,6 +18,19 @@
       "canonicalUrls": []
     },
     "overrides": {
+      "salute-posti-letto-2023": {
+        "holder": "Ministero della Salute",
+        "referencePeriod": "2023-01-01",
+        "publicationDate": "2025-07-29",
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/dati/documenti/Dataset-PostiLettoRegioneDisciplina2020.pdf",
+          "https://www.dati.salute.gov.it/it/dataset/posti-letto-regione-e-disciplina-2023/",
+          "https://www.dati.salute.gov.it/sites/default/files/2025-07/Posti%20letto%20per%20Regione%20e%20disciplina_2023_0.csv"
+        ]
+      },
       "affidamenti-diretti": {
         "referencePeriod": "2024-2026"
       },
@@ -246,6 +259,49 @@
     }
   },
   "datasets": [
+    {
+      "id": "salute-posti-letto-2023",
+      "title": "Posti letto per Regione e disciplina · 2023",
+      "domain": "health",
+      "relativePath": "salute-posti-letto-2023.csv",
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "encoding": "latin-1",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Dotazione al 1° gennaio 2023 delle strutture pubbliche ed equiparate e dell’attività accreditata delle case di cura private: conteggi di posti letto e reparti, non importi né spesa pubblica.",
+        "Il totale comprende degenza ordinaria, a pagamento, day hospital e day surgery. Acuti, riabilitazione e lungodegenza sono distinti; la disciplina Nido è esclusa.",
+        "La geografia indica dove si trovano le strutture, non la residenza dei pazienti. Bolzano e Trento restano Province autonome separate.",
+        "Eventuali modelli HSP12/HSP13 non trasmessi limitano la completezza: le righe assenti non sono zeri e non si stimano i posti mancanti.",
+        "Non misura pazienti curati, tempi di attesa, outcome, qualità o efficienza. Non calcolare costi per posto letto dal CE 2024: anno e perimetro contabile sono diversi.",
+        "Licenza dichiarata dalla scheda del dataset: Italian Open Data License (IODL) 2.0. Rilascio pubblicato il 29 luglio 2025; acquisizione del 6 settembre 2026."
+      ],
+      "expected": {
+        "bytes": 86277,
+        "sha256": "365a98b0ee40137dc8c477d17e429cdf6a150a04bc41cb666de2072117d1b39b",
+        "rows": 1019,
+        "columns": 12,
+        "headers": [
+          "Anno",
+          "Codice Regione",
+          "Descrizione Regione",
+          "Codice disciplina",
+          "Descrizione disciplina",
+          "Tipo di Disciplina",
+          "N° Reparti",
+          "Posti letto degenza ordinaria",
+          "Posti letto degenza a pagamento",
+          "Posti letto Day Hospital",
+          "Posti letto Day Surgery",
+          "Totale posti letto"
+        ]
+      }
+    },
     {
       "id": "siope-inventario-enti",
       "title": "SIOPE: inventario enti",

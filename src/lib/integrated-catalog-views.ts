@@ -191,6 +191,9 @@ export function matchesCatalogFilters(
 export function relatedReadingForDataset(
   dataset: Pick<CatalogDatasetSummary, "id" | "domain">,
 ): RelatedReading | null {
+  if (dataset.id === "salute-posti-letto-2023") {
+    return { href: "/spese/sanita#posti-letto", label: "La dotazione ospedaliera" };
+  }
   const topic = EDITORIAL_TOPICS.find((entry) =>
     entry.datasets.some((item) => item.id === dataset.id),
   );

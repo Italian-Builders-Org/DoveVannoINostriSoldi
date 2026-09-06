@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni";
+  surface: "/partecipazioni" | "/spese/sanita";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -955,6 +955,16 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/spese/sanita",
+    title: "La dotazione ospedaliera",
+    description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",
+    datasets: [{
+      id: "salute-posti-letto-2023",
+      label: "Posti letto per Regione e disciplina",
+      catalogBoundary: "Dotazione dichiarata delle strutture, non pazienti curati, tempi di attesa o qualità delle cure.",
+    }],
+  },
   {
     surface: "/partecipazioni",
     title: "Approfondimenti sulle partecipate statali",

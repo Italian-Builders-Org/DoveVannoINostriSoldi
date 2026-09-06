@@ -98,6 +98,7 @@ const mandatoryDatasetIds = [
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
+  "salute-posti-letto-2023",
   "segnalazioni",
   "segnalazioni-card",
   "segnalazioni-parti",
@@ -114,11 +115,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 83,
+  datasets: 84,
   derivedOnlyRows: 2_841,
-  publicRows: 815_453,
-  sourceBytes: 2_646_421_189,
-  sourceRows: 13_797_799,
+  publicRows: 816_472,
+  sourceBytes: 2_646_507_466,
+  sourceRows: 13_798_818,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -126,6 +127,7 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "salute-posti-letto-2023": "2023-01-01",
   "affidamenti-diretti": "2024-2026",
   "affitti-immobili": "2024-2026",
   "auto-welfare": "2024-2026",

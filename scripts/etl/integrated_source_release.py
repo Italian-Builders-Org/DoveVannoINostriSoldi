@@ -40,10 +40,10 @@ EXPECTED_CORPUS = {
     "hardlink": 4_860,
     "symlink": 5,
 }
-EXPECTED_DATASETS = 83
+EXPECTED_DATASETS = 84
 EXPECTED_DATASET_ROWS = {
-    "sourceRows": 13_797_799,
-    "publicRows": 815_453,
+    "sourceRows": 13_798_818,
+    "publicRows": 816_472,
     "catalogOnlyRows": 12_979_505,
     "derivedOnlyRows": 2_841,
 }

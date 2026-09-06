@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.797\.799/);
-  assert.match(coverageText, /815\.453/);
+  assert.match(coverageText, /13\.798\.818/);
+  assert.match(coverageText, /816\.472/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -185,7 +185,7 @@ async function driveCatalog(page, directory) {
   const priorityLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 83, "/dati: attesa solo la vista priorità");
+  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 84, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
   await screenshot(page, directory, "catalog.png");
 
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 83);
+  assert.equal(links.length, 84);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -266,8 +266,10 @@ async function driveHubs(page, directory) {
     ["/appalti/dettaglio", "Appalti, fornitori e rinnovi", "appalti.png"],
     ["/incarichi/dettaglio", "Incarichi, consulenze e personale", "incarichi.png"],
     ["/spese/operative", "Immobili, missioni, eventi e altre spese", "operative.png"],
+    ["/spese/capitoli-progetti", "Capitoli contabili e progetti", "capitoli-progetti.png"],
     ["/trasparenza", "Documenti, segnali e verifiche", "trasparenza.png"],
     ["/partecipazioni", "Partecipazioni pubbliche", "partecipazioni.png"],
+    ["/spese/sanita", "Sanità: personale e servizi nel Conto Economico", "sanita.png"],
   ];
   const actions = [];
   const links = new Set();
@@ -279,8 +281,21 @@ async function driveHubs(page, directory) {
     assert.ok(pageLinks.length > 0);
     pageLinks.forEach((href) => links.add(href));
     await screenshot(page, directory, image);
+    if (pathname === "/spese/sanita") {
+      await page.focus("#posti-letto summary");
+      await page.keyboard.press("Enter");
+      assert.equal(await page.$eval("#posti-letto details", (node) => node.open), true);
+      assert.equal(await page.$$eval("#posti-letto tbody tr", (nodes) => nodes.length), 21);
+      const section = await page.$("#posti-letto");
+      await section.screenshot({ path: resolve(directory, "posti-letto.png") });
+      const capacity = await (await request("/api/dati/salute-posti-letto-2023?limit=5")).json();
+      assert.equal(capacity.dataset.publicRows, 1_019);
+      assert.equal(capacity.dataset.sourceMetadata.referencePeriod, "2023-01-01");
+      assert.equal(capacity.dataset.licenseStatus, "verified-open-iodl-2.0");
+      await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
+    }
   }
-  assert.equal(links.size, 83);
+  assert.equal(links.size, 84);
   return { actions, uniqueDatasetLinks: links.size };
 }
 
@@ -290,6 +305,7 @@ async function driveMcp(page, directory) {
     document.body.innerText.includes("spesa_pa_dettaglio"),
   );
   assert.equal(integratedDatasetAdvertised, true);
+  assert.equal(await page.evaluate(() => document.body.innerText.includes("salute_posti_letto")), true);
   await screenshot(page, directory, "mcp.png");
   return { actions: [state], integratedDatasetAdvertised };
 }

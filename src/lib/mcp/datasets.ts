@@ -63,6 +63,13 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "salute_posti_letto": {
+      const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectIntegratedDataset({
+        datasetId: "salute-posti-letto-2023", q: query.query, limit,
+        offset: query.offset, cursor: query.cursor, signal: options.signal,
+      }));
+    }
     case "siope_inventario_enti":
     case "siope_province":
     case "siope_regioni":

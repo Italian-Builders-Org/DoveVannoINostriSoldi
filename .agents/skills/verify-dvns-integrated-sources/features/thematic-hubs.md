@@ -32,7 +32,7 @@ Preconditions:
 - **Keep hierarchy clear.** Main pages expose no more than three concise
   previews. The four hubs are expansion pages for the complete thematic paths
   and technical register, not long previews embedded in the main pages.
-- **Check total coverage.** The union of unique detail hrefs across the four hubs and the participation preview contains all 83 dataset IDs.
+- **Check total coverage.** The union of unique detail hrefs across the four hubs, the participation preview and `/spese/sanita` contains all 84 dataset IDs.
 - **Proof.** Retain one screenshot per hub and `state.json`.
 
 ## Gotchas

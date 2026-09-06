@@ -6,14 +6,14 @@ export const INTEGRATED_CORPUS_CONTRACT = {
   regularFiles: 46_438,
   hardlinks: 4_860,
   symlinks: 5,
-  datasets: 83,
+  datasets: 84,
   sourceIdentities: 34_071,
   quarantinedSourceIdentities: 1_493,
-  sourceRows: 13_797_799,
-  publicRows: 815_453,
+  sourceRows: 13_798_818,
+  publicRows: 816_472,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 2_646_421_189,
+  sourceBytes: 2_646_507_466,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;
@@ -60,6 +60,7 @@ export type IntegratedEvidenceLabel = z.infer<typeof evidenceLabelSchema>;
 export const licenseStatusSchema = z.enum([
   "not-declared",
   "verified-open-cc-by-4.0",
+  "verified-open-iodl-2.0",
 ]);
 export type IntegratedLicenseStatus = z.infer<typeof licenseStatusSchema>;
 

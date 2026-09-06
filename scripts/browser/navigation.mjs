@@ -164,11 +164,12 @@ try {
     label:'Sidebar rotazione e focus', pathname:'/', width:390, suite:'navigation',
     validate:async(page) => {
       await openMobile(page);
-      await page.setViewport({width:1280,height:900});
+      // Preserve device emulation: changing isMobile would reload the page.
+      await page.setViewport({...page.viewport(),width:1280,height:900});
       await page.waitForSelector('#mobile-navigation',{hidden:true});
       assert.equal(await page.evaluate(()=> document.activeElement?.classList.contains('sidebar-collapse')),true);
       assert.notEqual(await page.evaluate(()=>getComputedStyle(document.body).overflowY),'hidden');
-      await page.setViewport({width:768,height:900});
+      await page.setViewport({...page.viewport(),width:768,height:900});
       await page.waitForSelector('.mobile-menu-trigger',{visible:true});
       assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('mobile-menu-trigger')),true);
       await openMobile(page);

@@ -2,7 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -288,10 +288,21 @@ function verifySourceContracts(root) {
 export function writeDraft(root, draft) {
   const target = resolve(root, `src/content/monthly-reports/drafts/${draft.issueMonth}.ts`);
   const published = resolve(root, `src/content/monthly-reports/published/${draft.issueMonth}.ts`);
-  if (existsSync(target) || existsSync(published)) fail(`l'edizione ${draft.issueMonth} esiste già`);
+  if (existsSync(published)) fail(`l'edizione ${draft.issueMonth} esiste già`);
   mkdirSync(dirname(target), { recursive: true });
   const source = `import type { MonthlyReportDraft } from "@/lib/monthly-reports-contract";\n\nexport const monthlyReportDraft = ${JSON.stringify(draft, null, 2)} as const satisfies MonthlyReportDraft;\n`;
-  writeFileSync(target, source, { encoding: "utf8", flag: "wx" });
+  let descriptor;
+  try {
+    descriptor = openSync(target, "wx");
+  } catch (error) {
+    if (error.code === "EEXIST") fail(`l'edizione ${draft.issueMonth} esiste già`);
+    throw error;
+  }
+  try {
+    writeFileSync(descriptor, source, { encoding: "utf8" });
+  } finally {
+    closeSync(descriptor);
+  }
   return target;
 }
 

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -104,7 +104,24 @@ test("il generatore non sovrascrive e non registra né pubblica la bozza", () =>
     const draft = generatedDraft();
     const target = writeDraft(root, draft);
     assert.match(readFileSync(target, "utf8"), /status": "draft"/);
-    assert.throws(() => writeDraft(root, draft), /esiste già/);
+    const original = readFileSync(target, "utf8");
+    assert.throws(() => writeDraft(root, { ...draft, title: "Nuova bozza" }), /esiste già/);
+    assert.equal(readFileSync(target, "utf8"), original);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("il generatore protegge le edizioni già pubblicate", () => {
+  const root = mkdtempSync(join(tmpdir(), "dvns-report-"));
+  try {
+    const directory = join(root, "src/content/monthly-reports/published");
+    mkdirSync(directory, { recursive: true });
+    const published = join(directory, "2026-08.ts");
+    writeFileSync(published, "Edizione immutabile");
+    assert.throws(() => writeDraft(root, generatedDraft()), /esiste già/);
+    assert.equal(readFileSync(published, "utf8"), "Edizione immutabile");
+    assert.equal(existsSync(join(root, "src/content/monthly-reports/drafts/2026-08.ts")), false);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -134,6 +151,11 @@ test("il contratto pubblicato accetta solo capsule complete e verificabili", () 
   noDenominator.facts[0].value = { kind: "percentage", basisPoints: 100 };
   noDenominator.facts[0].denominator = null;
   assert.throws(() => validatePublishedMonthlyReport(noDenominator), /denominatore obbligatorio/);
+
+  const infiniteRatio = structuredClone(valid);
+  infiniteRatio.facts[0].value = { kind: "ratio", decimal: "9".repeat(310), unit: "imprese" };
+  infiniteRatio.facts[0].denominator = "popolazione osservata";
+  assert.throws(() => validatePublishedMonthlyReport(infiniteRatio), /rapporto decimale non valido/);
 
   const tablePercentage = structuredClone(valid);
   tablePercentage.figures[1].denominator = null;

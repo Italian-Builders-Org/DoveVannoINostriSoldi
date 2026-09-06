@@ -28,7 +28,7 @@ const SOURCE_IDS = [
   "ipa", "ipa-struttura", "openbdap", "anac", "inps", "cpt", "mef-irpef", "siope",
   "istat", "istat-casellario-pensioni",
   "consip", "opencoesione", "italiadomani", "opencivitas", "consulenti", "camera", "senato",
-  "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-cofog", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "inps-naspi", "mef-irpef-dettaglio", "ameco",
+  "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-cofog", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "inps-naspi", "mef-irpef-dettaglio", "ameco",
   "governi-presidenza",
 ];
 const MCP_HEADERS = {

@@ -1050,6 +1050,32 @@
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 34_727_DF_DCCV_POVERTA_1 è acquisita con le sette misure RELATIVE ed è con chiave completamente specificata (nove delle undici dimensioni fissate letteralmente, REF_AREA e DATA_TYPE enumerate) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati, partizioni territoriali sui soli conteggi entro tolleranza empirica dichiarata e composizioni percentuali che chiudono a 100 falliscono chiuse. Il flag CL_FLAG «0» non è uno zero osservato: una cella flaggata resta null. Vale anche un'asserzione NEGATIVA: le incidenze non devono chiudere per somma fra territori, perché un tasso non si comporta così. La famiglia relativa ha lock, byte e hash propri: il lock della famiglia assoluta non è riusabile. Nessuna licenza inferita: la risposta SDMX non ne espone alcuna."
     },
     {
+      "id": "istat-bes-economico-2004-2024",
+      "owner": "ISTAT BES dei territori 2004-2024, dominio benessere economico (edizione 2025)",
+      "files": [
+        "src/data/generated/istat-bes-economico-2004-2024.data.json",
+        "src/data/generated/istat-bes-economico-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-economico-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale di DF_BES_TERRIT_4 (dominio BES_04, edizione 2025) e acquisita con FREQ, DOMAIN ed EDITION fissati e DATA_TYPE e SEX enumerati; REF_AREA resta aperta nella chiave ma l'anagrafica dei 139 territori e vincolata nel lock e un codice fuori elenco fallisce chiuso. --check valida il bundle committato senza rete. La copertura e verificata PER INDICATORE (periodo e modalita di sesso propri), i livelli territoriali vengono dalla gerarchia CL_ITTER107 e non dalla lunghezza del codice, i compositi ITCD e ITFG sono dichiarati perche la fonte non li marca, e la rottura della catena di parentela su Bolzano e Trento e dichiarata invece che rattoppata. Nessuna misura e un conteggio: la somma territoriale NON e una riconciliazione valida e il contratto la rifiuta; vale invece l'invariante delle medie, il totale fra i due sessi, verificato su 5113 terne. Il flag CL_FLAG «g» rende la cella null, mai zero. Nessuna licenza inferita."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

@@ -124,6 +124,9 @@ const querySchema = z.object({
   period: z.string().max(20)
     .describe("Periodo dichiarato dal dataset, per esempio 2026-07-31 o 2026-Q2.")
     .optional(),
+  sex: z.enum(["F", "M", "T"])
+    .describe("Modalità di sesso per i dataset che la espongono: F, M oppure T (totale, che NON è la somma di F e M).")
+    .optional(),
   sector: z.string().max(20)
     .describe("Codice della sezione ATECO accettato dal dataset selezionato.")
     .optional(),

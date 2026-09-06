@@ -344,6 +344,18 @@ export async function queryPublicDataset(
         ...queryIstatPovertaRelativa({ territory: query.territory, year: query.year, measure: query.measure }),
       });
     }
+    case "istat_bes_economico": {
+      const { queryIstatBes } = await import("@/lib/istat-bes-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBes({
+          territory: query.territory,
+          year: query.year,
+          indicator: query.measure,
+          sex: query.sex,
+        }),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   Suspense,
+  type CSSProperties,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -302,7 +303,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             aria-label="Navigazione principale"
             ref={navigationRef}
           >
-            <ul className="primary-nav-list">
+            <ul className="primary-nav-list" style={{ "--nav-columns": Math.ceil(PRIMARY_NAV.length / 2) } as CSSProperties}>
               {PRIMARY_NAV.map((item) => {
                 const active = isNavSectionActive(pathname, item);
                 const hasChildren = Boolean(item.children?.length);

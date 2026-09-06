@@ -832,6 +832,21 @@ main { display: block; }
   .nav-item-toggle { min-width: 26px; padding-right: 4px; }
 }
 
+/* Two balanced rows keep every desktop section visible with its icon.
+   Smaller viewports retain the single swipeable navigation row. */
+@media (min-width: 1280px) {
+  .primary-nav { width: 100%; }
+  .primary-nav-list {
+    display: grid;
+    grid-template-columns: repeat(var(--nav-columns), minmax(0, 1fr));
+    gap: 0;
+  }
+  .nav-item { justify-content: center; }
+  .nav-item > a { padding-inline: 7px; font-size: 13px; }
+  .nav-item-has-menu > a { padding-right: 2px; }
+  .nav-item-toggle { min-width: 26px; padding-right: 4px; }
+}
+
 @media (max-width: 1000px) {
   :root { --gutter: 20px; }
   .header-search { width: 260px; }

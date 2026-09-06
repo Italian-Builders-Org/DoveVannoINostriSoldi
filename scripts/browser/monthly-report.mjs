@@ -37,6 +37,14 @@ async function inspectReport(page, width) {
       bodyWidth: document.body.scrollWidth,
       clientWidth: rootElement.clientWidth,
       figureCount: figures.length,
+      headerWidth: document.querySelector("main article > header").getBoundingClientRect().width,
+      primaryLinks: document.querySelectorAll("nav.primary-nav .nav-item > a").length,
+      primaryLinkIcons: document.querySelectorAll("nav.primary-nav .nav-item > a svg").length,
+      factUnits: [...document.querySelectorAll("main article > section strong > span:last-child")].map((node) => {
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        return { text: node.textContent, lines: range.getClientRects().length };
+      }),
       mainWidth: main.clientWidth - parseFloat(mainStyle.paddingLeft) - parseFloat(mainStyle.paddingRight),
       figureWidths: figures.map((figure) => figure.getBoundingClientRect().width),
       detailsCount: details.length,
@@ -55,6 +63,10 @@ async function inspectReport(page, width) {
   assert.equal(state.h1, "Imprese e territori", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
   assert.ok(state.figureWidths.every((width) => width >= state.mainWidth * 0.95), `${label}: margini predefiniti restringono i grafici`);
+  assert.ok(Math.abs(state.headerWidth - state.mainWidth) < 2, `${label}: intestazione e articolo disallineati`);
+  assert.equal(state.primaryLinkIcons, state.primaryLinks, `${label}: icone incoerenti nei link primari`);
+  assert.deepEqual(state.factUnits.map((unit) => unit.text), ["sedi di impresa", "miliardi €", "miliardi €"]);
+  assert.ok(state.factUnits.every((unit) => unit.lines === 1), `${label}: unità spezzate nelle schede`);
   assert.equal(state.figureCount, 2, `${label}: servono due visualizzazioni`);
   assert.equal(state.detailsCount, 2, `${label}: servono due tabelle accessibili`);
   assert.deepEqual(state.rowCounts, [16, 20], `${label}: righe grafici e tabelle divergenti`);

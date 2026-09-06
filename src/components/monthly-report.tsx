@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight01Icon, Calendar03Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MonthlyReportFigure } from "@/components/monthly-report-figure";
-import { formatReportPeriod, formatReportValue } from "@/lib/monthly-report-format";
+import { formatReportPeriod, formatReportValueParts } from "@/lib/monthly-report-format";
 import {
   MONTHLY_REPORT_SERIES,
   issueMonthLabel,
@@ -57,7 +57,8 @@ export function MonthlyReportArticle({ report }: { report: PublishedMonthlyRepor
           <div className={styles.factGrid}>
             {report.inBrief.map((id) => {
               const fact = facts.get(id)!;
-              return <article key={id}><h3>{fact.label}</h3><strong>{formatReportValue(fact.value)}</strong><p>{fact.plainLanguage}</p><p><small>Periodo: {formatReportPeriod(fact.referencePeriod)}. Perimetro: {fact.perimeter}{fact.denominator ? ` Denominatore: ${fact.denominator}.` : ""}</small></p><small>{fact.caveat} <SourceLinks ids={fact.evidenceIds} /></small></article>;
+              const value = formatReportValueParts(fact.value);
+              return <article key={id}><h3>{fact.label}</h3><strong><span>{value.amount}</span>{value.unit && <> <span className={styles.factUnit}>{value.unit}</span></>}</strong><p>{fact.plainLanguage}</p><p><small>Periodo: {formatReportPeriod(fact.referencePeriod)}. Perimetro: {fact.perimeter}{fact.denominator ? ` Denominatore: ${fact.denominator}.` : ""}</small></p><small>{fact.caveat} <SourceLinks ids={fact.evidenceIds} /></small></article>;
             })}
           </div>
         </section>

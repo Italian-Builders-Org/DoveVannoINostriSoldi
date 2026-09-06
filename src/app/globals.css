@@ -287,8 +287,10 @@ nav li a { text-decoration: none; }
 
 .primary-nav {
   min-width: 0;
-  overflow: visible;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.primary-nav::-webkit-scrollbar { display: none; }
 .primary-nav-list {
   display: flex;
   align-items: stretch;
@@ -391,8 +393,9 @@ nav li a { text-decoration: none; }
   cursor: pointer;
 }
 
+.nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }
 .nav-scroll-control {
-  display: none;
+  display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
@@ -799,18 +802,11 @@ main { display: block; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
-/* The primary sections need about 1580px to sit flat. Below that the row
-   scrolls inside itself rather than pushing the page sideways. */
+/* The navigation always contains its own overflow, including on wide screens
+   and at increased zoom. Below this width, submenus use the available row. */
 @media (max-width: 1580px) {
   .nav-item > a { padding-inline: 10px; }
   .nav-item-has-menu > a { padding-right: 4px; }
-  .nav-scroll-control { display: inline-flex; }
-  .nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }
-  .primary-nav {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .primary-nav::-webkit-scrollbar { display: none; }
   .nav-row > .nav-submenu {
     left: 0;
     right: 0;
@@ -819,15 +815,15 @@ main { display: block; }
   }
 }
 
-@media (max-width: 1580px) and (hover: none) {
+@media (hover: none) {
   .nav-scroll-control { display: none; }
 }
 
-@media (max-width: 1580px) and (pointer: coarse) {
+@media (pointer: coarse) {
   .nav-scroll-control { display: none; }
 }
 
-/* Keep every section visible on laptop screens, including publications.
+/* Use compact spacing on laptop screens, including publications.
    Touch layouts below 1100px retain their larger targets and swipe behavior. */
 @media (min-width: 1100px) and (max-width: 1580px) {
   .primary-nav-list { gap: 0; }

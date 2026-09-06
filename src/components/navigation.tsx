@@ -19,7 +19,19 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
   GithubIcon,
+  Home01Icon,
   News01Icon,
+  Building03Icon,
+  School01Icon,
+  Money01Icon,
+  MapsGlobal01Icon,
+  Task01Icon,
+  Building04Icon,
+  Building06Icon,
+  Search01Icon,
+  AiChat01Icon,
+  BookSearchIcon,
+  BookOpen01Icon,
 } from "@hugeicons/core-free-icons";
 import {
   PRIMARY_NAV,
@@ -28,6 +40,22 @@ import {
 } from "@/lib/site-navigation";
 import { isEventTargetWithin } from "@/lib/navigation-boundary";
 import { REPO_URL } from "@/lib/site";
+
+const NAV_ICONS = {
+  home: Home01Icon,
+  news: News01Icon,
+  business: Building03Icon,
+  education: School01Icon,
+  money: Money01Icon,
+  map: MapsGlobal01Icon,
+  projects: Task01Icon,
+  institutions: Building04Icon,
+  entities: Building06Icon,
+  checks: Search01Icon,
+  assistant: AiChat01Icon,
+  sources: BookSearchIcon,
+  research: BookOpen01Icon,
+} as const;
 
 type NavigationContentProps = Readonly<{
   pathname: string;
@@ -313,14 +341,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
                       ref={active ? activeLinkRef : undefined}
                       onClick={closeMenu}
                     >
-                      {item.icon === "news" ? (
-                        <HugeiconsIcon
-                          icon={News01Icon}
-                          size={17}
-                          strokeWidth={1.8}
-                          aria-hidden="true"
-                        />
-                      ) : null}
+                      <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={17} strokeWidth={1.8} aria-hidden="true" />
                       {item.label}
                     </Link>
                     {hasChildren ? (

@@ -10,8 +10,15 @@
 
 .articleHeader,
 .archive > header {
-  max-width: 52rem;
   margin-bottom: 3rem;
+}
+
+.archive > header {
+  max-width: 52rem;
+}
+
+.articleHeader .dek {
+  max-width: 70ch;
 }
 
 .eyebrow,
@@ -89,6 +96,14 @@
   font-size: clamp(1.4rem, 3vw, 2.1rem);
   line-height: 1.1;
   margin-block: 0.8rem;
+}
+
+.factUnit {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 0.4rem;
 }
 
 .factGrid small,

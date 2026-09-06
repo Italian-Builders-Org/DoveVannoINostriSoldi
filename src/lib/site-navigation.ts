@@ -8,20 +8,23 @@ export type NavLink = Readonly<{
   label: string;
 }>;
 
+export type NavIcon = "home" | "news" | "business" | "education" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+
 export type NavSection = Readonly<{
   href: string;
   label: string;
-  icon?: "news";
+  icon: NavIcon;
   aliases?: readonly string[];
   children?: readonly NavLink[];
 }>;
 
 export const PRIMARY_NAV: readonly NavSection[] = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "Home", icon: "home" },
   { href: "/report", label: "Report mensili", icon: "news" },
   {
     href: "/imprese",
     label: "Imprese",
+    icon: "business",
     children: [
       { href: "/imprese", label: "Panoramica" },
       { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
@@ -34,6 +37,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/istruzione",
     label: "Istruzione",
+    icon: "education",
     children: [
       { href: "/istruzione", label: "Atlante della scuola" },
       { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
@@ -42,6 +46,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/spese",
     label: "Soldi",
+    icon: "money",
     aliases: ["/stato", "/entrate"],
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
@@ -64,6 +69,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/territori",
     label: "Territori",
+    icon: "map",
     children: [
       { href: "/territori", label: "Panoramica" },
       { href: "/territori/irpef", label: "Redditi IRPEF" },
@@ -74,6 +80,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/coesione",
     label: "Fondi e progetti",
+    icon: "projects",
     aliases: ["/confronti", "/pnrr", "/progetti"],
     children: [
       { href: "/coesione", label: "Coesione e PNRR" },
@@ -85,6 +92,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/istituzioni",
     label: "Istituzioni",
+    icon: "institutions",
     aliases: ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
     children: [
       { href: "/istituzioni", label: "Panoramica" },
@@ -98,6 +106,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/enti",
     label: "Enti e società",
+    icon: "entities",
     aliases: ["/partecipazioni"],
     children: [
       { href: "/enti", label: "Registro enti" },
@@ -107,6 +116,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/controlli",
     label: "Cosa controllare",
+    icon: "checks",
     aliases: ["/appalti", "/incarichi", "/dati", "/trasparenza", "/controlli/sintesi"],
     children: [
       { href: "/appalti", label: "Appalti" },
@@ -117,10 +127,11 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/esplora", label: "Esplora relazioni" },
     ],
   },
-  { href: "/assistente", label: "Assistente" },
+  { href: "/assistente", label: "Assistente", icon: "assistant" },
   {
     href: "/fonti",
     label: "Fonti",
+    icon: "sources",
     aliases: ["/metodologia", "/studi"],
     children: [
       { href: "/fonti", label: "Elenco fonti" },

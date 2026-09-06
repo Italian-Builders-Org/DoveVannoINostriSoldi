@@ -21,6 +21,8 @@ async function inspectReport(page, width) {
   const label = `report agosto 2026 ${width}px`;
   const state = await page.evaluate(() => {
     const rootElement = document.documentElement;
+    const main = document.querySelector("main");
+    const mainStyle = getComputedStyle(main);
     const figures = [...document.querySelectorAll("main figure")];
     const details = [...document.querySelectorAll("main figure details.chart-data")];
     const captions = [...document.querySelectorAll("main figure table caption")];
@@ -35,7 +37,7 @@ async function inspectReport(page, width) {
       bodyWidth: document.body.scrollWidth,
       clientWidth: rootElement.clientWidth,
       figureCount: figures.length,
-      mainWidth: document.querySelector("main").getBoundingClientRect().width,
+      mainWidth: main.clientWidth - parseFloat(mainStyle.paddingLeft) - parseFloat(mainStyle.paddingRight),
       figureWidths: figures.map((figure) => figure.getBoundingClientRect().width),
       detailsCount: details.length,
       captions: captions.map((caption) => caption.textContent?.trim()),

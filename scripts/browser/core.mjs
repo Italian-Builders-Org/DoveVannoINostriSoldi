@@ -490,6 +490,9 @@ async function assertSpendingComposition(page, label, width) {
 }
 
 async function assertTableKeyboardScroll(page, label) {
+  // The SSR table is visible before its keyboard-handler bundle has loaded.
+  // Wait for that load here, then keep the native keyboard assertions intact.
+  await page.waitForNetworkIdle({ idleTime: 250, timeout: 10_000 });
   await page.waitForSelector(TABLE_REGION, { visible: true });
   const tableState = await page.$eval(TABLE_REGION, (region) => ({
     clientWidth: region.clientWidth,

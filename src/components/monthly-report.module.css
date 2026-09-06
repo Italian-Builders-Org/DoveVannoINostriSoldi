@@ -152,6 +152,10 @@
   margin-bottom: 1rem;
 }
 
+.figure th {
+  white-space: nowrap;
+}
+
 .archive > section > h2 {
   margin-bottom: 1.25rem;
 }

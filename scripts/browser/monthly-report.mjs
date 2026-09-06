@@ -69,20 +69,29 @@ async function inspectReport(page, width) {
   assert.equal(state.author, "Redazione DVNS", `${label}: autore metadata errato`);
   assert.equal(state.sourceLinksValid, true, `${label}: riferimento a fonte assente`);
 
-  const firstSummary = await page.$("main figure details.chart-data > summary");
-  assert.ok(firstSummary, `${label}: summary della tabella assente`);
-  await firstSummary.focus();
-  assert.equal(
-    await firstSummary.evaluate((element) => document.activeElement === element),
-    true,
-    `${label}: summary non raggiungibile da tastiera`,
-  );
-  await page.keyboard.press("Enter");
-  await page.waitForFunction(
-    (element) => element.closest("details")?.open === true,
-    { timeout: 2_000 },
-    firstSummary,
-  );
+  const summaries = await page.$$("main figure details.chart-data > summary");
+  for (const summary of summaries) {
+    await summary.focus();
+    assert.equal(
+      await summary.evaluate((element) => document.activeElement === element),
+      true,
+      `${label}: summary non raggiungibile da tastiera`,
+    );
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(
+      (element) => element.closest("details")?.open === true,
+      { timeout: 2_000 },
+      summary,
+    );
+  }
+  const labelLineCounts = await page.$$eval('main figure tbody th[scope="row"]', (cells) => cells.map((cell) => {
+    const range = document.createRange();
+    range.selectNodeContents(cell);
+    return range.getClientRects().length;
+  }));
+  assert.equal(labelLineCounts.length, 36, `${label}: etichette tabellari mancanti`);
+  assert.ok(labelLineCounts.every((count) => count === 1), `${label}: nomi delle regioni spezzati nelle tabelle`);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${label}: tabelle aperte causano overflow globale`);
 
   await page.screenshot({
     path: path.join(reviewDirectory, `monthly-report-${width}.png`),

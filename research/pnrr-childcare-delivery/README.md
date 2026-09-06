@@ -48,6 +48,16 @@ La versione 1.2 (6 settembre 2026) aggiunge:
   assenza di preregistrazione/peer review;
 - sezione web distinta dagli articoli mensili, con asset versionati e hash.
 
+La versione 1.3 (6 settembre 2026) rivede soltanto la presentazione del PDF:
+
+- note e limiti diventano paragrafi tipografici, senza riquadri colorati;
+- ripristina virgolette, apostrofi e simboli euro mancanti nel rendering;
+- corregge i riferimenti interni alle pagine e una riga troppo lunga.
+
+Testo, numeri, figure, tabelle e interpretazione restano quelli della versione
+1.2. Il PDF conserva 32 pagine. Gli asset pubblici della 1.2 restano disponibili
+nel percorso versionato precedente; la 1.3 ha un URL e uno SHA-256 distinti.
+
 La data dei dati resta **13 giugno 2026**, non settembre. La verifica MCP del
 6 settembre conferma 3.841 progetti, 18.851 procedure e 506.114.534.373 centesimi
 di finanziamento totale per la misura completa.

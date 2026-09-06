@@ -32,6 +32,7 @@
 
 \hypersetup{
   colorlinks=true,
+  hypertexnames=false,
   linkcolor=dvnsnavy,
   citecolor=dvnsteal,
   urlcolor=dvnsblue,
@@ -43,6 +44,7 @@
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt plus 1pt}
+\setlength{\emergencystretch}{2em}
 \setlist[itemize]{leftmargin=1.4em,itemsep=2pt,topsep=3pt}
 \setlist[enumerate]{leftmargin=1.5em,itemsep=3pt,topsep=3pt}
 \renewcommand{\arraystretch}{1.12}
@@ -53,12 +55,12 @@
 \fancyhead[R]{\small\color{dvnsgrey}DoveVannoINostriSoldi}
 \fancyfoot[C]{\thepage}
 
-\newcommand{\keybox}[1]{%
-  \begin{center}
-  \fcolorbox{dvnsteal}{dvnslight}{\parbox{0.91\textwidth}{#1}}
-  \end{center}
+\newcommand{\researchnote}[1]{%
+  \par\addvspace{0.5\baselineskip}
+  \noindent #1\par
+  \addvspace{0.5\baselineskip}
 }
-\newcommand{\euro}{\,€}
+\newcommand{\euro}{\,\texteuro{}}
 
 \begin{document}
 
@@ -75,9 +77,9 @@
   {\large\bfseries DoveVannoINostriSoldi\par}
   {\normalsize Laboratorio di ricerca civica sui conti pubblici\par}
   \vspace{0.5cm}
-  {\normalsize 6 settembre 2026 -- Working paper 1.2\par}
+  {\normalsize 6 settembre 2026 -- Working paper 1.3\par}
   \vfill
-  \keybox{\textbf{Confine interpretativo.} Questo studio misura lo stato amministrativo dei progetti, non i posti effettivamente aperti o certificati. I dati pubblici analizzati non contengono il numero di posti creati per CUP né il relativo certificato di completamento.}
+  \researchnote{\textbf{Confine interpretativo.} Questo studio misura lo stato amministrativo dei progetti, non i posti effettivamente aperti o certificati. I dati pubblici analizzati non contengono il numero di posti creati per CUP né il relativo certificato di completamento.}
   \vspace{0.4cm}
   {\small\color{dvnsgrey}Dati di attuazione Italia Domani, integrati e verificati tramite l'MCP di DoveVannoINostriSoldi; statistiche territoriali Istat. Codice, tabelle, hash e artefatti di riproduzione accompagnano il paper.\par}
   \vspace{0.8cm}
@@ -86,7 +88,7 @@
 
 \section*{Sintesi esecutiva}
 
-\keybox{\textbf{Una fotografia storica, non un bollettino corrente.} La versione 1.2 aggiorna metodo e presentazione, non i dati di attuazione: il riferimento resta il 13 giugno 2026. Le conclusioni non attestano lo stato dei cantieri a settembre né il conseguimento finale del target europeo.}
+\researchnote{\textbf{Una fotografia storica, non un bollettino corrente.} La versione 1.2 aggiorna metodo e presentazione, non i dati di attuazione: il riferimento resta il 13 giugno 2026. Le conclusioni non attestano lo stato dei cantieri a settembre né il conseguimento finale del target europeo.}
 
 Il target europeo M4C1-18 richiede certificati di completamento per almeno 150.480 posti nei servizi educativi 0--6 entro il secondo trimestre 2026 \citep{ec2026target}. A diciassette giorni dalla fine del trimestre, lo snapshot pubblico del 13 giugno 2026 permette di osservare progetti, fasi, finanziamenti e gare, ma non il numero di posti certificati. Il paper risponde quindi a una domanda più circoscritta e verificabile: \emph{quali progetti classificati come asili nido hanno raggiunto la conclusione amministrativa o almeno il collaudo, e dove si concentra il rischio di esecuzione?}
 
@@ -96,7 +98,7 @@ Il contributo centrale è distinguere cinque passaggi della produzione pubblica:
   \item \textbf{Solo 294 progetti su 2.980 risultano conclusi (9,9\%).} Altri 1.149 sono in collaudo ma non conclusi; 1.371 sono ancora in esecuzione lavori. La metà amministrativamente più matura della pipeline non equivale alla metà dei posti certificati: il denominatore richiesto dall'Unione europea non è osservabile.
   \item \textbf{Allocazione e maturità mostrano geografie diverse.} A livello regionale il finanziamento associato per bambino 0--2 è più elevato dove la copertura 2023/24 era più bassa ($\rho=-0{,}58$), ma la quota di progetti conclusi o in collaudo cresce con la copertura ($\rho=0{,}59$). Nelle tre regioni sotto il 20\% di copertura sono associati 3.951 euro per bambino stimato, ma solo il 37,1\% di tali fondi riguarda progetti almeno in collaudo. Nelle regioni sopra il 33\%, la stessa quota è circa il 58--59\%. È un'attenuazione descrittiva della perequazione lungo la pipeline, non una stima causale né una misura di spesa.
   \item \textbf{Il tempo e il tipo di opera separano nettamente i percorsi.} Una stima Kaplan--Meier che censura a destra i progetti ancora aperti indica una probabilità cumulata di conclusione registrata dell'11,7\% a tre anni e del 17,9\% a quattro. A quattro anni è 38,5\% per gli ampliamenti, 28,7\% per ristrutturazioni e recuperi, 9,6\% per le nuove realizzazioni. Sono curve descrittive, non previsioni.
-  \item \textbf{“Affidamenti diretti” cambia significato con il denominatore.} L'affidamento diretto semplice rappresenta il 77,5\% delle 13.715 righe procedura, ma soltanto il 12,3\% degli importi a base osservati. I servizi sono il 70,1\% delle righe e il 9,8\% del valore; i lavori il 24,9\% delle righe e l'88,0\% del valore. Numero e valore descrivono problemi diversi.
+  \item \textbf{\textquotedblleft{}Affidamenti diretti\textquotedblright{} cambia significato con il denominatore.} L'affidamento diretto semplice rappresenta il 77,5\% delle 13.715 righe procedura, ma soltanto il 12,3\% degli importi a base osservati. I servizi sono il 70,1\% delle righe e il 9,8\% del valore; i lavori il 24,9\% delle righe e l'88,0\% del valore. Numero e valore descrivono problemi diversi.
   \item \textbf{La gara mediana di 14 giorni è un dato fragile.} Solo 6.892 procedure (50,3\%) hanno entrambe le date in ordine plausibile e un intervallo tra zero e 730 giorni; 2.654 coppie riportano un'aggiudicazione precedente alla pubblicazione. La mediana va letta sul denominatore valido e non misura il cantiere.
   \item \textbf{Le associazioni condizionate indicano complessità, non ricette.} Un avvio più recente, una maggiore scala e le nuove costruzioni sono associati a minore maturità. Il numero di procedure ha un'associazione piccola e non sempre statisticamente distinguibile da zero. Non emerge evidenza che una sola riforma della gara basti a spiegare la consegna.
   \item \textbf{Il collo di bottiglia informativo è l'esito.} Regione, finanziamento e importi di gara sono quasi completi; mancano invece un registro pubblico CUP--posti, i certificati di completamento, la storia dei passaggi di fase e misure di apertura, personale e utilizzo del servizio.
@@ -125,7 +127,7 @@ This paper studies the administrative maturity of 2,980 projects explicitly clas
 
 L'espansione dei servizi per la prima infanzia è una politica del lavoro, dell'istruzione e dell'equità territoriale. Per l'Italia, l'evidenza sulla maggiore disponibilità di servizi sovvenzionati indica effetti rilevanti sulla partecipazione e sull'occupazione materna, senza peggioramenti osservati negli esiti cognitivi studiati \citep{carta2018}. La rilevanza sociale dell'investimento non garantisce però la sua consegna. La governance dei servizi combina responsabilità nazionali e locali, infrastrutture e spesa corrente, standard comuni e capacità amministrative diseguali \citep{lippi2023,torrini2025}.
 
-Il PNRR ha reso questa tensione misurabile. Nell’allegato del Consiglio di marzo 2026, il target M4C1-18 resta definito come certificati di completamento per almeno 150.480 posti nuovi, riqualificati, ampliati o derivanti da cambio d'uso nei servizi 0--6, con al massimo 35.000 posti da demolizione e ricostruzione \citep{ec2026target}. L'unità del target è dunque il \emph{posto certificato}, non l'euro assegnato, il progetto finanziato o la gara aggiudicata.
+Il PNRR ha reso questa tensione misurabile. Nell\textquoteright{}allegato del Consiglio di marzo 2026, il target M4C1-18 resta definito come certificati di completamento per almeno 150.480 posti nuovi, riqualificati, ampliati o derivanti da cambio d'uso nei servizi 0--6, con al massimo 35.000 posti da demolizione e ricostruzione \citep{ec2026target}. L'unità del target è dunque il \emph{posto certificato}, non l'euro assegnato, il progetto finanziato o la gara aggiudicata.
 
 L'ultimo approfondimento istituzionale microterritoriale disponibile prima della nostra finestra, il Focus UPB con dati ReGiS al 9 dicembre 2024, documentava difficoltà di adesione, ritardi di spesa, una quota molto bassa di progetti conclusi e un possibile scarto conservativo di circa 17.400 posti \citep{upb2025}. Studi successivi hanno approfondito la distribuzione spaziale attesa e la possibilità di correggere la mancata copertura mediante mobilità intercomunale \citep{zanardi2026}. Rimaneva aperta una domanda diversa: come appare la \emph{pipeline di consegna} immediatamente prima della scadenza?
 
@@ -279,7 +281,7 @@ Le caratteristiche osservate sono:
 
 \begin{itemize}
   \item logaritmo in base 2 del finanziamento totale in milioni di euro;
-  \item gruppo di intervento: nuova realizzazione, ampliamento, ristrutturazione/recupero, demolizione/ricostruzione, altro;
+  \item gruppo di intervento: nuova realizzazione, ampliamento, ristrutturazione/\allowbreak{}recupero, demolizione/\allowbreak{}ricostruzione, altro;
   \item indicatore di progetto già esistente;
   \item anno di avvio effettivo, centrato sul 2021;
   \item logaritmo in base 2 del numero di procedure più uno;
@@ -388,7 +390,7 @@ L'aggiustamento per maturità riduce il vantaggio. Nel gruppo sotto il 20\%, 1.4
 \label{tab:equitytiers}
 \resizebox{\textwidth}{!}{\input{../tables/equity_tiers.tex}}
 \begin{minipage}{0.96\textwidth}\footnotesize\color{dvnsgrey}
-Le somme aggregano regioni e bambini stimati; non sono medie regionali semplici. “Maturi” indica conclusi o in collaudo. Gli euro sono finanziamenti associati, non spesa né posti disponibili.
+Le somme aggregano regioni e bambini stimati; non sono medie regionali semplici. \textquotedblleft{}Maturi\textquotedblright{} indica conclusi o in collaudo. Gli euro sono finanziamenti associati, non spesa né posti disponibili.
 \end{minipage}
 \end{table}
 
@@ -418,11 +420,11 @@ Il campione contiene 13.715 procedure collegate; 2.816 progetti su 2.980 ne hann
   \label{fig:procurement}
 \end{figure}
 
-La figura non supporta l'equazione “più procedure = più ritardo” né la sua inversa. Le procedure si accumulano mentre il progetto avanza; un progetto complesso può averne di più; l'assenza di gare tra i record senza fase può riflettere incompletezza o uno stadio iniziale. L'impronta è utile per il triage e la tracciabilità, non per attribuire responsabilità causali.
+La figura non supporta l'equazione \textquotedblleft{}più procedure = più ritardo\textquotedblright{} né la sua inversa. Le procedure si accumulano mentre il progetto avanza; un progetto complesso può averne di più; l'assenza di gare tra i record senza fase può riflettere incompletezza o uno stadio iniziale. L'impronta è utile per il triage e la tracciabilità, non per attribuire responsabilità causali.
 
 \subsection{Per numero e per valore: due strutture diverse}
 
-Tra le 13.715 righe, 10.632 sono esattamente classificate come \texttt{AFFIDAMENTO DIRETTO}: il 77,5\% per numero. La loro somma degli importi a base osservati è 324,6 milioni, il 12,3\% del valore. Le procedure negoziate sono il 13,8\% delle righe ma il 48,9\% del valore; le aperte il 4,8\% e il 23,7\%. Dire “quasi otto gare su dieci sono dirette” è quindi corretto rispetto al numero, ma non descrive dove si concentra la massa finanziaria.
+Tra le 13.715 righe, 10.632 sono esattamente classificate come \texttt{AFFIDAMENTO DIRETTO}: il 77,5\% per numero. La loro somma degli importi a base osservati è 324,6 milioni, il 12,3\% del valore. Le procedure negoziate sono il 13,8\% delle righe ma il 48,9\% del valore; le aperte il 4,8\% e il 23,7\%. Dire \textquotedblleft{}quasi otto gare su dieci sono dirette\textquotedblright{} è quindi corretto rispetto al numero, ma non descrive dove si concentra la massa finanziaria.
 
 La stessa separazione vale per l'oggetto. I servizi rappresentano 9.614 righe (70,1\%) e 258 milioni (9,8\% del valore a base); i lavori 3.420 righe (24,9\%) e 2,32 miliardi (88,0\%). Il numero elevato di servizi è coerente con un ciclo che include progettazione, verifiche, collaudi e altre attività; non può essere interpretato come conteggio dei cantieri.
 
@@ -549,7 +551,7 @@ I modelli con effetti fissi regionali mantengono il segno delle associazioni pri
 
 \begin{enumerate}
   \item \textbf{Snapshot, non pannello.} Osserviamo lo stato al 13 giugno 2026, non la traiettoria completa.
-  \item \textbf{Stato amministrativo, non risultato fisico.} “Concluso” non è un certificato di posti.
+  \item \textbf{Stato amministrativo, non risultato fisico.} \textquotedblleft{}Concluso\textquotedblright{} non è un certificato di posti.
   \item \textbf{Classificazione amministrativa.} Il filtro \texttt{ASILI NIDO} migliora la coerenza, ma non sostituisce la verifica del contenuto dell'opera.
   \item \textbf{Finanziamento, non pagamento.} Gli importi associati e di gara non sono erogazioni osservate.
   \item \textbf{Copertura regionale.} Il benchmark territoriale è aggregato e precedente; non descrive il bacino comunale di ogni progetto.
@@ -619,7 +621,7 @@ Alla vigilia della scadenza osservata, il PNRR per gli asili nido presenta una p
 
 La cronologia, la scala e il tipo di opera mostrano associazioni più nette della semplice presenza di gare. Le curve con censura confermano che ampliamenti e recuperi seguono calendari osservati molto diversi dalle nuove costruzioni. Al tempo stesso, gli appalti cambiano volto a seconda del denominatore: 77,5\% di affidamenti diretti semplici per numero diventa 12,3\% per valore a base; il tempo mediano di 14 giorni poggia su metà delle righe. Questi risultati non assolvono né accusano alcun attore. Indicano che l'unità di analisi utile è il percorso completo del progetto e che qualità del dato e qualità dell'esecuzione sono inseparabili.
 
-Il limite dei dati è anche una proposta di ricerca. Pubblicare posti previsti e certificati per CUP, insieme a uno storico delle fasi e a indicatori di apertura e utilizzo, renderebbe possibile un vero studio di efficacia: non “quanto abbiamo finanziato?”, ma “dove sono diventati disponibili posti, per chi e con quale capacità operativa?”. Fino ad allora, il giudizio corretto è più modesto e più utile: sappiamo misurare l'equità amministrativa di una pipeline sotto pressione; non sappiamo ancora verificare pubblicamente il risultato fisico e sociale che la politica promette. Precisare questa differenza non indebolisce il monitoraggio: impedisce che un indicatore a monte venga scambiato per un successo a valle.
+Il limite dei dati è anche una proposta di ricerca. Pubblicare posti previsti e certificati per CUP, insieme a uno storico delle fasi e a indicatori di apertura e utilizzo, renderebbe possibile un vero studio di efficacia: non \textquotedblleft{}quanto abbiamo finanziato?\textquotedblright{}, ma \textquotedblleft{}dove sono diventati disponibili posti, per chi e con quale capacità operativa?\textquotedblright{}. Fino ad allora, il giudizio corretto è più modesto e più utile: sappiamo misurare l'equità amministrativa di una pipeline sotto pressione; non sappiamo ancora verificare pubblicamente il risultato fisico e sociale che la politica promette. Precisare questa differenza non indebolisce il monitoraggio: impedisce che un indicatore a monte venga scambiato per un successo a valle.
 
 \clearpage
 \appendix
@@ -663,7 +665,7 @@ La Tabella~\ref{tab:regionsfull} riporta numerosità, quota conclusa, quota alme
 \label{tab:regionsfull}
 \resizebox{\textwidth}{!}{\input{../tables/regions.tex}}
 \begin{minipage}{0.93\linewidth}\footnotesize\color{dvnsgrey}
-Copertura: posti autorizzati per 100 bambini 0--2, Istat 2023/24. €/bambino: finanziamento totale associato diviso per la popolazione 0--2 stimata da posti/copertura. Non è spesa erogata.
+Copertura: posti autorizzati per 100 bambini 0--2, Istat 2023/24. \texteuro{}/bambino: finanziamento totale associato diviso per la popolazione 0--2 stimata da posti/copertura. Non è spesa erogata.
 \end{minipage}
 \end{table}
 
@@ -698,7 +700,7 @@ Le quote grezze per anno di avvio mostrano la composizione temporale dello snaps
 
 \section{Appalti: classificazione e qualità temporale}
 
-La classificazione usa etichette testuali mutuamente esclusive. “Affidamento diretto semplice” richiede uguaglianza esatta con \texttt{AFFIDAMENTO DIRETTO}; le adesioni o accordi quadro richiedono tali termini nella descrizione e non includono automaticamente ogni record con CIG quadro. Questa regola rende replicabili i denominatori, ma non sostituisce la lettura giuridica del singolo CIG.
+La classificazione usa etichette testuali mutuamente esclusive. \textquotedblleft{}Affidamento diretto semplice\textquotedblright{} richiede uguaglianza esatta con \texttt{AFFIDAMENTO DIRETTO}; le adesioni o accordi quadro richiedono tali termini nella descrizione e non includono automaticamente ogni record con CIG quadro. Questa regola rende replicabili i denominatori, ma non sostituisce la lettura giuridica del singolo CIG.
 
 \begin{table}[H]
 \centering

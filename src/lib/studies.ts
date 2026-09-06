@@ -9,7 +9,7 @@ export const childcareStudy = {
   subtitle: "Asili nido PNRR: fondi, avanzamento e divari territoriali",
   description: "Uno studio riproducibile su 2.980 progetti: cosa osserviamo tra finanziamento, collaudo e servizio disponibile.",
   path: "/studi/dai-fondi-ai-posti",
-  assetPath: "/studi/dai-fondi-ai-posti/v1.2",
+  assetPath: `/studi/dai-fondi-ai-posti/v${childcare.version}`,
   ...childcare,
 } as const;
 

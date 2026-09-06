@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.829\.154/);
-  assert.match(coverageText, /846\.808/);
+  assert.match(coverageText, /13\.831\.979/);
+  assert.match(coverageText, /849\.633/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);

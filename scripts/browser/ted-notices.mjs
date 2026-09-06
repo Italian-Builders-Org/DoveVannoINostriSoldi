@@ -24,6 +24,10 @@ export async function inspectTedNotices(page) {
   assert.match(await page.$eval("#ted-scope + p", (node) => node.textContent), /non è il numero dei contratti/);
   const firstNumbers = await page.$$eval(`${notices} h3 a`, (nodes) => nodes.map((node) => node.href));
   await page.focus('nav[aria-label="Scorrimento degli avvisi"] a[href*="cursor="]');
+  await page.keyboard.press("Tab");
+  await page.keyboard.down("Shift");
+  await page.keyboard.press("Tab");
+  await page.keyboard.up("Shift");
   assert.ok(await page.$eval('nav[aria-label="Scorrimento degli avvisi"] a[href*="cursor="]', (node) => {
     const style = getComputedStyle(node);
     return document.activeElement === node && style.outlineStyle !== "none";

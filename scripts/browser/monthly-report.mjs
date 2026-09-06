@@ -35,6 +35,8 @@ async function inspectReport(page, width) {
       bodyWidth: document.body.scrollWidth,
       clientWidth: rootElement.clientWidth,
       figureCount: figures.length,
+      mainWidth: document.querySelector("main").getBoundingClientRect().width,
+      figureWidths: figures.map((figure) => figure.getBoundingClientRect().width),
       detailsCount: details.length,
       captions: captions.map((caption) => caption.textContent?.trim()),
       rowCounts,
@@ -50,6 +52,7 @@ async function inspectReport(page, width) {
   assert.equal(state.h1Count, 1, `${label}: serve un solo h1`);
   assert.equal(state.h1, "Imprese e territori", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
+  assert.ok(state.figureWidths.every((width) => width >= state.mainWidth * 0.95), `${label}: margini predefiniti restringono i grafici`);
   assert.equal(state.figureCount, 2, `${label}: servono due visualizzazioni`);
   assert.equal(state.detailsCount, 2, `${label}: servono due tabelle accessibili`);
   assert.deepEqual(state.rowCounts, [16, 20], `${label}: righe grafici e tabelle divergenti`);

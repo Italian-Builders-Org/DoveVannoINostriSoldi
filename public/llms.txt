@@ -5,6 +5,8 @@
 ## Superficie principale
 
 - [Home](https://www.dovevannoinostrisoldi.com/): quadro dei pagamenti comunali, mappa e collegamenti alle fonti.
+- [Report mensili](https://www.dovevannoinostrisoldi.com/report): archivio di articoli mensili con una storia principale, due visualizzazioni accessibili, periodi, perimetri e limiti.
+- [Agosto 2026: Imprese e territori](https://www.dovevannoinostrisoldi.com/report/2026-08): stock delle sedi di impresa attive e confronto regionale tra luglio 2025 e luglio 2026.
 - [Soldi](https://www.dovevannoinostrisoldi.com/spese): uscite di cassa dei Comuni da SIOPE, con serie temporali e voci contabili.
 - [Incassi comunali](https://www.dovevannoinostrisoldi.com/entrate): incassi di cassa SIOPE 2024–2026, con periodo osservato e stato completo o parziale espliciti, aggregati nazionali e regionali e dettaglio comunale paginato; non accertamenti né entrate di competenza, nessun saldo o classifica.
 - [Protezione dell’ambiente](https://www.dovevannoinostrisoldi.com/spese/ambiente): conti ISTAT EPEA 2016-2022, settori e classi CEPA separati, prezzi correnti, edizione 2025M2. Non è cassa SIOPE.

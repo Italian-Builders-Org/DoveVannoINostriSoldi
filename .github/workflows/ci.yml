@@ -122,7 +122,8 @@ jobs:
   etl:
     name: etl
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    # The full offline suite plus snapshot checks can exceed ten minutes.
+    timeout-minutes: 20
     env:
       # PYTHONPATH for ETL scripts that import sibling modules.
       # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,

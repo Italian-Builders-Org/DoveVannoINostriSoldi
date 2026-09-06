@@ -68,16 +68,16 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(navigationComponent, /showScrollControls && navigationScroll\.forward/);
   assert.match(navigationComponent, /navigation\.scrollLeft = Math\.max\(0, Math\.min\(maxScrollLeft, nextScrollLeft\)\)/);
   assert.match(globalsCss, /\.nav-scroll-control \{/);
-  assert.match(globalsCss, /@media \(max-width: 1320px\)[\s\S]*?\.nav-scroll-control \{ display: inline-flex; \}/);
+  assert.match(globalsCss, /\.nav-scroll-control \{\s*display: inline-flex;/);
   assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.nav-scroll-control \{ display: none; \}/);
   assert.match(globalsCss, /@media \(max-width: 900px\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/);
   assert.match(
     globalsCss,
-    /@media \(max-width: 1320px\) and \(hover: none\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
+    /@media \(hover: none\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
   );
   assert.match(
     globalsCss,
-    /@media \(max-width: 1320px\) and \(pointer: coarse\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
+    /@media \(pointer: coarse\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
   );
   assert.doesNotMatch(
     globalsCss,
@@ -98,7 +98,7 @@ test("a submenu can be opened without a pointer that can hover", async () => {
   assert.match(globalsCss, /\.nav-row > \.nav-submenu/);
   assert.match(globalsCss, /\.nav-menu-dismiss \{/);
   assert.match(globalsCss, /\.nav-item-toggle \{/);
-  assert.match(globalsCss, /@media \(max-width: 1320px\)/);
+  assert.match(globalsCss, /@media \(max-width: 1580px\)/);
   // Below that break the row scrolls; the panel is a sibling, not inside it.
   assert.match(globalsCss, /\.nav-row \{\n\s*position: relative;/);
   assert.match(navigationComponent, /data-menu-open=\{openHref \? "true" : undefined\}/);

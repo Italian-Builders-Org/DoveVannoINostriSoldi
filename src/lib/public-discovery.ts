@@ -2,6 +2,11 @@ import type { MetadataRoute } from "next";
 
 type PublicPath = "/" | `/${string}`;
 
+/** Static report editions generated from the published capsule registry. */
+export const PUBLISHED_MONTHLY_REPORT_PATHS = [
+  "/report/2026-08",
+] as const satisfies readonly PublicPath[];
+
 /**
  * Canonical pages that search engines may index. This is deliberately
  * separate from the visual navigation: a page can remain public even when it
@@ -47,6 +52,8 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/parlamento",
   "/partecipazioni",
   "/pnrr/incarichi",
+  "/report",
+  ...PUBLISHED_MONTHLY_REPORT_PATHS,
   "/privacy",
   "/regioni",
   "/spese",
@@ -122,6 +129,8 @@ export const LLMS_DISCOVERY_PATHS = [
   "/assistente",
   "/metodologia",
   "/privacy",
+  "/report",
+  ...PUBLISHED_MONTHLY_REPORT_PATHS,
   "/supporter",
 ] as const satisfies readonly (typeof PUBLIC_INDEXABLE_PATHS)[number][];
 

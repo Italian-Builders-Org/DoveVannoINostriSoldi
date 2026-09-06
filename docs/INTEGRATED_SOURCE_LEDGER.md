@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 88 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 89 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 88 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 88 | 66 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 13.829.154 | 846.808 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 2.652.773.857 | somma dei byte impegnati nelle 88 ricevute |
+| Dataset correnti | 89 | 67 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 13.831.979 | 849.633 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 2.653.991.679 | somma dei byte impegnati nelle 89 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 846.808 righe della proiezione pubblica restano invece interrogabili anche
+Le 849.633 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -34,6 +34,9 @@ Il dataset `mim-scuole-statali-comuni` aggiunge 6.648 righe comunali alla
 release precedente (87 dataset, 840.160 righe pubbliche): conteggi di codici
 marcati come sedi nell'anagrafe MIM 2026/27, IODL 2.0, raccordati a ISTAT
 tramite le identità MEF (CC BY 3.0 IT). [Contratto e riproduzione](MIM_SCHOOL_SERVICES.md).
+Il dataset `ted-avvisi-italia-2026-08` aggiunge 2.825 avvisi TED, con almeno
+un committente in Italia e pubblicazione ad agosto 2026. Riuso degli avvisi
+GUUE verificato; nessuna somma o join con ANAC. [Contratto e riproduzione](TED_NOTICES.md).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -131,6 +134,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `staff-funzioni` | Staff per funzione | personnel | 69 | 69 | 69 | rows | documented-fact | not-declared |
 | `trasparenza-parchi-l38` | Trasparenza dei parchi nazionali | transparency | 300 | 300 | 258 | source-index | documented-fact | not-declared |
 | `url-morti` | URL non raggiungibili | transparency | 98 | 98 | 98 | rows | missing-data | not-declared |
+| `ted-avvisi-italia-2026-08` | Avvisi TED · committenti in Italia · agosto 2026 | procurement | 2.825 | 2.825 | 2.825 | rows | documented-fact | verified-open-eu-reuse |
 | `vincitori` | Aggregati fornitori e settori | procurement | 682 | 682 | 0 | rows | documented-fact | not-declared |
 | `vincitori-cig` | Vincitori collegati ai CIG | procurement | 120 | 120 | 119 | rows | documented-fact | not-declared |
 | `salute-posti-letto-2023` | Posti letto per Regione e disciplina · 2023 | health | 1.019 | 1.019 | 0 | rows | documented-fact | verified-open-iodl-2.0 |

@@ -18,6 +18,20 @@
       "canonicalUrls": []
     },
     "overrides": {
+      "ted-avvisi-italia-2026-08": {
+        "holder": "Ufficio delle pubblicazioni dell’Unione europea",
+        "referencePeriod": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "quotidiana alla fonte; snapshot mensile con acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://api.ted.europa.eu/v3/notices/search",
+          "https://docs.ted.europa.eu/ODS/latest/reuse/search-api.html",
+          "https://ted.europa.eu/en/legal-notice",
+          "https://ted.europa.eu/it/"
+        ]
+      },
       "mim-scuole-statali-comuni": {
         "holder": "Ministero dell'Istruzione e del Merito",
         "referencePeriod": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
@@ -315,6 +329,49 @@
     }
   },
   "datasets": [
+    {
+      "id": "ted-avvisi-italia-2026-08",
+      "title": "Avvisi TED · committenti in Italia · agosto 2026",
+      "domain": "procurement",
+      "relativePath": "ted-avvisi-italia-2026-08.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-eu-reuse",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL avviso"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Unità: avvisi pubblicati sul Supplemento alla GUUE, identificati dal numero di pubblicazione. Non sono contratti, lotti, CIG unici o pagamenti. Questa proiezione non contiene misure monetarie.",
+        "Perimetro: almeno un committente con buyer-country=ITA; comprende enti UE con sede in Italia e 3 avvisi con committenti di più paesi. Non identifica il luogo di esecuzione e non copre tutti gli appalti italiani.",
+        "Periodo: pubblicazione dal 1 al 31 agosto 2026, non data di aggiudicazione o pagamento. 2825 avvisi in 12 pagine complete, acquisiti il 6 settembre 2026; la fonte pubblica quotidianamente, lo snapshot è mensile e aggiornato con revisione manuale.",
+        "I tipi originali restano distinti: result=1450, competition=1210, cont-modif=84, planning=39, dir-awa-pre=32, consultation=10. Un risultato non certifica un contratto aggiudicato; possono esserci modifiche, annullamenti e più lotti nello stesso avviso.",
+        "TED e ANAC possono descrivere le stesse procedure: non sommare i due perimetri. Nessun join per CIG estratto dal testo o per nomi e nessuna inferenza di elusione, frode o spreco.",
+        "Titolo italiano come pubblicato. Per i committenti si usa la versione italiana, oppure quella inglese nei 21 avvisi senza italiano; lingua esplicita. Nomi, paesi e CPV sono array JSON originali, non associazioni per posizione né record di lotto.",
+        "Riuso degli avvisi GUUE consentito dalla nota TED, salvo diversa indicazione, ai sensi della decisione 2011/833/UE. Metadati SIMAP CC0 1.0. Non attribuiamo agli avvisi la CC BY 4.0 del testo editoriale TED. © Unione europea; proiezione DVNS.",
+        "La data di pubblicazione è conservata in ogni riga. La risposta API mensile non dichiara una distinta data di rilascio: publicationDate del dataset resta null. I byte delle 12 risposte originali e gli hash sono verificabili offline."
+      ],
+      "expected": {
+        "bytes": 1217822,
+        "sha256": "f5125940d68d72f1f29a228e3a3f07641f182df6535b46acee2a0c49049a05eb",
+        "rows": 2825,
+        "columns": 9,
+        "headers": [
+          "Numero pubblicazione",
+          "Data pubblicazione",
+          "Tipo avviso",
+          "Titolo",
+          "Committenti",
+          "Lingua committenti",
+          "Paesi committenti",
+          "Codici CPV",
+          "URL avviso"
+        ]
+      }
+    },
     {
       "id": "mim-scuole-statali-comuni",
       "title": "Scuole statali · sedi per Comune",

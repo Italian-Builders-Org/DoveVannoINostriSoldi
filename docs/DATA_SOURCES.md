@@ -518,3 +518,16 @@ del 7,54%. La versione upstream dichiarata era
 `2026-07-21T11:00:00+0200`. Questi numeri documentano la caratterizzazione del
 primo rilascio: il runtime continua a leggere lo snapshot aggiornabile e non li
 usa come costanti dell'interfaccia.
+
+## TED: avvisi con committenti in Italia
+
+La pagina `/appalti/ted` e il dataset integrato `ted-avvisi-italia-2026-08`
+collegano 2.825 avvisi pubblicati nella GUUE ad agosto 2026, con almeno un
+committente che dichiara paese Italia. Fonte: Ufficio delle pubblicazioni
+dell’Unione europea, Search API TED. Dodici risposte complete, hash pinnati,
+acquisizione 6 settembre 2026 e riproduzione offline.
+
+Avvisi, non contratti o pagamenti; comprendono tipi diversi e tre avvisi con
+committenti di più paesi. Nessuna somma o join CIG con ANAC. Riuso degli avvisi
+GUUE verificato nella nota TED, salvo diversa indicazione, e metadati CC0 1.0.
+Pagina, API e MCP consumano lo stesso corpus. [Fonte, date, condizioni di riuso e riproduzione](TED_NOTICES.md).

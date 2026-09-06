@@ -147,6 +147,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/partecipazioni": ["societa partecipate", "quote", "partecipate"],
   "/appalti": ["appalti", "contratti", "gare", "acquisti"],
   "/appalti/dettaglio": ["appalti dettagli", "fornitori", "aggiudicatari"],
+  "/appalti/ted": ["ted", "avvisi ted", "guue", "appalti europei"],
   "/incarichi": ["incarichi", "consulenze", "personale"],
   "/incarichi/dettaglio": ["incarichi dettagli", "consulenti", "collaborazioni"],
   "/dati": ["dataset", "catalogo dati", "dati integrati"],

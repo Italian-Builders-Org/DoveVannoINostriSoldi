@@ -191,6 +191,9 @@ export function matchesCatalogFilters(
 export function relatedReadingForDataset(
   dataset: Pick<CatalogDatasetSummary, "id" | "domain">,
 ): RelatedReading | null {
+  if (dataset.id === "ted-avvisi-italia-2026-08") {
+    return { href: "/appalti/ted", label: "Avvisi TED con committenti in Italia" };
+  }
   if (dataset.id === "salute-posti-letto-2023") {
     return { href: "/spese/sanita#posti-letto", label: "La dotazione ospedaliera" };
   }

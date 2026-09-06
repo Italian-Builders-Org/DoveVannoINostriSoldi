@@ -27,6 +27,7 @@ function rowChunkName(datasetId, ordinal) {
 }
 
 const mandatoryDatasetIds = [
+  "ted-avvisi-italia-2026-08",
   "affidamenti-diretti",
   "affitti-immobili",
   "auto-welfare",
@@ -119,11 +120,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 88,
+  datasets: 89,
   derivedOnlyRows: 2_841,
-  publicRows: 846_808,
-  sourceBytes: 2_652_773_857,
-  sourceRows: 13_829_154,
+  publicRows: 849_633,
+  sourceBytes: 2_653_991_679,
+  sourceRows: 13_831_979,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -131,6 +132,7 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
   "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
   "istat-misura-comune-dipendenza-anziani": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
   "istat-misura-comune-dipendenza-strutturale": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",

@@ -245,9 +245,9 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
   for (const paper of papers.listPublished()) {
     addDocument(documents, {
       id: `paper:${paper.slug}`,
-      href: `/paper#${paper.slug}`,
+      href: paper.webPath ?? `/studi#${paper.slug}`,
       title: paper.title,
-      context: "Paper e ricerca",
+      context: "Studi e working paper",
       type: "pagina",
       aliases: [...paper.authors, "working paper", "ricerca"],
       description: paper.abstract,

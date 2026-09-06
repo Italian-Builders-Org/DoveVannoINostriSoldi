@@ -17,6 +17,7 @@ export type NavSection = Readonly<{
 
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home" },
+  { href: "/studi", label: "Studi", aliases: ["/paper"] },
   {
     href: "/imprese",
     label: "Imprese",
@@ -117,13 +118,9 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   },
   { href: "/assistente", label: "Assistente" },
   {
-    href: "/paper",
-    label: "Paper",
-  },
-  {
     href: "/fonti",
     label: "Fonti",
-    aliases: ["/metodologia", "/studi"],
+    aliases: ["/metodologia"],
     children: [
       { href: "/fonti", label: "Elenco fonti" },
       { href: "/fonti/calendario", label: "Calendario documenti" },
@@ -131,7 +128,6 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/fonti/copertura", label: "Copertura integrata" },
       { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
       { href: "/metodologia", label: "Metodo" },
-      { href: "/studi", label: "Studi e working paper" },
     ],
   },
 ] as const;
@@ -238,7 +234,6 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   {
     title: "Fonti e metodo",
     links: [
-      { href: "/paper", label: "Paper e ricerca" },
       { href: "/fonti", label: "Elenco fonti" },
       { href: "/fonti/calendario", label: "Calendario documenti" },
       { href: "/fonti/stato", label: "Stato delle fonti" },

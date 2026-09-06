@@ -16,7 +16,7 @@ const navigationTouchTargetSource = fs.readFileSync(
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, isNavChildActive } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
@@ -328,4 +328,10 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
     isNavChildActive("/coesione/asili", "/coesione", coesione.children),
     false,
   );
+});
+
+test("studies and their alias select a single dedicated primary section", () => {
+  for (const path of ["/studi", "/studi/dai-fondi-ai-posti", "/paper"]) {
+    assert.deepEqual(PRIMARY_NAV.filter((item) => isNavSectionActive(path, item)).map((item) => item.href), ["/studi"]);
+  }
 });

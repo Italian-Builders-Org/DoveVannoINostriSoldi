@@ -9,6 +9,7 @@ import {
   LLMS_DISCOVERY_PATHS,
   PUBLIC_INDEXABLE_PATHS,
   PUBLIC_NOINDEX_PATHS,
+  PUBLIC_REDIRECT_PATHS,
   publicRobots,
   publicSitemap,
 } from "../src/lib/public-discovery.ts";
@@ -62,6 +63,7 @@ test("the public discovery catalog is canonical, unique and complete for static 
       (topic) => routePath === `/${topic.section}/${topic.slug}`,
     )),
     ...PUBLIC_NOINDEX_PATHS,
+    ...PUBLIC_REDIRECT_PATHS,
   ]
     .slice()
     .sort();
@@ -132,4 +134,16 @@ test("llms discovery paths are indexable and resolve to public pages", async () 
       : path.join(appRoot, routePath.slice(1), "page.tsx");
     await access(pagePath, constants.R_OK);
   }
+});
+
+
+test("legacy paper entry redirects permanently and stays outside discovery", async () => {
+  assert.deepEqual(PUBLIC_REDIRECT_PATHS, ["/paper"]);
+  for (const routePath of PUBLIC_REDIRECT_PATHS) {
+    assert.equal(PUBLIC_INDEXABLE_PATHS.includes(routePath), false);
+    assert.equal(PUBLIC_NOINDEX_PATHS.includes(routePath), false);
+    assert.equal(LLMS_DISCOVERY_PATHS.includes(routePath), false);
+  }
+  const page = await readFile(path.join(appRoot, "paper", "page.tsx"), "utf8");
+  assert.match(page, /permanentRedirect\("\/studi"\)/);
 });

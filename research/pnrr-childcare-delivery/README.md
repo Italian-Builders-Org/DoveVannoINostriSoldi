@@ -97,6 +97,9 @@ i dati correnti. Non è necessario duplicare i 18 MB di snapshot nel paper.
 
 Dopo la compilazione eseguire `scripts/export_web.py` con Python per allineare
 PDF, CSV, JSON pubblici e capsula aggregata in `src/content/studies/`.
+L’esportazione è idempotente: accetta asset già presenti solo quando i byte
+coincidono. Un PDF ricompilato con byte diversi richiede una nuova versione;
+non cancellare gli asset pubblicati per aggirare questo controllo.
 I test `tests/studies.test.mjs` verificano denominatori, hash e identità del PDF.
 Il browser gate `scripts/browser/studies.mjs` verifica navigazione e download
 a 390 e 1.440 px sul server di produzione.

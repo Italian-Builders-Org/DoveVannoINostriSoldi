@@ -4,7 +4,7 @@
 .intro p { font-size: 1.12rem; line-height: 1.7; }
 .eyebrow { font-size: .8rem; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; }
 .card { border-top: 2px solid currentColor; padding: 1.8rem 0; }
-.card h2 { font-size: 2rem; margin: .4rem 0; }
+.card h3 { font-size: 2rem; margin: .4rem 0; }
 .meta { font-size: .9rem; opacity: .8; line-height: 1.7; }
 .actions { display: flex; flex-wrap: wrap; gap: .8rem 1.5rem; margin: 1.5rem 0; align-items: center; }
 .note { border-left: 3px solid currentColor; padding: .5rem 1.25rem; margin: 1.8rem 0; max-width: 80ch; line-height: 1.7; }

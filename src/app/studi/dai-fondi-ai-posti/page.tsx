@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { childcareStudy as study } from "@/lib/studies";
-import { REPO_URL } from "@/lib/site";
 import styles from "../studies.module.css";
 
 const count = (n: number) => new Intl.NumberFormat("it-IT", { useGrouping: "always" }).format(n);
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function ChildcareStudyPage() {
-  const source = `${REPO_URL}/tree/main/research/pnrr-childcare-delivery`;
+  const source = study.reproducibilityUrl;
   return <main className={`shell page ${styles.page}`}>
     <Link href="/studi">← Tutti gli studi</Link>
     <header className={styles.intro}>

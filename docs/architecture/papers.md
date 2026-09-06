@@ -1,39 +1,43 @@
-# Paper e ricerca
+# Archivio di ricerca
 
-Archivio pubblico: `/paper`. Pubblicazione occasionale, distinta dai report mensili.
-La v1 apre l'archivio senza pubblicare il primo studio ancora in lavorazione.
+Archivio pubblico canonico: `/studi`. `/paper` risponde con un redirect permanente
+308 verso l'archivio. Le pubblicazioni sono occasionali e distinte dai report
+mensili. La scheda di *Dai fondi ai posti*, già pubblicato, conserva il dettaglio
+HTML `/studi/dai-fondi-ai-posti` e gli asset delle revisioni precedenti.
 
 ## Confine editoriale
 
 - `src/content/papers/drafts`: appunti editoriali, mai importati dal sito.
-- `src/content/papers/published/index.ts`: solo schede approvate.
-- `src/lib/papers-contract.ts`: valida data, autori, versione, limiti, URL HTTPS
-  pubblici, hash SHA-256 del PDF e link ai materiali riproducibili.
+- `src/content/papers/published/index.ts`: metadati delle pubblicazioni. Per lo
+  studio sugli asili, versione e checksum derivano dalla capsula aggregata.
+- `src/lib/papers-contract.ts`: valida data, autori, versione, limiti, URL HTTPS,
+  hash SHA-256 del PDF e link ai materiali riproducibili.
 - `papers.listPublished()`: catalogo ordinato, isolato dalle mutazioni esterne.
-- Navigazione, ricerca globale, sitemap e discovery LLM espongono l'archivio;
-  la ricerca indicizza solo schede del registry pubblicato.
+- Navigazione, ricerca globale, sitemap e discovery LLM espongono gli URL
+  canonici; la ricerca indicizza solo il registro pubblicato.
 
-Le schede pubblicate hanno un'ancora stabile `/paper#slug`, un abstract HTML,
-limiti espliciti e link al PDF e ai materiali riproducibili. Il PDF non è l'unica
-spiegazione accessibile. La pubblicazione del primo studio richiede una PR
-editoriale separata; questo cambiamento non attesta risultati o peer review.
+Ogni scheda ha un'ancora stabile `/studi#slug`, abstract e limiti in HTML,
+autori, data, versione e link al PDF e ai materiali riproducibili. Uno studio
+può avere anche una pagina HTML dedicata tramite `webPath`. Il PDF non è
+l'unica spiegazione accessibile. Le bozze non hanno route pubbliche e un
+working paper non attesta una revisione scientifica esterna.
 
-## Primo studio e versioni
+## Versioni e provenienza
 
-Il candidato è *Dai fondi ai posti*, relativo agli asili nido PNRR. Ricerca,
-analisi e PDF restano nella branch `codex/paper-dati-spesa`; non copiarli da una
-worktree attiva. Alla revisione finale fissare commit, autori e artefatti,
-controllare che hash e URL coincidano con il PDF approvato e rendere disponibili
-codice, dati consentiti e istruzioni di riproduzione.
+La versione è una stringa numerica, per esempio `1`, `1.3` o `1.3.0`. Per una
+revisione usare un PDF con URL versionata distinta, conservare le versioni
+precedenti e documentare le correzioni nei materiali pubblici. Non sostituire
+silenziosamente il PDF a parità di versione.
 
-Per una revisione successiva usare un PDF con URL versionata distinta,
-conservare le versioni precedenti e documentare le correzioni nei materiali
-pubblici. Non sostituire silenziosamente il PDF a parità di versione.
+La versione 1.3 di *Dai fondi ai posti* modifica soltanto la tipografia del PDF:
+nessun riquadro colorato nelle note e nessun cambiamento ai risultati. I
+materiali sono collegati a un commit preciso, non al contenuto mutevole di
+`main`. Il percorso scientifico è descritto in [studies.md](studies.md).
 
 ## Verifica
 
-`node --experimental-strip-types --test tests/papers.test.mjs`
+`node --experimental-strip-types --test tests/papers.test.mjs tests/studies.test.mjs`
 
-`npm run test:browser:papers` controlla archivio, stato vuoto, canonical,
-navigazione attiva, tastiera e viewport 390/768/1280 px. Fa parte del runner
-produzione, che deve essere eseguito dalla worktree di questa branch.
+`npm run test:browser:papers` controlla redirect, archivio popolato, canonical,
+navigazione attiva, tastiera e viewport 390/768/1280 px. Il runner di produzione
+include anche il percorso archivio → dettaglio e il checksum del PDF scaricato.

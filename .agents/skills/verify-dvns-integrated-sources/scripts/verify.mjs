@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.798\.818/);
-  assert.match(coverageText, /816\.472/);
+  assert.match(coverageText, /13\.822\.506/);
+  assert.match(coverageText, /840\.160/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -185,7 +185,7 @@ async function driveCatalog(page, directory) {
   const priorityLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 84, "/dati: attesa solo la vista priorità");
+  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 87, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
   await screenshot(page, directory, "catalog.png");
 
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 84);
+  assert.equal(links.length, 87);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -211,6 +211,26 @@ async function driveCatalog(page, directory) {
   assert.equal(api.limit, 5);
   assert.ok(api.rows.length > 0 && api.rows.length <= 5);
   await writeFile(resolve(directory, "api-response.json"), `${JSON.stringify(api, null, 2)}\n`);
+  for (const [suffix, title] of [
+    ["vecchiaia", "Indice di vecchiaia"],
+    ["dipendenza-anziani", "Indice di dipendenza anziani"],
+    ["dipendenza-strutturale", "Indice di dipendenza strutturale"],
+  ]) {
+    const datasetId = `istat-misura-comune-${suffix}`;
+    const query = "q=Mappano&limit=5";
+    actions.push(await goto(page, `/dati/${datasetId}?${query}`, `A misura di Comune · ${title}`));
+    const municipal = await (await request(`/api/dati/${datasetId}?${query}`)).json();
+    assert.equal(municipal.rows.length, 1);
+    assert.equal(municipal.rows[0].cells["Codice comune Istat"], "001316");
+    assert.equal(municipal.rows[0].cells["2014"], "..");
+    const cells = await page.$$eval("tbody tr:first-child td", (nodes) => nodes.map((node) => node.textContent.trim()));
+    assert.deepEqual(cells.slice(0, municipal.dataset.headers.length), municipal.dataset.headers.map((header) => municipal.rows[0].cells[header]));
+    const text = await page.$eval("main", (node) => node.textContent);
+    assert.match(text, /Unità: rapporto per 100/);
+    assert.match(text, /statistica sperimentale/);
+    await screenshot(page, directory, `${datasetId}.png`);
+    await writeFile(resolve(directory, `${datasetId}.json`), `${JSON.stringify(municipal, null, 2)}\n`);
+  }
   return { actions, datasetLinks: links.length, renderedRows, apiRows: api.rows.length };
 }
 
@@ -296,6 +316,14 @@ async function driveHubs(page, directory) {
     }
   }
   assert.equal(links.size, 84);
+  actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
+  for (const suffix of ["vecchiaia", "dipendenza-anziani", "dipendenza-strutturale"]) {
+    const href = `/dati/istat-misura-comune-${suffix}`;
+    assert.ok(await page.$(`a[href="${href}"]`));
+    links.add(href);
+  }
+  await screenshot(page, directory, "contesto-demografico.png");
+  assert.equal(links.size, 87);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

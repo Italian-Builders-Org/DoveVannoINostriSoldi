@@ -18,6 +18,48 @@
       "canonicalUrls": []
     },
     "overrides": {
+      "istat-misura-comune-vecchiaia": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
+      "istat-misura-comune-dipendenza-anziani": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
+      "istat-misura-comune-dipendenza-strutturale": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
       "salute-posti-letto-2023": {
         "holder": "Ministero della Salute",
         "referencePeriod": "2023-01-01",
@@ -259,6 +301,154 @@
     }
   },
   "datasets": [
+    {
+      "id": "istat-misura-comune-vecchiaia",
+      "title": "A misura di Comune · Indice di vecchiaia",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-vecchiaia.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. Residenti al 31 dicembre di 65 anni e più/ Residenti al  31 dicembre in età da 0 a 14 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "N.C. significa indicatore non calcolabile perché la popolazione da 0 a 14 anni è zero: non è uno zero dell’indice e non è una soppressione per privacy.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 1906126,
+        "sha256": "c2dc26259ca1e199dd220383fb7335c2d069511bceebd28287c8987ea1434f07",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-anziani",
+      "title": "A misura di Comune · Indice di dipendenza anziani",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-dipendenza-anziani.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. Residenti al 31 dicembre di 65 anni e più / Residenti al 31 dicembre  in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 1997858,
+        "sha256": "2ae2c5b7f7dd0bef1aa413c2a53511d974c71ba0b1cbc98e1cc5e798ea0764c7",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-strutturale",
+      "title": "A misura di Comune · Indice di dipendenza strutturale",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-dipendenza-strutturale.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. (Residenti al 31 dicembre in età da 0 a 14 anni + Residenti al 31 dicembre di 65 anni e più) / Residenti al  31 dicembre in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 2005378,
+        "sha256": "0bb14ec71cdd3e6e4f4ee4b5b23ff81b842336cc277dc2859387995cba435dc0",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
     {
       "id": "salute-posti-letto-2023",
       "title": "Posti letto per Regione e disciplina · 2023",

@@ -184,6 +184,53 @@ async function captureHub(browser, pathname, width, outputName) {
   }
 }
 
+async function inspectDatasetLayout(browser, width) {
+  await runScenario(browser, {
+    label: `Dataset spacing and long filter ${width}px`,
+    pathname: "/dati/istat-misura-comune-vecchiaia?q=Cervatto&limit=5",
+    width, baseUrl, suite: "editorial", readySelector: "main table",
+    validate: async (page) => {
+      await waitForInteractiveHydration(page);
+      const spacing = await page.evaluate(() => {
+        const section = document.querySelector('[aria-labelledby="dataset-rows-title"]');
+        const legend = section.querySelector("ul");
+        const item = legend.querySelector("li");
+        const summary = document.querySelector("main details > summary");
+        return {
+          legendInset: item.getBoundingClientRect().left - section.getBoundingClientRect().left,
+          sourceControlHeight: summary.getBoundingClientRect().height,
+        };
+      });
+      assert.ok(spacing.legendInset >= 12, "Legenda aderente al bordo del pannello");
+      assert.ok(spacing.sourceControlHeight >= 44, "Controllo della fonte troppo piccolo per il touch");
+      const summary = await page.$("main details > summary");
+      await summary.focus();
+      await page.keyboard.press("Enter");
+      await page.waitForSelector("main details[open]");
+      assert.match(await page.$eval("main details[open]", (element) => element.innerText), /Unità: rapporto per 100/);
+
+      const query = "Comune".repeat(30);
+      await page.locator("#dataset-query").fill(query);
+      await page.locator('main form button[type="submit"]').click();
+      await page.waitForFunction((expected) => {
+        const tags = document.querySelectorAll('[aria-labelledby="dataset-rows-title"] span');
+        return new URL(location.href).searchParams.get("q") === expected &&
+          [...tags].some((tag) => tag.textContent === `Filtro: ${expected}`);
+      }, { timeout: 15_000 }, query);
+      const filter = await page.evaluate(() => {
+        const section = document.querySelector('[aria-labelledby="dataset-rows-title"]');
+        const tag = [...section.querySelectorAll("span")].find((element) => element.textContent.startsWith("Filtro:"));
+        const parent = section.getBoundingClientRect();
+        const rect = tag.getBoundingClientRect();
+        return { text: tag.textContent, left: rect.left - parent.left, right: parent.right - rect.right, scroll: tag.scrollWidth, width: tag.clientWidth };
+      });
+      assert.equal(filter.text, `Filtro: ${query}`);
+      assert.ok(filter.left >= 12 && filter.right >= 12, "Il filtro esce dal pannello");
+      assert.ok(filter.scroll <= filter.width + 1, "Il filtro taglia parte del testo");
+    },
+  });
+}
+
 mkdirSync(reviewDirectory, { recursive: true });
 
 const browser = await launchBrowser();
@@ -193,6 +240,9 @@ try {
     for (const topic of EDITORIAL_TOPICS) {
       await inspectRoute(browser, `/${topic.section}/${topic.slug}`, topic.title, width);
     }
+  }
+  for (const width of [320, 390, 768, 1280]) {
+    await inspectDatasetLayout(browser, width);
   }
   await captureHub(browser, "/appalti/dettaglio", 1280, "desktop.png");
   await captureHub(browser, "/appalti/dettaglio", 390, "mobile.png");

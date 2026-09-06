@@ -408,7 +408,9 @@
         "command": "python scripts/etl/opencivitas_snapshot.py --check",
         "coveredBy": "standalone"
       },
-      "reconciliationTests": [],
+      "reconciliationTests": [
+        "tests/etl/test_monetary_adapters.py"
+      ],
       "nodeTests": [
         "tests/opencivitas-contract.test.mjs"
       ],
@@ -804,7 +806,8 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_ssn_cce_snapshot.py"
+        "tests/etl/test_ssn_cce_snapshot.py",
+        "tests/etl/test_monetary_adapters.py"
       ],
       "nodeTests": [],
       "generator": {

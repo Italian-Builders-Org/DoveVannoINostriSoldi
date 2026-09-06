@@ -29,6 +29,7 @@ assi. Se un asse manca nella fonte, si dichiara assente: non si ricostruisce.
 - Unità unica e dichiarata: preferire **centesimi di euro** negli snapshot
   tipizzati; nel corpus le celle restano stringhe e il parser condiviso deve
   documentare come si convertono.
+- Per gli ETL Python vedi le [primitive monetarie e le policy degli adapter](ETL_MONETARY_PARSING.md).
 - Natura contabile **distinta**, mai sommata in silenzio:
   - stanziamento / previsione
   - impegno

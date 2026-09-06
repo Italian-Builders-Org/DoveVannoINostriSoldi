@@ -39,6 +39,13 @@
 
 ## Dataset e fonti
 
+La sezione [Paper di ricerca](https://www.dovevannoinostrisoldi.com/studi) raccoglie
+gli studi pubblicati con metodi, limiti e materiali riproducibili. Le bozze non
+sono incluse nel catalogo pubblico; la pubblicazione non ha una cadenza fissa.
+[Dai fondi ai posti](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti)
+analizza lo stato amministrativo dei progetti PNRR per asili nido al 13 giugno 2026,
+senza misurare i posti effettivamente aperti o certificati.
+
 Il catalogo MCP è la fonte più compatta per identificativi e filtri. Comprende SIOPE, OpenBDAP,
 OpenCoesione, ANAC, INPS, CPT, MEF IRPEF, MIM, IPA, partecipazioni MEF, Consulenti Pubblici,
 Parlamento e registro delle fonti. Le pagine [Fonti](https://www.dovevannoinostrisoldi.com/fonti)

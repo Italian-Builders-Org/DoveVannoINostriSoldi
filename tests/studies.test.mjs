@@ -15,12 +15,12 @@ test("study capsule agrees with research and conserves all denominators", async 
   assert.equal(capsule.procurement.reduce((n, r) => n + r.procedures, 0), 13715);
   assert.equal(capsule.pipeline[0].projects + capsule.pipeline[1].projects, capsule.headline.commissioning_or_concluded);
   assert.equal(capsule.source.reference_date, "2026-06-13");
-  assert.equal(capsule.version, "1.2");
+  assert.equal(capsule.version, "1.3");
 });
 test("public study assets match the versioned checksums and research PDF", async () => {
   const capsule = await json("../src/content/studies/childcare.json");
   for (const [name, expected] of Object.entries(capsule.assets)) {
-    const bytes = await readFile(new URL(`../public/studi/dai-fondi-ai-posti/v1.2/${name}`, import.meta.url));
+    const bytes = await readFile(new URL(`../public/studi/dai-fondi-ai-posti/v${capsule.version}/${name}`, import.meta.url));
     assert.equal(bytes.length, expected.bytes);
     assert.equal(createHash("sha256").update(bytes).digest("hex"), expected.sha256);
   }
@@ -37,4 +37,9 @@ test("study is editorially separate from monthly reports and raw snapshots", asy
   assert.doesNotMatch(page, /href="\/report/);
   const layout = await readFile(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
   assert.match(layout, /data-scroll-behavior="smooth"/);
+});
+
+test("previous published PDF remains available with its original checksum", async () => {
+  const previous = await readFile(new URL("../public/studi/dai-fondi-ai-posti/v1.2/dai-fondi-ai-posti.pdf", import.meta.url));
+  assert.equal(createHash("sha256").update(previous).digest("hex"), "0f82b5d9f4204ef6f180c290923c5fd445214c9d758dfaeab4a5b9f236e66c01");
 });

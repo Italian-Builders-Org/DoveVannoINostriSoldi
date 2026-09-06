@@ -1,5 +1,6 @@
 import "server-only";
 
+import { papers } from "@/lib/papers";
 import integratedCatalog from "@/data/generated/integrated/catalog.json";
 import {
   EDITORIAL_TOPICS,
@@ -240,6 +241,18 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
         description: null,
       });
     }
+  }
+
+  for (const paper of papers.listPublished()) {
+    addDocument(documents, {
+      id: `paper:${paper.slug}`,
+      href: paper.webPath ?? `/studi#${paper.slug}`,
+      title: paper.title,
+      context: "Paper di ricerca",
+      type: "pagina",
+      aliases: [...paper.authors, "working paper", "ricerca"],
+      description: paper.abstract,
+    });
   }
 
   for (const topic of EDITORIAL_TOPICS) {

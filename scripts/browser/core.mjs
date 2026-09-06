@@ -1228,6 +1228,9 @@ try {
         assertTextMatches(text, /Apri il catalogo MIM ↗/i, label);
 
         if (width === 1280) {
+          await page.waitForNetworkIdle({ idleTime: 250, timeout: 10_000 });
+          const fontiToggle = '.nav-item:has(> a[href="/fonti"]) > .nav-item-toggle';
+          await page.focus(fontiToggle);
           const fontiToggleBounds = await page.$eval(
             '.nav-item:has(> a[href="/fonti"]) > .nav-item-toggle',
             (toggle) => {
@@ -1243,8 +1246,12 @@ try {
           assert.ok(
             fontiToggleBounds.toggleLeft >= 0 &&
               fontiToggleBounds.toggleRight <= fontiToggleBounds.navigationRight,
-            `${label}: il controllo Fonti deve restare interamente visibile`,
+            `${label}: il controllo Fonti deve essere interamente visibile quando raggiunto da tastiera`,
           );
+          await page.keyboard.press("Enter");
+          await page.waitForSelector('.nav-row > .nav-submenu[aria-label="Pagine in Fonti"]', { visible: true });
+          await page.keyboard.press("Escape");
+          await page.waitForSelector('.nav-row > .nav-submenu', { hidden: true });
         }
 
         assert.equal(
@@ -2256,7 +2263,7 @@ try {
           );
         }
         const requiredFooterLinks = [
-          [".footer-sitemap a[href='/studi']", "Studi e working paper"],
+          [".footer-sitemap a[href='/studi']", "Paper di ricerca"],
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-secondary-links a[href='/termini']", "Termini"],
           [".footer-secondary-links a[href='/supporter']", "Chi ci sostiene"],

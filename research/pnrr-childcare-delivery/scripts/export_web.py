@@ -2,13 +2,24 @@
 """Export a frozen, aggregate-only capsule and versioned public assets."""
 import hashlib
 import json
-import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 RESEARCH = Path(__file__).resolve().parents[1]
-TARGET = ROOT / "public/studi/dai-fondi-ai-posti/v1.2"
+TARGET = ROOT / "public/studi/dai-fondi-ai-posti/v1.3"
 CAPSULE = ROOT / "src/content/studies/childcare.json"
+
+
+def publish_asset(source: Path, target: Path) -> dict:
+    """Publish a new asset or verify an identical repeat export."""
+    content = source.read_bytes()
+    try:
+        with target.open("xb") as output:
+            output.write(content)
+    except FileExistsError:
+        if target.read_bytes() != content:
+            raise ValueError(f"Asset già pubblicato con contenuto diverso: {target.name}; creare una nuova versione") from None
+    return {"sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content)}
 
 
 def main():
@@ -23,9 +34,8 @@ def main():
     }
     assets = {}
     for name, path in files.items():
-        shutil.copyfile(path, TARGET / name)
-        assets[name] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "bytes": path.stat().st_size}
-    capsule = {"version": "1.2", "revisedAt": "2026-09-06",
+        assets[name] = publish_asset(path, TARGET / name)
+    capsule = {"version": "1.3", "revisedAt": "2026-09-06",
                "source": summary["source"], "headline": summary["headline"],
                "pipeline": summary["pipeline"],
                "procurement": summary["procurement"]["procedure_number_value"],

@@ -107,9 +107,14 @@ export const PUBLIC_NOINDEX_PATHS = [
   "/cerca",
 ] as const satisfies readonly PublicPath[];
 
+/** Legacy entry points redirect to canonical pages and stay out of the sitemap. */
+export const PUBLIC_REDIRECT_PATHS = ["/paper"] as const satisfies readonly PublicPath[];
+
 /** Pages that the concise llms.txt overview must always expose. */
 export const LLMS_DISCOVERY_PATHS = [
   "/",
+  "/studi",
+  "/studi/dai-fondi-ai-posti",
   "/spese",
   "/entrate",
   "/spese/ambiente",

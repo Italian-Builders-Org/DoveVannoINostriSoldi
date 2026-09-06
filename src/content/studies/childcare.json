@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "revisedAt": "2026-09-06",
   "source": {
     "dataset": "pnrr_asili",
@@ -202,8 +202,8 @@
   },
   "assets": {
     "dai-fondi-ai-posti.pdf": {
-      "sha256": "0f82b5d9f4204ef6f180c290923c5fd445214c9d758dfaeab4a5b9f236e66c01",
-      "bytes": 384796
+      "sha256": "d0c225daa32d3151dfb6c575c995f60789cee149c20a2cfeeca8ac969a3d772b",
+      "bytes": 385712
     },
     "regioni.csv": {
       "sha256": "7b4bec0257293a48ee55d1a5d059f5d430f7aea5bc7cb4c50c68dec73f5fe8e4",

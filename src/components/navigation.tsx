@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   Suspense,
-  type CSSProperties,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -133,6 +132,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     backward: false,
     forward: false,
   });
+  const hasNavigationOverflow = navigationScroll.backward || navigationScroll.forward;
   const [submenuLeft, setSubmenuLeft] = useState(0);
   const showScrollControls = useMouseNavScrollControls();
   const canHover = useFinePointerHover();
@@ -213,7 +213,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
     if (activeBox.left < navigationBox.left || activeBox.right > navigationBox.right) {
       activeLink.scrollIntoView({ block: "nearest", inline: "nearest" });
     }
-  }, [pathname]);
+  }, [pathname, showScrollControls, hasNavigationOverflow]);
 
   useLayoutEffect(() => {
     if (!openHref) return;
@@ -303,7 +303,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
             aria-label="Navigazione principale"
             ref={navigationRef}
           >
-            <ul className="primary-nav-list" style={{ "--nav-columns": Math.ceil(PRIMARY_NAV.length / 2) } as CSSProperties}>
+            <ul className="primary-nav-list">
               {PRIMARY_NAV.map((item) => {
                 const active = isNavSectionActive(pathname, item);
                 const hasChildren = Boolean(item.children?.length);
@@ -406,26 +406,26 @@ function NavigationContent({ pathname, currentSearch }: NavigationContentProps) 
               </ul>
             </div>
           ) : null}
-          {showScrollControls && navigationScroll.backward ? (
+          {showScrollControls && hasNavigationOverflow ? (
             <button
               type="button"
               className="nav-scroll-control nav-scroll-control-backward"
               aria-label="Scorri la navigazione verso sinistra"
+              disabled={!navigationScroll.backward}
               onClick={() => scrollNavigation("backward")}
             >
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
-              <span aria-hidden="true">Indietro</span>
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
             </button>
           ) : null}
-          {showScrollControls && navigationScroll.forward ? (
+          {showScrollControls && hasNavigationOverflow ? (
             <button
               type="button"
               className="nav-scroll-control nav-scroll-control-forward"
               aria-label="Scorri la navigazione verso destra"
+              disabled={!navigationScroll.forward}
               onClick={() => scrollNavigation("forward")}
             >
-              <span aria-hidden="true">Scorri</span>
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
             </button>
           ) : null}
         </div>

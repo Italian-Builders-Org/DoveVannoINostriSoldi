@@ -17,13 +17,13 @@ try {
       suite: "studies", pathname: "/fonti", width,
       validate: async (page) => {
         await page.click('footer a[href="/studi"]');
-        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Studi e working paper");
+        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Paper di ricerca");
         await page.waitForFunction(() => {
           const title = document.querySelector("main h1")?.getBoundingClientRect();
           const header = document.querySelector(".site-header")?.getBoundingClientRect();
           return title && header && title.top >= header.bottom && title.bottom <= innerHeight;
         });
-        assert.equal(await page.$eval("main h1", el => el.textContent), "Studi e working paper");
+        assert.equal(await page.$eval("main h1", el => el.textContent), "Paper di ricerca");
         await page.screenshot({ path: new URL(`archive-${width}.png`, evidence).pathname, fullPage: true });
         await page.screenshot({ path: new URL(`archive-top-${width}.png`, evidence).pathname });
         await page.click('main a[href="/studi/dai-fondi-ai-posti"]');
@@ -39,6 +39,13 @@ try {
           overflow: document.documentElement.scrollWidth > innerWidth + 1,
           canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
           rows: document.querySelectorAll("main tbody tr").length,
+          figureWidth: document.querySelector("main figure").getBoundingClientRect().width,
+          sectionWidth: document.querySelector("main figure").closest("section").getBoundingClientRect().width,
+          labelLines: [...document.querySelectorAll("main tbody th")].map((cell) => {
+            const range = document.createRange();
+            range.selectNodeContents(cell);
+            return range.getClientRects().length;
+          }),
           download: document.querySelector('main a[download]')?.getAttribute("href"),
         }));
         assert.equal(state.headings, 1);
@@ -47,6 +54,8 @@ try {
         assert.match(state.body, /13 giugno 2026/);
         assert.match(state.canonical, /\/studi\/dai-fondi-ai-posti$/);
         assert.equal(state.rows, 7);
+        assert.ok(Math.abs(state.figureWidth - state.sectionWidth) < 2, "Il grafico usa la larghezza della sezione");
+        assert.ok(state.labelLines.every((lines) => lines === 1), "Le modalità non si spezzano nelle celle");
         const response = await fetch(new URL(state.download, baseUrl));
         assert.equal(response.status, 200);
         assert.match(response.headers.get("content-type"), /application\/pdf/);

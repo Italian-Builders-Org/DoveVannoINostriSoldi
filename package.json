@@ -34,6 +34,7 @@
     "test:production": "bash scripts/ci/run-production-gates.sh",
     "bench:runtime": "node --experimental-strip-types scripts/bench/runtime.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
+    "test:browser:papers": "node scripts/browser/papers.mjs",
     "test:browser:editorial": "node --experimental-strip-types scripts/browser/editorial.mjs",
     "test:browser:report": "node scripts/browser/report.mjs",
     "test:browser:monthly-report": "node scripts/browser/monthly-report.mjs",

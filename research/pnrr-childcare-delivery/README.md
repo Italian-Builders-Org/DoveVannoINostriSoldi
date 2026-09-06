@@ -48,6 +48,18 @@ La versione 1.2 (6 settembre 2026) aggiunge:
   assenza di preregistrazione/peer review;
 - sezione web distinta dagli articoli mensili, con asset versionati e hash.
 
+La versione 1.3 (6 settembre 2026) rivede soltanto la presentazione del PDF:
+
+- note e limiti diventano paragrafi tipografici, senza riquadri colorati;
+- ripristina virgolette, apostrofi e simboli euro mancanti nel rendering;
+- corregge i riferimenti interni alle pagine e una riga troppo lunga;
+- adotta la denominazione «Paper di ricerca», mantenendo esplicito lo stato
+  della revisione scientifica e l’assistenza di strumenti di IA.
+
+Testo, numeri, figure, tabelle e interpretazione restano quelli della versione
+1.2. Il PDF conserva 32 pagine. Gli asset pubblici della 1.2 restano disponibili
+nel percorso versionato precedente; la 1.3 ha un URL e uno SHA-256 distinti.
+
 La data dei dati resta **13 giugno 2026**, non settembre. La verifica MCP del
 6 settembre conferma 3.841 progetti, 18.851 procedure e 506.114.534.373 centesimi
 di finanziamento totale per la misura completa.
@@ -87,13 +99,16 @@ i dati correnti. Non è necessario duplicare i 18 MB di snapshot nel paper.
 
 Dopo la compilazione eseguire `scripts/export_web.py` con Python per allineare
 PDF, CSV, JSON pubblici e capsula aggregata in `src/content/studies/`.
+L’esportazione è idempotente: accetta asset già presenti solo quando i byte
+coincidono. Un PDF ricompilato con byte diversi richiede una nuova versione;
+non cancellare gli asset pubblicati per aggirare questo controllo.
 I test `tests/studies.test.mjs` verificano denominatori, hash e identità del PDF.
 Il browser gate `scripts/browser/studies.mjs` verifica navigazione e download
 a 390 e 1.440 px sul server di produzione.
 
 Output principali:
 
-- `paper/main.pdf`: working paper compilato (32 pagine);
+- `paper/main.pdf`: paper di ricerca compilato (32 pagine);
 - `paper/main.tex`: sorgente LaTeX;
 - `generated/analysis_summary.json`: risultati numerici principali;
 - `figures/`: undici figure in formato vettoriale PDF e PNG;

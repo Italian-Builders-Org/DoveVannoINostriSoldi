@@ -20,7 +20,6 @@ export type NavSection = Readonly<{
 
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home", icon: "home" },
-  { href: "/report", label: "Report mensili", icon: "news" },
   {
     href: "/imprese",
     label: "Imprese",
@@ -132,7 +131,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/fonti",
     label: "Fonti",
     icon: "sources",
-    aliases: ["/metodologia", "/studi"],
+    aliases: ["/metodologia"],
     children: [
       { href: "/fonti", label: "Elenco fonti" },
       { href: "/fonti/calendario", label: "Calendario documenti" },
@@ -140,14 +139,15 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/fonti/copertura", label: "Copertura integrata" },
       { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
       { href: "/metodologia", label: "Metodo" },
-      { href: "/studi", label: "Studi e working paper" },
     ],
   },
+  { href: "/report", label: "Report mensili", icon: "news" },
+  { href: "/studi", label: "Studi", icon: "research", aliases: ["/paper"] },
 ] as const;
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
   { title: "Home", links: [{ href: "/", label: "Home" }] },
-  { title: "Studi", links: [{ href: "/studi", label: "Studi e working paper" }] },
+  { title: "Studi", links: [{ href: "/studi", label: "Paper di ricerca" }] },
   {
     title: "Report mensili",
     links: [

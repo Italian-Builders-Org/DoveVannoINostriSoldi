@@ -134,6 +134,16 @@ export function findSiopeNonMunicipalEntities(query = ""): readonly SiopeNonMuni
     .some((value) => value.toLocaleLowerCase("it-IT").includes(term)));
 }
 
+export function selectSiopeNonMunicipalYear(entity: SiopeNonMunicipalEntity, requestedYear: string | string[] | undefined): { selected: NonMunicipalYear; invalidYear: boolean } {
+  const selected = typeof requestedYear === "string"
+    ? entity.years.find((item) => String(item.year) === requestedYear)
+    : undefined;
+  return {
+    selected: selected ?? entity.years[0],
+    invalidYear: requestedYear !== undefined && selected === undefined,
+  };
+}
+
 export function getSiopeNonMunicipalPeriodStatus(year: NonMunicipalYear): { status: "partial-revisionable" | "complete-revisionable"; latestObservedMonthMayBeIncomplete: boolean } {
   const acquisitionYear = new Date(year.provenance.acquisitionDate).getUTCFullYear();
   const partial = year.year >= acquisitionYear || year.monthsObserved.length < 12;

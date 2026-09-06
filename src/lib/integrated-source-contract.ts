@@ -13,7 +13,7 @@ export const INTEGRATED_CORPUS_CONTRACT = {
   publicRows: 815_453,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 2_646_406_047,
+  sourceBytes: 2_646_421_189,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;

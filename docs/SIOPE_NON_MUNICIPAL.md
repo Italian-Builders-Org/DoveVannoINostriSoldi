@@ -29,6 +29,10 @@ con IPA è ammesso soltanto con codice fiscale esatto e una sola corrispondenza;
 unmatched o ambigue non vengono attribuite a un codice IPA. Il 2026 conserva soltanto i mesi
 presenti nel file nazionale: non è trattato come anno completo. Un valore `0` è un movimento
 osservato, mentre `null` nella vista compatta indica assenza di movimenti osservati.
+La vista delle schede include soltanto identità valide in almeno una delle annualità
+pubblicate. I codici delle Province cessate prima del 2024 non vengono elencati come
+codici inclusi nelle schede delle Città metropolitane subentrate; eventuali conflitti
+di tipo entro il periodo 2024–2026 continuano a interrompere la generazione.
 
 ## Artefatti e consultazione
 
@@ -40,12 +44,17 @@ ricevute, agli hash delle righe canoniche e alla release integrata. Il manifest 
 `src/data/generated/siope-nonmunicipal-provenance.json` è un input del sigillo:
 la ricostruzione del proof non può modificarlo o ricavarlo dalla vista.
 
-La release storica corrente ha attestazione `historical-not-reattested`: conserva
-metadati e hash della vista già revisionata, ma **non** dichiara una verifica
-retroattiva dei cinque raw assenti dal checkout. Una modifica di quella vista
-richiede una nuova acquisizione verificata. Le release future conservano il
-manifest nativo completo, inclusa la ricevuta input verificata prima del parsing;
-fonti, hash, date e proiezioni determinano il loro `releaseId`. Il catalogo dati usa le stesse
+La release corrente conserva il manifest nativo completo di versione 2,
+inclusa la ricevuta dei cinque input ufficiali verificata prima del parsing.
+La riacquisizione del 6 settembre 2026 riproduce byte per byte i tre dataset
+dei pagamenti e conserva tutti gli importi della vista compatta. L'inventario
+esplicita anche i movimenti che non ricadono nella validità anagrafica: 1.764
+righe nel 2024, 64 nel 2025 e 17 nel 2026. Questi scarti non sono attribuiti
+arbitrariamente a un ente o a un tipo. Rispetto all'inventario precedente cambiano
+solo stato e nota di copertura; restano 201 righe e tutti i conteggi invariati.
+Il formato storico `historical-not-reattested` resta leggibile senza inventare
+ricevute retroattive. Per le nuove release,
+fonti, hash, date e proiezioni determinano il `releaseId`. Il catalogo dati usa le stesse
 righe complete e il MCP le espone con gli identificativi `siope_inventario_enti`,
 `siope_province`, `siope_regioni` e `siope_citta_metropolitane`.
 

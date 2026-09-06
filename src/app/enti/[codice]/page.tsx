@@ -306,7 +306,7 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
 
       <div className={styles.municipalityLayout}>
         {isMunicipality ? <MunicipalityEconomics profile={municipalityProfile} /> : null}
-        {nonMunicipalSnapshot ? <NonMunicipalEconomics entity={nonMunicipalSnapshot} year={Number(Array.isArray(search.siopeAnno) ? search.siopeAnno[0] : search.siopeAnno) || nonMunicipalSnapshot.years[0].year} /> : null}
+        {nonMunicipalSnapshot ? <NonMunicipalEconomics entity={nonMunicipalSnapshot} year={search.siopeAnno} /> : null}
         <EntityProcurementSection state={procurementState} />
         <EntityInformation
           entity={entity}

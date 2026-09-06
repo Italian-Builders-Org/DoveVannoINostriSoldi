@@ -5,6 +5,18 @@ import "./helpers/register-ts-alias.mjs";
 
 const detail = await import("../src/lib/siope-nonmunicipal.ts");
 
+test("non-municipal SIOPE year selection reports unavailable, malformed and repeated parameters", () => {
+  const entity = detail.getSiopeNonMunicipalEntityByIpaCode("r_lazio");
+  const select = (value) => detail.selectSiopeNonMunicipalYear(entity, value);
+  assert.deepEqual(select(undefined), { selected: entity.years[0], invalidYear: false });
+  for (const year of entity.years) {
+    assert.deepEqual(select(String(year.year)), { selected: year, invalidYear: false });
+  }
+  for (const value of ["", "abc", "0", "2023", "2025.0", "2.025e3", " 2025", ["2025", "2024"], ["2025", "2025"]]) {
+    assert.deepEqual(select(value), { selected: entity.years[0], invalidYear: true });
+  }
+});
+
 test("non-municipal SIOPE detail has unique IPA identities and reconciled integer-cent years", () => {
   assert.match(detail.siopeNonMunicipalReleaseId, /^[a-f0-9]{64}$/);
   const known = detail.getSiopeNonMunicipalEntityByIpaCode("r_lazio");

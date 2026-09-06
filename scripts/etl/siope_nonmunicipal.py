@@ -416,6 +416,10 @@ def build_entity_detail(*, identities: list[EntityIdentity], joins: dict[str, Ip
     for identity in identities:
         if identity.entity_type not in POLICY_BY_TYPE or not identity.tax_code:
             continue
+        # Historical predecessors outside the published years do not describe
+        # the identity of this release (for example Province replaced in 2015).
+        if not any(identity.valid_from <= date(year, 12, 31) and identity.valid_to >= date(year, 1, 1) for year in YEARS):
+            continue
         join = joins.get(identity.tax_code)
         if join and join.codice_ipa_status == "matched" and join.codice_ipa:
             grouped[(identity.tax_code, join.codice_ipa, identity.entity_type)].append(identity)

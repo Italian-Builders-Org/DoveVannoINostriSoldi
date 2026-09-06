@@ -6,6 +6,7 @@ import json
 import sys
 import tempfile
 import zipfile
+from datetime import date
 from pathlib import Path
 from unittest import TestCase, mock
 
@@ -182,6 +183,25 @@ class SiopeNonMunicipalTests(TestCase):
             for entity in detail["entities"]
         }
         self.assertEqual(totals, {"prov_test": 100, "reg_test": 200})
+
+    def test_detail_ignores_predecessors_outside_published_years(self) -> None:
+        identities = [
+            etl.EntityIdentity("100", date(2005, 1, 1), date(2023, 12, 31), "00000000001", "Provincia precedente", "01", "001", "PROVINCIA"),
+            etl.EntityIdentity("200", date(2024, 1, 1), date(9999, 12, 31), "00000000001", "Città metropolitana", "01", "001", "CITTA_METROP"),
+            etl.EntityIdentity("300", date(2027, 1, 1), date(9999, 12, 31), "00000000001", "Ente futuro", "01", "001", "REGIONE"),
+        ]
+        result = etl.build_entity_detail(
+            identities=identities,
+            joins={"00000000001": etl.IpaJoin("metro_test", "matched", "Test", "matched")},
+            payments={policy.key: [] for policy in etl.POLICIES},
+            sources={str(year): {} for year in etl.YEARS},
+            release_id="a" * 64,
+        )
+        self.assertEqual(len(result["entities"]), 1)
+        entity = result["entities"][0]
+        self.assertEqual(entity["entityType"], "CITTA_METROP")
+        self.assertEqual(entity["includedCodes"], ["200"])
+        self.assertTrue(all(year["status"] == "no_movements" for year in entity["years"]))
 
     def test_detail_rejects_same_cf_and_ipa_crossing_entity_types(self) -> None:
         zipped(self.input / "SIOPE_ANAGRAFICHE.zip", {

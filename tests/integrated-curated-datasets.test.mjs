@@ -117,7 +117,7 @@ const expectedTotals = {
   datasets: 83,
   derivedOnlyRows: 2_841,
   publicRows: 815_453,
-  sourceBytes: 2_646_406_047,
+  sourceBytes: 2_646_421_189,
   sourceRows: 13_797_799,
 };
 

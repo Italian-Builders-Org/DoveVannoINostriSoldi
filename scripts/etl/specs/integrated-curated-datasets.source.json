@@ -265,8 +265,8 @@
         "Il file 2026 è un anno in corso e non va trattato come annualità completa."
       ],
       "expected": {
-        "bytes": 33694,
-        "sha256": "6e2c4a4797bdd62400717a00ac4cd9e4ecd811e9aed77447246a49e162181c23",
+        "bytes": 48836,
+        "sha256": "396cc496684e041790e7a454c7f8972c4abc14af1cd4760819a6fa5935c5e59e",
         "rows": 201,
         "columns": 20,
         "headers": ["entityType", "year", "registryRows", "distinctSiopeCodes", "distinctTaxCodes", "validAtObservationCodes", "observedSiopeCodes", "withoutMovementsCodes", "observedMonths", "rawMovementRows", "knownAmountCents", "ipaMatched", "ipaUnmatched", "ipaAmbiguous", "ipaMatchedAmountCents", "ipaUnmatchedAmountCents", "ipaAmbiguousAmountCents", "coverageStatus", "coverageNote", "productStatus"]

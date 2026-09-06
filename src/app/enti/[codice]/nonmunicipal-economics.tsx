@@ -1,5 +1,5 @@
 import { compactEuroFromCents } from "@/lib/format";
-import { getSiopeNonMunicipalPeriodStatus, type SiopeNonMunicipalEntity } from "@/lib/siope-nonmunicipal";
+import { getSiopeNonMunicipalPeriodStatus, selectSiopeNonMunicipalYear, type SiopeNonMunicipalEntity } from "@/lib/siope-nonmunicipal";
 import styles from "./scheda.module.css";
 
 function monthLabel(months: readonly number[]): string {
@@ -12,9 +12,8 @@ function acquisitionLabel(value: string): string {
   return new Intl.DateTimeFormat("it-IT", { dateStyle: "long", timeZone: "UTC" }).format(new Date(value));
 }
 
-export function NonMunicipalEconomics({ entity, year }: { entity: SiopeNonMunicipalEntity; year: number }) {
-  const selected = entity.years.find((item) => item.year === year) ?? entity.years[0];
-  const invalidYear = Number.isFinite(year) && !entity.years.some((item) => item.year === year);
+export function NonMunicipalEconomics({ entity, year }: { entity: SiopeNonMunicipalEntity; year: string | string[] | undefined }) {
+  const { selected, invalidYear } = selectSiopeNonMunicipalYear(entity, year);
   const label = entity.entityType === "REGIONE" ? "Regione o Provincia autonoma" : entity.entityType === "CITTA_METROP" ? "Città metropolitana" : "Provincia";
   const period = getSiopeNonMunicipalPeriodStatus(selected);
   return <section className={`panel ${styles.economicSection}`} aria-labelledby="siope-nonmunicipal-title" id="pagamenti-siope">

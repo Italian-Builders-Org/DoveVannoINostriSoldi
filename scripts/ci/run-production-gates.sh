@@ -83,6 +83,10 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+echo "::group::Browser navigation suite"
+npm run test:browser:navigation
+echo "::endgroup::"
+
 echo "::group::Browser papers suite"
 npm run test:browser:papers
 echo "::endgroup::"

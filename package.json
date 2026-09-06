@@ -33,6 +33,7 @@
     "test:education-atlas": "node --experimental-strip-types --test tests/education-atlas.test.mjs",
     "test:production": "bash scripts/ci/run-production-gates.sh",
     "bench:runtime": "node --experimental-strip-types scripts/bench/runtime.mjs",
+    "test:browser:navigation": "node --experimental-strip-types scripts/browser/navigation.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:papers": "node scripts/browser/papers.mjs",
     "test:browser:editorial": "node --experimental-strip-types scripts/browser/editorial.mjs",

@@ -55,9 +55,11 @@ export default function RootLayout({
         <GoogleAnalytics />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
         <Navigation />
-        <div id="contenuto-principale" tabIndex={-1}>{children}</div>
-        <SectionNav />
-        <SiteFooter latestTerritorialCheckLabel={latestTerritorialCheckLabel} />
+        <div className="site-content">
+          <div id="contenuto-principale" tabIndex={-1}>{children}</div>
+          <SectionNav />
+          <SiteFooter latestTerritorialCheckLabel={latestTerritorialCheckLabel} />
+        </div>
         <ReportProblemButton />
       </body>
     </html>

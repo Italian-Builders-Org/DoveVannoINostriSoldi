@@ -249,9 +249,10 @@
       },
       "reconciliationTests": [
         "tests/etl/test_integrated_source_release.py",
-        "tests/etl/test_salute_hospital_beds.py"
+        "tests/etl/test_salute_hospital_beds.py",
+        "tests/etl/test_istat_misura_comune.py"
       ],
-      "nodeTests": ["tests/salute-hospital-beds.test.mjs"],
+      "nodeTests": ["tests/salute-hospital-beds.test.mjs", "tests/istat-misura-comune.test.mjs"],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
         "requiresNetworkInput": false

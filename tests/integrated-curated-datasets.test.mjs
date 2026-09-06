@@ -98,6 +98,9 @@ const mandatoryDatasetIds = [
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
+  "istat-misura-comune-dipendenza-anziani",
+  "istat-misura-comune-dipendenza-strutturale",
+  "istat-misura-comune-vecchiaia",
   "salute-posti-letto-2023",
   "segnalazioni",
   "segnalazioni-card",
@@ -115,11 +118,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 84,
+  datasets: 87,
   derivedOnlyRows: 2_841,
-  publicRows: 816_472,
-  sourceBytes: 2_646_507_466,
-  sourceRows: 13_798_818,
+  publicRows: 840_160,
+  sourceBytes: 2_652_416_828,
+  sourceRows: 13_822_506,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -127,6 +130,9 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "istat-misura-comune-dipendenza-anziani": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+  "istat-misura-comune-dipendenza-strutturale": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+  "istat-misura-comune-vecchiaia": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
   "salute-posti-letto-2023": "2023-01-01",
   "affidamenti-diretti": "2024-2026",
   "affitti-immobili": "2024-2026",

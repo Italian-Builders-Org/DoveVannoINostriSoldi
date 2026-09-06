@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -955,6 +955,16 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/dati",
+    title: "A misura di Comune",
+    description: "Tre serie demografiche ISTAT dal 2014 al 2024, disponibili nel catalogo con unità e geografia della fonte.",
+    datasets: [
+      { id: "istat-misura-comune-vecchiaia", label: "Indice di vecchiaia" },
+      { id: "istat-misura-comune-dipendenza-anziani", label: "Indice di dipendenza anziani" },
+      { id: "istat-misura-comune-dipendenza-strutturale", label: "Indice di dipendenza strutturale" },
+    ],
+  },
   {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",

@@ -469,6 +469,19 @@ Altre fonti da valutare nella fase 2:
 - serie storica OpenCivitas 2015-2022 e singole funzioni comunali;
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
+### ISTAT A misura di Comune
+
+Il corpus integra tre indicatori demografici comunali del sistema sperimentale
+ISTAT: indice di vecchiaia, dipendenza anziani e dipendenza strutturale. Ogni
+serie contiene 7.896 Comuni e i valori al 31 dicembre dal 2014 al 2024, sulla
+geografia comunale al 31 dicembre 2024 ricostruita dalla fonte.
+
+Sono rapporti per 100 con denominatori distinti, non spesa pubblica o un indice
+composito di benessere. `..` (dato non ricostruibile) e `N.C.` (denominatore
+nullo) rimangono distinti da zero. Catalogo, API e MCP usano le stesse righe;
+non viene aggiunto un indicatore aggregato alle schede Comune. Vedi
+[fonte, caveat e riproduzione](ISTAT_MISURA_COMUNE.md).
+
 ### Debito pubblico italiano
 
 La pagina `/debito` usa esclusivamente i cubi BDS di Banca d'Italia

@@ -159,13 +159,13 @@
 .btn svg { display: block; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn:active:not(:disabled) { transform: scale(.98); }
-.btn-primary { background: var(--color-accent-700); color: var(--color-on-strong); }
+.btn-primary { background: var(--color-accent-700); color: var(--color-raised); }
 .btn-primary:hover,
 .btn-primary:focus-visible {
   background: var(--color-accent-800);
-  color: var(--color-on-strong);
+  color: var(--color-raised);
 }
-.btn-primary:active { background: var(--color-accent-900); color: var(--color-on-strong); }
+.btn-primary:active { background: var(--color-accent-900); color: var(--color-raised); }
 .btn-secondary { border-color: var(--color-neutral-400); }
 .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }

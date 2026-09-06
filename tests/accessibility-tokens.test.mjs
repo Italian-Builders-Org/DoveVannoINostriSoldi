@@ -30,7 +30,12 @@ test("secondary text token meets WCAG AA on every shared light surface", () => {
 
 test("primary button pair meets WCAG AA", () => {
   assert.ok(contrast(token("color-accent-700"), token("color-raised")) >= 4.5);
+  assert.ok(contrast(token("color-accent-800"), token("color-raised")) >= 4.5);
   assert.match(css, /\.btn-primary\s*\{[^}]*background:\s*var\(--color-accent-700\)[^}]*color:\s*var\(--color-raised\)/s);
+  assert.match(
+    css,
+    /\.btn-primary:hover,\s*\.btn-primary:focus-visible\s*\{[^}]*background:\s*var\(--color-accent-800\)[^}]*color:\s*var\(--color-raised\)/s,
+  );
 });
 
 test("municipality summary and partial status palette pairs meet WCAG AA", () => {

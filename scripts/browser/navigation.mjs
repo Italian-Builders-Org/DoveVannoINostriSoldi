@@ -12,7 +12,8 @@ for (const href of destinations) {
   const response = await fetch(new URL(href, baseUrl), { signal: AbortSignal.timeout(30_000) });
   assert.equal(response.status, 200, `Destinazione non disponibile: ${href}`);
   await response.arrayBuffer();
-  linkResults.push({ href, status: response.status });
+  // Record the expected status only after the response has passed the assertion.
+  linkResults.push({ href, status: 200 });
 }
 writeFileSync("artifacts/browser/navigation-links.json", JSON.stringify(linkResults, null, 2));
 

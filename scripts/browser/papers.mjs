@@ -50,11 +50,22 @@ try {
           return active.left >= container.left - 1 && active.right <= container.right + 1;
         }), true, 'La sezione attiva deve essere visibile anche su mobile');
         if (width === 1280) {
-          const backward = await page.$('.nav-scroll-control-backward');
-          await backward.focus();
-          await page.keyboard.press('Enter');
-          await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
-          await page.click('.nav-scroll-control-forward');
+          const mouseControls = await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches);
+          if (mouseControls) {
+            const backward = await page.$('.nav-scroll-control-backward');
+            assert.ok(backward, 'Le frecce devono essere presenti con un puntatore mouse');
+            await backward.focus();
+            await page.keyboard.press('Enter');
+            await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
+            await page.click('.nav-scroll-control-forward');
+          } else {
+            assert.equal((await page.$$('.nav-scroll-control')).length, 0, 'Senza puntatore mouse le frecce non devono occupare spazio');
+            const first = await page.$('.nav-item:first-child > a');
+            await first.focus();
+            await page.waitForFunction(() => document.querySelector('.primary-nav').scrollLeft <= 1);
+            const last = await page.$('.nav-item:last-child > a');
+            await last.focus();
+          }
           await page.waitForFunction(() => {
             const container = document.querySelector('.primary-nav');
             const last = container.querySelector('li:last-child');

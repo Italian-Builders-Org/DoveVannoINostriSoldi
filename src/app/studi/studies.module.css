@@ -1,0 +1,31 @@
+.page { max-width: 1120px; }
+.intro { max-width: 760px; margin-bottom: 2.5rem; }
+.intro h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.06; letter-spacing: -.04em; margin: .6rem 0 1.2rem; }
+.intro p { font-size: 1.12rem; line-height: 1.7; }
+.eyebrow { font-size: .8rem; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; }
+.card { border-top: 2px solid currentColor; padding: 1.8rem 0; }
+.card h2 { font-size: 2rem; margin: .4rem 0; }
+.meta { font-size: .9rem; opacity: .8; line-height: 1.7; }
+.actions { display: flex; flex-wrap: wrap; gap: .8rem 1.5rem; margin: 1.5rem 0; align-items: center; }
+.note { border-left: 3px solid currentColor; padding: .5rem 1.25rem; margin: 1.8rem 0; max-width: 80ch; line-height: 1.7; }
+.section { margin: 3rem 0; max-width: 900px; }
+.section h2 { font-size: clamp(1.55rem, 3vw, 2rem); line-height: 1.3; }
+.section p, .section li { line-height: 1.8; max-width: 78ch; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 1.5rem 0; border-block: 1px solid var(--color-neutral-300); }
+.stats dt { font-size: .9rem; }
+.stats dd { font-size: clamp(1.8rem, 4vw, 2.8rem); margin: .5rem 0; font-variant-numeric: tabular-nums; }
+.bars { display: grid; gap: 1.2rem; margin: 1.5rem 0; }
+.barLabel { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .4rem; font-variant-numeric: tabular-nums; }
+.track { height: .65rem; background: var(--color-neutral-100); border-radius: .2rem; overflow: hidden; }
+.fill { height: 100%; background: var(--color-accent-700); }
+.tableWrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .9rem; }
+.table th, .table td { text-align: right; padding: .75rem .5rem; border-bottom: 1px solid var(--color-neutral-300); }
+.table th:first-child, .table td:first-child { text-align: left; }
+.table caption { text-align: left; padding: .75rem 0; font-weight: 600; }
+.hash { overflow-wrap: anywhere; font-size: .78rem; }
+@media (max-width: 600px) {
+  .stats { grid-template-columns: 1fr; gap: .8rem; }
+  .stats dd { margin-top: .15rem; }
+  .barLabel { font-size: .9rem; }
+}

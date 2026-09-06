@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /13\.321\.128/);
-  assert.match(coverageText, /338\.782/);
+  assert.match(coverageText, /13\.797\.799/);
+  assert.match(coverageText, /815\.453/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -185,7 +185,7 @@ async function driveCatalog(page, directory) {
   const priorityLinks = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 79, "/dati: attesa solo la vista priorità");
+  assert.ok(priorityLinks.length > 0 && priorityLinks.length < 83, "/dati: attesa solo la vista priorità");
   assert.ok(await page.$('nav[aria-label="Vista del catalogo"]'), "/dati: selettore vista assente");
   await screenshot(page, directory, "catalog.png");
 
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 79);
+  assert.equal(links.length, 83);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -280,7 +280,7 @@ async function driveHubs(page, directory) {
     pageLinks.forEach((href) => links.add(href));
     await screenshot(page, directory, image);
   }
-  assert.equal(links.size, 79);
+  assert.equal(links.size, 83);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

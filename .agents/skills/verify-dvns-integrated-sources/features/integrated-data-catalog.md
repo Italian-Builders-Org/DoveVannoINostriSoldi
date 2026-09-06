@@ -1,6 +1,6 @@
 # Integrated data catalog
 
-The catalog exposes all 79 datasets and lets a user search a row-level dataset
+The catalog exposes all 83 datasets and lets a user search a row-level dataset
 without changing missing values, zeroes, sources or evidence labels.
 
 ## Sub-features
@@ -24,7 +24,7 @@ Preconditions:
 - The skill doctor passes for the run-owned server.
 - `integrated_source_release.py --check` passes offline.
 
-- **Open catalog.** Run `node .agents/skills/verify-dvns-integrated-sources/scripts/verify.mjs drive integrated-data-catalog`. The H1 is `Tutti i dataset integrati`. The default view `/dati` leads with readable recipient/amount datasets (`Numeri da leggere`) and demotes coverage gaps (`Cosa manca ancora`); `/dati?vista=tutti` has 79 unique detail links.
+- **Open catalog.** Run `node .agents/skills/verify-dvns-integrated-sources/scripts/verify.mjs drive integrated-data-catalog`. The H1 is `Tutti i dataset integrati`. The default view `/dati` leads with readable recipient/amount datasets (`Numeri da leggere`) and demotes coverage gaps (`Cosa manca ancora`); `/dati?vista=tutti` has 83 unique detail links.
 - **Open detail.** The same drive navigates to `/dati/consulenze-legali?q=2024&limit=5`. The H1 is `Consulenze legali` and at most five matching rows render.
 - **Confirm API parity.** The drive requests `/api/dati/consulenze-legali?q=2024&limit=5`, requires the same dataset ID and row bound, and stores the response.
 - **Proof.** Retain `catalog.png`, `catalog-tutti.png`, `consulenze-legali.png`, `api-response.json` and `state.json` in the feature evidence directory.

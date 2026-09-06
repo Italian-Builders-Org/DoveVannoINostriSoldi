@@ -143,6 +143,7 @@
 }
 
 .viewSwitch a[aria-current="page"]:hover {
+  color: var(--color-on-strong);
   background: var(--color-accent-800);
 }
 

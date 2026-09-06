@@ -144,6 +144,17 @@ def pick_period(payload: Any) -> str | None:
                     break
         if dates:
             return max(dates)
+    entities = payload.get("entities")
+    if isinstance(entities, list):
+        entity_years = {
+            entry.get("year")
+            for entity in entities
+            if isinstance(entity, dict)
+            for entry in entity.get("years", [])
+            if isinstance(entry, dict) and type(entry.get("year")) is int
+        }
+        if entity_years:
+            return f"{min(entity_years)}-{max(entity_years)}"
     inputs = payload.get("inputs")
     if isinstance(inputs, dict):
         dates = []
@@ -176,6 +187,23 @@ def pick_observed(payload: Any) -> str | None:
                 formatted = format_value(source.get("retrievedAt") or source.get("observedAt"))
                 if formatted:
                     return formatted
+    entities = payload.get("entities")
+    if isinstance(entities, list):
+        observed = []
+        for entity in entities:
+            if not isinstance(entity, dict):
+                continue
+            for entry in entity.get("years", []):
+                if not isinstance(entry, dict):
+                    continue
+                provenance = entry.get("provenance")
+                if not isinstance(provenance, dict):
+                    continue
+                formatted = format_value(provenance.get("acquisitionDate"))
+                if formatted:
+                    observed.append(formatted)
+        if observed:
+            return max(observed)
     return None
 
 

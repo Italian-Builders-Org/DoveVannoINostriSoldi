@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-23T00:00:00Z",
+  "generatedAt": "2026-09-06T08:00:00Z",
   "corpusContract": {
     "elements": 51303,
     "regularFiles": 46438,
@@ -182,10 +182,144 @@
         "canonicalUrls": [
           "https://openbdap.rgs.mef.gov.it/"
         ]
+      },
+      "siope-inventario-enti": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
+      },
+      "siope-uscite-province": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
+      },
+      "siope-uscite-regioni": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
+      },
+      "siope-uscite-citta-metropolitane": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
       }
     }
   },
   "datasets": [
+    {
+      "id": "siope-inventario-enti",
+      "title": "SIOPE: inventario enti",
+      "domain": "public-spending",
+      "relativePath": "siope-inventario-enti.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Censimento SIOPE per tipo e anno: gli importi degli enti diversi da Province, Regioni e Città metropolitane non sono pubblicati come pagamenti.",
+        "Zero indica un movimento osservato di importo zero; assenza di movimenti resta distinta da zero.",
+        "Il file 2026 è un anno in corso e non va trattato come annualità completa."
+      ],
+      "expected": {
+        "bytes": 48836,
+        "sha256": "396cc496684e041790e7a454c7f8972c4abc14af1cd4760819a6fa5935c5e59e",
+        "rows": 201,
+        "columns": 20,
+        "headers": ["entityType", "year", "registryRows", "distinctSiopeCodes", "distinctTaxCodes", "validAtObservationCodes", "observedSiopeCodes", "withoutMovementsCodes", "observedMonths", "rawMovementRows", "knownAmountCents", "ipaMatched", "ipaUnmatched", "ipaAmbiguous", "ipaMatchedAmountCents", "ipaUnmatchedAmountCents", "ipaAmbiguousAmountCents", "coverageStatus", "coverageNote", "productStatus"]
+      }
+    },
+    {
+      "id": "siope-uscite-province",
+      "title": "SIOPE: pagamenti delle Province",
+      "domain": "public-spending",
+      "relativePath": "siope-uscite-province.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": ["Pagamenti di cassa delle amministrazioni provinciali, non spesa consolidata nel territorio.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
+      "expected": {"bytes": 62793689, "sha256": "f99489aaae1716d50a8940a125ace96899e740fb9bcfbf634f78cdf7f17499e6", "rows": 270194, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+    },
+    {
+      "id": "siope-uscite-regioni",
+      "title": "SIOPE: pagamenti delle Regioni",
+      "domain": "public-spending",
+      "relativePath": "siope-uscite-regioni.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": ["Comprende Regioni e Province autonome presenti nell'anagrafica SIOPE, non una somma dei Comuni.", "Pagamenti di cassa dell'amministrazione, non spesa sanitaria né spesa consolidata nel territorio.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
+      "expected": {"bytes": 33742102, "sha256": "05bbb02bbba60e7e15da18c2dd193c7223fd6e865c2f82a0a0fc1896822e9c3a", "rows": 150088, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+    },
+    {
+      "id": "siope-uscite-citta-metropolitane",
+      "title": "SIOPE: pagamenti delle Città metropolitane",
+      "domain": "public-spending",
+      "relativePath": "siope-uscite-citta-metropolitane.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": ["Pagamenti di cassa delle Città metropolitane; comparto PRO, separato da Province e Comuni.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
+      "expected": {"bytes": 12821784, "sha256": "50418065768722dc3b88ec5695f0383105832914d39582228ed7235eef6b55f5", "rows": 56188, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+    },
     {
       "id": "affidamenti-diretti",
       "title": "Affidamenti diretti",

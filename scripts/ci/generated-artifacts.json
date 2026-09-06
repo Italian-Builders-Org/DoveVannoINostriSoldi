@@ -719,6 +719,34 @@
       "trustModel": "Source-lock: the standalone --check requires input files not available in CI. The ETL test suite loads and validates the committed artifact directly."
     },
     {
+      "id": "siope-nonmunicipal",
+      "owner": "SIOPE non-municipal territorial entity payment detail",
+      "files": [
+        "src/data/generated/siope-nonmunicipal-detail.json",
+        "src/data/generated/siope-nonmunicipal-view-proof.json",
+        "src/data/generated/siope-nonmunicipal-provenance.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/siope_nonmunicipal.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_siope_nonmunicipal.py",
+        "tests/etl/test_siope_nonmunicipal_corpus.py"
+      ],
+      "nodeTests": [
+        "tests/siope-nonmunicipal.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/siope_nonmunicipal.py --input-dir <raw-siope-and-ipa> --input-receipt <verified-input-receipt.json> --output-dir <staging> --acquired-at <ISO-8601>",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
+      "trustModel": "Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+    },
+    {
       "id": "siope-municipal",
       "owner": "SIOPE municipal cash payments and receipts (separate contracts, joint publication)",
       "files": [

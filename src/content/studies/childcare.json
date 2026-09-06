@@ -1,0 +1,217 @@
+{
+  "version": "1.2",
+  "revisedAt": "2026-09-06",
+  "source": {
+    "dataset": "pnrr_asili",
+    "reference_date": "2026-06-13",
+    "snapshot_sha256": "5693cfe012b8de38c065852f0d040e54fda982ca98704e7faaf3a2566c3e0da2",
+    "projects_full_measure": 3841,
+    "tenders_full_measure": 18851,
+    "projects_primary_sample": 2980,
+    "tenders_primary_sample": 13715
+  },
+  "headline": {
+    "concluded": 294,
+    "concluded_share": 0.09865771812080537,
+    "commissioning_or_concluded": 1443,
+    "commissioning_or_concluded_share": 0.4842281879194631,
+    "actual_end_recorded": 294,
+    "actual_end_recorded_share": 0.09865771812080537,
+    "total_funding_eur": 3286914138.89,
+    "pnrr_funding_eur": 2866467234.2,
+    "projects_with_tenders": 2816
+  },
+  "pipeline": [
+    {
+      "maturity": "Concluso",
+      "projects": 294,
+      "funding": 221478248.57,
+      "project_share": 0.09865771812080537,
+      "funding_share": 0.06738181747722617
+    },
+    {
+      "maturity": "Collaudo non concluso",
+      "projects": 1149,
+      "funding": 1372083892.19,
+      "project_share": 0.3855704697986577,
+      "funding_share": 0.4174383127188581
+    },
+    {
+      "maturity": "Esecuzione lavori",
+      "projects": 1371,
+      "funding": 1555659113.07,
+      "project_share": 0.46006711409395973,
+      "funding_share": 0.473288637103052
+    },
+    {
+      "maturity": "Prima dell'esecuzione",
+      "projects": 38,
+      "funding": 38064794.91,
+      "project_share": 0.012751677852348993,
+      "funding_share": 0.011580708622603261
+    },
+    {
+      "maturity": "Fase non disponibile",
+      "projects": 128,
+      "funding": 99628090.15,
+      "project_share": 0.042953020134228186,
+      "funding_share": 0.030310524078260435
+    }
+  ],
+  "procurement": [
+    {
+      "procedure_group": "Affidamento diretto semplice",
+      "procedures": 10632,
+      "observed_base_amounts": 10628,
+      "base_amount_eur": 324594084.27,
+      "number_share": 0.775209624498724,
+      "value_share": 0.12322795814180058
+    },
+    {
+      "procedure_group": "Procedura negoziata",
+      "procedures": 1896,
+      "observed_base_amounts": 1893,
+      "base_amount_eur": 1286844624.78,
+      "number_share": 0.13824279985417426,
+      "value_share": 0.4885339667049716
+    },
+    {
+      "procedure_group": "Procedura aperta",
+      "procedures": 654,
+      "observed_base_amounts": 653,
+      "base_amount_eur": 625195146.43,
+      "number_share": 0.047685016405395554,
+      "value_share": 0.23734727485251753
+    },
+    {
+      "procedure_group": "Adesione/accordo quadro",
+      "procedures": 357,
+      "observed_base_amounts": 357,
+      "base_amount_eur": 362067765.6,
+      "number_share": 0.026029894276339775,
+      "value_share": 0.1374543579997576
+    },
+    {
+      "procedure_group": "Procedura ristretta",
+      "procedures": 46,
+      "observed_base_amounts": 46,
+      "base_amount_eur": 17790920.36,
+      "number_share": 0.003353991979584397,
+      "value_share": 0.006754093483732694
+    },
+    {
+      "procedure_group": "Altro affidamento diretto",
+      "procedures": 37,
+      "observed_base_amounts": 37,
+      "base_amount_eur": 2281413.13,
+      "number_share": 0.002697776157491797,
+      "value_share": 0.0008661090737992157
+    },
+    {
+      "procedure_group": "Altro/non disponibile",
+      "procedures": 93,
+      "observed_base_amounts": 93,
+      "base_amount_eur": 15320525.0,
+      "number_share": 0.006780896828290193,
+      "value_share": 0.005816239743420662
+    }
+  ],
+  "robustness": {
+    "leave_one_out": [
+      {
+        "indicator": "Quota almeno in collaudo",
+        "rho": 0.5851824407815235,
+        "loo_min": 0.5300570935899963,
+        "loo_max": 0.6862659721645316
+      },
+      {
+        "indicator": "Quota conclusa",
+        "rho": 0.6679203180128442,
+        "loo_min": 0.6283458261762207,
+        "loo_max": 0.7424309622138028
+      },
+      {
+        "indicator": "Fondi totali per bambino",
+        "rho": -0.5814216281800998,
+        "loo_min": -0.6529180093227768,
+        "loo_max": -0.5432207631327941
+      }
+    ],
+    "funding_basis": [
+      {
+        "tier": "<20",
+        "funding_basis": "total_funding_eur",
+        "mature_share": 0.3707200967296151
+      },
+      {
+        "tier": "<20",
+        "funding_basis": "pnrr_funding_eur",
+        "mature_share": 0.3703290179958638
+      },
+      {
+        "tier": "20--32,9",
+        "funding_basis": "total_funding_eur",
+        "mature_share": 0.4266610738403367
+      },
+      {
+        "tier": "20--32,9",
+        "funding_basis": "pnrr_funding_eur",
+        "mature_share": 0.4195933831626063
+      },
+      {
+        "tier": "33--39,9",
+        "funding_basis": "total_funding_eur",
+        "mature_share": 0.583188752993141
+      },
+      {
+        "tier": "33--39,9",
+        "funding_basis": "pnrr_funding_eur",
+        "mature_share": 0.5710491597440112
+      },
+      {
+        "tier": ">=40",
+        "funding_basis": "total_funding_eur",
+        "mature_share": 0.5901491337053729
+      },
+      {
+        "tier": ">=40",
+        "funding_basis": "pnrr_funding_eur",
+        "mature_share": 0.5906877281414982
+      }
+    ],
+    "timing_caps": [
+      {
+        "cap_days": 365,
+        "n": 6850,
+        "median": 14.0
+      },
+      {
+        "cap_days": 730,
+        "n": 6892,
+        "median": 14.0
+      },
+      {
+        "cap_days": null,
+        "n": 6902,
+        "median": 14.0
+      }
+    ],
+    "unknown_phase": 128,
+    "mature_lower": 0.4842281879194631,
+    "mature_upper_unknown": 0.5271812080536913
+  },
+  "assets": {
+    "dai-fondi-ai-posti.pdf": {
+      "sha256": "0f82b5d9f4204ef6f180c290923c5fd445214c9d758dfaeab4a5b9f236e66c01",
+      "bytes": 384796
+    },
+    "regioni.csv": {
+      "sha256": "7b4bec0257293a48ee55d1a5d059f5d430f7aea5bc7cb4c50c68dec73f5fe8e4",
+      "bytes": 6087
+    },
+    "sensibilita.json": {
+      "sha256": "9ac519748964d7c39427c4bf8f37072669c2198f13649dea96a3e487f8fced87",
+      "bytes": 1867
+    }
+  }
+}

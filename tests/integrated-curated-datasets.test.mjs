@@ -73,6 +73,7 @@ const mandatoryDatasetIds = [
   "missioni",
   "missioni-cdp",
   "missioni-cdp-buchi",
+  "mim-scuole-statali-comuni",
   "nominativi-incarichi",
   "openbdap-capitoli-2024-2026",
   "openbdap-consulenze-ce",
@@ -118,11 +119,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 87,
+  datasets: 88,
   derivedOnlyRows: 2_841,
-  publicRows: 840_160,
-  sourceBytes: 2_652_416_828,
-  sourceRows: 13_822_506,
+  publicRows: 846_808,
+  sourceBytes: 2_652_773_857,
+  sourceRows: 13_829_154,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -130,6 +131,7 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
   "istat-misura-comune-dipendenza-anziani": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
   "istat-misura-comune-dipendenza-strutturale": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
   "istat-misura-comune-vecchiaia": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",

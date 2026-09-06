@@ -32,7 +32,7 @@ Preconditions:
 - **Keep hierarchy clear.** Main pages expose no more than three concise
   previews. The four hubs are expansion pages for the complete thematic paths
   and technical register, not long previews embedded in the main pages.
-- **Check total coverage.** The existing hubs and surface previews retain their 84 dataset links. The three ISTAT municipal series are linked from `/dati?vista=tutti`; the combined coverage is 87 dataset IDs.
+- **Check total coverage.** The existing hubs and surface previews retain their 84 dataset links. The three ISTAT municipal series and the MIM school-site dataset are linked from `/dati?vista=tutti`; the combined coverage is 88 dataset IDs.
 - **Proof.** Retain one screenshot per hub and `state.json`.
 
 ## Gotchas

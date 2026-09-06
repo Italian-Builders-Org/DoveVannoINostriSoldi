@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita" | "/dati";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -955,6 +955,14 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/enti",
+    title: "Scuole statali nel Comune",
+    description: "Le schede comunali collegano i codici scuola MIM alle identità territoriali ufficiali, con copertura e limiti dichiarati.",
+    datasets: [
+      { id: "mim-scuole-statali-comuni", label: "Sedi scolastiche statali per Comune" },
+    ],
+  },
   {
     surface: "/dati",
     title: "A misura di Comune",

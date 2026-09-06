@@ -1355,9 +1355,47 @@ try {
         assert.equal(apiResponse.body.record.codiceIpa, "c_a783");
         assert.equal(apiResponse.body.municipalityProfile.identifiers.joinMethod, "exact_official_identifiers");
         assert.equal(apiResponse.body.municipalityProfile.siope.data.years.length, 3);
+        assert.equal(apiResponse.body.municipalityProfile.schoolServices.status, "available");
+        assert.equal(apiResponse.body.municipalityProfile.schoolServices.data.schoolSites, 49);
+        assert.equal(await page.$eval("#dati-scuole [data-school-sites]", (node) => node.textContent), "49");
+        await page.focus("#dati-scuole summary");
+        await page.keyboard.press("Enter");
+        assert.equal(await page.$eval("#dati-scuole details", (node) => node.open), true);
+        assert.match(await page.$eval("#dati-scuole", (node) => node.innerText), /non edifici distinti/);
+        assert.ok(await page.$('a[href="/dati/mim-scuole-statali-comuni?q=062008"]'));
       },
     });
     completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    for (const [code, status, message] of [
+      ["c_b743", "available", /non includono codici indicati come sedi/],
+      ["c_a599", "not_found", /Nessun record MIM/],
+      ["c_a326", "out_of_scope", /esclude Aosta, Trento e Bolzano/],
+    ]) {
+      const label = `Copertura scuole ${code} ${width}px`;
+      await runScenario(browser, {
+        label, pathname: `/enti/${code}`, width,
+        validate: async (page) => {
+          const text = await page.$eval("#dati-scuole", (node) => node.innerText);
+          assert.match(text, message);
+          const result = await page.evaluate(async (code) => {
+            const response = await fetch(`/api/enti/${code}`);
+            if (!response.ok) throw new Error(`API ${response.status}`);
+            return (await response.json()).municipalityProfile.schoolServices;
+          }, code);
+          assert.equal(result.status, status);
+          if (status === "available") {
+            assert.equal(result.data.schoolSites, 0);
+            assert.equal(await page.$eval("[data-school-sites]", (node) => node.textContent), "0");
+          } else {
+            assert.equal(await page.$("[data-school-sites]"), null);
+          }
+        },
+      });
+      completed.push(label);
+    }
   }
 
   for (const width of [390, 768, 1280]) {

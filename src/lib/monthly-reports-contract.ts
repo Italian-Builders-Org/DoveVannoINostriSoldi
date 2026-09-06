@@ -217,7 +217,7 @@ function validateValue(value: ReportValue, owner: string): void {
     return;
   }
   if (value.kind === "ratio") {
-    invariant(/^-?\d+(?:\.\d+)?$/.test(value.decimal), `${owner}: rapporto decimale non valido`);
+    invariant(/^-?\d+(?:\.\d+)?$/.test(value.decimal) && Number.isFinite(Number(value.decimal)), `${owner}: rapporto decimale non valido`);
     invariant(value.unit.trim().length > 0, `${owner}: unità del rapporto assente`);
     return;
   }

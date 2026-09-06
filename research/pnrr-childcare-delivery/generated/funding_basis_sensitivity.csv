@@ -1,0 +1,9 @@
+tier,funding_basis,mature_share
+<20,total_funding_eur,0.3707200967296151
+<20,pnrr_funding_eur,0.3703290179958638
+"20--32,9",total_funding_eur,0.4266610738403367
+"20--32,9",pnrr_funding_eur,0.4195933831626063
+"33--39,9",total_funding_eur,0.583188752993141
+"33--39,9",pnrr_funding_eur,0.5710491597440112
+>=40,total_funding_eur,0.5901491337053729
+>=40,pnrr_funding_eur,0.5906877281414982

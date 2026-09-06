@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "scope": "municipal-receipts",
+  "flow": "entrate",
+  "unit": "EUR",
+  "accountingBasis": "cash",
+  "year": 2026,
+  "generatedAt": "2026-09-05T21:33:01+00:00",
+  "latestMonth": 9,
+  "latestMonthLabel": "Settembre",
+  "totalCollected": 74583713666.8,
+  "receiptsWithPopulation": 74560136461.5,
+  "populationCovered": 58963455,
+  "nationalPerCapita": 1264.51,
+  "coverage": {
+    "activeSiopeMunicipalities": 7903,
+    "matchedToIpaRegion": 7893,
+    "unmatchedToIpaRegion": 10,
+    "withMovements": 7897,
+    "withRegion": 7893,
+    "withoutRegion": 4,
+    "receiptsWithoutRegion": 30360810.36,
+    "movementRows": 3003498,
+    "includedMovementRows": 2556758,
+    "malformedRows": 0,
+    "withPopulation": 7893,
+    "withoutPopulation": 4
+  },
+  "monthly": [
+    {
+      "month": 1,
+      "label": "Gennaio",
+      "flow": 6111833662.97,
+      "cumulative": 6111833662.97
+    },
+    {
+      "month": 2,
+      "label": "Febbraio",
+      "flow": 5690520539.35,
+      "cumulative": 11802354202.32
+    },
+    {
+      "month": 3,
+      "label": "Marzo",
+      "flow": 8461651338.9,
+      "cumulative": 20264005541.22
+    },
+    {
+      "month": 4,
+      "label": "Aprile",
+      "flow": 8616340099.0,
+      "cumulative": 28880345640.22
+    },
+    {
+      "month": 5,
+      "label": "Maggio",
+      "flow": 9764013770.31,
+      "cumulative": 38644359410.53
+    },
+    {
+      "month": 6,
+      "label": "Giugno",
+      "flow": 15440191072.84,
+      "cumulative": 54084550483.37
+    },
+    {
+      "month": 7,
+      "label": "Luglio",
+      "flow": 13415593770.77,
+      "cumulative": 67500144254.14
+    },
+    {
+      "month": 8,
+      "label": "Agosto",
+      "flow": 6661194728.92,
+      "cumulative": 74161338983.06
+    },
+    {
+      "month": 9,
+      "label": "Settembre",
+      "flow": 422374683.74,
+      "cumulative": 74583713666.8
+    }
+  ],
+  "regions": [
+    {
+      "region": "Lombardia",
+      "value": 10693296849.85,
+      "perCapitaValue": 10693296849.85,
+      "population": 10011929,
+      "perCapita": 1068.06,
+      "municipalities": 1501,
+      "municipalitiesWithPopulation": 1501
+    },
+    {
+      "region": "Lazio",
+      "value": 8471865194.53,
+      "perCapitaValue": 8471865194.53,
+      "population": 5714745,
+      "perCapita": 1482.46,
+      "municipalities": 378,
+      "municipalitiesWithPopulation": 378
+    },
+    {
+      "region": "Sicilia",
+      "value": 6616706412.2,
+      "perCapitaValue": 6616706412.2,
+      "population": 4797359,
+      "perCapita": 1379.24,
+      "municipalities": 391,
+      "municipalitiesWithPopulation": 391
+    },
+    {
+      "region": "Campania",
+      "value": 6295350267.21,
+      "perCapitaValue": 6295350267.21,
+      "population": 5576133,
+      "perCapita": 1128.98,
+      "municipalities": 549,
+      "municipalitiesWithPopulation": 549
+    },
+    {
+      "region": "Emilia-Romagna",
+      "value": 5007696012.55,
+      "perCapitaValue": 5007696012.55,
+      "population": 4451938,
+      "perCapita": 1124.84,
+      "municipalities": 330,
+      "municipalitiesWithPopulation": 330
+    },
+    {
+      "region": "Veneto",
+      "value": 4909763518.39,
+      "perCapitaValue": 4906461152.21,
+      "population": 4846305,
+      "perCapita": 1012.41,
+      "municipalities": 559,
+      "municipalitiesWithPopulation": 558
+    },
+    {
+      "region": "Piemonte",
+      "value": 4697536863.81,
+      "perCapitaValue": 4697086565.01,
+      "population": 4251354,
+      "perCapita": 1104.84,
+      "municipalities": 1180,
+      "municipalitiesWithPopulation": 1179
+    },
+    {
+      "region": "Toscana",
+      "value": 4506859670.08,
+      "perCapitaValue": 4506859670.08,
+      "population": 3660530,
+      "perCapita": 1231.2,
+      "municipalities": 273,
+      "municipalitiesWithPopulation": 273
+    },
+    {
+      "region": "Puglia",
+      "value": 4045422722.49,
+      "perCapitaValue": 4045422722.49,
+      "population": 3890661,
+      "perCapita": 1039.78,
+      "municipalities": 257,
+      "municipalitiesWithPopulation": 257
+    },
+    {
+      "region": "Calabria",
+      "value": 3278658164.64,
+      "perCapitaValue": 3278658164.64,
+      "population": 1838568,
+      "perCapita": 1783.27,
+      "municipalities": 404,
+      "municipalitiesWithPopulation": 404
+    },
+    {
+      "region": "Sardegna",
+      "value": 2927692431.64,
+      "perCapitaValue": 2921298145.99,
+      "population": 1568210,
+      "perCapita": 1862.82,
+      "municipalities": 377,
+      "municipalitiesWithPopulation": 376
+    },
+    {
+      "region": "Trentino-Alto Adige/Südtirol",
+      "value": 2421127642.89,
+      "perCapitaValue": 2407697388.22,
+      "population": 1077439,
+      "perCapita": 2234.65,
+      "municipalities": 282,
+      "municipalitiesWithPopulation": 281
+    },
+    {
+      "region": "Liguria",
+      "value": 2335622184.06,
+      "perCapitaValue": 2335622184.06,
+      "population": 1509140,
+      "perCapita": 1547.65,
+      "municipalities": 234,
+      "municipalitiesWithPopulation": 234
+    },
+    {
+      "region": "Marche",
+      "value": 2114516997.92,
+      "perCapitaValue": 2114516997.92,
+      "population": 1482746,
+      "perCapita": 1426.08,
+      "municipalities": 225,
+      "municipalitiesWithPopulation": 225
+    },
+    {
+      "region": "Abruzzo",
+      "value": 2079351598.61,
+      "perCapitaValue": 2079351598.61,
+      "population": 1269571,
+      "perCapita": 1637.84,
+      "municipalities": 305,
+      "municipalitiesWithPopulation": 305
+    },
+    {
+      "region": "Friuli-Venezia Giulia",
+      "value": 1757479099.62,
+      "perCapitaValue": 1757479099.62,
+      "population": 1194616,
+      "perCapita": 1471.17,
+      "municipalities": 215,
+      "municipalitiesWithPopulation": 215
+    },
+    {
+      "region": "Umbria",
+      "value": 994908035.59,
+      "perCapitaValue": 994908035.59,
+      "population": 853068,
+      "perCapita": 1166.27,
+      "municipalities": 92,
+      "municipalitiesWithPopulation": 92
+    },
+    {
+      "region": "Basilicata",
+      "value": 694322357.92,
+      "perCapitaValue": 694322357.92,
+      "population": 533233,
+      "perCapita": 1302.1,
+      "municipalities": 131,
+      "municipalitiesWithPopulation": 131
+    },
+    {
+      "region": "Molise",
+      "value": 425922264.02,
+      "perCapitaValue": 425922264.02,
+      "population": 289224,
+      "perCapita": 1472.64,
+      "municipalities": 136,
+      "municipalitiesWithPopulation": 136
+    },
+    {
+      "region": "Valle d'Aosta/Vallée d'Aoste",
+      "value": 279254568.42,
+      "perCapitaValue": 279254568.42,
+      "population": 122877,
+      "perCapita": 2272.63,
+      "municipalities": 74,
+      "municipalitiesWithPopulation": 74
+    }
+  ],
+  "titles": [
+    {
+      "code": "1",
+      "label": "Entrate correnti di natura tributaria, contributiva e perequativa",
+      "value": 23552789898.28
+    },
+    {
+      "code": "4",
+      "label": "Entrate in conto capitale",
+      "value": 11049225223.63
+    },
+    {
+      "code": "9",
+      "label": "Entrate per conto terzi e partite di giro",
+      "value": 10675812523.76
+    },
+    {
+      "code": "3",
+      "label": "Entrate extratributarie",
+      "value": 9245326205.23
+    },
+    {
+      "code": "2",
+      "label": "Trasferimenti correnti",
+      "value": 9077866204.23
+    },
+    {
+      "code": "0",
+      "label": "Incassi da regolarizzare",
+      "value": 7375419575.58
+    },
+    {
+      "code": "7",
+      "label": "Anticipazioni da istituto tesoriere/cassiere",
+      "value": 1969660266.04
+    },
+    {
+      "code": "6",
+      "label": "Accensione prestiti",
+      "value": 835321890.24
+    },
+    {
+      "code": "5",
+      "label": "Entrate da riduzione di attività finanziarie",
+      "value": 802291879.81
+    }
+  ],
+  "source": {
+    "siopeOwner": "Ragioneria Generale dello Stato · banca dati gestita da Banca d'Italia",
+    "siopeMovementsUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ENTRATE.2026.zip",
+    "siopeRegistryUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+    "ipaUrl": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+    "observedAt": "2026-09-05T21:33:01+00:00",
+    "siopeMovementsLastModified": "Thu, 03 Sep 2026 18:57:59 GMT",
+    "siopeMovementsEtag": "\"1b07917-65a98bb089a39\"",
+    "siopeMovementsSha256": "219473cc7b9ff602f920e8176725d2765e1cc70f9a080aea81a803474e0c65a8",
+    "siopeRegistryLastModified": "Thu, 03 Sep 2026 18:57:59 GMT",
+    "siopeRegistryEtag": "\"d23e8-65a98bb01faeb\"",
+    "siopeRegistrySha256": "fe8d2165c2acd5bf8bd1a91f00571481bd2a94ee8595e413751b26d4607b3c1e",
+    "ipaLastModified": "Sat, 05 Sep 2026 03:18:37 GMT",
+    "ipaEtag": "\"1788578317.445037-8579963-185014459\"",
+    "ipaSha256": "9616c951b3464178160724bab1c1606d9b61ec53676d485b150d9f1ecac9aca0",
+    "publicationDate": null,
+    "acquisitionDate": "2026-09-05T21:33:01+00:00",
+    "checkedAt": "2026-09-05T21:43:02+00:00",
+    "license": "not-declared"
+  },
+  "methodology": {
+    "measure": "incassi di cassa SIOPE dei Comuni; incasso non equivale ad accertamento o competenza",
+    "periodicity": "movimenti mensili puri, sommati da gennaio all'ultimo mese disponibile; il 2026 può essere parziale",
+    "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA; Provincia pubblicata nell'anagrafica enti SIOPE; codice IPA univoco sullo stesso codice fiscale",
+    "populationSource": "popolazione riportata nell'anagrafica enti SIOPE",
+    "populationReference": "data di riferimento non dichiarata dalla fonte",
+    "populationSourceLastModified": "Thu, 03 Sep 2026 18:57:59 GMT",
+    "perCapitaCoverage": "numeratore e denominatore includono soltanto i Comuni con popolazione valida",
+    "warning": "Gli incassi non sono accertamenti né entrate di competenza. Il totale regionale riguarda i Comuni con sede nella regione, non tutta l'entrata pubblica originata nel territorio. Il periodo 2026 può essere parziale e non va confrontato con anni completi come trend omogeneo. Il pro capite usa la popolazione SIOPE senza data di riferimento dichiarata. Entrate e uscite restano distinte: non si calcolano saldo di cassa, residuo fiscale o efficienza."
+  }
+}

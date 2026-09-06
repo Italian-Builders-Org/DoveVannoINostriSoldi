@@ -154,6 +154,29 @@ test("SIOPE national MCP query carries only compact full-population aggregates",
   assert.ok(JSON.stringify(result.distribution).length < 64 * 1024);
 });
 
+test("non-municipal SIOPE MCP datasets use bounded corpus selectors and reject semantic filters", async () => {
+  const inventory = await queryPublicDataset({ dataset: "siope_inventario_enti", limit: 2 });
+  assert.equal(inventory.dataset.id, "siope-inventario-enti");
+  assert.equal(inventory.rows.length, 2);
+  assert.equal(inventory.rows[0].cells.productStatus === "published-payments" || inventory.rows[0].cells.productStatus === "census-only", true);
+
+  const province = await queryPublicDataset({ dataset: "siope_province", limit: 2 });
+  assert.equal(province.dataset.id, "siope-uscite-province");
+  assert.equal(province.rows.length, 2);
+  assert.equal(typeof province.pagination.nextCursor, "string");
+  const continued = await queryPublicDataset({ dataset: "siope_province", limit: 2, cursor: province.pagination.nextCursor });
+  assert.ok(continued.rows[0].sourceRow > province.rows.at(-1).sourceRow);
+
+  const [regions, metros] = await Promise.all([
+    queryPublicDataset({ dataset: "siope_regioni", limit: 1 }),
+    queryPublicDataset({ dataset: "siope_citta_metropolitane", limit: 1 }),
+  ]);
+  assert.equal(regions.dataset.id, "siope-uscite-regioni");
+  assert.equal(metros.dataset.id, "siope-uscite-citta-metropolitane");
+  await assert.rejects(queryPublicDataset({ dataset: "siope_regioni", year: 2025 }), /Filtri non supportati.*year/);
+  await assert.rejects(queryPublicDataset({ dataset: "siope_province", region: "Lazio" }), /Filtri non supportati.*region/);
+});
+
 test("OpenCivitas query bounds pagination and rejects unavailable years", async () => {
   await assert.rejects(
     queryPublicDataset({ dataset: "opencivitas_fabbisogni", year: 2020 }),
@@ -366,6 +389,18 @@ test("every snapshot catalog example is executable offline", async () => {
     const result = await queryPublicDataset(dataset.exampleQuery);
     assert.notEqual(result, undefined, dataset.id);
   }
+});
+
+test("non-municipal SIOPE aliases declare manual acquisition and publication without changing municipal cadence", () => {
+  const aliases = ["siope_inventario_enti", "siope_province", "siope_regioni", "siope_citta_metropolitane"];
+  for (const id of aliases) {
+    const dataset = datasetCatalog.find((item) => item.id === id);
+    assert.equal(dataset.publicationCadence, "manuale");
+    assert.ok(dataset.sources.every((source) => !/controllo giornaliero dei file/i.test(source.cadence)));
+  }
+  const municipal = datasetCatalog.find((item) => item.id === "siope_comuni");
+  assert.equal(municipal.publicationCadence, undefined);
+  assert.ok(municipal.sources.some((source) => /controllo giornaliero dei file/i.test(source.cadence)));
 });
 
 test("MCP fails closed for an unknown runtime dataset", async () => {

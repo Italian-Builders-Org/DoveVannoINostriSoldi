@@ -206,7 +206,7 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     sourceUrl: "https://www.siope.it/documenti/siope2/open/last/",
     cadence: "periodica",
     cadenceNote:
-      "La piattaforma controlla ogni ora i validator dei file open data nazionali e rigenera lo snapshot solo quando la fonte ufficiale cambia.",
+      "L’automazione SIOPE controlla ogni giorno i validator dei file nazionali di entrate e uscite e rigenera gli snapshot solo quando la fonte ufficiale cambia; il monitor HTTP ha una cache distinta di un’ora.",
     discoveryRevalidateSeconds: HOUR,
     dataRevalidateSeconds: HOUR,
     staleAfterSeconds: null,

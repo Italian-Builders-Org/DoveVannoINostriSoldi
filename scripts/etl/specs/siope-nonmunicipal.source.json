@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "siope-nonmunicipal",
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/247",
+  "publication": "typed-snapshot",
+  "holder": "Ragioneria Generale dello Stato; banca dati gestita da Banca d'Italia",
+  "scope": "Province, Regioni comprese le Province autonome e Città metropolitane",
+  "referencePeriod": {
+    "from": 2024,
+    "to": 2026
+  },
+  "flow": "uscite",
+  "accountingBasis": "cash",
+  "unit": "EUR-cent",
+  "publicationDate": null,
+  "license": "not-declared",
+  "landingUrl": "https://www.siope.it/documenti/siope2/open/last",
+  "refreshCronUtc": null,
+  "inputReceipt": {
+    "schemaVersion": 1,
+    "scope": "non-municipal-payments-inputs",
+    "requiredPerFile": ["url", "bytes", "sha256", "acquisitionDate", "etag", "lastModified"],
+    "policy": "The independently recorded receipt is immutable and verified before parsing; the ETL never replaces expected values with observed input metadata."
+  },
+  "sources": {
+    "movements": {
+      "urlTemplate": "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.{year}.zip",
+      "memberPrefixTemplate": "USCITE",
+      "encoding": "latin-1",
+      "delimiter": ",",
+      "hasHeader": false,
+      "columns": ["entityCode", "year", "month", "managementCode", "amountCents"],
+      "uniqueMovementKey": ["entityCode", "year", "month", "managementCode"],
+      "amountPattern": "-?[0-9]+",
+      "maximumAbsoluteCents": 9007199254740991
+    },
+    "registry": {
+      "url": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+      "entitiesMemberPrefix": "ANAG_ENTI_SIOPE",
+      "entitiesColumns": ["entityCode", "validFrom", "validTo", "taxCode", "name", "rawRegionCode", "provinceCode", "population", "entityType"],
+      "managementMemberPrefix": "ANAG_CODGEST_USCITE",
+      "managementColumns": ["managementCode", "compartment", "label", "validFrom", "validTo"]
+    },
+    "ipa": {
+      "url": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+      "encoding": "utf-8-sig",
+      "requiredHeaders": ["cf", "regione", "cod_amm"],
+      "join": "Exact SIOPE tax code with one IPA code and one IPA region; no name or fuzzy join."
+    }
+  },
+  "policies": {
+    "PROVINCIA": "PRO",
+    "REGIONE": "REG",
+    "CITTA_METROP": "PRO"
+  },
+  "semantics": {
+    "validity": "Registry validity intersects each observed calendar month.",
+    "absence": "No observed movement is null in the compact entity view; an observed zero remains integer zero.",
+    "period": "Monthly cash flows are summed; missing months are never imputed and 2026 can be partial.",
+    "geography": "IPA region is a legal-seat field, not the physical destination of a payment.",
+    "nonGoals": "No health-payment coverage, consolidated public-administration total, pro-capita comparison or ranking."
+  },
+  "failClosed": ["unexpected archive member/schema", "wrong year or month", "duplicate movement key", "ambiguous temporal identity", "identity reused across type", "unknown or cross-compartment management code", "unsafe integer sum", "ambiguous IPA join", "missing or mismatched acquired-byte receipt", "unresolved movement without explicit diagnostic", "detail, corpus or release-proof reconciliation failure"]
+}

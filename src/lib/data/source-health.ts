@@ -356,32 +356,34 @@ async function probeSiope(signal?: AbortSignal): Promise<SourceHealth> {
   const base = baseHealth("siope");
   const startedAt = performance.now();
   const year = new Date().getUTCFullYear();
-  const url = `https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.${year}.zip`;
-
   try {
-    const response = await fetchOfficialSource("siope", url, {
-      kind: "discovery",
-      headers: {
-        Accept: "application/zip, application/octet-stream;q=0.9, */*;q=0.5",
-        Range: "bytes=0-0",
-      },
-      tags: ["health:siope", `dataset:siope-uscite-${year}`],
-      signal,
-    });
-
-    if (!response.ok) throw new Error(`SIOPE open data HTTP ${response.status}`);
-    const sourceTimestamp = response.headers.get("last-modified");
-    const range = response.headers.get("content-range");
-    await response.body?.cancel();
+    const files = await Promise.all(["USCITE", "ENTRATE"].map(async (flow) => {
+      const url = `https://www.siope.it/documenti/siope2/open/last/SIOPE_${flow}.${year}.zip`;
+      const response = await fetchOfficialSource("siope", url, {
+        kind: "discovery",
+        headers: {
+          Accept: "application/zip, application/octet-stream;q=0.9, */*;q=0.5",
+          Range: "bytes=0-0",
+        },
+        tags: ["health:siope", `dataset:siope-${flow.toLowerCase()}-${year}`],
+        signal,
+      });
+      const timestamp = response.headers.get("last-modified");
+      await response.body?.cancel();
+      if (!response.ok) throw new Error(`SIOPE ${flow.toLowerCase()} HTTP ${response.status}`);
+      return { flow, timestamp };
+    }));
+    // Both flows must be reachable; the oldest validator avoids hiding a stale stream.
+    const dates = files.map((file) => file.timestamp).filter((date): date is string => date !== null && Number.isFinite(Date.parse(date)));
+    const sourceTimestamp = dates.length === files.length
+      ? dates.sort((a, b) => Date.parse(a) - Date.parse(b))[0] : null;
 
     return {
       ...base,
       reachability: "up",
       freshness: freshnessFor("siope", sourceTimestamp),
       latencyMs: Math.round(performance.now() - startedAt),
-      detail: range
-        ? `File nazionale uscite ${year} raggiungibile · ${range}`
-        : `File nazionale uscite ${year} raggiungibile`,
+      detail: `File nazionali incassi e pagamenti ${year} raggiungibili · ${files.map((file) => `${file.flow.toLowerCase()}: ${file.timestamp ?? "Last-Modified non dichiarato"}`).join(" · ")}. Il monitor verifica i file, non la copertura annuale degli snapshot.`,
       recordCount: null,
     };
   } catch (error) {

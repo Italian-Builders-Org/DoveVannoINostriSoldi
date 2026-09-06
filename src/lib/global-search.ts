@@ -247,7 +247,7 @@ function buildSearchDocuments(): readonly SearchIndexDocument[] {
       id: `paper:${paper.slug}`,
       href: paper.webPath ?? `/studi#${paper.slug}`,
       title: paper.title,
-      context: "Studi e working paper",
+      context: "Paper di ricerca",
       type: "pagina",
       aliases: [...paper.authors, "working paper", "ricerca"],
       description: paper.abstract,

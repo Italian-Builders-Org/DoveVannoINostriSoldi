@@ -17,7 +17,7 @@ export default function ChildcareStudyPage() {
   return <main className={`shell page ${styles.page}`}>
     <Link href="/studi">← Tutti gli studi</Link>
     <header className={styles.intro}>
-      <p className={styles.eyebrow}>Working paper {study.version} · PNRR e prima infanzia</p>
+      <p className={styles.eyebrow}>Paper di ricerca {study.version} · PNRR e prima infanzia</p>
       <h1>{study.title}</h1>
       <p>{study.subtitle}</p>
       <p className={styles.meta}>DoveVannoINostriSoldi · Revisione <time dateTime={study.revisedAt}>6 settembre 2026</time><br />
@@ -81,7 +81,7 @@ export default function ChildcareStudyPage() {
         <li><a href={source}>Codice, LaTeX, dizionario e manifest delle fonti</a></li>
         <li><Link href="/mcp">Interrogare il catalogo tramite MCP</Link></li>
       </ul>
-      <p className={styles.meta}>Versione 1.2: corretti il riferimento temporale ISTAT, una mediana e una citazione; aggiunti controlli regionali e sui denominatori. Snapshot invariato. Working paper assistito da IA, senza peer review esterna dichiarata.</p>
+      <p className={styles.meta}>Versione 1.2: corretti il riferimento temporale ISTAT, una mediana e una citazione; aggiunti controlli regionali e sui denominatori. Snapshot invariato. Studio assistito da IA; non sottoposto a peer review esterna.</p>
       <details><summary>Impronte SHA-256</summary>
         <p className={styles.hash}>Snapshot: <code>{study.source.snapshot_sha256}</code></p>
         <p className={styles.hash}>PDF v{study.version}: <code>{study.assets["dai-fondi-ai-posti.pdf"].sha256}</code></p>

@@ -52,7 +52,9 @@ La versione 1.3 (6 settembre 2026) rivede soltanto la presentazione del PDF:
 
 - note e limiti diventano paragrafi tipografici, senza riquadri colorati;
 - ripristina virgolette, apostrofi e simboli euro mancanti nel rendering;
-- corregge i riferimenti interni alle pagine e una riga troppo lunga.
+- corregge i riferimenti interni alle pagine e una riga troppo lunga;
+- adotta la denominazione «Paper di ricerca», mantenendo esplicito lo stato
+  della revisione scientifica e l’assistenza di strumenti di IA.
 
 Testo, numeri, figure, tabelle e interpretazione restano quelli della versione
 1.2. Il PDF conserva 32 pagine. Gli asset pubblici della 1.2 restano disponibili
@@ -106,7 +108,7 @@ a 390 e 1.440 px sul server di produzione.
 
 Output principali:
 
-- `paper/main.pdf`: working paper compilato (32 pagine);
+- `paper/main.pdf`: paper di ricerca compilato (32 pagine);
 - `paper/main.tex`: sorgente LaTeX;
 - `generated/analysis_summary.json`: risultati numerici principali;
 - `figures/`: undici figure in formato vettoriale PDF e PNG;

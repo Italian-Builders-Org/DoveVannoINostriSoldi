@@ -17,13 +17,13 @@ try {
       suite: "studies", pathname: "/fonti", width,
       validate: async (page) => {
         await page.click('footer a[href="/studi"]');
-        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Studi e working paper");
+        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Paper di ricerca");
         await page.waitForFunction(() => {
           const title = document.querySelector("main h1")?.getBoundingClientRect();
           const header = document.querySelector(".site-header")?.getBoundingClientRect();
           return title && header && title.top >= header.bottom && title.bottom <= innerHeight;
         });
-        assert.equal(await page.$eval("main h1", el => el.textContent), "Studi e working paper");
+        assert.equal(await page.$eval("main h1", el => el.textContent), "Paper di ricerca");
         await page.screenshot({ path: new URL(`archive-${width}.png`, evidence).pathname, fullPage: true });
         await page.screenshot({ path: new URL(`archive-top-${width}.png`, evidence).pathname });
         await page.click('main a[href="/studi/dai-fondi-ai-posti"]');

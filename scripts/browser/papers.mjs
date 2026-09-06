@@ -25,7 +25,7 @@ try {
           pdf: document.querySelector('main a[href$=".pdf"]')?.getAttribute("href"),
           research: document.querySelector('main a[href*="/tree/"]')?.getAttribute("href"),
         }));
-        assert.deepEqual(state.headings, ["Studi e working paper"]);
+        assert.deepEqual(state.headings, ["Paper di ricerca"]);
         assert.equal(state.overflow, false);
         assert.deepEqual(state.current, ["Studi"]);
         assert.match(state.text, /Dai fondi ai posti/);

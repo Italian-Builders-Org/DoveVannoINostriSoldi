@@ -2246,7 +2246,7 @@ try {
         assert.ok(headings.includes("Studi"), `${label}: sezione Studi assente`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
         const requiredFooterLinks = [
-          [".footer-sitemap a[href='/studi']", "Studi e working paper"],
+          [".footer-sitemap a[href='/studi']", "Paper di ricerca"],
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-secondary-links a[href='/termini']", "Termini"],
           [".footer-secondary-links a[href='/supporter']", "Chi ci sostiene"],

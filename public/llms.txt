@@ -37,7 +37,7 @@
 
 ## Dataset e fonti
 
-La sezione [Studi e working paper](https://www.dovevannoinostrisoldi.com/studi) raccoglie
+La sezione [Paper di ricerca](https://www.dovevannoinostrisoldi.com/studi) raccoglie
 gli studi pubblicati con metodi, limiti e materiali riproducibili. Le bozze non
 sono incluse nel catalogo pubblico; la pubblicazione non ha una cadenza fissa.
 [Dai fondi ai posti](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti)

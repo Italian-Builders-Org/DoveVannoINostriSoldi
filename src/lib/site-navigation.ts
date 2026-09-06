@@ -134,7 +134,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
 
 export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
   { title: "Home", links: [{ href: "/", label: "Home" }] },
-  { title: "Studi", links: [{ href: "/studi", label: "Studi e working paper" }] },
+  { title: "Studi", links: [{ href: "/studi", label: "Paper di ricerca" }] },
   {
     title: "Imprese",
     links: [

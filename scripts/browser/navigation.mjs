@@ -186,11 +186,11 @@ try {
       // Preserve device emulation: changing isMobile would reload the page.
       await page.setViewport({...page.viewport(),width:1280,height:900});
       await page.waitForSelector('#mobile-navigation',{hidden:true});
-      assert.equal(await page.evaluate(()=> document.activeElement?.classList.contains('sidebar-collapse')),true);
+      await page.waitForFunction(() => document.activeElement?.classList.contains('sidebar-collapse'), {timeout: 3_000});
       assert.notEqual(await page.evaluate(()=>getComputedStyle(document.body).overflowY),'hidden');
       await page.setViewport({...page.viewport(),width:768,height:900});
       await page.waitForSelector('.mobile-menu-trigger',{visible:true});
-      assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('mobile-menu-trigger')),true);
+      await page.waitForFunction(() => document.activeElement?.classList.contains('mobile-menu-trigger'), {timeout: 3_000});
       await openMobile(page);
       await page.keyboard.press('Escape');
     },

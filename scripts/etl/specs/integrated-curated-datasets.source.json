@@ -340,10 +340,89 @@
           "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
           "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
         ]
+      },
+      "pnrr-progetti": {
+        "holder": "Ministero dell’Economia e delle Finanze · Ragioneria Generale dello Stato · Italia Domani / ReGiS",
+        "referencePeriod": "2026-06-13",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "periodica alla fonte; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/4.0/legalcode.it",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Localizzazione.csv",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Localizzazione_Metadati.zip",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti.csv",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti_Metadati.zip",
+          "https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html"
+        ]
       }
     }
   },
   "datasets": [
+    {
+      "id": "pnrr-progetti",
+      "title": "PNRR · catalogo nazionale dei progetti · 13 giugno 2026",
+      "domain": "cohesion",
+      "relativePath": "pnrr-progetti.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL progetti",
+        "URL localizzazioni"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "291398 registrazioni CUP/CLP/submisura, 285992 CUP formalmente validi e due registrazioni con segnaposto N/A e N/A2. Uno stesso CUP può avere più CLP o submisure: le righe non sono CUP unici.",
+        "Importi in euro decimali con virgola: finanziamento PNRR e finanziamento totale del progetto restano distinti. Non sono pagamenti osservati, spesa sostenuta o somme da attribuire automaticamente a un territorio. Lo zero della fonte resta zero; le celle vuote restano mancanti.",
+        "Fotografia ReGiS del 13 giugno 2026, acquisita il 7 settembre 2026, anche per progetti non validati. Stato del progetto ed esito della validazione non certificano erogazione del servizio o ritardo.",
+        "Localizzazioni è un array JSON di tuple: Regione, Descrizione Regione, Provincia, Descrizione Provincia, Comune, Descrizione Comune, Percentuale di Localizzazione. Contiene tutte le 347602 righe territoriali collegate esattamente per CUP, CLP e submisura; 40 registrazioni non hanno localizzazione. Indirizzi e CAP non sono ripubblicati.",
+        "Il codice Comune è relativo alla Provincia: il filtro comunale usa Provincia+Comune (sei cifre). Regione 000 significa ambito nazionale; Provincia/Comune 000 non identificano un comune. I codici sono quelli storici della fonte, senza raccordo automatico ai confini attuali.",
+        "Soggetto attuatore e localizzazione fisica sono dimensioni diverse. Progetti multiterritoriali restano una sola registrazione nei risultati filtrati. Non ripartiamo né sommiamo importi per localizzazione.",
+        "94 codici fiscali sono oscurati dalla fonte con asterischi e due sono vuoti: non sono ricostruiti o indicizzati. Otto registrazioni non hanno Codice Univoco Misura ma conservano la submisura. I segnaposto CUP non sono indicizzati come CUP validi.",
+        "Fonte: MEF-RGS, Italia Domani, versione 13.0, CC BY 4.0. Proiezione DVNS dei CSV Progetti e Localizzazione; source lock con hash e byte anche dei metadati. I file originali sono acquisiti fuori dal runtime e dal repository, secondo ADR 0001. Nessun pagamento ReGiS, gara o aggiudicatario è aggiunto da questa proiezione."
+      ],
+      "expected": {
+        "bytes": 222755495,
+        "sha256": "0039c9020434f53a14bdba14a808a6d845029cff368a18f69fc7404bc972463a",
+        "rows": 291398,
+        "columns": 28,
+        "headers": [
+          "CUP",
+          "Codice Locale Progetto",
+          "Missione",
+          "Descrizione Missione",
+          "Componente",
+          "Descrizione Componente",
+          "Codice Univoco Misura",
+          "Descrizione Misura",
+          "Codice Univoco Submisura",
+          "Descrizione Submisura",
+          "Amministrazione Titolare",
+          "Titolo Progetto",
+          "Soggetto Attuatore",
+          "Codice Fiscale Soggetto Attuatore",
+          "Stato CUP",
+          "Stato Avanzamento Progetto",
+          "Finanziamento PNRR",
+          "Finanziamento Totale",
+          "Esito Ultima Validazione",
+          "Data Ultima Validazione",
+          "Data Inizio Progetto Prevista",
+          "Data Inizio Progetto Effettiva",
+          "Data Fine Progetto Prevista",
+          "Data Fine Progetto Effettiva",
+          "Data di Estrazione",
+          "Localizzazioni",
+          "URL progetti",
+          "URL localizzazioni"
+        ]
+      }
+    },
     {
       "id": "ted-avvisi-italia-2026-08",
       "title": "Avvisi TED · committenti in Italia · agosto 2026",

@@ -52,6 +52,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/palazzo-chigi",
   "/parlamento",
   "/partecipazioni",
+  "/pnrr",
   "/pnrr/incarichi",
   "/report",
   ...PUBLISHED_MONTHLY_REPORT_PATHS,

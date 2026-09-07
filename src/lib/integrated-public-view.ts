@@ -520,3 +520,66 @@ export async function getIntegratedSourceCoverage() {
     },
   } as const;
 }
+
+export type PnrrProjectSelectorInput = Partial<Record<import("@/lib/pnrr-projects-index").PnrrFilter | "limit" | "cursor", unknown>> & { signal?: AbortSignal };
+
+/** Indexed PNRR view, sharing the validated corpus rows with the generic data API. */
+export async function selectPnrrProjects(input: PnrrProjectSelectorInput) {
+  const { PNRR_PROJECT_DATASET, pnrrProjectMetadata, pnrrFilterNames, pnrrFilterPatterns, pnrrMatchingRows } = await import("@/lib/pnrr-projects-index");
+  const filters: import("@/lib/pnrr-projects-index").PnrrFilters = {};
+  for (const field of pnrrFilterNames) {
+    const value = singleString(input[field], field)?.trim().toUpperCase();
+    if (value) {
+      if (value.length > 32 || !pnrrFilterPatterns[field].test(value)) throw new IntegratedQueryError(`Il filtro ${field} richiede un codice esatto valido.`);
+      filters[field] = value;
+    }
+  }
+  const limit = boundedInteger(input.limit, "limit", 25, 100, 1);
+  const bundle = await loadIntegratedSourceBundle();
+  const dataset = bundle.datasetsById.get(PNRR_PROJECT_DATASET);
+  if (!dataset || dataset.receiptSha256 !== pnrrProjectMetadata.receiptSha256 || dataset.publicRows !== pnrrProjectMetadata.coverage.projectRows) {
+    throw new Error("Indice PNRR non coerente con il corpus pubblicato.");
+  }
+  const queryHash = sha256Hex(canonicalJson(filters));
+  const token = singleString(input.cursor, "cursor");
+  let position = 0;
+  if (token !== undefined) {
+    if (token.length > 512 || !/^[A-Za-z0-9_-]+$/.test(token)) throw new IntegratedQueryError("Cursor PNRR non valido.");
+    try {
+      const bytes = Buffer.from(token, "base64url");
+      if (bytes.toString("base64url") !== token) throw new Error();
+      const cursor = JSON.parse(bytes.toString("utf8")) as Record<string, unknown>;
+      if (canonicalJson(Object.keys(cursor).sort()) !== canonicalJson(["next", "query", "release", "v"]) || cursor.v !== 1 || cursor.query !== queryHash || cursor.release !== bundle.release.releaseSetSha256 || !Number.isSafeInteger(cursor.next) || (cursor.next as number) <= 0) throw new Error();
+      position = cursor.next as number;
+    } catch { throw new IntegratedQueryError("Cursor PNRR non valido o riferito a filtri/rilascio diversi."); }
+  }
+  const refs = await pnrrMatchingRows(filters);
+  const matchedRows = refs?.length ?? dataset.publicRows;
+  if (position > 0 && position >= matchedRows) throw new IntegratedQueryError("Cursor PNRR oltre i risultati disponibili.");
+  const start = position;
+  const rows: IntegratedPublicRow[] = [];
+  let chunks = 0;
+  let rawBytes = 0;
+  let loaded: Awaited<ReturnType<typeof loadIntegratedDatasetChunk>> | undefined;
+  while (position < matchedRows && rows.length < limit) {
+    const sourceRow = refs?.[position] ?? position + 1;
+    const ordinal = Math.floor((sourceRow - 1) / INTEGRATED_ROW_CHUNK_ROWS);
+    if (!loaded || loaded.ordinal !== ordinal) {
+      if (chunks >= INTEGRATED_MAX_SEARCH_CHUNKS) break;
+      loaded = await loadIntegratedDatasetChunk(bundle, dataset, ordinal, input.signal);
+      chunks += 1;
+      rawBytes += loaded.uncompressedBytes;
+      if (rawBytes > INTEGRATED_MAX_SEARCH_RAW_BYTES) throw new Error("Budget PNRR superato.");
+    }
+    const row = loaded.rows[(sourceRow - 1) % INTEGRATED_ROW_CHUNK_ROWS];
+    if (!row || row.sourceRow !== sourceRow) throw new Error("Riferimento indice PNRR divergente.");
+    rows.push(row);
+    position += 1;
+  }
+  const nextCursor = position < matchedRows ? Buffer.from(canonicalJson({ v: 1, next: position, query: queryHash, release: bundle.release.releaseSetSha256 })).toString("base64url") : null;
+  return {
+    dataset: publicMetadata(dataset), referenceDate: pnrrProjectMetadata.referenceDate, filters,
+    coverage: pnrrProjectMetadata.coverage, matchedRows, rows,
+    pagination: { limit, returned: rows.length, start, nextCursor, exhausted: nextCursor === null, loadedChunks: chunks },
+  };
+}

@@ -133,6 +133,8 @@ const querySchema = z.object({
   years: z.number().int().min(2).max(20)
     .describe("Numero di Leggi di Bilancio più recenti da restituire, da 2 a 20, solo per il dataset che lo dichiara.")
     .optional(),
+  component: z.string().max(8).describe("Componente PNRR esatta, per esempio M1C1; solo pnrr_progetti.").optional(),
+  submeasure: z.string().max(24).describe("Codice univoco submisura PNRR, per esempio M1C1I1.01.00; solo pnrr_progetti.").optional(),
   mission: z.string().min(1).max(200)
     .describe("Nome esatto della missione in openbdap_legge_bilancio_storico, per esempio Ricerca e innovazione oppure Istruzione universitaria e formazione post-universitaria.")
     .optional(),

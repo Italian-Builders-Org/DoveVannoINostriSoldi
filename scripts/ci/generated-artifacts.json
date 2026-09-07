@@ -12,6 +12,31 @@
   ],
   "artifacts": [
     {
+      "id": "pnrr-projects-index",
+      "owner": "Italia Domani national PNRR project catalog",
+      "files": [
+        "src/data/generated/pnrr-projects-index"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/pnrr_projects.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pnrr_projects.py"
+      ],
+      "nodeTests": [
+        "tests/pnrr-projects.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/pnrr_projects.py --build-index",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/pnrr-projects.source.json",
+      "trustModel": "Exact row-reference indexes derived from validated integrated public rows; --check reconstructs every index and binds the source lock and dataset receipt. Reproducing the raw CSV projection additionally requires --input-dir with all four pinned Italia Domani assets. No upstream request occurs at runtime."
+    },
+    {
       "id": "anac-awardees-coverage",
       "owner": "ANAC awardees and awards coverage contract",
       "files": [
@@ -252,9 +277,16 @@
         "tests/etl/test_salute_hospital_beds.py",
         "tests/etl/test_istat_misura_comune.py",
         "tests/etl/test_mim_school_services.py",
-        "tests/etl/test_ted_notices.py"
+        "tests/etl/test_ted_notices.py",
+        "tests/etl/test_pnrr_projects.py"
       ],
-      "nodeTests": ["tests/salute-hospital-beds.test.mjs", "tests/istat-misura-comune.test.mjs", "tests/mim-school-services.test.mjs", "tests/ted-notices.test.mjs"],
+      "nodeTests": [
+        "tests/salute-hospital-beds.test.mjs",
+        "tests/istat-misura-comune.test.mjs",
+        "tests/mim-school-services.test.mjs",
+        "tests/ted-notices.test.mjs",
+        "tests/pnrr-projects.test.mjs"
+      ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
         "requiresNetworkInput": false

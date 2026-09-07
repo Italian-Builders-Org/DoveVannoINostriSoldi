@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted" | "/pnrr";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -966,6 +966,12 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/pnrr",
+    title: "Tutti i progetti PNRR",
+    description: "Registrazioni ReGiS di tutte le missioni, con finanziamenti e localizzazioni dichiarate al 13 giugno 2026.",
+    datasets: [{ id: "pnrr-progetti", label: "Catalogo nazionale progetti PNRR" }],
+  },
   {
     surface: "/appalti/ted",
     title: "Avvisi TED con committenti in Italia",

@@ -143,9 +143,10 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.match(mefIrpef?.detail ?? "", /Mancante\/errata separata/);
   const pnrr = overview.find((entry) => entry.sourceId === "italiadomani");
   assert.equal(pnrr?.reachability, "not-probed");
-  assert.equal(pnrr?.recordCount, 3_841);
+  assert.equal(pnrr?.recordCount, 291_398);
   assert.equal(pnrr?.freshness.sourceTimestamp, "2026-06-13");
-  assert.match(pnrr?.detail ?? "", /18\.851 gare/);
+  assert.match(pnrr?.detail ?? "", /285992 CUP validi/);
+  assert.match(pnrr?.detail ?? "", /senza pagamenti/);
   const istat = overview.find((entry) => entry.sourceId === "istat");
   assert.equal(istat?.reachability, "not-probed");
   assert.equal(istat?.recordCount, 7_894);

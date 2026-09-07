@@ -330,9 +330,9 @@ ANAC TrasparenzAI dimostra che il monitoraggio automatico della struttura di Amm
 ## Tier 3: investimenti
 
 ### ReGiS / PNRR
-Italia Domani pubblica estrazioni periodiche dei dati di attuazione PNRR. La prima integrazione copre esclusivamente la submisura `M4C1I1.01.00`, relativa ad asili nido, scuole dell'infanzia e servizi di educazione e cura per la prima infanzia.
+Italia Domani pubblica estrazioni periodiche dei dati di attuazione PNRR. Il catalogo nazionale `/pnrr` espone tutte le 291.398 registrazioni del rilascio 13/06/2026, con 285.992 CUP validi distinti, finanziamenti e localizzazioni; contratto e riproduzione in [PNRR_PROJECTS.md](PNRR_PROJECTS.md). Il verticale curato asili copre la submisura `M4C1I1.01.00`, relativa ad asili nido, scuole dell'infanzia e servizi di educazione e cura per la prima infanzia.
 
-Lo snapshot unisce quattro CSV ufficiali: progetti e localizzazioni tramite CUP; gare e aggiudicatari conservano inoltre CIG, Codice interno PDA e Codice procedura utente. Non vengono usati nomi testuali come chiavi. La release estratta il 13 giugno 2026 comprende 3.841 CUP, 3.842 localizzazioni, 18.851 gare e 18.250 righe aggiudicatario. Due righe aggiudicatario non hanno una chiave gara completa corrispondente e restano esplicitamente non collegate.
+Lo snapshot asili unisce quattro CSV ufficiali: progetti e localizzazioni tramite CUP; gare e aggiudicatari conservano inoltre CIG, Codice interno PDA e Codice procedura utente. Non vengono usati nomi testuali come chiavi. La release estratta il 13 giugno 2026 comprende 3.841 CUP, 3.842 localizzazioni, 18.851 gare e 18.250 righe aggiudicatario. Due righe aggiudicatario non hanno una chiave gara completa corrispondente e restano esplicitamente non collegate.
 
 Gli importi sono distinti per significato: finanziamento PNRR, finanziamento totale, importo di gara e importo di aggiudicazione. Lo snapshot non contiene i pagamenti ReGiS e quindi non trasforma nessuno di questi valori in “spesa erogata”. Hash, dimensioni, copertura, rigenerazione e limiti sono documentati in [PNRR_CHILDCARE.md](PNRR_CHILDCARE.md).
 

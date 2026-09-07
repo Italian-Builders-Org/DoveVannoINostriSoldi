@@ -122,7 +122,7 @@ Lavoro dati già in corso, da non dimenticare quando si sceglie una verticale:
 
 - ingestore ANAC BDNCP e indice CIG-CUP senza replicare la BDNCP;
 - crawler Amministrazione Trasparente da IPA;
-- ReGiS / PNRR oltre il perimetro asili;
+- pagamenti ReGiS e gare PNRR nazionali: il catalogo completo progetti/localizzazioni è ora disponibile in `/pnrr`;
 - drill-down OpenCoesione con anti-doppio conteggio;
 - ingestione persistente opere OpenBDAP MOP;
 - popolazione comunale ISTAT per denominatori annuali;

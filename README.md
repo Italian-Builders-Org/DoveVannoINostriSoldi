@@ -22,7 +22,7 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 - Capire rapidamente che cosa il dato misura, e che cosa non misura.
 - Fare domande al catalogo dati e al server MCP in sola lettura.
 
-Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 46 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) risponde su snapshot verificati, senza modello generativo.
+Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 46 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
 
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
@@ -62,7 +62,7 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | [Istituzioni](https://www.dovevannoinostrisoldi.com/istituzioni) | Parlamento, Palazzo Chigi, pagella dei governi, ministeri e regioni |
 | [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF |
 | [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, appalti, incarichi e catalogo dati |
-| [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Domande testuali su snapshot verificati, senza modello generativo |
+| [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Chat con la tua AI personale, dati verificati del sito e allegati |
 | [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, date di aggiornamento e calendario dei documenti programmatici |
 | [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |

@@ -52,6 +52,7 @@ class ScopePolicy:
     title: str
 
 POLICIES = (
+    ScopePolicy("asl", "ASL", "SAN", "siope-uscite-asl", "Pagamenti SIOPE delle ASL"),
     ScopePolicy("province", "PROVINCIA", "PRO", "siope-uscite-province", "Pagamenti SIOPE delle Province"),
     ScopePolicy("regioni", "REGIONE", "REG", "siope-uscite-regioni", "Pagamenti SIOPE delle Regioni"),
     ScopePolicy("citta-metropolitane", "CITTA_METROP", "PRO", "siope-uscite-citta-metropolitane", "Pagamenti SIOPE delle Città metropolitane"),
@@ -346,6 +347,11 @@ def inventory_and_rows(*, year: int, movement_zip: Path, identities: list[Entity
             raise SiopeNonMunicipalError("SIOPE: chiave movimento duplicata")
         seen[policy.key].add(key)
         management = resolve_management(management_codes, management_code, policy.compartment, year, month)
+        # SAN has its own four-digit vocabulary, not the territorial budget titles.
+        category_code = management.code if policy.compartment == "SAN" else title_code(management.code)
+        category_label = management.label if policy.compartment == "SAN" else TITLE_LABELS[category_code]
+        if policy.compartment == "SAN" and re.fullmatch(r"\d{4}", management.code) is None:
+            raise SiopeNonMunicipalError("SIOPE SAN: codice gestionale non valido")
         payments[policy.key].append({
             "entityCode": identity.code, "taxCode": identity.tax_code, "codiceIpa": join.codice_ipa,
             "entityType": identity.entity_type, "entityName": identity.name,
@@ -354,7 +360,7 @@ def inventory_and_rows(*, year: int, movement_zip: Path, identities: list[Entity
             "ipaJoinStatus": join.codice_ipa_status, "regionJoinStatus": join.region_status,
             "year": str(year), "month": str(month), "managementCode": management.code,
             "compartment": policy.compartment, "managementLabel": management.label,
-            "titleCode": title_code(management.code), "titleLabel": TITLE_LABELS[title_code(management.code)], "amountCents": str(amount),
+            "titleCode": category_code, "titleLabel": category_label, "amountCents": str(amount),
         })
     inventory: list[dict[str, str]] = []
     for entity_type in sorted(metrics):
@@ -513,6 +519,12 @@ def build_release(*, input_dir: Path, input_receipt: Path, output_dir: Path, acq
     )
     return manifest
 
+def valid_detail_category(row: dict, entity_type: str) -> bool:
+    if entity_type == "ASL":
+        # Exact labels and amounts are reconciled against the hashed SAN rows below.
+        return isinstance(row.get("code"), str) and re.fullmatch(r"\d{4}", row["code"]) is not None and isinstance(row.get("label"), str) and bool(row["label"].strip())
+    return row.get("code") in TITLE_LABELS and row.get("label") == TITLE_LABELS[row["code"]]
+
 def _load_and_validate_detail(path: Path) -> dict:
     try:
         detail = json.loads(path.read_text(encoding="utf-8"))
@@ -556,7 +568,7 @@ def _load_and_validate_detail(path: Path) -> dict:
                 monthly_total = safe_add(monthly_total, row["amountCents"])
             title_total = 0
             for row in titles:
-                if not isinstance(row, dict) or set(row) != {"code", "label", "amountCents"} or row.get("code") not in TITLE_LABELS or row.get("label") != TITLE_LABELS[row["code"]] or not isinstance(row.get("amountCents"), int):
+                if not isinstance(row, dict) or set(row) != {"code", "label", "amountCents"} or not valid_detail_category(row, entity["entityType"]) or not isinstance(row.get("amountCents"), int):
                     raise SiopeNonMunicipalError("Dettaglio SIOPE non municipale: titolo divergente")
                 title_total = safe_add(title_total, row["amountCents"])
             if item["status"] == "available" and (monthly_total != amount or title_total != amount):
@@ -596,6 +608,8 @@ def _projection_rows(projection_dir: Path) -> Iterable[dict[str, str]]:
 def _reconcile_detail_to_rows(detail: dict, rows: Iterable[dict[str, str]]) -> None:
     aggregates: dict[tuple[str, str, str, int], dict] = {}
     for row in rows:
+        if row.get("entityType") == "ASL" and (row.get("compartment") != "SAN" or re.fullmatch(r"\d{4}", row.get("managementCode", "")) is None or row.get("titleCode") != row.get("managementCode") or row.get("titleLabel") != row.get("managementLabel")):
+            raise SiopeNonMunicipalError("Corpus canonico SAN: categoria divergente dalla voce gestionale")
         if row.get("ipaJoinStatus") != "matched" or not row.get("codiceIpa"):
             continue
         try:

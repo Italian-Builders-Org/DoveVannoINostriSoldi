@@ -9,6 +9,8 @@
 # ending conversion turns a valid snapshot into a failed reconciliation.
 /data/source-ledger/** -text
 /src/data/generated/** -text
+# The Ministry source is CRLF; preserve and validate its original bytes.
+/tests/fixtures/salute-posti-letto-2023.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 
 *.gz binary
 *.ico binary

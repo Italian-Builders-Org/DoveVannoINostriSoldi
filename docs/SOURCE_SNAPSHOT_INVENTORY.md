@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 46
+- Artefatti nel registro: 48
 - PR automatica: 9 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 31 (PR umana dopo revisione)
+- manuale: 33 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -43,6 +43,8 @@ La revisione e il merge restano umani.
 
 | Artefatto | Periodo nello snapshot | Osservazione | URL ufficiale | Controllo DVNS | Workflow | Modo | Validazione |
 |---|---|---|---|---|---|---|---|
+| `anac-procurement-cpv` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_cpv.py --check` |
+| `pnrr-projects-index` | 2026-06-13 | non dichiarato | https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html | nessuno | nessuno | manuale | `python3 scripts/etl/pnrr_projects.py --check` |
 | `anac-awardees-coverage` | 2026-01-23 | 2026-08-30T18:30:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari | nessuno | nessuno | manuale | `python3 scripts/etl/anac_awardees_coverage.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |
@@ -69,7 +71,7 @@ La revisione e il merge restano umani.
 | `rgs-consulting-payments` | non dichiarato nello snapshot | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `rgs-ministries-2025` | 2025 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/rgs_ministries_account.py --validate-committed` |
 | `rgs-state-budget-territorial-2023` | 2023 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall | nessuno | nessuno | manuale | suite ETL |
-| `siope-nonmunicipal` | 2024-2026 | 2026-09-06T11:43:44+00:00 | https://www.siope.it/documenti/siope2/open/last | nessuno | nessuno | manuale | `python3 scripts/etl/siope_nonmunicipal.py --check` |
+| `siope-nonmunicipal` | 2024-2026 | 2026-09-07T00:11:56+00:00 | https://www.siope.it/documenti/siope2/open/last | nessuno | nessuno | manuale | `python3 scripts/etl/siope_nonmunicipal.py --check` |
 | `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_receipts_check.py --include-expenditure` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `ssn-cce-national-history` | non dichiarato nello snapshot | 2026-08-28T12:31:43.000Z | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |

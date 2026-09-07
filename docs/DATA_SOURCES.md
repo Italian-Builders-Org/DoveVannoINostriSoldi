@@ -109,7 +109,9 @@ Spec, vocabolario dei titoli, coperture e comandi offline sono descritti in
 Province, Regioni comprese le Province autonome e Città metropolitane usano gli stessi ZIP
 ufficiali delle uscite, ma una proiezione separata con comparti rispettivamente `PRO`, `REG`
 e `PRO`. Il censimento include tutti i tipi SIOPE, mentre i pagamenti pubblicati sono solo
-dei tre perimetri territoriali. Le identità sono unite a IPA esclusivamente per codice fiscale
+dei tre perimetri territoriali e delle ASL (comparto `SAN`). Le ASL conservano le voci
+gestionali sanitarie originali e sono accessibili da `/spese/sanita` e `/dati/siope-uscite-asl`;
+sono pagamenti di cassa, distinti e non sommabili al Conto Economico SSN. Le identità sono unite a IPA esclusivamente per codice fiscale
 esatto e intervallo temporale; zero osservato, assenza di movimenti e errore di join restano
 distinti. File, hash, provenienza, release e comando di rigenerazione sono in
 [SIOPE_NON_MUNICIPAL.md](SIOPE_NON_MUNICIPAL.md).
@@ -328,9 +330,9 @@ ANAC TrasparenzAI dimostra che il monitoraggio automatico della struttura di Amm
 ## Tier 3: investimenti
 
 ### ReGiS / PNRR
-Italia Domani pubblica estrazioni periodiche dei dati di attuazione PNRR. La prima integrazione copre esclusivamente la submisura `M4C1I1.01.00`, relativa ad asili nido, scuole dell'infanzia e servizi di educazione e cura per la prima infanzia.
+Italia Domani pubblica estrazioni periodiche dei dati di attuazione PNRR. Il catalogo nazionale `/pnrr` espone tutte le 291.398 registrazioni del rilascio 13/06/2026, con 285.992 CUP validi distinti, finanziamenti e localizzazioni; contratto e riproduzione in [PNRR_PROJECTS.md](PNRR_PROJECTS.md). Il verticale curato asili copre la submisura `M4C1I1.01.00`, relativa ad asili nido, scuole dell'infanzia e servizi di educazione e cura per la prima infanzia.
 
-Lo snapshot unisce quattro CSV ufficiali: progetti e localizzazioni tramite CUP; gare e aggiudicatari conservano inoltre CIG, Codice interno PDA e Codice procedura utente. Non vengono usati nomi testuali come chiavi. La release estratta il 13 giugno 2026 comprende 3.841 CUP, 3.842 localizzazioni, 18.851 gare e 18.250 righe aggiudicatario. Due righe aggiudicatario non hanno una chiave gara completa corrispondente e restano esplicitamente non collegate.
+Lo snapshot asili unisce quattro CSV ufficiali: progetti e localizzazioni tramite CUP; gare e aggiudicatari conservano inoltre CIG, Codice interno PDA e Codice procedura utente. Non vengono usati nomi testuali come chiavi. La release estratta il 13 giugno 2026 comprende 3.841 CUP, 3.842 localizzazioni, 18.851 gare e 18.250 righe aggiudicatario. Due righe aggiudicatario non hanno una chiave gara completa corrispondente e restano esplicitamente non collegate.
 
 Gli importi sono distinti per significato: finanziamento PNRR, finanziamento totale, importo di gara e importo di aggiudicazione. Lo snapshot non contiene i pagamenti ReGiS e quindi non trasforma nessuno di questi valori in “spesa erogata”. Hash, dimensioni, copertura, rigenerazione e limiti sono documentati in [PNRR_CHILDCARE.md](PNRR_CHILDCARE.md).
 
@@ -469,6 +471,30 @@ Altre fonti da valutare nella fase 2:
 - serie storica OpenCivitas 2015-2022 e singole funzioni comunali;
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
+### MIM · scuole statali per Comune
+
+Il CSV ufficiale 2026/27 al 1 settembre 2026, licenza IODL 2.0, fornisce
+50.273 codici scuola. La proiezione conta 39.713 codici marcati come sedi in
+6.648 Comuni e conserva separatamente gli altri codici. Il raccordo catastale /
+ISTAT usa le identità MEF verificate (CC BY 3.0 IT), senza confronto dei nomi.
+La scheda Comune distingue zero osservato, nessun record e territori esclusi
+(Aosta, Trento, Bolzano); il conteggio non misura qualità o accessibilità.
+Dati interrogabili anche in `/dati/mim-scuole-statali-comuni`, API e MCP.
+[Contratto, fonte, licenze e riproduzione](MIM_SCHOOL_SERVICES.md).
+
+### ISTAT A misura di Comune
+
+Il corpus integra tre indicatori demografici comunali del sistema sperimentale
+ISTAT: indice di vecchiaia, dipendenza anziani e dipendenza strutturale. Ogni
+serie contiene 7.896 Comuni e i valori al 31 dicembre dal 2014 al 2024, sulla
+geografia comunale al 31 dicembre 2024 ricostruita dalla fonte.
+
+Sono rapporti per 100 con denominatori distinti, non spesa pubblica o un indice
+composito di benessere. `..` (dato non ricostruibile) e `N.C.` (denominatore
+nullo) rimangono distinti da zero. Catalogo, API e MCP usano le stesse righe;
+non viene aggiunto un indicatore aggregato alle schede Comune. Vedi
+[fonte, caveat e riproduzione](ISTAT_MISURA_COMUNE.md).
+
 ### Debito pubblico italiano
 
 La pagina `/debito` usa esclusivamente i cubi BDS di Banca d'Italia
@@ -494,3 +520,16 @@ del 7,54%. La versione upstream dichiarata era
 `2026-07-21T11:00:00+0200`. Questi numeri documentano la caratterizzazione del
 primo rilascio: il runtime continua a leggere lo snapshot aggiornabile e non li
 usa come costanti dell'interfaccia.
+
+## TED: avvisi con committenti in Italia
+
+La pagina `/appalti/ted` e il dataset integrato `ted-avvisi-italia-2026-08`
+collegano 2.825 avvisi pubblicati nella GUUE ad agosto 2026, con almeno un
+committente che dichiara paese Italia. Fonte: Ufficio delle pubblicazioni
+dell’Unione europea, Search API TED. Dodici risposte complete, hash pinnati,
+acquisizione 6 settembre 2026 e riproduzione offline.
+
+Avvisi, non contratti o pagamenti; comprendono tipi diversi e tre avvisi con
+committenti di più paesi. Nessuna somma o join CIG con ANAC. Riuso degli avvisi
+GUUE verificato nella nota TED, salvo diversa indicazione, e metadati CC0 1.0.
+Pagina, API e MCP consumano lo stesso corpus. [Fonte, date, condizioni di riuso e riproduzione](TED_NOTICES.md).

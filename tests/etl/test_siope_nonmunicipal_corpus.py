@@ -187,7 +187,7 @@ class SiopeCompletePromotionTests(TestCase):
             expected = {"sourceRows": 1 + sum(p["rows"] for p in manifest["projections"].values()),
                 "publicRows": 1 + sum(p["rows"] for p in manifest["projections"].values()),
                 "catalogOnlyRows": 0, "derivedOnlyRows": 0}
-            with mock.patch.object(corpus, "ROOT", root), mock.patch.object(append_release, "ROOT", root), mock.patch.object(detail, "REPO_ROOT", root), mock.patch.object(release, "EXPECTED_DATASETS", 5):
+            with mock.patch.object(corpus, "ROOT", root), mock.patch.object(append_release, "ROOT", root), mock.patch.object(detail, "REPO_ROOT", root), mock.patch.object(release, "EXPECTED_DATASETS", 1 + len(manifest["projections"])):
                 artifacts = corpus.build_artifacts(spec_path=spec_path, source_root=fixture.output,
                     catalog_path=kwargs["catalog_path"], rows_dir=kwargs["rows_dir"], receipts_dir=kwargs["receipts_dir"],
                     proof_path=kwargs["proof_path"], private_map_out=None)

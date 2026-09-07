@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "holder": "Istituto nazionale di statistica (ISTAT)",
+    "url": "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+    "landingUrl": "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+    "methodologyUrl": "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf",
+    "licenseUrl": "https://www.istat.it/note-legali/",
+    "license": "not-declared",
+    "bytes": 4603162,
+    "sha256": "e7e363c4c42c840a68f7baf48fd3a7204bcaadbea8092498fa27d1a5a9d3e408",
+    "acquiredAt": "2026-09-06",
+    "geographyAsOf": "2024-12-31",
+    "referenceYears": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "experimental": true,
+    "moneyAxis": "absent",
+    "unit": "rapporto per 100 persone della fascia di eta al denominatore",
+    "aggregation": "not-additive",
+    "websiteReuseTerms": "CC-BY-4.0; salvo diversa indicazione, per i contenuti pubblicati sul sito ISTAT",
+    "publicationDate": null,
+    "landingUpdatedAt": "2026-05-26",
+    "tableUpdatedAt": "2026-01-01"
+  },
+  "fixture": {
+    "path": "tests/fixtures/istat-misura-comune/structure-cells.zip",
+    "bytes": 3789417,
+    "sha256": "3132d957ca8ff59859f67491fb48626700fba15aeef92fdb651126cf5be0ad1f",
+    "members": [
+      {
+        "name": "xl/sharedStrings.xml",
+        "bytes": 393037,
+        "sha256": "22f758da5c46365105a32846d9cdc9a5e79d15d1b266c246f2a272202090c94c"
+      },
+      {
+        "name": "xl/worksheets/sheet2.xml",
+        "bytes": 7102932,
+        "sha256": "f8cac56b6f02b52adca191d5c2f94a6f6cb382af470ee9126c4232ed070ff154"
+      },
+      {
+        "name": "xl/worksheets/sheet4.xml",
+        "bytes": 7194419,
+        "sha256": "055e1b5e576d5c699e7989bae137b70e086172f5cb1183f21f8de307daa14758"
+      },
+      {
+        "name": "xl/worksheets/sheet6.xml",
+        "bytes": 7248813,
+        "sha256": "4b36c660d86a459c8d45bcb8be22309896293b246e4eb0a915fe7cbf0e7eff4c"
+      },
+      {
+        "name": "xl/worksheets/sheet1.xml",
+        "bytes": 4550,
+        "sha256": "175cbdfe09bce5c1f41b9f1a38f78a85fd6347c09f87e8a101d300d71f8d5a93"
+      }
+    ]
+  },
+  "headers": [
+    "Ripartizione",
+    "Codice regione",
+    "Denominazione regione",
+    "Provincia",
+    "Capoluogo",
+    "Denominazione comune",
+    "Codice comune Istat",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+  ],
+  "sheets": [
+    {
+      "id": "istat-misura-comune-vecchiaia",
+      "name": "Tav. 6.1 Comuni",
+      "member": "xl/worksheets/sheet2.xml",
+      "title": "Tavola 6.1 - Indice di vecchiaia al 31 dicembre per comune. Anni 2014-2024",
+      "label": "Indice di vecchiaia",
+      "rows": 7896,
+      "footer": [
+        "Fonte: Elaborazione su dati Istat - Popolazione residente comunale per sesso, anno di nascita e stato civile. Data warehouse IstatData. ",
+        "Algoritmo/caratteristiche dei dati: Residenti al 31 dicembre di 65 anni e più/ Residenti al  31 dicembre in età da 0 a 14 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione. ",
+        "N.C. Indicatore non calcolabile, la popolazione in età 0-14 anni è pari a 0."
+      ],
+      "missing": {
+        "..": 10,
+        "N.C.": 21
+      },
+      "repeatedFooterCells": 0
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-anziani",
+      "name": "Tav. 7.1 Comuni",
+      "member": "xl/worksheets/sheet4.xml",
+      "title": "Tavola 7.1 - Indice di dipendenza anziani al 31 dicembre per comune. Anni 2014-2024",
+      "label": "Indice di dipendenza anziani",
+      "rows": 7896,
+      "footer": [
+        "Fonte: Elaborazione su dati Istat - Popolazione residente comunale per sesso, anno di nascita e stato civile. Data warehouse IstatData. ",
+        "Algoritmo/caratteristiche dei dati: Residenti al 31 dicembre di 65 anni e più / Residenti al 31 dicembre  in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione. "
+      ],
+      "missing": {
+        "..": 10,
+        "N.C.": 0
+      },
+      "repeatedFooterCells": 0
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-strutturale",
+      "name": "Tav. 8.1 Comuni",
+      "member": "xl/worksheets/sheet6.xml",
+      "title": "Tavola 8.1 - Indice di dipendenza strutturale al 31 dicembre per comune. Anni 2014-2024",
+      "label": "Indice di dipendenza strutturale",
+      "rows": 7896,
+      "footer": [
+        "Fonte: Elaborazione su dati Istat - Popolazione residente comunale per sesso, anno di nascita e stato civile. Data warehouse IstatData. ",
+        "Algoritmo/caratteristiche dei dati: (Residenti al 31 dicembre in età da 0 a 14 anni + Residenti al 31 dicembre di 65 anni e più) / Residenti al  31 dicembre in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione. "
+      ],
+      "missing": {
+        "..": 10,
+        "N.C.": 0
+      },
+      "repeatedFooterCells": 1022
+    }
+  ],
+  "metadataCells": {
+    "A12": "La configurazione territoriale e amministrativa utilizzata, relativa ai comuni e alle unità territoriali sovracomunali, fa riferimento alla data del 31.12.2024. A questa data, il numero dei comuni è pari a 7.896; negli anni il numero dei comuni può modificarsi sia per la costituzione di nuovi comuni, prevalentemente per la fusione di comuni già esistenti e conseguentemente soppressi, sia perchè alcuni sono inglobati in altri che non cambiano nome.",
+    "A13": "Il dato relativo al comune di Mappano (codistat=001316) non è ricalcolabile per gli anni 2014-2016 in quanto il comune è stato istituito il 18.04.2017 dalla fusione di zone di territorio scorporate dai comuni di Caselle Torinese, Borgaro Torinese, Settimo Torinese e Leini. ",
+    "A14": "Il dato relativo al comune di Misiliscemi (codistat=081025) non è ricalcolabile per gli anni 2014-2020 in quanto il comune è stato istituito il 20.02.2021 dalla fusione di zone di territorio scorporate dal comune di Trapani. ",
+    "A15": "Aggiornamento: Data ultimo aggiornamento delle tavole 01.01.2026",
+    "A16": "(..): Il dato non è ricostruibile nella fonte amministrativa."
+  },
+  "references": [
+    {
+      "url": "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+      "bytes": 122780,
+      "sha256": "c39a1d489b13d7228f2c7f7be0c1c00b6d5a2709d18af8900fe6b740dff8f9c9",
+      "acquiredAt": "2026-09-06"
+    },
+    {
+      "url": "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf",
+      "bytes": 831538,
+      "sha256": "80148d5e0f71b9a8a79b0766f2f03c4ee656d89defbac90c2d913d440de8d954",
+      "acquiredAt": "2026-09-06"
+    },
+    {
+      "url": "https://www.istat.it/note-legali/",
+      "bytes": 108808,
+      "sha256": "9178fcb59ab60cc1727dc55c851a3ff4f1605eac1b62a2f57f9d037558a6006e",
+      "acquiredAt": "2026-09-06"
+    }
+  ]
+}

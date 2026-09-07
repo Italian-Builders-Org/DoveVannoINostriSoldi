@@ -33,6 +33,7 @@ import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snap
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
@@ -411,14 +412,14 @@ function snapshotManagedOpenCoesione(): SourceHealth {
   };
 }
 
-function snapshotManagedPnrrChildcare(): SourceHealth {
+function snapshotManagedPnrr(): SourceHealth {
   return {
     ...baseHealth(PNRR_CHILDCARE_SOURCE.id),
     reachability: "not-probed",
-    freshness: freshnessFor(PNRR_CHILDCARE_SOURCE.id, PNRR_CHILDCARE_SOURCE.health.publishedAt),
+    freshness: freshnessFor(PNRR_CHILDCARE_SOURCE.id, pnrrProjectsMetadata.referenceDate),
     latencyMs: null,
-    detail: PNRR_CHILDCARE_SOURCE.health.detail,
-    recordCount: PNRR_CHILDCARE_SOURCE.health.recordCount,
+    detail: `Catalogo nazionale ReGiS: ${pnrrProjectsMetadata.coverage.projectRows} registrazioni, ${pnrrProjectsMetadata.coverage.uniqueCups} CUP validi distinti al 13/06/2026; progetti e localizzazioni, senza pagamenti. Il verticale asili conserva un rilascio distinto. Reachability non verificata da questo endpoint.`,
+    recordCount: pnrrProjectsMetadata.coverage.projectRows,
   };
 }
 
@@ -761,7 +762,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatCasellarioPensioni(),
     snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
-    snapshotManagedPnrrChildcare(),
+    snapshotManagedPnrr(),
     snapshotManagedOpenCivitas(),
     snapshotManagedMefParticipations(),
     snapshotManagedConsulenti(),
@@ -802,7 +803,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
   consip: snapshotManagedConsip,
   opencoesione: snapshotManagedOpenCoesione,
-  italiadomani: snapshotManagedPnrrChildcare,
+  italiadomani: snapshotManagedPnrr,
   opencivitas: snapshotManagedOpenCivitas,
   consulenti: snapshotManagedConsulenti,
   camera: snapshotManagedCamera,

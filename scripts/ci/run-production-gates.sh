@@ -83,6 +83,10 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+echo "::group::Browser navigation suite"
+npm run test:browser:navigation
+echo "::endgroup::"
+
 echo "::group::Browser papers suite"
 npm run test:browser:papers
 echo "::endgroup::"
@@ -92,9 +96,10 @@ npm run test:mcp:http
 echo "::endgroup::"
 
 echo "::group::MCP local load test"
-# Keep the throughput sample below the 30 requests/minute application limit:
-# the preceding protocol smoke intentionally shares the same local client IP.
-# The exact 30 + 1 limiter boundary is covered by the route unit suite.
+# Smoke and load share the same local client IP. Give load its own public
+# rate-limit window as protocol coverage grows; do not weaken the limiter or
+# reduce the throughput sample. The 30 + 1 boundary is covered by route tests.
+node --input-type=module -e 'await new Promise((resolve) => setTimeout(resolve, 60000))'
 npm run test:mcp:load -- \
   --url "${BASE_URL}/api/mcp" \
   --requests 15 \
@@ -104,6 +109,10 @@ echo "::endgroup::"
 
 echo "::group::Browser core suite"
 npm run test:browser:core
+echo "::endgroup::"
+
+echo "::group::Browser chart interactions"
+npm run test:browser:charts
 echo "::endgroup::"
 
 echo "::group::Browser editorial suite"

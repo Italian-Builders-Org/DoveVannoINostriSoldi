@@ -12,6 +12,56 @@
   ],
   "artifacts": [
     {
+      "id": "anac-procurement-cpv",
+      "owner": "ANAC CPV classification for the existing entity procurement profiles",
+      "files": [
+        "src/data/generated/anac-procurement-cpv"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_procurement_cpv.py"
+      ],
+      "nodeTests": [
+        "tests/anac-procurement-cpv.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --input-dir /path/to/locked-cig-archives",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-procurement-cpv.source.json",
+      "trustModel": "Derived classification index bound to the existing ANAC source lock and entity-profile metadata. Every published procedure joins to exactly one primary CIG row in the twelve complete 2025 archives; raw CPV codes and descriptions are retained. Offline checks verify all index and parent shard hashes and exact CIG coverage. Financial values and operator identities stay in the existing typed profile and are recomputed only after selecting whole CIGs."
+    },
+    {
+      "id": "pnrr-projects-index",
+      "owner": "Italia Domani national PNRR project catalog",
+      "files": [
+        "src/data/generated/pnrr-projects-index"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/pnrr_projects.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pnrr_projects.py"
+      ],
+      "nodeTests": [
+        "tests/pnrr-projects.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/pnrr_projects.py --build-index",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/pnrr-projects.source.json",
+      "trustModel": "Exact row-reference indexes derived from validated integrated public rows; --check reconstructs every index and binds the source lock and dataset receipt. Reproducing the raw CSV projection additionally requires --input-dir with all four pinned Italia Domani assets. No upstream request occurs at runtime."
+    },
+    {
       "id": "anac-awardees-coverage",
       "owner": "ANAC awardees and awards coverage contract",
       "files": [
@@ -248,9 +298,20 @@
         "coveredBy": "etl-suite"
       },
       "reconciliationTests": [
-        "tests/etl/test_integrated_source_release.py"
+        "tests/etl/test_integrated_source_release.py",
+        "tests/etl/test_salute_hospital_beds.py",
+        "tests/etl/test_istat_misura_comune.py",
+        "tests/etl/test_mim_school_services.py",
+        "tests/etl/test_ted_notices.py",
+        "tests/etl/test_pnrr_projects.py"
       ],
-      "nodeTests": [],
+      "nodeTests": [
+        "tests/salute-hospital-beds.test.mjs",
+        "tests/istat-misura-comune.test.mjs",
+        "tests/mim-school-services.test.mjs",
+        "tests/ted-notices.test.mjs",
+        "tests/pnrr-projects.test.mjs"
+      ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
         "requiresNetworkInput": false
@@ -407,7 +468,9 @@
         "command": "python scripts/etl/opencivitas_snapshot.py --check",
         "coveredBy": "standalone"
       },
-      "reconciliationTests": [],
+      "reconciliationTests": [
+        "tests/etl/test_monetary_adapters.py"
+      ],
       "nodeTests": [
         "tests/opencivitas-contract.test.mjs"
       ],
@@ -720,11 +783,11 @@
     },
     {
       "id": "siope-nonmunicipal",
-      "owner": "SIOPE non-municipal territorial entity payment detail",
+      "owner": "SIOPE non-municipal entity payment detail",
       "files": [
+        "src/data/generated/siope-nonmunicipal-provenance.json",
         "src/data/generated/siope-nonmunicipal-detail.json",
-        "src/data/generated/siope-nonmunicipal-view-proof.json",
-        "src/data/generated/siope-nonmunicipal-provenance.json"
+        "src/data/generated/siope-nonmunicipal-view-proof.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -744,7 +807,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+      "trustModel": "ASL, Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
     },
     {
       "id": "siope-municipal",
@@ -803,7 +866,8 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_ssn_cce_snapshot.py"
+        "tests/etl/test_ssn_cce_snapshot.py",
+        "tests/etl/test_monetary_adapters.py"
       ],
       "nodeTests": [],
       "generator": {

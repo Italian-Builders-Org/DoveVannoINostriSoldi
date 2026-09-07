@@ -4,6 +4,7 @@ import type {
   AnacConcentrationDimension,
   AnacEntityProcurementPageView,
 } from "@/lib/data/anac-entity-procurement-page";
+import { sortOperatorsForConcentration } from "@/lib/data/anac-entity-procurement-page";
 
 export type AnacConcentrationSelection = "top1" | "top10" | "all";
 
@@ -16,10 +17,7 @@ export function selectAnacConcentrationAwards(
   const metric = profile.concentration[dimension];
   if (metric.status === "withheld") return null;
   const limit = selection === "top1" ? 1 : selection === "top10" ? metric.includedTop : metric.operatorCount;
-  const operators = profile.operators.filter((operator) => {
-    const rank = dimension === "value" ? operator.rankByValue : operator.rankByCount;
-    return rank !== null && rank <= limit;
-  });
+  const operators = sortOperatorsForConcentration(profile.operators, dimension).slice(0, limit);
   const refs = new Set(operators.map((operator) => operator.ref));
   const awards = profile.awards.filter((award) => {
     if (!award.operatorRefs.some((ref) => refs.has(ref))) return false;

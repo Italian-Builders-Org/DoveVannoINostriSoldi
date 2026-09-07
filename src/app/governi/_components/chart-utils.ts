@@ -57,6 +57,21 @@ export function hasGovernmentChartTrend(periods: readonly string[]): boolean {
   return new Set(periods).size >= 2;
 }
 
+export function getGovernmentChartSelection(
+  points: readonly GovernmentChartPoint[],
+  period: string | null,
+) {
+  const first = points[0];
+  const selected = points.find((point) => point.period === period);
+  return {
+    first,
+    selected,
+    change: first && selected && hasGovernmentChartTrend(points.map((point) => point.period))
+      ? selected.value - first.value
+      : null,
+  };
+}
+
 function governmentChartPeriodEndExclusive(
   periodStart: string,
   frequency: GovernmentScorecardV6ChartSlide["frequency"],

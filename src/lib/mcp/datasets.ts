@@ -63,12 +63,30 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "pnrr_progetti": {
+      const { selectPnrrProjects } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectPnrrProjects({
+        cup: query.cup, mission: query.mission, component: query.component,
+        measure: query.measure, submeasure: query.submeasure, code: query.code,
+        region: query.region, province: query.province, territory: query.territory,
+        limit: query.limit, cursor: query.cursor, signal: options.signal,
+      }));
+    }
+    case "salute_posti_letto": {
+      const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectIntegratedDataset({
+        datasetId: "salute-posti-letto-2023", q: query.query, limit,
+        offset: query.offset, cursor: query.cursor, signal: options.signal,
+      }));
+    }
     case "siope_inventario_enti":
+    case "siope_asl":
     case "siope_province":
     case "siope_regioni":
     case "siope_citta_metropolitane": {
       const canonicalDatasetId = {
         siope_inventario_enti: "siope-inventario-enti",
+        siope_asl: "siope-uscite-asl",
         siope_province: "siope-uscite-province",
         siope_regioni: "siope-uscite-regioni",
         siope_citta_metropolitane: "siope-uscite-citta-metropolitane",

@@ -98,6 +98,8 @@ test("ordinary-statute municipality joins every available source by exact identi
   assert.ok(profile);
   assert.equal(profile.identifiers.joinMethod, "exact_official_identifiers");
   assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.schoolServices.status, "available");
+  assert.equal(profile.schoolServices.data.schoolSites, 49);
   assert.equal(profile.openCivitas.status, "available");
   assert.equal(profile.pnrrChildcare.data.totalProjects, 3);
   assert.ok(profile.siope.peerBenchmark);
@@ -120,6 +122,8 @@ test("committed SIOPE and ISTAT identity can serve a municipality without a live
   }), { allowCommittedIstatIdentity: true });
   assert.ok(profile);
   assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.schoolServices.status, "available");
+  assert.equal(profile.schoolServices.data.schoolSites, 49);
   assert.equal(profile.openCivitas.status, "available");
   assert.equal(profile.identifiers.istatCode, "062008");
 });
@@ -161,6 +165,7 @@ test("mismatched territorial identifiers fail closed and non-municipal entities 
   }));
   assert.ok(mismatch);
   assert.equal(mismatch.irpef.status, "not_found");
+  assert.equal(mismatch.schoolServices.status, "not_found");
   assert.equal(mismatch.openCivitas.status, "not_found");
   assert.equal(mismatch.identifiers.istatCode, null);
 

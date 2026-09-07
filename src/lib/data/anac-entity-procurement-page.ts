@@ -137,6 +137,7 @@ export type AnacEntityProcurementPageMeta = Readonly<{
 
 export type AnacEntityProcurementPageView = Readonly<{
   codiceIpa: string;
+  cpvFilter?: string;
   summary: AnacEntityProcurementPageRecord["summary"];
   operators: AnacEntityProcurementPageRecord["operators"];
   procedures: AnacEntityProcurementPageRecord["procedures"];
@@ -540,7 +541,7 @@ function scaledIntegers(values: readonly string[]): { integers: bigint[]; total:
   return { integers, total };
 }
 
-function sortOperatorsForConcentration(
+export function sortOperatorsForConcentration(
   operators: AnacEntityProcurementPageRecord["operators"],
   dimension: AnacConcentrationDimension,
 ): AnacEntityProcurementPageRecord["operators"] {
@@ -657,6 +658,70 @@ export function deriveAnacEntityProcurementConcentration(
     count: deriveCountConcentration(record.operators, record.summary.awardCount),
     value: deriveValueConcentration(record.operators, record.summary.attributedAwardValue),
   };
+}
+
+/** Recompute the existing accounting contract after selecting whole CIGs.
+ * Operator references stay stable across filters; multipart values stay unallocated.
+ */
+export function selectAnacEntityProcurementCigs(
+  profile: AnacEntityProcurementPageView,
+  selectedCigs: ReadonlySet<string>,
+): AnacEntityProcurementPageView {
+  const procedures = profile.procedures.filter((procedure) => selectedCigs.has(procedure.cig));
+  if (procedures.length !== selectedCigs.size) throw new Error("Filtro ANAC con CIG esterni al profilo.");
+  const awards = profile.awards.filter((award) => selectedCigs.has(award.cig));
+  const byRef = new Map(profile.operators.map((operator) => [operator.ref, {
+    ...operator, awardCount: 0, attributedAwardCount: 0, attributedValue: "0", rankByCount: 0, rankByValue: null as number | null,
+  }]));
+  let attributedAwardValue = "0";
+  let unattributedAwardValue = "0";
+  let positiveAwardCount = 0;
+  const attribution = { "single-operator": 0, multipart: 0, ambiguous: 0, "no-awardee": 0 };
+  for (const award of awards) {
+    attribution[award.attribution] += 1;
+    for (const ref of award.operatorRefs) {
+      const operator = byRef.get(ref);
+      if (!operator) throw new Error("Filtro ANAC con operatore non riconciliato.");
+      operator.awardCount += 1;
+    }
+    if (!isPositiveAmountStatus(award.amountStatus)) continue;
+    if (award.amount === null) throw new Error("Filtro ANAC con importo positivo mancante.");
+    positiveAwardCount += 1;
+    if (award.attribution === "single-operator") {
+      const operator = byRef.get(award.operatorRefs[0]);
+      if (!operator) throw new Error("Filtro ANAC con attribuzione non riconciliata.");
+      operator.attributedAwardCount += 1;
+      operator.attributedValue = addDecimals(operator.attributedValue, award.amount);
+      attributedAwardValue = addDecimals(attributedAwardValue, award.amount);
+    } else {
+      unattributedAwardValue = addDecimals(unattributedAwardValue, award.amount);
+    }
+  }
+  const operators = [...byRef.values()].filter((operator) => operator.awardCount > 0);
+  const byName = (left: typeof operators[number], right: typeof operators[number]) =>
+    left.name.localeCompare(right.name, "it") || left.ref.localeCompare(right.ref);
+  const byCount = [...operators].sort((left, right) => right.awardCount - left.awardCount || byName(left, right));
+  const byValue = operators.filter((operator) => operator.attributedValue !== "0")
+    .sort((left, right) => compareDecimals(right.attributedValue, left.attributedValue) || byName(left, right));
+  byCount.forEach((operator, index) => {
+    operator.rankByCount = index > 0 && byCount[index - 1].awardCount === operator.awardCount
+      ? byCount[index - 1].rankByCount : index + 1;
+  });
+  byValue.forEach((operator, index) => {
+    operator.rankByValue = index > 0 && byValue[index - 1].attributedValue === operator.attributedValue
+      ? byValue[index - 1].rankByValue : index + 1;
+  });
+  const summary = {
+    procedureCount: procedures.length, awardCount: awards.length,
+    awardValue: addDecimals(attributedAwardValue, unattributedAwardValue),
+    positiveAwardCount, awardeeCount: operators.length,
+    awardsWithStableAwardees: attribution["single-operator"] + attribution.multipart,
+    awardsWithoutStableAwardees: attribution.ambiguous + attribution["no-awardee"],
+    singleOperatorAwards: attribution["single-operator"],
+    multipartOrAmbiguousAwards: attribution.multipart + attribution.ambiguous,
+    attributedAwardValue, unattributedAwardValue,
+  };
+  return { ...profile, procedures, awards, operators, summary, concentration: deriveAnacEntityProcurementConcentration({ summary, operators }) };
 }
 
 function groupIntegerDigits(value: string): string {

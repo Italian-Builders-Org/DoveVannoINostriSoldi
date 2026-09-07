@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mim-scuole-statali-comuni",
+  "schoolYear": "202627",
+  "schoolYearLabel": "2026/27",
+  "dataAsOf": "2026-09-01",
+  "acquiredAt": "2026-09-06",
+  "publicationDate": null,
+  "catalogPublishedAt": "2026-06-18",
+  "source": {
+    "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20262720260901.csv",
+    "landingUrl": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT",
+    "holder": "Ministero dell'Istruzione e del Merito",
+    "license": "IODL 2.0",
+    "encoding": "utf-8",
+    "headers": [
+      "ANNOSCOLASTICO",
+      "AREAGEOGRAFICA",
+      "REGIONE",
+      "PROVINCIA",
+      "CODICEISTITUTORIFERIMENTO",
+      "DENOMINAZIONEISTITUTORIFERIMENTO",
+      "CODICESCUOLA",
+      "DENOMINAZIONESCUOLA",
+      "INDIRIZZOSCUOLA",
+      "CAPSCUOLA",
+      "CODICECOMUNESCUOLA",
+      "DESCRIZIONECOMUNE",
+      "DESCRIZIONECARATTERISTICASCUOLA",
+      "DESCRIZIONETIPOLOGIAGRADOISTRUZIONESCUOLA",
+      "INDICAZIONESEDEDIRETTIVO",
+      "INDICAZIONESEDEOMNICOMPRENSIVO",
+      "INDIRIZZOEMAILSCUOLA",
+      "INDIRIZZOPECSCUOLA",
+      "SITOWEBSCUOLA",
+      "SEDESCOLASTICA"
+    ],
+    "bytes": 13069213,
+    "sha256": "b62e43b672f1d293c6e12d9b3f2b7da32a3d73cd905f3bc702e99798e4bcd8b6"
+  },
+  "references": [
+    {
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Scuole",
+      "bytes": 373901,
+      "sha256": "03efb8fc764b82ba8f00eb8f33fb3727e5b7f5f3d9a357631311a2879328281a"
+    },
+    {
+      "url": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT",
+      "bytes": 177688,
+      "sha256": "03fa393fc9dc3a2b52fa107540e6a2cf511a1052a6cf36bff9511174fbc650aa"
+    },
+    {
+      "url": "https://dati.istruzione.it/opendata/approfondimenti/dizionario/",
+      "bytes": 26942,
+      "sha256": "72e55e3b82677d84b1a14f22b0ef39c5f8214264c15f1e98e0610c14d73f5604"
+    }
+  ],
+  "fixture": {
+    "path": "tests/fixtures/mim-school-services/registry-cells.csv.gz",
+    "headers": [
+      "ANNOSCOLASTICO",
+      "REGIONE",
+      "PROVINCIA",
+      "CODICESCUOLA",
+      "CODICECOMUNESCUOLA",
+      "DESCRIZIONECOMUNE",
+      "SEDESCOLASTICA"
+    ],
+    "bytes": 683327,
+    "sha256": "f2dd7ff8e17ee4bc1b47f6cc3ac58859a80a2019023137e779f940d14b96f4fc",
+    "selectedCells": {
+      "bytes": 2715420,
+      "sha256": "db4cc3120954add6ccedda7aa0a1cde7c063269f677d87767f79605ec202a448"
+    }
+  },
+  "municipalJoin": {
+    "path": "src/data/generated/mef-irpef-2024.data.json",
+    "bytes": 2578548,
+    "sha256": "ca54bc78ba33ba4dd61b411b51a237245646c6fd859c2c3ea30b567c463b13c3",
+    "municipalities": 7896,
+    "taxYear": 2024,
+    "source": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.zip",
+    "sourceZip": {
+      "bytes": 1028668,
+      "sha256": "75cecc95d72b76cda545666154e95ab414df1983f8a0eeef72915862ef4e8cb7",
+      "lastModified": "2026-04-23T14:52:16Z"
+    },
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "method": "exact cadastral code, unique ISTAT code and matching region; no name matching"
+  },
+  "regionCodes": {
+    "ABRUZZO": "13",
+    "BASILICATA": "17",
+    "CALABRIA": "18",
+    "CAMPANIA": "15",
+    "EMILIA ROMAGNA": "08",
+    "FRIULI-VENEZIA G.": "06",
+    "LAZIO": "12",
+    "LIGURIA": "07",
+    "LOMBARDIA": "03",
+    "MARCHE": "11",
+    "MOLISE": "14",
+    "PIEMONTE": "01",
+    "PUGLIA": "16",
+    "SARDEGNA": "20",
+    "SICILIA": "19",
+    "TOSCANA": "09",
+    "UMBRIA": "10",
+    "VENETO": "05"
+  },
+  "excludedRegions": {
+    "02": "Valle d'Aosta",
+    "04": "Trentino-Alto Adige"
+  },
+  "expected": {
+    "sourceRecords": 50273,
+    "recordsByRegion": {
+      "ABRUZZO": 1439,
+      "BASILICATA": 784,
+      "CALABRIA": 2838,
+      "CAMPANIA": 5510,
+      "EMILIA ROMAGNA": 3022,
+      "FRIULI-VENEZIA G.": 1123,
+      "LAZIO": 4036,
+      "LIGURIA": 1267,
+      "LOMBARDIA": 6457,
+      "MARCHE": 1561,
+      "MOLISE": 462,
+      "PIEMONTE": 3854,
+      "PUGLIA": 3201,
+      "SARDEGNA": 1875,
+      "SICILIA": 5188,
+      "TOSCANA": 3200,
+      "UMBRIA": 968,
+      "VENETO": 3488
+    },
+    "siteFlags": {
+      "SI": 39713,
+      "NO": 10560
+    },
+    "municipalities": 6648,
+    "municipalitiesWithSites": 6518
+  },
+  "publicHeaders": [
+    "Anno scolastico",
+    "Codice ISTAT comune",
+    "Codice catastale",
+    "Comune",
+    "Provincia",
+    "Regione",
+    "Sedi scolastiche statali",
+    "Altri codici anagrafici"
+  ]
+}

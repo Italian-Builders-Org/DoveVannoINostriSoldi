@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted" | "/pnrr";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -692,6 +692,17 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
         ],
       },
       {
+        id: "siope-uscite-asl",
+        label: "Pagamenti SIOPE delle ASL",
+        columns: [
+          { key: "entityName", label: "Ente" },
+          { key: "year", label: "Anno" },
+          { key: "month", label: "Mese" },
+          { key: "managementLabel", label: "Voce SAN" },
+          { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
         id: "siope-uscite-province",
         label: "Pagamenti SIOPE delle Province",
         columns: [
@@ -955,6 +966,48 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/pnrr",
+    title: "Tutti i progetti PNRR",
+    description: "Registrazioni ReGiS di tutte le missioni, con finanziamenti e localizzazioni dichiarate al 13 giugno 2026.",
+    datasets: [{ id: "pnrr-progetti", label: "Catalogo nazionale progetti PNRR" }],
+  },
+  {
+    surface: "/appalti/ted",
+    title: "Avvisi TED con committenti in Italia",
+    description: "Avvisi europei con almeno un committente in Italia, con ricerca e collegamenti ai documenti ufficiali.",
+    datasets: [
+      { id: "ted-avvisi-italia-2026-08", label: "Avvisi pubblicati ad agosto 2026" },
+    ],
+  },
+  {
+    surface: "/enti",
+    title: "Scuole statali nel Comune",
+    description: "Le schede comunali collegano i codici scuola MIM alle identità territoriali ufficiali, con copertura e limiti dichiarati.",
+    datasets: [
+      { id: "mim-scuole-statali-comuni", label: "Sedi scolastiche statali per Comune" },
+    ],
+  },
+  {
+    surface: "/dati",
+    title: "A misura di Comune",
+    description: "Tre serie demografiche ISTAT dal 2014 al 2024, disponibili nel catalogo con unità e geografia della fonte.",
+    datasets: [
+      { id: "istat-misura-comune-vecchiaia", label: "Indice di vecchiaia" },
+      { id: "istat-misura-comune-dipendenza-anziani", label: "Indice di dipendenza anziani" },
+      { id: "istat-misura-comune-dipendenza-strutturale", label: "Indice di dipendenza strutturale" },
+    ],
+  },
+  {
+    surface: "/spese/sanita",
+    title: "La dotazione ospedaliera",
+    description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",
+    datasets: [{
+      id: "salute-posti-letto-2023",
+      label: "Posti letto per Regione e disciplina",
+      catalogBoundary: "Dotazione dichiarata delle strutture, non pazienti curati, tempi di attesa o qualità delle cure.",
+    }],
+  },
   {
     surface: "/partecipazioni",
     title: "Approfondimenti sulle partecipate statali",

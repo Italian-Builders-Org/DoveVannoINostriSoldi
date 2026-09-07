@@ -8,7 +8,7 @@ export type NavLink = Readonly<{
   label: string;
 }>;
 
-export type NavIcon = "home" | "news" | "business" | "education" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
 
 export type NavSection = Readonly<{
   href: string;
@@ -45,7 +45,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
   {
     href: "/poverta",
     label: "Povertà",
-    icon: "map",
+    icon: "society",
     children: [{ href: "/poverta", label: "Assoluta e relativa" }],
   },
   {

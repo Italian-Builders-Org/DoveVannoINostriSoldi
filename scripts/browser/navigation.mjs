@@ -72,7 +72,8 @@ try {
         assert.deepEqual(await page.$$eval(`${root} .nav-submenu:not([hidden]) a[aria-current="page"]`, (links) => links.map((link) => link.textContent.trim())), ['Addetti']);
         // Every disclosure is reachable by keyboard and stays exclusive.
         for (const item of PRIMARY_NAV.filter((entry) => entry.children?.length)) {
-          const selector = `${root} button[aria-controls$="-${item.icon}"]`;
+          const menuKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "home";
+          const selector = `${root} button[aria-controls$="-${menuKey}"]`;
           await page.focus(selector);
           if (await page.$eval(selector, (button) => button.getAttribute('aria-expanded')) !== 'true') await page.keyboard.press('Enter');
           assert.equal(await page.$$eval(`${root} .nav-submenu:not([hidden])`, (menus) => menus.length), 1);

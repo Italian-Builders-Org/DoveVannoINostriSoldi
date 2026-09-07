@@ -10,7 +10,7 @@ import {
   ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
   GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
   MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
-  AiChat01Icon, BookSearchIcon, BookOpen01Icon,
+  AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import { PRIMARY_NAV, isNavChildActive, isNavSectionActive } from "@/lib/site-navigation";
 import { REPO_URL } from "@/lib/site";
@@ -20,6 +20,7 @@ const NAV_ICONS = {
   news: News01Icon,
   business: Building03Icon,
   education: School01Icon,
+  society: UserGroupIcon,
   money: Money01Icon,
   map: MapsGlobal01Icon,
   projects: Task01Icon,
@@ -53,7 +54,9 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
           const active = isNavSectionActive(pathname, item);
           const hasChildren = Boolean(item.children?.length);
           const open = !collapsed && openHref === item.href;
-          const menuId = `${id}-${item.icon}`;
+          // Key off the section href, not the icon: icons can repeat (or collide).
+          const menuKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "home";
+          const menuId = `${id}-${menuKey}`;
           return (
             <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
               data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>

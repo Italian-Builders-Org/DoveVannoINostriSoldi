@@ -232,14 +232,17 @@ function ConcentrationMetric({
   metric,
   codiceIpa,
   heading,
+  cpv,
 }: {
   metric: AnacConcentrationMetric;
   codiceIpa: string;
   heading: "h3" | "h4";
+  cpv?: string;
 }): ReactElement {
   const byValue = metric.dimension === "value";
   const title = byValue ? "Per valore attribuibile" : "Per numero di aggiudicazioni";
-  const rankingHref = appaltiHref(codiceIpa, byValue ? "view=operators&metric=value" : "view=operators&metric=count");
+  const filter = cpv ? `&cpv=${encodeURIComponent(cpv)}` : "";
+  const rankingHref = appaltiHref(codiceIpa, (byValue ? "view=operators&metric=value" : "view=operators&metric=count") + filter);
   const Heading = heading;
   if (metric.status === "withheld") {
     return (
@@ -251,7 +254,7 @@ function ConcentrationMetric({
     );
   }
   const detailHref = (selection: "top1" | "top10" | "all") =>
-    appaltiHref(codiceIpa, `view=concentration&metric=${metric.dimension}&selection=${selection}`);
+    appaltiHref(codiceIpa, `view=concentration&metric=${metric.dimension}&selection=${selection}${filter}`);
   const top1Href = detailHref("top1");
   const topLabel = metric.includedTop < 10 ? `Quota dei primi ${metric.includedTop}` : "Quota Top 10";
   return (
@@ -297,17 +300,18 @@ export function EntityProcurementConcentration({
         <div>
           <Heading className={heading === "h2" ? "panel-title" : undefined} id="anac-concentration-title">Concentrazione degli aggiudicatari</Heading>
           <p>
-            Quote Top 1 / Top 10 e indice HHI, calcolati sul ranking già pubblicato. Segnali descrittivi: non indicano illecito, spreco o responsabilità. Soglia {ANAC_CONCENTRATION_MIN_OBSERVATIONS} osservazioni. Fuori da questa slice: CPV, soglie, bunching e benchmark.
+            Quote Top 1 / Top 10 e indice HHI, calcolati sul ranking del perimetro selezionato. Segnali descrittivi: non indicano illecito, spreco o responsabilità. Soglia {ANAC_CONCENTRATION_MIN_OBSERVATIONS} osservazioni. Non sono un confronto con enti simili.
           </p>
         </div>
       </div>
       <div className={styles.concentrationGrid}>
-        <ConcentrationMetric metric={profile.concentration.count} codiceIpa={profile.codiceIpa} heading={heading === "h2" ? "h3" : "h4"} />
-        <ConcentrationMetric metric={profile.concentration.value} codiceIpa={profile.codiceIpa} heading={heading === "h2" ? "h3" : "h4"} />
+        <ConcentrationMetric metric={profile.concentration.count} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} heading={heading === "h2" ? "h3" : "h4"} />
+        <ConcentrationMetric metric={profile.concentration.value} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} heading={heading === "h2" ? "h3" : "h4"} />
       </div>
       <p className={styles.note}>
         HHI = somma dei quadrati delle quote percentuali, scala 0-10.000. Un valore non decimale esatto è mostrato troncato verso zero a due decimali (ellissi), non arrotondato. Ogni cifra apre i contratti che la producono.
       </p>
+      <p className={styles.note}>A parità di quota, Top 1 e Top 10 usano l’ordine per denominazione e riferimento del profilo. Il dettaglio include gli stessi operatori usati nel calcolo.</p>
     </section>
   );
 }

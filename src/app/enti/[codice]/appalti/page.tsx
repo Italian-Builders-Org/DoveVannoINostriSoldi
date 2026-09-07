@@ -15,6 +15,7 @@ import {
   type AnacConcentrationDrilldown,
   type AnacConcentrationSelection,
 } from "@/lib/data/anac-concentration-drilldown";
+import { anacCpvOptions, anacCpvSource, filterAnacProcurementByCpv, loadAnacCpvRecord, normalizeAnacCpv, parseAnacCpvFilter, type AnacCpvRecord } from "@/lib/data/anac-procurement-cpv";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { EntityProcurementSection, EntityProcurementSourceDetails, EntityProcurementConcentration } from "../entity-procurement-section";
 import styles from "./appalti.module.css";
@@ -115,6 +116,34 @@ function href(codice: string, values: Record<string, string | number | undefined
   return "/enti/" + encodeURIComponent(codice) + "/appalti" + (query ? "?" + query : "");
 }
 
+function CpvFilter({ codice, record, selected, matched }: { codice: string; record: AnacCpvRecord; selected: string; matched: number }) {
+  const { options, unclassified } = anacCpvOptions(record);
+  const selectedOption = options.find((option) => option.code === selected);
+  return (
+    <section className="panel" aria-labelledby="cpv-filter-title">
+      <h2 className="panel-title" id="cpv-filter-title">Esplora per categoria CPV</h2>
+      <p className={styles.note}>Il CPV descrive l’oggetto dell’acquisto. Il filtro usa il codice dichiarato da ANAC: conteggi, importi, aggiudicatari e indicatori riguardano le stesse procedure. Una categoria comune non rende automaticamente confrontabili enti o mercati.</p>
+      <form action={href(codice, {})} method="get" className={styles.cpvForm}>
+        <input type="hidden" name="view" value="summary" />
+        <label htmlFor="anac-cpv">Categoria CPV</label>
+        <select id="anac-cpv" name="cpv" defaultValue={selected}>
+          <option value="">Tutte le categorie ({integer(record.procedures.length)} procedure)</option>
+          {options.map((option) => <option key={option.code} value={option.code}>{option.code} · {option.descriptions[0] || "Descrizione non disponibile"} ({integer(option.procedures)})</option>)}
+          <option value="unclassified">CPV mancante o non interpretabile ({integer(unclassified)})</option>
+          {selected && selected !== "unclassified" && !selectedOption ? <option value={selected}>{selected} · nessuna procedura</option> : null}
+        </select>
+        <div className={styles.cpvActions}>
+          <button type="submit" className="btn btn-primary">Applica filtro</button>
+          {selected ? <Link href={href(codice, { view: "summary" })} className="btn btn-secondary">Rimuovi filtro</Link> : null}
+        </div>
+      </form>
+      <p id="cpv-scope" className={styles.note}><strong>{selected ? `CPV selezionato: ${selected === "unclassified" ? "mancante o non interpretabile" : selected}` : "Tutte le categorie"}</strong> · {integer(matched)} procedure su {integer(record.procedures.length)} nel profilo dell’ente.</p>
+      {selectedOption && selectedOption.descriptions.length > 1 ? <details className={styles.selection}><summary>Descrizioni ANAC del codice</summary><ul>{selectedOption.descriptions.map((description) => <li key={description}>{description}</li>)}</ul></details> : null}
+      <p className={styles.note}>Il confronto usa le otto cifre del codice, con o senza cifra di controllo nella fonte. La verifica del formato non certifica la nomenclatura. Il codice originale è visibile nella vista Procedure.</p>
+    </section>
+  );
+}
+
 function scopeLine(): ReactElement {
   return (
     <p className={styles.scopeLine}>
@@ -142,18 +171,19 @@ function Pager({
   size: 25 | 50;
   values: Record<string, string | number | undefined>;
 }) {
+  const cpv = values.cpv;
   const pages = Math.max(1, Math.ceil(total / size));
   if (pages < 2) return null;
   return (
     <nav className={styles.pager} aria-label="Paginazione">
-      {currentPage > 1 ? <Link href={href(codice, { ...values, page: currentPage - 1, pageSize: size })}>← Precedente</Link> : <span aria-disabled="true">← Precedente</span>}
+      {currentPage > 1 ? <Link href={href(codice, { cpv, ...values, page: currentPage - 1, pageSize: size })}>← Precedente</Link> : <span aria-disabled="true">← Precedente</span>}
       <span>Pagina {currentPage} di {pages}</span>
-      {currentPage < pages ? <Link href={href(codice, { ...values, page: currentPage + 1, pageSize: size })}>Successiva →</Link> : <span aria-disabled="true">Successiva →</span>}
+      {currentPage < pages ? <Link href={href(codice, { cpv, ...values, page: currentPage + 1, pageSize: size })}>Successiva →</Link> : <span aria-disabled="true">Successiva →</span>}
     </nav>
   );
 }
 
-function Views({ codice, active, operator, metric }: { codice: string; active: ProcurementView; operator?: string; metric: RankingMetric }) {
+function Views({ codice, active, operator, metric, cpv }: { codice: string; active: ProcurementView; operator?: string; metric: RankingMetric; cpv?: string }) {
   const links: Array<[ProcurementView, string]> = [
     ["summary", "Sintesi"],
     ["operators", "Aggiudicatari"],
@@ -163,7 +193,7 @@ function Views({ codice, active, operator, metric }: { codice: string; active: P
   return (
     <nav className={styles.views} aria-label="Vista dati ANAC">
       {links.map(([key, label]) => (
-        <Link key={key} className={active === key ? styles.activeView : undefined} href={href(codice, { view: key, operator, metric })} aria-current={active === key ? "page" : undefined}>
+        <Link key={key} className={active === key ? styles.activeView : undefined} href={href(codice, { cpv, view: key, operator, metric })} aria-current={active === key ? "page" : undefined}>
           {label}
         </Link>
       ))}
@@ -171,13 +201,13 @@ function Views({ codice, active, operator, metric }: { codice: string; active: P
   );
 }
 
-function RankingMetricToggle({ codice, metric, size }: { codice: string; metric: RankingMetric; size: 25 | 50 }) {
+function RankingMetricToggle({ codice, metric, size, cpv }: { codice: string; metric: RankingMetric; size: 25 | 50; cpv?: string }) {
   return (
     <nav className={styles.views} aria-label="Ordine della classifica aggiudicatari">
       <span>Ordina per:</span>
       <Link
         className={metric === "count" ? styles.activeView : undefined}
-        href={href(codice, { view: "operators", metric: "count", pageSize: size })}
+        href={href(codice, { cpv, view: "operators", metric: "count", pageSize: size })}
         aria-current={metric === "count" ? "page" : undefined}
         aria-label="Numero di aggiudicazioni"
       >
@@ -185,7 +215,7 @@ function RankingMetricToggle({ codice, metric, size }: { codice: string; metric:
       </Link>
       <Link
         className={metric === "value" ? styles.activeView : undefined}
-        href={href(codice, { view: "operators", metric: "value", pageSize: size })}
+        href={href(codice, { cpv, view: "operators", metric: "value", pageSize: size })}
         aria-current={metric === "value" ? "page" : undefined}
         aria-label="Valore attribuibile"
       >
@@ -196,16 +226,17 @@ function RankingMetricToggle({ codice, metric, size }: { codice: string; metric:
 }
 
 function Summary({ profile, codice }: { profile: AnacEntityProcurementPageView; codice: string }) {
+  const cpv = profile.cpvFilter;
   const s = profile.summary;
   const attributionCounts = countAnacAwardAttributions(profile.awards);
   return (
     <section className="panel" aria-labelledby="summary-title">
       <h2 className="panel-title" id="summary-title">Sintesi del perimetro</h2>
       <div className={styles.summaryGrid}>
-        <Link href={href(codice, { view: "procedures" })}><span>Procedure (CIG)</span><strong>{integer(s.procedureCount)}</strong></Link>
-        <Link href={href(codice, { view: "awards" })}><span>Aggiudicazioni</span><strong>{integer(s.awardCount)}</strong></Link>
-        <Link href={href(codice, { view: "awards" })}><span>Valore dichiarato</span><strong>{formatDecimalEuro(s.awardValue)}</strong></Link>
-        <Link href={href(codice, { view: "operators" })} aria-describedby="operators-definition"><span>Operatori economici identificati</span><strong>{integer(s.awardeeCount)}</strong></Link>
+        <Link href={href(codice, { cpv, view: "procedures" })}><span>Procedure (CIG)</span><strong>{integer(s.procedureCount)}</strong></Link>
+        <Link href={href(codice, { cpv, view: "awards" })}><span>Aggiudicazioni</span><strong>{integer(s.awardCount)}</strong></Link>
+        <Link href={href(codice, { cpv, view: "awards" })}><span>Valore dichiarato</span><strong>{formatDecimalEuro(s.awardValue)}</strong></Link>
+        <Link href={href(codice, { cpv, view: "operators" })} aria-describedby="operators-definition"><span>Operatori economici identificati</span><strong>{integer(s.awardeeCount)}</strong></Link>
       </div>
       <p className={styles.note}>
         L&apos;importo di aggiudicazione è dichiarato nella fonte e non equivale a un pagamento.
@@ -231,6 +262,7 @@ function Operators({
   size: 25 | 50;
   metric: RankingMetric;
 }) {
+  const cpv = profile.cpvFilter;
   const rows = [...profile.operators]
     .filter((operator) => metric === "count" || operator.rankByValue !== null)
     .sort((left, right) => {
@@ -250,16 +282,16 @@ function Operators({
           <tbody>
             {pageRows.map((operator) => (
               <tr key={operator.ref}>
-                <td className="num"><Link href={href(codice, { view: "operator", operator: operator.ref, metric })}>{metric === "value" ? operator.rankByValue : operator.rankByCount}</Link></td>
-                <th scope="row"><Link href={href(codice, { view: "operator", operator: operator.ref })}>{operator.name}</Link></th>
-                <td className="num"><Link href={href(codice, { view: "operator", operator: operator.ref })}>{integer(operator.awardCount)}</Link></td>
-                <td className="num"><Link href={href(codice, { view: "operator", operator: operator.ref })}>{formatDecimalEuro(operator.attributedValue)}</Link></td>
+                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref, metric })}>{metric === "value" ? operator.rankByValue : operator.rankByCount}</Link></td>
+                <th scope="row"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{operator.name}</Link></th>
+                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{integer(operator.awardCount)}</Link></td>
+                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{formatDecimalEuro(operator.attributedValue)}</Link></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ view: "operators", metric }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, view: "operators", metric }} />
     </section>
   );
 }
@@ -269,12 +301,16 @@ function Procedures({
   codice,
   currentPage,
   size,
+  cpvRecord,
 }: {
   profile: AnacEntityProcurementPageView;
   codice: string;
   currentPage: number;
   size: 25 | 50;
+  cpvRecord: AnacCpvRecord | null;
 }) {
+  const cpv = profile.cpvFilter;
+  const classifications = new Map(cpvRecord?.procedures.map((procedure) => [procedure.cig, procedure]));
   const rows = [...profile.procedures].sort((left, right) => (right.publishedAt ?? "").localeCompare(left.publishedAt ?? "") || left.cig.localeCompare(right.cig));
   const pageRows = rows.slice((currentPage - 1) * size, currentPage * size);
   return (
@@ -284,19 +320,25 @@ function Procedures({
         <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
         <table className="table">
           <caption>CIG pubblicati nel periodo</caption>
-          <thead><tr><th scope="col">CIG</th><th scope="col">Pubblicato</th><th scope="col">Fonte</th></tr></thead>
+          <thead><tr><th scope="col">CIG</th><th scope="col">Pubblicato</th><th scope="col">CPV originale ANAC</th><th scope="col">Descrizione ANAC</th><th scope="col">Fonte</th></tr></thead>
           <tbody>
-            {pageRows.map((procedure) => (
+            {pageRows.map((procedure) => {
+              const classification = classifications.get(procedure.cig);
+              const code = classification ? normalizeAnacCpv(classification.rawCode) : null;
+              return (
               <tr key={procedure.cig}>
                 <th scope="row"><a href={"https://dati.anticorruzione.it/superset/dashboard/dettaglio_cig/?cig=" + encodeURIComponent(procedure.cig)} target="_blank" rel="noreferrer">{procedure.cig} ↗</a></th>
                 <td>{procedure.publishedAt ?? "non disponibile"}</td>
+                <td>{code ? <Link href={href(codice, { view: "procedures", cpv: code })}>{classification!.rawCode}</Link> : classification?.rawCode || (cpvRecord ? "mancante" : "non verificabile")}</td>
+                <td>{classification?.description || "non disponibile"}</td>
                 <td>ANAC · dettaglio CIG</td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ view: "procedures" }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, view: "procedures" }} />
     </section>
   );
 }
@@ -309,13 +351,14 @@ function Awards({
   operator,
   concentration,
 }: {
-  profile: Pick<AnacEntityProcurementPageView, "awards">;
+  profile: Pick<AnacEntityProcurementPageView, "awards" | "cpvFilter">;
   codice: string;
   currentPage: number;
   size: 25 | 50;
   operator?: string;
   concentration?: AnacConcentrationDrilldown;
 }) {
+  const cpv = profile.cpvFilter;
   const selectedOperatorRefs = new Set(concentration?.operators.map((operator) => operator.ref));
   const rows = [...(concentration?.awards ?? profile.awards)]
     .filter((award) => !operator || award.operatorRefs.includes(operator))
@@ -343,12 +386,13 @@ function Awards({
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={concentration ? { view: "concentration", metric: concentration.metric.dimension, selection: concentration.selection } : { view: operator ? "operator" : "awards", operator }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={concentration ? { cpv, view: "concentration", metric: concentration.metric.dimension, selection: concentration.selection } : { cpv, view: operator ? "operator" : "awards", operator }} />
     </section>
   );
 }
 
-function ConcentrationDetail({ detail, codice, currentPage, size }: {
+function ConcentrationDetail({ detail, codice, currentPage, size, cpv }: {
+  cpv?: string;
   detail: AnacConcentrationDrilldown;
   codice: string;
   currentPage: number;
@@ -364,18 +408,18 @@ function ConcentrationDetail({ detail, codice, currentPage, size }: {
         <p>{byValue
           ? "Solo importi positivi attribuiti a un unico aggiudicatario risolto. Sono esclusi importi non positivi, mancanti o in conflitto e casi multipartiti o ambigui."
           : "Ogni aggiudicazione compare una sola volta. Se coinvolge più operatori selezionati, contribuisce con più relazioni al conteggio. Gli importi di questa vista non vanno sommati per ricostruire le quote per numero."}</p>
-        <p className={styles.note}>Peso della selezione: <strong>{byValue ? formatDecimalEuro(detail.weight) : integer(Number(detail.weight))}</strong> su {byValue ? formatDecimalEuro(detail.metric.marketTotal) : integer(Number(detail.metric.marketTotal))} {byValue ? "attribuibili" : "relazioni"} nel denominatore completo dell’ente.</p>
+        <p className={styles.note}>Peso della selezione: <strong>{byValue ? formatDecimalEuro(detail.weight) : integer(Number(detail.weight))}</strong> su {byValue ? formatDecimalEuro(detail.metric.marketTotal) : integer(Number(detail.metric.marketTotal))} {byValue ? "attribuibili" : "relazioni"} nel denominatore completo del perimetro selezionato.</p>
         {byValue ? <p className={styles.note}>Importi esatti in euro (punto decimale): selezione <code>{detail.weight}</code>; denominatore <code>{detail.metric.marketTotal}</code>. Gli importi in tabella sono mostrati ai centesimi.</p> : null}
         <p className={styles.note}>{detail.selection === "all" ? "La selezione HHI comprende tutte le quote del relativo perimetro; l’indice è la somma dei loro quadrati sulla scala da 0 a 10.000. " : ""}Questi indicatori descrittivi non indicano illecito.</p>
         {detail.selection !== "all" ? (
           <details className={styles.selection}>
             <summary>Operatori nella selezione ({detail.operators.length})</summary>
-            <ul>{detail.operators.map((operator) => <li key={operator.ref}><Link href={href(codice, { view: "operator", operator: operator.ref })}>{operator.name}</Link></li>)}</ul>
+            <ul>{detail.operators.map((operator) => <li key={operator.ref}><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{operator.name}</Link></li>)}</ul>
           </details>
-        ) : <p><Link href={href(codice, { view: "operators", metric: detail.metric.dimension })}>Consulta tutti gli operatori del perimetro →</Link></p>}
-        <Link className="btn btn-secondary" href={href(codice, { view: "summary" })}>← Torna agli indicatori</Link>
+        ) : <p><Link href={href(codice, { cpv, view: "operators", metric: detail.metric.dimension })}>Consulta tutti gli operatori del perimetro →</Link></p>}
+        <Link className="btn btn-secondary" href={href(codice, { cpv, view: "summary" })}>← Torna agli indicatori</Link>
       </section>
-      <Awards profile={{ awards: detail.awards }} codice={codice} currentPage={currentPage} size={size} concentration={detail} />
+      <Awards profile={{ awards: detail.awards, cpvFilter: cpv }} codice={codice} currentPage={currentPage} size={size} concentration={detail} />
     </>
   );
 }
@@ -387,6 +431,7 @@ function OperatorDetail({ profile, codice, operatorRef, currentPage, size }: {
   currentPage: number;
   size: 25 | 50;
 }) {
+  const cpv = profile.cpvFilter;
   const operator = profile.operators.find((candidate) => candidate.ref === operatorRef);
   if (!operator) return <div className="notice warning-notice"><strong>Aggiudicatario non trovato</strong><p>Il riferimento richiesto non appartiene al profilo pubblicato.</p></div>;
   return (
@@ -394,9 +439,9 @@ function OperatorDetail({ profile, codice, operatorRef, currentPage, size }: {
       <section className="panel" aria-labelledby="operator-title">
         <h2 className="panel-title" id="operator-title">{operator.name}</h2>
         <div className={styles.operatorFacts}>
-          <div><span>Aggiudicazioni</span><Link href={href(codice, { view: "operator", operator: operatorRef })}><strong>{integer(operator.awardCount)}</strong></Link></div>
-          <div><span>Aggiudicazioni con valore attribuito</span><Link href={href(codice, { view: "operator", operator: operatorRef })}><strong>{integer(operator.attributedAwardCount)}</strong></Link></div>
-          <div><span>Valore attribuibile</span><Link href={href(codice, { view: "operator", operator: operatorRef })}><strong>{formatDecimalEuro(operator.attributedValue)}</strong></Link></div>
+          <div><span>Aggiudicazioni</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{integer(operator.awardCount)}</strong></Link></div>
+          <div><span>Aggiudicazioni con valore attribuito</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{integer(operator.attributedAwardCount)}</strong></Link></div>
+          <div><span>Valore attribuibile</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{formatDecimalEuro(operator.attributedValue)}</strong></Link></div>
         </div>
         {operator.nameVariants > 1 ? <p className={styles.note}>Il dataset segnala {operator.nameVariants} denominazioni osservate; una canonica è pubblicata, senza elencare le varianti né usarle come identificativi.</p> : null}
       </section>
@@ -439,15 +484,26 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       </main>
     );
   }
-  const profile = state.profile;
   const query = await searchParams;
+  let cpv: string;
+  try { cpv = parseAnacCpvFilter(query.cpv); } catch { notFound(); }
+  let cpvRecord: AnacCpvRecord | null = null;
+  try { cpvRecord = await loadAnacCpvRecord(state.profile); } catch { /* Display an explicit unavailable state; never widen a selected cohort. */ }
+  if (cpv && !cpvRecord) return (
+    <main className={"shell page " + styles.page}>
+      <h1>Aggiudicazioni ANAC · {heading}</h1>
+      <div className="notice"><strong>Filtro CPV non disponibile</strong><p>La classificazione non è verificabile. I risultati del filtro non vengono pubblicati.</p></div>
+      <Link href={href(normalizedCode, { view: "summary" })}>Apri il profilo senza filtro</Link>
+    </main>
+  );
+  const profile = cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
   const selectedView = view(first(query.view));
   const metric: RankingMetric = first(query.metric) === "value" ? "value" : "count";
   const operatorRef = first(query.operator) || undefined;
   const size = pageSize(first(query.pageSize));
   let selection: AnacConcentrationSelection | undefined;
   if (selectedView === "concentration") {
-    if (Object.entries(query).some(([key, value]) => !["view", "metric", "selection", "page", "pageSize"].includes(key) || Array.isArray(value))
+    if (Object.entries(query).some(([key, value]) => !["view", "metric", "selection", "page", "pageSize", "cpv"].includes(key) || Array.isArray(value))
       || (query.metric !== "count" && query.metric !== "value")
       || (query.selection !== "top1" && query.selection !== "top10" && query.selection !== "all")
       || query.operator !== undefined) notFound();
@@ -471,12 +527,15 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <p>{"L'identità è collegata allo snapshot IPA verificato durante l'ETL; questa visita non interroga Indice PA."}</p>
       </div>
       {scopeLine()}
-      <Views codice={normalizedCode} active={selectedView} operator={operatorRef} metric={metric} />
-      {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} /> : null}
+      {cpvRecord ? <CpvFilter codice={normalizedCode} record={cpvRecord} selected={cpv} matched={profile.procedures.length} />
+        : <div className="notice"><strong>Filtro CPV non disponibile</strong><p>La classificazione non è verificabile; il profilo completo resta consultabile.</p></div>}
+      {cpv && profile.procedures.length === 0 ? <div className="notice"><strong>Nessuna procedura per questo CPV</strong><p>Il codice non compare nelle procedure di questo ente nello snapshot.</p></div> : null}
+      <Views codice={normalizedCode} active={selectedView} operator={operatorRef} metric={metric} cpv={cpv} />
+      {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} cpv={cpv} /> : null}
       <div className={styles.pageSize}>
         <span>Righe per pagina:</span>
-        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, selection, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
-        <Link href={href(normalizedCode, { view: selectedView, operator: operatorRef, metric, selection, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
+        <Link href={href(normalizedCode, { cpv, view: selectedView, operator: operatorRef, metric, selection, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
+        <Link href={href(normalizedCode, { cpv, view: selectedView, operator: operatorRef, metric, selection, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
       </div>
       {selectedView === "summary" ? (
         <>
@@ -485,10 +544,10 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         </>
       ) : null}
       {selectedView === "operators" ? <Operators profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} metric={metric} /> : null}
-      {selectedView === "procedures" ? <Procedures profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
+      {selectedView === "procedures" ? <Procedures profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} cpvRecord={cpvRecord} /> : null}
       {selectedView === "awards" ? <Awards profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
       {selectedView === "concentration" ? concentration
-        ? <ConcentrationDetail detail={concentration} codice={normalizedCode} currentPage={currentPage} size={size} />
+        ? <ConcentrationDetail detail={concentration} cpv={cpv} codice={normalizedCode} currentPage={currentPage} size={size} />
         : <div className="notice"><strong>Indicatore non pubblicato</strong><p>Il perimetro non soddisfa i requisiti di pubblicazione. Nessun valore viene trasformato in zero.</p></div>
         : null}
       {selectedView === "operator" && operatorRef ? <OperatorDetail profile={profile} codice={normalizedCode} operatorRef={operatorRef} currentPage={currentPage} size={size} /> : null}
@@ -500,6 +559,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
           <div><dt>Generato</dt><dd>{profile.meta.generatedAt}</dd></div>
           <div><dt>Perimetro temporale</dt><dd>CIG pubblicati nel 2025 · tutti i mesi · snapshot cross-temporale</dd></div>
           <EntityProcurementSourceDetails profile={profile} />
+          {cpvRecord ? <div><dt>Classificazione CPV</dt><dd><a href="https://dati.anticorruzione.it/opendata/dataset/cig-2025" target="_blank" rel="noreferrer">ANAC · CIG anno 2025</a> · byte riacquisiti il {anacCpvSource.acquiredAt}; stesso source lock del profilo. Licenza CC BY-SA 4.0.</dd></div> : null}
         </dl>
       </section>
     </main>

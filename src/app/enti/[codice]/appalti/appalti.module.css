@@ -213,3 +213,29 @@
 .note code {
   overflow-wrap: anywhere;
 }
+
+.cpvForm {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  min-width: 0;
+}
+
+.cpvForm label { font-weight: 650; }
+
+.cpvForm select {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.cpvActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

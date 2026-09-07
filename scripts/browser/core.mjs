@@ -4,6 +4,7 @@ import { inspectEpea } from "./epea.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAssistantComparison } from "./assistant-comparison.mjs";
+import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
 import {
@@ -1210,6 +1211,15 @@ try {
     },
   });
   completed.push("Atlante Istruzione deep-link filtri 1280px");
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `ANAC filtro CPV ${width}px`;
+    await runScenario(browser, {
+      label, width, pathname: "/enti/c_h501/appalti?view=summary",
+      validate: inspectAnacCpv,
+    });
+    completed.push(label);
+  }
 
   for (const width of [390, 768, 1280]) {
     const label = `ANAC concentrazione e contratti ${width}px`;

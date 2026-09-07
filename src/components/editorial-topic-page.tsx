@@ -253,7 +253,7 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
                 )}
                 <Link className={styles.action} href={`/dati/${result.dataset.id}`}>
                   {result.dataset.queryable
-                    ? "Vedi destinatari, importi e tutte le righe"
+                    ? "Esplora tutte le righe"
                     : "Apri scheda (senza numeri)"}
                 </Link>
               </div>

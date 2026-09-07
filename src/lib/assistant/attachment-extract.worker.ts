@@ -41,6 +41,9 @@ async function extract(name: string, bytes: ArrayBuffer): Promise<TextAttachment
 }
 
 self.onmessage = (event: MessageEvent<{ name: string; bytes: ArrayBuffer }>) => {
+  // Dedicated Worker.postMessage uses an empty origin. If an origin is supplied,
+  // accept only this worker's own origin, never a different web origin.
+  if (event.origin !== "" && event.origin !== self.location.origin) return;
   void extract(event.data.name, event.data.bytes).then(
     (attachment) => self.postMessage({ ok: true, attachment }),
     (error: unknown) => self.postMessage({ ok: false, message: error instanceof Error && /^(Non trovo|Il documento|Il PDF|La pagina|Il foglio|Salva il file|Questo file|Formato non)/u.test(error.message) ? error.message : "Non riesco a leggere il file. Potrebbe essere danneggiato, protetto da password o non supportato." }),

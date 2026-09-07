@@ -60,7 +60,7 @@ try {
     assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),2);
     await click('Copia risposta');
     await page.waitForFunction(()=>typeof window.__copiedText==='string');
-    assert.ok(await page.evaluate(()=>window.__copiedText.includes('https://www.siope.it/')));
+    assert.equal(await page.evaluate(()=>window.__copiedText.split('\n').at(-1)), 'SIOPE: https://www.siope.it/');
     await click('Copia domanda');
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);

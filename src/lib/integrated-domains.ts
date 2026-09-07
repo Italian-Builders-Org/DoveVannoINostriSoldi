@@ -7,6 +7,7 @@
  */
 
 export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
+  cohesion: "PNRR e investimenti",
   procurement: "Appalti e fornitori",
   consultancies: "Consulenze e incarichi",
   appointments: "Incarichi nominativi",

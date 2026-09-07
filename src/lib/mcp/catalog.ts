@@ -25,6 +25,7 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2021",
   "opencoesione_progetti",
   "pnrr_asili",
+  "pnrr_progetti",
   "anac_cig_snapshot",
   "consip_ordini",
   "eurostat_cofog",
@@ -96,6 +97,8 @@ export type DatasetQuery = {
   band?: string;
   years?: number;
   mission?: string;
+  component?: string;
+  submeasure?: string;
   schoolType?: string;
   pathway?: string;
   limit?: number;
@@ -179,6 +182,7 @@ const exampleQueries = {
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
+  pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
   pnrr_asili: { dataset: "pnrr_asili", region: "Lazio", limit: 20 },
   anac_cig_snapshot: { dataset: "anac_cig_snapshot", year: 2025 },
   consip_ordini: { dataset: "consip_ordini", year: 2025, channel: "mepa" },
@@ -279,6 +283,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencivitas_fabbisogni_2021", title: "Fabbisogni e servizi comunali 2021 (FC70TOT)", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni RSO, annualità 2021, famiglia FC70TOT.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Contratto distinto da FC80TOT 2022: non sommare né confrontare in silenzio le due annualità. La differenza dalla spesa standard non è spreco. RSS fuori perimetro." },
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
+  { id: "pnrr_progetti", title: "PNRR · catalogo nazionale dei progetti", summary: "291.398 registrazioni CUP/CLP/submisura ReGiS al 13 giugno 2026; 285.992 CUP validi distinti. Tutte le missioni, con finanziamenti e localizzazioni dichiarate.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "mission", "component", "measure", "submeasure", "code", "region", "province", "territory", "limit", "cursor"], caveat: "Codici esatti: mission=M1, component=M1C1, measure=M1C1I1.01, submeasure=M1C1I1.01.00; code=CF attuatore, region/province a 3 cifre, territory=Provincia+Comune a 6 cifre. Filtri combinati in AND. matchedRows conta registrazioni, non CUP unici. Finanziamento non è pagamento; attuatore non è localizzazione. Progetti non validati inclusi. Cursor vincolato a filtri e rilascio; una pagina può restituire meno di limit per il budget di lettura." },
   { id: "pnrr_asili", title: "PNRR asili e prima infanzia", summary: "Progetti Italia Domani per CUP, localizzazioni, finanziamenti, gare e aggiudicatari.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "query", "region", "province", "limit", "offset"], caveat: "Il finanziamento PNRR non è un pagamento osservato; gare e aggiudicazioni sono livelli distinti." },
   { id: "anac_cig_snapshot", title: "Contratti pubblici ANAC · CIG 2025", summary: "Aggregati verificati sui dodici file mensili CIG 2025, con copertura, hash, procedure e fasce di importo.", sourceIds: ["anac"], freshness: "snapshot", filters: ["year"], caveat: "È uno strumento di screening aggregato: non prova spreco, illecito, corruzione o frazionamento e non consente ancora la ricerca live per CIG." },
   { id: "consip_ordini", title: "Acquisti Consip · ordini Convenzioni e MEPA", summary: "Righe ordinate su Convenzioni e MEPA 2024-2026 aggregate per regione e tipologia di amministrazione, con importi noti e celle soppresse dichiarate.", sourceIds: ["consip"], freshness: "snapshot", filters: ["year", "channel"], caveat: "Gli importi sono limiti inferiori: la fonte sopprime il valore in molte righe (nei file MEPA importo e numero ordini sono mutuamente esclusivi) e pubblica anche storni negativi. Ordinato non è pagato e Consip non è tutta la spesa per acquisti della PA: nessun confronto con ANAC o SIOPE è una riconciliazione." },

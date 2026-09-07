@@ -259,6 +259,17 @@ assert.equal(pnrrData.pagination.total, 1);
 assert.equal(pnrrData.data[0].cup, "B11B21001610005");
 assert.match(pnrrData.methodology.fundingWarning, /non è un pagamento osservato/i);
 
+const pnrrProjectsDataset = await mcpRequest({
+  jsonrpc: "2.0", id: "pnrr-projects", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "pnrr_progetti", cup: "F81C23001370006", component: "M1C1" } },
+});
+const pnrrProjectsData = successfulMcpToolResult(pnrrProjectsDataset, "pnrr_progetti").data;
+assert.equal(pnrrProjectsData.matchedRows, 2);
+assert.deepEqual(pnrrProjectsData.rows.map((row) => row.cells["Codice Locale Progetto"]), ["F81C23001370006", "TERF81C23001370006"]);
+assert.equal(pnrrProjectsData.rows[0].cells.CUP, "F81C23001370006");
+assert.equal(pnrrProjectsData.rows[0].cells["Finanziamento PNRR"], "2299193,71");
+assert.equal(pnrrProjectsData.dataset.id, "pnrr-progetti");
+
 const integratedDataset = await mcpRequest({
   jsonrpc: "2.0",
   id: 22,

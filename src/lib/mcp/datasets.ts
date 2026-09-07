@@ -63,6 +63,15 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "pnrr_progetti": {
+      const { selectPnrrProjects } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectPnrrProjects({
+        cup: query.cup, mission: query.mission, component: query.component,
+        measure: query.measure, submeasure: query.submeasure, code: query.code,
+        region: query.region, province: query.province, territory: query.territory,
+        limit: query.limit, cursor: query.cursor, signal: options.signal,
+      }));
+    }
     case "salute_posti_letto": {
       const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
       return jsonSafe(await selectIntegratedDataset({

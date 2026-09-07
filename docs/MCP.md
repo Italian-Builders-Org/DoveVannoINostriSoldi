@@ -137,3 +137,12 @@ archivio mensile di `/appalti/ted` e `/api/dati/ted-avvisi-italia-2026-08`.
 2.825 avvisi pubblicati ad agosto 2026; nessuna misura monetaria o join ANAC.
 Fonte, data di pubblicazione per riga, acquisizione, paesi e limiti restano
 nel risultato. [Contratto TED](TED_NOTICES.md).
+
+### Catalogo nazionale PNRR
+
+`pnrr_progetti` legge le righe integrate `pnrr-progetti`, distinte dal verticale
+`pnrr_asili`. Filtri esatti per CUP, missione, componente, misura/submisura,
+CF attuatore e codici territoriali, con cursor vincolato al rilascio. La stessa
+vista è in `/pnrr` e `/api/pnrr/progetti`. I conteggi riguardano registrazioni
+CUP/CLP/submisura; il finanziamento non è pagamento. Contratto, esempi e limiti
+in [PNRR_PROJECTS.md](PNRR_PROJECTS.md).

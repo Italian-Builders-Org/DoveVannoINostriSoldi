@@ -73,8 +73,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /14\.166\.458/);
-  assert.match(coverageText, /1\.184\.112/);
+  assert.match(coverageText, /14\.457\.856/);
+  assert.match(coverageText, /1\.475\.510/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -193,7 +193,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 90);
+  assert.equal(links.length, 91);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -299,6 +299,7 @@ async function driveHubs(page, directory) {
     ["/trasparenza", "Documenti, segnali e verifiche", "trasparenza.png"],
     ["/partecipazioni", "Partecipazioni pubbliche", "partecipazioni.png"],
     ["/spese/sanita", "Sanità: personale e servizi nel Conto Economico", "sanita.png"],
+    ["/pnrr", "Dove sono i progetti del PNRR", "pnrr.png"],
   ];
   const actions = [];
   const links = new Set();
@@ -324,7 +325,7 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(links.size, 86);
+  assert.equal(links.size, 87);
   assert.ok(links.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
   for (const suffix of ["vecchiaia", "dipendenza-anziani", "dipendenza-strutturale"]) {
@@ -339,7 +340,7 @@ async function driveHubs(page, directory) {
   assert.ok(await page.$(`a[href="${tedHref}"]`));
   links.add(tedHref);
   await screenshot(page, directory, "contesto-territoriale.png");
-  assert.equal(links.size, 90);
+  assert.equal(links.size, 91);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

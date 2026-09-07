@@ -82,6 +82,7 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
             <h2 id="search-title">Parti da un luogo, un ente o un CUP</h2>
           </div>
           <a href="/api/pnrr/asili" className="btn btn-secondary">API aperta</a>
+          <Link href="/pnrr" className="btn btn-secondary">Tutti i progetti PNRR</Link>
         </div>
         <Form action="/coesione/asili" className={styles.form}>
           <label className={styles.queryField}>

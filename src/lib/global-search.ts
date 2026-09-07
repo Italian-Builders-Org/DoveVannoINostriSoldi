@@ -135,6 +135,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/territori/fisco": ["entrate", "saldo", "cpt", "conti pubblici territoriali"],
   "/territori/confronto": ["benchmark comuni", "comuni simili", "fabbisogni"],
   "/coesione": ["fondi", "progetti", "coesione", "pnrr"],
+  "/pnrr": ["pnrr", "progetti pnrr", "italia domani", "regis", "missioni pnrr"],
   "/coesione/asili": ["asili", "prima infanzia", "nidi", "pnrr asili"],
   "/confronti": ["confronti", "benchmark", "comparazioni"],
   "/pnrr/incarichi": ["incarichi pnrr", "indire"],

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
+import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
@@ -2417,6 +2418,14 @@ try {
     const label = `Avvisi TED ${width}px`;
     await runScenario(browser, {
       label, pathname: "/appalti", width, validate: inspectTedNotices,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 390, 768, 1280]) {
+    const label = `Catalogo progetti PNRR ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/pnrr", width, validate: inspectPnrrProjects,
     });
     completed.push(label);
   }

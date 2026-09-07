@@ -368,6 +368,8 @@ test("MCP query tool describes every input parameter for clients and directories
     "sector",
     "band",
     "years",
+    "component",
+    "submeasure",
     "mission",
     "schoolType",
     "pathway",

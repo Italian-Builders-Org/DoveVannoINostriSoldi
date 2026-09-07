@@ -98,6 +98,8 @@ const mandatoryDatasetIds = [
   "procurement-indici-mimit",
   "procurement-mimit-dork",
   "procurement-partecipate",
+  "rgs-conto-annuale-costo-2020",
+  "rgs-conto-annuale-personale-2020",
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
@@ -134,6 +136,8 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "rgs-conto-annuale-costo-2020": "Anno 2020; costo del lavoro annuale",
+  "rgs-conto-annuale-personale-2020": "Anno 2020; personale al 31 dicembre",
   "pnrr-progetti": "2026-06-13",
   "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
   "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",

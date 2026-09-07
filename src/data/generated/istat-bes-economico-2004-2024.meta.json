@@ -1,0 +1,146 @@
+{
+  "datasetId": "istat-bes-economico",
+  "indicators": [
+    {
+      "code": "04BEC001P",
+      "flagged": 0,
+      "from": 2021,
+      "label": "Reddito medio disponibile pro capite",
+      "observations": 355,
+      "sexes": [
+        "T"
+      ],
+      "summableAcrossTerritories": false,
+      "to": 2023,
+      "unit": "EURO"
+    },
+    {
+      "code": "04BEC002P",
+      "flagged": 119,
+      "from": 2008,
+      "label": "Retribuzione media annua dei lavoratori dipendenti",
+      "observations": 6308,
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "summableAcrossTerritories": false,
+      "to": 2023,
+      "unit": "EURO"
+    },
+    {
+      "code": "04BEC005P",
+      "flagged": 0,
+      "from": 2011,
+      "label": "Importo medio annuo pro-capite dei redditi pensionistici",
+      "observations": 5160,
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "summableAcrossTerritories": false,
+      "to": 2023,
+      "unit": "EURO"
+    },
+    {
+      "code": "04BEC006P",
+      "flagged": 0,
+      "from": 2011,
+      "label": "Pensionati con reddito pensionistico di basso importo",
+      "observations": 5060,
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "summableAcrossTerritories": false,
+      "to": 2023,
+      "unit": "VAL_PERC"
+    },
+    {
+      "code": "04BEC009P",
+      "flagged": 3,
+      "from": 2004,
+      "label": "Tasso di ingresso in sofferenza dei prestiti bancari alle famiglie",
+      "observations": 2709,
+      "sexes": [
+        "T"
+      ],
+      "summableAcrossTerritories": false,
+      "to": 2024,
+      "unit": "VAL_PERC"
+    }
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 1723972,
+      "path": "src/data/generated/istat-bes-economico-2004-2024.data.json",
+      "sha256": "71f84814aaa93c7ee8e8c68c02af5eb5bf50f93e3489c35609c9d8a586ef66bb"
+    },
+    "sourceLockSha256": "17e0ac5c62c0fbc160e926be6473077a48cfbff096a445785204c84514754e9f"
+  },
+  "observedAt": "2026-09-06",
+  "period": {
+    "from": 2004,
+    "to": 2024
+  },
+  "reconciliation": {
+    "comparisons": 5113,
+    "kind": "totale-fra-i-sessi",
+    "note": "Nessuna misura e un conteggio: sono tutte medie pro capite o percentuali, quindi le partizioni territoriali NON sono verificabili per somma e il contratto non finge di poterlo fare. L'invariante propria delle medie e che il totale stia fra i due sessi.",
+    "territorialSum": false,
+    "violations": 0,
+    "widestMarginAt": "04BEC002P/ITC45/2008",
+    "widestMarginTenths": 48377
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Il periodo complessivo NON vale per ogni indicatore: ciascuno dichiara il proprio from/to in expected.indicators. Un unico 2004-2024 sarebbe falso per quattro misure su cinque.",
+      "referencePeriod": "2004-2024"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-06",
+      "canonicalUrls": [
+        "https://esploradati.istat.it/databrowser/",
+        "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_4,1.0/A..BES_04.04BEC001P+04BEC002P+04BEC005P+04BEC006P+04BEC009P.F+M+T.2025"
+      ],
+      "checkedAt": "2026-09-06",
+      "hashes": "SHA-256 per asset in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "ISTAT — Istituto nazionale di statistica",
+      "license": "not-declared",
+      "publicationEdition": "2025"
+    },
+    "soldi": {
+      "nature": "redditi, retribuzioni e importi pensionistici delle FAMIGLIE, come medie pro capite — non è spesa pubblica, non è cassa, non è gettito",
+      "note": "L'asse soldi è presente ma delimitato: misura quanto le famiglie hanno, non quanto lo Stato spende. Nessuna somma né accostamento con SIOPE, OpenBDAP o mef_irpef. Le medie pro capite non sono sommabili fra territori.",
+      "unit": "euro correnti per gli indicatori EURO; nessuna per quelli VAL_PERC"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-06",
+      "checkedAt": "2026-09-06",
+      "note": "FREQ, DOMAIN ed EDITION fissati letteralmente; DATA_TYPE e SEX enumerati. REF_AREA e lasciata aperta nella chiave e l'anagrafica dei 139 territori e vincolata in expected.territories: l'ETL fallisce chiuso su qualunque codice fuori elenco, e un territorio in piu cambia i byte e quindi l'hash."
+    },
+    "assets": {
+      "bes-economico": {
+        "bytes": 2107955,
+        "format": "SDMX-CSV 1.0.0",
+        "sha256": "2711ded27eba1d05d82be7c7c556118987f84e2e3a4ecc8a6316217dece23e41",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_4,1.0/A..BES_04.04BEC001P+04BEC002P+04BEC005P+04BEC006P+04BEC009P.F+M+T.2025"
+      }
+    },
+    "dataStructure": "BES_TERRIT v1.1",
+    "dataflowId": "DF_BES_TERRIT_4",
+    "dataflowLabel": "Bes dei territori — Benessere economico",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX-CSV non espone alcun campo di licenza. Come per istat-cofog e per i due dataset di poverta non viene inferita alcuna licenza ne estesa da altri dataset ISTAT.",
+    "owner": "ISTAT — Istituto nazionale di statistica"
+  }
+}

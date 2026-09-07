@@ -37,8 +37,8 @@ test('BYOK route conceals upstream error bodies',async(t)=>{
 
 test('BYOK route bounds declared and streamed request bodies before egress',async(t)=>{
   let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
-  assert.equal((await POST(request({headers:{'content-length':'80001'}}))).status,413);
-  assert.equal((await POST(request({body:'x'.repeat(80001)}))).status,413);
+  assert.equal((await POST(request({headers:{'content-length':'1600001'}}))).status,413);
+  assert.equal((await POST(request({body:'x'.repeat(1600001)}))).status,413);
   assert.equal(calls,0);
 });
 
@@ -71,13 +71,29 @@ test('BYOK route streams provider deltas before the terminal verified envelope',
   const response=await POST(request({headers:{accept:'text/event-stream'}}));
   assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/text\/event-stream/);
   const text=await response.text();const frames=text.trim().split('\n\n').map(frame=>JSON.parse(frame.slice(6)));
-  assert.equal(frames[0].type,'delta');assert.equal(frames[0].text,'Dati 2025.');
+  assert.equal(frames[0].type,'activity');assert.equal(frames.find(frame=>frame.type==='delta').text,'Dati 2025.');
+  assert.deepEqual(frames.filter(frame=>frame.type==='activity'&&frame.activity.id==='query-0').map(frame=>frame.activity.status),['running','done']);
   assert.equal(frames.at(-1).type,'done');assert.equal(frames.at(-1).response.evidence[0].dataset,'siope_comuni');assert.equal(calls,2);
 });
 
 test('BYOK stream reports authentication failure without upstream content',async(t)=>{
   t.mock.method(globalThis,'fetch',async()=>Response.json({error:'private provider details'},{status:401}));
   const response=await POST(request({headers:{accept:'text/event-stream'}}));
-  const text=await response.text();const event=JSON.parse(text.trim().slice(6));
+  const text=await response.text();const event=text.trim().split('\n\n').map(frame=>JSON.parse(frame.slice(6))).at(-1);
   assert.equal(event.type,'error');assert.equal(event.response.code,'authentication');assert.equal(text.includes('private provider details'),false);
+});
+
+test('BYOK rejects attachment bounds, remote image references and assistant-owned files before egress',async(t)=>{
+  let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
+  const file={kind:'text',name:'nota.txt',text:'Dati sintetici',note:'Testo completo'};
+  const candidates=[
+    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(24001)}]}],
+    [{role:'user',content:'Leggi',attachments:[file,file,file,file]}],
+    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(12001)},{...file,text:'x'.repeat(12000)}]}],
+    [{role:'assistant',content:'Prima',attachments:[file]},{role:'user',content:'Leggi'}],
+    [{role:'user',content:'Leggi',attachments:[{kind:'image',name:'foto.jpg',mime:'image/jpeg',data:'https://example.test/image',width:100,height:100,note:''}]}],
+    [{role:'user',content:'Leggi',attachments:[{...file,url:'https://example.test/file'}]}],
+  ];
+  for(const messages of candidates)assert.equal((await POST(request({payload:{...valid,messages}}))).status,400);
+  assert.equal(calls,0);
 });

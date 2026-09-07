@@ -10,7 +10,7 @@ la bozza. La pagina non usa risposte deterministiche o un conto API DVNS.
 Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
 conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
 sono allineate a sinistra e supportano paragrafi, titoli, grassetti, codice inline ed
-elenchi. HTML, immagini e link prodotti dal modello non diventano contenuto attivo.
+elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link prodotti dal modello non diventano contenuto attivo.
 I link alle fonti vengono dal catalogo server.
 
 Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
@@ -30,6 +30,39 @@ Lo scorrimento segue la generazione finché l’utente resta vicino al fondo. Se
 messaggi precedenti, la chat non lo trascina in basso; un pulsante permette di tornare
 all’ultima risposta. Transizioni brevi, pulsanti con feedback e `prefers-reduced-motion`
 seguono le indicazioni di Emil Design.
+
+## Allegati e attività
+
+Il pulsante `+`, il trascinamento sul compositore e l’incolla di immagini permettono
+fino a 3 allegati, 5 MB ciascuno. Formati: PNG/JPEG/WebP, PDF testuali, DOCX,
+XLS/XLSX/ODS, TXT/Markdown/CSV/TSV/JSON in UTF-8. I file originali vengono letti
+sul dispositivo e non sono caricati in archivi remoti. Prima dell’invio si può aprire
+l’anteprima del testo o dell’immagine effettivamente disponibile al modello.
+
+Il testo totale degli allegati è limitato a 24.000 caratteri, senza tagli automatici.
+PDF: massimo 30 pagine, nessun OCR; immagini e grafici interni non sono estratti.
+DOCX: solo testo, senza immagini o impaginazione. Fogli: massimo 10 schede e 1.500
+celle valorizzate, coordinate e valore originale/formattato; formule non ricalcolate
+e macro non eseguite. Le immagini vengono decodificate, ridimensionate entro 1.536
+pixel per lato e ricodificate JPEG senza metadati originali (entro 450.000 caratteri
+base64); richiedono un modello con visione. Lettura/estrazione ha un budget di 15 secondi.
+I parser di documenti sono caricati quando servono e l’estrazione usa worker dedicati.
+
+Gli allegati seguono il messaggio nelle domande successive, modifica e rigenerazione.
+La richiesta complessiva può contenere al massimo 3 file: se i nuovi allegati superano
+il budget, il client elimina dal contesto le coppie più vecchie e mostra un avviso.
+Nuova chat, scollegamento, uscita e ricaricamento eliminano gli allegati in memoria.
+La route accetta esclusivamente testo e JPEG inline validati, mai URL o file ID.
+I blocchi inviati ai provider restano contenuti dell’utente distinti dall’evidenza DVNS.
+
+Le tile da 56 px hanno miniature o icone, colore e sigla del formato. Anello e
+percentuale seguono la lettura effettiva, con transizioni di ingresso e completamento.
+Il dettaglio attività compare per allegati o ricerche effettive: nomi dei file,
+selezione fonti, query eseguite e preparazione della risposta. Si richiude al termine.
+Non mostra ragionamenti privati né passaggi inventati. Su Luna via OpenRouter,
+la pianificazione usa `reasoning.effort: none`; la risposta usa `medium` soltanto se
+il piano indica un confronto complesso o calcoli a più passaggi, altrimenti `none`.
+`exclude: true` evita l’esposizione del ragionamento. I test verificano entrambi i payload.
 
 ## Chiavi e provider
 
@@ -65,7 +98,7 @@ Licenza, validazione, source lock e provenienza restano al confine dei dati pubb
 Non si importano snapshot raw nei Client Component e non si accettano URL, SQL,
 funzioni o strumenti di scrittura scelti dall’utente o dal modello.
 
-Una seconda chiamata spiega solo l’evidenza delle query riuscite, preservando periodo,
+Una seconda chiamata spiega l’evidenza delle query riuscite e gli eventuali allegati, preservando periodo,
 misura, unità, copertura, fonte e limiti. Per SIOPE la proiezione mantiene gli aggregati
 contabili e dichiara l’esclusione di classifiche, distribuzioni e normalizzazione
 geografica. Con filtro regionale, `totalPaid` resta nazionale e il valore regionale
@@ -81,11 +114,11 @@ _della verifica_). La riduzione del testo non è una misura del costo effettivo 
 ## Streaming, sicurezza e limiti operativi
 
 La route valida origine, Host, JSON, consenso, ruoli, modello, chiave e dimensione:
-80.000 byte, 500 caratteri per l’ultima domanda, 50 secondi complessivi. Rate limit in
+1.600.000 byte, 500 caratteri per l’ultima domanda, 50 secondi complessivi. Rate limit in
 memoria: 20 richieste/minuto per IP, 10 per hash della chiave, 4 concorrenti per istanza.
 Non sono limiti distribuiti; l’hosting/edge resta una protezione operativa separata.
 
-`Accept: text/event-stream` abilita il protocollo DVNS (`delta`, `done`, `error`).
+`Accept: text/event-stream` abilita il protocollo DVNS (`activity`, `delta`, `done`, `error`).
 Il server decodifica SSE dai tre provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
 errori, budget e cancellazione. Nessun evento di ragionamento, header, testo di errore
 upstream o credenziale viene riversato nel client. Risposte parziali non vengono marcate
@@ -120,7 +153,7 @@ dettatura non invia mai automaticamente la domanda.
 egress, isolamento delle chiavi, query, provenienza, cancellazione e SSE con provider
 simulati. `test:browser:assistant` verifica interazioni, rete simulata e screenshot a
 320, 390, 768 e 1280 px. `test:browser:voice` verifica l’API vocale simulata, senza
-registrare un microfono fisico. Entrambi fanno parte dei gate di produzione.
+registrare un microfono fisico. `test:browser:attachments` legge i file sintetici di `tests/fixtures/assistant/`, verifica anteprime, limiti, contesto e layout alle stesse larghezze. Tutte e tre le suite fanno parte dei gate di produzione.
 
 Le prove reali OpenRouter si svolgono separatamente tramite il pannello della chat,
 con chiave autorizzata dall’utente e mai inclusa negli artifact. I test simulati non

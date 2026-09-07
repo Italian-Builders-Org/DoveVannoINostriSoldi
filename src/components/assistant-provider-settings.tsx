@@ -50,13 +50,13 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
       <label htmlFor="assistant-model">Modello</label>
       <input id="assistant-model" list="assistant-models" value={model} maxLength={120} onChange={(event) => setModel(event.target.value)} autoComplete="off" spellCheck={false} required />
       <datalist id="assistant-models">{description.models.map((id) => <option key={id} value={id} />)}</datalist>
-      <small>Scegli un esempio o inserisci l’ID di un modello testuale disponibile sul tuo conto.</small>
+      <small>Scegli un esempio o inserisci l’ID di un modello disponibile sul tuo conto. Per allegare immagini serve un modello che le legga.</small>
       <label htmlFor="assistant-api-key">API key personale</label>
       <input ref={keyField} id="assistant-api-key" name="personal-api-credential" type="password" value={apiKey} onChange={(event) => setApiKey(event.target.value)} maxLength={512} autoComplete="off" autoCapitalize="none" spellCheck={false} required aria-describedby="assistant-key-help" />
       <small id="assistant-key-help"><a href={description.keysUrl} target="_blank" rel="noreferrer">Crea una chiave su {description.label} ↗</a>. Usa una chiave dedicata con limiti di spesa.</small>
       {provider === "openai" ? <p className={styles.providerNote}>La chiave API OpenAI è distinta dall’abbonamento ChatGPT; i consumi API sono fatturati separatamente.</p> : null}
       <div className={styles.providerPrivacy}>
-        <p>La chiave resta nella memoria di questa scheda. Per rispondere, chiave, domanda e contesto passano attraverso DVNS e raggiungono il servizio scelto. L’applicazione non li archivia né li scrive nei propri log.</p>
+        <p>La chiave resta nella memoria di questa scheda. Per rispondere, chiave, domanda, allegati e contesto passano attraverso DVNS e raggiungono il servizio scelto. L’applicazione non li archivia né li scrive nei propri log.</p>
         <p>{provider === "openrouter" ? "OpenRouter inoltra la richiesta al fornitore del modello. La conservazione dipende anche dalle impostazioni del tuo conto. " : "Il provider può conservare dati secondo le proprie condizioni. "}<a href={description.privacyUrl} target="_blank" rel="noreferrer">Condizioni sui dati ↗</a> · <a href="/privacy" target="_blank" rel="noreferrer">Privacy DVNS ↗</a></p>
       </div>
       <label className={styles.providerConsent}><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />

@@ -79,12 +79,12 @@ export default function PrivacyPage() {
           L&apos;assistente in <a href="/assistente">/assistente</a> permette di conversare con un
           provider AI usando la tua API key OpenRouter, OpenAI o Anthropic.
           Collegando un provider autorizzi l’invio della domanda, di un contesto limitato della
-          conversazione e degli estratti dei dataset pubblici necessari alla risposta. Chiave e
+          conversazione, degli allegati che scegli di inviare e degli estratti dei dataset pubblici necessari alla risposta. Chiave e
           contenuti transitano attraverso il backend DVNS e il servizio selezionato; OpenRouter
           può inoltrare la richiesta al fornitore del modello scelto.
         </p>
         <p>
-          La chiave e la conversazione restano nella memoria della scheda, senza salvataggio in
+          I documenti vengono letti sul dispositivo: si invia il testo estratto; le immagini vengono ottimizzate prima dell’invio. L’anteprima mostra contenuto e limiti: grafici e immagini dentro PDF, Word e fogli di calcolo non vengono estratti. I file originali non vengono caricati in un archivio remoto. La chiave, gli allegati e la conversazione restano nella memoria della scheda, senza salvataggio in
           cookie o archivi del browser. L’applicazione non li archivia sul server, non li scrive
           nei propri log e non li usa per analytics. “Nuova chat” svuota la conversazione;
           “Scollega e rimuovi chiave”, il ricaricamento o l’uscita dalla pagina rimuovono la

@@ -220,8 +220,9 @@
 }
 
 /* The viewport holds the conversation; only the message list scrolls. */
-.page { height: calc(100dvh - var(--assistant-header-height, var(--site-header-height, 132px))); }
-.page[data-conversation="true"] { min-height: 0; overflow: hidden; }
+.page { height: auto; min-height: calc(100dvh - var(--assistant-header-height, var(--site-header-height, 132px))); }
+.page[data-conversation="false"] .stage { min-height: auto; padding-top: 24px; }
+.page[data-conversation="true"] { height: calc(100dvh - var(--assistant-header-height, var(--site-header-height, 132px))); min-height: 0; overflow: hidden; }
 .page[data-conversation="true"] .stage { padding-bottom: 0; }
 .page[data-conversation="true"] .composerArea { position: relative; padding-top: 8px; margin-top: auto; }
 .page[data-conversation="true"] .composer { border-radius: 24px; padding: 0; }
@@ -274,3 +275,80 @@
   .messageActions button { transition: none; }
   .messageActions button:active { transform: none; }
 }
+
+/* The same compact surfaces and motion curve are shared by files and activity. */
+.attachments { display: flex; gap: 12px; max-width: 100%; margin: 0 0 12px; padding: 7px 6px 5px; overflow-x: auto; list-style: none; }
+.attachment { position: relative; flex: 0 0 56px; width: 56px; height: 56px; border: 1px solid var(--assistant-stroke); border-radius: 12px; background: var(--assistant-surface); opacity: 1; transform: translateY(0) scale(1); transition: opacity 180ms ease, transform 220ms cubic-bezier(.23,1,.32,1); }
+@starting-style { .attachment { opacity: 0; transform: translateY(5px) scale(.96); } }
+.attachmentOpen { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; width: 100%; height: 100%; padding: 4px 3px 2px; overflow: hidden; border: 0; border-radius: inherit; color: var(--assistant-muted); background: transparent; }
+.attachmentOpen > .attachmentName { display: block; width: 100%; min-width: 0; }
+.attachmentOpen strong { display: block; overflow: hidden; font-size: 9px; line-height: 12px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.attachmentName em { display: block; color: var(--attachment-accent, var(--assistant-muted)); font-size: 8px; line-height: 10px; letter-spacing: .04em; font-weight: 650; font-style: normal; }
+.attachmentOpen > svg { color: var(--attachment-accent, var(--assistant-muted)); }
+.attachment[data-format="pdf"] { --attachment-accent: #b84137; background: #fff5f3; }
+.attachment[data-format="sheet"] { --attachment-accent: #26744a; background: #f0f9f3; }
+.attachment[data-format="word"] { --attachment-accent: #3667b2; background: #f1f6fe; }
+.attachment[data-format="code"] { --attachment-accent: #7254a3; background: #f7f3fc; }
+.attachment[data-format="text"] { --attachment-accent: #65615b; background: #f7f6f3; }
+.attachmentOpen small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.attachmentOpen > img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.attachmentRemove { position: absolute; z-index: 2; top: -3px; right: -3px; display: grid; place-items: center; width: 23px; height: 23px; padding: 3px; border: 1px solid var(--assistant-stroke); border-radius: 50%; color: var(--assistant-ink); background: color-mix(in srgb, var(--assistant-panel) 92%, transparent); backdrop-filter: blur(6px); transition: opacity 180ms ease, filter 180ms ease, transform 150ms ease; }
+.attachmentRemove::after { position: absolute; inset: -4px; content: ""; }
+.attachmentRemove:active, .attachmentOpen:active { transform: scale(.97); }
+.attachment[data-error="true"] { border-color: var(--color-critical); }
+.attachmentHint { margin: 8px 6px; color: var(--assistant-muted); font-size: 10px; line-height: 1.5; }
+.attachmentErrors { margin: 5px 3px; padding: 0; list-style: none; color: var(--color-critical); font-size: 12px; }
+.attachmentRing { position: absolute; inset: -1px; width: 56px; height: 56px; overflow: visible; pointer-events: none; color: var(--focus-ring); }
+.attachmentRing path { transition: stroke-dashoffset 180ms linear, opacity 180ms ease; }
+.attachment[data-ready="true"] .attachmentRing { opacity: 0; transition: opacity 180ms ease 260ms; }
+.attachmentPercent { position: absolute; top: 2px; right: 2px; z-index: 2; padding: 1px 2px; border-radius: 4px; color: var(--assistant-ink); background: var(--assistant-panel); font-size: 9px; font-variant-numeric: tabular-nums; line-height: 12px; pointer-events: none; transition: opacity 180ms ease 220ms, filter 180ms ease 220ms; }
+.attachment[data-ready="true"] .attachmentPercent { opacity: 0; filter: blur(2px); }
+.attachment[data-ready="true"] .attachmentRemove { transition-delay: 280ms; }
+.attachment[data-ready="false"] .attachmentRemove { opacity: 0; filter: blur(2px); }
+.attachment[data-ready="false"] .attachmentRemove:focus-visible { opacity: 1; filter: none; }
+.attachmentDialog { width: min(760px, calc(100vw - 28px)); max-height: 88dvh; padding: 20px; border: 1px solid var(--assistant-stroke); border-radius: 20px; color: var(--assistant-ink); background: var(--assistant-panel); }
+.attachmentDialog::backdrop { background: rgb(0 0 0 / .2); backdrop-filter: blur(3px); }
+.attachmentDialog header { display: flex; align-items: center; gap: 12px; }
+.attachmentDialog h2 { flex: 1; min-width: 0; margin: 0; overflow-wrap: anywhere; font-size: 17px; font-weight: 550; }
+.attachmentDialog p, .attachmentDialog > small { color: var(--assistant-muted); font-size: 12px; line-height: 1.6; }
+.attachmentPreviewContent { max-height: 60dvh; margin: 16px 0; overflow: auto; border: 1px solid var(--assistant-stroke); border-radius: 12px; }
+.attachmentPreviewContent pre { margin: 0; padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.65; }
+.attachmentPreviewContent img { display: block; width: 100%; height: auto; }
+.composer[data-dragging="true"] { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
+.dropHint { display: block; margin: 4px 5px 10px; font-size: 12px; color: var(--assistant-muted); }
+.userBlock .attachments { justify-content: flex-end; margin-top: 5px; }
+.activity { margin: 4px 0 14px; font-size: 12px; color: var(--assistant-muted); }
+.activitySummary { display: flex; align-items: center; gap: 7px; max-width: 100%; min-height: 32px; padding: 2px 0; border: 0; color: inherit; background: transparent; text-align: left; }
+.activitySummary time { color: var(--assistant-muted); opacity: .75; font-size: 10px; font-variant-numeric: tabular-nums; }
+.activityBody { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 220ms cubic-bezier(.23,1,.32,1), opacity 180ms ease; }
+.activityBody[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+.activityBody > ol { min-height: 0; margin: 0; padding: 0; overflow: hidden; list-style: none; }
+.activityRow { margin: 0 0 0 7px; padding: 7px 0 7px 16px; border-left: 1px solid var(--assistant-stroke); opacity: 1; transform: translateY(0); filter: blur(0); transition: opacity 180ms ease, transform 220ms cubic-bezier(.23,1,.32,1), filter 180ms ease; }
+.activityRow { overflow: hidden; }
+.activityResources > span > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.activityRow > div:first-child { position: relative; display: flex; align-items: center; gap: 7px; }
+.activityDot { position: absolute; left: -19px; width: 5px; height: 5px; border-radius: 50%; background: var(--assistant-stroke); }
+.activityRow[data-running="true"] .activityDot { background: var(--assistant-ink); }
+/* impeccable-disable-next-line gradient-text: user-requested monochrome shimmer indicates a running task, and stops on completion. */
+.activityRow[data-running="true"] .activityLabel { background: linear-gradient(100deg, var(--assistant-muted) 20%, var(--assistant-ink) 45%, var(--assistant-muted) 70%); background-size: 240% 100%; background-clip: text; -webkit-text-fill-color: transparent; animation: activityShimmer 1.6s linear infinite; }
+@keyframes activityShimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+.activityResources { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.activityResources > span { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 2px 6px; overflow: hidden; border-radius: 5px; background: var(--assistant-surface); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.activityResources svg { flex: none; }
+@media (hover: hover) and (pointer: fine) {
+  .attachment:hover .attachmentRemove { opacity: 1; filter: none; }
+  .attachment[data-ready="false"]:hover .attachmentPercent { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .attachment, .attachmentRemove, .attachmentRing path, .attachmentPercent, .activityBody, .activityRow { transition: none; }
+  .activityRow[data-running="true"] .activityLabel { animation: none; background: none; -webkit-text-fill-color: currentColor; }
+}
+
+.answerTable { max-width: 100%; margin: 12px 0 18px; overflow-x: auto; border: 1px solid var(--assistant-stroke); border-radius: 12px; overscroll-behavior-inline: contain; }
+.answerTable table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+.answerTable th, .answerTable td { padding: 10px 12px; border-bottom: 1px solid var(--assistant-stroke); text-align: right; white-space: nowrap; }
+.answerTable th { background: var(--assistant-surface); font-weight: 550; }
+.answerTable th:first-child, .answerTable td:first-child { text-align: left; }
+.answerTable tr:last-child td { border-bottom: 0; }
+
+.contextNotice { padding: 9px 12px; border-left: 2px solid var(--assistant-stroke); color: var(--assistant-muted); font-size: 11px; line-height: 1.6; }

@@ -14,6 +14,6 @@ export function AssistantAiReply({ response }: { response: AiResponse }) {
         {entry.caveat ? <p className={styles.aiCaveat}>{entry.caveat}</p> : null}
       </div>)}
     </div> : null}
-    <p className={styles.aiDisclaimer}>Risposta generata con AI. Le fonti documentano i dataset consultati; verifica cifre e interpretazioni prima di usarle.</p>
+    <p className={styles.aiDisclaimer}>Risposta generata con AI. Verifica cifre, provenienza e interpretazioni prima di usarle.</p>
   </div>;
 }

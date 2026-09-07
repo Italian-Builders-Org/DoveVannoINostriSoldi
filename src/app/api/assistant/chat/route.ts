@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import * as z from "zod/v4";
 import { ASSISTANT_MAX_PROMPT_CHARS } from "@/lib/assistant/contracts";
 import { AI_KEY_PATTERN, AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_TEXT_CHARS, AI_MODEL_PATTERN, AI_REQUEST_MAX_BYTES, AI_REQUEST_TIMEOUT_MS, type AiFailure } from "@/lib/assistant/byok-contracts";
+import { attachmentSchema } from "@/lib/assistant/attachment-schema";
+import { ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TEXT_CHARS, attachmentTextSize } from "@/lib/assistant/attachment-contracts";
 import { executeByokChat } from "@/lib/assistant/byok-engine";
 import { AiProviderError } from "@/lib/assistant/provider-client";
 import { jsonResponse, readBoundedBody, rejectPublicPost } from "@/lib/http/public-post-guard";
@@ -21,6 +23,7 @@ const schema = z.object({
   consent: z.literal(true),
   messages: z.array(z.object({
     role: z.enum(["user", "assistant"]), content: z.string().min(1).max(AI_MAX_TEXT_CHARS),
+    attachments: z.array(attachmentSchema).max(ATTACHMENT_MAX_FILES).optional(),
   }).strict()).min(1).max(AI_MAX_HISTORY_MESSAGES + 1),
 }).strict();
 
@@ -50,6 +53,10 @@ export async function POST(request: Request) {
   let parsed: z.infer<typeof schema>;
   try { parsed = schema.parse(JSON.parse(raw)); }
   catch { return failure("invalid_request", "Configurazione o messaggi non validi. Controlla il pannello del provider."); }
+  const attachments = parsed.messages.flatMap((message) => message.attachments ?? []);
+  if (attachments.length > ATTACHMENT_MAX_FILES || attachmentTextSize(attachments) > ATTACHMENT_MAX_TEXT_CHARS || parsed.messages.some((message) => message.role !== "user" && message.attachments?.length)) {
+    return failure("invalid_request", "Gli allegati superano i limiti disponibili. Rimuovi un file o inizia una nuova chat.");
+  }
   const last = parsed.messages.at(-1)!;
   if (last.role !== "user" || !last.content.trim() || last.content.length > ASSISTANT_MAX_PROMPT_CHARS || parsed.messages.reduce((sum, message) => sum + message.content.length, 0) > AI_MAX_HISTORY_CHARS) {
     return failure("invalid_request", "La conversazione supera i limiti disponibili. Inizia una nuova chat.");
@@ -71,6 +78,7 @@ export async function POST(request: Request) {
             try {
               return await executeByokChat({ provider: parsed.provider, model: parsed.model, apiKey: credential }, parsed.messages, {
                 signal, onDelta: (text) => { if (!signal.aborted) send({ type: "delta", text }); },
+                onActivity: (activity) => { if (!signal.aborted) send({ type: "activity", activity }); },
               });
             } finally { release(); }
           });

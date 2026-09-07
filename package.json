@@ -36,6 +36,7 @@
     "test:browser:navigation": "node --experimental-strip-types scripts/browser/navigation.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:assistant": "node scripts/browser/assistant-chat.mjs",
+    "test:browser:attachments": "node scripts/browser/assistant-attachments.mjs",
     "test:browser:voice": "node scripts/browser/assistant-voice.mjs",
     "test:browser:charts": "node scripts/browser/chart-interactions.mjs",
     "test:browser:papers": "node scripts/browser/papers.mjs",
@@ -53,12 +54,15 @@
     "@hugeicons/core-free-icons": "^4.3.0",
     "@hugeicons/react": "^1.1.10",
     "@modelcontextprotocol/server": "^2.0.0",
+    "mammoth": "1.12.2",
     "next": "16.3.3",
+    "pdfjs-dist": "6.3.289",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-is": "19.2.8",
     "recharts": "3.10.1",
     "server-only": "^0.0.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "zod": "^4.5.4"
   },
   "devDependencies": {

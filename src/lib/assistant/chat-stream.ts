@@ -1,7 +1,8 @@
+import { isAiActivity, type AiActivity } from "@/lib/assistant/activity-contracts";
 import { AI_MAX_TEXT_CHARS, isAiResponse, type AiResponse } from "@/lib/assistant/byok-contracts";
 
 /** DVNS stream protocol; unfinished text never becomes a completed history message. */
-export async function readChatStream(response: Response, signal: AbortSignal, onText: (text: string) => void): Promise<AiResponse> {
+export async function readChatStream(response: Response, signal: AbortSignal, onText: (text: string) => void, onActivity?: (activity: AiActivity) => void): Promise<AiResponse> {
   if (!response.headers.get("content-type")?.includes("text/event-stream")) {
     const result: unknown = await response.json();
     if (!isAiResponse(result)) throw new Error("chat_response");
@@ -27,7 +28,8 @@ export async function readChatStream(response: Response, signal: AbortSignal, on
         const frame = buffer.slice(0, end); buffer = buffer.slice(end + 2);
         if (!frame.startsWith("data: ") || result) throw new Error("chat_stream_protocol");
         const event = JSON.parse(frame.slice(6)) as Record<string, unknown>;
-        if (event.type === "delta" && typeof event.text === "string") {
+        if (event.type === "activity" && isAiActivity(event.activity)) onActivity?.(event.activity);
+        else if (event.type === "delta" && typeof event.text === "string") {
           text += event.text;
           if (text.length > AI_MAX_TEXT_CHARS) throw new Error("chat_stream_size");
           onText(text);

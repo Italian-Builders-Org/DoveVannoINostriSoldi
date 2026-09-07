@@ -3,13 +3,18 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, ArrowUp01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon, ArrowUp01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
 import { ASSISTANT_MAX_PROMPT_CHARS } from "@/lib/assistant/contracts";
 import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_PROVIDERS, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
 import { AssistantProviderSettings } from "@/components/assistant-provider-settings";
 import { AssistantAiReply } from "@/components/assistant-ai-reply";
 import { AssistantMarkdown } from "@/components/assistant-markdown";
 import { readChatStream } from "@/lib/assistant/chat-stream";
+import { AssistantActivity } from "@/components/assistant-activity";
+import type { AiActivity } from "@/lib/assistant/activity-contracts";
+import { AssistantAttachments, AssistantAttachmentPreview } from "@/components/assistant-attachments";
+import { useAssistantAttachments } from "@/components/use-assistant-attachments";
+import { ATTACHMENT_ACCEPT, ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TEXT_CHARS, attachmentTextSize, type AiAttachment } from "@/lib/assistant/attachment-contracts";
 import { useAssistantVoice } from "@/components/use-assistant-voice";
 import styles from "@/app/assistente/assistant.module.css";
 
@@ -20,16 +25,22 @@ const EXAMPLES = [
   { label: "Confronta due anni", source: "SIOPE", detail: "Variazione tra annualità complete", command: "confronta", icon: ChartColumnIcon, prompt: "Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?" },
 ] as const;
 const MAX_TURNS = 12;
-type Turn = { id: number; prompt: string; response: AiResponse | null; partial?: string; stopped?: boolean };
+type Turn = { id: number; prompt: string; response: AiResponse | null; attachments?: AiAttachment[]; activities?: AiActivity[]; contextReduced?: boolean; startedAt: number; finishedAt?: number; partial?: string; stopped?: boolean };
 
 export function AssistantChat() {
   const [draft, setDraft] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
-  const [menu, setMenu] = useState<"sources" | "commands" | null>(null);
+  const [menu, setMenu] = useState<"sources" | "commands" | "add" | null>(null);
   const [query, setQuery] = useState("");
   const [activeOption, setActiveOption] = useState(0);
   const [info, setInfo] = useState(false);
+  const [preview, setPreview] = useState<AiAttachment | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const previewTrigger = useRef<HTMLElement | null>(null);
+  function openPreview(file: AiAttachment) { previewTrigger.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; setPreview(file); }
+  const fileInput = useRef<HTMLInputElement>(null);
+  const attachments = useAssistantAttachments();
   const [connection, setConnection] = useState<AiConnection | null>(null);
   const connectionRef = useRef<AiConnection | null>(null);
   const [settings, setSettings] = useState(false);
@@ -53,7 +64,7 @@ export function AssistantChat() {
   const hasConversation = turns.length > 0;
   const tooLong = draft.length > ASSISTANT_MAX_PROMPT_CHARS;
   const atLimit = turns.length >= MAX_TURNS;
-  const options = (menu === "sources" ? EXAMPLES.slice(0, 3) : EXAMPLES).filter((option) =>
+  const options = (menu === "add" ? [] : menu === "sources" ? EXAMPLES.slice(0, 3) : EXAMPLES).filter((option) =>
     `${option.source} ${option.label} ${option.command}`.toLocaleLowerCase("it-IT").includes(query.toLocaleLowerCase("it-IT")),
   );
 
@@ -66,7 +77,7 @@ export function AssistantChat() {
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    const leave = () => { connectionRef.current = null; pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); };
+    const leave = () => { connectionRef.current = null; pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };
     window.addEventListener("pagehide", leave);
     return () => { window.removeEventListener("pagehide", leave); pending.current?.abort(); if (copyTimer.current) clearTimeout(copyTimer.current); };
   }, []);
@@ -77,6 +88,7 @@ export function AssistantChat() {
     field.style.height = `${Math.min(180, Math.max(hasConversation ? 58 : 94, field.scrollHeight))}px`;
   }, [draft, hasConversation]);
   useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
     if (!hasConversation || !beforeComposer.current || !composerArea.current) return;
     const from = beforeComposer.current;
     beforeComposer.current = null;
@@ -120,7 +132,7 @@ export function AssistantChat() {
     } catch { setCopyError(true); }
   }
   async function ask(value: string, retryId?: number) {
-    if (pending.current || !value.trim() || value.length > ASSISTANT_MAX_PROMPT_CHARS || (atLimit && retryId === undefined)) return;
+    if ((retryId === undefined && attachments.blocked) || pending.current || !value.trim() || value.length > ASSISTANT_MAX_PROMPT_CHARS || (atLimit && retryId === undefined)) return;
     const ai = connectionRef.current;
     if (!ai) { setSettings(true); return; }
     if (!hasConversation) beforeComposer.current = composerArea.current?.getBoundingClientRect() ?? null;
@@ -130,25 +142,33 @@ export function AssistantChat() {
     const controller = new AbortController();
     pending.current = controller;
     const id = retryId ?? nextId.current++;
+    const files = retryId === undefined ? attachments.ready : turns.find((turn) => turn.id === id)?.attachments ?? [];
     voice.close();
     setMenu(null);
     setLoading(true);
     if (retryId === undefined) {
-      setTurns((current) => [...current, { id, prompt: value.trim(), response: null }]);
+      setTurns((current) => [...current, { id, prompt: value.trim(), response: null, attachments: files, startedAt: Date.now() }]);
       setDraft("");
-    } else setTurns((current) => current.slice(0, current.findIndex((turn) => turn.id === id) + 1).map((turn) => turn.id === id ? { id, prompt: value.trim(), response: null } : turn));
+      attachments.clear();
+    } else setTurns((current) => current.slice(0, current.findIndex((turn) => turn.id === id) + 1).map((turn) => turn.id === id ? { id, prompt: value.trim(), response: null, attachments: files, startedAt: Date.now() } : turn));
     const history: AiMessage[] = [];
     if (ai) {
       for (const turn of turns) {
         if (turn.id === retryId) break;
         if (turn.response?.ok && turn.response.kind === "ai_answer") {
-          history.push({ role: "user", content: turn.prompt }, { role: "assistant", content: turn.response.text });
+          history.push({ role: "user", content: turn.prompt, ...(turn.attachments?.length ? { attachments: turn.attachments } : {}) }, { role: "assistant", content: turn.response.text });
         }
       }
     }
     const messages = history.slice(-AI_MAX_HISTORY_MESSAGES);
-    while (messages.length && messages.reduce((sum, message) => sum + message.content.length, 0) + value.trim().length > AI_MAX_HISTORY_CHARS) messages.splice(0, 2);
-    messages.push({ role: "user", content: value.trim() });
+    const contextTooLarge = () => {
+      const included = [...messages.flatMap((message) => message.attachments ?? []), ...files];
+      return messages.reduce((sum, message) => sum + message.content.length, 0) + value.trim().length > AI_MAX_HISTORY_CHARS || included.length > ATTACHMENT_MAX_FILES || attachmentTextSize(included) > ATTACHMENT_MAX_TEXT_CHARS;
+    };
+    let removedFiles = 0;
+    while (messages.length && contextTooLarge()) removedFiles += messages.splice(0, 2).reduce((sum, message) => sum + (message.attachments?.length ?? 0), 0);
+    if (removedFiles) setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, contextReduced: true } : turn));
+    messages.push({ role: "user", content: value.trim(), ...(files.length ? { attachments: files } : {}) });
     const deadline = setTimeout(() => controller.abort(), 55_000);
     try {
       const result = await fetch("/api/assistant/chat", {
@@ -158,12 +178,18 @@ export function AssistantChat() {
       });
       const response = await readChatStream(result, controller.signal, (partial) => {
         if (pending.current === controller) setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, partial } : turn));
+      }, (activity) => {
+        if (pending.current === controller) setTurns((current) => current.map((turn) => {
+          if (turn.id !== id) return turn;
+          const previous = turn.activities ?? [];
+          return { ...turn, activities: previous.some((item) => item.id === activity.id) ? previous.map((item) => item.id === activity.id ? activity : item) : [...previous, activity] };
+        }));
       });
       if (pending.current !== controller) return;
-      setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, response, partial: undefined } : turn));
+      setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, response, partial: undefined, finishedAt: Date.now() } : turn));
     } catch {
       if (pending.current !== controller) return;
-      setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, response: {
+      setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, finishedAt: Date.now(), response: {
         ok: false, kind: "ai_error", code: controller.signal.aborted ? "timeout" : "data_unavailable",
         message: controller.signal.aborted ? "La ricerca sta impiegando troppo tempo. Puoi riprovare." : "Non riesco a raggiungere il servizio. Puoi riprovare tra poco.",
       } } : turn));
@@ -180,13 +206,15 @@ export function AssistantChat() {
     pending.current?.abort();
     pending.current = null;
     setLoading(false);
-    setTurns((current) => current.map((turn) => turn.response === null ? { ...turn, stopped: true } : turn));
+    setTurns((current) => current.map((turn) => turn.response === null ? { ...turn, stopped: true, finishedAt: Date.now() } : turn));
   }
   function reset() {
     stop();
     voice.close();
     setTurns([]);
     setEditing(null);
+    attachments.clear();
+    setPreview(null);
     setDraft("");
     setMenu(null);
     input.current?.focus();
@@ -232,6 +260,7 @@ export function AssistantChat() {
               {turns.map((turn, index) => (
                 <div className={styles.turn} key={turn.id} ref={index === turns.length - 1 ? lastTurn : undefined}>
                   <div className={styles.userBlock}>
+                    {turn.attachments?.length ? <AssistantAttachments items={turn.attachments.map((file, id) => ({ id, name: file.name, file }))} onPreview={openPreview} /> : null}
                     {editing?.id === turn.id ? <form className={styles.editMessage} onSubmit={(event) => { event.preventDefault(); void ask(editing.value, turn.id); }}>
                       <label className={styles.srOnly} htmlFor={`edit-message-${turn.id}`}>Modifica la domanda</label>
                       <textarea id={`edit-message-${turn.id}`} autoFocus value={editing.value} maxLength={ASSISTANT_MAX_PROMPT_CHARS} onChange={(event) => setEditing({ id: turn.id, value: event.target.value })} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); setEditing(null); } }} />
@@ -245,7 +274,9 @@ export function AssistantChat() {
                   </div>
                   <div className={styles.assistantMessage} data-assistant-reply aria-live={loading && !turn.response ? "off" : "polite"} aria-busy={!turn.response && !turn.stopped}>
                     <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.svg" alt="" width={22} height={26} /><span>DVNS</span><small>AI</small></div>
-                    {turn.response ? <AssistantAiReply response={turn.response} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Consulto i dati…</>}</p>}
+                    {turn.contextReduced ? <p className={styles.contextNotice}>I nuovi allegati superano il limite del contesto: i file dei messaggi più vecchi non sono inclusi in questa risposta. Per confrontarli, riallega insieme i file utili (massimo 3).</p> : null}
+                    <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} />
+                    {turn.response ? <AssistantAiReply response={turn.response} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
                     {turn.response || turn.stopped ? <div className={styles.messageActions}>
                       {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => void copyText([turn.response?.ok ? turn.response.text : "", ...(turn.response?.ok ? turn.response.evidence.flatMap((entry) => entry.sources.map((source) => `${source.name}: ${source.url}`)) : [])].join("\n\n"), `assistant-${turn.id}`)}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
                       <button type="button" aria-label="Rigenera risposta" title="Rigenera risposta; sostituisce anche i messaggi successivi" disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
@@ -264,7 +295,7 @@ export function AssistantChat() {
         <div className={styles.composerArea} ref={composerArea}>
           {hasConversation && awayFromBottom ? <button type="button" className={styles.jumpLatest} aria-label="Vai all’ultimo messaggio" onClick={() => { followBottom.current = true; setAwayFromBottom(false); scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}><HugeiconsIcon icon={ArrowDown01Icon} size={18} aria-hidden="true" /></button> : null}
           <div className={styles.composerAnchor} ref={composer}>
-            {menu ? <div className={styles.optionMenu} id="assistant-options" role="listbox" aria-label={menu === "sources" ? "Domande dalle fonti" : "Scorciatoie"}>
+            {menu && menu !== "add" ? <div className={styles.optionMenu} id="assistant-options" role="listbox" aria-label={menu === "sources" ? "Domande dalle fonti" : "Scorciatoie"}>
               <p>{menu === "sources" ? "Scegli una domanda dalla fonte" : "Inizia da una domanda"}</p>
               {options.length ? options.map((option, index) => <button type="button" role="option" aria-selected={activeOption === index} id={`assistant-option-${index}`} key={option.command} className={styles.option} onMouseEnter={() => setActiveOption(index)} onClick={() => chooseExample(option.prompt)}>
                 <HugeiconsIcon icon={option.icon} size={20} strokeWidth={1.6} aria-hidden="true" />
@@ -272,15 +303,27 @@ export function AssistantChat() {
                 <span className={styles.optionArrow} aria-hidden="true">↵</span>
               </button>) : <p className={styles.noOptions}>Nessun esempio per questa ricerca.</p>}
             </div> : null}
-            <form className={styles.composer} onSubmit={submit}>
+            {menu === "add" ? <div className={styles.optionMenu} id="assistant-add-menu" role="group" aria-label="Aggiungi alla domanda">
+              <button type="button" className={styles.option} onClick={() => { setMenu(null); fileInput.current?.click(); }}><HugeiconsIcon icon={Attachment01Icon} size={20} aria-hidden="true" /><span><strong>Allega file o immagini</strong><small>PDF, Word, Excel e testo · fino a 3 file, 5 MB ciascuno</small></span></button>
+              <button type="button" className={styles.option} onClick={() => { setMenu("sources"); setQuery(""); setActiveOption(0); input.current?.focus(); }}><HugeiconsIcon icon={BookOpen01Icon} size={20} aria-hidden="true" /><span><strong>Fonti ed esempi</strong><small>Inizia dai dataset del sito</small></span></button>
+            </div> : null}
+            <input ref={fileInput} type="file" accept={ATTACHMENT_ACCEPT} multiple className={styles.srOnly} tabIndex={-1} aria-label="Scegli gli allegati" onChange={(event) => { attachments.add(Array.from(event.target.files ?? [])); event.target.value = ""; input.current?.focus(); }} />
+            <form className={styles.composer} onSubmit={submit} data-dragging={dragging}
+              onDragOver={(event) => { if (event.dataTransfer.types.includes("Files")) { event.preventDefault(); setDragging(true); } }}
+              onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false); }}
+              onDrop={(event) => { event.preventDefault(); setDragging(false); if (!voice.busy && !loading) attachments.add(Array.from(event.dataTransfer.files)); }}
+              onPaste={(event) => { const files = Array.from(event.clipboardData.files); if (files.length && !voice.busy && !loading) { event.preventDefault(); attachments.add(files); } }}>
+
               <div className={styles.inputSurface} data-recording={voice.active}>
+                {attachments.items.length ? <AssistantAttachments items={attachments.items} onRemove={attachments.remove} onPreview={openPreview} /> : null}
+                {dragging ? <span className={styles.dropHint}>Rilascia i file qui</span> : null}
                 <label htmlFor="assistant-prompt" className={styles.srOnly}>Domanda in italiano</label>
                 <textarea ref={input} id="assistant-prompt" value={draft} onChange={(event) => changeDraft(event.target.value)} onKeyDown={keyDown}
                   placeholder="Chiedi qualcosa sui dati pubblici…" rows={3} maxLength={ASSISTANT_MAX_PROMPT_CHARS} readOnly={voice.busy}
-                  aria-describedby="assistant-help assistant-count" aria-controls={menu ? "assistant-options" : undefined}
+                  aria-describedby="assistant-help assistant-count" aria-controls={menu && menu !== "add" ? "assistant-options" : undefined}
                   aria-activedescendant={menu && options[activeOption] ? `assistant-option-${activeOption}` : undefined} aria-haspopup="listbox" />
                 <div className={styles.composerControls}>
-                  <button type="button" className={styles.iconButton} disabled={voice.busy} aria-label="Fonti ed esempi" aria-expanded={menu === "sources"} aria-controls="assistant-options" title="Fonti ed esempi (@)" onClick={() => { setMenu(menu === "sources" ? null : "sources"); setQuery(""); setActiveOption(0); input.current?.focus(); }}>
+                  <button type="button" className={styles.iconButton} disabled={voice.busy || loading} aria-label="Aggiungi allegati e fonti" aria-expanded={menu === "add"} aria-controls="assistant-add-menu" title="Aggiungi allegati e fonti" onClick={() => setMenu(menu === "add" ? null : "add")}>
                     <HugeiconsIcon icon={Add01Icon} size={23} strokeWidth={1.6} aria-hidden="true" />
                   </button>
                   <span className={styles.keyboardHint}>@ fonti <span>·</span> / scorciatoie</span>
@@ -291,7 +334,7 @@ export function AssistantChat() {
                     <span className={styles.micLabel}>{voice.active ? "Termina" : "Detta"}</span>
                   </button>
                   {loading ? <button type="button" className={styles.send} aria-label="Interrompi ricerca" title="Interrompi ricerca" onClick={stop}><HugeiconsIcon icon={StopIcon} size={21} strokeWidth={1.9} aria-hidden="true" /></button>
-                    : <button type="submit" className={styles.send} disabled={!draft.trim() || tooLong || voice.busy || atLimit} aria-label="Invia domanda" title="Invia domanda"><HugeiconsIcon icon={ArrowUp01Icon} size={23} strokeWidth={1.9} aria-hidden="true" /></button>}
+                    : <button type="submit" className={styles.send} disabled={!draft.trim() || tooLong || voice.busy || atLimit || attachments.blocked} aria-label="Invia domanda" title="Invia domanda"><HugeiconsIcon icon={ArrowUp01Icon} size={23} strokeWidth={1.9} aria-hidden="true" /></button>}
                 </div>
               </div>
               {voice.voice ? <div className={styles.voiceNotice} data-recording={voice.active}>
@@ -310,12 +353,14 @@ export function AssistantChat() {
               </div>
             </form>
           </div>
+          {attachments.error ? <p className={styles.draftError} role="alert">{attachments.error}</p> : null}
+          {attachments.items.length ? <p className={styles.attachmentHint}>Preparati sul dispositivo · inviati con la domanda al provider. Apri l’anteprima per controllare contenuto e limiti.</p> : null}
           {tooLong ? <p className={styles.draftError} role="alert">La dettatura supera 500 caratteri. Accorcia il testo prima di inviarlo.</p> : null}
           {atLimit ? <p className={styles.draftError}>Hai raggiunto il limite di questa conversazione. Apri una nuova chat per continuare.</p> : null}
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
             {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}
           </div> : null}
-          <p className={styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · ${connection.model} · L’AI può commettere errori.` : "Collega la tua AI per iniziare a conversare sui dati."}</p>
+          <p className={styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : "Collega la tua AI per iniziare a conversare sui dati."}</p>
         </div>
       </div>
 
@@ -323,7 +368,8 @@ export function AssistantChat() {
         <span>L’AI può commettere errori. Verifica le fonti.</span>
         <div><button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button><a href="/privacy">Privacy</a></div>
       </footer>
-      {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setTurns([]); setEditing(null); }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
+      {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setTurns([]); setEditing(null); if (!next) { attachments.clear(); setPreview(null); } }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
+      {preview ? <AssistantAttachmentPreview file={preview} onClose={() => { setPreview(null); requestAnimationFrame(() => { if (previewTrigger.current?.isConnected) previewTrigger.current.focus(); else input.current?.focus(); }); }} /> : null}
       <span className={styles.srOnly} role="status">{copied ? "Testo copiato" : copyError ? "Copia non disponibile: seleziona il testo e copialo manualmente." : loading ? "L’assistente sta rispondendo" : ""}</span>
       {info ? <div className={styles.infoPanel} id="assistant-info" role="region" aria-label="Come funziona l’assistente">
         <button type="button" className={styles.iconButton} aria-label="Chiudi informazioni" onClick={() => setInfo(false)}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>

@@ -1,0 +1,1 @@
+Fixture sintetiche, generate per test del compositore. Nessun dato personale o ufficiale. PDF con ReportLab, DOCX con python-docx, XLSX con openpyxl, PNG con Pillow. Biblioteca: 120000 stanziati / 90000 pagati; parco: 80000 / 40000. Il DOCX contiene solo la biblioteca.

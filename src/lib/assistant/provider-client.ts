@@ -49,34 +49,57 @@ async function boundedJson(response: Response, signal: AbortSignal): Promise<unk
   }
 }
 
-/** One paid request, without retries, redirects, tools, persistence or cross-provider fallback. */
+/** Serialize only validated inline content. No file IDs, remote URLs or provider file stores. */
+function providerMessages(provider: AiConnection["provider"], messages: readonly AiMessage[]) {
+  return messages.map((message) => {
+    if (!message.attachments?.length) return { role: message.role, content: message.content };
+    const text = [message.content, ...message.attachments.map((file) => JSON.stringify(file.kind === "text"
+      ? { allegatoUtente: file.name, contenuto: file.text, limiti: file.note }
+      : { immagineUtente: file.name, limiti: file.note }))].join("\n\n");
+    const images = message.attachments.filter((file) => file.kind === "image");
+    if (!images.length) return { role: message.role, content: text };
+    if (provider === "openai") return { role: message.role, content: [
+      { type: "input_text", text }, ...images.map((file) => ({ type: "input_image", image_url: `data:${file.mime};base64,${file.data}`, detail: "auto" })),
+    ] };
+    if (provider === "anthropic") return { role: message.role, content: [
+      ...images.map((file) => ({ type: "image", source: { type: "base64", media_type: file.mime, data: file.data } })), { type: "text", text },
+    ] };
+    return { role: message.role, content: [
+      { type: "text", text }, ...images.map((file) => ({ type: "image_url", image_url: { url: `data:${file.mime};base64,${file.data}` } })),
+    ] };
+  });
+}
+
+/** One paid request, without retries, redirects, persistence or cross-provider fallback. */
 export async function completeProviderText(
   connection: AiConnection,
   system: string,
   messages: readonly AiMessage[],
-  options: { signal: AbortSignal; fetcher?: typeof fetch; json?: boolean; toolSchema?: Record<string, unknown>; onDelta?: (text: string) => void },
+  options: { signal: AbortSignal; fetcher?: typeof fetch; json?: boolean; toolSchema?: Record<string, unknown>; onDelta?: (text: string) => void; reasoning?: "none" | "medium" },
 ): Promise<string> {
   const { provider, model, apiKey } = connection;
+  const inputMessages = providerMessages(provider, messages);
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   let body: Record<string, unknown>;
   if (provider === "anthropic") {
     headers["x-api-key"] = apiKey;
     headers["anthropic-version"] = "2023-06-01";
-    body = { model, system, messages, max_tokens: AI_MAX_OUTPUT_TOKENS, stream: false };
+    body = { model, system, messages: inputMessages, max_tokens: AI_MAX_OUTPUT_TOKENS, stream: false };
   } else {
     headers.Authorization = `Bearer ${apiKey}`;
     if (provider === "openai") {
-      body = { model, instructions: system, input: messages, store: false, max_output_tokens: AI_MAX_OUTPUT_TOKENS, stream: false,
+      body = { model, instructions: system, input: inputMessages, store: false, max_output_tokens: AI_MAX_OUTPUT_TOKENS, stream: false,
         ...(options.json ? { text: { format: { type: "json_object" } } } : {}),
         ...(model.startsWith("gpt-5") ? { reasoning: { effort: "low" } } : {}),
       };
     } else {
-      body = { model, messages: [{ role: "system", content: system }, ...messages], max_tokens: AI_MAX_OUTPUT_TOKENS, stream: false,
+      body = { model, messages: [{ role: "system", content: system }, ...inputMessages], max_tokens: AI_MAX_OUTPUT_TOKENS, stream: false,
         provider: { data_collection: "deny", allow_fallbacks: false },
         ...(options.json ? { response_format: { type: "json_object" } } : {}),
       };
     }
   }
+  if (options.reasoning && provider === "openrouter" && model === "openai/gpt-5.6-luna") body.reasoning = { effort: options.reasoning, exclude: true };
   if (options.toolSchema) {
     const parameters = { ...options.toolSchema };
     delete parameters.$schema;

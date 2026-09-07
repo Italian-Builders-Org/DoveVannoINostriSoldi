@@ -5,9 +5,10 @@ import { join } from "node:path";
 const records = 'section[aria-labelledby="results-title"] article';
 
 async function submit(page) {
+  await page.focus('main button[type="submit"]');
   await Promise.all([
     page.waitForNavigation({ waitUntil: "networkidle0" }),
-    page.click('main button[type="submit"]'),
+    page.keyboard.press("Enter"),
   ]);
 }
 

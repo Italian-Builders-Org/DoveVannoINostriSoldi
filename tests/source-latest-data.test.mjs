@@ -3,7 +3,7 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const { latestDataBySlug } = await import("../src/lib/source-latest-data.ts");
-const { SOURCE_IDS } = await import("../src/lib/data/source-policy.ts");
+const { ACTIVE_SOURCE_IDS, SOURCE_IDS } = await import("../src/lib/data/source-policy.ts");
 const { publicSources } = await import("../src/lib/sources.ts");
 
 test("annual CPT coverage remains a period instead of an invented date", () => {
@@ -37,11 +37,11 @@ test("SIOPE latest coverage names both cash flows without inventing a publicatio
   assert.match(latestDataBySlug.siope.label, /parziale/);
 });
 
-test("latest-data registry is exhaustive and keeps MEF periods distinct", () => {
+test("latest-data registry is exhaustive, publishes only active sources and keeps MEF periods distinct", () => {
   assert.deepEqual(Object.keys(latestDataBySlug).sort(), [...SOURCE_IDS].sort());
   assert.deepEqual(
     publicSources.map((source) => source.slug).sort(),
-    [...SOURCE_IDS].sort(),
+    [...ACTIVE_SOURCE_IDS].sort(),
   );
   assert.deepEqual(latestDataBySlug["mef-irpef"], {
     kind: "period",

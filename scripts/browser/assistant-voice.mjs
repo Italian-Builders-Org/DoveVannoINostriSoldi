@@ -69,11 +69,14 @@ async function inspectVoice(page, width) {
   await assertClosed(page);
 
   await open(page, "available");
-  // Native modal traps Tab navigation and has readable, 44px controls at every width.
+  // Native modal keeps background controls inert; Chromium can report BODY while Tab wraps.
   for (let index = 0; index < 9; index++) {
     await page.keyboard.press("Tab");
-    assert.equal(await page.evaluate(() => document.activeElement.closest("dialog") !== null), true);
+    const focus = await page.evaluate(() => ({ inside: document.activeElement.closest("dialog") !== null, tag: document.activeElement.tagName, id: document.activeElement.id, documentFocused: document.hasFocus() }));
+    assert.ok(focus.inside || focus.tag === "BODY", JSON.stringify(focus));
   }
+  await page.$eval("#assistant-prompt", (element) => element.focus());
+  assert.notEqual(await page.evaluate(() => document.activeElement.id), "assistant-prompt", "background form is not inert");
   const geometry = await page.$eval("#assistant-voice-title", (element) => {
     const dialog = element.closest("dialog");
     const rect = dialog.getBoundingClientRect();
@@ -111,15 +114,12 @@ async function inspectVoice(page, width) {
   assert.equal(await page.$eval("#assistant-voice-draft", (element) => element.value.length), 501);
   assert.equal(await page.$eval('button::-p-text(Usa questo testo)', (element) => element.disabled), true);
   await page.focus("#assistant-voice-draft");
-  const modifier = process.platform === "darwin" ? "Meta" : "Control";
-  await page.keyboard.down(modifier);
-  await page.keyboard.press("A");
-  await page.keyboard.up(modifier);
+  await page.$eval("#assistant-voice-draft", (element) => element.select());
   await page.keyboard.press("Backspace");
   await page.type("#assistant-voice-draft", "Quanto hanno speso i Comuni nel 2025?");
   // No audio or prompt has been posted during discovery, installation, recognition or editing.
   assert.equal(requests.length, 0);
-  await page.screenshot({ path: `artifacts/browser/assistant-voice-${width}.png`, fullPage: true });
+  await page.screenshot({ path: `artifacts/browser/assistant-voice-${width}.png` });
   await button(page, "Usa questo testo");
   await assertClosed(page);
   assert.equal(requests.length, 0);

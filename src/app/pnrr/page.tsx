@@ -85,7 +85,7 @@ export default async function PnrrPage({ searchParams }: { searchParams: Promise
       </section>
       {error && <p className={styles.error} role="alert">{error} <Link href="/pnrr">Riparti dal catalogo</Link></p>}
       {result && <section aria-labelledby="results-title" className={styles.results}>
-        <div className={styles.resultHeading}><div><h2 id="results-title">{integer(result.matchedRows)} registrazioni trovate</h2><p>{result.rows.length > 0 ? `Mostrate ${integer(result.pagination.start + 1)} a ${integer(result.pagination.start + result.rows.length)}. Ordine per CUP, codice locale e submisura.` : "Nessuna registrazione corrisponde a tutti i filtri. Prova ad azzerarne uno."}</p></div><Link href={`/api/pnrr/progetti?${new URLSearchParams({ ...result.filters, limit: "25", ...(typeof params.cursor === "string" ? { cursor: params.cursor } : {}) })}`}>Dati JSON</Link></div>
+        <div className={styles.resultHeading}><div><h2 id="results-title">{integer(result.matchedRows)} registrazioni trovate</h2><p>{result.rows.length > 0 ? `Mostrate ${integer(result.pagination.start + 1)} a ${integer(result.pagination.start + result.rows.length)}. Ordine per CUP, codice locale e submisura.` : "Nessuna registrazione corrisponde a tutti i filtri. Prova ad azzerarne uno."}</p></div><a href={`/api/pnrr/progetti?${new URLSearchParams({ ...result.filters, limit: "25", ...(typeof params.cursor === "string" ? { cursor: params.cursor } : {}) })}`}>Dati JSON</a></div>
         <div className={styles.projectList}>{result.rows.map((row) => {
           const cells = row.cells;
           const locations = pnrrLocations(cells.Localizzazioni);

@@ -44,6 +44,7 @@ class SiopeNonMunicipalTests(TestCase):
             "ANAG_CODGEST_USCITE.csv": [
                 ["1.01", "PRO", "Personale PRO", "2024-01-01", "9999-12-31"],
                 ["1.01", "REG", "Personale REG", "2024-01-01", "9999-12-31"],
+                ["1103", "SAN", "Competenze personale SAN", "2024-01-01", "9999-12-31"],
             ],
         }
         zipped(self.input / "SIOPE_ANAGRAFICHE.zip", registry)
@@ -52,7 +53,7 @@ class SiopeNonMunicipalTests(TestCase):
             encoding="utf-8",
         )
         for year in etl.YEARS:
-            rows = [["100", str(year), "01", "1.01", "100"], ["200", str(year), "01", "1.01", "-100"], ["300", str(year), "02", "1.01", "0"], ["400", str(year), "03", "1.01", "9"]]
+            rows = [["100", str(year), "01", "1.01", "100"], ["200", str(year), "01", "1.01", "-100"], ["300", str(year), "02", "1.01", "0"], ["400", str(year), "03", "1103", "9"]]
             if year == 2025:
                 rows.append(["500", "2025", "04", "1.01", "7"])
             zipped(self.input / f"SIOPE_USCITE.{year}.zip", {f"USCITE_{year}.csv": rows})
@@ -106,7 +107,13 @@ class SiopeNonMunicipalTests(TestCase):
         self.assertEqual(province_2024["ipaMatched"], "2")
         self.assertEqual(province_2024["productStatus"], "published-payments")
         asl = next(row for row in inventory if row["entityType"] == "ASL" and row["year"] == "2024")
-        self.assertEqual(asl["productStatus"], "census-only")
+        self.assertEqual(asl["productStatus"], "published-payments")
+        asl_rows = self.projection_rows("siope-uscite-asl.psv")
+        self.assertEqual(asl_rows[0]["compartment"], "SAN")
+        self.assertEqual(asl_rows[0]["titleCode"], "1103")
+        self.assertEqual(asl_rows[0]["titleLabel"], "Competenze personale SAN")
+        self.assertEqual(asl_rows[0]["codiceIpa"], "")
+        self.assertEqual(asl_rows[0]["ipaJoinStatus"], "unmatched")
         self.assertEqual(asl["knownAmountCents"], "9")
         metro = self.projection_rows("siope-uscite-citta-metropolitane.psv")
         self.assertEqual(metro[0]["amountCents"], "0")
@@ -122,6 +129,37 @@ class SiopeNonMunicipalTests(TestCase):
         self.assertEqual(provincial["years"][0]["status"], "available")
         self.assertEqual(provincial["years"][0]["monthly"], [{"month": 1, "amountCents": 100}])
         self.assertEqual(sum(entity["codiceIpa"] == "prov_test" for entity in detail["entities"]), 1)
+
+    def test_asl_exact_ipa_join_keeps_san_labels_and_reconciles_cash(self) -> None:
+        with (self.input / "amministrazioni.txt").open("a", encoding="utf-8") as handle:
+            handle.write("00000000004\tasl_test\tTest\n")
+        self.write_input_receipt()
+        self.build()
+        detail_path = self.output / "siope-nonmunicipal-detail.json"
+        detail = json.loads(detail_path.read_text())
+        asl = next(entity for entity in detail["entities"] if entity["codiceIpa"] == "asl_test")
+        self.assertEqual(asl["entityType"], "ASL")
+        for period in asl["years"]:
+            self.assertEqual(period["amountCents"], 9)
+            self.assertEqual(period["titles"], [{"code": "1103", "label": "Competenze personale SAN", "amountCents": 9}])
+        asl["years"][0]["titles"][0]["label"] = "Etichetta inventata"
+        detail_path.write_bytes(etl.canonical_json(detail) + b"\n")
+        with self.assertRaisesRegex(etl.SiopeNonMunicipalError, "corpus canonico"):
+            etl.validate_candidate_detail(detail_path=detail_path, projection_dir=self.output, manifest_path=self.output / "siope-nonmunicipal-release.json")
+
+    def test_asl_canonical_rows_cannot_relabel_san_as_territorial_titles(self) -> None:
+        self.build()
+        rows = self.projection_rows("siope-uscite-asl.psv")
+        rows[0]["titleCode"] = "1"
+        rows[0]["titleLabel"] = "Spese correnti"
+        with self.assertRaisesRegex(etl.SiopeNonMunicipalError, "categoria divergente"):
+            etl._reconcile_detail_to_rows({"entities": []}, rows)
+
+    def test_asl_rejects_a_territorial_management_code(self) -> None:
+        zipped(self.input / "SIOPE_USCITE.2024.zip", {"USCITE_2024.csv": [["400", "2024", "01", "1.01", "9"]]})
+        self.write_input_receipt()
+        with self.assertRaisesRegex(etl.SiopeNonMunicipalError, "comparto SAN"):
+            self.build()
 
     def test_rejects_duplicate_key_unknown_compartment_and_ambiguous_month_identity(self) -> None:
         duplicate = self.input / "SIOPE_USCITE.2024.zip"

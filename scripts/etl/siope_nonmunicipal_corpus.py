@@ -86,7 +86,7 @@ def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog
     detail_paths = (candidate_detail_path, candidate_manifest_path, detail_path, view_proof_path, release_proof_path)
     promotes_detail = any(path is not None for path in detail_paths)
     if promotes_detail and (any(path is None for path in detail_paths) or dataset_ids != {"siope-inventario-enti", *[policy.dataset_id for policy in detail_etl.POLICIES]}):
-        raise AppendError("vista, proof e quattro dataset SIOPE devono essere promossi insieme")
+        raise AppendError("vista, proof e tutti i dataset SIOPE devono essere promossi insieme")
     if promotes_detail:
         assert candidate_detail_path is not None and candidate_manifest_path is not None
         detail_etl.validate_candidate_detail(detail_path=candidate_detail_path, projection_dir=source_root, manifest_path=candidate_manifest_path)

@@ -9,15 +9,10 @@ const navigationSource = fs.readFileSync(
   "utf8",
 );
 const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs", import.meta.url), "utf8");
-const navigationTouchTargetSource = fs.readFileSync(
-  new URL("../scripts/browser/navigation-touch-target.mjs", import.meta.url),
-  "utf8",
-);
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 const { activeNavSection, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
-const { isEventTargetWithin } = await import("../src/lib/navigation-boundary.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
@@ -35,163 +30,11 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });
 
-test("primary navigation keeps dropdowns and no section subnav bar", async () => {
-  const navigationComponent = await readFile(
-    new URL("../src/components/navigation.tsx", import.meta.url),
-    "utf8",
-  );
-  assert.match(navigationComponent, /nav-submenu/);
-  assert.doesNotMatch(navigationComponent, /subnav-row|nav\.subnav|activeNavSection/);
-  assert.doesNotMatch(navigationComponent, /nav-note|Fonti e dati sempre visibili/);
-  assert.doesNotMatch(globalsCss, /\.nav-note/);
-});
-
-test("a submenu can be opened without a pointer that can hover", async () => {
-  const navigationComponent = await readFile(
-    new URL("../src/components/navigation.tsx", import.meta.url),
-    "utf8",
-  );
-  // The caret is a control, not a glyph: on a touch screen it is the only way
-  // into a section's pages, since hover never fires and the label navigates.
-  assert.match(navigationComponent, /<button\s+type="button"\s+className="nav-item-toggle"/);
-  assert.match(navigationComponent, /aria-expanded=\{open\}/);
-  assert.match(navigationComponent, /aria-controls=\{menuId\}/);
-  assert.match(navigationComponent, /icon=\{ArrowDown01Icon\}/);
-  assert.doesNotMatch(navigationComponent, /▾|Scorri →/);
-  assert.match(navigationComponent, /event\.key === "Escape"/);
-  assert.match(navigationComponent, /document\.addEventListener\("pointerdown", dismissOutside\)/);
-  assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-forward"/);
-  assert.match(navigationComponent, /className="nav-scroll-control nav-scroll-control-backward"/);
-  assert.match(navigationComponent, /useSyncExternalStore/);
-  assert.match(navigationComponent, /FINE_POINTER_HOVER_QUERY = "\(hover: hover\) and \(pointer: fine\)"/);
-  assert.match(navigationComponent, /MOUSE_NAV_SCROLL_CONTROLS_QUERY = `\$\{FINE_POINTER_HOVER_QUERY\} and \(min-width: 901px\)`/);
-  assert.match(navigationComponent, /showScrollControls && hasNavigationOverflow/);
-  assert.match(navigationComponent, /disabled=\{!navigationScroll\.forward\}/);
-  assert.match(navigationComponent, /disabled=\{!navigationScroll\.backward\}/);
-  assert.match(navigationComponent, /navigation\.scrollLeft = Math\.max\(0, Math\.min\(maxScrollLeft, nextScrollLeft\)\)/);
-  assert.match(globalsCss, /\.nav-scroll-control \{/);
-  assert.match(globalsCss, /\.nav-scroll-control \{\s*display: inline-flex;/);
-  assert.match(globalsCss, /\.nav-row\[data-menu-open="true"\] \.nav-scroll-control \{ display: none; \}/);
-  assert.match(globalsCss, /@media \(max-width: 900px\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/);
-  assert.match(
-    globalsCss,
-    /@media \(hover: none\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
-  );
-  assert.match(
-    globalsCss,
-    /@media \(pointer: coarse\)[\s\S]*?\.nav-scroll-control \{ display: none; \}/,
-  );
-  assert.doesNotMatch(
-    globalsCss,
-    /@media \(max-width: 620px\)[\s\S]*?\.nav-scroll-control \{\s*display: inline-flex/,
-  );
-  // Open state carries the path it was opened on, so a completed navigation
-  // closes the menu without a setState in an effect.
-  assert.match(navigationComponent, /openMenu\?\.pathname === pathname/);
-  // Hover, focus and caret share one open slot so two panels cannot overlap.
-  assert.match(navigationComponent, /onPointerEnter=/);
-  assert.match(navigationComponent, /pointerType === "touch"/);
-  assert.match(navigationComponent, /onFocusCapture=/);
-  assert.doesNotMatch(
-    globalsCss,
-    /\.nav-item-has-menu:hover \.nav-submenu|\.nav-item-has-menu:focus-within \.nav-submenu/,
-  );
-
-  assert.match(globalsCss, /\.nav-row > \.nav-submenu/);
-  assert.match(globalsCss, /\.nav-menu-dismiss \{/);
-  assert.match(globalsCss, /\.nav-item-toggle \{/);
-  assert.match(globalsCss, /@media \(max-width: 1580px\)/);
-  // Below that break the row scrolls; the panel is a sibling, not inside it.
-  assert.match(globalsCss, /\.nav-row \{\n\s*position: relative;/);
-  assert.match(navigationComponent, /data-menu-open=\{openHref \? "true" : undefined\}/);
-  assert.doesNotMatch(
-    globalsCss,
-    /\.nav-row\[data-menu-open="true"\] \.primary-nav \{ overflow: visible; \}/,
-  );
-  assert.match(navigationComponent, /className="nav-menu-dismiss"/);
-  assert.match(navigationComponent, /navMenuId/);
-  assert.match(navigationComponent, /useFinePointerHover/);
-});
-
-test("mobile dropdown taps use stable, hit-testable navigation geometry", () => {
-  assert.match(navigationTouchTargetSource, /export async function waitForStableNavigationTouchTarget/);
-  assert.match(navigationTouchTargetSource, /window\.requestAnimationFrame/);
-  assert.match(navigationTouchTargetSource, /navigation\.scrollLeft/);
-  assert.match(browserCoreSource, /await waitForStableNavigationTouchTarget\(page, toggle\)/);
-  assert.match(browserCoreSource, /const toggleBox = await toggle\.boundingBox\(\)/);
-  assert.match(browserCoreSource, /Menu touch senza Indietro\/Scorri 1024px/);
-  assert.match(browserCoreSource, /touch: true/);
-  assert.match(browserCoreSource, /Menu mobile: tendina si chiude al tap fuori/);
-  assert.match(browserCoreSource, /Menu mobile: scrollLeft invariato all'apertura/);
-});
-
 test("browser copy guard matches limit and offset as whole words", () => {
   assert.match(
     browserCoreSource,
     /assert\.doesNotMatch\(text, \/API struttura\|Dataset UO\|Dataset AOO\|\\blimit\\b\|\\boffset\\b\/i\)/,
   );
-});
-
-test("navigation guards related targets before checking containment", async () => {
-  const navigationComponent = await readFile(
-    new URL("../src/components/navigation.tsx", import.meta.url),
-    "utf8",
-  );
-  assert.match(
-    navigationComponent,
-    /import \{ isEventTargetWithin \} from "@\/lib\/navigation-boundary";/,
-  );
-  assert.equal(
-    navigationComponent.match(
-      /isEventTargetWithin\(navRowRef\.current, event\.relatedTarget\)/g,
-    )?.length,
-    2,
-  );
-  assert.match(navigationComponent, /isEventTargetWithin\(navRowRef\.current, event\.target\)/);
-  assert.match(navigationComponent, /event\.pointerType === "touch"\) return;/);
-});
-
-test("navigation related target guard distinguishes nodes from other event targets", () => {
-  const originalNode = globalThis.Node;
-  class TestNode extends EventTarget {
-    parent;
-
-    constructor(parent = null) {
-      super();
-      this.parent = parent;
-    }
-
-    contains(target) {
-      if (!(target instanceof TestNode)) throw new TypeError("contains() expects a Node");
-      return target === this || (target instanceof TestNode && target.parent === this);
-    }
-  }
-
-  Object.defineProperty(globalThis, "Node", {
-    configurable: true,
-    value: TestNode,
-  });
-
-  try {
-    const navigation = new TestNode();
-    const internal = new TestNode(navigation);
-    const external = new TestNode();
-    const nonNode = new EventTarget();
-
-    assert.equal(isEventTargetWithin(navigation, nonNode), false);
-    assert.equal(isEventTargetWithin(navigation, internal), true);
-    assert.equal(isEventTargetWithin(navigation, external), false);
-    assert.equal(isEventTargetWithin(navigation, null), false);
-  } finally {
-    if (originalNode === undefined) {
-      delete globalThis.Node;
-    } else {
-      Object.defineProperty(globalThis, "Node", {
-        configurable: true,
-        value: originalNode,
-      });
-    }
-  }
 });
 
 test("every page offers the rest of its section without the header menu", async () => {

@@ -277,144 +277,125 @@ nav li a { text-decoration: none; }
 
 /* ── primary navigation ─────────────────────────────────────────────────── */
 
-.nav-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  border-bottom: 1px solid var(--color-neutral-300);
-}
-
-.primary-nav {
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.primary-nav::-webkit-scrollbar { display: none; }
-.primary-nav-list {
-  display: flex;
-  align-items: stretch;
-  gap: var(--space-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-/* The label and its caret are two controls on one underline: the label goes to
-   the section, the caret opens the list of its pages. */
-.nav-item {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  flex: none;
-  border-bottom: 2px solid transparent;
-}
-.nav-item[data-section-active="true"] { border-bottom-color: var(--color-accent); }
-.nav-item > a {
+/* Sidebar disclosures use normal links and buttons in document order. */
+.navigation-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 14px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
+  justify-content: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  flex: none;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-neutral-700);
+  cursor: pointer;
+}
+.navigation-button:hover { background: var(--color-neutral-200); color: var(--color-text); }
+.sidebar-toolbar { display: flex; align-items: center; justify-content: space-between; flex: none; padding: 8px 12px; }
+.sidebar-heading { margin: 0; font-size: 14px; font-weight: 700; }
+.desktop-sidebar { display: none; }
+.primary-nav { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 20px; }
+.primary-nav-list, .nav-submenu { margin: 0; padding: 0; list-style: none; }
+.nav-item { display: grid; grid-template-columns: minmax(0, 1fr) 44px; position: relative; }
+.nav-item:not(.nav-item-has-menu) > a { grid-column: 1 / -1; }
+.sidebar-group {
+  grid-column: 1 / -1;
+  padding: 18px 12px 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 700;
   color: var(--color-neutral-600);
 }
-.nav-item-has-menu > a { padding-right: 6px; }
-.nav-item > a:hover { color: var(--color-text); }
-.nav-item > a[aria-current="page"],
-.nav-item > a[data-section-active="true"] { color: var(--color-text); }
-
-/* Hover cannot open anything on a touch screen, so the caret is a button and
-   not a glyph: it is the only way a phone reaches a section's pages. */
+.nav-item > a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 10px;
+  border-left: 2px solid transparent;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.nav-item > a > svg { flex: none; }
+.nav-item > a:hover, .nav-item-toggle:hover, .nav-submenu a:hover { color: var(--color-text); background: var(--color-neutral-200); }
+.nav-item > a[data-section-active="true"] { border-left-color: var(--color-accent); color: var(--color-text); background: var(--color-neutral-200); }
 .nav-item-toggle {
   display: grid;
   place-items: center;
-  min-width: 30px;
-  padding: 0 8px 0 2px;
-  font-size: 10px;
-  line-height: 1;
-  color: var(--color-neutral-600);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-.nav-item-toggle:hover { color: var(--color-text); }
-.nav-item-toggle > svg {
-  display: block;
-  transition: transform 140ms var(--ease-out);
-}
-.nav-item-toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
-.nav-item[data-section-active="true"] .nav-item-toggle { color: var(--color-text); }
-.nav-submenu {
-  display: none;
-  position: absolute;
-  top: calc(100% - 2px);
-  left: 0;
-  z-index: 20;
-  min-width: 220px;
-  padding: var(--space-2) 0;
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-300);
-  box-shadow: 0 8px 24px rgb(45 43 43 / 8%);
-}
-.nav-submenu ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.nav-submenu a {
-  display: block;
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-neutral-700);
-}
-.nav-submenu a:hover {
-  color: var(--color-text);
-  background: var(--color-neutral-100);
-}
-.nav-submenu a[aria-current="page"] {
-  color: var(--color-text);
-  background: var(--color-neutral-100);
-}
-/* The open panel lives on the row, not inside the scrolling nav, so opening
-   it never changes overflow or scrollLeft. */
-.nav-row > .nav-submenu {
-  display: block;
-  left: var(--nav-submenu-left, 0px);
-}
-.nav-menu-dismiss {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.nav-row[data-menu-open="true"] .nav-scroll-control { display: none; }
-.nav-scroll-control {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  min-height: 42px;
+  min-width: 44px;
+  min-height: 44px;
+  align-self: stretch;
   padding: 8px;
   border: 0;
   color: var(--color-neutral-600);
   background: transparent;
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
   cursor: pointer;
 }
-.nav-scroll-control:hover { color: var(--color-accent-700); }
-.nav-scroll-control:disabled { opacity: .3; cursor: default; color: var(--color-neutral-600); }
-.nav-scroll-control-backward { order: -1; border-right: 1px solid var(--color-neutral-300); }
-.nav-scroll-control-forward { border-left: 1px solid var(--color-neutral-300); }
+.nav-item-toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.nav-submenu { grid-column: 1 / -1; margin: 4px 0 8px 21px; border-left: 1px solid var(--color-neutral-300); }
+.nav-submenu[hidden] { display: none; }
+.nav-submenu a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; font-size: 12px; line-height: 1.4; color: var(--color-neutral-700); }
+.nav-submenu a[aria-current="page"] { color: var(--color-accent-700); font-weight: 700; background: var(--color-neutral-200); }
+.mobile-navigation {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  overflow: hidden;
+}
+.mobile-navigation::backdrop { background: rgb(20 20 20 / 38%); }
+.mobile-navigation-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100% - 44px));
+  height: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-neutral-300);
+}
+.mobile-navigation .sidebar-toolbar { padding-top: max(12px, env(safe-area-inset-top)); border-bottom: 1px solid var(--color-neutral-300); }
+.mobile-navigation .primary-nav { flex: 1; }
+body:has(.mobile-navigation:modal) { overflow: hidden; }
+
+@media (min-width: 1100px) {
+  body { --sidebar-width: 248px; --site-header-height: 80px; }
+  body:has(.desktop-sidebar[data-collapsed="true"]) { --sidebar-width: 68px; }
+  .header-inner { height: var(--site-header-height); max-width: none; padding-block: 12px; gap: 24px; }
+  .site-content { margin-left: var(--sidebar-width); }
+  .mobile-menu-trigger { display: none; }
+  .desktop-sidebar {
+    position: fixed;
+    inset: var(--site-header-height) auto 0 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-width);
+    background: var(--color-bg);
+    border-right: 1px solid var(--color-neutral-300);
+  }
+  .desktop-sidebar .primary-nav { flex: 1; }
+  .desktop-sidebar[data-collapsed="true"] .sidebar-toolbar { padding-inline: 12px; }
+  .desktop-sidebar[data-collapsed="true"] .sidebar-heading,
+  .desktop-sidebar[data-collapsed="true"] .sidebar-group,
+  .desktop-sidebar[data-collapsed="true"] .nav-item-toggle { display: none; }
+  .desktop-sidebar[data-collapsed="true"] .primary-nav { padding-inline: 10px; }
+  .desktop-sidebar[data-collapsed="true"] .nav-item { display: block; }
+  .desktop-sidebar[data-collapsed="true"] .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .desktop-sidebar[data-collapsed="true"] .nav-item > a { justify-content: center; padding-inline: 0; }
+}
 
 /* ── page shells ────────────────────────────────────────────────────────── */
 
@@ -806,47 +787,14 @@ main { display: block; }
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
-/* The navigation always contains its own overflow, including on wide screens
-   and at increased zoom. Below this width, submenus use the available row. */
-@media (max-width: 1580px) {
-  .nav-item > a { padding-inline: 10px; }
-  .nav-item-has-menu > a { padding-right: 4px; }
-  .nav-row > .nav-submenu {
-    left: 0;
-    right: 0;
-    width: auto;
-    min-width: 0;
-  }
-}
-
-@media (hover: none) {
-  .nav-scroll-control { display: none; }
-}
-
-@media (pointer: coarse) {
-  .nav-scroll-control { display: none; }
-}
-
-/* Use compact spacing on laptop screens, including publications.
-   Touch layouts below 1100px retain their larger targets and swipe behavior. */
-@media (min-width: 1100px) and (max-width: 1580px) {
-  .primary-nav-list { gap: 0; }
-  .nav-item > a { padding-inline: 7px; font-size: 13px; }
-  .nav-item-has-menu > a { padding-right: 2px; }
-  .nav-item-toggle { min-width: 26px; padding-right: 4px; }
-}
-
 @media (max-width: 1000px) {
   :root { --gutter: 20px; }
   .header-search { width: 260px; }
-  /* Below the desktop break the caret is the primary way in, so it gets a
-     full-height target instead of the hairline it needs beside a pointer. */
-  .nav-item-toggle { min-width: 40px; padding-inline: 8px; }
 }
 
 /* Keep the header's fixed actions inside the viewport before the full
    mobile layout takes over at 900px. */
-@media (min-width: 901px) and (max-width: 980px) {
+@media (min-width: 901px) and (max-width: 1099px) {
   .header-inner {
     flex-wrap: wrap;
     gap: var(--space-3);
@@ -868,8 +816,6 @@ main { display: block; }
   .brand { flex: 1; min-width: 0; }
   .brand-text strong { font-size: 19px; }
   .header-search { order: 3; width: 100%; }
-  /* Touch already pans the row. Extra Indietro/Scorri buttons steal space. */
-  .nav-scroll-control { display: none; }
   .footer-sitemap-columns {
     column-count: 2;
     column-gap: var(--space-4);
@@ -904,11 +850,6 @@ main { display: block; }
   .brand-mark { width: 38px; height: 38px; }
   .brand-text strong { font-size: 17px; }
   .header-action { padding-inline: 14px; }
-  .primary-nav a { padding: 12px 12px; font-size: 13px; }
-  .nav-item-has-menu > a { padding-right: 4px; }
-  .primary-nav { scrollbar-width: thin; }
-  .primary-nav::-webkit-scrollbar { display: block; height: 3px; }
-  .primary-nav::-webkit-scrollbar-thumb { background: var(--color-neutral-400); }
   .footer-sitemap-columns {
     column-count: 2;
     column-gap: var(--space-4);

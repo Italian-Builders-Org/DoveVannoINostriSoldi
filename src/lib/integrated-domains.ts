@@ -7,11 +7,15 @@
  */
 
 export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
+  cohesion: "PNRR e investimenti",
   procurement: "Appalti e fornitori",
   consultancies: "Consulenze e incarichi",
   appointments: "Incarichi nominativi",
   personnel: "Personale e organi",
   operations: "Spese operative",
+  health: "Dotazione sanitaria",
+  demography: "Contesto demografico",
+  education: "Servizi scolastici",
   transparency: "Trasparenza",
   oversight: "Controlli e atti",
   benchmarks: "Benchmark",

@@ -12,6 +12,56 @@
   ],
   "artifacts": [
     {
+      "id": "anac-procurement-cpv",
+      "owner": "ANAC CPV classification for the existing entity procurement profiles",
+      "files": [
+        "src/data/generated/anac-procurement-cpv"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_procurement_cpv.py"
+      ],
+      "nodeTests": [
+        "tests/anac-procurement-cpv.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --input-dir /path/to/locked-cig-archives",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-procurement-cpv.source.json",
+      "trustModel": "Derived classification index bound to the existing ANAC source lock and entity-profile metadata. Every published procedure joins to exactly one primary CIG row in the twelve complete 2025 archives; raw CPV codes and descriptions are retained. Offline checks verify all index and parent shard hashes and exact CIG coverage. Financial values and operator identities stay in the existing typed profile and are recomputed only after selecting whole CIGs."
+    },
+    {
+      "id": "pnrr-projects-index",
+      "owner": "Italia Domani national PNRR project catalog",
+      "files": [
+        "src/data/generated/pnrr-projects-index"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/pnrr_projects.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pnrr_projects.py"
+      ],
+      "nodeTests": [
+        "tests/pnrr-projects.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/pnrr_projects.py --build-index",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/pnrr-projects.source.json",
+      "trustModel": "Exact row-reference indexes derived from validated integrated public rows; --check reconstructs every index and binds the source lock and dataset receipt. Reproducing the raw CSV projection additionally requires --input-dir with all four pinned Italia Domani assets. No upstream request occurs at runtime."
+    },
+    {
       "id": "anac-awardees-coverage",
       "owner": "ANAC awardees and awards coverage contract",
       "files": [
@@ -248,9 +298,20 @@
         "coveredBy": "etl-suite"
       },
       "reconciliationTests": [
-        "tests/etl/test_integrated_source_release.py"
+        "tests/etl/test_integrated_source_release.py",
+        "tests/etl/test_salute_hospital_beds.py",
+        "tests/etl/test_istat_misura_comune.py",
+        "tests/etl/test_mim_school_services.py",
+        "tests/etl/test_ted_notices.py",
+        "tests/etl/test_pnrr_projects.py"
       ],
-      "nodeTests": [],
+      "nodeTests": [
+        "tests/salute-hospital-beds.test.mjs",
+        "tests/istat-misura-comune.test.mjs",
+        "tests/mim-school-services.test.mjs",
+        "tests/ted-notices.test.mjs",
+        "tests/pnrr-projects.test.mjs"
+      ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
         "requiresNetworkInput": false
@@ -407,7 +468,9 @@
         "command": "python scripts/etl/opencivitas_snapshot.py --check",
         "coveredBy": "standalone"
       },
-      "reconciliationTests": [],
+      "reconciliationTests": [
+        "tests/etl/test_monetary_adapters.py"
+      ],
       "nodeTests": [
         "tests/opencivitas-contract.test.mjs"
       ],
@@ -720,11 +783,11 @@
     },
     {
       "id": "siope-nonmunicipal",
-      "owner": "SIOPE non-municipal territorial entity payment detail",
+      "owner": "SIOPE non-municipal entity payment detail",
       "files": [
+        "src/data/generated/siope-nonmunicipal-provenance.json",
         "src/data/generated/siope-nonmunicipal-detail.json",
-        "src/data/generated/siope-nonmunicipal-view-proof.json",
-        "src/data/generated/siope-nonmunicipal-provenance.json"
+        "src/data/generated/siope-nonmunicipal-view-proof.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -744,7 +807,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+      "trustModel": "ASL, Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
     },
     {
       "id": "siope-municipal",
@@ -803,7 +866,8 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_ssn_cce_snapshot.py"
+        "tests/etl/test_ssn_cce_snapshot.py",
+        "tests/etl/test_monetary_adapters.py"
       ],
       "nodeTests": [],
       "generator": {
@@ -1048,6 +1112,32 @@
       "sourceSpec": "scripts/etl/specs/istat-poverta-relativa-2014-2024.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale del dataflow 34_727_DF_DCCV_POVERTA_1 è acquisita con le sette misure RELATIVE ed è con chiave completamente specificata (nove delle undici dimensioni fissate letteralmente, REF_AREA e DATA_TYPE enumerate) e vincolata per URL, byte e SHA-256; --check valida il bundle committato senza rete. Copertura piena, assenza di duplicati, partizioni territoriali sui soli conteggi entro tolleranza empirica dichiarata e composizioni percentuali che chiudono a 100 falliscono chiuse. Il flag CL_FLAG «0» non è uno zero osservato: una cella flaggata resta null. Vale anche un'asserzione NEGATIVA: le incidenze non devono chiudere per somma fra territori, perché un tasso non si comporta così. La famiglia relativa ha lock, byte e hash propri: il lock della famiglia assoluta non è riusabile. Nessuna licenza inferita: la risposta SDMX non ne espone alcuna."
+    },
+    {
+      "id": "istat-bes-economico-2004-2024",
+      "owner": "ISTAT BES dei territori 2004-2024, dominio benessere economico (edizione 2025)",
+      "files": [
+        "src/data/generated/istat-bes-economico-2004-2024.data.json",
+        "src/data/generated/istat-bes-economico-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_snapshot.py --input-dir <cartella con la risposta SDMX-CSV> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-economico-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale di DF_BES_TERRIT_4 (dominio BES_04, edizione 2025) e acquisita con FREQ, DOMAIN ed EDITION fissati e DATA_TYPE e SEX enumerati; REF_AREA resta aperta nella chiave ma l'anagrafica dei 139 territori e vincolata nel lock e un codice fuori elenco fallisce chiuso. --check valida il bundle committato senza rete. La copertura e verificata PER INDICATORE (periodo e modalita di sesso propri), i livelli territoriali vengono dalla gerarchia CL_ITTER107 e non dalla lunghezza del codice, i compositi ITCD e ITFG sono dichiarati perche la fonte non li marca, e la rottura della catena di parentela su Bolzano e Trento e dichiarata invece che rattoppata. Nessuna misura e un conteggio: la somma territoriale NON e una riconciliazione valida e il contratto la rifiuta; vale invece l'invariante delle medie, il totale fra i due sessi, verificato su 5113 terne. Il flag CL_FLAG «g» rende la cella null, mai zero. Nessuna licenza inferita."
     },
     {
       "id": "istat-epea-2016-2022",

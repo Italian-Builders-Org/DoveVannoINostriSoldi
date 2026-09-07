@@ -182,6 +182,7 @@ export default function CohesionPage() {
           <strong>{compactEuro(pnrrChildcareMeta.totals.pnrrFundingCents / 100)}</strong>
           <span>finanziamento PNRR registrato</span>
           <Link className="btn btn-primary" href="/coesione/asili">Apri Traccia PNRR →</Link>
+          <Link className="btn btn-secondary" href="/pnrr">Tutti i progetti PNRR →</Link>
         </div>
       </section>
 

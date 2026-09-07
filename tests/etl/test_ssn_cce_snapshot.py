@@ -111,6 +111,22 @@ class SsnCceSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ETL.SnapshotError, "Importo non valido"):
             ETL.parse_csv(payload, synthetic_lock(payload))
 
+    def test_required_amount_is_not_replaced_with_zero(self):
+        for raw in ("", " ", "n.d.", "*", "NaN"):
+            with self.subTest(raw=raw):
+                payload = csv_payload(valid_row(amount=raw))
+                with self.assertRaisesRegex(ETL.SnapshotError, "Importo Totale riga 2"):
+                    ETL.parse_csv(payload, synthetic_lock(payload))
+
+    def test_existing_snapshot_values_round_trip_through_the_source_parser(self):
+        snapshot = json.loads((ROOT / "src/data/generated/ssn-cce-2024.json").read_text())
+        for group in [snapshot["national"], *snapshot["regions"], *snapshot["entities"]]:
+            for metric, cents in group["values"].items():
+                sign = "-" if cents < 0 else ""
+                euros, remainder = divmod(abs(cents), 100)
+                raw = f"{sign}{euros}.{remainder:02d}"
+                self.assertEqual(ETL.parse_amount_cents(raw, metric), cents)
+
     def test_build_snapshot_uses_official_national_and_regional_inputs(self):
         lock = copy.deepcopy(ETL.load_lock(SPEC_PATH))
         metric_rows = [

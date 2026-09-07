@@ -31,7 +31,9 @@ import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
+import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getSsnCceSourceHealth, type SsnCceSourceHealth } from "@/lib/ssn-cce-snapshot";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
@@ -410,14 +412,14 @@ function snapshotManagedOpenCoesione(): SourceHealth {
   };
 }
 
-function snapshotManagedPnrrChildcare(): SourceHealth {
+function snapshotManagedPnrr(): SourceHealth {
   return {
     ...baseHealth(PNRR_CHILDCARE_SOURCE.id),
     reachability: "not-probed",
-    freshness: freshnessFor(PNRR_CHILDCARE_SOURCE.id, PNRR_CHILDCARE_SOURCE.health.publishedAt),
+    freshness: freshnessFor(PNRR_CHILDCARE_SOURCE.id, pnrrProjectsMetadata.referenceDate),
     latencyMs: null,
-    detail: PNRR_CHILDCARE_SOURCE.health.detail,
-    recordCount: PNRR_CHILDCARE_SOURCE.health.recordCount,
+    detail: `Catalogo nazionale ReGiS: ${pnrrProjectsMetadata.coverage.projectRows} registrazioni, ${pnrrProjectsMetadata.coverage.uniqueCups} CUP validi distinti al 13/06/2026; progetti e localizzazioni, senza pagamenti. Il verticale asili conserva un rilascio distinto. Reachability non verificata da questo endpoint.`,
+    recordCount: pnrrProjectsMetadata.coverage.projectRows,
   };
 }
 
@@ -718,6 +720,20 @@ function snapshotManagedIstatPovertaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesEconomico(): SourceHealth {
+  const { source, observedAt } = istatBesMetadata;
+  const asset = Object.values(source.assets)[0];
+  const provinces = istatBesData.territories.filter((entry) => entry.kind === "provincia").length;
+  return {
+    ...baseHealth("istat-bes-economico"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-economico", observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · BES dei territori, benessere economico (edizione ${istatBesData.domain.edition}, ${source.dataflowId}) · ${istatBesData.observations.length.toLocaleString("it-IT")} osservazioni su ${istatBesData.indicators.length} indicatori e ${istatBesData.territories.length} territori, di cui ${provinces} province · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Medie pro capite, non spesa pubblica e non sommabili fra territori.`,
+    recordCount: istatBesData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -746,7 +762,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatCasellarioPensioni(),
     snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
-    snapshotManagedPnrrChildcare(),
+    snapshotManagedPnrr(),
     snapshotManagedOpenCivitas(),
     snapshotManagedMefParticipations(),
     snapshotManagedConsulenti(),
@@ -763,6 +779,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatEpea(),
     snapshotManagedIstatPoverta(),
     snapshotManagedIstatPovertaRelativa(),
+    snapshotManagedIstatBesEconomico(),
     snapshotManagedInpsNaspi(),
     snapshotManagedMefIrpefDettaglio(),
   ];
@@ -786,7 +803,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
   consip: snapshotManagedConsip,
   opencoesione: snapshotManagedOpenCoesione,
-  italiadomani: snapshotManagedPnrrChildcare,
+  italiadomani: snapshotManagedPnrr,
   opencivitas: snapshotManagedOpenCivitas,
   consulenti: snapshotManagedConsulenti,
   camera: snapshotManagedCamera,
@@ -801,6 +818,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
+  "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
 } satisfies Record<SourceId, SourceHealthAdapter>);

@@ -23,19 +23,28 @@ import tempfile
 from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime
-from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Iterable
+
+from monetary import AmountError, AmountRangeError, MoneyPolicy, parse_cents
+from monetary import MAX_SAFE_CENTS as MAX_SAFE_INTEGER
 
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_LOCK = ROOT / "scripts/etl/specs/ssn-cce-2024.source.json"
 DEFAULT_OUTPUT = ROOT / "src/data/generated/ssn-cce-2024.json"
-MAX_SAFE_INTEGER = 9_007_199_254_740_991
 DATE_RE = re.compile(r"^\d{2}/\d{2}/\d{4}$")
 ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ISO_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 AMOUNT_RE = re.compile(r"^-?\d+\.\d{2}$")
+MONEY_POLICY = MoneyPolicy(
+    pattern=AMOUNT_RE,
+    decimal_separator=".",
+    unit="euros",
+    allow_negative=True,
+    rounding="reject",
+    strip_whitespace=True,
+)
 
 EXPECTED_METRICS = {
     "productionCosts": ("BZ9999", "Totale costi della produzione (B)"),
@@ -211,16 +220,12 @@ def load_lock(path: Path = DEFAULT_LOCK) -> dict[str, object]:
 
 
 def parse_amount_cents(raw: str, label: str) -> int:
-    value = raw.strip()
-    if not AMOUNT_RE.fullmatch(value):
-        raise SnapshotError(f"Importo non valido in {label}: {raw!r}")
     try:
-        cents = int((Decimal(value) * 100).to_integral_exact())
-    except (InvalidOperation, ValueError) as error:
+        return parse_cents(raw, MONEY_POLICY)
+    except AmountRangeError as error:
+        raise SnapshotError(f"Importo fuori intervallo sicuro in {label}") from error
+    except AmountError as error:
         raise SnapshotError(f"Importo non valido in {label}: {raw!r}") from error
-    if abs(cents) > MAX_SAFE_INTEGER:
-        raise SnapshotError(f"Importo fuori intervallo sicuro in {label}")
-    return cents
 
 
 def parse_date(raw: str, label: str) -> str:

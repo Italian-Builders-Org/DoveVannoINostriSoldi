@@ -564,7 +564,7 @@ test("UI keeps scope, rankings, official CIG links and concentration without lat
   assert.match(section, /Quota Top 1/);
   assert.match(section, /HHI \(0-10\.000\)/);
   assert.match(section, /non indicano illecito/);
-  assert.match(section, /Fuori da questa slice: CPV, soglie, bunching e benchmark/);
+  assert.match(section, /Non sono un confronto con enti simili/);
   assert.match(section, /troncato verso zero/);
   assert.match(detail, /dettaglio_cig/);
   assert.match(detail, /positive-exact-cent/);

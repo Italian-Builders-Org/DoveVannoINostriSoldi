@@ -124,6 +124,9 @@ const querySchema = z.object({
   period: z.string().max(20)
     .describe("Periodo dichiarato dal dataset, per esempio 2026-07-31 o 2026-Q2.")
     .optional(),
+  sex: z.enum(["F", "M", "T"])
+    .describe("Modalità di sesso per i dataset che la espongono: F, M oppure T (totale, che NON è la somma di F e M).")
+    .optional(),
   sector: z.string().max(20)
     .describe("Codice della sezione ATECO accettato dal dataset selezionato.")
     .optional(),
@@ -133,8 +136,10 @@ const querySchema = z.object({
   years: z.number().int().min(2).max(20)
     .describe("Numero di Leggi di Bilancio più recenti da restituire, da 2 a 20, solo per il dataset che lo dichiara.")
     .optional(),
+  component: z.string().max(8).describe("Componente PNRR esatta, per esempio M1C1; solo pnrr_progetti.").optional(),
+  submeasure: z.string().max(24).describe("Codice univoco submisura PNRR, per esempio M1C1I1.01.00; solo pnrr_progetti.").optional(),
   mission: z.string().min(1).max(200)
-    .describe("Nome esatto della missione in openbdap_legge_bilancio_storico, per esempio Ricerca e innovazione oppure Istruzione universitaria e formazione post-universitaria.")
+    .describe("Codice esatto in pnrr_progetti (es. M1); nome esatto della missione in openbdap_legge_bilancio_storico, per esempio Ricerca e innovazione oppure Istruzione universitaria e formazione post-universitaria.")
     .optional(),
   schoolType: z.string().max(30)
     .describe("Tipo di scuola del dataset istruzione: state, paritaria oppure all.")

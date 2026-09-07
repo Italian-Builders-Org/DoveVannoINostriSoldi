@@ -1,7 +1,7 @@
-# SIOPE: Province, Regioni e Città metropolitane
+# SIOPE: ASL, Province, Regioni e Città metropolitane
 
-Questa release espone i pagamenti di cassa SIOPE di Province, Regioni comprese le Province
-autonome e Città metropolitane per il 2024–2026. I Comuni rimangono nel contratto SIOPE
+Questa release espone i pagamenti di cassa SIOPE delle ASL e di Province, Regioni comprese
+le Province autonome e Città metropolitane per il 2024–2026. I Comuni rimangono nel contratto SIOPE
 municipale, che conserva separati pagamenti e incassi.
 
 ## Perimetro e fonti
@@ -16,13 +16,22 @@ I tipi ed i comparti sono intenzionalmente distinti:
 | Dataset | Tipo SIOPE | Comparto | Contenuto |
 | --- | --- | --- | --- |
 | `siope-inventario-enti` | tutti | tutti | censimento annuale e diagnostiche pubbliche |
+| `siope-uscite-asl` | `ASL` | `SAN` | pagamenti mensili per voce sanitaria |
 | `siope-uscite-province` | `PROVINCIA` | `PRO` | pagamenti mensili |
 | `siope-uscite-regioni` | `REGIONE` | `REG` | pagamenti mensili, incluse Province autonome |
 | `siope-uscite-citta-metropolitane` | `CITTA_METROP` | `PRO` | pagamenti mensili |
 
-ASL e altri tipi restano nel solo inventario: non esistono in questa release pagamenti
-sanitari, copertura universale della PA, consolidamenti geografici, importi pro capite o
-classifiche.
+Gli altri tipi restano nel solo inventario. Il dataset ASL comprende esclusivamente il tipo
+`ASL` di ANAG, non aziende ospedaliere, IRCCS o tutti gli enti del SSN. Non esistono in questa
+release copertura universale della PA, consolidamenti geografici, importi pro capite o classifiche.
+
+Per il comparto `SAN`, le voci hanno codici a quattro cifre: codice e descrizione vengono
+risolti nell'anagrafica gestionale ufficiale, per comparto e validità del mese. Le colonne
+`titleCode` e `titleLabel` conservano in questo dataset il codice e la descrizione della singola
+voce SAN, senza convertirli nei titoli di bilancio di Province e Regioni. La scheda raccoglie
+queste voci in un dettaglio espandibile e le riconcilia integralmente con i movimenti pubblici.
+I pagamenti SIOPE sono distinti dai costi di competenza economica del Conto Economico SSN:
+nessuna somma, confronto diretto o join implicito fra i due perimetri.
 
 Le righe dei pagamenti usano centesimi interi e hanno una identità temporale SIOPE. Il join
 con IPA è ammesso soltanto con codice fiscale esatto e una sola corrispondenza; le righe
@@ -39,7 +48,7 @@ di tipo entro il periodo 2024–2026 continuano a interrompere la generazione.
 Le righe pubbliche complete, il catalogo e le ricevute sono parte del corpus integrato.
 Il file `src/data/generated/siope-nonmunicipal-detail.json` è la vista compatta server-only
 per le schede ente; non contiene le righe raw del corpus. Il file
-`src/data/generated/siope-nonmunicipal-view-proof.json` lega la vista al catalogo, alle quattro
+`src/data/generated/siope-nonmunicipal-view-proof.json` lega la vista al catalogo, alle cinque
 ricevute, agli hash delle righe canoniche e alla release integrata. Il manifest separato
 `src/data/generated/siope-nonmunicipal-provenance.json` è un input del sigillo:
 la ricostruzione del proof non può modificarlo o ricavarlo dalla vista.
@@ -55,11 +64,22 @@ solo stato e nota di copertura; restano 201 righe e tutti i conteggi invariati.
 Il formato storico `historical-not-reattested` resta leggibile senza inventare
 ricevute retroattive. Per le nuove release,
 fonti, hash, date e proiezioni determinano il `releaseId`. Il catalogo dati usa le stesse
-righe complete e il MCP le espone con gli identificativi `siope_inventario_enti`,
+righe complete e il MCP le espone con gli identificativi `siope_inventario_enti`, `siope_asl`,
 `siope_province`, `siope_regioni` e `siope_citta_metropolitane`.
 
+L'estensione ASL del 7 settembre 2026 riacquisisce gli stessi cinque input: tutti gli hash
+coincidono con la release del 6 settembre. Aggiunge 334.479 movimenti (123.782 nel 2024,
+123.660 nel 2025 e 87.037 nel 2026) e 116 schede con join IPA esatto. Le sette identità
+SIOPE annuali prive di join IPA restano nel corpus e nell'inventario. Il 2026 osserva
+mesi da gennaio a settembre, senza dichiarare completo il mese più recente. L'inventario
+cambia solo lo stato delle tre righe ASL da `census-only` a `published-payments`.
+I tre dataset territoriali e le loro ricevute si riproducono byte per byte; il catalogo
+aggiorna la data di acquisizione e verifica delle fonti. Corpus: 90 dataset, 14.166.458 righe sorgente e 1.184.112 righe
+pubbliche (delta: +1 dataset e +334.479 righe). Tutti gli altri dataset restano invariati.
+
 Ogni dataset dichiara release, fonti, hash, data di acquisizione e caveat nel catalogo e
-nella ricevuta `data/source-ledger/datasets/`. Le pagine ente usano la vista snapshot e non
+nella ricevuta `data/source-ledger/datasets/`. Il percorso `/spese/sanita` collega le schede ASL e `/dati/siope-uscite-asl`.
+Le pagine ente usano la vista snapshot e non
 dipendono dalla disponibilità live di IPA.
 
 ## Rigenerazione e controlli
@@ -85,13 +105,13 @@ python3 scripts/etl/siope_nonmunicipal.py \
 
 Il builder valida schema, provenienza e riconciliazione tra vista e PSV. Dopo il riesame dei
 risultati, se gli input ufficiali sono cambiati si aggiornano intenzionalmente metadati
-e valori `expected` dei quattro dataset nella specifica del corpus. La ricevuta di
+e valori `expected` dei cinque dataset nella specifica del corpus. La ricevuta di
 acquisizione deve coincidere con la data dichiarata nel catalogo. Non si usano gli
 output appena prodotti per auto-approvare i nuovi valori.
 
 Se cambia il numero di righe, prima della promozione occorre revisionare anche
 il contratto aggregato. Calcolare e verificare separatamente il nuovo totale:
-totale precedente meno le righe precedenti dei quattro dataset più le nuove
+totale precedente meno le righe precedenti dei cinque dataset più le nuove
 righe riconciliate. Le quote `catalog-only` e `derived-only` degli altri dataset
 restano invariate. Registrare nella review i conteggi precedenti, nuovi e il delta.
 Aggiornare esplicitamente:
@@ -118,6 +138,7 @@ DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
 python3 scripts/etl/siope_nonmunicipal_corpus.py \
   --source-root /percorso/candidato \
   --dataset siope-inventario-enti \
+  --dataset siope-uscite-asl \
   --dataset siope-uscite-province \
   --dataset siope-uscite-regioni \
   --dataset siope-uscite-citta-metropolitane

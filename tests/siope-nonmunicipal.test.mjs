@@ -66,3 +66,20 @@ test("non-municipal SIOPE rejects plausible provenance drift against the native 
   raw.entities[0].years[0].provenance.acquisitionDate = "2026-09-05T08:00:00+00:00";
   assert.throws(() => detail.assertSiopeNonMunicipalDetail(raw), /provenienza|storica/);
 });
+
+test("ASL uses SAN vocabulary, exact IPA identity and preserves a new entity's absent years", () => {
+  const asl = detail.getSiopeNonMunicipalEntityByIpaCode("054");
+  assert.equal(asl.entityType, "ASL");
+  assert.equal(detail.getSiopeNonMunicipalTypeLabel(asl), "Azienda sanitaria locale");
+  assert.ok(detail.findSiopeNonMunicipalEntities("ASL").some((entity) => entity.codiceIpa === "054"));
+  for (const year of asl.years) {
+    assert.ok(year.titles.every((item) => /^\d{4}$/.test(item.code)));
+    assert.equal(year.amountCents, year.titles.reduce((total, item) => total + item.amountCents, 0));
+  }
+  const fresh = detail.getSiopeNonMunicipalEntityByIpaCode("W2RCGK0L");
+  for (const year of fresh.years.filter((period) => period.year < 2026)) {
+    assert.equal(year.status, "outside_period");
+    assert.equal(year.amountCents, null);
+    assert.deepEqual(year.monthly, []);
+  }
+});

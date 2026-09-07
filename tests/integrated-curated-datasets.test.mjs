@@ -27,6 +27,8 @@ function rowChunkName(datasetId, ordinal) {
 }
 
 const mandatoryDatasetIds = [
+  "pnrr-progetti",
+  "ted-avvisi-italia-2026-08",
   "affidamenti-diretti",
   "affitti-immobili",
   "auto-welfare",
@@ -73,6 +75,7 @@ const mandatoryDatasetIds = [
   "missioni",
   "missioni-cdp",
   "missioni-cdp-buchi",
+  "mim-scuole-statali-comuni",
   "nominativi-incarichi",
   "openbdap-capitoli-2024-2026",
   "openbdap-consulenze-ce",
@@ -98,10 +101,15 @@ const mandatoryDatasetIds = [
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
+  "istat-misura-comune-dipendenza-anziani",
+  "istat-misura-comune-dipendenza-strutturale",
+  "istat-misura-comune-vecchiaia",
+  "salute-posti-letto-2023",
   "segnalazioni",
   "segnalazioni-card",
   "segnalazioni-parti",
   "siope-inventario-enti",
+  "siope-uscite-asl",
   "siope-uscite-citta-metropolitane",
   "siope-uscite-province",
   "siope-uscite-regioni",
@@ -114,11 +122,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 83,
+  datasets: 91,
   derivedOnlyRows: 2_841,
-  publicRows: 815_453,
-  sourceBytes: 2_646_421_189,
-  sourceRows: 13_797_799,
+  publicRows: 1_475_510,
+  sourceBytes: 2_967_342_031,
+  sourceRows: 14_457_856,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -126,6 +134,13 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "pnrr-progetti": "2026-06-13",
+  "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
+  "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
+  "istat-misura-comune-dipendenza-anziani": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+  "istat-misura-comune-dipendenza-strutturale": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+  "istat-misura-comune-vecchiaia": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+  "salute-posti-letto-2023": "2023-01-01",
   "affidamenti-diretti": "2024-2026",
   "affitti-immobili": "2024-2026",
   "auto-welfare": "2024-2026",
@@ -159,6 +174,7 @@ const expectedReferencePeriods = {
   "rinnovi-proroghe": "date dichiarate negli atti: 2020-2029",
   "siope-inventario-enti": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-citta-metropolitane": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+  "siope-uscite-asl": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-province": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-regioni": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   vincitori: "2024-2026",
@@ -442,38 +458,39 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
     }
 
     const chunkCount = Math.ceil(dataset.expected.rows / rowChunkRows);
-    const plainChunks = Array.from({ length: chunkCount }, (_, ordinal) => {
-      const rowsPath = path.join(rowsDirectory, rowChunkName(dataset.id, ordinal));
-      const compressedRows = readFileSync(rowsPath);
-      assert.deepEqual(
-        [...compressedRows.subarray(0, 10)],
-        [0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff],
-        `${dataset.id}:${ordinal}: canonical gzip header independent of Python and host OS`,
-      );
-      const plainChunk = gunzipSync(compressedRows);
-      assert.ok(
-        plainChunk.length <= rowChunkMaxRawBytes,
-        `${dataset.id}:${ordinal}: chunk raw oltre 2 MiB`,
-      );
-      assert.equal(
-        plainChunk.toString("utf8").trimEnd().split("\n").length,
-        Math.min(rowChunkRows, dataset.expected.rows - ordinal * rowChunkRows),
-        `${dataset.id}:${ordinal}: cardinalità chunk`,
-      );
-      return plainChunk;
-    });
-    const plainRows = Buffer.concat(plainChunks);
-    assert.equal(sha256(plainRows), receipt.rowsSha256);
-    assert.ok(plainRows.length > 0 && plainRows.at(-1) === 0x0a, `${dataset.id}: newline finale`);
-    const lines = plainRows.toString("utf8").slice(0, -1).split("\n");
-    assert.equal(lines.length, receipt.publication.publicRows, `${dataset.id}: cardinalità JSONL`);
-
+    // Hash and validate each bounded chunk without constructing a >512 MiB string.
+    const rowsHash = createHash("sha256");
+    function* datasetLines() {
+      for (let ordinal = 0; ordinal < chunkCount; ordinal += 1) {
+        const rowsPath = path.join(rowsDirectory, rowChunkName(dataset.id, ordinal));
+        const compressedRows = readFileSync(rowsPath);
+        assert.deepEqual(
+          [...compressedRows.subarray(0, 10)],
+          [0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff],
+          `${dataset.id}:${ordinal}: canonical gzip header independent of Python and host OS`,
+        );
+        const plainChunk = gunzipSync(compressedRows, { maxOutputLength: rowChunkMaxRawBytes });
+        rowsHash.update(plainChunk);
+        assert.ok(plainChunk.length > 0 && plainChunk.at(-1) === 0x0a, `${dataset.id}:${ordinal}: newline finale`);
+        assert.ok(
+          plainChunk.length <= rowChunkMaxRawBytes,
+          `${dataset.id}:${ordinal}: chunk raw oltre 2 MiB`,
+        );
+        assert.equal(
+          plainChunk.toString("utf8").trimEnd().split("\n").length,
+          Math.min(rowChunkRows, dataset.expected.rows - ordinal * rowChunkRows),
+          `${dataset.id}:${ordinal}: cardinalità chunk`,
+        );
+        yield* plainChunk.toString("utf8").slice(0, -1).split("\n");
+      }
+    }
+    let sourceRow = 0;
     let rowsWithPublicSource = 0;
     let redactions = 0;
     const rowIds = new Set();
-    for (const [index, line] of lines.entries()) {
+    for (const line of datasetLines()) {
       const row = JSON.parse(line);
-      const sourceRow = index + 1;
+      sourceRow += 1;
       assert.deepEqual(sorted(Object.keys(row)), [
         "cells",
         "evidenceLabel",
@@ -534,6 +551,8 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
       }
       redactions += row.redactions.length;
     }
+    assert.equal(sourceRow, receipt.publication.publicRows, `${dataset.id}: cardinalità JSONL`);
+    assert.equal(rowsHash.digest("hex"), receipt.rowsSha256);
     assert.equal(receipt.publication.rowsWithPublicSource, rowsWithPublicSource);
     assert.equal(receipt.publication.redactions, redactions);
   }

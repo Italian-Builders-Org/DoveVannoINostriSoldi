@@ -9,6 +9,7 @@ export const DATASET_IDS = [
   "siope_comuni",
   "siope_entrate_comuni",
   "siope_inventario_enti",
+  "siope_asl",
   "siope_province",
   "siope_regioni",
   "siope_citta_metropolitane",
@@ -17,12 +18,14 @@ export const DATASET_IDS = [
   "openbdap_opere_pubbliche",
   "openbdap_ssn_conto_economico",
   "openbdap_ssn_storico_nazionale",
+  "salute_posti_letto",
   "openbdap_spesa_legislature",
   "openbdap_legge_bilancio_storico",
   "opencivitas_fabbisogni",
   "opencivitas_fabbisogni_2021",
   "opencoesione_progetti",
   "pnrr_asili",
+  "pnrr_progetti",
   "anac_cig_snapshot",
   "consip_ordini",
   "eurostat_cofog",
@@ -33,6 +36,7 @@ export const DATASET_IDS = [
   "istat_epea",
   "istat_poverta_assoluta",
   "istat_poverta_relativa",
+  "istat_bes_economico",
   "inps_naspi",
   "mef_irpef_dettaglio",
   "istat_pensionati_persone",
@@ -90,10 +94,13 @@ export type DatasetQuery = {
   channel?: "convenzioni" | "mepa";
   period?: string;
   sector?: string;
+  sex?: string;
   cepa?: string;
   band?: string;
   years?: number;
   mission?: string;
+  component?: string;
+  submeasure?: string;
   schoolType?: string;
   pathway?: string;
   limit?: number;
@@ -162,6 +169,7 @@ const exampleQueries = {
   siope_comuni: { dataset: "siope_comuni", year: 2025, region: "Calabria" },
   siope_entrate_comuni: { dataset: "siope_entrate_comuni", year: 2025, region: "Calabria", limit: 20 },
   siope_inventario_enti: { dataset: "siope_inventario_enti", limit: 20 },
+  siope_asl: { dataset: "siope_asl", limit: 20 },
   siope_province: { dataset: "siope_province", limit: 20 },
   siope_regioni: { dataset: "siope_regioni", limit: 20 },
   siope_citta_metropolitane: { dataset: "siope_citta_metropolitane", limit: 20 },
@@ -170,11 +178,13 @@ const exampleQueries = {
   openbdap_opere_pubbliche: { dataset: "openbdap_opere_pubbliche", cup: "I39B05000060005" },
   openbdap_ssn_conto_economico: { dataset: "openbdap_ssn_conto_economico", year: 2024, region: "Calabria", limit: 20 },
   openbdap_ssn_storico_nazionale: { dataset: "openbdap_ssn_storico_nazionale" },
+  salute_posti_letto: { dataset: "salute_posti_letto", query: "PIEMONTE", limit: 20 },
   openbdap_spesa_legislature: { dataset: "openbdap_spesa_legislature" },
   openbdap_legge_bilancio_storico: { dataset: "openbdap_legge_bilancio_storico", years: 6 },
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
+  pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
   pnrr_asili: { dataset: "pnrr_asili", region: "Lazio", limit: 20 },
   anac_cig_snapshot: { dataset: "anac_cig_snapshot", year: 2025 },
   consip_ordini: { dataset: "consip_ordini", year: 2025, channel: "mepa" },
@@ -186,6 +196,7 @@ const exampleQueries = {
   istat_epea: { dataset: "istat_epea", year: 2022, sector: "S13_15", cepa: "CEPA1" },
   istat_poverta_assoluta: { dataset: "istat_poverta_assoluta", territory: "IT", year: 2024 },
   istat_poverta_relativa: { dataset: "istat_poverta_relativa", territory: "IT", year: 2024 },
+  istat_bes_economico: { dataset: "istat_bes_economico", territory: "IT", year: 2023 },
   inps_naspi: { dataset: "inps_naspi", table: "beneficiari_02", year: 2022 },
   mef_irpef_dettaglio: { dataset: "mef_irpef_dettaglio", family: "tipo_reddito", breakdown: "regione", year: 2025 },
   istat_pensionati_persone: { dataset: "istat_pensionati_persone", year: 2022 },
@@ -258,7 +269,8 @@ const COMPANY_ATLAS_SOURCES: DatasetDescriptor["sources"] = Object.values(compan
 }));
 
 const datasetDescriptors: DatasetDescriptorInput[] = [
-  { id: "siope_inventario_enti", title: "SIOPE · inventario enti", summary: "Censimento nazionale SIOPE per tipo di ente e anno, con copertura dei join IPA e movimenti osservati.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "È un inventario di copertura: non pubblica pagamenti per tipi diversi da Province, Regioni e Città metropolitane. Zero osservato, assenza di movimenti ed errore di join restano distinti; il 2026 è parziale." },
+  { id: "siope_inventario_enti", title: "SIOPE · inventario enti", summary: "Censimento nazionale SIOPE per tipo di ente e anno, con copertura dei join IPA e movimenti osservati.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "È un inventario di copertura: non pubblica pagamenti per tipi diversi da ASL, Province, Regioni e Città metropolitane. Zero osservato, assenza di movimenti ed errore di join restano distinti; il 2026 è parziale." },
+  { id: "siope_asl", title: "SIOPE · pagamenti delle ASL", summary: "Movimenti mensili di cassa SIOPE delle aziende sanitarie locali 2024–2026, con voci del comparto SAN e join IPA esatto.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Solo enti di tipo ASL nel registro SIOPE, non tutti gli enti del SSN. Pagamenti di cassa, distinti dal conto economico OpenBDAP; nessuna somma tra i due perimetri. Il 2026 è parziale." },
   { id: "siope_province", title: "SIOPE · pagamenti delle Province", summary: "Movimenti mensili di cassa SIOPE delle Province 2024–2026, con identità temporale e join IPA esatto.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto PRO. Sono pagamenti di cassa dell'amministrazione, non spesa consolidata nel territorio né una classifica; il 2026 è parziale." },
   { id: "siope_regioni", title: "SIOPE · pagamenti delle Regioni", summary: "Movimenti mensili di cassa SIOPE delle Regioni e Province autonome 2024–2026, separati dai Comuni.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto REG; comprende le Province autonome registrate da SIOPE. Non è spesa sanitaria né una somma dei Comuni; il 2026 è parziale." },
   { id: "siope_citta_metropolitane", title: "SIOPE · pagamenti delle Città metropolitane", summary: "Movimenti mensili di cassa SIOPE delle Città metropolitane 2024–2026, separati dalle Province.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto PRO. Sono pagamenti di cassa dell'amministrazione, non spesa consolidata nel territorio né una classifica; il 2026 è parziale." },
@@ -274,6 +286,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencivitas_fabbisogni_2021", title: "Fabbisogni e servizi comunali 2021 (FC70TOT)", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni RSO, annualità 2021, famiglia FC70TOT.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Contratto distinto da FC80TOT 2022: non sommare né confrontare in silenzio le due annualità. La differenza dalla spesa standard non è spreco. RSS fuori perimetro." },
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
+  { id: "pnrr_progetti", title: "PNRR · catalogo nazionale dei progetti", summary: "291.398 registrazioni CUP/CLP/submisura ReGiS al 13 giugno 2026; 285.992 CUP validi distinti. Tutte le missioni, con finanziamenti e localizzazioni dichiarate.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "mission", "component", "measure", "submeasure", "code", "region", "province", "territory", "limit", "cursor"], caveat: "Codici esatti: mission=M1, component=M1C1, measure=M1C1I1.01, submeasure=M1C1I1.01.00; code=CF attuatore, region/province a 3 cifre, territory=Provincia+Comune a 6 cifre. Filtri combinati in AND. matchedRows conta registrazioni, non CUP unici. Finanziamento non è pagamento; attuatore non è localizzazione. Progetti non validati inclusi. Cursor vincolato a filtri e rilascio; una pagina può restituire meno di limit per il budget di lettura." },
   { id: "pnrr_asili", title: "PNRR asili e prima infanzia", summary: "Progetti Italia Domani per CUP, localizzazioni, finanziamenti, gare e aggiudicatari.", sourceIds: ["italiadomani"], freshness: "snapshot", filters: ["cup", "query", "region", "province", "limit", "offset"], caveat: "Il finanziamento PNRR non è un pagamento osservato; gare e aggiudicazioni sono livelli distinti." },
   { id: "anac_cig_snapshot", title: "Contratti pubblici ANAC · CIG 2025", summary: "Aggregati verificati sui dodici file mensili CIG 2025, con copertura, hash, procedure e fasce di importo.", sourceIds: ["anac"], freshness: "snapshot", filters: ["year"], caveat: "È uno strumento di screening aggregato: non prova spreco, illecito, corruzione o frazionamento e non consente ancora la ricerca live per CIG." },
   { id: "consip_ordini", title: "Acquisti Consip · ordini Convenzioni e MEPA", summary: "Righe ordinate su Convenzioni e MEPA 2024-2026 aggregate per regione e tipologia di amministrazione, con importi noti e celle soppresse dichiarate.", sourceIds: ["consip"], freshness: "snapshot", filters: ["year", "channel"], caveat: "Gli importi sono limiti inferiori: la fonte sopprime il valore in molte righe (nei file MEPA importo e numero ordini sono mutuamente esclusivi) e pubblica anche storni negativi. Ordinato non è pagato e Consip non è tutta la spesa per acquisti della PA: nessun confronto con ANAC o SIOPE è una riconciliazione." },
@@ -282,6 +295,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "istat_epea", title: "ISTAT · spesa per la protezione dell'ambiente (EPEA)", summary: "Conti della spesa per la protezione dell'ambiente, edizione 2025M2, anni 2016–2022, per settore istituzionale e classe CEPA.", sourceIds: ["istat-epea"], freshness: "snapshot", filters: ["year", "sector", "cepa"], caveat: "Contabilità SEC di competenza: non è cassa SIOPE. Non sommare né confrontare in silenzio con RGS, PNRR Missione 2 o SAD/SAF. TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono. Edizione 2025M2 fissata.", },
   { id: "istat_poverta_assoluta", title: "ISTAT · povertà assoluta", summary: "Indicatori ufficiali di povertà assoluta, serie corrente post-revisione, anni 2014–2024, per Italia e ripartizioni: incidenza familiare e individuale, intensità, composizione percentuale e conteggi in migliaia di famiglie e individui.", sourceIds: ["istat-poverta"], freshness: "snapshot", filters: ["territory", "year", "measure"], caveat: "NON è spesa pubblica: sono incidenze, intensità e conteggi, mai sommabili né accostabili a SIOPE, OpenBDAP o IRPEF. Incidenza, intensità e composizione sono misure diverse con unità diverse e non si sommano fra loro; famiglie e individui sono denominatori distinti. Solo i conteggi sono sommabili fra territori: sommare le incidenze delle ripartizioni non dà il valore nazionale. Le aree composite Nord e Mezzogiorno contengono già le loro parti. È la serie corrente dal 2014: le serie 34_201/34_202 finiscono nel 2013 e la 34_728 è interrotta, non vanno mai giuntate. ISTAT non pubblica la povertà a livello comunale. Il dato non misura efficacia di una manovra né responsabilità di un governo.", },
   { id: "istat_poverta_relativa", title: "ISTAT · povertà relativa", summary: "Indicatori ufficiali di povertà relativa, serie corrente post-revisione, anni 2014–2024, per Italia e ripartizioni: incidenza familiare e individuale, intensità, composizione percentuale e conteggi in migliaia di famiglie e individui.", sourceIds: ["istat-poverta-relativa"], freshness: "snapshot", filters: ["territory", "year", "measure"], caveat: "NON è la povertà assoluta e NON va sommata né confrontata con essa: la relativa misura la distanza dalla spesa media delle famiglie, l'assoluta il costo di un paniere di beni essenziali. Sono due definizioni diverse della stessa parola. NON è spesa pubblica: nessun accostamento a SIOPE, OpenBDAP o IRPEF. Incidenza, intensità e composizione hanno unità diverse e non si sommano fra loro; famiglie e individui sono denominatori distinti. Solo i conteggi sono sommabili fra territori. Le aree composite Nord e Mezzogiorno contengono già le loro parti. È la serie corrente dal 2014: 34_202 finisce nel 2013 e la 34_728 è interrotta, non vanno mai giuntate. ISTAT non pubblica la povertà a livello comunale.", },
+  { id: "istat_bes_economico", title: "ISTAT · BES dei territori, benessere economico", summary: "Cinque indicatori del dominio benessere economico del BES dei territori, edizione 2025, per Italia, ripartizioni, regioni e 111 province: reddito medio disponibile pro capite, retribuzione media, importo medio dei redditi pensionistici, quota di pensionati con reddito basso e tasso di ingresso in sofferenza dei prestiti alle famiglie.", sourceIds: ["istat-bes-economico"], freshness: "snapshot", filters: ["territory", "year", "measure", "sex"], caveat: "NON è spesa pubblica: misura quanto le famiglie hanno, non quanto lo Stato spende. Nessuna somma o accostamento con SIOPE, OpenBDAP o IRPEF. Sono medie pro capite e percentuali, quindi NON sommabili fra territori: la media di una ripartizione non è la somma di quelle delle sue province. Il totale per sesso non è la somma di F e M, è la media sull'intera popolazione. Ogni indicatore ha il proprio periodo: non esiste un unico 2004-2024, e confrontare indicatori diversi agli estremi significa confrontare anni diversi. Le aree composite Nord e Mezzogiorno contengono già le loro parti. L'anagrafica delle province non è stabile: include province istituite dopo e le tre sarde soppresse nel 2016. Nessun indice composito e nessuna classifica di territori.", },
   { id: "inps_naspi", title: "INPS · NASpI beneficiari e trattamenti", summary: "Beneficiari e trattamenti NASpI dal 2018 al 2022 per ripartizione, regione e provincia, con sesso, classe di età e durata teorica, da nove tabelle SDMX.", sourceIds: ["inps-naspi"], freshness: "snapshot", filters: ["table", "measure", "year", "territory"], caveat: "Beneficiari e trattamenti sono misure diverse — persone contro periodi di prestazione — e non vanno sommate né confrontate. Sono conteggi, NON euro: nessuna somma con la spesa per prestazioni, con SIOPE o con i bilanci INPS. È un flusso annuale, non lo stock di pensioni vigenti o di invalidità civile già in piattaforma, e non è sommabile fra anni. Le celle soppresse per privacy restano nulle e non sono zeri osservati. Territorio, sesso, classe di età e durata sono dimensioni distinte e non denominatori intercambiabili. Il numero di beneficiari non dice nulla su adeguatezza o merito della prestazione." },
   { id: "mef_irpef_dettaglio", title: "MEF · dettaglio IRPEF per regione, età e sesso", summary: "Tipo di reddito, calcolo IRPEF e bonus dichiarati, incrociati con la classe di reddito complessivo, per regione, classe di età e sesso: dichiarazioni 2017-2025, anni di imposta 2016-2024. Il filtro year indica l’anno di dichiarazione.", sourceIds: ["mef-irpef-dettaglio"], freshness: "snapshot", filters: ["family", "breakdown", "year", "limit", "offset"], caveat: "Imposta e redditi DICHIARATI, non gettito riscosso: nessuna somma con SIOPE o con i bilanci pubblici. Frequenza, Ammontare in euro e Numero contribuenti sono tre nature distinte e non si sommano né si confrontano. Gli anni indicati sono anni di dichiarazione, non di imposta. La famiglia bonus misura due strumenti diversi sotto lo stesso nome — Bonus IRPEF fino al 2020, Trattamento integrativo dal 2022, entrambi nel 2021 — e le serie non sono concatenabili. Una cella vuota non è uno zero osservato. Le dimensioni non sono denominatori intercambiabili e i tagli non si sommano fra loro. Alcune misure esistono in un taglio e non in un altro nello stesso anno: l\u2019assenza è dichiarata, mai riempita." },
   { id: "inps_invalidita_civile", title: "Prestazioni INPS di invalidità civile", summary: "Spesa nazionale, stock di prestazioni e nuove pensioni di invalidità civile per regione.", sourceIds: ["inps"], freshness: "snapshot", filters: ["year", "region"], caveat: "Prestazioni, pensioni, spesa e nuove decorrenze sono misure diverse. I dati aggregati non provano frode e non consentono attribuzioni individuali." },
@@ -299,10 +313,25 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "debito_pubblico_italiano", title: "Debito pubblico italiano", summary: "Stock Maastricht, variazioni mensili, composizione, detentori, vita residua e interessi annuali.", sourceIds: ["bancaditalia", "eurostat"], freshness: "snapshot", filters: [], caveat: "Stock, flussi netti, detentori e interessi hanno periodi diversi. Le fonti pubblicano importi in milioni di euro: la conversione in centesimi interi non aggiunge precisione alla misura originaria. Gli indicatori per il cittadino descrivono esposizioni e meccanismi, non previsioni né effetti individuali." },
   { id: "registro_fonti", title: "Registro delle fonti", summary: "Proprietari, copertura, formati, cadenza e stato di integrazione delle fonti censite.", sourceIds: [], freshness: "snapshot", filters: ["query"] },
   {
+    id: "salute_posti_letto",
+    title: "Posti letto per Regione e disciplina",
+    summary: "1.019 righe del Ministero della Salute al 1° gennaio 2023: 21 territori, 68 discipline, conteggi di posti letto e reparti.",
+    sourceIds: [],
+    customSources: [{
+      id: "salute-posti-letto-2023", name: "Posti letto per Regione e disciplina 2023",
+      owner: "Ministero della Salute",
+      url: "https://www.dati.salute.gov.it/it/dataset/posti-letto-regione-e-disciplina-2023/",
+      cadence: "Annuale", license: "IODL 2.0", dataAsOf: "2023-01-01", publishedAt: "2025-07-29",
+    }],
+    freshness: "snapshot",
+    filters: ["query", "limit", "cursor", "offset"],
+    caveat: "Accesso al corpus salute-posti-letto-2023. Conteggi, non euro; geografia delle strutture, non dei pazienti. La dotazione non misura pazienti curati, tempi di attesa o qualità delle cure. Nido escluso; eventuali modelli HSP12/HSP13 non trasmessi limitano la completezza. Il CE 2024 ha anno e perimetro diversi: nessun costo per posto letto o indice di efficienza.",
+  },
+  {
     id: "spesa_pa_dettaglio",
     title: "Dettaglio integrato della spesa pubblica",
     summary:
-      `Accesso uniforme ai ${INTEGRATED_CORPUS_CONTRACT.datasets} dataset integrati su affidamenti, fornitori, incarichi, consulenze, personale, spese operative, trasparenza e benchmark.`,
+      `Accesso uniforme ai ${INTEGRATED_CORPUS_CONTRACT.datasets} dataset integrati su affidamenti, fornitori, incarichi, consulenze, personale, spese operative, trasparenza, benchmark, contesto demografico ISTAT A misura di Comune, sedi scolastiche statali MIM e avvisi TED con committenti in Italia.`,
     sourceIds: [],
     freshness: "snapshot",
     filters: ["code", "query", "limit", "cursor", "offset"],

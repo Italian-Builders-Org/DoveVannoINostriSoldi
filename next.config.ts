@@ -7,9 +7,13 @@ const integratedSourceRuntimeFiles = [
   "data/source-ledger/dataset-proof.json",
   "src/data/generated/integrated/catalog.json",
   "src/data/generated/integrated/rows/*.jsonl.gz",
+  "src/data/generated/pnrr-projects-index/*.json.gz",
 ];
 
 const entityProcurementRuntimeFiles = [
+  "src/data/generated/anac-procurement-cpv/*.jsonl.gz",
+  "src/data/generated/anac-procurement-cpv/meta.json",
+  "scripts/etl/specs/anac-procurement-cpv.source.json",
   "src/data/generated/anac-entity-procurement-page/meta.json",
   "src/data/generated/anac-entity-procurement-page/entities/*.jsonl.gz",
   "scripts/etl/specs/anac-entity-procurement-page.source.json",
@@ -54,12 +58,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Element-level intake ledgers are checked offline; public MCP reads the
+  // receipt, release proofs and validated row chunks, never these CI files.
+  outputFileTracingExcludes: {
+    "/api/mcp": ["data/source-ledger/elements/**/*"],
+  },
   outputFileTracingIncludes: {
     "/enti/*": entityProcurementRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/dati": integratedSourceRuntimeFiles,
     "/dati/*": integratedSourceRuntimeFiles,
     "/api/dati/*": integratedSourceRuntimeFiles,
+    "/pnrr": integratedSourceRuntimeFiles,
+    "/api/pnrr/progetti": integratedSourceRuntimeFiles,
     "/fonti/copertura": integratedSourceRuntimeFiles,
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,

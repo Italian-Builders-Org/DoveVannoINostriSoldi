@@ -60,6 +60,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "istat-poverta": [],
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-poverta-relativa": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-bes-economico": [],
   // Snapshot-only: le risposte SDMX-ML sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
   "inps-naspi": [],
   // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.

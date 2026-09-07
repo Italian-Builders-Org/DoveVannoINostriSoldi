@@ -3,42 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HeaderSearch } from "@/components/header-search";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  GithubIcon,
-  Home01Icon,
-  News01Icon,
-  Building03Icon,
-  School01Icon,
-  Money01Icon,
-  MapsGlobal01Icon,
-  Task01Icon,
-  Building04Icon,
-  Building06Icon,
-  Search01Icon,
-  AiChat01Icon,
-  BookSearchIcon,
-  BookOpen01Icon,
+  ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
+  GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
+  MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
+  AiChat01Icon, BookSearchIcon, BookOpen01Icon,
 } from "@hugeicons/core-free-icons";
-import {
-  PRIMARY_NAV,
-  isNavChildActive,
-  isNavSectionActive,
-} from "@/lib/site-navigation";
-import { isEventTargetWithin } from "@/lib/navigation-boundary";
+import { PRIMARY_NAV, isNavChildActive, isNavSectionActive } from "@/lib/site-navigation";
 import { REPO_URL } from "@/lib/site";
 
 const NAV_ICONS = {
@@ -57,45 +31,66 @@ const NAV_ICONS = {
   research: BookOpen01Icon,
 } as const;
 
-type NavigationContentProps = Readonly<{
-  pathname: string;
-  currentSearch: string | null;
-}>;
 
-const FINE_POINTER_HOVER_QUERY = "(hover: hover) and (pointer: fine)";
-/** Mouse on a viewport wide enough that swipe is not the primary way to pan. */
-const MOUSE_NAV_SCROLL_CONTROLS_QUERY = `${FINE_POINTER_HOVER_QUERY} and (min-width: 901px)`;
+type NavigationLocation = Readonly<{ pathname: string; currentSearch: string | null }>;
 
-function subscribeFinePointerHover(onChange: () => void) {
-  const media = window.matchMedia(FINE_POINTER_HOVER_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-
-function subscribeMouseNavScrollControls(onChange: () => void) {
-  const media = window.matchMedia(MOUSE_NAV_SCROLL_CONTROLS_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-
-function useFinePointerHover() {
-  return useSyncExternalStore(
-    subscribeFinePointerHover,
-    () => window.matchMedia(FINE_POINTER_HOVER_QUERY).matches,
-    () => false,
+/** One link map and disclosure implementation for both responsive surfaces. */
+function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNavigate }:
+  NavigationLocation & Readonly<{ id: string; collapsed?: boolean; onNavigate?: () => void }>) {
+  const [selection, setSelection] = useState<{ pathname: string; href: string | null } | null>(null);
+  const activeSection = PRIMARY_NAV.find((item) => item.children?.length && isNavSectionActive(pathname, item));
+  const openHref = selection?.pathname === pathname ? selection.href : activeSection?.href;
+  return (
+    <nav id={id} className="primary-nav" aria-label="Navigazione principale"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && !onNavigate && openHref) {
+          event.currentTarget.querySelector<HTMLButtonElement>('button[aria-expanded="true"]')?.focus();
+          setSelection({ pathname, href: null });
+        }
+      }}>
+      <ul className="primary-nav-list">
+        {PRIMARY_NAV.map((item) => {
+          const active = isNavSectionActive(pathname, item);
+          const hasChildren = Boolean(item.children?.length);
+          const open = !collapsed && openHref === item.href;
+          const menuId = `${id}-${item.icon}`;
+          return (
+            <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
+              data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>
+              {item.href === "/imprese" || item.href === "/report" ? (
+                <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Esplora i dati"}</span>
+              ) : null}
+              <Link href={item.href} title={collapsed ? item.label : undefined}
+                aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
+                data-section-active={active ? "true" : undefined} onNavigate={onNavigate}>
+                <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={19} strokeWidth={1.8} aria-hidden="true" />
+                <span className="nav-label">{item.label}</span>
+              </Link>
+              {hasChildren ? (
+                <button type="button" className="nav-item-toggle" aria-expanded={open}
+                  aria-controls={menuId} aria-label={`Pagine in ${item.label}`}
+                  onClick={() => setSelection({ pathname, href: open ? null : item.href })}>
+                  <HugeiconsIcon icon={ArrowDown01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
+                </button>
+              ) : null}
+              {hasChildren ? (
+                <ul id={menuId} className="nav-submenu" hidden={!open} aria-label={`Pagine in ${item.label}`}>
+                  {item.children!.map((child) => (
+                    <li key={child.href}>
+                      <Link href={child.href} onNavigate={onNavigate}
+                        aria-current={currentSearch !== null && isNavChildActive(pathname, child.href, item.children!, currentSearch) ? "page" : undefined}>
+                        {child.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
-}
-
-function useMouseNavScrollControls() {
-  return useSyncExternalStore(
-    subscribeMouseNavScrollControls,
-    () => window.matchMedia(MOUSE_NAV_SCROLL_CONTROLS_QUERY).matches,
-    () => false,
-  );
-}
-
-function navMenuId(href: string) {
-  return `nav-menu-${href.replace(/\W+/g, "-")}`;
 }
 
 export function Navigation() {
@@ -103,341 +98,133 @@ export function Navigation() {
   const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
     <>
-      <Suspense fallback={null}>
-        <NavigationSearchSync onChange={setCurrentSearch} />
-      </Suspense>
+      <Suspense fallback={null}><NavigationSearchSync onChange={setCurrentSearch} /></Suspense>
       <NavigationContent pathname={pathname} currentSearch={currentSearch} />
     </>
   );
 }
 
-function NavigationSearchSync({
-  onChange,
-}: Readonly<{ onChange: (search: string) => void }>) {
-  const searchParams = useSearchParams();
-  const currentSearch = searchParams.toString();
-
-  useLayoutEffect(() => {
-    onChange(currentSearch);
-  }, [currentSearch, onChange]);
-
+function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string) => void }>) {
+  const currentSearch = useSearchParams().toString();
+  useLayoutEffect(() => { onChange(currentSearch); }, [currentSearch, onChange]);
   return null;
 }
 
-function NavigationContent({ pathname, currentSearch }: NavigationContentProps) {
-  const navigationRef = useRef<HTMLElement>(null);
-  const navRowRef = useRef<HTMLDivElement>(null);
-  const activeLinkRef = useRef<HTMLAnchorElement>(null);
-  const [navigationScroll, setNavigationScroll] = useState({
-    backward: false,
-    forward: false,
-  });
-  const hasNavigationOverflow = navigationScroll.backward || navigationScroll.forward;
-  const [submenuLeft, setSubmenuLeft] = useState(0);
-  const showScrollControls = useMouseNavScrollControls();
-  const canHover = useFinePointerHover();
-  /**
-   * Exactly one submenu may be open. Hover, focus and the caret all write the
-   * same state so CSS never opens a second panel through :hover/:focus-within
-   * while another is still held open.
-   *
-   * The URL it was opened on travels with it: a completed navigation has
-   * already answered the menu, so the open state simply stops applying rather
-   * than being cleared from an effect after the new page has painted.
-   */
-  const [openMenu, setOpenMenu] = useState<{
-    href: string;
-    pathname: string;
-    search: string | null;
-  } | null>(null);
-  const openHref =
-    openMenu?.pathname === pathname &&
-    (openMenu.search === null || currentSearch === null || openMenu.search === currentSearch)
-      ? openMenu.href
-      : null;
+function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
+  // Layout state survives client navigation; no storage-driven shift during hydration.
+  const [collapsed, setCollapsed] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const collapseRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openedLocationRef = useRef("");
+  const backdropPointerRef = useRef(false);
 
-  const closeMenu = useCallback(() => setOpenMenu(null), []);
-  const liveSearch = useCallback(() => {
-    if (typeof window === "undefined") return currentSearch;
-    return window.location.search.replace(/^\?/, "");
-  }, [currentSearch]);
-  const openItem = useCallback(
-    (href: string) => setOpenMenu({ href, pathname, search: liveSearch() }),
-    [liveSearch, pathname],
-  );
-  const openSection = PRIMARY_NAV.find((item) => item.href === openHref && item.children?.length);
-
-  const updateNavigationScroll = useCallback(() => {
-    const navigation = navigationRef.current;
-    if (!navigation) return;
-    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
-    const next = {
-      backward: navigation.scrollLeft > 4,
-      forward: navigation.scrollLeft < maxScrollLeft - 4,
-    };
-    setNavigationScroll((current) => (
-      current.backward === next.backward && current.forward === next.forward ? current : next
-    ));
-  }, []);
-
-  const scrollNavigation = useCallback((direction: "backward" | "forward") => {
-    const navigation = navigationRef.current;
-    if (!navigation) return;
-    const maxScrollLeft = Math.max(0, navigation.scrollWidth - navigation.clientWidth);
-    const distance = Math.max(160, Math.round(navigation.clientWidth * 0.75));
-    const nextScrollLeft = navigation.scrollLeft + (direction === "forward" ? distance : -distance);
-    navigation.scrollLeft = Math.max(0, Math.min(maxScrollLeft, nextScrollLeft));
-  }, []);
-
-  useLayoutEffect(() => {
-    const navigation = navigationRef.current;
-    if (!navigation) return;
-    updateNavigationScroll();
-    navigation.addEventListener("scroll", updateNavigationScroll, { passive: true });
-    window.addEventListener("resize", updateNavigationScroll);
-    const resizeObserver = new ResizeObserver(updateNavigationScroll);
-    resizeObserver.observe(navigation);
-    return () => {
-      navigation.removeEventListener("scroll", updateNavigationScroll);
-      window.removeEventListener("resize", updateNavigationScroll);
-      resizeObserver.disconnect();
-    };
-  }, [updateNavigationScroll]);
+  function closeDrawer() { dialogRef.current?.close(); }
+  function openDrawer() {
+    const dialog = dialogRef.current;
+    if (!dialog || dialog.open) return;
+    openedLocationRef.current = window.location.pathname + window.location.search;
+    dialog.showModal();
+    setDrawerOpen(true);
+    closeRef.current?.focus();
+  }
 
   useEffect(() => {
-    const navigation = navigationRef.current;
-    const activeLink = activeLinkRef.current;
-    if (!navigation || !activeLink) return;
-    const navigationBox = navigation.getBoundingClientRect();
-    const activeBox = activeLink.getBoundingClientRect();
-    if (activeBox.left < navigationBox.left || activeBox.right > navigationBox.right) {
-      activeLink.scrollIntoView({ block: "nearest", inline: "nearest" });
+    // Also close on history navigation, without closing on the first query sync.
+    if (dialogRef.current?.open && openedLocationRef.current !== window.location.pathname + window.location.search) {
+      dialogRef.current.close();
     }
-  }, [pathname, showScrollControls, hasNavigationOverflow]);
-
-  useLayoutEffect(() => {
-    if (!openHref) return;
-    const item = navigationRef.current?.querySelector(".nav-item-has-menu[data-open='true']");
-    const row = navRowRef.current;
-    if (!item || !row) return;
-    const itemBox = item.getBoundingClientRect();
-    const rowBox = row.getBoundingClientRect();
-    setSubmenuLeft(itemBox.left - rowBox.left);
-  }, [openHref]);
+  }, [pathname, currentSearch]);
 
   useEffect(() => {
-    if (openHref === null) return;
-    function dismissOutside(event: PointerEvent) {
-      if (!isEventTargetWithin(navRowRef.current, event.target)) closeMenu();
+    const media = window.matchMedia("(min-width: 1100px)");
+    function resize() {
+      if (media.matches && dialogRef.current?.open) {
+        dialogRef.current.close();
+        collapseRef.current?.focus();
+      } else if (!media.matches && document.activeElement?.closest(".desktop-sidebar")) {
+        mobileTriggerRef.current?.focus();
+      }
     }
-    function dismissOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") closeMenu();
-    }
-    document.addEventListener("pointerdown", dismissOutside);
-    document.addEventListener("keydown", dismissOnEscape);
-    return () => {
-      document.removeEventListener("pointerdown", dismissOutside);
-      document.removeEventListener("keydown", dismissOnEscape);
-    };
-  }, [openHref, closeMenu]);
+    media.addEventListener("change", resize);
+    return () => media.removeEventListener("change", resize);
+  }, []);
 
   return (
     <>
       <header className="site-header">
         <div className="shell header-inner">
+          <button type="button" className="navigation-button mobile-menu-trigger" ref={mobileTriggerRef}
+            aria-label="Apri menu di navigazione" aria-controls="mobile-navigation" aria-expanded={drawerOpen}
+            aria-haspopup="dialog" onClick={openDrawer}>
+            <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+          </button>
           <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
-            <Image
-              className="brand-mark"
-              src="/brand/dvns-mark-transparent.svg"
-              width={44}
-              height={44}
-              alt=""
-              aria-hidden="true"
-              priority
-            />
-            <span className="brand-text">
-              <strong>Dove vanno i nostri soldi?</strong>
-            </span>
+            <Image className="brand-mark" src="/brand/dvns-mark-transparent.svg" width={44} height={44} alt="" aria-hidden="true" priority />
+            <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
           </Link>
-
           <span className="header-spacer" />
-
           <HeaderSearch />
-
           <div className="header-actions">
-            <Link className="header-action header-action-accent" href="/mcp">
-              Istruzioni MCP
-            </Link>
-            <a
-              className="header-action header-action-icon"
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Codice su GitHub, si apre in una nuova scheda"
-              title="Codice su GitHub"
-            >
+            <Link className="header-action header-action-accent" href="/mcp">Istruzioni MCP</Link>
+            <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
+              aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
               <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />
             </a>
           </div>
         </div>
-
-        <div
-          className="shell nav-row"
-          ref={navRowRef}
-          data-menu-open={openHref ? "true" : undefined}
-          onPointerLeave={(event) => {
-            if (!canHover || event.pointerType === "touch") return;
-            if (isEventTargetWithin(navRowRef.current, event.relatedTarget)) return;
-            closeMenu();
-          }}
-          onBlur={(event) => {
-            // Touch browsers blur/focus unpredictably around the caret; outside
-            // pointerdown and Escape already own dismiss there.
-            if (!canHover) return;
-            if (isEventTargetWithin(navRowRef.current, event.relatedTarget)) return;
-            closeMenu();
-          }}
-        >
-          <nav
-            className="primary-nav"
-            aria-label="Navigazione principale"
-            ref={navigationRef}
-          >
-            <ul className="primary-nav-list">
-              {PRIMARY_NAV.map((item) => {
-                const active = isNavSectionActive(pathname, item);
-                const hasChildren = Boolean(item.children?.length);
-                const menuId = navMenuId(item.href);
-                const open = openHref === item.href;
-                return (
-                  <li
-                    key={item.href}
-                    className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
-                    data-section-active={active ? "true" : undefined}
-                    data-open={open ? "true" : undefined}
-                    onPointerEnter={(event) => {
-                      // Touch uses the caret; mouse/pen transfer the single open slot.
-                      // Do not gate on matchMedia(hover): headless and some hybrids
-                      // report hover:none even when pointer events are mouse-like.
-                      if (event.pointerType === "touch") return;
-                      if (hasChildren) openItem(item.href);
-                      else closeMenu();
-                    }}
-                    onFocusCapture={(event) => {
-                      if (!canHover) return;
-                      if (
-                        hasChildren &&
-                        !(event.target as HTMLElement).matches(".nav-item-toggle")
-                      ) {
-                        openItem(item.href);
-                      }
-                    }}
-                  >
-                    <Link
-                      href={item.href}
-                      aria-current={
-                        pathname === item.href && currentSearch === "" ? "page" : undefined
-                      }
-                      data-section-active={active ? "true" : undefined}
-                      ref={active ? activeLinkRef : undefined}
-                      onClick={closeMenu}
-                    >
-                      <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={17} strokeWidth={1.8} aria-hidden="true" />
-                      {item.label}
-                    </Link>
-                    {hasChildren ? (
-                      <button
-                        type="button"
-                        className="nav-item-toggle"
-                        aria-expanded={open}
-                        aria-controls={menuId}
-                        aria-label={`${open ? "Chiudi" : "Apri"} le pagine in ${item.label}`}
-                        onClick={() =>
-                          setOpenMenu(
-                            open
-                              ? null
-                              : { href: item.href, pathname, search: liveSearch() },
-                          )
-                        }
-                      >
-                        <HugeiconsIcon
-                          icon={ArrowDown01Icon}
-                          size={15}
-                          strokeWidth={1.8}
-                          aria-hidden="true"
-                        />
-                      </button>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          {openSection?.children ? (
-            <div
-              className="nav-submenu"
-              id={navMenuId(openSection.href)}
-              role="region"
-              aria-label={`Pagine in ${openSection.label}`}
-              style={{ ["--nav-submenu-left" as string]: `${submenuLeft}px` }}
-            >
-              <ul>
-                {openSection.children.map((child) => (
-                  <li key={child.href}>
-                    <Link
-                      href={child.href}
-                      aria-current={
-                        currentSearch !== null &&
-                        isNavChildActive(
-                          pathname,
-                          child.href,
-                          openSection.children!,
-                          currentSearch,
-                        )
-                          ? "page"
-                          : undefined
-                      }
-                      onClick={closeMenu}
-                    >
-                      {child.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-          {showScrollControls && hasNavigationOverflow ? (
-            <button
-              type="button"
-              className="nav-scroll-control nav-scroll-control-backward"
-              aria-label="Scorri la navigazione verso sinistra"
-              disabled={!navigationScroll.backward}
-              onClick={() => scrollNavigation("backward")}
-            >
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
-            </button>
-          ) : null}
-          {showScrollControls && hasNavigationOverflow ? (
-            <button
-              type="button"
-              className="nav-scroll-control nav-scroll-control-forward"
-              aria-label="Scorri la navigazione verso destra"
-              disabled={!navigationScroll.forward}
-              onClick={() => scrollNavigation("forward")}
-            >
-              <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
-            </button>
-          ) : null}
-        </div>
       </header>
-      {openHref ? (
-        <button
-          type="button"
-          className="nav-menu-dismiss"
-          aria-label="Chiudi il menu"
-          onClick={closeMenu}
-        />
-      ) : null}
+      <aside className="desktop-sidebar" data-collapsed={collapsed} aria-label="Menu del sito"
+        onBlurCapture={(event) => {
+          // CSS can hide the focused control before the media change callback.
+          if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
+            mobileTriggerRef.current?.focus();
+          }
+        }}>
+        <div className="sidebar-toolbar">
+          <span className="sidebar-heading">Esplora</span>
+          <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
+            aria-label={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
+            title={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
+            aria-expanded={!collapsed} aria-controls="desktop-navigation" onClick={() => setCollapsed(!collapsed)}>
+            <HugeiconsIcon icon={collapsed ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+          </button>
+        </div>
+        <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={collapsed} />
+      </aside>
+      <dialog id="mobile-navigation" className="mobile-navigation" ref={dialogRef} aria-labelledby="mobile-navigation-title"
+        onClose={() => setDrawerOpen(false)}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = [...event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')]
+            .filter((node) => node.getClientRects().length > 0);
+          const first = controls[0];
+          const last = controls.at(-1);
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
+        onPointerDown={(event) => { backdropPointerRef.current = event.target === event.currentTarget; }}
+        onClick={(event) => {
+          if (backdropPointerRef.current && event.target === event.currentTarget) closeDrawer();
+          backdropPointerRef.current = false;
+        }}>
+        <div className="mobile-navigation-panel">
+          <div className="sidebar-toolbar">
+            <h2 id="mobile-navigation-title" className="sidebar-heading">Esplora il sito</h2>
+            <button type="button" className="navigation-button" ref={closeRef} aria-label="Chiudi menu di navigazione" onClick={closeDrawer}>
+              <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+            </button>
+          </div>
+          {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
+        </div>
+      </dialog>
     </>
   );
 }

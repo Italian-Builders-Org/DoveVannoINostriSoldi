@@ -265,7 +265,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                 <h2 id="dataset-rows-title" className="panel-title">Righe pubbliche</h2>
                 <p>{resultSummary}</p>
               </div>
-              {result.query ? <span className="tag tag-neutral">Filtro: {result.query}</span> : null}
+              {result.query ? <span className={`tag tag-neutral ${styles.filterTag}`}>Filtro: {result.query}</span> : null}
             </div>
 
             <ul className={styles.valueLegend}>
@@ -282,6 +282,10 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                 <span>valore protetto, non uno zero</span>
               </li>
             </ul>
+
+            {result.rows.length > 0 && dataset.headers.length > 4 ? (
+              <p className={styles.tableHint}>Scorri la tabella in orizzontale per leggere le altre colonne.</p>
+            ) : null}
 
             {result.rows.length > 0 ? (
               <div className={`table-scroll ${styles.dataTable}`} role="region" aria-label={`Righe di ${dataset.title}`} tabIndex={0}>

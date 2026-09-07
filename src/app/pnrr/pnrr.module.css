@@ -1,0 +1,55 @@
+.page { display: grid; gap: 1.5rem; min-width: 0; }
+.intro { max-width: 55rem; }
+.intro h1 { font-size: clamp(2rem, 4.5vw, 3.25rem); line-height: 1.12; letter-spacing: -.035em; margin: .5rem 0 1rem; }
+.intro > p:not(.eyebrow) { line-height: 1.65; }
+.eyebrow { color: var(--color-neutral-700); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
+.scope { font-size: .9rem; color: var(--color-neutral-700); }
+.links, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.links { font-size: .9rem; }
+.note { padding: 1.15rem 1.35rem; border: 1px solid var(--color-neutral-300); background: var(--color-surface); line-height: 1.65; }
+.filters { padding: 1.5rem; min-width: 0; }
+.filters h2 { margin: 0 0 1rem; font-size: 1.25rem; }
+.filterGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.field { display: grid; gap: .4rem; min-width: 0; font-size: .9rem; font-weight: 600; }
+.field input, .field select { width: 100%; min-width: 0; min-height: 2.8rem; border: 1px solid var(--color-neutral-300); border-radius: .5rem; padding: .65rem .75rem; background: var(--color-bg); color: var(--color-text); font: inherit; font-weight: 400; }
+.advanced { margin: 1rem 0; }
+.advanced summary, .detail summary { cursor: pointer; padding: .65rem 0; font-weight: 600; line-height: 1.5; }
+.advanced[open] .filterGrid { padding-top: .8rem; }
+.advanced p, .detail p { color: var(--color-neutral-700); font-size: .88rem; line-height: 1.6; }
+.actions button { min-height: 2.8rem; border: 1px solid var(--color-text); border-radius: .5rem; background: var(--color-text); color: var(--color-bg); padding: .7rem 1.2rem; font: inherit; font-weight: 700; cursor: pointer; }
+.actions a { padding: .6rem 0; }
+.error { border: 1px solid var(--color-neutral-300); padding: 1rem; line-height: 1.6; }
+.results { min-width: 0; }
+.resultHeading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .7rem; margin-bottom: 1rem; }
+.resultHeading h2 { margin: 0 0 .5rem; font-size: 1.35rem; }
+.resultHeading p { margin: 0; font-size: .85rem; color: var(--color-neutral-700); line-height: 1.6; }
+.projectList { border-top: 1px solid var(--color-neutral-300); }
+.project { padding: 1.5rem 0; border-bottom: 1px solid var(--color-neutral-300); overflow-wrap: anywhere; }
+.project h3 { font-size: 1.12rem; line-height: 1.5; margin: .6rem 0; }
+.projectMeta { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; font-size: .75rem; color: var(--color-neutral-700); margin: 0; }
+.measure { color: var(--color-neutral-700); line-height: 1.6; font-size: .88rem; }
+.facts { display: grid; grid-template-columns: 1fr 1.5fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.facts > div { min-width: 0; }
+.facts dt { font-size: .75rem; color: var(--color-neutral-700); line-height: 1.5; margin-bottom: .3rem; }
+.facts dd { font-size: .88rem; line-height: 1.6; margin: 0; }
+.detail { margin-top: .5rem; }
+.detail summary { font-size: .85rem; }
+.detail h4 { font-size: .9rem; }
+.locations { font-size: .85rem; line-height: 1.75; padding-left: 1.2rem; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+.pagination a { padding: .8rem 1rem; border: 1px solid var(--color-neutral-300); border-radius: .5rem; font-weight: 600; }
+.pagination span { font-size: .85rem; color: var(--color-neutral-700); }
+.sources { padding: 1.5rem; }
+.sources h2 { margin-top: 0; font-size: 1.25rem; }
+.sources p { font-size: .9rem; line-height: 1.7; }
+.verticals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.verticals a { display: grid; gap: .7rem; border: 1px solid var(--color-neutral-300); border-radius: .75rem; padding: 1.25rem; text-decoration: none; }
+.verticals span { font-size: .9rem; color: var(--color-neutral-700); line-height: 1.6; }
+.page :is(a, button, input, select, summary):focus-visible { outline: 3px solid var(--color-accent-700); outline-offset: 3px; }
+@media (max-width: 720px) {
+  .filterGrid, .verticals { grid-template-columns: minmax(0, 1fr); }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filters, .sources { padding: 1rem; }
+  .note { padding: 1rem; }
+}
+@media (max-width: 380px) { .facts { grid-template-columns: minmax(0, 1fr); } }

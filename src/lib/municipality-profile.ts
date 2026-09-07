@@ -4,6 +4,7 @@ import type { IpaEntity } from "@/lib/ipa";
 import type { OpenCivitasMunicipality, OpenCivitasSnapshot } from "@/lib/data/opencivitas-contract";
 import type { PnrrChildcareMeta } from "@/lib/data/pnrr-childcare-contract";
 import type { MefIrpefQueryResult, MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
+import { getMunicipalitySchoolServices, type MunicipalitySchoolServices } from "@/lib/municipality-school-services";
 import {
   getSiopeMunicipalityDetail,
   getSiopeMunicipalityPeerObservations,
@@ -44,6 +45,7 @@ export type MunicipalityProfile = Readonly<{
     methodology: MefIrpefQueryResult["methodology"];
     source: MefIrpefQueryResult["provenance"]["source"];
   }>>;
+  schoolServices: MunicipalitySchoolServices;
   openCivitas: ProfileSection<Readonly<{
     referenceYear: number;
     publishedAt: string;
@@ -277,6 +279,11 @@ export async function getMunicipalityProfile(
   const pnrrProjects = [...pnrrModule.getPnrrChildcareProjectsByImplementerTaxCode(taxCode)]
     .sort((left, right) => left.cup.localeCompare(right.cup, "en"));
   const projectsWithKnownFunding = pnrrProjects.filter((project) => project.funding.totalCents !== null);
+  const schoolServices = await getMunicipalitySchoolServices(
+    irpef.status === "available" && irpef.data.record.territory.level === "municipality"
+      ? irpef.data.record.territory
+      : null,
+  );
 
   return {
     identifiers: {
@@ -298,6 +305,7 @@ export async function getMunicipalityProfile(
         : null,
     },
     irpef,
+    schoolServices,
     openCivitas,
     pnrrChildcare: {
       status: "available",

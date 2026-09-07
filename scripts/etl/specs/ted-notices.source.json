@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "ted-avvisi-italia-2026-08",
+  "url": "https://api.ted.europa.eu/v3/notices/search",
+  "holder": "Ufficio delle pubblicazioni dell’Unione europea",
+  "license": "Riuso libero degli avvisi GUUE, salvo diversa indicazione; decisione 2011/833/UE; metadati SIMAP CC0 1.0",
+  "referencePeriod": "2026-08-01/2026-08-31",
+  "acquisitionDate": "2026-09-06",
+  "publicationDate": null,
+  "request": {
+    "query": "buyer-country = ITA AND publication-date >= 20260801 AND publication-date <= 20260831 SORT BY publication-number",
+    "fields": [
+      "publication-number",
+      "publication-date",
+      "notice-title",
+      "buyer-name",
+      "buyer-country",
+      "form-type",
+      "classification-cpv"
+    ],
+    "limit": 250,
+    "scope": "ALL",
+    "checkQuerySyntax": false,
+    "paginationMode": "PAGE_NUMBER"
+  },
+  "totalNotices": 2825,
+  "forms": {
+    "result": 1450,
+    "competition": 1210,
+    "cont-modif": 84,
+    "planning": 39,
+    "dir-awa-pre": 32,
+    "consultation": 10
+  },
+  "internationalNotices": 3,
+  "englishBuyerNotices": 21,
+  "pages": [
+    {
+      "path": "page-01.json",
+      "bytes": 2649172,
+      "sha256": "2d1f8889e101f268dff6bc02dbb9ad6057886d09ff88c41e6c35272912d0f350",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-01.json.gz",
+        "bytes": 272934,
+        "sha256": "c1bc9e38bb5e67fcaf531ab9142d02065984d2dda8de04599f259c4466a2b1ac"
+      }
+    },
+    {
+      "path": "page-02.json",
+      "bytes": 2637857,
+      "sha256": "4fc7edc76d080137e4fe584207e271c8c32e54c7ec4d62929304bb94eafa8a46",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-02.json.gz",
+        "bytes": 271061,
+        "sha256": "117d04883cefe5bce9926050c248e491888a872d372ce63bb9c4dd5c4583dbe0"
+      }
+    },
+    {
+      "path": "page-03.json",
+      "bytes": 2586878,
+      "sha256": "53c318c7d1fa1f33ddc41d5f49ba735925c11e7b46043aedeba3cc0734008d93",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-03.json.gz",
+        "bytes": 274346,
+        "sha256": "99387b3e6d877dd5e684e59583cfc79bc8413c1bcbee7d110c946997701aba57"
+      }
+    },
+    {
+      "path": "page-04.json",
+      "bytes": 2611649,
+      "sha256": "9bf02cb3f0ca5d6ad49d7ce1bf2099b8bb26b66eb72c92a3b70bd0bfcdd96c56",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-04.json.gz",
+        "bytes": 274663,
+        "sha256": "902ec395888a664752ccfad7a8bbfe3fd45039179b70cd6a792c1bfd1523ead1"
+      }
+    },
+    {
+      "path": "page-05.json",
+      "bytes": 2625147,
+      "sha256": "668b531d5c2c6c3c24e26681b1f104ba416adb638c53b121bcbc73be4fa7c9aa",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-05.json.gz",
+        "bytes": 270424,
+        "sha256": "92a22f4f1695ae9446afac0428c7268dbf1b640411d929cd1f12c3511781bfa4"
+      }
+    },
+    {
+      "path": "page-06.json",
+      "bytes": 2751289,
+      "sha256": "2717ec7fe84aed1b8fe63fe820b8e68ab8eed0f2eb303970807d153deddfbaa3",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-06.json.gz",
+        "bytes": 278917,
+        "sha256": "e6f186cff515c0f5618cb0ee50b7df17dcb547f95a01a44984279d6d0b4eb936"
+      }
+    },
+    {
+      "path": "page-07.json",
+      "bytes": 2662337,
+      "sha256": "e0731421e81672aebc687c5487a69660eb1796c8eff14b0e2754f232e42f608e",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-07.json.gz",
+        "bytes": 278345,
+        "sha256": "3c9864f85dca8bfc0aa011d7e99dcbd953e0cc5a78c87ea5279cb85e091ce510"
+      }
+    },
+    {
+      "path": "page-08.json",
+      "bytes": 2643734,
+      "sha256": "7d83dcd32c7b2fa918a33486246e4399fd18ffe32bb54e1dc24929dc9e041a49",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-08.json.gz",
+        "bytes": 279831,
+        "sha256": "695b7d568bddb80da3de01e82abe5c0caabfe8a0985ea1a7dad01694781c33cb"
+      }
+    },
+    {
+      "path": "page-09.json",
+      "bytes": 2514750,
+      "sha256": "b660a1ce060d2cdea277333d32b1e05cd9233a6d9e4cc9af7f2131c69b0291d1",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-09.json.gz",
+        "bytes": 269584,
+        "sha256": "1bfaa0644fa3b8d1d97636094e8ed0dfb19411522ba19577241fb5ff049bc0a5"
+      }
+    },
+    {
+      "path": "page-10.json",
+      "bytes": 2630649,
+      "sha256": "3506e129b8897129312922c111aa01badb82bfeddb534ead9d6fddc1790c230d",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-10.json.gz",
+        "bytes": 278246,
+        "sha256": "e68517d17e8e6b32ccb3ed491174680ba76a301a6434ae8cc386ebc1779ca507"
+      }
+    },
+    {
+      "path": "page-11.json",
+      "bytes": 2640422,
+      "sha256": "c97d63a9b194805fafb917106e17b7502e9e15a3ef8aad5dd6a73dd449f16727",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-11.json.gz",
+        "bytes": 272720,
+        "sha256": "669e813c785984869b51d4f82e4164faff4ab0b8e6df9677398f3bdf71ed7031"
+      }
+    },
+    {
+      "path": "page-12.json",
+      "bytes": 734704,
+      "sha256": "ed31bdc698d8b54ffa5a4286b53f850f57b770e48e3f1373d8ba108d8abfff64",
+      "rows": 75,
+      "fixture": {
+        "path": "tests/fixtures/ted-notices/page-12.json.gz",
+        "bytes": 77369,
+        "sha256": "883f5b2f38dd2bb77b3383c140ef0fa87e008c59bd4e97f5ff44f830565678cb"
+      }
+    }
+  ],
+  "references": [
+    {
+      "url": "https://ted.europa.eu/en/legal-notice",
+      "bytes": 212081,
+      "sha256": "42109000cad2aa39d34873198e38f854b1ad27998954b1ad6dd428cce813f3ff"
+    },
+    {
+      "url": "https://docs.ted.europa.eu/ODS/latest/reuse/search-api.html",
+      "bytes": 28669,
+      "sha256": "28d2fa9ad8fbeabc3d85c1f9c7c784bf417f09fc06affd0b9e1e13c48f8ae9dc"
+    }
+  ],
+  "publicHeaders": [
+    "Numero pubblicazione",
+    "Data pubblicazione",
+    "Tipo avviso",
+    "Titolo",
+    "Committenti",
+    "Lingua committenti",
+    "Paesi committenti",
+    "Codici CPV",
+    "URL avviso"
+  ]
+}

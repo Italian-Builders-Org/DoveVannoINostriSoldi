@@ -12,12 +12,32 @@ const {
   formatGovernmentChartPeriod,
   formatGovernmentChartPublicationStatus,
   formatGovernmentChartPointStatus,
+  getGovernmentChartSelection,
   GOVERNMENT_CHART_COLORS,
   hasGovernmentChartTrend,
   isGovernmentChartPointInWindow,
   isGovernmentChartStartBoundaryPeriod,
   splitGovernmentChartAtMissingPeriods,
 } = await import("../src/app/governi/_components/chart-utils.ts");
+
+test("selection compares the exact selected observation with the start, without filling gaps", () => {
+  const points = [
+    { period: "2008-05", value: 3.7, status: "observed" },
+    { period: "2009-02", value: 1.4, status: "estimated" },
+    { period: "2011-11", value: 3.7, status: "observed" },
+  ];
+  const selected = getGovernmentChartSelection(points, "2009-02");
+  assert.equal(selected.selected, points[1]);
+  assert.equal(selected.first, points[0]);
+  assert.ok(Math.abs(selected.change - (-2.3)) < 1e-10);
+  assert.equal(getGovernmentChartSelection(points, "2008-05").change, 0);
+  assert.equal(getGovernmentChartSelection(points, "2011-11").change, 0);
+  assert.equal(getGovernmentChartSelection(points, "2010-01").change, null);
+  assert.equal(getGovernmentChartSelection(points, null).selected, undefined);
+  assert.equal(getGovernmentChartSelection([], "2009-02").change, null);
+  assert.equal(getGovernmentChartSelection([points[0]], "2008-05").change, null);
+  assert.equal(getGovernmentChartSelection([{ period: "2020", value: 0 }, { period: "2021", value: -2 }], "2021").change, -2);
+});
 
 test("pointer positions map to the closest bounded chart period", () => {
   assert.equal(getClosestGovernmentChartPointIndex(0, 100), null);

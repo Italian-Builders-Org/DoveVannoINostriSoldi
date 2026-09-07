@@ -18,6 +18,89 @@
       "canonicalUrls": []
     },
     "overrides": {
+      "ted-avvisi-italia-2026-08": {
+        "holder": "Ufficio delle pubblicazioni dell’Unione europea",
+        "referencePeriod": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "quotidiana alla fonte; snapshot mensile con acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://api.ted.europa.eu/v3/notices/search",
+          "https://docs.ted.europa.eu/ODS/latest/reuse/search-api.html",
+          "https://ted.europa.eu/en/legal-notice",
+          "https://ted.europa.eu/it/"
+        ]
+      },
+      "mim-scuole-statali-comuni": {
+        "holder": "Ministero dell'Istruzione e del Merito",
+        "referencePeriod": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://dati.istruzione.it/opendata/approfondimenti/dizionario/",
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20262720260901.csv",
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT",
+          "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.zip"
+        ]
+      },
+      "istat-misura-comune-vecchiaia": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
+      "istat-misura-comune-dipendenza-anziani": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
+      "istat-misura-comune-dipendenza-strutturale": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "periodica; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/statistica-sperimentale/aggiornamento-degli-indicatori-del-sistema-informativo-a-misura-di-comune/",
+          "https://www.istat.it/storage/misura-comune/1d-Popolazione-indicatori-struttura.xlsx",
+          "https://www.istat.it/storage/misura-comune/Nota-metodologica.pdf"
+        ]
+      },
+      "salute-posti-letto-2023": {
+        "holder": "Ministero della Salute",
+        "referencePeriod": "2023-01-01",
+        "publicationDate": "2025-07-29",
+        "acquisitionDate": "2026-09-06",
+        "checkedAt": "2026-09-06",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/dati/documenti/Dataset-PostiLettoRegioneDisciplina2020.pdf",
+          "https://www.dati.salute.gov.it/it/dataset/posti-letto-regione-e-disciplina-2023/",
+          "https://www.dati.salute.gov.it/sites/default/files/2025-07/Posti%20letto%20per%20Regione%20e%20disciplina_2023_0.csv"
+        ]
+      },
       "affidamenti-diretti": {
         "referencePeriod": "2024-2026"
       },
@@ -187,8 +270,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -202,8 +285,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -217,8 +300,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -232,8 +315,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -242,10 +325,378 @@
           "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
           "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
         ]
+      },
+      "siope-uscite-asl": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
+      },
+      "pnrr-progetti": {
+        "holder": "Ministero dell’Economia e delle Finanze · Ragioneria Generale dello Stato · Italia Domani / ReGiS",
+        "referencePeriod": "2026-06-13",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "periodica alla fonte; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/4.0/legalcode.it",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Localizzazione.csv",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Localizzazione_Metadati.zip",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti.csv",
+          "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti_Metadati.zip",
+          "https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html"
+        ]
       }
     }
   },
   "datasets": [
+    {
+      "id": "pnrr-progetti",
+      "title": "PNRR · catalogo nazionale dei progetti · 13 giugno 2026",
+      "domain": "cohesion",
+      "relativePath": "pnrr-progetti.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL progetti",
+        "URL localizzazioni"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "291398 registrazioni CUP/CLP/submisura, 285992 CUP formalmente validi e due registrazioni con segnaposto N/A e N/A2. Uno stesso CUP può avere più CLP o submisure: le righe non sono CUP unici.",
+        "Importi in euro decimali con virgola: finanziamento PNRR e finanziamento totale del progetto restano distinti. Non sono pagamenti osservati, spesa sostenuta o somme da attribuire automaticamente a un territorio. Lo zero della fonte resta zero; le celle vuote restano mancanti.",
+        "Fotografia ReGiS del 13 giugno 2026, acquisita il 7 settembre 2026, anche per progetti non validati. Stato del progetto ed esito della validazione non certificano erogazione del servizio o ritardo.",
+        "Localizzazioni è un array JSON di tuple: Regione, Descrizione Regione, Provincia, Descrizione Provincia, Comune, Descrizione Comune, Percentuale di Localizzazione. Contiene tutte le 347602 righe territoriali collegate esattamente per CUP, CLP e submisura; 40 registrazioni non hanno localizzazione. Indirizzi e CAP non sono ripubblicati.",
+        "Il codice Comune è relativo alla Provincia: il filtro comunale usa Provincia+Comune (sei cifre). Regione 000 significa ambito nazionale; Provincia/Comune 000 non identificano un comune. I codici sono quelli storici della fonte, senza raccordo automatico ai confini attuali.",
+        "Soggetto attuatore e localizzazione fisica sono dimensioni diverse. Progetti multiterritoriali restano una sola registrazione nei risultati filtrati. Non ripartiamo né sommiamo importi per localizzazione.",
+        "94 codici fiscali sono oscurati dalla fonte con asterischi e due sono vuoti: non sono ricostruiti o indicizzati. Otto registrazioni non hanno Codice Univoco Misura ma conservano la submisura. I segnaposto CUP non sono indicizzati come CUP validi.",
+        "Fonte: MEF-RGS, Italia Domani, versione 13.0, CC BY 4.0. Proiezione DVNS dei CSV Progetti e Localizzazione; source lock con hash e byte anche dei metadati. I file originali sono acquisiti fuori dal runtime e dal repository, secondo ADR 0001. Nessun pagamento ReGiS, gara o aggiudicatario è aggiunto da questa proiezione."
+      ],
+      "expected": {
+        "bytes": 222755495,
+        "sha256": "0039c9020434f53a14bdba14a808a6d845029cff368a18f69fc7404bc972463a",
+        "rows": 291398,
+        "columns": 28,
+        "headers": [
+          "CUP",
+          "Codice Locale Progetto",
+          "Missione",
+          "Descrizione Missione",
+          "Componente",
+          "Descrizione Componente",
+          "Codice Univoco Misura",
+          "Descrizione Misura",
+          "Codice Univoco Submisura",
+          "Descrizione Submisura",
+          "Amministrazione Titolare",
+          "Titolo Progetto",
+          "Soggetto Attuatore",
+          "Codice Fiscale Soggetto Attuatore",
+          "Stato CUP",
+          "Stato Avanzamento Progetto",
+          "Finanziamento PNRR",
+          "Finanziamento Totale",
+          "Esito Ultima Validazione",
+          "Data Ultima Validazione",
+          "Data Inizio Progetto Prevista",
+          "Data Inizio Progetto Effettiva",
+          "Data Fine Progetto Prevista",
+          "Data Fine Progetto Effettiva",
+          "Data di Estrazione",
+          "Localizzazioni",
+          "URL progetti",
+          "URL localizzazioni"
+        ]
+      }
+    },
+    {
+      "id": "ted-avvisi-italia-2026-08",
+      "title": "Avvisi TED · committenti in Italia · agosto 2026",
+      "domain": "procurement",
+      "relativePath": "ted-avvisi-italia-2026-08.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-eu-reuse",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL avviso"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Unità: avvisi pubblicati sul Supplemento alla GUUE, identificati dal numero di pubblicazione. Non sono contratti, lotti, CIG unici o pagamenti. Questa proiezione non contiene misure monetarie.",
+        "Perimetro: almeno un committente con buyer-country=ITA; comprende enti UE con sede in Italia e 3 avvisi con committenti di più paesi. Non identifica il luogo di esecuzione e non copre tutti gli appalti italiani.",
+        "Periodo: pubblicazione dal 1 al 31 agosto 2026, non data di aggiudicazione o pagamento. 2825 avvisi in 12 pagine complete, acquisiti il 6 settembre 2026; la fonte pubblica quotidianamente, lo snapshot è mensile e aggiornato con revisione manuale.",
+        "I tipi originali restano distinti: result=1450, competition=1210, cont-modif=84, planning=39, dir-awa-pre=32, consultation=10. Un risultato non certifica un contratto aggiudicato; possono esserci modifiche, annullamenti e più lotti nello stesso avviso.",
+        "TED e ANAC possono descrivere le stesse procedure: non sommare i due perimetri. Nessun join per CIG estratto dal testo o per nomi e nessuna inferenza di elusione, frode o spreco.",
+        "Titolo italiano come pubblicato. Per i committenti si usa la versione italiana, oppure quella inglese nei 21 avvisi senza italiano; lingua esplicita. Nomi, paesi e CPV sono array JSON originali, non associazioni per posizione né record di lotto.",
+        "Riuso degli avvisi GUUE consentito dalla nota TED, salvo diversa indicazione, ai sensi della decisione 2011/833/UE. Metadati SIMAP CC0 1.0. Non attribuiamo agli avvisi la CC BY 4.0 del testo editoriale TED. © Unione europea; proiezione DVNS.",
+        "La data di pubblicazione è conservata in ogni riga. La risposta API mensile non dichiara una distinta data di rilascio: publicationDate del dataset resta null. I byte delle 12 risposte originali e gli hash sono verificabili offline."
+      ],
+      "expected": {
+        "bytes": 1217822,
+        "sha256": "f5125940d68d72f1f29a228e3a3f07641f182df6535b46acee2a0c49049a05eb",
+        "rows": 2825,
+        "columns": 9,
+        "headers": [
+          "Numero pubblicazione",
+          "Data pubblicazione",
+          "Tipo avviso",
+          "Titolo",
+          "Committenti",
+          "Lingua committenti",
+          "Paesi committenti",
+          "Codici CPV",
+          "URL avviso"
+        ]
+      }
+    },
+    {
+      "id": "mim-scuole-statali-comuni",
+      "title": "Scuole statali · sedi per Comune",
+      "domain": "education",
+      "relativePath": "mim-scuole-statali-comuni.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Conteggio DVNS dei codici scuola unici dell’anagrafe MIM: SEDESCOLASTICA=SI per le sedi, NO per gli altri codici. Non è una misura monetaria e non va sommata alla spesa pubblica.",
+        "Unità: codici scolastici censiti come sedi. I punti di servizio non sono edifici distinti, posti disponibili, qualità didattica o accessibilità misurata.",
+        "Copertura: sole scuole statali; Aosta, Trento e Bolzano sono esclusi dal file MIM. Scuole paritarie, asili nido e altre anagrafi restano fuori perimetro.",
+        "Uno zero conta nessun codice marcato SI fra i record presenti per quel Comune. Un Comune senza record resta assente; nessuno dei due casi prova che il servizio non esista.",
+        "50273 codici sorgente = 39713 sedi SI + 10560 altri codici NO; 6648 Comuni con record, di cui 6518 con almeno una sede SI. Il corpus conta le 6648 righe della proiezione comunale, non i record originali.",
+        "Raccordo esatto per codice catastale e regione con l’anagrafe MEF comunale 2024: tutti i codici MIM sono riconciliati a un solo codice ISTAT. Nessun confronto di nomi o dato fiscale entra nel conteggio.",
+        "Licenza dell’anagrafe MIM: IODL 2.0. Il raccordo dei codici usa MEF – Dipartimento delle Finanze, CC BY 3.0 IT, con attribuzione separata; le condizioni di una fonte non sono estese all’altra.",
+        "La scheda MIM riporta pubblicazione del dataset al 18 giugno 2026, mentre il CSV 2026/27 dichiara dati al 1° settembre 2026. La data di pubblicazione della specifica distribuzione non è dichiarata."
+      ],
+      "expected": {
+        "bytes": 357029,
+        "sha256": "aad5f83980537066fbdec346cdee05fadc45f8c0c79fc9b085d756581f8c4653",
+        "rows": 6648,
+        "columns": 8,
+        "headers": [
+          "Anno scolastico",
+          "Codice ISTAT comune",
+          "Codice catastale",
+          "Comune",
+          "Provincia",
+          "Regione",
+          "Sedi scolastiche statali",
+          "Altri codici anagrafici"
+        ]
+      }
+    },
+    {
+      "id": "istat-misura-comune-vecchiaia",
+      "title": "A misura di Comune · Indice di vecchiaia",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-vecchiaia.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. Residenti al 31 dicembre di 65 anni e più/ Residenti al  31 dicembre in età da 0 a 14 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "N.C. significa indicatore non calcolabile perché la popolazione da 0 a 14 anni è zero: non è uno zero dell’indice e non è una soppressione per privacy.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 1906126,
+        "sha256": "c2dc26259ca1e199dd220383fb7335c2d069511bceebd28287c8987ea1434f07",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-anziani",
+      "title": "A misura di Comune · Indice di dipendenza anziani",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-dipendenza-anziani.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. Residenti al 31 dicembre di 65 anni e più / Residenti al 31 dicembre  in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 1997858,
+        "sha256": "2ae2c5b7f7dd0bef1aa413c2a53511d974c71ba0b1cbc98e1cc5e798ea0764c7",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
+    {
+      "id": "istat-misura-comune-dipendenza-strutturale",
+      "title": "A misura di Comune · Indice di dipendenza strutturale",
+      "domain": "demography",
+      "relativePath": "istat-misura-comune-dipendenza-strutturale.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Sistema informativo ISTAT A misura di Comune, classificato come statistica sperimentale. Tre indicatori demografici comunali, non spesa pubblica, reddito o indici compositi di benessere.",
+        "Unità: rapporto per 100. (Residenti al 31 dicembre in età da 0 a 14 anni + Residenti al 31 dicembre di 65 anni e più) / Residenti al  31 dicembre in età da 15 a 64 anni * 100. A partire dal 2018 i dati tengono conto dei risultati del Censimento permanente della popolazione.",
+        "Ogni colonna dal 2014 al 2024 indica il valore al 31 dicembre del relativo anno. Non sommare o mediare i rapporti tra Comuni, anni o indicatori.",
+        "Confini comunali al 31 dicembre 2024, ricostruiti dalla fonte lungo la serie: fusioni e cambi di provincia seguono la geografia ISTAT della release. Nessuna imputazione DVNS da province o regioni.",
+        "Il simbolo originale .. indica un dato non ricostruibile nella fonte amministrativa, distinto da zero. Mappano manca dal 2014 al 2016 e Misiliscemi dal 2014 al 2020. Non ricostruire i valori assenti.",
+        "Dal 2018 i dati tengono conto del Censimento permanente della popolazione. Contesto demografico, non qualità dei servizi, efficienza o responsabilità amministrativa.",
+        "Proiezione DVNS delle sole tabelle comunali del file ISTAT: valori numerici originali conservati come stringhe, senza arrotondamenti. Fonte ISTAT. Tavole aggiornate al 1° gennaio 2026; pagina aggiornata il 26 maggio 2026; data di pubblicazione della specifica release non dichiarata. Il file non dichiara una licenza specifica: le note legali del sito prevedono CC BY 4.0 salvo diversa indicazione."
+      ],
+      "expected": {
+        "bytes": 2005378,
+        "sha256": "0bb14ec71cdd3e6e4f4ee4b5b23ff81b842336cc277dc2859387995cba435dc0",
+        "rows": 7896,
+        "columns": 18,
+        "headers": [
+          "Ripartizione",
+          "Codice regione",
+          "Denominazione regione",
+          "Provincia",
+          "Capoluogo",
+          "Denominazione comune",
+          "Codice comune Istat",
+          "2014",
+          "2015",
+          "2016",
+          "2017",
+          "2018",
+          "2019",
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      }
+    },
+    {
+      "id": "salute-posti-letto-2023",
+      "title": "Posti letto per Regione e disciplina · 2023",
+      "domain": "health",
+      "relativePath": "salute-posti-letto-2023.csv",
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "encoding": "latin-1",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Dotazione al 1° gennaio 2023 delle strutture pubbliche ed equiparate e dell’attività accreditata delle case di cura private: conteggi di posti letto e reparti, non importi né spesa pubblica.",
+        "Il totale comprende degenza ordinaria, a pagamento, day hospital e day surgery. Acuti, riabilitazione e lungodegenza sono distinti; la disciplina Nido è esclusa.",
+        "La geografia indica dove si trovano le strutture, non la residenza dei pazienti. Bolzano e Trento restano Province autonome separate.",
+        "Eventuali modelli HSP12/HSP13 non trasmessi limitano la completezza: le righe assenti non sono zeri e non si stimano i posti mancanti.",
+        "Non misura pazienti curati, tempi di attesa, outcome, qualità o efficienza. Non calcolare costi per posto letto dal CE 2024: anno e perimetro contabile sono diversi.",
+        "Licenza dichiarata dalla scheda del dataset: Italian Open Data License (IODL) 2.0. Rilascio pubblicato il 29 luglio 2025; acquisizione del 6 settembre 2026."
+      ],
+      "expected": {
+        "bytes": 86277,
+        "sha256": "365a98b0ee40137dc8c477d17e429cdf6a150a04bc41cb666de2072117d1b39b",
+        "rows": 1019,
+        "columns": 12,
+        "headers": [
+          "Anno",
+          "Codice Regione",
+          "Descrizione Regione",
+          "Codice disciplina",
+          "Descrizione disciplina",
+          "Tipo di Disciplina",
+          "N° Reparti",
+          "Posti letto degenza ordinaria",
+          "Posti letto degenza a pagamento",
+          "Posti letto Day Hospital",
+          "Posti letto Day Surgery",
+          "Totale posti letto"
+        ]
+      }
+    },
     {
       "id": "siope-inventario-enti",
       "title": "SIOPE: inventario enti",
@@ -260,16 +711,66 @@
       "sourceFields": [],
       "privateFields": [],
       "caveats": [
-        "Censimento SIOPE per tipo e anno: gli importi degli enti diversi da Province, Regioni e Città metropolitane non sono pubblicati come pagamenti.",
+        "Censimento SIOPE per tipo e anno: gli importi degli enti diversi da ASL, Province, Regioni e Città metropolitane non sono pubblicati come pagamenti.",
         "Zero indica un movimento osservato di importo zero; assenza di movimenti resta distinta da zero.",
         "Il file 2026 è un anno in corso e non va trattato come annualità completa."
       ],
       "expected": {
-        "bytes": 48836,
-        "sha256": "396cc496684e041790e7a454c7f8972c4abc14af1cd4760819a6fa5935c5e59e",
+        "bytes": 48857,
+        "sha256": "9f36b8b9c0d8671205d78b3dcc0c8481bdf95af2f93446dc1b25ee4b78606979",
         "rows": 201,
         "columns": 20,
         "headers": ["entityType", "year", "registryRows", "distinctSiopeCodes", "distinctTaxCodes", "validAtObservationCodes", "observedSiopeCodes", "withoutMovementsCodes", "observedMonths", "rawMovementRows", "knownAmountCents", "ipaMatched", "ipaUnmatched", "ipaAmbiguous", "ipaMatchedAmountCents", "ipaUnmatchedAmountCents", "ipaAmbiguousAmountCents", "coverageStatus", "coverageNote", "productStatus"]
+      }
+    },
+    {
+      "id": "siope-uscite-asl",
+      "title": "SIOPE: pagamenti delle ASL",
+      "domain": "public-spending",
+      "relativePath": "siope-uscite-asl.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Solo enti di tipo ASL nel registro SIOPE: non rappresenta tutti gli enti del Servizio Sanitario Nazionale.",
+        "Importi in centesimi di euro: pagamenti di cassa, distinti dai costi di competenza economica del Conto Economico SSN. Le due misure non si sommano.",
+        "Comparto SAN: titleCode e titleLabel conservano il codice gestionale a quattro cifre e la sua descrizione ufficiale, non i titoli di bilancio degli enti territoriali.",
+        "Il join IPA usa esclusivamente il codice fiscale esatto e univoco. Le righe senza corrispondenza restano pubbliche con stato unmatched; i nomi non sono chiavi di join.",
+        "La sede legale non indica il destinatario del pagamento. Nessun consolidamento territoriale o indicatore di efficienza.",
+        "Il 2026 è parziale e revisionabile: sono pubblicati solo i mesi osservati, con il mese più recente potenzialmente incompleto.",
+        "Zero è un movimento osservato. Assenza di movimenti e fuori validità restano distinti da zero."
+      ],
+      "expected": {
+        "bytes": 90594836,
+        "sha256": "3c93c4a2069627bb4052594a53a9981615a8080b654391c5283cb57a21453348",
+        "rows": 334479,
+        "columns": 19,
+        "headers": [
+          "entityCode",
+          "taxCode",
+          "codiceIpa",
+          "entityType",
+          "entityName",
+          "validFrom",
+          "validTo",
+          "region",
+          "province",
+          "ipaJoinStatus",
+          "regionJoinStatus",
+          "year",
+          "month",
+          "managementCode",
+          "compartment",
+          "managementLabel",
+          "titleCode",
+          "titleLabel",
+          "amountCents"
+        ]
       }
     },
     {

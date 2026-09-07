@@ -4,6 +4,7 @@ import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { ssnCceSnapshot as data } from "@/lib/ssn-cce-snapshot";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { SsnAccountingComparison } from "./ssn-accounting-comparison";
+import HospitalBeds from "./hospital-beds";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
@@ -120,6 +121,17 @@ export default function HealthSpendingPage() {
           visualizzazione; l&apos;artefatto conserva centesimi interi.
         </p>
       </section>
+
+      <section className="panel" aria-labelledby="asl-cash-title">
+        <h2 className="panel-title" id="asl-cash-title">Cerchi i pagamenti delle ASL?</h2>
+        <p>I pagamenti di cassa SIOPE delle aziende sanitarie locali sono disponibili dal 2024 al 2026. Il 2026 è parziale. Misurano uscite di denaro e restano separati dai costi di competenza economica di questa pagina.</p>
+        <div className={styles.sectionHead}>
+          <Link className="btn" href="/enti?q=ASL">Cerca una ASL</Link>
+          <Link className="btn secondary" href="/dati/siope-uscite-asl">Consulta i movimenti SIOPE</Link>
+        </div>
+      </section>
+
+      <HospitalBeds />
 
       <section className="panel" aria-labelledby="regions-title">
         <div className={styles.sectionHead}>

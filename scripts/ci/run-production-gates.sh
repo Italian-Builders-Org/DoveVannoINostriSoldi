@@ -111,6 +111,10 @@ echo "::group::Browser core suite"
 npm run test:browser:core
 echo "::endgroup::"
 
+echo "::group::Browser chart interactions"
+npm run test:browser:charts
+echo "::endgroup::"
+
 echo "::group::Browser editorial suite"
 npm run test:browser:editorial
 echo "::endgroup::"

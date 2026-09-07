@@ -6,7 +6,6 @@ import csv
 import gzip
 import hashlib
 import io
-import itertools
 import json
 import re
 import sqlite3

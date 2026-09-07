@@ -403,23 +403,6 @@ async function resolveChunkDescriptor(
   return resolved;
 }
 
-async function validatePostingRef(
-  root: string,
-  manifest: OpenCupManifest,
-  ref: PostingRef,
-  budget: QueryBudget,
-  signal?: AbortSignal,
-): Promise<void> {
-  const chunk = await resolveChunkDescriptor(root, manifest, ref.chunkOrdinal, budget, signal);
-  if (
-    ref.sourceRow > manifest.publicRows ||
-    ref.sourceRow < chunk.firstSourceRow ||
-    ref.sourceRow >= chunk.firstSourceRow + chunk.rowCount
-  ) {
-    throw new OpenCupUnavailableError("Riferimento riga OpenCUP fuori dal chunk dichiarato.");
-  }
-}
-
 async function findLeafEntry(
   root: string,
   descriptor: ImmutableObjectDescriptor,
@@ -501,10 +484,9 @@ export async function openCupPostingRefs(
   if ("refs" in entry) {
     let previousSourceRow = 0;
     for (const [position, ref] of entry.refs.entries()) {
-      if (position >= entry.matchedRows || ref.sourceRow <= previousSourceRow) {
+      if (ref.sourceRow <= previousSourceRow || ref.sourceRow > manifest.publicRows || ref.chunkOrdinal >= manifest.chunkCount) {
         throw new OpenCupUnavailableError("Riferimento riga OpenCUP non valido.");
       }
-      await validatePostingRef(root, manifest, ref, budget, signal);
       previousSourceRow = ref.sourceRow;
       if (position >= start && refs.length < maximum) refs.push(ref);
     }
@@ -569,10 +551,9 @@ export async function openCupPostingRefs(
       }
       for (const [offset, ref] of page.refs.entries()) {
         const refPosition = page.start + offset;
-        if (refPosition >= entry.matchedRows || ref.sourceRow <= previousSourceRow) {
+        if (refPosition >= entry.matchedRows || ref.sourceRow <= previousSourceRow || ref.sourceRow > manifest.publicRows || ref.chunkOrdinal >= manifest.chunkCount) {
           throw new OpenCupUnavailableError("Riferimento riga OpenCUP non valido.");
         }
-        await validatePostingRef(root, manifest, ref, budget, signal);
         previousSourceRow = ref.sourceRow;
         if (refPosition >= start && refs.length < maximum) refs.push(ref);
       }
@@ -610,6 +591,9 @@ export async function loadOpenCupRows(
   for (const ref of match.refs) {
     throwIfAborted(signal);
     if (loadedOrdinal !== ref.chunkOrdinal) {
+      // Reserve both the descriptor group (if absent) and the row object.
+      const neededReads = match.budget.chunkDescriptors.has(ref.chunkOrdinal) ? 1 : 2;
+      if (match.budget.objectReads + neededReads > MAX_OBJECT_READS) break;
       const chunk = await resolveChunkDescriptor(
         match.root,
         match.manifest,
@@ -617,6 +601,9 @@ export async function loadOpenCupRows(
         match.budget,
         signal,
       );
+      if (ref.sourceRow < chunk.firstSourceRow || ref.sourceRow >= chunk.firstSourceRow + chunk.rowCount) {
+        throw new OpenCupUnavailableError("Riferimento riga OpenCUP fuori dal chunk dichiarato.");
+      }
       if (
         match.budget.objectReads >= MAX_OBJECT_READS ||
         match.budget.rawBytes + chunk.rawBytes > MAX_RAW_BYTES
@@ -666,6 +653,10 @@ export async function loadOpenCupRows(
           ) ||
           row.sourceUrls.some((url) => !isSafePublicHttpUrl(url)) ||
           row.sourceUrls.join("\n") !== expectedSourceUrls.join("\n") ||
+          ["COSTO_PROGETTO", "FINANZIAMENTO_PROGETTO"].some((field) => {
+            const value = row.cells[field];
+            return value !== null && !/^[0-9]+$/.test(value);
+          }) ||
           privateFields.some((field) => {
             const cell = row.cells[field];
             const matchingRedactions = row.redactions.filter(
@@ -729,8 +720,6 @@ export async function probeOpenCupRelease(signal?: AbortSignal) {
     observedAt: manifest.observedAt,
     publicationDate: manifest.publicationDate,
     publicRows: manifest.publicRows,
-    // Transitional consumer compatibility; the manifest itself has no ambiguous publishedAt field.
-    publishedAt: manifest.publicationDate,
     referenceDate: manifest.referenceDate,
     releaseId,
   } as const;

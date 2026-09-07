@@ -1,113 +1,116 @@
 # ADR-002 — Object storage OpenCUP
 
-- **Stato:** proposto; provider approvato, provisioning e restore non eseguiti
-- **Data:** 7 settembre 2026
-- **Ambito:** raw OpenCUP, oggetti pubblici redatti, manifest e recupero
-- **Decisione:** Cloudflare R2 nell'account del progetto, con prodotto spento fino alla prova di ripristino
+- **Stato:** proposta operativa; R2 approvato come prima scelta, provisioning e restore da eseguire.
+- **Data:** 7 settembre 2026.
+- **Riferimenti:** [ADR-001](ADR-001-generated-artifacts-storage.md), [decisioni del maintainer su #249](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/249#issuecomment-5574486182).
 
-## Contesto
+## Perimetro della draft PR
 
-Il rilascio nazionale verificato contiene 11.973.988 righe e occupa
-2.203.779.590 byte nello ZIP ufficiale. La trasformazione produce 58.979
-oggetti redatti e indirizzati per hash, per 3.650.205.754 byte. Questi file non
-possono entrare in Git né essere letti integralmente durante una richiesta
-Next.js.
+La pipeline offline trasforma lo ZIP ufficiale in oggetti redatti con indice
+per CUP esatto. La candidata locale verificata contiene 11.973.988 righe:
+2.203.779.590 byte sorgente e 58.979 oggetti prodotto, per 3.650.205.754 byte.
+Queste misure vanno riconfermate sulla release destinata al primo upload.
 
-Questo ADR applica il contratto di
-[ADR-001](ADR-001-generated-artifacts-storage.md) alla issue #249. Il
-maintainer ha approvato R2 come prima scelta, ma bucket, credenziali, backup e
-oggetti non esistono ancora. La PR mantiene quindi OpenCUP configurato ma non
-visibile in UI, API pubblica, stato fonti o MCP.
+Le nuove ricerche OpenCUP restano spente in UI, API e MCP; la fonte non compare
+nello stato pubblico. La scheda storica `catalog-only` e la sua provenienza
+restano visibili con i conteggi del corpus già pubblicato, senza righe nazionali.
 
-## Decisione
+Il reader attuale legge oggetti locali verificati. La connessione autenticata
+a R2 e il manifest remoto devono essere integrati e verificati dopo la review
+di questa draft, prima dell'attivazione. I nomi R2 sotto sono proposti, non
+variabili già consumate dal runtime.
 
-1. I bucket appartengono all'organizzazione o a un account di progetto gestito
-   dai maintainer. Non si usano account personali dei contributor.
-2. Il raw CSV/ZIP resta privato, in un bucket separato e accessibile soltanto al
-   processo di acquisizione. Il runtime non riceve credenziali per quel bucket.
-3. Il bucket prodotto contiene soltanto oggetti già redatti. Ogni chiave è
-   `sha256/<digest>` e i byte devono corrispondere al digest indicato nel
-   manifest versionato in Git.
-4. Il bucket non espone il listing. Le letture runtime sono server-side e
-   limitate agli oggetti indicati dal manifest; nessun URL o nome oggetto arriva
-   dall'utente.
-5. Gli oggetti non vengono sovrascritti. Content addressing, manifest
-   immutabili e Bucket Lock forniscono il versionamento operativo richiesto.
-   Un rollback seleziona un manifest precedente, senza modificare gli oggetti.
-6. Si conservano la release corrente e le due release approvate precedenti.
-   La cancellazione è ammessa soltanto dopo aver verificato che nessun manifest
-   mantenuto o deploy attivo referenzi l'oggetto.
-7. Il backup deve trovarsi in un dominio di guasto distinto da R2. La
-   destinazione sarà scelta dai maintainer prima del primo upload di produzione.
+La ricerca per CF del titolare e i collegamenti dalle schede ente/coesione/opere
+richiesti da #249 restano da completare. CF/PIVA sono oscurati nel prodotto:
+serve concordare un identificativo esatto pubblicabile e il relativo indice,
+senza ricostruire identità da nomi o titoli. Questa draft non chiude #249.
+
+## Storage, accesso e versioni
+
+- Bucket nell'account dell'organizzazione, creati dai maintainer.
+- Raw CSV/ZIP privato in un bucket separato; nessun accesso raw dal runtime.
+- Bucket prodotto con soli oggetti redatti, chiavi `sha256/<digest>` e nessun
+  listing pubblico. Solo il manifest decide quali oggetti leggere.
+- Manifest e ricevuta versionati in Git; verifica byte/SHA prima dell'uso,
+  cache immutabile solo per digest, rollback tramite manifest precedente.
+- Retention della release corrente e delle due precedenti. Conservare comunque
+  ogni oggetto referenziato da `main`, un deploy attivo o un manifest mantenuto.
+- Backup in un dominio di guasto distinto, scelto dai maintainer prima del
+  caricamento in produzione.
+
+R2 non implementa il [versioning S3](https://developers.cloudflare.com/r2/api/s3/api/).
+La proposta è conservare ogni versione per digest, con manifest immutabili e
+[Bucket Lock](https://developers.cloudflare.com/r2/buckets/bucket-locks/).
+Questa soluzione non equivale al versioning nativo del bucket richiesto da
+ADR-001: i maintainer devono accettarla esplicitamente nella review dell'ADR
+oppure indicare un'alternativa prima del provisioning.
 
 ## Configurazione proposta
 
-Credenziali, inserite dai maintainer in CI e runtime:
+I maintainer inseriscono questi secret; in issue/PR non vanno mai i valori:
 
 - `DVNS_OPENCUP_R2_RUNTIME_ACCESS_KEY_ID`
 - `DVNS_OPENCUP_R2_RUNTIME_SECRET_ACCESS_KEY`
 - `DVNS_OPENCUP_R2_CI_ACCESS_KEY_ID`
 - `DVNS_OPENCUP_R2_CI_SECRET_ACCESS_KEY`
 
-Configurazione server-side, senza valori nella issue o nella PR:
+Configurazione server-side: `DVNS_OPENCUP_R2_ACCOUNT_ID`,
+`DVNS_OPENCUP_R2_PRODUCT_BUCKET`, `DVNS_OPENCUP_R2_RAW_BUCKET`.
+Runtime in sola lettura sul prodotto; CI può caricare candidati ma non
+promuoverli. La configurazione locale già supportata è
+`DVNS_OPENCUP_PROJECTS_MANIFEST`, percorso del manifest accanto a `sha256/`.
 
-- `DVNS_OPENCUP_R2_ACCOUNT_ID`
-- `DVNS_OPENCUP_R2_PRODUCT_BUCKET`
-- `DVNS_OPENCUP_R2_RAW_BUCKET`
+## Stima da approvare prima dell'upload
 
-Le credenziali runtime sono di sola lettura sul bucket prodotto. Le
-credenziali CI possono scrivere gli oggetti candidati, ma non rendono attiva
-una release: la promozione resta una modifica del manifest e del gate nel
-repository.
+Ipotesi mensile: tre versioni completamente diverse, un refresh e una sua
+ripetizione, due verifiche integrali e 100.000 ricerche senza cache.
 
-## Stima prima del primo upload
+| Voce | Volume previsto |
+| --- | --- |
+| Storage prodotto + ZIP raw, tre versioni | 10,951 + 6,611 = 17,562 GB |
+| Scritture refresh, inclusa ripetizione | meno di 120.000 oggetti, oltre al multipart raw |
+| Letture runtime | massimo 800.000, usando il budget di 8 oggetti per ricerca |
+| Verifiche integrali CI | circa 118.000 letture e 7,30 GB scaricati da R2 |
+| Upload CI | circa 11,71 GB tra raw e prodotto per due tentativi |
+| Download sorgente ufficiale | circa 4,41 GB per due tentativi |
 
-La stima va ricalcolata immediatamente prima del primo upload usando il listino
-R2 corrente e il traffico atteso. Con la candidata locale:
+Con il [listino R2 Standard](https://developers.cloudflare.com/r2/pricing/)
+verificato il 7 settembre 2026 e franchigie interamente disponibili, queste
+ipotesi costano circa 0,12 USD/mese: 18 GB arrotondati, meno 10 gratuiti, a
+0,015 USD/GB-mese. Le operazioni restano sotto le franchigie di un milione di
+scritture e dieci milioni di letture; l'egress R2 è gratuito.
+Sono esclusi backup esterno, compute, log, IVA e traffico del provider
+applicativo. Ricalcolare considerando anche gli altri consumi dell'account;
+il limite di spesa finale spetta ai maintainer.
 
-- una release prodotto occupa 3,650 GB;
-- tre release completamente diverse occuperebbero al massimo 10,951 GB;
-- una ricerca con risultato legge normalmente 5 oggetti, circa 386–422 KB;
-- una ricerca assente usa da 1 a 3 letture.
+## Verifica e attivazione
 
-Al listino consultato il 7 settembre 2026, R2 Standard include 10 GB-mese,
-1 milione di operazioni Class A e 10 milioni di operazioni Class B al mese;
-oltre soglia costa 0,015 USD/GB-mese e 0,36 USD per milione di letture. R2 non
-addebita egress Internet. Nel caso conservativo di tre release senza
-deduplicazione, il solo storage oltre franchigia è circa 0,02 USD/mese; 10
-milioni di ricerche da 5 letture genererebbero circa 14,40 USD/mese di Class B.
-Queste cifre non includono backup esterno, compute, log, IVA o traffico del
-provider applicativo.
+Build offline, usando il source lock versionato e percorsi privati esterni a Git:
 
-Riferimenti: [prezzi R2](https://developers.cloudflare.com/r2/pricing/),
-[Bucket Lock](https://developers.cloudflare.com/r2/buckets/bucket-locks/).
+```python
+from pathlib import Path
+from opencup_projects import build_release, official_contract, verify_release
 
-## Prova di backup e ripristino
+output = Path("/percorso/privato/release")
+build_release(Path("/percorso/privato/OpendataProgetti.zip"), output, official_contract())
+verify_release(output / "manifest.json")
+```
 
-Prima di attivare OpenCUP:
+Il modulo si importa con `PYTHONPATH=scripts/etl`.
+Prima della visibilità, i maintainer devono:
 
-1. scegliere un oggetto prodotto dal manifest e annotare chiave, byte e SHA-256;
-2. copiarlo nel backup esterno e rimuoverlo soltanto dall'ambiente di prova;
-3. ripristinarlo in un bucket R2 di prova;
-4. scaricarlo per digest, verificare byte e SHA-256 prima della decompressione;
-5. avviare il reader con il manifest candidato e verificare la canary e una
-   ricerca CUP completa;
-6. registrare in issue o PR data, ambiente, release, digest ed esito, senza
-   credenziali o identificativi sensibili.
+1. completare review, decisione sul versioning, provisioning e upload di prova;
+2. scegliere un oggetto dal manifest, annotare digest/byte e copiarlo nel backup;
+3. rimuovere soltanto la copia di prova, ripristinarla dal backup e riscaricarla
+   per digest, verificando byte/SHA prima della decompressione;
+4. verificare canary e ricerca CUP nell'ambiente ripristinato;
+5. registrare in issue/PR data, ambiente, commit, manifest, digest ed esito;
+6. attivare insieme policy, stato fonte, UI/API e MCP.
 
-Un restore fallito lascia il prodotto spento. Non si usa `latest`, un digest
-diverso o una release precedente come fallback silenzioso.
+Un errore lascia il prodotto spento; nessun fallback silenzioso a `latest`
+o ad altri digest. Ripetere periodicamente il restore con esito registrato.
 
-## Attivazione e aggiornamento obbligatorio
-
-La visibilità può essere attivata soltanto dopo review del codice, provisioning
-R2, upload di prova, stima costi approvata e restore riuscito. La stessa modifica
-deve attivare source policy e stato fonte, API/UI e catalogo MCP.
-
-Questo ADR deve essere aggiornato prima dell'attivazione con:
-
-- nomi reali dei bucket e permessi effettivi, senza segreti;
-- destinazione e retention del backup esterno;
-- stima mensile approvata per storage, letture CI/runtime e backup;
-- manifest e release testati;
-- ricevuta della prova di restore e decisione finale di promozione.
+**Da aggiornare prima dell'attivazione:** bucket e permessi effettivi senza
+segreti, approvazione del versioning, destinazione/retention e frequenza di
+verifica del backup, stima approvata, reader R2 e manifest testati, ricevuta
+del restore e decisione di promozione.

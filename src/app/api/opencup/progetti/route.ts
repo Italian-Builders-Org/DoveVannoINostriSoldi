@@ -3,18 +3,15 @@ import {
   IntegratedQueryError,
   selectOpenCupProjects,
 } from "@/lib/integrated-public-view";
-import { OPENCUP_PRODUCT_INTEGRATION } from "@/lib/data/source-policy";
+import { SOURCE_POLICIES } from "@/lib/data/source-policy";
 
 const allowed = new Set(["cup", "limit", "cursor"]);
 const errorHeaders = { "Cache-Control": "no-store" };
 
 export const runtime = "nodejs";
 
-export async function handleOpenCupRequest(
-  request: NextRequest,
-  integration = OPENCUP_PRODUCT_INTEGRATION,
-) {
-  if (integration !== "active") {
+export async function GET(request: NextRequest) {
+  if (SOURCE_POLICIES.opencup.integration !== "active") {
     return NextResponse.json(
       { error: "Risorsa non disponibile." },
       { status: 404, headers: errorHeaders },
@@ -67,5 +64,3 @@ export async function handleOpenCupRequest(
     );
   }
 }
-
-export const GET = handleOpenCupRequest;

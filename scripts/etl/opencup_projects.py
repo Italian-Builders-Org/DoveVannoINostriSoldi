@@ -15,7 +15,7 @@ import zipfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path, PurePosixPath
-from typing import Iterator
+from typing import Callable, Iterator, Literal
 from urllib.parse import urlsplit
 
 import integrated_curated_datasets as corpus
@@ -34,30 +34,9 @@ OFFICIAL_URL_PATHS = {
 SYNTHETIC_SPEC_PATH = Path(__file__).with_name("specs") / "opencup-projects.synthetic.json"
 OFFICIAL_SPEC_PATH = Path(__file__).with_name("specs") / "opencup-projects.source.json"
 CUP_RE = re.compile(r"^[A-Z0-9]{15}$")
-MONEY_RE = re.compile(r"^[0-9]+(?:,[0-9]{1,2})?$")
 INTEGER_EUR_RE = re.compile(r"^[0-9]+$")
 MEMBER_RE = re.compile(r"^OpenCup_Progetti[0-9]+\.csv$")
 
-SOURCE_HEADERS = [
-    "CUP",
-    "DESCRIZIONE_SINTETICA_CUP",
-    "ANNO_DECISIONE",
-    "DATA_GENERAZIONE_CUP",
-    "STATO_PROGETTO",
-    "COSTO_PROGETTO",
-    "FINANZIAMENTO_PROGETTO",
-    "SOGGETTO_TITOLARE",
-    "PIVA_CODFISCALE_SOG_TITOLARE",
-    "PIVA_CF_BENEFICIARIO",
-    "CODICE_NATURA_INTERVENTO",
-    "NATURA_INTERVENTO",
-    "CODICE_TIPO_INTERVENTO",
-    "TIPOLOGIA_INTERVENTO",
-    "CODICE_REGIONE",
-    "REGIONE",
-    "CODICE_COMUNE",
-    "COMUNE",
-]
 PRIVATE_FIELDS = {
     "PIVA_CODFISCALE_SOG_TITOLARE",
     "PIVA_CF_BENEFICIARIO",
@@ -114,7 +93,7 @@ def _source_headers(contract: dict[str, object]) -> list[str]:
         if not isinstance(csv_contract, dict) or not isinstance(csv_contract.get("headers"), list):
             raise SourceError("Header CSV OpenCUP mancanti nel source lock")
         return [str(header) for header in csv_contract["headers"]]
-    return SOURCE_HEADERS
+    return official_contract()["csv"]["headers"]
 
 
 def _public_headers(contract: dict[str, object]) -> list[str]:
@@ -123,7 +102,7 @@ def _public_headers(contract: dict[str, object]) -> list[str]:
         if not isinstance(headers, list):
             raise SourceError("Header pubblici OpenCUP mancanti nel source lock")
         return [str(header) for header in headers]
-    return SOURCE_HEADERS
+    return official_contract()["publicHeaders"]
 
 
 def _redacted_fields(contract: dict[str, object]) -> set[str]:
@@ -159,7 +138,6 @@ def _validate_contract(contract: dict[str, object]) -> None:
         "delimiter",
         "encoding",
         "evidenceLabel",
-        "headers",
         "maxMembers",
         "maxMemberBytes",
         "maxTotalBytes",
@@ -177,14 +155,13 @@ def _validate_contract(contract: dict[str, object]) -> None:
         or contract["dataKind"] != "opencup-projects"
         or contract["datasetId"] != DATASET_ID
         or contract["delimiter"] != ";"
-        or contract["encoding"] != "utf-8-sig"
+        or contract["encoding"] != "utf-8"
         or contract["evidenceLabel"] != "synthetic-fixture"
-        or contract["headers"] != SOURCE_HEADERS
         or contract["fixtureOnly"] is not True
         or contract["licenseStatus"] != "unverified"
         or contract["observedAt"] is not None
         or contract["publishedAt"] is not None
-        or contract["moneyFormat"] != "decimal-comma-exact-v1"
+        or contract["moneyFormat"] != "integer-eur-exact-v1"
         or contract["moneyUnit"] != "EUR"
     ):
         raise SourceError("Contratto OpenCUP non autorizzato per la fixture")
@@ -587,47 +564,6 @@ def _verify_locked_archive(archive_path: Path, contract: dict[str, object]) -> N
         raise SourceError("Hash o byte ZIP OpenCUP divergenti dal source lock")
 
 
-def _public_row_synthetic(values: dict[str, str], source_row: int) -> dict[str, object]:
-    cup = values["CUP"]
-    if cup and not CUP_RE.fullmatch(cup):
-        raise SourceError(f"CUP OpenCUP non valido alla registrazione {source_row}")
-    for field in ("COSTO_PROGETTO", "FINANZIAMENTO_PROGETTO"):
-        value = values[field]
-        try:
-            parse_euro_cents(value)
-        except SourceError as error:
-            raise SourceError(
-                f"Importo OpenCUP non valido alla registrazione {source_row}"
-            ) from error
-
-    cells: dict[str, str | None] = {}
-    redactions: list[dict[str, str]] = []
-    for field in SOURCE_HEADERS:
-        value = values[field]
-        if field in PRIVATE_FIELDS:
-            if value:
-                cells[field] = None
-                redactions.append({"field": field, "reason": "personal-identifier"})
-            else:
-                cells[field] = ""
-        else:
-            cells[field] = value or None
-
-    public_digest = corpus.sha256_bytes(corpus.canonical_json(cells))
-    row_id = "row-" + corpus.sha256_bytes(
-        f"{DATASET_ID}:{source_row}:{public_digest}".encode("utf-8")
-    )[:24]
-    return {
-        "id": row_id,
-        "cells": cells,
-        "evidenceLabel": "synthetic-fixture",
-        "redactions": redactions,
-        "sourceRow": source_row,
-        "sourceRowSha256": public_digest,
-        "sourceUrls": [],
-    }
-
-
 def _validate_official_date(value: str) -> str:
     if not re.fullmatch(r"[0-9]{2}-[A-Z]{3}-[0-9]{4}", value):
         raise SourceError("Data OpenCUP fuori contratto")
@@ -751,30 +687,8 @@ def _public_row_official(values: dict[str, str], source_row: int, contract: dict
         "redactions": redactions,
         "sourceRow": source_row,
         "sourceRowSha256": public_digest,
-        "sourceUrls": [_source_url(contract)],
+        "sourceUrls": [] if contract["evidenceLabel"] == "synthetic-fixture" else [_source_url(contract)],
     }
-
-
-def _public_row(
-    values: dict[str, str],
-    source_row: int,
-    contract: dict[str, object],
-) -> dict[str, object]:
-    if _is_official_contract(contract):
-        return _public_row_official(values, source_row, contract)
-    return _public_row_synthetic(values, source_row)
-
-
-def parse_euro_cents(value: str) -> int | None:
-    """Parse the locked decimal-comma EUR value exactly, without float."""
-
-    if value == "":
-        return None
-    match = MONEY_RE.fullmatch(value)
-    if match is None:
-        raise SourceError("Importo OpenCUP fuori contratto")
-    whole, _, fraction = value.partition(",")
-    return int(whole) * 100 + int(fraction.ljust(2, "0") or "0")
 
 
 def _project_records(
@@ -786,6 +700,9 @@ def _project_records(
     _validate_contract(contract)
     _verify_locked_archive(archive_path, contract)
     source_headers = _source_headers(contract)
+    projection_contract = contract if _is_official_contract(contract) else {
+        **official_contract(), "evidenceLabel": "synthetic-fixture",
+    }
     csv_contract = contract.get("csv") if _is_official_contract(contract) else contract
     try:
         with zipfile.ZipFile(archive_path) as archive:
@@ -817,10 +734,10 @@ def _project_records(
                                     f"Riga OpenCUP troncata o eccedente alla registrazione {source_row}"
                                 )
                             yield (
-                                _public_row(
+                                _public_row_official(
                                     values,
                                     source_row,
-                                    contract,
+                                    projection_contract,
                                 ),
                                 info,
                                 member_record,
@@ -897,6 +814,50 @@ def _posting_directory_node(output: Path, children: list[_NodeRange]) -> _NodeRa
     return _NodeRange(children[0].minimum, children[-1].maximum, descriptor, depth)
 
 
+def _assemble_directory_levels(
+    output: Path,
+    connection: sqlite3.Connection,
+    table: Literal["index_nodes", "posting_nodes"],
+    child_count: int,
+    directory_node: Callable[[Path, list[_NodeRange]], _NodeRange],
+) -> _NodeRange:
+    """Assemble either tree with at most one directory of descriptors in RAM."""
+
+    if table not in {"index_nodes", "posting_nodes"}:
+        raise SourceError("Tabella nodi OpenCUP non valida")
+    depth = 1
+
+    def children_at_depth():
+        return connection.execute(
+            f"SELECT minimum, maximum, descriptor FROM {table} WHERE depth = ? ORDER BY ordinal",
+            (depth,),
+        )
+
+    def nodes(rows) -> list[_NodeRange]:
+        return [
+            _NodeRange(str(minimum), str(maximum), json.loads(payload), depth)
+            for minimum, maximum, payload in rows
+        ]
+
+    while child_count > MAX_INDEX_CHILDREN:
+        cursor = children_at_depth()
+        next_ordinal = 0
+        connection.execute(f"DELETE FROM {table} WHERE depth = ?", (depth + 1,))
+        while rows := cursor.fetchmany(MAX_INDEX_CHILDREN):
+            node = directory_node(output, nodes(rows))
+            connection.execute(
+                f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?)",
+                (
+                    depth + 1, next_ordinal, node.minimum, node.maximum,
+                    json.dumps(node.descriptor, sort_keys=True, separators=(",", ":")),
+                ),
+            )
+            next_ordinal += 1
+        depth += 1
+        child_count = next_ordinal
+    return directory_node(output, nodes(children_at_depth()))
+
+
 def _build_posting_tree(
     output: Path,
     cup: str,
@@ -919,8 +880,8 @@ def _build_posting_tree(
         CREATE TABLE IF NOT EXISTS posting_nodes (
             depth INTEGER NOT NULL,
             ordinal INTEGER NOT NULL,
-            start INTEGER NOT NULL,
-            end INTEGER NOT NULL,
+            minimum TEXT NOT NULL,
+            maximum TEXT NOT NULL,
             descriptor TEXT NOT NULL,
             PRIMARY KEY (depth, ordinal)
         )
@@ -995,75 +956,9 @@ def _build_posting_tree(
     if page_count != (matched_rows + MAX_POSTING_REFS - 1) // MAX_POSTING_REFS:
         raise SourceError("Conteggio posting list OpenCUP divergente")
 
-    current_depth = 1
-    current_count = page_count
-    while current_count > MAX_INDEX_CHILDREN:
-        next_depth = current_depth + 1
-        connection.execute(
-            "DELETE FROM posting_nodes WHERE depth = ?",
-            (next_depth,),
-        )
-        children: list[_NodeRange] = []
-        next_ordinal = 0
-
-        def write_directory() -> None:
-            nonlocal next_ordinal
-            if not children:
-                return
-            node = _posting_directory_node(output, list(children))
-            connection.execute(
-                "INSERT INTO posting_nodes VALUES (?, ?, ?, ?, ?)",
-                (
-                    next_depth,
-                    next_ordinal,
-                    int(node.minimum),
-                    int(node.maximum),
-                    json.dumps(node.descriptor, sort_keys=True, separators=(",", ":")),
-                ),
-            )
-            next_ordinal += 1
-            children.clear()
-
-        for _ordinal, start, end, descriptor_payload in connection.execute(
-            """
-            SELECT ordinal, start, end, descriptor
-            FROM posting_nodes WHERE depth = ? ORDER BY ordinal
-            """,
-            (current_depth,),
-        ):
-            children.append(
-                _NodeRange(
-                    str(start),
-                    str(end),
-                    json.loads(descriptor_payload),
-                    current_depth,
-                )
-            )
-            if len(children) == MAX_INDEX_CHILDREN:
-                write_directory()
-        write_directory()
-        current_depth = next_depth
-        current_count = next_ordinal
-        if current_depth >= MAX_POSTING_TREE_DEPTH and current_count > MAX_INDEX_CHILDREN:
-            raise SourceError("Profondità posting OpenCUP oltre il contratto")
-
-    root_children: list[_NodeRange] = []
-    for _ordinal, start, end, descriptor_payload in connection.execute(
-        """
-        SELECT ordinal, start, end, descriptor
-        FROM posting_nodes WHERE depth = ? ORDER BY ordinal
-        """,
-        (current_depth,),
-    ):
-        root_children.append(
-            _NodeRange(
-                str(start),
-                str(end),
-                json.loads(descriptor_payload),
-                current_depth,
-            )
-        )
-    return _posting_directory_node(output, root_children).descriptor
+    return _assemble_directory_levels(
+        output, connection, "posting_nodes", page_count, _posting_directory_node,
+    ).descriptor
 
 
 def _directory_node(output: Path, children: list[_NodeRange]) -> _NodeRange:
@@ -1215,75 +1110,9 @@ def _build_index(
     if leaf_ordinal == 0:
         raise SourceError("La fixture OpenCUP non contiene CUP indicizzabili")
 
-    current_depth = 1
-    current_count = leaf_ordinal
-    while current_count > MAX_INDEX_CHILDREN:
-        next_depth = current_depth + 1
-        connection.execute(
-            "DELETE FROM index_nodes WHERE depth = ?",
-            (next_depth,),
-        )
-        children: list[_NodeRange] = []
-        next_ordinal = 0
-
-        def write_directory() -> None:
-            nonlocal next_ordinal
-            if not children:
-                return
-            node = _directory_node(output, list(children))
-            connection.execute(
-                "INSERT INTO index_nodes VALUES (?, ?, ?, ?, ?)",
-                (
-                    next_depth,
-                    next_ordinal,
-                    node.minimum,
-                    node.maximum,
-                    json.dumps(node.descriptor, sort_keys=True, separators=(",", ":")),
-                ),
-            )
-            next_ordinal += 1
-            children.clear()
-
-        for ordinal, minimum, maximum, descriptor_payload in connection.execute(
-            """
-            SELECT ordinal, minimum, maximum, descriptor
-            FROM index_nodes WHERE depth = ? ORDER BY ordinal
-            """,
-            (current_depth,),
-        ):
-            children.append(
-                _NodeRange(
-                    str(minimum),
-                    str(maximum),
-                    json.loads(descriptor_payload),
-                    current_depth,
-                )
-            )
-            if len(children) == MAX_INDEX_CHILDREN:
-                write_directory()
-        write_directory()
-        current_depth = next_depth
-        current_count = next_ordinal
-        if current_depth >= MAX_INDEX_DEPTH and current_count > MAX_INDEX_CHILDREN:
-            raise SourceError("Profondità indice OpenCUP oltre il contratto")
-
-    root_children: list[_NodeRange] = []
-    for _ordinal, minimum, maximum, descriptor_payload in connection.execute(
-        """
-        SELECT ordinal, minimum, maximum, descriptor
-        FROM index_nodes WHERE depth = ? ORDER BY ordinal
-        """,
-        (current_depth,),
-    ):
-        root_children.append(
-            _NodeRange(
-                str(minimum),
-                str(maximum),
-                json.loads(descriptor_payload),
-                current_depth,
-            )
-        )
-    root = _directory_node(output, root_children)
+    root = _assemble_directory_levels(
+        output, connection, "index_nodes", leaf_ordinal, _directory_node,
+    )
     canary_cup, canary_source_row = connection.execute(
         "SELECT cup, source_row FROM refs ORDER BY cup, source_row LIMIT 1"
     ).fetchone()
@@ -1309,7 +1138,6 @@ def build_release(
     output: Path,
     contract: dict[str, object],
     *,
-    sqlite_trace_callback=None,
     sample_rows: int | None = None,
 ) -> dict[str, object]:
     """Build a content-addressed release from a synthetic or locked source."""
@@ -1440,8 +1268,6 @@ def build_release(
     with tempfile.TemporaryDirectory(prefix="opencup-index-") as temporary:
         connection = sqlite3.connect(Path(temporary) / "refs.sqlite3")
         try:
-            if sqlite_trace_callback is not None:
-                connection.set_trace_callback(sqlite_trace_callback)
             connection.execute(
                 "CREATE TABLE refs (cup TEXT NOT NULL, source_row INTEGER NOT NULL, chunk_ordinal INTEGER NOT NULL, PRIMARY KEY (cup, source_row))"
             )
@@ -1597,26 +1423,7 @@ def build_release(
     return manifest
 
 
-def build_fixture_release(
-    archive_path: Path,
-    output: Path,
-    contract: dict[str, object],
-    *,
-    sqlite_trace_callback=None,
-) -> dict[str, object]:
-    """Backward-compatible wrapper for local synthetic fixture releases."""
-
-    if contract.get("fixtureOnly") is not True:
-        raise SourceError("build_fixture_release richiede un contratto synthetic-fixture")
-    return build_release(
-        archive_path,
-        output,
-        contract,
-        sqlite_trace_callback=sqlite_trace_callback,
-    )
-
-
-def verify_fixture_release(manifest_path: Path) -> dict[str, int]:
+def verify_release(manifest_path: Path) -> dict[str, int]:
     """Verify a release by streaming rows and using SQLite for reconciliation.
 
     The verifier deliberately keeps only one object/chunk in memory.  The
@@ -1953,10 +1760,11 @@ def verify_fixture_release(manifest_path: Path) -> dict[str, int]:
                                 and redaction.get("field") == private_field
                                 and redaction.get("reason") == "personal-identifier"
                             ]
-                            if cell not in {None, ""} or (cell is None and len(matches) != 1) or (
-                                cell == "" and matches
-                            ):
+                            if cell is not None or len(matches) != 1:
                                 raise SourceError("Campo privato fixture OpenCUP non redatto")
+                        for money_field in ("COSTO_PROGETTO", "FINANZIAMENTO_PROGETTO"):
+                            if cells[money_field] is not None:
+                                parse_euro_integer(cells[money_field])
                         for field, value in cells.items():
                             if not isinstance(value, str):
                                 continue

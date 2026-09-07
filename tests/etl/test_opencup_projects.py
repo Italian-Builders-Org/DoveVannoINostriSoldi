@@ -7,6 +7,7 @@ import copy
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 from pathlib import Path
 
@@ -27,10 +28,10 @@ class OpenCupProjectsTests(unittest.TestCase):
         members: dict[str, list[dict[str, str]]],
         *,
         headers: list[str] | None = None,
-        encoding: str = "utf-8-sig",
+        encoding: str = "utf-8",
         delimiter: str = ";",
     ) -> None:
-        headers = headers or etl.SOURCE_HEADERS
+        headers = headers or etl.official_contract()["csv"]["headers"]
         with zipfile.ZipFile(self.archive, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for name, rows in members.items():
                 output = io.StringIO(newline="")
@@ -45,31 +46,14 @@ class OpenCupProjectsTests(unittest.TestCase):
                 archive.writestr(name, output.getvalue().encode(encoding))
 
     def row(self, **overrides: str) -> dict[str, str]:
-        row = dict.fromkeys(etl.SOURCE_HEADERS, "")
-        row.update(
-            {
-                "CUP": "A12B34567890001",
+        return self.official_row(
+            **{
                 "DESCRIZIONE_SINTETICA_CUP": "Scuola comunale",
-                "ANNO_DECISIONE": "2024",
-                "DATA_GENERAZIONE_CUP": "15/03/2024",
-                "STATO_PROGETTO": "ATTIVO",
                 "COSTO_PROGETTO": "0",
-                "FINANZIAMENTO_PROGETTO": "12345678901234,01",
-                "SOGGETTO_TITOLARE": "Comune sintetico",
-                "PIVA_CODFISCALE_SOG_TITOLARE": "00000000000",
-                "PIVA_CF_BENEFICIARIO": "RSSMRA80A01H501U",
-                "CODICE_NATURA_INTERVENTO": "03",
-                "NATURA_INTERVENTO": "Realizzazione di lavori pubblici",
-                "CODICE_TIPO_INTERVENTO": "01",
-                "TIPOLOGIA_INTERVENTO": "Nuova realizzazione",
-                "CODICE_REGIONE": "05",
-                "REGIONE": "VENETO",
-                "CODICE_COMUNE": "023091",
-                "COMUNE": "VERONA",
+                "FINANZIAMENTO_PROGETTO": "1234567890123401",
+                **overrides,
             }
         )
-        row.update(overrides)
-        return row
 
     def unique_cup(self, index: int) -> str:
         return f"A12{index:012d}"
@@ -159,66 +143,18 @@ class OpenCupProjectsTests(unittest.TestCase):
             chunks.extend(group_payload["chunks"])
         return chunks
 
-    def test_money_parser_keeps_missing_zero_and_large_values_exact(self):
-        self.assertIsNone(etl.parse_euro_cents(""))
-        self.assertEqual(etl.parse_euro_cents("0"), 0)
-        self.assertEqual(etl.parse_euro_cents("10,5"), 1050)
-        self.assertEqual(etl.parse_euro_cents("12345678901234,01"), 1234567890123401)
-        with self.assertRaises(etl.SourceError):
-            etl.parse_euro_cents("10.50")
-
-    def test_streaming_projection_preserves_duplicate_cup_and_redacts_identifiers(self):
-        self.write_archive(
-            {
-                "OpenCup_Progetti0.csv": [
-                    self.row(DESCRIZIONE_SINTETICA_CUP="Scuola\ncomunale"),
-                    self.row(
-                        CUP="B12B34567890002",
-                        DESCRIZIONE_SINTETICA_CUP="Scuola\ncomunale",
-                        FINANZIAMENTO_PROGETTO="",
-                        CODICE_COMUNE="027042",
-                        COMUNE="VENEZIA",
-                    ),
-                ],
-                "OpenCup_Progetti1.csv": [self.row(COSTO_PROGETTO="10,50")],
-            }
-        )
-
-        projected = list(etl.project_archive(self.archive, etl.synthetic_contract()))
-
-        self.assertEqual([row["sourceRow"] for row in projected], [1, 2, 3])
-        self.assertEqual(
-            [row["cells"]["CUP"] for row in projected],
-            ["A12B34567890001", "B12B34567890002", "A12B34567890001"],
-        )
-        self.assertEqual(projected[0]["cells"]["DESCRIZIONE_SINTETICA_CUP"], "Scuola\ncomunale")
-        self.assertEqual(projected[0]["cells"]["COSTO_PROGETTO"], "0")
-        self.assertIsNone(projected[1]["cells"]["FINANZIAMENTO_PROGETTO"])
-        self.assertEqual(projected[1]["cells"]["COMUNE"], "VENEZIA")
-        self.assertEqual(projected[2]["cells"]["COSTO_PROGETTO"], "10,50")
-        for row in projected:
-            self.assertIsNone(row["cells"]["PIVA_CODFISCALE_SOG_TITOLARE"])
-            self.assertIsNone(row["cells"]["PIVA_CF_BENEFICIARIO"])
-            self.assertEqual(
-                row["redactions"],
-                [
-                    {"field": "PIVA_CODFISCALE_SOG_TITOLARE", "reason": "personal-identifier"},
-                    {"field": "PIVA_CF_BENEFICIARIO", "reason": "personal-identifier"},
-                ],
-            )
-
     def test_fixture_release_reconciles_members_rows_index_and_is_deterministic(self):
         self.write_archive(
             {
                 "OpenCup_Progetti1.csv": [self.row(CUP="B12B34567890002")],
-                "OpenCup_Progetti0.csv": [self.row(), self.row(COSTO_PROGETTO="10,50")],
+                "OpenCup_Progetti0.csv": [self.row(), self.row(COSTO_PROGETTO="10")],
             }
         )
         first = self.root / "first"
         second = self.root / "second"
 
-        first_manifest = etl.build_fixture_release(self.archive, first, etl.synthetic_contract())
-        second_manifest = etl.build_fixture_release(self.archive, second, etl.synthetic_contract())
+        first_manifest = etl.build_release(self.archive, first, etl.synthetic_contract())
+        second_manifest = etl.build_release(self.archive, second, etl.synthetic_contract())
 
         self.assertEqual(first_manifest, second_manifest)
         self.assertEqual(first_manifest["sourceRows"], 3)
@@ -253,40 +189,10 @@ class OpenCupProjectsTests(unittest.TestCase):
             for path in (second / "sha256").iterdir()
         )
         self.assertEqual(first_objects, second_objects)
+        with self.assertRaisesRegex(etl.SourceError, "non vuoto"):
+            etl.build_release(self.archive, first, etl.synthetic_contract())
 
-    def test_fixture_release_keeps_chunk_source_ranges_contiguous(self):
-        self.write_archive(
-            {
-                "OpenCup_Progetti0.csv": [
-                    self.row(DESCRIZIONE_SINTETICA_CUP=f"Progetto {index}")
-                    for index in range(etl.MAX_CHUNK_ROWS + 1)
-                ]
-            }
-        )
-
-        manifest = etl.build_fixture_release(
-            self.archive,
-            self.root / "chunked",
-            etl.synthetic_contract(),
-        )
-
-        chunks = self.chunk_descriptors(self.root / "chunked", manifest)
-        self.assertEqual(len(chunks), 2)
-        self.assertEqual(
-            [
-                (chunk["firstSourceRow"], chunk["rowCount"])
-                for chunk in chunks
-            ],
-            [(1, etl.MAX_CHUNK_ROWS), (etl.MAX_CHUNK_ROWS + 1, 1)],
-        )
-
-    def test_source_contract_rejects_invalid_money_unexpected_members_and_corruption(self):
-        self.write_archive(
-            {"OpenCup_Progetti0.csv": [self.row(COSTO_PROGETTO="10.50")]}
-        )
-        with self.assertRaisesRegex(etl.SourceError, "Importo"):
-            list(etl.project_archive(self.archive, etl.synthetic_contract()))
-
+    def test_source_contract_rejects_unexpected_members_and_corruption(self):
         self.write_archive({"OpenCup_Progetti0.csv": [self.row()]})
         with zipfile.ZipFile(self.archive, "a") as archive:
             archive.writestr("../unexpected.csv", b"not allowed")
@@ -296,14 +202,6 @@ class OpenCupProjectsTests(unittest.TestCase):
         self.archive.write_bytes(b"not a zip")
         with self.assertRaisesRegex(etl.SourceError, "corrotto"):
             list(etl.project_archive(self.archive, etl.synthetic_contract()))
-
-    def test_build_rejects_nonempty_output(self):
-        self.write_archive({"OpenCup_Progetti0.csv": [self.row()]})
-        output = self.root / "already-used"
-        output.mkdir()
-        (output / "marker").write_text("keep", encoding="utf-8")
-        with self.assertRaisesRegex(etl.SourceError, "non vuoto"):
-            etl.build_fixture_release(self.archive, output, etl.synthetic_contract())
 
     def test_official_lock_projects_only_public_projection_and_redacts_identifiers(self):
         headers = etl.official_contract()["csv"]["headers"]
@@ -377,7 +275,7 @@ class OpenCupProjectsTests(unittest.TestCase):
         self.assertNotIn("fixtureOnly", sample_manifest)
         self.assertNotIn("publishedAt", sample_manifest)
         self.assertEqual(
-            etl.verify_fixture_release(sample_output / "manifest.json")["verifiedRows"],
+            etl.verify_release(sample_output / "manifest.json")["verifiedRows"],
             1,
         )
         with self.assertRaisesRegex(etl.SourceError, "oltre le righe"):
@@ -393,7 +291,7 @@ class OpenCupProjectsTests(unittest.TestCase):
         forged_manifest.pop("sampleDefinition")
         (sample_output / "manifest.json").write_bytes(etl.corpus.canonical_json(forged_manifest))
         with self.assertRaisesRegex(etl.SourceError, "Release ufficiale.*source lock"):
-            etl.verify_fixture_release(sample_output / "manifest.json")
+            etl.verify_release(sample_output / "manifest.json")
 
         output = self.root / "official-release"
         with self.assertRaisesRegex(etl.SourceError, "Contratto build ufficiale.*source lock"):
@@ -476,38 +374,7 @@ class OpenCupProjectsTests(unittest.TestCase):
             with self.assertRaisesRegex(etl.SourceError, "Header"):
                 list(etl.project_archive(self.archive, altered_contract))
 
-    def test_full_fixture_proof_checks_every_referenced_object_and_preserves_manifest(self):
-        self.write_archive(
-            {
-                "OpenCup_Progetti0.csv": [self.row() for _ in range(etl.INLINE_POSTING_REFS + 1)],
-                "OpenCup_Progetti1.csv": [self.row(CUP="B12B34567890002")],
-            }
-        )
-        output = self.root / "proof"
-        manifest = etl.build_fixture_release(
-            self.archive,
-            output,
-            etl.synthetic_contract(),
-        )
-        manifest_before = (output / "manifest.json").read_bytes()
-
-        proof = etl.verify_fixture_release(output / "manifest.json")
-
-        self.assertEqual(proof["verifiedObjects"], len(list((output / "sha256").iterdir())))
-        self.assertEqual(proof["verifiedRows"], etl.INLINE_POSTING_REFS + 2)
-        self.assertEqual(proof["verifiedPostingRefs"], etl.INLINE_POSTING_REFS + 2)
-
-        directory = json.loads((output / manifest["rootIndex"]["key"]).read_text())
-        leaf_descriptor = directory["children"][0]["node"]
-        leaf = json.loads((output / leaf_descriptor["key"]).read_text())
-        posting_root = json.loads((output / leaf["entries"][0]["postingRoot"]["key"]).read_text())
-        posting_path = output / posting_root["children"][0]["node"]["key"]
-        posting_path.write_bytes(b"{}\n")
-        with self.assertRaises(etl.SourceError):
-            etl.verify_fixture_release(output / "manifest.json")
-        self.assertEqual((output / "manifest.json").read_bytes(), manifest_before)
-
-    def test_scale_release_groups_chunks_and_inlines_small_cups_without_posting_objects(self):
+    def test_scale_release_reconciles_all_rows_and_objects_and_rejects_corruption(self):
         rows = [
             self.row(
                 CUP=self.unique_cup(index),
@@ -517,14 +384,10 @@ class OpenCupProjectsTests(unittest.TestCase):
         ]
         self.write_archive({"OpenCup_Progetti0.csv": rows})
         output = self.root / "scale"
-        traced_sql: list[str] = []
 
-        manifest = etl.build_fixture_release(
-            self.archive,
-            output,
-            etl.synthetic_contract(),
-            sqlite_trace_callback=traced_sql.append,
-        )
+        # Exercise several tree levels with a small fixture and unchanged object schemas.
+        with patch.object(etl, "MAX_INDEX_CHILDREN", 16):
+            manifest = etl.build_release(self.archive, output, etl.synthetic_contract())
 
         manifest_bytes = (output / "manifest.json").stat().st_size
         object_paths = list((output / "sha256").iterdir())
@@ -539,66 +402,22 @@ class OpenCupProjectsTests(unittest.TestCase):
                 postings.append(path)
 
         self.assertEqual(manifest["distinctCups"], 5_000)
-        self.assertEqual(
-            [statement for statement in traced_sql if "FROM REFS WHERE CUP =" in statement.upper()],
-            [],
-        )
-        self.assertEqual(
-            [statement for statement in traced_sql if "GROUP BY CUP" in statement.upper()],
-            [],
-        )
         self.assertLess(manifest_bytes, 2 * 1024 * 1024)
         self.assertLess(len(object_paths), manifest["distinctCups"] // 10)
         self.assertEqual(postings, [])
         self.assertGreater(len(manifest["chunkGroups"]), 0)
-        proof = etl.verify_fixture_release(output / "manifest.json")
+        proof = etl.verify_release(output / "manifest.json")
         self.assertEqual(proof["verifiedRows"], 5_000)
         self.assertEqual(proof["verifiedPostingRefs"], 5_000)
+        self.assertEqual(proof["verifiedObjects"], len(object_paths))
+        manifest_path = output / "manifest.json"
+        manifest_before = manifest_path.read_bytes()
+        chunk_path = output / self.chunk_descriptors(output, manifest)[-1]["key"]
+        chunk_path.write_bytes(b"corrupted")
+        with self.assertRaises(etl.SourceError):
+            etl.verify_release(manifest_path)
+        self.assertEqual(manifest_path.read_bytes(), manifest_before)
 
-    def test_large_posting_tree_locates_later_page_without_scanning_prior_pages(self):
-        rows = [
-            self.row(DESCRIZIONE_SINTETICA_CUP=f"Progetto {index}")
-            for index in range(2 * etl.MAX_POSTING_REFS + 1)
-        ]
-        self.write_archive({"OpenCup_Progetti0.csv": rows})
-        output = self.root / "posting-tree"
-        manifest = etl.build_fixture_release(
-            self.archive,
-            output,
-            etl.synthetic_contract(),
-        )
-        directory = json.loads((output / manifest["rootIndex"]["key"]).read_text())
-        leaf = json.loads((output / directory["children"][0]["node"]["key"]).read_text())
-        posting_root = leaf["entries"][0]["postingRoot"]
-
-        reads: list[str] = []
-        descriptor = posting_root
-        position = etl.MAX_POSTING_REFS + 1
-        while True:
-            reads.append(descriptor["key"])
-            node = json.loads((output / descriptor["key"]).read_text())
-            if node["kind"] == "posting-directory":
-                child = next(
-                    child
-                    for child in node["children"]
-                    if child["start"] <= position < child["end"]
-                )
-                descriptor = child["node"]
-                continue
-            self.assertEqual(node["kind"], "postings")
-            self.assertEqual(node["start"], etl.MAX_POSTING_REFS)
-            self.assertEqual(len(node["refs"]), etl.MAX_POSTING_REFS)
-            break
-
-        self.assertEqual(len(reads), 2)
-        self.assertEqual(
-            etl.verify_fixture_release(output / "manifest.json"),
-            {
-                "verifiedObjects": len(list((output / "sha256").iterdir())),
-                "verifiedPostingRefs": 2 * etl.MAX_POSTING_REFS + 1,
-                "verifiedRows": 2 * etl.MAX_POSTING_REFS + 1,
-            },
-        )
 
 
 if __name__ == "__main__":

@@ -12,6 +12,31 @@
   ],
   "artifacts": [
     {
+      "id": "anac-procurement-cpv",
+      "owner": "ANAC CPV classification for the existing entity procurement profiles",
+      "files": [
+        "src/data/generated/anac-procurement-cpv"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_procurement_cpv.py"
+      ],
+      "nodeTests": [
+        "tests/anac-procurement-cpv.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_procurement_cpv.py --input-dir /path/to/locked-cig-archives",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-procurement-cpv.source.json",
+      "trustModel": "Derived classification index bound to the existing ANAC source lock and entity-profile metadata. Every published procedure joins to exactly one primary CIG row in the twelve complete 2025 archives; raw CPV codes and descriptions are retained. Offline checks verify all index and parent shard hashes and exact CIG coverage. Financial values and operator identities stay in the existing typed profile and are recomputed only after selecting whole CIGs."
+    },
+    {
       "id": "pnrr-projects-index",
       "owner": "Italia Domani national PNRR project catalog",
       "files": [

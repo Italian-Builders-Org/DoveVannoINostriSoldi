@@ -11,6 +11,9 @@ const integratedSourceRuntimeFiles = [
 ];
 
 const entityProcurementRuntimeFiles = [
+  "src/data/generated/anac-procurement-cpv/*.jsonl.gz",
+  "src/data/generated/anac-procurement-cpv/meta.json",
+  "scripts/etl/specs/anac-procurement-cpv.source.json",
   "src/data/generated/anac-entity-procurement-page/meta.json",
   "src/data/generated/anac-entity-procurement-page/entities/*.jsonl.gz",
   "scripts/etl/specs/anac-entity-procurement-page.source.json",

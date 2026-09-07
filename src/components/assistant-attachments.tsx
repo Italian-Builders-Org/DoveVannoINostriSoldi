@@ -2,20 +2,20 @@
 
 import { useEffect, useRef } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01Icon, File01Icon, Table01Icon, Pdf01Icon, Doc01Icon, Txt01Icon, FileScriptIcon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Cancel01Icon, File01Icon } from "@hugeicons/core-free-icons";
 import { attachmentLabel, type AiAttachment } from "@/lib/assistant/attachment-contracts";
 import type { AttachmentDraft } from "@/components/use-assistant-attachments";
 import styles from "@/app/assistente/assistant.module.css";
 
 function fileAppearance(name: string) {
   const extension = name.split(".").at(-1)?.toLowerCase() ?? "";
-  if (extension === "pdf") return { icon: Pdf01Icon, tone: "pdf", label: "PDF" };
-  if (["xlsx", "xls", "ods", "csv", "tsv"].includes(extension)) return { icon: Table01Icon, tone: "sheet", label: extension.toUpperCase() };
-  if (extension === "docx") return { icon: Doc01Icon, tone: "word", label: "WORD" };
-  if (["md", "json"].includes(extension)) return { icon: FileScriptIcon, tone: "code", label: extension.toUpperCase() };
-  if (extension === "txt") return { icon: Txt01Icon, tone: "text", label: "TXT" };
-  if (["png", "jpg", "jpeg", "webp"].includes(extension)) return { icon: Image01Icon, tone: "image", label: "IMG" };
-  return { icon: File01Icon, tone: "text", label: "FILE" };
+  if (extension === "pdf") return { tone: "pdf", label: "PDF" };
+  if (["xlsx", "xls", "ods", "csv", "tsv"].includes(extension)) return { tone: "sheet", label: extension.toUpperCase() };
+  if (extension === "docx") return { tone: "word", label: "DOCX" };
+  if (["md", "json"].includes(extension)) return { tone: "code", label: extension.toUpperCase() };
+  if (extension === "txt") return { tone: "text", label: "TXT" };
+  if (["png", "jpg", "jpeg", "webp"].includes(extension)) return { tone: "image", label: "IMG" };
+  return { tone: "text", label: "FILE" };
 }
 
 export function AssistantAttachments({ items, onRemove, onPreview }: { items: readonly AttachmentDraft[]; onRemove?: (id: number) => void; onPreview: (file: AiAttachment) => void }) {
@@ -26,7 +26,7 @@ export function AssistantAttachments({ items, onRemove, onPreview }: { items: re
           // Locally decoded JPEG; do not send user images to the image optimizer.
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={`data:${item.file.mime};base64,${item.file.data}`} alt="" width={56} height={56} />
-          : <><HugeiconsIcon icon={fileAppearance(item.name).icon} size={23} aria-hidden="true" /><span className={styles.attachmentName}><strong>{item.name.replace(/\.[^.]+$/u, "")}</strong><em>{fileAppearance(item.name).label}</em></span></>}
+          : <><span className={styles.attachmentGlyph} aria-hidden="true"><HugeiconsIcon icon={File01Icon} size={25} strokeWidth={1.4} /><em>{fileAppearance(item.name).label}</em></span><span className={styles.attachmentName}><strong>{item.name.replace(/\.[^.]+$/u, "")}</strong></span></>}
         <span className={styles.srOnly}>{item.file ? attachmentLabel(item.file) : item.error ? "File non disponibile" : "Lettura in corso…"}</span>
       </button>
       {onRemove && item.progress !== undefined ? <>

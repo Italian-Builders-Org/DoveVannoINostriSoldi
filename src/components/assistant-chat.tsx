@@ -307,7 +307,7 @@ export function AssistantChat() {
               <button type="button" className={styles.option} onClick={() => { setMenu(null); fileInput.current?.click(); }}><HugeiconsIcon icon={Attachment01Icon} size={20} aria-hidden="true" /><span><strong>Allega file o immagini</strong><small>PDF, Word, Excel e testo · fino a 3 file, 5 MB ciascuno</small></span></button>
               <button type="button" className={styles.option} onClick={() => { setMenu("sources"); setQuery(""); setActiveOption(0); input.current?.focus(); }}><HugeiconsIcon icon={BookOpen01Icon} size={20} aria-hidden="true" /><span><strong>Fonti ed esempi</strong><small>Inizia dai dataset del sito</small></span></button>
             </div> : null}
-            <input ref={fileInput} type="file" accept={ATTACHMENT_ACCEPT} multiple className={styles.srOnly} tabIndex={-1} aria-label="Scegli gli allegati" onChange={(event) => { attachments.add(Array.from(event.target.files ?? [])); event.target.value = ""; input.current?.focus(); }} />
+            <input ref={fileInput} type="file" accept={ATTACHMENT_ACCEPT} multiple className={styles.srOnly} tabIndex={-1} aria-label="Scegli gli allegati" onChange={(event) => { attachments.add(Array.from(event.target.files ?? [])); event.target.value = ""; input.current?.focus({ preventScroll: true }); }} />
             <form className={styles.composer} onSubmit={submit} data-dragging={dragging}
               onDragOver={(event) => { if (event.dataTransfer.types.includes("Files")) { event.preventDefault(); setDragging(true); } }}
               onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false); }}
@@ -369,7 +369,7 @@ export function AssistantChat() {
         <div><button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button><a href="/privacy">Privacy</a></div>
       </footer>
       {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setTurns([]); setEditing(null); if (!next) { attachments.clear(); setPreview(null); } }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
-      {preview ? <AssistantAttachmentPreview file={preview} onClose={() => { setPreview(null); requestAnimationFrame(() => { if (previewTrigger.current?.isConnected) previewTrigger.current.focus(); else input.current?.focus(); }); }} /> : null}
+      {preview ? <AssistantAttachmentPreview file={preview} onClose={() => { setPreview(null); requestAnimationFrame(() => { if (previewTrigger.current?.isConnected) previewTrigger.current.focus({ preventScroll: true }); else input.current?.focus(); }); }} /> : null}
       <span className={styles.srOnly} role="status">{copied ? "Testo copiato" : copyError ? "Copia non disponibile: seleziona il testo e copialo manualmente." : loading ? "L’assistente sta rispondendo" : ""}</span>
       {info ? <div className={styles.infoPanel} id="assistant-info" role="region" aria-label="Come funziona l’assistente">
         <button type="button" className={styles.iconButton} aria-label="Chiudi informazioni" onClick={() => setInfo(false)}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>

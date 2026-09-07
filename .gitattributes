@@ -16,4 +16,7 @@
 *.ico binary
 *.jpg binary
 *.png binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
 *.pem -text

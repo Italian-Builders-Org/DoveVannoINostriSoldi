@@ -692,6 +692,17 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
         ],
       },
       {
+        id: "siope-uscite-asl",
+        label: "Pagamenti SIOPE delle ASL",
+        columns: [
+          { key: "entityName", label: "Ente" },
+          { key: "year", label: "Anno" },
+          { key: "month", label: "Mese" },
+          { key: "managementLabel", label: "Voce SAN" },
+          { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
         id: "siope-uscite-province",
         label: "Pagamenti SIOPE delle Province",
         columns: [

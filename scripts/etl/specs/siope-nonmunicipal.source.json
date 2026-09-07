@@ -4,7 +4,7 @@
   "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/247",
   "publication": "typed-snapshot",
   "holder": "Ragioneria Generale dello Stato; banca dati gestita da Banca d'Italia",
-  "scope": "Province, Regioni comprese le Province autonome e Città metropolitane",
+  "scope": "ASL, Province, Regioni comprese le Province autonome e Città metropolitane",
   "referencePeriod": {
     "from": 2024,
     "to": 2026
@@ -49,6 +49,7 @@
     }
   },
   "policies": {
+    "ASL": "SAN",
     "PROVINCIA": "PRO",
     "REGIONE": "REG",
     "CITTA_METROP": "PRO"
@@ -58,7 +59,8 @@
     "absence": "No observed movement is null in the compact entity view; an observed zero remains integer zero.",
     "period": "Monthly cash flows are summed; missing months are never imputed and 2026 can be partial.",
     "geography": "IPA region is a legal-seat field, not the physical destination of a payment.",
-    "nonGoals": "No health-payment coverage, consolidated public-administration total, pro-capita comparison or ranking."
+    "sanCategories": "ASL use four-digit SAN management codes and official labels with temporal validity, not territorial budget titles.",
+    "nonGoals": "No all-SSN coverage, addition to accrual-based SSN costs, consolidated public-administration total, pro-capita comparison or ranking."
   },
   "failClosed": ["unexpected archive member/schema", "wrong year or month", "duplicate movement key", "ambiguous temporal identity", "identity reused across type", "unknown or cross-compartment management code", "unsafe integer sum", "ambiguous IPA join", "missing or mismatched acquired-byte receipt", "unresolved movement without explicit diagnostic", "detail, corpus or release-proof reconciliation failure"]
 }

@@ -9,6 +9,7 @@ export const DATASET_IDS = [
   "siope_comuni",
   "siope_entrate_comuni",
   "siope_inventario_enti",
+  "siope_asl",
   "siope_province",
   "siope_regioni",
   "siope_citta_metropolitane",
@@ -163,6 +164,7 @@ const exampleQueries = {
   siope_comuni: { dataset: "siope_comuni", year: 2025, region: "Calabria" },
   siope_entrate_comuni: { dataset: "siope_entrate_comuni", year: 2025, region: "Calabria", limit: 20 },
   siope_inventario_enti: { dataset: "siope_inventario_enti", limit: 20 },
+  siope_asl: { dataset: "siope_asl", limit: 20 },
   siope_province: { dataset: "siope_province", limit: 20 },
   siope_regioni: { dataset: "siope_regioni", limit: 20 },
   siope_citta_metropolitane: { dataset: "siope_citta_metropolitane", limit: 20 },
@@ -260,7 +262,8 @@ const COMPANY_ATLAS_SOURCES: DatasetDescriptor["sources"] = Object.values(compan
 }));
 
 const datasetDescriptors: DatasetDescriptorInput[] = [
-  { id: "siope_inventario_enti", title: "SIOPE · inventario enti", summary: "Censimento nazionale SIOPE per tipo di ente e anno, con copertura dei join IPA e movimenti osservati.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "È un inventario di copertura: non pubblica pagamenti per tipi diversi da Province, Regioni e Città metropolitane. Zero osservato, assenza di movimenti ed errore di join restano distinti; il 2026 è parziale." },
+  { id: "siope_inventario_enti", title: "SIOPE · inventario enti", summary: "Censimento nazionale SIOPE per tipo di ente e anno, con copertura dei join IPA e movimenti osservati.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "È un inventario di copertura: non pubblica pagamenti per tipi diversi da ASL, Province, Regioni e Città metropolitane. Zero osservato, assenza di movimenti ed errore di join restano distinti; il 2026 è parziale." },
+  { id: "siope_asl", title: "SIOPE · pagamenti delle ASL", summary: "Movimenti mensili di cassa SIOPE delle aziende sanitarie locali 2024–2026, con voci del comparto SAN e join IPA esatto.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Solo enti di tipo ASL nel registro SIOPE, non tutti gli enti del SSN. Pagamenti di cassa, distinti dal conto economico OpenBDAP; nessuna somma tra i due perimetri. Il 2026 è parziale." },
   { id: "siope_province", title: "SIOPE · pagamenti delle Province", summary: "Movimenti mensili di cassa SIOPE delle Province 2024–2026, con identità temporale e join IPA esatto.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto PRO. Sono pagamenti di cassa dell'amministrazione, non spesa consolidata nel territorio né una classifica; il 2026 è parziale." },
   { id: "siope_regioni", title: "SIOPE · pagamenti delle Regioni", summary: "Movimenti mensili di cassa SIOPE delle Regioni e Province autonome 2024–2026, separati dai Comuni.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto REG; comprende le Province autonome registrate da SIOPE. Non è spesa sanitaria né una somma dei Comuni; il 2026 è parziale." },
   { id: "siope_citta_metropolitane", title: "SIOPE · pagamenti delle Città metropolitane", summary: "Movimenti mensili di cassa SIOPE delle Città metropolitane 2024–2026, separati dalle Province.", sourceIds: ["siope", "ipa"], customSources: nonMunicipalSiopeSources, freshness: "snapshot", publicationCadence: "manuale", filters: ["query", "limit", "offset", "cursor"], caveat: "Comparto PRO. Sono pagamenti di cassa dell'amministrazione, non spesa consolidata nel territorio né una classifica; il 2026 è parziale." },

@@ -122,6 +122,15 @@ export default function HealthSpendingPage() {
         </p>
       </section>
 
+      <section className="panel" aria-labelledby="asl-cash-title">
+        <h2 className="panel-title" id="asl-cash-title">Cerchi i pagamenti delle ASL?</h2>
+        <p>I pagamenti di cassa SIOPE delle aziende sanitarie locali sono disponibili dal 2024 al 2026. Il 2026 è parziale. Misurano uscite di denaro e restano separati dai costi di competenza economica di questa pagina.</p>
+        <div className={styles.sectionHead}>
+          <Link className="btn" href="/enti?q=ASL">Cerca una ASL</Link>
+          <Link className="btn secondary" href="/dati/siope-uscite-asl">Consulta i movimenti SIOPE</Link>
+        </div>
+      </section>
+
       <HospitalBeds />
 
       <section className="panel" aria-labelledby="regions-title">

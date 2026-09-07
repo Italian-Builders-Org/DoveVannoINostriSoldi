@@ -257,7 +257,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <section className="panel" aria-labelledby="siope-territoriali-title">
           <div className={styles.resultsHead}>
             <h2 className="panel-title" id="siope-territoriali-title">
-              {query ? "Enti territoriali SIOPE pubblicati" : "Province, Regioni e Città metropolitane SIOPE"}
+              {query ? "Enti SIOPE pubblicati" : "ASL, Province, Regioni e Città metropolitane SIOPE"}
             </h2>
             <span>{integer(nonMunicipalEntities.length)} {query ? "corrispondenze" : "enti con dettaglio di cassa"}</span>
           </div>
@@ -265,7 +265,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
             Elenco dal rilascio SIOPE verificato. La ricerca per nome o codice IPA usa lo stesso campo del registro; resta disponibile anche se IPA non risponde.
           </p>
           {nonMunicipalEntities.length > 0 ? (
-            <div className="table-scroll" role="region" aria-label="Enti territoriali SIOPE pubblicati" tabIndex={0}>
+            <div className="table-scroll" role="region" aria-label="Enti SIOPE pubblicati" tabIndex={0}>
               <table className="table">
                 <thead><tr><th scope="col">Ente</th><th scope="col">Tipologia SIOPE</th><th scope="col">Codice IPA</th></tr></thead>
                 <tbody>{nonMunicipalEntities.map((entity) => (
@@ -277,7 +277,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                 ))}</tbody>
               </table>
             </div>
-          ) : <p className={styles.note}>Nessun ente territoriale SIOPE corrisponde alla ricerca.</p>}
+          ) : <p className={styles.note}>Nessun ente SIOPE corrisponde alla ricerca.</p>}
         </section>
       )}
 

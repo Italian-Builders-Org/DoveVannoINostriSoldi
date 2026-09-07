@@ -167,12 +167,20 @@ test("non-municipal SIOPE MCP datasets use bounded corpus selectors and reject s
   const continued = await queryPublicDataset({ dataset: "siope_province", limit: 2, cursor: province.pagination.nextCursor });
   assert.ok(continued.rows[0].sourceRow > province.rows.at(-1).sourceRow);
 
-  const [regions, metros] = await Promise.all([
+  const [regions, metros, asl] = await Promise.all([
     queryPublicDataset({ dataset: "siope_regioni", limit: 1 }),
     queryPublicDataset({ dataset: "siope_citta_metropolitane", limit: 1 }),
+    queryPublicDataset({ dataset: "siope_asl", limit: 2 }),
   ]);
   assert.equal(regions.dataset.id, "siope-uscite-regioni");
   assert.equal(metros.dataset.id, "siope-uscite-citta-metropolitane");
+  assert.equal(asl.dataset.id, "siope-uscite-asl");
+  assert.equal(asl.rows.length, 2);
+  assert.ok(asl.rows.every((row) => row.cells.entityType === "ASL" && row.cells.compartment === "SAN"));
+  assert.ok(asl.rows.every((row) => row.cells.titleCode === row.cells.managementCode && row.cells.titleLabel === row.cells.managementLabel));
+  const nextAsl = await queryPublicDataset({ dataset: "siope_asl", limit: 2, cursor: asl.pagination.nextCursor });
+  assert.ok(nextAsl.rows[0].sourceRow > asl.rows.at(-1).sourceRow);
+  await assert.rejects(queryPublicDataset({ dataset: "siope_asl", year: 2025 }), /Filtri non supportati.*year/);
   await assert.rejects(queryPublicDataset({ dataset: "siope_regioni", year: 2025 }), /Filtri non supportati.*year/);
   await assert.rejects(queryPublicDataset({ dataset: "siope_province", region: "Lazio" }), /Filtri non supportati.*region/);
 });
@@ -392,7 +400,7 @@ test("every snapshot catalog example is executable offline", async () => {
 });
 
 test("non-municipal SIOPE aliases declare manual acquisition and publication without changing municipal cadence", () => {
-  const aliases = ["siope_inventario_enti", "siope_province", "siope_regioni", "siope_citta_metropolitane"];
+  const aliases = ["siope_asl", "siope_inventario_enti", "siope_province", "siope_regioni", "siope_citta_metropolitane"];
   for (const id of aliases) {
     const dataset = datasetCatalog.find((item) => item.id === id);
     assert.equal(dataset.publicationCadence, "manuale");

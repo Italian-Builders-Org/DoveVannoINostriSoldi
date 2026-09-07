@@ -8,10 +8,19 @@ const destinations = [...new Set(PRIMARY_NAV.flatMap((item) => [item.href, ...(i
 mkdirSync("artifacts/browser", { recursive: true });
 await waitForServer(baseUrl);
 const linkResults = [];
+// These pages allow their OpenBDAP adapters 50 seconds before fallback/error UI.
+// Give serialization time to complete; all other destinations retain 30 seconds.
+const historyDestinations = new Set(['/spese/sanita/storico', '/stato/legislature']);
 for (const href of destinations) {
-  const response = await fetch(new URL(href, baseUrl), { signal: AbortSignal.timeout(30_000) });
-  assert.equal(response.status, 200, `Destinazione non disponibile: ${href}`);
-  await response.arrayBuffer();
+  try {
+    const response = await fetch(new URL(href, baseUrl), {
+      signal: AbortSignal.timeout(historyDestinations.has(href) ? 60_000 : 30_000),
+    });
+    assert.equal(response.status, 200, `Destinazione non disponibile: ${href}`);
+    await response.arrayBuffer();
+  } catch (cause) {
+    throw new Error(`Verifica della destinazione fallita: ${href}`, { cause });
+  }
   // Record the expected status only after the response has passed the assertion.
   linkResults.push({ href, status: 200 });
 }

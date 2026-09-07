@@ -1401,7 +1401,7 @@ try {
   }
 
   for (const width of [390, 768, 1280]) {
-    for (const [code, heading] of [["r_lazio", /regione/i], ["p_AN", /provincia/i], ["cmbo", /città metropolitana/i]]) {
+    for (const [code, heading] of [["r_lazio", /regione/i], ["p_AN", /provincia/i], ["cmbo", /città metropolitana/i], ["054", /azienda sanitaria locale/i]]) {
       const label = `Pagamenti SIOPE ${code} ${width}px`;
       await runScenario(browser, {
         label,
@@ -1412,6 +1412,13 @@ try {
           assert.match(text, heading);
           assert.match(text, /Annualità completa e revisionabile/);
           assert.match(text, /non spesa consolidata nel territorio/);
+          if (code === "054") {
+            assert.match(text, /distinti dai costi del Conto Economico SSN/);
+            assert.equal(await page.$eval("#pagamenti-siope details", (element) => element.open), false);
+            await page.click("#pagamenti-siope summary");
+            assert.equal(await page.$eval("#pagamenti-siope details", (element) => element.open), true);
+            assert.match(await page.$eval('[aria-label="Voci dei pagamenti SIOPE SAN"]', (element) => element.innerText), /1103/);
+          }
           assert.equal(await page.$eval("#siope-anno", (element) => element.value), "2025");
           assert.equal(await page.$$eval('[aria-label="Importi mensili dei pagamenti SIOPE 2025"] tbody tr', (rows) => rows.length), 12);
           const totalWidthRatio = await page.$eval("#pagamenti-siope dl", (element) => element.firstElementChild.getBoundingClientRect().width / element.getBoundingClientRect().width);
@@ -1447,6 +1454,18 @@ try {
     });
     completed.push(label);
   }
+
+  await runScenario(browser, {
+    label: "ASL nuova fuori validità nel 2024 390px",
+    pathname: "/enti/W2RCGK0L?siopeAnno=2024",
+    width: 390,
+    validate: async (page) => {
+      const text = await page.$eval("#pagamenti-siope", (element) => element.innerText);
+      assert.match(text, /Fuori dal periodo di validità dell'ente/);
+      assert.doesNotMatch(text, /Totale pagato nel periodo|Periodo parziale|Annualità completa/);
+    },
+  });
+  completed.push("ASL nuova fuori validità nel 2024 390px");
 
   await runScenario(browser, {
     label: "Ente non comunale layout leggibile 390px",

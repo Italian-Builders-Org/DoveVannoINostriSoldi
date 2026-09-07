@@ -8,7 +8,10 @@ import {
 const datasetFilters = new Map(datasetCatalog.map((dataset) => [dataset.id, new Set(dataset.filters)]));
 
 function rejectUnsupportedFilters(query: DatasetQuery) {
-  const supported = datasetFilters.get(query.dataset) ?? new Set<string>();
+  const supported = datasetFilters.get(query.dataset);
+  if (!supported) {
+    throw new Error(`Dataset non supportato o non disponibile: ${query.dataset}.`);
+  }
   const provided = Object.entries(query)
     .filter(([key, value]) => key !== "dataset" && value !== undefined)
     .map(([key]) => key);

@@ -228,9 +228,9 @@ assert.throws(enableOpenCupFixtureAccessForTests, /produzione/);
 if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
 else process.env.NODE_ENV = originalNodeEnv;
 enableOpenCupFixtureAccessForTests();
-const { GET } = await import("../src/app/api/opencup/progetti/route.ts");
-const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
-const { datasetCatalog } = await import("../src/lib/mcp/catalog.ts");
+const { GET, handleOpenCupRequest } = await import("../src/app/api/opencup/progetti/route.ts");
+const { registeredDatasetCatalog } = await import("../src/lib/mcp/catalog.ts");
+const activeRequest = (request) => handleOpenCupRequest(request, "active");
 
 test.after(async () => {
   delete process.env.DVNS_OPENCUP_PROJECTS_MANIFEST;
@@ -368,7 +368,7 @@ test("OpenCUP runtime rejects an incomplete production index before object reads
   process.env.DVNS_OPENCUP_PROJECTS_MANIFEST = manifestPath;
   resetImmutableObjectStoreForTests();
   try {
-    const response = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=B12B34567890002"));
+    const response = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=B12B34567890002"));
     assert.equal(response.status, 503);
     assert.equal(response.headers.get("cache-control"), "no-store");
     assert.deepEqual(getImmutableObjectStoreDiagnosticsForTests().cacheKeys, []);
@@ -413,7 +413,9 @@ test("OpenCUP runtime rejects non-official production provenance URLs", async ()
 });
 
 test("OpenCUP HTTP route shares selector results and distinguishes absent from invalid CUP", async () => {
-  const response = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001&limit=1"));
+  const gated = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001&limit=1"));
+  assert.equal(gated.status, 404);
+  const response = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001&limit=1"));
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "public, max-age=300");
   const payload = await response.json();
@@ -423,12 +425,12 @@ test("OpenCUP HTTP route shares selector results and distinguishes absent from i
   assert.equal(payload.dataset.sourceMetadata.publicationDate, null);
   assert.equal(payload.dataset.sourceMetadata.acquisitionDate, null);
 
-  const absent = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=Z99Z99999999999"));
+  const absent = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=Z99Z99999999999"));
   assert.equal(absent.status, 200);
   assert.equal((await absent.json()).matchedRows, 0);
 
   for (const query of ["cup=short", "cup=A12B34567890001&cup=A12B34567890001", "q=scuola", "limit=101"]) {
-    const invalid = await GET(new NextRequest(`http://localhost/api/opencup/progetti?${query}`));
+    const invalid = await activeRequest(new NextRequest(`http://localhost/api/opencup/progetti?${query}`));
     assert.equal(invalid.status, 400, query);
     assert.equal(invalid.headers.get("cache-control"), "no-store");
   }
@@ -442,7 +444,7 @@ test("OpenCUP HTTP route maps an altered index object to a non-cacheable 503", a
   resetImmutableObjectStoreForTests();
   await writeFile(indexPath, altered);
   try {
-    const response = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001"));
+    const response = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001"));
     assert.equal(response.status, 503);
     assert.equal(response.headers.get("cache-control"), "no-store");
     assert.equal(response.headers.get("retry-after"), "5");
@@ -518,7 +520,7 @@ test("OpenCUP HTTP route fails closed when no manifest is configured", async () 
   const manifestPath = process.env.DVNS_OPENCUP_PROJECTS_MANIFEST;
   delete process.env.DVNS_OPENCUP_PROJECTS_MANIFEST;
   try {
-    const response = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001"));
+    const response = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001"));
     assert.equal(response.status, 503);
     assert.equal(response.headers.get("cache-control"), "no-store");
   } finally {
@@ -554,7 +556,7 @@ test("OpenCUP HTTP route rejects an oversized serialized response", async () => 
   resetImmutableObjectStoreForTests();
   await writeFile(manifestPath, `${canonical(largeManifest)}\n`);
   try {
-    const response = await GET(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001&limit=1"));
+    const response = await activeRequest(new NextRequest("http://localhost/api/opencup/progetti?cup=A12B34567890001&limit=1"));
     assert.equal(response.status, 413);
     assert.equal(response.headers.get("cache-control"), "no-store");
   } finally {
@@ -563,15 +565,10 @@ test("OpenCUP HTTP route rejects an oversized serialized response", async () => 
   }
 });
 
-test("OpenCUP MCP dispatch reuses the selector and documents plural accounting semantics", async () => {
-  const direct = await selectOpenCupProjects({ cup: "A12B34567890001", limit: 1 });
-  const mcp = await queryPublicDataset({
-    dataset: "opencup_progetto",
-    cup: "  a12b34567890001  ",
-    limit: 1,
-  });
-  assert.deepEqual(mcp, direct);
-  const descriptor = datasetCatalog.find((dataset) => dataset.id === "opencup_progetto");
+test("configured OpenCUP MCP descriptor documents plural accounting semantics", async () => {
+  const direct = await selectOpenCupProjects({ cup: "  a12b34567890001  ", limit: 1 });
+  assert.equal(direct.rows.length, 1);
+  const descriptor = registeredDatasetCatalog.find((dataset) => dataset.id === "opencup_progetto");
   assert.ok(descriptor);
   assert.deepEqual(descriptor.sourceIds, ["opencup"]);
   assert.equal(descriptor.sources[0].owner, "Dipartimento per la programmazione e il coordinamento della politica economica");

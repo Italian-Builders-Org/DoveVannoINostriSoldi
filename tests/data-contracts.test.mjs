@@ -6,8 +6,8 @@ const { parseDelimitedRecords, parsePublicNumber } = await import(
   "../src/lib/data/delimited.ts"
 );
 const { classifyFreshness } = await import("../src/lib/data/freshness.ts");
-const { SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
-const { publicSources } = await import("../src/lib/sources.ts");
+const { ACTIVE_SOURCE_IDS, SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
+const { publicSources, sourceCatalog } = await import("../src/lib/sources.ts");
 const { fetchOfficialSource } = await import("../src/lib/data/source-fetch.ts");
 
 test("semicolon parser preserves quoted delimiters and escaped quotes", () => {
@@ -40,9 +40,14 @@ test("every registered source has a complete operational policy", () => {
   assert.equal(new Set(SOURCE_IDS).size, SOURCE_IDS.length);
   assert.equal(SOURCE_IDS.length, 33);
   assert.deepEqual(
-    [...publicSources.map((source) => source.slug)].sort(),
+    [...sourceCatalog.map((source) => source.slug)].sort(),
     [...SOURCE_IDS].sort(),
-    "public registry and operational policy registry must stay aligned",
+    "source catalog and operational policy registry must stay aligned",
+  );
+  assert.deepEqual(
+    [...publicSources.map((source) => source.slug)].sort(),
+    [...ACTIVE_SOURCE_IDS].sort(),
+    "public sources must exclude configured integrations",
   );
 
   for (const sourceId of SOURCE_IDS) {

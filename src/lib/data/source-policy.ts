@@ -46,6 +46,11 @@ export type SourceCadence =
   | "per-amministrazione"
   | "su-pubblicazione";
 
+export type ProductIntegrationState = "active" | "configured";
+
+/** One release gate shared by source status, UI and MCP. */
+export const OPENCUP_PRODUCT_INTEGRATION = "configured" as ProductIntegrationState;
+
 export type SourcePolicy = {
   id: SourceId;
   label: string;
@@ -59,6 +64,7 @@ export type SourcePolicy = {
   timeoutMs: number;
   maxRetries: number;
   tags: readonly string[];
+  integration?: ProductIntegrationState;
 };
 
 const HOUR = 60 * 60;
@@ -287,6 +293,7 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 5_000,
     maxRetries: 0,
     tags: ["source:opencup", "domain:projects"],
+    integration: OPENCUP_PRODUCT_INTEGRATION,
   },
   italiadomani: {
     id: PNRR_CHILDCARE_SOURCE.id,
@@ -546,6 +553,9 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
 };
 
 export const SOURCE_IDS = Object.freeze(Object.keys(SOURCE_POLICIES) as SourceId[]);
+export const ACTIVE_SOURCE_IDS = Object.freeze(
+  SOURCE_IDS.filter((sourceId) => SOURCE_POLICIES[sourceId].integration !== "configured"),
+);
 
 export function getSourcePolicy(sourceId: SourceId): SourcePolicy {
   return SOURCE_POLICIES[sourceId];

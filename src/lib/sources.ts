@@ -1,4 +1,5 @@
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import { OPENCUP_PRODUCT_INTEGRATION, type ProductIntegrationState } from "@/lib/data/source-policy";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 
 export type PublicSource = {
@@ -12,9 +13,10 @@ export type PublicSource = {
   url: string;
   note: string;
   joinKeys?: string[];
+  integration?: ProductIntegrationState;
 };
 
-export const publicSources: PublicSource[] = [
+export const sourceCatalog: PublicSource[] = [
   {
     slug: "ameco",
     name: "Commissione europea · AMECO",
@@ -332,6 +334,7 @@ export const publicSources: PublicSource[] = [
     url: "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data",
     note: "Fonte configurata ma non attiva: G1–G4 non sono ancora chiusi. Registrazioni, CUP distinti e localizzazioni restano conteggi separati; costo e finanziamento non sono pagamenti.",
     joinKeys: ["CUP esatto"],
+    integration: OPENCUP_PRODUCT_INTEGRATION,
   },
   {
     slug: PNRR_CHILDCARE_SOURCE.id,
@@ -414,6 +417,10 @@ export const publicSources: PublicSource[] = [
     note: "Impegni, pagamenti in conto competenza e pagamenti in conto residui restano separati. Il workbook è della sola PCM e non viene sommato ai Ministeri o al Parlamento. La pagina non dichiara una licenza per il file.",
   },
 ];
+
+export const publicSources = sourceCatalog.filter(
+  (source) => source.integration !== "configured",
+);
 
 export const sourceCounts = {
   total: publicSources.length,

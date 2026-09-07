@@ -60,8 +60,11 @@ persistiti. Dettagli e limiti: `docs/ASSISTENTE.md`.
 
 ## Storage e verifica
 
-La decisione attuale è [Git per gli artifact del prodotto](architecture/ADR-001-generated-artifacts-storage.md).
-PostgreSQL e object storage sono eventuali evoluzioni, non dipendenze presenti.
+La regola generale è [Git per gli artifact del prodotto](architecture/ADR-001-generated-artifacts-storage.md).
+Per OpenCUP è proposta una
+[eccezione su Cloudflare R2](architecture/ADR-002-opencup-object-storage.md),
+ancora inattiva finché provisioning e ripristino non saranno verificati.
+PostgreSQL non è una dipendenza presente.
 Le credenziali dei refresh e dell'App GitHub per le segnalazioni sono soltanto
 server-side; l'avvio locale non le richiede.
 

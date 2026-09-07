@@ -2,15 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { ACTIVE_DATASET_IDS, DATASET_IDS, activeDatasetCatalog, datasetCatalog } = await import("../src/lib/mcp/catalog.ts");
+const { ACTIVE_DATASET_IDS, DATASET_IDS, datasetCatalog, registeredDatasetCatalog } = await import("../src/lib/mcp/catalog.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
-const { publicSources } = await import("../src/lib/sources.ts");
+const { sourceCatalog } = await import("../src/lib/sources.ts");
 
 test("MCP catalog has one descriptor per stable dataset id and valid source references", () => {
-  assert.deepEqual(datasetCatalog.map((dataset) => dataset.id).sort(), [...DATASET_IDS].sort());
+  assert.deepEqual(registeredDatasetCatalog.map((dataset) => dataset.id).sort(), [...DATASET_IDS].sort());
   assert.equal(new Set(DATASET_IDS).size, DATASET_IDS.length);
-  const knownSources = new Set(publicSources.map((source) => source.slug));
-  for (const dataset of datasetCatalog) {
+  const knownSources = new Set(sourceCatalog.map((source) => source.slug));
+  for (const dataset of registeredDatasetCatalog) {
     assert.ok(dataset.title.length > 0);
     assert.ok(dataset.summary.length > 0);
     assert.equal(dataset.exampleQuery.dataset, dataset.id);
@@ -52,10 +52,14 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
   assert.match(pensioners.caveat, /non.*sommabile/i);
 });
 
-test("configured OpenCUP is registered internally but not advertised before promotion", () => {
-  assert.ok(datasetCatalog.some((dataset) => dataset.id === "opencup_progetto" && dataset.integration === "configured"));
+test("configured OpenCUP is registered internally but not advertised before promotion", async () => {
+  assert.ok(registeredDatasetCatalog.some((dataset) => dataset.id === "opencup_progetto" && dataset.integration === "configured"));
   assert.ok(!ACTIVE_DATASET_IDS.includes("opencup_progetto"));
-  assert.ok(!activeDatasetCatalog.some((dataset) => dataset.id === "opencup_progetto"));
+  assert.ok(!datasetCatalog.some((dataset) => dataset.id === "opencup_progetto"));
+  await assert.rejects(
+    queryPublicDataset({ dataset: "opencup_progetto", cup: "A12B34567890001" }),
+    /Dataset non supportato o non disponibile: opencup_progetto/,
+  );
 });
 
 test("ISTAT pension MCP projections keep benefits and persons separate", async () => {

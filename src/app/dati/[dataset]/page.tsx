@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { DatasetInsightPanel } from "@/components/dataset-insight-panel";
 import { OpenCupSearchForm } from "@/components/opencup-search-form";
 import Pagination from "@/components/pagination";
+import { OPENCUP_PRODUCT_INTEGRATION } from "@/lib/data/source-policy";
 import { integer } from "@/lib/format";
 import { relatedReadingForDataset } from "@/lib/integrated-catalog-views";
 import {
@@ -224,12 +225,12 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
 
       {!dataset.queryable ? (
         <section className={`panel ${styles.unavailablePanel}`} aria-labelledby="dataset-no-rows-title">
-          <h2 id="dataset-no-rows-title">{dataset.id === "opencup-progetti-bulk" ? "Cerca nel prodotto OpenCUP" : "Niente da scorrere qui"}</h2>
+          <h2 id="dataset-no-rows-title">{dataset.id === "opencup-progetti-bulk" && OPENCUP_PRODUCT_INTEGRATION === "active" ? "Cerca nel prodotto OpenCUP" : "Niente da scorrere qui"}</h2>
           <p>
             Documenta {integer(dataset.sourceRows)} righe sorgente e lo stato di pubblicazione, senza
             creare destinatari o importi sostitutivi.
           </p>
-          {dataset.id === "opencup-progetti-bulk" ? (
+          {dataset.id === "opencup-progetti-bulk" && OPENCUP_PRODUCT_INTEGRATION === "active" ? (
             <OpenCupSearchForm className={styles.cupSearch} />
           ) : null}
           <div>

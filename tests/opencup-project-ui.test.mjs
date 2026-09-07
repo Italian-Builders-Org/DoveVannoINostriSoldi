@@ -4,7 +4,7 @@ import test from "node:test";
 
 const source = (path) => readFile(new URL(path, import.meta.url), "utf8");
 
-test("project route composes PNRR and OpenCUP evidence without making PNRR mandatory", async () => {
+test("project route prepares OpenCUP evidence behind the shared release gate", async () => {
   const [page, notFound] = await Promise.all([
     source("../src/app/progetti/[cup]/page.tsx"),
     source("../src/app/progetti/[cup]/not-found.tsx"),
@@ -12,6 +12,8 @@ test("project route composes PNRR and OpenCUP evidence without making PNRR manda
 
   assert.match(page, /selectOpenCupProjects/);
   assert.match(page, /OpenCupProjectPanel/);
+  assert.match(page, /OPENCUP_PRODUCT_INTEGRATION !== "active"/);
+  assert.match(page, /OPENCUP_PRODUCT_INTEGRATION === "active"/);
   assert.match(page, /getPnrrChildcareProject\(cup\)/);
   assert.match(page, /Progetto CUP \$\{cup\}/);
   assert.match(page, /OpenCUP temporaneamente non disponibile/i);
@@ -36,13 +38,14 @@ test("OpenCUP panel exposes plural records, pagination state and cautious accoun
   assert.match(panel, /focus\(\)/);
 });
 
-test("catalog-only OpenCUP page offers exact CUP navigation instead of a national scan", async () => {
+test("catalog-only OpenCUP page keeps exact CUP navigation behind the release gate", async () => {
   const [page, search] = await Promise.all([
     source("../src/app/dati/[dataset]/page.tsx"),
     source("../src/components/opencup-search-form.tsx"),
   ]);
 
   assert.match(page, /dataset\.id === "opencup-progetti-bulk"/);
+  assert.match(page, /OPENCUP_PRODUCT_INTEGRATION === "active"/);
   assert.match(page, /OpenCupSearchForm/);
   assert.match(search, /router\.push\(`\/progetti\/\$\{cup\}`\)/);
   assert.match(search, /\[A-Z0-9\]\{15\}/);

@@ -1,9 +1,9 @@
-import type { SourceId } from "@/lib/data/source-policy";
+import { OPENCUP_PRODUCT_INTEGRATION, type SourceId } from "@/lib/data/source-policy";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { educationAtlasCatalogSources } from "@/lib/education-atlas-metadata";
 import { INTEGRATED_CORPUS_CONTRACT } from "@/lib/integrated-source-contract";
 import { companyAtlasSources } from "@/lib/company-atlas-metadata";
-import { publicSources } from "@/lib/sources";
+import { sourceCatalog } from "@/lib/sources";
 
 export const DATASET_IDS = [
   "siope_comuni",
@@ -147,7 +147,7 @@ type DatasetDescriptorInput = Omit<DatasetDescriptor, "sources" | "exampleQuery"
   integration?: DatasetDescriptor["integration"];
 };
 
-const sourceById = new Map(publicSources.map((source) => [source.slug, source]));
+const sourceById = new Map(sourceCatalog.map((source) => [source.slug, source]));
 
 const nonMunicipalSiopeSources: DatasetSource[] = [
   {
@@ -296,7 +296,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     summary: "Registrazioni del dataset OpenCUP Progetti selezionate per codice CUP esatto, con duplicati della fonte preservati e paginazione stabile.",
     sourceIds: ["opencup"],
     freshness: "snapshot",
-    integration: "configured",
+    integration: OPENCUP_PRODUCT_INTEGRATION,
     filters: ["cup", "limit", "cursor"],
     caveat: "Il costo dichiarato del progetto, il finanziamento richiesto e gli eventuali pagamenti osservati sono grandezze diverse e non vanno sommati né interpretati come avanzamento. Un CUP può avere più registrazioni sorgente. La presenza nel perimetro OpenCUP non prova l'appartenenza al PNRR; il corpus nazionale resta indisponibile finché manifest e storage non sono promossi.",
   },
@@ -411,7 +411,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   },
 ];
 
-export const datasetCatalog: DatasetDescriptor[] = datasetDescriptors.map((dataset) => {
+export const registeredDatasetCatalog: DatasetDescriptor[] = datasetDescriptors.map((dataset) => {
   const { customSources, ...descriptor } = dataset;
   return {
     ...descriptor,
@@ -432,10 +432,10 @@ export const datasetCatalog: DatasetDescriptor[] = datasetDescriptors.map((datas
 });
 
 /** Only promoted datasets are advertised by the public MCP server. */
-export const activeDatasetCatalog = datasetCatalog.filter(
+export const datasetCatalog = registeredDatasetCatalog.filter(
   (dataset) => dataset.integration === "active",
 );
-export const ACTIVE_DATASET_IDS = activeDatasetCatalog.map(
+export const ACTIVE_DATASET_IDS = datasetCatalog.map(
   (dataset) => dataset.id,
 ) as [DatasetId, ...DatasetId[]];
 

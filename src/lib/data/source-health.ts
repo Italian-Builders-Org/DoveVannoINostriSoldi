@@ -4,6 +4,7 @@ import { classifyFreshness, type Freshness } from "@/lib/data/freshness";
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import { ipaRuntimeFetchOptions } from "@/lib/ipa-runtime-fetch";
 import {
+  ACTIVE_SOURCE_IDS,
   SOURCE_IDS,
   SOURCE_POLICIES,
   type SourceId,
@@ -803,7 +804,6 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatCasellarioPensioni(),
     snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
-    configuredOpenCup(),
     snapshotManagedPnrr(),
     snapshotManagedOpenCivitas(),
     snapshotManagedMefParticipations(),
@@ -869,7 +869,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
 /** Orders every adapter by the public registry and fails closed on omissions. */
 export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealth[] {
   const bySource = new Map(entries.map((entry) => [entry.sourceId, entry]));
-  return SOURCE_IDS.map((sourceId) => {
+  return ACTIVE_SOURCE_IDS.map((sourceId) => {
     const health = bySource.get(sourceId);
     if (!health) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
     return health;
@@ -888,7 +888,7 @@ export async function getSourceHealthOverview(
   const signal = options.signal && deadline
     ? AbortSignal.any([options.signal, deadline])
     : options.signal ?? deadline;
-  const entries = await Promise.all(SOURCE_IDS.map((sourceId) => {
+  const entries = await Promise.all(ACTIVE_SOURCE_IDS.map((sourceId) => {
     const adapter = SOURCE_HEALTH_ADAPTERS[sourceId] as SourceHealthAdapter | undefined;
     if (!adapter) throw new Error(`Adapter operativo senza probe: ${sourceId}`);
     return adapter(signal);

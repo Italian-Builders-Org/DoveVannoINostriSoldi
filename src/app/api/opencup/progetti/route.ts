@@ -3,13 +3,23 @@ import {
   IntegratedQueryError,
   selectOpenCupProjects,
 } from "@/lib/integrated-public-view";
+import { OPENCUP_PRODUCT_INTEGRATION } from "@/lib/data/source-policy";
 
 const allowed = new Set(["cup", "limit", "cursor"]);
 const errorHeaders = { "Cache-Control": "no-store" };
 
 export const runtime = "nodejs";
 
-export async function GET(request: NextRequest) {
+export async function handleOpenCupRequest(
+  request: NextRequest,
+  integration = OPENCUP_PRODUCT_INTEGRATION,
+) {
+  if (integration !== "active") {
+    return NextResponse.json(
+      { error: "Risorsa non disponibile." },
+      { status: 404, headers: errorHeaders },
+    );
+  }
   try {
     const params = request.nextUrl.searchParams;
     const input: Record<string, string> = {};
@@ -57,3 +67,5 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export const GET = handleOpenCupRequest;

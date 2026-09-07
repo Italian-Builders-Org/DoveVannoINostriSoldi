@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
 import { getPublicWorksByCup } from "@/lib/bdap-public-works";
+import { OPENCUP_PRODUCT_INTEGRATION } from "@/lib/data/source-policy";
 import { compactEuro, exactEuro, integer, longDate, shortDate } from "@/lib/format";
 import {
   IntegratedQueryError,
@@ -53,6 +54,9 @@ const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
   }
 
   try {
+    if (OPENCUP_PRODUCT_INTEGRATION !== "active") {
+      return { cup, openCup: null, openCupUnavailable: false, pnrr };
+    }
     const openCup = await selectOpenCupProjects({ cup, limit: 20 });
     return { cup, openCup, openCupUnavailable: false, pnrr };
   } catch (error) {
@@ -66,7 +70,7 @@ const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
 export async function generateMetadata({ params }: { params: RouteParams }): Promise<Metadata> {
   const { cup: rawCup } = await params;
   const lookup = await loadProject(rawCup);
-  if (!lookup.cup || (!lookup.pnrr && lookup.openCup && lookup.openCup.matchedRows === 0)) notFound();
+  if (!lookup.cup || (!lookup.pnrr && !lookup.openCup && !lookup.openCupUnavailable) || (!lookup.pnrr && lookup.openCup?.matchedRows === 0)) notFound();
   const title = lookup.pnrr?.title
     ?? lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP
     ?? `Progetto CUP ${lookup.cup}`;
@@ -115,7 +119,7 @@ async function MopEvidence({ cup }: { cup: string }) {
 export default async function ProjectPage({ params }: { params: RouteParams }) {
   const { cup: rawCup } = await params;
   const lookup = await loadProject(rawCup);
-  if (!lookup.cup || (!lookup.pnrr && lookup.openCup && lookup.openCup.matchedRows === 0)) notFound();
+  if (!lookup.cup || (!lookup.pnrr && !lookup.openCup && !lookup.openCupUnavailable) || (!lookup.pnrr && lookup.openCup?.matchedRows === 0)) notFound();
   const cup = lookup.cup;
   const project = lookup.pnrr;
   const tenderTotal = project?.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0) ?? 0;
@@ -158,7 +162,7 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
         <span><Evidence kind="mancante" /> non pubblicato o non collegabile</span>
       </div>
 
-      {lookup.openCup ? <OpenCupProjectPanel initial={lookup.openCup} /> : (
+      {OPENCUP_PRODUCT_INTEGRATION === "active" ? (lookup.openCup ? <OpenCupProjectPanel initial={lookup.openCup} /> : (
         <section className={styles.openCupUnavailable} aria-labelledby="opencup-title">
           <div className={styles.sectionHeading}><h2 id="opencup-title">Registrazioni OpenCUP</h2></div>
           <div className="notice">
@@ -166,7 +170,7 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
             <p>{project ? "Le altre evidenze della scheda restano disponibili." : "Riprova più tardi: l’indisponibilità della fonte non dimostra che il CUP sia assente."}</p>
           </div>
         </section>
-      )}
+      )) : null}
 
       {project ? <>
       <section className={styles.flow} aria-labelledby="flow-title">

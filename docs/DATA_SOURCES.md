@@ -345,19 +345,22 @@ Ogni dimensione deve riconciliarsi con il totale nazionale, sia per i valori gen
 
 ### OpenCUP
 
-OpenCUP è l'anagrafe nazionale dei progetti di investimento pubblico promossa dal DIPE della Presidenza del Consiglio dei Ministri. Pubblica ogni mese progetti, localizzazioni, soggetti titolari e fonti di copertura con licenza CC BY 4.0. Il CUP è la chiave necessaria per collegare investimento, finanziamento, contratto e avanzamento senza usare corrispondenze testuali.
+OpenCUP è l'anagrafe nazionale dei progetti di investimento pubblico promossa
+dal DIPE della Presidenza del Consiglio dei Ministri. Il CUP permette di
+collegare fonti diverse tramite un identificativo esatto, senza corrispondenze
+testuali.
 
-Il rilascio nazionale dei progetti supera 1,7 GB. Lo snapshot bulk registrato
-contiene 11.942.784 record CSV reali; le 11.991.275 linee fisiche di dati
-includono 48.491 newline interne a campi quotati e non indicano progetti
-aggiuntivi. Per questo la fonte è registrata ma non viene scaricata durante una
-richiesta Next.js. L'integrazione prevista usa:
+Il rilascio Progetti osservato il 7 settembre 2026 è uno ZIP ufficiale da
+2.203.779.590 byte con 11.973.988 record CSV. Il formato reale è UTF-8,
+separato da punto e virgola e diviso in sette membri; newline interne a campi
+quotati non sono record aggiuntivi. Il source lock conserva URL, SHA-256,
+header, dialetto, mapping, licenza CC BY 4.0 e conteggi osservati.
 
-1. discovery del rilascio mensile e dei suoi metadati;
-2. download in object storage con hash e validator HTTP;
-3. lettura streaming del CSV separato da pipe;
-4. indice persistente per CUP e codice fiscale del soggetto titolare;
-5. collegamenti a OpenCoesione, ReGiS e ANAC soltanto tramite identificativi esatti.
+La pipeline offline e l'indice per CUP esatto sono implementati, ma il prodotto
+resta spento. Gli oggetti redatti devono essere caricati nello storage R2 del
+progetto e superare una prova di backup e ripristino prima di comparire in UI,
+API, stato fonti o MCP. Dettagli e campi ancora da aggiornare sono in
+[ADR-002](architecture/ADR-002-opencup-object-storage.md).
 
 Il dataset OpenCUP che segnala candidati PNRR non certifica l'ammissione al finanziamento. Per i progetti PNRR effettivi resta necessaria la fonte ReGiS o l'elenco ufficiale dell'amministrazione responsabile.
 

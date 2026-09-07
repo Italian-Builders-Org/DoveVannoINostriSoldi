@@ -3,7 +3,6 @@ import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
-import { inspectAssistantComparison } from "./assistant-comparison.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
@@ -2240,65 +2239,17 @@ try {
   }
 
   for (const width of [320, 390, 768, 1280]) {
-    const label = `Assistente deterministico ${width}px`;
+    const label = `Assistente AI ${width}px`;
     await runScenario(browser, {
-      label,
-      pathname: "/assistente",
-      width,
+      label, pathname: "/assistente", width,
       validate: async (page) => {
-        const text = await bodyText(page);
-        assertTextMatches(text, /Assistente sui dati pubblici/i, label);
-        assertTextMatches(text, /deterministico e in sola lettura/i, label);
-        assert.ok(await page.$("#assistant-prompt"), `${label}: campo domanda assente`);
-        assert.ok(await page.$('main form button[type="submit"]'), `${label}: invio assente`);
-      },
-    });
-    completed.push(label);
-  }
-
-  for (const width of [390, 1280]) {
-    const label = `Assistente risposta verificata ${width}px`;
-    await runScenario(browser, {
-      label,
-      pathname: "/assistente",
-      width,
-      validate: async (page) => {
+        assertTextMatches(await bodyText(page), /Cosa vuoi sapere/i, label);
         await page.type("#assistant-prompt", "Quanto hanno speso i Comuni nel 2025?");
         await page.click('main form button[type="submit"]');
-        await page.waitForFunction(() =>
-          document.body.innerText.includes("Pagamenti SIOPE dei Comuni") &&
-          document.body.innerText.includes("anno completo 2025"),
-        );
-        const text = await bodyText(page);
-        assertTextMatches(text, /Risposta verificata/i, label);
-        assertTextMatches(text, /Fonte/i, label);
-        assertTextMatches(text, /Da leggere con attenzione/i, label);
-        const responseText = await page.$eval('[aria-live="polite"]', (element) => element.textContent ?? "");
-        assert.doesNotMatch(responseText, /Quanto hanno speso i Comuni nel 2025\?/u, `${label}: prompt riversato nella risposta`);
-        assert.equal(
-          await page.$eval('[aria-live="polite"]', (element) => element.getAttribute("aria-busy")),
-          "false",
-          `${label}: stato busy non concluso`,
-        );
+        await page.waitForSelector('dialog[open]');
+        assertTextMatches(await bodyText(page), /La tua AI, la tua chiave/i, label);
+        assert.equal(await page.$('[data-assistant-reply]'), null, "nessuna risposta prima del collegamento");
       },
-    });
-    completed.push(label);
-  }
-
-  for (const width of [320, 390, 768, 1280]) {
-    const label = `Assistente confronto annuale ${width}px`;
-    await runScenario(browser, {
-      label, pathname: "/assistente", width,
-      validate: (page) => inspectAssistantComparison(page),
-    });
-    completed.push(label);
-  }
-
-  for (const width of [390, 1280]) {
-    const label = `Assistente confronto parziale ${width}px`;
-    await runScenario(browser, {
-      label, pathname: "/assistente", width,
-      validate: (page) => inspectAssistantComparison(page, { partial: true }),
     });
     completed.push(label);
   }

@@ -76,19 +76,37 @@ export default function PrivacyPage() {
       <section className="panel">
         <h2 className="panel-title">Assistente del portale e dettatura</h2>
         <p>
-          L&apos;assistente deterministico in <a href="/assistente">/assistente</a> interpreta solo
-          poche domande allowlisted e interroga direttamente gli adapter read-only. Il testo della
-          domanda non viene salvato, inserito in una cronologia o scritto nei log applicativi; la
-          versione attuale non usa provider AI o analytics sulle domande. Restano
-          possibili i log tecnici del provider di hosting descritti sopra.
+          L&apos;assistente in <a href="/assistente">/assistente</a> permette di conversare con un
+          provider AI usando la tua API key OpenRouter, OpenAI o Anthropic.
+          Collegando un provider autorizzi l’invio della domanda, di un contesto limitato della
+          conversazione e degli estratti dei dataset pubblici necessari alla risposta. Chiave e
+          contenuti transitano attraverso il backend DVNS e il servizio selezionato; OpenRouter
+          può inoltrare la richiesta al fornitore del modello scelto.
+        </p>
+        <p>
+          La chiave e la conversazione restano nella memoria della scheda, senza salvataggio in
+          cookie o archivi del browser. L’applicazione non li archivia sul server, non li scrive
+          nei propri log e non li usa per analytics. “Nuova chat” svuota la conversazione;
+          “Scollega e rimuovi chiave”, il ricaricamento o l’uscita dalla pagina rimuovono la
+          configurazione. I normali log tecnici dell’hosting possono essere conservati come
+          descritto sopra. Le risposte AI sono indicate come tali e possono contenere errori.
+        </p>
+        <p>
+          I consumi sono a carico del tuo conto presso il provider. L’abbonamento ChatGPT non
+          include i consumi delle API OpenAI. La conservazione da parte del provider dipende
+          dalle sue condizioni e dalle impostazioni del tuo conto: consulta le informative di{" "}
+          <a href="https://openrouter.ai/privacy" target="_blank" rel="noreferrer">OpenRouter</a>,{" "}
+          <a href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noreferrer">OpenAI</a> e{" "}
+          <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noreferrer">Anthropic</a>.
+          Non inserire dati personali, informazioni riservate o altre credenziali nelle domande.
         </p>
         <p>
           La dettatura facoltativa usa il riconoscimento locale del browser, quando disponibile per
           l’italiano. Il microfono richiede un’azione esplicita e il permesso del browser; si ferma
           entro 30 secondi, alla chiusura della finestra o quando lasci la pagina. L’applicazione
           non registra né invia audio e non usa un servizio remoto di trascrizione. Il testo resta
-          nella pagina per essere modificato: “Usa questo testo” lo copia nella domanda, “Cerca nei
-          dati” lo invia all’assistente. Resta nella memoria della pagina, senza un archivio delle domande.
+          nella domanda per essere modificato; solo il pulsante di invio o il tasto Invio lo
+          invia all’assistente. Resta nella memoria della pagina, senza un archivio delle domande.
           L’eventuale pacchetto italiano viene scaricato e gestito dal browser solo su tua richiesta;
           il download contatta il servizio del browser e può proseguire dopo la chiusura della finestra.
         </p>

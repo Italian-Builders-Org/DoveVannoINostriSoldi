@@ -1,101 +1,143 @@
-# Assistente deterministico
+# Chat AI sui dati pubblici
 
-## Perimetro della prima tranche
+`/assistente` è una chat con chiave personale OpenRouter, OpenAI o Anthropic.
+Ogni domanda passa dall’AI; senza collegamento, l’invio apre le impostazioni e conserva
+la bozza. La pagina non usa risposte deterministiche o un conto API DVNS.
+`/assistente/anteprima` reindirizza permanentemente alla pagina pubblica.
 
-`/assistente` e `/api/assistant` espongono una piccola interfaccia testuale, read-only e
-deterministica. Il parser riconosce soltanto intenti allowlisted in italiano e il server richiama
-direttamente `queryPublicDataset`: non effettua HTTP ricorsivo verso il sito e non accetta URL,
-SQL, nomi di funzione, provider o dataset scelti dal testo.
+## Interazione e contesto
 
-Gli intenti disponibili sono:
+Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
+conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
+sono allineate a sinistra e supportano paragrafi, titoli, grassetti, codice inline ed
+elenchi. HTML, immagini e link prodotti dal modello non diventano contenuto attivo.
+I link alle fonti vengono dal catalogo server.
 
-- pagamenti SIOPE nazionali dei Comuni per anno;
-- confronto dei pagamenti SIOPE tra due anni, in Italia o in una sola Regione;
-- pagamenti SIOPE regionali dei Comuni per anno, soltanto per le Regioni esplicite nel catalogo;
-- pagamenti dello Stato nazionali nel rilascio OpenBDAP disponibile per anno;
-- imposta netta dichiarata MEF per Regione nell’anno d’imposta 2024.
+Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
+La copia della risposta comprende i link alle fonti. Modifica e rigenerazione sostituiscono
+anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
+richiede un invio esplicito e può essere annullata. Rigenerare comporta nuove chiamate
+a pagamento, come una nuova domanda.
 
-Ogni risposta contiene dataset, periodo, osservazione numerica, fonte, data di osservazione,
-fatti numerici già calcolati dall’adapter e caveat. La risposta non restituisce il prompt né il
-payload completo dell’adapter.
+Il client conserva i messaggi solo nella memoria della pagina: massimo 12 domande;
+per il contesto invia fino a 6 messaggi precedenti, entro 16.000 caratteri complessivi.
+Risposte interrotte o fallite non entrano nella cronologia inviata al modello.
+“Nuova chat” svuota la conversazione e mantiene la chiave. Salvare un nuovo collegamento
+o scollegarlo avvia una nuova conversazione. Nessun archivio server, analytics o logging
+delle domande. La finestra di contesto evita chiamate aggiuntive di riassunto a pagamento.
 
-## Confronto tra due anni — issue #17
+Lo scorrimento segue la generazione finché l’utente resta vicino al fondo. Se legge
+messaggi precedenti, la chat non lo trascina in basso; un pulsante permette di tornare
+all’ultima risposta. Transizioni brevi, pulsanti con feedback e `prefers-reduced-motion`
+seguono le indicazioni di Emil Design.
 
-Esempi: «Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?»
-e «Confronta i pagamenti dei Comuni in Calabria dal 2024 al 2025».
-Il parser riconosce l’intera domanda di confronto: due anni distinti e un solo
-territorio. Ordina gli anni in senso cronologico e indica la direzione della
-differenza. Domande con più anni, temi specifici, mesi, territori multipli o
-confronti Stato/IRPEF ricevono aiuto; non viene più usato silenziosamente soltanto
-il primo anno. Anche le richieste con un solo anno che chiedono un confronto
-ricevono aiuto.
+## Chiavi e provider
 
-La risposta `kind: comparison` conserva due `answers`, ognuna con periodo,
-valore, copertura, fonte e osservazione propri. `change` contiene differenza in
-euro e percentuale rispetto all’anno iniziale soltanto se entrambi i rilasci
-arrivano a dicembre e sono osservati dopo la fine dell’anno. Negli altri casi è
-`null` e il motivo è visibile prima dei valori. Un dicembre ancora in corso non
-è un anno completo. Base zero: differenza disponibile, percentuale `null`.
-Gli importi vengono confrontati in centesimi interi sicuri; nessuna annualizzazione
-né correzione per l’inflazione.
+Il pannello richiede provider, ID del modello, chiave e conferma dell’invio e dei costi.
+Non esegue chiamate di verifica. La chiave rimane in memoria React, mai in cookie,
+URL, localStorage o sessionStorage. Cambiare provider svuota il campo. Scollegamento,
+ricaricamento, uscita e `pagehide` la rimuovono; il campo password viene svuotato anche
+se il pannello era aperto. OpenAI API è distinta dall’abbonamento ChatGPT.
 
-È una differenza fra gli aggregati pubblicati di ciascun anno, non un confronto
-su una coorte costante: possono cambiare enti con movimenti e abbinamenti IPA.
-Nessun indicatore di qualità, efficienza o causalità. Se manca un anno, una query
-fallisce o il territorio/anno restituito non coincide, l’intera risposta è
-`unavailable`, senza risultati parziali spacciati per confronto.
+`POST /api/assistant/chat` riceve la chiave solo nell’header Authorization e la inoltra
+solo all’endpoint fisso del provider scelto. DVNS vede chiave, domanda e contesto durante
+l’elaborazione: BYOK non elimina questo trattamento. L’applicazione non li archivia
+né li scrive nei log. Policy dell’hosting e conservazione del provider restano distinte.
 
-## Sicurezza e limiti
+OpenAI usa Responses con `store: false`, che non equivale a Zero Data Retention.
+Anthropic usa Messages. OpenRouter usa Chat Completions con `data_collection: deny`
+e `allow_fallbacks: false`. Il modello predefinito OpenRouter è `openai/gpt-5.6-luna`;
+il campo resta modificabile. Servono modelli che supportano chiamate agli strumenti.
+Nessuna chiave da environment, endpoint arbitrario, redirect, retry automatico o
+fallback su altri conti/provider.
 
-- JSON soltanto, `Content-Type: application/json`, origine same-host e Host coerente;
-- body massimo 16 KiB e prompt massimo 500 caratteri;
-- una query per dato singolo, esattamente due per il confronto SIOPE; un unico timeout
-  complessivo e `AbortSignal` condiviso, cancellato anche se una delle due query fallisce;
-- nessuna persistenza, cronologia, analytics applicativa o logging del testo;
-- richieste su frode, corruzione, evasione o responsabilità individuale vengono rifiutate con una
-  spiegazione non accusatoria;
-- richieste ambigue, classifiche, singoli Comuni e provider AI producono esempi, non stime.
+## Dati e costi
 
-Il route handler applica i limiti di durata e body, un rate limit in memoria di 30 richieste
-al minuto per indirizzo e massimo 4 richieste concorrenti. Questi controlli sono locali
-all’istanza: non sono un rate limit distribuito e non sostituiscono una regola edge/WAF
-per rate limiting e abuse prevention.
+La prima chiamata AI riceve il catalogo compatto completo: id, titolo, filtri ed esempio.
+Non riceve tutti gli snapshot o i testi delle fonti. Il modello chiama lo strumento
+`query_dvns`, con al massimo due ricerche, oppure restituisce un chiarimento.
+Gli argomenti devono rispettare lo schema MCP condiviso e i filtri del dataset;
+solo dopo la validazione il server richiama `queryPublicDataset`.
 
-## Dettatura locale — issue #17
+Il catalogo e gli adapter sono gli stessi usati dal sito/MCP. Nuovi dataset registrati
+in quel percorso diventano disponibili alla chat senza un catalogo AI separato.
+Licenza, validazione, source lock e provenienza restano al confine dei dati pubblici.
+Non si importano snapshot raw nei Client Component e non si accettano URL, SQL,
+funzioni o strumenti di scrittura scelti dall’utente o dal modello.
 
-La voce è progressive enhancement della stessa domanda testuale. “Detta la domanda” apre
-un dialog nativo nominato, senza avviare il microfono. Il browser deve esporre
-`SpeechRecognition.available({ langs: ["it-IT"], processLocally: true })` e la proprietà
-`processLocally`: in assenza del supporto locale, resta la scrittura manuale. Nessun fallback
-a riconoscimento remoto o API prefissate legacy. Il supporto è ancora sperimentale e dipende
-da browser, lingua, dispositivo e Permissions Policy; non viene promesso per tutti i browser.
+Una seconda chiamata spiega solo l’evidenza delle query riuscite, preservando periodo,
+misura, unità, copertura, fonte e limiti. Per SIOPE la proiezione mantiene gli aggregati
+contabili e dichiara l’esclusione di classifiche, distribuzioni e normalizzazione
+geografica. Con filtro regionale, `totalPaid` resta nazionale e il valore regionale
+è in `regions`: il contesto lo dichiara esplicitamente.
 
-Il download del pacchetto italiano richiede un pulsante separato: è gestito dal browser,
-contatta il suo servizio e può proseguire se il dialog viene chiuso. L’installazione non
-attiva il microfono. Solo “Inizia dettatura” chiama `start()`, dopo aver imposto
-`processLocally = true`, `lang = it-IT`, `continuous = false` e `interimResults = false`.
-La sessione termina entro 30 secondi; “Termina dettatura” concede al browser al massimo
-3 secondi per l’ultimo risultato. Escape, chiusura, pagina nascosta e unmount interrompono
-la sessione e scartano la bozza. Callback tardive non possono ripristinarla.
+Limiti per domanda: massimo due chiamate AI, due query, 5 righe dove è supportato `limit`,
+offset 100, nessun cursore, evidenza entro 24.000 caratteri e risposta entro 2.048 token /
+8.000 caratteri. Se l’evidenza è troppo grande, la ricerca chiede di restringere il campo,
+senza troncamenti silenziosi. Il catalogo compatto iniziale è di circa 9.600 caratteri,
+contro circa 31.000 includendo descrizioni e caveat ripetuti (50 dataset al momento
+_della verifica_). La riduzione del testo non è una misura del costo effettivo del provider.
 
-La trascrizione finale è modificabile. Oltre 500 caratteri, la UI segnala che non ha acquisito
-la parte finale e impedisce la conferma finché il testo non rientra nel limite. “Usa questo
-testo” sostituisce la domanda, senza inviarla; solo “Cerca nei dati” chiama la route esistente,
-con i medesimi rate limit, validazione, fonti e calcoli. Nessuna cattura di audio tramite
-MediaRecorder, upload, storage, telemetria o log di audio/trascrizioni. La privacy pubblica
-descrive questa sequenza. La chiusura restituisce il focus al pulsante di apertura.
+## Streaming, sicurezza e limiti operativi
 
-Riferimenti API: [elaborazione locale](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/processLocally),
-[disponibilità](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/available_static),
-[pacchetti del browser](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/install_static).
+La route valida origine, Host, JSON, consenso, ruoli, modello, chiave e dimensione:
+80.000 byte, 500 caratteri per l’ultima domanda, 50 secondi complessivi. Rate limit in
+memoria: 20 richieste/minuto per IP, 10 per hash della chiave, 4 concorrenti per istanza.
+Non sono limiti distribuiti; l’hosting/edge resta una protezione operativa separata.
 
-Verifica: `node --experimental-strip-types --test tests/assistant-voice.test.mjs` e
-`npm run test:browser:voice` con `DVNS_BASE_URL` su un server locale. I casi browser con
-riconoscimento simulato verificano transizioni, conferma, rete, responsive e tastiera;
-non misurano accuratezza della trascrizione o funzionamento di un microfono fisico.
+`Accept: text/event-stream` abilita il protocollo DVNS (`delta`, `done`, `error`).
+Il server decodifica SSE dai tre provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
+errori, budget e cancellazione. Nessun evento di ragionamento, header, testo di errore
+upstream o credenziale viene riversato nel client. Risposte parziali non vengono marcate
+come complete; il pulsante stop abortisce la richiesta e non annulla costi già maturati.
+Il parser richiede una terminazione valida e applica un budget anche ai byte ricevuti.
 
-## Evoluzione futura
+Il system prompt privilegia i dati DVNS, distingue misure e periodi, vieta cifre inventate,
+accuse e l’esecuzione di istruzioni dentro domanda, cronologia o fonti. Un controllo
+blocca alcuni tentativi espliciti di cambiare istruzioni. Non è una garanzia contro
+jailbreak o allucinazioni: i vincoli effettivi sono egress fisso, schema validato,
+adapter read-only, output escapato e budget. Non ci sono segreti nel contesto del modello.
 
-ASR remoto, provider LLM, memoria conversazionale e analisi aggregate delle domande richiederebbero una
-nuova valutazione di consenso, minimizzazione, retention, opt-out, audit e parità delle risposte.
-Non fanno parte di questa tranche; la issue #17 resta aperta per le fasi ulteriori già discusse.
+BYOK non costituisce un’esenzione generale dal GDPR o dall’AI Act; ruoli e obblighi
+vanno valutati sul servizio concreto. Informativa e pannello dichiarano il transito dei dati.
+
+## Dettatura locale
+
+Il microfono verifica il supporto locale e avvia la dettatura con il permesso del browser.
+Richiede `SpeechRecognition.available({ langs: ["it-IT"], processLocally: true })`
+e `processLocally`; nessun fallback remoto. Se serve il pacchetto italiano, il download
+richiede un pulsante separato e non avvia il microfono.
+
+La sessione termina entro 30 secondi. Stop concede fino a 3 secondi per l’ultimo risultato.
+Escape, annullamento, pagina nascosta e unmount interrompono la sessione. Annullare
+ripristina la bozza precedente; un testo già confermato e modificato resta nel compositore.
+Oltre 500 caratteri la UI impedisce l’invio. Nessun audio viene caricato su DVNS e la
+dettatura non invia mai automaticamente la domanda.
+
+## Verifica
+
+`tests/assistant-byok*.test.mjs` e `tests/assistant-stream.test.mjs` verificano contratti,
+egress, isolamento delle chiavi, query, provenienza, cancellazione e SSE con provider
+simulati. `test:browser:assistant` verifica interazioni, rete simulata e screenshot a
+320, 390, 768 e 1280 px. `test:browser:voice` verifica l’API vocale simulata, senza
+registrare un microfono fisico. Entrambi fanno parte dei gate di produzione.
+
+Le prove reali OpenRouter si svolgono separatamente tramite il pannello della chat,
+con chiave autorizzata dall’utente e mai inclusa negli artifact. I test simulati non
+costituiscono una prova di accesso reale a OpenAI o Anthropic.
+
+L’endpoint precedente `/api/assistant` rimane compatibile per i suoi client e test;
+la chat pubblica non lo chiama. La issue #17 resta aperta per le fasi successive,
+tra cui eventuali account, cronologie persistenti e analisi aggregate delle domande.
+
+Fonti: [OpenAI dati](https://developers.openai.com/api/docs/guides/your-data),
+[OpenAI strumenti](https://developers.openai.com/api/docs/guides/function-calling),
+[OpenAI streaming](https://developers.openai.com/api/docs/guides/streaming-responses),
+[Anthropic strumenti](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools),
+[Anthropic streaming](https://platform.claude.com/docs/en/build-with-claude/streaming),
+[OpenRouter strumenti](https://openrouter.ai/docs/guides/features/tool-calling),
+[OpenRouter streaming](https://openrouter.ai/docs/api_reference/streaming),
+[OpenRouter routing](https://openrouter.ai/docs/guides/routing/provider-selection),
+[OpenRouter privacy](https://openrouter.ai/docs/guides/privacy/data-collection),
+[EDPB](https://www.edpb.europa.eu/sme/learn-the-basics/data-controller-or-data-processor_en),
+[Commissione europea](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act).

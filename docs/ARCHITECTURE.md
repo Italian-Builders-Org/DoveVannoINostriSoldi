@@ -39,7 +39,11 @@ Non richiede un database locale, Docker o un servizio di ingestione per avviarsi
 `src/lib/mcp/catalog.ts` descrive i dataset; `datasets.ts` li collega alle
 funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
 `OPTIONS /mcp` sono alias supportati; `GET /mcp` resta la pagina informativa.
-L'assistente in `src/lib/assistant/` usa intenti deterministici sugli snapshot.
+La chat in `src/lib/assistant/` usa AI per ogni domanda. La route `/api/assistant/chat` usa la chiave personale ricevuta nella singola richiesta
+per OpenAI, Anthropic o OpenRouter. Il modello propone al massimo due query, validate
+con lo stesso schema MCP e il catalogo prima di chiamare `queryPublicDataset`.
+La risposta viene trasmessa in streaming SSE. Le fonti sono aggiunte dall'applicazione; testo, chiave e conversazione non sono
+persistiti. Dettagli e limiti: `docs/ASSISTENTE.md`.
 
 ## Invarianti
 

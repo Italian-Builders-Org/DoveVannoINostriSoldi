@@ -141,6 +141,19 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["territorio", "anno", "misura"],
   },
   {
+    slug: "istat-bes-economico",
+    name: "ISTAT · BES dei territori, benessere economico",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage:
+      "Italia, ripartizioni, regioni e 111 province, 2004–2024; cinque indicatori del dominio benessere economico",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "NON è spesa pubblica: sono redditi, retribuzioni e pensioni delle famiglie come medie pro capite, più due indicatori di disagio. Le medie non sono sommabili fra territori e il totale per sesso non è la somma di F e M. Ogni indicatore ha il proprio periodo: non esiste un unico 2004–2024. L'anagrafica delle province non è stabile sulla serie. Nessun indice composito e nessuna classifica di territori.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

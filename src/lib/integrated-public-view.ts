@@ -629,6 +629,12 @@ export async function selectOpenCupProjects(input: OpenCupProjectSelectorInput) 
       dataset: {
         ...metadata,
         title: "Progetti OpenCUP",
+        licenseStatus: fixtureMode
+          ? metadata.licenseStatus
+          : "verified-open-cc-by-4.0" as const,
+        reuseNote: fixtureMode
+          ? metadata.reuseNote
+          : "Riuso verificato: CC BY 4.0.",
         publication: "rows" as const,
         evidenceLabel: match.manifest.evidenceLabel,
         sourceRows: match.manifest.sourceRows,
@@ -636,14 +642,16 @@ export async function selectOpenCupProjects(input: OpenCupProjectSelectorInput) 
         headers: match.manifest.headers,
         sourceMetadata: {
           holder: "Dipartimento per la programmazione e il coordinamento della politica economica",
-          referencePeriod: match.manifest.publishedAt,
-          publicationDate: match.manifest.publishedAt?.slice(0, 10) ?? null,
-          acquisitionDate: match.manifest.observedAt?.slice(0, 10) ?? null,
+          referencePeriod: match.manifest.referenceDate,
+          publicationDate: match.manifest.publicationDate,
+          acquisitionDate: match.manifest.acquiredAt?.slice(0, 10) ?? null,
           checkedAt: match.manifest.observedAt?.slice(0, 10)
-            ?? match.manifest.publishedAt?.slice(0, 10)
             ?? metadata.sourceMetadata.checkedAt,
           updateFrequency: "mensile (cadenza dichiarata dalla fonte)",
-          canonicalUrls: [match.manifest.sourceUrl],
+          canonicalUrls: [...new Set(
+            [match.manifest.landingUrl, match.manifest.sourceUrl]
+              .filter((url): url is string => url !== null),
+          )],
         },
         queryable: true,
         publicationNote: fixtureMode

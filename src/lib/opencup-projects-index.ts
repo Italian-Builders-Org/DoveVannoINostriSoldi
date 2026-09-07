@@ -22,7 +22,6 @@ export const OPENCUP_PROJECT_HEADERS = [
   "CUP",
   "DESCRIZIONE_SINTETICA_CUP",
   "ANNO_DECISIONE",
-  "DATA_GENERAZIONE_CUP",
   "STATO_PROGETTO",
   "COSTO_PROGETTO",
   "FINANZIAMENTO_PROGETTO",
@@ -31,18 +30,31 @@ export const OPENCUP_PROJECT_HEADERS = [
   "PIVA_CF_BENEFICIARIO",
   "CODICE_NATURA_INTERVENTO",
   "NATURA_INTERVENTO",
+  "COD_NATURA_DIPE",
+  "NATURA_DIPE",
   "CODICE_TIPO_INTERVENTO",
   "TIPOLOGIA_INTERVENTO",
-  "CODICE_REGIONE",
-  "REGIONE",
-  "CODICE_COMUNE",
-  "COMUNE",
+  "CODICE_AREA_INTERVENTO",
+  "AREA_INTERVENTO",
+  "CODICE_SETTORE_INTERVENTO",
+  "SETTORE_INTERVENTO",
+  "CODICE_SOTTOSETTORE_INTERVENTO",
+  "SOTTOSETTORE_INTERVENTO",
+  "CODICE_CATEGORIA_INTERVENTO",
+  "CATEGORIA_INTERVENTO",
+  "DATA_GENERAZIONE_CUP",
 ] as const;
 export const OPENCUP_CUP_PATTERN = /^[A-Z0-9]{15}$/;
+const OPENCUP_OFFICIAL_ORIGIN = "https://www.opencup.gov.it";
+const OPENCUP_LANDING_PATH = "/portale/web/opencup/accesso-agli-open-data";
+const OPENCUP_SOURCE_PATH_PREFIX = "/portale/documents/21195/299152/OpendataProgetti.zip/";
+const OPENCUP_LICENSE_PATH = "/portale/web/opencup/licenza-cc-by";
 
 const sha256Schema = z.string().regex(/^[0-9a-f]{64}$/);
 const positiveInteger = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 const nonnegativeInteger = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+const referenceDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const isoDateTimeSchema = z.string().datetime();
 const descriptorSchema = z.object({
   sha256: sha256Schema,
   bytes: positiveInteger,
@@ -59,17 +71,29 @@ const chunkSchema = descriptorSchema.and(z.object({
   firstSourceRow: positiveInteger,
   rowCount: positiveInteger.max(1_000),
 }).strict());
+const chunkGroupManifestSchema = z.object({
+  chunkCount: positiveInteger.max(256),
+  firstOrdinal: nonnegativeInteger,
+  firstSourceRow: positiveInteger,
+  object: descriptorSchema,
+  rowCount: positiveInteger,
+}).strict();
 const manifestBase = z.object({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   datasetId: z.literal(OPENCUP_PROJECT_DATASET),
   projectionVersion: z.literal(1),
   sourceSha256: sha256Schema,
   sourceSpecSha256: sha256Schema,
   sourceUrl: z.string().url(),
+  landingUrl: z.string().url().nullable(),
+  licenseUrl: z.string().url().nullable(),
   evidenceLabel: z.enum(["documented-fact", "synthetic-fixture"]),
   licenseStatus: z.string().min(1),
-  observedAt: z.string().datetime().nullable(),
-  publishedAt: z.string().datetime().nullable(),
+  referenceDate: referenceDateSchema.nullable(),
+  publicationDate: referenceDateSchema.nullable(),
+  lastModified: isoDateTimeSchema.nullable(),
+  observedAt: isoDateTimeSchema.nullable(),
+  acquiredAt: isoDateTimeSchema.nullable(),
   canary: z.object({
     cup: z.string().regex(OPENCUP_CUP_PATTERN),
     sourceRow: positiveInteger,
@@ -81,23 +105,36 @@ const manifestBase = z.object({
   distinctCups: positiveInteger,
   headers: z.array(z.string().min(1)).min(1),
   rootIndex: descriptorSchema,
-  chunks: z.array(chunkSchema).min(1),
+  chunkCount: positiveInteger,
+  chunkGroups: z.array(chunkGroupManifestSchema).min(1),
 });
 const productionManifestSchema = manifestBase.extend({
   evidenceLabel: z.literal("documented-fact"),
+  licenseStatus: z.literal("CC-BY-4.0"),
+  landingUrl: z.string().url(),
+  licenseUrl: z.string().url(),
+  referenceDate: referenceDateSchema,
+  lastModified: isoDateTimeSchema,
+  observedAt: isoDateTimeSchema,
+  acquiredAt: isoDateTimeSchema,
 }).strict();
 const fixtureManifestSchema = manifestBase.extend({
   fixtureOnly: z.literal(true),
   evidenceLabel: z.literal("synthetic-fixture"),
   licenseStatus: z.literal("unverified"),
+  landingUrl: z.null(),
+  licenseUrl: z.null(),
+  referenceDate: z.null(),
+  publicationDate: z.null(),
+  lastModified: z.null(),
   observedAt: z.null(),
-  publishedAt: z.null(),
+  acquiredAt: z.null(),
 }).strict();
 const manifestSchema = z.union([productionManifestSchema, fixtureManifestSchema]);
 export type OpenCupManifest = z.infer<typeof manifestSchema>;
 
 const directorySchema = z.object({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   kind: z.literal("directory"),
   children: z.array(z.object({
     minCup: z.string().regex(OPENCUP_CUP_PATTERN),
@@ -108,22 +145,44 @@ const directorySchema = z.object({
 const leafEntrySchema = z.object({
   cup: z.string().regex(OPENCUP_CUP_PATTERN),
   matchedRows: positiveInteger,
-  firstPage: descriptorSchema,
-}).strict();
+  refs: z.array(z.object({
+    sourceRow: positiveInteger,
+    chunkOrdinal: nonnegativeInteger,
+  }).strict()).min(1).max(64),
+}).strict().or(z.object({
+  cup: z.string().regex(OPENCUP_CUP_PATTERN),
+  matchedRows: positiveInteger,
+  postingRoot: descriptorSchema,
+}).strict());
 const leafSchema = z.object({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   kind: z.literal("leaf"),
   entries: z.array(leafEntrySchema).min(1).max(256),
 }).strict();
 const postingSchema = z.object({
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(2),
   kind: z.literal("postings"),
   cup: z.string().regex(OPENCUP_CUP_PATTERN),
   refs: z.array(z.object({
     sourceRow: positiveInteger,
     chunkOrdinal: nonnegativeInteger,
   }).strict()).min(1).max(1_000),
-  next: descriptorSchema.nullable(),
+  start: nonnegativeInteger,
+  next: descriptorSchema.nullable().optional(),
+}).strict();
+const postingDirectorySchema = z.object({
+  schemaVersion: z.literal(2),
+  kind: z.literal("posting-directory"),
+  children: z.array(z.object({
+    start: nonnegativeInteger,
+    end: positiveInteger,
+    node: descriptorSchema,
+  }).strict()).min(1).max(256),
+}).strict();
+const chunkGroupSchema = z.object({
+  schemaVersion: z.literal(2),
+  kind: z.literal("chunk-group"),
+  chunks: z.array(chunkSchema).min(1).max(256),
 }).strict();
 
 const MAX_MANIFEST_BYTES = 2 * 1024 * 1024;
@@ -147,13 +206,20 @@ export class OpenCupUnavailableError extends Error {
   }
 }
 
-type QueryBudget = { objectReads: number; rawBytes: number; loadedChunks: Set<number> };
+type ChunkDescriptor = z.infer<typeof chunkSchema>;
+type PostingRef = z.infer<typeof postingSchema>["refs"][number];
+type QueryBudget = {
+  objectReads: number;
+  rawBytes: number;
+  loadedChunks: Set<number>;
+  chunkDescriptors: Map<number, ChunkDescriptor>;
+};
 type PostingMatch = {
   cup: string;
   manifest: OpenCupManifest;
   releaseId: string;
   root: string;
-  refs: readonly { sourceRow: number; chunkOrdinal: number }[];
+  refs: readonly PostingRef[];
   matchedRows: number;
   budget: QueryBudget;
 };
@@ -214,25 +280,58 @@ async function readManifest(path: string, signal?: AbortSignal): Promise<{ manif
 }
 
 function validateManifest(manifest: OpenCupManifest): void {
-  if (manifest.sourceRows !== manifest.publicRows || manifest.indexedRows > manifest.publicRows) {
+  const fixtureMode = "fixtureOnly" in manifest;
+  if (
+    manifest.sourceRows !== manifest.publicRows ||
+    manifest.indexedRows !== manifest.publicRows
+  ) {
     throw new OpenCupUnavailableError("Conteggi manifest OpenCUP non riconciliati.");
+  }
+  if (!fixtureMode && (
+    !isOfficialOpenCupUrl(manifest.landingUrl, OPENCUP_LANDING_PATH) ||
+    !isOfficialOpenCupUrl(manifest.sourceUrl, OPENCUP_SOURCE_PATH_PREFIX, true) ||
+    !isOfficialOpenCupUrl(manifest.licenseUrl, OPENCUP_LICENSE_PATH)
+  )) {
+    throw new OpenCupUnavailableError("Provenienza URL manifest OpenCUP non valida.");
   }
   if (manifest.headers.join("\n") !== OPENCUP_PROJECT_HEADERS.join("\n")) {
     throw new OpenCupUnavailableError("Header manifest OpenCUP divergenti.");
   }
+  let expectedOrdinal = 0;
   let expectedSourceRow = 1;
-  for (const [ordinal, chunk] of manifest.chunks.entries()) {
+  for (const group of manifest.chunkGroups) {
     if (
-      chunk.ordinal !== ordinal ||
-      chunk.firstSourceRow !== expectedSourceRow ||
-      chunk.format !== "jsonl-gzip-v1"
+      group.firstOrdinal !== expectedOrdinal ||
+      group.firstSourceRow !== expectedSourceRow ||
+      group.object.format !== "json-v1"
     ) {
-      throw new OpenCupUnavailableError("Intervalli chunk OpenCUP non contigui.");
+      throw new OpenCupUnavailableError("Intervalli gruppo chunk OpenCUP non contigui.");
     }
-    expectedSourceRow += chunk.rowCount;
+    expectedOrdinal += group.chunkCount;
+    expectedSourceRow += group.rowCount;
   }
-  if (expectedSourceRow !== manifest.publicRows + 1 || manifest.rootIndex.format !== "json-v1") {
+  if (
+    expectedOrdinal !== manifest.chunkCount ||
+    expectedSourceRow !== manifest.publicRows + 1 ||
+    manifest.rootIndex.format !== "json-v1"
+  ) {
     throw new OpenCupUnavailableError("Copertura chunk OpenCUP non completa.");
+  }
+}
+
+function isOfficialOpenCupUrl(value: string, path: string, prefix = false): boolean {
+  try {
+    const parsed = new URL(value);
+    return (
+      parsed.origin === OPENCUP_OFFICIAL_ORIGIN &&
+      parsed.username === "" &&
+      parsed.password === "" &&
+      parsed.port === "" &&
+      parsed.hash === "" &&
+      (prefix ? parsed.pathname.startsWith(path) : parsed.pathname === path)
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -253,6 +352,71 @@ async function readJsonObject(
   } catch (error) {
     if (error instanceof OpenCupUnavailableError || (error instanceof Error && error.name === "AbortError")) throw error;
     throw new OpenCupUnavailableError("Oggetto indice OpenCUP non valido.", { cause: error });
+  }
+}
+
+function chunkGroupForOrdinal(manifest: OpenCupManifest, ordinal: number): OpenCupManifest["chunkGroups"][number] | null {
+  return manifest.chunkGroups.find(
+    (group) => group.firstOrdinal <= ordinal && ordinal < group.firstOrdinal + group.chunkCount,
+  ) ?? null;
+}
+
+async function resolveChunkDescriptor(
+  root: string,
+  manifest: OpenCupManifest,
+  ordinal: number,
+  budget: QueryBudget,
+  signal?: AbortSignal,
+): Promise<ChunkDescriptor> {
+  const cached = budget.chunkDescriptors.get(ordinal);
+  if (cached) return cached;
+  if (!Number.isSafeInteger(ordinal) || ordinal < 0 || ordinal >= manifest.chunkCount) {
+    throw new OpenCupUnavailableError("Riferimento chunk OpenCUP non valido.");
+  }
+  const group = chunkGroupForOrdinal(manifest, ordinal);
+  if (!group) throw new OpenCupUnavailableError("Riferimento chunk OpenCUP fuori dai gruppi dichiarati.");
+  const payload = chunkGroupSchema.parse(await readJsonObject(root, group.object, budget, signal));
+  if (
+    payload.chunks.length !== group.chunkCount ||
+    payload.chunks[0]?.ordinal !== group.firstOrdinal ||
+    payload.chunks[0]?.firstSourceRow !== group.firstSourceRow ||
+    payload.chunks.reduce((total, chunk) => total + chunk.rowCount, 0) !== group.rowCount
+  ) {
+    throw new OpenCupUnavailableError("Gruppo chunk OpenCUP divergente dal manifest.");
+  }
+  let expectedOrdinal = group.firstOrdinal;
+  let expectedSourceRow = group.firstSourceRow;
+  for (const chunk of payload.chunks) {
+    if (
+      chunk.ordinal !== expectedOrdinal ||
+      chunk.firstSourceRow !== expectedSourceRow ||
+      chunk.format !== "jsonl-gzip-v1"
+    ) {
+      throw new OpenCupUnavailableError("Intervalli chunk OpenCUP non contigui.");
+    }
+    budget.chunkDescriptors.set(chunk.ordinal, chunk);
+    expectedOrdinal += 1;
+    expectedSourceRow += chunk.rowCount;
+  }
+  const resolved = budget.chunkDescriptors.get(ordinal);
+  if (!resolved) throw new OpenCupUnavailableError("Chunk OpenCUP non dichiarato.");
+  return resolved;
+}
+
+async function validatePostingRef(
+  root: string,
+  manifest: OpenCupManifest,
+  ref: PostingRef,
+  budget: QueryBudget,
+  signal?: AbortSignal,
+): Promise<void> {
+  const chunk = await resolveChunkDescriptor(root, manifest, ref.chunkOrdinal, budget, signal);
+  if (
+    ref.sourceRow > manifest.publicRows ||
+    ref.sourceRow < chunk.firstSourceRow ||
+    ref.sourceRow >= chunk.firstSourceRow + chunk.rowCount
+  ) {
+    throw new OpenCupUnavailableError("Riferimento riga OpenCUP fuori dal chunk dichiarato.");
   }
 }
 
@@ -285,6 +449,14 @@ async function findLeafEntry(
     if (cups.join("\n") !== [...new Set(cups)].sort().join("\n")) {
       throw new OpenCupUnavailableError("Chiavi foglia OpenCUP non ordinate o duplicate.");
     }
+    for (const entry of leaf.entries) {
+      if ("refs" in entry && entry.refs.length !== entry.matchedRows) {
+        throw new OpenCupUnavailableError("Conteggio posting list OpenCUP divergente.");
+      }
+      if (("refs" in entry && entry.matchedRows > 64) || (!("refs" in entry) && entry.matchedRows <= 64)) {
+        throw new OpenCupUnavailableError("Schema posting OpenCUP divergente.");
+      }
+    }
     return leaf.entries.find((entry) => entry.cup === cup) ?? null;
   }
   throw new OpenCupUnavailableError("Profondità indice OpenCUP oltre il contratto.");
@@ -309,7 +481,15 @@ export async function openCupPostingRefs(
     throw new Error("Cursor OpenCUP riferito a un rilascio diverso; riparti dalla prima pagina.");
   }
   const root = dirname(manifestPath);
-  const budget: QueryBudget = { objectReads: 0, rawBytes: 0, loadedChunks: new Set() };
+  if (!Number.isSafeInteger(start) || start < 0 || !Number.isSafeInteger(maximum) || maximum <= 0) {
+    throw new Error("Intervallo pagina OpenCUP non valido.");
+  }
+  const budget: QueryBudget = {
+    objectReads: 0,
+    rawBytes: 0,
+    loadedChunks: new Set(),
+    chunkDescriptors: new Map(),
+  };
   const entry = await findLeafEntry(root, manifest.rootIndex, cup, budget, signal);
   if (!entry) {
     return { cup, manifest, releaseId, root, refs: [], matchedRows: 0, budget };
@@ -317,39 +497,97 @@ export async function openCupPostingRefs(
   if (start < 0 || start >= entry.matchedRows) {
     throw new Error("Cursor OpenCUP oltre i risultati disponibili.");
   }
-  const refs: { sourceRow: number; chunkOrdinal: number }[] = [];
-  let descriptor: ImmutableObjectDescriptor | null = entry.firstPage;
-  let position = 0;
-  const seenPages = new Set<string>();
-  let previousSourceRow = 0;
-  while (descriptor) {
-    if (seenPages.has(descriptor.sha256)) {
-      throw new OpenCupUnavailableError("Ciclo nella posting list OpenCUP.");
-    }
-    seenPages.add(descriptor.sha256);
-    const page = postingSchema.parse(await readJsonObject(root, descriptor, budget, signal));
-    if (page.cup !== cup) throw new OpenCupUnavailableError("Posting list riferita a un CUP diverso.");
-    for (const ref of page.refs) {
-      if (
-        position >= entry.matchedRows ||
-        ref.sourceRow <= previousSourceRow ||
-        ref.sourceRow > manifest.publicRows ||
-        ref.chunkOrdinal >= manifest.chunks.length
-      ) {
+  const refs: PostingRef[] = [];
+  if ("refs" in entry) {
+    let previousSourceRow = 0;
+    for (const [position, ref] of entry.refs.entries()) {
+      if (position >= entry.matchedRows || ref.sourceRow <= previousSourceRow) {
         throw new OpenCupUnavailableError("Riferimento riga OpenCUP non valido.");
       }
-      const chunk = manifest.chunks[ref.chunkOrdinal];
-      if (ref.sourceRow < chunk.firstSourceRow || ref.sourceRow >= chunk.firstSourceRow + chunk.rowCount) {
-        throw new OpenCupUnavailableError("Riferimento riga OpenCUP fuori dal chunk dichiarato.");
-      }
+      await validatePostingRef(root, manifest, ref, budget, signal);
       previousSourceRow = ref.sourceRow;
       if (position >= start && refs.length < maximum) refs.push(ref);
-      position += 1;
     }
-    descriptor = page.next;
-  }
-  if (position !== entry.matchedRows) {
-    throw new OpenCupUnavailableError("Conteggio posting list OpenCUP divergente.");
+  } else {
+    let descriptor: ImmutableObjectDescriptor = entry.postingRoot;
+    let page: z.infer<typeof postingSchema> | null = null;
+    let expectedRangeStart = 0;
+    let expectedRangeEnd = entry.matchedRows;
+    for (let depth = 1; depth <= MAX_INDEX_DEPTH; depth += 1) {
+      const raw = await readJsonObject(root, descriptor, budget, signal);
+      if ((raw as { kind?: unknown })?.kind === "posting-directory") {
+        const directory = postingDirectorySchema.parse(raw);
+        let previousEnd = expectedRangeStart;
+        for (const child of directory.children) {
+          if (
+            child.start !== previousEnd ||
+            child.end <= child.start ||
+            child.end > expectedRangeEnd
+          ) {
+            throw new OpenCupUnavailableError("Intervalli directory posting OpenCUP non validi.");
+          }
+          previousEnd = child.end;
+        }
+        if (previousEnd !== expectedRangeEnd) {
+          throw new OpenCupUnavailableError("Copertura directory posting OpenCUP divergente.");
+        }
+        const child = directory.children.find(
+          (candidate) => candidate.start <= start && start < candidate.end,
+        );
+        if (!child) throw new OpenCupUnavailableError("Pagina posting OpenCUP non trovata.");
+        expectedRangeStart = child.start;
+        expectedRangeEnd = child.end;
+        descriptor = child.node;
+        continue;
+      }
+      page = postingSchema.parse(raw);
+      break;
+    }
+    if (!page) throw new OpenCupUnavailableError("Profondità albero posting OpenCUP oltre il contratto.");
+
+    const seenPages = new Set<string>();
+    let position = page.start;
+    let previousSourceRow = 0;
+    let enforcePageRange = true;
+    while (page) {
+      if (seenPages.has(descriptor.sha256)) {
+        throw new OpenCupUnavailableError("Ciclo nella posting list OpenCUP.");
+      }
+      seenPages.add(descriptor.sha256);
+      if (
+        page.cup !== cup ||
+        page.start !== position ||
+        (enforcePageRange && page.start !== expectedRangeStart) ||
+        (enforcePageRange && (
+          page.start > start ||
+          start >= page.start + page.refs.length
+        )) ||
+        (enforcePageRange && page.start + page.refs.length !== expectedRangeEnd) ||
+        page.start + page.refs.length > entry.matchedRows
+      ) {
+        throw new OpenCupUnavailableError("Intervallo pagina posting OpenCUP non valido.");
+      }
+      for (const [offset, ref] of page.refs.entries()) {
+        const refPosition = page.start + offset;
+        if (refPosition >= entry.matchedRows || ref.sourceRow <= previousSourceRow) {
+          throw new OpenCupUnavailableError("Riferimento riga OpenCUP non valido.");
+        }
+        await validatePostingRef(root, manifest, ref, budget, signal);
+        previousSourceRow = ref.sourceRow;
+        if (refPosition >= start && refs.length < maximum) refs.push(ref);
+      }
+      position = page.start + page.refs.length;
+      const next = page.next ?? null;
+      if (refs.length >= maximum) break;
+      if (position === entry.matchedRows) {
+        if (next) throw new OpenCupUnavailableError("Pagina posting finale con continuazione inattesa.");
+        break;
+      }
+      if (!next) throw new OpenCupUnavailableError("Conteggio posting list OpenCUP divergente.");
+      descriptor = next;
+      page = postingSchema.parse(await readJsonObject(root, descriptor, budget, signal));
+      enforcePageRange = false;
+    }
   }
   return {
     cup,
@@ -372,7 +610,13 @@ export async function loadOpenCupRows(
   for (const ref of match.refs) {
     throwIfAborted(signal);
     if (loadedOrdinal !== ref.chunkOrdinal) {
-      const chunk = match.manifest.chunks[ref.chunkOrdinal];
+      const chunk = await resolveChunkDescriptor(
+        match.root,
+        match.manifest,
+        ref.chunkOrdinal,
+        match.budget,
+        signal,
+      );
       if (
         match.budget.objectReads >= MAX_OBJECT_READS ||
         match.budget.rawBytes + chunk.rawBytes > MAX_RAW_BYTES
@@ -427,9 +671,7 @@ export async function loadOpenCupRows(
             const matchingRedactions = row.redactions.filter(
               (redaction) => redaction.field === field && redaction.reason === "personal-identifier",
             );
-            return ![null, ""].includes(cell) ||
-              (cell === null && matchingRedactions.length !== 1) ||
-              (cell === "" && matchingRedactions.length !== 0);
+            return cell !== null || matchingRedactions.length !== 1;
           }) ||
           row.redactions.some((redaction) => !(redaction.field in row.cells))
         ) {
@@ -441,7 +683,8 @@ export async function loadOpenCupRows(
       loadedOrdinal = ref.chunkOrdinal;
       match.budget.loadedChunks.add(ref.chunkOrdinal);
     }
-    const chunk = match.manifest.chunks[ref.chunkOrdinal];
+    const chunk = match.budget.chunkDescriptors.get(ref.chunkOrdinal);
+    if (!chunk) throw new OpenCupUnavailableError("Chunk OpenCUP non caricato.");
     const row = loadedRows[ref.sourceRow - chunk.firstSourceRow];
     if (!row || row.sourceRow !== ref.sourceRow || row.cells.CUP !== match.cup) {
       throw new OpenCupUnavailableError("Riferimento indice OpenCUP divergente dalla riga.");
@@ -477,10 +720,18 @@ export async function probeOpenCupRelease(signal?: AbortSignal) {
     throw new OpenCupUnavailableError("Canary pubblica OpenCUP non riconciliata.");
   }
   return {
+    acquiredAt: manifest.acquiredAt,
     distinctCups: manifest.distinctCups,
     fixtureOnly: "fixtureOnly" in manifest,
+    landingUrl: manifest.landingUrl,
+    lastModified: manifest.lastModified,
+    licenseUrl: manifest.licenseUrl,
+    observedAt: manifest.observedAt,
+    publicationDate: manifest.publicationDate,
     publicRows: manifest.publicRows,
-    publishedAt: manifest.publishedAt,
+    // Transitional consumer compatibility; the manifest itself has no ambiguous publishedAt field.
+    publishedAt: manifest.publicationDate,
+    referenceDate: manifest.referenceDate,
     releaseId,
   } as const;
 }

@@ -131,6 +131,22 @@ test("Google Analytics loads only on the public site hostname", async () => {
   assert.match(analytics, /gtag\('config'/);
 });
 
+test("primary nav disclosure ids key off section href, not shared icons", async () => {
+  const hrefs = PRIMARY_NAV.map((item) => item.href);
+  assert.equal(new Set(hrefs).size, hrefs.length);
+  const poverta = PRIMARY_NAV.find((item) => item.href === "/poverta");
+  const territori = PRIMARY_NAV.find((item) => item.href === "/territori");
+  assert.equal(poverta?.icon, "society");
+  assert.equal(territori?.icon, "map");
+  assert.notEqual(poverta?.icon, territori?.icon);
+  const navigationComponent = await readFile(
+    new URL("../src/components/navigation.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(navigationComponent, /menuKey = item\.href\.replace/);
+  assert.doesNotMatch(navigationComponent, /menuId = `\$\{id\}-\$\{item\.icon\}`/);
+});
+
 test("activeNavSection resolves nested routes to the parent menu", () => {
   const coesione = activeNavSection("/coesione/asili");
   assert.equal(coesione?.href, "/coesione");

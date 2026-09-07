@@ -8,7 +8,7 @@ export type NavLink = Readonly<{
   label: string;
 }>;
 
-export type NavIcon = "home" | "news" | "business" | "education" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
 
 export type NavSection = Readonly<{
   href: string;
@@ -41,6 +41,12 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/istruzione", label: "Atlante della scuola" },
       { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
     ],
+  },
+  {
+    href: "/poverta",
+    label: "Povertà",
+    icon: "society",
+    children: [{ href: "/poverta", label: "Assoluta e relativa" }],
   },
   {
     href: "/spese",
@@ -173,6 +179,10 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/istruzione", label: "Atlante Istruzione" },
       { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
     ],
+  },
+  {
+    title: "Povertà",
+    links: [{ href: "/poverta", label: "Assoluta e relativa" }],
   },
   {
     title: "Soldi",

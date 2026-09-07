@@ -22,6 +22,7 @@ import {
   formatGovernmentChartPeriod,
   formatGovernmentChartPointStatus,
   formatGovernmentChartValue,
+  getGovernmentChartSelection,
   GOVERNMENT_CHART_COLORS,
   GOVERNMENT_CHART_MARKERS,
   GOVERNMENT_CHART_PATTERNS,
@@ -137,6 +138,10 @@ function IndicatorChart({
       change: first && last && last.period_start > first.period_start ? last.value - first.value : null,
     };
   });
+  const selections = visibleSeries.map((series) => ({
+    ...series,
+    ...getGovernmentChartSelection(series.points, activePeriod),
+  }));
 
   return (
     <article
@@ -253,17 +258,17 @@ function IndicatorChart({
         </div>
       )}
 
-      <div className={styles.seriesSummary} aria-label="Valori iniziali, finali e variazioni">
-        {summaries.map((series) => (
-          <article key={series.id}>
+      <div className={styles.seriesSummary} aria-label="Valori iniziali, selezionati e variazioni">
+        {selections.map((series) => (
+          <article key={series.id} data-series-summary={series.id}>
             <h4><span style={{ backgroundColor: GOVERNMENT_CHART_COLORS[series.id] }} aria-hidden="true" /><b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}</h4>
-            {series.first && series.last && series.change !== null ? (
+            {series.first ? (
               <dl>
                 <div><dt>Inizio del periodo · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}{formatGovernmentChartPointStatus(series.first)}</dd></div>
-                <div><dt>Fine del periodo · {formatGovernmentChartPeriod(series.last.period)}</dt><dd>{formatGovernmentChartValue(series.last.value, chart.unit)}{formatGovernmentChartPointStatus(series.last)}</dd></div>
-                <div><dt>Variazione</dt><dd>{formatChange(series.change, chart.unit)}</dd></div>
+                <div><dt data-selected-period>Periodo selezionato · {activePeriod === null ? "n.d." : formatGovernmentChartPeriod(activePeriod)}</dt><dd data-selected-value>{series.selected ? `${formatGovernmentChartValue(series.selected.value, chart.unit)}${formatGovernmentChartPointStatus(series.selected)}` : "n.d."}</dd></div>
+                <div><dt>Variazione dall’inizio</dt><dd data-selected-change>{series.change === null ? "n.d." : formatChange(series.change, chart.unit)}</dd></div>
               </dl>
-            ) : <p>Servono almeno due periodi pubblicati per calcolare una variazione.</p>}
+            ) : <p>Nessun dato pubblicato nel periodo.</p>}
           </article>
         ))}
       </div>
@@ -277,7 +282,7 @@ function IndicatorChart({
               <tr>
                 <th scope="col">Paese</th>
                 {periods.map((period) => <th scope="col" key={period}>{formatGovernmentChartPeriod(period)}</th>)}
-                <th scope="col">Variazione</th>
+                <th scope="col">Variazione intero periodo</th>
               </tr>
             </thead>
             <tbody>
@@ -318,6 +323,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
 
   const move = (delta: number) => setActiveIndex((current) => (current + delta + total) % total);
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if ((event.target as Element).closest('[data-chart-plot="true"]')) return;
     if (event.key === "ArrowLeft") {
       event.preventDefault();
       move(-1);
@@ -363,7 +369,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
         <ol className={styles.indicatorList} aria-label="Tutti i grafici degli indicatori">
           {charts.slides.map((chart, index) => (
             <li key={chart.indicator_id}>
-              <IndicatorChart chart={chart} scope={scope} position={index + 1} total={total} listView />
+              <IndicatorChart key={scope} chart={chart} scope={scope} position={index + 1} total={total} listView />
             </li>
           ))}
         </ol>
@@ -379,7 +385,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
           onPointerUp={onPointerUp}
           onPointerCancel={() => { pointerStart.current = null; }}
         >
-          <IndicatorChart chart={activeSlide} scope={scope} position={activeIndex + 1} total={total} />
+          <IndicatorChart key={`${activeSlide.indicator_id}-${scope}`} chart={activeSlide} scope={scope} position={activeIndex + 1} total={total} />
         </div>
       )}
 

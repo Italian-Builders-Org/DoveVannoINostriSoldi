@@ -36,7 +36,7 @@ try {
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
         const navLabels = await page.$$eval('#desktop-navigation .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
-        assert.deepEqual(navLabels.slice(0, 5), ['Home', 'Imprese', 'Istruzione', 'Soldi', 'Territori']);
+        assert.deepEqual(navLabels.slice(0, 6), ['Home', 'Imprese', 'Istruzione', 'Povertà', 'Soldi', 'Territori']);
         assert.deepEqual(navLabels.slice(-2), ['Report mensili', 'Studi']);
         assert.equal(await page.$$eval('#desktop-navigation .nav-item > a > svg', (icons) => icons.length), navLabels.length);
         const details = await page.$("main details summary");

@@ -42,3 +42,12 @@ Limite prudenziale di confronto: 250 MB per le funzioni Node.js, come da
 [documentazione Vercel](https://vercel.com/docs/functions/limitations),
 controllata il 7 settembre 2026. Il supporto fino a 5 GB richiede requisiti e
 abilitazione specifici; non viene assunto attivo né modificato da questa PR.
+
+## Budget delle verifiche
+
+Il gate ETL verde della base ha richiesto 19 minuti e 38 secondi
+([run 34151719132](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/actions/runs/34151719132)).
+Le 346.112 righe aggiunte aumentano del 23,5% le righe pubbliche e vengono
+riconciliate anche contro i CSV originali. Il timeout del job passa da 20 a
+30 minuti; suite, controlli snapshot e network guard restano tutti attivi.
+Il tempo finale della nuova CI va registrato prima di accettare questa ADR.

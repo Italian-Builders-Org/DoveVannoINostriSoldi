@@ -122,8 +122,8 @@ jobs:
   etl:
     name: etl
     runs-on: ubuntu-24.04
-    # The full offline suite plus snapshot checks can exceed ten minutes.
-    timeout-minutes: 20
+    # Main already needs ~20 minutes; Conto Annuale adds 346,112 verified rows.
+    timeout-minutes: 30
     env:
       # PYTHONPATH for ETL scripts that import sibling modules.
       # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,

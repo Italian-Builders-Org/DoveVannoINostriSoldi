@@ -386,7 +386,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
     introduction: "La pagina riunisce consistenza del personale, staff per funzione e indennità degli organi senza trasformare massimali, dotazioni e pagamenti in un’unica misura.",
     status: "Fatto documentato",
     primaryMetric: "247",
-    primaryLabel: "righe di personale su 143 enti",
+    primaryLabel: "righe nel focus su 143 enti",
     hubSummary: "Organici, funzioni e indennità letti nel rispettivo perimetro, con confronti UE separati.",
     facts: [
       { value: "69", label: "righe staff per funzione", note: "Funzioni dichiarate, non una graduatoria di produttività." },
@@ -399,6 +399,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       "Una dotazione di personale più alta o più bassa non misura da sola efficienza o qualità.",
       "I confronti internazionali restano candidati finché unità e perimetri non sono normalizzati.",
       "Piani di gestione, organici e compensi degli organi hanno unità diverse e non vengono sommati.",
+      "Il Conto Annuale 2020 è storico: personale al 31 dicembre e costo annuale hanno coperture diverse. Non è SIOPE cassa.",
     ],
     datasets: [
       {
@@ -410,6 +411,28 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
           { key: "teste", label: "Personale" },
           { key: "fte", label: "FTE" },
           { key: "costo_lordo_eur", label: "Costo lordo" },
+        ],
+      },
+      {
+        id: "rgs-conto-annuale-costo-2020",
+        label: "Conto Annuale · costo del lavoro 2020",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Amministrazione", label: "Amministrazione" },
+          { key: "Contratto", label: "Contratto" },
+          { key: "Descrizione voce", label: "Voce" },
+          { key: "Importo euro", label: "Euro" },
+        ],
+      },
+      {
+        id: "rgs-conto-annuale-personale-2020",
+        label: "Conto Annuale · personale al 31 dicembre 2020",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Amministrazione", label: "Amministrazione" },
+          { key: "Descrizione qualifica", label: "Qualifica" },
+          { key: "Tempo pieno uomini", label: "Tempo pieno uomini" },
+          { key: "Tempo pieno donne", label: "Tempo pieno donne" },
         ],
       },
       { id: "staff-funzioni", label: "Staff per funzione" },

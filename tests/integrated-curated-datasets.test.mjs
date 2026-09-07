@@ -122,11 +122,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 91,
+  datasets: 93,
   derivedOnlyRows: 2_841,
-  publicRows: 1_475_510,
-  sourceBytes: 2_967_342_031,
-  sourceRows: 14_457_856,
+  publicRows: 1_821_622,
+  sourceBytes: 3_065_988_108,
+  sourceRows: 14_803_968,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the

@@ -6,14 +6,14 @@ export const INTEGRATED_CORPUS_CONTRACT = {
   regularFiles: 46_438,
   hardlinks: 4_860,
   symlinks: 5,
-  datasets: 91,
+  datasets: 93,
   sourceIdentities: 34_071,
   quarantinedSourceIdentities: 1_493,
-  sourceRows: 14_457_856,
-  publicRows: 1_475_510,
+  sourceRows: 14_803_968,
+  publicRows: 1_821_622,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 2_967_342_031,
+  sourceBytes: 3_065_988_108,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;

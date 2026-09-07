@@ -150,7 +150,7 @@ export default async function SourceStatusPage() {
             </div>
 
             <div className={styles.meta}>
-              <strong>Collegata</strong>
+              <strong>{source.integration === "active" ? "Collegata" : "Configurata, non attiva"}</strong>
               <span>Cadenza: {source.policy.cadence}</span>
               <span>Cerchiamo nuovi dati ogni {duration(source.policy.discoveryRevalidateSeconds)}</span>
             </div>

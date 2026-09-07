@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { getPublicWorksByCup } from "@/lib/bdap-public-works";
 import { compactEuro, exactEuro, integer, longDate, shortDate } from "@/lib/format";
+import {
+  IntegratedQueryError,
+  normalizeOpenCupCup,
+  selectOpenCupProjects,
+  type OpenCupProjectSelection,
+} from "@/lib/integrated-public-view";
+import { OpenCupUnavailableError } from "@/lib/opencup-projects-index";
 import {
   PnrrChildcareQueryError,
   awardeesForTender,
@@ -11,26 +18,61 @@ import {
   pnrrChildcareMeta,
 } from "@/lib/pnrr-childcare-snapshot";
 import type { PnrrChildcareProject } from "@/lib/data/pnrr-childcare-contract";
+import { OpenCupProjectPanel } from "./opencup-project-panel";
 import styles from "./project.module.css";
 
 type RouteParams = Promise<{ cup: string }>;
 type MopLookup = Awaited<ReturnType<typeof getPublicWorksByCup>>;
 
-function projectFrom(rawCup: string): PnrrChildcareProject {
+type ProjectLookup = {
+  cup: string | null;
+  openCup: OpenCupProjectSelection | null;
+  openCupUnavailable: boolean;
+  pnrr: PnrrChildcareProject | null;
+};
+
+const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
+  let cup: string;
   try {
-    return getPnrrChildcareProject(rawCup) ?? notFound();
+    cup = normalizeOpenCupCup(rawCup);
   } catch (error) {
-    if (error instanceof PnrrChildcareQueryError) notFound();
+    if (error instanceof IntegratedQueryError) {
+      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null };
+    }
     throw error;
   }
-}
+
+  let pnrr: PnrrChildcareProject | null;
+  try {
+    pnrr = getPnrrChildcareProject(cup);
+  } catch (error) {
+    if (error instanceof PnrrChildcareQueryError) {
+      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null };
+    }
+    throw error;
+  }
+
+  try {
+    const openCup = await selectOpenCupProjects({ cup, limit: 20 });
+    return { cup, openCup, openCupUnavailable: false, pnrr };
+  } catch (error) {
+    if (error instanceof OpenCupUnavailableError) {
+      return { cup, openCup: null, openCupUnavailable: true, pnrr };
+    }
+    throw error;
+  }
+});
 
 export async function generateMetadata({ params }: { params: RouteParams }): Promise<Metadata> {
-  const { cup } = await params;
-  const project = projectFrom(cup);
+  const { cup: rawCup } = await params;
+  const lookup = await loadProject(rawCup);
+  if (!lookup.cup || (!lookup.pnrr && lookup.openCup && lookup.openCup.matchedRows === 0)) notFound();
+  const title = lookup.pnrr?.title
+    ?? lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP
+    ?? `Progetto CUP ${lookup.cup}`;
   return {
-    title: `${project.cup} · ${project.title}`,
-    description: `Traccia documentale del progetto PNRR ${project.cup}: finanziamento, localizzazione, gare e aggiudicatari.`,
+    title: `${lookup.cup} · ${title}`,
+    description: `Traccia documentale del progetto ${lookup.cup} nei rilasci pubblici consultati.`,
   };
 }
 
@@ -71,30 +113,40 @@ async function MopEvidence({ cup }: { cup: string }) {
 }
 
 export default async function ProjectPage({ params }: { params: RouteParams }) {
-  const { cup } = await params;
-  const project = projectFrom(cup);
-  const tenderTotal = project.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0);
-  const awardTotal = project.tenders.reduce((sum, tender) => sum + (tender.awardAmountCents ?? 0), 0);
-  const linkedAwardees = new Set(project.tenders.flatMap((tender) => awardeesForTender(project, tender)));
-  const unmatchedAwardees = project.awardees.filter((awardee) => !linkedAwardees.has(awardee));
-  const primaryPlace = project.locations[0];
+  const { cup: rawCup } = await params;
+  const lookup = await loadProject(rawCup);
+  if (!lookup.cup || (!lookup.pnrr && lookup.openCup && lookup.openCup.matchedRows === 0)) notFound();
+  const cup = lookup.cup;
+  const project = lookup.pnrr;
+  const tenderTotal = project?.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0) ?? 0;
+  const awardTotal = project?.tenders.reduce((sum, tender) => sum + (tender.awardAmountCents ?? 0), 0) ?? 0;
+  const linkedAwardees = new Set(project?.tenders.flatMap((tender) => awardeesForTender(project, tender)) ?? []);
+  const unmatchedAwardees = project?.awardees.filter((awardee) => !linkedAwardees.has(awardee)) ?? [];
+  const primaryPlace = project?.locations[0];
+  const openCupPrimary = lookup.openCup?.rows[0];
+  const title = project?.title ?? openCupPrimary?.cells.DESCRIZIONE_SINTETICA_CUP ?? `Progetto CUP ${cup}`;
+  const place = project
+    ? [primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region]
+    : [openCupPrimary?.cells.COMUNE, openCupPrimary?.cells.REGIONE];
 
   return (
     <main className="shell page">
       <nav className={styles.breadcrumb} aria-label="Percorso">
         <Link href="/coesione">Fondi e progetti</Link><span>/</span>
-        <Link href="/coesione/asili">PNRR asili</Link><span>/</span><strong>{project.cup}</strong>
+        {project ? <><Link href="/coesione/asili">PNRR asili</Link><span>/</span></> : null}<strong>{cup}</strong>
       </nav>
 
       <header className={styles.hero}>
         <div>
           <div className={styles.heroMeta}>
-            <span>CUP {project.cup}</span>
-            <Evidence kind="osservato" />
-            <span>{project.status.validationOutcome ?? "Esito non disponibile"}</span>
+            <span>CUP {cup}</span>
+            {!project && openCupPrimary?.evidenceLabel === "synthetic-fixture"
+              ? <span>Fixture sintetica</span>
+              : <Evidence kind="osservato" />}
+            <span>{project?.status.validationOutcome ?? openCupPrimary?.cells.STATO_PROGETTO ?? "Stato non disponibile"}</span>
           </div>
-          <h1>{project.title}</h1>
-          <p>{[primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region].filter(Boolean).join(" · ")}</p>
+          <h1>{title}</h1>
+          <p>{place.filter(Boolean).join(" · ") || "Localizzazione non disponibile"}</p>
         </div>
       </header>
 
@@ -106,6 +158,17 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
         <span><Evidence kind="mancante" /> non pubblicato o non collegabile</span>
       </div>
 
+      {lookup.openCup ? <OpenCupProjectPanel initial={lookup.openCup} /> : (
+        <section className={styles.openCupUnavailable} aria-labelledby="opencup-title">
+          <div className={styles.sectionHeading}><h2 id="opencup-title">Registrazioni OpenCUP</h2></div>
+          <div className="notice">
+            <strong>OpenCUP temporaneamente non disponibile</strong>
+            <p>{project ? "Le altre evidenze della scheda restano disponibili." : "Riprova più tardi: l’indisponibilità della fonte non dimostra che il CUP sia assente."}</p>
+          </div>
+        </section>
+      )}
+
+      {project ? <>
       <section className={styles.flow} aria-labelledby="flow-title">
         <div className={styles.sectionHeading}><h2 id="flow-title">Quattro livelli, senza scorciatoie</h2></div>
         <div className={styles.flowGrid}>
@@ -212,6 +275,16 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
           </div>
         </section>
       </div>
+      </> : (
+        <section className="panel">
+          <div className={styles.sectionHeading}><h2>Altre fonti per lo stesso CUP</h2></div>
+          <p>Il collegamento usa soltanto il CUP esatto. Aprire una ricerca non significa che OpenBDAP contenga già un’opera corrispondente.</p>
+          <div className={styles.actions}>
+            <a className="btn btn-secondary" href={`/api/opere?cup=${cup}`}>Cerca in OpenBDAP MOP</a>
+            <Link className="btn btn-secondary" href="/metodologia">Metodologia</Link>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

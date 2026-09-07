@@ -14,6 +14,7 @@ export type SourceId =
   | "istat-casellario-pensioni"
   | "consip"
   | "opencoesione"
+  | "opencup"
   | "italiadomani"
   | "opencivitas"
   | "consulenti"
@@ -272,6 +273,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 15_000,
     maxRetries: 1,
     tags: ["source:opencoesione", "domain:cohesion"],
+  },
+  opencup: {
+    id: "opencup",
+    label: "OpenCUP · Progetti",
+    owner: "Dipartimento per la programmazione e il coordinamento della politica economica",
+    sourceUrl: "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data",
+    cadence: "mensile",
+    cadenceNote: "La landing OpenCUP dichiara aggiornamento mensile. La freschezza è valutabile solo dalla data di pubblicazione del rilascio effettivamente servito.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 62 * DAY,
+    timeoutMs: 5_000,
+    maxRetries: 0,
+    tags: ["source:opencup", "domain:projects"],
   },
   italiadomani: {
     id: PNRR_CHILDCARE_SOURCE.id,

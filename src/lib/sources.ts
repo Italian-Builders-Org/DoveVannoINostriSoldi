@@ -322,6 +322,18 @@ export const publicSources: PublicSource[] = [
     note: "Dashboard nazionale attiva; nessun drill-down per progetto, soggetto o territorio. Aggiornamento automatico dall'API ufficiale.",
   },
   {
+    slug: "opencup",
+    name: "OpenCUP · Progetti",
+    owner: "Dipartimento per la programmazione e il coordinamento della politica economica",
+    area: "Anagrafe dei progetti identificati da CUP",
+    cadence: "Mensile dichiarata dalla landing; controllo discovery giornaliero",
+    coverage: "Bulk Progetti nazionale catalogato; prodotto interrogabile solo dopo manifest e storage verificati",
+    format: "ZIP · CSV · oggetti JSONL gzip indicizzati per CUP",
+    url: "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data",
+    note: "Fonte configurata ma non attiva: G1–G4 non sono ancora chiusi. Registrazioni, CUP distinti e localizzazioni restano conteggi separati; costo e finanziamento non sono pagamenti.",
+    joinKeys: ["CUP esatto"],
+  },
+  {
     slug: PNRR_CHILDCARE_SOURCE.id,
     name: PNRR_CHILDCARE_SOURCE.public.name,
     owner: PNRR_CHILDCARE_SOURCE.owner,

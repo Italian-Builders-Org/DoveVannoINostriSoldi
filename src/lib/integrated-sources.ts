@@ -143,7 +143,7 @@ function releaseDatasetLoadSlot(): void {
   }
 }
 
-async function withDatasetLoadSlot<T>(
+export async function withIntegratedDatasetLoadSlot<T>(
   load: () => Promise<T>,
   signal: AbortSignal,
 ): Promise<T> {
@@ -400,7 +400,7 @@ export function loadIntegratedDatasetChunk(
   pending.controller = controller;
   pending.consumers = 0;
   pending.settled = false;
-  pending.promise = withDatasetLoadSlot(
+  pending.promise = withIntegratedDatasetLoadSlot(
     () => readDatasetChunk(bundle, dataset, ordinal, controller.signal),
     controller.signal,
   ).finally(() => {

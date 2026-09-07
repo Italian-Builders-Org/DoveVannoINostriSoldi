@@ -104,6 +104,7 @@ const exhaustiveLatestDataBySlug = {
   "ipa-struttura": null,
   openbdap: null,
   opencoesione: { kind: "date", value: openCoesioneSnapshot.referenceDate },
+  opencup: null,
   [PNRR_CHILDCARE_SOURCE.id]: PNRR_CHILDCARE_SOURCE.latestData,
   opencivitas: { kind: "date", value: openCivitasSnapshot.publishedAt },
   "partecipazioni-pubbliche": { kind: "date", value: mefParticipationsSnapshot.publishedAt },

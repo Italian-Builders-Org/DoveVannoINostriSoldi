@@ -1,7 +1,7 @@
 import { McpServer, type McpRequestContext } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
 import { APP_VERSION } from "@/lib/app-version";
-import { datasetCatalog } from "@/lib/mcp/catalog";
+import { activeDatasetCatalog } from "@/lib/mcp/catalog";
 import { datasetQuerySchema as querySchema } from "@/lib/mcp/query-schema";
 import { queryPublicDataset } from "@/lib/mcp/datasets";
 import { relatedMcpServices } from "@/lib/mcp/related-services";
@@ -62,8 +62,6 @@ export const dvnsStarterPrompts = [
     message: "Cerca i dati disponibili per la Calabria e dimmi che cosa non è confrontabile.",
   },
 ] as const;
-
-
 
 const listDatasetsToolConfig = {
   title: "Elenca i dataset",
@@ -155,7 +153,7 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
       description: "Dataset interrogabili, filtri, fonti e avvertenze semantiche.",
       mimeType: "application/json",
     },
-    async (uri) => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(datasetCatalog) }] }),
+    async (uri) => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(activeDatasetCatalog) }] }),
   );
 
   server.registerResource(
@@ -195,7 +193,7 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
   server.registerTool(
     "list_datasets",
     listDatasetsToolConfig,
-    async () => toolResult({ datasets: datasetCatalog, relatedMcpServices }),
+    async () => toolResult({ datasets: activeDatasetCatalog, relatedMcpServices }),
   );
 
   server.registerTool(

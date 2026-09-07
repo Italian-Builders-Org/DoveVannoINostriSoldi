@@ -27,7 +27,7 @@ const REVISION = "a".repeat(40);
 const SOURCE_IDS = [
   "ipa", "ipa-struttura", "openbdap", "anac", "inps", "cpt", "mef-irpef", "siope",
   "istat", "istat-casellario-pensioni",
-  "consip", "opencoesione", "italiadomani", "opencivitas", "consulenti", "camera", "senato",
+  "consip", "opencoesione", "opencup", "italiadomani", "opencivitas", "consulenti", "camera", "senato",
   "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-cofog", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "inps-naspi", "mef-irpef-dettaglio", "ameco",
   "governi-presidenza",
 ];
@@ -118,14 +118,14 @@ function sourcePayload({ down = false } = {}) {
     ok: true,
     summary: {
       total: SOURCE_IDS.length,
-      active: SOURCE_IDS.length,
+      active: SOURCE_IDS.length - 1,
       reachable: down ? SOURCE_IDS.length - 1 : SOURCE_IDS.length,
       unreachable: down ? 1 : 0,
       notProbed: 0,
     },
     sources: SOURCE_IDS.map((sourceId, index) => ({
       sourceId,
-      integration: "active",
+      integration: sourceId === "opencup" ? "configured" : "active",
       reachability: down && index === 0 ? "down" : "up",
     })),
   };

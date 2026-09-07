@@ -1,8 +1,8 @@
 import * as z from "zod/v4";
-import { DATASET_IDS } from "@/lib/mcp/catalog";
+import { ACTIVE_DATASET_IDS } from "@/lib/mcp/catalog";
 
 export const datasetQuerySchema = z.object({
-  dataset: z.enum(DATASET_IDS).describe("Identificativo restituito da list_datasets."),
+  dataset: z.enum(ACTIVE_DATASET_IDS).describe("Identificativo restituito da list_datasets."),
   year: z.number().int().min(2000).max(2100)
     .describe("Anno di riferimento a quattro cifre, solo se dichiarato tra i filtri del dataset.")
     .optional(),
@@ -27,8 +27,8 @@ export const datasetQuerySchema = z.object({
   code: z.string().max(100)
     .describe("Codice identificativo richiesto dal dataset, per esempio codice IPA o ISTAT.")
     .optional(),
-  cup: z.string().max(15)
-    .describe("Codice Unico di Progetto dell'opera pubblica da cercare, massimo 15 caratteri.")
+  cup: z.string().max(64)
+    .describe("Codice Unico di Progetto: gli spazi esterni vengono rimossi prima della validazione esatta a 15 caratteri.")
     .optional(),
   area: z.string().max(100)
     .describe("Area tematica usata dai dataset che espongono classificazioni o segnali di controllo.")

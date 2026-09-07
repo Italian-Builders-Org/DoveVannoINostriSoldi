@@ -77,6 +77,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
     "bdap-opendata.rgs.mef.gov.it",
   ],
   opencoesione: ["opencoesione.gov.it", "www.opencoesione.gov.it"],
+  // The runtime checks the pinned normalized artifact, never the upstream bulk archive.
+  opencup: [],
   italiadomani: PNRR_CHILDCARE_SOURCE.allowedHosts,
   opencivitas: ["opencivitas.it", "www.opencivitas.it", "docs.opencivitas.it"],
   consulenti: [

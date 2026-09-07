@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { DATASET_IDS, datasetCatalog } = await import("../src/lib/mcp/catalog.ts");
+const { ACTIVE_DATASET_IDS, DATASET_IDS, activeDatasetCatalog, datasetCatalog } = await import("../src/lib/mcp/catalog.ts");
 const { queryPublicDataset } = await import("../src/lib/mcp/datasets.ts");
 const { publicSources } = await import("../src/lib/sources.ts");
 
@@ -50,6 +50,12 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
   assert.match(pensioners.caveat, /denominatore.*persone/i);
   assert.match(pensioners.caveat, /importi.*lordi/i);
   assert.match(pensioners.caveat, /non.*sommabile/i);
+});
+
+test("configured OpenCUP is registered internally but not advertised before promotion", () => {
+  assert.ok(datasetCatalog.some((dataset) => dataset.id === "opencup_progetto" && dataset.integration === "configured"));
+  assert.ok(!ACTIVE_DATASET_IDS.includes("opencup_progetto"));
+  assert.ok(!activeDatasetCatalog.some((dataset) => dataset.id === "opencup_progetto"));
 });
 
 test("ISTAT pension MCP projections keep benefits and persons separate", async () => {
@@ -392,8 +398,8 @@ test("MEF IRPEF MCP adapter delegates to the bounded domain query", async () => 
   );
 });
 
-test("every snapshot catalog example is executable offline", async () => {
-  for (const dataset of datasetCatalog.filter((item) => item.freshness === "snapshot")) {
+test("every active snapshot catalog example is executable offline", async () => {
+  for (const dataset of datasetCatalog.filter((item) => item.freshness === "snapshot" && item.integration === "active")) {
     const result = await queryPublicDataset(dataset.exampleQuery);
     assert.notEqual(result, undefined, dataset.id);
   }

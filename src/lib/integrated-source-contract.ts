@@ -50,6 +50,7 @@ export type IntegratedPublication = z.infer<typeof publicationSchema>;
 
 export const evidenceLabelSchema = z.enum([
   "documented-fact",
+  "synthetic-fixture",
   "missing-data",
   "verified-difference",
   "needs-explanation",
@@ -515,7 +516,7 @@ export function isSafePublicHttpUrl(value: string): boolean {
   }
 }
 
-function containsUnsafePublicUrl(value: string): boolean {
+export function containsUnsafePublicUrl(value: string): boolean {
   const matches = value.match(/https?:\/\/[^\s<>"']+/gi) ?? [];
   return matches.some((match) => {
     const candidate = match.replace(/[.,;:!?\])}]+$/g, "");

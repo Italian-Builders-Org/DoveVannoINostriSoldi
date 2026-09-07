@@ -63,6 +63,15 @@ export async function queryPublicDataset(
   const offset = boundedInteger(query.offset, 0, 0, 100_000);
 
   switch (query.dataset) {
+    case "opencup_progetto": {
+      const { selectOpenCupProjects } = await import("@/lib/integrated-public-view");
+      return jsonSafe(await selectOpenCupProjects({
+        cup: query.cup,
+        limit: query.limit,
+        cursor: query.cursor,
+        signal: options.signal,
+      }));
+    }
     case "pnrr_progetti": {
       const { selectPnrrProjects } = await import("@/lib/integrated-public-view");
       return jsonSafe(await selectPnrrProjects({

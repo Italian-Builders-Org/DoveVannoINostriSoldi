@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { DatasetInsightPanel } from "@/components/dataset-insight-panel";
+import { OpenCupSearchForm } from "@/components/opencup-search-form";
 import Pagination from "@/components/pagination";
 import { integer } from "@/lib/format";
 import { relatedReadingForDataset } from "@/lib/integrated-catalog-views";
@@ -223,11 +224,14 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
 
       {!dataset.queryable ? (
         <section className={`panel ${styles.unavailablePanel}`} aria-labelledby="dataset-no-rows-title">
-          <h2 id="dataset-no-rows-title">Niente da scorrere qui</h2>
+          <h2 id="dataset-no-rows-title">{dataset.id === "opencup-progetti-bulk" ? "Cerca nel prodotto OpenCUP" : "Niente da scorrere qui"}</h2>
           <p>
             Documenta {integer(dataset.sourceRows)} righe sorgente e lo stato di pubblicazione, senza
             creare destinatari o importi sostitutivi.
           </p>
+          {dataset.id === "opencup-progetti-bulk" ? (
+            <OpenCupSearchForm className={styles.cupSearch} />
+          ) : null}
           <div>
             {related ? <Link href={related.href}>Vai a {related.label} →</Link> : null}
             <Link href="/dati?vista=priorita">Torna ai numeri da leggere →</Link>

@@ -40,6 +40,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-casellario-pensioni",
   "consip",
   "opencoesione",
+  "opencup",
   "italiadomani",
   "opencivitas",
   "consulenti",
@@ -407,12 +408,13 @@ export function validateSourceHealthPayload(response, body) {
     });
   }
   const allowedReachability = new Set(["up", "down", "not-probed"]);
+  const allowedIntegration = new Set(["active", "configured"]);
   const sourceIds = new Set();
   for (const source of payload.sources) {
     if (
       !source
       || typeof source !== "object"
-      || source.integration !== "active"
+      || !allowedIntegration.has(source.integration)
       || typeof source.sourceId !== "string"
       || source.sourceId.trim() === ""
       || sourceIds.has(source.sourceId)
@@ -432,10 +434,10 @@ export function validateSourceHealthPayload(response, body) {
       code: "invalid_source_health_contract",
     });
   }
-  const active = payload.sources;
-  const reachable = active.filter((source) => source.reachability === "up");
-  const down = active.filter((source) => source.reachability === "down");
-  const notProbed = active.filter((source) => source.reachability === "not-probed");
+  const active = payload.sources.filter((source) => source.integration === "active");
+  const reachable = payload.sources.filter((source) => source.reachability === "up");
+  const down = payload.sources.filter((source) => source.reachability === "down");
+  const notProbed = payload.sources.filter((source) => source.reachability === "not-probed");
   if (
     active.length === 0
     || payload.summary.total !== payload.sources.length

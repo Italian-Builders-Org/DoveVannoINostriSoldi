@@ -1,0 +1,40 @@
+{
+  "dataKind": "opencup-projects",
+  "datasetId": "opencup-progetti-bulk",
+  "delimiter": ";",
+  "encoding": "utf-8-sig",
+  "evidenceLabel": "synthetic-fixture",
+  "fixtureOnly": true,
+  "headers": [
+    "CUP",
+    "DESCRIZIONE_SINTETICA_CUP",
+    "ANNO_DECISIONE",
+    "DATA_GENERAZIONE_CUP",
+    "STATO_PROGETTO",
+    "COSTO_PROGETTO",
+    "FINANZIAMENTO_PROGETTO",
+    "SOGGETTO_TITOLARE",
+    "PIVA_CODFISCALE_SOG_TITOLARE",
+    "PIVA_CF_BENEFICIARIO",
+    "CODICE_NATURA_INTERVENTO",
+    "NATURA_INTERVENTO",
+    "CODICE_TIPO_INTERVENTO",
+    "TIPOLOGIA_INTERVENTO",
+    "CODICE_REGIONE",
+    "REGIONE",
+    "CODICE_COMUNE",
+    "COMUNE"
+  ],
+  "licenseStatus": "unverified",
+  "maxMemberBytes": 8388608,
+  "maxMembers": 8,
+  "maxTotalBytes": 16777216,
+  "moneyFormat": "decimal-comma-exact-v1",
+  "moneyUnit": "EUR",
+  "observedAt": null,
+  "publishedAt": null,
+  "schemaVersion": 1,
+  "sourceUrls": [
+    "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data"
+  ]
+}

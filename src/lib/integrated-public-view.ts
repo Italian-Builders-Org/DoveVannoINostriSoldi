@@ -523,6 +523,154 @@ export async function getIntegratedSourceCoverage() {
 
 export type PnrrProjectSelectorInput = Partial<Record<import("@/lib/pnrr-projects-index").PnrrFilter | "limit" | "cursor", unknown>> & { signal?: AbortSignal };
 
+export type OpenCupProjectSelectorInput = {
+  cup: unknown;
+  limit?: unknown;
+  cursor?: unknown;
+  signal?: AbortSignal;
+};
+
+type OpenCupCursorPayload = {
+  datasetId: "opencup-progetti-bulk";
+  filterSha256: string;
+  next: number;
+  releaseId: string;
+  v: 1;
+};
+
+export function normalizeOpenCupCup(value: unknown): string {
+  const cup = singleString(value, "cup", false)!.trim().toUpperCase();
+  if (!/^[A-Z0-9]{15}$/.test(cup)) {
+    throw new IntegratedQueryError("Il parametro cup richiede un codice alfanumerico esatto di 15 caratteri.");
+  }
+  return cup;
+}
+
+/** Exact OpenCUP lookup shared by UI, HTTP and MCP. */
+export async function selectOpenCupProjects(input: OpenCupProjectSelectorInput) {
+  const {
+    OPENCUP_PROJECT_DATASET,
+    OpenCupUnavailableError,
+    loadOpenCupRows,
+    openCupPostingRefs,
+  } = await import("@/lib/opencup-projects-index");
+  const cup = normalizeOpenCupCup(input.cup);
+  const limit = boundedInteger(input.limit, "limit", 20, 100, 1);
+  const deadline = AbortSignal.timeout(5_000);
+  const signal = input.signal ? AbortSignal.any([input.signal, deadline]) : deadline;
+  const filterSha256 = sha256Hex(canonicalJson({ cup }));
+  const token = singleString(input.cursor, "cursor");
+  let start = 0;
+  let expectedRelease: string | undefined;
+  if (token !== undefined) {
+    if (token.length > INTEGRATED_MAX_CURSOR_LENGTH || !/^[A-Za-z0-9_-]+$/.test(token)) {
+      throw new IntegratedQueryError("Cursor OpenCUP non valido.");
+    }
+    try {
+      const bytes = Buffer.from(token, "base64url");
+      if (bytes.toString("base64url") !== token) throw new Error();
+      const cursor = JSON.parse(bytes.toString("utf8")) as OpenCupCursorPayload;
+      if (
+        canonicalJson(cursor) !== bytes.toString("utf8") ||
+        Object.keys(cursor).join("\n") !== ["datasetId", "filterSha256", "next", "releaseId", "v"].join("\n") ||
+        cursor.v !== 1 ||
+        cursor.datasetId !== OPENCUP_PROJECT_DATASET ||
+        cursor.filterSha256 !== filterSha256 ||
+        !/^[0-9a-f]{64}$/.test(cursor.releaseId) ||
+        !Number.isSafeInteger(cursor.next) ||
+        cursor.next <= 0
+      ) throw new Error();
+      start = cursor.next;
+      expectedRelease = cursor.releaseId;
+    } catch {
+      throw new IntegratedQueryError("Cursor OpenCUP non valido o riferito a filtri diversi.");
+    }
+  }
+  let match;
+  try {
+    match = await openCupPostingRefs(cup, start, limit, signal, expectedRelease);
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("Cursor OpenCUP")) {
+      throw new IntegratedQueryError(error.message);
+    }
+    if (error instanceof OpenCupUnavailableError) throw error;
+    throw new OpenCupUnavailableError("Indice OpenCUP non valido.", { cause: error });
+  }
+  try {
+    if (signal.aborted) throw new OpenCupUnavailableError("Timeout della ricerca OpenCUP.");
+    const bundle = await loadIntegratedSourceBundle();
+    if (signal.aborted) throw new OpenCupUnavailableError("Timeout della ricerca OpenCUP.");
+    const catalogDataset = bundle.datasetsById.get(OPENCUP_PROJECT_DATASET);
+    if (!catalogDataset) throw new OpenCupUnavailableError("Dataset OpenCUP assente dal catalogo integrato.");
+    const fixtureMode = "fixtureOnly" in match.manifest;
+    if (!fixtureMode && (
+      catalogDataset.publication !== "rows" ||
+      catalogDataset.receiptSha256 !== match.manifest.receiptSha256 ||
+      catalogDataset.publicRows !== match.manifest.publicRows
+    )) {
+      throw new OpenCupUnavailableError("Manifest OpenCUP non promosso nel catalogo integrato.");
+    }
+    const loaded = await loadOpenCupRows(match, signal);
+    if (match.matchedRows > 0 && loaded.rows.length === 0) {
+      throw new OpenCupUnavailableError("Budget OpenCUP insufficiente per produrre una riga.");
+    }
+    const next = start + loaded.rows.length;
+    const nextCursor = next < match.matchedRows
+      ? Buffer.from(canonicalJson({
+          datasetId: OPENCUP_PROJECT_DATASET,
+          filterSha256,
+          next,
+          releaseId: match.releaseId,
+          v: 1,
+        }), "utf8").toString("base64url")
+      : null;
+    const metadata = publicMetadata(catalogDataset);
+    return {
+      dataset: {
+        ...metadata,
+        title: "Progetti OpenCUP",
+        publication: "rows" as const,
+        evidenceLabel: match.manifest.evidenceLabel,
+        sourceRows: match.manifest.sourceRows,
+        publicRows: match.manifest.publicRows,
+        headers: match.manifest.headers,
+        sourceMetadata: {
+          holder: "Dipartimento per la programmazione e il coordinamento della politica economica",
+          referencePeriod: match.manifest.publishedAt,
+          publicationDate: match.manifest.publishedAt?.slice(0, 10) ?? null,
+          acquisitionDate: match.manifest.observedAt?.slice(0, 10) ?? null,
+          checkedAt: match.manifest.observedAt?.slice(0, 10)
+            ?? match.manifest.publishedAt?.slice(0, 10)
+            ?? metadata.sourceMetadata.checkedAt,
+          updateFrequency: "mensile (cadenza dichiarata dalla fonte)",
+          canonicalUrls: [match.manifest.sourceUrl],
+        },
+        queryable: true,
+        publicationNote: fixtureMode
+          ? "Contratto locale su fixture sintetica; non prova copertura nazionale."
+          : "Le registrazioni OpenCUP sono interrogabili per CUP esatto.",
+      },
+      releaseId: match.releaseId,
+      filters: { cup },
+      rows: loaded.rows,
+      matchedRows: match.matchedRows,
+      pagination: {
+        limit,
+        returned: loaded.rows.length,
+        start,
+        nextCursor,
+        exhausted: nextCursor === null,
+        loadedChunks: loaded.loadedChunks,
+      },
+    };
+  } catch (error) {
+    if (error instanceof OpenCupUnavailableError) throw error;
+    throw new OpenCupUnavailableError("Rilascio OpenCUP non verificabile.", { cause: error });
+  }
+}
+
+export type OpenCupProjectSelection = Awaited<ReturnType<typeof selectOpenCupProjects>>;
+
 /** Indexed PNRR view, sharing the validated corpus rows with the generic data API. */
 export async function selectPnrrProjects(input: PnrrProjectSelectorInput) {
   const { PNRR_PROJECT_DATASET, pnrrProjectMetadata, pnrrFilterNames, pnrrFilterPatterns, pnrrMatchingRows } = await import("@/lib/pnrr-projects-index");

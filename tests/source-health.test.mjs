@@ -147,6 +147,15 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.equal(pnrr?.freshness.sourceTimestamp, "2026-06-13");
   assert.match(pnrr?.detail ?? "", /285992 CUP validi/);
   assert.match(pnrr?.detail ?? "", /senza pagamenti/);
+  const openCup = overview.find((entry) => entry.sourceId === "opencup");
+  assert.equal(openCup?.integration, "configured");
+  assert.equal(openCup?.reachability, "not-probed");
+  assert.equal(openCup?.freshness.state, "unknown");
+  assert.equal(openCup?.recordCount, null);
+  assert.match(openCup?.detail ?? "", /manifest nazionale non configurato/i);
+  assert.equal(SOURCE_POLICIES.opencup.cadence, "mensile");
+  assert.equal(SOURCE_POLICIES.opencup.discoveryRevalidateSeconds, 86_400);
+  assert.equal(SOURCE_POLICIES.opencup.staleAfterSeconds, 62 * 86_400);
   const istat = overview.find((entry) => entry.sourceId === "istat");
   assert.equal(istat?.reachability, "not-probed");
   assert.equal(istat?.recordCount, 7_894);

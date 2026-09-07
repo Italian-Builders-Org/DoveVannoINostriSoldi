@@ -323,6 +323,79 @@
   margin-top: var(--space-4);
 }
 
+.openCupPanel,
+.openCupUnavailable {
+  margin-bottom: var(--space-6);
+}
+
+.openCupPanel > .sectionHeading p {
+  margin: 8px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.openCupRecord {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.openCupRecord summary {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 140px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: 16px 4px;
+  cursor: pointer;
+}
+
+.openCupRecord summary span,
+.openCupRecord summary small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.openCupRecord summary strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.openCupRecord summary small {
+  text-align: right;
+}
+
+.openCupRecordBody {
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+}
+
+.liveStatus {
+  min-height: 1.4em;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupProvenance {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupProvenance p {
+  margin: 4px 0;
+}
+
+.openCupProvenance code {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 900px) {
   .flowGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -365,6 +438,15 @@
   .tenderList summary {
     grid-template-columns: 1fr;
     gap: 5px;
+  }
+
+  .openCupRecord summary {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .openCupRecord summary small {
+    text-align: left;
   }
 
   .tenderList summary small {

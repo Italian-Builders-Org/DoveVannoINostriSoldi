@@ -41,7 +41,7 @@ import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/governm
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
-export type SourceIntegrationState = "active";
+export type SourceIntegrationState = "active" | "configured";
 export type SourceReachability = "up" | "down" | "not-probed";
 
 export type SourceHealth = {
@@ -146,6 +146,7 @@ function freshnessFor(sourceId: SourceId, sourceTimestamp: string | null): Fresh
 
 function baseHealth(
   sourceId: SourceId,
+  integration: SourceIntegrationState = "active",
 ): Omit<
   SourceHealth,
   "reachability" | "freshness" | "latencyMs" | "detail" | "recordCount"
@@ -155,7 +156,7 @@ function baseHealth(
     sourceId,
     label: policy.label,
     owner: policy.owner,
-    integration: "active",
+    integration,
     checkedAt: new Date().toISOString(),
     policy: {
       cadence: policy.cadence,
@@ -166,6 +167,46 @@ function baseHealth(
       sourceUrl: policy.sourceUrl,
     },
   };
+}
+
+function configuredOpenCup(): SourceHealth {
+  return {
+    ...baseHealth("opencup", "configured"),
+    reachability: "not-probed",
+    freshness: freshnessFor("opencup", null),
+    latencyMs: null,
+    detail: "Contratto configurato; manifest nazionale non configurato, storage non controllato e copertura nazionale non attiva.",
+    recordCount: null,
+  };
+}
+
+async function probeConfiguredOpenCup(signal?: AbortSignal): Promise<SourceHealth> {
+  if (!process.env.DVNS_OPENCUP_PROJECTS_MANIFEST) return configuredOpenCup();
+  const base = baseHealth("opencup", "configured");
+  const startedAt = performance.now();
+  try {
+    const { probeOpenCupRelease } = await import("@/lib/opencup-projects-index");
+    const release = await probeOpenCupRelease(signal);
+    return {
+      ...base,
+      reachability: "up",
+      freshness: freshnessFor("opencup", release.publishedAt),
+      latencyMs: Math.round(performance.now() - startedAt),
+      detail: release.fixtureOnly
+        ? `Fixture sintetica verificata · release ${release.releaseId.slice(0, 12)} · ${release.publicRows} righe · ${release.distinctCups} CUP distinti · copertura nazionale non attiva.`
+        : `Manifest e canary verificati · release ${release.releaseId.slice(0, 12)} · ${release.publicRows.toLocaleString("it-IT")} righe · ${release.distinctCups.toLocaleString("it-IT")} CUP distinti · dataset non ancora attivo.`,
+      recordCount: release.publicRows,
+    };
+  } catch (error) {
+    return {
+      ...base,
+      reachability: "down",
+      freshness: freshnessFor("opencup", null),
+      latencyMs: Math.round(performance.now() - startedAt),
+      detail: error instanceof Error ? error.message : "Artifact OpenCUP non verificabile.",
+      recordCount: null,
+    };
+  }
 }
 
 async function getIpaRecordCount(signal?: AbortSignal): Promise<number | null> {
@@ -762,6 +803,7 @@ export function getSnapshotManagedSourceHealth(): SourceHealth[] {
     snapshotManagedIstatCasellarioPensioni(),
     snapshotManagedConsip(),
     snapshotManagedOpenCoesione(),
+    configuredOpenCup(),
     snapshotManagedPnrr(),
     snapshotManagedOpenCivitas(),
     snapshotManagedMefParticipations(),
@@ -803,6 +845,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
   consip: snapshotManagedConsip,
   opencoesione: snapshotManagedOpenCoesione,
+  opencup: probeConfiguredOpenCup,
   italiadomani: snapshotManagedPnrr,
   opencivitas: snapshotManagedOpenCivitas,
   consulenti: snapshotManagedConsulenti,

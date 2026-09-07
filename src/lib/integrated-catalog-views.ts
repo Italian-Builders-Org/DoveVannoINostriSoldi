@@ -8,13 +8,14 @@ export const DEFAULT_CATALOG_VIEW: CatalogView = "priorita";
 
 export const INTEGRATED_EVIDENCE_LABELS: Record<IntegratedEvidenceLabel, string> = {
   "documented-fact": "Fatto documentato",
+  "synthetic-fixture": "Fixture sintetica",
   "missing-data": "Dato mancante",
   "verified-difference": "Scostamento verificato",
   "needs-explanation": "Richiede una spiegazione",
   "official-finding": "Accertamento ufficiale",
 };
 
-export const PRIORITY_EVIDENCE_ORDER: readonly Exclude<IntegratedEvidenceLabel, "documented-fact">[] = [
+export const PRIORITY_EVIDENCE_ORDER: readonly Exclude<IntegratedEvidenceLabel, "documented-fact" | "synthetic-fixture">[] = [
   "needs-explanation",
   "missing-data",
   "verified-difference",
@@ -25,7 +26,7 @@ export const PUBLICATION_FILTERS = ["rows", "source-index", "catalog-only", "der
 export type PublicationFilter = (typeof PUBLICATION_FILTERS)[number];
 
 const PRIORITY_GROUP_COPY: Record<
-  Exclude<IntegratedEvidenceLabel, "documented-fact">,
+  Exclude<IntegratedEvidenceLabel, "documented-fact" | "synthetic-fixture">,
   { title: string; note: string }
 > = {
   "needs-explanation": {

@@ -50,3 +50,15 @@ class SourceSnapshotInventoryTests(unittest.TestCase):
         }
         self.assertEqual(module["pick_period"](payload), "2024-2026")
         self.assertEqual(module["pick_observed"](payload), "2026-09-06T08:00:00+00:00")
+
+    def test_annual_provenance_manifest_preserves_full_range_for_large_details(self):
+        module = runpy.run_path(str(SCRIPT))
+        payload = {
+            "acquiredAt": "2026-09-07T00:11:56+00:00",
+            "sources": {str(year): {"acquisitionDate": "2026-09-07"} for year in (2024, 2025, 2026)},
+        }
+        self.assertEqual(module["pick_period"](payload), "2024-2026")
+        self.assertEqual(module["pick_observed"](payload), "2026-09-07T00:11:56+00:00")
+        registry = module["load_registry"]()
+        artifact = next(item for item in registry["artifacts"] if item["id"] == "siope-nonmunicipal")
+        self.assertEqual(module["snapshot_dates"](artifact)[0], "2024-2026")

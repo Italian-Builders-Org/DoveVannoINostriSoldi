@@ -109,7 +109,9 @@ Spec, vocabolario dei titoli, coperture e comandi offline sono descritti in
 Province, Regioni comprese le Province autonome e Città metropolitane usano gli stessi ZIP
 ufficiali delle uscite, ma una proiezione separata con comparti rispettivamente `PRO`, `REG`
 e `PRO`. Il censimento include tutti i tipi SIOPE, mentre i pagamenti pubblicati sono solo
-dei tre perimetri territoriali. Le identità sono unite a IPA esclusivamente per codice fiscale
+dei tre perimetri territoriali e delle ASL (comparto `SAN`). Le ASL conservano le voci
+gestionali sanitarie originali e sono accessibili da `/spese/sanita` e `/dati/siope-uscite-asl`;
+sono pagamenti di cassa, distinti e non sommabili al Conto Economico SSN. Le identità sono unite a IPA esclusivamente per codice fiscale
 esatto e intervallo temporale; zero osservato, assenza di movimenti e errore di join restano
 distinti. File, hash, provenienza, release e comando di rigenerazione sono in
 [SIOPE_NON_MUNICIPAL.md](SIOPE_NON_MUNICIPAL.md).

@@ -726,11 +726,11 @@
     },
     {
       "id": "siope-nonmunicipal",
-      "owner": "SIOPE non-municipal territorial entity payment detail",
+      "owner": "SIOPE non-municipal entity payment detail",
       "files": [
+        "src/data/generated/siope-nonmunicipal-provenance.json",
         "src/data/generated/siope-nonmunicipal-detail.json",
-        "src/data/generated/siope-nonmunicipal-view-proof.json",
-        "src/data/generated/siope-nonmunicipal-provenance.json"
+        "src/data/generated/siope-nonmunicipal-view-proof.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -750,7 +750,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+      "trustModel": "ASL, Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
     },
     {
       "id": "siope-municipal",

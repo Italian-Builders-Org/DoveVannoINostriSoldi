@@ -133,6 +133,9 @@ def pick_period(payload: Any) -> str | None:
                 return found
     sources = payload.get("sources")
     if isinstance(sources, dict):
+        if sources and all(re.fullmatch(r"[0-9]{4}", key) and isinstance(value, dict) for key, value in sources.items()):
+            years = [int(year) for year in sources]
+            return f"{min(years)}-{max(years)}"
         dates = []
         for source in sources.values():
             if not isinstance(source, dict):

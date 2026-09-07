@@ -108,6 +108,7 @@ const mandatoryDatasetIds = [
   "segnalazioni-card",
   "segnalazioni-parti",
   "siope-inventario-enti",
+  "siope-uscite-asl",
   "siope-uscite-citta-metropolitane",
   "siope-uscite-province",
   "siope-uscite-regioni",
@@ -120,11 +121,11 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 89,
+  datasets: 90,
   derivedOnlyRows: 2_841,
-  publicRows: 849_633,
-  sourceBytes: 2_653_991_679,
-  sourceRows: 13_831_979,
+  publicRows: 1_184_112,
+  sourceBytes: 2_744_586_536,
+  sourceRows: 14_166_458,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -171,6 +172,7 @@ const expectedReferencePeriods = {
   "rinnovi-proroghe": "date dichiarate negli atti: 2020-2029",
   "siope-inventario-enti": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-citta-metropolitane": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+  "siope-uscite-asl": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-province": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   "siope-uscite-regioni": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
   vincitori: "2024-2026",

@@ -270,8 +270,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -285,8 +285,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -300,8 +300,8 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -315,8 +315,23 @@
         "holder": "Ragioneria Generale dello Stato · SIOPE",
         "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
         "publicationDate": null,
-        "acquisitionDate": "2026-09-06",
-        "checkedAt": "2026-09-06",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
+        "canonicalUrls": [
+          "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2024.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
+          "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2026.zip"
+        ]
+      },
+      "siope-uscite-asl": {
+        "holder": "Ragioneria Generale dello Stato · SIOPE",
+        "referencePeriod": "2024-2026; 2026 aggiornato fino al mese disponibile nel file nazionale",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
         "updateFrequency": "annuale per file SIOPE; il file dell'anno in corso e parziale",
         "canonicalUrls": [
           "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
@@ -617,16 +632,66 @@
       "sourceFields": [],
       "privateFields": [],
       "caveats": [
-        "Censimento SIOPE per tipo e anno: gli importi degli enti diversi da Province, Regioni e Città metropolitane non sono pubblicati come pagamenti.",
+        "Censimento SIOPE per tipo e anno: gli importi degli enti diversi da ASL, Province, Regioni e Città metropolitane non sono pubblicati come pagamenti.",
         "Zero indica un movimento osservato di importo zero; assenza di movimenti resta distinta da zero.",
         "Il file 2026 è un anno in corso e non va trattato come annualità completa."
       ],
       "expected": {
-        "bytes": 48836,
-        "sha256": "396cc496684e041790e7a454c7f8972c4abc14af1cd4760819a6fa5935c5e59e",
+        "bytes": 48857,
+        "sha256": "9f36b8b9c0d8671205d78b3dcc0c8481bdf95af2f93446dc1b25ee4b78606979",
         "rows": 201,
         "columns": 20,
         "headers": ["entityType", "year", "registryRows", "distinctSiopeCodes", "distinctTaxCodes", "validAtObservationCodes", "observedSiopeCodes", "withoutMovementsCodes", "observedMonths", "rawMovementRows", "knownAmountCents", "ipaMatched", "ipaUnmatched", "ipaAmbiguous", "ipaMatchedAmountCents", "ipaUnmatchedAmountCents", "ipaAmbiguousAmountCents", "coverageStatus", "coverageNote", "productStatus"]
+      }
+    },
+    {
+      "id": "siope-uscite-asl",
+      "title": "SIOPE: pagamenti delle ASL",
+      "domain": "public-spending",
+      "relativePath": "siope-uscite-asl.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "Solo enti di tipo ASL nel registro SIOPE: non rappresenta tutti gli enti del Servizio Sanitario Nazionale.",
+        "Importi in centesimi di euro: pagamenti di cassa, distinti dai costi di competenza economica del Conto Economico SSN. Le due misure non si sommano.",
+        "Comparto SAN: titleCode e titleLabel conservano il codice gestionale a quattro cifre e la sua descrizione ufficiale, non i titoli di bilancio degli enti territoriali.",
+        "Il join IPA usa esclusivamente il codice fiscale esatto e univoco. Le righe senza corrispondenza restano pubbliche con stato unmatched; i nomi non sono chiavi di join.",
+        "La sede legale non indica il destinatario del pagamento. Nessun consolidamento territoriale o indicatore di efficienza.",
+        "Il 2026 è parziale e revisionabile: sono pubblicati solo i mesi osservati, con il mese più recente potenzialmente incompleto.",
+        "Zero è un movimento osservato. Assenza di movimenti e fuori validità restano distinti da zero."
+      ],
+      "expected": {
+        "bytes": 90594836,
+        "sha256": "3c93c4a2069627bb4052594a53a9981615a8080b654391c5283cb57a21453348",
+        "rows": 334479,
+        "columns": 19,
+        "headers": [
+          "entityCode",
+          "taxCode",
+          "codiceIpa",
+          "entityType",
+          "entityName",
+          "validFrom",
+          "validTo",
+          "region",
+          "province",
+          "ipaJoinStatus",
+          "regionJoinStatus",
+          "year",
+          "month",
+          "managementCode",
+          "compartment",
+          "managementLabel",
+          "titleCode",
+          "titleLabel",
+          "amountCents"
+        ]
       }
     },
     {

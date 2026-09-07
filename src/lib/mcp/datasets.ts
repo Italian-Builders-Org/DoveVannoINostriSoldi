@@ -71,11 +71,13 @@ export async function queryPublicDataset(
       }));
     }
     case "siope_inventario_enti":
+    case "siope_asl":
     case "siope_province":
     case "siope_regioni":
     case "siope_citta_metropolitane": {
       const canonicalDatasetId = {
         siope_inventario_enti: "siope-inventario-enti",
+        siope_asl: "siope-uscite-asl",
         siope_province: "siope-uscite-province",
         siope_regioni: "siope-uscite-regioni",
         siope_citta_metropolitane: "siope-uscite-citta-metropolitane",

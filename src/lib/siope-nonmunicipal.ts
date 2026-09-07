@@ -10,6 +10,7 @@ import integratedReleaseProof from "../../data/source-ledger/release-proof.json"
 import inventoryReceipt from "../../data/source-ledger/datasets/siope-inventario-enti.receipt.json";
 import metroReceipt from "../../data/source-ledger/datasets/siope-uscite-citta-metropolitane.receipt.json";
 import provinceReceipt from "../../data/source-ledger/datasets/siope-uscite-province.receipt.json";
+import aslReceipt from "../../data/source-ledger/datasets/siope-uscite-asl.receipt.json";
 import regionReceipt from "../../data/source-ledger/datasets/siope-uscite-regioni.receipt.json";
 
 export type NonMunicipalYear = {
@@ -37,7 +38,7 @@ export type NonMunicipalYear = {
 export type SiopeNonMunicipalEntity = {
   codiceIpa: string;
   taxCode: string;
-  entityType: "PROVINCIA" | "REGIONE" | "CITTA_METROP";
+  entityType: "PROVINCIA" | "REGIONE" | "CITTA_METROP" | "ASL";
   entityName: string;
   includedCodes: readonly string[];
   years: readonly NonMunicipalYear[];
@@ -80,6 +81,7 @@ function assertReleaseBinding(value: Detail): void {
   }
   const receipts = {
     "siope-inventario-enti": inventoryReceipt,
+    "siope-uscite-asl": aslReceipt,
     "siope-uscite-citta-metropolitane": metroReceipt,
     "siope-uscite-province": provinceReceipt,
     "siope-uscite-regioni": regionReceipt,
@@ -99,7 +101,7 @@ export function assertSiopeNonMunicipalDetail(value: Detail): asserts value is D
   const ipa = new Set<string>();
   const entities = value.entities as SiopeNonMunicipalEntity[];
   for (const entity of entities) {
-    if (!/^[A-Za-z0-9_]+$/.test(entity.codiceIpa) || ipa.has(entity.codiceIpa) || !/^\d{11}$/.test(entity.taxCode) || !["PROVINCIA", "REGIONE", "CITTA_METROP"].includes(entity.entityType) || !entity.entityName || !Array.isArray(entity.includedCodes) || entity.includedCodes.length === 0 || [...entity.includedCodes].join("\n") !== [...new Set(entity.includedCodes)].sort().join("\n") || !Array.isArray(entity.years) || entity.years.length !== 3 || entity.years.map((year: NonMunicipalYear) => year.year).join(",") !== "2026,2025,2024") throw new Error("SIOPE non comunale: identità non valida");
+    if (!/^[A-Za-z0-9_]+$/.test(entity.codiceIpa) || ipa.has(entity.codiceIpa) || !/^\d{11}$/.test(entity.taxCode) || !["PROVINCIA", "REGIONE", "CITTA_METROP", "ASL"].includes(entity.entityType) || !entity.entityName || !Array.isArray(entity.includedCodes) || entity.includedCodes.length === 0 || [...entity.includedCodes].join("\n") !== [...new Set(entity.includedCodes)].sort().join("\n") || !Array.isArray(entity.years) || entity.years.length !== 3 || entity.years.map((year: NonMunicipalYear) => year.year).join(",") !== "2026,2025,2024") throw new Error("SIOPE non comunale: identità non valida");
     ipa.add(entity.codiceIpa);
     for (const year of entity.years) {
       const provenance = year.provenance as NonMunicipalYear["provenance"] & Record<string, unknown>;
@@ -126,6 +128,7 @@ export const siopeNonMunicipalReleaseId = detail.releaseId;
 export const siopeNonMunicipalEntities = detail.entities;
 
 export function getSiopeNonMunicipalTypeLabel(entity: SiopeNonMunicipalEntity): string {
+  if (entity.entityType === "ASL") return "Azienda sanitaria locale";
   if (entity.entityType === "CITTA_METROP") return "Città metropolitana";
   if (entity.entityType === "PROVINCIA") return "Provincia";
   return /^provincia autonoma\b/i.test(entity.entityName) ? "Provincia autonoma" : "Regione";

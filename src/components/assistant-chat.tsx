@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { AssistantVoice } from "@/components/assistant-voice";
 import {
   ASSISTANT_EXAMPLES,
   ASSISTANT_MAX_PROMPT_CHARS,
@@ -187,9 +188,12 @@ export function AssistantChat() {
           <span id="assistant-help">Niente cronologia, account o provider AI: la domanda viene interpretata da regole allowlisted.</span>
           <span id="assistant-count">{prompt.length}/{ASSISTANT_MAX_PROMPT_CHARS}</span>
         </div>
-        <button className="btn" type="submit" disabled={loading || prompt.trim().length === 0}>
-          {loading ? "Controllo la fonte…" : "Cerca nei dati"}
-        </button>
+        <div className={styles.formActions}>
+          <button className="btn" type="submit" disabled={loading || prompt.trim().length === 0}>
+            {loading ? "Controllo la fonte…" : "Cerca nei dati"}
+          </button>
+          <AssistantVoice disabled={loading} onConfirm={setPrompt} />
+        </div>
       </form>
 
       <div className={styles.examples} aria-label="Esempi di domande">

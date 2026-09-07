@@ -3,7 +3,7 @@ import { AssistantChat } from "@/components/assistant-chat";
 
 export const metadata: Metadata = {
   title: "Assistente sui dati pubblici",
-  description: "Domande testuali deterministiche sui dati pubblici già verificati dal portale.",
+  description: "Domande sui dati pubblici verificati, con testo e dettatura locale nei browser compatibili.",
 };
 
 export default function AssistantPage() {
@@ -12,7 +12,7 @@ export default function AssistantPage() {
       <header className="page-intro">
         <h1>Assistente sui dati pubblici</h1>
         <p>
-          Una prima interfaccia testuale, deterministica e in sola lettura. Non genera analisi con
+          Un assistente deterministico e in sola lettura, con dettatura locale nei browser compatibili. Non genera analisi con
           un modello AI: riconosce solo poche domande esplicite e riusa gli stessi adapter verificati
           del sito e dell’MCP.
         </p>
@@ -23,9 +23,10 @@ export default function AssistantPage() {
       <section className="panel" aria-labelledby="assistant-boundary-title">
         <h2 id="assistant-boundary-title">Cosa non fa ancora</h2>
         <p>
-          Non supporta voce, chat con memoria, domande sul singolo Comune, classifiche, spiegazioni
-          causali o accuse di frode e corruzione. La voce e un eventuale provider AI potranno essere
-          valutati in una fase separata, con consenso, retention e controlli privacy documentati.
+          Non supporta chat con memoria, domande sul singolo Comune, classifiche, spiegazioni
+          causali o accuse di frode e corruzione. Non usa un provider AI per interpretare le domande.
+          La dettatura richiede il supporto locale dell’italiano nel browser: puoi sempre scrivere
+          la domanda e controllare il testo prima di inviarlo.
         </p>
         <p>
           Le richieste non vengono salvate dall’applicazione e il testo non viene scritto nei log

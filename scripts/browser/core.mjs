@@ -2247,7 +2247,7 @@ try {
       validate: async (page) => {
         const text = await bodyText(page);
         assertTextMatches(text, /Assistente sui dati pubblici/i, label);
-        assertTextMatches(text, /deterministica e in sola lettura/i, label);
+        assertTextMatches(text, /deterministico e in sola lettura/i, label);
         assert.ok(await page.$("#assistant-prompt"), `${label}: campo domanda assente`);
         assert.ok(await page.$('main form button[type="submit"]'), `${label}: invio assente`);
       },

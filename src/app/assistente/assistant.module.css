@@ -11,7 +11,8 @@
 
 .form { display: grid; gap: var(--space-2); }
 .form label { font-weight: 700; }
-.form textarea {
+.form textarea,
+.voiceDraft textarea {
   width: 100%;
   min-height: 94px;
   padding: 12px 14px;
@@ -30,6 +31,7 @@
 }
 .formMeta span:first-child { max-width: 80ch; }
 .form button { justify-self: start; margin-top: var(--space-2); }
+.formActions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 
 .examples {
   display: flex;
@@ -94,3 +96,13 @@
 .comparison > h3 { margin: 0; }
 .comparisonYears { display: grid; gap: var(--space-6); margin-top: var(--space-6); }
 .comparisonYears .answer { min-width: 0; }
+
+.voiceDialog { width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: var(--space-5); overflow-y: auto; border: 1px solid var(--color-neutral-400); background: var(--color-raised); color: var(--color-text); }
+.voiceDialog::backdrop { background: rgb(32 30 29 / .55); }
+.voiceHeader { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); }
+.voiceHeader h2 { margin: 0; }
+.voiceDialog button { min-height: 44px; white-space: normal; }
+.voiceStatus { padding: var(--space-3); border: 1px solid var(--color-neutral-300); }
+.voiceDraft { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+.voiceDraft label { font-weight: 700; }
+.voiceDraft p { margin: 0; font-size: 12px; }

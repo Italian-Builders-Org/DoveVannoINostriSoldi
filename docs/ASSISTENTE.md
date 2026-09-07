@@ -54,15 +54,48 @@ fallisce o il territorio/anno restituito non coincide, l’intera risposta è
 - nessuna persistenza, cronologia, analytics applicativa o logging del testo;
 - richieste su frode, corruzione, evasione o responsabilità individuale vengono rifiutate con una
   spiegazione non accusatoria;
-- richieste ambigue, classifiche, singoli Comuni, voce e provider AI producono esempi, non stime.
+- richieste ambigue, classifiche, singoli Comuni e provider AI producono esempi, non stime.
 
 Il route handler applica i limiti di durata e body, un rate limit in memoria di 30 richieste
 al minuto per indirizzo e massimo 4 richieste concorrenti. Questi controlli sono locali
 all’istanza: non sono un rate limit distribuito e non sostituiscono una regola edge/WAF
 per rate limiting e abuse prevention.
 
+## Dettatura locale — issue #17
+
+La voce è progressive enhancement della stessa domanda testuale. “Detta la domanda” apre
+un dialog nativo nominato, senza avviare il microfono. Il browser deve esporre
+`SpeechRecognition.available({ langs: ["it-IT"], processLocally: true })` e la proprietà
+`processLocally`: in assenza del supporto locale, resta la scrittura manuale. Nessun fallback
+a riconoscimento remoto o API prefissate legacy. Il supporto è ancora sperimentale e dipende
+da browser, lingua, dispositivo e Permissions Policy; non viene promesso per tutti i browser.
+
+Il download del pacchetto italiano richiede un pulsante separato: è gestito dal browser,
+contatta il suo servizio e può proseguire se il dialog viene chiuso. L’installazione non
+attiva il microfono. Solo “Inizia dettatura” chiama `start()`, dopo aver imposto
+`processLocally = true`, `lang = it-IT`, `continuous = false` e `interimResults = false`.
+La sessione termina entro 30 secondi; “Termina dettatura” concede al browser al massimo
+3 secondi per l’ultimo risultato. Escape, chiusura, pagina nascosta e unmount interrompono
+la sessione e scartano la bozza. Callback tardive non possono ripristinarla.
+
+La trascrizione finale è modificabile. Oltre 500 caratteri, la UI segnala che non ha acquisito
+la parte finale e impedisce la conferma finché il testo non rientra nel limite. “Usa questo
+testo” sostituisce la domanda, senza inviarla; solo “Cerca nei dati” chiama la route esistente,
+con i medesimi rate limit, validazione, fonti e calcoli. Nessuna cattura di audio tramite
+MediaRecorder, upload, storage, telemetria o log di audio/trascrizioni. La privacy pubblica
+descrive questa sequenza. La chiusura restituisce il focus al pulsante di apertura.
+
+Riferimenti API: [elaborazione locale](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/processLocally),
+[disponibilità](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/available_static),
+[pacchetti del browser](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/install_static).
+
+Verifica: `node --experimental-strip-types --test tests/assistant-voice.test.mjs` e
+`npm run test:browser:voice` con `DVNS_BASE_URL` su un server locale. I casi browser con
+riconoscimento simulato verificano transizioni, conferma, rete, responsive e tastiera;
+non misurano accuratezza della trascrizione o funzionamento di un microfono fisico.
+
 ## Evoluzione futura
 
-Voce, provider LLM, memoria conversazionale e analisi aggregate delle domande richiederebbero una
+ASR remoto, provider LLM, memoria conversazionale e analisi aggregate delle domande richiederebbero una
 nuova valutazione di consenso, minimizzazione, retention, opt-out, audit e parità delle risposte.
-Non fanno parte di questa tranche.
+Non fanno parte di questa tranche; la issue #17 resta aperta per le fasi ulteriori già discusse.

@@ -83,6 +83,10 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+echo "::group::Browser assistant voice suite"
+npm run test:browser:voice
+echo "::endgroup::"
+
 echo "::group::Browser navigation suite"
 npm run test:browser:navigation
 echo "::endgroup::"

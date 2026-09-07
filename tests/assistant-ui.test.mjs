@@ -6,7 +6,7 @@ async function source(path) {
   return readFile(new URL(path, import.meta.url), "utf8");
 }
 
-test("assistant UI is a separate accessible text-only surface", async () => {
+test("assistant UI keeps its accessible deterministic text surface", async () => {
   const [page, component, css, navigation] = await Promise.all([
     source("../src/app/assistente/page.tsx"),
     source("../src/components/assistant-chat.tsx"),
@@ -28,7 +28,7 @@ test("assistant UI is a separate accessible text-only surface", async () => {
 
 test("assistant UI keeps narrow controls inside the viewport", async () => {
   const css = await source("../src/app/assistente/assistant.module.css");
-  assert.match(css, /\.form textarea \{[\s\S]*?width: 100%;/);
+  assert.match(css, /\.form textarea,[\s\S]*?width: 100%;/);
   assert.match(css, /overflow-wrap: anywhere/);
   assert.match(css, /\.form button \{ justify-self: start/);
   assert.match(css, /\.example \{[\s\S]*?min-height: 44px;/);

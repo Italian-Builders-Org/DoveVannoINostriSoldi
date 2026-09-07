@@ -74,13 +74,23 @@ export default function PrivacyPage() {
       </section>
 
       <section className="panel">
-        <h2 className="panel-title">Assistente testuale del portale</h2>
+        <h2 className="panel-title">Assistente del portale e dettatura</h2>
         <p>
           L&apos;assistente deterministico in <a href="/assistente">/assistente</a> interpreta solo
           poche domande allowlisted e interroga direttamente gli adapter read-only. Il testo della
           domanda non viene salvato, inserito in una cronologia o scritto nei log applicativi; la
-          versione attuale non usa voce, modelli linguistici o analytics sulle domande. Restano
+          versione attuale non usa provider AI o analytics sulle domande. Restano
           possibili i log tecnici del provider di hosting descritti sopra.
+        </p>
+        <p>
+          La dettatura facoltativa usa il riconoscimento locale del browser, quando disponibile per
+          l’italiano. Il microfono richiede un’azione esplicita e il permesso del browser; si ferma
+          entro 30 secondi, alla chiusura della finestra o quando lasci la pagina. L’applicazione
+          non registra né invia audio e non usa un servizio remoto di trascrizione. Il testo resta
+          nella pagina per essere modificato: “Usa questo testo” lo copia nella domanda, “Cerca nei
+          dati” lo invia all’assistente. Resta nella memoria della pagina, senza un archivio delle domande.
+          L’eventuale pacchetto italiano viene scaricato e gestito dal browser solo su tua richiesta;
+          il download contatta il servizio del browser e può proseguire dopo la chiusura della finestra.
         </p>
       </section>
 

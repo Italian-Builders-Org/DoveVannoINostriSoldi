@@ -1462,7 +1462,7 @@ try {
     validate: async (page) => {
       const text = await page.$eval("#pagamenti-siope", (element) => element.innerText);
       assert.match(text, /Fuori dal periodo di validità dell'ente/);
-      assert.doesNotMatch(text, /Totale pagato nel periodo/);
+      assert.doesNotMatch(text, /Totale pagato nel periodo|Periodo parziale|Annualità completa/);
     },
   });
   completed.push("ASL nuova fuori validità nel 2024 390px");

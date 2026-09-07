@@ -173,3 +173,15 @@ test('native planning rejects unexpected tools and parallel tool calls',async()=
     await assert.rejects(completeProviderText(connection,'System',messages,{signal:signal(),toolSchema:{type:'object'},fetcher:async()=>Response.json({status:'completed',output:calls})}),AiProviderError);
   }
 });
+
+
+test('MEF chat evidence expresses exact euros while preserving partial cells and provenance',async()=>{
+  const {projectChatEvidence}=await import('../src/lib/assistant/evidence-projection.ts');
+  const source={period:{taxYear:2024},provenance:{sha:'fixture'},rows:[{coverage:'complete',frequency:0,amountCents:0},{coverage:'complete',frequency:3,amountCents:-101},{coverage:'partial',knownFrequency:9,knownAmountCents:22380895862000,suppressedRows:2}]};
+  const untouched=structuredClone(source);
+  const projected=projectChatEvidence({dataset:'mef_irpef_comunale'},source);
+  assert.deepEqual(projected.rows,[{coverage:'complete',frequency:0,amountEuros:'0.00'},{coverage:'complete',frequency:3,amountEuros:'-1.01'},{coverage:'partial',knownFrequency:9,knownAmountEuros:'223808958620.00',suppressedRows:2}]);
+  assert.deepEqual(source,untouched);assert.deepEqual(projected.provenance,source.provenance);assert.deepEqual(projected.period,source.period);
+  assert.throws(()=>projectChatEvidence({dataset:'mef_irpef_comunale'},{amountCents:1.5}));
+  assert.deepEqual(projectChatEvidence({dataset:'other'},source),source);
+});

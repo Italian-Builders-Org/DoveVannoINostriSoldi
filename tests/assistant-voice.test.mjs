@@ -171,12 +171,12 @@ test("availability timeout stays failed after a late success", async (t) => {
   assert.equal(s.latest().status, "error");
 });
 
-test("long transcripts stay bounded and distinguish overflow from a valid prompt", async (t) => {
+test("long transcripts remain intact for review instead of silently truncating", async (t) => {
   const s = setup(t);
   await s.session.check(); s.session.start();
   s.instances[0].result("a".repeat(100_000));
   s.instances[0].onend();
-  assert.equal(s.latest().transcript.length, 501);
+  assert.equal(s.latest().transcript.length, 100_000);
 });
 
 test("failed and timed-out pack installation never enables recording", async (t) => {

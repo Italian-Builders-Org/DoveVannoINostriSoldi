@@ -296,6 +296,7 @@ nav li a { text-decoration: none; }
 .sidebar-toolbar { display: flex; align-items: center; justify-content: space-between; flex: none; padding: 8px 12px; }
 .sidebar-heading { margin: 0; font-size: 14px; font-weight: 700; }
 .desktop-sidebar { display: none; }
+.sidebar-callout { flex: none; padding: 12px; }
 .primary-nav { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 20px; }
 .primary-nav-list, .nav-submenu { margin: 0; padding: 0; list-style: none; }
 .nav-item { display: grid; grid-template-columns: minmax(0, 1fr) 44px; position: relative; }
@@ -388,6 +389,7 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
   }
   .desktop-sidebar .primary-nav { flex: 1; }
   .desktop-sidebar[data-collapsed="true"] .sidebar-toolbar { padding-inline: 12px; }
+  .desktop-sidebar[data-collapsed="true"] .sidebar-callout { padding-inline: 11px; }
   .desktop-sidebar[data-collapsed="true"] .sidebar-heading,
   .desktop-sidebar[data-collapsed="true"] .sidebar-group,
   .desktop-sidebar[data-collapsed="true"] .nav-item-toggle { display: none; }

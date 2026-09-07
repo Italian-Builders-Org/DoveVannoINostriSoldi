@@ -1,7 +1,7 @@
 /** Bounded, in-memory attachment representation shared by browser and API. */
-export const ATTACHMENT_MAX_FILES = 3;
-export const ATTACHMENT_MAX_FILE_BYTES = 5 * 1024 * 1024;
-export const ATTACHMENT_MAX_TEXT_CHARS = 24_000;
+export const ATTACHMENT_MAX_FILES = 8;
+export const ATTACHMENT_MAX_FILE_BYTES = 10 * 1024 * 1024;
+export const ATTACHMENT_MAX_TEXT_CHARS = 80_000;
 export const ATTACHMENT_MAX_IMAGE_CHARS = 450_000;
 export const ATTACHMENT_MAX_PIXELS = 1536;
 export const ATTACHMENT_PARSE_TIMEOUT_MS = 15_000;

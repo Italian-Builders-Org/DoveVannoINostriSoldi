@@ -8,6 +8,7 @@ export type AttachmentDraft = { id: number; name: string; file?: AiAttachment; e
 export function useAssistantAttachments() {
   const [items, setItems] = useState<AttachmentDraft[]>([]);
   const [error, setError] = useState("");
+  const [noticeVersion, setNoticeVersion] = useState(0);
   const current = useRef<AttachmentDraft[]>([]);
   const jobs = useRef(new Map<number, AbortController>());
   const next = useRef(0);
@@ -28,7 +29,7 @@ export function useAssistantAttachments() {
   }
   function add(files: readonly File[]) {
     setError("");
-    if (files.length + current.current.length > ATTACHMENT_MAX_FILES) { setError("Puoi allegare fino a 3 file per messaggio. Rimuovine uno o scegli meno file."); return; }
+    if (files.length + current.current.length > ATTACHMENT_MAX_FILES) { notifyLimit(); return false; }
     for (const file of files) {
       const id = next.current++;
       const controller = new AbortController(); jobs.current.set(id, controller);
@@ -41,13 +42,18 @@ export function useAssistantAttachments() {
       }).then((prepared) => {
         if (controller.signal.aborted) return;
         const ready = current.current.flatMap((item) => item.file ? [item.file] : []);
-        if (attachmentTextSize([...ready, prepared]) > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Gli allegati insieme superano 24.000 caratteri. Rimuovi un file o usa estratti più brevi.");
+        if (attachmentTextSize([...ready, prepared]) > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Gli allegati insieme superano 80.000 caratteri. Rimuovi un file o usa estratti più brevi.");
         update(current.current.map((item) => item.id === id ? { id, name: file.name, file: prepared, progress: 100 } : item));
       }).catch((failure: unknown) => {
         if (!controller.signal.aborted) update(current.current.map((item) => item.id === id ? { id, name: file.name, error: failure instanceof Error ? failure.message : "Non riesco a leggere il file." } : item));
       }).finally(() => jobs.current.delete(id));
       queue.current = work;
     }
+    return true;
   }
-  return { items, error, add, remove, clear, ready: items.flatMap((item) => item.file ? [item.file] : []), blocked: items.some((item) => !item.file) };
+  function notifyLimit() {
+    setError("Puoi allegare fino a 8 file per messaggio. Rimuovine uno o scegli meno file.");
+    setNoticeVersion((version) => version + 1);
+  }
+  return { items, error, noticeVersion, notifyLimit, add, remove, clear, ready: items.flatMap((item) => item.file ? [item.file] : []), blocked: items.some((item) => !item.file) };
 }

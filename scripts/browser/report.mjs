@@ -19,7 +19,7 @@ import {
 
 const baseUrl = defaultBaseUrl();
 const ENDPOINT = "/api/segnalazioni";
-const TRIGGER = 'button[data-report-problem-trigger="floating"]';
+const TRIGGER = 'button[data-report-problem-trigger="sidebar"]';
 const INLINE_TRIGGER = 'button[data-report-problem-trigger="inline"]';
 const DIALOG = "dialog[open]";
 const ISSUE_URL = "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/4242";
@@ -85,7 +85,19 @@ async function activateUntilOpen(page, activate, label) {
   assert.fail(`${label}: il dialog non si apre dopo ripetute attivazioni`);
 }
 
+async function sidebarTrigger(page) {
+  const desktop = await page.$eval('.desktop-sidebar',el=>el.getBoundingClientRect().width>0);
+  if (desktop) return '.desktop-sidebar '+TRIGGER;
+  for(let attempt=0;attempt<5&&!await page.$('#mobile-navigation[open]');attempt++){
+    await page.click('.mobile-menu-trigger');
+    await page.waitForSelector('#mobile-navigation[open]',{timeout:2000}).catch(()=>{});
+  }
+  await page.waitForSelector('#mobile-navigation[open]');
+  return '#mobile-navigation '+TRIGGER;
+}
+
 async function openDialog(page, { label, selector = TRIGGER }) {
+  if (selector === TRIGGER) selector = await sidebarTrigger(page);
   await page.waitForSelector(selector, { visible: true });
   await activateUntilOpen(page, () => page.click(selector), label);
   const state = await dialogState(page);
@@ -153,37 +165,44 @@ try {
       width,
       validate: async (page) => {
         const label = `${width}px`;
-        const trigger = await triggerGeometry(page, TRIGGER);
+        const selector = await sidebarTrigger(page);
+        const trigger = await triggerGeometry(page, selector);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
         assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);
-        assert.equal(trigger.text, "Segnala un problema", `${label}: etichetta visivamente nascosta`);
+        assert.ok(trigger.text.includes("Qualcosa non torna?"), `${label}: messaggio della card`);
         assert.ok(trigger.height >= 44, `${label}: area di tocco ${trigger.height}px < 44px`);
-        assert.ok(trigger.width <= 48, `${label}: il trigger globale deve restare un'icona (${trigger.width}px)`);
+        assert.ok(trigger.width > 100, `${label}: la card deve essere leggibile`);
         assert.ok(trigger.left >= 0 && trigger.right <= trigger.innerWidth + 1, `${label}: trigger fuori viewport`);
         assert.ok(trigger.bottom <= trigger.innerHeight + 1, `${label}: trigger sotto il viewport`);
 
-        const overlap = await page.evaluate((sel) => {
-          const button = document.querySelector(sel);
-          const rect = button.getBoundingClientRect();
-          const probe = document.elementFromPoint(rect.left - 8, rect.top + rect.height / 2);
-          return probe ? !button.contains(probe) : true;
-        }, TRIGGER);
-        assert.equal(overlap, true, `${label}: il trigger non deve estendersi oltre il proprio bordo`);
-
-        // Keyboard: the trigger is focusable and opens with Enter; Esc closes and returns focus.
+        // Keyboard opens the report; mobile navigation closes first.
         await activateUntilOpen(page, async () => {
-          await page.focus(TRIGGER);
+          await page.focus(selector);
           await page.keyboard.press("Enter");
         }, label);
         const opened = await dialogState(page);
         assert.equal(opened.containsFocus, true, `${label}: focus non nel dialog`);
-        assert.equal(await page.$eval(TRIGGER, (node) => node.getAttribute("aria-expanded")), "true");
-
+        assert.equal(await page.$eval(selector, node => node.getAttribute("aria-expanded")), "true");
+        assert.equal(await page.$('#mobile-navigation[open]'),null);
         await page.keyboard.press("Escape");
         await page.waitForSelector(DIALOG, { hidden: true });
-        const focusBack = await page.evaluate((sel) => document.activeElement === document.querySelector(sel), TRIGGER);
-        assert.equal(focusBack, true, `${label}: dopo Esc il focus deve tornare al trigger`);
-        assert.equal(await page.$eval(TRIGGER, (node) => node.getAttribute("aria-expanded")), "false");
+        const focusSelector = selector.startsWith('#mobile') ? '.mobile-menu-trigger' : selector;
+        const focusBack = await page.evaluate(sel => document.activeElement === document.querySelector(sel), focusSelector);
+        assert.equal(focusBack, true, `${label}: dopo Esc il focus deve tornare al controllo visibile`);
+        assert.equal(await page.$eval(selector, node => node.getAttribute("aria-expanded")), "false");
+        if (width === 1280) {
+          await page.click('button[aria-label="Riduci menu a icone"]');
+          await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
+          const compact = await triggerGeometry(page, selector);
+          assert.ok(compact.width>=44 && compact.width<=56, JSON.stringify(compact));
+          await openDialog(page,{label:'sidebar compatta'});await page.keyboard.press('Escape');
+          await page.waitForSelector(DIALOG,{hidden:true});
+          await openDialog(page,{label:'cambio viewport con segnalazione aperta'});
+          await page.setViewport({width:390,height:844});await page.keyboard.press('Escape');
+          await page.waitForSelector(DIALOG,{hidden:true});
+          await page.waitForFunction(()=>document.activeElement?.classList.contains('mobile-menu-trigger'));
+        }
+
       },
     });
   }

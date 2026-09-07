@@ -85,6 +85,8 @@ Seleziona fino a ${AI_MAX_QUERIES} query pertinenti nel catalogo. Puoi usare due
 Chiama lo strumento query_dvns con queries, clarification e needsReasoning.
 Attiva needsReasoning soltanto se la risposta richiede calcoli a più passaggi, riconciliare incongruenze o confronti complessi. Per letture, somme semplici e riassunti usa false.
 Usa soltanto filtri dichiarati per il dataset. Massimo 5 righe per query; niente cursori; offset massimo 100.
+Per contribuenti, reddito complessivo e totali IRPEF territoriali usa mef_irpef_comunale, detail: "summary", level coerente e filtro region, province o code. mef_irpef_dettaglio serve agli incroci per classi di reddito, età o sesso e non offre un filtro per una specifica regione: le prime righe non rappresentano un totale territoriale.
+Se il catalogo non offre un filtro per il territorio richiesto, non interpretare le prime righe come risposta territoriale.
 Se bastano gli allegati, restituisci queries: [] e clarification: "": la fase successiva risponderà leggendo i file.
 Se la domanda non è coperta e non ci sono allegati utili, o richiede un chiarimento, restituisci queries: [] e una breve spiegazione senza cifre inventate.
 Catalogo verificato dall'applicazione: ${JSON.stringify(catalogForModel)}.
@@ -124,8 +126,8 @@ Compila gli argomenti dello strumento: queries è un array, clarification una st
     return answer("Questa ricerca produce troppi dati per una risposta affidabile. Restringi la domanda a un territorio, periodo o ente.", results.map((result) => result.source));
   }
   // Source content is supplied as data in a user message, never promoted to instructions.
-  const reasoning = plan.needsReasoning ? "medium" : "none";
-  const deeper = connection.provider === "openrouter" && connection.model === "openai/gpt-5.6-luna" && plan.needsReasoning;
+  const reasoning = connection.reasoning && connection.reasoning !== "auto" ? connection.reasoning : plan.needsReasoning ? "medium" : "none";
+  const deeper = connection.provider === "openrouter" && connection.model === "openai/gpt-5.6-luna" && reasoning === "medium";
   activity({ id: "answer", label: deeper ? "Analisi approfondita" : "Preparo la risposta", status: "running" });
   const text = await completeProviderText(connection, DVNS_AI_SYSTEM_PROMPT, [
     ...safeMessages,

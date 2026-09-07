@@ -49,7 +49,50 @@ La chiave è stata scollegata al termine. I test automatici successivi non la us
 
 `npm run test:browser:attachments` verifica estrazione effettiva dei sei formati
 PDF/DOCX/XLSX/PNG/TXT/MD, anteprima, conservazione nei messaggi, modifica e
-rigenerazione, limiti ed errori a 320, 390, 768 e 1280 px. Le risposte AI di questa
-suite sono simulate. La finestra 768x700 copre anche il difetto del footer che si
+rigenerazione, limiti ed errori a 320, 390, 743, 768, 983 e 1280 px. Le risposte AI di questa
+suite sono simulate. Le finestre intermedie alte 695 px coprono anche il difetto del footer che si
 sovrapponeva ai suggerimenti quando crescevano prompt e allegati.
 Screenshot: `artifacts/browser/assistant-attachments-<larghezza>-*.png`.
+
+
+## Ulteriori prove reali e correzioni
+
+Il 7 settembre sono state completate nel browser integrato anche queste prove:
+
+- SIOPE 2024, modalità automatica/rapida: 109.473.053.743,63 euro e conteggi di copertura
+  confrontati con l’output effettivo dell’adapter.
+- Sei allegati insieme (PDF, DOCX, XLSX, PNG, TXT, Markdown): cifre coerenti,
+  omissioni del Word riconosciute, percentuali 75% e 50%, totale ponderato 65%.
+- IRPEF Lombardia, modalità approfondita e rapida: entrambe riportano 7.607.245
+  contribuenti e 223.808.958.620 euro, anno d’imposta 2024 e dichiarazione 2025.
+  I due valori sono stati confrontati con `queryPublicDataset`, senza chiamate AI.
+
+Le prime due prove IRPEF hanno rilevato problemi: scelta di una tabella di dettaglio
+senza filtro regionale, poi lettura dei centesimi come euro. Sono stati corretti
+il contesto del pianificatore e la proiezione monetaria dedicata alla chat. Le due
+risposte finali sopra sono successive alle correzioni. Gli snapshot pubblici e il
+contratto MCP restano invariati.
+
+Le modalità sono parametri richiesti a OpenRouter (`none` e `medium`), verificati
+anche nei test del protocollo; non è stata misurata la quantità effettiva di token
+di ragionamento. Le chiavi sono state rimosse dalle schede dopo le prove.
+
+La suite allegati verifica otto file, rifiuto del nono, anteprime, riduzione del
+contesto, incolla oltre 8.000 caratteri trasformato in TXT e campo a scorrimento
+interno oltre il limite. La dettatura conserva il testo riconosciuto senza
+troncamento silenzioso. Il modulo di segnalazione viene verificato nella sidebar,
+in modalità compatta, nel menu mobile e durante un cambio di viewport.
+
+## Confronto desktop per la PR
+
+Entrambe le immagini sono catture del browser a 1440 × 1000, scala 1.
+Il Prima è la pagina pubblica acquisita il 7 settembre prima del merge; il Dopo
+è la pagina iniziale del nuovo assistente nella build di produzione locale.
+
+### Prima
+
+![Assistente prima della modifica](screenshots/assistant-before-desktop.png)
+
+### Dopo
+
+![Assistente dopo la modifica](screenshots/assistant-after-desktop.png)

@@ -19,17 +19,19 @@ export const AI_PROVIDERS = {
   },
 } as const;
 export type AiProvider = keyof typeof AI_PROVIDERS;
-export type AiConnection = { provider: AiProvider; model: string; apiKey: string };
+export type AiReasoning = "auto" | "none" | "medium";
+export type AiConnection = { provider: AiProvider; model: string; apiKey: string; reasoning?: AiReasoning };
 export type AiMessage = { role: "user" | "assistant"; content: string; attachments?: AiAttachment[] };
 export const AI_MAX_HISTORY_MESSAGES = 6;
 export const AI_MAX_HISTORY_CHARS = 16_000;
+export const AI_MAX_PROMPT_CHARS = 8_000;
 export const AI_MAX_TEXT_CHARS = 8_000;
 export const AI_MAX_OUTPUT_TOKENS = 2_048;
 export const AI_MAX_PROVIDER_RESPONSE_BYTES = 262_144;
 export const AI_MAX_EVIDENCE_CHARS = 24_000;
 export const AI_MAX_QUERIES = 2;
 export const AI_REQUEST_TIMEOUT_MS = 50_000;
-export const AI_REQUEST_MAX_BYTES = 1_600_000;
+export const AI_REQUEST_MAX_BYTES = 4_000_000;
 export const AI_MODEL_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,119}$/u;
 export const AI_KEY_PATTERN = /^[\x21-\x7E]{16,512}$/u;
 export type AiSource = { name: string; url: string; period?: string };

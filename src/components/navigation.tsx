@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HeaderSearch } from "@/components/header-search";
+import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
@@ -196,6 +197,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
           </button>
         </div>
         <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={collapsed} />
+        <div className="sidebar-callout"><ReportProblemButton variant="sidebar" compact={collapsed} /></div>
       </aside>
       <dialog id="mobile-navigation" className="mobile-navigation" ref={dialogRef} aria-labelledby="mobile-navigation-title"
         onClose={() => setDrawerOpen(false)}
@@ -226,6 +228,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
             </button>
           </div>
           {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
+          <div className="sidebar-callout"><ReportProblemButton variant="sidebar" onOpen={closeDrawer} restoreFocusRef={mobileTriggerRef} /></div>
         </div>
       </dialog>
     </>

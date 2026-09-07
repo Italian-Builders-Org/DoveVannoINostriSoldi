@@ -36,7 +36,7 @@ function textAttachment(file: File, bytes: ArrayBuffer, signal: AbortSignal): Pr
 export async function prepareAttachment(file: File, signal: AbortSignal, onProgress: (value: number) => void = () => undefined): Promise<AiAttachment> {
   const extension = `.${file.name.split(".").at(-1)?.toLowerCase()}`;
   if (!ATTACHMENT_ACCEPT.split(",").includes(extension)) throw new Error("Formato non supportato. Per Word usa DOCX; per gli altri documenti PDF, Excel o testo.");
-  if (!file.size || file.size > ATTACHMENT_MAX_FILE_BYTES) throw new Error("Ogni file deve contenere dati e pesare al massimo 5 MB.");
+  if (!file.size || file.size > ATTACHMENT_MAX_FILE_BYTES) throw new Error("Ogni file deve contenere dati e pesare al massimo 10 MB.");
   if (!file.name.trim() || file.name.length > 180 || /[\u0000-\u001F\u007F]/u.test(file.name)) throw new Error("Rinomina il file con un nome breve e leggibile.");
   const deadline = AbortSignal.timeout(ATTACHMENT_PARSE_TIMEOUT_MS);
   const bounded = AbortSignal.any([signal, deadline]);

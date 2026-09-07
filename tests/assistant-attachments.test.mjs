@@ -20,16 +20,16 @@ for(const provider of ['openai','anthropic','openrouter'])test(`Attachments use 
   else if(provider==='openai')assert.equal(message.content[1].image_url,'data:image/jpeg;base64,'+image.data);
   else assert.equal(message.content[1].image_url.url,'data:image/jpeg;base64,'+image.data);
 });
-for(const needsReasoning of [false,true])test(`Luna reasoning ${needsReasoning?'medium':'none'} follows planning and attachment-only answers preserve provenance`,async()=>{
+for(const [needsReasoning,reasoning,effort] of [[false,'auto','none'],[true,'auto','medium'],[false,'medium','medium'],[true,'none','none']])test(`Luna reasoning ${reasoning} with plan ${needsReasoning} requests ${effort} and preserves attachment provenance`,async()=>{
   const requests=[],activities=[];
   const fetcher=async(url,init)=>{
     const body=JSON.parse(init.body);requests.push(body);
     return Response.json({choices:[{finish_reason:requests.length===1?'tool_calls':'stop',message:requests.length===1?{tool_calls:[{type:'function',function:{name:'query_dvns',arguments:JSON.stringify({queries:[],clarification:'',needsReasoning})}}]}:{content:'Dati sintetici: pagato il 75%.'}}]});
   };
-  const result=await executeByokChat({provider:'openrouter',model:'openai/gpt-5.6-luna',apiKey:'test-only-key'},[{role:'user',content:'Leggi e calcola',attachments:[file]}],{signal:new AbortController().signal,fetcher,onActivity:a=>activities.push(a),queryDataset:()=>assert.fail('Attachment-only task must not query a dataset')});
-  assert.equal(requests.length,2);assert.deepEqual(requests[0].reasoning,{effort:'none',exclude:true});assert.deepEqual(requests[1].reasoning,{effort:needsReasoning?'medium':'none',exclude:true});
+  const result=await executeByokChat({provider:'openrouter',model:'openai/gpt-5.6-luna',apiKey:'test-only-key',reasoning},[{role:'user',content:'Leggi e calcola',attachments:[file]}],{signal:new AbortController().signal,fetcher,onActivity:a=>activities.push(a),queryDataset:()=>assert.fail('Attachment-only task must not query a dataset')});
+  assert.equal(requests.length,2);assert.deepEqual(requests[0].reasoning,{effort:'none',exclude:true});assert.deepEqual(requests[1].reasoning,{effort,exclude:true});
   assert.deepEqual(result.evidence,[]);assert.match(result.text,/75%/);
   assert.equal(activities[0].id,'attachments');assert.deepEqual(activities[0].resources,['nota.txt']);
-  assert.equal(activities.find(a=>a.id==='answer'&&a.status==='running').label,needsReasoning?'Analisi approfondita':'Preparo la risposta');
+  assert.equal(activities.find(a=>a.id==='answer'&&a.status==='running').label,effort==='medium'?'Analisi approfondita':'Preparo la risposta');
   assert.match(requests[1].messages[0].content,/non fidati/);
 });

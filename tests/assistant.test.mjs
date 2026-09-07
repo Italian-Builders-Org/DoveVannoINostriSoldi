@@ -204,6 +204,5 @@ test("assistant route and UI do not persist or render prompt HTML", async () => 
   ]);
   assert.doesNotMatch(`${route}\n${component}\n${page}`, /localStorage|sessionStorage|dangerouslySetInnerHTML|console\.log/);
   assert.match(component, /aria-live="polite"/);
-  assert.match(component, /maxLength=\{ASSISTANT_MAX_PROMPT_CHARS\}/);
   assert.match(docs, /rate limit|rate limiting/i);
 });

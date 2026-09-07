@@ -75,10 +75,10 @@ async function inspectVoice(page, width) {
   assert.equal(await page.evaluate(()=>window.__voiceTest.aborts),1);
   await open(page,"available");
   await page.waitForFunction(()=>window.__voiceTest.starts===1);
-  await page.evaluate(()=>window.__voiceTest.instance.onresult({results:[{isFinal:true,0:{transcript:"x".repeat(2000)}}]}));
+  await page.evaluate(()=>window.__voiceTest.instance.onresult({results:[{isFinal:true,0:{transcript:"x".repeat(9000)}}]}));
   await click(page,"Termina dettatura");
   await page.waitForFunction(()=>!document.querySelector('#assistant-prompt').readOnly);
-  assert.equal((await draft()).length,501);
+  assert.equal((await draft()).length,"Domanda precedente ".length+9000);
   assert.equal(await page.$eval('button[aria-label="Invia domanda"]',el=>el.disabled),true);
   await page.$eval(field,el=>{el.focus();el.select();});
   await page.keyboard.press("Backspace");

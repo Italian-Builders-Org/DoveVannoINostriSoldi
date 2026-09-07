@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { AI_KEY_PATTERN, AI_MODEL_PATTERN, AI_PROVIDERS, type AiConnection, type AiProvider } from "@/lib/assistant/byok-contracts";
+import { Cancel01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { AI_KEY_PATTERN, AI_MODEL_PATTERN, AI_PROVIDERS, type AiConnection, type AiProvider, type AiReasoning } from "@/lib/assistant/byok-contracts";
 import styles from "@/app/assistente/assistant.module.css";
 
 export function AssistantProviderSettings({ connection, onSave, onClose }: {
@@ -13,6 +13,8 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
   const keyField = useRef<HTMLInputElement>(null);
   const [provider, setProvider] = useState<AiProvider>(connection?.provider ?? "openrouter");
   const [model, setModel] = useState<string>(connection?.model ?? AI_PROVIDERS.openrouter.defaultModel);
+  const [reasoning, setReasoning] = useState<AiReasoning>(connection?.reasoning ?? "auto");
+  const supportsReasoning = provider === "openrouter" && model.trim() === "openai/gpt-5.6-luna";
   const [apiKey, setApiKey] = useState(connection?.apiKey ?? "");
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
@@ -33,7 +35,7 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
     if (!AI_KEY_PATTERN.test(key)) { setError("Controlla la chiave API: non deve contenere spazi o andare a capo."); return; }
     if (!AI_MODEL_PATTERN.test(model.trim())) { setError("Inserisci l’identificativo del modello indicato dal provider."); return; }
     if (!consent) { setError("Conferma l’invio al provider e i costi sul tuo conto."); return; }
-    onSave({ provider, model: model.trim(), apiKey: key });
+    onSave({ provider, model: model.trim(), apiKey: key, ...(supportsReasoning ? { reasoning } : {}) });
     setApiKey("");
     onClose();
   }
@@ -44,13 +46,26 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
     <p id="assistant-provider-description">Scegli il servizio che vuoi usare per conversare sui dati del sito.</p>
     <form onSubmit={save} autoComplete="off">
       <label htmlFor="assistant-provider">Provider</label>
+      <div className={styles.providerSelect}>
       <select id="assistant-provider" value={provider} onChange={(event) => changeProvider(event.target.value as AiProvider)}>
         {Object.entries(AI_PROVIDERS).map(([id, entry]) => <option key={id} value={id}>{entry.label}</option>)}
       </select>
+      <HugeiconsIcon icon={ArrowDown01Icon} size={18} aria-hidden="true" />
+      </div>
       <label htmlFor="assistant-model">Modello</label>
       <input id="assistant-model" list="assistant-models" value={model} maxLength={120} onChange={(event) => setModel(event.target.value)} autoComplete="off" spellCheck={false} required />
       <datalist id="assistant-models">{description.models.map((id) => <option key={id} value={id} />)}</datalist>
       <small>Scegli un esempio o inserisci l’ID di un modello disponibile sul tuo conto. Per allegare immagini serve un modello che le legga.</small>
+      {supportsReasoning ? <>
+        <label htmlFor="assistant-reasoning">Analisi</label>
+        <div className={styles.providerSelect}>
+          <select id="assistant-reasoning" value={reasoning} onChange={(event) => setReasoning(event.target.value as AiReasoning)}>
+            <option value="auto">Automatica</option><option value="none">Rapida</option><option value="medium">Approfondita</option>
+          </select>
+          <HugeiconsIcon icon={ArrowDown01Icon} size={18} aria-hidden="true" />
+        </div>
+        <small>Automatica adatta l’analisi alla domanda. Approfondita può richiedere più tempo e consumi.</small>
+      </> : null}
       <label htmlFor="assistant-api-key">API key personale</label>
       <input ref={keyField} id="assistant-api-key" name="personal-api-credential" type="password" value={apiKey} onChange={(event) => setApiKey(event.target.value)} maxLength={512} autoComplete="off" autoCapitalize="none" spellCheck={false} required aria-describedby="assistant-key-help" />
       <small id="assistant-key-help"><a href={description.keysUrl} target="_blank" rel="noreferrer">Crea una chiave su {description.label} ↗</a>. Usa una chiave dedicata con limiti di spesa.</small>

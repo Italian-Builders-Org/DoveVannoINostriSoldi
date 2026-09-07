@@ -3,7 +3,7 @@ import { ATTACHMENT_MAX_TEXT_CHARS, type TextAttachment } from "./attachment-con
 function cleanText(value: string) {
   const text = value.replace(/\r\n?/gu, "\n").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/gu, "").trim();
   if (!text) throw new Error("Non trovo testo leggibile. Per una scansione, allega le pagine come immagini.");
-  if (text.length > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Il documento supera 24.000 caratteri. Seleziona una parte più breve: non taglio il contenuto automaticamente.");
+  if (text.length > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Il documento supera 80.000 caratteri. Seleziona una parte più breve: non taglio il contenuto automaticamente.");
   return text;
 }
 
@@ -24,7 +24,7 @@ async function extract(name: string, bytes: ArrayBuffer): Promise<TextAttachment
       text += `\n\n[Scheda ${name}]\n`;
       for (const [address, cell] of Object.entries(book.Sheets[name])) {
         if (address.startsWith("!") || (!cell.f && cell.v === undefined)) continue;
-        if (++cells > 1500) throw new Error("Il foglio supera 1.500 celle valorizzate. Seleziona le righe utili in un file più piccolo.");
+        if (++cells > 5000) throw new Error("Il foglio supera 5.000 celle valorizzate. Seleziona le righe utili in un file più piccolo.");
         const value = cell.v === undefined ? "[formula senza risultato salvato]" : String(cell.v);
         text += `${address}\t${value}${cell.w && cell.w !== value ? ` (visualizzato: ${cell.w})` : ""}${cell.f ? " [risultato salvato di una formula]" : ""}\n`;
         if (text.length > ATTACHMENT_MAX_TEXT_CHARS) cleanText(text);

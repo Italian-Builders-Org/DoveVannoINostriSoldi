@@ -3,9 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, ArrowUp01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
-import { ASSISTANT_MAX_PROMPT_CHARS } from "@/lib/assistant/contracts";
-import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_PROVIDERS, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
+import { Add01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
+import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_PROMPT_CHARS, AI_PROVIDERS, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
 import { AssistantProviderSettings } from "@/components/assistant-provider-settings";
 import { AssistantAiReply } from "@/components/assistant-ai-reply";
 import { AssistantMarkdown } from "@/components/assistant-markdown";
@@ -62,7 +61,7 @@ export function AssistantChat() {
   const nextId = useRef(0);
   const voice = useAssistantVoice(draft, setDraft);
   const hasConversation = turns.length > 0;
-  const tooLong = draft.length > ASSISTANT_MAX_PROMPT_CHARS;
+  const tooLong = draft.length > AI_MAX_PROMPT_CHARS;
   const atLimit = turns.length >= MAX_TURNS;
   const options = (menu === "add" ? [] : menu === "sources" ? EXAMPLES.slice(0, 3) : EXAMPLES).filter((option) =>
     `${option.source} ${option.label} ${option.command}`.toLocaleLowerCase("it-IT").includes(query.toLocaleLowerCase("it-IT")),
@@ -81,11 +80,16 @@ export function AssistantChat() {
     window.addEventListener("pagehide", leave);
     return () => { window.removeEventListener("pagehide", leave); pending.current?.abort(); if (copyTimer.current) clearTimeout(copyTimer.current); };
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const field = input.current;
     if (!field) return;
-    field.style.height = "0px";
-    field.style.height = `${Math.min(180, Math.max(hasConversation ? 58 : 94, field.scrollHeight))}px`;
+    const resize = () => {
+      field.style.height = "0px";
+      field.style.height = `${Math.min(180, Math.max(hasConversation ? 58 : 94, field.scrollHeight))}px`;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
   }, [draft, hasConversation]);
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -132,7 +136,7 @@ export function AssistantChat() {
     } catch { setCopyError(true); }
   }
   async function ask(value: string, retryId?: number) {
-    if ((retryId === undefined && attachments.blocked) || pending.current || !value.trim() || value.length > ASSISTANT_MAX_PROMPT_CHARS || (atLimit && retryId === undefined)) return;
+    if ((retryId === undefined && attachments.blocked) || pending.current || !value.trim() || value.length > AI_MAX_PROMPT_CHARS || (atLimit && retryId === undefined)) return;
     const ai = connectionRef.current;
     if (!ai) { setSettings(true); return; }
     if (!hasConversation) beforeComposer.current = composerArea.current?.getBoundingClientRect() ?? null;
@@ -173,7 +177,7 @@ export function AssistantChat() {
     try {
       const result = await fetch("/api/assistant/chat", {
         method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream", Authorization: `Bearer ${ai.apiKey}` },
-        body: JSON.stringify({ provider: ai.provider, model: ai.model, consent: true, messages }), signal: controller.signal,
+        body: JSON.stringify({ provider: ai.provider, model: ai.model, ...(ai.reasoning ? { reasoning: ai.reasoning } : {}), consent: true, messages }), signal: controller.signal,
         cache: "no-store", credentials: "same-origin",
       });
       const response = await readChatStream(result, controller.signal, (partial) => {
@@ -263,9 +267,9 @@ export function AssistantChat() {
                     {turn.attachments?.length ? <AssistantAttachments items={turn.attachments.map((file, id) => ({ id, name: file.name, file }))} onPreview={openPreview} /> : null}
                     {editing?.id === turn.id ? <form className={styles.editMessage} onSubmit={(event) => { event.preventDefault(); void ask(editing.value, turn.id); }}>
                       <label className={styles.srOnly} htmlFor={`edit-message-${turn.id}`}>Modifica la domanda</label>
-                      <textarea id={`edit-message-${turn.id}`} autoFocus value={editing.value} maxLength={ASSISTANT_MAX_PROMPT_CHARS} onChange={(event) => setEditing({ id: turn.id, value: event.target.value })} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); setEditing(null); } }} />
-                      <p>La modifica sostituirà la risposta e gli eventuali messaggi successivi.</p>
-                      <div><button type="button" onClick={() => setEditing(null)}>Annulla modifica</button><button type="submit" disabled={!editing.value.trim() || loading}>Invia modifica</button></div>
+                      <textarea id={`edit-message-${turn.id}`} autoFocus value={editing.value} aria-invalid={editing.value.length > AI_MAX_PROMPT_CHARS || undefined} onChange={(event) => setEditing({ id: turn.id, value: event.target.value })} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); setEditing(null); } }} />
+                      <p>{editing.value.length > AI_MAX_PROMPT_CHARS ? `Massimo 8.000 caratteri. Rimuovine ${(editing.value.length - AI_MAX_PROMPT_CHARS).toLocaleString("it-IT")} per inviare.` : "La modifica sostituirà la risposta e gli eventuali messaggi successivi."}</p>
+                      <div><button type="button" onClick={() => setEditing(null)}>Annulla modifica</button><button type="submit" disabled={!editing.value.trim() || editing.value.length > AI_MAX_PROMPT_CHARS || loading}>Invia modifica</button></div>
                     </form> : <><div className={styles.userMessage}><span className={styles.srOnly}>Tu: </span>{turn.prompt}</div>
                     <div className={styles.messageActions}>
                       <button type="button" aria-label="Copia domanda" title={copied === `user-${turn.id}` ? "Copiato" : "Copia domanda"} onClick={() => void copyText(turn.prompt, `user-${turn.id}`)}><HugeiconsIcon icon={copied === `user-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button>
@@ -304,7 +308,7 @@ export function AssistantChat() {
               </button>) : <p className={styles.noOptions}>Nessun esempio per questa ricerca.</p>}
             </div> : null}
             {menu === "add" ? <div className={styles.optionMenu} id="assistant-add-menu" role="group" aria-label="Aggiungi alla domanda">
-              <button type="button" className={styles.option} onClick={() => { setMenu(null); fileInput.current?.click(); }}><HugeiconsIcon icon={Attachment01Icon} size={20} aria-hidden="true" /><span><strong>Allega file o immagini</strong><small>PDF, Word, Excel e testo · fino a 3 file, 5 MB ciascuno</small></span></button>
+              <button type="button" className={styles.option} onClick={() => { setMenu(null); if (attachments.items.length >= ATTACHMENT_MAX_FILES) attachments.notifyLimit(); else fileInput.current?.click(); }}><HugeiconsIcon icon={Attachment01Icon} size={20} aria-hidden="true" /><span><strong>Allega file o immagini</strong><small>PDF, Word, Excel e testo · fino a 8 file, 10 MB ciascuno</small></span></button>
               <button type="button" className={styles.option} onClick={() => { setMenu("sources"); setQuery(""); setActiveOption(0); input.current?.focus(); }}><HugeiconsIcon icon={BookOpen01Icon} size={20} aria-hidden="true" /><span><strong>Fonti ed esempi</strong><small>Inizia dai dataset del sito</small></span></button>
             </div> : null}
             <input ref={fileInput} type="file" accept={ATTACHMENT_ACCEPT} multiple className={styles.srOnly} tabIndex={-1} aria-label="Scegli gli allegati" onChange={(event) => { attachments.add(Array.from(event.target.files ?? [])); event.target.value = ""; input.current?.focus({ preventScroll: true }); }} />
@@ -312,29 +316,39 @@ export function AssistantChat() {
               onDragOver={(event) => { if (event.dataTransfer.types.includes("Files")) { event.preventDefault(); setDragging(true); } }}
               onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false); }}
               onDrop={(event) => { event.preventDefault(); setDragging(false); if (!voice.busy && !loading) attachments.add(Array.from(event.dataTransfer.files)); }}
-              onPaste={(event) => { const files = Array.from(event.clipboardData.files); if (files.length && !voice.busy && !loading) { event.preventDefault(); attachments.add(files); } }}>
+              onPaste={(event) => {
+                if (voice.busy || loading) return;
+                const files = Array.from(event.clipboardData.files);
+                if (files.length) { event.preventDefault(); attachments.add(files); return; }
+                const text = event.clipboardData.getData("text/plain");
+                if (event.target === input.current && text.length > AI_MAX_PROMPT_CHARS) {
+                  event.preventDefault();
+                  const name = `testo-incollato-${attachments.items.length + 1}.txt`;
+                  if (attachments.add([new File([text], name, { type: "text/plain;charset=utf-8" })]) && !draft.trim()) setDraft("Analizza il testo allegato.");
+                }
+              }}>
 
               <div className={styles.inputSurface} data-recording={voice.active}>
                 {attachments.items.length ? <AssistantAttachments items={attachments.items} onRemove={attachments.remove} onPreview={openPreview} /> : null}
                 {dragging ? <span className={styles.dropHint}>Rilascia i file qui</span> : null}
                 <label htmlFor="assistant-prompt" className={styles.srOnly}>Domanda in italiano</label>
                 <textarea ref={input} id="assistant-prompt" value={draft} onChange={(event) => changeDraft(event.target.value)} onKeyDown={keyDown}
-                  placeholder="Chiedi qualcosa sui dati pubblici…" rows={3} maxLength={ASSISTANT_MAX_PROMPT_CHARS} readOnly={voice.busy}
-                  aria-describedby="assistant-help assistant-count" aria-controls={menu && menu !== "add" ? "assistant-options" : undefined}
+                  placeholder="Chiedi qualcosa sui dati pubblici…" rows={3} readOnly={voice.busy} aria-invalid={tooLong || undefined}
+                  aria-describedby={`assistant-help assistant-count${tooLong ? " assistant-prompt-limit" : ""}`} aria-controls={menu && menu !== "add" ? "assistant-options" : undefined}
                   aria-activedescendant={menu && options[activeOption] ? `assistant-option-${activeOption}` : undefined} aria-haspopup="listbox" />
                 <div className={styles.composerControls}>
                   <button type="button" className={styles.iconButton} disabled={voice.busy || loading} aria-label="Aggiungi allegati e fonti" aria-expanded={menu === "add"} aria-controls="assistant-add-menu" title="Aggiungi allegati e fonti" onClick={() => setMenu(menu === "add" ? null : "add")}>
                     <HugeiconsIcon icon={Add01Icon} size={23} strokeWidth={1.6} aria-hidden="true" />
                   </button>
-                  <span className={styles.keyboardHint}>@ fonti <span>·</span> / scorciatoie</span>
-                  <span id="assistant-count" className={styles.count} data-overflow={tooLong}>{draft.length > 400 ? `${draft.length}/${ASSISTANT_MAX_PROMPT_CHARS}` : ""}</span>
+                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.keyboardHint}>@ fonti <span>·</span> / scorciatoie</span>}
+                  <span id="assistant-count" className={styles.count} data-overflow={tooLong}>{draft.length >= AI_MAX_PROMPT_CHARS * .8 ? `${draft.length}/${AI_MAX_PROMPT_CHARS}` : ""}</span>
                   <button type="button" className={`${styles.iconButton} ${styles.microphone}`} data-recording={voice.active} disabled={loading || voice.voice?.status === "checking" || voice.voice?.status === "installing" || voice.voice?.status === "stopping"}
                     aria-label={voice.active ? "Termina dettatura" : "Detta la domanda"} aria-pressed={voice.active} title={voice.active ? "Termina dettatura" : "Detta la domanda"} onClick={voice.start}>
                     <HugeiconsIcon icon={voice.active ? StopIcon : Mic01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
                     <span className={styles.micLabel}>{voice.active ? "Termina" : "Detta"}</span>
                   </button>
                   {loading ? <button type="button" className={styles.send} aria-label="Interrompi ricerca" title="Interrompi ricerca" onClick={stop}><HugeiconsIcon icon={StopIcon} size={21} strokeWidth={1.9} aria-hidden="true" /></button>
-                    : <button type="submit" className={styles.send} disabled={!draft.trim() || tooLong || voice.busy || atLimit || attachments.blocked} aria-label="Invia domanda" title="Invia domanda"><HugeiconsIcon icon={ArrowUp01Icon} size={23} strokeWidth={1.9} aria-hidden="true" /></button>}
+                    : <button type="submit" className={styles.send} disabled={!draft.trim() || tooLong || voice.busy || atLimit || attachments.blocked} aria-label="Invia domanda" title="Invia domanda"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" strokeLinejoin="miter" /></svg></button>}
                 </div>
               </div>
               {voice.voice ? <div className={styles.voiceNotice} data-recording={voice.active}>
@@ -353,9 +367,8 @@ export function AssistantChat() {
               </div>
             </form>
           </div>
-          {attachments.error ? <p className={styles.draftError} role="alert">{attachments.error}</p> : null}
-          {attachments.items.length ? <p className={styles.attachmentHint}>Preparati sul dispositivo · inviati con la domanda al provider. Apri l’anteprima per controllare contenuto e limiti.</p> : null}
-          {tooLong ? <p className={styles.draftError} role="alert">La dettatura supera 500 caratteri. Accorcia il testo prima di inviarlo.</p> : null}
+          {attachments.error ? <p key={attachments.noticeVersion} className={styles.limitNotice} role="alert">{attachments.error}</p> : null}
+          {tooLong ? <p id="assistant-prompt-limit" className={styles.draftError} role="alert">Massimo 8.000 caratteri. Rimuovine {(draft.length - AI_MAX_PROMPT_CHARS).toLocaleString("it-IT")} per inviare.</p> : null}
           {atLimit ? <p className={styles.draftError}>Hai raggiunto il limite di questa conversazione. Apri una nuova chat per continuare.</p> : null}
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
             {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}

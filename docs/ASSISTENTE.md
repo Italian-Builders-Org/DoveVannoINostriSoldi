@@ -34,14 +34,14 @@ seguono le indicazioni di Emil Design.
 ## Allegati e attività
 
 Il pulsante `+`, il trascinamento sul compositore e l’incolla di immagini permettono
-fino a 3 allegati, 5 MB ciascuno. Formati: PNG/JPEG/WebP, PDF testuali, DOCX,
+fino a 8 allegati, 10 MB ciascuno. Formati: PNG/JPEG/WebP, PDF testuali, DOCX,
 XLS/XLSX/ODS, TXT/Markdown/CSV/TSV/JSON in UTF-8. I file originali vengono letti
 sul dispositivo e non sono caricati in archivi remoti. Prima dell’invio si può aprire
 l’anteprima del testo o dell’immagine effettivamente disponibile al modello.
 
-Il testo totale degli allegati è limitato a 24.000 caratteri, senza tagli automatici.
+Il testo totale degli allegati è limitato a 80.000 caratteri, senza tagli automatici.
 PDF: massimo 30 pagine, nessun OCR; immagini e grafici interni non sono estratti.
-DOCX: solo testo, senza immagini o impaginazione. Fogli: massimo 10 schede e 1.500
+DOCX: solo testo, senza immagini o impaginazione. Fogli: massimo 10 schede e 5.000
 celle valorizzate, coordinate e valore originale/formattato; formule non ricalcolate
 e macro non eseguite. Le immagini vengono decodificate, ridimensionate entro 1.536
 pixel per lato e ricodificate JPEG senza metadati originali (entro 450.000 caratteri
@@ -49,7 +49,7 @@ base64); richiedono un modello con visione. Lettura/estrazione ha un budget di 1
 I parser di documenti sono caricati quando servono e l’estrazione usa worker dedicati.
 
 Gli allegati seguono il messaggio nelle domande successive, modifica e rigenerazione.
-La richiesta complessiva può contenere al massimo 3 file: se i nuovi allegati superano
+La richiesta complessiva può contenere al massimo 8 file: se i nuovi allegati superano
 il budget, il client elimina dal contesto le coppie più vecchie e mostra un avviso.
 Nuova chat, scollegamento, uscita e ricaricamento eliminano gli allegati in memoria.
 La route accetta esclusivamente testo e JPEG inline validati, mai URL o file ID.
@@ -114,7 +114,7 @@ _della verifica_). La riduzione del testo non è una misura del costo effettivo 
 ## Streaming, sicurezza e limiti operativi
 
 La route valida origine, Host, JSON, consenso, ruoli, modello, chiave e dimensione:
-1.600.000 byte, 500 caratteri per l’ultima domanda, 50 secondi complessivi. Rate limit in
+4.000.000 byte, 8.000 caratteri per l’ultima domanda, 50 secondi complessivi. Rate limit in
 memoria: 20 richieste/minuto per IP, 10 per hash della chiave, 4 concorrenti per istanza.
 Non sono limiti distribuiti; l’hosting/edge resta una protezione operativa separata.
 
@@ -144,7 +144,8 @@ richiede un pulsante separato e non avvia il microfono.
 La sessione termina entro 30 secondi. Stop concede fino a 3 secondi per l’ultimo risultato.
 Escape, annullamento, pagina nascosta e unmount interrompono la sessione. Annullare
 ripristina la bozza precedente; un testo già confermato e modificato resta nel compositore.
-Oltre 500 caratteri la UI impedisce l’invio. Nessun audio viene caricato su DVNS e la
+I testi incollati oltre 8.000 caratteri diventano allegati TXT, entro il limite di 80.000 caratteri complessivi estratti. Una domanda vuota diventa «Analizza il testo allegato»; una bozza esistente resta intatta. Il file resta visibile e rimovibile prima dell’invio. Per testo digitato, dettato o modificato oltre 8.000 caratteri la UI impedisce l’invio e indica quanto accorciare.
+Il testo incollato o dettato resta nel campo, senza tagli automatici. Nessun audio viene caricato su DVNS e la
 dettatura non invia mai automaticamente la domanda.
 
 ## Verifica
@@ -174,3 +175,19 @@ Fonti: [OpenAI dati](https://developers.openai.com/api/docs/guides/your-data),
 [OpenRouter privacy](https://openrouter.ai/docs/guides/privacy/data-collection),
 [EDPB](https://www.edpb.europa.eu/sme/learn-the-basics/data-controller-or-data-processor_en),
 [Commissione europea](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act).
+
+### Scelta dell’analisi con Luna
+
+Per OpenRouter e `openai/gpt-5.6-luna`, il pannello offre Automatica, Rapida
+(`reasoning.effort: none`) e Approfondita (`medium`). Automatica segue il piano
+verificato; la selezione delle fonti usa sempre `none`. Il corpo del ragionamento
+non viene richiesto né mostrato. La label delle attività indica la modalità
+richiesta, non una misura dei token effettivamente consumati dal provider.
+Le opzioni seguono la [documentazione OpenRouter](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+
+La proiezione per la chat MEF comunale converte esattamente `amountCents` e
+`knownAmountCents` in stringhe decimali `amountEuros` e `knownAmountEuros`.
+Gli adapter pubblici/MCP restano invariati. La proiezione mantiene copertura,
+frequenze, celle parziali, periodo e provenance, evitando che il modello legga
+un importo in centesimi come euro. Il piano distingue inoltre i totali IRPEF
+territoriali dalle tabelle di dettaglio prive di filtro per singola regione.

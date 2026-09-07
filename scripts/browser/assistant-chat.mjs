@@ -37,6 +37,8 @@ try {
     assert.match(await page.$eval(field,el=>el.value),/Calabria/);assert.equal(requests.length,0);
     await page.keyboard.press('Enter');await page.waitForSelector('dialog[open]');
     assert.equal(requests.length,0,'no key, no provider call');
+    const selectGeometry=await page.$eval('#assistant-provider',el=>{const field=el.getBoundingClientRect(),icon=el.parentElement.querySelector('svg').getBoundingClientRect();return{center:Math.abs(field.top+field.height/2-icon.top-icon.height/2),right:field.right-icon.right,padding:parseFloat(getComputedStyle(el).paddingRight)};});
+    assert.ok(selectGeometry.center<1 && selectGeometry.right>=12 && selectGeometry.right<=16 && selectGeometry.padding>=40,JSON.stringify(selectGeometry));
     await page.type('#assistant-api-key','test-only-router-key-123');
     await page.select('#assistant-provider','openai');
     assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');

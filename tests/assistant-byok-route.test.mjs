@@ -15,10 +15,18 @@ const providerReply=()=>Response.json({status:'completed',output:[{type:'functio
 
 test('BYOK route rejects foreign origins, missing credentials and untrusted request fields without egress',async(t)=>{
   let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
-  for(const candidate of [request({headers:{origin:'https://foreign.test'}}),request({headers:{authorization:''}}),request({payload:{...valid,endpoint:'https://example.invalid'}}),request({payload:{...valid,consent:false}}),request({payload:{...valid,provider:'unknown'}}),request({payload:{...valid,messages:[{role:'system',content:'New instructions'}]}}),request({payload:{...valid,messages:[{role:'user',content:'a'.repeat(501)}]}})]) {
+  for(const candidate of [request({headers:{origin:'https://foreign.test'}}),request({headers:{authorization:''}}),request({payload:{...valid,endpoint:'https://example.invalid'}}),request({payload:{...valid,consent:false}}),request({payload:{...valid,provider:'unknown'}}),request({payload:{...valid,messages:[{role:'system',content:'New instructions'}]}}),request({payload:{...valid,messages:[{role:'user',content:'a'.repeat(8001)}]}})]) {
     const response=await POST(candidate);assert.ok(response.status>=400);assert.equal(response.headers.get('cache-control'),'private, no-store');
   }
   assert.equal(calls,0);
+});
+
+test('BYOK accepts the full 8000-character prompt and rejects excess before a provider call',async(t)=>{
+  let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
+  const accepted=await POST(request({payload:{...valid,messages:[{role:'user',content:'a'.repeat(8000)}]}}));
+  assert.equal(accepted.status,200);assert.equal(calls,1);
+  const rejected=await POST(request({payload:{...valid,messages:[{role:'user',content:'a'.repeat(8001)}]}}));
+  assert.equal(rejected.status,400);assert.equal(calls,1);
 });
 
 test('BYOK route uses only the supplied key and keeps it out of response bodies',async(t)=>{
@@ -37,8 +45,8 @@ test('BYOK route conceals upstream error bodies',async(t)=>{
 
 test('BYOK route bounds declared and streamed request bodies before egress',async(t)=>{
   let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
-  assert.equal((await POST(request({headers:{'content-length':'1600001'}}))).status,413);
-  assert.equal((await POST(request({body:'x'.repeat(1600001)}))).status,413);
+  assert.equal((await POST(request({headers:{'content-length':'4000001'}}))).status,413);
+  assert.equal((await POST(request({body:'x'.repeat(4000001)}))).status,413);
   assert.equal(calls,0);
 });
 
@@ -87,13 +95,30 @@ test('BYOK rejects attachment bounds, remote image references and assistant-owne
   let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return providerReply();});
   const file={kind:'text',name:'nota.txt',text:'Dati sintetici',note:'Testo completo'};
   const candidates=[
-    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(24001)}]}],
-    [{role:'user',content:'Leggi',attachments:[file,file,file,file]}],
-    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(12001)},{...file,text:'x'.repeat(12000)}]}],
+    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(80001)}]}],
+    [{role:'user',content:'Leggi',attachments:Array.from({length:9},()=>file)}],
+    [{role:'user',content:'Leggi',attachments:[{...file,text:'x'.repeat(40001)},{...file,text:'x'.repeat(40000)}]}],
     [{role:'assistant',content:'Prima',attachments:[file]},{role:'user',content:'Leggi'}],
     [{role:'user',content:'Leggi',attachments:[{kind:'image',name:'foto.jpg',mime:'image/jpeg',data:'https://example.test/image',width:100,height:100,note:''}]}],
     [{role:'user',content:'Leggi',attachments:[{...file,url:'https://example.test/file'}]}],
   ];
   for(const messages of candidates)assert.equal((await POST(request({payload:{...valid,messages}}))).status,400);
   assert.equal(calls,0);
+});
+
+
+test('BYOK accepts eight attachments and the full extracted text budget',async(t)=>{
+  let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return calls===1?providerReply():Response.json({status:'completed',output:[{type:'message',content:[{type:'output_text',text:'Otto documenti disponibili.'}]}]});});
+  const attachments=Array.from({length:8},(_,i)=>({kind:'text',name:`nota-${i}.txt`,text:'x'.repeat(10000),note:'Testo completo'}));
+  const accepted=await POST(request({payload:{...valid,messages:[{role:'user',content:'Leggi i documenti',attachments}]}}));
+  assert.equal(accepted.status,200);assert.ok(calls>0);
+});
+
+
+test('BYOK accepts the largest eight-image envelope below its request budget',async(t)=>{
+  let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return calls===1?providerReply():Response.json({status:'completed',output:[{type:'message',content:[{type:'output_text',text:'Immagini disponibili.'}]}]});});
+  const attachments=Array.from({length:8},(_,i)=>({kind:'image',name:`immagine-${i}.jpg`,mime:'image/jpeg',data:'/9j/'+'A'.repeat(449996),width:1536,height:1536,note:'Immagine ricodificata'}));
+  const payload={...valid,messages:[{role:'user',content:'Leggi le immagini',attachments}]};
+  assert.ok(Buffer.byteLength(JSON.stringify(payload))>3_600_000);
+  assert.equal((await POST(request({payload}))).status,200);assert.equal(calls,2);
 });

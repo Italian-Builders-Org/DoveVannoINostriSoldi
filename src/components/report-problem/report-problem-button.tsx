@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Flag02Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight02Icon, Flag02Icon } from "@hugeicons/core-free-icons";
 import styles from "./report-problem.module.css";
 
 // The dialog, its schema and its styles are downloaded only on the first
@@ -15,19 +15,22 @@ const ReportProblemDialog = dynamic(
 );
 
 type ReportProblemButtonProps = Readonly<{
-  /** `floating` is the global control; `inline` is a plain text button for footers and pages. */
-  variant?: "floating" | "inline";
+  variant?: "sidebar" | "inline";
+  compact?: boolean;
+  onOpen?: () => void;
+  restoreFocusRef?: RefObject<HTMLButtonElement | null>;
 }>;
 
-export function ReportProblemButton({ variant = "floating" }: ReportProblemButtonProps) {
+export function ReportProblemButton({ variant = "inline", compact = false, onOpen, restoreFocusRef }: ReportProblemButtonProps) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const openDialog = useCallback(() => {
+    onOpen?.();
     setMounted(true);
     setOpen(true);
-  }, []);
+  }, [onOpen]);
 
   const closeDialog = useCallback(() => setOpen(false), []);
 
@@ -36,16 +39,21 @@ export function ReportProblemButton({ variant = "floating" }: ReportProblemButto
   // been committed, so the trigger is guaranteed to be focusable again.
   const wasOpenRef = useRef(false);
   useEffect(() => {
-    if (wasOpenRef.current && !open) triggerRef.current?.focus();
+    if (wasOpenRef.current && !open) {
+      const target = restoreFocusRef?.current ?? triggerRef.current;
+      const visibleTarget = target?.getClientRects().length ? target : [...document.querySelectorAll<HTMLButtonElement>('[data-report-problem-trigger="sidebar"], .mobile-menu-trigger')].find((button) => button.getClientRects().length);
+      visibleTarget?.focus({ preventScroll: true });
+    }
     wasOpenRef.current = open;
-  }, [open]);
+  }, [open, restoreFocusRef]);
 
   return (
     <>
       <button
         ref={triggerRef}
         type="button"
-        className={variant === "floating" ? styles.floatingTrigger : styles.inlineTrigger}
+        className={variant === "sidebar" ? styles.sidebarTrigger : styles.inlineTrigger}
+        data-compact={compact}
         onClick={openDialog}
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -53,9 +61,13 @@ export function ReportProblemButton({ variant = "floating" }: ReportProblemButto
         title="Segnala un problema"
         data-report-problem-trigger={variant}
       >
-        <HugeiconsIcon icon={Flag02Icon} size={variant === "floating" ? 18 : 16} strokeWidth={1.8} aria-hidden="true" />
-        {variant === "floating" ? (
-          <span className={styles.visuallyHidden}>Segnala un problema</span>
+        <HugeiconsIcon icon={Flag02Icon} size={variant === "sidebar" ? 18 : 16} strokeWidth={1.8} aria-hidden="true" />
+        {variant === "sidebar" ? (
+          <span className={styles.sidebarCopy}>
+            <strong>Qualcosa non torna?</strong>
+            <span>Aiutaci a migliorare il sito.</span>
+            <span className={styles.sidebarAction}>Segnala un problema <HugeiconsIcon icon={ArrowRight02Icon} size={15} aria-hidden="true" /></span>
+          </span>
         ) : (
           "Segnala un problema"
         )}

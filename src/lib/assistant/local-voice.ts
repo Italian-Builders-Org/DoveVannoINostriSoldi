@@ -1,5 +1,3 @@
-import { ASSISTANT_MAX_PROMPT_CHARS } from "@/lib/assistant/contracts";
-
 /** Browser-only, on-device dictation. No remote recognizer or audio transport. */
 export type VoiceStatus = "checking" | "unsupported" | "downloadable" | "installing" | "ready" | "starting" | "listening" | "stopping" | "review" | "error";
 export type VoiceUpdate = { status: VoiceStatus; message: string; transcript?: string };
@@ -112,11 +110,11 @@ export class LocalVoiceSession {
       recognition.onresult = (event) => {
         if (this.closed || !ACTIVE.includes(this.status)) return;
         let text = "";
-        for (let index = 0; index < event.results.length && text.length <= ASSISTANT_MAX_PROMPT_CHARS; index++) {
+        for (let index = 0; index < event.results.length; index++) {
           const result = event.results[index];
-          if (result.isFinal) text += `${text ? " " : ""}${result[0].transcript.slice(0, ASSISTANT_MAX_PROMPT_CHARS + 1)}`;
+          if (result.isFinal) text += `${text ? " " : ""}${result[0].transcript}`;
         }
-        this.transcript = text.trim().slice(0, ASSISTANT_MAX_PROMPT_CHARS + 1);
+        this.transcript = text.trim();
         this.emit(this.status, "Dettatura in corso. Premi Termina dettatura per spegnere il microfono e controllare il testo.", this.transcript);
       };
       recognition.onerror = (event) => {

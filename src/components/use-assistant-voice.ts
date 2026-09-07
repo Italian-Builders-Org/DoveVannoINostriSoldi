@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ASSISTANT_MAX_PROMPT_CHARS } from "@/lib/assistant/contracts";
 import { LocalVoiceSession, type LocalRecognitionConstructor, type VoiceUpdate } from "@/lib/assistant/local-voice";
 
 /** Inline controls retain the local-only voice engine. */
@@ -70,7 +69,7 @@ export function useAssistantVoice(draft: string, setDraft: (value: string) => vo
       setVoice(update);
       if (update.transcript !== undefined) {
         const combined = [base.current.trimEnd(), update.transcript].filter(Boolean).join(" ");
-        setDraft(combined.slice(0, ASSISTANT_MAX_PROMPT_CHARS + 1));
+        setDraft(combined);
       }
     });
     session.current = current;

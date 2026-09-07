@@ -20,7 +20,7 @@ export async function extractPdf(name: string, bytes: ArrayBuffer, signal: Abort
       const value = content.items.map((item) => "str" in item ? item.str + (item.hasEOL ? "\n" : " ") : "").join("").trim();
       if (!value) throw new Error(`La pagina ${number} non contiene testo leggibile. Per le scansioni usa immagini PNG o JPEG.`);
       text += `\n\n[Pagina ${number}]\n${value}`;
-      if (text.length > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Il PDF supera 24.000 caratteri. Seleziona una parte più breve: non taglio il contenuto automaticamente.");
+      if (text.length > ATTACHMENT_MAX_TEXT_CHARS) throw new Error("Il PDF supera 80.000 caratteri. Seleziona una parte più breve: non taglio il contenuto automaticamente.");
       page.cleanup();
       onProgress(number / pdf.numPages);
     }

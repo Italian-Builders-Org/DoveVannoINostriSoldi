@@ -92,7 +92,8 @@ test("CI verifies every main commit and uses the current artifact runtime", asyn
   assert.doesNotMatch(ci, /github\.event\.pull_request\.number \|\| github\.ref/);
   // upload-artifact must be SHA-pinned (supply-chain security).
   assert.doesNotMatch(`${ci}\n${mefRefresh}`, /actions\/upload-artifact@v\d/);
-  assert.equal((`${ci}\n${mefRefresh}`.match(/actions\/upload-artifact@[0-9a-f]{40}/g) ?? []).length, 4);
+  assert.equal((`${ci}\n${mefRefresh}`.match(/actions\/upload-artifact@[0-9a-f]{40}/g) ?? []).length, 5);
+  assert.match(ci, /name: Upload procurement award-year screenshots\n\s+if: always\(\)\n\s+uses: actions\/upload-artifact@[0-9a-f]{40}[^\n]*\n\s+with:\n\s+name: procurement-award-year-screenshots\n\s+path: artifacts\/browser\/procurement-award-year\//);
   assert.match(harness, /const BROWSER_LAUNCH_TIMEOUT_MS = 60_000;/);
   assert.match(harness, /timeoutMs = BROWSER_LAUNCH_TIMEOUT_MS/);
 });

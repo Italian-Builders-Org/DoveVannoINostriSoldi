@@ -154,6 +154,30 @@ const legacyTools = await mcpRequest({ jsonrpc: "2.0", id: 1, method: "tools/lis
 assert.match(legacyTools, /list_datasets/);
 assert.match(legacyTools, /query_dataset/);
 
+const healthQuery = { dataset: "istat_bes_salute", territory: "ITC45", measure: "01SAL005", sex: "F", year: 2021 };
+const healthResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 281, method: "tools/call",
+  params: { name: "query_dataset", arguments: healthQuery },
+});
+const health = successfulMcpToolResult(healthResponse, "istat_bes_salute").data;
+assert.equal(health.domain.code, "BES_01");
+assert.deepEqual(health.observations, [{ indicator: "01SAL005", territory: "ITC45", sex: "F", year: 2021, valueTenths: null, status: "n" }]);
+assert.equal(health.indicators[0].unit, "STA_RA_PER_10THOU");
+assert.equal(health.reconciliation.totalBetweenSexes, false);
+const healthApiResponse = await fetch(new URL("/api/territori/bes-salute?territorio=ITC45&indicatore=01SAL005&sesso=F&anno=2021", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(healthApiResponse.status, 200);
+const healthApi = JSON.parse(await responseText(healthApiResponse, "API BES Salute"));
+assert.deepEqual(healthApi.observations, health.observations);
+assert.deepEqual(healthApi.source, health.source);
+const invalidHealth = await mcpRequest({
+  jsonrpc: "2.0", id: 282, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_salute", measure: "04BEC001P" } },
+});
+assert.match(invalidHealth, /"isError":true/);
+assert.match(invalidHealth, /Indicatore non riconosciuto/);
+
 const compatibilityTools = await mcpRequest(
   { jsonrpc: "2.0", id: 11, method: "tools/list" },
   {},

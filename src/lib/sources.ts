@@ -154,6 +154,18 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-salute",
+    name: "ISTAT · BES dei territori, Salute",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "135 territori, di cui 107 province; sei indicatori di salute, con periodi propri fra 2004 e 2024",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Speranza di vita in anni, mortalità infantile per 1.000 nati vivi e quattro tassi standardizzati per 10.000 residenti nelle classi di età indicate. Non è spesa pubblica né una misura di efficienza. Dati provinciali, non comunali; copertura territoriale non costante. T è distinto da F/M, null da zero. Nessuna somma, imputazione o classifica.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

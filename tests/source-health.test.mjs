@@ -91,6 +91,14 @@ function fakeLiveHealth(sourceId) {
   };
 }
 
+test("BES health keeps acquisition distinct from an unknown source publication date", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-salute"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 46157);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.equal(health.freshness.state, "unknown");
+});
+
 test("source health registry covers every operational source, including ANAC, INPS and CPT", async () => {
   assert.deepEqual(Object.keys(SOURCE_HEALTH_ADAPTERS), SOURCE_IDS);
   assert.ok(Object.values(SOURCE_HEALTH_ADAPTERS).every((adapter) => typeof adapter === "function"));

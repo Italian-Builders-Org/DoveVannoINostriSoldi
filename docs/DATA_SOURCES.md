@@ -540,3 +540,11 @@ Le distribuzioni ufficiali DFP, CC BY 4.0, aggiungono 244.566 righe di costo e
 101.546 di personale al corpus pubblico. Snapshot storico 2020, con anno e
 chiave amministrazione RGS; coperture distinte, nessun totale sintetico né
 assimilazione a SIOPE cassa. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md).
+
+### ISTAT Bes dei territori · Salute
+
+Il dominio completo `BES_01`, edizione 2025, aggiunge sei indicatori e 46.157
+osservazioni su 135 territori, di cui 107 province. Periodi e unità distinti per
+indicatore; flag di significatività conservato, nessun dato comunale o indice
+composito. Fonte `istat-bes-salute`, API e MCP con selettore condiviso e pagine
+di massimo 100 righe. [Lock, denominatori, geografia e riproduzione](research/ISTAT_BES_SALUTE.md).

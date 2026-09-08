@@ -30,6 +30,7 @@ export type SourceId =
   | "istat-poverta"
   | "istat-poverta-relativa"
   | "istat-bes-economico"
+  | "istat-bes-salute"
   | "inps-naspi"
   | "mef-irpef-dettaglio"
   | "ameco"
@@ -497,6 +498,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-bes-economico", "domain:social-conditions"],
+  },
+  "istat-bes-salute": {
+    id: "istat-bes-salute",
+    label: "ISTAT · BES dei territori, Salute",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-salute", "domain:health"],
   },
   "inps-naspi": {
     id: "inps-naspi",

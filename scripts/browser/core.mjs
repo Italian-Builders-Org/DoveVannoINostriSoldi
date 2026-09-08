@@ -427,8 +427,12 @@ async function assertSpendingComposition(page, label, width) {
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
       hasMetadata: /Quote sul totale dei pagamenti SIOPE.*Fonte acquisita/s.test(root.textContent ?? ""),
       compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      // Prefer visual order: independent desktop rails may put the ranking
+      // earlier in the DOM while the map still appears first on screen.
       mapBeforeMunicipalities: Boolean(
-        map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
+        map &&
+          municipalityHeading &&
+          map.getBoundingClientRect().top <= municipalityHeading.getBoundingClientRect().top + 1
       ),
       viewportWidth,
     };

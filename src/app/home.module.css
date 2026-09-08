@@ -8,9 +8,7 @@
   grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
   grid-template-areas:
     "italy italy"
-    "summary map"
-    "months regions"
-    "rank cohesion"
+    "leftRail rightRail"
     "anomalies anomalies"
     "reading reading";
   align-items: start;
@@ -71,24 +69,29 @@
 }
 
 .column { display: contents; }
-/* Rails stay in the markup for grouping, but never form a stretched row:
-   each panel owns its grid area so DOM order can keep the map before the
-   municipality ranking (browser production gate + screen readers). */
+/* Two independent stacks: a tall left composition must not stretch the map
+   row or leave a blank band above the regions table. */
 .leftRail,
 .rightRail {
-  display: contents;
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  align-self: start;
+  min-width: 0;
 }
-.summaryPanel { grid-area: summary; display: flex; flex-direction: column; min-width: 0; }
+.leftRail { grid-area: leftRail; }
+.rightRail { grid-area: rightRail; }
+.summaryPanel { display: flex; flex-direction: column; min-width: 0; }
 .summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(250px, 1fr) auto auto auto; --composition-height: 100%; }
 .summaryPanel .rule { width: 100%; }
-.mapPanel { grid-area: map; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.mapPanel { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; height: fit-content; }
 .mapPanel .mapStage { display: block; flex: none; }
 .mapPanel .mapStage > div { width: 100%; }
-.monthsPanel { grid-area: months; display: flex; flex-direction: column; min-width: 0; }
-.monthsPanel .monthList { flex: 1; justify-content: space-evenly; }
-.regionsPanel { grid-area: regions; min-width: 0; }
-.rankPanel { grid-area: rank; min-width: 0; }
-.cohesionPanel { grid-area: cohesion; min-width: 0; }
+.monthsPanel { display: flex; flex-direction: column; min-width: 0; height: fit-content; }
+.monthsPanel .monthList { flex: none; }
+.regionsPanel { min-width: 0; height: fit-content; }
+.rankPanel { min-width: 0; height: fit-content; }
+.cohesionPanel { min-width: 0; height: fit-content; }
 .anomaliesPanel { grid-area: anomalies; min-width: 0; }
 .readingPanel { grid-area: reading; }
 
@@ -572,6 +575,14 @@
       "anomalies"
       "reading";
   }
+  .leftRail,
+  .rightRail { display: contents; }
+  .summaryPanel { grid-area: summary; }
+  .mapPanel { grid-area: map; }
+  .monthsPanel { grid-area: months; }
+  .regionsPanel { grid-area: regions; }
+  .rankPanel { grid-area: rank; }
+  .cohesionPanel { grid-area: cohesion; }
   .summaryPanel > [data-composition-state] { flex: none; --composition-height: clamp(250px, 62cqw, 320px); }
   .monthsPanel .monthList { gap: 10px; }
 

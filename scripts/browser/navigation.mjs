@@ -84,7 +84,7 @@ try {
           await page.focus(selector);
           if (await page.$eval(selector, (button) => button.getAttribute('aria-expanded')) !== 'true') await page.keyboard.press('Enter');
           assert.equal(await page.$$eval(`${root} .nav-submenu:not([hidden])`, (menus) => menus.length), 1);
-          for (const child of flattenNavLinks(item.children)) {
+          for (const child of item.children) {
             const link = await page.$(`${root} .nav-submenu a[href="${child.href}"]`);
             await link.focus();
             assert.equal(await link.evaluate((element) => {

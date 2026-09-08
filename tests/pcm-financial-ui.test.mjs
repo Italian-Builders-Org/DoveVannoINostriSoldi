@@ -19,7 +19,7 @@ test("Palazzo Chigi keeps scope, accounting phases and source visible", () => {
   assert.match(treemap, /dataKey="paymentsCents"/);
   assert.match(treemap, /mission\.paymentsCents > 0/);
   assert.match(treemap, /institutionalCategoryColor/);
-  assert.match(treemap, /Le due aree\s*\n?\s*a zero restano nella tabella/);
+  assert.match(treemap, /Le due aree\s*\n?\s*a zero restano in tabella/);
   assert.doesNotMatch(page, /spreco|corruzione|illecito/i);
 });
 

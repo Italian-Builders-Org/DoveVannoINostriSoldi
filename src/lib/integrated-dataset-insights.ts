@@ -5,6 +5,7 @@ import {
   detectInsightRoles,
   emptyInsights,
   formatInsightTeaser,
+  isInsightCapable,
   type DatasetInsights,
 } from "@/lib/integrated-dataset-insight-core";
 import {
@@ -63,7 +64,7 @@ export async function loadDatasetInsights(
   if (!dataset) return null;
   const queryable = dataset.publication === "rows" || dataset.publication === "source-index";
   const roles = detectInsightRoles(dataset.headers);
-  if (!queryable || roles.recipient === null || roles.amount === null) {
+  if (!isInsightCapable(dataset.headers, queryable, dataset.id)) {
     return emptyInsights(datasetId, roles, dataset.publicRows, false);
   }
 

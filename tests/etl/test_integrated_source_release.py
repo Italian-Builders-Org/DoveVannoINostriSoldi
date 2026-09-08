@@ -99,13 +99,13 @@ class AggregateReleaseProofTests(unittest.TestCase):
             "proofSha256": "6" * 64,
             "catalogBytes": 50,
             "catalogSha256": "7" * 64,
-            "receipts": 91,
+            "receipts": 93,
             "rowArtifacts": 379,
             "artifactCount": 459,
             "receiptSetSha256": "8" * 64,
             "artifactSetSha256": "9" * 64,
-            "sourceRows": 14_457_856,
-            "publicRows": 1_475_510,
+            "sourceRows": 14_803_968,
+            "publicRows": 1_821_622,
             "catalogOnlyRows": 12_979_505,
             "derivedOnlyRows": 2_841,
             "sourceBytes": 2_537_014_778,
@@ -414,6 +414,18 @@ class DatasetGateTests(unittest.TestCase):
         with self.assertRaisesRegex(release.ReleaseError, "release contract"):
             release._validate_datasets(self.paths)
 
+    def test_deep_dataset_failure_rejects_otherwise_valid_receipts(self) -> None:
+        with (
+            patch.object(release, "EXPECTED_DATASETS", 43),
+            patch.object(release, "EXPECTED_DATASET_ROWS", {
+                "sourceRows": 43, "publicRows": 2,
+                "catalogOnlyRows": 40, "derivedOnlyRows": 1,
+            }),
+            patch.object(dataset_builder, "check_committed", side_effect=ValueError("invalid row semantics")),
+            self.assertRaisesRegex(release.ReleaseError, "deep dataset artifact gate failed"),
+        ):
+            release._validate_datasets(self.paths)
+
     def test_extra_or_missing_dataset_artifact_fails_closed(self) -> None:
         extra = self.receipts / "extra.receipt.json"
         extra.write_bytes(b"{}\n")
@@ -438,7 +450,7 @@ class CommittedReleaseProofTests(unittest.TestCase):
         proof = release.check_release()
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
-        self.assertEqual(proof["contract"]["datasets"], 91)
+        self.assertEqual(proof["contract"]["datasets"], 93)
 
 
 if __name__ == "__main__":

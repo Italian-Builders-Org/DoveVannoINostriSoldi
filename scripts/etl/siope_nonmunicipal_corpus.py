@@ -91,6 +91,13 @@ def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog
         assert candidate_detail_path is not None and candidate_manifest_path is not None
         detail_etl.validate_candidate_detail(detail_path=candidate_detail_path, projection_dir=source_root, manifest_path=candidate_manifest_path)
     spec, datasets = corpus.load_spec(spec_path)
+    refresh_contract = None
+    if promotes_detail and spec_path.resolve() == corpus.DEFAULT_SPEC.resolve():
+        from siope_nonmunicipal_contract import apply_manifest, load_manifest, row_contract
+        manifest = load_manifest(candidate_manifest_path)
+        apply_manifest(spec, manifest)
+        datasets = corpus.validate_spec(spec)
+        refresh_contract = row_contract(manifest)
     selected = [item for item in datasets if item["id"] in dataset_ids]
     if {item["id"] for item in selected} != dataset_ids:
         raise AppendError("dataset SIOPE non presente nella specifica corpus")
@@ -139,7 +146,7 @@ def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog
         totals["catalogOnlyRows"] += receipt["publication"]["catalogOnlyRows"]
         totals["derivedOnlyRows"] += receipt["publication"]["derivedOnlyRows"]
         totals["sourceBytes"] += receipt["source"]["bytes"]
-    if promotes_detail and any(totals[field] != expected for field, expected in integrated_source_release.EXPECTED_DATASET_ROWS.items()):
+    if promotes_detail and any(totals[field] != expected for field, expected in (refresh_contract or integrated_source_release.EXPECTED_DATASET_ROWS).items()):
         raise AppendError("Contratto aggregato da revisionare prima della promozione: aggiornare EXPECTED_DATASET_ROWS e i contratti dipendenti secondo docs/SIOPE_NON_MUNICIPAL.md")
     preserved_entries = [entry for entry in existing_entries if entry["id"] not in dataset_ids]
     catalog = {"schemaVersion": 1, "generatedAt": spec["generatedAt"], "corpusContract": spec["corpusContract"], "totals": totals, "datasets": sorted([*preserved_entries, *new_entries], key=lambda entry: entry["id"])}
@@ -162,6 +169,7 @@ def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog
         protected_paths = {detail_path, view_proof_path, release_proof_path, provenance_path}
         candidate_detail_payload = candidate_detail_path.read_bytes()
         candidate_manifest_payload = candidate_manifest_path.read_bytes()
+        artifacts[provenance_path] = candidate_manifest_payload
 
         def seal_release() -> None:
             corpus.write_bytes(detail_path, candidate_detail_payload)

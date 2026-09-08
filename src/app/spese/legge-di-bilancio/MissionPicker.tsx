@@ -42,7 +42,7 @@ const percentage = new Intl.NumberFormat("it-IT", {
 const integerFmt = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 0 });
 
 function signedPercent(value: number | null): string {
-  if (value === null) return "n/d";
+  if (value === null) return "Non disponibile";
   const sign = value > 0 ? "+" : "";
   return `${sign}${value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 }

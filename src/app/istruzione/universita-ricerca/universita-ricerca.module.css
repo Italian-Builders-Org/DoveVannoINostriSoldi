@@ -65,7 +65,7 @@
 .track span {
   display: block;
   height: 100%;
-  background: var(--color-accent-700);
+  background: var(--chart-data-primary);
 }
 
 .metadata {

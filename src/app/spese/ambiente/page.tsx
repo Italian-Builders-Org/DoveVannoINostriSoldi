@@ -57,11 +57,6 @@ export default async function EnvironmentPage({ searchParams }: PageProps<"/spes
         <p>Il settore delle amministrazioni pubbliche comprende anche le istituzioni sociali private senza scopo di lucro al servizio delle famiglie (S13_15). Il totale dell’economia (S1) include inoltre famiglie e società: non rappresenta la sola spesa pubblica.</p>
       </section>
 
-      <div className="notice">
-        <strong>Conti di competenza, non pagamenti di cassa</strong>
-        <p>Questi importi non si sommano ai pagamenti SIOPE, agli stanziamenti RGS, al PNRR o ai sussidi SAD/SAF. Non misurano da soli efficacia delle politiche climatiche, spreco o qualità ambientale. La fonte qui esposta è nazionale: non attribuiamo quote a Comuni o regioni.</p>
-      </div>
-
       <div className={styles.columns}>
         <section className="panel" aria-labelledby="classes-title">
           <h2 id="classes-title" className="panel-title">Per attività ambientale · {view.year}</h2>
@@ -93,6 +88,13 @@ export default async function EnvironmentPage({ searchParams }: PageProps<"/spes
         </section>
       </div>
 
+      <details className="data-details">
+        <summary>Fonte, metodo e limiti</summary>
+      <div className="notice">
+        <strong>Conti di competenza, non pagamenti di cassa</strong>
+        <p>Questi importi non si sommano ai pagamenti SIOPE, agli stanziamenti RGS, al PNRR o ai sussidi SAD/SAF. Non misurano da soli efficacia delle politiche climatiche, spreco o qualità ambientale. La fonte qui esposta è nazionale: non attribuiamo quote a Comuni o regioni.</p>
+      </div>
+
       <section className="panel" aria-labelledby="source-title">
         <h2 id="source-title" className="panel-title">Fonte, periodo e limiti</h2>
         <p>ISTAT · Spese per la protezione dell’ambiente (EPEA). Periodo 2016-2022; edizione dichiarata 2025M2. Snapshot acquisito il {longDate(source.acquiredAt)}: la data di acquisizione non è l’anno della spesa.</p>
@@ -101,9 +103,10 @@ export default async function EnvironmentPage({ searchParams }: PageProps<"/spes
         <details className={styles.provenance}>
           <summary>Dettagli dello snapshot e limiti di riuso</summary>
           <p>Dataflow {source.dataflowId}. SHA-256 dei byte della fonte: <code>{source.sha256}</code>.</p>
-          <p>Licenza non dichiarata dalla risposta SDMX acquisita; non viene inferita. La pagina utilizza lo snapshot già versionato del progetto.</p>
+          <p>Licenza non dichiarata nella risposta SDMX acquisita.</p>
         </details>
       </section>
+      </details>
     </main>
   );
 }

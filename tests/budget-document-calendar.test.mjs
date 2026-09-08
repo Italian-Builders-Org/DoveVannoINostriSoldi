@@ -79,7 +79,7 @@ test("la pagina spiega limiti, stato e provenienza del calendario", async () => 
     "utf8",
   );
 
-  assert.match(page, /Quando escono i documenti che guidano i conti pubblici/);
+  assert.match(page, /Calendario dei documenti pubblici/);
   assert.match(page, /Una data non è un dato economico/);
   assert.match(page, /atteso.+non significa in ritardo/s);
   assert.match(page, /target="_blank"/);

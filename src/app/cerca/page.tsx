@@ -53,8 +53,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <div className="page-intro">
         <h1>Cerca nel sito</h1>
         <p>
-          Cerca tra pagine, sezioni, dataset, strumenti e il registro ufficiale degli enti. Le
-          corrispondenze sono ordinate con regole visibili e senza risultati generati.
+          Cerca pagine, dataset o enti pubblici.
         </p>
       </div>
 
@@ -85,7 +84,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {query.length > 0 && query.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH ? (
         <div className="notice warning-notice">
           <strong>Scrivi almeno due caratteri</strong>
-          <p>Così la ricerca resta utile e non sovraccarica il registro pubblico.</p>
+          <p>Puoi cercare anche per codice IPA.</p>
         </div>
       ) : null}
 

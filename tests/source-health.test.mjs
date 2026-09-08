@@ -91,6 +91,14 @@ function fakeLiveHealth(sourceId) {
   };
 }
 
+test("BES health keeps acquisition distinct from an unknown source publication date", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-salute"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 46157);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.equal(health.freshness.state, "unknown");
+});
+
 test("source health registry covers every operational source, including ANAC, INPS and CPT", async () => {
   assert.deepEqual(Object.keys(SOURCE_HEALTH_ADAPTERS), SOURCE_IDS);
   assert.ok(Object.values(SOURCE_HEALTH_ADAPTERS).every((adapter) => typeof adapter === "function"));
@@ -233,4 +241,13 @@ test("source health registry fails closed when an adapter is omitted", () => {
     (entry) => entry.sourceId !== "anac",
   );
   assert.throws(() => orderSourceHealth(incomplete), /Adapter operativo senza probe/);
+});
+
+
+test("BES Istruzione source health reports a snapshot without inventing publication freshness", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-istruzione"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 14952);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.match(health.detail, /76 celle ignote/);
 });

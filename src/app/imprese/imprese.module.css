@@ -48,9 +48,9 @@
 .headline {
   display: block;
   margin-top: var(--space-3);
-  color: var(--color-accent-900);
+  color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: clamp(38px, 5vw, 58px);
+  font-size: clamp(32px, 4vw, 46px);
   font-weight: var(--font-heading-weight);
   letter-spacing: -.055em;
   line-height: .98;
@@ -93,7 +93,7 @@
 .regionIdentity > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .detailRegion { display: inline-flex; align-items: center; gap: 9px; }
 .detailCard strong { font-size: 19px; }
-.detailCard b { color: var(--color-accent-900); font-size: 30px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.detailCard b { color: var(--color-text); font-size: 30px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .detailCard small { color: var(--color-neutral-700); font-size: 11px; }
 .sourceTitle { margin: 14px 0 2px; font-size: 16px; }
 .sourcePublisher { margin: 0; }
@@ -112,3 +112,22 @@
   .dashboardGrid { grid-template-columns: 1fr; }
   .dashboardGrid > .column:last-child { grid-column: auto; display: flex; }
 }
+
+@media (min-width: 801px) {
+  .mapPanel { --atlas-map-height: 400px; }
+  .rankingPanel :global(.table td), .rankingPanel :global(.table th[scope="row"]) { padding-block: 4px; }
+  .rankingPanel :global(.table th[scope="row"] a) { display: flex; align-items: center; min-height: 44px; }
+}
+
+.dashboardGrid { grid-template-columns: minmax(300px, .85fr) minmax(0, 1.5fr); grid-template-areas: "summary map" "detail map" "sector ranking" "sources sources"; align-items: stretch; }
+.dashboardGrid > .column, .dashboardGrid > .column:last-child { display: contents; }
+.summaryPanel { grid-area: summary; }
+.detailPanel { grid-area: detail; }
+.mapPanel { grid-area: map; display: flex; flex-direction: column; justify-content: space-between; }
+.sectorPanel { grid-area: sector; display: flex; flex-direction: column; }
+.sectorPanel .sectorList { flex: 1; justify-content: space-evenly; }
+.rankingPanel { grid-area: ranking; }
+.sourceDetails { grid-area: sources; }
+.sourceGrid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); align-items: start; }
+.dashboardGrid :global(.table a) { color: var(--color-text); }
+@media (max-width: 900px) { .dashboardGrid { grid-template-columns: 1fr; grid-template-areas: "summary" "map" "detail" "sector" "ranking" "sources"; } .sourceGrid { grid-template-columns: 1fr; } }

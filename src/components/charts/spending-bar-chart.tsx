@@ -30,15 +30,13 @@ const exactEuro = new Intl.NumberFormat("it-IT", {
 function compactEuro(value: number): string {
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000_000) return `${(value / 1_000_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mld €`;
-  if (absolute >= 1_000_000) return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 0 })} mln €`;
+  if (absolute >= 1_000_000) return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mln €`;
   if (absolute >= 1_000) return `${(value / 1_000).toLocaleString("it-IT", { maximumFractionDigits: 0 })} mila €`;
   return `${value.toLocaleString("it-IT", { maximumFractionDigits: 0 })} €`;
 }
 
 function shortLabel(label: string, maxLength = 38): string {
-  const normalized = label
-    .toLocaleLowerCase("it-IT")
-    .replace(/(^|[.!?]\s+)([a-zà-ú])/g, (match) => match.toLocaleUpperCase("it-IT"));
+  const normalized = label;
 
   return normalized.length > maxLength
     ? `${normalized.slice(0, Math.max(1, maxLength - 1)).trimEnd()}…`
@@ -50,11 +48,13 @@ export function SpendingBarChart({
   ariaLabel,
   maxItems = 10,
   height = 420,
+  color,
 }: {
   data: SpendingChartPoint[];
   ariaLabel: string;
   maxItems?: number;
   height?: number;
+  color?: string;
 }) {
   const chartData = data.slice(0, maxItems).map((point) => ({
     ...point,
@@ -114,7 +114,7 @@ export function SpendingBarChart({
               isAnimationActive={false}
             >
               {chartData.map((point, index) => (
-                <Cell key={`${point.code ?? point.label}-${index}`} fill={chartColor(index)} />
+                <Cell key={`${point.code ?? point.label}-${index}`} fill={color ?? chartColor(index)} />
               ))}
             </Bar>
           </BarChart>

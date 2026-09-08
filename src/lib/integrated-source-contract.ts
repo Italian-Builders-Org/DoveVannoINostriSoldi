@@ -1,19 +1,81 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import siopeManifest from "../data/generated/siope-nonmunicipal-provenance.json" with { type: "json" };
+
+export function siopeProjectionMeasurements(value: unknown) {
+  const projection = z.object({
+    bytes: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+    rows: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+  }).strict();
+  const native = z.object({
+    schemaVersion: z.literal(2),
+    scope: z.literal("non-municipal-payments"),
+    acquiredAt: z.string().regex(/^\d{4}-\d{2}-\d{2}T/),
+    releaseId: z.string().regex(/^[a-f0-9]{64}$/),
+    inputReceiptSha256: z.string().regex(/^[a-f0-9]{64}$/),
+    inputReceipt: z.object({
+      schemaVersion: z.literal(1),
+      scope: z.literal("non-municipal-payments-inputs"),
+      files: z.record(z.string(), z.object({
+        url: z.string(),
+        bytes: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+        sha256: z.string().regex(/^[a-f0-9]{64}$/),
+        acquisitionDate: z.string(),
+        etag: z.string().min(1).nullable(),
+        lastModified: z.string().min(1).nullable(),
+      }).strict()),
+    }).strict(),
+    sources: z.unknown(),
+    projections: z.object({
+      "siope-inventario-enti": projection,
+      "siope-uscite-asl": projection,
+      "siope-uscite-province": projection,
+      "siope-uscite-regioni": projection,
+      "siope-uscite-citta-metropolitane": projection,
+    }).strict(),
+  }).passthrough().parse(value);
+  const base = "https://www.siope.it/documenti/siope2/open/last";
+  const urls: Record<string, string> = {
+    "SIOPE_ANAGRAFICHE.zip": `${base}/SIOPE_ANAGRAFICHE.zip`,
+    "amministrazioni.txt": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
+    ...Object.fromEntries([2024, 2025, 2026].map((year) => [`SIOPE_USCITE.${year}.zip`, `${base}/SIOPE_USCITE.${year}.zip`])),
+  };
+  if (Object.keys(native.inputReceipt.files).length !== 5 ||
+      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/.test(native.acquiredAt) ||
+      !Number.isFinite(Date.parse(native.acquiredAt)) ||
+      Object.entries(urls).some(([name, url]) => native.inputReceipt.files[name]?.url !== url || native.inputReceipt.files[name]?.acquisitionDate !== native.acquiredAt)) {
+    throw new Error("SIOPE: provenienza divergente dalla ricevuta nativa");
+  }
+  if (sha256Hex(`${canonicalJson(native.inputReceipt)}\n`) !== native.inputReceiptSha256 ||
+      sha256Hex(canonicalJson({ inputReceiptSha256: native.inputReceiptSha256, projections: native.projections, sources: native.sources })) !== native.releaseId) {
+    throw new Error("SIOPE: misure divergenti dalla ricevuta nativa");
+  }
+  const rows = Object.values(native.projections).reduce((sum, item) => sum + item.rows, 0);
+  const bytes = Object.values(native.projections).reduce((sum, item) => sum + item.bytes, 0);
+  if (!Number.isSafeInteger(rows + 13_992_818) || !Number.isSafeInteger(bytes + 2_865_986_840)) {
+    throw new Error("SIOPE: totali fuori dal limite intero sicuro");
+  }
+  return { projections: native.projections, acquisitionDate: native.acquiredAt.slice(0, 10), rows, bytes };
+}
+
+const siopeMeasurements = siopeProjectionMeasurements(siopeManifest);
+const siopeRows = siopeMeasurements.rows;
+const siopeBytes = siopeMeasurements.bytes;
 
 export const INTEGRATED_CORPUS_CONTRACT = {
   archiveEntries: 51_303,
   regularFiles: 46_438,
   hardlinks: 4_860,
   symlinks: 5,
-  datasets: 91,
+  datasets: 93,
   sourceIdentities: 34_071,
   quarantinedSourceIdentities: 1_493,
-  sourceRows: 14_457_856,
-  publicRows: 1_475_510,
+  sourceRows: 13_992_818 + siopeRows,
+  publicRows: 1_010_472 + siopeRows,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 2_967_342_031,
+  sourceBytes: 2_865_986_840 + siopeBytes,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;

@@ -6,12 +6,6 @@ import type { RgsMinistry } from "@/lib/data/rgs-ministries-contract";
 import { institutionalCategoryColor } from "@/lib/chart-category-colors";
 import styles from "./ministry-commitment-treemap.module.css";
 
-const compactEuro = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
@@ -58,7 +52,7 @@ function shortLabel(code: string): string {
 
 function tile(props: TreemapNode) {
   const node = props as MinistryNode;
-  const showLabel = node.width >= 145 && node.height >= 62;
+  const showLabel = node.width >= Math.max(118, (node.shortLabel?.length ?? 0) * 7.5 + 24) && node.height >= 62;
   const showShare = node.width >= 155 && node.height >= 88;
 
   return (
@@ -68,18 +62,18 @@ function tile(props: TreemapNode) {
         y={node.y}
         width={node.width}
         height={node.height}
-        fill={institutionalCategoryColor(node.index)}
+        fill={`color-mix(in srgb, ${institutionalCategoryColor(node.index)} 40%, var(--color-raised))`}
         stroke="var(--color-raised)"
         strokeWidth={2}
       />
       {showLabel ? (
         <>
-          <text x={node.x + 12} y={node.y + 25} className={styles.tileLabel}>
+          <text x={node.x + node.width / 2} y={node.y + node.height / 2 - (showShare ? 12 : 0)} textAnchor="middle" className={styles.tileLabel}>
             {node.shortLabel}
           </text>
           {showShare ? (
-            <text x={node.x + 12} y={node.y + 47} className={styles.tileShare}>
-              {compactEuro.format((node.totalCpCents ?? 0) / 100)} · {percentage.format(node.share ?? 0)}
+            <text x={node.x + node.width / 2} y={node.y + node.height / 2 + 18} textAnchor="middle" className={styles.tileShare}>
+              {percentage.format(node.share ?? 0)}
             </text>
           ) : null}
         </>
@@ -133,9 +127,7 @@ export function MinistryCommitmentTreemap({ ministries }: { ministries: RgsMinis
         </ResponsiveContainer>
       </div>
       <figcaption id="ministeri-totale-cp-caption">
-        Ogni riquadro è un ministero: più è grande, più pesa sul totale impegnato nel 2025.
-        Quel totale è la somma di già pagato e ancora da pagare nell&apos;anno (nella fonte: Totale
-        CP = Pagato CP + Rimasto CP).
+        Quota sul totale impegnato nel 2025: pagato + ancora da pagare nell’anno (Totale CP = Pagato CP + Rimasto CP).
       </figcaption>
     </figure>
   );

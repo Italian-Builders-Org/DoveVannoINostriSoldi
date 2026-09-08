@@ -16,6 +16,7 @@ class WorkflowGovernanceTests(unittest.TestCase):
         "mef-participations-refresh.yml": "mef-participations",
         "public-debt-refresh.yml": "public-debt",
         "siope-refresh.yml": "siope-municipal",
+        "siope-nonmunicipal-refresh.yml": "siope-nonmunicipal",
     }
 
     def read(self, name):

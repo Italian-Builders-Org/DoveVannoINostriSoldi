@@ -1,3 +1,4 @@
+import { INTEGRATED_CORPUS_CONTRACT } from "../src/lib/integrated-source-contract.ts";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
@@ -24,8 +25,8 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   assert.equal(release.archiveReceipt.entries, 51_303);
   assert.equal(release.sourceCatalog.identities, 34_071);
   assert.equal(release.sourceCatalog.quarantined, 1_493);
-  assert.equal(release.datasets.sourceRows, 14_457_856);
-  assert.equal(release.datasets.publicRows, 1_475_510);
+  assert.equal(release.datasets.sourceRows, INTEGRATED_CORPUS_CONTRACT.sourceRows);
+  assert.equal(release.datasets.publicRows, INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.equal(release.datasets.catalogOnlyRows, 12_979_505);
   assert.equal(release.datasets.derivedOnlyRows, 2_841);
 
@@ -37,13 +38,13 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   );
 });
 
-test("all 91 datasets remain visible and only catalog dispositions decide row access", async () => {
+test("all 93 datasets remain visible and only catalog dispositions decide row access", async () => {
   const overview = await view.getIntegratedDataOverview();
   assert.equal(overview.complete, true);
-  assert.equal(overview.datasets.length, 91);
-  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 69);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), 14_457_856);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), 1_475_510);
+  assert.equal(overview.datasets.length, 93);
+  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 71);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), INTEGRATED_CORPUS_CONTRACT.sourceRows);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.ok(overview.datasets.every((dataset) => dataset.sourceMetadata.holder.length > 0));
   assert.ok(overview.datasets.every((dataset) => /^\d{4}-\d{2}-\d{2}$/.test(dataset.sourceMetadata.checkedAt)));
   assert.ok(overview.datasets.every((dataset) => dataset.provenanceHref === `/fonti/copertura#dataset-${dataset.id}`));
@@ -273,10 +274,10 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
     )));
   }
-  assert.equal(checked.length, 69);
+  assert.equal(checked.length, 71);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
-    1_475_510,
+    INTEGRATED_CORPUS_CONTRACT.publicRows,
   );
   assert.ok(checked.every((result) => result.rows.length === 1));
 });
@@ -382,7 +383,7 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
           loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
         )));
       }
-      if (loaded.length !== 69) throw new Error("Unexpected queryable dataset count");
+      if (loaded.length !== 71) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();
@@ -519,8 +520,8 @@ test("the server boundary and pages preserve missing, zero and async Next route 
   assert.match(detail, /dataset\.sourceMetadata\.canonicalUrls\.map/);
   assert.match(detail, /row\.sourceUrls\.map/);
   assert.match(detail, /DatasetInsightPanel|loadDatasetInsights/);
-  assert.match(detail, /Niente da scorrere qui|Torna ai numeri da leggere/);
-  assert.match(catalog, /Tutti i dataset integrati/);
+  assert.match(detail, /Righe non consultabili|Torna al catalogo/);
+  assert.match(catalog, /Catalogo dei dati/);
   assert.match(catalog, /parseCatalogQuery/);
   assert.match(catalog, /catalogViewHref/);
   assert.match(catalog, /filterBar/);

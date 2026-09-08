@@ -2,54 +2,62 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
 }
+
+.tables > section { display: flex; flex-direction: column; }
+.tables .shareList { flex: 1; justify-content: space-between; }
+.tables:has(details[open]) > section:last-child { align-self: start; }
 
 .tracePanel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, .65fr);
   gap: var(--space-6);
-  align-items: end;
+  align-items: center;
   margin: var(--space-6) 0;
-  padding: clamp(24px, 5vw, 52px);
-  color: var(--color-on-strong);
-  background: var(--color-neutral-900);
-  border-top: 3px solid var(--color-accent);
+  padding: var(--space-5);
+  color: var(--color-neutral-900);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
 }
 .tracePanel > div > span:first-child {
-  color: var(--color-accent-300);
+  color: var(--color-neutral-600);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
 .tracePanel h2 {
-  max-width: 18ch;
+  max-width: 34ch;
   margin: 8px 0 12px;
-  color: var(--color-on-strong);
-  font-size: clamp(30px, 5vw, 52px);
-  line-height: .98;
+  color: var(--color-neutral-900);
+  font-size: 24px;
+  line-height: 1.2;
   letter-spacing: -.04em;
 }
 .tracePanel p {
   max-width: 65ch;
   margin: 0;
-  color: var(--color-on-strong-muted);
+  color: var(--color-neutral-700);
 }
+.dimensionTables { grid-template-columns: minmax(0, 1fr); }
+
 .traceAction {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 8px;
 }
+.traceAction strong,
+.traceAction > span { grid-column: 1 / -1; }
 .traceAction strong {
-  color: var(--color-on-strong);
-  font-size: 32px;
+  color: var(--color-neutral-900);
+  font-size: 28px;
   letter-spacing: -.04em;
 }
 .traceAction span {
   margin-bottom: var(--space-3);
-  color: var(--color-on-strong-muted);
+  color: var(--color-neutral-700);
   font-size: 11px;
 }
 
@@ -150,4 +158,8 @@
     white-space: normal;
     text-align: left;
   }
+}
+
+@media (max-width: 420px) {
+  .traceAction { grid-template-columns: minmax(0, 1fr); }
 }

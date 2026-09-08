@@ -47,11 +47,9 @@ export default async function SourceCoveragePage() {
     <main className={`shell page ${styles.page}`}>
       <div className="page-intro">
         <p className={styles.eyebrow}>Copertura verificata</p>
-        <h1>Che cosa è stato integrato e contabilizzato</h1>
+        <h1>Copertura dei dati integrati</h1>
         <p>
-          Questa pagina chiude i denominatori: ogni elemento, ogni identità di fonte e ogni riga dei
-          dataset selezionati è contato. Essere nel registro non significa che il contenuto sia
-          adatto alla ripubblicazione o che descriva uno spreco.
+          Copertura di documenti, fonti e righe dei dataset. Il registro comprende anche materiale non ripubblicabile; la presenza non indica uno spreco.
         </p>
       </div>
 
@@ -78,15 +76,14 @@ export default async function SourceCoveragePage() {
         <div>
           <span className="stat-label">Stato del rilascio</span>
           <span className={styles.completeValue}>{coverage.complete ? "Completo" : "Non completo"}</span>
-          <span className="stat-note">il sito si arresta se le prove divergono</span>
+          <span className="stat-note">coerenza dei conteggi</span>
         </div>
       </section>
 
       <div className="notice">
         <strong>Copertura completa, uso selettivo</strong>
         <p>
-          Il registro mostra che niente è stato saltato. Poi si sceglie cosa entra nel prodotto e
-          cosa resta in quarantena. “Solo manifesto” non significa dato mancante.
+          Il registro distingue dati consultabili, materiale non pubblicabile e documenti censiti senza righe di dettaglio.
         </p>
       </div>
 
@@ -109,8 +106,7 @@ export default async function SourceCoveragePage() {
             <div><dt>Occorrenze complessive</dt><dd>{integer(coverage.sources.totalOccurrences)}</dd></div>
           </dl>
           <p className={styles.panelNote}>
-            Le {integer(coverage.sources.quarantined)} identità in quarantena restano traversabili con
-            un ID opaco e uno stato, ma senza esporre il valore sorgente.
+            Le {integer(coverage.sources.quarantined)} fonti non pubblicabili conservano identificativo e stato, senza esporre il contenuto.
           </p>
           <Link href="/fonti/catalogo">Apri il catalogo completo →</Link>
         </div>
@@ -137,7 +133,7 @@ export default async function SourceCoveragePage() {
               <tr>
                 <th scope="row">Solo catalogo</th>
                 <td className="num">{integer(coverage.datasets.catalogOnlyRows)}</td>
-                <td>Dataset visibile e contato, senza artefatto di righe pubbliche.</td>
+                <td>Dataset censito, senza righe pubbliche consultabili.</td>
               </tr>
               <tr>
                 <th scope="row">Solo derivati</th>

@@ -4,7 +4,7 @@
 
 **Direzione: “Il registro pubblico.”**
 
-DoveVannoINostriSoldi è un prodotto operativo di consultazione e verifica. Deve sembrare un documento pubblico contemporaneo: carta chiara, inchiostro nero, un solo accento rosso che indica dove guardare. Niente pannelli traslucidi, niente bagliori, niente angoli arrotondati.
+DoveVannoINostriSoldi è un prodotto operativo di consultazione e verifica. Deve sembrare un documento pubblico contemporaneo: carta chiara, inchiostro nero, un accento rosso per azioni ed evidenze e toni petrolio per i dati. Niente pannelli traslucidi, niente bagliori, niente angoli arrotondati.
 
 La direzione è **dati subito, fonte vicina, superfici piatte**.
 
@@ -27,7 +27,7 @@ I token vivono in `src/app/design-system.css`; la base e la chrome dell'applicaz
 
 ## 02 Colors
 
-La palette è grigio-carta caldo con un unico rosso di segnalazione. Evitare nero puro, bianco puro come fondo pagina, neon, glow e seconde tinte in competizione con l'accento.
+La palette è grigio-carta caldo con rosso di segnalazione e petrolio per mappe e serie quantitative. Evitare neon, glow e colori decorativi in competizione con i dati.
 
 ### Core tokens
 
@@ -35,7 +35,7 @@ La palette è grigio-carta caldo con un unico rosso di segnalazione. Evitare ner
 - `--color-surface: #eae9e9` — fondo secondario;
 - `--color-raised: #ffffff` — superficie dei pannelli;
 - `--color-text: #201e1d` — testo principale e fondo dei tooltip;
-- `--color-accent: #ec3013` — azione, evidenza, serie primaria;
+- `--color-accent: #ec3013` — azione ed evidenza;
 - `--color-accent-2: #e15b47` — accento secondario, usato di rado;
 - `--color-divider` — separatore calcolato dal testo.
 
@@ -66,28 +66,25 @@ La palette è grigio-carta caldo con un unico rosso di segnalazione. Evitare ner
 
 ### Token per le visualizzazioni
 
-`--chart-primary` è l'accento; `--chart-secondary…quinary` scendono lungo la rampa neutra. Una serie accentata su contesto neutro, mai un arcobaleno generico.
+`--chart-primary` usa il petrolio `--chart-data-primary`; `--chart-secondary…quaternary` usano la rampa neutra. Una serie principale su contesto neutro, mai un arcobaleno generico.
 
-Per le sole composizioni additive istituzionali (treemap Ministeri / Palazzo Chigi / Regioni) esistono `--chart-category-blue|teal|purple|amber|green|slate`: famiglie leggibili con testo bianco, senza usare il rosso come colore di categoria. Il rosso resta per CTA, evidenza e warning.
+Per le sole composizioni additive istituzionali (treemap Ministeri / Palazzo Chigi / Regioni) esistono `--chart-category-blue|teal|purple|amber|green|slate`: famiglie miscelate al 40% con il bianco, con testo inchiostro leggibile, senza usare il rosso come colore di categoria. Il rosso resta per CTA, evidenza e warning.
 
-La coropleta regionale usa cinque passi sequenziali — `accent-200, accent-300, accent-400, accent-600, accent-800` — con contorno `--color-neutral-500` da 1px. Due vincoli, entrambi verificati a schermo:
-
-- **il passo più chiaro deve staccarsi dal pannello bianco.** Partire da `accent-100` rende invisibili le regioni con la spesa più bassa: la rampa parte da `accent-200`;
-- **il contorno non può essere bianco.** Due regioni chiare adiacenti con bordo bianco si leggono come una macchia sola. Il grigio medio funziona sotto tutti e cinque i passi.
+Le coroplete regionali usano cinque passi sequenziali `--chart-map-1…5`, dal petrolio chiaro allo scuro, con contorno `--color-neutral-500` da 1px. Il passo più chiaro deve distinguersi dal pannello bianco; i confini restano leggibili anche fra due regioni chiare. `--chart-data-primary` e `--chart-data-track` sono i ruoli per serie quantitative senza significato di allarme.
 
 Regione selezionata: contorno `--color-text` da 2px. Regione senza dato: `--color-neutral-200`.
 
 ## 03 Typography
 
-Un'unica famiglia: **Geist**, caricata con `next/font/google` e self-hosted. `--font-heading-weight: 800` per titoli ed etichette, 400–600 per il testo. `--font-mono` è riservato a codice, identificativi e valori tecnici; etichette, testo editoriale e titoli usano sempre i token Geist.
+Un'unica famiglia: **Geist**, caricata con `next/font/google` e self-hosted. `--font-heading-weight: 600` per titoli ed etichette, 400–600 per il testo. `--font-mono` è riservato a codice, identificativi e valori tecnici; etichette, testo editoriale e titoli usano sempre i token Geist.
 
 ### Ramp
 
-- `h1` di pagina: 30px, `letter-spacing: -.02em`;
-- numero principale di un pannello: 38px, 800;
-- numero di una banda statistica: 24px, 800;
+- `h1` di pagina: da 28 a 40px, peso 600, `letter-spacing: -.025em`;
+- numero principale di un pannello: 38px, 600;
+- numero di una banda statistica: 24px, 600;
 - corpo: 14px (13,5px sotto i 620px), `line-height: 1.55`;
-- etichetta di pannello (`.panel-title`): 11px, 800, maiuscolo, `letter-spacing: .09em`;
+- etichetta di pannello (`.panel-title`): 11px, 600, maiuscolo, `letter-spacing: .09em`;
 - didascalia e nota: 12px, `neutral-600`.
 
 La scala spaziale condivisa è 4/8/12/16/20/24/32px (`--space-1/2/3/4/5/6/8`). Le eccezioni ottiche restano locali e motivate; valori ricorrenti non devono essere riscritti pagina per pagina.
@@ -102,7 +99,7 @@ Tutto in `src/lib/format.ts`. Sono regole di lettura, non di stile:
 - **Decimali fissi nella forma compatta**: due per i miliardi, uno per i milioni. “5 mld €” in mezzo a “10,74 mld €” rompe l'incolonnamento.
 - **Una sola unità per colonna** (`compactEuroLike`). Una classifica che passa da “mld” a “mln” a metà elenco costringe a ri-scalare ogni riga: la colonna sceglie l'unità dal valore più grande e la tiene per tutti.
 - **Compatto più esatto**: il titolo mostra “70,94 mld €”, la riga sotto “70.936.770.818,54 € esatti”. Il lettore deve poter riconciliare quello che stampiamo con il file della fonte.
-- **Mai un numero al posto di un buco**: “n.d.”, “non disponibile” o “non ancora collegata”, mai una stima travestita da dato.
+- **Mai un numero al posto di un buco**: “Non disponibile” o “non ancora collegata”, mai una stima travestita da dato.
 
 ## 04 Elevation
 
@@ -124,11 +121,15 @@ La gerarchia si costruisce con il fondo e una linea da 1px, non con l'ombra:
 
 ### Navigation
 
-Header su una riga: marchio con firma tricolore, ricerca, azione. Sotto, la barra delle sezioni con sottolineatura accentata sulla voce corrente. Sotto i 900px l'header va a capo e la ricerca prende tutta la riga; la barra delle sezioni scorre orizzontalmente senza scrollbar visibile.
+Header su una riga con marchio, ricerca e azioni. Da 1100px la navigazione è una sidebar con sottomenu a fisarmonica: la sezione corrente si apre automaticamente. L'altezza delle righe si adatta agli schermi bassi; i sottomenu lunghi scorrono dentro la sidebar. Sotto 1100px la ricerca si apre da un pulsante e la navigazione usa il menu mobile. Escape chiude la ricerca e restituisce il focus.
+
+Una banda di pubblicazione presenta una frase e il collegamento al report o allo studio. La rotazione ogni sette secondi si ferma con hover, focus, pausa, pagina nascosta e movimento ridotto. I controlli testuali si mostrano al focus da tastiera.
 
 ### Dashboard
 
-La home è una griglia a tre colonne (`360px | 1fr | 300px`): lettura/composizione, geografia, dettaglio. A 1320px la colonna destra diventa una banda di moduli a piena larghezza; a 900px tutto segue lo stesso ordine DOM in colonna singola. La classifica dei Comuni non precede mai la mappa.
+La home ha due colonne: totale e composizione accanto alla mappa, andamento mensile accanto alla classifica regionale. I pannelli della stessa riga condividono i bordi superiore e inferiore. Sotto 900px l'ordine è totale, mappa, mesi, regioni. Non aggiungere moduli per riempire spazi vuoti.
+
+Le pagine tematiche mostrano prima domanda, dato, periodo e filtri. Fonti, definizioni e limiti estesi rimangono disponibili in dettagli espandibili sotto i risultati; le qualifiche indispensabili per interpretare il valore restano vicine al dato. Usare “Non disponibile” al posto di sigle ambigue, senza confondere celle vuote, oscurate e zero.
 
 ### Composizione della spesa
 
@@ -146,7 +147,7 @@ Use: fotografia additiva dello stesso totale, categorie mutuamente esclusive, co
 
 ### Stat strip
 
-`.stat-strip`: una banda bianca divisa in colonne, ognuna con etichetta maiuscola piccola, valore in Geist 800 e nota esplicativa. Etichetta, valore e nota sono `display: block` e stanno su righe separate — accostati sulla stessa riga il numero si attacca all'etichetta e diventa illeggibile. Quattro colonne su desktop, due sotto i 900px, una sotto i 620px.
+`.stat-strip`: una banda bianca divisa in colonne, ognuna con etichetta maiuscola piccola, valore in Geist 600 e nota esplicativa. Etichetta, valore e nota sono `display: block` e stanno su righe separate — accostati sulla stessa riga il numero si attacca all'etichetta e diventa illeggibile. Quattro colonne su desktop, due sotto i 900px, una sotto i 620px.
 
 ### Bar rows
 
@@ -188,7 +189,7 @@ Transizioni brevi (140ms, `--ease-out`) su colore e sfondo. Nessuna animazione d
 
 - Nessuna larghezza fissa sui contenitori di pagina.
 - Nessun `border-radius`, gradiente decorativo o ombra su una superficie che non sta sopra la pagina.
-- Nessun secondo colore d'accento per “dare varietà”: il rosso indica, il resto è neutro.
+- Nessun colore aggiunto per “dare varietà”: usare i ruoli quantitativi, istituzionali e di stato dichiarati.
 - Nessun colore scritto a mano in un componente o in un modulo CSS.
 - Nessun numero senza fonte e senza data.
 - Nessuna parola che trasformi un segnale in un'accusa.

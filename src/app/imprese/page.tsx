@@ -36,7 +36,7 @@ function first(value: string | string[] | undefined): string | undefined {
 }
 
 function compactCount(value: number | null): string {
-  if (value === null) return "n.d.";
+  if (value === null) return "Non disponibile";
   if (Math.abs(value) >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mln`;
   }
@@ -46,8 +46,7 @@ function compactCount(value: number | null): string {
   return integer(Math.round(value));
 }
 
-function compactTurnover(value: number | null): string {
-  if (value === null) return "n.d.";
+function compactTurnover(value: number): string {
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mld €`;
@@ -58,8 +57,7 @@ function compactTurnover(value: number | null): string {
   return `${integer(Math.round(value))} mila €`;
 }
 
-function compactEuroPerEmployee(value: number | null): string {
-  if (value === null) return "n.d.";
+function compactEuroPerEmployee(value: number): string {
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" })} mln € / addetto`;
@@ -71,7 +69,7 @@ function compactEuroPerEmployee(value: number | null): string {
 }
 
 function formatIstatValue(value: number | null, format: IstatMetricFormat): string {
-  if (value === null) return "n.d.";
+  if (value === null) return "Non disponibile";
   switch (format) {
     case "thousand-euro":
       return compactTurnover(value);
@@ -158,15 +156,14 @@ export default async function ImpresePage({
       <main className={`shell ${styles.dashboard}`}>
         <header className={styles.hero}>
           <div>
-            <span className={styles.kicker}>Modulo Imprese · Stima anticipata ISTAT 2024</span>
+            <span className={styles.kicker}>Stima anticipata ISTAT 2024</span>
             <h1>Atlante Imprese Italia</h1>
             <p>
-              Dove si concentrano fatturato, addetti, unità locali e valore aggiunto del sistema produttivo?
-              Esplora i dati aggregati del Registro Frame Territoriale Anticipato 2024 per regione e macro-settore economico.
+              Fatturato, addetti, unità locali e valore aggiunto per regione e macro-settore. Stima anticipata ISTAT 2024.
             </p>
           </div>
           <div className={styles.heroMeta}>
-            <span className="tag tag-accent">Solo dati aggregati</span>
+
             <span>ATECO 2007 agg. 2022 · 20 regioni</span>
             <Link href="/metodologia">Come leggiamo i numeri →</Link>
           </div>
@@ -187,16 +184,16 @@ export default async function ImpresePage({
 
         <div className={styles.dashboardGrid}>
           <div className={styles.column}>
-            <section className="panel" aria-labelledby="scope-title">
+            <section className={`panel ${styles.summaryPanel}`} aria-labelledby="scope-title">
               <div className={styles.panelHead}>
-                <h2 id="scope-title" className="panel-title">Perimetro selezionato</h2>
-                <span className="status status-attiva">Snapshot ISTAT</span>
+                <h2 id="scope-title" className="panel-title">Dato selezionato</h2>
+
               </div>
-              <strong className={styles.headline}>{formatIstatValue(turnoverView.nationalValue, turnoverView.metricFormat)}</strong>
-              <p className={styles.headlineNote}>{turnoverView.metricUnit} · {turnoverView.periodLabel}</p>
+              <strong className={styles.headline}>{formatIstatValue(turnoverView.nationalValue, turnoverView.metricFormat).replace(" / addetto", "")}</strong>
+              <p className={styles.headlineNote}>{turnoverView.metricFormat === "thousand-euro" ? "Importo in euro" : turnoverView.metricUnit} · {turnoverView.periodLabel}</p>
 
               <dl className={styles.factRows}>
-                <div><dt>Metrica</dt><dd>{turnoverView.metricLabel}</dd></div>
+                <div><dt>Indicatore</dt><dd>{turnoverView.metricLabel}</dd></div>
                 <div><dt>Territorio</dt><dd>{visibleRegion?.name ?? "Tutta Italia"}</dd></div>
                 <div><dt>Settore</dt><dd>{turnoverView.selectedSectorLabel}</dd></div>
                 <div><dt>Classificazione</dt><dd>ATECO 2007 agg. 2022</dd></div>
@@ -206,7 +203,7 @@ export default async function ImpresePage({
               <Link className="btn btn-block" href="/metodologia">Metodo e definizioni</Link>
             </section>
 
-            <section className="panel" aria-labelledby="sector-title">
+            <section className={`panel ${styles.sectorPanel}`} aria-labelledby="sector-title">
               <div className={styles.panelHead}>
                 <h2 id="sector-title" className="panel-title">
                   {turnoverView.metricFormat === "euro-per-employee" ? "Confronto per macro-settore" : "Distribuzione per macro-settore"}
@@ -228,7 +225,7 @@ export default async function ImpresePage({
                       <i aria-hidden="true"><b style={{ width: `${relativeWidth}%` }} /></i>
                       <small>
                         {sector.value === null
-                          ? "n.d."
+                          ? "Non disponibile"
                           : turnoverView.metricFormat === "euro-per-employee"
                             ? "confronto tra macro-settori"
                             : `${percent(share)} del perimetro osservato`}
@@ -253,7 +250,7 @@ export default async function ImpresePage({
               <CompanyAtlasMap
                 regions={turnoverView.regionPoints}
                 selectedRegion={turnoverView.region === "ALL" ? "all" : turnoverView.region}
-                metricUnit={turnoverView.metricUnit}
+                metricUnit={turnoverView.metricFormat === "thousand-euro" ? "euro" : turnoverView.metricUnit}
                 valueFormat={turnoverView.metricFormat}
               />
               <p className={styles.attribution}>
@@ -261,7 +258,7 @@ export default async function ImpresePage({
               </p>
             </section>
 
-            <section className="panel" aria-labelledby="ranking-title">
+            <section className={`panel ${styles.rankingPanel}`} aria-labelledby="ranking-title">
               <div className={styles.panelHead}>
                 <h2 id="ranking-title" className="panel-title">Prime 10 regioni</h2>
                 <span className={styles.headNote}>{turnoverView.metricUnit}</span>
@@ -290,36 +287,29 @@ export default async function ImpresePage({
           </div>
 
           <div className={styles.column}>
-            <section className="panel" aria-labelledby="detail-title">
+            <section className={`panel ${styles.detailPanel}`} aria-labelledby="detail-title">
               <div className={styles.panelHead}>
-                <h2 id="detail-title" className="panel-title">Lettura rapida</h2>
-                <span className="tag tag-neutral">{turnoverView.matchedObservationCount} territorio</span>
-              </div>
-              <div className={styles.detailCard}>
-                <span className={styles.detailLabel}>Regione in evidenza</span>
-                {visibleRegion ? (
-                  <div className={styles.detailRegion}>
-                    <RegionCrest regionCode={visibleRegion.code} regionName={visibleRegion.name} decorative />
-                    <strong>{visibleRegion.name}</strong>
-                  </div>
-                ) : <strong>Italia</strong>}
-                <b>{formatIstatValue(visibleRegion?.value ?? turnoverView.nationalValue, turnoverView.metricFormat)}</b>
-                <small>{turnoverView.metricUnit} · {turnoverView.selectedSectorLabel}</small>
+                <h2 id="detail-title" className="panel-title">Aggiornamento dei dati</h2>
+
               </div>
               <dl className={styles.factRows}>
                 <div><dt>Ultimo aggiornamento fonte</dt><dd>{longDate(source.updatedAt)}</dd></div>
-                <div><dt>Controllo snapshot</dt><dd>{longDate(source.observedAt)}</dd></div>
+                <div><dt>Verificato da noi</dt><dd>{longDate(source.observedAt)}</dd></div>
                 <div><dt>Cadenza prevista</dt><dd>{source.cadence}</dd></div>
                 <div><dt>Copertura</dt><dd>{source.coverage}</dd></div>
               </dl>
             </section>
 
+            <details className={`data-details ${styles.sourceDetails}`}>
+            <summary>Fonti, metodo e copertura</summary>
+            <div className={styles.sourceGrid}>
             <section className="panel" aria-labelledby="source-title">
               <div className={styles.panelHead}>
                 <h2 id="source-title" className="panel-title">Fonte del numero</h2>
                 <span className="status status-attiva">CC BY 4.0</span>
               </div>
-              <h3 className={styles.sourceTitle}>{source.label}</h3>
+              <p className={styles.note}>{integer(turnoverView.matchedObservationCount)} osservazioni utilizzate.</p>
+            <h3 className={styles.sourceTitle}>{source.label}</h3>
               <p className={styles.sourcePublisher}>{source.publisher}</p>
               {turnoverView.caveats.map((caveat) => (
                 <p className={styles.sourceCaveat} key={caveat}>{caveat}</p>
@@ -328,7 +318,7 @@ export default async function ImpresePage({
             </section>
 
             <aside className={`notice ${styles.boundaryNotice}`}>
-              <strong>Confine del modulo</strong>
+              <strong>Cosa includono i dati</strong>
               <p>
                 Qui non troverai nomi di aziende, identificativi, codici fiscali, partite IVA, fatturati o bilanci
                 esatti di singole imprese. Il dato è un aggregato regionale e per macro-settore (Industria/Servizi)
@@ -337,6 +327,8 @@ export default async function ImpresePage({
               </p>
               <Link href="/fonti">Vedi tutte le fonti e le licenze →</Link>
             </aside>
+            </div>
+          </details>
           </div>
         </div>
         <RegionCrestAttribution />
@@ -368,15 +360,14 @@ export default async function ImpresePage({
     <main className={`shell ${styles.dashboard}`}>
       <header className={styles.hero}>
         <div>
-          <span className={styles.kicker}>Modulo Imprese · Atlante Economico Italiano</span>
+
           <h1>Atlante Imprese Italia</h1>
           <p>
-            Dove si concentra il tessuto produttivo italiano? Esplora imprese attive, addetti,
-            localizzazioni e fasce di valore della produzione, regione per regione.
+            Imprese attive, addetti, localizzazioni e fasce di valore della produzione per regione.
           </p>
         </div>
         <div className={styles.heroMeta}>
-          <span className="tag tag-accent">Solo dati aggregati</span>
+
           <span>ATECO 2025 · 20 regioni</span>
           <Link href="/metodologia">Come leggiamo i numeri →</Link>
         </div>
@@ -391,16 +382,16 @@ export default async function ImpresePage({
 
       <div className={styles.dashboardGrid}>
         <div className={styles.column}>
-          <section className="panel" aria-labelledby="scope-title">
+          <section className={`panel ${styles.summaryPanel}`} aria-labelledby="scope-title">
             <div className={styles.panelHead}>
-              <h2 id="scope-title" className="panel-title">Perimetro selezionato</h2>
-              <span className="status status-attiva">Snapshot</span>
+              <h2 id="scope-title" className="panel-title">Dato selezionato</h2>
+
             </div>
             <strong className={styles.headline}>{compactCount(view.nationalValue)}</strong>
-            <p className={styles.headlineNote}>{view.metricUnit} · {view.periodLabel}</p>
+            <p className={styles.headlineNote}>{view.metricUnit} · {/^\d{4}-\d{2}-\d{2}$/.test(view.periodLabel) ? longDate(view.periodLabel) : view.periodLabel}</p>
 
             <dl className={styles.factRows}>
-              <div><dt>Metrica</dt><dd>{view.metricLabel}</dd></div>
+              <div><dt>Indicatore</dt><dd>{view.metricLabel}</dd></div>
               <div><dt>Territorio</dt><dd>{visibleRegion?.name ?? "Tutta Italia"}</dd></div>
               <div><dt>Settore</dt><dd>{view.selectedSectorLabel}</dd></div>
               {view.metric === "production_value_band_count" ? (
@@ -412,7 +403,7 @@ export default async function ImpresePage({
             <Link className="btn btn-block" href="/metodologia">Metodo e definizioni</Link>
           </section>
 
-          <section className="panel" aria-labelledby="sector-title">
+          <section className={`panel ${styles.sectorPanel}`} aria-labelledby="sector-title">
             <div className={styles.panelHead}>
               <h2 id="sector-title" className="panel-title">Dove si concentra l&apos;attività</h2>
               <span className={styles.headNote}>prime 7 sezioni</span>
@@ -424,7 +415,7 @@ export default async function ImpresePage({
                   <li key={sector.code}>
                     <div className={styles.sectorLabel}><b>{sector.code}</b><span>{sector.label}</span><strong>{compactCount(sector.value)}</strong></div>
                     <i aria-hidden="true"><b style={{ width: `${share}%` }} /></i>
-                    <small>{sector.value === null ? "n.d." : percent(share)} del perimetro settoriale</small>
+                    <small>{sector.value === null ? "Non disponibile" : percent(share)} del perimetro settoriale</small>
                   </li>
                 );
               })}
@@ -437,7 +428,7 @@ export default async function ImpresePage({
           <section className={`panel ${styles.mapPanel}`} aria-labelledby="map-panel-title">
             <div className={styles.panelHead}>
               <h2 id="map-panel-title" className="panel-title">{view.metricLabel} per regione</h2>
-              <span className={styles.headNote}>{view.periodLabel}</span>
+              <span className={styles.headNote}>{/^\d{4}-\d{2}-\d{2}$/.test(view.periodLabel) ? longDate(view.periodLabel) : view.periodLabel}</span>
             </div>
             <CompanyAtlasMap
               regions={view.regionPoints}
@@ -449,7 +440,7 @@ export default async function ImpresePage({
             </p>
           </section>
 
-          <section className="panel" aria-labelledby="ranking-title">
+          <section className={`panel ${styles.rankingPanel}`} aria-labelledby="ranking-title">
             <div className={styles.panelHead}>
               <h2 id="ranking-title" className="panel-title">Prime 10 regioni</h2>
               <span className={styles.headNote}>valore assoluto</span>
@@ -473,34 +464,27 @@ export default async function ImpresePage({
         </div>
 
         <div className={styles.column}>
-          <section className="panel" aria-labelledby="detail-title">
+          <section className={`panel ${styles.detailPanel}`} aria-labelledby="detail-title">
             <div className={styles.panelHead}>
-              <h2 id="detail-title" className="panel-title">Lettura rapida</h2>
-              <span className="tag tag-neutral">{view.matchedObservationCount} righe</span>
-            </div>
-            <div className={styles.detailCard}>
-              <span className={styles.detailLabel}>Regione in evidenza</span>
-              {visibleRegion ? (
-                <div className={styles.detailRegion}>
-                  <RegionCrest regionCode={visibleRegion.code} regionName={visibleRegion.name} decorative />
-                  <strong>{visibleRegion.name}</strong>
-                </div>
-              ) : <strong>Italia</strong>}
-              <b>{compactCount(visibleRegion?.value ?? view.nationalValue)}</b>
-              <small>{view.metricUnit} · {view.selectedSectorLabel}</small>
+              <h2 id="detail-title" className="panel-title">Aggiornamento dei dati</h2>
+
             </div>
             <dl className={styles.factRows}>
               <div><dt>Ultimo aggiornamento fonte</dt><dd>{longDate(source.updatedAt)}</dd></div>
-              <div><dt>Controllo snapshot</dt><dd>{longDate(source.observedAt)}</dd></div>
+              <div><dt>Verificato da noi</dt><dd>{longDate(source.observedAt)}</dd></div>
               <div><dt>Cadenza prevista</dt><dd>{source.cadence}</dd></div>
             </dl>
           </section>
 
-          <section className="panel" aria-labelledby="source-title">
+          <details className={`data-details ${styles.sourceDetails}`}>
+            <summary>Fonti, metodo e copertura</summary>
+            <div className={styles.sourceGrid}>
+            <section className="panel" aria-labelledby="source-title">
             <div className={styles.panelHead}>
               <h2 id="source-title" className="panel-title">Fonte del numero</h2>
               <span className="status status-attiva">CC BY 4.0</span>
             </div>
+            <p className={styles.note}>{integer(view.matchedObservationCount)} osservazioni utilizzate.</p>
             <h3 className={styles.sourceTitle}>{source.label}</h3>
             <p className={styles.sourcePublisher}>{source.publisher}</p>
             <p className={styles.sourceCaveat}>{source.caveat}</p>
@@ -508,7 +492,7 @@ export default async function ImpresePage({
           </section>
 
           <aside className={`notice ${styles.boundaryNotice}`}>
-            <strong>Confine del modulo</strong>
+            <strong>Cosa includono i dati</strong>
             <p>
               Qui non troverai nomi di aziende, identificativi o fatturato esatto. Il dato business
               più vicino è una fascia di valore della produzione derivata dai bilanci, quindi resta
@@ -516,6 +500,8 @@ export default async function ImpresePage({
             </p>
             <Link href="/fonti">Vedi tutte le fonti e le licenze →</Link>
           </aside>
+            </div>
+          </details>
         </div>
       </div>
         <RegionCrestAttribution />

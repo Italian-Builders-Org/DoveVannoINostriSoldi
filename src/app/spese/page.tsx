@@ -66,7 +66,7 @@ export default async function MoneyPage({
     const isPartial = partialMonth(comparisonData) !== null;
     return {
       year: comparisonYear,
-      share: share === null ? "n.d." : percent(share * 100),
+      share: share === null ? "Non disponibile" : percent(share * 100),
       isPartial,
       period: isPartial
         ? `gennaio-${comparisonData.latestMonthLabel.toLocaleLowerCase("it-IT")} · parziale`
@@ -115,6 +115,105 @@ export default async function MoneyPage({
         </div>
       </div>
 
+
+      <div className={styles.split}>
+        <section className="panel">
+          <h2 className="panel-title">Le {data.titles.length} voci di uscita</h2>
+
+
+          <ol className={styles.titleList}>
+            {titles.map((title) => (
+              <li key={title.code}>
+                <div className={styles.titleHead}>
+                  <h3>
+                    {title.copy.name}
+                    <small> · {title.copy.official}</small>
+                  </h3>
+                  <b>
+                    {compactEuro(title.value)} · {percent(title.share)}
+                  </b>
+                </div>
+                <div className={styles.titleTrack} aria-hidden="true">
+                  <i style={{ width: `${title.share}%` }} />
+                </div>
+                <p>{title.copy.explanation}</p>
+                <small>Valore esatto: {exactEuro(title.value)}.</small>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <div className={styles.aside}>
+          <section className="panel">
+            <h2 className="panel-title">Mese per mese · mld €</h2>
+            <ul className={styles.monthList}>
+              {data.monthly.map((point) => {
+                const running = point.month === runningMonth;
+                return (
+                  <li key={point.month}>
+                    <span>
+                      {point.label}
+                      {running ? "*" : ""}
+                    </span>
+                    <i aria-hidden="true">
+                      <b
+                        className={running ? styles.running : undefined}
+                        style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
+                      />
+                    </i>
+                    <b className="num-tabular">{billions(point.flow)}</b>
+                  </li>
+                );
+              })}
+            </ul>
+            {runningMonth === null ? (
+              <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
+            ) : (
+              <p className={styles.note}>
+                *{data.latestMonthLabel} è parziale: il dato può cambiare.
+              </p>
+            )}
+          </section>
+
+          <section className="panel">
+            <h2 className="panel-title">Flusso e cumulato · mld €</h2>
+            <div className="table-scroll" role="region" aria-label="Flusso mensile e cumulato delle spese" tabIndex={0}>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Mese</th>
+                    <th scope="col" className="num">Pagato</th>
+                    <th scope="col" className="num">Cumulato</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.monthly.map((point) => (
+                    <tr key={point.month}>
+                      <th scope="row">
+                        {point.label}
+                        {point.month === runningMonth ? "*" : ""}
+                      </th>
+                      <td className="num">{billions(point.flow)}</td>
+                      <td className="num">{billions(point.cumulative)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <IntegratedSectionPreview
+        section="spese"
+        title="Dai pagamenti alle singole voci operative"
+        description="Eventi, campagne, affitti, missioni, auto e rimborsi hanno anteprime dedicate e pagine con record, fonti e limiti."
+        hubHref="/spese/operative"
+        limit={3}
+      />
+
+      <details className={styles.method}>
+        <summary>Fonti, copertura e confronti</summary>
       <section
         className="notice scope-notice"
         aria-labelledby="spese-scope-title"
@@ -132,12 +231,8 @@ export default async function MoneyPage({
         </p>
       </section>
 
-      <div className={styles.split}>
-        <section className="panel">
-          <h2 className="panel-title">Le {data.titles.length} voci di uscita</h2>
-
           <section className={styles.analysis} aria-labelledby="spese-analysis-title">
-            <h3 id="spese-analysis-title">Il {titleOneShareLabel} è tanto o poco?</h3>
+            <h3 id="spese-analysis-title">Quota di spesa corrente: {titleOneShareLabel}</h3>
             <p className={styles.analysisLead}>
               È la quota dei pagamenti per <strong>spese correnti</strong> (Titolo 1 nella fonte
               SIOPE) sul totale delle uscite comunali nel periodo selezionato. Misura di cassa e
@@ -205,7 +300,7 @@ export default async function MoneyPage({
                   <dt>Soglia al 25% dei residenti</dt>
                   <dd>
                     {data.distribution.perCapita.residentWeighted.p25 === null
-                      ? "n.d."
+                      ? "Non disponibile"
                       : exactEuro(data.distribution.perCapita.residentWeighted.p25)}
                   </dd>
                 </div>
@@ -213,7 +308,7 @@ export default async function MoneyPage({
                   <dt>Mediana residenti</dt>
                   <dd>
                     {data.distribution.perCapita.residentWeighted.p50 === null
-                      ? "n.d."
+                      ? "Non disponibile"
                       : exactEuro(data.distribution.perCapita.residentWeighted.p50)}
                   </dd>
                 </div>
@@ -221,7 +316,7 @@ export default async function MoneyPage({
                   <dt>Soglia al 75% dei residenti</dt>
                   <dd>
                     {data.distribution.perCapita.residentWeighted.p75 === null
-                      ? "n.d."
+                      ? "Non disponibile"
                       : exactEuro(data.distribution.perCapita.residentWeighted.p75)}
                   </dd>
                 </div>
@@ -229,7 +324,7 @@ export default async function MoneyPage({
                   <dt>Mediana dei Comuni</dt>
                   <dd>
                     {data.distribution.perCapita.municipalityWeighted.p50 === null
-                      ? "n.d."
+                      ? "Non disponibile"
                       : exactEuro(data.distribution.perCapita.municipalityWeighted.p50)}
                   </dd>
                 </div>
@@ -249,99 +344,6 @@ export default async function MoneyPage({
             </div>
           </section>
 
-          <ol className={styles.titleList}>
-            {titles.map((title) => (
-              <li key={title.code}>
-                <div className={styles.titleHead}>
-                  <h3>
-                    {title.copy.name}
-                    <small> · {title.copy.official}</small>
-                  </h3>
-                  <b>
-                    {compactEuro(title.value)} · {percent(title.share)}
-                  </b>
-                </div>
-                <div className={styles.titleTrack} aria-hidden="true">
-                  <i style={{ width: `${title.share}%` }} />
-                </div>
-                <p>{title.copy.explanation}</p>
-                <small>Valore esatto: {exactEuro(title.value)}.</small>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <div className={styles.aside}>
-          <section className="panel">
-            <h2 className="panel-title">Mese per mese · mld €</h2>
-            <ul className={styles.monthList}>
-              {data.monthly.map((point) => {
-                const running = point.month === runningMonth;
-                return (
-                  <li key={point.month}>
-                    <span>
-                      {point.label}
-                      {running ? "*" : ""}
-                    </span>
-                    <i aria-hidden="true">
-                      <b
-                        className={running ? styles.running : undefined}
-                        style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
-                      />
-                    </i>
-                    <b className="num-tabular">{billions(point.flow)}</b>
-                  </li>
-                );
-              })}
-            </ul>
-            {runningMonth === null ? (
-              <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
-            ) : (
-              <p className={styles.note}>
-                *{data.latestMonthLabel} è ancora in corso: il numero salirà.
-              </p>
-            )}
-          </section>
-
-          <section className="panel">
-            <h2 className="panel-title">Flusso e cumulato · mld €</h2>
-            <div className="table-scroll" role="region" aria-label="Flusso mensile e cumulato delle spese" tabIndex={0}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Mese</th>
-                    <th scope="col" className="num">Pagato</th>
-                    <th scope="col" className="num">Cumulato</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.monthly.map((point) => (
-                    <tr key={point.month}>
-                      <th scope="row">
-                        {point.label}
-                        {point.month === runningMonth ? "*" : ""}
-                      </th>
-                      <td className="num">{billions(point.flow)}</td>
-                      <td className="num">{billions(point.cumulative)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <IntegratedSectionPreview
-        section="spese"
-        title="Dai pagamenti alle singole voci operative"
-        description="Eventi, campagne, affitti, missioni, auto e rimborsi hanno anteprime dedicate e pagine con record, fonti e limiti."
-        hubHref="/spese/operative"
-        limit={3}
-      />
-
-      <details className={styles.method}>
-        <summary>Come sono raccolti questi dati</summary>
         <p>
           Misura: {data.methodology.measure}. {data.methodology.periodicity}. Righe lette:{" "}
           {integer(data.coverage.movementRows)} · incluse:{" "}

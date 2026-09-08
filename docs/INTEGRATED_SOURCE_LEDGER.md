@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 91 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 93 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 91 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 91 | 69 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 14.457.856 | 1.475.510 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 2.967.342.031 | somma dei byte impegnati nelle 91 ricevute |
+| Dataset correnti | 93 | 71 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 14.803.968 | 1.821.622 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.065.988.108 | somma dei byte impegnati nelle 93 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 1.475.510 righe della proiezione pubblica restano invece interrogabili anche
+Le 1.821.622 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -138,6 +138,8 @@ fornisce comunque un percorso di provenienza verificabile.
 | `trasparenza-parchi-l38` | Trasparenza dei parchi nazionali | transparency | 300 | 300 | 258 | source-index | documented-fact | not-declared |
 | `url-morti` | URL non raggiungibili | transparency | 98 | 98 | 98 | rows | missing-data | not-declared |
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `ted-avvisi-italia-2026-08` | Avvisi TED · committenti in Italia · agosto 2026 | procurement | 2.825 | 2.825 | 2.825 | rows | documented-fact | verified-open-eu-reuse |
 | `vincitori` | Aggregati fornitori e settori | procurement | 682 | 682 | 0 | rows | documented-fact | not-declared |
 | `vincitori-cig` | Vincitori collegati ai CIG | procurement | 120 | 120 | 119 | rows | documented-fact | not-declared |
@@ -213,3 +215,10 @@ Il catalogo delle identità viene
 ricostruito con una chiave HMAC
 privata stabile, così gli ID pubblici sono riproducibili senza rendere
 reversibili i valori in quarantena.
+
+## Conto Annuale 2020
+
+Le due distribuzioni DFP/RGS aggiungono 346.112 righe interrogabili, conservate
+con la rispettiva granularità. Il raccordo usa anno e tipo/codice istituzione;
+10.310 enti comuni non implicano coperture identiche.
+[Contratto e verifiche offline](CONTO_ANNUALE.md).

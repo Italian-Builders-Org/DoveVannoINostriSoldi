@@ -92,9 +92,9 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(page, /supporter\.href \?/);
   assert.match(footer, /href="\/supporter"/);
   assert.match(footer, /BUY_ME_A_COFFEE_URL/);
-  assert.match(footer, /Buy me an AI compute/);
+  assert.match(footer, /Sostieni DVNS/);
   assert.match(footer, /SITE_SUPPORTERS/);
-  assert.match(footer, /Supportata da/);
+  assert.match(footer, /Con il supporto di/);
   assert.match(footer, /MANTO_VENTURE\.href/);
   assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
   assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
@@ -108,7 +108,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /Canali/);
   assert.match(globals, /\.footer-support \{/);
   assert.match(globals, /\.footer-support-action \{/);
-  assert.match(globals, /\.footer-social \{/);
+  assert.match(globals, /\.footer-social ul \{/);
   assert.match(globals, /\.footer-social \.footer-link \{[\s\S]*?min-height:\s*44px/);
   assert.match(globals, /\.footer-backer \{/);
   assert.doesNotMatch(footer, /cdnjs\.buymeacoffee\.com/);

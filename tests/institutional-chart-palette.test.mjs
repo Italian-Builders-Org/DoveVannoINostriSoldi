@@ -40,7 +40,7 @@ test("additive treemaps use the categorical palette and keep value plus share in
   for (const [name, component] of [["PCM", pcm], ["Ministeri", ministries], ["Regioni", regions]]) {
     assert.match(component, /institutionalCategoryColor\(node\.index\)/, `${name}: categorical fill missing`);
     assert.doesNotMatch(component, /fill="var\(--color-accent\)"|fillOpacity|treemapTile/, `${name}: old red fill remains`);
-    assert.match(component, /compactEuro\.format[\s\S]*·[\s\S]*percentage\.format/, `${name}: value and share are not paired`);
+    assert.match(component, /exactEuro\.format[\s\S]*percentage\.format\(point\.share/, `${name}: value and share are not paired`);
   }
 });
 

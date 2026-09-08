@@ -39,11 +39,10 @@ export default function ControlliSintesiPage() {
     <main className={`shell page ${styles.page}`}>
       <div className="page-intro">
         <p className="eyebrow">Cosa controllare · Sintesi</p>
-        <h1>Cosa monitorare, dove approfondire, cosa si può migliorare</h1>
+        <h1>Da dove iniziare i controlli</h1>
         <p>
-          Questa pagina non è una classifica di sprechi. Raccoglie ciò che i dati in piattaforma
-          già mostrano, in tre passi: cosa emerge, dove andare a leggere, cosa si può fare per
-          verificare o migliorare. Ogni cifra resta legata a fonte, periodo e limiti.
+          Osservazioni, fonti e percorsi di verifica. Ogni cifra resta legata al proprio periodo
+          e ai propri limiti; un segnale non dimostra uno spreco o una responsabilità.
         </p>
         <p className={styles.leadLinks}>
           <Link href="/controlli">Elenco segnali →</Link>
@@ -52,7 +51,9 @@ export default function ControlliSintesiPage() {
         </p>
       </div>
 
-      <section className={`panel ${styles.howTo}`} aria-labelledby="how-to-title">
+      <details className="data-details">
+        <summary>Come leggere i percorsi di verifica</summary>
+        <section className={`panel ${styles.howTo}`} aria-labelledby="how-to-title">
         <h2 id="how-to-title" className="panel-title">Come si legge</h2>
         <ol className={styles.steps}>
           {sintesiReadingOrder.map((step) => (
@@ -69,7 +70,8 @@ export default function ControlliSintesiPage() {
           Non attribuiamo sprechi, illeciti o responsabilità. Un segnale orienta un controllo;
           le ipotesi di miglioramento non sono risparmi già in cassa.
         </p>
-      </section>
+        </section>
+      </details>
 
       <section className={styles.pathways} aria-labelledby="pathways-title">
         <div className={styles.pathwaysIntro}>
@@ -79,7 +81,7 @@ export default function ControlliSintesiPage() {
           <p>
             Numeri presi da OpenCivitas, ANAC, MEF, Corte dei conti, RGS, Banca d&apos;Italia,
             Eurostat, Guardia di finanza e dagli scenari già pubblicati su Cosa controllare.
-            Nulla di nuovo inventato qui.
+
           </p>
         </div>
 

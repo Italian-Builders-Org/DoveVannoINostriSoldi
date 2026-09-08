@@ -40,7 +40,7 @@ export default function BudgetDocumentCalendarPage() {
       <header className={styles.header}>
         <div>
           <span className={styles.kicker}>CICLO DI BILANCIO {BUDGET_DOCUMENT_CALENDAR_YEAR}</span>
-          <h1 className={styles.title}>Quando escono i documenti che guidano i conti pubblici.</h1>
+          <h1 className={styles.title}>Calendario dei documenti pubblici</h1>
           <p className={styles.lead}>
             Seguiamo pubblicazioni MEF, UPB, Corte dei conti, Banca d’Italia, ISTAT e INPS.
             Le date già note restano distinte dalle finestre attese: “atteso” non significa in ritardo.

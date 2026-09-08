@@ -24,13 +24,7 @@ export default function SourcesPage() {
         </p>
       </div>
 
-      <div className="stat-strip">
-        <div>
-          <span className="stat-label">Fonti collegate</span>
-          <span className="stat-value">{sourceCounts.total}</span>
-          <span className="stat-note">tutte con un adapter operativo</span>
-        </div>
-      </div>
+      <p><strong>{sourceCounts.total} fonti collegate</strong> al portale.</p>
 
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
@@ -83,8 +77,7 @@ export default function SourcesPage() {
         <p>
           L&apos;Atlante Imprese usa tre release aggregate di CCIAA Marche su dati InfoCamere
           e la stima anticipata ISTAT 2024 (Frame Territoriale Anticipato). Sono
-          registrate qui con periodo osservato e licenza; non fanno ancora parte del
-          registry operativo delle fonti civiche.
+          registrate qui con periodo osservato e licenza; sono separate dal catalogo delle fonti civiche.
         </p>
         <p id="company-atlas-sources-scroll-hint" className={styles.scrollHint}>
           Scorri orizzontalmente per leggere tutte le colonne della tabella.
@@ -130,16 +123,13 @@ export default function SourcesPage() {
         <section className="panel">
           <h2 className="panel-title">Come lavoriamo</h2>
           <p>
-            Scarichiamo i file ufficiali, li ricontiamo e mostriamo sempre il periodo o la data
-            dichiarata dalla fonte, separandoli dal momento in cui li abbiamo controllati. Non
-            cambiamo mai il significato di un dato e non inventiamo numeri che la fonte non pubblica.
+            Verifichiamo i file ufficiali e distinguiamo il periodo del dato dalla data del nostro controllo.
           </p>
         </section>
         <section className="panel">
           <h2 className="panel-title">Se un dato manca</h2>
           <p>
-            Lo scriviamo. Se una fonte è in ritardo o non copre un anno, lo trovi scritto accanto al
-            numero, invece di uno spazio vuoto o una stima nascosta.
+            Indichiamo accanto ai numeri ritardi e periodi non coperti dalla fonte.
           </p>
         </section>
         <section className="panel">

@@ -453,7 +453,6 @@ export default function PensionsPage() {
             <h2 className="panel-title" id="composition-title">
               Come si compone la spesa lorda ISTAT {latestYear}
             </h2>
-            <p>Barre ordinate per importo, con valori e percentuali leggibili senza dipendere dal colore.</p>
           </div>
           <span className="tag tag-neutral">{categories.length} categorie</span>
         </div>

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 48
-- PR automatica: 9 (data bot, branch `automation/data/*`, PR)
+- Artefatti nel registro: 53
+- PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 33 (PR umana dopo revisione)
+- manuale: 37 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -43,6 +43,7 @@ La revisione e il merge restano umani.
 
 | Artefatto | Periodo nello snapshot | Osservazione | URL ufficiale | Controllo DVNS | Workflow | Modo | Validazione |
 |---|---|---|---|---|---|---|---|
+| `anac-procurement-peers` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_peers.py --check` |
 | `anac-procurement-cpv` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_cpv.py --check` |
 | `pnrr-projects-index` | 2026-06-13 | non dichiarato | https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html | nessuno | nessuno | manuale | `python3 scripts/etl/pnrr_projects.py --check` |
 | `anac-awardees-coverage` | 2026-01-23 | 2026-08-30T18:30:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari | nessuno | nessuno | manuale | `python3 scripts/etl/anac_awardees_coverage.py --check` |
@@ -53,7 +54,7 @@ La revisione e il merge restano umani.
 | `indire-pnrr-assignments` | aggiornamento aprile 2026 | 2026-08-23 | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/indire_pnrr_assignments.py --validate-committed` |
 | `inps-civil-invalidity` | non dichiarato nello snapshot | 2026-08-20T22:30:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `inps-pensions-osservatorio` | non dichiarato nello snapshot | 2026-09-01T12:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
-| `integrated-catalog` | non dichiarato nello snapshot | 2026-09-06T08:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
+| `integrated-catalog` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `integrated-rows` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `istat-municipality-geography` | 31/12/2022 | 2026-08-25T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_municipality_geography.py --validate-committed` |
 | `istat-regions-2024` | 2024 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_regions_account.py --validate-committed` |
@@ -61,6 +62,8 @@ La revisione e il merge restano umani.
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
+| `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
+| `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
 | `opencoesione` | 2026-04-30 | 2026-08-20T08:51:13+00:00 | https://opencoesione.gov.it/it/api/aggregati/ | `17 */6 * * *` | `.github/workflows/opencoesione-refresh.yml` | PR automatica | `python scripts/etl/opencoesione_snapshot.py --check` |
 | `parliament` | non dichiarato nello snapshot | 2026-08-20T14:00:00.000Z | non dichiarato nel registro | `37 */6 * * *` | `.github/workflows/parliament-sources.yml` | solo rilevamento | `python scripts/etl/parliament_sources.py --check` |
@@ -71,7 +74,7 @@ La revisione e il merge restano umani.
 | `rgs-consulting-payments` | non dichiarato nello snapshot | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `rgs-ministries-2025` | 2025 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/rgs_ministries_account.py --validate-committed` |
 | `rgs-state-budget-territorial-2023` | 2023 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall | nessuno | nessuno | manuale | suite ETL |
-| `siope-nonmunicipal` | 2024-2026 | 2026-09-07T00:11:56+00:00 | https://www.siope.it/documenti/siope2/open/last | nessuno | nessuno | manuale | `python3 scripts/etl/siope_nonmunicipal.py --check` |
+| `siope-nonmunicipal` | 2024-2026 | 2026-09-07T00:11:56+00:00 | https://www.siope.it/documenti/siope2/open/last | `17 5 8 * *` | `.github/workflows/siope-nonmunicipal-refresh.yml` | PR automatica | `python3 scripts/etl/siope_nonmunicipal.py --check` |
 | `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_receipts_check.py --include-expenditure` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `ssn-cce-national-history` | non dichiarato nello snapshot | 2026-08-28T12:31:43.000Z | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
@@ -84,12 +87,14 @@ La revisione e il merge restano umani.
 | `istat-poverta-assoluta-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family assoluta --check` |
 | `istat-poverta-relativa-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family relativa --check` |
 | `istat-bes-economico-2004-2024` | 2004-2024 | 2026-09-06 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_snapshot.py --check` |
+| `istat-bes-salute-2004-2024` | 2004-2024 | 2026-09-08 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_salute.py --check` |
+| `istat-bes-istruzione-2004-2024` | 2004-2024 | 2026-09-08 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_istruzione.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `mef-irpef-dettaglio-2017-2025` | 2016-2024 (anni di imposta) | 2026-09-05 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes | nessuno | nessuno | manuale | `python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |
-| `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-06T08:00:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
+| `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
 
 ## Prossimo passo

@@ -12,6 +12,31 @@
   ],
   "artifacts": [
     {
+      "id": "anac-procurement-peers",
+      "owner": "Municipal ANAC peer comparison from committed ANAC and ISTAT snapshots",
+      "files": [
+        "src/data/generated/anac-procurement-peers"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_procurement_peers.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_procurement_peers.py"
+      ],
+      "nodeTests": [
+        "tests/anac-procurement-peers.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_procurement_peers.py",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-procurement-peers.source.json",
+      "trustModel": "Derived index of unique municipal fiscal-code joins to ISTAT SITUAS 2025, population 2024. Complete offline rederivation verifies locked ANAC profile/CPV shards, geography provenance, exact rational concentration and identity exclusions. Runtime verifies bounded payload hashes and parent snapshot locks; peer selection keeps missing data, distinct count/value denominators and minimum cohorts explicit."
+    },
+    {
       "id": "anac-procurement-cpv",
       "owner": "ANAC CPV classification for the existing entity procurement profiles",
       "files": [
@@ -303,14 +328,16 @@
         "tests/etl/test_istat_misura_comune.py",
         "tests/etl/test_mim_school_services.py",
         "tests/etl/test_ted_notices.py",
-        "tests/etl/test_pnrr_projects.py"
+        "tests/etl/test_pnrr_projects.py",
+        "tests/etl/test_conto_annuale.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",
         "tests/istat-misura-comune.test.mjs",
         "tests/mim-school-services.test.mjs",
         "tests/ted-notices.test.mjs",
-        "tests/pnrr-projects.test.mjs"
+        "tests/pnrr-projects.test.mjs",
+        "tests/conto-annuale.test.mjs"
       ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
@@ -486,6 +513,58 @@
         "upstreamUrl": "https://www.opencivitas.it/it/open-data"
       },
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
+    },
+    {
+      "id": "opencivitas-2018",
+      "owner": "OpenCivitas municipal 2018 FC50TOT",
+      "files": [
+        "src/data/generated/opencivitas-2018.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-contract.test.mjs",
+        "tests/opencivitas-2018-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50TOT 2018 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019, FC70TOT 2021 e FC80TOT 2022. Join di 6606 Comuni RSO; aggregati esclusi. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018.source.json"
+    },
+    {
+      "id": "opencivitas-2019",
+      "owner": "OpenCivitas municipal 2019 FC60TOT",
+      "files": [
+        "src/data/generated/opencivitas-2019.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-contract.test.mjs",
+        "tests/opencivitas-2019-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60TOT 2019 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e FC80TOT 2022. Join di 6567 Comuni RSO; aggregati esclusi. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019.source.json"
     },
     {
       "id": "opencivitas-2021",
@@ -783,7 +862,7 @@
     },
     {
       "id": "siope-nonmunicipal",
-      "owner": "SIOPE non-municipal entity payment detail",
+      "owner": "metaforismo — SIOPE non-municipal payments",
       "files": [
         "src/data/generated/siope-nonmunicipal-provenance.json",
         "src/data/generated/siope-nonmunicipal-detail.json",
@@ -796,18 +875,25 @@
       },
       "reconciliationTests": [
         "tests/etl/test_siope_nonmunicipal.py",
-        "tests/etl/test_siope_nonmunicipal_corpus.py"
+        "tests/etl/test_siope_nonmunicipal_corpus.py",
+        "tests/etl/test_siope_nonmunicipal_refresh.py"
       ],
       "nodeTests": [
         "tests/siope-nonmunicipal.test.mjs"
       ],
       "generator": {
-        "command": "python3 scripts/etl/siope_nonmunicipal.py --input-dir <raw-siope-and-ipa> --input-receipt <verified-input-receipt.json> --output-dir <staging> --acquired-at <ISO-8601>",
+        "command": "python3 scripts/etl/siope_nonmunicipal_refresh.py",
         "requiresNetworkInput": true
       },
-      "refreshWorkflow": null,
+      "refreshWorkflow": ".github/workflows/siope-nonmunicipal-refresh.yml",
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "ASL, Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+      "trustModel": "Receipt-verified 2024–2026 payments; bounded monthly acquisition, source-specific corpus promotion and managed PR candidate only. CI combines the native SIOPE check with the real integrated release gate in the ETL suite; refresh and publisher validate the complete correlated release. All non-SIOPE contributions remain pinned. Schedule configuration does not attest execution.",
+      "publication": {
+        "branch": "automation/data/siope-nonmunicipal",
+        "commitTitle": "chore(data): refresh SIOPE nonmunicipal payments",
+        "prTitle": "chore(data): refresh SIOPE nonmunicipal payments",
+        "upstreamUrl": "https://www.siope.it/documenti/siope2/open/last"
+      }
     },
     {
       "id": "siope-municipal",
@@ -1138,6 +1224,58 @@
       "sourceSpec": "scripts/etl/specs/istat-bes-economico-2004-2024.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale di DF_BES_TERRIT_4 (dominio BES_04, edizione 2025) e acquisita con FREQ, DOMAIN ed EDITION fissati e DATA_TYPE e SEX enumerati; REF_AREA resta aperta nella chiave ma l'anagrafica dei 139 territori e vincolata nel lock e un codice fuori elenco fallisce chiuso. --check valida il bundle committato senza rete. La copertura e verificata PER INDICATORE (periodo e modalita di sesso propri), i livelli territoriali vengono dalla gerarchia CL_ITTER107 e non dalla lunghezza del codice, i compositi ITCD e ITFG sono dichiarati perche la fonte non li marca, e la rottura della catena di parentela su Bolzano e Trento e dichiarata invece che rattoppata. Nessuna misura e un conteggio: la somma territoriale NON e una riconciliazione valida e il contratto la rifiuta; vale invece l'invariante delle medie, il totale fra i due sessi, verificato su 5113 terne. Il flag CL_FLAG «g» rende la cella null, mai zero. Nessuna licenza inferita."
+    },
+    {
+      "id": "istat-bes-salute-2004-2024",
+      "owner": "ISTAT BesT BES_01 Salute, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-salute-2004-2024.data.json",
+        "src/data/generated/istat-bes-salute-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_salute.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_salute.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-salute.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_salute.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-salute-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock dedicato a BES_01: CSV e struttura ufficiale vincolati per URL, byte e SHA-256. Sei indicatori, unità e definizioni da codelist; copertura per sesso/anno e geografia Parent CL_ITTER107, 135 territori e 107 province. Il flag n resta null con significato statistico conservato. Zero, null e riga assente distinti; nessuna somma o riconciliazione F/M/T economica. --check e contratto runtime verificano metadati, hash e copertura offline. Licenza not-declared, nessuna inferenza."
+    },
+    {
+      "id": "istat-bes-istruzione-2004-2024",
+      "owner": "ISTAT BesT BES_02 Istruzione, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-istruzione-2004-2024.data.json",
+        "src/data/generated/istat-bes-istruzione-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_istruzione.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_istruzione.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-istruzione.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_istruzione.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-istruzione-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_02: CSV e codelist ufficiali vincolati per URL, byte, SHA-256. Nove indicatori, 139 territori e 111 province. Copertura per indicatore/sesso/anno, Parent e compositi espliciti. 76 celle g restano null; nessuna somma o riconciliazione F/M/T trasferita da altri domini. Valori ufficiali sopra 100 conservati. Contratti ETL/runtime offline, licenza not-declared."
     },
     {
       "id": "istat-epea-2016-2022",

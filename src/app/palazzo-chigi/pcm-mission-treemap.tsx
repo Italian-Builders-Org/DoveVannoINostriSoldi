@@ -6,12 +6,6 @@ import type { PcmFinancialMission } from "@/lib/data/pcm-financial-contract";
 import { institutionalCategoryColor } from "@/lib/chart-category-colors";
 import styles from "./pcm-mission-treemap.module.css";
 
-const compactEuro = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
 
 const exactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
@@ -35,7 +29,7 @@ type MissionNode = TreemapNode & {
 
 function tile(props: TreemapNode) {
   const node = props as MissionNode;
-  const showLabel = node.width >= 128 && node.height >= 62;
+  const showLabel = node.width >= Math.max(118, (node.shortLabel?.length ?? 0) * 7.5 + 24) && node.height >= 62;
   const showShare = node.width >= 150 && node.height >= 88;
 
   return (
@@ -45,18 +39,18 @@ function tile(props: TreemapNode) {
         y={node.y}
         width={node.width}
         height={node.height}
-        fill={institutionalCategoryColor(node.index)}
+        fill={`color-mix(in srgb, ${institutionalCategoryColor(node.index)} 40%, var(--color-raised))`}
         stroke="var(--color-raised)"
         strokeWidth={2}
       />
       {showLabel ? (
         <>
-          <text x={node.x + 12} y={node.y + 25} className={styles.tileLabel}>
+          <text x={node.x + node.width / 2} y={node.y + node.height / 2 - (showShare ? 12 : 0)} textAnchor="middle" className={styles.tileLabel}>
             {node.shortLabel}
           </text>
           {showShare ? (
-            <text x={node.x + 12} y={node.y + 45} className={styles.tileShare}>
-              {compactEuro.format((node.paymentsCents ?? 0) / 100)} · {percentage.format(node.share ?? 0)}
+            <text x={node.x + node.width / 2} y={node.y + node.height / 2 + 18} textAnchor="middle" className={styles.tileShare}>
+              {percentage.format(node.share ?? 0)}
             </text>
           ) : null}
         </>
@@ -126,8 +120,7 @@ export function PcmMissionTreemap({
         </ResponsiveContainer>
       </div>
       <figcaption>
-        Ogni riquadro è un&apos;area di lavoro: più è grande, più pesa sul totale pagato nel 2024.
-        Le due aree a zero restano nella tabella e non occupano spazio. I valori esatti sono sotto.
+        Quote sul totale pagato nel 2024. Le due aree a zero restano in tabella.
       </figcaption>
     </figure>
   );

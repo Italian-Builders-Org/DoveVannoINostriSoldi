@@ -51,6 +51,7 @@ PUBLICATION_IDS = frozenset(
         "opencoesione",
         "public-debt",
         "siope-municipal",
+        "siope-nonmunicipal",
     }
 )
 PUBLICATION_BRANCH_RE = re.compile(r"^automation/data/[a-z0-9]+(?:-[a-z0-9]+)*$")

@@ -15,7 +15,7 @@
   "publicationDate": null,
   "license": "not-declared",
   "landingUrl": "https://www.siope.it/documenti/siope2/open/last",
-  "refreshCronUtc": null,
+  "refreshCronUtc": "17 5 8 * *",
   "inputReceipt": {
     "schemaVersion": 1,
     "scope": "non-municipal-payments-inputs",

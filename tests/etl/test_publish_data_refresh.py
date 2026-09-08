@@ -21,6 +21,22 @@ SPEC.loader.exec_module(publisher)
 
 
 class PublishDataRefreshTests(TestCase):
+    def test_siope_full_release_gate_is_required_for_refresh_and_publication(self) -> None:
+        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        item = next(item for item in registry["artifacts"] if item["id"] == "siope-nonmunicipal")
+        self.assertEqual(item["offlineCheck"]["command"], "python3 scripts/etl/siope_nonmunicipal.py --check")
+        for identifier in ("integrated-catalog", "integrated-rows"):
+            integrated = next(item for item in registry["artifacts"] if item["id"] == identifier)
+            self.assertEqual(integrated["offlineCheck"]["coveredBy"], "etl-suite")
+            self.assertIn("tests/etl/test_integrated_source_release.py", integrated["reconciliationTests"])
+        artifact = publisher.load_artifact("siope-nonmunicipal")
+        self.assertEqual(artifact.offline_command, "python3 scripts/ci/check-siope-nonmunicipal-refresh.py")
+        workflow = (ROOT / artifact.workflow).read_text()
+        self.assertLess(
+            workflow.index("python scripts/ci/check-siope-nonmunicipal-refresh.py"),
+            workflow.index("uses: ./.github/actions/publish-data-refresh"),
+        )
+
     def test_budget_publication_is_limited_to_snapshot_lock_and_generated_inventory(self) -> None:
         from dataclasses import replace
         artifact = publisher.load_artifact("openbdap-budget-law")
@@ -56,6 +72,7 @@ class PublishDataRefreshTests(TestCase):
                 "opencoesione",
                 "public-debt",
                 "siope-municipal",
+                "siope-nonmunicipal",
             },
         )
         self.assertEqual(
@@ -70,6 +87,7 @@ class PublishDataRefreshTests(TestCase):
                 "automation/data/opencoesione",
                 "automation/data/public-debt",
                 "automation/data/siope",
+                "automation/data/siope-nonmunicipal",
             },
         )
         for publication in publications.values():

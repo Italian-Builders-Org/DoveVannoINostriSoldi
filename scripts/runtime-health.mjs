@@ -56,6 +56,8 @@ const EXPECTED_SOURCE_IDS = [
   "istat-poverta",
   "istat-poverta-relativa",
   "istat-bes-economico",
+  "istat-bes-salute",
+  "istat-bes-istruzione",
   "inps-naspi",
   "mef-irpef-dettaglio",
   "ameco",

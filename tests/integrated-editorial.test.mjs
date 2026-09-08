@@ -115,7 +115,7 @@ test("every curated dataset drills down from its topic to a complete or explanat
   );
 
   assert.match(topicPage, /href={`\/dati\/\$\{result\.dataset\.id\}`}/);
-  assert.match(topicPage, /Anteprima dei record/);
+  assert.match(topicPage, /Anteprima dei dati/);
   assert.match(topicPage, /limit: 3/);
   assert.doesNotMatch(topicPage, /limit: 5/);
   assert.match(topicPage, /configured\.catalogBoundary/);

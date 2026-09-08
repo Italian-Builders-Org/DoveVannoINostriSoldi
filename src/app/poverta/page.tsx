@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 function rate(value: number | null): string {
-  return value === null ? "n.d." : percent(value);
+  return value === null ? "Non disponibile" : percent(value);
 }
 
 function FamilySection({ family }: { family: PovertaFamilyView }) {
@@ -95,7 +95,7 @@ function FamilySection({ family }: { family: PovertaFamilyView }) {
 
       <p className={styles.sourceNote}>
         Fonte: ISTAT, dataflow <code>{family.source.dataflowId}</code> · acquisito il{" "}
-        {longDate(family.source.observedAt)} · licenza {family.source.licenseId} ·{" "}
+        {longDate(family.source.observedAt)} · licenza {family.source.licenseId === "not-declared" ? "non dichiarata" : family.source.licenseId} ·{" "}
         <a href={family.source.landingUrl}>vai al databrowser ISTAT</a>
       </p>
     </section>
@@ -109,8 +109,8 @@ export default function PovertaPage() {
   return (
     <main className={`shell page ${styles.page}`}>
       <header className="page-intro">
-        <p className="eyebrow">Condizioni economiche · Povertà</p>
-        <h1>Povertà assoluta e relativa in Italia</h1>
+
+        <h1>Povertà in Italia</h1>
         <p>
           Gli indicatori ufficiali ISTAT, dal {assoluta.period.from} al {assoluta.period.to}, per
           l&apos;Italia e le sue ripartizioni. Sono <strong>due misure distinte</strong>: la povertà
@@ -123,8 +123,15 @@ export default function PovertaPage() {
         </p>
       </header>
 
+      <div className={styles.families}>
+        <FamilySection family={assoluta} />
+        <FamilySection family={relativa} />
+      </div>
+
+      <details className="data-details">
+        <summary>Definizioni, limiti e copertura</summary>
       <section className="notice" aria-labelledby="limiti-pagina">
-        <h2 id="limiti-pagina">Cosa non è questa pagina</h2>
+        <h2 id="limiti-pagina">Come leggere gli indicatori</h2>
         <p>
           <strong>Non è spesa pubblica.</strong> Questi numeri dicono quante famiglie e quante
           persone vivono sotto una soglia, non quanto lo Stato spende per contrastare la povertà.
@@ -147,11 +154,6 @@ export default function PovertaPage() {
         </p>
       </section>
 
-      <div className={styles.families}>
-        <FamilySection family={assoluta} />
-        <FamilySection family={relativa} />
-      </div>
-
       <section aria-labelledby="nota-ripartizioni">
         <h2 id="nota-ripartizioni">Perché Nord e Mezzogiorno non sono in tabella</h2>
         <p>
@@ -168,6 +170,7 @@ export default function PovertaPage() {
           via API per chi li cerca.
         </p>
       </section>
+      </details>
     </main>
   );
 }

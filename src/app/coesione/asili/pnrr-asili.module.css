@@ -1,10 +1,10 @@
 .hero {
-  padding: clamp(28px, 6vw, 64px) 0 var(--space-6);
+  padding: var(--space-5) 0;
   border-bottom: 1px solid var(--color-neutral-300);
 }
 
 .hero h1 {
-  max-width: 18ch;
+  max-width: 32ch;
   margin: 0 0 12px;
   font-size: clamp(36px, 5vw, 64px);
   line-height: 0.98;
@@ -16,13 +16,13 @@
   max-width: 67ch;
   margin: 0;
   color: var(--color-neutral-700);
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .searchPanel {
   margin: var(--space-6) 0;
   padding: var(--space-5);
-  background: var(--color-neutral-100);
+  background: var(--color-raised);
   border: 1px solid var(--color-neutral-300);
 }
 
@@ -37,7 +37,7 @@
 .searchHeading h2,
 .resultsHeading h2 {
   margin: 0;
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: 22px;
   letter-spacing: -0.035em;
 }
 

@@ -89,17 +89,8 @@ export function MonthlyReportArticle({ report }: { report: PublishedMonthlyRepor
 export function MonthlyReportsArchive({ reports }: { reports: readonly MonthlyReportSummary[] }) {
   return (
     <main className={`shell ${styles.archive}`}>
-      <header><p className={styles.eyebrow}>Pubblicazione mensile</p><h1>{MONTHLY_REPORT_SERIES.title}</h1><p className={styles.dek}>Una storia principale e rubriche stabili per capire i dati pubblici del mese, con fonti e limiti sempre visibili.</p></header>
-      <section aria-labelledby="editions-title"><h2 id="editions-title">Tutte le edizioni</h2><div className={styles.archiveGrid}>{reports.map((report) => <article key={report.issueMonth}><p className={styles.issueDate}><HugeiconsIcon icon={Calendar03Icon} size={18} aria-hidden="true" />{report.issueLabel}</p><h3><Link href={report.href}>{report.title}</Link></h3><p>{report.teaser}</p><small>Pubblicato il {localDate(report.publishedOn)} · {report.readingMinutes} min · cutoff {localDate(report.dataCutoff)}</small><Link className={styles.readLink} href={report.href}>Leggi il report <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" /></Link></article>)}</div></section>
+      <header><p className={styles.eyebrow}>Pubblicazione mensile</p><h1>{MONTHLY_REPORT_SERIES.title}</h1><p className={styles.dek}>Ogni mese, una lettura dei dati pubblici italiani.</p></header>
+      <section aria-labelledby="editions-title"><h2 id="editions-title">Tutte le edizioni</h2><div className={styles.archiveGrid}>{reports.map((report) => <article key={report.issueMonth}><p className={styles.issueDate}><HugeiconsIcon icon={Calendar03Icon} size={18} aria-hidden="true" />{report.issueLabel}</p><h3><Link href={report.href}>{report.title}</Link></h3><p>{report.teaser}</p><small>Pubblicato il {localDate(report.publishedOn)} · {report.readingMinutes} min · dati verificati al {localDate(report.dataCutoff)}</small><Link className={styles.readLink} href={report.href}>Leggi il report <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" /></Link></article>)}</div></section>
     </main>
-  );
-}
-
-export function LatestMonthlyReportTeaser({ report }: { report: MonthlyReportSummary }) {
-  return (
-    <section className={`panel ${styles.homeTeaser}`} aria-labelledby="monthly-report-teaser-title">
-      <div><p className={styles.eyebrow}>{MONTHLY_REPORT_SERIES.title} · {report.issueLabel}</p><h2 id="monthly-report-teaser-title">{report.title}</h2><p>{report.teaser}</p><small>{report.readingMinutes} min · dati verificati fino al {localDate(report.dataCutoff)}</small></div>
-      <Link className="btn" href={report.href}>Leggi il numero <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" /></Link>
-    </section>
   );
 }

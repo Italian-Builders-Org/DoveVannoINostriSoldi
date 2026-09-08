@@ -1,0 +1,56 @@
+{
+  "applicationRevision": "84ade2b84b43be9b2a1dd46f076c574471f2d8b8",
+  "baseRevision": "5af13bc85b49be7a94edbf9fd1ce6057d66c394e",
+  "source": "Local Next.js production build, Node 22.23.2, screenshots of the main content region at scroll position zero",
+  "browserCommand": "DVNS_BASE_URL=http://127.0.0.1:3185 npm run test:browser:procurement-peers",
+  "checks": [
+    "1440/768/390 px: three published metrics and ten peers for Veroli",
+    "count/value coverage separation, nine-peer group withheld, unknown municipal identity withheld",
+    "keyboard focus and Enter on native methodology disclosure",
+    "exact concentration drill-downs; CPV filter never silently removed",
+    "browser console/errors and horizontal page overflow checked",
+    "manual Browser: desktop 1280, tablet 768, mobile 390; horizontal keyboard scroll and actual peer HHI link opened"
+  ],
+  "notVerified": [
+    "Physical devices",
+    "Hosted runtime or production deployment"
+  ],
+  "files": [
+    {
+      "file": "veroli-1440.png",
+      "route": "/enti/c_l780/appalti/confronti",
+      "viewportWidth": 1440,
+      "imageWidth": 1192,
+      "imageHeight": 1672,
+      "bytes": 220751,
+      "sha256": "8e0711339768623396bddcfa16f933af4cd13133ce34ba35039eb7b1961624d7"
+    },
+    {
+      "file": "veroli-768.png",
+      "route": "/enti/c_l780/appalti/confronti",
+      "viewportWidth": 768,
+      "imageWidth": 768,
+      "imageHeight": 1742,
+      "bytes": 216725,
+      "sha256": "5d11d73e53058e041637362b08b862aaccafee25ee497026d506c0e1f6d10074"
+    },
+    {
+      "file": "veroli-390.png",
+      "route": "/enti/c_l780/appalti/confronti",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 2464,
+      "bytes": 180882,
+      "sha256": "29aaa03e92c5b3542ee22cc2c6fcc874d47f16f8d1f47ac1bb0ffa4f73ba4d21"
+    },
+    {
+      "file": "veroli-value-390.png",
+      "route": "/enti/c_l780/appalti/confronti?metric=value",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 1277,
+      "bytes": 113994,
+      "sha256": "8cb124695637d85df782d1ec4b2e71539716558827a748b6e68f54fbeef39ab7"
+    }
+  ]
+}

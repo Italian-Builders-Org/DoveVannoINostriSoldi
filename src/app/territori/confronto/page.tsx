@@ -139,7 +139,7 @@ function signedEuro(cents: number): string {
 }
 
 function signedPercent(basisPoints: number | null): string {
-  if (basisPoints === null) return "n.d.";
+  if (basisPoints === null) return "Non disponibile";
   const prefix = basisPoints > 0 ? "+" : "";
   return `${prefix}${new Intl.NumberFormat("it-IT", {
     minimumFractionDigits: 1,
@@ -394,7 +394,7 @@ export default async function MunicipalComparisonPage({
                     </td>
                     <td className="num">
                       {sort === "per-km2"
-                        ? municipality.differencePerSquareKmCents === null ? "n.d." : signedEuro(municipality.differencePerSquareKmCents)
+                        ? municipality.differencePerSquareKmCents === null ? "Non disponibile" : signedEuro(municipality.differencePerSquareKmCents)
                         : signedEuro(municipality.differencePerCapitaCents)}
                     </td>
                     <td className="num">

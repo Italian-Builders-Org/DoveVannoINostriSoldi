@@ -40,12 +40,7 @@ export function EducationAtlasFilters({
   }
 
   return (
-    <section className={styles.filters} aria-labelledby="education-filters-title">
-      <div className={styles.filterIntro}>
-        <span className={styles.eyebrow}>Esplora il perimetro</span>
-        <h2 id="education-filters-title">Cambia anno, territorio e percorso</h2>
-        <p>Ogni scelta aggiorna mappa, distribuzione, trend e indirizzi osservati.</p>
-      </div>
+    <section className={styles.filters} aria-label="Filtra i dati della scuola">
       <div className={styles.controlGrid}>
         <fieldset className={styles.periodFieldset}>
           <legend>Anno scolastico</legend>

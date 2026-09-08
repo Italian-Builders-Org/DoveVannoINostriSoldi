@@ -235,11 +235,16 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
     files = tuple(item.get("files") or ())
     if not files or any(not isinstance(path, str) or not path for path in files):
         raise PublishError(f"artifact has no valid generated file allowlist: {artifact_id}")
+    offline_command = offline["command"]
+    if artifact_id == "siope-nonmunicipal":
+        # Publication mutates shared proofs; verify the full release at this boundary.
+        # CI already runs that real gate in its ETL suite, outside the native check.
+        offline_command = "python3 scripts/ci/check-siope-nonmunicipal-refresh.py"
     return Artifact(
         artifact_id=artifact_id,
         files=files,
         workflow=item["refreshWorkflow"],
-        offline_command=offline["command"],
+        offline_command=offline_command,
         node_tests=tuple(item.get("nodeTests") or ()),
         reconciliation_tests=tuple(item.get("reconciliationTests") or ()),
         publication=Publication(
@@ -270,6 +275,13 @@ def normalized_repo_path(path: str) -> str:
 
 
 def allowlisted_paths(artifact: Artifact) -> set[str]:
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import current_paths
+        paths = current_paths(ROOT)
+        for path in paths:
+            if (ROOT / path).is_symlink() or (ROOT / path).resolve() != ROOT / path:
+                raise PublishError(f"unsafe SIOPE publication path: {path}")
+        return paths
     normalized = {normalized_repo_path(path) for path in artifact.files}
     if len(normalized) != len(artifact.files):
         raise PublishError(f"duplicate generated file in registry for {artifact.artifact_id}")
@@ -302,10 +314,17 @@ def status_paths(artifact: Artifact, *, runner: Runner = subprocess.run) -> set[
             raise PublishError("renames are not permitted in generated-data publication")
         changed.add(normalized_repo_path(path))
     allowed = allowlisted_paths(artifact)
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import allowed as siope_allowed
+        allowed.update(path for path in changed if siope_allowed(path))
     unexpected = changed - allowed
     if unexpected:
         raise PublishError("unexpected tracked or untracked changed path(s): " + ", ".join(sorted(unexpected)))
-    missing = [path for path in artifact.files if not (ROOT / path).is_file()]
+    required = artifact.files
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import FIXED
+        required = FIXED
+    missing = [path for path in required if not (ROOT / path).is_file()]
     if missing:
         raise PublishError("registry-listed generated file is missing: " + ", ".join(missing))
     return changed
@@ -313,7 +332,7 @@ def status_paths(artifact: Artifact, *, runner: Runner = subprocess.run) -> set[
 
 def file_digest(artifact: Artifact) -> str:
     digest = hashlib.sha256()
-    for path in sorted(artifact.files):
+    for path in sorted(allowlisted_paths(artifact)):
         payload = (ROOT / path).read_bytes()
         encoded_path = path.encode("utf-8")
         digest.update(len(encoded_path).to_bytes(8, "big"))
@@ -326,9 +345,31 @@ def file_digest(artifact: Artifact) -> str:
 def ref_file_digest(ref: str, artifact: Artifact, *, runner: Runner = subprocess.run) -> str:
     """Hash exactly the allowlisted blobs from a candidate commit tree."""
     digest = hashlib.sha256()
-    for path in sorted(artifact.files):
-        result = run_command(["git", "show", f"{ref}:{path}"], runner=runner)
-        payload = result.stdout.encode("utf-8")
+    paths = artifact.files
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import FIXED, allowed
+        tree_entries = run_command(["git", "ls-tree", "-r", ref], runner=runner).stdout.splitlines()
+        selected = []
+        for entry in tree_entries:
+            metadata, path = entry.split("\t", 1)
+            if not allowed(path):
+                continue
+            mode, kind, _ = metadata.split()
+            if mode != "100644" or kind != "blob":
+                raise PublishError("SIOPE candidate contains a non-regular artifact")
+            selected.append(path)
+        paths = tuple(selected)
+        if not FIXED <= set(paths):
+            raise PublishError("SIOPE candidate tree is missing a correlated artifact")
+    for path in sorted(paths):
+        if artifact.artifact_id == "siope-nonmunicipal":
+            result = runner(["git", "show", f"{ref}:{path}"], cwd=ROOT, capture_output=True, text=False, check=False)
+            if result.returncode:
+                raise PublishError("Cannot read SIOPE candidate blob")
+            payload = result.stdout
+        else:
+            result = run_command(["git", "show", f"{ref}:{path}"], runner=runner)
+            payload = result.stdout.encode("utf-8")
         encoded_path = path.encode("utf-8")
         digest.update(len(encoded_path).to_bytes(8, "big"))
         digest.update(encoded_path)
@@ -354,6 +395,13 @@ def parse_trailers(body: str) -> dict[str, str]:
     return parsed
 
 
+def publication_file_labels(artifact: Artifact) -> tuple[str, ...]:
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import FIXED, IDS
+        return tuple(sorted(FIXED)) + tuple(f"src/data/generated/integrated/rows/{identifier}.part-[0-9]{{5}}.jsonl.gz" for identifier in IDS)
+    return artifact.files
+
+
 def provenance_body(
     artifact: Artifact,
     run: RunContext,
@@ -364,7 +412,7 @@ def provenance_body(
 ) -> str:
     validators = list(artifact.reconciliation_tests) + list(artifact.node_tests)
     validator_text = ", ".join(validators) if validators else "(registry offline check only)"
-    files = "\n".join(f"- `{path}`" for path in artifact.files)
+    files = "\n".join(f"- `{path}`" for path in publication_file_labels(artifact))
     upstream_urls = artifact.publication.upstream_urls or (artifact.publication.upstream_url,)
     upstream_details = ""
     if len(upstream_urls) > 1:
@@ -449,6 +497,9 @@ def validate_existing_commit(
     ):
         raise PublishError("existing branch commit has human or tampered author/committer identity")
     allowed = allowlisted_paths(artifact)
+    if artifact.artifact_id == "siope-nonmunicipal":
+        from siope_publication_paths import allowed as siope_allowed
+        allowed.update(path for path in commit.files if siope_allowed(path))
     if not commit.files or set(commit.files) - allowed:
         raise PublishError("existing branch commit changes an unallowlisted path")
     if commit.trailers.get("Data-Refresh-Artifact") != artifact.artifact_id:
@@ -522,7 +573,7 @@ def managed_pr_matches(
         and _provenance_field(pr.body, "Base SHA") == branch.parent
         and _provenance_field(pr.body, "Candidate SHA") == branch.tip
         and _provenance_field(pr.body, "Files SHA-256") == branch.trailers.get("Data-Refresh-Files-SHA256")
-        and listed_files == tuple(artifact.files)
+        and listed_files == publication_file_labels(artifact)
         and _provenance_field(pr.body, "Offline validator") == artifact.offline_command
         and _provenance_field(pr.body, "Runtime/reconciliation validators") == validator_text
         and workflow_run is not None
@@ -676,7 +727,10 @@ def make_candidate(
     try:
         index_env = {"GIT_INDEX_FILE": index_path}
         run_command(["git", "read-tree", base_sha], env=index_env, runner=runner)
-        run_command(["git", "add", "--", *artifact.files], env=index_env, runner=runner)
+        paths = artifact.files
+        if artifact.artifact_id == "siope-nonmunicipal":
+            paths = sorted(status_paths(artifact, runner=runner))
+        run_command(["git", "add", "--", *paths], env=index_env, runner=runner)
         tree = run_command(["git", "write-tree"], env=index_env, runner=runner).stdout.strip()
         message = commit_message(artifact, run, base_sha, digest)
         commit_env = {

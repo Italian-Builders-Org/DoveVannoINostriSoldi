@@ -144,8 +144,11 @@ export function detectInsightRoles(headers: readonly string[]): InsightColumnRol
 }
 
 /** True when the dataset can support a top-recipient reading. */
-export function isInsightCapable(headers: readonly string[], queryable: boolean): boolean {
-  if (!queryable) return false;
+export function isInsightCapable(headers: readonly string[], queryable: boolean, datasetId?: string): boolean {
+  if (!queryable || datasetId === "auto-welfare") return false;
+  // Layered datasets mix individual records and accounting aggregates. A
+  // recipient ranking requires a dedicated view for each layer.
+  if (headers.includes("strato")) return false;
   const roles = detectInsightRoles(headers);
   return roles.recipient !== null && roles.amount !== null;
 }
@@ -226,6 +229,10 @@ function finalizeRecipients(map: Map<string, MutableRecipient>): InsightRecipien
     );
 }
 
+export function hasNamedInsightRecipient(name: string): boolean {
+  return !/^(?:n[.\/]?d\.?|non disponibile|dato non disponibile|[-\u2014\u2013])$/i.test(name.trim());
+}
+
 function buildHeadline(top: InsightRecipient | undefined, rowsWithAmount: number): string | null {
   if (!top || rowsWithAmount === 0) return null;
   const awardsLabel =
@@ -264,7 +271,7 @@ export function aggregateRecipientInsights(
   },
 ): DatasetInsights {
   const roles = detectInsightRoles(headers);
-  const capable = roles.recipient !== null && roles.amount !== null;
+  const capable = isInsightCapable(headers, true, datasetId);
   if (!capable || !roles.recipient || !roles.amount) {
     return emptyInsights(datasetId, roles, options.publicRows, false);
   }
@@ -337,5 +344,6 @@ export function insightCapabilityBadge(headers: readonly string[], queryable: bo
 export function formatInsightTeaser(insights: DatasetInsights): string | null {
   if (!insights.capable || !insights.topRecipients[0]) return null;
   const top = insights.topRecipients[0];
+  if (!hasNamedInsightRecipient(top.name)) return null;
   return `${top.name}: ${compactEuro(top.totalEuro)}`;
 }

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon } from "@hugeicons/core-free-icons";
+import { Search01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import {
   GLOBAL_SEARCH_MIN_QUERY_LENGTH,
   type GlobalSearchResponse,
@@ -37,12 +37,25 @@ export function HeaderSearch() {
   const [loading, setLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [expanded, setExpanded] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLFormElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
   const results = flattenResults(response);
   const trimmedQuery = query.trim();
   const showDropdown = open && trimmedQuery.length >= GLOBAL_SEARCH_MIN_QUERY_LENGTH;
+
+  useLayoutEffect(() => { if (expanded) inputRef.current?.focus(); }, [expanded]);
+
+  function closeSearch(restoreFocus = false) {
+    setOpen(false);
+    setExpanded(false);
+    setActiveIndex(-1);
+    if (restoreFocus && window.matchMedia("(max-width: 1099px)").matches) triggerRef.current?.focus();
+  }
 
   useEffect(() => {
     const effectQuery = query.trim();
@@ -104,23 +117,31 @@ export function HeaderSearch() {
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!wrapperRef.current?.contains(event.target as Node)) closeSearch();
     }
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
+  useEffect(() => {
+    const compact = window.matchMedia("(max-width: 1099px)");
+    function preserveSearchFocus() {
+      if (compact.matches && rootRef.current?.contains(document.activeElement)) setExpanded(true);
+      if (!compact.matches && document.activeElement === triggerRef.current) inputRef.current?.focus();
+    }
+    compact.addEventListener("change", preserveSearchFocus);
+    return () => compact.removeEventListener("change", preserveSearchFocus);
+  }, []);
+
   function goToResult(result: SearchResult) {
-    setOpen(false);
-    setActiveIndex(-1);
+    closeSearch();
     router.push(result.href);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") {
       event.preventDefault();
-      setOpen(false);
-      setActiveIndex(-1);
+      closeSearch(true);
       return;
     }
 
@@ -145,19 +166,29 @@ export function HeaderSearch() {
   }
 
   return (
+    <div className="header-search-root" data-expanded={expanded} ref={wrapperRef}
+      onKeyDown={(event) => { if (event.key === "Escape" && !event.defaultPrevented) { event.preventDefault(); closeSearch(true); } }}
+      onBlurCapture={(event) => { if (event.relatedTarget instanceof Node && !event.currentTarget.contains(event.relatedTarget)) closeSearch(); }}>
+      <button ref={triggerRef} type="button" className="navigation-button header-search-trigger"
+        aria-label={expanded ? "Chiudi ricerca" : "Apri ricerca"} aria-expanded={expanded} aria-controls="header-search-form"
+        onClick={() => expanded ? closeSearch(true) : setExpanded(true)}>
+        <HugeiconsIcon icon={expanded ? Cancel01Icon : Search01Icon} size={21} strokeWidth={1.7} aria-hidden="true" />
+      </button>
     <form
+      id="header-search-form"
       className="header-search"
       action="/cerca"
       method="get"
       role="search"
       autoComplete="off"
       ref={rootRef}
-      onSubmit={() => setOpen(false)}
+      onSubmit={() => closeSearch()}
     >
       <label htmlFor="global-site-search">Cerca nel sito</label>
       <input
         className="input"
         id="global-site-search"
+        ref={inputRef}
         name="q"
         type="search"
         placeholder="Cerca pagine, dati o enti"
@@ -193,11 +224,11 @@ export function HeaderSearch() {
         <div className="header-search-dropdown">
           {loading ? (
             <p className="header-search-empty" role="status" aria-live="polite">
-              Cerco nel sito…
+              Ricerca…
             </p>
           ) : searchError ? (
             <p className="header-search-empty" role="status" aria-live="polite">
-              La ricerca globale non è disponibile. Premi Invio per riprovare.
+              Ricerca non disponibile. Premi Invio per riprovare.
             </p>
           ) : response && results.length === 0 ? (
             <p className="header-search-empty" role="status" aria-live="polite">
@@ -224,7 +255,7 @@ export function HeaderSearch() {
                       className="header-search-option"
                       data-active={resultIndex === activeIndex ? "true" : undefined}
                       onMouseEnter={() => setActiveIndex(resultIndex)}
-                      onClick={() => setOpen(false)}
+                      onClick={() => closeSearch()}
                     >
                       <span className="header-search-option-copy">
                         <span className="header-search-option-name">{result.title}</span>
@@ -242,13 +273,14 @@ export function HeaderSearch() {
             <Link
               href={`/cerca?q=${encodeURIComponent(trimmedQuery)}`}
               className="header-search-all"
-              onClick={() => setOpen(false)}
+              onClick={() => closeSearch()}
             >
-              Vedi tutti i risultati
+              Tutti i risultati
             </Link>
           ) : null}
         </div>
       ) : null}
     </form>
+    </div>
   );
 }

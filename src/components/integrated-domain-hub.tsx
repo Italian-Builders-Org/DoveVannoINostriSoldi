@@ -30,7 +30,7 @@ const EVIDENCE_LABELS: Record<string, string> = {
 };
 
 function publicationLabel(publication: string): string {
-  if (publication === "rows") return "Righe interrogabili";
+  if (publication === "rows") return "Righe consultabili";
   if (publication === "source-index") return "Indice interrogabile";
   if (publication === "catalog-only") return "Solo catalogo";
   return "Materiale derivato";
@@ -78,22 +78,18 @@ export default async function IntegratedDomainHub({
         <div>
           <span className="stat-label">Insiemi</span>
           <span className="stat-value">{integer(selected.length)}</span>
-          <span className="stat-note">tutti contabilizzati nel registro centrale</span>
         </div>
         <div>
           <span className="stat-label">Righe sorgente</span>
           <span className="stat-value">{integer(sourceRows)}</span>
-          <span className="stat-note">conteggiate nel proprio perimetro</span>
         </div>
         <div>
-          <span className="stat-label">Righe interrogabili</span>
+          <span className="stat-label">Righe consultabili</span>
           <span className="stat-value">{integer(publicRows)}</span>
-          <span className="stat-note">zero e dato mancante restano distinti</span>
         </div>
         <div>
-          <span className="stat-label">Insiemi interrogabili</span>
+          <span className="stat-label">Dataset consultabili</span>
           <span className="stat-value">{integer(queryable)}</span>
-          <span className="stat-note">con ricerca e paginazione limitata</span>
         </div>
       </section>
 
@@ -105,7 +101,6 @@ export default async function IntegratedDomainHub({
       <section className={styles.explore} aria-labelledby="percorsi-tematici">
         <div className={styles.sectionHeading}>
           <h2 id="percorsi-tematici">Percorsi tematici</h2>
-          <p>Ogni anteprima porta a una pagina leggibile e, da lì, a tutte le righe e alle fonti.</p>
         </div>
         <div className={styles.features}>
           {topics.map((topic) => (
@@ -129,7 +124,7 @@ export default async function IntegratedDomainHub({
                 </ul>
               </div>
               <Link className={styles.openLink} href={`/${topic.section}/${topic.slug}`}>
-                Apri analisi e record
+                Esplora i dati
               </Link>
             </article>
           ))}
@@ -137,7 +132,6 @@ export default async function IntegratedDomainHub({
             <article className={styles.feature} key={view.href}>
               <div className={styles.featureMetric}>
                 <strong>{view.metric}</strong>
-                <span>vista già verificata</span>
               </div>
               <div className={styles.featureCopy}>
                 <div className={styles.featureTitle}><h3><Link href={view.href}>{view.title}</Link></h3></div>
@@ -152,7 +146,7 @@ export default async function IntegratedDomainHub({
       <details className={styles.register}>
         <summary>
           <span>
-            <strong>Espandi il registro tecnico</strong>
+            <strong>Tutti i dataset della sezione</strong>
             <small>{integer(selected.length)} insiemi con stato, righe, fonti e limiti</small>
           </span>
         </summary>
@@ -193,8 +187,7 @@ export default async function IntegratedDomainHub({
       <section className={`panel ${styles.more}`}>
         <h2 className="panel-title">Registro e provenienza</h2>
         <p>
-          Il catalogo generale espone tutti i {integer(overview.totals.datasets)} insiemi; la copertura mostra come elementi,
-          identità di fonte e righe si riconciliano senza omissioni silenziose.
+          Il catalogo generale espone tutti i {integer(overview.totals.datasets)} dataset, con fonti e copertura.
         </p>
         <div>
           <Link href="/dati">Tutti gli insiemi</Link>

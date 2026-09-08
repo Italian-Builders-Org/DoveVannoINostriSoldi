@@ -23,7 +23,7 @@ test("Regions page explains spending destinations in clear professional language
   assert.match(page, /<th scope="col">Voce<\/th>/);
   assert.match(treemap, /siopeTitleCopy\(title\.code, "regione"\)/);
   assert.match(treemap, /point\.explanation/);
-  assert.match(treemap, /Al passaggio del cursore/);
+  assert.match(treemap, /Quote sugli impegni 2024/);
   assert.doesNotMatch(treemap, /Passaci sopra|cassiere e poi restituiti|Soldi messi|Soldi di passaggio|tiene in piedi/);
   assert.match(titles, /Partite di giro/);
   assert.match(titles, /anticipazioni di tesoreria/);

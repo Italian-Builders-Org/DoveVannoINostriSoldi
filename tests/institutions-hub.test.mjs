@@ -12,9 +12,9 @@ test("Institutions hub indexes five separate routes without a combined total", (
     assert.match(navigation, new RegExp(`"${route}"`));
   }
   assert.match(navigation, /href: "\/istituzioni",\s*\n\s*label: "Istituzioni"/);
-  assert.match(page, /Ogni percorso resta separato/);
+  assert.match(page, /Anni, confini e regole contabili restano diversi/);
   assert.match(page, /<h1>Istituzioni pubbliche<\/h1>/);
-  assert.match(page, /Cinque percorsi, cinque confini/);
+  assert.match(page, /Esplora le istituzioni/);
   assert.match(page, /I confronti restano dentro ogni fonte/);
   assert.doesNotMatch(page, /compactEuro|exactEuro|treemap/i);
   assert.doesNotMatch(page, /non li sommiamo|Sommarli produrrebbe/i);

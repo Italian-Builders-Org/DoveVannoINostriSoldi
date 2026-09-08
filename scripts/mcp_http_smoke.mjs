@@ -154,6 +154,68 @@ const legacyTools = await mcpRequest({ jsonrpc: "2.0", id: 1, method: "tools/lis
 assert.match(legacyTools, /list_datasets/);
 assert.match(legacyTools, /query_dataset/);
 
+const healthQuery = { dataset: "istat_bes_salute", territory: "ITC45", measure: "01SAL005", sex: "F", year: 2021 };
+const healthResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 281, method: "tools/call",
+  params: { name: "query_dataset", arguments: healthQuery },
+});
+const health = successfulMcpToolResult(healthResponse, "istat_bes_salute").data;
+assert.equal(health.domain.code, "BES_01");
+assert.deepEqual(health.observations, [{ indicator: "01SAL005", territory: "ITC45", sex: "F", year: 2021, valueTenths: null, status: "n" }]);
+assert.equal(health.indicators[0].unit, "STA_RA_PER_10THOU");
+assert.equal(health.reconciliation.totalBetweenSexes, false);
+const healthApiResponse = await fetch(new URL("/api/territori/bes-salute?territorio=ITC45&indicatore=01SAL005&sesso=F&anno=2021", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(healthApiResponse.status, 200);
+const healthApi = JSON.parse(await responseText(healthApiResponse, "API BES Salute"));
+assert.deepEqual(healthApi.observations, health.observations);
+assert.deepEqual(healthApi.source, health.source);
+const invalidHealth = await mcpRequest({
+  jsonrpc: "2.0", id: 282, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_salute", measure: "04BEC001P" } },
+});
+assert.match(invalidHealth, /"isError":true/);
+assert.match(invalidHealth, /Indicatore non riconosciuto/);
+
+const educationQuery = { dataset: "istat_bes_istruzione", territory: "IT108", measure: "02IST004", sex: "F", year: 2017 };
+const educationResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 2812, method: "tools/call",
+  params: { name: "query_dataset", arguments: educationQuery },
+});
+const education = successfulMcpToolResult(educationResponse, "istat_bes_istruzione").data;
+assert.equal(education.domain.code, "BES_02");
+assert.deepEqual(education.observations, [{ indicator: "02IST004", territory: "IT108", sex: "F", year: 2017, valueTenths: null, status: "g" }]);
+assert.equal(education.indicators[0].unit, "SPEC_COHORT_RATE");
+assert.equal(education.reconciliation.totalBetweenSexes, false);
+const educationApiResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT108&indicatore=02IST004&sesso=F&anno=2017", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(educationApiResponse.status, 200);
+const educationApi = JSON.parse(await responseText(educationApiResponse, "API BES Istruzione"));
+assert.deepEqual(educationApi.observations, education.observations);
+assert.deepEqual(educationApi.source, education.source);
+const invalidEducation = await mcpRequest({
+  jsonrpc: "2.0", id: 2813, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_istruzione", measure: "04BEC001P" } },
+});
+assert.match(invalidEducation, /"isError":true/);
+assert.match(invalidEducation, /Indicatore non riconosciuto/);
+
+const educationPageResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT&limit=2&offset=2", baseUrl), { signal: AbortSignal.timeout(10_000) });
+assert.equal(educationPageResponse.status, 200);
+const educationPage = JSON.parse(await responseText(educationPageResponse, "API BES Istruzione page"));
+assert.equal(educationPage.observations.length, 2);
+assert.equal(educationPage.pagination.nextOffset, 4);
+assert.equal(educationPage.source.licenseId, "not-declared");
+assert.equal(educationPage.semantics.soldi.present, false);
+for (const suffix of ["", "?territorio=015146", "?territorio=IT&limit=101", "?anno=2020&anno=2021"]) {
+  const invalid = await fetch(new URL(`/api/territori/bes-istruzione${suffix}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(invalid.status, 400);
+  assert.equal(invalid.headers.get("cache-control"), "no-store");
+  await responseText(invalid, "API BES Istruzione invalid query");
+}
+
 const compatibilityTools = await mcpRequest(
   { jsonrpc: "2.0", id: 11, method: "tools/list" },
   {},
@@ -423,6 +485,56 @@ const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", 
 assert.equal(modernData.level, "region");
 assert.equal(modernData.pagination.returned, 20);
 
+const fc50ApiResponse = await fetch(new URL("/api/spese/opencivitas-2018?codice=058091&anno=2018", baseUrl));
+assert.equal(fc50ApiResponse.status, 200);
+const fc50ApiData = JSON.parse(await responseText(fc50ApiResponse, "FC50 API"));
+const fc50McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc50-2018", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year: 2018 } },
+});
+const fc50McpData = successfulMcpToolResult(fc50McpResult, "opencivitas_fabbisogni_2018").data;
+assert.deepEqual(fc50McpData, fc50ApiData);
+assert.equal(fc50ApiData.referenceYear, 2018);
+assert.equal(fc50ApiData.family, "FC50TOT");
+assert.equal(fc50ApiData.coverage.municipalities, 6606);
+assert.equal(fc50ApiData.data[0].historicalSpendingCents, 299693120810);
+assert.equal(fc50ApiData.provenance.sha256.data, "78107746fe7edac1791ac61d3d6b09ba5bd4d65f80db896c1c6c450e5bca55c0");
+for (const year of [2019, 2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc50-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2018?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
+const fc60ApiResponse = await fetch(new URL("/api/spese/opencivitas-2019?codice=058091&anno=2019", baseUrl));
+assert.equal(fc60ApiResponse.status, 200);
+const fc60ApiData = JSON.parse(await responseText(fc60ApiResponse, "FC60 API"));
+const fc60McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc60-2019", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year: 2019 } },
+});
+const fc60McpData = successfulMcpToolResult(fc60McpResult, "opencivitas_fabbisogni_2019").data;
+assert.deepEqual(fc60McpData, fc60ApiData);
+assert.equal(fc60ApiData.referenceYear, 2019);
+assert.equal(fc60ApiData.family, "FC60TOT");
+assert.equal(fc60ApiData.coverage.municipalities, 6567);
+assert.equal(fc60ApiData.data[0].historicalSpendingCents, 308248360020);
+assert.equal(fc60ApiData.provenance.sha256.data, "5292914fcbda4b26047020fa11bc9cdca70ff7cf93e5b4a0bd33b5153cb1a8d1");
+for (const year of [2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc60-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2019?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
 console.log(JSON.stringify({
   ok: true,
   baseUrl: baseUrl.origin,
@@ -443,5 +555,7 @@ console.log(JSON.stringify({
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",
+    "fc50-2018-api-mcp-provenance-year-separation",
+    "fc60-2019-api-mcp-provenance-year-separation",
   ],
 }));

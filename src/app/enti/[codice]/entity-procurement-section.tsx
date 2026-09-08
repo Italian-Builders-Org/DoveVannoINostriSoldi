@@ -233,15 +233,18 @@ function ConcentrationMetric({
   codiceIpa,
   heading,
   cpv,
+  awardYear,
 }: {
   metric: AnacConcentrationMetric;
   codiceIpa: string;
   heading: "h3" | "h4";
   cpv?: string;
+  awardYear?: string;
 }): ReactElement {
   const byValue = metric.dimension === "value";
   const title = byValue ? "Per valore attribuibile" : "Per numero di aggiudicazioni";
-  const filter = cpv ? `&cpv=${encodeURIComponent(cpv)}` : "";
+  const filter = (cpv ? `&cpv=${encodeURIComponent(cpv)}` : "")
+    + (awardYear ? `&awardYear=${encodeURIComponent(awardYear)}` : "");
   const rankingHref = appaltiHref(codiceIpa, (byValue ? "view=operators&metric=value" : "view=operators&metric=count") + filter);
   const Heading = heading;
   if (metric.status === "withheld") {
@@ -305,8 +308,8 @@ export function EntityProcurementConcentration({
         </div>
       </div>
       <div className={styles.concentrationGrid}>
-        <ConcentrationMetric metric={profile.concentration.count} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} heading={heading === "h2" ? "h3" : "h4"} />
-        <ConcentrationMetric metric={profile.concentration.value} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} heading={heading === "h2" ? "h3" : "h4"} />
+        <ConcentrationMetric metric={profile.concentration.count} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} awardYear={profile.awardYearFilter} heading={heading === "h2" ? "h3" : "h4"} />
+        <ConcentrationMetric metric={profile.concentration.value} codiceIpa={profile.codiceIpa} cpv={profile.cpvFilter} awardYear={profile.awardYearFilter} heading={heading === "h2" ? "h3" : "h4"} />
       </div>
       <p className={styles.note}>
         HHI = somma dei quadrati delle quote percentuali, scala 0-10.000. Un valore non decimale esatto è mostrato troncato verso zero a due decimali (ellissi), non arrotondato. Ogni cifra apre i contratti che la producono.
@@ -418,7 +421,6 @@ function Available({ profile }: { profile: AnacEntityProcurementPageView }) {
           <div><dt>Importo</dt><dd>Importo di aggiudicazione dichiarato; non è un dato di pagamento.</dd></div>
           <div><dt>Identità</dt><dd>Il codice fiscale dell&apos;ente proviene da IPA ed è usato per il controllo di identità; i codici fiscali degli operatori non sono pubblicati.</dd></div>
           <EntityProcurementSourceDetails profile={profile} />
-          <div><dt>Shard</dt><dd>Artifact hash-pinned e validato offline prima della lettura.</dd></div>
         </dl>
       </details>
     </section>

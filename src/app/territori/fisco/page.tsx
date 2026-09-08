@@ -75,7 +75,7 @@ export default async function RegionalFiscalPage({
     },
   );
   const formatMetric = (value: number | null, signed = false) => value === null
-    ? "n.d."
+    ? "Non disponibile"
     : measure === "totale"
     ? signed ? signedFromCents(value) : compactFromCents(value)
     : signed ? signedFromCents(value) : exactFromCents(value);

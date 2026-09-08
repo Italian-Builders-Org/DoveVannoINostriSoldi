@@ -21,7 +21,7 @@ function assertNever(value: never): never {
 }
 
 function auditNumber(raw: number, display: number) {
-  return <data value={raw}>{display}</data>;
+  return <data value={raw}>{display.toLocaleString("it-IT", { maximumFractionDigits: 2 })}</data>;
 }
 
 function displayYear(year: number | null) {
@@ -90,7 +90,7 @@ function HeroPillars({ view }: { view: GovernmentScorecardV6PageView }) {
           {view.pillars.map((pillar) => (
             <li key={pillar.id}>
               <span>{pillar.label}</span>
-              <strong>n.d.</strong>
+              <strong>Non disponibile</strong>
             </li>
           ))}
         </ul>

@@ -250,23 +250,18 @@ export function SpendingComposition({
               {labelMode === "detail" ? (
                 <span className={styles.tileCopy}>
                   <b>{item.shortLabel ?? item.label}</b>
-                  <small>{compactEuro(item.valueEuro)} · {percent(share(item))}</small>
+                  <strong>{percent(share(item))}</strong>
                 </span>
               ) : labelMode === "label" ? (
                 <span className={styles.tileCopy}>
                   <b>{item.shortLabel ?? item.label}</b>
-                  <small>{percent(share(item))}</small>
+                  <strong>{percent(share(item))}</strong>
                 </span>
               ) : <span className={styles.tileIndex}>{index + 1}</span>}
             </button>
           );
         })}
       </div>
-
-      <p className={styles.guide}>
-        <span className={styles.guideDesktop}>Più grande è il riquadro, maggiore è la quota sul totale. I valori esatti sono sotto.</span>
-        <span className={styles.guideMobile}>Più lunga è la barra, maggiore è la quota sul totale.</span>
-      </p>
 
       <ol className={styles.legend}>
         {items.map((item, index) => (
@@ -324,12 +319,12 @@ export function SpendingComposition({
       ) : null}
 
       <p className={styles.meta}>
-        <strong>{period}</strong> · {scope}. Denominatore: {denominator}. Fonte:{" "}
-        <a href={source.href} target="_blank" rel="noreferrer">{source.label}</a>, acquisita il {source.observedAt}.
+        <a href={source.href} target="_blank" rel="noreferrer">{source.label}</a> · {period}
       </p>
 
       <details className={styles.tableDetails}>
-        <summary>Dati esatti della composizione</summary>
+        <summary>Dati esatti e fonte</summary>
+        <p className={styles.meta}>{scope}. Quote sul {denominator}. Fonte acquisita il {source.observedAt}.</p>
         <div className="table-scroll" role="region" aria-label="Dati esatti della composizione" tabIndex={0}>
           <table className="table">
             <thead><tr><th scope="col">Voce</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead>

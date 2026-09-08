@@ -74,7 +74,7 @@ export default async function LeggeDiBilancioPage({
         <p className={styles.howtoLead}>Costruisci il tuo scenario di riallocazione</p>
         <ol className={styles.howtoSteps}>
           <li>
-            <span>1</span> Tocca − / + su un riquadro del treemap per aumentarlo o tagliarlo
+            <span>1</span> Usa − / + su una voce per modificarla
           </li>
           <li>
             <span>2</span> La barra in basso segue il saldo netto della tua manovra
@@ -90,8 +90,7 @@ export default async function LeggeDiBilancioPage({
           <strong>OpenBDAP non ha risposto durante questa visita</strong>
           <p>
             Mostriamo l&apos;ultimo snapshot verificato, acquisito il {longDate(series.observedAt)}.
-            Sono dati ufficiali RGS, non una serie dimostrativa; la data resta visibile anche nella
-            provenienza qui sotto.
+            Fonte: RGS.
           </p>
         </div>
       ) : null}
@@ -107,7 +106,7 @@ export default async function LeggeDiBilancioPage({
         <div className={styles.errorState} role="alert">
           <strong>Dati OpenBDAP non raggiungibili in questo momento.</strong>
           <p>
-            Non mostriamo una serie dimostrativa al posto del dato mancante. Riprova più tardi.
+            Riprova più tardi.
           </p>
         </div>
       )}

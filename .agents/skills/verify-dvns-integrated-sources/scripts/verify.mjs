@@ -15,6 +15,7 @@ const evidenceRoot = resolve(
 const viewportMode = process.env.DVNS_VERIFY_VIEWPORT ?? "desktop";
 const viewports = {
   desktop: { width: 1440, height: 1000, deviceScaleFactor: 1 },
+  tablet: { width: 768, height: 1024, deviceScaleFactor: 1 },
   mobile: { width: 390, height: 844, deviceScaleFactor: 1 },
 };
 const viewport = viewports[viewportMode];
@@ -25,7 +26,7 @@ if (!/^https?:$/.test(baseUrl.protocol)) {
   throw new Error("DVNS_BASE_URL deve usare HTTP o HTTPS.");
 }
 if (!viewport) {
-  throw new Error("DVNS_VERIFY_VIEWPORT deve essere desktop oppure mobile.");
+  throw new Error("DVNS_VERIFY_VIEWPORT deve essere desktop, tablet oppure mobile.");
 }
 
 function url(pathname) {
@@ -73,8 +74,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /14\.457\.856/);
-  assert.match(coverageText, /1\.475\.510/);
+  assert.match(coverageText, /14\.803\.968/);
+  assert.match(coverageText, /1\.821\.622/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -193,7 +194,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 91);
+  assert.equal(links.length, 93);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -240,6 +241,55 @@ async function driveCatalog(page, directory) {
   assert.match(await page.$eval("main", (node) => node.textContent), /IODL 2.0/);
   await screenshot(page, directory, "mim-scuole-statali-comuni.png");
   await writeFile(resolve(directory, "mim-scuole-statali-comuni.json"), `${JSON.stringify(schools, null, 2)}\n`);
+  for (const [kind, label, total] of [["costo", "costo del lavoro PA", 244566], ["personale", "personale PA", 101546]]) {
+    const id = `rgs-conto-annuale-${kind}-2020`;
+    actions.push(await goto(page, `/dati/${id}?limit=5`, `Conto Annuale · ${label} · 2020`));
+    const result = await (await request(`/api/dati/${id}?limit=5`)).json();
+    assert.equal(result.dataset.publicRows, total);
+    assert.equal(result.rows[0].cells["Codice amministrazione RGS"], "U:11799");
+    const cells = await page.$$eval("tbody tr:first-child td", (nodes) => nodes.map((node) => node.textContent.trim()));
+    for (const [index, header] of result.dataset.headers.entries()) {
+      if (header === "Importo euro") {
+        assert.match(cells[index], /15[.]000[.]000/);
+      } else {
+        assert.equal(cells[index], result.rows[0].cells[header]);
+      }
+    }
+    assert.match(await page.$eval("main", (node) => node.textContent), /Snapshot storico 2020/);
+    await screenshot(page, directory, `${id}.png`);
+    await writeFile(resolve(directory, `${id}.json`), `${JSON.stringify(result, null, 2)}\n`);
+    const region = '[role="region"][aria-label^="Righe di Conto Annuale"]';
+    await page.focus(region);
+    assert.ok(await page.$eval(region, (node) => document.activeElement === node));
+    const before = await page.$eval(region, (node) => node.scrollLeft);
+    await page.keyboard.press("ArrowRight");
+    await page.waitForFunction((selector, previous) => document.querySelector(selector).scrollLeft > previous, {}, region, before);
+    await page.focus("#dataset-query");
+    await page.keyboard.type("U:11799");
+    await Promise.all([page.waitForNavigation({ waitUntil: "networkidle2" }), page.keyboard.press("Enter")]);
+    assert.equal(new URL(page.url()).searchParams.get("q"), "U:11799");
+    assert.equal(await page.$$eval("tbody tr", (nodes) => nodes.length), 5);
+    actions.push(await assertHealthyPage(page, `Conto Annuale · ${label} · 2020`));
+    const next = await page.$('main a[href*="cursor="]');
+    assert.ok(next);
+    await Promise.all([page.waitForNavigation({ waitUntil: "networkidle2" }), next.click()]);
+    assert.ok(new URL(page.url()).searchParams.has("cursor"));
+    actions.push(await goto(page, `/dati/${id}?q=nessunrisultatocontoannuale257&limit=5`, `Conto Annuale · ${label} · 2020`));
+    assert.equal(await page.$$eval("tbody tr", (nodes) => nodes.length), 0);
+    actions.push(await goto(page, `/dati/${id}?cursor=invalid&limit=5`, `Conto Annuale · ${label} · 2020`));
+    assert.ok(await page.$('[role="alert"]'));
+  }
+  actions.push(await goto(page, "/incarichi/personale-organi", "Personale, staff e organi"));
+  for (const summary of await page.$$("details[open] > summary")) await summary.click();
+  for (const kind of ["costo", "personale"]) {
+    const selector = `details:has(a[href="/dati/rgs-conto-annuale-${kind}-2020"])`;
+    await page.focus(`${selector} > summary`);
+    await page.keyboard.press("Enter");
+    assert.equal(await page.$eval(selector, (node) => node.open), true);
+    assert.equal(await page.$$eval(`${selector} tbody tr`, (nodes) => nodes.length), 3);
+    await (await page.$(selector)).screenshot({ path: resolve(directory, `conto-annuale-${kind}-anteprima.png`) });
+    actions.push(await assertHealthyPage(page, "Personale, staff e organi"));
+  }
   return { actions, datasetLinks: links.length, renderedRows, apiRows: api.rows.length };
 }
 
@@ -325,7 +375,7 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(links.size, 87);
+  assert.equal(links.size, 89);
   assert.ok(links.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Tutti i dataset integrati"));
   for (const suffix of ["vecchiaia", "dipendenza-anziani", "dipendenza-strutturale"]) {
@@ -336,11 +386,16 @@ async function driveHubs(page, directory) {
   const schoolsHref = "/dati/mim-scuole-statali-comuni";
   assert.ok(await page.$(`a[href="${schoolsHref}"]`));
   links.add(schoolsHref);
+  for (const kind of ["costo", "personale"]) {
+    const href = `/dati/rgs-conto-annuale-${kind}-2020`;
+    assert.ok(await page.$(`a[href="${href}"]`));
+    links.add(href);
+  }
   const tedHref = "/dati/ted-avvisi-italia-2026-08";
   assert.ok(await page.$(`a[href="${tedHref}"]`));
   links.add(tedHref);
   await screenshot(page, directory, "contesto-territoriale.png");
-  assert.equal(links.size, 91);
+  assert.equal(links.size, 93);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

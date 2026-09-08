@@ -267,6 +267,30 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_fabbisogni_2018": {
+      const { queryOpenCivitas2018 } = await import("@/lib/opencivitas-2018-snapshot");
+      if (query.year !== undefined && query.year !== 2018) {
+        throw new Error("OpenCivitas FC50TOT è disponibile per il 2018. 2019, 2021 e 2022 restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2018({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_fabbisogni_2019": {
+      const { queryOpenCivitas2019 } = await import("@/lib/opencivitas-2019-snapshot");
+      if (query.year !== undefined && query.year !== 2019) {
+        throw new Error("OpenCivitas FC60TOT è disponibile per il 2019. 2021 e 2022 restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2019({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencoesione_progetti": {
       const {
         deriveOpenCoesioneDimension,
@@ -384,6 +408,23 @@ export async function queryPublicDataset(
           indicator: query.measure,
           sex: query.sex,
         }),
+      });
+    }
+    case "istat_bes_salute": {
+      const { queryIstatBesSalute } = await import("@/lib/istat-bes-salute-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesSalute({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }),
+      });
+    }
+    case "istat_bes_istruzione": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesIstruzione } = await import("@/lib/istat-bes-istruzione-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesIstruzione({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }
     case "consip_ordini": {

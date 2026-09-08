@@ -337,3 +337,19 @@ node --experimental-strip-types --test tests/bdap-legge-bilancio.test.mjs tests/
 
 Il primo comando contatta la fonte ufficiale e scrive soltanto un candidato
 locale se cambia. Nessun comando locale qui pubblica una PR o avvia un merge.
+
+## SIOPE non comunale: una fonte, una proposta
+
+`siope-nonmunicipal-refresh.yml` configura il controllo mensile del giorno 8 alle
+05:17 UTC per ASL, Province, Regioni e Città metropolitane, annualità 2024–2026.
+Owner `metaforismo`, ambiente protetto `source-operations`, branch del data bot
+`automation/data/siope-nonmunicipal`. L'acquisizione limitata degli input ufficiali
+precede receipt, proiezioni, riconciliazioni e PR; a byte invariati non cambia nulla.
+Il refresh comunale mantiene workflow e perimetro propri.
+
+La configurazione non è attestazione di esecuzione schedulata né aggiornamento della
+produzione. Tutti gli artifact correlati devono superare i contratti offline e la
+review prima del merge; nessun push diretto su main o nuovo segreto. Limiti di rete,
+allowlist, conteggi variabili dei soli dataset SIOPE e rollback sono documentati in
+[SIOPE_NON_MUNICIPAL.md](SIOPE_NON_MUNICIPAL.md#refresh-mensile-tramite-data-bot).
+Refs #189: questa slice non chiude l'epica della freschezza.

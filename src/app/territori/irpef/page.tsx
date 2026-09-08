@@ -284,10 +284,9 @@ export default async function MefIrpefPage({
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Redditi e imposta netta dichiarata, Comune per Comune</h1>
+        <h1>Redditi e imposte dichiarate</h1>
         <p>
-          Statistiche MEF su contribuenti, redditi e addizionali. La vista iniziale mostra le
-          Regioni; puoi passare a Province e Comuni senza scaricare l’intero archivio nel browser.
+          Statistiche MEF su contribuenti, redditi e addizionali per Regioni, Province e Comuni.
         </p>
       </div>
 
@@ -538,7 +537,7 @@ export default async function MefIrpefPage({
           <ul>
             <li><a href={source.methodologyUrl} target="_blank" rel="noreferrer">Nota metodologica ufficiale</a></li>
             <li><a href={source.definitionsUrl} target="_blank" rel="noreferrer">Definizioni ufficiali delle variabili</a></li>
-            <li><a href={source.assetUrl} target="_blank" rel="noreferrer">CSV ufficiale bloccato nello snapshot</a></li>
+            <li><a href={source.assetUrl} target="_blank" rel="noreferrer">CSV ufficiale utilizzato</a></li>
           </ul>
           <dl>
             <div><dt>Comuni attribuiti</dt><dd>{integer(result.coverage.municipalities)}</dd></div>

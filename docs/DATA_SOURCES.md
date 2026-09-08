@@ -368,6 +368,20 @@ Il dataset OpenCUP che segnala candidati PNRR non certifica l'ammissione al fina
 
 OpenCivitas pubblica dati comunali su fabbisogni standard, spesa storica e servizi. La prima integrazione usa il rilascio 2022 dei servizi totali e copre 6.557 Comuni delle 15 Regioni a statuto ordinario.
 
+Sono disponibili anche snapshot storici separati: FC70TOT 2021 (6.565 Comuni)
+e FC60TOT 2019, versione 2 (6.567 Comuni). La fetta 2019 espone
+`/api/spese/opencivitas-2019` e MCP `opencivitas_fabbisogni_2019`, con filtro
+obbligatorio per regione o codice ISTAT e paginazione. I valori sono interrogabili
+per una sola annualità; non si sommano né si confrontano silenziosamente famiglie
+diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
+totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
+della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
+
+È integrato anche FC50TOT 2018 versione 1 (6.606 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2018` e MCP `opencivitas_fabbisogni_2018`.
+Fonte, lock, denominatori e differenze dai metadati 2019 sono documentati in
+[OpenCivitas 2018](OPENCIVITAS_2018.md). Gli anni restano separati.
+
 Per ogni Comune conserviamo:
 
 - codice ISTAT, nome, provincia e regione;
@@ -471,7 +485,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- serie storica OpenCivitas 2015-2022 e singole funzioni comunali;
+- ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
+  totali 2018, 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune
@@ -536,3 +551,26 @@ Avvisi, non contratti o pagamenti; comprendono tipi diversi e tre avvisi con
 committenti di più paesi. Nessuna somma o join CIG con ANAC. Riuso degli avvisi
 GUUE verificato nella nota TED, salvo diversa indicazione, e metadati CC0 1.0.
 Pagina, API e MCP consumano lo stesso corpus. [Fonte, date, condizioni di riuso e riproduzione](TED_NOTICES.md).
+
+### Conto Annuale RGS · personale e costo del lavoro 2020
+
+Le distribuzioni ufficiali DFP, CC BY 4.0, aggiungono 244.566 righe di costo e
+101.546 di personale al corpus pubblico. Snapshot storico 2020, con anno e
+chiave amministrazione RGS; coperture distinte, nessun totale sintetico né
+assimilazione a SIOPE cassa. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md).
+
+### ISTAT Bes dei territori · Salute
+
+Il dominio completo `BES_01`, edizione 2025, aggiunge sei indicatori e 46.157
+osservazioni su 135 territori, di cui 107 province. Periodi e unità distinti per
+indicatore; flag di significatività conservato, nessun dato comunale o indice
+composito. Fonte `istat-bes-salute`, API e MCP con selettore condiviso e pagine
+di massimo 100 righe. [Lock, denominatori, geografia e riproduzione](research/ISTAT_BES_SALUTE.md).
+
+### ISTAT BES dei territori — Istruzione e formazione
+
+Dominio BES_02, edizione 2025: nove indicatori, 14.952 osservazioni e 139
+territori (111 province), con periodi e denominatori propri. Percentuali e
+tasso specifico di coorte, non spesa o efficienza; 76 celle ignote `g`, nessuna
+imputazione comunale. Fonte `istat-bes-istruzione`, API/MCP paginati.
+[Lock, definizioni e limiti](research/ISTAT_BES_ISTRUZIONE.md).

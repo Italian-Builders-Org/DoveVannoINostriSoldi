@@ -76,7 +76,11 @@ test("navigazione, home, ricerca, sitemap e discovery espongono archivio ed ediz
   assert.ok(PRIMARY_NAV.every((item) => typeof item.icon === "string"));
   assert.match(navigation, /NAV_ICONS\[item\.icon\]/);
   const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
-  assert.ok(home.indexOf("LatestMonthlyReportTeaser") < home.indexOf("rankPanel"));
+  assert.doesNotMatch(home, /LatestMonthlyReportTeaser/);
+  const layout = await readFile(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /monthlyReports\.listPublished\(\)\[0\]/);
+  assert.match(layout, /href: latestReport\.href/);
+  assert.match(navigation, /PublicationAnnouncement items=\{announcements\}/);
 
   const result = searchSiteDocuments("imprese territori").find((item) => item.href === "/report/2026-08");
   assert.equal(result?.title, "Agosto 2026: Imprese e territori");

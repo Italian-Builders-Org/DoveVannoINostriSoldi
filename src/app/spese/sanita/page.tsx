@@ -66,7 +66,7 @@ export default function HealthSpendingPage() {
   return (
     <main className="shell page">
       <header className="page-intro">
-        <h1>Sanità: personale e servizi nel Conto Economico</h1>
+        <h1>Sanità: costi del personale e dei servizi</h1>
         <p>
           Un confronto tra voci contabili del consuntivo 2024 degli enti del Servizio Sanitario
           Nazionale. Il dataset misura costi di competenza economica.
@@ -91,16 +91,6 @@ export default function HealthSpendingPage() {
         </div>
       </div>
 
-      <div className="notice">
-        <strong>Le etichette sono quelle di OpenBDAP</strong>
-        <p>
-          La fonte non pubblica una voce chiamata “gettonisti” o “cooperative”. BA2080 è il
-          <em> Totale Costo del personale</em>; BA1350 è “Consulenze, Collaborazioni, Interinale e
-          altre prestazioni di lavoro sanitarie e sociosanitarie”. Non trasformiamo una voce
-          aggregata in un tipo di contratto e non deduciamo qualità o frodi.
-        </p>
-      </div>
-
       <section className="panel" aria-labelledby="categories-title">
         <div className={styles.sectionHead}>
           <div>
@@ -108,8 +98,7 @@ export default function HealthSpendingPage() {
               Le voci contabili a confronto
             </h2>
             <p>
-              Aggregato nazionale ufficiale del dataset SSN_CCE_NAZ_VOCCN_001. Il grafico confronta
-              gli importi; codici e copertura del dettaglio restano disponibili nella tabella.
+              Costi nazionali del Servizio Sanitario Nazionale. Valori esatti, codici e copertura nella tabella.
             </p>
           </div>
           <span className="tag tag-neutral">2024 · consuntivo</span>
@@ -117,8 +106,7 @@ export default function HealthSpendingPage() {
         <SsnAccountingComparison data={comparisonData} />
         <p className={styles.note}>
           “Acquisti di servizi” comprende più servizi sanitari e non sanitari, oltre alle sole
-          prestazioni di lavoro. Gli importi nella tabella sono arrotondati solo nella
-          visualizzazione; l&apos;artefatto conserva centesimi interi.
+          prestazioni di lavoro. Importi arrotondati in tabella; valori esatti nel dataset.
         </p>
       </section>
 
@@ -202,7 +190,7 @@ export default function HealthSpendingPage() {
               Dettaglio per ente
             </h2>
             <p>
-              Elenco completo server-side dei {integer(data.detailCoverage.entityCount)} enti di
+              Elenco completo dei {integer(data.detailCoverage.entityCount)} enti di
               dettaglio, alfabetico per codice geografico e Codice Ente SSN.
             </p>
           </div>
@@ -219,7 +207,6 @@ export default function HealthSpendingPage() {
                 <th scope="col" className="num">Prestazioni lavoro sanitarie</th>
                 <th scope="col" className="num">Prestazioni lavoro non sanitarie</th>
                 <th scope="col" className="num">Acquisti di servizi</th>
-                <th scope="col">Codici</th>
               </tr>
             </thead>
             <tbody>
@@ -227,24 +214,32 @@ export default function HealthSpendingPage() {
                 <tr key={entity.id}>
                   <th scope="row">
                     {entity.name}
-                    <small>{entity.region}</small>
+                    <details className="table-details"><summary>Codici nella fonte</summary><div>SSN <code>{entity.codeSsn}</code></div><div>BDAP <code>{entity.codeBdap}</code></div></details>
                   </th>
                   <td>{entity.region}</td>
-                  <td className="num">{entity.missing.productionCosts ? "n.d." : compactEuro(euro(entity.values.productionCosts))}</td>
-                  <td className="num">{entity.missing.personnelCost ? "n.d." : compactEuro(euro(entity.values.personnelCost))}</td>
-                  <td className="num">{entity.missing.healthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.healthcareWorkServices))}</td>
-                  <td className="num">{entity.missing.nonHealthcareWorkServices ? "n.d." : compactEuro(euro(entity.values.nonHealthcareWorkServices))}</td>
-                  <td className="num">{entity.missing.purchasedServices ? "n.d." : compactEuro(euro(entity.values.purchasedServices))}</td>
-                  <td>
-                    <code>{entity.codeSsn}</code>
-                    <small>BDAP {entity.codeBdap}</small>
-                  </td>
+                  <td className="num">{entity.missing.productionCosts ? "Non disponibile" : compactEuro(euro(entity.values.productionCosts))}</td>
+                  <td className="num">{entity.missing.personnelCost ? "Non disponibile" : compactEuro(euro(entity.values.personnelCost))}</td>
+                  <td className="num">{entity.missing.healthcareWorkServices ? "Non disponibile" : compactEuro(euro(entity.values.healthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.nonHealthcareWorkServices ? "Non disponibile" : compactEuro(euro(entity.values.nonHealthcareWorkServices))}</td>
+                  <td className="num">{entity.missing.purchasedServices ? "Non disponibile" : compactEuro(euro(entity.values.purchasedServices))}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </section>
+
+      <details className="data-details">
+        <summary>Fonti, definizioni e limiti</summary>
+      <div className="notice">
+        <strong>Le etichette sono quelle di OpenBDAP</strong>
+        <p>
+          La fonte non pubblica una voce chiamata “gettonisti” o “cooperative”. BA2080 è il
+          <em> Totale Costo del personale</em>; BA1350 è “Consulenze, Collaborazioni, Interinale e
+          altre prestazioni di lavoro sanitarie e sociosanitarie”. Non trasformiamo una voce
+          aggregata in un tipo di contratto e non deduciamo qualità o frodi.
+        </p>
+      </div>
 
       <div className={styles.columns}>
         <section className="panel" aria-labelledby="limits-title">
@@ -263,6 +258,7 @@ export default function HealthSpendingPage() {
         </section>
       </div>
 
+      </details>
       <div className="notice">
         <strong>Non è un conto di pagamenti</strong>
         <p>

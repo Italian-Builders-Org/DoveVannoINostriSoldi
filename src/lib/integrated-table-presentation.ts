@@ -14,6 +14,7 @@ const technicalKeys = new Set([
   'codice_categoria', 'codice_ce2', 'codice_ce3', 'entity_code', 'tax_code',
   'ipa_join_status', 'region_join_status', 'management_code', 'title_code',
   'valid_from', 'valid_to', 'data_di_estrazione',
+  'codice_amministrazione_rgs', 'codice_istituzione',
 ]);
 
 function normalizedKey(key: string): string {
@@ -44,6 +45,7 @@ const labels: Record<string, string> = {
   cf_piva: 'Codice fiscale o partita IVA', fonte_file: 'File di provenienza',
   entity_code: 'Codice SIOPE', tax_code: 'Codice fiscale', codice_ipa: 'Codice IPA',
   entity_name: 'Ente', entity_type: 'Tipo di ente', year: 'Anno', month: 'Mese',
+  codice_amministrazione_rgs: 'Codice amministrazione RGS',
   region: 'Regione', province: 'Provincia', management_label: 'Gestione',
   title_label: 'Titolo di spesa', compartment: 'Comparto', amount_cents: 'Importo (centesimi di euro)',
   valid_from: 'Valido dal', valid_to: 'Valido fino al', source_year: 'Anno della fonte',

@@ -22,3 +22,19 @@ test('presentation keeps project identifiers, accounting layers, amounts and unk
   assert.equal(tableColumnLabel('amountCents'), 'Importo (centesimi di euro)');
   assert.equal(tableColumnLabel('canone_annuo_eur'), 'Canone annuo (€)');
 });
+
+test('Conto Annuale keeps measures and classifications visible with institution identifiers in row details', () => {
+  for (const kind of ['costo', 'personale']) {
+    const dataset = catalog.datasets.find((item) => item.id === `rgs-conto-annuale-${kind}-2020`);
+    assert.ok(dataset);
+    const { primary, technical } = splitTableColumns(dataset.headers, dataset.id);
+    assert.ok(technical.includes('Codice amministrazione RGS'));
+    assert.ok(technical.includes('Codice istituzione'));
+    assert.equal(primary[0], 'Amministrazione');
+    for (const key of ['Anno', 'Contratto', 'Tipo istituzione', 'Descrizione tipo',
+      ...(kind === 'costo' ? ['Voce spesa', 'Descrizione voce', 'Segno fonte', 'Importo euro']
+        : ['Qualifica', 'Descrizione qualifica', 'Tempo pieno uomini', 'Tempo pieno donne'])]) {
+      assert.ok(primary.includes(key), `${dataset.id}: ${key}`);
+    }
+  }
+});

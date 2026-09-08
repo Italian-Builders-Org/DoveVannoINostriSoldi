@@ -73,6 +73,15 @@ export function SiteFooter() {
           </div>)}
         </div>
       </details>
+      <p className="footer-disclaimer">
+        Parte dei dati pubblicati è stata raggruppata e presentata con l&apos;uso massivo di
+        intelligenza artificiale. Controlliamo continuamente le fonti ufficiali e i vincoli di
+        lettura, ma l&apos;AI può sbagliare: verifica sempre sulla fonte originale prima di
+        qualsiasi decisione. Il sito non sostituisce i dati pubblici e non fornisce consulenza.{" "}
+        <Link href="/metodologia">Metodo</Link>
+        {" · "}
+        <Link href="/termini">Termini</Link>
+      </p>
       <div className="footer-credits">
         <div className="footer-makers">
           <span>Un progetto di</span>

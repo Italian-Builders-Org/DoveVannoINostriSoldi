@@ -174,8 +174,7 @@ export default async function HomePage({
 
           <p className={styles.freshness}>
             <i aria-hidden="true" />
-            Eurostat COFOG Italia: serie al {eurostatCofogData.period.to} (il{" "}
-            {eurostatCofogData.period.to + 1} non è ancora pubblicato)
+            Eurostat COFOG Italia: snapshot fino al {eurostatCofogData.period.to}
           </p>
 
           <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
@@ -228,11 +227,11 @@ export default async function HomePage({
           <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="state-title">
             <div className={styles.panelHead}>
               <h3 id="state-title" className="panel-title">
-                Di cui bilancio dello Stato
+                Bilancio dello Stato
               </h3>
               <InfoTooltip id="state-lb-tip" label="Perché non è lo stesso totale?">
-                Qui leggiamo gli stanziamenti della Legge di Bilancio (competenza), non la spesa
-                PA Eurostat. Sono due racconti ufficiali diversi sullo stesso Paese.
+                Spesa PA Eurostat e stanziamenti dello Stato hanno criteri contabili e perimetri
+                diversi: questi stanziamenti non sono una quota del totale Eurostat.
               </InfoTooltip>
             </div>
             <strong className={styles.headline}>{billions(funnel.state.totalWithoutDebtEuro)} mld €</strong>
@@ -249,6 +248,7 @@ export default async function HomePage({
                 <dd>Stanziamenti di competenza</dd>
               </div>
             </dl>
+            <p className={styles.headNote}>Prime {funnel.state.slices.length} missioni</p>
             <HomeItalyCompositionChart
               slices={funnel.state.slices}
               ariaLabel={`Missioni Legge di Bilancio ${funnel.state.year} senza debito`}

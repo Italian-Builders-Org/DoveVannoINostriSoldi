@@ -70,13 +70,14 @@ test("home page leads with Italy charts then keeps the municipal map", async () 
   assert.match(page, /buildHomeItalyFunnel/);
   assert.match(page, /HomeItalyCompositionChart/);
   assert.match(page, /Spesa pubblica totale/);
-  assert.match(page, /Di cui bilancio dello Stato/);
+  assert.match(page, /Bilancio dello Stato/);
+  assert.doesNotMatch(page, /Di cui bilancio dello Stato/);
   assert.match(page, /Dove va, in grandi voci/);
   assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /ItalyRegionsMap/);
   assert.match(page, /SpendingComposition/);
   assert.match(page, /recentLimit=\{4\}/);
-  assert.match(page, /non è ancora pubblicato/);
+  assert.match(page, /snapshot fino al/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Come leggere questi numeri/);
   assert.match(css, /\.italyBand \{/);

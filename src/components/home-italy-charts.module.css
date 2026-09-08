@@ -21,6 +21,9 @@
 }
 
 .barName {
+  display: flex;
+  align-items: start;
+  gap: 4px;
   min-width: 0;
   color: var(--color-neutral-800);
   font-size: 13px;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InfoTooltip } from "@/components/info-tooltip";
 import { billions, percent } from "@/lib/format";
 import type { HomeFunnelSlice } from "@/lib/home-italy-funnel";
 import styles from "./home-italy-charts.module.css";
@@ -19,6 +20,14 @@ export function HomeItalyCompositionChart({
         const label = (
           <span className={styles.barName}>
             {slice.href ? <Link href={slice.href}>{slice.label}</Link> : slice.label}
+            {slice.note ? (
+              <InfoTooltip
+                id={`home-slice-${slice.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`}
+                label={`Perimetro: ${slice.label}`}
+              >
+                {slice.note}
+              </InfoTooltip>
+            ) : null}
           </span>
         );
 

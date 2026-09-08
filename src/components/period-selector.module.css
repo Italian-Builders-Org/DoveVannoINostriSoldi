@@ -92,6 +92,9 @@
 }
 
 .olderMenu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
@@ -117,7 +120,7 @@
   text-decoration: none;
 }
 
-.olderMenu a + a {
+.olderMenu li + li {
   border-top: 1px solid var(--color-neutral-200);
 }
 

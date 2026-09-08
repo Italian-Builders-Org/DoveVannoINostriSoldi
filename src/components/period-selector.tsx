@@ -83,6 +83,7 @@ function OlderYearsMenu({
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
   const olderSelected = years.includes(activeYear);
 
@@ -96,7 +97,10 @@ function OlderYearsMenu({
     }
 
     function dismissOnKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        if (rootRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
+        setOpen(false);
+      }
     }
 
     document.addEventListener("pointerdown", dismissOutside);
@@ -110,29 +114,29 @@ function OlderYearsMenu({
   return (
     <div className={styles.older} ref={rootRef} data-open={open ? "true" : undefined}>
       <button
+        ref={triggerRef}
         type="button"
         aria-expanded={open}
         aria-controls={menuId}
-        aria-haspopup="true"
         aria-current={olderSelected ? "true" : undefined}
         onClick={() => setOpen((value) => !value)}
       >
         Altri
       </button>
       {open ? (
-        <div className={styles.olderMenu} id={menuId} role="list">
+        <ul className={styles.olderMenu} id={menuId}>
           {years.map((year) => (
-            <Link
-              key={year}
-              href={hrefFor(year)}
-              role="listitem"
-              aria-current={year === activeYear ? "page" : undefined}
-              onClick={() => setOpen(false)}
-            >
-              {year}
-            </Link>
+            <li key={year}>
+              <Link
+                href={hrefFor(year)}
+                aria-current={year === activeYear ? "page" : undefined}
+                onClick={() => setOpen(false)}
+              >
+                {year}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       ) : null}
     </div>
   );

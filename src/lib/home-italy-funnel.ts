@@ -13,7 +13,7 @@ import {
 /** Everyday labels for COFOG divisions (3B). GF10 is broader than pensions alone. */
 export const COFOG_EVERYDAY_LABELS: Readonly<Record<string, string>> = {
   TOTAL: "Totale",
-  GF01: "Stato e servizi generali",
+  GF01: "Servizi generali",
   GF02: "Difesa",
   GF03: "Ordine pubblico e sicurezza",
   GF04: "Economia e imprese",
@@ -250,7 +250,7 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
       caveats: [
         ...cofog.caveats.slice(0, 2),
         "Il totale Eurostat non è la somma esatta delle funzioni: ogni cella è arrotondata dalla fonte.",
-        "Il 2025 non è ancora pubblicato per l’Italia in questa serie Eurostat.",
+        `Lo snapshot Eurostat acquisito copre l’Italia fino al ${eurostatCofogData.period.to}.`,
       ],
     },
     state: {

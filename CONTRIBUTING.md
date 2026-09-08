@@ -129,6 +129,11 @@ latenza delle fonti live, rete, rendering o cold start.
 
 ### Build Vercel senza lavoro duplicato
 
+`npm run build` verifica anche i manifest dei pacchetti runtime: blocca il
+tracing accidentale di test, documentazione e ricerca, controlla gli artifact
+ANAC necessari e impedisce l'inclusione dell'indice operatori nelle route enti.
+Vedi [misure e verifica dei bundle](docs/VERCEL_RUNTIME_BUNDLES.md).
+
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nel job
 `production` di GitHub Actions. `npm ci` locale e in CI conserva il download

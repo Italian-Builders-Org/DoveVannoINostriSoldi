@@ -366,30 +366,10 @@ nav li a { text-decoration: none; }
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--color-bg);
   border-right: 1px solid var(--color-neutral-300);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
-.mobile-navigation .sidebar-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  padding-top: max(12px, env(safe-area-inset-top));
-  border-bottom: 1px solid var(--color-neutral-300);
-  background: var(--color-bg);
-}
-.mobile-navigation .primary-nav {
-  /* Scroll with the panel: do not create a nested scroller that pins the callout. */
-  flex: none;
-  overflow: visible;
-  min-height: auto;
-  max-height: none;
-}
-.mobile-navigation .sidebar-callout {
-  position: static;
-  flex: none;
-  margin-top: 8px;
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-}
+.mobile-navigation .sidebar-toolbar { padding-top: max(12px, env(safe-area-inset-top)); border-bottom: 1px solid var(--color-neutral-300); }
+/* Keep «Qualcosa non torna?» pinned: only the link list scrolls when nested menus grow. */
+.mobile-navigation .primary-nav { flex: 1; }
 body:has(.mobile-navigation:modal) { overflow: hidden; }
 
 @media (min-width: 1100px) {

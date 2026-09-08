@@ -65,3 +65,16 @@ test("FC50 only excludes coherent timezone-qualified acquisition timestamps from
   value.source.observedAt = "2026-09-08T03:00:00Z";
   assert.throws(() => assertOpenCivitas2018Snapshot(value), /timestamp/);
 });
+
+
+test("FC50 preserves source-coded assessment reasons independently from absent FC60 reasons", async () => {
+  const snapshot = assertOpenCivitas2018Snapshot(load());
+  const unavailable = snapshot.municipalities.filter((row) => row.servicesAssessmentReason !== null);
+  assert.equal(unavailable.length, 7);
+  assert.ok(unavailable.every((row) => row.servicesAssessmentReason === "cod_no_quest"));
+  assert.equal(unavailable.filter((row) => row.spendingAssessmentReason === "cod_sps_noval").length, 4);
+  assert.equal(unavailable.filter((row) => row.spendingAssessmentReason === null).length, 3);
+  const { assertOpenCivitas2019Snapshot } = await import("../src/lib/data/opencivitas-2019-contract.ts");
+  const fc60 = assertOpenCivitas2019Snapshot(JSON.parse(readFileSync(new URL("../src/data/generated/opencivitas-2019.json", import.meta.url), "utf8")));
+  assert.ok(fc60.municipalities.every((row) => row.spendingAssessmentReason === null && row.servicesAssessmentReason === null));
+});

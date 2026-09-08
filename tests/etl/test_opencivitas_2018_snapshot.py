@@ -96,6 +96,15 @@ class FC50ReleaseTests(unittest.TestCase):
         fc60 = json.loads(Path("tests/fixtures/opencivitas-2019-source-sample.json").read_text())
         self.assertEqual(len(SAMPLE["definitions"]), 25)
         self.assertEqual(len(fc60["definitions"]), 27)
+        fc50_codes = {row["VAR_IND_COD"]: row for row in SAMPLE["definitions"]}
+        fc60_codes = {row["VAR_IND_COD"]: row for row in fc60["definitions"]}
+        self.assertEqual(set(fc60_codes) - set(fc50_codes), {"FL_NO_CONFRONTO_SPESA", "FL_NO_CONFRONTO_OUT"})
+        # These navigation flags changed meaning/type and are NOT imported as
+        # the selected assessment-reason indicators.
+        for code in ("SERV_NO_VALUT_SPESA_TOT", "SERV_NO_VALUT_OUT_TOT"):
+            self.assertEqual(fc50_codes[code]["VAR_IND_TIP"], "NAVIGA")
+            self.assertEqual(fc60_codes[code]["VAR_IND_TIP"], "LQP")
+            self.assertNotEqual(fc50_codes[code]["VAR_IND_DES"], fc60_codes[code]["VAR_IND_DES"])
         with self.assertRaises(snapshot.StructuralError):
             snapshot.verify_definitions(fc60["definitions"])
         rows = copy.deepcopy(SAMPLE["indicators"])

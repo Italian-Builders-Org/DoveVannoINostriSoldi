@@ -38,6 +38,15 @@ indicatori esposti hanno codici, descrizioni, unità, lingua IT, funzione TOTALE
 e tipi FS/LQP verificati nei byte 2018. Sono quindi riutilizzate le primitive
 numeriche, tabulari e del modello comunale; il contratto annuale e i pin restano
 indipendenti. La fixture di Roma deriva dal CSV 2018, non dal 2019.
+FC50 non ha `FL_NO_CONFRONTO_SPESA` e `FL_NO_CONFRONTO_OUT`; inoltre
+`SERV_NO_VALUT_SPESA_TOT` e `SERV_NO_VALUT_OUT_TOT` sono NAVIGA, mentre in FC60
+sono LQP con descrizioni diverse. Queste variabili non vengono importate né
+confuse con i due indicatori selezionati `DESCR_NON_VALUTABILE_*`.
+
+Nel 2018 sette Comuni conservano `cod_no_quest` come motivo servizi; quattro
+hanno anche `cod_sps_noval` come motivo spesa. Sono codici testuali della fonte,
+conservati senza traduzioni inferite. Nel 2019 i due motivi sono sempre `null`:
+questa differenza annuale è coperta dai test, senza riempire o cancellare celle.
 
 - Spesa storica e standard: euro convertiti in centesimi con arrotondamento al
   centesimo più vicino; differenza storica meno standard.

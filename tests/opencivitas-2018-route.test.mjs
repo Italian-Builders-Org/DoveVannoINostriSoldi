@@ -20,6 +20,9 @@ test("FC50 API and MCP share pagination, provenance, missing-code and region ali
   const descriptor = datasetCatalog.find((item) => item.id === "opencivitas_fabbisogni_2018");
   assert.equal(descriptor.sources[0].period, "2018");
   assert.equal(descriptor.sources[0].publishedAt, "2022-02-14");
+  const { datasetQuerySchema } = await import("../src/lib/mcp/query-schema.ts");
+  assert.equal(datasetQuerySchema.parse(descriptor.exampleQuery).dataset, descriptor.id);
+  assert.equal((await queryPublicDataset(descriptor.exampleQuery)).referenceYear, 2018);
   const response = GET(new NextRequest(`${base}?regione=Lazio&limit=2&offset=2&anno=2018`));
   assert.equal(response.status, 200);
   assert.match(response.headers.get("cache-control"), /public/);

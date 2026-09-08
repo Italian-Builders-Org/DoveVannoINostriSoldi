@@ -1,0 +1,3453 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-cig-2007-2025",
+  "license": "CC BY-SA 4.0",
+  "observedAt": "2026-09-08T12:00:00Z",
+  "scope": {
+    "years": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "distributionKind": "annual-monthly-full-snapshots",
+    "note": "ZIP mensili ufficiali CIG ANAC 2007-2025 usati solo per arricchire le procedure collegate agli operatori."
+  },
+  "resources": [
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "b80d0a65-8e50-40db-962b-b5e57dc0d078",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_01.zip",
+      "archiveBytes": 157386,
+      "archiveSha256": "49c3848829c211a9ff5f109cda4c000750bb70b66dfe5ca5c41fbf799ab6abde",
+      "member": {
+        "name": "cig_csv_2007_01.csv",
+        "bytes": 732711,
+        "crc32": "4da96855",
+        "sha256": "ae9f07f23775b2ab93f09ba0dafe68c7c7e2b131a190a255ec4d2fb0c6b70cdb"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "e61ea76b-9411-4e0b-bf5d-e74a147da15c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_02.zip",
+      "archiveBytes": 799799,
+      "archiveSha256": "8584addf5169f43d0dc5b0221aff383e87ec98192ec567d982f30f927be6f31d",
+      "member": {
+        "name": "cig_csv_2007_02.csv",
+        "bytes": 3634956,
+        "crc32": "a9db9c56",
+        "sha256": "b9cb45114bb613f9a7cee8eede29a6d1a7c8817488c5b914a3a9dc791f9f67fd"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "e40b138e-a17b-44bc-9f3d-045d1e41548f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_03.zip",
+      "archiveBytes": 1275678,
+      "archiveSha256": "2c098f29b2292c2be98cdbfed1d8fd98d76f5b8cd00229815c6dcf8a5a8b3389",
+      "member": {
+        "name": "cig_csv_2007_03.csv",
+        "bytes": 5851237,
+        "crc32": "61062837",
+        "sha256": "e987c90a503c101924ea2c5a60f90bd5615ed4ee1091d7ecadb724e77df987df"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "69dc9962-b196-45d0-b019-588932479fff",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_04.zip",
+      "archiveBytes": 1126183,
+      "archiveSha256": "b6b074be6cf30e17bedf00ca90ef589376e3c314aa3762375078b6268cdf6eea",
+      "member": {
+        "name": "cig_csv_2007_04.csv",
+        "bytes": 5115720,
+        "crc32": "43739cac",
+        "sha256": "1367a13fe73c7d42b932dffc47817a5112e2458c18ba7e4090b68b92e9839346"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "6f09e9f9-a5c1-404b-a548-2edaba8df796",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_05.zip",
+      "archiveBytes": 1423852,
+      "archiveSha256": "551e4df6953fb9ff381d4a62d089329e3476c69449f6f1a3467cf82cca4e7ef0",
+      "member": {
+        "name": "cig_csv_2007_05.csv",
+        "bytes": 6465431,
+        "crc32": "80a3d7ad",
+        "sha256": "77f14886475fa5122966c171197fb70a51ecbc6e7585e1657198c969ce510bf8"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "701f5fea-951c-40e6-b297-96dd68cdb196",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_06.zip",
+      "archiveBytes": 1369884,
+      "archiveSha256": "8a8375eb239409f937ac978b1cd101472f08ba41441324dd868b34c02b2804cd",
+      "member": {
+        "name": "cig_csv_2007_06.csv",
+        "bytes": 6242995,
+        "crc32": "888be1a2",
+        "sha256": "935480dbbcdbc7b68f8cff8f31c2ee9c3e4d8ae019ee75a1a8b1072a5e005be5"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "fc89aaac-b4c4-4dc5-972f-46047fb76993",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_07.zip",
+      "archiveBytes": 1330093,
+      "archiveSha256": "9767b75bb6e5b4556766613c227fbd83bf00208be4ae8186093a0ae23124dbab",
+      "member": {
+        "name": "cig_csv_2007_07.csv",
+        "bytes": 6018470,
+        "crc32": "b1797f57",
+        "sha256": "d8d057bf07b889cd16bed03fb404facd0409ad070f929090bb04f5812211d66a"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "e5a070cf-1fbe-410f-97e9-42d0796c54b5",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_08.zip",
+      "archiveBytes": 993157,
+      "archiveSha256": "710ad6d27f80279400cc05ce354dfea106fe4719a12b5e4936cc214f140c5466",
+      "member": {
+        "name": "cig_csv_2007_08.csv",
+        "bytes": 4457920,
+        "crc32": "44118287",
+        "sha256": "06bfd9a4e7cb29c0bf45fab99d637ade3f04a9b2883cf6fdbf324511aff372b8"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "3d70b311-9754-4002-b01b-347b2da6c614",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_09.zip",
+      "archiveBytes": 1014922,
+      "archiveSha256": "4ea398e8c5e6497384fd245de8c7079655a02709509572ef07f8e43bd723a3a0",
+      "member": {
+        "name": "cig_csv_2007_09.csv",
+        "bytes": 4578777,
+        "crc32": "f1c76ea1",
+        "sha256": "c1d098d74e386f3093de7cde83bf6f27a83972d91076f7cbe089fb309f414377"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "1e4a9c2b-9f08-4a32-bcd1-fb0a3d95213c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_10.zip",
+      "archiveBytes": 1444386,
+      "archiveSha256": "438b04af1ea59057967dc2610baf6ffab195e624f7827d61c12cf742cd756ca7",
+      "member": {
+        "name": "cig_csv_2007_10.csv",
+        "bytes": 6533161,
+        "crc32": "9f0fb5fd",
+        "sha256": "e207d4112ac5dfa8d9511fdd73a33198b6250ad19dca2d4d98dc0ea2d36fa403"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "87bdedcf-0b93-4534-855f-a5c336e49739",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_11.zip",
+      "archiveBytes": 1457328,
+      "archiveSha256": "77cb65b390b5b08a1a2745843a85ab7312e53fd5077230aa1bde5ef6841680ea",
+      "member": {
+        "name": "cig_csv_2007_11.csv",
+        "bytes": 6555389,
+        "crc32": "7b854934",
+        "sha256": "10600da65f44bbb707d6304c84516ff971b9e2929c864650bfcc5edb005d7288"
+      }
+    },
+    {
+      "year": 2007,
+      "fileName": "cig_csv_2007_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2007",
+      "resourceId": "3ee6686a-73b5-4451-a667-f94b53015562",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2007/filesystem/cig_csv_2007_12.zip",
+      "archiveBytes": 1344106,
+      "archiveSha256": "005b59a96fac142de0853baaf30d0dff9f6399c81b8b83ec4d11ad9cda42a2b6",
+      "member": {
+        "name": "cig_csv_2007_12.csv",
+        "bytes": 6040090,
+        "crc32": "0e7435f0",
+        "sha256": "f2da7607fe6625a4b6059f3983366acf1d0c4d2eb80dc89937a4f83cc53f01b3"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "123cd386-3d97-45ab-8b10-c8c650cb0449",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_01.zip",
+      "archiveBytes": 1261844,
+      "archiveSha256": "3a9b312049e8408340e7c787ac83621f807997b8123235e365aa3eaa9262326a",
+      "member": {
+        "name": "cig_csv_2008_01.csv",
+        "bytes": 5715713,
+        "crc32": "33b99239",
+        "sha256": "9e1998432d38c2ce75e3abb3a1852cab9dc5461f62e2c78c6afdfebfcce749df"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "214bf0ef-0b82-430e-aab2-66cc37276e4b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_02.zip",
+      "archiveBytes": 1493770,
+      "archiveSha256": "db008a687085636eaf014212fbc0f0269b082241277b19b41cdd7c51ef4b3934",
+      "member": {
+        "name": "cig_csv_2008_02.csv",
+        "bytes": 6741124,
+        "crc32": "1baa3721",
+        "sha256": "afbae512749c0a0188eff3ef8e021ad19605b5041f86bb50600f68e447cf17e9"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "47eda99f-79d1-4825-9d5b-96bf90ffbab6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_03.zip",
+      "archiveBytes": 1532812,
+      "archiveSha256": "8412547fb32a90f3cdbdbc5334e2d19fee88f36bf86d903697510645aee456dc",
+      "member": {
+        "name": "cig_csv_2008_03.csv",
+        "bytes": 6854526,
+        "crc32": "321caae6",
+        "sha256": "f1966391d1696cd802baa59b5739efda3a1104f4456443357ae3bb1708d1a862"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "b27f183f-7ef1-4e50-92c1-1d792c6356d9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_04.zip",
+      "archiveBytes": 1605131,
+      "archiveSha256": "96e38154004500ddec9c3dbbc6bbbacae8554abeb4f62900db4586fbb060a314",
+      "member": {
+        "name": "cig_csv_2008_04.csv",
+        "bytes": 7158888,
+        "crc32": "9cf010b5",
+        "sha256": "ae890477611bd378d4baeb3a523ae3b16177ec73fe510917e3d68f3ff6b03cc5"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "aa4a8c36-0591-46b4-ae5b-96e55207ca45",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_05.zip",
+      "archiveBytes": 1715927,
+      "archiveSha256": "410cc68b1da22c74aea5add8bba797093287cb301fdb8bbbf0669aca88cfdaea",
+      "member": {
+        "name": "cig_csv_2008_05.csv",
+        "bytes": 7554149,
+        "crc32": "b591ed9a",
+        "sha256": "ccd9c96c503b790c0b053a46eb9e87ae3c54704658bedbd136fbe7a2767f2a3a"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "66633da7-21dd-4ff7-9137-897abc9bbba4",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_06.zip",
+      "archiveBytes": 1845890,
+      "archiveSha256": "488afbd907f8db3dd8842f080b1e4ba5469f5c4a5111ba235ea83b0b52a1a95a",
+      "member": {
+        "name": "cig_csv_2008_06.csv",
+        "bytes": 8005877,
+        "crc32": "3d0c416b",
+        "sha256": "ab392d94f84297739683b0884c64efd71bbb3d0e677505e44bd482c270ea7912"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "9d018a83-95aa-4680-a541-513a05fdf1b3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_07.zip",
+      "archiveBytes": 2005333,
+      "archiveSha256": "3b1a77eb992e5690c0e8cec5b536190b78a3e038c4f7b4c61ff8bd35dc91077c",
+      "member": {
+        "name": "cig_csv_2008_07.csv",
+        "bytes": 8691097,
+        "crc32": "e7a3e863",
+        "sha256": "2e5e05608755b60d287f74834d08998d292f4f91eaae91d25732f3ae07dfb5ab"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "919597a2-8400-46d5-9efd-e8fd9327721e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_08.zip",
+      "archiveBytes": 1199695,
+      "archiveSha256": "c4124e86e123b48fe83a86c243f38008ca4713d854a27172053a4e28979a0a22",
+      "member": {
+        "name": "cig_csv_2008_08.csv",
+        "bytes": 5124979,
+        "crc32": "ccf7fc49",
+        "sha256": "a0c60ce027e612d3906355af9a15d42f9dd3ee0674fe730e56242a767aac70c4"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "18cf1975-d138-4cdc-a093-a78ca4e2fd4a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_09.zip",
+      "archiveBytes": 1659821,
+      "archiveSha256": "9e19a88333d5b9363bfb882d94e39e820d06de20eca6b155cf11d0eb340490cb",
+      "member": {
+        "name": "cig_csv_2008_09.csv",
+        "bytes": 7413287,
+        "crc32": "e24a6500",
+        "sha256": "1be29783b1013b6195a907b9ae8cea8681b4307f6bf7cbdb947f96616994e6af"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "a8ed8282-4daf-4903-80a1-83c68005323f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_10.zip",
+      "archiveBytes": 2319324,
+      "archiveSha256": "3837d3bca95c17b09c212348edd288f8cb0841ad1b9665539a917fedcb8aab39",
+      "member": {
+        "name": "cig_csv_2008_10.csv",
+        "bytes": 9893141,
+        "crc32": "edc2f12a",
+        "sha256": "5670cb8ff966acb4c9847491c13fe7aaa0a29f1bb8030dd14d1b555285003044"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "c2ad584c-8447-43e1-8330-bfd1835a4650",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_11.zip",
+      "archiveBytes": 2223929,
+      "archiveSha256": "38dd75672f5290deddeb031a08db0276e7fc9cbe6c3e922ee140a5a482d98e2f",
+      "member": {
+        "name": "cig_csv_2008_11.csv",
+        "bytes": 9411134,
+        "crc32": "57475a71",
+        "sha256": "63e5ee722e1a6404a36db63df16b8ce6087244b01992835a3b77b64f67feca44"
+      }
+    },
+    {
+      "year": 2008,
+      "fileName": "cig_csv_2008_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2008",
+      "resourceId": "0d359b5c-0c35-4baf-9384-bdcb15ce6ccb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2008/filesystem/cig_csv_2008_12.zip",
+      "archiveBytes": 2465094,
+      "archiveSha256": "627ba1bdc60c5f312cb1cfc407f41708d0d98e793324f64af1d8725cac213d6c",
+      "member": {
+        "name": "cig_csv_2008_12.csv",
+        "bytes": 10344511,
+        "crc32": "09f60095",
+        "sha256": "1a6d166707cf335ebc0254dd3d7b7633899c82e677bd2e7f41897a3303d325c9"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "1fd43fcc-49b6-45ea-bdff-cad207510519",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_01.zip",
+      "archiveBytes": 1824413,
+      "archiveSha256": "59c97ed088a404b98bf61429144a682214bc2105bb3e5ed23da5d06c30458f66",
+      "member": {
+        "name": "cig_csv_2009_01.csv",
+        "bytes": 7714754,
+        "crc32": "52c8c555",
+        "sha256": "b1d413f4fba5f049c9f3272a4291d7ebb59ae884ab2acf9969f6a8af33dcc8f9"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "5db8fdf0-ba27-46d2-a687-4917140dd7c8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_02.zip",
+      "archiveBytes": 2320207,
+      "archiveSha256": "d237a72b1f30ec3141177a564c31f619f803dcaf59d4dbfb694336be844c77e3",
+      "member": {
+        "name": "cig_csv_2009_02.csv",
+        "bytes": 10300354,
+        "crc32": "0d51c23a",
+        "sha256": "734c2891704bfd516ad75b4aa31f623b24dd72b36c7a383866e98724ad554008"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "f1a5c5f6-1e8c-4f1c-8aec-be7c491a8dd6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_03.zip",
+      "archiveBytes": 2645368,
+      "archiveSha256": "6af24f7bfeb594679bc44077d917f718c658a8e0273e360c4989b109f5a99e4c",
+      "member": {
+        "name": "cig_csv_2009_03.csv",
+        "bytes": 11081447,
+        "crc32": "0d6bfd0b",
+        "sha256": "1fa6d12401cefa2b973cc51c3e04cc07536fb00ca0a9c30a4e12766eb57c6b1e"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "3209e7a3-8889-421f-9c86-2173ee522433",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_04.zip",
+      "archiveBytes": 2395099,
+      "archiveSha256": "b46a88e583f95ed139489c9a1de13d444d27be0caeac1aada3779ab247ee6dc2",
+      "member": {
+        "name": "cig_csv_2009_04.csv",
+        "bytes": 10108882,
+        "crc32": "0a5c9bd2",
+        "sha256": "2fb28fd9077512f62f7ed507e44edaafc9f6c37ae91b894cb6c806049b3173e7"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "bb4c5e09-67fd-48ae-b355-a5f5c0f765a8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_05.zip",
+      "archiveBytes": 2647357,
+      "archiveSha256": "9814dae55cd69150852e6f1003ae828cdf95f966c766a99557d9571f2e88499a",
+      "member": {
+        "name": "cig_csv_2009_05.csv",
+        "bytes": 11777859,
+        "crc32": "7e37375c",
+        "sha256": "ec9e1d131de851408cd7db174643262058d2942cf35ad45c4461a42ea6442009"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "a6069953-ff85-4d13-a2fa-11335d6335a8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_06.zip",
+      "archiveBytes": 2629153,
+      "archiveSha256": "5a83df05251933ef857d476ece3ae6e840303ddfdb1a8d09d0d019d85f585aa2",
+      "member": {
+        "name": "cig_csv_2009_06.csv",
+        "bytes": 11588387,
+        "crc32": "97c1b40a",
+        "sha256": "41c9ab127db2a0c3af678469e4d08641083210eab9a6d5734044b39fec348e3b"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "84b636e2-fe56-41fe-a313-9975d4535b01",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_07.zip",
+      "archiveBytes": 2714754,
+      "archiveSha256": "2e2e65d03cea0a0e0e56764f217830abcc54fcd717271ec55de0fa2922f0c128",
+      "member": {
+        "name": "cig_csv_2009_07.csv",
+        "bytes": 11392401,
+        "crc32": "5bcb8b93",
+        "sha256": "84880e5054bc3f4a485868984a0064777bf1b079dead40e3a58628f834617474"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "48ecc7e5-b466-4090-b289-8b2a18824d61",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_08.zip",
+      "archiveBytes": 1658275,
+      "archiveSha256": "14f5d21630097dbedf954f1dd3746cd4128b08cdf0cf36354d8100a2e809fa30",
+      "member": {
+        "name": "cig_csv_2009_08.csv",
+        "bytes": 7015273,
+        "crc32": "0a8945e8",
+        "sha256": "8343168fc8f0f345b09ce8015e3a9c28ed386f41ec2f825f0bf79730f3bd88fc"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "a04d2f4c-a076-4777-ae5e-2ffd4b9caf73",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_09.zip",
+      "archiveBytes": 2407010,
+      "archiveSha256": "8def5a22418e229958dacfe05d4c9bb322576eff3cb9bdff004126b43d7c3d4a",
+      "member": {
+        "name": "cig_csv_2009_09.csv",
+        "bytes": 10432959,
+        "crc32": "9593d1c8",
+        "sha256": "84e13575d048ee1823e972b00ba230de3bd30f818ef165f46c507d98ce00a58d"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "709f371c-324e-4120-9976-389011f82735",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_10.zip",
+      "archiveBytes": 2817223,
+      "archiveSha256": "1f58b155fcd8e123adb9766f4f33deec1797fdf6885003d6aacaf352e58734ec",
+      "member": {
+        "name": "cig_csv_2009_10.csv",
+        "bytes": 12015736,
+        "crc32": "f7535f51",
+        "sha256": "8048dabf1a605f07d15064b510baa7e7d9d5cd4a8b21244a6de127f6db4d0bfe"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "003fa90d-f471-4492-b887-91be8906bb01",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_11.zip",
+      "archiveBytes": 3285458,
+      "archiveSha256": "21a3a6cea618db5da13d15c1775053f0aee7f86eec4753aafcc56822f6ee32fc",
+      "member": {
+        "name": "cig_csv_2009_11.csv",
+        "bytes": 13760967,
+        "crc32": "e42671d9",
+        "sha256": "2a5dd7187286d92234095f57096695ddf279eee9b5d3408687968b1fe425d1fc"
+      }
+    },
+    {
+      "year": 2009,
+      "fileName": "cig_csv_2009_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2009",
+      "resourceId": "47418d07-a989-4f26-b8b1-317fdb964468",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2009/filesystem/cig_csv_2009_12.zip",
+      "archiveBytes": 4000667,
+      "archiveSha256": "fcab897e8ce0749e6adc17bb98d69ad488038003746e5d1c954d211d24b2dd3c",
+      "member": {
+        "name": "cig_csv_2009_12.csv",
+        "bytes": 17853110,
+        "crc32": "950406fb",
+        "sha256": "c2f25c42b08ca0a8df39a50ee35c471b873a0982413f485deb1f313822b134c6"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "f6677b9c-3f01-44e1-86d6-8b5806339164",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_01.zip",
+      "archiveBytes": 3529727,
+      "archiveSha256": "14ee3e7edead6ec98cfc960472012661970f8413a05ee8b78b346398b94bd542",
+      "member": {
+        "name": "cig_csv_2010_01.csv",
+        "bytes": 15040767,
+        "crc32": "3efad9cf",
+        "sha256": "9be66d9f8e81a337b0ce80191eac16c20d330f19b55c6126b66dc2eac78a98d8"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "d05ee277-64ee-499a-95e0-ac8f9f2200bb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_02.zip",
+      "archiveBytes": 3474247,
+      "archiveSha256": "9e93afd677d8c2300571bc002b181ae931e22ede49987ed750c8ba36265ba8f4",
+      "member": {
+        "name": "cig_csv_2010_02.csv",
+        "bytes": 14738674,
+        "crc32": "79c54dfa",
+        "sha256": "14ae696b11c8623a3c24b2d24dde742ebcf244eb305b49f60cb8dc411e1eb051"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "94d9b614-ee3e-4298-864d-c73a0e9067a9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_03.zip",
+      "archiveBytes": 4288899,
+      "archiveSha256": "fadf5f779f97c81772b439c54322fd2348ed5fa07d203718db527190029e871e",
+      "member": {
+        "name": "cig_csv_2010_03.csv",
+        "bytes": 18795329,
+        "crc32": "b804772e",
+        "sha256": "5fb1eb338df04d116780abcbe0a20c6cbe8b90d757ce8f641789c9b161ff39f3"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "f807e447-f464-4610-8d94-decb725d6793",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_04.zip",
+      "archiveBytes": 4015821,
+      "archiveSha256": "ad1e261ed1b4026ad40b05872c6ade6c37a3268527f888ab3a874739b97b7760",
+      "member": {
+        "name": "cig_csv_2010_04.csv",
+        "bytes": 17240464,
+        "crc32": "f5f6ce53",
+        "sha256": "cd1ce37d441ab281bc6f882185b4edc982df5057c03459f2a7e30d9631974258"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "a1da5b1b-9766-4f22-b489-d07d5c94f0a0",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_05.zip",
+      "archiveBytes": 4448032,
+      "archiveSha256": "720af3f23c709fae2081753f96d8b2d52a83d0456162f7dc9332091d20fff35d",
+      "member": {
+        "name": "cig_csv_2010_05.csv",
+        "bytes": 18879754,
+        "crc32": "79d42322",
+        "sha256": "6e7e56931f30ced4a48a811adf6f4f5ea9bd84034b14790681c0d09c99278c15"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "a21ab0f2-a2a5-4ffc-94ef-de3e613c2a3b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_06.zip",
+      "archiveBytes": 4788574,
+      "archiveSha256": "3bcda994df9e463822fd687703ef6b65ea70bb4a25114985b93c0c8432ec7a77",
+      "member": {
+        "name": "cig_csv_2010_06.csv",
+        "bytes": 20247242,
+        "crc32": "6e18d9f3",
+        "sha256": "ba922fa7768d5bec49020bf98f19ca613c40526231ca8d19764735bafc11e3f5"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "9240fddb-667e-4532-aac8-2a75f2db9de4",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_07.zip",
+      "archiveBytes": 4840489,
+      "archiveSha256": "553deffa73487681ee9533c08267f4f0ea8ff976fa237c0ebcfec2bebbb4240b",
+      "member": {
+        "name": "cig_csv_2010_07.csv",
+        "bytes": 20186380,
+        "crc32": "6ab03005",
+        "sha256": "9199519455869ecbfd6d268063f95854d4ccae0a6ecdd04fc1dd81b167b2eeb1"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "3220f37d-e63a-409a-a505-2db8433ca7b6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_08.zip",
+      "archiveBytes": 4056587,
+      "archiveSha256": "d9047f1aa011afe5f66f804c7616e58578cdb3c147e5024526438d0329a18d2a",
+      "member": {
+        "name": "cig_csv_2010_08.csv",
+        "bytes": 17179954,
+        "crc32": "3c2ce0d7",
+        "sha256": "8c24cd0305711736d0144019f0fbc2c5a4bff339743382e4b70ef1f04f9c7a4b"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "449e86ef-27b4-40c9-a74e-ccc852e708d8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_09.zip",
+      "archiveBytes": 9183015,
+      "archiveSha256": "8c9f28d8ba3c1e20ed2d03771a9fc0bc2fec9fa0d813ada6048038cceef01842",
+      "member": {
+        "name": "cig_csv_2010_09.csv",
+        "bytes": 38614912,
+        "crc32": "8aefbacf",
+        "sha256": "c732d5a3c0ba1d8301aa2d6850227ae910b66c8ca052c3801258c903e2838e0c"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "2f201810-6994-485a-b612-feb7a572dec9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_10.zip",
+      "archiveBytes": 11345454,
+      "archiveSha256": "83e5c5e5cad67ee8cad9997ca5fe3406a2f57106eb3c210acad968f36344b4bf",
+      "member": {
+        "name": "cig_csv_2010_10.csv",
+        "bytes": 46625914,
+        "crc32": "bc2b3f06",
+        "sha256": "dd7ee9b3e02c39e470c6e88c52812de8d91b36dc7449e11f79595078e9ece324"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "995ddfd7-5d54-44dc-a817-84afc598d193",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_11.zip",
+      "archiveBytes": 15889151,
+      "archiveSha256": "f28f4d0fa7a89217df1b4d24b03963c8421b92cebe3a11ff76436df9a4224418",
+      "member": {
+        "name": "cig_csv_2010_11.csv",
+        "bytes": 65348729,
+        "crc32": "e406e876",
+        "sha256": "e064f85d968a423c6177737be6ae3a8419573fd04e573954ac1c393980536024"
+      }
+    },
+    {
+      "year": 2010,
+      "fileName": "cig_csv_2010_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2010",
+      "resourceId": "1a514c02-5048-4d77-9107-981d4c69172c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2010/filesystem/cig_csv_2010_12.zip",
+      "archiveBytes": 24739343,
+      "archiveSha256": "176d99f33a79c0afb967b83a57e52d8f0f5c4058f7fbffb3dbbffd0e5735cf62",
+      "member": {
+        "name": "cig_csv_2010_12.csv",
+        "bytes": 102737386,
+        "crc32": "52d81a36",
+        "sha256": "23996a8103c5ff076a71c5c6e1f419c8a597162f0b13d9d690e68748aab1acc1"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "80df913c-f1af-43f2-ad1d-4414540de778",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_01.zip",
+      "archiveBytes": 24541235,
+      "archiveSha256": "db92234e7a68a687abad7dca2b5bf10e47442e4b0e7ad740d37891c00155c38c",
+      "member": {
+        "name": "cig_csv_2011_01.csv",
+        "bytes": 103369318,
+        "crc32": "21c223f9",
+        "sha256": "c46a014e997f39715daf0de3a9bcb484249a6e0ea0bd132cb3674310ea987b82"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "228811b5-1572-4b13-b220-92b2cf716205",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_02.zip",
+      "archiveBytes": 28345242,
+      "archiveSha256": "fb27b987334e0702851ca10cca55f2821b1b0555d81f8b2ef2c0d9d3b7fdfe02",
+      "member": {
+        "name": "cig_csv_2011_02.csv",
+        "bytes": 117895302,
+        "crc32": "e46b5f0f",
+        "sha256": "b06018f597a1d9c3f4ae09cf8110de0f3f54b98838c850c2237920ed572e6c3d"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "b375f780-b1c7-4d1d-a57f-68bd99df21a2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_03.zip",
+      "archiveBytes": 35781679,
+      "archiveSha256": "92813b49ea19fe5bfa97b45c21db5bab8cc844d37ba980b7d1c48d41f20a9f21",
+      "member": {
+        "name": "cig_csv_2011_03.csv",
+        "bytes": 148691314,
+        "crc32": "56c55c94",
+        "sha256": "4ecdb054002740a12e416add3134fe959b6aa5d925b362ed740de593d1448d4d"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "3e8f0f1e-0184-422d-8be2-a51eacb6ac36",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_04.zip",
+      "archiveBytes": 32054123,
+      "archiveSha256": "3279517cf6b6024d2bb8928c84ad7ac3d7c40dfd893faba7119f866f69029a14",
+      "member": {
+        "name": "cig_csv_2011_04.csv",
+        "bytes": 133294200,
+        "crc32": "d03b127a",
+        "sha256": "13593b4454ddcbcbc153c2c99b2236ac8c5d9426425345ebd0844fd68d7fcd42"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "c3a8f381-c6fa-4373-acb9-b1dbf4ea4235",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_05.zip",
+      "archiveBytes": 27113457,
+      "archiveSha256": "6e38e34139603314a068aad33e3f50e0fc783a4bd4ed3d31c3d7f4a98063980f",
+      "member": {
+        "name": "cig_csv_2011_05.csv",
+        "bytes": 112363603,
+        "crc32": "dd33fc2e",
+        "sha256": "3455f2f459182b79a9aaa98e4325373bec994c1f9597e2d121da37c38e8ecc89"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "3a6eecda-e868-4ca3-89b8-532dec261317",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_06.zip",
+      "archiveBytes": 19747480,
+      "archiveSha256": "511852f83a5c3800063e7254f3dc5437652ea46a6146809602b501f12435110f",
+      "member": {
+        "name": "cig_csv_2011_06.csv",
+        "bytes": 82400472,
+        "crc32": "60d45041",
+        "sha256": "b3a887c552c6625fe5ea194c6d0126c7d8e1775ef1f7a519231fba71c97fa8cb"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "ab85152b-ecf0-4395-aba3-a7f9e35a8ab0",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_07.zip",
+      "archiveBytes": 14983804,
+      "archiveSha256": "b99f87818106671837295be9bdcb58f28b44c3bcf1eef10bf66d14b2be513610",
+      "member": {
+        "name": "cig_csv_2011_07.csv",
+        "bytes": 65035723,
+        "crc32": "40902655",
+        "sha256": "2d27bab4d59331fde2c10de1b171a3a8a9b8df1c44128c0b820c85d23ac56dfa"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "c03c3aa2-336e-4e65-8b50-5ce1d0b39ba5",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_08.zip",
+      "archiveBytes": 8523404,
+      "archiveSha256": "96c478e65611d6d85761a00b8722c726809870af850dce345171f7771e80a8e7",
+      "member": {
+        "name": "cig_csv_2011_08.csv",
+        "bytes": 36034177,
+        "crc32": "e2db5dc7",
+        "sha256": "43a81f15c20b8791a0eb92aa39f90cdd7e609185d0ae30c4aceae1ad588c4d9c"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "03a70305-546e-48db-a468-c2e6b1214493",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_09.zip",
+      "archiveBytes": 12787173,
+      "archiveSha256": "58eda59f85c392038a1d4ca57437008d4094782ea706701093d90dc0ea000e4f",
+      "member": {
+        "name": "cig_csv_2011_09.csv",
+        "bytes": 53951448,
+        "crc32": "73f5824a",
+        "sha256": "673da09b323e9a5c88424a3e18b83d74c9f57bf6fb29c81be479aa2b31349e16"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "3ccb2b46-68e9-426f-a9d2-8065183e35da",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_10.zip",
+      "archiveBytes": 13501143,
+      "archiveSha256": "17a0f18a74f0fc0292d59c1a8d28f50f8d28026c7438f4a8ce9f077f026583a5",
+      "member": {
+        "name": "cig_csv_2011_10.csv",
+        "bytes": 56989821,
+        "crc32": "def18fc1",
+        "sha256": "5e29764430f038acb8b5ca7599cd6ce46733a1f9da2dee6528e5652281f884df"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "5dac6e1f-cd79-462b-91d4-1eb6772b838f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_11.zip",
+      "archiveBytes": 14004303,
+      "archiveSha256": "f50a1f42994952d31c4ccdb44647786903dbf90cb4ba283ff2815fd2b8eb3f26",
+      "member": {
+        "name": "cig_csv_2011_11.csv",
+        "bytes": 58644756,
+        "crc32": "5bb2f487",
+        "sha256": "28718ef6a439fffd6a7ed49028930867b978acdb2a8537f7ecc8890063a94863"
+      }
+    },
+    {
+      "year": 2011,
+      "fileName": "cig_csv_2011_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2011",
+      "resourceId": "cfe12d42-7e49-45f8-b9fd-6bc4f76fa5cb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2011/filesystem/cig_csv_2011_12.zip",
+      "archiveBytes": 14539229,
+      "archiveSha256": "85c87cc92306008cb3dc8e88e3fec5cb4b305ef2f7d220effa071fb788777e65",
+      "member": {
+        "name": "cig_csv_2011_12.csv",
+        "bytes": 61650599,
+        "crc32": "3ba9a548",
+        "sha256": "b16b65432f9c374aa33c74653636dc25eef176d24449950d01b944db75e56cbe"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "95353407-4d4e-4372-b999-441a8736f298",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_01.zip",
+      "archiveBytes": 10930216,
+      "archiveSha256": "c5ba97613d9619501eaef23e4f9eb83eb0f6464680261e71634d719b83d8c316",
+      "member": {
+        "name": "cig_csv_2012_01.csv",
+        "bytes": 47212857,
+        "crc32": "c4bcdf1c",
+        "sha256": "9e4694ab28177ce5f2dad653521f1833e04bac25ef16cfa749bc16003f10a353"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "ca8735e4-aff2-4d5a-b2b5-1a19e62cb906",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_02.zip",
+      "archiveBytes": 10777278,
+      "archiveSha256": "88a924faf1bdccc3b27f99b70664352d742002d5e897b12a19c157e950473680",
+      "member": {
+        "name": "cig_csv_2012_02.csv",
+        "bytes": 46444133,
+        "crc32": "62d0c4c6",
+        "sha256": "8e4b75e911295c564157dcfe5fb198783bc83a36b573d4e2f6fb89c1c1b3de44"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "9ba8c73e-3372-4f77-bf1d-656a413896a7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_03.zip",
+      "archiveBytes": 11605576,
+      "archiveSha256": "39cfd4978bf13af1a115b8e4de90dc3974fccbb122ca651407ba88ed0aefe2e0",
+      "member": {
+        "name": "cig_csv_2012_03.csv",
+        "bytes": 49300694,
+        "crc32": "43d98177",
+        "sha256": "fe26f5fb1c14bc1cd7bea7730e3576579a303dbe5e2f96fda73d95f7d72ef8ce"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "6ce2bdfe-346f-4bb5-91c9-c3cb67165c99",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_04.zip",
+      "archiveBytes": 8436318,
+      "archiveSha256": "7b79d9d385c0f014cb053929c65557e16b64a9219f1086decf5654eb6fdaa33c",
+      "member": {
+        "name": "cig_csv_2012_04.csv",
+        "bytes": 35945205,
+        "crc32": "ee5f26c7",
+        "sha256": "5e3bd0b22afe251c26eebac64a13df449eabbb785bceec1182c04df65088ea6d"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "36cf96f4-b963-44db-8311-6169f3a60ede",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_05.zip",
+      "archiveBytes": 10340844,
+      "archiveSha256": "e670c79c1043c9438a39c70cea3f8ceef1c88ae9149feaa8abad11c616395f31",
+      "member": {
+        "name": "cig_csv_2012_05.csv",
+        "bytes": 43968001,
+        "crc32": "d72a9311",
+        "sha256": "f4c5b8e0e54f364670b278dc635093aec85b00b605f05eed7ff3d1ab8c0e5790"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "37a300ce-130f-4ef8-b95e-7faeef2a07d2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_06.zip",
+      "archiveBytes": 8902980,
+      "archiveSha256": "aef0b85bf6318fa747d21167e17a9b09137c4cf138576fb5d785f8efd96c3ee6",
+      "member": {
+        "name": "cig_csv_2012_06.csv",
+        "bytes": 37831490,
+        "crc32": "04a88e49",
+        "sha256": "5ccc5f897aab8e4cb5098b255a31362c85f833681185d4cb0791a5c451a45e7d"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "1eec46be-b7d8-4612-8a6f-be778302e22f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_07.zip",
+      "archiveBytes": 8738819,
+      "archiveSha256": "5088d3f7973c2225bad9ca347ffb9e34dc2d95c0527d776f29a67b63197e7d7d",
+      "member": {
+        "name": "cig_csv_2012_07.csv",
+        "bytes": 37388974,
+        "crc32": "af4da284",
+        "sha256": "a4a7011b06fca1c68f297eb502304e287e58bc09e8a2c7238c5d1775d22cfbf3"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "ca97b7a9-0935-4642-baef-e14f887d94c3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_08.zip",
+      "archiveBytes": 5029369,
+      "archiveSha256": "2d4931cc708cb0b8bb377f5e87fdbcd8aba89cc228ecd0b220e150ba10500f94",
+      "member": {
+        "name": "cig_csv_2012_08.csv",
+        "bytes": 21252911,
+        "crc32": "cc162671",
+        "sha256": "c44ba5d7441930275e96356c274bbeeae5515f4b2a14227392f533f5af55150b"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "418ef2bc-3eb4-4ddd-8cf3-9d20485f4b98",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_09.zip",
+      "archiveBytes": 7166322,
+      "archiveSha256": "18d89b2736fa8901cd00f705a1ccdd11779d2b23e93873deecbdd0dc6090a543",
+      "member": {
+        "name": "cig_csv_2012_09.csv",
+        "bytes": 30501357,
+        "crc32": "3a5b5884",
+        "sha256": "20fc58c227cd58e7611d0566dfde1cd24e4c03b76e389a910f297fd82de54108"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "b6892c78-7db1-4460-9a70-53e830d932b3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_10.zip",
+      "archiveBytes": 9273020,
+      "archiveSha256": "7a30f1a3c1e2cdab600461b06ad4656abfa340f9ca594dd68e87487b851d15d7",
+      "member": {
+        "name": "cig_csv_2012_10.csv",
+        "bytes": 39760012,
+        "crc32": "3fc621db",
+        "sha256": "e8df0640b24b898491489195896fa70c8a7fff91c342b5a3d121e2b6122cffb7"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "018e2eb4-4e9f-46a9-8ccf-f0d919f36848",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_11.zip",
+      "archiveBytes": 8929509,
+      "archiveSha256": "86433e35721d61d42ddbf2c144faeac86ec6d270b3f98d3f9123fa0a5210aa55",
+      "member": {
+        "name": "cig_csv_2012_11.csv",
+        "bytes": 39179743,
+        "crc32": "126d9e47",
+        "sha256": "033b5943e7ef5e9a033992ab99fe62166840cd2bf58267f16ba9b257b7dfc32a"
+      }
+    },
+    {
+      "year": 2012,
+      "fileName": "cig_csv_2012_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2012",
+      "resourceId": "51b8a124-cf51-45f3-80ed-2124db60a156",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2012/filesystem/cig_csv_2012_12.zip",
+      "archiveBytes": 8856409,
+      "archiveSha256": "a8b0ba2fc3c8e028fd36b46f679786d2988f20ec216f052c9ed6d49ecdcf0fe2",
+      "member": {
+        "name": "cig_csv_2012_12.csv",
+        "bytes": 38066617,
+        "crc32": "f5dcb5b6",
+        "sha256": "4b554639922ee2381eb4c8d6839a0d1131316875a8d3cc657c8a636d752c2ce4"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "4981c93b-ae0e-4de4-9559-f74d8d4059c2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_01.zip",
+      "archiveBytes": 8240565,
+      "archiveSha256": "82d19aa8c5ca3fd40784e38b4e18f234c84c2d14b8f32a4bde5f56c2d536df71",
+      "member": {
+        "name": "cig_csv_2013_01.csv",
+        "bytes": 36202764,
+        "crc32": "17599fac",
+        "sha256": "22d520ae0d530dd33399d4936569ddd47bc58316f9dba2410ce03f54a12716d6"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "23879b65-fcdf-4268-af4a-b6b9f12dc68d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_02.zip",
+      "archiveBytes": 7198565,
+      "archiveSha256": "e98ca61cfdbc51ac3530d48c0a8518f0d60b1acc5f5ed972f35512f26a4c2109",
+      "member": {
+        "name": "cig_csv_2013_02.csv",
+        "bytes": 32534293,
+        "crc32": "e9143d96",
+        "sha256": "376373095073f8b2d0398055c5df8d6339b4812f6a4b7e5db9859dbd6551c96b"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "79a4885e-c9ea-4522-a010-22f6f5db18c3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_03.zip",
+      "archiveBytes": 7737093,
+      "archiveSha256": "d54630f005099536647cae214fe320d9389d100d701371b8ef3cabb4a889de52",
+      "member": {
+        "name": "cig_csv_2013_03.csv",
+        "bytes": 33857269,
+        "crc32": "5a593211",
+        "sha256": "1b303d195df076ad8a916720719b5571a6cbad97fd6744d4994d062671c7484b"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "e6e55589-98e3-4d23-a2a9-ec41cb8022da",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_04.zip",
+      "archiveBytes": 6331811,
+      "archiveSha256": "312cb819c6174c3922e5047a05aba95721df8ad56ac1f1d884cb1b206a2ec128",
+      "member": {
+        "name": "cig_csv_2013_04.csv",
+        "bytes": 26410232,
+        "crc32": "57aa049c",
+        "sha256": "41f65316e5f4b91a8990767b1b6e6dc992787f5e74262fb7a8bcc3741ad5a2e1"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "6bb61b83-a27d-4948-9a07-9ad165581b75",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_05.zip",
+      "archiveBytes": 7158332,
+      "archiveSha256": "9d08640482e5883779084fb455ae7744f2942c9a476f1dabf908a4046bfd7875",
+      "member": {
+        "name": "cig_csv_2013_05.csv",
+        "bytes": 30123694,
+        "crc32": "a6c9ef4e",
+        "sha256": "6628827594436fde5fd27dae88ec8edcb2f0e22cc24f3e1d913c21792bad6d28"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "759b6b20-e7f8-4eb1-b68f-23fb255c648d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_06.zip",
+      "archiveBytes": 6391349,
+      "archiveSha256": "34326b4cc6534a72ea74a3a049dc2dde3273f6d03bb1cb0821c817978ba42fbf",
+      "member": {
+        "name": "cig_csv_2013_06.csv",
+        "bytes": 27708704,
+        "crc32": "ee27657d",
+        "sha256": "f6c651dd6630d20c565b6ff5c5e415a1a00a11aa367f6f5faa86a89c836a83bd"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "c51edf93-d929-4e00-9298-9f9943191358",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_07.zip",
+      "archiveBytes": 6470137,
+      "archiveSha256": "83bb2f255bc97370b94279063840a81a3ddd75c79cff187a000c39db656a2528",
+      "member": {
+        "name": "cig_csv_2013_07.csv",
+        "bytes": 27712192,
+        "crc32": "f87c11c0",
+        "sha256": "d2194e80daad0d9aa28d4634150e58c8efce24900d6fb0e8d5482321f7314fe1"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "a18195ad-92f3-48d9-92ff-8d3f19d52573",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_08.zip",
+      "archiveBytes": 3934358,
+      "archiveSha256": "424724f9ea9a5fa3879d23b745cf6beaf8a8ae9dcfb963ecbdf1110581a977c0",
+      "member": {
+        "name": "cig_csv_2013_08.csv",
+        "bytes": 17324498,
+        "crc32": "0880678f",
+        "sha256": "72769b3b2c8035eff876037b1f08974e5c1333ff7f53e78350ed1f1a1a39db48"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "fbed3de3-e732-4971-8f56-e9677e47b946",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_09.zip",
+      "archiveBytes": 5642525,
+      "archiveSha256": "cbcbb3278d7e70f6da6b31d2eeaae65863db34379d4461064bc80850f901a717",
+      "member": {
+        "name": "cig_csv_2013_09.csv",
+        "bytes": 24436565,
+        "crc32": "d9907e2f",
+        "sha256": "ad3af1da43e495e0a96a138da93bf24eece7df9ddde482cfa49be61e303f3881"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "993d68ed-2006-4835-a160-ac2f4d6b769e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_10.zip",
+      "archiveBytes": 7150749,
+      "archiveSha256": "79de64b2a71872d93d8a66a2184d3465e8a4b9218fc08ed5f316cf0b93847ee7",
+      "member": {
+        "name": "cig_csv_2013_10.csv",
+        "bytes": 30256312,
+        "crc32": "b3717791",
+        "sha256": "d54958ab8cd8cd19b7b06424b7b253efac7c2415971b17398ed47da180eee160"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "1221c2bb-4598-482e-b769-5b853e4ffa61",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_11.zip",
+      "archiveBytes": 6723101,
+      "archiveSha256": "d8951ccb41ea7d0ff4e765099ea9ccdc5709b33b527db65b39ea9a912be75509",
+      "member": {
+        "name": "cig_csv_2013_11.csv",
+        "bytes": 29026508,
+        "crc32": "86eef177",
+        "sha256": "bd24d9d0184774bd7afab51d449ee8d38a8074301c4adee23436758849be536a"
+      }
+    },
+    {
+      "year": 2013,
+      "fileName": "cig_csv_2013_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2013",
+      "resourceId": "c1bc478b-a7de-44de-a704-1e10c6fd84a2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2013/filesystem/cig_csv_2013_12.zip",
+      "archiveBytes": 8109418,
+      "archiveSha256": "275847c32c9e698f14df9bdda6aa678ab3accdfd0f65218fc6aff952ca60f1c9",
+      "member": {
+        "name": "cig_csv_2013_12.csv",
+        "bytes": 35121034,
+        "crc32": "e685c467",
+        "sha256": "cbe07395bf43d0d525798b27078866f9102a82a4519b79ca5ed8709c6a0294b8"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "24412580-94b6-4295-b521-8a87dcdae7f9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_01.zip",
+      "archiveBytes": 5156635,
+      "archiveSha256": "fc8e05376a23f6bf55fcd1fff61bca0b3ceb98e8f3b88134abda5f7d6ed4a26f",
+      "member": {
+        "name": "cig_csv_2014_01.csv",
+        "bytes": 22834548,
+        "crc32": "8b7f7abd",
+        "sha256": "80a7039bc12f5c8b100e2c9b976f184afb545422892496eb1e95c30907881050"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "45da7c96-b1b7-45e1-9d6b-51be019c5db1",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_02.zip",
+      "archiveBytes": 5818731,
+      "archiveSha256": "bc76d70af681c588129e0a9c1a3730aa50f93af710c5c198ec28a0dcf4cd64b5",
+      "member": {
+        "name": "cig_csv_2014_02.csv",
+        "bytes": 27212503,
+        "crc32": "aae0589c",
+        "sha256": "23526e65ed9c12617bf64a6c0294d1600d84cfb1769d41a49554b995fde20a3b"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "8b80894d-25f6-40d7-954f-e3fe5d0f7f0a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_03.zip",
+      "archiveBytes": 6246015,
+      "archiveSha256": "120724c909da1f9c7df02ed03e68cf7f96e06433a7cc054a04378f105d7a2a8a",
+      "member": {
+        "name": "cig_csv_2014_03.csv",
+        "bytes": 27899552,
+        "crc32": "98330fe3",
+        "sha256": "cf770878fe2c7a1ca6dc5d8da86e6decd1bd413d841ef199ccef59f1002f222e"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "9787a650-b49f-4b8d-ac22-0de7da0d464e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_04.zip",
+      "archiveBytes": 5839307,
+      "archiveSha256": "ed94bade0e8f74a16b34a2e671313680bcf45ce66738f9599b574c2c366fcb01",
+      "member": {
+        "name": "cig_csv_2014_04.csv",
+        "bytes": 25641106,
+        "crc32": "b80b65a0",
+        "sha256": "743680b2d32cdc82b062dfe8d47c10b0c37403a2f8806624bb08615ac9615ec0"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "83eb4fd7-e90b-4764-9200-da97d34b7168",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_05.zip",
+      "archiveBytes": 6044476,
+      "archiveSha256": "b0a44f49fd88b911fd3e4e5ccf5b3fc1e45f07f3a136253202b35162aa2da667",
+      "member": {
+        "name": "cig_csv_2014_05.csv",
+        "bytes": 28332728,
+        "crc32": "f65bd649",
+        "sha256": "638834bcceb4412a9583387586179691a9069eaabcd96776388a726d58a57ab2"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "f10aaf87-a30f-454a-ac68-6aae7971bca6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_06.zip",
+      "archiveBytes": 5688544,
+      "archiveSha256": "e74cadbad621d4c8c54902e25faa2f1a6ea7931b2a4832a14ba79ecd46ae74f7",
+      "member": {
+        "name": "cig_csv_2014_06.csv",
+        "bytes": 24357453,
+        "crc32": "ce7a9bfa",
+        "sha256": "44236afda779222a6cf4a8ac9080926acca82a63ecd59a2b91497bf805018178"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "ba788e50-94aa-43fa-b19c-f70f875f297c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_07.zip",
+      "archiveBytes": 5044936,
+      "archiveSha256": "5141d6869224c0d5d45dfc529e882a0fe6929f235c1519834e5c1efd712e6781",
+      "member": {
+        "name": "cig_csv_2014_07.csv",
+        "bytes": 21917462,
+        "crc32": "6744851e",
+        "sha256": "a66be7fbf965f1345797943fa8a689ffeb57af1272f07b24cd198e254386ee6c"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "c809997c-32d7-42a2-b85d-c8c1b7763af8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_08.zip",
+      "archiveBytes": 3357190,
+      "archiveSha256": "4d9b7ef8795e097d02e88653c4a59b4fd758e69361172e2ed609f5d38af3e761",
+      "member": {
+        "name": "cig_csv_2014_08.csv",
+        "bytes": 16462346,
+        "crc32": "3a7755ed",
+        "sha256": "eaee7390693d1424fdf5a16f21ac13b363d68d38fa3eb6bec361c0a8b6ec1d91"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "c6c1ca11-193f-492a-957e-e159aa47f1f5",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_09.zip",
+      "archiveBytes": 4856639,
+      "archiveSha256": "f51151dab94222c545f9c1897b2542ebb26b94d30a28ed7fbc89bcb9c076e02d",
+      "member": {
+        "name": "cig_csv_2014_09.csv",
+        "bytes": 21688268,
+        "crc32": "e4eb8f24",
+        "sha256": "a04b2cb280e4740a0ad92d4bdfaf6849b02f44fe7abce6db7802eb4df6ea5091"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "4dadeb98-c319-4141-ab4f-29cf98b6182f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_10.zip",
+      "archiveBytes": 5683012,
+      "archiveSha256": "c2323d9a69759fc55ed73804bfa258978717706a80dd04c792a4077f5b8997d1",
+      "member": {
+        "name": "cig_csv_2014_10.csv",
+        "bytes": 24940818,
+        "crc32": "71b3670e",
+        "sha256": "566110853bb638d4838112f9999948b61ddb2bbaf96a2979c6cfcd3cd884aa3e"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "39f29a26-7521-4137-afa9-b4bab077d655",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_11.zip",
+      "archiveBytes": 5504939,
+      "archiveSha256": "e6d8a503b50e26054be9e2a5ecd4bba333af4938a97b8aef18a2ba9e3ce49d24",
+      "member": {
+        "name": "cig_csv_2014_11.csv",
+        "bytes": 24329534,
+        "crc32": "307adeb1",
+        "sha256": "89063b69b943e5b868765d4ed4a1a6d3b7c0f7d7ad6af84d08fad4f377844489"
+      }
+    },
+    {
+      "year": 2014,
+      "fileName": "cig_csv_2014_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2014",
+      "resourceId": "d66f1945-05eb-4c73-b675-89941123d364",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2014/filesystem/cig_csv_2014_12.zip",
+      "archiveBytes": 6392805,
+      "archiveSha256": "b0396505f938e2fb906e0a15cb18ac02674cebcd162d66f7d0412014f140cd69",
+      "member": {
+        "name": "cig_csv_2014_12.csv",
+        "bytes": 27774253,
+        "crc32": "8ae5ee57",
+        "sha256": "a4d5ca6e84a50b75e8f933974c34ea0d88c03edcc1ace1e10a578182cbabb8fc"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "7ed3396e-6018-448c-9d50-74478c5a14fe",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_01.zip",
+      "archiveBytes": 4280715,
+      "archiveSha256": "83564ced42f7dab05be19f39ad3080277d2274403fdd80f9e00002678d657d2f",
+      "member": {
+        "name": "cig_csv_2015_01.csv",
+        "bytes": 20630503,
+        "crc32": "0cb097aa",
+        "sha256": "ad8b654e9781da9af21862dc9494c752fe80a2dbb2596ead1e608f2f7c01f415"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "1f60f867-b79e-495d-9e4f-007a33de0fd8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_02.zip",
+      "archiveBytes": 4736492,
+      "archiveSha256": "daa29823ce23ec8ecb3a88e8a9066df68ce3edfc683ee51cf2abc9379f0c8e14",
+      "member": {
+        "name": "cig_csv_2015_02.csv",
+        "bytes": 21127318,
+        "crc32": "7b8af38b",
+        "sha256": "ea9808d334e841df2101dbd8f51f1b85cac5a02c3e3b45f8063cc3a6bee4d86e"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "42153c54-bcf2-421f-9d17-0ba1b174f253",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_03.zip",
+      "archiveBytes": 5497014,
+      "archiveSha256": "980f774000159f0b9b7c9fd501476811490c8c6cbfcbb2512137e01fcf7999f9",
+      "member": {
+        "name": "cig_csv_2015_03.csv",
+        "bytes": 24681615,
+        "crc32": "55139d5f",
+        "sha256": "d21cefb0f7eec665280b5b3610b5c0bb52b71eb66bcd1405d632ed1389691e41"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "04a32acd-2b14-45f6-b14a-2ddafc5745a3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_04.zip",
+      "archiveBytes": 5175340,
+      "archiveSha256": "e3ef09507fdbf664074ba870f1050b778462f892fa81cc0b43ad34a6cd9ecbd1",
+      "member": {
+        "name": "cig_csv_2015_04.csv",
+        "bytes": 24072553,
+        "crc32": "c3c06050",
+        "sha256": "9891d0ab5032c57413092ad545492ac9a8cb25decb8447924bb51e17e3a0a01c"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "b34e965e-aba5-404b-acd2-deb5604e939a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_05.zip",
+      "archiveBytes": 4683171,
+      "archiveSha256": "2f3f8c6daf8929174b7da6bf3cee17ba10c90eb5d6a92824964dd9081f079a9b",
+      "member": {
+        "name": "cig_csv_2015_05.csv",
+        "bytes": 20178543,
+        "crc32": "21f30f69",
+        "sha256": "41f33ab5c19709e8ff6f540fbf1b81625f653a9e8983cc013106a88d412d0831"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "2d5b9d96-a233-43e2-84f3-0fac161a1cd7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_06.zip",
+      "archiveBytes": 4913223,
+      "archiveSha256": "5fea435a68f92d61de0f26acbd84f7bf4d3fd8911b131dc12e5fac479af2fd33",
+      "member": {
+        "name": "cig_csv_2015_06.csv",
+        "bytes": 22692440,
+        "crc32": "5709ceea",
+        "sha256": "24114fb6a5ea6ec8d5f7284c26427d3bc8372e8c64006c833ed0623aadf2e75a"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "07ee0a08-a063-4a5b-b91f-b19ec3765a5f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_07.zip",
+      "archiveBytes": 5234632,
+      "archiveSha256": "68757d2251a107cfe050ea6bfab406a47ea0392a6b3bc646b0f8fc0a520ceb70",
+      "member": {
+        "name": "cig_csv_2015_07.csv",
+        "bytes": 23601757,
+        "crc32": "5ae4d4e0",
+        "sha256": "2caa640c660f310ff01cb7eeb5a4ed3763b7eed1ef73dfb99034a5ff8bee8637"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "a5ad5bd7-5359-4c41-a000-4aa216865bdf",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_08.zip",
+      "archiveBytes": 3130658,
+      "archiveSha256": "21e0d04dc0a53fb47002a30df5ca8d98e0e241546079800344932de526a9807b",
+      "member": {
+        "name": "cig_csv_2015_08.csv",
+        "bytes": 14278325,
+        "crc32": "f2f32057",
+        "sha256": "0d2f85bfdd9d5f169ba55fedcad8f84c10417113a1c659174e247a84c53bafa9"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "56d07b31-5e4e-40ac-8eae-87970c299388",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_09.zip",
+      "archiveBytes": 4212495,
+      "archiveSha256": "03b02b3f6740a6d172bba8d5bd13ed1ba3769323145af242e38d33f8c32f17b6",
+      "member": {
+        "name": "cig_csv_2015_09.csv",
+        "bytes": 18169326,
+        "crc32": "4ed14a30",
+        "sha256": "321b6b3d96f55c080eb03196ebe3a9f73ddb15e12279bdc764ec9ebc8f27d90f"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "6b58457e-a5d5-42a1-8d4a-ed9408cca4b8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_10.zip",
+      "archiveBytes": 5113270,
+      "archiveSha256": "05a573a72a15d886afaaf34787b180d5aa85323ede2a012ca06f4fa9344bf72e",
+      "member": {
+        "name": "cig_csv_2015_10.csv",
+        "bytes": 22240185,
+        "crc32": "ddbbddca",
+        "sha256": "2c737a0928dfaf52f6ae1802e63150d73ce6aca793584f738c66aeca7cb6501e"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "5931d86f-9c0e-4840-8c84-1d4a72ec742a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_11.zip",
+      "archiveBytes": 5208900,
+      "archiveSha256": "25d9ab43b71cccc06254823e8063f0ad8c8e3154a02503be0ad5f64af59514ad",
+      "member": {
+        "name": "cig_csv_2015_11.csv",
+        "bytes": 23770086,
+        "crc32": "a0440748",
+        "sha256": "016e9ec3777a68a88557e9bd7e7710e81170d931c70d5aff2ab4342f9b737cb6"
+      }
+    },
+    {
+      "year": 2015,
+      "fileName": "cig_csv_2015_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2015",
+      "resourceId": "8b7b181f-86cc-4836-94a9-e8d30a522a4d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2015/filesystem/cig_csv_2015_12.zip",
+      "archiveBytes": 6640771,
+      "archiveSha256": "dd904dd390feaf2e11ef4a3bed8f369dc5eb80d9bb606687578ca104848554d3",
+      "member": {
+        "name": "cig_csv_2015_12.csv",
+        "bytes": 29812908,
+        "crc32": "dadf6739",
+        "sha256": "44bfd4c4f9222a89cdec3e04e574b4503c533ddc569f4fce0586dbe8aada4d6b"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "888ab1fc-1860-4e56-aecb-60bf83267e35",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_01.zip",
+      "archiveBytes": 4014024,
+      "archiveSha256": "8486356b6c3aafdb7346cfd2d56fe4f9064c581f4dc84af6bb83754eeaf336f9",
+      "member": {
+        "name": "cig_csv_2016_01.csv",
+        "bytes": 20658231,
+        "crc32": "b82e833a",
+        "sha256": "6e7890781a89158034ba04ed0c6cd7be6d2427259d1b53f04a6fd57716ddc725"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "53b1de77-103a-4f54-826f-536173374ff7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_02.zip",
+      "archiveBytes": 4306130,
+      "archiveSha256": "643e73c18a174a4140fdf31730a4446481e6d167ef99987a4e8bbdb121ac9b51",
+      "member": {
+        "name": "cig_csv_2016_02.csv",
+        "bytes": 19200781,
+        "crc32": "a3291c99",
+        "sha256": "0f42ec1e6638a29c6a253e2f85d3bc3fb248ac430e3cdb2ad69a72a84bf16dcf"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "b24712a9-d446-4dc9-a623-53b01234c9d1",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_03.zip",
+      "archiveBytes": 4692393,
+      "archiveSha256": "dd6e5bfd6f2b86aa5e23010a09798c8b60d4257615ca8b44289a7574b0513c20",
+      "member": {
+        "name": "cig_csv_2016_03.csv",
+        "bytes": 21157746,
+        "crc32": "9dfb32fa",
+        "sha256": "e69147fa307839e1046443252a0cc77e412def2a95ab2db388c1479c4f50a81e"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "98ca5a48-92be-4040-8efa-d1da51bef2d4",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_04.zip",
+      "archiveBytes": 4970897,
+      "archiveSha256": "0ee6b8f11c7456d5776488ba2047c3aded73d582df70805eccae21b0caf0c89a",
+      "member": {
+        "name": "cig_csv_2016_04.csv",
+        "bytes": 22167823,
+        "crc32": "acb705fd",
+        "sha256": "41391251afbca0e52af74bf1e3fa15dd590cd9eff3d65de844a7e5daa7d1b7d6"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "3830bf53-3e11-41c7-969a-607270b85916",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_05.zip",
+      "archiveBytes": 2968786,
+      "archiveSha256": "4bcbf8fce5e044aadb40dbac73f3c1214fc854cdbde868435e300f5c6b25260a",
+      "member": {
+        "name": "cig_csv_2016_05.csv",
+        "bytes": 13868116,
+        "crc32": "d0e98592",
+        "sha256": "1a29cfea9ab9e0ea0d6e3f6fefeeb67b0a22debd1b7e081a6c3d4430bab4b5e2"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "f04788e6-aeda-4e66-971a-7f750e2c0253",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_06.zip",
+      "archiveBytes": 4012629,
+      "archiveSha256": "621ff42382ad426b8b4e681aa7efc0e883882efc8358ed4747ee3c99ca0bb383",
+      "member": {
+        "name": "cig_csv_2016_06.csv",
+        "bytes": 18263484,
+        "crc32": "06968d29",
+        "sha256": "b0a61a5629754f8905398f89135cd03815e78af1a2b3b14bc84b253bad579786"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "49aebc77-6da2-48f0-ac81-c8203d417c70",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_07.zip",
+      "archiveBytes": 4270959,
+      "archiveSha256": "8a405357da7e37271fb2601e894a08c28db1ad891828cc0c79a54855837f2d9e",
+      "member": {
+        "name": "cig_csv_2016_07.csv",
+        "bytes": 20239248,
+        "crc32": "3bdf04b3",
+        "sha256": "2a8e30f15e84474bf0f5c9e051810855a1c648f8b957e155f92b7e0a121a2b13"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "f2f96bb5-94e3-4c6e-885b-9c4c494261a6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_08.zip",
+      "archiveBytes": 2917974,
+      "archiveSha256": "e29c3ab8ed87e135491d93fd61f2dd0d391c5bbbaa58259938923c6509bab5db",
+      "member": {
+        "name": "cig_csv_2016_08.csv",
+        "bytes": 13228430,
+        "crc32": "9808b630",
+        "sha256": "60b7247effa5902e05031b1f6514b488c32b1d21b6eec6d271feace02abb7483"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "f2e4dc3f-ea62-4037-b7d7-7f3865d334fb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_09.zip",
+      "archiveBytes": 3845876,
+      "archiveSha256": "eb7ee20b2d9d7b0061baacd41f29f43be29558555ede35d4d170ddb7c2e0c089",
+      "member": {
+        "name": "cig_csv_2016_09.csv",
+        "bytes": 17650180,
+        "crc32": "db7a2513",
+        "sha256": "cb4bcfc5679b8019c7850a659de5936386d4c9b8f17631b8690244aff3cabe42"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "8c4b0476-2ed7-424b-b319-2dc7de13c0a5",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_10.zip",
+      "archiveBytes": 4286409,
+      "archiveSha256": "0cf3d1ce7a81f53584e7c12c8cc26ae542a1bea8a5cc5f04d5c381db823c2f80",
+      "member": {
+        "name": "cig_csv_2016_10.csv",
+        "bytes": 18852344,
+        "crc32": "b67b3aa6",
+        "sha256": "8d61fdd79ed63e8fa54c66451d286b2b1ced1942025571294eed959c1fde5265"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "f1647f57-a672-4b1f-b1af-27ecba799d40",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_11.zip",
+      "archiveBytes": 5030046,
+      "archiveSha256": "b80a354c67a8160862c9d93570c68b4172509f07a8309429e45a89b953569fed",
+      "member": {
+        "name": "cig_csv_2016_11.csv",
+        "bytes": 22216147,
+        "crc32": "c0d8f5ea",
+        "sha256": "dff92ac542ac2e1b2b81e00eae9b502e89f1f881519f1c8cc3b1f03821225f3c"
+      }
+    },
+    {
+      "year": 2016,
+      "fileName": "cig_csv_2016_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2016",
+      "resourceId": "be4923fc-0df1-4e8c-8992-1ae9bcd83bb3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2016/filesystem/cig_csv_2016_12.zip",
+      "archiveBytes": 6131403,
+      "archiveSha256": "e7878a55174abf62bc27d24a07befe85be01acc413b77d9c4c7c3099897a4209",
+      "member": {
+        "name": "cig_csv_2016_12.csv",
+        "bytes": 28139095,
+        "crc32": "ae6c9e64",
+        "sha256": "df504397a90d371e2cfdfa6ca31196747580fc1dcac6ae15d932b5aab9a407db"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "41eddaa5-39f5-4a02-b32e-bdb1d9a2c50b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_01.zip",
+      "archiveBytes": 3890626,
+      "archiveSha256": "262d769a088e4a65f6b9ab25becf357d2b015b867267b7a03cbfd79f3d39c798",
+      "member": {
+        "name": "cig_csv_2017_01.csv",
+        "bytes": 17812703,
+        "crc32": "8ab2a495",
+        "sha256": "39c0af5330089b2b4535cbf1938e9d1ebc9712de61621f95e814f39a65ec934c"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "388c146c-7e61-41fa-bb7b-6c79b8488abe",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_02.zip",
+      "archiveBytes": 4437761,
+      "archiveSha256": "eb9ce7717682d978e47fe2217d2b9acb791890bc3327f450d12aee6ca7023167",
+      "member": {
+        "name": "cig_csv_2017_02.csv",
+        "bytes": 20570515,
+        "crc32": "9b924643",
+        "sha256": "df2616d2b5de52fe18ba03d75ce2ac26273f96c1822f9128d3f17c5e9de6a80b"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "79ffcbac-70bf-466d-a1a3-9c128ecc7964",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_03.zip",
+      "archiveBytes": 5479763,
+      "archiveSha256": "9015dae13802c11779460e81b025d2b62841e9b6b379c05d493a69121a97ec13",
+      "member": {
+        "name": "cig_csv_2017_03.csv",
+        "bytes": 25423759,
+        "crc32": "5d6196d7",
+        "sha256": "33eb490d5d41bba2709fe4add93d8bd1bad5614697af87aa4dc18034ca43b511"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "ad70490b-2260-4c40-8667-a65822126a3e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_04.zip",
+      "archiveBytes": 4380838,
+      "archiveSha256": "e461e006de1d972676a307aa2d23ab320ef9ce94df2c6b253e90ca30c1a81a03",
+      "member": {
+        "name": "cig_csv_2017_04.csv",
+        "bytes": 20868582,
+        "crc32": "3f6dd00f",
+        "sha256": "e1c6be4036279650ed901d93fcc5988743160e52b4beab496c2b17e2d018bf93"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "d1124c96-d857-4f9a-afea-5627e1a9febc",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_05.zip",
+      "archiveBytes": 5471762,
+      "archiveSha256": "98f0319e6dd3b60135fa413b924586739904395d598183a46c06a54dbc73f46e",
+      "member": {
+        "name": "cig_csv_2017_05.csv",
+        "bytes": 23892399,
+        "crc32": "2b8a11f5",
+        "sha256": "0c43d900fa3f0da7f6960c1da924003086de36e27092eb744379255e123815a3"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "50c0f26b-f1ba-4a2f-b019-67371c4109b1",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_06.zip",
+      "archiveBytes": 5078177,
+      "archiveSha256": "2c6eb1356805a46834ff6573c2dff878f2a14a71836ff9e6d54c12e79f691704",
+      "member": {
+        "name": "cig_csv_2017_06.csv",
+        "bytes": 24371386,
+        "crc32": "09926550",
+        "sha256": "96aa58c2cf2825fe9728e8b070ad2ffa1acb82d0491a7e986fdfeb8917d1df03"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "68756dbd-1a92-4643-8f76-f4bc711a5641",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_07.zip",
+      "archiveBytes": 4860533,
+      "archiveSha256": "0ae38961f349890491956cf216dcff7d831e19627899e1adea8cbf6816af575c",
+      "member": {
+        "name": "cig_csv_2017_07.csv",
+        "bytes": 22319247,
+        "crc32": "d9c68fab",
+        "sha256": "9bb2aef43fa09b3955894faf9539e072481b09d59b82ffac2e6fe5700a7c3875"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "c45ee8f5-3078-4580-b844-034ff6da6cd2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_08.zip",
+      "archiveBytes": 3599995,
+      "archiveSha256": "bf0823480ca14874053cb14e8ba9c13ceb9ea33c3a821cf838fed7bf04d1d97a",
+      "member": {
+        "name": "cig_csv_2017_08.csv",
+        "bytes": 17087381,
+        "crc32": "18cee06b",
+        "sha256": "2b48d616304f490e3799c055d70cb34d17fdc462ae07b91211fc5105e694e3f8"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "c6c8a4c5-dd54-4b3c-a738-4928b917ad6c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_09.zip",
+      "archiveBytes": 4394777,
+      "archiveSha256": "df81abf63376732486df3adef0a864a929721f41618f3368159b6fb63ce933d8",
+      "member": {
+        "name": "cig_csv_2017_09.csv",
+        "bytes": 21407898,
+        "crc32": "357dc8ec",
+        "sha256": "171bd1fd7d832165d31effbb624883a91dd96c35420bd8b27424b91a1c49cc72"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "5fbcbd7c-dcc6-45fd-a146-b23aaf458bf7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_10.zip",
+      "archiveBytes": 5203485,
+      "archiveSha256": "77dc1e28fe9e08c34da0afc66ba560c3a0dbcbea8c889d11a2a2fabab0b05762",
+      "member": {
+        "name": "cig_csv_2017_10.csv",
+        "bytes": 23322486,
+        "crc32": "1133e4c4",
+        "sha256": "ad015890519e4c34b448a38ad0dfb7e1c692a65651323522ee5c009fbf0e8ec4"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "d14eeb1a-6d33-4000-9c85-cb3537bf1010",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_11.zip",
+      "archiveBytes": 5681455,
+      "archiveSha256": "9d46735f8448b22c120bdf21c6fd1e5620030674f4650f33ce1f29d68433e99f",
+      "member": {
+        "name": "cig_csv_2017_11.csv",
+        "bytes": 25928169,
+        "crc32": "39422c61",
+        "sha256": "70654c6163b46c8f68d1bc1d8d70ca8f9912873ac0b4cbc07d361c8936587cfb"
+      }
+    },
+    {
+      "year": 2017,
+      "fileName": "cig_csv_2017_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2017",
+      "resourceId": "4fe1cc0b-ae2a-4cab-9942-545128c1913b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2017/filesystem/cig_csv_2017_12.zip",
+      "archiveBytes": 6142612,
+      "archiveSha256": "d495c7b57c5e0a979054b7cc52bf5fce1e8d9e293c15a2ddbb3c90040a967ae9",
+      "member": {
+        "name": "cig_csv_2017_12.csv",
+        "bytes": 27346937,
+        "crc32": "3a44d226",
+        "sha256": "0db05677763a409532b95c885727cf8cde68e9e0fbb878d07234bb354228520c"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "05855c6b-ae1e-4ac9-beb4-9b4170331400",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_01.zip",
+      "archiveBytes": 4708464,
+      "archiveSha256": "622ec78d8eba4c91bae9cdbd9e401dbbe4cb00fade75a95570b44b68cb059615",
+      "member": {
+        "name": "cig_csv_2018_01.csv",
+        "bytes": 22409419,
+        "crc32": "afa221ae",
+        "sha256": "51bdba409136516997e0a08d2810d417bb9eca4c414c087a49f18793aea134b7"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "20cb364a-9abf-487b-b51a-2418ffe670c6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_02.zip",
+      "archiveBytes": 4351557,
+      "archiveSha256": "3323ecd21d3ad5d248fc2a4ed1013a0e71d2806d2782727a0f645773fe887e24",
+      "member": {
+        "name": "cig_csv_2018_02.csv",
+        "bytes": 19092834,
+        "crc32": "b5055cbb",
+        "sha256": "614c3ebebe2d60cedafb01220523ecee6c900d7bf12eee4cf21c3582c7132ac2"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "6e203a3e-3c59-4b17-824e-6360e9d1f8d3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_03.zip",
+      "archiveBytes": 5112513,
+      "archiveSha256": "d21f171cd37d8a50c68dd79bbd2366a62127b84f6abc04667a6dc17b5652ee30",
+      "member": {
+        "name": "cig_csv_2018_03.csv",
+        "bytes": 24327940,
+        "crc32": "8fa76929",
+        "sha256": "b1fd284e2fda436445c0528040f215f43e4c4f3bf9788580e13830a269c3f4ba"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "935c4a37-8d46-43ba-af60-be42a67a5a47",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_04.zip",
+      "archiveBytes": 5041030,
+      "archiveSha256": "8d6ccfa7aa37a544cb6bfc568b40a9774c76284c04421c08a2d7bb47cd597627",
+      "member": {
+        "name": "cig_csv_2018_04.csv",
+        "bytes": 23913767,
+        "crc32": "1ba97a47",
+        "sha256": "2d1f236967e289a3f642d178ed609ad68a5aeecd0e80ed88cbeb52c12a2cf13e"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "31e1a75f-6664-493b-b4ea-7ef46c480de2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_05.zip",
+      "archiveBytes": 5402379,
+      "archiveSha256": "2827f0cfb0c2533d00c9acb1281d0a27dae449d8f99cd039972038bdee65a451",
+      "member": {
+        "name": "cig_csv_2018_05.csv",
+        "bytes": 25343527,
+        "crc32": "961c03e9",
+        "sha256": "4a94a34137fdafb6a632498bb620ae2d09cf89130e0c5e0d85faa2306d2d30df"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "92ad1e21-43ce-4c59-8902-8c6b88eaab45",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_06.zip",
+      "archiveBytes": 6384616,
+      "archiveSha256": "08e84c89c4821c815b72ad28b693c430b8e48e8f9424ac786461358a4575d684",
+      "member": {
+        "name": "cig_csv_2018_06.csv",
+        "bytes": 29999431,
+        "crc32": "cc24308c",
+        "sha256": "821ac1375f8f096e4e45eb2dd6e19d3cc83612cec010a640fe0e79910d4f5d23"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "ced6bb82-e61f-4585-8e6d-350dd2b8ed6a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_07.zip",
+      "archiveBytes": 4969425,
+      "archiveSha256": "3076bd3f33d8d2cb8391e55f537ad9decf1fa8999dd04cbc044b6ef79077cf13",
+      "member": {
+        "name": "cig_csv_2018_07.csv",
+        "bytes": 21490351,
+        "crc32": "f3870b8f",
+        "sha256": "2c8957dc919b37825325f98fadbf3139492268300260a893749b85beca9c0eb0"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "12d0199d-d410-40a0-908a-24dc9aa6221b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_08.zip",
+      "archiveBytes": 3563229,
+      "archiveSha256": "b740c248bfef7150ad6cbbbf6c79bfaf6cc70056088e963576fe65bf97c3c055",
+      "member": {
+        "name": "cig_csv_2018_08.csv",
+        "bytes": 15618904,
+        "crc32": "b07358bd",
+        "sha256": "0d3aaf5c29c1eaf1a65ca50d9d41a04a9526a1d847732f7e54ef0fed987b52da"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "5918ce8a-8c5b-4082-b5a5-2fd113bc2f8f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_09.zip",
+      "archiveBytes": 3975096,
+      "archiveSha256": "995b855040e4e7f2188cb2f9db83924a2664205bf41856148e68462e1f4fb01d",
+      "member": {
+        "name": "cig_csv_2018_09.csv",
+        "bytes": 17196089,
+        "crc32": "175fa6c4",
+        "sha256": "9d81daa1c07503db400baa7ca07e3286025f9eee120f190b4837fe1a967b8810"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "3c2b5850-29ca-48aa-ab42-5a88663b9d26",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_10.zip",
+      "archiveBytes": 5844783,
+      "archiveSha256": "9d990700e373e8344da17582d9f79edfe1e2bdf82a0e9ed030fdb0a80b087644",
+      "member": {
+        "name": "cig_csv_2018_10.csv",
+        "bytes": 24835987,
+        "crc32": "61aa56ae",
+        "sha256": "3e22a404644dd48f8e92ee939bd4efc89e602730ee25429ca92892e0a3c3ee5e"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "d1858a19-3784-46cc-9df6-bf4a56f0c8ae",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_11.zip",
+      "archiveBytes": 5505744,
+      "archiveSha256": "85bc00d5d773be2ac3403aba3f4438c7869f40ed356302e4c08b14e8d39d5e89",
+      "member": {
+        "name": "cig_csv_2018_11.csv",
+        "bytes": 23875770,
+        "crc32": "27714f49",
+        "sha256": "999ac1e9d10df654dcbfebc16c233e5b1e9982033d5b31d4fcd8943aa6d75986"
+      }
+    },
+    {
+      "year": 2018,
+      "fileName": "cig_csv_2018_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2018",
+      "resourceId": "d4ef16ff-3336-4aaa-b980-9272a57ed69d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2018/filesystem/cig_csv_2018_12.zip",
+      "archiveBytes": 6080299,
+      "archiveSha256": "cf9435a651be597db3c0b5e779c44a5ea63eeb156232b528cc8f238f269ad97b",
+      "member": {
+        "name": "cig_csv_2018_12.csv",
+        "bytes": 26308807,
+        "crc32": "98cc4043",
+        "sha256": "867724182400d78c646cb2f78a92c08dfe055e3dbd1fd46682be94139612a78a"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "65d205b5-69c9-44ac-813a-f93871c2b797",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_01.zip",
+      "archiveBytes": 4330197,
+      "archiveSha256": "72de9d61b527107bf1f4117d8456bb0fb6aefa5064ae41772aa7922b982c0bec",
+      "member": {
+        "name": "cig_csv_2019_01.csv",
+        "bytes": 19108992,
+        "crc32": "94469693",
+        "sha256": "d18c9f85f38edb07c875056fd61e685a96d1e0c82f12fc76212b347ed973d948"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "3e33c251-4461-4329-8bb3-3265b520b63f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_02.zip",
+      "archiveBytes": 5022038,
+      "archiveSha256": "1f2f140f81fc9e0a14639167b760304df97d5a4e2432546910620e8fe3343a6e",
+      "member": {
+        "name": "cig_csv_2019_02.csv",
+        "bytes": 23770174,
+        "crc32": "8c99dc7b",
+        "sha256": "d296b7ac3c1f1931428a29ec9a7b336330868e99d6a0d600a780be79c3377adb"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "d1195421-abf5-4446-8a2f-0fcd980b308b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_03.zip",
+      "archiveBytes": 5697956,
+      "archiveSha256": "9bfffe1294227b5510dbd316a2465c1926579cb378fec34e0467e8efca3e946a",
+      "member": {
+        "name": "cig_csv_2019_03.csv",
+        "bytes": 25225054,
+        "crc32": "2d4552ab",
+        "sha256": "59f9d433ff00bbf7b7b287041e3032c1031e74aff4e67f86edfa990c3952a29c"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "bbdf2f48-1327-4bbc-ba20-c394de7f7445",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_04.zip",
+      "archiveBytes": 5603480,
+      "archiveSha256": "2eef941be35808d7397d20498db6e7f64a2a176937484abf380c9731b9b81589",
+      "member": {
+        "name": "cig_csv_2019_04.csv",
+        "bytes": 25025910,
+        "crc32": "2cebfbed",
+        "sha256": "c99e332ae512885c215379265921e301d89b86fe37c0583bb8a6753f1d39088b"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "6d8ae15e-0758-4a2c-aed2-3b484a6eb332",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_05.zip",
+      "archiveBytes": 5402348,
+      "archiveSha256": "0309075b1aa788042e63cdb422cf7942b04affa58e7735a2239e4a3edfb30da0",
+      "member": {
+        "name": "cig_csv_2019_05.csv",
+        "bytes": 23266135,
+        "crc32": "624ea4a4",
+        "sha256": "6b39b68ef3df54917b4e59ce2e7bb441f0d95a1ec6545027d8907574ac8b196a"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "21f4e2d7-6f8e-4de0-adfd-99ca29799de9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_06.zip",
+      "archiveBytes": 4683505,
+      "archiveSha256": "b122e82bded1a1e65b38a0e3cc3e07267079b3320c0959f30bb6e02b1b4fceb2",
+      "member": {
+        "name": "cig_csv_2019_06.csv",
+        "bytes": 20502129,
+        "crc32": "76034443",
+        "sha256": "83097adfb25f173243d6f21e86e5541ae5c7f74125a56517e9ac0f8309ed59da"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "3e33aae7-72e2-4249-9dfb-56ab38e1561f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_07.zip",
+      "archiveBytes": 5573157,
+      "archiveSha256": "c5c9429ba19603265dea673eaf14d957069f144f81cbccb6a56ff6ef82653d88",
+      "member": {
+        "name": "cig_csv_2019_07.csv",
+        "bytes": 26915888,
+        "crc32": "dc10667f",
+        "sha256": "b1cf147c6cd7b777e006ca3a3144cb7fcee1ef3163d9da488e0116c7687fd1a3"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "1e29204a-bc14-4831-9418-fc04505755eb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_08.zip",
+      "archiveBytes": 3598299,
+      "archiveSha256": "8b033bb7a48b0e8d5fe3af53a230796d8b5efd1ec114a5327edda05cbb4839e1",
+      "member": {
+        "name": "cig_csv_2019_08.csv",
+        "bytes": 16852704,
+        "crc32": "9d0e293c",
+        "sha256": "bd73ba9deb07ca7ae00a08ba48deafe2aa20260b6bea12f62123ee64a6d50c7f"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "a998cd0d-aea2-42ac-836f-fcba2fc06da3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_09.zip",
+      "archiveBytes": 4463242,
+      "archiveSha256": "6c205ea4ab3226bd91db1754ea34462975c9ab4b7841d7594640bf42f9c3c08d",
+      "member": {
+        "name": "cig_csv_2019_09.csv",
+        "bytes": 20468086,
+        "crc32": "e1a9472b",
+        "sha256": "363a6c581c8257685d3f0c4ec6266becb1aa209baa82f0ff1f3f910cdd5c7ae6"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "1568bf73-dd63-4487-be52-e38f6afe80f2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_10.zip",
+      "archiveBytes": 6491210,
+      "archiveSha256": "3f78c9f8099c6ae7480bb2b88d3744de8a0842901851d48d29256410daadcb5e",
+      "member": {
+        "name": "cig_csv_2019_10.csv",
+        "bytes": 29841791,
+        "crc32": "ba869c52",
+        "sha256": "5e398cfe4092c7666adf667de037b03220d357501461d2d12948b5cf0c4bb313"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "4fc86620-1f7e-4a07-b799-4af7a6419db2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_11.zip",
+      "archiveBytes": 5634383,
+      "archiveSha256": "205951757a036b5db81ea7cac928b7191857ad09223e0cc1b35d130b3ad78e2f",
+      "member": {
+        "name": "cig_csv_2019_11.csv",
+        "bytes": 25992604,
+        "crc32": "1d053de0",
+        "sha256": "ee65c54f0cf55a85480bf34f3d24600d0d6b1992fe7698197c03b73820037560"
+      }
+    },
+    {
+      "year": 2019,
+      "fileName": "cig_csv_2019_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2019",
+      "resourceId": "f772453f-1049-4ddc-93e3-557d50005149",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2019/filesystem/cig_csv_2019_12.zip",
+      "archiveBytes": 6631534,
+      "archiveSha256": "8033720640cb8510a93e8be1723f0cd56b1f8828c6077b433ef8aaa6ec5dea9f",
+      "member": {
+        "name": "cig_csv_2019_12.csv",
+        "bytes": 30620926,
+        "crc32": "053e9741",
+        "sha256": "79eb47b740ee8f39332b2082df15ce90a2bd0c07804f5094c0d54e9fa3ceb2ed"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "4037ee04-9107-4a80-a02f-92a956135cd4",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_01.zip",
+      "archiveBytes": 4811166,
+      "archiveSha256": "33f59347d4d63123a7198bec48d30596a71f81c030f4ca3327df32764c4761a7",
+      "member": {
+        "name": "cig_csv_2020_01.csv",
+        "bytes": 23098067,
+        "crc32": "c1014015",
+        "sha256": "12548a721b5b7edc7763e0463bddf9c63f53b020fad28baaed168b5cee899588"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "ae398747-9b41-4ca2-a93f-0e639ec93e7a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_02.zip",
+      "archiveBytes": 5322018,
+      "archiveSha256": "c35ff0e49e9eb09cfbf315d6e1f692373108b763da247a7a20990950d1eacf15",
+      "member": {
+        "name": "cig_csv_2020_02.csv",
+        "bytes": 26007663,
+        "crc32": "7b12353c",
+        "sha256": "fc1582459d0da5241757e3e292e0703d1b675ee7b34d612965d7d8522121b5d2"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "ad845e10-ddb2-4c61-831a-32b85dc1c7bf",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_03.zip",
+      "archiveBytes": 4908069,
+      "archiveSha256": "3ea3cd19b0021e65d0b00299ccca58d7abcd9e22f3c8dd2acf7de77f6792299b",
+      "member": {
+        "name": "cig_csv_2020_03.csv",
+        "bytes": 23046085,
+        "crc32": "1f34fe1d",
+        "sha256": "751244287c537e9a065c423caea913d221985cb0499f4ebd7bcfb442cc5b6d3b"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "db8bf575-16e6-4dde-8743-4efe3b3707de",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_04.zip",
+      "archiveBytes": 4407669,
+      "archiveSha256": "7d09ab9a2ab55944cc593cc0c35c4903dc6c7e1afcc43ad30b4c6bae9050fbaa",
+      "member": {
+        "name": "cig_csv_2020_04.csv",
+        "bytes": 21504860,
+        "crc32": "ca2f08bf",
+        "sha256": "61da0bf63c3d4ba3a134c4bbe2823219bdc3f360bfd25f6ec83fc28b2309c75e"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "669f0cd3-d1f7-4d04-bd8c-78af48a668b7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_05.zip",
+      "archiveBytes": 5336284,
+      "archiveSha256": "a7184c5458bbf68fde5552904b6b50d8d4018ff3d246f2d48140fa0f0bad33ce",
+      "member": {
+        "name": "cig_csv_2020_05.csv",
+        "bytes": 26061407,
+        "crc32": "58ab3aaa",
+        "sha256": "77484d1d6be61e276c5ed661f9e98059de72f47e75315f1a094f6f688c06b9ad"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "55731751-b1e1-43ad-b116-65e46191e8bb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_06.zip",
+      "archiveBytes": 5463096,
+      "archiveSha256": "0f0714a37b7342d20c0441676fb12a4fcb13133b8121a8782ed876b052e45b8f",
+      "member": {
+        "name": "cig_csv_2020_06.csv",
+        "bytes": 26067320,
+        "crc32": "c9a28e3b",
+        "sha256": "0a235356c62c43fcf6e86c4b1a11f70733e0d5a92e7f1b93be361dd49ac37882"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "0dd761af-8aa2-4b03-97ee-aac9262464a8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_07.zip",
+      "archiveBytes": 6162410,
+      "archiveSha256": "64990ee7d3eec38578397ed5bcfa3080178349e1451ea1b994c15b3efd5811ac",
+      "member": {
+        "name": "cig_csv_2020_07.csv",
+        "bytes": 28708823,
+        "crc32": "6da33267",
+        "sha256": "2fbc347f2eb6a689548eb9bb34096c51ef0c2ca2ba17dbd06c4bd3bd14b346e9"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "3ab288e5-fbdc-4b96-87c1-dd0fed22e396",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_08.zip",
+      "archiveBytes": 4591447,
+      "archiveSha256": "0392362ab28c72a5ebc70f59b6f72f21d8e3d9b62ab459615986801fe005321f",
+      "member": {
+        "name": "cig_csv_2020_08.csv",
+        "bytes": 22046655,
+        "crc32": "79344884",
+        "sha256": "a2c3a03b8da7f87160e65eb30f7793101473079b6c863ab3fde8b7c931ba38b6"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "cec0baf0-aae6-45dd-b17b-72043f961427",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_09.zip",
+      "archiveBytes": 6175950,
+      "archiveSha256": "330de36675e791f47436ec5bae90cd93d75ac8c15aac7df599da6ab65d56a5c4",
+      "member": {
+        "name": "cig_csv_2020_09.csv",
+        "bytes": 28278507,
+        "crc32": "8f0ed4b1",
+        "sha256": "ed9efa38537ad0548052c26ba560fbab453f31a701d9cb7f70031fe97b3055c0"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "152531a3-f5ab-49c5-b727-47afff4ec0dc",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_10.zip",
+      "archiveBytes": 6318223,
+      "archiveSha256": "aa7b58fc58a452343a39cd587d518cb9556fb94409cd749212142b97bf70bea4",
+      "member": {
+        "name": "cig_csv_2020_10.csv",
+        "bytes": 28846391,
+        "crc32": "8561cbf3",
+        "sha256": "7ebc7dee8b994fd8f70aedcc33c77f4352c1afa0b1f7490954744de28fc6a0f0"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "61b7e531-851f-4251-89a1-a70f3070e5a4",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_11.zip",
+      "archiveBytes": 7229465,
+      "archiveSha256": "b41072a7ff1dbdd79d965a1d300fcae618060fedaac1b1d5ccb577fc002aa0b1",
+      "member": {
+        "name": "cig_csv_2020_11.csv",
+        "bytes": 33238745,
+        "crc32": "5f95b95f",
+        "sha256": "add4e4e33d416dff0ee44ba0cf78541af7e8871c2191dc986a0a86fd555b0e02"
+      }
+    },
+    {
+      "year": 2020,
+      "fileName": "cig_csv_2020_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2020",
+      "resourceId": "b9b45383-7fdd-41b5-be97-7d4ee732128d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2020/filesystem/cig_csv_2020_12.zip",
+      "archiveBytes": 7896908,
+      "archiveSha256": "9587773750dfbd19c73bf9d7eb90e51551801e667c1befa26b3490328a769151",
+      "member": {
+        "name": "cig_csv_2020_12.csv",
+        "bytes": 36459554,
+        "crc32": "dd2c104d",
+        "sha256": "4c489dd0ca66daafa6a85c9eda5763cbe80ce091d3fa1b7bf3d4d260f37b6ab7"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "f5c23ca2-0585-4885-a950-cad89df6166f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_01.zip",
+      "archiveBytes": 4832237,
+      "archiveSha256": "6895a0b8f4361674d68990f58422bf6155423292c5a9c53934f3a42354049b95",
+      "member": {
+        "name": "cig_csv_2021_01.csv",
+        "bytes": 23870659,
+        "crc32": "3eeb1d83",
+        "sha256": "995cfa12997af62c0c0e151234d0f66e5ca2c9b904165062d5db8f5f3e96ec22"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "ecf132b6-daee-4681-8dfa-97da1820e19a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_02.zip",
+      "archiveBytes": 5927582,
+      "archiveSha256": "72cbef0fc6c55430a7594a6f4f80578b15f9c5210e153f8b207029bfc17a0618",
+      "member": {
+        "name": "cig_csv_2021_02.csv",
+        "bytes": 29346758,
+        "crc32": "65208a97",
+        "sha256": "ef6da43cf87b1b54734d4ca033a2db1d6319b8d9d2474eba95e2b30d08e82ec9"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "270fd7af-f879-4dae-9935-7012db3b9060",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_03.zip",
+      "archiveBytes": 6766565,
+      "archiveSha256": "da6567857e7d1fb861fdc2e2522fb94be1b0a7632dbb0ac32ff249147254cf44",
+      "member": {
+        "name": "cig_csv_2021_03.csv",
+        "bytes": 30934945,
+        "crc32": "1bcbb220",
+        "sha256": "0c9231fab606c7854d0f907b210289089f1766b928081b39e961c926432ac0af"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "1f9b1f0d-8148-4095-9857-d412341d84f3",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_04.zip",
+      "archiveBytes": 6941075,
+      "archiveSha256": "cbe80adc41a6112f263a8fc9bd5a234695ca8c50f9cbdb3b080b62e265667a50",
+      "member": {
+        "name": "cig_csv_2021_04.csv",
+        "bytes": 34874923,
+        "crc32": "4294a516",
+        "sha256": "7505a1ddb005df6f9b9ed4be0af906d9cd94e6ad80e6f4db55741ed4569631be"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "4191b1f6-0cdf-4726-97c2-35040209e4fe",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_05.zip",
+      "archiveBytes": 6779302,
+      "archiveSha256": "c87567ba9ba5b2be977e64a9cacb80d9765c85909030745815a47ee61a36dca0",
+      "member": {
+        "name": "cig_csv_2021_05.csv",
+        "bytes": 31497215,
+        "crc32": "5e9777c3",
+        "sha256": "efdc628487c4847c32002c0b9c057bd7583d693c036f8d95203901090d133941"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "4bceec05-59fa-4de0-a137-a1b4e94bd1a9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_06.zip",
+      "archiveBytes": 6298762,
+      "archiveSha256": "62f5271d2c490774da22bf869e0ce40ba1becaa55c6a013741eb7cbd25640de0",
+      "member": {
+        "name": "cig_csv_2021_06.csv",
+        "bytes": 28833223,
+        "crc32": "fa03cfcf",
+        "sha256": "2388ecd3ffe8023f458d64fae86f3fb3e95fb9c0edbe5484d90009fa2560edae"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "9f085bb3-86b9-4e5a-ab96-e3911065f43b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_07.zip",
+      "archiveBytes": 7137595,
+      "archiveSha256": "3a8ff826f5ca14817fb77a5690d1f2e8bfb1d82f3a034500bb749809027d4497",
+      "member": {
+        "name": "cig_csv_2021_07.csv",
+        "bytes": 32414627,
+        "crc32": "09490342",
+        "sha256": "abbb6a2c42425fb083b54a8c5db2e2c722fc108e2f8b719122695c99477abff4"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "682cbf15-f4bf-4cbf-bea3-ae2bf5c941a2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_08.zip",
+      "archiveBytes": 5297001,
+      "archiveSha256": "bf43a1e4e0977bb995c722c7a39b9cd2a7e09aa52b26df448a60f610595c8434",
+      "member": {
+        "name": "cig_csv_2021_08.csv",
+        "bytes": 24903531,
+        "crc32": "d7af12d1",
+        "sha256": "c163219d7fcea07e57c4abdbd97c6f3a466b2045dabf35d7a56df7a63013523e"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "1fa375ba-d1e8-4fc2-8c4e-8c7963f72502",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_09.zip",
+      "archiveBytes": 6900373,
+      "archiveSha256": "1fd07d0f65a5f63eddc049b217c10b3f62ec61d7b0951610547f9d3631b145fd",
+      "member": {
+        "name": "cig_csv_2021_09.csv",
+        "bytes": 31537511,
+        "crc32": "0f5e9fb3",
+        "sha256": "016eb59f29fd58e6d61448be8b7410ea0d4514ef30a4f0a88f1c4ca46ee74b90"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "20239f25-d9b2-4176-bc4e-f1cd7150337e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_10.zip",
+      "archiveBytes": 6435831,
+      "archiveSha256": "dfc149ff5c32289c32ff1fd7c2f1c800565e0c523b5f9e3c893fd22105287eb3",
+      "member": {
+        "name": "cig_csv_2021_10.csv",
+        "bytes": 29451547,
+        "crc32": "16d6c895",
+        "sha256": "86c98c30ba515bb149851c9190f2606c53743b438911638c808184dd04e17c8f"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "b053ea6a-bf98-4d25-9dc9-2780a2a62578",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_11.zip",
+      "archiveBytes": 6721819,
+      "archiveSha256": "4bf52a5e9cd2607d87ed01eda20d12fe7c6fbce8ed672dc6ede09425e9a3cc94",
+      "member": {
+        "name": "cig_csv_2021_11.csv",
+        "bytes": 30519811,
+        "crc32": "73ebaabe",
+        "sha256": "4a226bb481509a9c832e864faf56ab2b0ed8e6bde4bf9a307bb3ad450e6147b4"
+      }
+    },
+    {
+      "year": 2021,
+      "fileName": "cig_csv_2021_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2021",
+      "resourceId": "3fb6c5c8-3b99-4703-9994-4f65cba74aa9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2021/filesystem/cig_csv_2021_12.zip",
+      "archiveBytes": 8558690,
+      "archiveSha256": "a9f05e85d1f6516357efe2d2029e8ab26aa68666338e05329b954ac8721f6019",
+      "member": {
+        "name": "cig_csv_2021_12.csv",
+        "bytes": 39034451,
+        "crc32": "d1866bbb",
+        "sha256": "5a634bfd460da1090f53d1b23e72ed344370aa06443dc1a4fbeb77d467da776b"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "bd674b75-6bcd-4a71-8b7e-0f66d23b6421",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_01.zip",
+      "archiveBytes": 5147225,
+      "archiveSha256": "629b45ddfeed214c72852d78b470a1a8f4c3ad836cabafd4d2209747318c6ff9",
+      "member": {
+        "name": "cig_csv_2022_01.csv",
+        "bytes": 26364858,
+        "crc32": "744634ef",
+        "sha256": "a4fcd198a1382b726f3ca8ac7edd0f08b15a60270618f7781766f37f5b4cf6ad"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "a0af9d10-e200-4caf-9a22-4fe76148e245",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_02.zip",
+      "archiveBytes": 5911660,
+      "archiveSha256": "614fe27ef3bc22759242606532fd31743f13defea14639c780071b1841a6b1d4",
+      "member": {
+        "name": "cig_csv_2022_02.csv",
+        "bytes": 27991619,
+        "crc32": "5b89a839",
+        "sha256": "19c75a69df51d31a177efee54437f3288c48c7d5ff2a87b95bb77ba8ff741e3b"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "2d84206a-09a3-4490-824d-2e2c7cb30f42",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_03.zip",
+      "archiveBytes": 7670715,
+      "archiveSha256": "ccb4adda672c75ff724468b16f303bac50ede72f7cc9e501737836967107a6b0",
+      "member": {
+        "name": "cig_csv_2022_03.csv",
+        "bytes": 35571460,
+        "crc32": "1ef2cee5",
+        "sha256": "f0a63bf0adc4cb9202053dbf0e250ebbbaff0d55be27a71f0778ebe670bfc6ee"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "58092c6a-83d1-4056-9639-98cc8a88a0b5",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_04.zip",
+      "archiveBytes": 7130003,
+      "archiveSha256": "1ea9314d0e95a088f2d86b907c7671cf380f9ed3369c4df51a9440a33416586c",
+      "member": {
+        "name": "cig_csv_2022_04.csv",
+        "bytes": 36362272,
+        "crc32": "2c9cd2ac",
+        "sha256": "a3cd7130077815af95f437510c65fe1cc72b2a5ff45b9d6e777a145a124077f9"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "c2602110-b92a-46cc-bda7-084749cc70a6",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_05.zip",
+      "archiveBytes": 7565365,
+      "archiveSha256": "fd444e00bbe0eef701dd76160e7c2803e425248a4aa591549ee37f2cafab43b2",
+      "member": {
+        "name": "cig_csv_2022_05.csv",
+        "bytes": 36099545,
+        "crc32": "bbfed704",
+        "sha256": "a60258b1c7f76b3fa9c80d33bcd43fc2b0284d31dd01a38d3d92b8e7e245f515"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "cbcf2854-1cf6-4541-be0b-3086dad77879",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_06.zip",
+      "archiveBytes": 7417742,
+      "archiveSha256": "720f0409f5cc2d02667a1eb2dc98a874bcd712686b71466bb8af2a7abbd47f89",
+      "member": {
+        "name": "cig_csv_2022_06.csv",
+        "bytes": 34761647,
+        "crc32": "46799931",
+        "sha256": "cf965e2b0d81c55f77d3c36c7c2125c9e0650b7152141a25c87d85266bd3ea76"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "650c5836-1633-4127-b066-e552783c04fe",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_07.zip",
+      "archiveBytes": 8452879,
+      "archiveSha256": "9bb0aedb4855742286913e489b1c37a331984d5ce55f8d830ce97c19fc83979a",
+      "member": {
+        "name": "cig_csv_2022_07.csv",
+        "bytes": 42164776,
+        "crc32": "86836690",
+        "sha256": "291cf313a7f809ba9e6b297fb6c5e097cebc8964d3466431d6039d4767c99b99"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "62e9e605-76ab-43d2-8059-66f7c3c58071",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_08.zip",
+      "archiveBytes": 6272208,
+      "archiveSha256": "60186d4797d803477fdaee13ed1c3523a717f57cc011566dda11ade9b2c9a040",
+      "member": {
+        "name": "cig_csv_2022_08.csv",
+        "bytes": 29704023,
+        "crc32": "a956b8d7",
+        "sha256": "9558896b4f51efbc8b8804c626619b4cbb1e692506ae165f231849eb894c222b"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "f549f7d0-9365-4919-accb-b7f8df6e0535",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_09.zip",
+      "archiveBytes": 7720917,
+      "archiveSha256": "141da7fb2e34ba680bc7ba62fb0ad5f6df76240ce7bd259aca59d3cbdcadca80",
+      "member": {
+        "name": "cig_csv_2022_09.csv",
+        "bytes": 35475801,
+        "crc32": "a01c4a88",
+        "sha256": "5e78919cca5d06895c8ee1e4e4c91e14e6bc5af58c605c35ca4656034f1f78dd"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "a5289953-117b-4069-940d-30d04edda046",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_10.zip",
+      "archiveBytes": 7126589,
+      "archiveSha256": "b0322181dad83da0c2f6c5d9f3e18c73d6656514c4f3cf3ce9fcc54c01d8412f",
+      "member": {
+        "name": "cig_csv_2022_10.csv",
+        "bytes": 32302356,
+        "crc32": "1b127939",
+        "sha256": "acc9b94cadcef5a4af83673867b9860b5f6b9d6d678a42f6908f55b8095bd56c"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "dc532172-7c8e-41b4-8e46-024a0dae781f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_11.zip",
+      "archiveBytes": 8653260,
+      "archiveSha256": "fd7ac608d3b9fdc0da598f053605f86221da9f1b4b0283d53699a6174b2649a4",
+      "member": {
+        "name": "cig_csv_2022_11.csv",
+        "bytes": 39531714,
+        "crc32": "56393ade",
+        "sha256": "f5b1584f523f037fb7531e79d9e22795cedd0156340c13b34eda32b37c18748b"
+      }
+    },
+    {
+      "year": 2022,
+      "fileName": "cig_csv_2022_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2022",
+      "resourceId": "008d35a8-07ba-4ba6-96f7-690e30175188",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2022/filesystem/cig_csv_2022_12.zip",
+      "archiveBytes": 11425011,
+      "archiveSha256": "5e93f9e59b670ec3b8499094ed97a0c368b8885a79b783caadb9c151a7eb0728",
+      "member": {
+        "name": "cig_csv_2022_12.csv",
+        "bytes": 51967727,
+        "crc32": "da457471",
+        "sha256": "6b509e7ef4232fe75fed4ab3917d7ed496c3bc876ae0795b0650633e3b1245cb"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "bcbcff25-6429-4355-880a-de9fc254d6f7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_01.zip",
+      "archiveBytes": 7805075,
+      "archiveSha256": "0cebb2b0c503f98361103328cac4fbcbd6d7e904988fded2b5fcbe92455dc537",
+      "member": {
+        "name": "cig_csv_2023_01.csv",
+        "bytes": 36813174,
+        "crc32": "87e1284b",
+        "sha256": "8a070d2514f4e6b4c02d36fee1a4d0c6c4ed757e251d1851175b2210a3f9e326"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "a9086619-6b84-4a8c-bbb7-d2439a197c88",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_02.zip",
+      "archiveBytes": 9227617,
+      "archiveSha256": "3fef993470898f84a1b02cd3f8e35ab37d713335c654491b5f8ad9ecfb7ca270",
+      "member": {
+        "name": "cig_csv_2023_02.csv",
+        "bytes": 48334540,
+        "crc32": "a12a33eb",
+        "sha256": "1a37a9434746ff9ace97b4556a6c02eebbab8de664c17520e5a2482b6c8713be"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "fe1f0238-6a08-442e-84ce-d9ad6c52bd1b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_03.zip",
+      "archiveBytes": 11242786,
+      "archiveSha256": "97bd7531b5481bb3776f3c37c2dfecc63a309318854824a3d026be09e10b628b",
+      "member": {
+        "name": "cig_csv_2023_03.csv",
+        "bytes": 52288449,
+        "crc32": "992cd138",
+        "sha256": "8e8017ab7517e09713889b80d67548ee3d19081303581f7d6e5648cfcfa6e1e1"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "45feb969-c6d9-4e3a-9b5c-db0151f95675",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_04.zip",
+      "archiveBytes": 7481244,
+      "archiveSha256": "5670d98b9470b80591fcec55ee5dfa7b9da490d36e8ec98f0503810484ad4133",
+      "member": {
+        "name": "cig_csv_2023_04.csv",
+        "bytes": 34819387,
+        "crc32": "402eab67",
+        "sha256": "1017723c91abe62402dfb648ad1f05819b011874664c6c6ee8fc4266a2fc446a"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "c36c5a13-8ce9-47b7-9d13-f1fd5675a0eb",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_05.zip",
+      "archiveBytes": 10314991,
+      "archiveSha256": "993633748bc95656af7517c4e63163ad2be8b444a50fcb137e1550198b2c29f9",
+      "member": {
+        "name": "cig_csv_2023_05.csv",
+        "bytes": 47291012,
+        "crc32": "a585199b",
+        "sha256": "26dbe04a2352c3da683ba6e4ef9f7daa651646efef34a0edb36e10e3794fd8d2"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "750f8b46-8f2c-4554-81e7-7328d8dac74b",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_06.zip",
+      "archiveBytes": 15515897,
+      "archiveSha256": "56ec481441eb7376458089bad9fa49209aa20f00ef09ed603f05524b8800ac27",
+      "member": {
+        "name": "cig_csv_2023_06.csv",
+        "bytes": 72076833,
+        "crc32": "8e0d90b8",
+        "sha256": "e062f864b68f020a42910f56c496a3ccc2bd2f51fb047f4352f3948067562a86"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "9a969fcc-5a71-42cb-970d-62b06268f5c9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_07.zip",
+      "archiveBytes": 8437392,
+      "archiveSha256": "ee70954d7fde4113268895a416e0791855165746e09ef03d068cc2f6351b38ec",
+      "member": {
+        "name": "cig_csv_2023_07.csv",
+        "bytes": 39495236,
+        "crc32": "455d3641",
+        "sha256": "23df8142e879b0ebf8d744c9fabe4bce5cde4eaf800047359503d1b7342e10b4"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "04db9f8f-009f-4f79-aeaa-da887e0bd205",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_08.zip",
+      "archiveBytes": 6675848,
+      "archiveSha256": "0a7a7b28c0d3a6ca4d2ce5854e862eb4139862efe7fa5839225193288aa88129",
+      "member": {
+        "name": "cig_csv_2023_08.csv",
+        "bytes": 30899296,
+        "crc32": "33743f69",
+        "sha256": "356fd736f6d85632a4942fbd66362d61c4f6b401c71a3a0147461c4fcbd602e3"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "a39ed460-3a26-4813-a265-27efb90fb26e",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_09.zip",
+      "archiveBytes": 10233636,
+      "archiveSha256": "1ad5f6c6fc11ab21096316180e930d21475eba3fd72b6a730dc33ce3c8a00a7c",
+      "member": {
+        "name": "cig_csv_2023_09.csv",
+        "bytes": 47276682,
+        "crc32": "dfedce40",
+        "sha256": "0bac8722e01534087222a7910e00246005c61d9ad7d3abffc93f551be35cf59f"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "aa473497-7d13-444d-9d69-57d05f1117c2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_10.zip",
+      "archiveBytes": 10255429,
+      "archiveSha256": "4d52ebd6a508142c51ffbb7f846a185e3badbb644c00571512f8d1d685700e7c",
+      "member": {
+        "name": "cig_csv_2023_10.csv",
+        "bytes": 50227578,
+        "crc32": "11688b3a",
+        "sha256": "230411439c9035f37ea0323274ae8e8c03af36498f179b53b672c22b6b631d53"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "b2144922-d313-4f4d-91a9-95143ee1d947",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_11.zip",
+      "archiveBytes": 11199356,
+      "archiveSha256": "1acbed137d4d982b4b4db6dca61a30fc7823d3769eb42d32c5404e3907631280",
+      "member": {
+        "name": "cig_csv_2023_11.csv",
+        "bytes": 51441068,
+        "crc32": "1c87d6f3",
+        "sha256": "d1e14e0ac27e28e15009dc7e72fb7545c3cb4ce5815830632ca5ac44748bad29"
+      }
+    },
+    {
+      "year": 2023,
+      "fileName": "cig_csv_2023_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2023",
+      "resourceId": "a1c71873-41d0-4cee-80aa-40de7a60ffe8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2023/filesystem/cig_csv_2023_12.zip",
+      "archiveBytes": 13770060,
+      "archiveSha256": "47f3437e6bfae2bc8e11a92f3726434de6332404d99c44b86dba720134c2a095",
+      "member": {
+        "name": "cig_csv_2023_12.csv",
+        "bytes": 65743426,
+        "crc32": "ad633a1c",
+        "sha256": "d327cbbf19d01bb2a5a3bf3d6efec6b35342c1ab941a68e4383776a0bca4bc1f"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "96e154db-0e7a-40bd-b3fc-dbd7835e0b39",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_01.zip",
+      "archiveBytes": 6461968,
+      "archiveSha256": "efe81759821aa292c5f1476b103e6e4a3965b18de825d19277376bfdbefa4cee",
+      "member": {
+        "name": "cig_csv_2024_01.csv",
+        "bytes": 30163236,
+        "crc32": "fed98a4f",
+        "sha256": "0d67ea3d7455bd936ef2c4169bdc67e0df1e45bf07961698e4a2d531dac5bb72"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "50ad267f-eff0-40c8-a548-b03431260030",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_02.zip",
+      "archiveBytes": 15157271,
+      "archiveSha256": "498c6a358a882943ecd4a66f78a3b275714136370a03f521cc4837a626b491fe",
+      "member": {
+        "name": "cig_csv_2024_02.csv",
+        "bytes": 69156886,
+        "crc32": "4be8837d",
+        "sha256": "3cd35d5a0e389b06703cefa1b8bdab664518bf13b0444d198b605cb850112df3"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "b83aff6e-e6c1-4fef-ba16-336f8b7ebd96",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_03.zip",
+      "archiveBytes": 15450070,
+      "archiveSha256": "a83be3c989c67d370e4890904700f68303749fbdd1b2835f0190ae5c4e1cf126",
+      "member": {
+        "name": "cig_csv_2024_03.csv",
+        "bytes": 70750469,
+        "crc32": "2b058a11",
+        "sha256": "a3597af8af7ee8b81e72e797cafd802d0fe7ec51b03c20d99b1c9b718124e979"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "9cc84453-7be3-4249-a38b-807f2955c799",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_04.zip",
+      "archiveBytes": 16516958,
+      "archiveSha256": "28d02a34ae63d8aeb8fb002297da886200d80f812a4b79bc40a3836fbc921e29",
+      "member": {
+        "name": "cig_csv_2024_04.csv",
+        "bytes": 76315544,
+        "crc32": "bf716f86",
+        "sha256": "99ab751a50fdad69d477264f12f64b12d71e0f1a9bc83b9cd0624275d0062a66"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "3e8a3ab2-8287-4de9-8c47-fd12e9906855",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_05.zip",
+      "archiveBytes": 19922526,
+      "archiveSha256": "3aa17c7166bda16728e24cd4ad3ae6b093d9ffa417cb2f4396bfbe1f03d81e93",
+      "member": {
+        "name": "cig_csv_2024_05.csv",
+        "bytes": 91189356,
+        "crc32": "b4cefc80",
+        "sha256": "83a9f896d921957592865221a7d73fdfb7fe00447872c4b9f2c9ab0d2d23e97e"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "86c674ec-a6f6-4473-9ca8-d063364bf08d",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_06.zip",
+      "archiveBytes": 19118654,
+      "archiveSha256": "ca7954fd97ac300638ae6c8b9a646730e96cd81c7c2362608c04359a49870566",
+      "member": {
+        "name": "cig_csv_2024_06.csv",
+        "bytes": 83585275,
+        "crc32": "1dd474fa",
+        "sha256": "3c7d9d6539d8bde4930a34b35586bf94588174eb9cba37391754ca4144e30812"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "cadb3300-52d8-4234-89da-f07a46d6ddd2",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_07.zip",
+      "archiveBytes": 20390614,
+      "archiveSha256": "2fc3900190dbde984bbbcc20b1a06fcdb67501fae0f9c4dc28e4f4b986ccb0b6",
+      "member": {
+        "name": "cig_csv_2024_07.csv",
+        "bytes": 89619870,
+        "crc32": "44e2bfae",
+        "sha256": "a3fd1c25ea74238669cd357d8294295c567cc0d84c1c0ea2fa5d9f186a861981"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "59961633-2554-41d4-aa93-1c25e64c12a8",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_08.zip",
+      "archiveBytes": 13098230,
+      "archiveSha256": "1b538d4e4d698758fee5a58e9a0b45d5b5d1c512b513ce83c9820eb6ca05f898",
+      "member": {
+        "name": "cig_csv_2024_08.csv",
+        "bytes": 57463132,
+        "crc32": "2e46482e",
+        "sha256": "8ae89e7be5f9d3f905141728336dee4850c412f31dd8ee4790cb0a3cb7d575ce"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "22f6f15b-4584-41f7-bbc2-bf5245e09cba",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_09.zip",
+      "archiveBytes": 18818013,
+      "archiveSha256": "a9c13999d805c92f8501e8fc928f9a0a9ab958dd42fb1864282dd0f17fb1495b",
+      "member": {
+        "name": "cig_csv_2024_09.csv",
+        "bytes": 81639320,
+        "crc32": "999e082f",
+        "sha256": "d26f451d5e22a4fcb5dd1abcdaaaa8141fa0e92859ebda997ce28df4f7396ec6"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "4799b28f-538c-4b83-acb5-680f6b935c87",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_10.zip",
+      "archiveBytes": 24105388,
+      "archiveSha256": "617825370125354056dcee2726b4c146e4ee27d33bd7a376e9e763a2089b009c",
+      "member": {
+        "name": "cig_csv_2024_10.csv",
+        "bytes": 106921710,
+        "crc32": "50073dd4",
+        "sha256": "8472694273c9e87184a0b6f676bbb2f34f56cb935972314383fbb2d81f951556"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "ae304eb3-a8e0-4567-b70b-6310c5753cb9",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_11.zip",
+      "archiveBytes": 23090511,
+      "archiveSha256": "f9ac3ebbb1de6d51d67bf4f1ffe4656661b0d65662e0485ae8860e2f9f1e5e73",
+      "member": {
+        "name": "cig_csv_2024_11.csv",
+        "bytes": 102647626,
+        "crc32": "ea06d446",
+        "sha256": "7984201b81e4b2d5b7589440bac11cb27e679baa7b0eb1096f6ae6009bf2967f"
+      }
+    },
+    {
+      "year": 2024,
+      "fileName": "cig_csv_2024_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2024",
+      "resourceId": "5a5e9756-0eb6-4922-abd3-3a548ad5bffd",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2024/filesystem/cig_csv_2024_12.zip",
+      "archiveBytes": 27337899,
+      "archiveSha256": "eafee656b2941f15e75bff5c05d381282db9bedcc6727bfab3aff9d5473905d4",
+      "member": {
+        "name": "cig_csv_2024_12.csv",
+        "bytes": 121220975,
+        "crc32": "4e1e160b",
+        "sha256": "128cfc945f290903c700efae786272be9f171bd25ff98cbf3e403643c986066f"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_01.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "a1a4be23-11f5-4a95-93d0-5e3267ec6c3f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_01.zip",
+      "archiveBytes": 20798988,
+      "archiveSha256": "8133cd5ea2b592b4e48afa1eb0ec2db1a831f00a254de077518f8263818a371c",
+      "member": {
+        "name": "cig_csv_2025_01.csv",
+        "bytes": 91942157,
+        "crc32": "26a71daa",
+        "sha256": "50437a1c63a320bcc3a5a8ad31d21788f95bdc223b4ffd6c85c035a8ed445492"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_02.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "a87a23dd-44a3-4b49-a7ad-b96566476979",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_02.zip",
+      "archiveBytes": 21674004,
+      "archiveSha256": "ddeb33a5c46fd3f1c4f2988c73e28ca148628670848b8a2a86fd12bffd02045f",
+      "member": {
+        "name": "cig_csv_2025_02.csv",
+        "bytes": 96057335,
+        "crc32": "f7579a7a",
+        "sha256": "43fd4ea5ba66409e3377120cae47b93a3832aeb5d2c34ea1646eb6eee3b30160"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_03.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "dab282d9-f5c5-4595-9a9b-e17cdae7c98f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_03.zip",
+      "archiveBytes": 22468395,
+      "archiveSha256": "231c2f7713af92c1aef4314a42ccafddb2914d5a6730d8159d13bd54590f3a1f",
+      "member": {
+        "name": "cig_csv_2025_03.csv",
+        "bytes": 99661342,
+        "crc32": "eb6bee0a",
+        "sha256": "837d9f557ada6b571cfaa25fd2ffcc22d421be767375db3abc0b3ccc3f2e3787"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_04.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "a047f20f-84e4-48ac-8c54-f69127075d67",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_04.zip",
+      "archiveBytes": 23640461,
+      "archiveSha256": "2b8651f49312bca7e356a63b29dc47da5945dfbf7b78bed57ce9aaff54ba1055",
+      "member": {
+        "name": "cig_csv_2025_04.csv",
+        "bytes": 106370987,
+        "crc32": "1a0ec9ff",
+        "sha256": "9b70bda0f7d929d8451c455564de9fd46b29cf8fa254cb63ae650a89b3d13b13"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_05.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "28288080-14c7-45d1-8ff5-26e25fb4159a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_05.zip",
+      "archiveBytes": 23204302,
+      "archiveSha256": "8f4ef20c3d7a3bf43ff2181341b063e86abc10e0e09232cffd11d3e193aac7b4",
+      "member": {
+        "name": "cig_csv_2025_05.csv",
+        "bytes": 101914212,
+        "crc32": "b5986e2d",
+        "sha256": "908d9d045d86faba8d46bf3b00e67dc14e5e76bd999ad80b59ef207f1be9255c"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_06.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "039b8d17-756e-454b-a1a2-dda46237c6ea",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_06.zip",
+      "archiveBytes": 22724612,
+      "archiveSha256": "9006c457b0604f7040a2826ba0294da55379f75cd2756dcf1ad93a90276ebf34",
+      "member": {
+        "name": "cig_csv_2025_06.csv",
+        "bytes": 103901086,
+        "crc32": "72f60334",
+        "sha256": "48a46f3a6c868a8ff9de89fd62c2c099693629a45fc04e1c16f220e69170eb4d"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_07.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "f99292f4-87a0-4e78-bf57-1c54bc4ba5ba",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_07.zip",
+      "archiveBytes": 24551620,
+      "archiveSha256": "ad0c6265c81e78749d703e6a474e387e043ec69f2e5400264fcd4f91599315e8",
+      "member": {
+        "name": "cig_csv_2025_07.csv",
+        "bytes": 110285077,
+        "crc32": "98554424",
+        "sha256": "155474089886a129ff10c3b1d9a6d65e5d514cafcf93b4e345c9d3268848c297"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_08.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "fffb1c60-ff4e-43d4-b36f-1596eef7f079",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_08.zip",
+      "archiveBytes": 14864424,
+      "archiveSha256": "c16e7aa06d6fb0e0880cf797e6d04fdedf37e076c2fd83563dc4f4973e6b539f",
+      "member": {
+        "name": "cig_csv_2025_08.csv",
+        "bytes": 66544151,
+        "crc32": "d911f9ad",
+        "sha256": "71d2db2b19f196559d2e26c97a1b915f72aa06de51a22eaef020b5a8147e014a"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_09.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "bd56cf08-e8a1-4b96-8c41-bfcdf05d3c9c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_09.zip",
+      "archiveBytes": 22343431,
+      "archiveSha256": "1b7d009a7120b92444f9ffc8d986a75bdd008cf86623721692e7f74bbf9ff154",
+      "member": {
+        "name": "cig_csv_2025_09.csv",
+        "bytes": 99338658,
+        "crc32": "1aa27778",
+        "sha256": "e78f6f6c58af598e4d1b51a84c878909d8a0e4422e50a62b0f2a33bb0efed1e1"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_10.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "12b9c75f-cc6c-43c7-aeb9-f73f262b3a23",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_10.zip",
+      "archiveBytes": 25872938,
+      "archiveSha256": "6e7e467cbb008cc846ee096d3b8e1955fe338d3426a913f0750218bca52901d5",
+      "member": {
+        "name": "cig_csv_2025_10.csv",
+        "bytes": 115192784,
+        "crc32": "e59d5a7c",
+        "sha256": "868d867d4276e32ca8f710cc79466e54b13b570f307b6de4c5745c636574576b"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_11.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "8bc58a13-f600-4198-ad10-38738d4b4cc0",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_11.zip",
+      "archiveBytes": 21871608,
+      "archiveSha256": "cb40213cb6b294650099bf6a6ccd656d9139c374796c903302d17359accc2e60",
+      "member": {
+        "name": "cig_csv_2025_11.csv",
+        "bytes": 95809492,
+        "crc32": "bfb09e9b",
+        "sha256": "1e1a7bfe9e13f821232bc2df967717f610ae6578d215b3e678bd515e9ad5250b"
+      }
+    },
+    {
+      "year": 2025,
+      "fileName": "cig_csv_2025_12.zip",
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "resourceId": "ebf0b0df-0ce0-4242-b297-a0b9c5cecac7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_12.zip",
+      "archiveBytes": 32708524,
+      "archiveSha256": "6f696155e0b2ab4b2d608fe403e1bdc88a8a2c0d08812de325dd97ddedc6013a",
+      "member": {
+        "name": "cig_csv_2025_12.csv",
+        "bytes": 143461670,
+        "crc32": "8aa5d40e",
+        "sha256": "f0446d010683fa031ead3eeb0beed7f1d5342a9c0be8294bf59c2cddbe8fcbb7"
+      }
+    }
+  ]
+}

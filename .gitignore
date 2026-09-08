@@ -56,3 +56,6 @@ __pycache__/
 
 # Vercel CLI local link
 .vercel
+
+# Local ETL caches (ANAC ZIPs, etc.)
+.cache/

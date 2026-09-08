@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { activeNavSection, isNavChildActive } from "@/lib/site-navigation";
+import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
 
 /** Related pages remain available after reading the current section. */
@@ -26,7 +26,7 @@ function SectionNavContent({
   currentSearch,
 }: Readonly<{ pathname: string; currentSearch: string | null }>) {
   const section = activeNavSection(pathname);
-  const pages = section?.children ?? [];
+  const pages = flattenNavLinks(section?.children ?? []);
   if (pages.length < 2) return null;
 
   return (
@@ -42,7 +42,7 @@ function SectionNavContent({
           const current = currentSearch !== null
             && isNavChildActive(pathname, page.href, pages, currentSearch);
           return (
-            <li key={page.href}>
+            <li key={`${page.href}:${page.label}`}>
               {current ? (
                 <span className={styles.current} aria-current="page">
                   {page.label}

@@ -12,7 +12,7 @@ const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs",
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
@@ -150,7 +150,9 @@ test("primary nav disclosure ids key off section href, not shared icons", async 
 test("activeNavSection resolves nested routes to the parent menu", () => {
   const coesione = activeNavSection("/coesione/asili");
   assert.equal(coesione?.href, "/coesione");
-  assert.ok(coesione?.children?.some((child) => child.href === "/coesione/asili"));
+  assert.ok(
+    flattenNavLinks(coesione?.children ?? []).some((child) => child.href === "/coesione/asili"),
+  );
 
   const enti = activeNavSection("/enti/c_a783");
   assert.equal(enti?.href, "/enti");
@@ -161,6 +163,19 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   assert.deepEqual(
     appalti?.children?.map((child) => child.label),
     ["Appalti", "Incarichi", "Catalogo dati", "Segnali", "Sintesi", "Esplora relazioni"],
+  );
+  assert.ok(
+    appalti?.children
+      ?.find((child) => child.href === "/appalti")
+      ?.children?.some((child) => child.href === "/appalti/operatori"),
+  );
+  assert.equal(
+    isNavChildActive(
+      "/appalti/operatori",
+      "/appalti/operatori",
+      appalti?.children?.find((child) => child.href === "/appalti")?.children ?? [],
+    ),
+    true,
   );
 
   const sintesi = activeNavSection("/controlli/sintesi");
@@ -181,12 +196,13 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   assert.equal(debito?.href, "/spese");
   assert.ok(debito?.children?.some((child) => child.href === "/debito"));
 
+  const coesionePages = flattenNavLinks(coesione.children ?? []);
   assert.equal(
-    isNavChildActive("/coesione/asili", "/coesione/asili", coesione.children),
+    isNavChildActive("/coesione/asili", "/coesione/asili", coesionePages),
     true,
   );
   assert.equal(
-    isNavChildActive("/coesione/asili", "/coesione", coesione.children),
+    isNavChildActive("/coesione/asili", "/coesione", coesionePages),
     false,
   );
 });

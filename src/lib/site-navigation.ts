@@ -6,6 +6,7 @@
 export type NavLink = Readonly<{
   href: string;
   label: string;
+  children?: readonly NavLink[];
 }>;
 
 export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
@@ -56,8 +57,13 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
-      { href: "/spese/sanita", label: "Sanità" },
-      { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
+      {
+        href: "/spese/sanita",
+        label: "Sanità",
+        children: [
+          { href: "/spese/sanita/storico", label: "Serie storica" },
+        ],
+      },
       { href: "/spese/sport", label: "Sport" },
       { href: "/spese/invalidita", label: "Invalidità INPS" },
       { href: "/spese/pensioni", label: "Pensioni e pensionati" },
@@ -65,10 +71,15 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/spese/consulenze", label: "Consulenze ministeriali" },
       { href: "/spese/territoriale", label: "Spesa statale per territorio" },
       { href: "/spese/operative", label: "Spese operative" },
-      { href: "/stato", label: "Amministrazioni centrali" },
+      {
+        href: "/stato",
+        label: "Amministrazioni centrali",
+        children: [
+          { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
+          { href: "/stato/legislature", label: "Spesa per legislatura" },
+        ],
+      },
       { href: "/debito", label: "Debito pubblico" },
-      { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
-      { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],
   },
   {
@@ -88,11 +99,16 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     icon: "projects",
     aliases: ["/confronti", "/pnrr", "/progetti"],
     children: [
-      { href: "/coesione", label: "Coesione e PNRR" },
-      { href: "/pnrr", label: "Tutti i progetti PNRR" },
-      { href: "/coesione/asili", label: "Asili e prima infanzia" },
+      {
+        href: "/coesione",
+        label: "Coesione e PNRR",
+        children: [
+          { href: "/pnrr", label: "Tutti i progetti PNRR" },
+          { href: "/coesione/asili", label: "Asili e prima infanzia" },
+          { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
+        ],
+      },
       { href: "/confronti", label: "Confronti verificati" },
-      { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
     ],
   },
   {
@@ -125,8 +141,22 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     icon: "checks",
     aliases: ["/appalti", "/incarichi", "/dati", "/trasparenza", "/controlli/sintesi"],
     children: [
-      { href: "/appalti", label: "Appalti" },
-      { href: "/incarichi", label: "Incarichi" },
+      {
+        href: "/appalti",
+        label: "Appalti",
+        children: [
+          { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
+          { href: "/appalti/ted", label: "Avvisi TED" },
+          { href: "/appalti/dettaglio", label: "Dettaglio e fornitori" },
+        ],
+      },
+      {
+        href: "/incarichi",
+        label: "Incarichi",
+        children: [
+          { href: "/incarichi/dettaglio", label: "Dettaglio" },
+        ],
+      },
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },
       { href: "/controlli/sintesi", label: "Sintesi" },
@@ -246,6 +276,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     links: [
       { href: "/appalti", label: "Appalti" },
       { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
+      { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
       { href: "/appalti/ted", label: "Avvisi TED" },
       { href: "/incarichi", label: "Incarichi" },
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
@@ -329,16 +360,29 @@ function isMoreSpecificHref(candidateHref: string, currentHref: string): boolean
   return candidate.searchParams.size > current.searchParams.size;
 }
 
+function navLinkMatchesLocation(location: NavigationLocation, link: NavLink): boolean {
+  if (hrefMatchesLocation(location, link.href)) return true;
+  return link.children?.some((child) => navLinkMatchesLocation(location, child)) ?? false;
+}
+
+/** Flat list of links for section footers and tests, parents before their nested pages. */
+export function flattenNavLinks(links: readonly NavLink[]): NavLink[] {
+  const out: NavLink[] = [];
+  for (const link of links) {
+    out.push({ href: link.href, label: link.label });
+    if (link.children?.length) {
+      out.push(...flattenNavLinks(link.children));
+    }
+  }
+  return out;
+}
+
 export function isNavSectionActive(pathname: string, item: NavSection): boolean {
   const location = parseNavigationLocation(pathname);
   if (item.href === "/") return location.pathname === "/";
   if (pathMatches(location.pathname, item.href)) return true;
   if (item.aliases?.some((alias) => pathMatches(location.pathname, alias))) return true;
-  return (
-    item.children?.some(
-      (child) => hrefMatchesLocation(location, child.href),
-    ) ?? false
-  );
+  return item.children?.some((child) => navLinkMatchesLocation(location, child)) ?? false;
 }
 
 export function activeNavSection(pathname: string): NavSection | null {
@@ -377,4 +421,9 @@ export function isNavChildActive(
     isMoreSpecificHref(candidate.href, current.href) ? candidate : current,
   );
   return best.href === childHref;
+}
+
+/** True when this link or any nested child matches the current location. */
+export function isNavBranchActive(pathname: string, link: NavLink, search = ""): boolean {
+  return navLinkMatchesLocation(parseNavigationLocation(pathname, search), link);
 }

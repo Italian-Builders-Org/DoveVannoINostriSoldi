@@ -14,7 +14,13 @@ import {
   MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
   AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
 } from "@hugeicons/core-free-icons";
-import { PRIMARY_NAV, isNavChildActive, isNavSectionActive } from "@/lib/site-navigation";
+import {
+  PRIMARY_NAV,
+  isNavBranchActive,
+  isNavChildActive,
+  isNavSectionActive,
+  type NavLink,
+} from "@/lib/site-navigation";
 import { REPO_URL } from "@/lib/site";
 
 const NAV_ICONS = {
@@ -36,6 +42,89 @@ const NAV_ICONS = {
 
 
 type NavigationLocation = Readonly<{ pathname: string; currentSearch: string | null }>;
+
+function NavSubtree({
+  links,
+  pathname,
+  currentSearch,
+  idPrefix,
+  onNavigate,
+  depth = 1,
+}: NavigationLocation & Readonly<{
+  links: readonly NavLink[];
+  idPrefix: string;
+  onNavigate?: () => void;
+  depth?: number;
+}>) {
+  // Match top-level disclosure: an explicit null on this pathname means "closed",
+  // even when the branch is route-active (otherwise Appalti cannot be collapsed
+  // while viewing /appalti/*).
+  const [selection, setSelection] = useState<{ pathname: string; href: string | null } | null>(null);
+  const activeBranch = links.find((link) => link.children?.length && isNavBranchActive(pathname, link, currentSearch ?? ""));
+  const openNestedHref = selection?.pathname === pathname
+    ? selection.href
+    : (activeBranch?.href ?? null);
+
+  return (
+    <>
+      {links.map((child) => {
+        const hasNested = Boolean(child.children?.length);
+        const nestedOpen = hasNested && openNestedHref === child.href;
+        const nestedId = `${idPrefix}-${child.href.replace(/^\//, "").replace(/[/?=&]/g, "-")}`;
+        const current = currentSearch !== null
+          && isNavChildActive(pathname, child.href, links, currentSearch)
+          && !(
+            hasNested
+            && child.children!.some((nested) => isNavBranchActive(pathname, nested, currentSearch))
+          );
+        return (
+          <li
+            key={`${child.href}:${child.label}`}
+            className={hasNested ? "nav-subitem nav-subitem-has-menu" : "nav-subitem"}
+            data-open={nestedOpen ? "true" : undefined}
+          >
+            <Link
+              href={child.href}
+              onNavigate={onNavigate}
+              aria-current={current ? "page" : undefined}
+            >
+              {child.label}
+            </Link>
+            {hasNested ? (
+              <button
+                type="button"
+                className="nav-item-toggle nav-subitem-toggle"
+                aria-expanded={nestedOpen}
+                aria-controls={nestedId}
+                aria-label={`Pagine in ${child.label}`}
+                onClick={() => setSelection({ pathname, href: nestedOpen ? null : child.href })}
+              >
+                <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+              </button>
+            ) : null}
+            {hasNested ? (
+              <ul
+                id={nestedId}
+                className={depth >= 2 ? "nav-submenu nav-submenu-nested" : "nav-submenu nav-submenu-nested"}
+                hidden={!nestedOpen}
+                aria-label={`Pagine in ${child.label}`}
+              >
+                <NavSubtree
+                  links={child.children!}
+                  pathname={pathname}
+                  currentSearch={currentSearch}
+                  idPrefix={nestedId}
+                  onNavigate={onNavigate}
+                  depth={depth + 1}
+                />
+              </ul>
+            ) : null}
+          </li>
+        );
+      })}
+    </>
+  );
+}
 
 /** One link map and disclosure implementation for both responsive surfaces. */
 function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNavigate }:
@@ -80,14 +169,13 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
               ) : null}
               {hasChildren ? (
                 <ul id={menuId} className="nav-submenu" hidden={!open} aria-label={`Pagine in ${item.label}`}>
-                  {item.children!.map((child) => (
-                    <li key={child.href}>
-                      <Link href={child.href} onNavigate={onNavigate}
-                        aria-current={currentSearch !== null && isNavChildActive(pathname, child.href, item.children!, currentSearch) ? "page" : undefined}>
-                        {child.label}
-                      </Link>
-                    </li>
-                  ))}
+                  <NavSubtree
+                    links={item.children!}
+                    pathname={pathname}
+                    currentSearch={currentSearch}
+                    idPrefix={menuId}
+                    onNavigate={onNavigate}
+                  />
                 </ul>
               ) : null}
             </li>

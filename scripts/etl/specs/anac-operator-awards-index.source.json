@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-operator-awards-index",
+  "distributionKind": "sharded-public-operator-index",
+  "observedAt": "2026-09-08T10:30:00Z",
+  "generatedAt": "2026-09-08T10:30:00Z",
+  "scope": {
+    "distributionKind": "full-snapshot",
+    "deltasApplied": [],
+    "nationalPopulationClaim": "not-asserted",
+    "temporalAlignment": "cross-snapshot",
+    "moneyNature": "award-declared",
+    "note": "Indice nazionale degli aggiudicatari ANAC con CF checksum-valid. Gli importi sono aggiudicazione dichiarata, non pagamento. Gli award multi-operatore contano nelle N aggiudicazioni ma il valore attributo resta solo agli award a operatore unico. I campi procedura (oggetto/CPV/stazione) arrivano dai CIG annuali 2007-2025 quando il CIG e presente."
+  },
+  "parent": {
+    "path": "scripts/etl/specs/anac-awardees.source.json",
+    "sha256": "b7025ed5c5323da978568227b32555cd46f32841e081077eef4aa271e0835078"
+  },
+  "cigEnrichmentSpec": {
+    "path": "scripts/etl/specs/anac-cig-2007-2025.source.json"
+  },
+  "contract": {
+    "awardKey": ["cig", "id_aggiudicazione"],
+    "operatorIdentity": "checksum-valid-italian-tax-code",
+    "operatorDisplayName": "most-frequent-normalized-denomination-then-lexical",
+    "operatorRef": "op-########-from-sorted-national-cf",
+    "awardAmountAggregation": "once-per-distinct-award-pair",
+    "valueAttribution": "single-resolved-operator-awards-only",
+    "searchKey": "uppercase-alnum-collapsed-denomination",
+    "searchMode": "prefix-and-substring-on-searchKey",
+    "maxAwardsPublishedPerOperator": 15,
+    "shards": 256,
+    "operatorShardRule": "first-two-hex-sha256-of-operator-ref",
+    "compression": "deterministic-gzip-mtime-zero",
+    "cigProcedureFields": [
+      "oggetto_lotto|oggetto_gara",
+      "cod_cpv",
+      "descrizione_cpv",
+      "denominazione_amministrazione_appaltante",
+      "anno_pubblicazione"
+    ]
+  },
+  "privacy": {
+    "containsOperatorTaxIds": false,
+    "containsOperatorTaxIdHashes": false,
+    "containsOperatorNames": true,
+    "operatorNamesUsedAsKeys": false,
+    "containsRawRows": false,
+    "containsEntityTaxIds": false,
+    "containsAusa": false
+  },
+  "limitations": [
+    "CIG e aggiudicazioni/aggiudicatari sono snapshot cross-temporali con date di modifica diverse",
+    "la copertura nazionale corrente non e dichiarata",
+    "il valore e importo di aggiudicazione dichiarato, non pagamento o incasso",
+    "gli award multi-operatore restano nel conteggio ma non nel valore attributo",
+    "la scheda pubblica al massimo 15 aggiudicazioni recenti per operatore",
+    "ranking e drill-down sono descrittivi e non indicano illeciti",
+    "i campi procedura CIG (oggetto/CPV/stazione) derivano dagli snapshot annuali CIG 2007-2025 e possono mancare se il CIG non compare in quei file",
+    "per CIG multi-lotto si preferisce la riga con flag_prevalente, altrimenti oggetto_lotto piu informativo"
+  ]
+}

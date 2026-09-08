@@ -397,6 +397,7 @@ export default function AppaltiPage() {
         </ScrollRegion>
       </section>
 
+      <p><Link href="/appalti/operatori">Imprese aggiudicatarie ANAC</Link> · Ricerca nazionale sullo storico degli aggiudicatari (importo dichiarato, non incassato).</p>
       <p><Link href="/appalti/ted">Avvisi europei TED con committenti in Italia</Link> · Pubblicazioni di agosto 2026, in un perimetro distinto dai CIG ANAC.</p>
 
       <IntegratedSectionPreview

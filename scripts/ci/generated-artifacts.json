@@ -112,6 +112,56 @@
       "trustModel": "Aggregate-only coverage manifest derived from two official, hash-pinned ANAC full snapshots. No fiscal identifier or company name is published."
     },
     {
+      "id": "anac-operator-awards-index",
+      "owner": "ANAC national operator awards search index",
+      "files": [
+        "src/data/generated/anac-operator-awards-index"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_operator_awards_index.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_operator_awards_index.py"
+      ],
+      "nodeTests": [
+        "tests/anac-operator-awards-index.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_operator_awards_index.py --awardees-input ... --awards-input ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "trustModel": "Public national operator index derived from the hash-pinned ANAC awardees/awards full snapshots, enriched with procedure fields from the hash-pinned ANAC CIG annual monthly snapshots 2007-2025. Operator tax codes are used only transiently to assign opaque op-######## refs and are never published. Award values are exact decimals counted once per award pair; multi-operator awards remain unattributed for value. Search exposes denominations without CF or CF hashes. CIG oggetto/CPV/contracting-authority fields stay null when unmatched."
+    },
+    {
+      "id": "anac-cig-2007-2025",
+      "owner": "ANAC CIG annual monthly snapshots used to enrich operator procedures",
+      "files": [
+        "scripts/etl/specs/anac-cig-2007-2025.source.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_operator_cig_enrich.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_operator_awards_index.py"
+      ],
+      "nodeTests": [
+        "tests/anac-operator-awards-index.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_operator_cig_enrich.py --cig-cache .cache/anac/cig",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-cig-2007-2025.source.json",
+      "trustModel": "Hash-pinned inventory of official ANAC CIG monthly ZIP snapshots for years 2007-2025. Used only to attach source procedure fields to published operator awards; no invented money values."
+    },
+    {
       "id": "anac-entity-procurement-coverage",
       "owner": "ANAC contracting-authority and procurement readiness contract",
       "files": [

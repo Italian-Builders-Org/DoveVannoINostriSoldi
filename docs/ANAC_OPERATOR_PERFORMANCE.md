@@ -17,7 +17,8 @@ ridondanza di circa 30 MiB evita ordinamenti e caricamenti nazionali nel runtime
 È un derivato pubblico normalizzato, coerente con ADR 001; nessun file raw
 viene aggiunto al repository.
 
-Dopo la rigenerazione dell'indice sorgente, eseguire con Node 22:
+Dopo la rigenerazione dell'indice sorgente, eseguire con il runtime `.nvmrc`
+e le dipendenze installate tramite `npm ci` (come nel job ETL di CI):
 
 ```sh
 node --experimental-strip-types scripts/etl/anac-operator-browse.mjs

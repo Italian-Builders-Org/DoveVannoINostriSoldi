@@ -135,6 +135,16 @@ jobs:
         with:
           persist-credentials: false
 
+      # The operator ranking derivative shares the TypeScript runtime validators.
+      - name: Setup Node for snapshot checks
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install snapshot check dependencies
+        run: npm ci
+
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:

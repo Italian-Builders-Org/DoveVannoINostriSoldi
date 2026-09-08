@@ -4,6 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { integer } from "@/lib/format";
 import {
+  anacAwardYearOptions,
+  filterAnacProcurementByAwardYear,
+  parseAnacAwardYearFilter,
   clampEntityProcurementPage,
   countAnacAwardAttributions,
   decodeEntityProcurementRouteCode,
@@ -116,7 +119,7 @@ function href(codice: string, values: Record<string, string | number | undefined
   return "/enti/" + encodeURIComponent(codice) + "/appalti" + (query ? "?" + query : "");
 }
 
-function CpvFilter({ codice, record, selected, matched }: { codice: string; record: AnacCpvRecord; selected: string; matched: number }) {
+function CpvFilter({ codice, record, selected, matched, awardYear }: { codice: string; record: AnacCpvRecord; selected: string; matched: number; awardYear: string }) {
   const { options, unclassified } = anacCpvOptions(record);
   const selectedOption = options.find((option) => option.code === selected);
   return (
@@ -125,6 +128,7 @@ function CpvFilter({ codice, record, selected, matched }: { codice: string; reco
       <p className={styles.note}>Il CPV descrive l’oggetto dell’acquisto. Il filtro usa il codice dichiarato da ANAC: conteggi, importi, aggiudicatari e indicatori riguardano le stesse procedure. Una categoria comune non rende automaticamente confrontabili enti o mercati.</p>
       <form action={href(codice, {})} method="get" className={styles.cpvForm}>
         <input type="hidden" name="view" value="summary" />
+        <input type="hidden" name="awardYear" value={awardYear} />
         <label htmlFor="anac-cpv">Categoria CPV</label>
         <select id="anac-cpv" name="cpv" defaultValue={selected}>
           <option value="">Tutte le categorie ({integer(record.procedures.length)} procedure)</option>
@@ -134,12 +138,40 @@ function CpvFilter({ codice, record, selected, matched }: { codice: string; reco
         </select>
         <div className={styles.cpvActions}>
           <button type="submit" className="btn btn-primary">Applica filtro</button>
-          {selected ? <Link href={href(codice, { view: "summary" })} className="btn btn-secondary">Rimuovi filtro</Link> : null}
+          {selected ? <Link href={href(codice, { view: "summary", awardYear })} className="btn btn-secondary">Rimuovi filtro</Link> : null}
         </div>
       </form>
-      <p id="cpv-scope" className={styles.note}><strong>{selected ? `CPV selezionato: ${selected === "unclassified" ? "mancante o non interpretabile" : selected}` : "Tutte le categorie"}</strong> · {integer(matched)} procedure su {integer(record.procedures.length)} nel profilo dell’ente.</p>
+      <p id="cpv-scope" className={styles.note}><strong>{selected ? `CPV selezionato: ${selected === "unclassified" ? "mancante o non interpretabile" : selected}` : "Tutte le categorie"}</strong> · {integer(matched)} procedure su {integer(record.procedures.length)} nel profilo dell’ente{awardYear ? ", prima del filtro anno" : ""}.</p>
       {selectedOption && selectedOption.descriptions.length > 1 ? <details className={styles.selection}><summary>Descrizioni ANAC del codice</summary><ul>{selectedOption.descriptions.map((description) => <li key={description}>{description}</li>)}</ul></details> : null}
       <p className={styles.note}>Il confronto usa le otto cifre del codice, con o senza cifra di controllo nella fonte. La verifica del formato non certifica la nomenclatura. Il codice originale è visibile nella vista Procedure.</p>
+    </section>
+  );
+}
+
+function AwardYearFilter({ codice, profile, selected, matched, cpv }: {
+  codice: string; profile: AnacEntityProcurementPageView; selected: string; matched: number; cpv: string;
+}) {
+  const { years, undated } = anacAwardYearOptions(profile);
+  return (
+    <section className="panel" aria-labelledby="award-year-title">
+      <h2 className="panel-title" id="award-year-title">Anno di aggiudicazione</h2>
+      <p className={styles.note}>Anno dell’aggiudicazione definitiva, non della pubblicazione del CIG. Solo coorte CIG 2025: copertura variabile tra anni, non l’intero mercato.</p>
+      <form action={href(codice, {})} method="get" className={styles.cpvForm}>
+        <input type="hidden" name="view" value="summary" />
+        <input type="hidden" name="cpv" value={cpv} />
+        <label htmlFor="anac-award-year">Periodo delle aggiudicazioni</label>
+        <select id="anac-award-year" name="awardYear" defaultValue={selected} aria-describedby="award-year-coverage">
+          <option value="">Tutti gli anni ({integer(profile.awards.length)})</option>
+          {years.map(({ year, awards }) => <option key={year} value={year}>{year} ({integer(awards)} aggiudicazioni)</option>)}
+          <option value="undated">Data non disponibile ({integer(undated)})</option>
+          {selected && selected !== "undated" && !years.some(({ year }) => year === selected) ? <option value={selected}>{selected} · nessuna aggiudicazione</option> : null}
+        </select>
+        <div className={styles.cpvActions}>
+          <button type="submit" className="btn btn-primary">Applica periodo</button>
+          {selected ? <Link className="btn btn-secondary" href={href(codice, { cpv, view: "summary" })}>Tutti gli anni</Link> : null}
+        </div>
+      </form>
+      <p id="award-year-coverage" className={styles.note}><strong>{selected === "undated" ? "Data non disponibile" : selected ? `Anno ${selected}` : "Tutti gli anni"}</strong> · {integer(matched)} aggiudicazioni su {integer(profile.awards.length)}{cpv ? " nella categoria CPV selezionata" : " nel profilo"}. Date non disponibili: {integer(undated)} (mancanti, non interpretabili o in conflitto), incluse in «Tutti gli anni».</p>
     </section>
   );
 }
@@ -171,19 +203,18 @@ function Pager({
   size: 25 | 50;
   values: Record<string, string | number | undefined>;
 }) {
-  const cpv = values.cpv;
   const pages = Math.max(1, Math.ceil(total / size));
   if (pages < 2) return null;
   return (
     <nav className={styles.pager} aria-label="Paginazione">
-      {currentPage > 1 ? <Link href={href(codice, { cpv, ...values, page: currentPage - 1, pageSize: size })}>← Precedente</Link> : <span aria-disabled="true">← Precedente</span>}
+      {currentPage > 1 ? <Link href={href(codice, { ...values, page: currentPage - 1, pageSize: size })}>← Precedente</Link> : <span aria-disabled="true">← Precedente</span>}
       <span>Pagina {currentPage} di {pages}</span>
-      {currentPage < pages ? <Link href={href(codice, { cpv, ...values, page: currentPage + 1, pageSize: size })}>Successiva →</Link> : <span aria-disabled="true">Successiva →</span>}
+      {currentPage < pages ? <Link href={href(codice, { ...values, page: currentPage + 1, pageSize: size })}>Successiva →</Link> : <span aria-disabled="true">Successiva →</span>}
     </nav>
   );
 }
 
-function Views({ codice, active, operator, metric, cpv }: { codice: string; active: ProcurementView; operator?: string; metric: RankingMetric; cpv?: string }) {
+function Views({ codice, active, operator, metric, cpv, awardYear }: { codice: string; active: ProcurementView; operator?: string; metric: RankingMetric; cpv?: string; awardYear?: string }) {
   const links: Array<[ProcurementView, string]> = [
     ["summary", "Sintesi"],
     ["operators", "Aggiudicatari"],
@@ -193,7 +224,7 @@ function Views({ codice, active, operator, metric, cpv }: { codice: string; acti
   return (
     <nav className={styles.views} aria-label="Vista dati ANAC">
       {links.map(([key, label]) => (
-        <Link key={key} className={active === key ? styles.activeView : undefined} href={href(codice, { cpv, view: key, operator, metric })} aria-current={active === key ? "page" : undefined}>
+        <Link key={key} className={active === key ? styles.activeView : undefined} href={href(codice, { cpv, awardYear, view: key, operator, metric })} aria-current={active === key ? "page" : undefined}>
           {label}
         </Link>
       ))}
@@ -201,13 +232,13 @@ function Views({ codice, active, operator, metric, cpv }: { codice: string; acti
   );
 }
 
-function RankingMetricToggle({ codice, metric, size, cpv }: { codice: string; metric: RankingMetric; size: 25 | 50; cpv?: string }) {
+function RankingMetricToggle({ codice, metric, size, cpv, awardYear }: { codice: string; metric: RankingMetric; size: 25 | 50; cpv?: string; awardYear?: string }) {
   return (
     <nav className={styles.views} aria-label="Ordine della classifica aggiudicatari">
       <span>Ordina per:</span>
       <Link
         className={metric === "count" ? styles.activeView : undefined}
-        href={href(codice, { cpv, view: "operators", metric: "count", pageSize: size })}
+        href={href(codice, { cpv, awardYear, view: "operators", metric: "count", pageSize: size })}
         aria-current={metric === "count" ? "page" : undefined}
         aria-label="Numero di aggiudicazioni"
       >
@@ -215,7 +246,7 @@ function RankingMetricToggle({ codice, metric, size, cpv }: { codice: string; me
       </Link>
       <Link
         className={metric === "value" ? styles.activeView : undefined}
-        href={href(codice, { cpv, view: "operators", metric: "value", pageSize: size })}
+        href={href(codice, { cpv, awardYear, view: "operators", metric: "value", pageSize: size })}
         aria-current={metric === "value" ? "page" : undefined}
         aria-label="Valore attribuibile"
       >
@@ -227,16 +258,17 @@ function RankingMetricToggle({ codice, metric, size, cpv }: { codice: string; me
 
 function Summary({ profile, codice }: { profile: AnacEntityProcurementPageView; codice: string }) {
   const cpv = profile.cpvFilter;
+  const awardYear = profile.awardYearFilter;
   const s = profile.summary;
   const attributionCounts = countAnacAwardAttributions(profile.awards);
   return (
     <section className="panel" aria-labelledby="summary-title">
       <h2 className="panel-title" id="summary-title">Sintesi del perimetro</h2>
       <div className={styles.summaryGrid}>
-        <Link href={href(codice, { cpv, view: "procedures" })}><span>Procedure (CIG)</span><strong>{integer(s.procedureCount)}</strong></Link>
-        <Link href={href(codice, { cpv, view: "awards" })}><span>Aggiudicazioni</span><strong>{integer(s.awardCount)}</strong></Link>
-        <Link href={href(codice, { cpv, view: "awards" })}><span>Valore dichiarato</span><strong>{formatDecimalEuro(s.awardValue)}</strong></Link>
-        <Link href={href(codice, { cpv, view: "operators" })} aria-describedby="operators-definition"><span>Operatori economici identificati</span><strong>{integer(s.awardeeCount)}</strong></Link>
+        <Link href={href(codice, { cpv, awardYear, view: "procedures" })}><span>Procedure (CIG)</span><strong>{integer(s.procedureCount)}</strong></Link>
+        <Link href={href(codice, { cpv, awardYear, view: "awards" })}><span>Aggiudicazioni</span><strong>{integer(s.awardCount)}</strong></Link>
+        <Link href={href(codice, { cpv, awardYear, view: "awards" })}><span>Valore dichiarato</span><strong>{formatDecimalEuro(s.awardValue)}</strong></Link>
+        <Link href={href(codice, { cpv, awardYear, view: "operators" })} aria-describedby="operators-definition"><span>Operatori economici identificati</span><strong>{integer(s.awardeeCount)}</strong></Link>
       </div>
       <p className={styles.note}>
         L&apos;importo di aggiudicazione è dichiarato nella fonte e non equivale a un pagamento.
@@ -263,6 +295,7 @@ function Operators({
   metric: RankingMetric;
 }) {
   const cpv = profile.cpvFilter;
+  const awardYear = profile.awardYearFilter;
   const rows = [...profile.operators]
     .filter((operator) => metric === "count" || operator.rankByValue !== null)
     .sort((left, right) => {
@@ -282,16 +315,16 @@ function Operators({
           <tbody>
             {pageRows.map((operator) => (
               <tr key={operator.ref}>
-                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref, metric })}>{metric === "value" ? operator.rankByValue : operator.rankByCount}</Link></td>
-                <th scope="row"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{operator.name}</Link></th>
-                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{integer(operator.awardCount)}</Link></td>
-                <td className="num"><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{formatDecimalEuro(operator.attributedValue)}</Link></td>
+                <td className="num"><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operator.ref, metric })}>{metric === "value" ? operator.rankByValue : operator.rankByCount}</Link></td>
+                <th scope="row"><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operator.ref })}>{operator.name}</Link></th>
+                <td className="num"><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operator.ref })}>{integer(operator.awardCount)}</Link></td>
+                <td className="num"><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operator.ref })}>{formatDecimalEuro(operator.attributedValue)}</Link></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, view: "operators", metric }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, awardYear, view: "operators", metric }} />
     </section>
   );
 }
@@ -310,16 +343,17 @@ function Procedures({
   cpvRecord: AnacCpvRecord | null;
 }) {
   const cpv = profile.cpvFilter;
+  const awardYear = profile.awardYearFilter;
   const classifications = new Map(cpvRecord?.procedures.map((procedure) => [procedure.cig, procedure]));
   const rows = [...profile.procedures].sort((left, right) => (right.publishedAt ?? "").localeCompare(left.publishedAt ?? "") || left.cig.localeCompare(right.cig));
   const pageRows = rows.slice((currentPage - 1) * size, currentPage * size);
   return (
     <section className="panel" aria-labelledby="procedures-title">
-      <h2 className="panel-title" id="procedures-title">Procedure pubblicate</h2>
+      <h2 className="panel-title" id="procedures-title">{awardYear ? "Procedure delle aggiudicazioni selezionate" : "Procedure pubblicate"}</h2>
       <div className="table-scroll" role="region" aria-label="Procedure ANAC" tabIndex={0}>
         <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
         <table className="table">
-          <caption>CIG pubblicati nel periodo</caption>
+          <caption>CIG pubblicati nel 2025{awardYear === "undated" ? " con aggiudicazioni senza data disponibile" : awardYear ? ` con aggiudicazioni del ${awardYear}` : ""}</caption>
           <thead><tr><th scope="col">CIG</th><th scope="col">Pubblicato</th><th scope="col">CPV originale ANAC</th><th scope="col">Descrizione ANAC</th><th scope="col">Fonte</th></tr></thead>
           <tbody>
             {pageRows.map((procedure) => {
@@ -329,7 +363,7 @@ function Procedures({
               <tr key={procedure.cig}>
                 <th scope="row"><a href={"https://dati.anticorruzione.it/superset/dashboard/dettaglio_cig/?cig=" + encodeURIComponent(procedure.cig)} target="_blank" rel="noreferrer">{procedure.cig} ↗</a></th>
                 <td>{procedure.publishedAt ?? "non disponibile"}</td>
-                <td>{code ? <Link href={href(codice, { view: "procedures", cpv: code })}>{classification!.rawCode}</Link> : classification?.rawCode || (cpvRecord ? "mancante" : "non verificabile")}</td>
+                <td>{code ? <Link href={href(codice, { view: "procedures", cpv: code, awardYear })}>{classification!.rawCode}</Link> : classification?.rawCode || (cpvRecord ? "mancante" : "non verificabile")}</td>
                 <td>{classification?.description || "non disponibile"}</td>
                 <td>ANAC · dettaglio CIG</td>
               </tr>
@@ -338,7 +372,7 @@ function Procedures({
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, view: "procedures" }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={{ cpv, awardYear, view: "procedures" }} />
     </section>
   );
 }
@@ -351,7 +385,7 @@ function Awards({
   operator,
   concentration,
 }: {
-  profile: Pick<AnacEntityProcurementPageView, "awards" | "cpvFilter">;
+  profile: Pick<AnacEntityProcurementPageView, "awards" | "cpvFilter" | "awardYearFilter">;
   codice: string;
   currentPage: number;
   size: 25 | 50;
@@ -359,6 +393,7 @@ function Awards({
   concentration?: AnacConcentrationDrilldown;
 }) {
   const cpv = profile.cpvFilter;
+  const awardYear = profile.awardYearFilter;
   const selectedOperatorRefs = new Set(concentration?.operators.map((operator) => operator.ref));
   const rows = [...(concentration?.awards ?? profile.awards)]
     .filter((award) => !operator || award.operatorRefs.includes(operator))
@@ -385,13 +420,14 @@ function Awards({
           </tbody>
         </table>
       </div>
-      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={concentration ? { cpv, view: "concentration", metric: concentration.metric.dimension, selection: concentration.selection } : { cpv, view: operator ? "operator" : "awards", operator }} />
+      <Pager codice={codice} currentPage={currentPage} total={rows.length} size={size} values={concentration ? { cpv, awardYear, view: "concentration", metric: concentration.metric.dimension, selection: concentration.selection } : { cpv, awardYear, view: operator ? "operator" : "awards", operator }} />
     </section>
   );
 }
 
-function ConcentrationDetail({ detail, codice, currentPage, size, cpv }: {
+function ConcentrationDetail({ detail, codice, currentPage, size, cpv, awardYear }: {
   cpv?: string;
+  awardYear?: string;
   detail: AnacConcentrationDrilldown;
   codice: string;
   currentPage: number;
@@ -413,12 +449,12 @@ function ConcentrationDetail({ detail, codice, currentPage, size, cpv }: {
         {detail.selection !== "all" ? (
           <details className={styles.selection}>
             <summary>Operatori nella selezione ({detail.operators.length})</summary>
-            <ul>{detail.operators.map((operator) => <li key={operator.ref}><Link href={href(codice, { cpv, view: "operator", operator: operator.ref })}>{operator.name}</Link></li>)}</ul>
+            <ul>{detail.operators.map((operator) => <li key={operator.ref}><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operator.ref })}>{operator.name}</Link></li>)}</ul>
           </details>
-        ) : <p><Link href={href(codice, { cpv, view: "operators", metric: detail.metric.dimension })}>Consulta tutti gli operatori del perimetro →</Link></p>}
-        <Link className="btn btn-secondary" href={href(codice, { cpv, view: "summary" })}>← Torna agli indicatori</Link>
+        ) : <p><Link href={href(codice, { cpv, awardYear, view: "operators", metric: detail.metric.dimension })}>Consulta tutti gli operatori del perimetro →</Link></p>}
+        <Link className="btn btn-secondary" href={href(codice, { cpv, awardYear, view: "summary" })}>← Torna agli indicatori</Link>
       </section>
-      <Awards profile={{ awards: detail.awards, cpvFilter: cpv }} codice={codice} currentPage={currentPage} size={size} concentration={detail} />
+      <Awards profile={{ awards: detail.awards, cpvFilter: cpv, awardYearFilter: awardYear }} codice={codice} currentPage={currentPage} size={size} concentration={detail} />
     </>
   );
 }
@@ -431,6 +467,7 @@ function OperatorDetail({ profile, codice, operatorRef, currentPage, size }: {
   size: 25 | 50;
 }) {
   const cpv = profile.cpvFilter;
+  const awardYear = profile.awardYearFilter;
   const operator = profile.operators.find((candidate) => candidate.ref === operatorRef);
   if (!operator) return <div className="notice warning-notice"><strong>Aggiudicatario non trovato</strong><p>Il riferimento richiesto non appartiene al profilo pubblicato.</p></div>;
   return (
@@ -438,9 +475,9 @@ function OperatorDetail({ profile, codice, operatorRef, currentPage, size }: {
       <section className="panel" aria-labelledby="operator-title">
         <h2 className="panel-title" id="operator-title">{operator.name}</h2>
         <div className={styles.operatorFacts}>
-          <div><span>Aggiudicazioni</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{integer(operator.awardCount)}</strong></Link></div>
-          <div><span>Aggiudicazioni con valore attribuito</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{integer(operator.attributedAwardCount)}</strong></Link></div>
-          <div><span>Valore attribuibile</span><Link href={href(codice, { cpv, view: "operator", operator: operatorRef })}><strong>{formatDecimalEuro(operator.attributedValue)}</strong></Link></div>
+          <div><span>Aggiudicazioni</span><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operatorRef })}><strong>{integer(operator.awardCount)}</strong></Link></div>
+          <div><span>Aggiudicazioni con valore attribuito</span><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operatorRef })}><strong>{integer(operator.attributedAwardCount)}</strong></Link></div>
+          <div><span>Valore attribuibile</span><Link href={href(codice, { cpv, awardYear, view: "operator", operator: operatorRef })}><strong>{formatDecimalEuro(operator.attributedValue)}</strong></Link></div>
         </div>
         {operator.nameVariants > 1 ? <p className={styles.note}>Il dataset segnala {operator.nameVariants} denominazioni osservate; una canonica è pubblicata, senza elencare le varianti né usarle come identificativi.</p> : null}
       </section>
@@ -485,24 +522,26 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
   }
   const query = await searchParams;
   let cpv: string;
-  try { cpv = parseAnacCpvFilter(query.cpv); } catch { notFound(); }
+  let awardYear: string;
+  try { cpv = parseAnacCpvFilter(query.cpv); awardYear = parseAnacAwardYearFilter(query.awardYear); } catch { notFound(); }
   let cpvRecord: AnacCpvRecord | null = null;
   try { cpvRecord = await loadAnacCpvRecord(state.profile); } catch { /* Display an explicit unavailable state; never widen a selected cohort. */ }
   if (cpv && !cpvRecord) return (
     <main className={"shell page " + styles.page}>
       <h1>Aggiudicazioni ANAC · {heading}</h1>
       <div className="notice"><strong>Filtro CPV non disponibile</strong><p>La classificazione non è verificabile. I risultati del filtro non vengono pubblicati.</p></div>
-      <Link href={href(normalizedCode, { view: "summary" })}>Apri il profilo senza filtro</Link>
+      <Link href={href(normalizedCode, { view: "summary", awardYear })}>Rimuovi solo il filtro CPV</Link>
     </main>
   );
-  const profile = cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
+  const cpvProfile = cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
+  const profile = filterAnacProcurementByAwardYear(cpvProfile, awardYear);
   const selectedView = view(first(query.view));
   const metric: RankingMetric = first(query.metric) === "value" ? "value" : "count";
   const operatorRef = first(query.operator) || undefined;
   const size = pageSize(first(query.pageSize));
   let selection: AnacConcentrationSelection | undefined;
   if (selectedView === "concentration") {
-    if (Object.entries(query).some(([key, value]) => !["view", "metric", "selection", "page", "pageSize", "cpv"].includes(key) || Array.isArray(value))
+    if (Object.entries(query).some(([key, value]) => !["view", "metric", "selection", "page", "pageSize", "cpv", "awardYear"].includes(key) || Array.isArray(value))
       || (query.metric !== "count" && query.metric !== "value")
       || (query.selection !== "top1" && query.selection !== "top10" && query.selection !== "all")
       || query.operator !== undefined) notFound();
@@ -526,28 +565,30 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <p>{"Dati IPA verificati al momento dell’acquisizione. Consulta Indice PA per eventuali aggiornamenti."}</p>
       </div>
       {scopeLine()}
-      {cpvRecord ? <CpvFilter codice={normalizedCode} record={cpvRecord} selected={cpv} matched={profile.procedures.length} />
+      <AwardYearFilter codice={normalizedCode} profile={cpvProfile} selected={awardYear} matched={profile.awards.length} cpv={cpv} />
+      {awardYear && profile.awards.length === 0 ? <div className="notice"><strong>Nessuna aggiudicazione nel periodo selezionato</strong><p>Questo risultato riguarda solo il profilo acquisito e la categoria selezionata.</p></div> : null}
+      {cpvRecord ? <CpvFilter codice={normalizedCode} record={cpvRecord} selected={cpv} matched={cpvProfile.procedures.length} awardYear={awardYear} />
         : <div className="notice"><strong>Filtro CPV non disponibile</strong><p>La classificazione non è verificabile; il profilo completo resta consultabile.</p></div>}
-      {cpv && profile.procedures.length === 0 ? <div className="notice"><strong>Nessuna procedura per questo CPV</strong><p>Il codice non compare nelle procedure di questo ente nello snapshot.</p></div> : null}
-      <Views codice={normalizedCode} active={selectedView} operator={operatorRef} metric={metric} cpv={cpv} />
-      {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} cpv={cpv} /> : null}
+      {cpv && cpvProfile.procedures.length === 0 ? <div className="notice"><strong>Nessuna procedura per questo CPV</strong><p>Il codice non compare nelle procedure di questo ente nello snapshot.</p></div> : null}
+      <Views codice={normalizedCode} active={selectedView} operator={operatorRef} metric={metric} cpv={cpv} awardYear={awardYear} />
+      {selectedView === "operators" ? <RankingMetricToggle codice={normalizedCode} metric={metric} size={size} cpv={cpv} awardYear={awardYear} /> : null}
       <div className={styles.pageSize}>
         <span>Righe per pagina:</span>
-        <Link href={href(normalizedCode, { cpv, view: selectedView, operator: operatorRef, metric, selection, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
-        <Link href={href(normalizedCode, { cpv, view: selectedView, operator: operatorRef, metric, selection, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
+        <Link href={href(normalizedCode, { cpv, awardYear, view: selectedView, operator: operatorRef, metric, selection, pageSize: 25 })} aria-current={size === 25 ? "page" : undefined}>25</Link>
+        <Link href={href(normalizedCode, { cpv, awardYear, view: selectedView, operator: operatorRef, metric, selection, pageSize: 50 })} aria-current={size === 50 ? "page" : undefined}>50</Link>
       </div>
       {selectedView === "summary" ? (
         <>
           <Summary profile={profile} codice={normalizedCode} />
           <EntityProcurementConcentration profile={profile} className="panel" />
-          {!cpv ? <p><Link href={href(normalizedCode, {}) + "/confronti"}>Confronta con Comuni simili →</Link></p> : null}
+          {!cpv && !awardYear ? <p><Link href={href(normalizedCode, {}) + "/confronti"}>Confronta con Comuni simili →</Link></p> : null}
         </>
       ) : null}
       {selectedView === "operators" ? <Operators profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} metric={metric} /> : null}
       {selectedView === "procedures" ? <Procedures profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} cpvRecord={cpvRecord} /> : null}
       {selectedView === "awards" ? <Awards profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} /> : null}
       {selectedView === "concentration" ? concentration
-        ? <ConcentrationDetail detail={concentration} cpv={cpv} codice={normalizedCode} currentPage={currentPage} size={size} />
+        ? <ConcentrationDetail detail={concentration} cpv={cpv} awardYear={awardYear} codice={normalizedCode} currentPage={currentPage} size={size} />
         : <div className="notice"><strong>Indicatore non pubblicato</strong><p>Il perimetro non soddisfa i requisiti di pubblicazione. Nessun valore viene trasformato in zero.</p></div>
         : null}
       {selectedView === "operator" && operatorRef ? <OperatorDetail profile={profile} codice={normalizedCode} operatorRef={operatorRef} currentPage={currentPage} size={size} /> : null}

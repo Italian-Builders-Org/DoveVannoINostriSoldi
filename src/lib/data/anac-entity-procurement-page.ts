@@ -138,6 +138,7 @@ export type AnacEntityProcurementPageMeta = Readonly<{
 export type AnacEntityProcurementPageView = Readonly<{
   codiceIpa: string;
   cpvFilter?: string;
+  awardYearFilter?: string;
   summary: AnacEntityProcurementPageRecord["summary"];
   operators: AnacEntityProcurementPageRecord["operators"];
   procedures: AnacEntityProcurementPageRecord["procedures"];
@@ -670,6 +671,47 @@ export function selectAnacEntityProcurementCigs(
   const procedures = profile.procedures.filter((procedure) => selectedCigs.has(procedure.cig));
   if (procedures.length !== selectedCigs.size) throw new Error("Filtro ANAC con CIG esterni al profilo.");
   const awards = profile.awards.filter((award) => selectedCigs.has(award.cig));
+  return deriveProcurementSubset(profile, procedures, awards);
+}
+
+export function parseAnacAwardYearFilter(value: unknown): string {
+  if (value === undefined || value === "") return "";
+  if (typeof value === "string" && (value === "undated" || /^[1-9][0-9]{3}$/.test(value))) return value;
+  throw new Error("Anno di aggiudicazione non valido.");
+}
+
+function awardYear(award: AnacEntityProcurementPageRecord["awards"][number]): string {
+  return nullableDate(award.awardedAt, "awardedAt")?.slice(0, 4) ?? "undated";
+}
+
+export function anacAwardYearOptions(profile: Pick<AnacEntityProcurementPageView, "awards">) {
+  const counts = new Map<string, number>();
+  for (const award of profile.awards) {
+    const year = awardYear(award);
+    counts.set(year, (counts.get(year) ?? 0) + 1);
+  }
+  return {
+    years: [...counts].filter(([year]) => year !== "undated").sort(([a], [b]) => b.localeCompare(a))
+      .map(([year, awards]) => ({ year, awards })),
+    undated: counts.get("undated") ?? 0,
+  };
+}
+
+/** An award-year subset of the locked CIG cohort, never a historical market. */
+export function filterAnacProcurementByAwardYear(profile: AnacEntityProcurementPageView, value: unknown): AnacEntityProcurementPageView {
+  const selected = parseAnacAwardYearFilter(value);
+  if (!selected) return profile;
+  const awards = profile.awards.filter((award) => awardYear(award) === selected);
+  const cigs = new Set(awards.map((award) => award.cig));
+  const procedures = profile.procedures.filter((procedure) => cigs.has(procedure.cig));
+  return { ...deriveProcurementSubset(profile, procedures, awards), awardYearFilter: selected };
+}
+
+function deriveProcurementSubset(
+  profile: AnacEntityProcurementPageView,
+  procedures: AnacEntityProcurementPageRecord["procedures"],
+  awards: AnacEntityProcurementPageRecord["awards"],
+): AnacEntityProcurementPageView {
   const byRef = new Map(profile.operators.map((operator) => [operator.ref, {
     ...operator, awardCount: 0, attributedAwardCount: 0, attributedValue: "0", rankByCount: 0, rankByValue: null as number | null,
   }]));

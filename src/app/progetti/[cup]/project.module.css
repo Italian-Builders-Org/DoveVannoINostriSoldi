@@ -15,7 +15,7 @@
 }
 
 .hero {
-  padding: clamp(32px, 7vw, 72px) 0 var(--space-6);
+  padding: var(--space-6) 0;
   border-bottom: 1px solid var(--color-neutral-300);
 }
 
@@ -31,7 +31,7 @@
 }
 
 .hero h1 {
-  max-width: 18ch;
+  max-width: 36ch;
   margin: 12px 0;
   font-size: clamp(38px, 5vw, 64px);
   line-height: 0.98;
@@ -100,7 +100,7 @@
 
 .sectionHeading h2 {
   margin: 0;
-  font-size: clamp(24px, 3vw, 38px);
+  font-size: 24px;
   letter-spacing: -0.04em;
 }
 

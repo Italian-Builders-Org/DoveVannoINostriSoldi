@@ -12,6 +12,7 @@ import {
 } from "@/lib/integrated-public-view";
 import { isInsightCapable, loadDatasetInsights } from "@/lib/integrated-dataset-insights";
 import type { EditorialDatasetPreview, EditorialTopic } from "@/lib/integrated-editorial";
+import { isTechnicalTableColumn, tableColumnLabel } from "@/lib/integrated-table-presentation";
 import styles from "./editorial-topic-page.module.css";
 
 function previewColumns(
@@ -19,18 +20,19 @@ function previewColumns(
   preferred: EditorialDatasetPreview["columns"],
 ): readonly Readonly<{ key: string; label: string }>[] {
   const populated = result.dataset.headers.filter((header) =>
+    !isTechnicalTableColumn(header) &&
     result.rows.some((row) => row.cells[header] !== null && row.cells[header] !== ""),
   );
   if (!preferred || preferred.length === 0) {
-    return populated.slice(0, 5).map((key) => ({ key, label: key }));
+    return populated.slice(0, 5).map((key) => ({ key, label: tableColumnLabel(key) }));
   }
   return preferred
-    .filter((column) => result.dataset.headers.includes(column.key))
+    .filter((column) => result.dataset.headers.includes(column.key) && !isTechnicalTableColumn(column.key))
     .slice(0, 5);
 }
 
 function cellValue(value: string | null, amount: boolean): string {
-  if (value === null || value.trim() === "") return "n.d.";
+  if (value === null || value.trim() === "" || /^n[.\/]?d\.?$/i.test(value.trim())) return "Non disponibile";
   if (amount) {
     const formatted = formatIntegratedAmountCell(value);
     if (formatted !== null) return formatted;
@@ -64,7 +66,7 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
   const insightSource = results.find(
     (result) =>
       result.dataset.queryable &&
-      isInsightCapable(result.dataset.headers, true) &&
+      isInsightCapable(result.dataset.headers, true, result.dataset.id) &&
       result.dataset.publicRows > 0,
   );
   const insights = insightSource
@@ -97,29 +99,25 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
 
       <section className="stat-strip" aria-label={`Copertura di ${topic.title}`}>
         <div>
-          <span className="stat-label">Insiemi collegati</span>
+          <span className="stat-label">Dataset</span>
           <span className="stat-value">{integer(results.length)}</span>
-          <span className="stat-note">ognuno conserva il proprio perimetro</span>
         </div>
         <div>
-          <span className="stat-label">Righe interrogabili</span>
+          <span className="stat-label">Righe consultabili</span>
           <span className="stat-value">{integer(publicRows)}</span>
-          <span className="stat-note">con ricerca e paginazione limitata</span>
         </div>
         <div>
           <span className="stat-label">Righe sorgente</span>
           <span className="stat-value">{integer(sourceRows)}</span>
-          <span className="stat-note">contate senza omissioni silenziose</span>
         </div>
         <div>
           <span className="stat-label">Con fonte puntuale</span>
           <span className="stat-value">{integer(sourceLinkedRows)}</span>
-          <span className="stat-note">almeno un collegamento pubblico sicuro</span>
         </div>
       </section>
 
       <section className={styles.findings} aria-labelledby="risultati-documentati">
-        <h2 id="risultati-documentati">Sintesi dai file</h2>
+        <h2 id="risultati-documentati">In sintesi</h2>
         <dl>
           {topic.facts.map((fact) => (
             <div key={`${fact.value}-${fact.label}`}>
@@ -143,10 +141,9 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
       <section className={styles.records} aria-labelledby="anteprima-record">
         <div className={styles.sectionHeading}>
           <div>
-            <h2 id="anteprima-record">Anteprima dei record</h2>
-            <p>Selezione breve; il collegamento apre fonti e tutte le righe.</p>
+            <h2 id="anteprima-record">Anteprima dei dati</h2>
           </div>
-          <Link className={styles.action} href="/dati">Apri il registro completo</Link>
+          <Link className={styles.action} href="/dati">Tutti i dataset</Link>
         </div>
 
         {results.map((result, index) => {
@@ -248,13 +245,13 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
                   </div>
                 ) : (
                   <p className={styles.empty}>
-                    Materiale nel registro, senza record puntuali in questa proiezione.
+                    Questo dataset non contiene righe pubbliche consultabili.
                   </p>
                 )}
                 <Link className={styles.action} href={`/dati/${result.dataset.id}`}>
                   {result.dataset.queryable
-                    ? "Esplora tutte le righe"
-                    : "Apri scheda (senza numeri)"}
+                    ? "Consulta i dati"
+                    : "Fonte e copertura"}
                 </Link>
               </div>
             </details>

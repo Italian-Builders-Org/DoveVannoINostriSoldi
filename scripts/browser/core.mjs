@@ -98,7 +98,7 @@ async function assertCohesionTracePanelContrast(page, label) {
     }
 
     const section = [...document.querySelectorAll("main section")].find(
-      (candidate) => candidate.querySelector("h2")?.textContent?.includes("Il totale non basta"),
+      (candidate) => candidate.querySelector("h2")?.textContent?.includes("Dai fondi per gli asili alle gare"),
     );
     if (!section) return null;
 
@@ -130,8 +130,8 @@ async function assertCohesionTracePanelContrast(page, label) {
 
   assert.ok(state, `${label}: pannello traccia PNRR non trovato`);
   assert.ok(
-    state.background?.every((channel) => channel < 80),
-    `${label}: sfondo del pannello traccia non risulta scuro`,
+    state.background?.every((channel) => channel > 240),
+    `${label}: sfondo del pannello traccia non risulta chiaro`,
   );
   for (const sample of state.samples) {
     assert.ok(sample.ratio !== null, `${label}: colore ${sample.name} non misurabile`);
@@ -196,7 +196,7 @@ async function assertCohesionStatusLayout(page, label) {
 async function assertCohesionPathwayContrast(page, label) {
   const state = await page.$eval("main", (main) => {
     const heading = [...main.querySelectorAll("h2")].find((candidate) =>
-      candidate.textContent?.includes("Segui un progetto fino alla gara"),
+      candidate.textContent?.includes("Dai fondi per gli asili alle gare"),
     );
     const panel = heading?.closest("section");
     const paragraph = panel?.querySelector("p");
@@ -404,6 +404,14 @@ async function assertRegionalMapSelection(page, label) {
   for (const path of regionPaths) await path.dispose();
 }
 
+async function openHeaderSearch(page) {
+  if (page.viewport().width < 1100) {
+    await page.waitForSelector('.header-search-trigger', { visible: true });
+    if (await page.$eval('.header-search-trigger', (button) => button.getAttribute('aria-expanded')) !== 'true') await page.click('.header-search-trigger');
+    await page.waitForSelector('#global-site-search', { visible: true });
+  }
+}
+
 async function assertSpendingComposition(page, label, width) {
   const selector = '[data-composition-state="ready"]';
   await page.waitForSelector(selector);
@@ -417,20 +425,20 @@ async function assertSpendingComposition(page, label, width) {
       legendButtons: root.querySelectorAll("ol button").length,
       visualDisplay: visual ? getComputedStyle(visual).display : null,
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
-      hasMetadata: /Denominatore:.*Fonte:/s.test(root.textContent ?? ""),
+      hasMetadata: /Quote sul totale dei pagamenti SIOPE.*Fonte acquisita/s.test(root.textContent ?? ""),
       compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
       mapBeforeMunicipalities: Boolean(
         map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
       ),
-      shouldCollapse: viewportWidth <= 620,
+      viewportWidth,
     };
   }, width);
   assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
   assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
-  assert.equal(state.compositionBeforeMap, true, `${label}: composizione dopo la mappa nel DOM`);
+  assert.equal(state.compositionBeforeMap, true, `${label}: composizione prima della mappa nel DOM`);
   assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
-  assert.equal(state.visualDisplay === "none", state.shouldCollapse, `${label}: fallback mobile incoerente`);
-  if (!state.shouldCollapse) assert.ok(state.visualHeight >= 250, `${label}: geometria treemap non riservata`);
+  assert.notEqual(state.visualDisplay, "none", `${label}: composizione visibile anche su mobile`);
+  assert.ok(state.visualHeight >= 250, `${label}: geometria composizione non riservata`);
 
   const firstLegendButton = `${selector} ol button`;
   await page.focus(firstLegendButton);
@@ -897,9 +905,12 @@ try {
       pathname: "/imprese",
       width,
       validate: async (page) => {
+        const sourceDetails = 'main details[class*="sourceDetails"]';
+        assert.equal(await page.$eval(sourceDetails, (element) => element.open), false);
+        await page.click(`${sourceDetails} > summary`);
         const text = await bodyText(page);
         assertTextMatches(text, /Atlante Imprese Italia/i, label);
-        assertTextMatches(text, /Solo dati aggregati/i, label);
+        assertTextMatches(text, /distribuzione aggregata/i, label);
         assertTextMatches(text, /Fonte del numero/i, label);
         assert.equal(
           (await page.$$('[data-region-map="true"] path[role="button"]')).length,
@@ -935,10 +946,10 @@ try {
   }
 
   const istatMetricViews = [
-    ["turnover", /Fatturato aggregato/i, /migliaia di euro/i],
+    ["turnover", /Fatturato aggregato/i, /Importo in euro/i],
     ["istat_local_units", /Unità locali \(ISTAT\)/i, /unità locali/i],
     ["istat_employees", /Addetti \(ISTAT\)/i, /addetti/i],
-    ["istat_value_added", /Valore aggiunto aggregato/i, /migliaia di euro/i],
+    ["istat_value_added", /Valore aggiunto aggregato/i, /Importo in euro/i],
     ["istat_value_added_per_employee", /Valore aggiunto per addetto/i, /euro per addetto/i],
     ["istat_turnover_per_employee", /Fatturato per addetto/i, /euro per addetto/i],
   ];
@@ -954,7 +965,7 @@ try {
         assertTextMatches(text, /Valore aggiunto per addetto/i, label);
         assertTextMatches(text, /euro per addetto/i, label);
         assertTextMatches(text, /Confronto per macro-settore/i, label);
-        assert.doesNotMatch(text, /NaN|undefined/i, `${label}: valore non formattato`);
+        assert.doesNotMatch(text, /\b(?:NaN|undefined)\b/i, `${label}: valore non formattato`);
 
         const metricFilter = '[data-atlas-filter="metric"]';
         assert.equal(
@@ -979,7 +990,7 @@ try {
             unitPattern,
             `${label} ${metric}`,
           );
-          assert.doesNotMatch(await bodyText(page), /NaN|undefined/i, `${label} ${metric}: valore non formattato`);
+          assert.doesNotMatch(await bodyText(page), /\b(?:NaN|undefined)\b/i, `${label} ${metric}: valore non formattato`);
           await assertResponsiveShell(page, `${label} ${metric}`, width);
         }
       },
@@ -994,27 +1005,29 @@ try {
       pathname: "/istruzione",
       width,
       validate: async (page) => {
+        assert.equal(await page.$eval('main > details', (element) => element.open), false);
+        await page.click('main > details > summary');
         const text = await bodyText(page);
         assertTextMatches(text, /Atlante Istruzione/i, label);
-        assertTextMatches(text, /Solo dati aggregati/i, label);
-        assertTextMatches(text, /Modulo Istruzione · MIM/i, label);
-        assertTextMatches(text, /Perimetro selezionato/i, label);
-        assertTextMatches(text, /Dove si concentrano i percorsi/i, label);
+        assertTextMatches(text, /Studenti delle scuole superiori/i, label);
+        assertTextMatches(text, /Fonte: MIM/i, label);
+        assertTextMatches(text, /Studenti delle scuole superiori/i, label);
+        assertTextMatches(text, /Percorsi più frequentati/i, label);
         assertTextMatches(text, /Studenti osservati per Regione/i, label);
         assertTextMatches(text, /Prime 10 Regioni/i, label);
-        assertTextMatches(text, /Trend del perimetro/i, label);
-        assertTextMatches(text, /Indirizzi più presenti/i, label);
+        assertTextMatches(text, /Studenti nel tempo/i, label);
+        assertTextMatches(text, /Indirizzi più frequentati/i, label);
         assertTextMatches(text, /Copertura della fonte/i, label);
         assertTextMatches(text, /Fonte del numero/i, label);
         assertTextMatches(text, /IODL 2\.0/i, label);
         assertTextMatches(text, /CODICESCUOLA/i, label);
         assertTextMatches(text, /18\/20 Regioni osservate/i, label);
         assertTextMatches(text, /Valle d'Aosta e Trentino-Alto Adige/i, label);
-        assertTextMatches(text, /n\.d\. significa dato non disponibile/i, label);
+        assertTextMatches(text, /non indica assenza di scuole o studenti/i, label);
         assertTextMatches(text, /Dati della distribuzione/i, label);
         assertTextMatches(text, /Pubblicato dataset studenti/i, label);
-        assertTextMatches(text, /Pubblicata anagrafe join/i, label);
-        assertTextMatches(text, /Come leggiamo i numeri →/i, label);
+        assertTextMatches(text, /Pubblicata anagrafe scuole/i, label);
+        assertTextMatches(text, /Fonti, copertura e metodo/i, label);
         assertTextMatches(text, /Apri il catalogo MIM ↗/i, label);
 
 
@@ -1127,11 +1140,12 @@ try {
       pathname: "/istruzione?region=02",
       width,
       validate: async (page) => {
+        await page.click('main > details > summary');
         const text = await bodyText(page);
         assertTextMatches(text, /Atlante Istruzione/i, label);
         assertTextMatches(text, /Valle d'Aosta/i, label);
         assertTextMatches(text, /Copertura della fonte/i, label);
-        assertTextMatches(text, /n\.d\./i, label);
+        assertTextMatches(text, /Non disponibile/i, label);
         assertTextMatches(text, /Dato non disponibile per il perimetro selezionato/i, label);
         assertTextMatches(
           text,
@@ -1149,7 +1163,7 @@ try {
           '[data-region-map="true"] ~ [aria-live="polite"] span',
           (el) => el.textContent?.trim(),
         );
-        assert.equal(detailValue, "n.d.");
+        assert.equal(detailValue, "Non disponibile");
 
         const emptyTableRegions = await page.$$eval(
           '[role="region"][aria-label="Indirizzi di studio con più studenti osservati"]',
@@ -1176,7 +1190,8 @@ try {
     pathname: "/istruzione?period=202425&schoolType=state&pathway=SCIENTIFICO&region=15",
     width: 1280,
     validate: async (page) => {
-      const text = await bodyText(page);
+      await page.click('main > details > summary');
+        const text = await bodyText(page);
       assertTextMatches(text, /Atlante Istruzione/i, "Atlante Istruzione deep-link filtri 1280px");
       assertTextMatches(text, /Campania/i, "Atlante Istruzione deep-link filtri 1280px");
       assertTextMatches(text, /Statale/i, "Atlante Istruzione deep-link filtri 1280px");
@@ -1353,9 +1368,15 @@ try {
           "details[data-municipality-information]",
           (element) => element.innerText,
         );
-        assert.match(informationText, /Profilo servito da snapshot verificati|Snapshot verificato durante l.ETL/i);
-        assert.match(informationText, /Uffici non inclusi nello snapshot locale/i);
-        assert.match(informationText, /nessuna chiamata IPA durante la visita/i);
+        assert.match(informationText, /Dati verificati al.*25 agosto 2026/is);
+        assert.match(informationText, /Uffici non disponibili in questa scheda/i);
+        assert.match(informationText, /Indice PA · Enti/i);
+        assert.deepEqual(await page.evaluate(() => performance.getEntriesByType("resource")
+          .map((entry) => entry.name).filter((url) => {
+            const hostname = new URL(url).hostname;
+            return ["indicepa.gov.it", "ipa.gov.it"].some((domain) =>
+              hostname === domain || hostname.endsWith(`.${domain}`));
+          })), [], "Il profilo verificato non richiede IPA dal browser");
         assert.equal(await page.$("details[data-structure-details]"), null);
 
         const apiResponse = await page.evaluate(async () => {
@@ -1507,6 +1528,7 @@ try {
           waitUntil: "domcontentloaded",
           timeout: 45_000,
         });
+        await openHeaderSearch(page);
         const input = await page.waitForSelector("#global-site-search", { visible: true });
         assert.ok(input, `Ricerca città (${query}): campo assente`);
         await input.click();
@@ -1677,7 +1699,8 @@ try {
     pathname: "/controlli",
     width: 390,
     validate: async (page) => {
-      const text = await bodyText(page);
+      await page.click('main > details.data-details > summary');
+        const text = await bodyText(page);
       assertTextMatches(text, /Come leggere i numeri/i, "Controlli leggibilità");
       assertTextMatches(text, /Segnali da relazioni ufficiali/i, "Controlli leggibilità");
       assertTextMatches(text, /Screening derivato · OpenCivitas/i, "Controlli leggibilità");
@@ -1848,6 +1871,8 @@ try {
         await page.waitForSelector(".site-footer", { visible: true });
         const sitemap = await page.$(".footer-sitemap");
         assert.ok(sitemap, `${label}: mappa del sito assente`);
+        assert.equal(await sitemap.evaluate((node) => node.open), false, "Mappa del sito chiusa inizialmente");
+        await page.click(".footer-sitemap > summary");
         const columns = await page.$(".footer-sitemap-columns");
         assert.ok(columns, `${label}: contenitore dei gruppi assente`);
         const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
@@ -1872,15 +1897,15 @@ try {
         const requiredFooterLinks = [
           [".footer-sitemap a[href='/studi']", "Paper di ricerca"],
           [".footer-actions a[href='/privacy']", "Privacy"],
-          [".footer-secondary-links a[href='/termini']", "Termini"],
-          [".footer-secondary-links a[href='/supporter']", "Chi ci sostiene"],
-          [".footer-makers a[href='https://mantoventure.com']", "Manto Venture"],
+          [".footer-actions a[href='/termini']", "Termini"],
+          [".footer-backer a[href='/supporter']", "Chi ci sostiene"],
+          [".footer-backer a[href='https://mantoventure.com']", "Manto Venture"],
           [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram"],
           [".footer-social a[href='https://x.com/DVNSoldi']", "X"],
         ];
         for (const [selector, expectedLabel] of requiredFooterLinks) {
           await page.waitForSelector(selector, { visible: true });
-          const actualLabel = await page.$eval(selector, (link) => link.textContent?.trim() ?? "");
+          const actualLabel = await page.$eval(selector, (link) => link.getAttribute("aria-label") ?? link.textContent?.trim() ?? "");
           assert.equal(actualLabel, expectedLabel, `${label}: etichetta errata per ${selector}`);
         }
         await assertResponsiveShell(page, label, width);
@@ -1967,7 +1992,8 @@ try {
       width,
       validate: async (page) => {
         await stubSuccessfulHeaderSearch(page);
-        const input = await page.$("#global-site-search");
+        await openHeaderSearch(page);
+      const input = await page.$("#global-site-search");
         assert.ok(input, `${label}: campo di ricerca assente`);
         await input.type("Roma");
         await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
@@ -1992,6 +2018,7 @@ try {
     width: 390,
     validate: async (page) => {
       await stubSuccessfulHeaderSearch(page);
+      await openHeaderSearch(page);
       const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header Escape: campo assente");
       await input.type("Roma");
@@ -2021,11 +2048,12 @@ try {
           void request.continue();
         }
       });
+      await openHeaderSearch(page);
       const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header errore: campo assente");
       await input.type("Roma");
       await page.waitForFunction(() =>
-        document.body.innerText.includes("La ricerca globale non è disponibile"),
+        document.body.innerText.includes("Ricerca non disponibile"),
       );
       await page.keyboard.press("Escape");
       assert.equal(await input.evaluate((element) => element.getAttribute("aria-expanded")), "false");
@@ -2072,6 +2100,7 @@ try {
           void request.continue();
         }
       });
+      await openHeaderSearch(page);
       const input = await page.$("#global-site-search");
       assert.ok(input, "Ricerca header testo lungo: campo assente");
       await input.type("ente");
@@ -2191,6 +2220,7 @@ try {
       pathname: "/spese/sanita",
       width,
       validate: async (page) => {
+        await page.click('main > details.data-details > summary');
         const text = await bodyText(page);
         assertTextMatches(text, /costi di competenza economica/i, label);
         assertTextMatches(text, /non pubblica una voce chiamata “gettonisti” o “cooperative”/i, label);
@@ -2210,7 +2240,7 @@ try {
       width,
       validate: async (page) => {
         const text = await bodyText(page);
-        assertTextMatches(text, /Da miliardi nazionali a un CUP verificabile/i, label);
+        assertTextMatches(text, /Asili e prima infanzia: i progetti PNRR/i, label);
         assertTextMatches(text, /progetti trovati/i, label);
         assert.ok(await page.$('input[name="q"]'), `${label}: ricerca assente`);
         assert.ok(await page.$('select[name="regione"]'), `${label}: filtro regione assente`);

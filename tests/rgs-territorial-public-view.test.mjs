@@ -140,7 +140,7 @@ test("RGS territorial page awaits GET filters and exposes non-additivity and den
   assert.match(page, /name="limit"/);
   assert.match(page, /non\s+devono essere sommati insieme/i);
   assert.match(page, /denominatori calcolati[\s\S]*non versionati/i);
-  assert.match(page, /senza float/i);
+  assert.match(page, /formatRgsTerritorialValue/);
   assert.match(page, /Interessi e debito/i);
   assert.match(page, /8\.057,70 milioni/);
   assert.match(page, /source\.landingUrl/);

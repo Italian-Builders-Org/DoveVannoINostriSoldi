@@ -78,6 +78,7 @@ function selectedSurfaceFilter(value: string | string[] | undefined): SurfaceFil
 function compactMetric(value: number | null, metric: Metric): string {
   if (value === null) return "Non disponibile";
   if (metric === "totale") return compactEuro(value);
+  if (metric === "per-abitante") return `${integer(Math.round(value))} €/abitante`;
   const unit = metric === "per-km2" ? "€/km²" : "€/abitante";
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
@@ -90,12 +91,12 @@ function compactMetric(value: number | null, metric: Metric): string {
 }
 
 function tableMetric(value: number | null, metric: Metric): string {
-  if (value === null) return "n.d.";
+  if (value === null) return "Non disponibile";
   return metric === "totale" ? compactEuro(value) : compactMetric(value, metric);
 }
 
 function exactMetricValue(value: number | null): string {
-  return value === null ? "n.d." : exactEuro(value);
+  return value === null ? "Non disponibile" : exactEuro(value);
 }
 
 function populationMatches(population: number | null, filter: PopulationFilter): boolean {
@@ -251,8 +252,8 @@ export default async function TerritoriesPage({
       formattedValue: formatMetric(value),
       exactValue: metric === "totale" ? exactEuro(value) : `${exactEuro(value)} ${metric === "per-km2" ? "per km²" : "per abitante"}`,
       total: compactEuro(region.value),
-      perCapita: region.perCapita === null ? "n.d." : compactMetric(region.perCapita, "per-abitante"),
-      perSquareKm: region.perSquareKm === null ? "n.d." : compactMetric(region.perSquareKm, "per-km2"),
+      perCapita: region.perCapita === null ? "Non disponibile" : compactMetric(region.perCapita, "per-abitante"),
+      perSquareKm: region.perSquareKm === null ? "Non disponibile" : compactMetric(region.perSquareKm, "per-km2"),
       population: region.population === null ? "abitanti n.d." : `${integer(region.population)} abitanti`,
       surface: region.geography === null ? "superficie n.d." : `${region.geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km²`,
       detailHref: cptRegionAnchorOf(region.region) ? `/territori/fisco#${cptRegionAnchorOf(region.region)}` : null,
@@ -301,10 +302,9 @@ export default async function TerritoriesPage({
           {isPartialYear ? (
             <span className={styles.periodBadge}>Dati parziali · gennaio-{monthLabel} {data.year}</span>
           ) : null}
-          <h1>Pagamenti dei Comuni, territorio per territorio</h1>
+          <h1>Pagamenti dei Comuni per territorio</h1>
           <p>
             Pagamenti di cassa dei Comuni con sede nella regione, da gennaio a {monthLabel} {data.year}.
-            {" "}{metricExplanation(metric)}
           </p>
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/territori" query={{ misura: metric }} />
@@ -352,7 +352,7 @@ export default async function TerritoriesPage({
           <TerritoryMetricChart
           points={chartPoints}
           title={`Confronto tra regioni · ${METRIC_LABELS[metric]}`}
-          description="Una barra più lunga indica un valore maggiore nella misura selezionata. Non rappresenta qualità dei servizi, fabbisogno o merito amministrativo."
+          description="Confronto dei pagamenti, non dell’efficienza dei servizi."
           reference={metric === "totale" || nationalMetric === null ? null : {
             label: nationalMetricLabel,
             value: nationalMetric,
@@ -403,9 +403,9 @@ export default async function TerritoriesPage({
                     <td className="num">
                       {metric === "per-km2"
                         ? areaSurfaceSquareKilometres === null
-                          ? "n.d."
+                          ? "Non disponibile"
                           : `${areaSurfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km²`
-                        : summary.population === null ? "n.d." : integer(summary.population)}
+                        : summary.population === null ? "Non disponibile" : integer(summary.population)}
                     </td>
                     <td className="num">
                       {integer(summary.municipalitiesWithPopulation)} /{" "}
@@ -439,8 +439,8 @@ export default async function TerritoriesPage({
                         <td className="num">{compactEuroLike(region.value, regionScale)}</td>
                         <td className="num">
                           {metric === "per-km2"
-                            ? region.geography === null ? "n.d." : `${region.geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km²`
-                            : region.population === null ? "n.d." : integer(region.population)}
+                            ? region.geography === null ? "Non disponibile" : `${region.geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km²`
+                            : region.population === null ? "Non disponibile" : integer(region.population)}
                         </td>
                         <td className="num">
                           {integer(region.municipalitiesWithPopulation)} /{" "}
@@ -460,6 +460,7 @@ export default async function TerritoriesPage({
 
       <details className={`panel ${styles.methodDetails}`}>
         <summary>Metodo, denominatori e copertura</summary>
+        <p>{metricExplanation(metric)}</p>
         <p className={styles.note}>Nota di metodo: {data.methodology.warning}</p>
         <p className={styles.note}>
           {metric === "per-km2"
@@ -473,18 +474,59 @@ export default async function TerritoriesPage({
           Trento e Bolzano sono pubblicati come due Province autonome: il dato SIOPE aggregato
           del Trentino-Alto Adige non viene collegato artificialmente a una sola voce.
         </p>
+
+      <section className="panel">
+        <h2 className="panel-title">Quanto del registro stiamo leggendo</h2>
+        <div className={styles.coverage}>
+          <dl className={styles.coverageList}>
+            <div>
+              <dt>Comuni con movimenti</dt>
+              <dd>{integer(data.coverage.withMovements)}</dd>
+            </div>
+            <div>
+              <dt>Comuni validi nel periodo</dt>
+              <dd>{integer(data.coverage.activeSiopeMunicipalities)}</dd>
+            </div>
+            <div>
+              <dt>Con movimenti senza regione</dt>
+              <dd>{integer(data.coverage.withoutRegion)}</dd>
+            </div>
+            <div>
+              <dt>Righe malformate</dt>
+              <dd>{integer(data.coverage.malformedRows)}</dd>
+            </div>
+            <div>
+              <dt>Comuni con popolazione</dt>
+              <dd>{integer(data.coverage.withPopulation)}</dd>
+            </div>
+            <div>
+              <dt>Senza popolazione</dt>
+              <dd>{integer(data.coverage.withoutPopulation)}</dd>
+            </div>
+          </dl>
+          <p>
+            I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
+            restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
+            senza una corrispondenza ufficiale. Il denominatore è la{" "}
+            {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
+            aggiornata il{" "}
+            {data.methodology.populationSourceLastModified
+              ? longDate(data.methodology.populationSourceLastModified)
+              : "data non disponibile"}. Fonte SIOPE · {data.source.siopeOwner},
+            scaricata il{" "}
+            {longDate(data.source.observedAt)}.{" "}
+            <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
+          </p>
+        </div>
+      </section>
       </details>
 
       <section className={`panel ${styles.municipalityPanel}`} data-municipality-ranking={metric}>
         <div className={styles.municipalityHeading}>
           <div>
-            <span className={styles.eyebrow}>Esplora i Comuni</span>
             <h2 className="panel-title">Valori più alti · {METRIC_LABELS[metric].toLocaleLowerCase("it-IT")}</h2>
             <p>
-              Non è una classifica di efficienza. Un totale alto può dipendere da turismo,
-              ricostruzione o servizi offerti a non residenti; superficie ridotta, investimenti e
-              servizi sovracomunali possono produrre valori molto distanti. I filtri aiutano a
-              confrontare territori più omogenei.
+              Per confronti più omogenei, usa i filtri per popolazione e superficie.
             </p>
           </div>
           <Link href="/territori/confronto">Confronta Comuni simili →</Link>
@@ -569,7 +611,7 @@ export default async function TerritoriesPage({
                     {tableMetric(metric === "totale" ? municipality.value : metric === "per-km2" ? municipality.perSquareKm : municipality.perCapita, metric)}
                   </td>
                   <td className="num">{compactEuro(municipality.value)}</td>
-                  <td className="num">{municipality.population === null ? "n.d." : integer(municipality.population)}</td>
+                  <td className="num">{municipality.population === null ? "Non disponibile" : integer(municipality.population)}</td>
                   <td className="num">{municipality.geography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 1 })} km²</td>
                 </tr>;
               })}
@@ -611,50 +653,7 @@ export default async function TerritoriesPage({
         </p>
       </div>
 
-      <section className="panel">
-        <h2 className="panel-title">Quanto del registro stiamo leggendo</h2>
-        <div className={styles.coverage}>
-          <dl className={styles.coverageList}>
-            <div>
-              <dt>Comuni con movimenti</dt>
-              <dd>{integer(data.coverage.withMovements)}</dd>
-            </div>
-            <div>
-              <dt>Comuni validi nel periodo</dt>
-              <dd>{integer(data.coverage.activeSiopeMunicipalities)}</dd>
-            </div>
-            <div>
-              <dt>Con movimenti senza regione</dt>
-              <dd>{integer(data.coverage.withoutRegion)}</dd>
-            </div>
-            <div>
-              <dt>Righe malformate</dt>
-              <dd>{integer(data.coverage.malformedRows)}</dd>
-            </div>
-            <div>
-              <dt>Comuni con popolazione</dt>
-              <dd>{integer(data.coverage.withPopulation)}</dd>
-            </div>
-            <div>
-              <dt>Senza popolazione</dt>
-              <dd>{integer(data.coverage.withoutPopulation)}</dd>
-            </div>
-          </dl>
-          <p>
-            I {exactEuro(data.coverage.paymentsWithoutRegion)} dei Comuni senza abbinamento IPA
-            restano nel totale nazionale ma fuori dai totali regionali: non assegniamo una regione
-            senza una corrispondenza ufficiale. Il denominatore è la{" "}
-            {data.methodology.populationSource}; {data.methodology.populationReference}; anagrafica
-            aggiornata il{" "}
-            {data.methodology.populationSourceLastModified
-              ? longDate(data.methodology.populationSourceLastModified)
-              : "data non disponibile"}. Fonte SIOPE · {data.source.siopeOwner},
-            scaricata il{" "}
-            {longDate(data.source.observedAt)}.{" "}
-            <Link href="/fonti/stato">Stato di tutte le fonti →</Link>
-          </p>
-        </div>
-      </section>
+
     </main>
   );
 }

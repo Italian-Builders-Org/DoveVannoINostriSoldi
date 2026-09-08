@@ -101,9 +101,7 @@ export default async function PublicSourceCatalogPage({ searchParams }: SourceCa
         </p>
         <h1>Catalogo completo delle fonti integrate</h1>
         <p>
-          Ogni identità è traversabile con un ID opaco. Le fonti pubbliche mantengono il loro
-          collegamento; le identità in quarantena restano contate e visibili nello stato, ma il loro
-          valore non viene esposto.
+          Le fonti pubbliche hanno un collegamento diretto. Per quelle non pubblicabili mostriamo identificativo, stato e motivo, senza esporne il contenuto.
         </p>
       </div>
 
@@ -191,10 +189,9 @@ export default async function PublicSourceCatalogPage({ searchParams }: SourceCa
         {result.sources.length > 0 ? (
           <div className={`table-scroll ${styles.sourceTable}`} role="region" aria-label="Catalogo delle identità di fonte" tabIndex={0}>
             <table className="table">
-              <caption>Identità pubbliche e in quarantena, ordinate per ID opaco</caption>
+              <caption>Fonti pubbliche e non pubblicabili, ordinate per identificativo</caption>
               <thead>
                 <tr>
-                  <th scope="col">ID</th>
                   <th scope="col">Stato</th>
                   <th scope="col">Classificazione</th>
                   <th scope="col">Valore pubblico</th>
@@ -205,7 +202,6 @@ export default async function PublicSourceCatalogPage({ searchParams }: SourceCa
               <tbody>
                 {result.sources.map((source) => (
                   <tr key={source.id}>
-                    <th scope="row"><code>{source.id}</code></th>
                     <td>
                       <span className={`tag ${source.disposition === "published" ? "tag-accent" : "tag-neutral"}`}>
                         {source.disposition === "published" ? "Valore pubblico" : "In quarantena"}
@@ -226,6 +222,7 @@ export default async function PublicSourceCatalogPage({ searchParams }: SourceCa
                       {source.reasonCodes.length === 0
                         ? <span className={styles.withheld}>Nessuna</span>
                         : source.reasonCodes.join(", ")}
+                      <details className="table-details"><summary>Identificativo fonte</summary><code>{source.id}</code></details>
                     </td>
                   </tr>
                 ))}

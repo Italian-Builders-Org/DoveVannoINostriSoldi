@@ -209,15 +209,13 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
               <thead>
                 <tr>
                   <th scope="col">Voce</th>
-                  <th scope="col">Codice</th>
                   <th scope="col" className="num">Pagato</th>
                 </tr>
               </thead>
               <tbody>
                 {data.economicDetails.slice(0, 30).map((item) => (
                   <tr key={`${item.code}:${item.label}`}>
-                    <th scope="row">{item.label}</th>
-                    <td>{item.code ?? "n.d."}</td>
+                    <th scope="row">{item.label}<details className="table-details"><summary>Codice nella fonte</summary>{item.code ?? "Non disponibile"}</details></th>
                     <td className="num">{compactEuro(item.value)}</td>
                   </tr>
                 ))}
@@ -266,7 +264,7 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
           </div>
           <div className={styles.qualityItem}>
             <span>Differenza</span>
-            <strong>{data.consistency.economicDifferencePct === null ? "n.d." : percent(data.consistency.economicDifferencePct, 2)}</strong>
+            <strong>{data.consistency.economicDifferencePct === null ? "Non disponibile" : percent(data.consistency.economicDifferencePct, 2)}</strong>
             <small>Scarto percentuale tra i due totali.</small>
           </div>
         </div>
@@ -320,6 +318,7 @@ export default async function AdministrationPage({ params, searchParams }: PageP
         <AdministrationDashboard data={data} />
       ) : (
         <div className={styles.errorState}>
+          <h1 className={styles.title}>Spesa dell’amministrazione</h1>
           <strong>Dati non disponibili per questa amministrazione.</strong>
           <p>{errorMessage ?? "La fonte non ha restituito un risultato utilizzabile."}</p>
           <Link className="btn btn-secondary" href="/stato">Torna alle spese dello Stato</Link>

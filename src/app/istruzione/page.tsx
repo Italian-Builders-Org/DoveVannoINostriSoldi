@@ -27,7 +27,7 @@ function first(value: string | string[] | undefined): string | undefined {
 }
 
 function compactStudents(value: number | null): string {
-  if (value === null) return "n.d.";
+  if (value === null) return "Non disponibile";
   if (Math.abs(value) >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1 })} mln`;
   }
@@ -38,13 +38,13 @@ function compactStudents(value: number | null): string {
 }
 
 function signedPercent(current: number | null, previous: number | null): string {
-  if (current === null || previous === null || previous === 0) return "n.d.";
+  if (current === null || previous === null || previous === 0) return "Non disponibile";
   const change = ((current - previous) / previous) * 100;
   return `${change >= 0 ? "+" : ""}${percent(change)}`;
 }
 
 function genderShare(female: number | null, total: number | null): string {
-  if (female === null || total === null || total === 0) return "n.d.";
+  if (female === null || total === null || total === 0) return "Non disponibile";
   return percent((female / total) * 100);
 }
 
@@ -85,18 +85,14 @@ export default async function EducationAtlasPage({
     <main className={`shell ${styles.dashboard}`}>
       <header className={styles.hero}>
         <div>
-          <span className={styles.kicker}>Modulo Istruzione · MIM</span>
           <h1>Atlante Istruzione</h1>
           <p>
-            Quali percorsi della scuola secondaria di II grado sono presenti, dove e come cambiano?
-            Esplora gli studenti osservati dal MIM per Regione, tipo di scuola e indirizzo.
+            Studenti delle scuole superiori per regione, tipo di scuola e indirizzo.
           </p>
         </div>
         <div className={styles.heroMeta}>
-          <span className="tag tag-accent">Solo dati aggregati</span>
-          <span>Scuola secondaria di II grado · dal 2022/23 al 2024/25</span>
-          <Link href="/metodologia">Come leggiamo i numeri →</Link>
-          <Link href="/istruzione/universita-ricerca">Università e Ricerca: stanziamenti →</Link>
+          <span>Fonte: MIM · 2022/23 al 2024/25</span>
+          <Link href="/istruzione/universita-ricerca">Università e ricerca →</Link>
         </div>
       </header>
 
@@ -115,13 +111,12 @@ export default async function EducationAtlasPage({
 
       <div className={styles.dashboardGrid}>
         <div className={styles.column}>
-          <section className="panel" aria-labelledby="education-scope-title">
+          <section className={`panel ${styles.summaryPanel}`} aria-labelledby="education-scope-title">
             <div className={styles.panelHead}>
-              <h2 id="education-scope-title" className="panel-title">Perimetro selezionato</h2>
-              <span className="status status-attiva">Snapshot MIM</span>
+              <h2 id="education-scope-title" className="panel-title">Studenti delle scuole superiori</h2>
             </div>
             <strong className={styles.headline}>{compactStudents(view.perimeterValue)}</strong>
-            <p className={styles.headlineNote}>studenti osservati · anno scolastico {view.periodLabel} · dati al {longDate(selectedPeriodSourceFile?.dataAsOf)}</p>
+            <p className={styles.headlineNote}>anno scolastico {view.periodLabel}</p>
 
             <dl className={styles.factRows}>
               <div><dt>Territorio</dt><dd>{selectedRegionName}</dd></div>
@@ -130,16 +125,12 @@ export default async function EducationAtlasPage({
               <div><dt>Copertura</dt><dd>{view.coverage.observedRegionCount}/{view.coverage.expectedRegionCount} Regioni</dd></div>
             </dl>
 
-            <p className={styles.definition}>
-              La presenza di studenti in un indirizzo descrive il file osservato. Non è una misura di qualità,
-              esito scolastico, domanda futura o carenza occupazionale.
-            </p>
-            <Link className="btn btn-block" href="/metodologia">Metodo e definizioni</Link>
+            <p className={styles.note}>Dati al {longDate(selectedPeriodSourceFile?.dataAsOf)}. {view.missingRegionNames.length > 0 ? `Non disponibili per ${view.missingRegionNames.join(" e ")}.` : null}</p>
           </section>
 
-          <section className="panel" aria-labelledby="pathway-title">
+          <section className={`panel ${styles.pathwaysPanel}`} aria-labelledby="pathway-title">
             <div className={styles.panelHead}>
-              <h2 id="pathway-title" className="panel-title">Dove si concentrano i percorsi</h2>
+              <h2 id="pathway-title" className="panel-title">Percorsi più frequentati</h2>
               <span className={styles.headNote}>studenti osservati</span>
             </div>
             {topPathways.length > 0 ? (
@@ -149,11 +140,11 @@ export default async function EducationAtlasPage({
                   return (
                     <li key={pathway.code}>
                       <div className={styles.pathwayLabel}>
-                        <span>{pathway.label}</span>
+                        <span title={pathway.label}>{pathway.label}</span>
                         <strong>{compactStudents(pathway.value)}</strong>
                       </div>
                       <i aria-hidden="true"><b style={{ width: `${share}%` }} /></i>
-                      <small>{pathway.value === null ? "n.d." : percent(share)} del perimetro · {genderShare(pathway.femaleCount, pathway.value)} ragazze</small>
+                      <small>{pathway.value === null ? "Non disponibile" : percent(share)} del perimetro · {genderShare(pathway.femaleCount, pathway.value)} ragazze</small>
                     </li>
                   );
                 })}
@@ -161,7 +152,6 @@ export default async function EducationAtlasPage({
             ) : (
               <p className={styles.emptyState} role="status">Dato non disponibile per il perimetro selezionato.</p>
             )}
-            <p className={styles.note}>Il percorso è una categoria del file MIM; l&apos;indirizzo di studio è il dettaglio sottostante.</p>
           </section>
         </div>
 
@@ -183,7 +173,7 @@ export default async function EducationAtlasPage({
             </p>
           </section>
 
-          <section className="panel" aria-labelledby="education-ranking-title">
+          <section className={`panel ${styles.rankingPanel}`} aria-labelledby="education-ranking-title">
             <div className={styles.panelHead}>
               <h2 id="education-ranking-title" className="panel-title">Prime 10 Regioni</h2>
               <span className={styles.headNote}>valore assoluto</span>
@@ -206,32 +196,29 @@ export default async function EducationAtlasPage({
             ) : (
               <p className={styles.emptyState} role="status">Dato non disponibile per il perimetro selezionato.</p>
             )}
-            <p className={styles.note}>La classifica descrive la dimensione del perimetro selezionato, non la qualità delle scuole.</p>
           </section>
         </div>
 
         <div className={styles.column}>
-          <section className="panel" aria-labelledby="trend-title">
+          <section className={`panel ${styles.trendPanel}`} aria-labelledby="trend-title">
             <div className={styles.panelHead}>
-              <h2 id="trend-title" className="panel-title">Trend del perimetro</h2>
-              <span className={styles.headNote}>serie disponibile</span>
+              <h2 id="trend-title" className="panel-title">Studenti nel tempo</h2>
             </div>
             {hasTrendData ? (
               <>
                 <EducationTrendChart data={view.trend} />
                 <p className={styles.trendDelta}>
-                  Ultimo confronto: <strong>{signedPercent(currentTrend?.value ?? null, previousTrend?.value ?? null)}</strong> rispetto all&apos;anno precedente.
+                  <strong>{signedPercent(currentTrend?.value ?? null, previousTrend?.value ?? null)}</strong> rispetto all’anno precedente.
                 </p>
               </>
             ) : (
               <p className={styles.emptyState} role="status">Dato non disponibile per il perimetro selezionato.</p>
             )}
-            <p className={styles.note}>La variazione è descrittiva e dipende dal perimetro e dalla classificazione pubblicati dal MIM.</p>
           </section>
 
-          <section className="panel" aria-labelledby="address-title">
+          <section className={`panel ${styles.addressPanel}`} aria-labelledby="address-title">
             <div className={styles.panelHead}>
-              <h2 id="address-title" className="panel-title">Indirizzi più presenti</h2>
+              <h2 id="address-title" className="panel-title">Indirizzi più frequentati</h2>
               <span className={styles.headNote}>{view.periodLabel}</span>
             </div>
             {view.addressRanking.length > 0 ? (
@@ -252,9 +239,15 @@ export default async function EducationAtlasPage({
             ) : (
               <p className={styles.emptyState} role="status">Dato non disponibile per il perimetro selezionato.</p>
             )}
-            <p className={styles.note}>Gli indirizzi sono aggregati dal file MIM. Non vengono pubblicati nomi o indirizzi fisici delle scuole.</p>
           </section>
 
+        </div>
+      </div>
+
+      <details className="data-details">
+        <summary>Fonti, copertura e metodo</summary>
+        <p>I dati descrivono quanti studenti sono presenti nei file MIM. Non misurano la qualità delle scuole o gli esiti scolastici. Il percorso raggruppa gli indirizzi di studio; non vengono pubblicati nomi o indirizzi fisici delle scuole.</p>
+        <div className={styles.sourceGrid}>
           <section className={`panel ${styles.coveragePanel}`} aria-labelledby="coverage-title">
             <div className={styles.panelHead}>
               <h2 id="coverage-title" className="panel-title">Copertura della fonte</h2>
@@ -266,7 +259,7 @@ export default async function EducationAtlasPage({
             </div>
             <p className={styles.sourceCaveat}>
               {view.missingRegionNames.length > 0
-                ? `Il dataset studenti esclude le province autonome di Trento e Bolzano; l'anagrafe usata per il join esclude inoltre Aosta. La copertura comune è ${view.coverage.observedRegionCount}/${view.coverage.expectedRegionCount} Regioni: ${view.missingRegionNames.join(" e ")} restano n.d.; n.d. significa dato non disponibile nel perimetro, non assenza di scuole o studenti.`
+                ? `Il dataset studenti esclude le province autonome di Trento e Bolzano; l'anagrafe usata per il join esclude inoltre Aosta. La copertura comune è ${view.coverage.observedRegionCount}/${view.coverage.expectedRegionCount} Regioni: ${view.missingRegionNames.join(" e ")} restano senza dato disponibile nel perimetro: questo non indica assenza di scuole o studenti.`
                 : "Il file osservato espone tutte le Regioni dichiarate nel perimetro."}
             </p>
             <dl className={styles.factRows}>
@@ -274,7 +267,7 @@ export default async function EducationAtlasPage({
               <div><dt>Righe anno selezionato</dt><dd>{integer(view.coverage.byPeriodSchoolType[view.period]?.state.sourceRows ?? 0)} + {integer(view.coverage.byPeriodSchoolType[view.period]?.paritaria.sourceRows ?? 0)}</dd></div>
               <div><dt>Dati della distribuzione</dt><dd>{longDate(selectedPeriodSourceFile?.dataAsOf)}</dd></div>
               <div><dt>Pubblicato dataset studenti</dt><dd>{longDate(studentSource.publishedAt)}</dd></div>
-              <div><dt>Pubblicata anagrafe join</dt><dd>{longDate(registrySource.publishedAt)}</dd></div>
+              <div><dt>Pubblicata anagrafe scuole</dt><dd>{longDate(registrySource.publishedAt)}</dd></div>
               <div><dt>Verificato da noi</dt><dd>{longDate(studentSource.verifiedAt)}</dd></div>
             </dl>
           </section>
@@ -290,7 +283,7 @@ export default async function EducationAtlasPage({
             <a className="btn btn-block" href={studentSource.landingUrl} target="_blank" rel="noreferrer">Apri il catalogo MIM ↗</a>
           </section>
         </div>
-      </div>
+      </details>
     </main>
   );
 }

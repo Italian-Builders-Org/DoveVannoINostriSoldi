@@ -135,7 +135,7 @@ async function inspectRoute(browser, pathname, title, width) {
         const root = document.documentElement;
         const h1s = [...document.querySelectorAll("h1")];
         const dataLink = [...document.querySelectorAll("a")].some((link) =>
-          /Vedi tutte le righe|Dati e fonti|registro completo/i.test(link.textContent ?? ""),
+          link.getAttribute("href")?.startsWith("/dati/") && /Vedi tutte le righe|Dati e fonti|registro completo|Consulta i dati|Fonte e copertura/i.test(link.textContent ?? ""),
         );
         const normalize = (value) => value.normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("it-IT");
         const legacyLimitHeadings = new Set([
@@ -195,7 +195,7 @@ async function inspectDatasetLayout(browser, width) {
         const section = document.querySelector('[aria-labelledby="dataset-rows-title"]');
         const legend = section.querySelector("ul");
         const item = legend.querySelector("li");
-        const summary = document.querySelector("main details > summary");
+        const summary = document.querySelector("main > details > summary");
         return {
           legendInset: item.getBoundingClientRect().left - section.getBoundingClientRect().left,
           sourceControlHeight: summary.getBoundingClientRect().height,
@@ -203,11 +203,11 @@ async function inspectDatasetLayout(browser, width) {
       });
       assert.ok(spacing.legendInset >= 12, "Legenda aderente al bordo del pannello");
       assert.ok(spacing.sourceControlHeight >= 44, "Controllo della fonte troppo piccolo per il touch");
-      const summary = await page.$("main details > summary");
+      const summary = await page.$("main > details > summary");
       await summary.focus();
       await page.keyboard.press("Enter");
-      await page.waitForSelector("main details[open]");
-      assert.match(await page.$eval("main details[open]", (element) => element.innerText), /Unità: rapporto per 100/);
+      await page.waitForSelector("main > details[open]");
+      assert.match(await page.$eval("main > details[open]", (element) => element.innerText), /Unità: rapporto per 100/);
 
       const query = "Comune".repeat(30);
       await page.locator("#dataset-query").fill(query);

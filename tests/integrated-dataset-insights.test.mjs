@@ -41,6 +41,18 @@ test("parseInsightAmount keeps null/empty distinct from zero", () => {
   assert.equal(parseInsightAmount("1234.56"), 1234.56);
 });
 
+test("layered PNRR records never become a combined recipient ranking", async () => {
+  const headers = ["strato", "nome_o_ditta", "importo"];
+  assert.equal(isInsightCapable(headers, true), false);
+  const result = aggregateRecipientInsights("layered", headers, [
+    { id: "1", sourceRow: 1, cells: { strato: "AT", nome_o_ditta: "Persona", importo: "100" }, sourceUrls: [] },
+    { id: "2", sourceRow: 2, cells: { strato: "CE3", nome_o_ditta: "Aggregato", importo: "1000" }, sourceUrls: [] },
+  ], { publicRows: 2 });
+  assert.equal(result.capable, false);
+  assert.deepEqual(result.chartPoints, []);
+  assert.deepEqual(result.multiService, []);
+});
+
 test("amount columns include canoni even when some cells are n.d.", () => {
   assert.equal(looksLikeAmountHeader("canone_annuo_eur"), true);
   assert.equal(looksLikeAmountHeader("canone_mq"), true);
@@ -144,4 +156,20 @@ test("loadDatasetInsightTeaser returns a compact recipient line for vincitori", 
   assert.ok(teaser);
   assert.equal(teaser.complete, true);
   assert.match(teaser.line, /€|mln|mld/);
+});
+
+ test("auto and welfare ceilings are not added to observed spending", async () => {
+  const insights = await loadDatasetInsights("auto-welfare");
+  assert.equal(insights.capable, false);
+  assert.deepEqual(insights.chartPoints, []);
+});
+
+test("unknown recipient placeholders cannot become catalog subjects", async () => {
+  const { formatInsightTeaser } = await import("../src/lib/integrated-dataset-insight-core.ts");
+  const insights = aggregateRecipientInsights("missing-recipient", ["nome", "importo"], [
+    { id: "1", sourceRow: 1, cells: { nome: "n.d.", importo: "100" }, sourceUrls: [] },
+  ], { publicRows: 1 });
+  assert.equal(formatInsightTeaser(insights), null);
+  assert.equal(insights.rowsWithAmount, 1);
+  assert.equal(insights.totalEuro, 100);
 });

@@ -1,7 +1,7 @@
 .page { max-width: 1120px; }
-.intro { max-width: 760px; margin-bottom: 2.5rem; }
+.intro { max-width: 760px; margin-bottom: 1rem; }
 .intro h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.06; letter-spacing: -.04em; margin: .6rem 0 1.2rem; }
-.intro p { font-size: 1.12rem; line-height: 1.7; }
+.intro p { font-size: 1rem; line-height: 1.7; }
 .eyebrow { font-size: .8rem; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; }
 .card { border-top: 2px solid currentColor; padding: 1.8rem 0; }
 .card h3 { font-size: 2rem; margin: .4rem 0; }

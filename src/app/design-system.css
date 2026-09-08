@@ -63,7 +63,7 @@
   --color-negative: var(--color-critical);
 
   --font-heading: var(--font-geist), system-ui, sans-serif;
-  --font-heading-weight: 800;
+  --font-heading-weight: 600;
   --font-body: var(--font-geist), system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -113,6 +113,11 @@
      for actions, warnings and genuinely critical states. */
   --chart-data-primary: #176b73;
   --chart-data-track: #dce9e9;
+  --chart-map-1: #deebeb;
+  --chart-map-2: #b9d4d6;
+  --chart-map-3: #86b3b7;
+  --chart-map-4: #4b9097;
+  --chart-map-5: #176b73;
   --chart-progress: #73833a;
   --chart-progress-track: #e5e8d9;
 

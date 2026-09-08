@@ -1,5 +1,9 @@
 /* The sidebar card and footer link share the same lazy native dialog. */
 .inlineTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: baseline;
   padding: 0;
   border: 0;
   font-weight: inherit;
@@ -205,4 +209,14 @@
 
 @media (max-width: 480px) {
   .header, .form, .success { padding-inline: var(--space-4); }
+}
+
+@media (min-width: 1100px) and (max-height: 860px) {
+  .sidebarTrigger { padding: 10px; align-items: center; }
+  .sidebarCopy > span:not(.sidebarAction) { display: none; }
+  .sidebarCopy .sidebarAction { margin-top: 0; }
+}
+@media (min-width: 1100px) and (max-height: 740px) {
+  .sidebarCopy .sidebarAction { display: none; }
+  .sidebarCopy strong { font-size: 12px; }
 }

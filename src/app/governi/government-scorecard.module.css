@@ -6,18 +6,18 @@
 }
 
 .hero {
-  padding: clamp(18px, 4vw, 40px);
-  color: var(--color-on-strong);
-  background: var(--color-text);
-  border-top: 6px solid var(--color-accent);
+  padding: 20px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
 }
 
 .kicker,
 .sectionEyebrow,
 .contextPosition {
-  color: var(--color-accent-300);
+  color: var(--color-neutral-700);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -31,7 +31,7 @@
 
 .metric {
   margin: 8px 0 0;
-  color: var(--color-neutral-300);
+  color: var(--color-neutral-700);
   font-size: 13px;
 }
 
@@ -45,7 +45,7 @@
 
 .scoreLine > strong {
   font-family: var(--font-heading);
-  font-size: clamp(54px, 9vw, 88px);
+  font-size: clamp(44px, 6vw, 64px);
   line-height: .82;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .scoreLine b {
-  color: var(--color-accent-300);
+  color: var(--color-neutral-700);
   font-size: clamp(20px, 3vw, 27px);
 }
 
@@ -72,7 +72,7 @@
 }
 
 .notScored > strong {
-  color: var(--color-accent-300);
+  color: var(--color-neutral-700);
   font-family: var(--font-heading);
   font-size: clamp(28px, 5vw, 48px);
   line-height: 1;
@@ -88,7 +88,7 @@
   flex-wrap: wrap;
   gap: 4px 20px;
   margin: 10px 0;
-  color: var(--color-neutral-300);
+  color: var(--color-neutral-700);
   font-size: 12px;
 }
 
@@ -99,7 +99,7 @@
   margin: 12px 0 0;
   padding: 0;
   list-style: none;
-  background: var(--color-neutral-600);
+  background: var(--color-neutral-300);
 }
 
 .heroPillars li {
@@ -108,11 +108,11 @@
   gap: 3px;
   min-width: 0;
   padding: 9px;
-  background: var(--color-text);
+  background: var(--color-raised);
 }
 
 .heroPillars span {
-  color: var(--color-neutral-300);
+  color: var(--color-neutral-700);
   font-size: 11px;
   line-height: 1.15;
 }
@@ -120,7 +120,7 @@
 .heroPillars strong {
   margin-top: auto;
   padding-top: 4px;
-  color: var(--color-accent-300);
+  color: var(--color-neutral-700);
   font-size: 19px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -137,9 +137,9 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--color-accent-300);
+  color: var(--color-neutral-700);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .disclaimer {

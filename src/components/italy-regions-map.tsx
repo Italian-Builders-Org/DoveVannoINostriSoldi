@@ -37,7 +37,6 @@ export function ItalyRegionsMap({
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
   const [focusedCode, setFocusedCode] = useState<string | null>(null);
   const [selectionLocked, setSelectionLocked] = useState(false);
-  const [automaticSelection, setAutomaticSelection] = useState<"ip" | null>(null);
   const userSelected = useRef(false);
   const regionPathRefs = useRef(new Map<string, SVGPathElement>());
   const { byCode, thresholds } = useMemo(() => {
@@ -67,7 +66,6 @@ export function ItalyRegionsMap({
         const code = payload.region?.code;
         if (!userSelected.current && code && byCode.get(code)) {
           setSelectedCode(code);
-          setAutomaticSelection("ip");
         }
       } catch {
         if (controller.signal.aborted) return;
@@ -81,7 +79,6 @@ export function ItalyRegionsMap({
   function selectRegion(code: string) {
     userSelected.current = true;
     setSelectionLocked(true);
-    setAutomaticSelection(null);
     setFocusedCode(code);
     setHoveredCode(null);
     setSelectedCode(code);
@@ -224,12 +221,6 @@ export function ItalyRegionsMap({
           </select>
         </label>
 
-        {automaticSelection ? (
-          <p className={styles.geoNote}>
-            Regione proposta dalla posizione approssimativa dell’IP; l’indirizzo non viene mostrato
-            né salvato.
-          </p>
-        ) : null}
 
         <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
           <span className={styles.legendEnd}>Meno spesa per abitante</span>
@@ -256,19 +247,19 @@ export function ItalyRegionsMap({
         <b>{selected?.region ?? "Dato non disponibile"}</b>
         <span>
           <small>Totale</small>
-          {selected ? compactEuro(selected.value) : "n.d."}
+          {selected ? compactEuro(selected.value) : "Non disponibile"}
         </span>
         <span>
           <small>Per abitante</small>
-          {selected?.perCapita === null || !selected ? "n.d." : exactEuro(selected.perCapita)}
+          {selected?.perCapita === null || !selected ? "Non disponibile" : exactEuro(selected.perCapita)}
         </span>
         <span>
           <small>Abitanti</small>
-          {selected?.population == null ? "n.d." : integer(selected.population)}
+          {selected?.population == null ? "Non disponibile" : integer(selected.population)}
         </span>
         <span>
           <small>Comuni</small>
-          {selected ? integer(selected.municipalities) : "n.d."}
+          {selected ? integer(selected.municipalities) : "Non disponibile"}
         </span>
         <span>
           <small>Periodo</small>

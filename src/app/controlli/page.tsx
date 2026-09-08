@@ -165,7 +165,7 @@ export default async function ControlsPage({ searchParams }: PageProps) {
           Ogni numero dice una cosa precisa e mostra anche i suoi limiti.
         </p>
         <p>
-          Per un quadro in tre passi (cosa emerge, dove approfondire, cosa si può migliorare) apri la{" "}
+          Leggi la{" "}
           <Link href="/controlli/sintesi">Sintesi</Link>.
         </p>
       </div>
@@ -199,6 +199,9 @@ export default async function ControlsPage({ searchParams }: PageProps) {
         </ul>
       </nav>
 
+      <p>Un segnale indica cosa approfondire; non dimostra da solo spreco o responsabilità.</p>
+      <details className="data-details">
+        <summary>Come leggere i segnali</summary>
       <section
         className="notice scope-notice"
         aria-labelledby="controlli-reading-title"
@@ -223,8 +226,7 @@ export default async function ControlsPage({ searchParams }: PageProps) {
       <section className={`panel ${styles.typeLegend}`} aria-labelledby="signal-types-title">
         <h2 id="signal-types-title" className="panel-title">Come leggere i numeri</h2>
         <p className={styles.legendLead}>
-          Ogni blocco è un tipo di dato diverso. La riga colorata mostra quanto è forte il segnale,
-          non una colpa.
+          I segnali descrivono fenomeni diversi e non attribuiscono responsabilità.
         </p>
         <ul className={styles.toneLegend}>
           {(Object.keys(toneLabels) as Array<keyof typeof toneLabels>).map((tone) => (
@@ -257,6 +259,8 @@ export default async function ControlsPage({ searchParams }: PageProps) {
         </details>
       </section>
 
+      </details>
+
       <section className={styles.signalSection} aria-labelledby="official-signals-title">
         <header className={styles.sectionIntro}>
           <h2 id="official-signals-title">Segnali da relazioni ufficiali</h2>
@@ -267,9 +271,7 @@ export default async function ControlsPage({ searchParams }: PageProps) {
         </header>
         {signals.length === 0 ? (
           <p className={styles.note}>
-            Per l&apos;anno selezionato non ci sono segnali da relazioni ufficiali nel nostro
-            ambito. Non significa che non ce ne siano: significa che qui non ne abbiamo ancora uno
-            verificabile.
+            Non abbiamo segnali verificati per l’anno selezionato. Questo non prova l’assenza di criticità.
           </p>
         ) : null}
 

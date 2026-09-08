@@ -82,7 +82,7 @@ export default async function SourceStatusPage() {
       <header className={styles.header}>
         <div>
           <span className={styles.kicker}>STATO DELLE FONTI</span>
-          <h1 className={styles.title}>Quando sono stati aggiornati i dati.</h1>
+          <h1 className={styles.title}>Aggiornamento delle fonti</h1>
           <p className={styles.lead}>
             Mostriamo tre cose diverse: se abbiamo collegato la fonte, come risultava all&apos;ultimo
             controllo e a quando risale il dato. Un sito temporaneamente irraggiungibile non rende
@@ -112,24 +112,24 @@ export default async function SourceStatusPage() {
 
       <p className={styles.footerNote}>Ultimo controllo delle fonti: {sourceDate(checkedAt)}.</p>
 
+      <details className="data-details">
+        <summary>Come leggere lo stato delle fonti</summary>
       <section className={styles.explainer}>
         <div>
           <h2>Controllare spesso non rende il dato in tempo reale.</h2>
           <p>
-            Se IPA aggiorna ogni giorno, possiamo ricontrollarlo ogni ora. Se una fonte è mensile,
-            controllarlo più volte al giorno ci aiuta a trovare presto il nuovo rilascio,
-            ma il dato resta mensile.
+            La frequenza dei nostri controlli non cambia quella di pubblicazione della fonte.
           </p>
         </div>
         <div>
           <h2>Disponibilità e aggiornamento sono cose diverse.</h2>
           <p>
-            Una fonte può rispondere ma avere dati vecchi, oppure essere momentaneamente offline
-            mentre l&apos;ultimo dato acquisito è ancora valido. Se non abbiamo abbastanza informazioni,
-            lo diciamo senza inventare un semaforo.
+            Una fonte raggiungibile può avere dati vecchi; una fonte offline può avere un ultimo dato ancora valido.
           </p>
         </div>
       </section>
+
+      </details>
 
       <section className={styles.table} aria-label="Stato delle fonti ufficiali">
         <div className={styles.tableHeader}>
@@ -183,8 +183,7 @@ export default async function SourceStatusPage() {
 
       <p className={styles.footerNote}>
         “Non ancora controllato” non significa che il sito ufficiale sia offline. “Data non valutabile”
-        non significa che il dato sia vecchio. Significa che non abbiamo abbastanza informazioni.
-        Preferiamo lasciare un dubbio visibile invece di inventare una certezza.
+        non significa che il dato sia vecchio. Mancano informazioni sufficienti per valutarlo.
       </p>
     </main>
   );

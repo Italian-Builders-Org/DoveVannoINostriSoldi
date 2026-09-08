@@ -84,9 +84,9 @@ export default function PublicDebtPage() {
   return (
     <main className="shell page">
       <header className="page-intro">
-        <span className={styles.kicker}>Banca d’Italia + Eurostat · snapshot verificato</span>
-        <h1>Il debito pubblico italiano, senza contatori stimati</h1>
-        <p>Stock, variazioni, finanziamento, detentori, scadenze e interessi. I periodi restano separati perché le fonti non si aggiornano insieme.</p>
+        <span className={styles.kicker}>Banca d’Italia · Eurostat</span>
+        <h1>Il debito pubblico italiano</h1>
+        <p>Quanto debito abbiamo, come cambia e chi lo detiene. Ogni dato riporta il proprio periodo di riferimento.</p>
         <p className={styles.meta}>{data.measurement.precisionNote}</p>
       </header>
 

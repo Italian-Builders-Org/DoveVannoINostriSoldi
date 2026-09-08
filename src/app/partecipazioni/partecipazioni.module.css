@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Direct share fills from the left; the remainder is the indirect share. */
@@ -23,7 +23,7 @@
 .track i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 
 .legend {
@@ -45,7 +45,7 @@
   height: 10px;
   flex: none;
 }
-.direct { background: var(--color-accent); }
+.direct { background: var(--chart-data-primary); }
 .indirect { background: var(--color-neutral-400); }
 
 .evidence { margin: 0; }

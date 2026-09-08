@@ -71,7 +71,7 @@ export default function AppaltiPage() {
     <main className={`shell page ${styles.page}`}>
       <div className={styles.intro}>
         <div className="page-intro">
-          <h1>Appalti pubblici: che cosa mostrano i CIG 2025</h1>
+          <h1>Appalti pubblici nel 2025</h1>
           <p>
             Una lettura dei codici di gara pubblicati da ANAC per capire quali procedure ricorrono
             di più e quali numeri meritano un controllo più vicino.
@@ -85,8 +85,6 @@ export default function AppaltiPage() {
           <span>valori in euro dichiarati per il lotto</span>
         </p>
       </div>
-
-      <p><Link href="/appalti/ted">Avvisi europei TED con committenti in Italia</Link> · Pubblicazioni di agosto 2026, in un perimetro distinto dai CIG ANAC.</p>
 
       <section className="stat-strip" aria-label="Numeri principali del perimetro ANAC">
         <div>
@@ -103,52 +101,13 @@ export default function AppaltiPage() {
           <span className="stat-label">Affidamento diretto · sul valore CIG</span>
           <span className="stat-value">{percent(directAward.amountSharePercent ?? 0)}</span>
           <span className="stat-note">
-            somma di importo_lotto · quota sul totale euro dello snapshot
+            quota sul valore dichiarato dei lotti
           </span>
         </div>
         <div>
           <span className="stat-label">Copertura CIG</span>
           <span className="stat-value">12/12</span>
           <span className="stat-note">file mensili presenti nello snapshot</span>
-        </div>
-      </section>
-
-      <section className={`notice scope-notice ${styles.readingNotice}`} aria-labelledby="appalti-reading-title">
-        <h2 id="appalti-reading-title">Come leggere questi numeri</h2>
-        <p>
-          Qui sotto tutto parla dello <strong>stesso snapshot CIG 2025</strong>: conteggio dei CIG e
-          somma di <strong>importo_lotto</strong> (valore dichiarato del lotto). Sono due letture
-          diverse dello stesso file, non due mercati diversi. I grandi numeri in euro della tabella
-          (centinaia di miliardi) sono proprio quella somma.
-        </p>
-      </section>
-
-      <section className={`panel ${styles.leadPanel}`} aria-labelledby="procedure-title">
-        <div className={styles.leadCopy}>
-          <h2 id="procedure-title" className="panel-title">Le procedure che ricorrono di più</h2>
-          <p>
-            La voce <strong>AFFIDAMENTO DIRETTO</strong> è l&apos;etichetta più frequente:{" "}
-            {share(directAward.records, totalCigs)} dei {integer(totalCigs)} CIG, ma solo{" "}
-            {percent(directAward.amountSharePercent ?? 0)} della somma di{" "}
-            <strong>importo_lotto</strong> nello snapshot
-            ({exactEuro((directAward.amountEuroCents ?? 0) / 100)}). La famiglia di etichette che
-            iniziano con “AFFIDAMENTO DIRETTO” arriva a {share(directAwardFamily.records, totalCigs)}{" "}
-            dei CIG e a {percent(directAwardFamily.amountSharePercent ?? 0)} del valore dichiarato.
-          </p>
-        </div>
-        <div className={styles.leadMeasurePair}>
-          <div className={styles.leadMeasure}>
-            <span>Sul numero di CIG</span>
-            <strong>{share(directAward.records, totalCigs)}</strong>
-            <small>etichetta esatta · {integer(directAward.records)} CIG</small>
-          </div>
-          <div className={styles.leadMeasure} data-emphasis="value">
-            <span>Sul valore dichiarato</span>
-            <strong>{percent(directAward.amountSharePercent ?? 0)}</strong>
-            <small>
-              {exactEuro((directAward.amountEuroCents ?? 0) / 100)} · importo_lotto &gt; 0
-            </small>
-          </div>
         </div>
       </section>
 
@@ -318,8 +277,7 @@ export default function AppaltiPage() {
             <h2 id="threshold-title" className="panel-title">Un segnale vicino alla soglia</h2>
             <p>
               Nella fascia <strong>[135.000 €, 140.000 €)</strong> ci sono {integer(thresholdBand.servicesAndSuppliesRecords)}
-              {" "}CIG di servizi e forniture. Questi numeri indicano dove guardare meglio negli atti.
-              La fascia serve a scegliere cosa verificare negli atti originali.
+              {" "}CIG di servizi e forniture da approfondire negli atti originali.
             </p>
           </div>
           <span className="tag tag-neutral">Intervallo dichiarato da ANAC</span>
@@ -368,8 +326,7 @@ export default function AppaltiPage() {
         <div className={styles.exactAmounts}>
           <h3>Valori del lotto che ricorrono spesso</h3>
           <p>
-            Sono conteggi di CIG con lo stesso valore dichiarato. Li mostriamo come indizio
-            descrittivo su quanto ricorre quel valore dichiarato.
+            CIG con lo stesso valore dichiarato del lotto.
           </p>
           <ScrollRegion className="table-scroll" role="region" aria-label="Valori esatti del lotto più ricorrenti" tabIndex={0}>
             <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
@@ -440,6 +397,8 @@ export default function AppaltiPage() {
         </ScrollRegion>
       </section>
 
+      <p><Link href="/appalti/ted">Avvisi europei TED con committenti in Italia</Link> · Pubblicazioni di agosto 2026, in un perimetro distinto dai CIG ANAC.</p>
+
       <IntegratedSectionPreview
         section="appalti"
         title="Dal quadro nazionale ai singoli atti"
@@ -448,7 +407,33 @@ export default function AppaltiPage() {
         limit={3}
       />
 
-      <section className={`panel ${styles.sourcePanel}`} id="fonti-metodo" aria-labelledby="sources-title">
+      <details className="data-details" id="fonti-metodo">
+        <summary>Fonti, metodo e limiti</summary>
+      <section className={`notice scope-notice ${styles.readingNotice}`} aria-labelledby="appalti-reading-title">
+        <h2 id="appalti-reading-title">Come leggere questi numeri</h2>
+        <p>
+          Qui sotto tutto parla dello <strong>stesso snapshot CIG 2025</strong>: conteggio dei CIG e
+          somma di <strong>importo_lotto</strong> (valore dichiarato del lotto). Sono due letture
+          diverse dello stesso file, non due mercati diversi. I grandi numeri in euro della tabella
+          (centinaia di miliardi) sono proprio quella somma.
+        </p>
+      </section>
+
+      <section className="panel" aria-labelledby="procedure-title">
+        <div className={styles.leadCopy}>
+          <h2 id="procedure-title" className="panel-title">Le procedure che ricorrono di più</h2>
+          <p>
+            La voce <strong>AFFIDAMENTO DIRETTO</strong> è l&apos;etichetta più frequente:{" "}
+            {share(directAward.records, totalCigs)} dei {integer(totalCigs)} CIG, ma solo{" "}
+            {percent(directAward.amountSharePercent ?? 0)} della somma di{" "}
+            <strong>importo_lotto</strong> nello snapshot
+            ({exactEuro((directAward.amountEuroCents ?? 0) / 100)}). La famiglia di etichette che
+            iniziano con “AFFIDAMENTO DIRETTO” arriva a {share(directAwardFamily.records, totalCigs)}{" "}
+            dei CIG e a {percent(directAwardFamily.amountSharePercent ?? 0)} del valore dichiarato.
+          </p>
+        </div>
+      </section>
+      <section className={`panel ${styles.sourcePanel}`} aria-labelledby="sources-title">
         <h2 id="sources-title" className="panel-title">Fonti, metodo e limiti</h2>
         <p>
           La fonte primaria è il dataset ufficiale ANAC dei CIG 2025. Abbiamo letto i dodici file
@@ -510,6 +495,7 @@ export default function AppaltiPage() {
           Vuoi passare dal quadro ai controlli? Apri la pagina <Link href="/controlli">Cosa vale la pena controllare →</Link>.
         </p>
       </section>
+      </details>
     </main>
   );
 }

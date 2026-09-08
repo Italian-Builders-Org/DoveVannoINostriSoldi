@@ -339,16 +339,14 @@ export function HealthSpendingHistoryChart({
           <Legend seriesList={WORK_SERVICES_SERIES} label="Legenda delle prestazioni di lavoro" />
 
           <figcaption className={styles.panelCaption}>
-            Voci relative a prestazioni sanitarie (BA1350) e non sanitarie (BA1750). La scala autonoma rende leggibili le variazioni senza schiacciamento visivo né un doppio asse fuorviante.
+            Prestazioni sanitarie (BA1350) e non sanitarie (BA1750), su scala separata dal grafico precedente.
           </figcaption>
         </figure>
       </div>
 
       <p className={styles.overallCaption}>
         Valori nominali a consuntivo in euro di competenza economica del Conto Economico SSN
-        (OpenBDAP RGS). La serie è presentata su due grafici a scala separata per consentire il
-        confronto simultaneo sia dei grandi aggregati sia delle prestazioni di lavoro, evitando
-        le distorsioni di scala di un asse unico o di un doppio asse. La serie non è corretta per
+        (OpenBDAP RGS). I due grafici usano scale diverse. La serie non è corretta per
         l&apos;inflazione e non misura efficienza, qualità dell&apos;assistenza o dotazioni organiche.
       </p>
     </div>

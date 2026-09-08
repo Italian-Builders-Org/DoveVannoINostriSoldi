@@ -38,7 +38,7 @@ export default function TransparencyPage() {
         {
           href: "/confronti/catalogo",
           title: "Benchmark da rendere omogenei",
-          summary: "Consulenze, contratti e istituzioni passano da un gate di comparabilità.",
+          summary: "Confronti di consulenze, contratti e istituzioni, con i rispettivi limiti.",
           metric: "90 benchmark",
         },
         {

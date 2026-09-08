@@ -14,7 +14,7 @@ test("controlli sintesi page keeps verification copy and no automatic guilt labe
     source("../src/lib/site-navigation.ts"),
   ]);
 
-  assert.match(page, /Cosa monitorare, dove approfondire/);
+  assert.match(page, /Da dove iniziare i controlli/);
   assert.match(page, /buildControlliSintesiPathways/);
   assert.match(page, /buildAiStewardshipAgenda/);
   assert.match(page, /buildAiInterventionMap/);

@@ -23,6 +23,7 @@ import {
   type IntegratedDatasetResult,
 } from "@/lib/integrated-public-view";
 import { offsetFromPage, pageCountFromTotal, pageFromOffset } from "@/lib/pagination";
+import { splitTableColumns, tableColumnLabel } from "@/lib/integrated-table-presentation";
 import styles from "../dati.module.css";
 
 type SearchValue = string | string[] | undefined;
@@ -73,6 +74,7 @@ function requestedOffset(search: Record<string, SearchValue>, limit: number): Se
 function CellValue({ value, amount }: { value: string | null; amount: boolean }) {
   if (value === null) return <span className={styles.missingValue}>Dato non pubblicato</span>;
   if (value === "") return <span className={styles.missingValue}>Dato non presente</span>;
+  if (/^n[.\/]?d\.?$/i.test(value.trim())) return <span className={styles.missingValue} title={`Valore nella fonte: ${value}`}>Non disponibile</span>;
   if (amount) {
     const formatted = formatIntegratedAmountCell(value);
     if (formatted !== null) {
@@ -153,13 +155,14 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
   const related = relatedReadingForDataset(dataset);
   const shouldLoadInsights =
     dataset.queryable &&
-    isInsightCapable(dataset.headers, true) &&
+    isInsightCapable(dataset.headers, true, dataset.id) &&
     result.query === null;
   const insights = shouldLoadInsights ? await loadDatasetInsights(dataset.id) : null;
   const firstVisible = result.pagination.scanStartSourceRow ?? 0;
   const lastVisible = result.pagination.scanEndSourceRow ?? 0;
   const hasNext = result.pagination.nextCursor !== null;
   const amounts = amountColumnKeys(dataset.headers, result.rows);
+  const columns = splitTableColumns(dataset.headers, dataset.id);
   const currentPage = pageFromOffset(result.offset ?? 0, result.limit);
   const pageCount = pageCountFromTotal(dataset.publicRows, result.limit);
   const resultSummary = result.query === null
@@ -201,7 +204,6 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
         <div>
           <span className="stat-label">Righe sorgente</span>
           <span className="stat-value">{integer(dataset.sourceRows)}</span>
-          <span className="stat-note">denominatore del dataset</span>
         </div>
         <div>
           <span className="stat-label">Etichetta</span>
@@ -213,7 +215,6 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
         <div>
           <span className="stat-label">Con fonte puntuale</span>
           <span className="stat-value">{integer(dataset.rowsWithPublicSource)}</span>
-          <span className="stat-note">URL HTTP(S) nelle righe</span>
         </div>
       </section>
 
@@ -223,14 +224,13 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
 
       {!dataset.queryable ? (
         <section className={`panel ${styles.unavailablePanel}`} aria-labelledby="dataset-no-rows-title">
-          <h2 id="dataset-no-rows-title">Niente da scorrere qui</h2>
+          <h2 id="dataset-no-rows-title">Righe non consultabili</h2>
           <p>
-            Documenta {integer(dataset.sourceRows)} righe sorgente e lo stato di pubblicazione, senza
-            creare destinatari o importi sostitutivi.
+            Documenta {integer(dataset.sourceRows)} {dataset.sourceRows === 1 ? "riga sorgente" : "righe sorgente"}. Sono disponibili fonte e stato di pubblicazione.
           </p>
           <div>
             {related ? <Link href={related.href}>Vai a {related.label} →</Link> : null}
-            <Link href="/dati?vista=priorita">Torna ai numeri da leggere →</Link>
+            <Link href="/dati?vista=priorita">Torna al catalogo →</Link>
           </div>
         </section>
       ) : (
@@ -238,7 +238,6 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
           <section className={`panel ${styles.queryPanel}`} aria-labelledby="dataset-search-title">
             <div>
               <h2 id="dataset-search-title" className="panel-title">Cerca nelle celle</h2>
-              <p>Maiuscole e minuscole indifferenti. Solo campi pubblici.</p>
             </div>
             <form action={`/dati/${dataset.id}`} method="get" className={styles.searchForm}>
               <label htmlFor="dataset-query">Testo da cercare</label>
@@ -283,7 +282,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
               </li>
             </ul>
 
-            {result.rows.length > 0 && dataset.headers.length > 4 ? (
+            {result.rows.length > 0 && columns.primary.length > 4 ? (
               <p className={styles.tableHint}>Scorri la tabella in orizzontale per leggere le altre colonne.</p>
             ) : null}
 
@@ -296,14 +295,13 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Riga</th>
-                      {dataset.headers.map((header) => (
+                      {columns.primary.map((header) => (
                         <th
                           scope="col"
                           key={header}
                           className={amounts.has(header) ? "num" : undefined}
                         >
-                          {header}
+                          <span title={`Campo nella fonte: ${header}`}>{tableColumnLabel(header)}</span>
                         </th>
                       ))}
                       <th scope="col">Fonti</th>
@@ -312,11 +310,7 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                   <tbody>
                     {result.rows.map((row) => (
                       <tr key={row.id}>
-                        <th scope="row">
-                          <code>{row.id}</code>
-                          <small>sorgente {integer(row.sourceRow)}</small>
-                        </th>
-                        {dataset.headers.map((header) => (
+                        {columns.primary.map((header) => (
                           <td
                             key={header}
                             className={amounts.has(header) ? `num ${styles.amountCell}` : undefined}
@@ -350,6 +344,19 @@ export default async function IntegratedDatasetPage({ params, searchParams }: Da
                               ))}
                             </ul>
                           )}
+                          <details className={styles.rowDetails}>
+                            <summary>Dettagli della riga</summary>
+                            <dl>
+                              <div><dt>Identificativo</dt><dd><code>{row.id}</code></dd></div>
+                              <div><dt>Riga nella fonte</dt><dd>{integer(row.sourceRow)}</dd></div>
+                              {columns.technical.map((header) => (
+                                <div key={header}>
+                                  <dt title={`Campo nella fonte: ${header}`}>{tableColumnLabel(header)}</dt>
+                                  <dd><CellValue amount={amounts.has(header)} value={row.cells[header] ?? null} /></dd>
+                                </div>
+                              ))}
+                            </dl>
+                          </details>
                         </td>
                       </tr>
                     ))}

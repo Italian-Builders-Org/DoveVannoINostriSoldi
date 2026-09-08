@@ -293,7 +293,7 @@ export function AssistantChat() {
         ) : <div className={styles.welcome}>
           <Image className={styles.heroMark} src="/brand/dvns-mark-transparent.svg" alt="" width={48} height={56} priority />
           <h1>Cosa vuoi sapere?</h1>
-          <p>Partiamo dai dati pubblici.</p>
+
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>

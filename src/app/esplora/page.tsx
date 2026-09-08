@@ -22,22 +22,25 @@ export default function EsploraPage() {
       <section className={styles.intro}>
         <h1>Esplora relazioni</h1>
         <p>
-          Fetta verticale su <code>incarichi-nominativi-shard</code>: ogni arco collega una
-          persona a un ente (incarico). Su{" "}
-          <strong>{searchable.toLocaleString("it-IT")}</strong> relazioni ricercabili, i
-          riferimenti CIG/CUP e di atto compaiono in nota e sono ricercabili. Non fondiamo
-          persone con lo stesso nome senza un id stabile.
+          Cerca persone, enti e riferimenti agli atti in <strong>{searchable.toLocaleString("it-IT")}</strong> relazioni tra incarichi ed enti pubblici.
+          Un collegamento indica dove approfondire; non dimostra un’irregolarità.
         </p>
-        {suspects > 0 ? (
-          <p className={styles.caveat}>
-            {suspects.toLocaleString("it-IT")} record gemelli di importo (stesso atto, rapporto
-            ×100 o ×1000) restano nell&apos;artifact ma sono esclusi da aggregati e ricerca.
-          </p>
-        ) : null}
-        <p className={styles.caveat}>{caveat}</p>
+
       </section>
 
       <EsploraSearch initialCount={searchable} />
+
+      <details className="data-details">
+        <summary>Fonti, identità e record esclusi</summary>
+        <p>La ricerca usa il dataset <code>incarichi-nominativi-shard</code>. Non unisce persone con lo stesso nome senza un identificativo stabile. I riferimenti CIG, CUP e agli atti sono ricercabili.</p>
+        {suspects > 0 ? (
+          <p className={styles.caveat}>
+            {suspects.toLocaleString("it-IT")} record con importi sospetti (stesso atto, rapporto
+            ×100 o ×1000) restano nel file di origine ma sono esclusi da aggregati e ricerca.
+          </p>
+        ) : null}
+        <p className={styles.caveat}>{caveat}</p>
+      </details>
 
       <section className={styles.provenance}>
         <Link href="/incarichi">Registro ufficiale incarichi</Link>

@@ -268,7 +268,7 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
             <dt>Densità</dt>
             <dd>
               {municipalityGeography?.densityPerSquareKilometre == null
-                ? "n.d."
+                ? "Non disponibile"
                 : `${integer(Math.round(municipalityGeography.densityPerSquareKilometre))} ab./km²`}
             </dd>
           </div>
@@ -277,7 +277,7 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
             <dd>
               {municipalityGeography
                 ? `${municipalityGeography.surfaceSquareKilometres.toLocaleString("it-IT", { maximumFractionDigits: 2 })} km²`
-                : "n.d."}
+                : "Non disponibile"}
             </dd>
           </div>
           <div>

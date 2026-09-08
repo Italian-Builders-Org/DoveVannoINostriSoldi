@@ -22,21 +22,21 @@ function contrast(first, second) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-test("coesione trace panel keeps high-contrast text on the dark surface", () => {
-  const surface = token("color-neutral-900");
-  assert.match(coesioneCss, /\.tracePanel[\s\S]*background:\s*var\(--color-neutral-900\)/);
-  assert.match(coesioneCss, /\.tracePanel > div > span:first-child[\s\S]*color:\s*var\(--color-accent-300\)/);
-  assert.match(coesioneCss, /\.traceAction span[\s\S]*color:\s*var\(--color-on-strong-muted\)/);
+test("coesione trace panel keeps high-contrast text on the light surface", () => {
+  const surface = token("color-raised");
+  assert.match(coesioneCss, /\.tracePanel[\s\S]*background:\s*var\(--color-raised\)/);
+  assert.match(coesioneCss, /\.tracePanel > div > span:first-child[\s\S]*color:\s*var\(--color-neutral-600\)/);
+  assert.match(coesioneCss, /\.traceAction span[\s\S]*color:\s*var\(--color-neutral-700\)/);
 
   const pairs = [
-    ["trace heading", token("color-raised"), surface],
-    ["trace body", token("color-neutral-300"), surface],
-    ["trace kicker", token("color-accent-300"), surface],
-    ["trace metric label", token("color-on-strong-muted"), surface],
-    ["trace metric value", token("color-raised"), surface],
+    ["trace heading", token("color-neutral-900"), surface],
+    ["trace body", token("color-neutral-700"), surface],
+    ["trace kicker", token("color-neutral-600"), surface],
+    ["trace metric label", token("color-neutral-700"), surface],
+    ["trace metric value", token("color-neutral-900"), surface],
   ];
 
   for (const [label, foreground, background] of pairs) {
-    assert.ok(contrast(foreground, background) >= 4.5, `${label} sotto 4.5:1 sul pannello scuro`);
+    assert.ok(contrast(foreground, background) >= 4.5, `${label} sotto 4.5:1 sul pannello chiaro`);
   }
 });

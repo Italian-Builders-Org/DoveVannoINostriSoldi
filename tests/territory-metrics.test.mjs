@@ -84,7 +84,7 @@ test("territory page metadata and copy identify the per-square-kilometre coverag
 test("macro-area per-square-kilometre values fail closed on partial geography", async () => {
   const page = await readFile(new URL("../src/app/territori/page.tsx", import.meta.url), "utf8");
   assert.match(page, /areaRegions\.every\(\(region\) => region\.geography !== null\)/);
-  assert.match(page, /areaSurfaceSquareKilometres === null[\s\S]*?"n\.d\."/);
+  assert.match(page, /areaSurfaceSquareKilometres === null[\s\S]*?"Non disponibile"/);
   assert.doesNotMatch(page, /region\.geography\?\.surfaceSquareKilometres \?\? 0/);
 });
 
@@ -92,7 +92,7 @@ test("fiscal per-square-kilometre values keep null instead of becoming zero", as
   const page = await readFile(new URL("../src/app/territori/fisco/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(page, /balancePerSquareKmCents \?\? 0/);
   assert.doesNotMatch(page, /PerCapitaCents`\] \?\? 0/);
-  assert.match(page, /value === null\s*\?\s*"n\.d\."/);
+  assert.match(page, /value === null\s*\?\s*"Non disponibile"/);
   assert.match(page, /rightValue === null/);
 });
 

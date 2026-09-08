@@ -61,7 +61,7 @@
 
 .split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: var(--space-4);
 }
@@ -88,9 +88,7 @@
   .filters { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Keep linked section headings below the sticky tablet/desktop navigation. */
-.anchorTarget { scroll-margin-top: 14rem; }
-
-@media (max-width: 620px) {
-  .anchorTarget { scroll-margin-top: var(--space-4); }
+/* Include the announcement and header when following pagination anchors. */
+.anchorTarget {
+  scroll-margin-top: calc(var(--announcement-height, 0px) + 68px + var(--space-4));
 }

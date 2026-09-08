@@ -151,7 +151,7 @@ function ComparisonChart({
           return (
             <div key={country.id}>
               <dt><i style={{ background: GOVERNMENT_CHART_COLORS[country.id] }} /><b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[country.id]}</b>{country.label}</dt>
-              <dd>{change === null ? "n.d." : `${change > 0 ? "+" : ""}${formatGovernmentChartValue(change, chart.unit)}`}</dd>
+              <dd>{change === null ? "Non disponibile" : `${change > 0 ? "+" : ""}${formatGovernmentChartValue(change, chart.unit)}`}</dd>
             </div>
           );
         })}
@@ -166,8 +166,8 @@ function ComparisonChart({
               {series.map((country) => (
                 <tr key={country.id}>
                   <th scope="row">{country.label}</th>
-                  <td>{country.points[0] ? `${formatGovernmentChartPeriod(country.points[0].period)}: ${formatGovernmentChartValue(country.points[0].value, chart.unit)}${formatGovernmentChartPointStatus(country.points[0])}` : "n.d."}</td>
-                  <td>{country.points.at(-1) ? `${formatGovernmentChartPeriod(country.points.at(-1)!.period)}: ${formatGovernmentChartValue(country.points.at(-1)!.value, chart.unit)}${formatGovernmentChartPointStatus(country.points.at(-1)!)}` : "n.d."}</td>
+                  <td>{country.points[0] ? `${formatGovernmentChartPeriod(country.points[0].period)}: ${formatGovernmentChartValue(country.points[0].value, chart.unit)}${formatGovernmentChartPointStatus(country.points[0])}` : "Non disponibile"}</td>
+                  <td>{country.points.at(-1) ? `${formatGovernmentChartPeriod(country.points.at(-1)!.period)}: ${formatGovernmentChartValue(country.points.at(-1)!.value, chart.unit)}${formatGovernmentChartPointStatus(country.points.at(-1)!)}` : "Non disponibile"}</td>
                 </tr>
               ))}
             </tbody>

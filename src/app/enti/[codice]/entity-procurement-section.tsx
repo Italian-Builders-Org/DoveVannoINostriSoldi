@@ -418,7 +418,6 @@ function Available({ profile }: { profile: AnacEntityProcurementPageView }) {
           <div><dt>Importo</dt><dd>Importo di aggiudicazione dichiarato; non è un dato di pagamento.</dd></div>
           <div><dt>Identità</dt><dd>Il codice fiscale dell&apos;ente proviene da IPA ed è usato per il controllo di identità; i codici fiscali degli operatori non sono pubblicati.</dd></div>
           <EntityProcurementSourceDetails profile={profile} />
-          <div><dt>Shard</dt><dd>Artifact hash-pinned e validato offline prima della lettura.</dd></div>
         </dl>
       </details>
     </section>

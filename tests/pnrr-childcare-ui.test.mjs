@@ -10,7 +10,7 @@ test("PNRR catalog is server-rendered, searchable, and semantically cautious", a
   assert.match(page, /queryPnrrChildcare/);
   assert.match(page, /finanziamento PNRR registrato/i);
   assert.match(page, /pista documentale su CUP, finanziamenti, gare e aggiudicatari/i);
-  assert.match(page, /non contiene i pagamenti ReGiS/i);
+  assert.match(page, /I pagamenti ReGiS non sono disponibili in questa fonte/i);
   assert.match(page, /Intero archivio:[\s\S]*?coverage\.uniqueProjects/);
   assert.match(page, /submeasure\.code/);
   assert.match(page, /longDate\(pnrrChildcareMeta\.referenceDate\)/);

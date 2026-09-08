@@ -26,7 +26,14 @@ export async function inspectGovernmentChart(page, card) {
     element.focus({ preventScroll: true });
   });
   for (const key of ["Home", "ArrowRight", "End", "ArrowLeft"]) {
+    const previous = await read();
+    const currentIndex = previous.periods.indexOf(previous.period);
+    const expectedIndex = key === "Home" ? 0 : key === "End" ? previous.periods.length - 1
+      : Math.max(0, Math.min(previous.periods.length - 1, currentIndex + (key === "ArrowRight" ? 1 : -1)));
     await page.keyboard.press(key);
+    await page.waitForFunction((element, expectedPeriod) =>
+      element.querySelector('[role="status"] strong')?.textContent === expectedPeriod,
+    { timeout: 3_000 }, card, previous.periods[expectedIndex]);
     const state = await read();
     assert.equal(state.id, id, `${id}: i tasti del grafico cambiano indicatore`);
     assert.equal(state.summaries.length, 4, `${id}: riepiloghi della selezione assenti`);
@@ -35,7 +42,7 @@ export async function inspectGovernmentChart(page, card) {
     if (key === "Home") assert.equal(index, 0);
     if (key === "End") assert.equal(index, state.periods.length - 1);
     for (const [countryIndex, summary] of state.summaries.entries()) {
-      const observations = state.rows[countryIndex].slice(0, -1).filter((value) => value !== "n.d.");
+      const observations = state.rows[countryIndex].slice(0, -1).filter((value) => value !== "Non disponibile");
       if (observations.length === 0) {
         assert.equal(summary.value, undefined);
         continue;
@@ -44,11 +51,11 @@ export async function inspectGovernmentChart(page, card) {
       assert.equal(summary.value, state.rows[countryIndex][index], `${id}: valore diverso dalla tabella`);
       const number = (value) => Number(value.split(" · ")[0].replaceAll(".", "").replace(",", "."));
       const first = observations[0];
-      if (summary.value !== "n.d." && observations.length >= 2) {
+      if (summary.value !== "Non disponibile" && observations.length >= 2) {
         const tolerance = (await card.evaluate((element) => element.textContent.includes("Valori: Euro"))) ? 1 : 0.02;
         assert.ok(Math.abs(number(summary.change) - (number(summary.value) - number(first))) <= tolerance,
           `${id}: variazione incoerente con il valore selezionato`);
-      } else assert.equal(summary.change, "n.d.");
+      } else assert.equal(summary.change, "Non disponibile");
     }
   }
   // Real pointer coordinates in the SVG viewBox, including its responsive transform.
@@ -77,7 +84,7 @@ try {
   }
   for (const { width, id } of scenarios) {
     await runScenario(browser, {
-      suite: "chart-interactions", label: `government-chart-${id}-${width}`, pathname: `/governi/${id}`, width, baseUrl,
+      suite: "chart-interactions", label: `government-chart-${id}-${width}`, pathname: `/governi/${id}`, width, baseUrl, waitUntil: "networkidle2",
       validate: async (page) => {
         await page.waitForSelector('[data-slide-id]');
         await inspectGovernmentChart(page, await page.$('[data-slide-id]'));

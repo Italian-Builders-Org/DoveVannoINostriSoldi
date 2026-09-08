@@ -84,60 +84,6 @@ export default function ParliamentPage() {
         </div>
       </dl>
 
-      <div className="notice">
-        <strong>Come leggere questi numeri</strong>
-        <p>
-          Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
-          pagato. Ogni documento resta sul suo ambito.
-        </p>
-      </div>
-
-      <section className="panel" aria-labelledby="copertura-parlamento">
-        <div className={styles.coverageHeader}>
-          <div>
-            <h2 id="copertura-parlamento">Copertura dei due rami</h2>
-            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
-          </div>
-          <span>Documenti 2024 · fonti ufficiali</span>
-        </div>
-        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
-        <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Ramo</th>
-                <th scope="col">Documento</th>
-                <th scope="col">Approvato</th>
-                <th scope="col">Copertura</th>
-                <th scope="col">Fonte</th>
-              </tr>
-            </thead>
-            <tbody>
-              {documentCoverage.map((source) => (
-                <tr key={source.id}>
-                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
-                  <td>
-                    {source.title}
-                    <small>ID fonte: {source.sourceRecordId}</small>
-                  </td>
-                  <td>{longDate(source.updatedAt)}</td>
-                  <td>
-                    <span className={styles.metadataStatus}>Solo metadati</span>
-                    <small>Numeri del PDF non verificati</small>
-                  </td>
-                  <td>
-                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
-                    {source.downloadUrl ? (
-                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       {chambers.map((chamber) => (
         <section className={styles.chamber} key={chamber.id}>
           <header className={styles.chamberHeader}>
@@ -233,6 +179,62 @@ export default function ParliamentPage() {
         </section>
       ))}
 
+      <details className="data-details">
+        <summary>Documenti, copertura e limiti</summary>
+      <div className="notice">
+        <strong>Come leggere questi numeri</strong>
+        <p>
+          Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
+          pagato. Ogni documento resta sul suo ambito.
+        </p>
+      </div>
+
+      <section className="panel" aria-labelledby="copertura-parlamento">
+        <div className={styles.coverageHeader}>
+          <div>
+            <h2 id="copertura-parlamento">Copertura dei due rami</h2>
+            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
+          </div>
+          <span>Documenti 2024 · fonti ufficiali</span>
+        </div>
+        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
+        <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Ramo</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Approvato</th>
+                <th scope="col">Copertura</th>
+                <th scope="col">Fonte</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documentCoverage.map((source) => (
+                <tr key={source.id}>
+                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
+                  <td>
+                    {source.title}
+                    <small>ID fonte: {source.sourceRecordId}</small>
+                  </td>
+                  <td>{longDate(source.updatedAt)}</td>
+                  <td>
+                    <span className={styles.metadataStatus}>Solo metadati</span>
+                    <small>Numeri del PDF non verificati</small>
+                  </td>
+                  <td>
+                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
+                    {source.downloadUrl ? (
+                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="panel">
         <h2 className="panel-title">Cosa non pubblichiamo ancora</h2>
         <p className={styles.plainText}>{parliamentSnapshot.methodology.missingData}</p>
@@ -242,6 +244,7 @@ export default function ParliamentPage() {
           <Link href="/fonti">Fonti collegate</Link>
         </div>
       </section>
+      </details>
     </main>
   );
 }

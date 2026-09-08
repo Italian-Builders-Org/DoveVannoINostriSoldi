@@ -31,7 +31,7 @@ test("the pensions page has an accessible text-first composition graphic", () =>
   assert.match(page, /right\.grossAmountCents - left\.grossAmountCents/);
   assert.match(page, /category\.grossAmountCents \/ latestBenefits\.grossAmountCents/);
   assert.match(page, /<table className="table">/);
-  assert.match(css, /background: var\(--color-accent\)/);
+  assert.match(css, /background: var\(--chart-data-primary\)/);
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.doesNotMatch(css, /CHART_COLORS|chart-category-colors/);
 });

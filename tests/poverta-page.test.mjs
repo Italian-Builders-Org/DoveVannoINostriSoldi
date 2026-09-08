@@ -88,7 +88,7 @@ test("i valori sono percentuali plausibili e coincidono con lo snapshot", () => 
 });
 
 test("la pagina dichiara i limiti che il dato impone", () => {
-  assert.match(page, /Cosa non è questa pagina/);
+  assert.match(page, /Definizioni, limiti e copertura/);
   assert.match(page, /Non è spesa pubblica/);
   assert.match(page, /non si sommano e non si sottraggono/);
   assert.match(page, /Non c&apos;è una classifica/);

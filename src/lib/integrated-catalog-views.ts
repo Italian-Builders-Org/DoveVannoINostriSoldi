@@ -149,12 +149,12 @@ export function publicationLabel(publication: string): string {
 
 /** Datasets with public recipient + amount columns (live insight possible). */
 export function hasReadableNumbers(
-  dataset: Pick<CatalogDatasetSummary, "queryable" | "headers" | "publication">,
+  dataset: Pick<CatalogDatasetSummary, "queryable" | "headers" | "publication" | "id">,
 ): boolean {
   const queryable =
     dataset.queryable ??
     (dataset.publication === "rows" || dataset.publication === "source-index");
-  return isInsightCapable(dataset.headers ?? [], Boolean(queryable));
+  return isInsightCapable(dataset.headers ?? [], Boolean(queryable), dataset.id);
 }
 
 /**

@@ -140,8 +140,7 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
           <span className={styles.kicker}>RGS / OPENBDAP · PAGAMENTI DEL BILANCIO DELLO STATO</span>
           <h1 className={styles.title}>Dove va la spesa dello Stato.</h1>
           <p className={styles.lead}>
-            Leggiamo i dati ufficiali della Ragioneria Generale dello Stato per mostrare come cambia
-            la spesa, chi la gestisce e per quale funzione. Non usiamo stime o valori dimostrativi.
+            Pagamenti dello Stato per periodo, amministrazione e funzione. Fonte: Ragioneria Generale dello Stato.
           </p>
         </div>
 
@@ -493,16 +492,19 @@ export default async function StateSpendingPage({ searchParams }: PageProps) {
               <span className={styles.kicker}>RGS / OPENBDAP</span>
               <h1 className={styles.title}>Spese dello Stato.</h1>
               <p className={styles.lead}>
-                Questa pagina usa solo dati ufficiali OpenBDAP. Se la fonte non risponde, non
-                sostituiamo i valori con numeri inventati.
+                Fonte: Ragioneria Generale dello Stato · OpenBDAP.
               </p>
             </div>
           </header>
           <div className={styles.errorState}>
             <strong>Dati temporaneamente non disponibili.</strong>
             <p>
-              Non siamo riusciti a leggere OpenBDAP. Puoi riprovare più tardi. Dettaglio: {errorMessage ?? "non disponibile"}.
+              Non siamo riusciti a leggere OpenBDAP. Puoi riprovare più tardi oppure consultare il consuntivo 2025 dal selettore del periodo.
             </p>
+            <details className="data-details">
+              <summary>Dettaglio tecnico</summary>
+              <p>{errorMessage ?? "non disponibile"}</p>
+            </details>
           </div>
         </>
       )}

@@ -10,7 +10,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
 }
 
 .aside {
@@ -230,4 +230,17 @@
   .analysisComparison :global(.table) { table-layout: fixed; }
   .analysisComparison :global(.table) th,
   .analysisComparison :global(.table) td { padding-inline: 4px; }
+}
+
+.aside > section:first-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.aside .monthList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
 }

@@ -107,7 +107,7 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
       </div>
 
       <section className={styles.flow} aria-labelledby="flow-title">
-        <div className={styles.sectionHeading}><h2 id="flow-title">Quattro livelli, senza scorciatoie</h2></div>
+        <div className={styles.sectionHeading}><h2 id="flow-title">Finanziamenti, gare e pagamenti</h2></div>
         <div className={styles.flowGrid}>
           <div><span>Finanziamento PNRR registrato</span><strong>{money(project.funding.pnrrCents)}</strong><Evidence kind="osservato" /></div>
           <div><span>Importi di gara</span><strong>{exactEuro(tenderTotal / 100)}</strong><Evidence kind="derivato" /></div>

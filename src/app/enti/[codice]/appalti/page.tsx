@@ -371,12 +371,11 @@ function Awards({
         <p className={styles.tableHint}>Scorri la tabella verso destra →</p>
         <table className="table">
           <caption>Aggiudicazioni distinte per coppia CIG e identificativo</caption>
-          <thead><tr><th scope="col">CIG</th><th scope="col">ID aggiudicazione</th><th scope="col">Data</th><th scope="col" className="num">Importo</th><th scope="col">Stato</th>{concentration ? <th scope="col">Relazioni selezionate</th> : null}</tr></thead>
+          <thead><tr><th scope="col">CIG</th><th scope="col">Data</th><th scope="col" className="num">Importo</th><th scope="col">Stato</th>{concentration ? <th scope="col">Relazioni selezionate</th> : null}</tr></thead>
           <tbody>
             {pageRows.map((award) => (
               <tr key={award.cig + ":" + award.awardId}>
-                <th scope="row"><a href={"https://dati.anticorruzione.it/superset/dashboard/dettaglio_cig/?cig=" + encodeURIComponent(award.cig)} target="_blank" rel="noreferrer">{award.cig} ↗</a></th>
-                <td>{award.awardId}</td>
+                <th scope="row"><a href={"https://dati.anticorruzione.it/superset/dashboard/dettaglio_cig/?cig=" + encodeURIComponent(award.cig)} target="_blank" rel="noreferrer">{award.cig} ↗</a><details className="table-details"><summary>ID aggiudicazione</summary>{award.awardId}</details></th>
                 <td>{award.awardedAt ?? "non disponibile"}</td>
                 <td className="num">{formatDecimalEuro(award.amount)}</td>
                 <td>{awardStatusLabel(award)}</td>
@@ -477,8 +476,8 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       <main className={"shell page " + styles.page}>
         <p><Link href={"/enti/" + encodeURIComponent(normalizedCode)}>← Torna alla scheda ente</Link></p>
         <div className="notice">
-          <strong>Profilo servito senza chiamate live</strong>
-          <p>{"L'identità è collegata allo snapshot IPA verificato durante l'ETL; questa visita non interroga Indice PA."}</p>
+          <strong>Dati acquisiti dalla fonte</strong>
+          <p>{"Dati IPA verificati al momento dell’acquisizione. Consulta Indice PA per eventuali aggiornamenti."}</p>
         </div>
         <EntityProcurementSection state={state} />
       </main>
@@ -523,8 +522,8 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <p>Procedure, aggiudicazioni e aggiudicatari collegati a questo ente.</p>
       </div>
       <div className="notice">
-        <strong>Profilo servito senza chiamate live</strong>
-        <p>{"L'identità è collegata allo snapshot IPA verificato durante l'ETL; questa visita non interroga Indice PA."}</p>
+        <strong>Dati acquisiti dalla fonte</strong>
+        <p>{"Dati IPA verificati al momento dell’acquisizione. Consulta Indice PA per eventuali aggiornamenti."}</p>
       </div>
       {scopeLine()}
       {cpvRecord ? <CpvFilter codice={normalizedCode} record={cpvRecord} selected={cpv} matched={profile.procedures.length} />
@@ -554,13 +553,13 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       {selectedView === "operator" && operatorRef ? <OperatorDetail profile={profile} codice={normalizedCode} operatorRef={operatorRef} currentPage={currentPage} size={size} /> : null}
       <section className="panel" aria-labelledby="method-title">
         <h2 className="panel-title" id="method-title">Fonte e limiti</h2>
-        <p className={styles.note}>Snapshot CIG pubblicati 2025, cross-temporale: non è copertura nazionale corrente. L&apos;importo di aggiudicazione è dichiarato e non è un pagamento. Il collegamento dell&apos;ente a IPA è stato verificato durante l&apos;ETL hash-pinned; non viene ricontrollato live a ogni visita. I codici fiscali degli aggiudicatari/operatori non sono pubblicati.</p>
-        <p className={styles.note}>Le righe sono pagine del profilo hash-pinned; i conflitti e i casi senza attribuzione restano indicati nella tabella. Quote Top 1 / Top 10 e HHI sono descrittivi e non indicano illecito.</p>
+        <p className={styles.note}>Snapshot CIG pubblicati 2025, cross-temporale: non è copertura nazionale corrente. L&apos;importo di aggiudicazione è dichiarato e non è un pagamento. L’identità dell’ente è verificata nel registro IPA. I codici fiscali degli aggiudicatari/operatori non sono pubblicati.</p>
+        <p className={styles.note}>La tabella indica identità ambigue e importi non attribuibili. Quote Top 1 / Top 10 e HHI sono descrittivi e non indicano illecito.</p>
         <dl className={styles.sourceList}>
           <div><dt>Generato</dt><dd>{profile.meta.generatedAt}</dd></div>
           <div><dt>Perimetro temporale</dt><dd>CIG pubblicati nel 2025 · tutti i mesi · snapshot cross-temporale</dd></div>
           <EntityProcurementSourceDetails profile={profile} />
-          {cpvRecord ? <div><dt>Classificazione CPV</dt><dd><a href="https://dati.anticorruzione.it/opendata/dataset/cig-2025" target="_blank" rel="noreferrer">ANAC · CIG anno 2025</a> · byte riacquisiti il {anacCpvSource.acquiredAt}; stesso source lock del profilo. Licenza CC BY-SA 4.0.</dd></div> : null}
+          {cpvRecord ? <div><dt>Classificazione CPV</dt><dd><a href="https://dati.anticorruzione.it/opendata/dataset/cig-2025" target="_blank" rel="noreferrer">ANAC · CIG anno 2025</a> · file acquisiti il {anacCpvSource.acquiredAt}. Licenza CC BY-SA 4.0.</dd></div> : null}
         </dl>
       </section>
     </main>

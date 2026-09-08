@@ -251,7 +251,7 @@ function IndicatorChart({
             return (
               <span key={series.id}>
                 <i style={{ backgroundColor: GOVERNMENT_CHART_COLORS[series.id] }} aria-hidden="true" />
-                <b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}: {point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "n.d."}
+                <b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}: {point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "Non disponibile"}
               </span>
             );
           })}
@@ -265,8 +265,8 @@ function IndicatorChart({
             {series.first ? (
               <dl>
                 <div><dt>Inizio del periodo · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}{formatGovernmentChartPointStatus(series.first)}</dd></div>
-                <div><dt data-selected-period>Periodo selezionato · {activePeriod === null ? "n.d." : formatGovernmentChartPeriod(activePeriod)}</dt><dd data-selected-value>{series.selected ? `${formatGovernmentChartValue(series.selected.value, chart.unit)}${formatGovernmentChartPointStatus(series.selected)}` : "n.d."}</dd></div>
-                <div><dt>Variazione dall’inizio</dt><dd data-selected-change>{series.change === null ? "n.d." : formatChange(series.change, chart.unit)}</dd></div>
+                <div><dt data-selected-period>Periodo selezionato · {activePeriod === null ? "Non disponibile" : formatGovernmentChartPeriod(activePeriod)}</dt><dd data-selected-value>{series.selected ? `${formatGovernmentChartValue(series.selected.value, chart.unit)}${formatGovernmentChartPointStatus(series.selected)}` : "Non disponibile"}</dd></div>
+                <div><dt>Variazione dall’inizio</dt><dd data-selected-change>{series.change === null ? "Non disponibile" : formatChange(series.change, chart.unit)}</dd></div>
               </dl>
             ) : <p>Nessun dato pubblicato nel periodo.</p>}
           </article>
@@ -291,9 +291,9 @@ function IndicatorChart({
                   <th scope="row">{series.label}</th>
                   {periods.map((period) => {
                     const point = series.points.find((candidate) => candidate.period === period);
-                    return <td key={period}>{point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "n.d."}</td>;
+                    return <td key={period}>{point ? `${formatGovernmentChartValue(point.value, chart.unit)}${formatGovernmentChartPointStatus(point)}` : "Non disponibile"}</td>;
                   })}
-                  <td>{series.change === null ? "n.d." : formatChange(series.change, chart.unit)}</td>
+                  <td>{series.change === null ? "Non disponibile" : formatChange(series.change, chart.unit)}</td>
                 </tr>
               ))}
             </tbody>

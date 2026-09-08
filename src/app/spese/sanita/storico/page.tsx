@@ -151,9 +151,7 @@ export default async function HealthSpendingHistoryPage() {
         <>
           {history!.dataMode === "snapshot" ? (
             <p className={styles.note} role="status">
-              OpenBDAP non sta restituendo i CSV annuali in questo momento: mostriamo lo snapshot
-              nazionale verificato (il 2024 coincide con lo snapshot hash-locked della pagina
-              principale). Quando la fonte torna disponibile, la lettura live riprende in automatico.
+              OpenBDAP non risponde: mostriamo gli ultimi dati nazionali verificati, con data di acquisizione indicata nelle fonti.
             </p>
           ) : null}
           <section className="panel">

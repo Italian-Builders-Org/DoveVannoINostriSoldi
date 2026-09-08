@@ -48,7 +48,7 @@ export function EntityInformation({
           <h2 id="entity-contacts-title">Contatti</h2>
           {snapshotOnly ? (
             <p>
-              Contatti e responsabile non sono inclusi nello snapshot locale. Per i recapiti correnti fa
+              Contatti e responsabile non sono disponibili. Per i recapiti aggiornati fa
               fede Indice PA.
             </p>
           ) : (
@@ -98,8 +98,7 @@ export function EntityInformation({
             <div><dt>Licenza</dt><dd>{IPA_LICENSE}</dd></div>
             {snapshotOnly ? (
               <>
-                <div><dt>Modalità</dt><dd>Snapshot verificato durante l&apos;ETL; nessuna chiamata IPA durante la visita</dd></div>
-                <div><dt>Snapshot osservato</dt><dd>{snapshotObservedAt ? longDate(snapshotObservedAt) : "Non indicato"}</dd></div>
+                <div><dt>Dati verificati al</dt><dd>{snapshotObservedAt ? longDate(snapshotObservedAt) : "Non indicato"}</dd></div>
               </>
             ) : (
               <>
@@ -122,8 +121,8 @@ export function EntityInformation({
           <h2 id="entity-structure-title">Uffici dichiarati in IPA</h2>
           {snapshotOnly ? (
             <div className="notice">
-              <strong>Uffici non inclusi nello snapshot locale</strong>
-              <p>La visita non interroga IPA live; per UO e AOO correnti consulta direttamente la fonte ufficiale.</p>
+              <strong>Uffici non disponibili in questa scheda</strong>
+              <p>Consulta gli uffici aggiornati su Indice PA.</p>
             </div>
           ) : structure ? (
             <>
@@ -189,7 +188,7 @@ export function EntityInformation({
           ) : (
             <div className="notice warning-notice">
               <strong>Gli uffici non sono disponibili in questo momento</strong>
-              <p>La scheda anagrafica resta consultabile senza ricostruire la struttura dai nomi.</p>
+              <p>La scheda anagrafica resta consultabile.</p>
             </div>
           )}
         </section>
@@ -198,9 +197,7 @@ export function EntityInformation({
           <section aria-labelledby="entity-future-data-title">
             <h2 id="entity-future-data-title">Altri collegamenti economici</h2>
             <p className={styles.note}>
-              Per questo tipo di ente pubblichiamo già contratti e aggiudicazioni ANAC quando
-              disponibili. Pagamenti SIOPE, progetti PNRR e consulenze verranno collegati solo con
-              join esatti verso fonti ufficiali.
+              Consulta i contratti e le aggiudicazioni ANAC disponibili per questo ente.
             </p>
           </section>
         ) : null}

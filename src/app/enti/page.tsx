@@ -178,15 +178,14 @@ export default async function EntiPage({ searchParams }: PageProps) {
           </button>
         </form>
         <p className={styles.note}>
-          La ricerca legge direttamente il registro IPA di AgID. Non usiamo nomi dimostrativi o un
-          elenco scritto a mano.
+          Ricerca nel registro IPA di AgID.
         </p>
       </section>
 
       {query && !canSearch && (
         <div className="notice warning-notice">
           <strong>Scrivi almeno due caratteri</strong>
-          <p>La ricerca parte dopo due caratteri per non sovraccaricare il servizio pubblico.</p>
+          <p>Inserisci il nome o il codice IPA dell’ente.</p>
         </div>
       )}
 
@@ -194,8 +193,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <div className="notice warning-notice">
           <strong>La fonte IPA non risponde in questo momento</strong>
           <p>
-            Non sostituiamo il dato ufficiale con un elenco inventato. Riprova più tardi oppure apri
-            i dati AgID.
+            Riprova più tardi oppure consulta i dati AgID.
           </p>
         </div>
       )}
@@ -217,7 +215,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                     <th scope="col">Ente</th>
                     <th scope="col">Tipologia</th>
                     <th scope="col">Sede</th>
-                    <th scope="col">Codice IPA</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -227,6 +225,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                         <Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
                           {entity.denominazione}
                         </Link>
+                        <details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details>
                         {entity.acronimo || entity.inLiquidazione ? (
                           <small>
                             {entity.acronimo}
@@ -237,9 +236,6 @@ export default async function EntiPage({ searchParams }: PageProps) {
                       </th>
                       <td>{entity.tipologia ?? "Non indicata"}</td>
                       <td>{locationLabel(entity.sede.indirizzo, entity.sede.cap)}</td>
-                      <td>
-                        <code>{entity.codiceIpa}</code>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -267,12 +263,11 @@ export default async function EntiPage({ searchParams }: PageProps) {
           {nonMunicipalEntities.length > 0 ? (
             <div className="table-scroll" role="region" aria-label="Enti SIOPE pubblicati" tabIndex={0}>
               <table className="table">
-                <thead><tr><th scope="col">Ente</th><th scope="col">Tipologia SIOPE</th><th scope="col">Codice IPA</th></tr></thead>
+                <thead><tr><th scope="col">Ente</th><th scope="col">Tipologia SIOPE</th></tr></thead>
                 <tbody>{nonMunicipalEntities.map((entity) => (
                   <tr key={entity.codiceIpa}>
-                    <th scope="row"><Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>{entity.entityName}</Link></th>
+                    <th scope="row"><Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>{entity.entityName}</Link><details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details></th>
                     <td>{getSiopeNonMunicipalTypeLabel(entity)}</td>
-                    <td><code>{entity.codiceIpa}</code></td>
                   </tr>
                 ))}</tbody>
               </table>
@@ -293,7 +288,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                 <tr>
                   <th scope="col">Amministrazione</th>
                   <th scope="col">Categoria</th>
-                  <th scope="col">Codice IPA</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -303,6 +298,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                       <Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
                         {entity.denominazione}
                       </Link>
+                      <details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details>
                     </th>
                     <td>
                       {entity.codiceIpa === "PCM"
@@ -310,9 +306,6 @@ export default async function EntiPage({ searchParams }: PageProps) {
                         : entity.codiceNatura === "2220"
                           ? "Ministero"
                           : "Amministrazione centrale"}
-                    </td>
-                    <td>
-                      <code>{entity.codiceIpa}</code>
                     </td>
                   </tr>
                 ))}
@@ -326,8 +319,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <div className="notice warning-notice">
           <strong>L&apos;elenco delle amministrazioni centrali non è disponibile ora</strong>
           <p>
-            La ricerca IPA resta utilizzabile; non sostituiamo l&apos;elenco ufficiale con una lista
-            statica.
+            Puoi cercare l’ente nel registro IPA.
           </p>
         </div>
       )}
@@ -388,17 +380,14 @@ export default async function EntiPage({ searchParams }: PageProps) {
             <thead>
               <tr>
                 <th scope="col">Società</th>
-                <th scope="col">Codice fiscale</th>
+
                 <th scope="col" className="num">Enti soci</th>
               </tr>
             </thead>
             <tbody>
               {participations.topCompaniesByDeclaringAdministrations.map((company) => (
                 <tr key={company.taxCode}>
-                  <th scope="row">{company.name}</th>
-                  <td>
-                    <code>{company.taxCode}</code>
-                  </td>
+                  <th scope="row">{company.name}<details className="table-details"><summary>Codice fiscale</summary><code>{company.taxCode}</code></details></th>
                   <td className="num">{integer(company.declaringAdministrations)}</td>
                 </tr>
               ))}

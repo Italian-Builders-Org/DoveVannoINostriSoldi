@@ -64,7 +64,7 @@ function DimensionTable({
               <td className="num">{percent(item.paymentCostRatio * 100)}</td>
               <td className="num">
                 {item.averagePublicCostCents === null
-                  ? "n.d."
+                  ? "Non disponibile"
                   : compactEuro(euros(item.averagePublicCostCents))}
               </td>
               <td className="num">{integer(item.projects)}</td>
@@ -79,7 +79,7 @@ function DimensionTable({
                     Dettaglio ↗
                   </a>
                 ) : (
-                  "n.d."
+                  "Non disponibile"
                 )}
               </td>
             </tr>
@@ -160,22 +160,14 @@ export default function CohesionPage() {
         </div>
       </div>
 
-      <div className="notice">
-        <strong>Come leggere questi numeri</strong>
-        <p>
-          La quota confronta ogni tema con il costo pubblico nazionale. “Pagato sul costo” è soldi
-          usciti diviso costo previsto.
-        </p>
-      </div>
-
       <section className={styles.tracePanel}>
         <div>
-          <span>Nuovo · traccia PNRR</span>
-          <h2>Il totale non basta. Segui un progetto fino alla gara.</h2>
+          <span>Asili · PNRR</span>
+          <h2>Dai fondi per gli asili alle gare</h2>
           <p>
-            {integer(pnrrChildcareMeta.coverage.uniqueProjects)} CUP per asili e prima infanzia,
+            {integer(pnrrChildcareMeta.coverage.uniqueProjects)} codici progetto (CUP) per asili e prima infanzia,
             con localizzazioni, finanziamenti, {integer(pnrrChildcareMeta.coverage.tenderRows)} gare
-            e aggiudicatari collegati senza confondere importi e pagamenti.
+            e aggiudicatari collegati.
           </p>
         </div>
         <div className={styles.traceAction}>
@@ -186,7 +178,7 @@ export default function CohesionPage() {
         </div>
       </section>
 
-      <div className={styles.tables}>
+      <div className={`${styles.tables} ${styles.dimensionTables}`}>
         <section className="panel">
           <h2 className="panel-title">Dove vanno questi soldi · per tema</h2>
           <DimensionTable items={themes} label="tema" />
@@ -230,6 +222,8 @@ export default function CohesionPage() {
         <section className="panel">
           <h2 className="panel-title">La serie storica · cumulata</h2>
           <CohesionHistoryChart data={snapshot.annualSeries} />
+          <details className="chart-data">
+            <summary>Ultimi cinque anni: importi e quota pagata</summary>
           <div className="table-scroll" role="region" aria-label="Serie annuale OpenCoesione" tabIndex={0}>
             <table className="table">
               <thead>
@@ -254,6 +248,7 @@ export default function CohesionPage() {
               </tbody>
             </table>
           </div>
+          </details>
           <p className={styles.note}>
             La serie cresce nel tempo perché è cumulata dal 1990: ogni punto somma i totali fino a
             quell&apos;anno.
@@ -277,6 +272,16 @@ export default function CohesionPage() {
             I rapporti finanziari differiscono fra categorie e richiedono contesto progettuale.
           </p>
         </section>
+      </div>
+
+      <details className="data-details">
+        <summary>Fonti, metodo e verifica</summary>
+      <div className="notice">
+        <strong>Come leggere questi numeri</strong>
+        <p>
+          La quota confronta ogni tema con il costo pubblico nazionale. “Pagato sul costo” è soldi
+          usciti diviso costo previsto.
+        </p>
       </div>
 
       <div className="notice">
@@ -342,6 +347,7 @@ export default function CohesionPage() {
           </Link>
         </div>
       </section>
+      </details>
     </main>
   );
 }

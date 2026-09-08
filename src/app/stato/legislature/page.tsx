@@ -57,7 +57,7 @@ function LegislaturePanel({ cycle }: { cycle: LegislatureSpendingCycle }) {
                       {entry.isPreElectionYear ? <span className={styles.tag}>anno pre-elettorale</span> : null}
                     </th>
                     <td className="num">{exactEuro(entry.totalPaid)}</td>
-                    <td>{entry.extraordinaryContext ?? "n.d."}</td>
+                    <td>{entry.extraordinaryContext ?? "Nessuna nota"}</td>
                     <td>
                       <a href={entry.source.packageUrl} target="_blank" rel="noreferrer">
                         Package OpenBDAP {entry.year}

@@ -14,35 +14,35 @@ const dossiers = [
     title: "Parlamento",
     period: "Camera: dati 2025 · documenti 2024 per Camera e Senato",
     description:
-      "Camera e Senato restano distinti. Mostriamo i numeri solo dove li abbiamo già controllati; per gli altri documenti diciamo che cosa manca.",
+      "Bilanci e documenti di Camera e Senato, con la copertura disponibile per ciascuna istituzione.",
   },
   {
     href: "/palazzo-chigi",
     title: "Palazzo Chigi",
     period: "Rendiconto PCM 2024",
     description:
-      "Soldi impegnati e soldi pagati dalla sola Presidenza del Consiglio, con file ufficiale scaricabile.",
+      "Impegni e pagamenti della Presidenza del Consiglio, con il rendiconto ufficiale scaricabile.",
   },
   {
     href: "/governi",
     title: "Pagella dei governi",
-    period: "Core macro dal 1995 · storia prima del 1995",
+    period: "Indicatori dal 1995 · storia dei governi precedenti",
     description:
-      "Risultati economici durante ogni governo, confronto europeo, contesto, misure e previsione corrente senza attribuire causalità automatica.",
+      "Indicatori economici, confronto europeo e contesto per ciascun governo.",
   },
   {
     href: "/ministeri",
     title: "Ministeri",
     period: "Rendiconto dello Stato 2025",
     description:
-      "Quanto hanno impegnato, già pagato e ancora da pagare 15 ministeri. Palazzo Chigi e Parlamento non ci sono.",
+      "Impegni, pagamenti e somme ancora da pagare di 15 ministeri.",
   },
   {
     href: "/regioni",
     title: "Regioni",
     period: "Consuntivi Istat 2024",
     description:
-      "Come si spezzano i soldi impegnati di 22 Regioni e Province autonome, senza classifiche inventate.",
+      "Impegni di 22 Regioni e Province autonome, suddivisi per voce di bilancio.",
   },
 ] as const;
 
@@ -52,16 +52,12 @@ export default function InstitutionsPage() {
       <div className="page-intro">
         <h1>Istituzioni pubbliche</h1>
         <p>
-          Parlamento, Palazzo Chigi, governi, Ministeri e Regioni richiedono domande e dati diversi.
-          Ogni percorso resta separato.
+          Bilanci, spese e dati di Parlamento, Palazzo Chigi, governi, Ministeri e Regioni.
         </p>
       </div>
 
       <section aria-labelledby="percorsi-istituzionali">
-        <div className={styles.sectionHeader}>
-          <h2 id="percorsi-istituzionali">Cinque percorsi, cinque confini</h2>
-          <p>In ogni pagina trovi importi esatti o limiti di copertura, periodo e fonte ufficiale.</p>
-        </div>
+        <h2 id="percorsi-istituzionali" className="sr-only">Esplora le istituzioni</h2>
         <div className={styles.grid}>
           {dossiers.map((dossier) => (
             <article className={styles.card} key={dossier.href}>

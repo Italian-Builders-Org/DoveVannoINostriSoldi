@@ -107,7 +107,7 @@ test("the SSN view labels accounting scope and remains responsive", () => {
   assert.match(healthPage, /alfabetico per codice geografico e Codice Ente SSN/);
   assert.match(healthPage, /codici 041[\s\S]*042/);
   assert.match(healthPage, /datasets\.entities\.sourceSha256/);
-  assert.match(healthPage, /Aggregato nazionale ufficiale/);
+  assert.match(healthPage, /Totale nazionale ufficiale/);
   assert.match(healthPage, /integer\(data\.detailCoverage\.entityCount\)/);
   assert.match(healthPage, /Enti di dettaglio esposti/i);
   assert.match(

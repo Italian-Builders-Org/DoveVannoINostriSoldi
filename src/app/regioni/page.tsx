@@ -101,14 +101,6 @@ export default async function RegionsPage({
         </div>
       </dl>
 
-      <div className="notice">
-        <strong>Perimetro di lettura</strong>
-        <p>
-          Sono gli impegni assoluti di {selected.label}. Senza popolazione Istat dello stesso anno
-          non calcoliamo il pro capite e non usiamo la mappa.
-        </p>
-      </div>
-
       <section className="panel" aria-labelledby="composizione-regionale">
         <div className={styles.sectionHeader}>
           <div>
@@ -206,6 +198,16 @@ export default async function RegionsPage({
 
       <RegionCrestAttribution />
 
+      <details className="data-details">
+        <summary>Fonte, copertura e controlli</summary>
+      <div className="notice">
+        <strong>Perimetro di lettura</strong>
+        <p>
+          Sono gli impegni assoluti di {selected.label}. Senza popolazione Istat dello stesso anno
+          non calcoliamo il pro capite e non usiamo la mappa.
+        </p>
+      </div>
+
       <section className="panel" aria-labelledby="fonte-regioni">
         <h2 className="panel-title" id="fonte-regioni">Fonte e controlli</h2>
         <div className={styles.provenance}>
@@ -217,14 +219,14 @@ export default async function RegionsPage({
         <p className={styles.statusNote}>
           Fonte {source.sourceRecordId}, foglio “{selected.sourceSheet}”. Abbiamo escluso i tre
           fogli aggregati Italia, Regioni ordinarie e Regioni speciali. Per ogni territorio la
-          somma delle voci coincide con il totale ufficiale. La pagina Istat non dichiara una
-          licenza: non ne inventiamo una.
+          somma delle voci coincide con il totale ufficiale. Licenza non dichiarata nella pagina Istat.
         </p>
         <div className={styles.sourceLinks}>
           <a href={source.landingUrl} target="_blank" rel="noreferrer">Apri la pagina Istat ↗</a>
           <a href={source.resourceUrl} target="_blank" rel="noreferrer">Scarica le tavole ufficiali ↗</a>
         </div>
       </section>
+      </details>
     </main>
   );
 }

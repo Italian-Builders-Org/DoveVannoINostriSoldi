@@ -214,10 +214,10 @@
 
 .paymentSummary {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(480px, 1fr);
+  grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr);
   margin: var(--space-4) 0 0;
-  border: 1px solid var(--color-accent-300);
-  background: var(--color-accent-100);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
 }
 
 .paymentSummary > div {
@@ -225,7 +225,7 @@
   padding: var(--space-4);
 }
 .singlePaymentSummary { grid-template-columns: minmax(0, 1fr); }
-.paymentSummary > div + div { border-left: 1px solid var(--color-accent-200); }
+.paymentSummary > div + div { border-left: 1px solid var(--color-neutral-200); }
 
 .paymentSummary dt {
   color: var(--color-neutral-700);
@@ -245,7 +245,7 @@
   overflow-wrap: anywhere;
 }
 .paymentSummary .paymentTotal dd {
-  color: var(--color-accent-800);
+  color: var(--color-neutral-900);
   font-size: clamp(32px, 4vw, 46px);
 }
 .paymentSummary small { display: block; margin-top: 5px; color: var(--color-neutral-700); }
@@ -257,7 +257,7 @@
 
 .paymentSummary > .paymentFacts {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
   padding: 0;
 }
 
@@ -265,8 +265,8 @@
   min-width: 0;
   padding: var(--space-4);
 }
-.paymentFacts > div + div { border-left: 1px solid var(--color-accent-200); }
-.paymentFacts dd { font-size: 21px; }
+.paymentFacts > div + div { border-left: 1px solid var(--color-neutral-200); }
+.paymentFacts dd { font-size: 19px; overflow-wrap: normal; }
 
 .peerBenchmark {
   margin-top: var(--space-4);

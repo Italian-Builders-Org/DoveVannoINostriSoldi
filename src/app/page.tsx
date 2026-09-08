@@ -3,7 +3,6 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
-import { LatestMonthlyReportTeaser } from "@/components/monthly-report";
 import { PeriodSelector } from "@/components/period-selector";
 import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
@@ -18,7 +17,6 @@ import {
   percent,
 } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
-import { monthlyReports } from "@/lib/monthly-reports";
 import { openCoesioneSnapshot as cohesion } from "@/lib/opencoesione-snapshot";
 import {
   HOME_SPENDING_BUCKETS,
@@ -129,13 +127,12 @@ export default async function HomePage({
   const cohesionRatio =
     cohesionCommitted > 0 ? (cohesionPaid / cohesionCommitted) * 100 : 0;
   const anomalySignals = getHomeAnomalySignals();
-  const latestMonthlyReport = monthlyReports.listPublished()[0];
 
   return (
     <main className={`shell ${styles.dashboard}`}>
       <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
       <div className={styles.column}>
-        <section className="panel">
+        <section className={`panel ${styles.summaryPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Pagamenti effettuati dai Comuni</h2>
             <InfoTooltip id="cash-payments-tip" label="Che cosa sono i pagamenti di cassa?">
@@ -146,7 +143,7 @@ export default async function HomePage({
 
           <p className={styles.freshness}>
             <i aria-hidden="true" />
-            Dati aggiornati al {longDate(siope.source.siopeMovementsLastModified)}
+            Aggiornati al {longDate(siope.source.siopeMovementsLastModified)}
           </p>
 
           <strong className={styles.headline}>{compactEuro(siope.totalPaid)}</strong>
@@ -159,12 +156,12 @@ export default async function HomePage({
               <dt>In media per abitante</dt>
               <dd>
                 {siope.nationalPerCapita === null
-                  ? "n.d."
+                  ? "Non disponibile"
                   : exactEuro(siope.nationalPerCapita)}
               </dd>
             </div>
             <div>
-              <dt>Pagamenti al netto delle partite di giro</dt>
+              <dt>Al netto delle partite di giro</dt>
               <dd>{compactEuro(netPayments)}</dd>
             </div>
             <div>
@@ -191,7 +188,7 @@ export default async function HomePage({
             scope="Pagamenti di cassa dei Comuni in tutta Italia"
             denominator="totale dei pagamenti SIOPE dei Comuni nel periodo"
             source={{
-              label: `${siope.source.siopeOwner} · SIOPE`,
+              label: "SIOPE · RGS / Banca d’Italia",
               href: siope.source.siopeMovementsUrl,
               observedAt: longDate(siope.source.observedAt),
             }}
@@ -200,11 +197,51 @@ export default async function HomePage({
             className={`btn btn-block ${styles.spendingDetailsLink}`}
             href={`/spese?anno=${year}`}
           >
-            Vedi il dettaglio delle voci
+            Dettaglio delle spese
           </Link>
+          <details className={styles.sourceDetails}>
+          <summary>Fonti e aggiornamenti</summary>
+          <div className={styles.sourceList}>
+            <article>
+              <header>
+                <strong>SIOPE · pagamenti dei Comuni</strong>
+              </header>
+              <dl>
+                <div>
+                  <dt>Dati fino a</dt>
+                  <dd>
+                    {monthLabel} {siope.year}
+                  </dd>
+                </div>
+                <div>
+                  <dt>File pubblicato il</dt>
+                  <dd>{longDate(siope.source.siopeMovementsLastModified)}</dd>
+                </div>
+                <div>
+                  <dt>Scaricato da noi</dt>
+                  <dd>{longDate(siope.source.observedAt)}</dd>
+                </div>
+              </dl>
+            </article>
+            <article>
+              <header>
+                <strong>IPA · registro degli enti</strong>
+              </header>
+              <dl>
+                <div>
+                  <dt>Aggiornato il</dt>
+                  <dd>{longDate(siope.source.ipaLastModified)}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+          <Link className="btn btn-block" href="/fonti">
+            Tutte le fonti
+          </Link>
+          </details>
         </section>
 
-        <section className="panel">
+        <section className={`panel ${styles.monthsPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Mese per mese</h2>
             <span className={styles.headNote}>miliardi di €</span>
@@ -234,7 +271,7 @@ export default async function HomePage({
             <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
           ) : (
             <p className={styles.note}>
-              {siope.latestMonthLabel} è ancora in corso: il numero salirà.
+              {siope.latestMonthLabel} è parziale: il dato può cambiare.
             </p>
           )}
         </section>
@@ -244,7 +281,7 @@ export default async function HomePage({
       <div className={styles.column}>
         <section className={`panel ${styles.mapPanel}`}>
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Dove si spende di più, regione per regione</h2>
+            <h2 className="panel-title">Pagamenti dei Comuni per regione</h2>
             <PeriodSelector
               activeYear={year}
               years={availableSiopeYears}
@@ -269,7 +306,7 @@ export default async function HomePage({
                 </div>
                 <div>
                   <span>Ultimo mese completo</span>
-                  <strong>{lastCompleted ? compactEuro(lastCompleted.flow) : "n.d."}</strong>
+                  <strong>{lastCompleted ? compactEuro(lastCompleted.flow) : "Non disponibile"}</strong>
                   <small>
                     {lastCompleted
                       ? `${lastCompleted.label.toLocaleLowerCase("it-IT")} ${siope.year}`
@@ -280,7 +317,7 @@ export default async function HomePage({
                   <span>In media per abitante</span>
                   <strong>
                     {siope.nationalPerCapita === null
-                      ? "n.d."
+                      ? "Non disponibile"
                       : exactEuro(siope.nationalPerCapita)}
                   </strong>
                   <small>su {integer(siope.populationCovered)} persone</small>
@@ -298,7 +335,7 @@ export default async function HomePage({
           </div>
 
           <p className={styles.attribution}>
-            Confini amministrativi a fini statistici:{" "}
+            Confini: {" "}
             <a
               href="https://www.istat.it/storage/cartografia/confini_amministrativi/generalizzati/2026/Limiti01012026_g.zip"
               target="_blank"
@@ -310,13 +347,13 @@ export default async function HomePage({
             <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
               CC BY 4.0
             </a>
-            , geometria semplificata.
+            , semplificati.
           </p>
         </section>
 
         <section className={`panel ${styles.regionsPanel}`}>
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Le regioni con più pagamenti per abitante</h2>
+            <h2 className="panel-title">Regioni: pagamenti per abitante</h2>
             <span className={styles.headNote}>Comuni con sede nella regione</span>
           </div>
           <div className="table-scroll" role="region" aria-label="Regioni ordinate per pagamenti pro capite" tabIndex={0}>
@@ -342,7 +379,7 @@ export default async function HomePage({
                       </span>
                     </th>
                     <td className="num">
-                      {region.perCapita === null ? "n.d." : exactEuro(region.perCapita)}
+                      {region.perCapita === null ? "Non disponibile" : exactEuro(region.perCapita)}
                     </td>
                     <td className="num">{compactEuroLike(region.value, topRegionScale)}</td>
                   </tr>
@@ -352,58 +389,14 @@ export default async function HomePage({
           </div>
           <RegionCrestAttribution />
           <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi tutte le regioni
+            Tutte le regioni
           </Link>
         </section>
 
-        <section className={`panel ${styles.sourcePanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">Da dove arrivano i numeri</h2>
-          </div>
-          <div className={styles.sourceList}>
-            <article>
-              <header>
-                <strong>SIOPE · pagamenti dei Comuni</strong>
-                <span className="status status-attiva">Attiva</span>
-              </header>
-              <dl>
-                <div>
-                  <dt>Dati fino a</dt>
-                  <dd>
-                    {monthLabel} {siope.year}
-                  </dd>
-                </div>
-                <div>
-                  <dt>File pubblicato il</dt>
-                  <dd>{longDate(siope.source.siopeMovementsLastModified)}</dd>
-                </div>
-                <div>
-                  <dt>Scaricato da noi</dt>
-                  <dd>{longDate(siope.source.observedAt)}</dd>
-                </div>
-              </dl>
-            </article>
-            <article>
-              <header>
-                <strong>IPA · registro degli enti</strong>
-                <span className="status status-attiva">Attiva</span>
-              </header>
-              <dl>
-                <div>
-                  <dt>Aggiornato il</dt>
-                  <dd>{longDate(siope.source.ipaLastModified)}</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
-          <Link className="btn btn-block" href="/fonti">
-            Vedi tutte le fonti
-          </Link>
-        </section>
+
       </div>
 
       <div className={styles.column}>
-        {latestMonthlyReport ? <LatestMonthlyReportTeaser report={latestMonthlyReport} /> : null}
         <section className={`panel ${styles.rankPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">
@@ -426,15 +419,12 @@ export default async function HomePage({
               </li>
             ))}
           </ol>
-          <p className={styles.note}>
-            Confronto pro capite; il totale resta nel dettaglio territoriale.
-          </p>
           <Link className="btn btn-block" href={`/territori?anno=${year}`}>
             Vedi il confronto territoriale
           </Link>
         </section>
 
-        <section className={`panel ${styles.actionPanel}`}>
+        <section className={`panel ${styles.actionPanel} ${styles.cohesionPanel}`}>
           <div className={`${styles.panelHead} ${styles.compactHeader}`}>
             <h2 className="panel-title">Fondi e progetti</h2>
             <span className={styles.headNote}>OpenCoesione</span>
@@ -463,7 +453,7 @@ export default async function HomePage({
                 <i style={{ width: `${Math.min(cohesionRatio, 100)}%` }} />
               </div>
               <p className={styles.note}>
-                Serie cumulata al {year}, nello snapshot aggiornato al {longDate(cohesion.referenceDate)}.
+                Serie cumulata al {year}, aggiornata al {longDate(cohesion.referenceDate)}.
                 Un pagamento non prova che il progetto sia finito.
               </p>
             </>
@@ -475,16 +465,17 @@ export default async function HomePage({
           </Link>
         </section>
 
-        <section className={`panel ${styles.actionPanel}`}>
+        <section className={`panel ${styles.actionPanel} ${styles.anomaliesPanel}`}>
           <div className={`${styles.panelHead} ${styles.compactHeader}`}>
             <h2 className="panel-title">Anomalie da approfondire</h2>
+            <Link className={styles.anomaliesLink} href="/controlli">Tutti i controlli <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></Link>
             <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
               Un valore insolito rispetto a enti simili o a una soglia statistica. È un segnale
               statistico da verificare con le fonti, non una prova di spreco o illecito.
             </InfoTooltip>
           </div>
           <div className={styles.anomalyGallery}>
-            {anomalySignals.map((signal, index) => {
+            {anomalySignals.map((signal) => {
               const presentation = HOME_ANOMALY_PRESENTATION[signal.id as keyof typeof HOME_ANOMALY_PRESENTATION];
               if (!presentation) return null;
 
@@ -495,22 +486,10 @@ export default async function HomePage({
                   key={signal.id}
                 >
                   <div className={styles.anomalyItemHead}>
-                    <span className={styles.anomalyMarker} aria-hidden="true">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
                     <span className={styles.anomalyArea}>{signal.area}</span>
                   </div>
                   <h3>{presentation.title}</h3>
                   <strong className={styles.anomalyValue}>{anomalyValue(signal)}</strong>
-                  {signal.unit === "percent" ? (
-                    <span
-                      className={styles.anomalyBar}
-                      role="img"
-                      aria-label={`${percent(signal.value)} delle procedure`}
-                    >
-                      <i style={{ width: `${Math.min(signal.value, 100)}%` }} />
-                    </span>
-                  ) : null}
                   <p className={styles.anomalyMeta}>
                     <span>{presentation.period}</span>
                     <a
@@ -532,18 +511,14 @@ export default async function HomePage({
               Mostriamo solo i segnali con fonte verificata. <Link href="/controlli">Esplora gli altri controlli</Link>.
             </p>
           ) : null}
-          <Link className="btn btn-block" href="/controlli">
-            Apri tutti i controlli
-          </Link>
+
         </section>
 
         <aside className={styles.readingPanel} aria-labelledby="reading-title">
           <div className={styles.readingIntro}>
-            <span className={styles.readingKicker}>Chiave di lettura</span>
             <h2 id="reading-title" className="panel-title">Come leggere questi numeri</h2>
             <p className={styles.readingNote}>
-              Il totale dice quanto è uscito; il valore per abitante aiuta a confrontare Comuni
-              diversi. Considera sempre anche la dimensione dell&apos;ente e i servizi che gestisce.
+              Nel confronto considera popolazione e servizi gestiti da ciascun Comune.
             </p>
           </div>
           <dl className={styles.readingRules}>
@@ -553,11 +528,11 @@ export default async function HomePage({
             </div>
             <div>
               <dt>Per abitante</dt>
-              <dd>Un confronto più equo</dd>
+              <dd>Importo diviso per la popolazione</dd>
             </div>
           </dl>
           <Link className={styles.readingLink} href="/metodologia">
-            Come leggiamo i dati
+            Metodo
             <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
           </Link>
         </aside>

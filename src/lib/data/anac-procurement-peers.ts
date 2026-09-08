@@ -31,6 +31,8 @@ export type AnacPeerMetric = keyof z.infer<typeof metrics>;
 export type AnacPeerDimension = "count" | "value";
 export const anacPeerSource = spec;
 export const ANAC_PEER_MINIMUM = 10;
+/** Minimum CPV composition overlap (exact rational). Editorial v1.1: 70%, was 80%. */
+export const ANAC_PEER_CPV_MINIMUM = { numerator: "7", denominator: "10" } as const;
 
 export function comparePeerRatios(a: AnacPeerRatio, b: AnacPeerRatio): number {
   const difference = BigInt(a.numerator) * BigInt(b.denominator) - BigInt(b.numerator) * BigInt(a.denominator);
@@ -90,7 +92,7 @@ export function selectAnacPeers(rows: readonly AnacPeerRow[], code: string, dime
   const peers = target && exclusions.length === 0 ? eligible.filter((row) =>
     row.istatCode !== target.istatCode && row.codiceIpa !== code
     && withinFactorTwo(target.population!, row.population!) && withinFactorTwo(target.procedures, row.procedures)
-    && comparePeerRatios(peerCpvOverlap(target, row), { numerator: "4", denominator: "5" }) >= 0,
+    && comparePeerRatios(peerCpvOverlap(target, row), ANAC_PEER_CPV_MINIMUM) >= 0,
   ).sort((a, b) => a.codiceIpa < b.codiceIpa ? -1 : a.codiceIpa > b.codiceIpa ? 1 : 0) : [];
   return { target, exclusions, eligibleCount: eligible.length, peers, publish: exclusions.length === 0 && peers.length >= ANAC_PEER_MINIMUM };
 }

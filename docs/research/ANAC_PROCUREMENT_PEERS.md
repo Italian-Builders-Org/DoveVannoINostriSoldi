@@ -48,11 +48,12 @@ Tra gli enti ammissibili, il gruppo di un Comune contiene gli altri Comuni con:
 
 - popolazione da metà al doppio;
 - numero di procedure da metà al doppio;
-- sovrapposizione della composizione CPV di almeno 80%.
+- sovrapposizione della composizione CPV di almeno **70%** (revisione v1.1;
+  in v1.0 era 80%).
 
 La sovrapposizione è `sum_k min(n_ak / N_a, n_bk / N_b)`, con `k` pari alle
 prime due cifre dei CPV dal formato interpretabile, `n_ak` procedure di quella
-categoria e `N_a` **tutte** le procedure del Comune. I codici mancanti restano
+categoria e `N_a` **tutte** le procedure del Comune. I CPV mancanti restano
 nel denominatore e non creano una categoria comune. Non si inferisce il CPV
 dall’oggetto e il formato non certifica la nomenclatura.
 
@@ -61,6 +62,21 @@ risultato economico da descrivere. La composizione è per numero di procedure,
 non per importo; non controlla forma di affidamento, durata, funzioni svolte,
 struttura degli operatori o altri fattori. Il confronto non isola l’effetto
 delle scelte di un’amministrazione.
+
+### Revisione metodologica v1.1 (soglia CPV)
+
+Sullo stesso indice (7.850 Comuni univoci, 3.418 ammissibili per numero), la
+soglia CPV all’80% produceva **un solo** Comune con almeno dieci pari (Veroli).
+Il vincolo su popolazione×2 e procedure×2, da solo, non apriva la copertura:
+togliendo il fattore procedure restava comunque un solo Comune a ≥10.
+
+Abbassare solo la sovrapposizione CPV a **70%**, a parità di ogni altro
+criterio e del minimo di dieci pari, porta a **circa 1.800** Comuni con
+confronto pubblicabile per numero (Veroli: 221 pari; Rodengo Saiano: 201).
+La soglia resta editoriale e dichiarata in pagina; non è uno standard ANAC.
+
+Non si abbassa il minimo di dieci pari né i requisiti di copertura 90% /
+30 aggiudicazioni: servono ancora per mediana e percentile.
 
 ## Statistiche e navigazione
 
@@ -77,13 +93,11 @@ non filtrato. Parametri CPV sulla nuova pagina vengono rifiutati, evitando
 un allargamento silenzioso del perimetro. La lista è paginata a 25 Comuni e
 ordinata stabilmente per codice IPA; i riassunti usano l’intero gruppo.
 
-Nello snapshot iniziale: 7.850 Comuni univoci su 23.737 profili ANAC, nessuna
+Nello snapshot: 7.850 Comuni univoci su 23.737 profili ANAC, nessuna
 identità municipale duplicata. 3.418 superano i requisiti per numero e 2.793
-quelli per valore. Solo **Veroli (`c_l780`)** raggiunge dieci altri Comuni per
-numero; Rodengo Saiano ne ha nove. Veroli non supera la copertura per valore.
-Questa copertura limitata è un risultato della selezione, non una graduatoria
-nazionale. Ogni estensione richiede nuovi dati o una revisione metodologica
-esplicita; non basta ridurre una soglia per ottenere più risultati.
+quelli per valore. Con la soglia CPV al 70%, circa 1.800 Comuni raggiungono
+dieci altri Comuni per numero. Questa copertura resta un risultato della
+selezione, non una graduatoria nazionale.
 
 ## Architettura e verifiche
 
@@ -107,7 +121,7 @@ DVNS_BASE_URL=http://127.0.0.1:3000 npm run test:browser:procurement-peers
 ```
 
 La verifica offline rigenera tutto il contenuto dai parent bloccati. I test
-Node confrontano tutte le misure di Veroli e dei suoi dieci pari con i profili
+Node confrontano le misure di Veroli (e un pari stabile) con i profili
 originali, oltre a soglie, CPV mancanti, parità, precisione, minimi e corruzione.
 I test browser coprono pubblicazione, sospensione per copertura/campione,
 link ai contratti e desktop/tablet/mobile; sono parte del gate di produzione.

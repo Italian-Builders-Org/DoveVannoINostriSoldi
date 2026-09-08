@@ -33,6 +33,7 @@ import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snap
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
+import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -747,6 +748,18 @@ function snapshotManagedIstatBesSalute(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesIstruzione(): SourceHealth {
+  const { source } = istatBesIstruzioneMetadata;
+  return {
+    ...baseHealth("istat-bes-istruzione"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-istruzione", source.publicationDate),
+    latencyMs: null,
+    detail: "Nove indicatori BES_02 Istruzione e formazione, edizione 2025; 14.952 osservazioni e 139 territori, di cui 111 province. Periodi e disponibilità per sesso distinti per indicatore fra 2004 e 2024. Non è spesa pubblica né dato comunale; 76 celle ignote.",
+    recordCount: istatBesIstruzioneData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -833,6 +846,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
+  "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
 } satisfies Record<SourceId, SourceHealthAdapter>);

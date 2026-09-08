@@ -166,6 +166,18 @@ export const publicSources: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-istruzione",
+    name: "ISTAT · BES dei territori, Istruzione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Nove indicatori BES_02 Istruzione e formazione, edizione 2025; 14.952 osservazioni e 139 territori, di cui 111 province. Periodi e disponibilità per sesso distinti per indicatore fra 2004 e 2024.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Percentuali e tasso specifico di coorte con denominatori propri: non è spesa pubblica né una misura di qualità o efficienza. Nessuna somma geografica o F+M, imputazione comunale, classifica o correlazione SIOPE. Il flag g resta null; riga assente e zero sono distinti. INVALSI senza 2020; 12SER002 appartiene a BES_02. Valori ufficiali di partecipazione scolastica sopra 100% conservati. Compositi e padri esterni dichiarati, geografia non costante. Licenza non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -178,6 +178,44 @@ const invalidHealth = await mcpRequest({
 assert.match(invalidHealth, /"isError":true/);
 assert.match(invalidHealth, /Indicatore non riconosciuto/);
 
+const educationQuery = { dataset: "istat_bes_istruzione", territory: "IT108", measure: "02IST004", sex: "F", year: 2017 };
+const educationResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 2812, method: "tools/call",
+  params: { name: "query_dataset", arguments: educationQuery },
+});
+const education = successfulMcpToolResult(educationResponse, "istat_bes_istruzione").data;
+assert.equal(education.domain.code, "BES_02");
+assert.deepEqual(education.observations, [{ indicator: "02IST004", territory: "IT108", sex: "F", year: 2017, valueTenths: null, status: "g" }]);
+assert.equal(education.indicators[0].unit, "SPEC_COHORT_RATE");
+assert.equal(education.reconciliation.totalBetweenSexes, false);
+const educationApiResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT108&indicatore=02IST004&sesso=F&anno=2017", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(educationApiResponse.status, 200);
+const educationApi = JSON.parse(await responseText(educationApiResponse, "API BES Istruzione"));
+assert.deepEqual(educationApi.observations, education.observations);
+assert.deepEqual(educationApi.source, education.source);
+const invalidEducation = await mcpRequest({
+  jsonrpc: "2.0", id: 2813, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_istruzione", measure: "04BEC001P" } },
+});
+assert.match(invalidEducation, /"isError":true/);
+assert.match(invalidEducation, /Indicatore non riconosciuto/);
+
+const educationPageResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT&limit=2&offset=2", baseUrl), { signal: AbortSignal.timeout(10_000) });
+assert.equal(educationPageResponse.status, 200);
+const educationPage = JSON.parse(await responseText(educationPageResponse, "API BES Istruzione page"));
+assert.equal(educationPage.observations.length, 2);
+assert.equal(educationPage.pagination.nextOffset, 4);
+assert.equal(educationPage.source.licenseId, "not-declared");
+assert.equal(educationPage.semantics.soldi.present, false);
+for (const suffix of ["", "?territorio=015146", "?territorio=IT&limit=101", "?anno=2020&anno=2021"]) {
+  const invalid = await fetch(new URL(`/api/territori/bes-istruzione${suffix}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(invalid.status, 400);
+  assert.equal(invalid.headers.get("cache-control"), "no-store");
+  await responseText(invalid, "API BES Istruzione invalid query");
+}
+
 const compatibilityTools = await mcpRequest(
   { jsonrpc: "2.0", id: 11, method: "tools/list" },
   {},

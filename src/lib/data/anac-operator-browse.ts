@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { closeSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { z } from "zod";
@@ -55,7 +55,20 @@ function loadManifest(meta: AnacOperatorIndexMeta): Manifest {
   try {
     const info = fstatSync(fd);
     if (!info.isFile() || info.size > 512 * 1024) throw new Error("Manifest paginazione operatori troppo grande");
-    manifest = manifestSchema.parse(JSON.parse(readFileSync(fd, "utf8")));
+    // Bound the read to the checked descriptor without a dynamic readFileSync
+    // argument, which makes Turbopack trace unrelated repository files.
+    const bytes = Buffer.alloc(info.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (!count) throw new Error("Manifest paginazione operatori incompleto");
+      offset += count;
+    }
+    const after = fstatSync(fd);
+    if (info.size !== after.size || info.mtimeMs !== after.mtimeMs || info.ino !== after.ino) {
+      throw new Error("Manifest paginazione operatori cambiato durante la lettura");
+    }
+    manifest = manifestSchema.parse(JSON.parse(bytes.toString("utf8")));
   } finally {
     closeSync(fd);
   }

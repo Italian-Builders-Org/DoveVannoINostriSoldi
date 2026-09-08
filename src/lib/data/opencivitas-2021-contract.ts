@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "./opencivitas-municipality.ts";
+import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "@/lib/data/opencivitas-municipality";
 
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 const LANDING_URL = "https://www.opencivitas.it/it/open-data";

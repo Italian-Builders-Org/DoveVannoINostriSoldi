@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { assertOpenCivitas2019Snapshot } from "../src/lib/data/opencivitas-2019-contract.ts";
+import "./helpers/register-ts-alias.mjs";
+const { assertOpenCivitas2019Snapshot } = await import("../src/lib/data/opencivitas-2019-contract.ts");
 
 const load = () => JSON.parse(readFileSync(new URL("../src/data/generated/opencivitas-2019.json", import.meta.url), "utf8"));
 

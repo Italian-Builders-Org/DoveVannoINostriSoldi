@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "./opencivitas-municipality.ts";
+import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "@/lib/data/opencivitas-municipality";
 
 export type OpenCivitas2019Snapshot = {
   schemaVersion: 1;

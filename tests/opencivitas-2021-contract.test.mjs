@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { PYTHON_BIN } from "./helpers/python.mjs";
-import { assertOpenCivitas2021Snapshot } from "../src/lib/data/opencivitas-2021-contract.ts";
+import "./helpers/register-ts-alias.mjs";
+const { assertOpenCivitas2021Snapshot } = await import("../src/lib/data/opencivitas-2021-contract.ts");
 
 const snapshotPath = new URL("../src/data/generated/opencivitas-2021.json", import.meta.url);
 

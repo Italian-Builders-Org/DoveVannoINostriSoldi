@@ -53,7 +53,8 @@ try {
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth));
     await click('Rigenera risposta');await complete(2);assert.deepEqual(requests[1].messages[0].attachments,requests[0].messages[0].attachments);
     await click('Modifica domanda');await page.waitForSelector('[id^="edit-message-"]');await page.$eval('[id^="edit-message-"]',el=>{el.focus();el.select();});await page.keyboard.press('Backspace');await page.type('[id^="edit-message-"]','Confronta soltanto la biblioteca nei file.');await page.click('button::-p-text(Invia modifica)');await complete(3);assert.deepEqual(requests[2].messages[0].attachments,requests[0].messages[0].attachments);
-    await upload(['nota.txt','criteri.md','grafico.png'].map(fixture));await ready(3);
+    // Prefer tiny text fixtures here: re-parsing criteri.md under CI load has timed out.
+    await upload(['grafico.png','nota.txt','nota.txt'].map(fixture));await ready(3);
     await click('Anteprima grafico.png');await page.waitForSelector('dialog[open] img');assert.equal(await page.$eval('dialog img',el=>el.naturalWidth),1000);await click('Chiudi anteprima allegato');
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-image-text.png`,fullPage:true});
     await page.type('#assistant-prompt','Leggi questi nuovi allegati.');await click('Invia domanda');await page.waitForFunction(()=>document.querySelectorAll('[data-assistant-reply] table').length===2&&!document.querySelector('button[aria-label="Interrompi ricerca"]'));

@@ -20,7 +20,10 @@
     "path": "scripts/etl/specs/anac-cig-2007-2025.source.json"
   },
   "contract": {
-    "awardKey": ["cig", "id_aggiudicazione"],
+    "awardKey": [
+      "cig",
+      "id_aggiudicazione"
+    ],
     "operatorIdentity": "checksum-valid-italian-tax-code",
     "operatorDisplayName": "most-frequent-normalized-denomination-then-lexical",
     "operatorRef": "op-########-from-sorted-national-cf",
@@ -57,6 +60,7 @@
     "la scheda pubblica al massimo 15 aggiudicazioni recenti per operatore",
     "ranking e drill-down sono descrittivi e non indicano illeciti",
     "i campi procedura CIG (oggetto/CPV/stazione) derivano dagli snapshot annuali CIG 2007-2025 e possono mancare se il CIG non compare in quei file",
-    "per CIG multi-lotto si preferisce la riga con flag_prevalente, altrimenti oggetto_lotto piu informativo"
+    "per CIG multi-lotto si preferisce la riga con flag_prevalente, altrimenti oggetto_lotto piu informativo",
+    "le tabelle riassuntive CPV/stazioni/oggetti contano CIG unici abbinati solo tra le aggiudicazioni pubblicate (non l'intero universo CIG ANAC)"
   ]
 }

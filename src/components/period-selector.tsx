@@ -7,17 +7,19 @@ export function PeriodSelector({
   pathname,
   query = {},
   className,
+  label = "Anno dei dati",
 }: {
   activeYear: number;
   years: number[];
   pathname: string;
   query?: Record<string, string>;
   className?: string;
+  label?: string;
 }) {
   return (
     <nav
       className={`${styles.wrapper}${className ? ` ${className}` : ""}`}
-      aria-label="Anno dei dati SIOPE"
+      aria-label={label}
     >
       <span>Anno</span>
       <div>

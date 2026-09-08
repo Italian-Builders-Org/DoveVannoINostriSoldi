@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "@/lib/data/opencivitas-municipality";
 
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 const LANDING_URL = "https://www.opencivitas.it/it/open-data";
@@ -9,45 +10,7 @@ const ENTITIES_URL = "https://docs.opencivitas.it/Metadati_Enti_2021_xlsx.zip";
 const INDICATORS_URL =
   "https://docs.opencivitas.it/2021_Metadati_Ind_FC70TOT_1_xlsx.zip";
 const EXPECTED_MUNICIPALITIES = 6_565;
-const MUNICIPALITY_COLUMNS = [
-  "istatCode",
-  "name",
-  "province",
-  "region",
-  "historicalSpendingCents",
-  "standardSpendingCents",
-  "differenceCents",
-  "historicalPerCapitaCents",
-  "standardPerCapitaCents",
-  "differencePerCapitaCents",
-  "differenceBasisPoints",
-  "serviceDifferenceBasisPoints",
-  "spendingLevel",
-  "serviceLevel",
-  "spendingAssessmentReason",
-  "servicesAssessmentReason",
-  "sourceWarnings",
-] as const;
-
-export type OpenCivitas2021Municipality = {
-  istatCode: string;
-  name: string;
-  province: string;
-  region: string;
-  historicalSpendingCents: number;
-  standardSpendingCents: number;
-  differenceCents: number;
-  historicalPerCapitaCents: number;
-  standardPerCapitaCents: number;
-  differencePerCapitaCents: number;
-  differenceBasisPoints: number;
-  serviceDifferenceBasisPoints: number | null;
-  spendingLevel: number | null;
-  serviceLevel: number | null;
-  spendingAssessmentReason: string | null;
-  servicesAssessmentReason: string | null;
-  sourceWarnings: string[];
-};
+export type OpenCivitas2021Municipality = OpenCivitasMunicipality;
 
 export type OpenCivitas2021Snapshot = {
   schemaVersion: 1;

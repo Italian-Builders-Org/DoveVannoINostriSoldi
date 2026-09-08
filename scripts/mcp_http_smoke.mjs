@@ -447,6 +447,31 @@ const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", 
 assert.equal(modernData.level, "region");
 assert.equal(modernData.pagination.returned, 20);
 
+const fc60ApiResponse = await fetch(new URL("/api/spese/opencivitas-2019?codice=058091&anno=2019", baseUrl));
+assert.equal(fc60ApiResponse.status, 200);
+const fc60ApiData = JSON.parse(await responseText(fc60ApiResponse, "FC60 API"));
+const fc60McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc60-2019", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year: 2019 } },
+});
+const fc60McpData = successfulMcpToolResult(fc60McpResult, "opencivitas_fabbisogni_2019").data;
+assert.deepEqual(fc60McpData, fc60ApiData);
+assert.equal(fc60ApiData.referenceYear, 2019);
+assert.equal(fc60ApiData.family, "FC60TOT");
+assert.equal(fc60ApiData.coverage.municipalities, 6567);
+assert.equal(fc60ApiData.data[0].historicalSpendingCents, 308248360020);
+assert.equal(fc60ApiData.provenance.sha256.data, "5292914fcbda4b26047020fa11bc9cdca70ff7cf93e5b4a0bd33b5153cb1a8d1");
+for (const year of [2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc60-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2019?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
 console.log(JSON.stringify({
   ok: true,
   baseUrl: baseUrl.origin,
@@ -467,5 +492,6 @@ console.log(JSON.stringify({
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",
+    "fc60-2019-api-mcp-provenance-year-separation",
   ],
 }));

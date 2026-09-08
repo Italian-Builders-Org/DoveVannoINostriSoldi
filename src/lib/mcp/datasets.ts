@@ -255,6 +255,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_fabbisogni_2019": {
+      const { queryOpenCivitas2019 } = await import("@/lib/opencivitas-2019-snapshot");
+      if (query.year !== undefined && query.year !== 2019) {
+        throw new Error("OpenCivitas FC60TOT è disponibile per il 2019. 2021 e 2022 restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2019({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencoesione_progetti": {
       const {
         deriveOpenCoesioneDimension,

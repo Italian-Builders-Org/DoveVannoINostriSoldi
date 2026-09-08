@@ -810,7 +810,7 @@
     },
     {
       "id": "siope-nonmunicipal",
-      "owner": "SIOPE non-municipal entity payment detail",
+      "owner": "metaforismo — SIOPE non-municipal payments",
       "files": [
         "src/data/generated/siope-nonmunicipal-provenance.json",
         "src/data/generated/siope-nonmunicipal-detail.json",
@@ -818,23 +818,30 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python3 scripts/etl/siope_nonmunicipal.py --check",
+        "command": "python3 scripts/ci/check-siope-nonmunicipal-refresh.py",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
         "tests/etl/test_siope_nonmunicipal.py",
-        "tests/etl/test_siope_nonmunicipal_corpus.py"
+        "tests/etl/test_siope_nonmunicipal_corpus.py",
+        "tests/etl/test_siope_nonmunicipal_refresh.py"
       ],
       "nodeTests": [
         "tests/siope-nonmunicipal.test.mjs"
       ],
       "generator": {
-        "command": "python3 scripts/etl/siope_nonmunicipal.py --input-dir <raw-siope-and-ipa> --input-receipt <verified-input-receipt.json> --output-dir <staging> --acquired-at <ISO-8601>",
+        "command": "python3 scripts/etl/siope_nonmunicipal_refresh.py",
         "requiresNetworkInput": true
       },
-      "refreshWorkflow": null,
+      "refreshWorkflow": ".github/workflows/siope-nonmunicipal-refresh.yml",
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "ASL, Province, Regioni e Città metropolitane keep distinct temporal identities, SIOPE compartments and exact CF-to-IPA joins. The compact detail is bound to canonical rows, receipts and the integrated release proof. Refresh and publication are manual."
+      "trustModel": "Receipt-verified 2024–2026 payments; bounded monthly acquisition, source-specific corpus promotion and managed PR candidate only. All non-SIOPE contributions remain pinned. Schedule configuration does not attest execution.",
+      "publication": {
+        "branch": "automation/data/siope-nonmunicipal",
+        "commitTitle": "chore(data): refresh SIOPE nonmunicipal payments",
+        "prTitle": "chore(data): refresh SIOPE nonmunicipal payments",
+        "upstreamUrl": "https://www.siope.it/documenti/siope2/open/last"
+      }
     },
     {
       "id": "siope-municipal",

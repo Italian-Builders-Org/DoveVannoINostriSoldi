@@ -103,28 +103,25 @@ python3 scripts/etl/siope_nonmunicipal.py \
   --acquired-at 2026-09-06T08:00:00+00:00
 ```
 
-Il builder valida schema, provenienza e riconciliazione tra vista e PSV. Dopo il riesame dei
-risultati, se gli input ufficiali sono cambiati si aggiornano intenzionalmente metadati
-e valori `expected` dei cinque dataset nella specifica del corpus. La ricevuta di
-acquisizione deve coincidere con la data dichiarata nel catalogo. Non si usano gli
-output appena prodotti per auto-approvare i nuovi valori.
+Il builder valida schema, provenienza e riconciliazione tra vista e PSV. Il manifest
+nativo conserva la ricevuta acquisita prima del parsing e hash, byte e righe di ogni
+proiezione. Il reader della specifica corpus usa questo manifest per i soli cinque
+dataset SIOPE: cambiano misure e date di osservazione, mentre header, natura contabile,
+URL, licenza e caveat restano nella specifica revisionata. I valori `expected` nella
+specifica conservano la baseline; per i refresh SIOPE il riferimento operativo è il
+manifest nativo, validato anche dal contratto indipendente TypeScript.
 
-Se cambia il numero di righe, prima della promozione occorre revisionare anche
-il contratto aggregato. Calcolare e verificare separatamente il nuovo totale:
-totale precedente meno le righe precedenti dei cinque dataset più le nuove
-righe riconciliate. Le quote `catalog-only` e `derived-only` degli altri dataset
-restano invariate. Registrare nella review i conteggi precedenti, nuovi e il delta.
-Aggiornare esplicitamente:
+Il contratto aggregato conserva un contributo fisso per tutti gli altri dataset e
+aggiunge le sole righe delle cinque proiezioni riconciliate. `catalog-only` e
+`derived-only` restano fissi. Le ricevute e i chunk vengono comunque ricalcolati e
+verificati integralmente: il manifest non sostituisce il parsing o la riconciliazione.
+Se un'altra issue aggiunge un dataset al corpus, i contributi non-SIOPE in
+`siope_nonmunicipal_contract.py` e `integrated-source-contract.ts` vanno revisionati
+insieme ai consueti conteggi di release. Il bot SIOPE non può scrivere questi file.
 
-- `EXPECTED_DATASET_ROWS` in `scripts/etl/integrated_source_release.py`;
-- i conteggi corrispondenti in `src/lib/integrated-source-contract.ts`;
-- gli attesi di release nei test del corpus e nella skill
-  `.agents/skills/verify-dvns-integrated-sources/`.
-
-Non modificare i conteggi per aggirare un errore di riconciliazione. Il promotore
-rifiuta un contratto aggregato non allineato **prima di scrivere**. Il test
-`SiopeCompletePromotionTests` esercita sia questo rifiuto sia la promozione reale
-con nuovi conteggi esplicitamente revisionati, manifest, ricevute e tutti i sigilli.
+I test di promozione esercitano sia il contratto manuale di una specifica custom sia
+il refresh automatico con più o meno righe, senza aggiornamenti manuali degli attesi.
+Un errore durante il sigillo ripristina catalogo, chunk, ricevute, manifest e proof.
 Dopo la promozione eseguire i gate completi di `CONTRIBUTING.md`: i tre comandi
 seguenti sono soltanto il controllo rapido degli artifact.
 
@@ -158,7 +155,52 @@ DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
 python3 scripts/etl/integrated_source_release.py --check
 ```
 
-La cadenza dei file sorgente non equivale alla pubblicazione del prodotto: acquisizione e
-promozione di queste nuove proiezioni sono manuali. Il refresh giornaliero comunale non viene
-modificato. I test ETL verificano hash, schema, intervalli, identità temporali e tipo, mapping
-tipo-comparto, join, scarti, duplicati, centesimi, riconciliazioni e rollback della promozione.
+## Refresh mensile tramite data bot
+
+Il workflow `siope-nonmunicipal-refresh.yml` controlla la fonte il giorno 8 del mese
+alle 05:17 UTC, oltre all'avvio manuale. È una cadenza DVNS proporzionata ai movimenti
+mensili e alle revisioni dei file annuali; non è una promessa di rilascio della fonte.
+Owner: `metaforismo`. Il job usa `source-operations` e le credenziali del data bot già
+gestite; non introduce segreti, push diretti su main o merge automatici. La branch
+`automation/data/siope-nonmunicipal` contiene soltanto una proposta da revisionare.
+La configurazione del cron non dimostra un'esecuzione: protezioni dell'environment,
+credenziali e risultati vanno verificati nel run effettivo. Questa slice non attesta
+un refresh schedulato né cambia gli snapshot economici correnti. Refs #189.
+
+```sh
+PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/siope_nonmunicipal_refresh.py
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/ci/check-siope-nonmunicipal-refresh.py
+```
+
+L'acquisizione accetta soltanto i cinque URL canonici; un redirect, un errore HTTP,
+un file incompleto o uno schema inatteso interrompono il job. Limiti: 160 MiB per
+file movimenti, 32 MiB per anagrafica o IPA, 512 MiB complessivi, 30 secondi di timeout
+per lettura e 12 minuti per l'acquisizione; nessun retry implicito. Gli ZIP ammettono
+al massimo 100 membri univoci per archivio e 3 GiB espansi complessivi. Servono almeno
+2 GiB liberi per lo staging; gli ZIP vengono letti senza estrazione su disco. La
+ricevuta committata del 7 settembre misura circa 216 MB scaricati: è un'osservazione,
+non una garanzia sui rilasci futuri. Il job completo ha timeout di 45 minuti.
+
+A hash e byte invariati il risultato è `NO_CHANGE`: non cambiano file o date solo
+perché è trascorso tempo o è cambiato un ETag. Un input nuovo rigenera tutte e cinque
+le proiezioni, poi il promotore valida e aggiorna insieme gli artifact correlati.
+La concorrenza del workflow è isolata da quella comunale e non cancella un refresh
+in corso. Un avanzamento di main durante la generazione fa fallire il publisher;
+il run va ripetuto sulla nuova base.
+
+L'allowlist è chiusa in `scripts/ci/siope_publication_paths.py`: tre JSON SIOPE,
+cinque ricevute esatte, chunk `part-NNNNN` dei soli cinque dataset, catalogo,
+dataset-proof, release-proof e inventario generato. Il publisher verifica i blob
+compressi come byte, inclusi i chunk aggiunti e rimossi; non ottiene accesso generico
+ad altri ledger, specifiche o codice. Gli altri dataset sono preservati e ricontrollati.
+
+Prima del publisher sono obbligatori i contratti offline SIOPE, corpus e release,
+i test ETL della fonte e i contratti Node. Prima del merge restano CI completa e
+review. Per rollback chiudere la proposta oppure revertire il suo merge completo:
+non ripristinare soltanto la vista o uno dei proof. Un job fallito non pubblica
+artifact parziali; main conserva l'ultimo rilascio validato.
+
+Restano espliciti il perimetro 2024–2026 e la necessità di revisione per aggiungere
+annualità, tipi di ente, URL, schemi o licenze. Il refresh giornaliero comunale non
+viene modificato; i mesi mancanti e i join IPA non risolti non vengono inventati.

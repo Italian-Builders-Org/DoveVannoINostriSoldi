@@ -48,6 +48,15 @@ EXPECTED_DATASET_ROWS = {
     "derivedOnlyRows": 2_841,
 }
 
+
+def expected_dataset_rows(paths: ReleasePaths) -> dict[str, int]:
+    # Synthetic/custom release contracts retain their explicitly supplied totals.
+    if paths.dataset_spec.resolve() != DEFAULT_DATASET_SPEC.resolve():
+        return EXPECTED_DATASET_ROWS
+    from siope_nonmunicipal_contract import row_contract
+    return row_contract()
+
+
 SOURCE_PROOF_KEYS = frozenset({"schemaVersion", "catalogVersion", "coverage", "integrity"})
 SOURCE_COVERAGE_KEYS = frozenset(
     {
@@ -723,7 +732,7 @@ def _validate_datasets(paths: ReleasePaths) -> dict[str, object]:
         totals["publicRows"] + totals["catalogOnlyRows"] + totals["derivedOnlyRows"]
     ):
         raise ReleaseError("global dataset row equation does not close")
-    if any(totals[field] != expected for field, expected in EXPECTED_DATASET_ROWS.items()):
+    if any(totals[field] != expected for field, expected in expected_dataset_rows(paths).items()):
         raise ReleaseError("dataset row dispositions diverge from the release contract")
 
     try:
@@ -789,16 +798,17 @@ def build_expected_release(paths: ReleasePaths = ReleasePaths()) -> dict[str, ob
     archive = _validate_archive_receipt(paths)
     source_catalog = _validate_source_catalog(paths)
     datasets = _validate_datasets(paths)
+    dataset_rows = expected_dataset_rows(paths)
     contract = {
         "archiveEntries": EXPECTED_CORPUS["entries"],
         "regularFiles": EXPECTED_CORPUS["regular"],
         "hardlinks": EXPECTED_CORPUS["hardlink"],
         "symlinks": EXPECTED_CORPUS["symlink"],
         "datasets": EXPECTED_DATASETS,
-        "datasetSourceRows": EXPECTED_DATASET_ROWS["sourceRows"],
-        "datasetPublicRows": EXPECTED_DATASET_ROWS["publicRows"],
-        "datasetCatalogOnlyRows": EXPECTED_DATASET_ROWS["catalogOnlyRows"],
-        "datasetDerivedOnlyRows": EXPECTED_DATASET_ROWS["derivedOnlyRows"],
+        "datasetSourceRows": dataset_rows["sourceRows"],
+        "datasetPublicRows": dataset_rows["publicRows"],
+        "datasetCatalogOnlyRows": dataset_rows["catalogOnlyRows"],
+        "datasetDerivedOnlyRows": dataset_rows["derivedOnlyRows"],
     }
     release_set = {
         "contract": contract,

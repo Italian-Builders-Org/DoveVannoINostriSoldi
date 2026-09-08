@@ -956,6 +956,9 @@ def load_spec(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         raise DatasetBuildError(f"source spec illeggibile: {path}") from error
     if not isinstance(spec, dict):
         raise DatasetBuildError("source spec deve essere un oggetto")
+    if path.resolve() == DEFAULT_SPEC.resolve():
+        from siope_nonmunicipal_contract import PROVENANCE, apply_manifest, load_manifest
+        apply_manifest(spec, load_manifest(ROOT / PROVENANCE))
     return spec, validate_spec(spec)
 
 

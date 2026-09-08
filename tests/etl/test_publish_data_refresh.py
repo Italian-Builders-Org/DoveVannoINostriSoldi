@@ -56,6 +56,7 @@ class PublishDataRefreshTests(TestCase):
                 "opencoesione",
                 "public-debt",
                 "siope-municipal",
+                "siope-nonmunicipal",
             },
         )
         self.assertEqual(
@@ -70,6 +71,7 @@ class PublishDataRefreshTests(TestCase):
                 "automation/data/opencoesione",
                 "automation/data/public-debt",
                 "automation/data/siope",
+                "automation/data/siope-nonmunicipal",
             },
         )
         for publication in publications.values():

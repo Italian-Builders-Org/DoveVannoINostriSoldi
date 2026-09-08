@@ -1,3 +1,4 @@
+import { INTEGRATED_CORPUS_CONTRACT } from "../src/lib/integrated-source-contract.ts";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
@@ -24,8 +25,8 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   assert.equal(release.archiveReceipt.entries, 51_303);
   assert.equal(release.sourceCatalog.identities, 34_071);
   assert.equal(release.sourceCatalog.quarantined, 1_493);
-  assert.equal(release.datasets.sourceRows, 14_803_968);
-  assert.equal(release.datasets.publicRows, 1_821_622);
+  assert.equal(release.datasets.sourceRows, INTEGRATED_CORPUS_CONTRACT.sourceRows);
+  assert.equal(release.datasets.publicRows, INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.equal(release.datasets.catalogOnlyRows, 12_979_505);
   assert.equal(release.datasets.derivedOnlyRows, 2_841);
 
@@ -42,8 +43,8 @@ test("all 93 datasets remain visible and only catalog dispositions decide row ac
   assert.equal(overview.complete, true);
   assert.equal(overview.datasets.length, 93);
   assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 71);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), 14_803_968);
-  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), 1_821_622);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), INTEGRATED_CORPUS_CONTRACT.sourceRows);
+  assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.ok(overview.datasets.every((dataset) => dataset.sourceMetadata.holder.length > 0));
   assert.ok(overview.datasets.every((dataset) => /^\d{4}-\d{2}-\d{2}$/.test(dataset.sourceMetadata.checkedAt)));
   assert.ok(overview.datasets.every((dataset) => dataset.provenanceHref === `/fonti/copertura#dataset-${dataset.id}`));
@@ -276,7 +277,7 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
   assert.equal(checked.length, 71);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
-    1_821_622,
+    INTEGRATED_CORPUS_CONTRACT.publicRows,
   );
   assert.ok(checked.every((result) => result.rows.length === 1));
 });

@@ -8,6 +8,7 @@ import { gunzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
+import { INTEGRATED_CORPUS_CONTRACT, siopeProjectionMeasurements } from "../src/lib/integrated-source-contract.ts";
 
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
@@ -126,9 +127,9 @@ const expectedTotals = {
   catalogOnlyRows: 12_979_505,
   datasets: 93,
   derivedOnlyRows: 2_841,
-  publicRows: 1_821_622,
-  sourceBytes: 3_065_988_108,
-  sourceRows: 14_803_968,
+  publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
+  sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
+  sourceRows: INTEGRATED_CORPUS_CONTRACT.sourceRows,
 };
 
 // Non-null periods are admitted only when a dedicated temporal field in the
@@ -290,6 +291,12 @@ function assertNoInternalProvenance(value, context) {
 
 test("the committed curated corpus has an exact, closed artifact and row ledger", () => {
   const spec = readJson(specPath);
+  const siope = siopeProjectionMeasurements(readJson(path.join(repositoryRoot, "src/data/generated/siope-nonmunicipal-provenance.json")));
+  for (const dataset of spec.datasets) {
+    if (!Object.hasOwn(siope.projections, dataset.id)) continue;
+    Object.assign(dataset.expected, siope.projections[dataset.id]);
+    Object.assign(spec.sourceMetadata.overrides[dataset.id], { acquisitionDate: siope.acquisitionDate, checkedAt: siope.acquisitionDate });
+  }
   const catalog = readJson(catalogPath);
   const proof = readJson(proofPath);
   const sourceMetadataFor = (datasetId) => ({

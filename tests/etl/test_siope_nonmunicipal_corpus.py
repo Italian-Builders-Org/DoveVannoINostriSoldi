@@ -152,7 +152,15 @@ class SiopeNonMunicipalCorpusTests(TestCase):
 
 class SiopeCompletePromotionTests(TestCase):
     def test_refresh_uses_the_reviewed_contract_and_seals_real_provenance(self) -> None:
+        self.exercise_promotion(automated=False)
+
+    def test_automated_refresh_changes_rows_without_manual_expectations_and_rolls_back(self) -> None:
+        self.exercise_promotion(automated=True)
+
+    def exercise_promotion(self, *, automated: bool) -> None:
         import shutil
+        from contextlib import ExitStack
+        import siope_nonmunicipal_contract as refresh_contract
         from test_siope_nonmunicipal import SiopeNonMunicipalTests
         import siope_nonmunicipal as detail
         import integrated_source_release as release
@@ -198,33 +206,52 @@ class SiopeCompletePromotionTests(TestCase):
                 spec_path.write_text(json.dumps(spec))
                 def hashes():
                     return {p.relative_to(root).as_posix(): digest(p.read_bytes()) for p in root.rglob("*") if p.is_file()}
-                before = hashes()
-                with self.assertRaisesRegex(append_release.AppendError, "Contratto aggregato da revisionare"):
-                    append_release.append(**kwargs)
-                self.assertEqual(hashes(), before)
-                # Only fixture contracts are substituted: all validators and sealers run.
-                with mock.patch.object(release, "EXPECTED_DATASET_ROWS", expected):
-                    append_release.append(**kwargs)
-                    # Reacquire a different row set, then review the revised counts explicitly.
-                    from test_siope_nonmunicipal import zipped
-                    zipped(fixture.input / "SIOPE_USCITE.2026.zip", {"USCITE_2026.csv": [
-                        ["100", "2026", "01", "1.01", "100"],
-                        ["100", "2026", "03", "1.01", "50"],
-                    ]})
-                    fixture.write_input_receipt()
-                    updated = fixture.build()
-                    for item in spec["datasets"]:
-                        if item["id"] in kwargs["dataset_ids"]:
-                            item["expected"].update(updated["projections"][item["id"]])
-                    spec_path.write_text(json.dumps(spec))
-                    before_update = hashes()
-                    with self.assertRaisesRegex(append_release.AppendError, "Contratto aggregato da revisionare"):
+                with ExitStack() as stack:
+                    if automated:
+                        for identifier in kwargs["dataset_ids"]:
+                            spec["sourceMetadata"]["overrides"][identifier] = dict(spec["sourceMetadata"]["default"])
+                        spec_path.write_text(json.dumps(spec))
+                        (generated / "siope-nonmunicipal-provenance.json").write_bytes(detail.canonical_json(manifest) + b"\n")
+                        for module, name, value in (
+                            (corpus, "DEFAULT_SPEC", spec_path),
+                            (release, "DEFAULT_DATASET_SPEC", spec_path),
+                            (refresh_contract, "ROOT", root),
+                            (refresh_contract, "FIXED_ROWS", dict(sourceRows=1, publicRows=1, catalogOnlyRows=0, derivedOnlyRows=0)),
+                        ):
+                            stack.enter_context(mock.patch.object(module, name, value))
+                    before = hashes()
+                    if not automated:
+                        with self.assertRaisesRegex(append_release.AppendError, "Contratto aggregato da revisionare"):
+                            append_release.append(**kwargs)
+                        self.assertEqual(hashes(), before)
+                    # Only synthetic non-SIOPE contracts are substituted; all gates and seals run.
+                    with mock.patch.object(release, "EXPECTED_DATASET_ROWS", expected):
                         append_release.append(**kwargs)
-                    self.assertEqual(hashes(), before_update)
-                    new_count = 1 + sum(p["rows"] for p in updated["projections"].values())
-                    revised = dict(expected, sourceRows=new_count, publicRows=new_count)
-                    with mock.patch.object(release, "EXPECTED_DATASET_ROWS", revised):
-                        append_release.append(**kwargs)
+                        from test_siope_nonmunicipal import zipped
+                        zipped(fixture.input / "SIOPE_USCITE.2026.zip", {"USCITE_2026.csv": [
+                            ["100", "2026", "01", "1.01", "100"],
+                            ["100", "2026", "03", "1.01", "50"],
+                        ]})
+                        fixture.write_input_receipt()
+                        updated = fixture.build()
+                        if not automated:
+                            for item in spec["datasets"]:
+                                if item["id"] in kwargs["dataset_ids"]:
+                                    item["expected"].update(updated["projections"][item["id"]])
+                            spec_path.write_text(json.dumps(spec))
+                        before_update = hashes()
+                        if automated:
+                            with mock.patch.object(detail, "build_committed_view_proof", side_effect=RuntimeError("injected seal failure")):
+                                with self.assertRaisesRegex(RuntimeError, "injected seal failure"):
+                                    append_release.append(**kwargs)
+                        else:
+                            with self.assertRaisesRegex(append_release.AppendError, "Contratto aggregato da revisionare"):
+                                append_release.append(**kwargs)
+                        self.assertEqual(hashes(), before_update)
+                        new_count = 1 + sum(p["rows"] for p in updated["projections"].values())
+                        revised = dict(expected, sourceRows=new_count, publicRows=new_count)
+                        with mock.patch.object(release, "EXPECTED_DATASET_ROWS", expected if automated else revised):
+                            append_release.append(**kwargs)
                 actual = json.loads(kwargs["release_proof_path"].read_text())
                 self.assertEqual(actual["datasets"]["publicRows"], new_count)
                 self.assertEqual(json.loads((generated / "siope-nonmunicipal-provenance.json").read_text()), updated)

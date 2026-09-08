@@ -12,6 +12,31 @@
   ],
   "artifacts": [
     {
+      "id": "anac-procurement-peers",
+      "owner": "Municipal ANAC peer comparison from committed ANAC and ISTAT snapshots",
+      "files": [
+        "src/data/generated/anac-procurement-peers"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/anac_procurement_peers.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_procurement_peers.py"
+      ],
+      "nodeTests": [
+        "tests/anac-procurement-peers.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_procurement_peers.py",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-procurement-peers.source.json",
+      "trustModel": "Derived index of unique municipal fiscal-code joins to ISTAT SITUAS 2025, population 2024. Complete offline rederivation verifies locked ANAC profile/CPV shards, geography provenance, exact rational concentration and identity exclusions. Runtime verifies bounded payload hashes and parent snapshot locks; peer selection keeps missing data, distinct count/value denominators and minimum cohorts explicit."
+    },
+    {
       "id": "anac-procurement-cpv",
       "owner": "ANAC CPV classification for the existing entity procurement profiles",
       "files": [

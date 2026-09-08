@@ -1,0 +1,22 @@
+.page { gap: var(--space-5); }
+.scope { color: var(--color-neutral-700); font-size: 14px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tabs a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--color-neutral-300); text-decoration: underline; text-underline-offset: 3px; }
+.tabs a[aria-current="page"] { background: var(--color-accent-100); color: var(--color-text); border-color: var(--color-accent-300); }
+.indicators { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); margin-block: var(--space-5); }
+.indicator { min-width: 0; padding-left: var(--space-4); border-left: 2px solid var(--color-accent-300); }
+.indicator h3 { font-size: 15px; margin: 0 0 12px; font-weight: 600; }
+.value { display: inline-block; font-size: clamp(24px, 3vw, 36px); font-weight: 650; font-variant-numeric: tabular-nums; text-decoration: underline; text-underline-offset: 5px; overflow-wrap: anywhere; }
+.indicator dl { margin: var(--space-4) 0 0; font-size: 14px; }
+.indicator dl div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
+.indicator dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.note { color: var(--color-neutral-700); font-size: 14px; line-height: 1.6; }
+.criteria { padding-left: 20px; }
+.criteria li + li { margin-top: 8px; }
+.tableHint { display: none; color: var(--color-neutral-700); font-size: 14px; }
+.details { margin-top: var(--space-4); }
+@media (max-width: 700px) {
+  .indicators { grid-template-columns: 1fr; }
+  .tableHint { display: block; }
+  .indicator { padding-bottom: var(--space-3); }
+}

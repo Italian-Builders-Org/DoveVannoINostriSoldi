@@ -69,3 +69,13 @@ Per setup, test mirati, build, browser e worktree vedi
 [CONTRIBUTING.md](../CONTRIBUTING.md). Per una nuova fonte parti dallo
 [standard di import](DATA_IMPORT_STANDARD.md); per significato e limiti dei dati
 vedi [principi legali ed etici](LEGAL_AND_ETHICS.md).
+
+### Confronti appalti tra Comuni
+
+`anac_procurement_peers.py` deriva un indice compatto dai profili ANAC, dal
+loro CPV e dalla geografia ISTAT SITUAS già verificati. Il loader e selettore
+`src/lib/data/anac-procurement-peers.ts` servono la pagina
+`/enti/[codice]/appalti/confronti`, con copertura e gruppi minimi espliciti.
+Il corpus integrato non cambia: l’indice non aggiunge righe raw e i valori
+rimandano alle aggiudicazioni esistenti. Metodo, denominatori e comandi sono
+in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).

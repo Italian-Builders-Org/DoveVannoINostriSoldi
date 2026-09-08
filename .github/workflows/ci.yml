@@ -122,8 +122,9 @@ jobs:
   etl:
     name: etl
     runs-on: ubuntu-24.04
-    # Main already needs ~20 minutes; Conto Annuale adds 346,112 verified rows.
-    timeout-minutes: 30
+    # Full ETL and artifact checks reached 30 minutes in CI. Leave room for
+    # pinned Node setup and the operator derivative verification to complete.
+    timeout-minutes: 45
     env:
       # PYTHONPATH for ETL scripts that import sibling modules.
       # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,

@@ -96,6 +96,10 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /SITE_SUPPORTERS/);
   assert.match(footer, /Con il supporto di/);
   assert.match(footer, /MANTO_VENTURE\.href/);
+  assert.match(footer, /footer-disclaimer/);
+  assert.match(footer, /intelligenza artificiale/);
+  assert.match(footer, /AI può sbagliare/);
+  assert.match(globals, /\.footer-disclaimer \{/);
   assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
   assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
   assert.match(site, /https:\/\/www\.threads\.com\/@dovevannoinostrisoldi/);

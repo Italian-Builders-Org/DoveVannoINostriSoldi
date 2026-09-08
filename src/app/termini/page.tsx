@@ -43,6 +43,12 @@ export default function TermsPage() {
           Correggiamo gli errori verificabili, ma chi riusa i risultati resta responsabile di
           controllarne adeguatezza, data e contesto.
         </p>
+        <p>
+          Parte delle aggregazioni e delle presentazioni sul sito è prodotta o organizzata con
+          strumenti di intelligenza artificiale. Anche con controlli continui sulle fonti ufficiali,
+          l&apos;AI può sbagliare o omettere limiti rilevanti. Prima di qualsiasi decisione,
+          confronta sempre i numeri con la fonte ufficiale indicata in pagina.
+        </p>
       </section>
 
       <section className="panel">

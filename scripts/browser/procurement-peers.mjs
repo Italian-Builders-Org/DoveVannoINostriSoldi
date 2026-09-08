@@ -33,7 +33,9 @@ try {
           assert.ok(hint > 0 && hint <= width, "mobile scroll hint hidden or clipped");
         }
         await captureMain(page, `veroli-${width}.png`);
-        await page.locator("main details summary").click();
+        await page.focus("main details summary");
+        await page.keyboard.press("Enter");
+        assert.equal(await page.$eval("main details summary", (el) => el === document.activeElement), true);
         assert.equal(await page.$eval("main details", (el) => el.open), true);
         await navigate(page, { url: new URL(links[2], baseUrl).toString(), label: "peer HHI source", readySelector: "#concentration-detail-title" });
         assert.ok(await page.$("main table"), "exact concentration drill-down missing");

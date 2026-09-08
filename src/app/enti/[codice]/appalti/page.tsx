@@ -541,6 +541,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <>
           <Summary profile={profile} codice={normalizedCode} />
           <EntityProcurementConcentration profile={profile} className="panel" />
+          {!cpv ? <p><Link href={href(normalizedCode, {}) + "/confronti"}>Confronta con Comuni simili →</Link></p> : null}
         </>
       ) : null}
       {selectedView === "operators" ? <Operators profile={profile} codice={normalizedCode} currentPage={currentPage} size={size} metric={metric} /> : null}

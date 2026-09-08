@@ -48,7 +48,8 @@
     "test:browser:integrated": "node --experimental-strip-types scripts/browser/editorial.mjs",
     "test:lighthouse": "node scripts/lighthouse_budget.mjs",
     "test:mcp:http": "node scripts/mcp_http_smoke.mjs",
-    "test:mcp:load": "node scripts/mcp_load.mjs"
+    "test:mcp:load": "node scripts/mcp_load.mjs",
+    "test:browser:procurement-peers": "node scripts/browser/procurement-peers.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.0",

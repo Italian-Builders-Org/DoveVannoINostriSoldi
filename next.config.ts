@@ -66,6 +66,14 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/enti/*": entityProcurementRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
+    "/enti/*/appalti/confronti": [
+      "src/data/generated/anac-procurement-peers/*",
+      "scripts/etl/specs/anac-procurement-peers.source.json",
+      "src/data/generated/anac-entity-procurement-page/meta.json",
+      "src/data/generated/anac-procurement-cpv/meta.json",
+      "scripts/etl/specs/anac-procurement-cpv.source.json",
+      "src/data/generated/istat-municipality-geography.json",
+    ],
     "/dati": integratedSourceRuntimeFiles,
     "/dati/*": integratedSourceRuntimeFiles,
     "/api/dati/*": integratedSourceRuntimeFiles,

@@ -10,6 +10,14 @@ const integratedSourceRuntimeFiles = [
   "src/data/generated/pnrr-projects-index/*.json.gz",
 ];
 
+const operatorRuntimeFiles = [
+  "src/data/generated/anac-operator-awards-index/meta.json",
+  "src/data/generated/anac-operator-awards-index/summaries.json",
+  "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
+  "src/data/generated/anac-operator-awards-index/operators/*.jsonl.gz",
+  "scripts/etl/specs/anac-operator-awards-index.source.json",
+];
+
 const entityProcurementRuntimeFiles = [
   "src/data/generated/anac-procurement-cpv/*.jsonl.gz",
   "src/data/generated/anac-procurement-cpv/meta.json",
@@ -82,8 +90,9 @@ const nextConfig: NextConfig = {
     "/fonti/copertura": integratedSourceRuntimeFiles,
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,
-    "/mcp": integratedSourceRuntimeFiles,
-    "/api/mcp": integratedSourceRuntimeFiles,
+    "/api/assistant/chat": operatorRuntimeFiles,
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
   },
 };
 

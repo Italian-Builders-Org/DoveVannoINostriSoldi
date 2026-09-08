@@ -328,6 +328,10 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "anac_operatori": {
+      const { queryAnacOperatorAwards } = await import("@/lib/anac-operator-public-view");
+      return jsonSafe(queryAnacOperatorAwards({ query: query.query, code: query.code, measure: query.measure, limit: query.limit }, options.signal));
+    }
     case "anac_cig_snapshot": {
       const { getAnacCigSnapshot } = await import("@/lib/anac-cig-snapshot");
       return jsonSafe(getAnacCigSnapshot(query.year));

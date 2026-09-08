@@ -25,7 +25,7 @@ export const datasetQuerySchema = z.object({
     .describe("Dettaglio IRPEF: summary, income-sources, income-bands oppure all.")
     .optional(),
   code: z.string().max(100)
-    .describe("Codice identificativo richiesto dal dataset, per esempio codice IPA o ISTAT.")
+    .describe("Codice identificativo richiesto dal dataset, per esempio codice IPA o ISTAT; anac_operatori richiede op-######## dallo snapshot.")
     .optional(),
   cup: z.string().max(64)
     .describe("Codice Unico di Progetto: gli spazi esterni vengono rimossi prima della validazione esatta a 15 caratteri.")
@@ -55,7 +55,7 @@ export const datasetQuerySchema = z.object({
     .describe("Taglio dimensionale del dataset selezionato, per esempio regione, classeEta o sesso.")
     .optional(),
   measure: z.string().max(20)
-    .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti.")
+    .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti; anac_operatori accetta awardCount o attributedValue.")
     .optional(),
   cofog: z.string().max(8)
     .describe("Funzione COFOG: per Eurostat TOTAL o GF01…GF10; per ISTAT il totale G oppure una divisione da G010 a G100.")

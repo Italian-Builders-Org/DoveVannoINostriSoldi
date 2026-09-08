@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import "./helpers/register-ts-alias.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
@@ -323,6 +325,62 @@ test("loaded profile exposes withheld concentration without changing the shard s
       assert.equal("concentration" in fixture.record, false);
     }
   } finally {
+    cleanup(fixture);
+  }
+});
+
+test("descriptor reader handles partial reads without changing the published profile", async (t) => {
+  const fixture = makeFixture();
+  const originalRead = fs.readSync;
+  let reads = 0;
+  t.mock.method(fs, "readSync", (fd, buffer, offset, length, position) => {
+    reads++;
+    return originalRead(fd, buffer, offset, Math.min(length, 17), position);
+  });
+  syncBuiltinESMExports();
+  try {
+    const result = await loader.loadAnacEntityProcurementPage({ codiceIpa: fixture.record.codiceIpa, currentEntityCf: fixture.record.codiceFiscaleEnte, rootDirectory: fixture.projectRoot });
+    assert.equal(result.status, "available");
+    assert.deepEqual(result.profile.summary, fixture.record.summary);
+    assert.ok(reads > 10);
+  } finally {
+    t.mock.restoreAll();
+    syncBuiltinESMExports();
+    cleanup(fixture);
+  }
+});
+
+test("descriptor reader fails closed on an early EOF", async (t) => {
+  const fixture = makeFixture();
+  t.mock.method(fs, "readSync", () => 0);
+  syncBuiltinESMExports();
+  try {
+    const result = await loader.loadAnacEntityProcurementPage({ codiceIpa: fixture.record.codiceIpa, currentEntityCf: fixture.record.codiceFiscaleEnte, rootDirectory: fixture.projectRoot });
+    assert.equal(result.status, "unavailable");
+    assert.equal(result.reason, "artifact-invalid");
+  } finally {
+    t.mock.restoreAll();
+    syncBuiltinESMExports();
+    cleanup(fixture);
+  }
+});
+
+test("descriptor reader rejects a file growing after the checked read", async (t) => {
+  const fixture = makeFixture();
+  const originalRead = fs.readSync;
+  t.mock.method(fs, "readSync", (fd, buffer, offset, length, position) => {
+    const count = originalRead(fd, buffer, offset, length, position);
+    fs.appendFileSync(join(fixture.projectRoot, ARTIFACT_RELATIVE, "meta.json"), " ");
+    return count;
+  });
+  syncBuiltinESMExports();
+  try {
+    const result = await loader.loadAnacEntityProcurementPage({ codiceIpa: fixture.record.codiceIpa, currentEntityCf: fixture.record.codiceFiscaleEnte, rootDirectory: fixture.projectRoot });
+    assert.equal(result.status, "unavailable");
+    assert.equal(result.reason, "artifact-invalid");
+  } finally {
+    t.mock.restoreAll();
+    syncBuiltinESMExports();
     cleanup(fixture);
   }
 });

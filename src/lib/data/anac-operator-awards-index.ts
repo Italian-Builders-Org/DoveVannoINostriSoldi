@@ -1,8 +1,8 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { closeSync, existsSync, fstatSync, openSync, readFileSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { closeSync, existsSync, fstatSync, openSync, readFileSync, readSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 
 const DATASET = "anac-operator-awards-index" as const;
@@ -210,12 +210,8 @@ const operatorCache = new Map<string, AnacOperatorRecord | null>();
 const MAX_SUMMARIES_BYTES = 2_000_000;
 const MAX_SUMMARY_ROWS = 50;
 
-function repoRoot(): string {
-  return resolve(process.cwd());
-}
-
 function artifactPath(...parts: string[]): string {
-  return join(repoRoot(), ARTIFACT_DIR, ...parts);
+  return join(process.cwd(), ARTIFACT_DIR, ...parts);
 }
 
 function sha256Bytes(value: Buffer): string {
@@ -592,7 +588,7 @@ function assertNationalSummaries(value: unknown): AnacOperatorNationalSummaries 
 }
 
 function loadSourceSpecSha(): string {
-  const raw = readFileSync(join(repoRoot(), SOURCE_SPEC_PATH));
+  const raw = readFileSync(join(process.cwd(), SOURCE_SPEC_PATH));
   return sha256Bytes(raw);
 }
 
@@ -604,7 +600,15 @@ function readStableUtf8(path: string, maxBytes: number, label: string): string {
     const before = fstatSync(fd);
     if (!before.isFile()) throw new Error(`${label} non e un file`);
     if (before.size > maxBytes) throw new Error(`${label} troppo grande`);
-    const bytes = readFileSync(fd);
+    // Read only the checked size from the same descriptor. readFileSync(fd)
+    // is interpreted as a dynamic path by Turbopack and traces the whole repo.
+    const bytes = Buffer.alloc(before.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (!count) throw new Error(`${label} cambiato durante la lettura`);
+      offset += count;
+    }
     const after = fstatSync(fd);
     if (
       before.size !== after.size ||

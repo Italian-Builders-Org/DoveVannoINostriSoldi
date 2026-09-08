@@ -61,9 +61,21 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
     "/api/mcp": ["data/source-ledger/elements/**/*"],
   },
   outputFileTracingIncludes: {
+    "/appalti/operatori": [
+      "src/data/generated/anac-operator-awards-index/meta.json",
+      "src/data/generated/anac-operator-awards-index/summaries.json",
+      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
+      "src/data/generated/anac-operator-browse/*",
+      "scripts/etl/specs/anac-operator-awards-index.source.json",
+    ],
+    "/appalti/operatori/*": [
+      "src/data/generated/anac-operator-awards-index/**/*",
+      "scripts/etl/specs/anac-operator-awards-index.source.json",
+    ],
     "/enti/*": entityProcurementRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/enti/*/appalti/confronti": [

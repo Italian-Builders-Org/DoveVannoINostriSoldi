@@ -180,27 +180,6 @@
   margin-inline-end: 0.25rem;
   flex: none;
 }
-.hitDetail { display: grid; gap: 0.5rem; margin-top: 0.75rem; max-width: 52rem; }
-.hitDetail p { margin: 0; color: var(--color-neutral-700); font-size: 0.9375rem; }
-.hitDetailLabel { font-weight: 600; color: var(--color-text) !important; }
-.awardPreview {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.4rem;
-  font-size: 0.875rem;
-}
-.awardPreview li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.9rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid var(--color-neutral-200, #ebe8e2);
-  color: var(--color-neutral-700);
-}
-.cig { font-family: var(--font-mono); color: var(--color-text); font-weight: 600; }
-.procedureObject { flex: 1 1 100%; color: var(--color-text); }
 .pagination {
   display: grid;
   gap: 0.85rem;

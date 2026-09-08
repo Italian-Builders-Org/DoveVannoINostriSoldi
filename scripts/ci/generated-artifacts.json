@@ -137,6 +137,30 @@
       "trustModel": "Public national operator index derived from the hash-pinned ANAC awardees/awards full snapshots, enriched with procedure fields from the hash-pinned ANAC CIG annual monthly snapshots 2007-2025. Operator tax codes are used only transiently to assign opaque op-######## refs and are never published. Award values are exact decimals counted once per award pair; multi-operator awards remain unattributed for value. Search exposes denominations without CF or CF hashes. CIG oggetto/CPV/contracting-authority fields stay null when unmatched."
     },
     {
+      "id": "anac-operator-browse",
+      "owner": "ANAC operator paginated rankings",
+      "files": [
+        "src/data/generated/anac-operator-browse"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/etl/anac-operator-browse.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/anac-operator-read-budget.test.mjs",
+        "tests/anac-operator-awards-index.test.mjs"
+      ],
+      "generator": {
+        "command": "node --experimental-strip-types scripts/etl/anac-operator-browse.mjs",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "trustModel": "Deterministic complete rankings derived offline from the hash-pinned public operator search index. Manifest binds source hashes and each gzip block; runtime verifies only consumed blocks. No additional source or fiscal identifiers."
+    },
+    {
       "id": "anac-cig-2007-2025",
       "owner": "ANAC CIG annual monthly snapshots used to enrich operator procedures",
       "files": [

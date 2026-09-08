@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
+import { compactEuroLike, exactEuro, integer } from "@/lib/format";
 import {
   ANAC_OPERATOR_INDEX,
   listAnacOperatorsPage,
-  loadAnacOperatorsByRefs,
   loadAnacOperatorIndexMeta,
   loadAnacOperatorNationalSummaries,
   searchAnacOperators,
   type AnacOperatorNationalSummaries,
-  type AnacOperatorRecord,
   type AnacOperatorSearchHit,
 } from "@/lib/data/anac-operator-awards-index";
 import { ScrollRegion } from "../scroll-region";
@@ -45,25 +43,6 @@ function yearRange(min: number | null, max: number | null): string {
   if (min === null && max === null) return "anni non disponibili";
   if (min === max) return String(min);
   return `${min ?? "?"}-${max ?? "?"}`;
-}
-
-function amountStatusLabel(status: AnacOperatorRecord["awards"][number]["amountStatus"]): string | null {
-  switch (status) {
-    case "negative":
-      return "importo negativo in fonte";
-    case "missing":
-      return "importo mancante in fonte";
-    case "invalid":
-      return "importo non valido in fonte";
-    case "conflicting":
-      return "importo conflittuale in fonte";
-    case "zero":
-      return "importo zero";
-    case "positive-subcent":
-      return "centesimi oltre i due decimali";
-    default:
-      return null;
-  }
 }
 
 function listHref(options: {
@@ -196,20 +175,16 @@ function OperatorPagination({
 
 function OperatorHits({
   hits,
-  details,
   ranked = false,
   rankOffset = 0,
 }: Readonly<{
   hits: readonly AnacOperatorSearchHit[];
-  details?: ReadonlyMap<string, AnacOperatorRecord>;
   ranked?: boolean;
   rankOffset?: number;
 }>) {
   return (
     <ol className={styles.hits} aria-label={ranked ? "Elenco operatori ANAC" : "Risultati imprese aggiudicatarie"}>
       {hits.map((hit, index) => {
-        const detail = details?.get(hit.ref);
-        const recent = detail?.awards.slice(0, 3) ?? [];
         return (
           <li key={hit.ref} className={styles.hit}>
             <h3>
@@ -230,91 +205,9 @@ function OperatorHits({
               </span>
               <span>Anni osservati: {yearRange(hit.yearMin, hit.yearMax)}</span>
             </div>
-            {detail ? (
-              <div className={styles.hitDetail}>
-                <p>
-                  Identità in ANAC: denominazione pubblicata sotto, CF unito solo lato server e non
-                  esposto. Nella fonte compaiono <strong>{integer(detail.nameVariants)}</strong>{" "}
-                  {detail.nameVariants === 1 ? "variante" : "varianti"} di nome per lo stesso
-                  operatore. Di <strong>{integer(detail.awardCount)}</strong> aggiudicazioni
-                  collegate, <strong>{integer(detail.attributedAwardCount)}</strong> sono a
-                  operatore unico e entrano nel valore attribuibile (
-                  {formatDecimalEuro(detail.attributedValue)}).
-                </p>
-                {detail.topCpv && detail.topCpv.length > 0 ? (
-                  <p>
-                    Categorie CPV ricorrenti nei CIG pubblicati:{" "}
-                    {detail.topCpv
-                      .slice(0, 3)
-                      .map((item) => `${item.label} (${integer(item.count)})`)
-                      .join(" · ")}
-                    .
-                  </p>
-                ) : null}
-                {detail.topContractingAuthorities && detail.topContractingAuthorities.length > 0 ? (
-                  <p>
-                    Stazioni appaltanti ricorrenti:{" "}
-                    {detail.topContractingAuthorities
-                      .slice(0, 3)
-                      .map((item) => `${item.label} (${integer(item.count)})`)
-                      .join(" · ")}
-                    .
-                  </p>
-                ) : null}
-                {recent.length > 0 ? (
-                  <>
-                    <p className={styles.hitDetailLabel}>
-                      Ultime aggiudicazioni pubblicate (CIG, oggetto da CIG ANAC, importo dichiarato):
-                    </p>
-                    <ul className={styles.awardPreview}>
-                      {recent.map((award) => {
-                        const statusNote = amountStatusLabel(award.amountStatus);
-                        const procedure = award.procedure?.matched ? award.procedure : null;
-                        return (
-                          <li key={`${award.cig}-${award.awardId}`}>
-                            <span className={styles.cig}>{award.cig}</span>
-                            <span>{award.awardedAt ? longDate(award.awardedAt) : "data n.d."}</span>
-                            <span>{formatDecimalEuro(award.amount)}</span>
-                            <span>
-                              {award.attribution === "single-operator"
-                                ? "operatore unico"
-                                : "più operatori"}
-                            </span>
-                            {statusNote ? <span>{statusNote}</span> : null}
-                            {procedure?.oggetto ? (
-                              <span className={styles.procedureObject}>{procedure.oggetto}</span>
-                            ) : null}
-                            {procedure?.contractingAuthority ? (
-                              <span>Chi ha bandito: {procedure.contractingAuthority}</span>
-                            ) : null}
-                            {procedure?.cpvLabel || procedure?.cpvCode ? (
-                              <span>Categoria CPV: {procedure.cpvLabel ?? procedure.cpvCode}</span>
-                            ) : null}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    {detail.awardsTruncated || detail.awardCount > recent.length ? (
-                      <p className={styles.note}>
-                        <Link href={`/appalti/operatori/${hit.ref}`}>
-                          Apri la scheda per fino a {ANAC_OPERATOR_INDEX.maxAwardsPublished} CIG
-                          recenti
-                        </Link>
-                        {detail.awardsTruncated
-                          ? ` (su ${integer(detail.awardCount)} totali nello snapshot).`
-                          : "."}
-                      </p>
-                    ) : null}
-                  </>
-                ) : null}
-              </div>
-            ) : (
-              <p className={styles.note}>
-                Solo denominazione e aggiudicazioni dalla fonte.{" "}
-                <Link href={`/appalti/operatori/${hit.ref}`}>Apri la scheda</Link> per i CIG
-                recenti.
-              </p>
-            )}
+            <p className={styles.note}>
+              <Link href={`/appalti/operatori/${hit.ref}`}>Scheda e CIG recenti</Link>
+            </p>
           </li>
         );
       })}
@@ -801,12 +694,10 @@ function OperatorSummaryTables({
 function SearchSection({
   result,
   operatorsTotal,
-  details,
   showResults,
 }: Readonly<{
   result: ReturnType<typeof searchAnacOperators>;
   operatorsTotal: number;
-  details: ReadonlyMap<string, AnacOperatorRecord>;
   showResults: boolean;
 }>) {
   return (
@@ -840,7 +731,7 @@ function SearchSection({
               ? "Nessuna impresa corrisponde alla ricerca in questo indice."
               : `${integer(Math.min(result.hits.length, result.limit))} di ${integer(result.matched)} corrispondenze.`}
       </p>
-      {showResults ? <OperatorHits hits={result.hits} details={details} /> : null}
+      {showResults ? <OperatorHits hits={result.hits} /> : null}
     </section>
   );
 }
@@ -858,10 +749,6 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
     ? listAnacOperatorsPage({ by: ordine || "awardCount", page: first(search.page) })
     : null;
   const byValue = listing?.rankBy === "attributedValue";
-  const detailRefs = showSearch
-    ? result.hits.map((hit) => hit.ref)
-    : listing?.hits.map((hit) => hit.ref) ?? [];
-  const details = loadAnacOperatorsByRefs(detailRefs);
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -906,7 +793,6 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
           <SearchSection
             result={result}
             operatorsTotal={meta.totals.operators}
-            details={details}
             showResults={showSearch}
           />
         </>
@@ -943,7 +829,6 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
           </div>
           <OperatorHits
             hits={listing.hits}
-            details={details}
             ranked
             rankOffset={(listing.page - 1) * listing.pageSize}
           />
@@ -955,7 +840,6 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
         <SearchSection
           result={result}
           operatorsTotal={meta.totals.operators}
-          details={details}
           showResults={false}
         />
       ) : null}

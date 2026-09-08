@@ -127,6 +127,10 @@ echo "::group::Browser procurement peer comparisons"
 npm run test:browser:procurement-peers
 echo "::endgroup::"
 
+echo "::group::Browser operator pages"
+node scripts/browser/operatori.mjs
+echo "::endgroup::"
+
 echo "::group::Browser procurement award years"
 node scripts/browser/procurement-award-year.mjs
 echo "::endgroup::"

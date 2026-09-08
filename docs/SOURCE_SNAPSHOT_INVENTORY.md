@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 55
+- Artefatti nel registro: 56
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 39 (PR umana dopo revisione)
+- manuale: 40 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -48,6 +48,7 @@ La revisione e il merge restano umani.
 | `pnrr-projects-index` | 2026-06-13 | non dichiarato | https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html | nessuno | nessuno | manuale | `python3 scripts/etl/pnrr_projects.py --check` |
 | `anac-awardees-coverage` | 2026-01-23 | 2026-08-30T18:30:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari | nessuno | nessuno | manuale | `python3 scripts/etl/anac_awardees_coverage.py --check` |
 | `anac-operator-awards-index` | non dichiarato nello snapshot | 2026-09-08T10:30:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_awards_index.py --check` |
+| `anac-operator-browse` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/etl/anac-operator-browse.mjs --check` |
 | `anac-cig-2007-2025` | non dichiarato nello snapshot | 2026-09-08T12:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |

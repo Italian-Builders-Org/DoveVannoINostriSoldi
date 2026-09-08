@@ -1,9 +1,10 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { closeSync, existsSync, fstatSync, openSync, readFileSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { closeSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
+import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
+import { readAnacOperatorPage } from "@/lib/data/anac-operator-browse";
 
 const DATASET = "anac-operator-awards-index" as const;
 const SOURCE_SPEC_PATH = "scripts/etl/specs/anac-operator-awards-index.source.json";
@@ -210,20 +211,12 @@ const operatorCache = new Map<string, AnacOperatorRecord | null>();
 const MAX_SUMMARIES_BYTES = 2_000_000;
 const MAX_SUMMARY_ROWS = 50;
 
-function repoRoot(): string {
-  return resolve(process.cwd());
-}
-
 function artifactPath(...parts: string[]): string {
-  return join(repoRoot(), ARTIFACT_DIR, ...parts);
+  return join(process.cwd(), ARTIFACT_DIR, ...parts);
 }
 
 function sha256Bytes(value: Buffer): string {
   return createHash("sha256").update(value).digest("hex");
-}
-
-function sha256File(path: string): string {
-  return sha256Bytes(readFileSync(path));
 }
 
 function assertInstant(value: unknown, label: string): string {
@@ -262,16 +255,9 @@ function normalizeSearchQuery(raw: string): string {
     .replace(/[^0-9A-Z]+/g, "");
 }
 
-function readGunzipped(path: string, maxBytes: number): string {
-  const compressed = readFileSync(path);
-  if (compressed.byteLength > maxBytes) {
-    throw new Error(`artifacto troppo grande: ${path}`);
-  }
-  const uncompressed = gunzipSync(compressed);
-  if (uncompressed.byteLength > MAX_UNCOMPRESSED_BYTES) {
-    throw new Error(`artifacto decompresso troppo grande: ${path}`);
-  }
-  return uncompressed.toString("utf8");
+function readGunzipped(path: string, maxBytes: number, expected: { bytes: number; sha256: string }): string {
+  const compressed = readStableBytes(path, maxBytes, "indice operatori", expected);
+  return gunzipSync(compressed, { maxOutputLength: MAX_UNCOMPRESSED_BYTES }).toString("utf8");
 }
 
 function parseJsonl<T>(text: string, validate: (value: unknown) => T, maxRecords: number): T[] {
@@ -282,7 +268,7 @@ function parseJsonl<T>(text: string, validate: (value: unknown) => T, maxRecords
   return lines.map((line) => validate(JSON.parse(line)));
 }
 
-function assertSearchHit(value: unknown): AnacOperatorSearchHit {
+export function assertAnacOperatorSearchHit(value: unknown): AnacOperatorSearchHit {
   if (!value || typeof value !== "object") throw new Error("hit search non valido");
   const row = value as Record<string, unknown>;
   if (row.schemaVersion !== 1) throw new Error("schemaVersion search non valido");
@@ -592,19 +578,25 @@ function assertNationalSummaries(value: unknown): AnacOperatorNationalSummaries 
 }
 
 function loadSourceSpecSha(): string {
-  const raw = readFileSync(join(repoRoot(), SOURCE_SPEC_PATH));
+  const raw = readFileSync(join(process.cwd(), SOURCE_SPEC_PATH));
   return sha256Bytes(raw);
 }
 
 /** Read a committed artifact under an open fd so size checks cannot race the body. */
-function readStableUtf8(path: string, maxBytes: number, label: string): string {
+function readStableBytes(path: string, maxBytes: number, label: string, expected?: { bytes: number; sha256: string }): Buffer {
   let fd: number | null = null;
   try {
     fd = openSync(path, "r");
     const before = fstatSync(fd);
     if (!before.isFile()) throw new Error(`${label} non e un file`);
     if (before.size > maxBytes) throw new Error(`${label} troppo grande`);
-    const bytes = readFileSync(fd);
+    const bytes = Buffer.alloc(before.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (!count) throw new Error(`${label} cambiato durante la lettura`);
+      offset += count;
+    }
     const after = fstatSync(fd);
     if (
       before.size !== after.size ||
@@ -614,9 +606,12 @@ function readStableUtf8(path: string, maxBytes: number, label: string): string {
     ) {
       throw new Error(`${label} cambiato durante la lettura`);
     }
-    return bytes.toString("utf8");
+    if (expected && (bytes.length !== expected.bytes || sha256Bytes(bytes) !== expected.sha256)) {
+      throw new Error(`${label}: SHA-256 o dimensione non allineati`);
+    }
+    return bytes;
   } catch (error) {
-    if (error instanceof Error && /troppo grande|cambiato durante|non e un file/.test(error.message)) {
+    if (error instanceof Error && /troppo grande|cambiato durante|non e un file|non allineati/.test(error.message)) {
       throw error;
     }
     throw new Error(`${label} assente`);
@@ -628,35 +623,12 @@ function readStableUtf8(path: string, maxBytes: number, label: string): string {
 export function loadAnacOperatorIndexMeta(): AnacOperatorIndexMeta {
   if (cachedMeta) return cachedMeta;
   const path = artifactPath("meta.json");
-  const meta = assertAnacOperatorIndexMeta(JSON.parse(readStableUtf8(path, MAX_META_BYTES, "meta operatori")));
+  const meta = assertAnacOperatorIndexMeta(JSON.parse(readStableBytes(path, MAX_META_BYTES, "meta operatori").toString("utf8")));
   if (meta.sourceSpecSha256 !== loadSourceSpecSha()) {
     throw new Error("sourceSpecSha256 operatori non allineato");
   }
-  const searchPath = artifactPath("search.jsonl.gz");
-  if (!existsSync(searchPath) || statSync(searchPath).size !== meta.search.bytes) {
-    throw new Error("search index operatori non allineato");
-  }
-  if (sha256File(searchPath) !== meta.search.sha256) {
-    throw new Error("SHA-256 search operatori non allineato");
-  }
-  for (const shard of meta.shards) {
-    const shardPath = artifactPath("operators", `${shard.id}.jsonl.gz`);
-    if (!existsSync(shardPath) || statSync(shardPath).size !== shard.bytes) {
-      throw new Error(`shard operatori ${shard.id} non allineato`);
-    }
-    if (sha256File(shardPath) !== shard.sha256) {
-      throw new Error(`SHA-256 shard operatori ${shard.id} non allineato`);
-    }
-  }
-  if (meta.summaries) {
-    const summariesPath = artifactPath("summaries.json");
-    if (!existsSync(summariesPath) || statSync(summariesPath).size !== meta.summaries.bytes) {
-      throw new Error("summaries.json non allineato");
-    }
-    if (sha256File(summariesPath) !== meta.summaries.sha256) {
-      throw new Error("SHA-256 summaries.json non allineato");
-    }
-  }
+  // The offline source-lock check verifies every artifact. Runtime reads verify
+  // the exact bytes consumed, so an unrelated shard cannot slow down the hub.
   cachedMeta = meta;
   return meta;
 }
@@ -670,7 +642,7 @@ export function loadAnacOperatorNationalSummaries(): AnacOperatorNationalSummari
   }
   const path = artifactPath("summaries.json");
   const summaries = assertNationalSummaries(
-    JSON.parse(readStableUtf8(path, MAX_SUMMARIES_BYTES, "summaries.json")),
+    JSON.parse(readStableBytes(path, MAX_SUMMARIES_BYTES, "summaries.json", meta.summaries).toString("utf8")),
   );
   if (summaries.coverage.operators !== meta.totals.operators) {
     throw new Error("summaries.operators non riconcilia totals");
@@ -685,8 +657,8 @@ export function loadAnacOperatorNationalSummaries(): AnacOperatorNationalSummari
 function loadSearchIndex(): readonly AnacOperatorSearchHit[] {
   if (cachedSearch) return cachedSearch;
   const meta = loadAnacOperatorIndexMeta();
-  const text = readGunzipped(artifactPath("search.jsonl.gz"), MAX_SEARCH_BYTES);
-  const hits = parseJsonl(text, assertSearchHit, MAX_SEARCH_RECORDS);
+  const text = readGunzipped(artifactPath("search.jsonl.gz"), MAX_SEARCH_BYTES, meta.search);
+  const hits = parseJsonl(text, assertAnacOperatorSearchHit, MAX_SEARCH_RECORDS);
   if (hits.length !== meta.totals.operators) {
     throw new Error("conteggio search operatori non allineato");
   }
@@ -753,44 +725,9 @@ const MAX_TOP_LIMIT = 100;
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
 
-function compareAttributedValue(left: string, right: string): number {
-  const leftValue = Number(left);
-  const rightValue = Number(right);
-  if (!Number.isFinite(leftValue) || !Number.isFinite(rightValue)) {
-    return right.localeCompare(left, "en");
-  }
-  return rightValue - leftValue;
-}
-
 function parseRankBy(raw: AnacOperatorRankBy | string | string[] | undefined): AnacOperatorRankBy {
   const value = Array.isArray(raw) ? raw[0] : raw;
   return value === "attributedValue" || value === "valore" ? "attributedValue" : "awardCount";
-}
-
-let cachedSortedByCount: AnacOperatorSearchHit[] | null = null;
-let cachedSortedByValue: AnacOperatorSearchHit[] | null = null;
-
-function sortedOperatorIndex(rankBy: AnacOperatorRankBy): readonly AnacOperatorSearchHit[] {
-  if (rankBy === "attributedValue") {
-    if (!cachedSortedByValue) {
-      cachedSortedByValue = [...loadSearchIndex()].sort((left, right) => {
-        const byValue = compareAttributedValue(left.attributedValue, right.attributedValue);
-        if (byValue !== 0) return byValue;
-        if (right.awardCount !== left.awardCount) return right.awardCount - left.awardCount;
-        return left.name.localeCompare(right.name, "it");
-      });
-    }
-    return cachedSortedByValue;
-  }
-  if (!cachedSortedByCount) {
-    cachedSortedByCount = [...loadSearchIndex()].sort((left, right) => {
-      if (right.awardCount !== left.awardCount) return right.awardCount - left.awardCount;
-      const byValue = compareAttributedValue(left.attributedValue, right.attributedValue);
-      if (byValue !== 0) return byValue;
-      return left.name.localeCompare(right.name, "it");
-    });
-  }
-  return cachedSortedByCount;
 }
 
 /** Top operators by count or attributed award value. Descriptive ranking only. */
@@ -804,7 +741,7 @@ export function listTopAnacOperators(options?: {
     MAX_TOP_LIMIT,
     Math.max(1, Number.isFinite(options?.limit) ? Number(options?.limit) : DEFAULT_TOP_LIMIT),
   );
-  return { rankBy, hits: sortedOperatorIndex(rankBy).slice(0, limit), limit, meta };
+  return { rankBy, hits: readAnacOperatorPage(meta, rankBy, 0, limit, assertAnacOperatorSearchHit), limit, meta };
 }
 
 /** Paginated national operator list (all operators, ranked). */
@@ -827,7 +764,7 @@ export function listAnacOperatorsPage(options?: {
   const start = (page - 1) * pageSize;
   return {
     rankBy,
-    hits: sortedOperatorIndex(rankBy).slice(start, start + pageSize),
+    hits: readAnacOperatorPage(meta, rankBy, start, pageSize, assertAnacOperatorSearchHit),
     page,
     pageSize,
     total,
@@ -838,7 +775,7 @@ export function listAnacOperatorsPage(options?: {
 
 /** Load operator details for many refs with one shard read per bucket. */
 export function loadAnacOperatorsByRefs(refs: readonly string[]): Map<string, AnacOperatorRecord> {
-  loadAnacOperatorIndexMeta();
+  const meta = loadAnacOperatorIndexMeta();
   const wanted = [...new Set(refs.filter((ref) => OPERATOR_REF.test(ref)))];
   const out = new Map<string, AnacOperatorRecord>();
   const missingByBucket = new Map<string, string[]>();
@@ -854,15 +791,17 @@ export function loadAnacOperatorsByRefs(refs: readonly string[]): Map<string, An
     missingByBucket.set(bucket, list);
   }
   for (const [bucket, bucketRefs] of missingByBucket) {
-    const text = readGunzipped(artifactPath("operators", `${bucket}.jsonl.gz`), MAX_SHARD_BYTES);
+    const shard = meta.shards.find((item) => item.id === bucket);
+    if (!shard) throw new Error(`shard operatori ${bucket} assente`);
+    const text = readGunzipped(artifactPath("operators", `${bucket}.jsonl.gz`), MAX_SHARD_BYTES, shard);
     const records = parseJsonl(text, assertOperatorRecord, 50_000);
     const wantedSet = new Set(bucketRefs);
     for (const record of records) {
-      operatorCache.set(record.ref, record);
       if (wantedSet.has(record.ref)) out.set(record.ref, record);
     }
     for (const ref of bucketRefs) {
-      if (!operatorCache.has(ref)) operatorCache.set(ref, null);
+      if (operatorCache.size >= 100) operatorCache.delete(operatorCache.keys().next().value!);
+      operatorCache.set(ref, out.get(ref) ?? null);
     }
   }
   return out;
@@ -871,17 +810,7 @@ export function loadAnacOperatorsByRefs(refs: readonly string[]): Map<string, An
 export function getAnacOperatorByRef(ref: string): AnacOperatorRecord | null {
   if (!OPERATOR_REF.test(ref)) return null;
   if (operatorCache.has(ref)) return operatorCache.get(ref) ?? null;
-  loadAnacOperatorIndexMeta();
-  const bucket = createHash("sha256").update(ref).digest("hex").slice(0, 2);
-  const text = readGunzipped(artifactPath("operators", `${bucket}.jsonl.gz`), MAX_SHARD_BYTES);
-  const records = parseJsonl(text, assertOperatorRecord, 50_000);
-  let found: AnacOperatorRecord | null = null;
-  for (const record of records) {
-    operatorCache.set(record.ref, record);
-    if (record.ref === ref) found = record;
-  }
-  if (!found) operatorCache.set(ref, null);
-  return found;
+  return loadAnacOperatorsByRefs([ref]).get(ref) ?? null;
 }
 
 export function isAnacOperatorRef(value: string): boolean {

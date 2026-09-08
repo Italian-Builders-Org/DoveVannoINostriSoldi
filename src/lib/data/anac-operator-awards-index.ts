@@ -590,6 +590,8 @@ function readStableBytes(path: string, maxBytes: number, label: string, expected
     const before = fstatSync(fd);
     if (!before.isFile()) throw new Error(`${label} non e un file`);
     if (before.size > maxBytes) throw new Error(`${label} troppo grande`);
+    // Read only the checked size from the same descriptor. readFileSync(fd)
+    // is interpreted as a dynamic path by Turbopack and traces the whole repo.
     const bytes = Buffer.alloc(before.size);
     let offset = 0;
     while (offset < bytes.length) {

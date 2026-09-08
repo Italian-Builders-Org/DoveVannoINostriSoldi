@@ -365,6 +365,15 @@ Il dataset OpenCUP che segnala candidati PNRR non certifica l'ammissione al fina
 
 OpenCivitas pubblica dati comunali su fabbisogni standard, spesa storica e servizi. La prima integrazione usa il rilascio 2022 dei servizi totali e copre 6.557 Comuni delle 15 Regioni a statuto ordinario.
 
+Sono disponibili anche snapshot storici separati: FC70TOT 2021 (6.565 Comuni)
+e FC60TOT 2019, versione 2 (6.567 Comuni). La fetta 2019 espone
+`/api/spese/opencivitas-2019` e MCP `opencivitas_fabbisogni_2019`, con filtro
+obbligatorio per regione o codice ISTAT e paginazione. I valori sono interrogabili
+per una sola annualità; non si sommano né si confrontano silenziosamente famiglie
+diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
+totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
+della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
+
 Per ogni Comune conserviamo:
 
 - codice ISTAT, nome, provincia e regione;
@@ -468,7 +477,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- serie storica OpenCivitas 2015-2022 e singole funzioni comunali;
+- ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
+  totali 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

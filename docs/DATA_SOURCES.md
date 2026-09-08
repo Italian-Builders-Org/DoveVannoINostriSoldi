@@ -533,3 +533,10 @@ Avvisi, non contratti o pagamenti; comprendono tipi diversi e tre avvisi con
 committenti di più paesi. Nessuna somma o join CIG con ANAC. Riuso degli avvisi
 GUUE verificato nella nota TED, salvo diversa indicazione, e metadati CC0 1.0.
 Pagina, API e MCP consumano lo stesso corpus. [Fonte, date, condizioni di riuso e riproduzione](TED_NOTICES.md).
+
+### Conto Annuale RGS · personale e costo del lavoro 2020
+
+Le distribuzioni ufficiali DFP, CC BY 4.0, aggiungono 244.566 righe di costo e
+101.546 di personale al corpus pubblico. Snapshot storico 2020, con anno e
+chiave amministrazione RGS; coperture distinte, nessun totale sintetico né
+assimilazione a SIOPE cassa. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md).

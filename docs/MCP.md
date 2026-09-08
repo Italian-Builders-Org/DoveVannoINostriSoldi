@@ -146,3 +146,9 @@ CF attuatore e codici territoriali, con cursor vincolato al rilascio. La stessa
 vista è in `/pnrr` e `/api/pnrr/progetti`. I conteggi riguardano registrazioni
 CUP/CLP/submisura; il finanziamento non è pagamento. Contratto, esempi e limiti
 in [PNRR_PROJECTS.md](PNRR_PROJECTS.md).
+
+Il Conto Annuale storico 2020 è interrogabile con `spesa_pa_dettaglio` e i codici
+`rgs-conto-annuale-costo-2020` e `rgs-conto-annuale-personale-2020`.
+La chiave `Codice amministrazione RGS` va associata ad `Anno`; una ricerca come
+`U:11799` filtra le celle, senza eseguire join o somme.
+[Perimetri e limiti](CONTO_ANNUALE.md).

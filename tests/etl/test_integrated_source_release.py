@@ -99,13 +99,13 @@ class AggregateReleaseProofTests(unittest.TestCase):
             "proofSha256": "6" * 64,
             "catalogBytes": 50,
             "catalogSha256": "7" * 64,
-            "receipts": 91,
+            "receipts": 93,
             "rowArtifacts": 379,
             "artifactCount": 459,
             "receiptSetSha256": "8" * 64,
             "artifactSetSha256": "9" * 64,
-            "sourceRows": 14_457_856,
-            "publicRows": 1_475_510,
+            "sourceRows": 14_803_968,
+            "publicRows": 1_821_622,
             "catalogOnlyRows": 12_979_505,
             "derivedOnlyRows": 2_841,
             "sourceBytes": 2_537_014_778,
@@ -438,7 +438,7 @@ class CommittedReleaseProofTests(unittest.TestCase):
         proof = release.check_release()
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
-        self.assertEqual(proof["contract"]["datasets"], 91)
+        self.assertEqual(proof["contract"]["datasets"], 93)
 
 
 if __name__ == "__main__":

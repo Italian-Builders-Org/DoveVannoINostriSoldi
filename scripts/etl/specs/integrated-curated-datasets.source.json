@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-06T08:00:00Z",
+  "generatedAt": "2026-09-07T21:45:00Z",
   "corpusContract": {
     "elements": 51303,
     "regularFiles": 46438,
@@ -355,6 +355,34 @@
           "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti.csv",
           "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti_Metadati.zip",
           "https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html"
+        ]
+      },
+      "rgs-conto-annuale-costo-2020": {
+        "holder": "MEF – Ragioneria Generale dello Stato; distribuzione Dipartimento della Funzione Pubblica",
+        "referencePeriod": "Anno 2020; costo del lavoro annuale",
+        "publicationDate": "2022-09-23",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "annuale dichiarata dalla fonte; snapshot storico con aggiornamento manuale",
+        "canonicalUrls": [
+          "https://contoannuale.rgs.mef.gov.it/",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://dati-coll.dfp.gov.it/dataset/1308c340-624a-46e0-8ea2-888d3d72c4d2/resource/65172182-a08a-46d9-a1ba-675316f7ffd5/download/costo_lavoro_2020.csv",
+          "https://dati-coll.dfp.gov.it/dataset/costo_lavoro"
+        ]
+      },
+      "rgs-conto-annuale-personale-2020": {
+        "holder": "MEF – Ragioneria Generale dello Stato; distribuzione Dipartimento della Funzione Pubblica",
+        "referencePeriod": "Anno 2020; personale al 31 dicembre",
+        "publicationDate": "2022-09-23",
+        "acquisitionDate": "2026-09-07",
+        "checkedAt": "2026-09-07",
+        "updateFrequency": "annuale dichiarata dalla fonte; snapshot storico con aggiornamento manuale",
+        "canonicalUrls": [
+          "https://contoannuale.rgs.mef.gov.it/",
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://dati-coll.dfp.gov.it/dataset/80b49214-fa00-4e25-aafb-2c122a523df6/resource/f4e810e7-72d9-4041-9d63-9e819823e3e0/download/occupazione_2020.csv",
+          "https://dati-coll.dfp.gov.it/dataset/occupazione"
         ]
       }
     }
@@ -5372,6 +5400,105 @@
           "url_affidamenti_diretti",
           "flag_bandi",
           "note"
+        ]
+      }
+    },
+    {
+      "id": "rgs-conto-annuale-costo-2020",
+      "title": "Conto Annuale · costo del lavoro PA · 2020",
+      "domain": "personnel",
+      "relativePath": "rgs-conto-annuale-costo-2020.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Snapshot storico 2020: non descrive il personale o i costi attuali. Fonte RGS, distribuzione DFP, CC BY 4.0; proiezione DVNS.",
+        "Importi annuali in euro già firmati: il segno della fonte non va applicato nuovamente. Il costo del lavoro non è SIOPE cassa; non sommare i due sistemi.",
+        "10.785 amministrazioni; voci e contratti restano distinti. Copertura diversa dal personale: nessun costo medio per dipendente ricavabile da un join delle righe.",
+        "Raccordo tramite Anno e Codice amministrazione RGS (tipo:codice istituzione), non tramite denominazione o codice SIOPE. I due dataset hanno 10.310 enti comuni.",
+        "Alcune descrizioni contengono caratteri sostitutivi già presenti nel CSV ufficiale; non sono stati ricostruiti."
+      ],
+      "expected": {
+        "bytes": 60681207,
+        "sha256": "3e1776246f4c5ca4c8f26091e88e42b2e91224c39bc808212baeaed5ef728107",
+        "rows": 244566,
+        "columns": 12,
+        "headers": [
+          "Anno",
+          "Codice amministrazione RGS",
+          "Codice istituzione",
+          "Amministrazione",
+          "Tipo istituzione",
+          "Descrizione tipo",
+          "Contratto",
+          "Voce spesa",
+          "Descrizione voce",
+          "Segno fonte",
+          "Importo euro",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-conto-annuale-personale-2020",
+      "title": "Conto Annuale · personale PA · 2020",
+      "domain": "personnel",
+      "relativePath": "rgs-conto-annuale-personale-2020.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Snapshot storico 2020: non descrive il personale o i costi attuali. Fonte RGS, distribuzione DFP, CC BY 4.0; proiezione DVNS.",
+        "Persone al 31 dicembre 2020, non equivalenti a tempo pieno. Il catalogo esclude i contratti flessibili; le fasce part time seguono il dizionario DFP (<50% e >50%), che non chiarisce il valore esattamente al 50%.",
+        "10.330 amministrazioni. 220 ricorrenze aggiuntive delle stesse chiavi ente/contratto/categoria/qualifica hanno valori diversi: righe conservate, senza deduplica né totali sintetici.",
+        "Raccordo tramite Anno e Codice amministrazione RGS (tipo:codice istituzione), non tramite denominazione o codice SIOPE. I due dataset hanno 10.310 enti comuni.",
+        "Alcune descrizioni contengono caratteri sostitutivi già presenti nel CSV ufficiale; non sono stati ricostruiti."
+      ],
+      "expected": {
+        "bytes": 37964870,
+        "sha256": "f6ede9ba49460a3ada16f31ed009d92cbfce2d805a4990618467b5508866e336",
+        "rows": 101546,
+        "columns": 25,
+        "headers": [
+          "Anno",
+          "Codice amministrazione RGS",
+          "Codice istituzione",
+          "Amministrazione",
+          "Comparto",
+          "Descrizione comparto",
+          "Contratto",
+          "Descrizione contratto",
+          "Categoria",
+          "Descrizione categoria",
+          "Qualifica",
+          "Descrizione qualifica",
+          "Macrocategoria",
+          "Descrizione macrocategoria",
+          "Aggregato",
+          "Descrizione aggregato",
+          "Tipo istituzione",
+          "Descrizione tipo",
+          "Tempo pieno uomini",
+          "Tempo pieno donne",
+          "Part time <50% uomini",
+          "Part time <50% donne",
+          "Part time >50% uomini",
+          "Part time >50% donne",
+          "URL fonte"
         ]
       }
     }

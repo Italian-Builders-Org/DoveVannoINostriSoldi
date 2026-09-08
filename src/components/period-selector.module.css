@@ -2,9 +2,18 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.wrapper:has([aria-expanded="true"]) {
+  z-index: 20;
 }
 
 .wrapper > span {
+  flex: none;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .07em;
@@ -12,14 +21,26 @@
   color: var(--color-neutral-600);
 }
 
-.wrapper > div {
+.years {
   display: inline-flex;
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
   border: 1px solid var(--color-neutral-400);
 }
 
-.wrapper a {
+.yearList {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.yearList > a,
+.older > button {
   display: grid;
-  min-width: 56px;
+  min-width: 52px;
   min-height: 44px;
   place-items: center;
   padding-inline: 10px;
@@ -27,18 +48,90 @@
   font-size: 12px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
   transition: color 140ms var(--ease-out), background-color 140ms var(--ease-out);
 }
-.wrapper a + a { border-left: 1px solid var(--color-neutral-300); }
-.wrapper a:hover { color: var(--color-text); background: var(--color-neutral-200); }
 
-.wrapper a[aria-current="page"] {
+.yearList > a + a {
+  border-left: 1px solid var(--color-neutral-300);
+}
+
+.yearList > a:hover,
+.older > button:hover {
+  color: var(--color-text);
+  background: var(--color-neutral-200);
+}
+
+.yearList > a[aria-current="page"],
+.older > button[aria-current="true"] {
   color: var(--color-raised);
   background: var(--color-accent-700);
 }
-.wrapper a[aria-current="page"]:hover {
+
+.yearList > a[aria-current="page"]:hover,
+.older > button[aria-current="true"]:hover {
   color: var(--color-on-strong);
   background: var(--color-accent-800);
+}
+
+.older {
+  position: relative;
+  flex: none;
+  z-index: 2;
+  border-left: 1px solid var(--color-neutral-300);
+}
+
+.older[data-open="true"] {
+  z-index: 3;
+}
+
+.older > button {
+  min-width: 58px;
+}
+
+.olderMenu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 21;
+  display: grid;
+  min-width: max(100%, 88px);
+  max-height: min(320px, 50dvh);
+  overflow: auto;
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.olderMenu a {
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  padding-inline: 12px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.olderMenu li + li {
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.olderMenu a:hover {
+  color: var(--color-text);
+  background: var(--color-neutral-100);
+}
+
+.olderMenu a[aria-current="page"] {
+  color: var(--color-raised);
+  background: var(--color-accent-700);
 }
 
 @media (max-width: 560px) {
@@ -48,10 +141,18 @@
     flex-direction: column;
     gap: 6px;
   }
-  .wrapper > div { width: 100%; }
-  .wrapper a { flex: 1; }
+  .years { width: 100%; }
+  .yearList { flex: 1; }
+  .yearList > a { flex: 1; }
+  .older { position: static; }
+  .olderMenu {
+    left: 0;
+    right: 0;
+    min-width: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wrapper a { transition-duration: 0ms; }
+  .yearList > a,
+  .older > button { transition-duration: 0ms; }
 }

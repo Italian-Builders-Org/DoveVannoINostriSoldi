@@ -35,7 +35,7 @@ class AcquisitionTests(TestCase):
             return result
 
     def test_receipt_hashes_exact_bytes_and_unchanged_inputs_ignore_validator_churn(self):
-        first = self.acquire(lambda url: Response(url))
+        first = self.acquire(Response)
         second = self.acquire(lambda url: Response(url, headers={"ETag": '"new-validator"'}))
         self.assertTrue(refresh.same_inputs(first, second))
         second["files"]["amministrazioni.txt"]["sha256"] = "0" * 64
@@ -56,10 +56,10 @@ class AcquisitionTests(TestCase):
     def test_streaming_and_aggregate_limits_apply_without_content_length(self):
         with mock.patch.dict(refresh.LIMITS, {key: 3 for key in refresh.LIMITS}):
             with self.assertRaisesRegex(refresh.RefreshError, "budget"):
-                self.acquire(lambda url: Response(url))
+                self.acquire(Response)
         with mock.patch.object(refresh, "TOTAL_LIMIT", 15):
             with self.assertRaisesRegex(refresh.RefreshError, "budget"):
-                self.acquire(lambda url: Response(url))
+                self.acquire(Response)
 
     def test_redirect_handler_blocks_before_following_the_new_destination(self):
         with self.assertRaises(refresh.RefreshError):
@@ -72,7 +72,7 @@ class AcquisitionTests(TestCase):
     def test_deadline_bounds_the_whole_acquisition(self):
         clock = mock.Mock(side_effect=[0, 0, refresh.DOWNLOAD_SECONDS + 1])
         with self.assertRaisesRegex(refresh.RefreshError, "budget"):
-            self.acquire(lambda url: Response(url), clock=clock)
+            self.acquire(Response, clock=clock)
 
     def test_unchanged_real_fixture_bytes_do_not_rebuild_or_promote(self):
         fixture = fixtures.SiopeNonMunicipalTests()

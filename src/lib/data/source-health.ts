@@ -32,6 +32,7 @@ import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
+import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -734,6 +735,18 @@ function snapshotManagedIstatBesEconomico(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesSalute(): SourceHealth {
+  const { source } = istatBesSaluteMetadata;
+  return {
+    ...baseHealth("istat-bes-salute"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-salute", source.publicationDate),
+    latencyMs: null,
+    detail: "BES Salute, edizione 2025: 46.157 osservazioni, sei indicatori e 135 territori, di cui 107 province. Periodi e unità distinti per indicatore; una cella statisticamente non significativa. Non è spesa pubblica né dato comunale.",
+    recordCount: istatBesSaluteData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -819,6 +832,7 @@ export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
+  "istat-bes-salute": snapshotManagedIstatBesSalute,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
 } satisfies Record<SourceId, SourceHealthAdapter>);

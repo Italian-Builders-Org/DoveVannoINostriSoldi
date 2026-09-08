@@ -290,6 +290,23 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencivitas_fabbisogni_2021", title: "Fabbisogni e servizi comunali 2021 (FC70TOT)", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni RSO, annualità 2021, famiglia FC70TOT.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Contratto distinto da FC80TOT 2022: non sommare né confrontare in silenzio le due annualità. La differenza dalla spesa standard non è spreco. RSS fuori perimetro." },
   {
+    id: "opencivitas_fabbisogni_2018",
+    title: "Fabbisogni e servizi comunali 2018 (FC50TOT)",
+    summary: "Spesa storica, spesa standard e livelli dei servizi di 6.606 Comuni RSO, annualità 2018, famiglia FC50TOT.",
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Servizi totali 2018 · FC50TOT",
+      owner: "Ragioneria Generale dello Stato · pubblicazione SOSE",
+      url: "https://docs.opencivitas.it/2018_Ind_FC50TOT_1_csv.zip",
+      cadence: "Irregolare; snapshot storico 2018 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2022-02-14", updatedAt: "2022-02-14", period: "2018",
+      sha256: "78107746fe7edac1791ac61d3d6b09ba5bd4d65f80db896c1c6c450e5bca55c0", bytes: 4649896,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC60TOT 2019, FC70TOT 2021 e FC80TOT 2022: nessuna somma o confronto silenzioso tra annualità. Il 2020 non è ricostruito. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
+  },
+  {
     id: "opencivitas_fabbisogni_2019",
     title: "Fabbisogni e servizi comunali 2019 (FC60TOT)",
     summary: "Spesa storica, spesa standard e livelli dei servizi di 6.567 Comuni RSO, annualità 2019, famiglia FC60TOT.",

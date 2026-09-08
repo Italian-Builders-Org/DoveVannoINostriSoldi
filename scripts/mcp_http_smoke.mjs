@@ -447,6 +447,31 @@ const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", 
 assert.equal(modernData.level, "region");
 assert.equal(modernData.pagination.returned, 20);
 
+const fc50ApiResponse = await fetch(new URL("/api/spese/opencivitas-2018?codice=058091&anno=2018", baseUrl));
+assert.equal(fc50ApiResponse.status, 200);
+const fc50ApiData = JSON.parse(await responseText(fc50ApiResponse, "FC50 API"));
+const fc50McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc50-2018", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year: 2018 } },
+});
+const fc50McpData = successfulMcpToolResult(fc50McpResult, "opencivitas_fabbisogni_2018").data;
+assert.deepEqual(fc50McpData, fc50ApiData);
+assert.equal(fc50ApiData.referenceYear, 2018);
+assert.equal(fc50ApiData.family, "FC50TOT");
+assert.equal(fc50ApiData.coverage.municipalities, 6606);
+assert.equal(fc50ApiData.data[0].historicalSpendingCents, 299693120810);
+assert.equal(fc50ApiData.provenance.sha256.data, "78107746fe7edac1791ac61d3d6b09ba5bd4d65f80db896c1c6c450e5bca55c0");
+for (const year of [2019, 2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc50-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2018?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
 const fc60ApiResponse = await fetch(new URL("/api/spese/opencivitas-2019?codice=058091&anno=2019", baseUrl));
 assert.equal(fc60ApiResponse.status, 200);
 const fc60ApiData = JSON.parse(await responseText(fc60ApiResponse, "FC60 API"));
@@ -492,6 +517,7 @@ console.log(JSON.stringify({
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",
+    "fc50-2018-api-mcp-provenance-year-separation",
     "fc60-2019-api-mcp-provenance-year-separation",
   ],
 }));

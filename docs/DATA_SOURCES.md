@@ -374,6 +374,11 @@ diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
 totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
 della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
 
+È integrato anche FC50TOT 2018 versione 1 (6.606 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2018` e MCP `opencivitas_fabbisogni_2018`.
+Fonte, lock, denominatori e differenze dai metadati 2019 sono documentati in
+[OpenCivitas 2018](OPENCIVITAS_2018.md). Gli anni restano separati.
+
 Per ogni Comune conserviamo:
 
 - codice ISTAT, nome, provincia e regione;
@@ -478,7 +483,7 @@ Altre fonti da valutare nella fase 2:
 - sanità;
 - dati regionali e comunali con maggiore granularità;
 - ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
-  totali 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
+  totali 2018, 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

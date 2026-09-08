@@ -255,6 +255,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_fabbisogni_2018": {
+      const { queryOpenCivitas2018 } = await import("@/lib/opencivitas-2018-snapshot");
+      if (query.year !== undefined && query.year !== 2018) {
+        throw new Error("OpenCivitas FC50TOT è disponibile per il 2018. 2019, 2021 e 2022 restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2018({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2019": {
       const { queryOpenCivitas2019 } = await import("@/lib/opencivitas-2019-snapshot");
       if (query.year !== undefined && query.year !== 2019) {

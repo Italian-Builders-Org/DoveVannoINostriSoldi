@@ -515,6 +515,32 @@
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
+      "id": "opencivitas-2018",
+      "owner": "OpenCivitas municipal 2018 FC50TOT",
+      "files": [
+        "src/data/generated/opencivitas-2018.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-contract.test.mjs",
+        "tests/opencivitas-2018-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50TOT 2018 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019, FC70TOT 2021 e FC80TOT 2022. Join di 6606 Comuni RSO; aggregati esclusi. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018.source.json"
+    },
+    {
       "id": "opencivitas-2019",
       "owner": "OpenCivitas municipal 2019 FC60TOT",
       "files": [

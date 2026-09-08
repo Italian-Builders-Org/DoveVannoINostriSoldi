@@ -44,7 +44,7 @@ function formatCompactEuro(value: string, reference: number): string {
 function yearRange(min: number | null, max: number | null): string {
   if (min === null && max === null) return "anni non disponibili";
   if (min === max) return String(min);
-  return `${min ?? "?"}–${max ?? "?"}`;
+  return `${min ?? "?"}-${max ?? "?"}`;
 }
 
 function amountStatusLabel(status: AnacOperatorRecord["awards"][number]["amountStatus"]): string | null {
@@ -473,7 +473,7 @@ function OperatorSummaryTables({
           <p className={styles.note}>
             Nei grafici vedi le prime {integer(chartLimit)} posizioni (barra = confronto col primo).
             Nelle tabelle restano tutte le {integer(summaries.basis.limit)}. Fonte: full snapshot
-            aggiudicatari/aggiudicazioni + CIG 2007–2025.
+            aggiudicatari/aggiudicazioni + CIG 2007-2025.
           </p>
         </div>
       </div>
@@ -654,7 +654,7 @@ function OperatorSummaryTables({
                       <td className="num">{integer(index + 1)}</td>
                       <th scope="row">{row.label}</th>
                       <td>
-                        <code>{row.code ?? "—"}</code>
+                        <code>{row.code ?? "-"}</code>
                       </td>
                       <td className="num">{integer(row.count)}</td>
                     </tr>
@@ -964,7 +964,7 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
         <h2 id="operatori-source-title">Fonte e limiti</h2>
         <p>
           ANAC Open Data: full snapshot aggiudicatari e aggiudicazioni (CC BY-SA 4.0), arricchiti con
-          i campi procedura dei CIG annuali 2007–2025. Snapshot aggiudicatari/aggiudicazioni
+          i campi procedura dei CIG annuali 2007-2025. Snapshot aggiudicatari/aggiudicazioni
           osservato il {meta.observedAt.slice(0, 10)}. Non dichiara una popolazione nazionale
           corrente: i delta mensili successivi non sono sommati. {summaries.basis.note}
         </p>

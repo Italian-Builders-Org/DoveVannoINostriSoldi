@@ -28,7 +28,7 @@ function formatDecimalEuro(value: string | null): string {
 function yearRange(min: number | null, max: number | null): string {
   if (min === null && max === null) return "anni non disponibili";
   if (min === max) return String(min);
-  return `${min ?? "?"}–${max ?? "?"}`;
+  return `${min ?? "?"}-${max ?? "?"}`;
 }
 
 function amountStatusLabel(status: string): string {
@@ -109,7 +109,7 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
         <h2 id="operatore-caveat">Chi è questo soggetto (da fonte)</h2>
         <p>
           Denominazione e aggiudicazioni da snapshot ANAC aggiudicatari/aggiudicazioni; oggetto,
-          CPV e stazione appaltante dai CIG annuali 2007–2025 quando il CIG è presente in quei file.
+          CPV e stazione appaltante dai CIG annuali 2007-2025 quando il CIG è presente in quei file.
           Qui sotto: fino a {ANAC_OPERATOR_INDEX.maxAwardsPublished} CIG più recenti. Gli euro sono
           importi di aggiudicazione, non pagamenti. Varianti di nome:{" "}
           {integer(operator.nameVariants)}
@@ -184,7 +184,7 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
                         </div>
                       </>
                     ) : (
-                      <span className={styles.note}>CIG non abbinato agli snapshot 2007–2025</span>
+                      <span className={styles.note}>CIG non abbinato agli snapshot 2007-2025</span>
                     )}
                   </td>
                   <td>{award.awardedAt ? longDate(award.awardedAt) : "n.d."}</td>

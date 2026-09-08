@@ -18,7 +18,6 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const CIG = /^[A-Z0-9]{10}$/;
 const AWARD_ID = /^[0-9]+$/;
-const YEAR = /^\d{4}$/;
 const MAX_META_BYTES = 2_000_000;
 const MAX_SEARCH_BYTES = 64 * 1024 * 1024;
 const MAX_SHARD_BYTES = 64 * 1024 * 1024;

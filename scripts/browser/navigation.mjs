@@ -1,10 +1,17 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { PRIMARY_NAV } from "../../src/lib/site-navigation.ts";
+import { PRIMARY_NAV, flattenNavLinks } from "../../src/lib/site-navigation.ts";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario, waitForServer } from "./harness.mjs";
 
 const baseUrl = defaultBaseUrl();
-const destinations = [...new Set(PRIMARY_NAV.flatMap((item) => [item.href, ...(item.children ?? []).map((child) => child.href)]))];
+const destinations = [
+  ...new Set(
+    PRIMARY_NAV.flatMap((item) => [
+      item.href,
+      ...flattenNavLinks(item.children ?? []).map((child) => child.href),
+    ]),
+  ),
+];
 mkdirSync("artifacts/browser", { recursive: true });
 await waitForServer(baseUrl);
 const linkResults = [];
@@ -77,7 +84,7 @@ try {
           await page.focus(selector);
           if (await page.$eval(selector, (button) => button.getAttribute('aria-expanded')) !== 'true') await page.keyboard.press('Enter');
           assert.equal(await page.$$eval(`${root} .nav-submenu:not([hidden])`, (menus) => menus.length), 1);
-          for (const child of item.children) {
+          for (const child of flattenNavLinks(item.children)) {
             const link = await page.$(`${root} .nav-submenu a[href="${child.href}"]`);
             await link.focus();
             assert.equal(await link.evaluate((element) => {

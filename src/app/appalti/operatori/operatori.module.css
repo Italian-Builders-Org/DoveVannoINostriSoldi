@@ -199,7 +199,7 @@
   border-bottom: 1px solid var(--color-neutral-200, #ebe8e2);
   color: var(--color-neutral-700);
 }
-.cig { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--color-text); font-weight: 600; }
+.cig { font-family: var(--font-mono); color: var(--color-text); font-weight: 600; }
 .procedureObject { flex: 1 1 100%; color: var(--color-text); }
 .pagination {
   display: grid;

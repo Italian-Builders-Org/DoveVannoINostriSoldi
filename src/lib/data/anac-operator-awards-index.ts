@@ -89,6 +89,49 @@ export type AnacOperatorNamedCount = Readonly<{
   count: number;
 }>;
 
+export type AnacOperatorCpvCount = Readonly<{
+  label: string;
+  code: string | null;
+  count: number;
+}>;
+
+export type AnacOperatorSummaryHit = Readonly<{
+  ref: string;
+  name: string;
+  awardCount: number;
+  attributedAwardCount: number;
+  attributedValue: string;
+  yearMin: number | null;
+  yearMax: number | null;
+}>;
+
+export type AnacOperatorNationalSummaries = Readonly<{
+  schemaVersion: 1;
+  dataset: typeof DATASET;
+  generatedAt: string;
+  basis: Readonly<{
+    operators: string;
+    procedures: string;
+    limit: number;
+    moneyNature: string;
+    note: string;
+  }>;
+  coverage: Readonly<{
+    operators: number;
+    uniqueMatchedCigsCounted: number;
+    distinctCpvLabels: number;
+    distinctContractingAuthorities: number;
+    distinctProcedureObjects: number;
+    skippedNonInformativeOggetto?: number;
+    skippedNonInformativeCpv?: number;
+  }>;
+  topOperatorsByAwardCount: readonly AnacOperatorSummaryHit[];
+  topOperatorsByAttributedValue: readonly AnacOperatorSummaryHit[];
+  topCpv: readonly AnacOperatorCpvCount[];
+  topContractingAuthorities: readonly AnacOperatorNamedCount[];
+  topProcedureObjects: readonly AnacOperatorNamedCount[];
+}>;
+
 export type AnacOperatorRecord = Readonly<{
   schemaVersion: 1;
   ref: string;
@@ -143,6 +186,13 @@ export type AnacOperatorIndexMeta = Readonly<{
   }>[];
   sourceSpecSha256: string;
   cigEnrichment?: Readonly<Record<string, unknown>>;
+  summaries?: Readonly<{
+    path: string;
+    bytes: number;
+    sha256: string;
+    limit: number;
+    coverage: Readonly<Record<string, unknown>>;
+  }>;
 }>;
 
 export type AnacOperatorSearchResult = Readonly<{
@@ -156,7 +206,10 @@ export type AnacOperatorSearchResult = Readonly<{
 
 let cachedMeta: AnacOperatorIndexMeta | null = null;
 let cachedSearch: readonly AnacOperatorSearchHit[] | null = null;
+let cachedSummaries: AnacOperatorNationalSummaries | null = null;
 const operatorCache = new Map<string, AnacOperatorRecord | null>();
+const MAX_SUMMARIES_BYTES = 2_000_000;
+const MAX_SUMMARY_ROWS = 50;
 
 function repoRoot(): string {
   return resolve(process.cwd());
@@ -403,7 +456,140 @@ export function assertAnacOperatorIndexMeta(value: unknown): AnacOperatorIndexMe
   if (!Array.isArray(meta.limitations) || meta.limitations.length === 0) {
     throw new Error("limitations assenti");
   }
+  if (meta.cigEnrichment && !meta.summaries) {
+    throw new Error("summaries nazionali attesi dopo cigEnrichment");
+  }
+  if (meta.summaries) {
+    const summaries = meta.summaries as Record<string, unknown>;
+    if (typeof summaries.path !== "string" || !summaries.path.endsWith("summaries.json")) {
+      throw new Error("summaries.path non valido");
+    }
+    if (typeof summaries.sha256 !== "string" || !SHA256.test(summaries.sha256)) {
+      throw new Error("summaries.sha256 non valido");
+    }
+    assertNonNegInt(summaries.bytes, "summaries.bytes");
+    assertNonNegInt(summaries.limit, "summaries.limit");
+  }
   return meta as AnacOperatorIndexMeta;
+}
+
+function assertSummaryHit(value: unknown, label: string): AnacOperatorSummaryHit {
+  if (!value || typeof value !== "object") throw new Error(`${label} non valido`);
+  const row = value as Record<string, unknown>;
+  if (typeof row.ref !== "string" || !OPERATOR_REF.test(row.ref)) {
+    throw new Error(`${label}.ref non valido`);
+  }
+  if (typeof row.name !== "string" || row.name.length === 0 || row.name.length > 500) {
+    throw new Error(`${label}.name non valido`);
+  }
+  return {
+    ref: row.ref,
+    name: row.name,
+    awardCount: assertNonNegInt(row.awardCount, `${label}.awardCount`),
+    attributedAwardCount: assertNonNegInt(row.attributedAwardCount, `${label}.attributedAwardCount`),
+    attributedValue: assertDecimal(row.attributedValue, `${label}.attributedValue`),
+    yearMin: assertYear(row.yearMin, `${label}.yearMin`),
+    yearMax: assertYear(row.yearMax, `${label}.yearMax`),
+  };
+}
+
+function assertSummaryNamed(value: unknown, label: string): AnacOperatorNamedCount {
+  if (!value || typeof value !== "object") throw new Error(`${label} non valido`);
+  const row = value as Record<string, unknown>;
+  if (typeof row.label !== "string" || row.label.length === 0 || row.label.length > 400) {
+    throw new Error(`${label}.label non valido`);
+  }
+  return { label: row.label, count: assertNonNegInt(row.count, `${label}.count`) };
+}
+
+function assertSummaryCpv(value: unknown, label: string): AnacOperatorCpvCount {
+  const named = assertSummaryNamed(value, label);
+  const row = value as Record<string, unknown>;
+  const code =
+    row.code === null || row.code === undefined
+      ? null
+      : assertOptionalText(row.code, `${label}.code`, 40);
+  return { ...named, code };
+}
+
+function assertNationalSummaries(value: unknown): AnacOperatorNationalSummaries {
+  if (!value || typeof value !== "object") throw new Error("summaries non validi");
+  const row = value as Record<string, unknown>;
+  if (row.schemaVersion !== 1 || row.dataset !== DATASET) {
+    throw new Error("summaries dataset inatteso");
+  }
+  assertInstant(row.generatedAt, "summaries.generatedAt");
+  const basis = row.basis as Record<string, unknown> | undefined;
+  if (!basis || typeof basis.operators !== "string" || typeof basis.procedures !== "string") {
+    throw new Error("summaries.basis non valido");
+  }
+  const limit = assertNonNegInt(basis.limit, "summaries.basis.limit");
+  if (limit < 1 || limit > MAX_SUMMARY_ROWS) throw new Error("summaries.limit fuori range");
+  if (typeof basis.moneyNature !== "string" || typeof basis.note !== "string") {
+    throw new Error("summaries.basis note/money non validi");
+  }
+  const coverage = row.coverage as Record<string, unknown> | undefined;
+  if (!coverage) throw new Error("summaries.coverage assente");
+  const requireRows = assertNonNegInt(coverage.uniqueMatchedCigsCounted, "uniqueMatchedCigs") > 0;
+  const readHits = (key: string): AnacOperatorSummaryHit[] => {
+    const list = row[key];
+    if (!Array.isArray(list) || list.length > limit) throw new Error(`${key} non valido`);
+    if (requireRows && list.length === 0) throw new Error(`${key} vuoto`);
+    return list.map((item, index) => assertSummaryHit(item, `${key}[${index}]`));
+  };
+  const readNamed = (key: string): AnacOperatorNamedCount[] => {
+    const list = row[key];
+    if (!Array.isArray(list) || list.length > limit) throw new Error(`${key} non valido`);
+    if (requireRows && list.length === 0) throw new Error(`${key} vuoto`);
+    return list.map((item, index) => assertSummaryNamed(item, `${key}[${index}]`));
+  };
+  const readCpv = (key: string): AnacOperatorCpvCount[] => {
+    const list = row[key];
+    if (!Array.isArray(list) || list.length > limit) throw new Error(`${key} non valido`);
+    if (requireRows && list.length === 0) throw new Error(`${key} vuoto`);
+    return list.map((item, index) => assertSummaryCpv(item, `${key}[${index}]`));
+  };
+  return {
+    schemaVersion: 1,
+    dataset: DATASET,
+    generatedAt: row.generatedAt as string,
+    basis: {
+      operators: basis.operators,
+      procedures: basis.procedures,
+      limit,
+      moneyNature: basis.moneyNature,
+      note: basis.note,
+    },
+    coverage: {
+      operators: assertNonNegInt(coverage.operators, "coverage.operators"),
+      uniqueMatchedCigsCounted: assertNonNegInt(
+        coverage.uniqueMatchedCigsCounted,
+        "coverage.uniqueMatchedCigsCounted",
+      ),
+      distinctCpvLabels: assertNonNegInt(coverage.distinctCpvLabels, "coverage.distinctCpvLabels"),
+      distinctContractingAuthorities: assertNonNegInt(
+        coverage.distinctContractingAuthorities,
+        "coverage.distinctContractingAuthorities",
+      ),
+      distinctProcedureObjects: assertNonNegInt(
+        coverage.distinctProcedureObjects,
+        "coverage.distinctProcedureObjects",
+      ),
+      skippedNonInformativeOggetto:
+        coverage.skippedNonInformativeOggetto === undefined
+          ? undefined
+          : assertNonNegInt(coverage.skippedNonInformativeOggetto, "skippedOggetto"),
+      skippedNonInformativeCpv:
+        coverage.skippedNonInformativeCpv === undefined
+          ? undefined
+          : assertNonNegInt(coverage.skippedNonInformativeCpv, "skippedCpv"),
+    },
+    topOperatorsByAwardCount: readHits("topOperatorsByAwardCount"),
+    topOperatorsByAttributedValue: readHits("topOperatorsByAttributedValue"),
+    topCpv: readCpv("topCpv"),
+    topContractingAuthorities: readNamed("topContractingAuthorities"),
+    topProcedureObjects: readNamed("topProcedureObjects"),
+  };
 }
 
 function loadSourceSpecSha(): string {
@@ -439,8 +625,39 @@ export function loadAnacOperatorIndexMeta(): AnacOperatorIndexMeta {
       throw new Error(`SHA-256 shard operatori ${shard.id} non allineato`);
     }
   }
+  if (meta.summaries) {
+    const summariesPath = artifactPath("summaries.json");
+    if (!existsSync(summariesPath) || statSync(summariesPath).size !== meta.summaries.bytes) {
+      throw new Error("summaries.json non allineato");
+    }
+    if (sha256File(summariesPath) !== meta.summaries.sha256) {
+      throw new Error("SHA-256 summaries.json non allineato");
+    }
+  }
   cachedMeta = meta;
   return meta;
+}
+
+/** National ranking tables for the operatori hub (source-locked). */
+export function loadAnacOperatorNationalSummaries(): AnacOperatorNationalSummaries {
+  if (cachedSummaries) return cachedSummaries;
+  const meta = loadAnacOperatorIndexMeta();
+  if (!meta.summaries) {
+    throw new Error("summaries nazionali assenti");
+  }
+  const path = artifactPath("summaries.json");
+  if (statSync(path).size > MAX_SUMMARIES_BYTES) {
+    throw new Error("summaries.json troppo grande");
+  }
+  const summaries = assertNationalSummaries(JSON.parse(readFileSync(path, "utf8")));
+  if (summaries.coverage.operators !== meta.totals.operators) {
+    throw new Error("summaries.operators non riconcilia totals");
+  }
+  if (summaries.topOperatorsByAwardCount.length > meta.summaries.limit) {
+    throw new Error("summaries operatori oltre il limite meta");
+  }
+  cachedSummaries = summaries;
+  return summaries;
 }
 
 function loadSearchIndex(): readonly AnacOperatorSearchHit[] {

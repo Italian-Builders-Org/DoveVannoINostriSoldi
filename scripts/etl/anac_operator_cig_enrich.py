@@ -415,6 +415,19 @@ def write_cig_source_spec(manifest_path: Path, cig_cache: Path, output: Path, ob
     output.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _build_national_summaries(index_dir: Path, observed_at: str) -> None:
+    summaries_path = ROOT / "scripts" / "etl" / "anac_operator_national_summaries.py"
+    spec = importlib.util.spec_from_file_location("anac_operator_national_summaries", summaries_path)
+    if spec is None or spec.loader is None:  # pragma: no cover
+        raise ContractError("Impossibile caricare anac_operator_national_summaries")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    summaries = module.build_summaries(index_dir, observed_at)
+    summaries_meta = module.write_summaries(index_dir, summaries)
+    module.update_meta(index_dir, summaries_meta, observed_at)
+
+
 def assert_enriched_index(index_dir: Path) -> None:
     meta = json.loads((index_dir / "meta.json").read_text(encoding="utf-8"))
     enrich = meta.get("cigEnrichment")
@@ -437,6 +450,14 @@ def assert_enriched_index(index_dir: Path) -> None:
         path = ROOT / shard["path"]
         if sha256_path(path) != shard["sha256"]:
             raise ContractError(f"hash drift {shard['path']}")
+    summaries_path = ROOT / "scripts" / "etl" / "anac_operator_national_summaries.py"
+    spec = importlib.util.spec_from_file_location("anac_operator_national_summaries_check", summaries_path)
+    if spec is None or spec.loader is None:  # pragma: no cover
+        raise ContractError("Impossibile caricare anac_operator_national_summaries")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    module.assert_summaries(index_dir)
 
 
 def main() -> int:
@@ -465,6 +486,7 @@ def main() -> int:
     procedures, inputs, coverage = build_procedure_map(args.cig_cache, target)
     coverage["target"] = len(target)
     meta = rewrite_index(args.index, procedures, inputs, coverage, args.observed_at)
+    _build_national_summaries(args.index, args.observed_at)
     write_cig_source_spec(args.manifest, args.cig_cache, args.cig_spec_out, args.observed_at)
     matched = meta["cigEnrichment"]["coverage"]["uniqueMatchedCigs"]
     print(

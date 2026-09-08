@@ -9,6 +9,7 @@ const {
   listTopAnacOperators,
   loadAnacOperatorsByRefs,
   loadAnacOperatorIndexMeta,
+  loadAnacOperatorNationalSummaries,
   searchAnacOperators,
 } = await import("../src/lib/data/anac-operator-awards-index.ts");
 
@@ -77,4 +78,30 @@ test("ANAC operator page lists all operators with stable pagination", () => {
 test("ANAC operator lookup rejects malformed refs", () => {
   assert.equal(getAnacOperatorByRef("op-1"), null);
   assert.equal(getAnacOperatorByRef("not-a-ref"), null);
+});
+
+test("ANAC operator national summaries are source-locked and ranked", () => {
+  const meta = loadAnacOperatorIndexMeta();
+  assert.ok(meta.summaries);
+  const summaries = loadAnacOperatorNationalSummaries();
+  assert.equal(summaries.coverage.operators, meta.totals.operators);
+  assert.equal(summaries.topOperatorsByAwardCount.length, summaries.basis.limit);
+  assert.equal(summaries.topOperatorsByAttributedValue.length, summaries.basis.limit);
+  assert.equal(summaries.topCpv.length, summaries.basis.limit);
+  assert.equal(summaries.topContractingAuthorities.length, summaries.basis.limit);
+  assert.equal(summaries.topProcedureObjects.length, summaries.basis.limit);
+  for (let index = 1; index < summaries.topOperatorsByAwardCount.length; index += 1) {
+    assert.ok(
+      summaries.topOperatorsByAwardCount[index - 1].awardCount >=
+        summaries.topOperatorsByAwardCount[index].awardCount,
+    );
+  }
+  for (const row of summaries.topCpv) {
+    assert.notEqual(row.code, "99999999");
+    assert.ok(!/non disponibile/i.test(row.label));
+  }
+  for (const row of summaries.topProcedureObjects) {
+    assert.ok(!/non pubblicabile/i.test(row.label));
+    assert.ok(row.label.length >= 16);
+  }
 });

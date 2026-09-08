@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { integer, longDate } from "@/lib/format";
+import { compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import {
   ANAC_OPERATOR_INDEX,
   listAnacOperatorsPage,
   loadAnacOperatorsByRefs,
   loadAnacOperatorIndexMeta,
+  loadAnacOperatorNationalSummaries,
   searchAnacOperators,
+  type AnacOperatorNationalSummaries,
   type AnacOperatorRecord,
   type AnacOperatorSearchHit,
 } from "@/lib/data/anac-operator-awards-index";
+import { ScrollRegion } from "../scroll-region";
 import styles from "./operatori.module.css";
 
 export const metadata: Metadata = {
   title: "Imprese aggiudicatarie ANAC",
   description:
-    "Elenco e ricerca nazionale storica delle imprese aggiudicatarie nei full snapshot ANAC, con conteggi e importi di aggiudicazione dichiarati.",
+    "Tabelle riassuntive e elenco nazionale storico delle imprese aggiudicatarie ANAC: conteggi, valori dichiarati, CPV, stazioni appaltanti e oggetti di gara.",
 };
 
 type Search = Record<string, string | string[] | undefined>;
@@ -28,11 +31,13 @@ function formatDecimalEuro(value: string | null): string {
   if (value === null) return "n.d.";
   const amount = Number(value);
   if (!Number.isFinite(amount)) return value;
-  return new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return exactEuro(amount);
+}
+
+function formatCompactEuro(value: string, reference: number): string {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return value;
+  return compactEuroLike(amount, reference);
 }
 
 function yearRange(min: number | null, max: number | null): string {
@@ -60,8 +65,14 @@ function amountStatusLabel(status: AnacOperatorRecord["awards"][number]["amountS
   }
 }
 
-function listHref(options: { ordine?: string; page?: number; q?: string }): string {
+function listHref(options: {
+  ordine?: string;
+  page?: number;
+  q?: string;
+  vista?: "elenco";
+}): string {
   const params = new URLSearchParams();
+  if (options.vista === "elenco") params.set("vista", "elenco");
   if (options.q) params.set("q", options.q);
   if (options.ordine === "valore") params.set("ordine", "valore");
   if (options.page && options.page > 1) params.set("page", String(options.page));
@@ -77,7 +88,7 @@ function OperatorPagination({
   byValue,
 }: Readonly<{ page: number; pageCount: number; byValue: boolean }>) {
   const ordine = byValue ? "valore" : undefined;
-  const href = (target: number) => listHref({ ordine, page: target });
+  const href = (target: number) => listHref({ vista: "elenco", ordine, page: target });
   const backJump = Math.max(1, page - PAGE_JUMP);
   const forwardJump = Math.min(pageCount, page + PAGE_JUMP);
   const jumpMin = Math.max(1, page - PAGE_JUMP);
@@ -153,6 +164,7 @@ function OperatorPagination({
         )}
       </div>
       <form action="/appalti/operatori" method="get" className={styles.pageJump}>
+        <input type="hidden" name="vista" value="elenco" />
         {byValue ? <input type="hidden" name="ordine" value="valore" /> : null}
         <label htmlFor="operatori-page">
           Vai a pagina
@@ -202,20 +214,20 @@ function OperatorHits({
             <h3>
               {ranked ? (
                 <span className={styles.rank} aria-hidden="true">
-                  #{rankOffset + index + 1}
-                  {" "}
+                  #{rankOffset + index + 1}{" "}
                 </span>
               ) : null}
               <Link href={`/appalti/operatori/${hit.ref}`}>{hit.name}</Link>
             </h3>
             <div className={styles.hitMeta}>
               <span>
-                Aggiudicazioni: <strong>{integer(hit.awardCount)}</strong>
+                Quante volte risulta aggiudicataria: <strong>{integer(hit.awardCount)}</strong>
               </span>
               <span>
-                Valore attribuibile: <strong>{formatDecimalEuro(hit.attributedValue)}</strong>
+                Valore di aggiudicazione attribuibile:{" "}
+                <strong>{formatDecimalEuro(hit.attributedValue)}</strong>
               </span>
-              <span>Periodo osservato: {yearRange(hit.yearMin, hit.yearMax)}</span>
+              <span>Anni osservati: {yearRange(hit.yearMin, hit.yearMax)}</span>
             </div>
             {detail ? (
               <div className={styles.hitDetail}>
@@ -230,7 +242,7 @@ function OperatorHits({
                 </p>
                 {detail.topCpv && detail.topCpv.length > 0 ? (
                   <p>
-                    CPV ricorrenti nei CIG pubblicati (da snapshot CIG ANAC):{" "}
+                    Categorie CPV ricorrenti nei CIG pubblicati:{" "}
                     {detail.topCpv
                       .slice(0, 3)
                       .map((item) => `${item.label} (${integer(item.count)})`)
@@ -240,7 +252,7 @@ function OperatorHits({
                 ) : null}
                 {detail.topContractingAuthorities && detail.topContractingAuthorities.length > 0 ? (
                   <p>
-                    Stazioni appaltanti ricorrenti (denominazione ANAC):{" "}
+                    Stazioni appaltanti ricorrenti:{" "}
                     {detail.topContractingAuthorities
                       .slice(0, 3)
                       .map((item) => `${item.label} (${integer(item.count)})`)
@@ -251,36 +263,33 @@ function OperatorHits({
                 {recent.length > 0 ? (
                   <>
                     <p className={styles.hitDetailLabel}>
-                      Ultime aggiudicazioni pubblicate (CIG, oggetto procedura da CIG ANAC, importo
-                      dichiarato):
+                      Ultime aggiudicazioni pubblicate (CIG, oggetto da CIG ANAC, importo dichiarato):
                     </p>
                     <ul className={styles.awardPreview}>
                       {recent.map((award) => {
                         const statusNote = amountStatusLabel(award.amountStatus);
                         const procedure = award.procedure?.matched ? award.procedure : null;
                         return (
-                        <li key={`${award.cig}-${award.awardId}`}>
-                          <span className={styles.cig}>{award.cig}</span>
-                          <span>{award.awardedAt ? longDate(award.awardedAt) : "data n.d."}</span>
-                          <span>{formatDecimalEuro(award.amount)}</span>
-                          <span>
-                            {award.attribution === "single-operator"
-                              ? "operatore unico"
-                              : "multi-operatore"}
-                          </span>
-                          {statusNote ? <span>{statusNote}</span> : null}
-                          {procedure?.oggetto ? (
-                            <span className={styles.procedureObject}>{procedure.oggetto}</span>
-                          ) : null}
-                          {procedure?.contractingAuthority ? (
-                            <span>SA: {procedure.contractingAuthority}</span>
-                          ) : null}
-                          {procedure?.cpvLabel || procedure?.cpvCode ? (
+                          <li key={`${award.cig}-${award.awardId}`}>
+                            <span className={styles.cig}>{award.cig}</span>
+                            <span>{award.awardedAt ? longDate(award.awardedAt) : "data n.d."}</span>
+                            <span>{formatDecimalEuro(award.amount)}</span>
                             <span>
-                              CPV: {procedure.cpvLabel ?? procedure.cpvCode}
+                              {award.attribution === "single-operator"
+                                ? "operatore unico"
+                                : "più operatori"}
                             </span>
-                          ) : null}
-                        </li>
+                            {statusNote ? <span>{statusNote}</span> : null}
+                            {procedure?.oggetto ? (
+                              <span className={styles.procedureObject}>{procedure.oggetto}</span>
+                            ) : null}
+                            {procedure?.contractingAuthority ? (
+                              <span>Chi ha bandito: {procedure.contractingAuthority}</span>
+                            ) : null}
+                            {procedure?.cpvLabel || procedure?.cpvCode ? (
+                              <span>Categoria CPV: {procedure.cpvLabel ?? procedure.cpvCode}</span>
+                            ) : null}
+                          </li>
                         );
                       })}
                     </ul>
@@ -312,16 +321,363 @@ function OperatorHits({
   );
 }
 
+function SummaryIntro({
+  metaTotals,
+  summaries,
+}: Readonly<{
+  metaTotals: ReturnType<typeof loadAnacOperatorIndexMeta>["totals"];
+  summaries: AnacOperatorNationalSummaries;
+}>) {
+  const attributed = Number(metaTotals.attributedValue);
+  return (
+    <>
+      <div className={`stat-strip ${styles.stats}`} aria-label="Numeri chiave dell'indice">
+        <div>
+          <span className="stat-label">Imprese nell&apos;indice</span>
+          <strong className="stat-value">{integer(metaTotals.operators)}</strong>
+          <span className="stat-note">con codice fiscale valido nello snapshot ANAC</span>
+        </div>
+        <div>
+          <span className="stat-label">Volte in cui risultano aggiudicatarie</span>
+          <strong className="stat-value">{integer(metaTotals.awardRelations)}</strong>
+          <span className="stat-note">coppie CIG + aggiudicazione collegate a un&apos;impresa</span>
+        </div>
+        <div>
+          <span className="stat-label">Valore di aggiudicazione attribuibile</span>
+          <strong className="stat-value">
+            {Number.isFinite(attributed) ? compactEuroLike(attributed, attributed) : "n.d."}
+          </strong>
+          <span className="stat-note">
+            solo quando c&apos;è un unico aggiudicatario · {formatDecimalEuro(metaTotals.attributedValue)}{" "}
+            esatti
+          </span>
+        </div>
+        <div>
+          <span className="stat-label">CIG con dettaglio procedura</span>
+          <strong className="stat-value">
+            {integer(summaries.coverage.uniqueMatchedCigsCounted)}
+          </strong>
+          <span className="stat-note">
+            su aggiudicazioni pubblicate in scheda (oggetto, CPV, stazione)
+          </span>
+        </div>
+      </div>
+
+      <aside className={`notice ${styles.glossary}`} aria-labelledby="operatori-glossary">
+        <h2 id="operatori-glossary">Come leggere questi numeri</h2>
+        <ul>
+          <li>
+            <strong>Aggiudicataria</strong> = impresa risultata assegnataria in ANAC. Non significa
+            automaticamente che abbia incassato quei soldi.
+          </li>
+          <li>
+            <strong>Valore attribuibile</strong> = somma degli importi di{" "}
+            <em>aggiudicazione dichiarata</em> solo quando c&apos;è un unico operatore. Con più
+            aggiudicatarie sullo stesso CIG il conteggio resta, l&apos;importo non viene spartito.
+          </li>
+          <li>
+            <strong>Categoria CPV / stazione / oggetto</strong> = campi della procedura CIG ANAC,
+            contati una volta per ogni CIG abbinato tra le aggiudicazioni mostrate in scheda.
+          </li>
+          <li>
+            Le classifiche descrivono ricorrenze nello snapshot:{" "}
+            <strong>non sono giudizi, illeciti o ranking di affidabilità</strong>.
+          </li>
+        </ul>
+      </aside>
+    </>
+  );
+}
+
+function OperatorSummaryTables({
+  summaries,
+}: Readonly<{ summaries: AnacOperatorNationalSummaries }>) {
+  const valueReference = Math.max(
+    ...summaries.topOperatorsByAttributedValue.map((row) => Number(row.attributedValue) || 0),
+    1,
+  );
+  const matched = summaries.coverage.uniqueMatchedCigsCounted;
+
+  return (
+    <section className={styles.summaries} aria-labelledby="operatori-summaries-title">
+      <div className={styles.sectionHead}>
+        <div>
+          <h2 id="operatori-summaries-title">Cosa compare più spesso</h2>
+          <p className={styles.note}>
+            Prime {integer(summaries.basis.limit)} posizioni per ogni classifica. Fonte: full
+            snapshot aggiudicatari/aggiudicazioni + CIG 2007–2025.
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.summaryGrid}>
+        <article className={styles.summaryCard} aria-labelledby="top-count-title">
+          <h3 id="top-count-title">Imprese con più aggiudicazioni</h3>
+          <p className={styles.summaryLead}>
+            Quante volte l&apos;impresa risulta aggiudicataria nello snapshot (tutti gli operatori
+            dell&apos;indice).
+          </p>
+          <ScrollRegion
+            className={`table-scroll ${styles.tableScroll}`}
+            role="region"
+            aria-label="Tabella imprese per numero di aggiudicazioni"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>Top per numero di aggiudicazioni osservate</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Impresa</th>
+                  <th scope="col" className="num">
+                    Aggiudicazioni
+                  </th>
+                  <th scope="col" className="num">
+                    Valore attribuibile
+                  </th>
+                  <th scope="col">Anni</th>
+                </tr>
+              </thead>
+              <tbody>
+                {summaries.topOperatorsByAwardCount.map((row, index) => (
+                  <tr key={row.ref}>
+                    <td className="num">{integer(index + 1)}</td>
+                    <th scope="row">
+                      <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+                    </th>
+                    <td className="num">{integer(row.awardCount)}</td>
+                    <td className="num" title={formatDecimalEuro(row.attributedValue)}>
+                      {formatCompactEuro(row.attributedValue, valueReference)}
+                    </td>
+                    <td>{yearRange(row.yearMin, row.yearMax)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </article>
+
+        <article className={styles.summaryCard} aria-labelledby="top-value-title">
+          <h3 id="top-value-title">Imprese con più valore attribuibile</h3>
+          <p className={styles.summaryLead}>
+            Somma degli importi di aggiudicazione dichiarati quando c&apos;è un solo aggiudicatario
+            (non è denaro ricevuto).
+          </p>
+          <ScrollRegion
+            className={`table-scroll ${styles.tableScroll}`}
+            role="region"
+            aria-label="Tabella imprese per valore attribuibile"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>Top per valore di aggiudicazione attribuibile</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Impresa</th>
+                  <th scope="col" className="num">
+                    Valore attribuibile
+                  </th>
+                  <th scope="col" className="num">
+                    Aggiudicazioni
+                  </th>
+                  <th scope="col">Anni</th>
+                </tr>
+              </thead>
+              <tbody>
+                {summaries.topOperatorsByAttributedValue.map((row, index) => (
+                  <tr key={row.ref}>
+                    <td className="num">{integer(index + 1)}</td>
+                    <th scope="row">
+                      <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+                    </th>
+                    <td className="num" title={formatDecimalEuro(row.attributedValue)}>
+                      {formatCompactEuro(row.attributedValue, valueReference)}
+                    </td>
+                    <td className="num">{integer(row.awardCount)}</td>
+                    <td>{yearRange(row.yearMin, row.yearMax)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </article>
+
+        <article className={styles.summaryCard} aria-labelledby="top-cpv-title">
+          <h3 id="top-cpv-title">Categorie di lavoro più frequenti (CPV)</h3>
+          <p className={styles.summaryLead}>
+            Etichette CPV dei CIG abbinati ({integer(matched)} CIG unici tra le aggiudicazioni
+            pubblicate in scheda).
+          </p>
+          <ScrollRegion
+            className={`table-scroll ${styles.tableScroll}`}
+            role="region"
+            aria-label="Tabella categorie CPV ricorrenti"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>Top categorie CPV per numero di CIG</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col">Codice</th>
+                  <th scope="col" className="num">
+                    CIG
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {summaries.topCpv.map((row, index) => (
+                  <tr key={`${row.code ?? "x"}-${row.label}`}>
+                    <td className="num">{integer(index + 1)}</td>
+                    <th scope="row">{row.label}</th>
+                    <td>
+                      <code>{row.code ?? "—"}</code>
+                    </td>
+                    <td className="num">{integer(row.count)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </article>
+
+        <article className={styles.summaryCard} aria-labelledby="top-sa-title">
+          <h3 id="top-sa-title">Chi bandisce più spesso</h3>
+          <p className={styles.summaryLead}>
+            Denominazione della stazione appaltante nei CIG abbinati (campo ANAC, non un registro
+            enti completo).
+          </p>
+          <ScrollRegion
+            className={`table-scroll ${styles.tableScroll}`}
+            role="region"
+            aria-label="Tabella stazioni appaltanti ricorrenti"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>Top stazioni appaltanti per numero di CIG</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Stazione appaltante</th>
+                  <th scope="col" className="num">
+                    CIG
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {summaries.topContractingAuthorities.map((row, index) => (
+                  <tr key={row.label}>
+                    <td className="num">{integer(index + 1)}</td>
+                    <th scope="row">{row.label}</th>
+                    <td className="num">{integer(row.count)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </article>
+
+        <article className={`${styles.summaryCard} ${styles.summaryCardWide}`} aria-labelledby="top-oggetto-title">
+          <h3 id="top-oggetto-title">Oggetti di gara più ripetuti</h3>
+          <p className={styles.summaryLead}>
+            Testo oggetto del CIG ripetuto alla lettera più volte. Esclude etichette vuote o non
+            pubblicabili in fonte.
+          </p>
+          <ScrollRegion
+            className={`table-scroll ${styles.tableScroll}`}
+            role="region"
+            aria-label="Tabella oggetti di gara ricorrenti"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>Top oggetti procedura per numero di CIG</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Oggetto (testo ANAC)</th>
+                  <th scope="col" className="num">
+                    CIG
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {summaries.topProcedureObjects.map((row, index) => (
+                  <tr key={`${row.label}-${row.count}`}>
+                    <td className="num">{integer(index + 1)}</td>
+                    <th scope="row">{row.label}</th>
+                    <td className="num">{integer(row.count)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollRegion>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function SearchSection({
+  result,
+  operatorsTotal,
+  details,
+  showResults,
+}: Readonly<{
+  result: ReturnType<typeof searchAnacOperators>;
+  operatorsTotal: number;
+  details: ReadonlyMap<string, AnacOperatorRecord>;
+  showResults: boolean;
+}>) {
+  return (
+    <section aria-labelledby="operatori-search-title">
+      <h2 id="operatori-search-title">Cerca un&apos;impresa per nome</h2>
+      <form action="/appalti/operatori" method="get" className={styles.search}>
+        <div>
+          <label htmlFor="operatori-query">Nome impresa</label>
+          <input
+            className="input"
+            id="operatori-query"
+            name="q"
+            type="search"
+            maxLength={120}
+            defaultValue={result.query}
+            placeholder="Es. costruzioni oppure autostrade"
+            autoComplete="off"
+          />
+        </div>
+        <button className="btn btn-primary" type="submit">
+          Cerca
+        </button>
+        {result.query ? <Link href="/appalti/operatori">Azzera</Link> : null}
+      </form>
+      <p className={styles.results} role="status">
+        {!result.query
+          ? `Filtra i ${integer(operatorsTotal)} operatori (almeno ${ANAC_OPERATOR_INDEX.minQueryLength} caratteri).`
+          : result.normalizedQuery.length < ANAC_OPERATOR_INDEX.minQueryLength
+            ? `Servono almeno ${ANAC_OPERATOR_INDEX.minQueryLength} caratteri alfanumerici dopo la normalizzazione.`
+            : result.matched === 0
+              ? "Nessuna impresa corrisponde alla ricerca in questo indice."
+              : `${integer(Math.min(result.hits.length, result.limit))} di ${integer(result.matched)} corrispondenze.`}
+      </p>
+      {showResults ? <OperatorHits hits={result.hits} details={details} /> : null}
+    </section>
+  );
+}
+
 export default async function OperatoriPage({ searchParams }: { searchParams: Promise<Search> }) {
   const search = await searchParams;
   const meta = loadAnacOperatorIndexMeta();
+  const summaries = loadAnacOperatorNationalSummaries();
   const query = first(search.q);
   const ordine = first(search.ordine);
+  const showList = first(search.vista) === "elenco" && !query;
   const result = searchAnacOperators({ q: query, limit: 50 });
   const showSearch = result.normalizedQuery.length >= ANAC_OPERATOR_INDEX.minQueryLength;
-  const listing = showSearch
-    ? null
-    : listAnacOperatorsPage({ by: ordine || "awardCount", page: first(search.page) });
+  const listing = showList
+    ? listAnacOperatorsPage({ by: ordine || "awardCount", page: first(search.page) })
+    : null;
   const byValue = listing?.rankBy === "attributedValue";
   const detailRefs = showSearch
     ? result.hits.map((hit) => hit.ref)
@@ -331,41 +687,53 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
   return (
     <main className={`shell page ${styles.page}`}>
       <nav aria-label="Percorso">
-        <Link href="/appalti">Appalti pubblici</Link> / Imprese aggiudicatarie
+        <Link href="/appalti">Appalti pubblici</Link>
+        {showList ? (
+          <>
+            {" "}
+            / <Link href="/appalti/operatori">Imprese aggiudicatarie</Link> / Elenco completo
+          </>
+        ) : (
+          <> / Imprese aggiudicatarie</>
+        )}
       </nav>
       <div className="page-intro">
-        <p className={styles.eyebrow}>Full snapshot ANAC · aggiudicatari e aggiudicazioni</p>
-        <h1>Imprese aggiudicatarie</h1>
+        <p className={styles.eyebrow}>Full snapshot ANAC · aggiudicatari, aggiudicazioni e CIG</p>
+        <h1>{showList ? "Elenco completo delle imprese" : "Imprese aggiudicatarie"}</h1>
         <p>
-          Elenco completo degli operatori con CF valido nello snapshot, ordinabile per conteggio o
-          valore attribuibile, più ricerca per denominazione. Non è la pagina{" "}
-          <Link href="/imprese">Atlante imprese</Link> (aggregati CCIAA/ISTAT).
+          {showList
+            ? "Tutte le imprese con CF valido nello snapshot, ordinate per conteggio o valore attribuibile."
+            : "Prima le classifiche più leggibili (imprese, categorie, stazioni, oggetti). Poi puoi aprire l’elenco completo o cercare una denominazione. Non è la pagina "}
+          {showList ? null : <Link href="/imprese">Atlante imprese</Link>}
+          {showList ? null : " (aggregati CCIAA/ISTAT)."}
         </p>
       </div>
 
-      <div className={`stat-strip ${styles.stats}`} aria-label="Perimetro dell'indice">
-        <div>
-          <span className="stat-label">Operatori con CF valido</span>
-          <strong className="stat-value">{integer(meta.totals.operators)}</strong>
-          <span className="stat-note">identità unite solo lato server, senza CF pubblici</span>
-        </div>
-        <div>
-          <span className="stat-label">Aggiudicazioni collegate</span>
-          <strong className="stat-value">{integer(meta.totals.awardRelations)}</strong>
-          <span className="stat-note">coppie CIG + id aggiudicazione per operatore</span>
-        </div>
-      </div>
+      {!showList ? (
+        <>
+          <SummaryIntro metaTotals={meta.totals} summaries={summaries} />
+          <OperatorSummaryTables summaries={summaries} />
+          <section className={styles.listCta} aria-labelledby="operatori-list-cta">
+            <h2 id="operatori-list-cta">Vuoi scorrere tutte le imprese?</h2>
+            <p>
+              L&apos;elenco nazionale ha {integer(meta.totals.operators)} operatori su{" "}
+              {integer(Math.ceil(meta.totals.operators / ANAC_OPERATOR_INDEX.defaultPageSize))}{" "}
+              pagine. Le tabelle sopra mostrano solo le prime posizioni.
+            </p>
+            <Link className="btn btn-primary" href={listHref({ vista: "elenco" })}>
+              Vai all&apos;elenco completo
+            </Link>
+          </section>
+          <SearchSection
+            result={result}
+            operatorsTotal={meta.totals.operators}
+            details={details}
+            showResults={showSearch}
+          />
+        </>
+      ) : null}
 
-      <aside className="notice" aria-labelledby="operatori-scope">
-        <h2 id="operatori-scope">Che cosa stai leggendo</h2>
-        <p>
-          L&apos;importo è di <strong>aggiudicazione dichiarata</strong>, non un pagamento né un
-          &quot;incassato&quot;. Mostriamo denominazione, conteggi, valori e CIG osservati. La
-          classifica non indica illeciti.
-        </p>
-      </aside>
-
-      {!showSearch && listing ? (
+      {showList && listing ? (
         <section aria-labelledby="operatori-list-title">
           <div className={styles.sectionHead}>
             <div>
@@ -373,20 +741,21 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
               <p className={styles.note}>
                 Pagina {integer(listing.page)} di {integer(listing.pageCount)} ·{" "}
                 {integer(listing.hits.length)} imprese mostrate su {integer(listing.total)} · ordine{" "}
-                {byValue ? "per valore attribuibile" : "per numero di aggiudicazioni"}.
+                {byValue ? "per valore attribuibile" : "per numero di aggiudicazioni"}.{" "}
+                <Link href="/appalti/operatori">Torna alle tabelle riassuntive</Link>
               </p>
             </div>
             <div className={styles.rankSwitch} role="group" aria-label="Ordine dell'elenco">
               <Link
                 className={!byValue ? styles.rankSwitchActive : undefined}
-                href={listHref({ page: 1 })}
+                href={listHref({ vista: "elenco", page: 1 })}
                 aria-current={!byValue ? "page" : undefined}
               >
                 Per conteggio
               </Link>
               <Link
                 className={byValue ? styles.rankSwitchActive : undefined}
-                href={listHref({ ordine: "valore", page: 1 })}
+                href={listHref({ vista: "elenco", ordine: "valore", page: 1 })}
                 aria-current={byValue ? "page" : undefined}
               >
                 Per valore
@@ -403,46 +772,22 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
         </section>
       ) : null}
 
-      <section aria-labelledby="operatori-search-title">
-        <h2 id="operatori-search-title">Cerca per denominazione</h2>
-        <form action="/appalti/operatori" method="get" className={styles.search}>
-          <div>
-            <label htmlFor="operatori-query">Nome impresa</label>
-            <input
-              className="input"
-              id="operatori-query"
-              name="q"
-              type="search"
-              maxLength={120}
-              defaultValue={result.query}
-              placeholder="Es. costruzioni oppure autostrade"
-              autoComplete="off"
-            />
-          </div>
-          <button className="btn btn-primary" type="submit">
-            Cerca
-          </button>
-          {result.query ? <Link href="/appalti/operatori">Azzera</Link> : null}
-        </form>
-        <p className={styles.results} role="status">
-          {!result.query
-            ? `Filtra i ${integer(meta.totals.operators)} operatori (almeno ${ANAC_OPERATOR_INDEX.minQueryLength} caratteri).`
-            : result.normalizedQuery.length < ANAC_OPERATOR_INDEX.minQueryLength
-              ? `Servono almeno ${ANAC_OPERATOR_INDEX.minQueryLength} caratteri alfanumerici dopo la normalizzazione.`
-              : result.matched === 0
-                ? "Nessuna impresa corrisponde alla ricerca in questo indice."
-                : `${integer(Math.min(result.hits.length, result.limit))} di ${integer(result.matched)} corrispondenze.`}
-        </p>
-        {showSearch ? <OperatorHits hits={result.hits} details={details} /> : null}
-      </section>
+      {showList ? (
+        <SearchSection
+          result={result}
+          operatorsTotal={meta.totals.operators}
+          details={details}
+          showResults={false}
+        />
+      ) : null}
 
       <section className="panel" aria-labelledby="operatori-source-title">
         <h2 id="operatori-source-title">Fonte e limiti</h2>
         <p>
           ANAC Open Data: full snapshot aggiudicatari e aggiudicazioni (CC BY-SA 4.0), arricchiti con
-          i campi procedura dei CIG annuali 2007–2025 (oggetto, CPV, stazione appaltante). Snapshot
-          aggiudicatari/aggiudicazioni osservato il {meta.observedAt.slice(0, 10)}. Non dichiara una
-          popolazione nazionale corrente: i delta mensili successivi non sono sommati.
+          i campi procedura dei CIG annuali 2007–2025. Snapshot aggiudicatari/aggiudicazioni
+          osservato il {meta.observedAt.slice(0, 10)}. Non dichiara una popolazione nazionale
+          corrente: i delta mensili successivi non sono sommati. {summaries.basis.note}
         </p>
         <div className={styles.links}>
           <a href="https://dati.anticorruzione.it/opendata/dataset/aggiudicatari">Aggiudicatari ANAC</a>

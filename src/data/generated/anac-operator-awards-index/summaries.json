@@ -1,0 +1,651 @@
+{
+  "basis": {
+    "limit": 20,
+    "moneyNature": "award-declared",
+    "note": "Le classifiche imprese usano tutto l'indice search. CPV, stazioni e oggetti contano una sola volta per ogni CIG abbinato tra le aggiudicazioni pubblicate (max 15 per operatore).",
+    "operators": "search-index-all-operators",
+    "procedures": "unique-matched-cig-among-published-awards"
+  },
+  "coverage": {
+    "distinctContractingAuthorities": 28887,
+    "distinctCpvLabels": 14094,
+    "distinctProcedureObjects": 1571313,
+    "operators": 478418,
+    "skippedNonInformativeCpv": 99421,
+    "skippedNonInformativeOggetto": 35309,
+    "uniqueMatchedCigsCounted": 1727280
+  },
+  "dataset": "anac-operator-awards-index",
+  "generatedAt": "2026-09-08T12:20:00Z",
+  "schemaVersion": 1,
+  "topContractingAuthorities": [
+    {
+      "count": 11696,
+      "label": "ROMA CAPITALE"
+    },
+    {
+      "count": 11217,
+      "label": "AGENZIA DELLE ENTRATE - RISCOSSIONE"
+    },
+    {
+      "count": 9418,
+      "label": "RAI RADIOTELEVISIONE ITALIANA S.P.A."
+    },
+    {
+      "count": 8881,
+      "label": "ANAS SPA"
+    },
+    {
+      "count": 6671,
+      "label": "TRENITALIA SPA"
+    },
+    {
+      "count": 6577,
+      "label": "RETE FERROVIARIA ITALIANA - SOCIETA PER AZIONI"
+    },
+    {
+      "count": 6407,
+      "label": "POSTE ITALIANE SPA"
+    },
+    {
+      "count": 5906,
+      "label": "PROVINCIA AUTONOMA DI TRENTO"
+    },
+    {
+      "count": 5500,
+      "label": "REGIONE SICILIANA"
+    },
+    {
+      "count": 5159,
+      "label": "PROVINCIA AUTONOMA DI BOLZANO"
+    },
+    {
+      "count": 4563,
+      "label": "ENEL ITALIA SPA"
+    },
+    {
+      "count": 4373,
+      "label": "CONSIGLIO NAZIONALE DELLE RICERCHE"
+    },
+    {
+      "count": 3192,
+      "label": "COMUNE DI MILANO"
+    },
+    {
+      "count": 3181,
+      "label": "COMUNE DI NAPOLI"
+    },
+    {
+      "count": 3125,
+      "label": "COMUNE DI GENOVA"
+    },
+    {
+      "count": 3050,
+      "label": "COMUNE DI FIRENZE"
+    },
+    {
+      "count": 3050,
+      "label": "ISTITUTO POLIGRAFICO E ZECCA DELLO STATO SPA"
+    },
+    {
+      "count": 2826,
+      "label": "AZIENDA TRASPORTI MILANESI S.P.A."
+    },
+    {
+      "count": 2668,
+      "label": "ACQUEDOTTO PUGLIESE SPA"
+    },
+    {
+      "count": 2573,
+      "label": "REGIONE TOSCANA"
+    }
+  ],
+  "topCpv": [
+    {
+      "code": "45233141-9",
+      "count": 25909,
+      "label": "LAVORI DI MANUTENZIONE STRADALE"
+    },
+    {
+      "code": "45454000-4",
+      "count": 25827,
+      "label": "LAVORI DI RISTRUTTURAZIONE"
+    },
+    {
+      "code": "45262522-6",
+      "count": 18002,
+      "label": "LAVORI EDILI"
+    },
+    {
+      "code": "71300000-1",
+      "count": 17543,
+      "label": "SERVIZI DI INGEGNERIA"
+    },
+    {
+      "code": "79112000-2",
+      "count": 15083,
+      "label": "SERVIZI DI RAPPRESENTANZA LEGALE"
+    },
+    {
+      "code": "45233140-2",
+      "count": 15001,
+      "label": "LAVORI STRADALI"
+    },
+    {
+      "code": "79952000-2",
+      "count": 14462,
+      "label": "SERVIZI DI ORGANIZZAZIONE DI EVENTI"
+    },
+    {
+      "code": "71240000-2",
+      "count": 13318,
+      "label": "SERVIZI ARCHITETTONICI, DI INGEGNERIA E PIANIFICAZIONE"
+    },
+    {
+      "code": "45454100-5",
+      "count": 13102,
+      "label": "LAVORI DI RESTAURO"
+    },
+    {
+      "code": "71330000-0",
+      "count": 12736,
+      "label": "VARI SERVIZI DI INGEGNERIA"
+    },
+    {
+      "code": "85320000-8",
+      "count": 12560,
+      "label": "SERVIZI SOCIALI"
+    },
+    {
+      "code": "33190000-8",
+      "count": 12153,
+      "label": "DISPOSITIVI E PRODOTTI MEDICI VARI"
+    },
+    {
+      "code": "71200000-0",
+      "count": 12120,
+      "label": "SERVIZI ARCHITETTONICI E SERVIZI AFFINI"
+    },
+    {
+      "code": "45453000-7",
+      "count": 11036,
+      "label": "LAVORI DI RIPARAZIONE E RIPRISTINO"
+    },
+    {
+      "code": "80500000-9",
+      "count": 10805,
+      "label": "SERVIZI DI FORMAZIONE"
+    },
+    {
+      "code": "71220000-6",
+      "count": 10693,
+      "label": "SERVIZI DI PROGETTAZIONE ARCHITETTONICA"
+    },
+    {
+      "code": "45450000-6",
+      "count": 10375,
+      "label": "ALTRI LAVORI DI COMPLETAMENTO DI EDIFICI"
+    },
+    {
+      "code": "77310000-6",
+      "count": 9651,
+      "label": "SERVIZI DI PIANTAGIONE E MANUTENZIONE DI ZONE VERDI"
+    },
+    {
+      "code": "45453100-8",
+      "count": 9342,
+      "label": "LAVORI DI RIPARAZIONE"
+    },
+    {
+      "code": "90620000-9",
+      "count": 8820,
+      "label": "SERVIZI DI SGOMBERO NEVE"
+    }
+  ],
+  "topOperatorsByAttributedValue": [
+    {
+      "attributedAwardCount": 2175,
+      "attributedValue": "87250227936.2020700000059",
+      "awardCount": 2248,
+      "name": "CURIUM ITALY S.R.L.",
+      "ref": "op-00312349",
+      "yearMax": 2026,
+      "yearMin": 2008
+    },
+    {
+      "attributedAwardCount": 1,
+      "attributedValue": "78000000000",
+      "awardCount": 1,
+      "name": "BIAN.CA. SRL - IN LIQUIDAZIONE",
+      "ref": "op-00194204",
+      "yearMax": 2008,
+      "yearMin": 2008
+    },
+    {
+      "attributedAwardCount": 221,
+      "attributedValue": "74367051944.01",
+      "awardCount": 236,
+      "name": "EL.SE. SOLUTIONS SRL",
+      "ref": "op-00307674",
+      "yearMax": 2026,
+      "yearMin": 2010
+    },
+    {
+      "attributedAwardCount": 7209,
+      "attributedValue": "67610837275.2202073420034",
+      "awardCount": 7276,
+      "name": "GILEAD SCIENCES S.R.L.",
+      "ref": "op-00301865",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 1254,
+      "attributedValue": "50068619194.506900002",
+      "awardCount": 1321,
+      "name": "GE HEALTHCARE S.R.L.",
+      "ref": "op-00303507",
+      "yearMax": 2025,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 18133,
+      "attributedValue": "49245565380.67033700",
+      "awardCount": 18137,
+      "name": "A2A ENERGIA S.P.A.",
+      "ref": "op-00310214",
+      "yearMax": 2026,
+      "yearMin": 2005
+    },
+    {
+      "attributedAwardCount": 6644,
+      "attributedValue": "37788723535.255",
+      "awardCount": 6673,
+      "name": "HERA COMM S.P.A.",
+      "ref": "op-00122334",
+      "yearMax": 2026,
+      "yearMin": 2000
+    },
+    {
+      "attributedAwardCount": 11842,
+      "attributedValue": "35135645852.5616998435",
+      "awardCount": 11845,
+      "name": "AGSM AIM ENERGIA S.P.A.",
+      "ref": "op-00172660",
+      "yearMax": 2026,
+      "yearMin": 2004
+    },
+    {
+      "attributedAwardCount": 223,
+      "attributedValue": "24909423065.05538",
+      "awardCount": 232,
+      "name": "ITEL TELECOMUNICAZIONI S.R.L.",
+      "ref": "op-00171955",
+      "yearMax": 2026,
+      "yearMin": 2010
+    },
+    {
+      "attributedAwardCount": 101,
+      "attributedValue": "24791325728.23",
+      "awardCount": 114,
+      "name": "GAMMA SERVIZI SRL",
+      "ref": "op-00076085",
+      "yearMax": 2026,
+      "yearMin": 2016
+    },
+    {
+      "attributedAwardCount": 13652,
+      "attributedValue": "24361539911.755588326152854",
+      "awardCount": 13964,
+      "name": "ROCHE SOCIETA' PER AZIONI",
+      "ref": "op-00023916",
+      "yearMax": 2026,
+      "yearMin": 2006
+    },
+    {
+      "attributedAwardCount": 27,
+      "attributedValue": "23038012515.202",
+      "awardCount": 29,
+      "name": "ORCHIDEA SOCIETA' COOPERATIVA SOCIALE",
+      "ref": "op-00110800",
+      "yearMax": 2025,
+      "yearMin": 2010
+    },
+    {
+      "attributedAwardCount": 6170,
+      "attributedValue": "22971510264.72465",
+      "awardCount": 6817,
+      "name": "VODAFONE ITALIA S.P.A.",
+      "ref": "op-00328141",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 25113,
+      "attributedValue": "22604309131.7764998249343",
+      "awardCount": 32280,
+      "name": "MEDTRONIC ITALIA S.P.A.",
+      "ref": "op-00289391",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 8728,
+      "attributedValue": "22074610250.327",
+      "awardCount": 8739,
+      "name": "ENEL ENERGIA SPA",
+      "ref": "op-00266921",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 10186,
+      "attributedValue": "20885592280.6694183343794",
+      "awardCount": 10311,
+      "name": "JANSSEN CILAG S.P.A.",
+      "ref": "op-00032618",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 18927,
+      "attributedValue": "19570930922.364529999996",
+      "awardCount": 22361,
+      "name": "TIM S.P.A.",
+      "ref": "op-00015070",
+      "yearMax": 2026,
+      "yearMin": 2000
+    },
+    {
+      "attributedAwardCount": 13322,
+      "attributedValue": "18932096446.076034673852677",
+      "awardCount": 13467,
+      "name": "NOVARTIS FARMA SPA",
+      "ref": "op-00272764",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 577,
+      "attributedValue": "17435983977.479",
+      "awardCount": 1009,
+      "name": "IBM ITALIA",
+      "ref": "op-00300396",
+      "yearMax": 2025,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 118,
+      "attributedValue": "17377655521.05",
+      "awardCount": 118,
+      "name": "ACQUEDOTTO PUGLIESE SPA",
+      "ref": "op-00011048",
+      "yearMax": 2025,
+      "yearMin": 2008
+    }
+  ],
+  "topOperatorsByAwardCount": [
+    {
+      "attributedAwardCount": 25113,
+      "attributedValue": "22604309131.7764998249343",
+      "awardCount": 32280,
+      "name": "MEDTRONIC ITALIA S.P.A.",
+      "ref": "op-00289391",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 16828,
+      "attributedValue": "6863025514.2670625833772",
+      "awardCount": 22712,
+      "name": "JOHNSON & JOHNSON MEDICAL S.P.A.",
+      "ref": "op-00280630",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 18927,
+      "attributedValue": "19570930922.364529999996",
+      "awardCount": 22361,
+      "name": "TIM S.P.A.",
+      "ref": "op-00015070",
+      "yearMax": 2026,
+      "yearMin": 2000
+    },
+    {
+      "attributedAwardCount": 21038,
+      "attributedValue": "16830292734.917619338532305",
+      "awardCount": 21505,
+      "name": "SANOFI S.R.L.",
+      "ref": "op-00026948",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 19071,
+      "attributedValue": "3528885632.033766601327210130",
+      "awardCount": 19742,
+      "name": "VIATRIS ITALIA S.R.L.",
+      "ref": "op-00162718",
+      "yearMax": 2026,
+      "yearMin": 2014
+    },
+    {
+      "attributedAwardCount": 18247,
+      "attributedValue": "13967918771.31369701537537695",
+      "awardCount": 18783,
+      "name": "PFIZER S.R.L.",
+      "ref": "op-00161796",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 18133,
+      "attributedValue": "49245565380.67033700",
+      "awardCount": 18137,
+      "name": "A2A ENERGIA S.P.A.",
+      "ref": "op-00310214",
+      "yearMax": 2026,
+      "yearMin": 2005
+    },
+    {
+      "attributedAwardCount": 11510,
+      "attributedValue": "2838739340.76551428556092",
+      "awardCount": 16050,
+      "name": "BOSTON SCIENTIFIC SPA",
+      "ref": "op-00301969",
+      "yearMax": 2026,
+      "yearMin": 2005
+    },
+    {
+      "attributedAwardCount": 13652,
+      "attributedValue": "24361539911.755588326152854",
+      "awardCount": 13964,
+      "name": "ROCHE SOCIETA' PER AZIONI",
+      "ref": "op-00023916",
+      "yearMax": 2026,
+      "yearMin": 2006
+    },
+    {
+      "attributedAwardCount": 13322,
+      "attributedValue": "18932096446.076034673852677",
+      "awardCount": 13467,
+      "name": "NOVARTIS FARMA SPA",
+      "ref": "op-00272764",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 10161,
+      "attributedValue": "1825929700.51738060063395",
+      "awardCount": 13055,
+      "name": "B. BRAUN MILANO SPA",
+      "ref": "op-00021320",
+      "yearMax": 2026,
+      "yearMin": 2006
+    },
+    {
+      "attributedAwardCount": 12388,
+      "attributedValue": "2670606316.98555400603107",
+      "awardCount": 13006,
+      "name": "FRESENIUS KABI ITALIA S.R.L. IN BREVE FKI S.R.L.",
+      "ref": "op-00198657",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 12758,
+      "attributedValue": "8622861906.030152012936033",
+      "awardCount": 12990,
+      "name": "GLAXOSMITHKLINE S.P.A.",
+      "ref": "op-00006440",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 8913,
+      "attributedValue": "5322130130.509562841564",
+      "awardCount": 12809,
+      "name": "ABBOTT MEDICAL ITALIA S.R.L.",
+      "ref": "op-00302259",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 11980,
+      "attributedValue": "3823993418.410526233151669",
+      "awardCount": 12715,
+      "name": "TEVA ITALIA S.R.L.",
+      "ref": "op-00304302",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 12420,
+      "attributedValue": "17257410851.853903",
+      "awardCount": 12434,
+      "name": "EDISON ENERGIA S.P.A.",
+      "ref": "op-00284311",
+      "yearMax": 2026,
+      "yearMin": 2005
+    },
+    {
+      "attributedAwardCount": 11842,
+      "attributedValue": "35135645852.5616998435",
+      "awardCount": 11845,
+      "name": "AGSM AIM ENERGIA S.P.A.",
+      "ref": "op-00172660",
+      "yearMax": 2026,
+      "yearMin": 2004
+    },
+    {
+      "attributedAwardCount": 11580,
+      "attributedValue": "2483296735.43586",
+      "awardCount": 11582,
+      "name": "ENIMOOV S.P.A.",
+      "ref": "op-00156856",
+      "yearMax": 2026,
+      "yearMin": 2005
+    },
+    {
+      "attributedAwardCount": 9575,
+      "attributedValue": "2643215520.858632563280364",
+      "awardCount": 10743,
+      "name": "SANDOZ S.P.A.",
+      "ref": "op-00025510",
+      "yearMax": 2026,
+      "yearMin": 2007
+    },
+    {
+      "attributedAwardCount": 10186,
+      "attributedValue": "20885592280.6694183343794",
+      "awardCount": 10311,
+      "name": "JANSSEN CILAG S.P.A.",
+      "ref": "op-00032618",
+      "yearMax": 2026,
+      "yearMin": 2007
+    }
+  ],
+  "topProcedureObjects": [
+    {
+      "count": 309,
+      "label": "SERVIZI DI FORMAZIONE"
+    },
+    {
+      "count": 264,
+      "label": "MATERIALE INFORMATICO"
+    },
+    {
+      "count": 264,
+      "label": "TRASPORTO SCOLASTICO"
+    },
+    {
+      "count": 235,
+      "label": "FORNITURA ENERGIA ELETTRICA"
+    },
+    {
+      "count": 222,
+      "label": "FORNITURA MATERIALE INFORMATICO"
+    },
+    {
+      "count": 221,
+      "label": "INCARICO PROFESSIONALE"
+    },
+    {
+      "count": 210,
+      "label": "ASSISTENZA PROTESICA"
+    },
+    {
+      "count": 193,
+      "label": "FORNITURA ARREDI"
+    },
+    {
+      "count": 188,
+      "label": "ACQUISTO MATERIALE INFORMATICO"
+    },
+    {
+      "count": 184,
+      "label": "DISPOSITIVI MEDICI"
+    },
+    {
+      "count": 178,
+      "label": "SERVIZI CIMITERIALI"
+    },
+    {
+      "count": 173,
+      "label": "SERVIZIO DI TRASPORTO SCOLASTICO"
+    },
+    {
+      "count": 171,
+      "label": "SERVIZIO TRASPORTO SCOLASTICO"
+    },
+    {
+      "count": 164,
+      "label": "CORSI DI FORMAZIONE"
+    },
+    {
+      "count": 162,
+      "label": "SMALTIMENTO RIFIUTI"
+    },
+    {
+      "count": 153,
+      "label": "ACCORDO QUADRO SEMESTRALE PER LA FORNITURA CARBURANTE NECESSARIO ALLE UNITA NAVALI DEL CORPO"
+    },
+    {
+      "count": 153,
+      "label": "CONVENZIONAMENTO DI STRUTTURE EDUCATIVE PRIVATE ED AZIENDALI PER L'ANNO EDUCATIVO 2017/2018"
+    },
+    {
+      "count": 153,
+      "label": "SERVIZIO DI PULIZIA"
+    },
+    {
+      "count": 153,
+      "label": "VIAGGIO DI ISTRUZIONE"
+    },
+    {
+      "count": 152,
+      "label": "CONVENZIONAMENTO DI STRUTTURE EDUCATIVE PRIVATE ED AZIENDALI PER L' ANNO EDUCATIVO 2016/2017"
+    }
+  ]
+}

@@ -7,6 +7,12 @@ const baseUrl = defaultBaseUrl();
 const root = "/enti/c_l780/appalti";
 const screenshots = path.join(defaultArtifactsDir(), "procurement-peers");
 mkdirSync(screenshots, { recursive: true });
+async function captureMain(page, filename) {
+  const bounds = await (await page.$("main")).boundingBox();
+  assert.ok(bounds);
+  await page.screenshot({ path: path.join(screenshots, filename), clip: bounds, captureBeyondViewport: true });
+}
+
 const browser = await launchBrowser();
 try {
   for (const width of [1440, 768, 390]) {
@@ -22,7 +28,11 @@ try {
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true, `page overflow at ${width}px`);
         const boxes = await page.$$eval("main article", (els) => els.map((el) => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom }; }));
         for (let i = 1; i < boxes.length; i++) assert.ok(boxes[i].x >= boxes[i - 1].right - 1 || boxes[i].y >= boxes[i - 1].bottom - 1, "overlapping indicators");
-        await page.screenshot({ path: path.join(screenshots, `veroli-${width}.png`), fullPage: true });
+        if (width === 390) {
+          const hint = await page.$$eval("main p", (elements) => elements.find((el) => el.textContent.includes("Scorri la tabella"))?.getBoundingClientRect().width);
+          assert.ok(hint > 0 && hint <= width, "mobile scroll hint hidden or clipped");
+        }
+        await captureMain(page, `veroli-${width}.png`);
         await page.locator("main details summary").click();
         assert.equal(await page.$eval("main details", (el) => el.open), true);
         await navigate(page, { url: new URL(links[2], baseUrl).toString(), label: "peer HHI source", readySelector: "#concentration-detail-title" });
@@ -40,6 +50,7 @@ try {
         assert.equal(await page.$eval("#comparison-title", (el) => el.textContent), "Confronto non pubblicato");
         assert.ok(await page.$eval("main", (el, text) => el.textContent.includes(text), message));
         assert.equal(await page.$$eval("main article", (els) => els.length), 0, "withheld values shown as indicators");
+        if (pathname === `${root}/confronti?metric=value`) await captureMain(page, "veroli-value-390.png");
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
       },
     });

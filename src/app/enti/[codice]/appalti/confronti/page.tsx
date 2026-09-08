@@ -91,9 +91,10 @@ export default async function ProcurementPeersPage({ params, searchParams }: Pro
       {peers.length > 0 && target ? <section className="panel" aria-labelledby="peers-title">
         <h2 className="panel-title" id="peers-title">Comuni nel gruppo · {integer(group.peers.length)}</h2>
         <p className={styles.note}>I valori collegano alle aggiudicazioni che li compongono.</p>
+        <p className={styles.tableHint}>Scorri la tabella in orizzontale →</p>
         <div className="table-scroll" role="region" aria-label="Confronto dei Comuni" tabIndex={0}>
           <table className="table">
-            <caption>Popolazione 2024 e appalti dei CIG pubblicati nel 2025. Su schermi piccoli, scorri la tabella in orizzontale.</caption>
+            <caption>Popolazione 2024 e appalti dei CIG pubblicati nel 2025.</caption>
             <thead><tr><th scope="col">Comune</th><th scope="col" className="num">Residenti</th><th scope="col" className="num">Procedure</th><th scope="col" className="num">CPV in comune</th><th scope="col" className="num">Top 1</th><th scope="col" className="num">Top 10</th><th scope="col" className="num">HHI</th></tr></thead>
             <tbody>{peers.map((peer) => <tr key={peer.codiceIpa}>
               <th scope="row"><Link href={profileHref(peer.codiceIpa)}>{peer.name}</Link></th>

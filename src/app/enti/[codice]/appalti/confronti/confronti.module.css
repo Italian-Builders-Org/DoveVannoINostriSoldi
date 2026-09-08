@@ -13,8 +13,10 @@
 .note { color: var(--color-neutral-700); font-size: 14px; line-height: 1.6; }
 .criteria { padding-left: 20px; }
 .criteria li + li { margin-top: 8px; }
+.tableHint { display: none; color: var(--color-neutral-700); font-size: 14px; }
 .details { margin-top: var(--space-4); }
 @media (max-width: 700px) {
   .indicators { grid-template-columns: 1fr; }
+  .tableHint { display: block; }
   .indicator { padding-bottom: var(--space-3); }
 }

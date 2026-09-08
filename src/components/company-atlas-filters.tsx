@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import type { CompanyAtlasFilters as AtlasFilters } from "@/lib/company-atlas";
+import { longDate } from "@/lib/format";
 import styles from "./company-atlas-filters.module.css";
 
 type SelectOption = Readonly<{ id: string; label: string }>;
@@ -64,15 +65,10 @@ export function CompanyAtlasFilters({
   }
 
   return (
-    <section className={styles.filters} aria-labelledby="atlas-filters-title">
-      <div className={styles.filterIntro}>
-        <span className={styles.eyebrow}>Esplora il perimetro</span>
-        <h2 id="atlas-filters-title">Cambia metrica e territorio</h2>
-        <p>Ogni scelta aggiorna mappa, classifica e dettaglio usando la stessa fonte.</p>
-      </div>
+    <section className={styles.filters} aria-label="Filtra i dati delle imprese">
       <div className={styles.controlGrid}>
         <label>
-          <span>Metrica</span>
+          <span>Dato da confrontare</span>
           <select
             value={filters.metric}
             onChange={(event) => updateFilter("metric", event.target.value)}
@@ -88,7 +84,7 @@ export function CompanyAtlasFilters({
             onChange={(event) => updateFilter("period", event.target.value)}
             data-atlas-filter="period"
           >
-            {periods.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+            {periods.map((option) => <option key={option.id} value={option.id}>{/^\d{4}-\d{2}-\d{2}$/.test(option.label) ? longDate(option.label) : option.label}</option>)}
           </select>
         </label>
         <label>

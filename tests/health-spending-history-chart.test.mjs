@@ -86,8 +86,8 @@ test("health spending trend chart preserves design tokens, accessibility and zer
 
   // Disclaimer note on nominal economic-accounting values without causality inference
   assert.match(chartCode, /Valori nominali a consuntivo in euro di competenza economica/);
-  assert.match(chartCode, /due grafici a scala separata/);
-  assert.match(chartCode, /doppio asse/);
+  assert.match(chartCode, /due grafici usano scale diverse/);
+  assert.doesNotMatch(chartCode, /yAxisId=/);
   assert.match(chartCode, /non misura efficienza/);
   assert.match(chartCode, /dotazioni organiche/);
 

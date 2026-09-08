@@ -179,12 +179,15 @@ export function CompanyAtlasMap({
           <span>Meno</span>
           {[0, 1, 2, 3, 4].map((index) => <i key={index} className={styles[`level${index}`]} aria-hidden="true" />)}
           <span>Più</span>
+          {regions.some((region) => region.value === null) ? <span className={styles.missingKey}><i className={styles.noData} aria-hidden="true" /> Non disponibile</span> : null}
         </div>
 
         <div className={styles.detail} aria-live="polite">
           <strong>{displayedRegion?.name ?? "Seleziona una regione"}</strong>
-          <span>{displayedRegion?.value === null || displayedRegion?.value === undefined ? "n.d." : displayValue(displayedRegion.value)}</span>
-          <small>{displayedRegion ? metricUnit : "valore regionale"}</small>
+          {displayedRegion ? <>
+            <span>{displayedRegion.value === null ? "Non disponibile" : displayValue(displayedRegion.value)}</span>
+            <small>{metricUnit}</small>
+          </> : <small>Passa sulla mappa o scegli una regione</small>}
         </div>
       </div>
     </div>

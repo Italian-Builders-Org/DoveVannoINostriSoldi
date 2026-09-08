@@ -579,7 +579,7 @@ test("UI keeps scope, rankings, official CIG links and concentration without lat
   assert.match(detail, /metric: "value", pageSize: size/);
   assert.match(detail, /Perimetro temporale/);
   assert.match(detail, /verifyLiveFiscalCode: false/);
-  assert.match(detail, /snapshot IPA verificato durante l'ETL/);
+  assert.match(detail, /Dati IPA verificati al momento dell’acquisizione/);
   assert.match(detail, /maxDuration = 15/);
   assert.doesNotMatch(detail, /getIpaEntityByCode/);
   const entityPage = readFileSync(new URL("../src/app/enti/[codice]/page.tsx", import.meta.url), "utf8");

@@ -9,7 +9,9 @@ type ManifestEntry = {
   asset: string | null;
   sourcePage: string | null;
   license: string | null;
+  licenseUrl?: string;
   author: string | null;
+  attribution?: string;
   width?: number;
   height?: number;
 };
@@ -80,21 +82,14 @@ export function RegionCrest({
 }
 
 export function RegionCrestAttribution() {
-  const crestCount = Object.values(entries).filter((entry) => entry.assetType === "commons-crest").length;
-  const alternateCount = Object.values(entries).filter(
-    (entry) => entry.assetType === "commons-regional-flag",
-  ).length;
-
   return (
-    <p className={styles.attribution} data-region-crest-attribution>
-      Simboli regionali: {crestCount} stemmi SVG Commons e {alternateCount} alternativa vettoriale
-      Commons, con autore e licenza registrati nel manifest. Non usiamo segnaposto neutri né badge
-      originali{" "}
-      <a href={manifest.catalogUrl} target="_blank" rel="noreferrer">
-        nel catalogo Wikimedia Commons ↗
-      </a>
-      . Il simbolo del Veneto è indicato come bandiera regionale alternativa. I simboli identificano
-      il territorio: non sono una misura dei pagamenti e non modificano la choropleth.
-    </p>
+    <details className={styles.attribution} data-region-crest-attribution>
+      <summary>Crediti degli stemmi</summary>
+      <ul>{Object.entries(entries).map(([code, entry]) => <li key={code}>
+        <a href={entry.sourcePage ?? manifest.catalogUrl} target="_blank" rel="noreferrer">{entry.name}</a>
+        {entry.assetType === "commons-regional-flag" ? " (bandiera)" : ""} · {entry.attribution ?? entry.author} · {" "}
+        {entry.licenseUrl ? <a href={entry.licenseUrl} target="_blank" rel="noreferrer">{entry.license}</a> : entry.license}
+      </li>)}</ul>
+    </details>
   );
 }

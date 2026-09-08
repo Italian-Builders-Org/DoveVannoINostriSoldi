@@ -22,7 +22,7 @@ export async function inspectAnacConcentration(page) {
       assert.match(text, /Importi esatti in euro/);
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, url);
-    const summary = await page.$("main details > summary");
+    const summary = await page.$('main details:has(a[href*="view=operator"]) > summary');
     if (summary) {
       assert.ok((await summary.boundingBox()).height >= 44);
       await summary.focus();

@@ -125,7 +125,7 @@ export default function ParticipationsPage() {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Società</th>
-                <th scope="col">Codice fiscale</th>
+
                 <th scope="col" className="num">Amministrazioni</th>
               </tr>
             </thead>
@@ -133,10 +133,7 @@ export default function ParticipationsPage() {
               {snapshot.topCompaniesByDeclaringAdministrations.map((company, index) => (
                 <tr key={company.taxCode}>
                   <td>{index + 1}</td>
-                  <th scope="row">{company.name}</th>
-                  <td>
-                    <code>{company.taxCode}</code>
-                  </td>
+                  <th scope="row">{company.name}<details className="table-details"><summary>Codice fiscale</summary><code>{company.taxCode}</code></details></th>
                   <td className="num">{integer(company.declaringAdministrations)}</td>
                 </tr>
               ))}

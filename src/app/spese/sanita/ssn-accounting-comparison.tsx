@@ -46,12 +46,6 @@ const VIEW_OPTIONS = [
 
 type View = (typeof VIEW_OPTIONS)[number]["id"];
 
-function axisLabel(label: string, maxLength = 34): string {
-  return label.length > maxLength
-    ? `${label.slice(0, maxLength - 1).trimEnd()}…`
-    : label;
-}
-
 function TooltipContent({
   active,
   payload,
@@ -80,7 +74,6 @@ function ComparisonTable({ data }: { data: readonly SsnAccountingComparisonPoint
         <thead>
           <tr>
             <th scope="col">Voce</th>
-            <th scope="col">Codice fonte</th>
             <th scope="col" className="num">Importo</th>
             <th scope="col">Copertura</th>
           </tr>
@@ -91,8 +84,8 @@ function ComparisonTable({ data }: { data: readonly SsnAccountingComparisonPoint
               <th scope="row">
                 <span className={styles.metricName}>{point.label}</span>
                 <small>{point.sourceLabel}</small>
+                <details className="table-details"><summary>Codice nella fonte</summary><code>{point.code}</code></details>
               </th>
-              <td><code>{point.code}</code></td>
               <td className="num">
                 <strong>{compactEuro(point.valueCents / 100)}</strong>
                 <small>{exactEuro(point.valueCents / 100)}</small>
@@ -118,7 +111,7 @@ export function SsnAccountingComparison({
   const chartData: ChartPoint[] = data.map((point) => ({
     ...point,
     value: point.valueCents / 100,
-    axisLabel: axisLabel(point.label),
+    axisLabel: point.label,
   }));
 
   const selectView = (next: View, focus = false) => {

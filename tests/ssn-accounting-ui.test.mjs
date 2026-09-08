@@ -15,7 +15,7 @@ test("SSN accounting comparison offers a chart/table switch without losing the e
   assert.match(page, /valueCents: national\[metric\]/);
   assert.match(page, /detailPresent: data\.detailCoverage\.present\[metric\]/);
   assert.match(page, /detailMissing: data\.detailCoverage\.missing\[metric\]/);
-  assert.match(page, /grafico confronta\s*\n?\s*gli importi/);
+  assert.match(page, /Costi nazionali del Servizio Sanitario Nazionale/);
   assert.match(page, /region\.values\.productionCosts/);
   assert.match(page, /region\.values\.purchasedServices/);
   assert.match(page, /entity\.missing\.nonHealthcareWorkServices/);
@@ -37,7 +37,7 @@ test("SSN accounting comparison offers a chart/table switch without losing the e
   assert.match(component, /domain=\{\[0, "auto"\]\}/);
   assert.match(component, /position=\{\{ x: 8 \}\}/);
   assert.match(component, /ChartDataTable/);
-  assert.match(component, /Codice fonte/);
+  assert.match(component, /<summary>Codice nella fonte<\/summary><code>\{point\.code\}<\/code>/);
   assert.match(component, /Copertura dettaglio/);
   assert.match(component, /role="region" aria-label="Voci contabili sanità 2024"/);
   assert.match(component, /scope="row"/);

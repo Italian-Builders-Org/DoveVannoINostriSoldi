@@ -1,6 +1,6 @@
 .article,
 .archive {
-  padding-block: clamp(2rem, 5vw, 5rem);
+  padding-block: var(--space-6);
 }
 
 .article {
@@ -107,8 +107,7 @@
 }
 
 .factGrid small,
-.archiveGrid small,
-.homeTeaser small {
+.archiveGrid small {
   color: var(--color-neutral-600);
   display: block;
   line-height: 1.45;
@@ -179,6 +178,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.archiveGrid article:only-child { grid-column: 1 / -1; }
+
 .archiveGrid article {
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-lg);
@@ -198,19 +199,7 @@
   margin-top: 1.25rem;
 }
 
-.homeTeaser {
-  align-items: end;
-  display: flex;
-  gap: 2rem;
-  grid-column: 1 / -1;
-  justify-content: space-between;
-  padding: clamp(1.4rem, 4vw, 2.5rem);
-}
 
-.homeTeaser h2 {
-  font-size: clamp(1.7rem, 4vw, 2.7rem);
-  margin-block: 0.4rem 0.7rem;
-}
 
 @media (max-width: 720px) {
   .publicationMeta,
@@ -219,10 +208,6 @@
     grid-template-columns: 1fr;
   }
 
-  .homeTeaser {
-    align-items: stretch;
-    flex-direction: column;
-  }
 
   .timelineChart {
     height: 20rem;

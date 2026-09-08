@@ -4,7 +4,7 @@
 
 .chart {
   width: 100%;
-  height: 390px;
+  min-height: 180px;
 }
 
 .tooltip {
@@ -50,12 +50,6 @@
   color: var(--color-neutral-600);
   font-size: 12px;
   text-align: center;
-}
-
-@media (max-width: 700px) {
-  .chart {
-    height: 360px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

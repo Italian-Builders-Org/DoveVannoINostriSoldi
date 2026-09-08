@@ -49,13 +49,13 @@
 .selectedOutline.hoverOutline { stroke-width: 3; }
 
 /* One sequential ramp, read as intensity rather than as five categories. It
-   starts at accent-200 rather than accent-100: the first step has to be
+   uses a dedicated sequential data ramp: the first step has to be
    distinguishable from the white panel behind the map. */
-.level0 { fill: var(--color-accent-200); background: var(--color-accent-200); }
-.level1 { fill: var(--color-accent-300); background: var(--color-accent-300); }
-.level2 { fill: var(--color-accent-400); background: var(--color-accent-400); }
-.level3 { fill: var(--color-accent-600); background: var(--color-accent-600); }
-.level4 { fill: var(--color-accent-800); background: var(--color-accent-800); }
+.level0 { fill: var(--chart-map-1); background: var(--chart-map-1); }
+.level1 { fill: var(--chart-map-2); background: var(--chart-map-2); }
+.level2 { fill: var(--chart-map-3); background: var(--chart-map-3); }
+.level3 { fill: var(--chart-map-4); background: var(--chart-map-4); }
+.level4 { fill: var(--chart-map-5); background: var(--chart-map-5); }
 .noData { fill: var(--color-neutral-200); background: var(--color-neutral-200); }
 
 .legend {
@@ -77,12 +77,6 @@
 .legendEnd:last-child { margin-left: var(--space-2); }
 
 .mobileSelector { display: none; }
-
-.geoNote {
-  margin: var(--space-2) 0 0;
-  font-size: 11px;
-  color: var(--color-neutral-600);
-}
 
 /* The reading row under the map: hover/focus previews until a click or an
    explicit keyboard selection fixes the region. */

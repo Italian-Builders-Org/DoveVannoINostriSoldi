@@ -105,6 +105,8 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
       <figcaption>
         Ogni punto contiene il totale registrato fino a quell&apos;anno.
       </figcaption>
+      <details className="chart-data">
+        <summary>Dati del grafico in tabella</summary>
       <div className={styles.tableWrap} role="region" aria-label="Totali annuali OpenCoesione" tabIndex={0}>
         <table>
           <caption>Totali annuali pubblicati da OpenCoesione</caption>
@@ -126,6 +128,7 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
           </tbody>
         </table>
       </div>
+      </details>
     </figure>
   );
 }

@@ -54,7 +54,7 @@ export function RegistryTypeChart({ data }: { data: IpaTypeStat[] }) {
 
   return (
     <figure className={styles.figure}>
-      <div className={styles.chart} role="img" aria-label="Distribuzione dei record IPA per tipologia di ente">
+      <div className={styles.chart} style={{ height: Math.max(180, chartData.length * 36 + 28) }} role="img" aria-label="Distribuzione dei record IPA per tipologia di ente">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             accessibilityLayer
@@ -105,8 +105,7 @@ export function RegistryTypeChart({ data }: { data: IpaTypeStat[] }) {
         </ResponsiveContainer>
       </div>
       <figcaption className={styles.caption}>
-        Conteggio dei record per le tipologie più presenti nel datastore IPA. Il grafico viene calcolato
-        tramite query SQL sull&apos;API ufficiale, non da un campione locale.
+        Enti per le tipologie più presenti nel registro ufficiale IPA.
       </figcaption>
       <ChartDataTable
         label="Distribuzione dei record IPA per tipologia di ente"

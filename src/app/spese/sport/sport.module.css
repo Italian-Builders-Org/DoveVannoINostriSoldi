@@ -75,7 +75,7 @@
   display: block;
   height: 100%;
   max-width: 100%;
-  background: var(--color-accent-700);
+  background: var(--chart-data-primary);
 }
 
 .deltaNote {

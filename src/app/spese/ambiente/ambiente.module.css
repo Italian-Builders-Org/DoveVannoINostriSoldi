@@ -24,8 +24,9 @@
 
 .filters select {
   width: 100%;
-  min-width: 0;
+  min-width: 84px;
   min-height: 44px;
+  padding: 8px 12px;
 }
 
 .summary h2 {
@@ -34,8 +35,8 @@
 
 .total {
   margin-block: var(--space-3);
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
@@ -89,7 +90,7 @@
 .bar i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 
 .provenance code {

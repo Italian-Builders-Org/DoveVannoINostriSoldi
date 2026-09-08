@@ -6,7 +6,8 @@
 .dashboard {
   display: grid;
   grid-template-columns: 360px minmax(0, 1fr);
-  align-items: start;
+  grid-template-areas: "summary map" "months regions" "rank cohesion" "anomalies anomalies" "reading reading";
+  align-items: stretch;
   gap: var(--space-4);
   padding-block: var(--space-4) 0;
 }
@@ -23,23 +24,20 @@
   border: 0;
 }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-/* Supporting modules sit in a shared two-by-two band. Keeping them in a
-   third vertical rail made the footer wait for the longest rail and left
-   large empty areas under the two shorter columns on laptop-sized screens. */
-.dashboard > .column:last-child {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-}
-.dashboard > .column:last-child > :global(.panel) { height: 100%; }
+.column { display: contents; }
+.summaryPanel { grid-area: summary; display: flex; flex-direction: column; min-width: 0; }
+.summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(250px, 1fr) auto auto auto; --composition-height: 100%; }
+.summaryPanel .rule { width: 100%; }
+.mapPanel { grid-area: map; display: flex; flex-direction: column; min-width: 0; }
+.mapPanel .mapStage { flex: 1; display: flex; align-items: center; }
+.mapPanel .mapStage > div { width: 100%; }
+.monthsPanel { grid-area: months; display: flex; flex-direction: column; min-width: 0; }
+.monthsPanel .monthList { flex: 1; justify-content: space-evenly; }
+.regionsPanel { grid-area: regions; min-width: 0; }
+.rankPanel { grid-area: rank; min-width: 0; }
+.cohesionPanel { grid-area: cohesion; min-width: 0; }
+.anomaliesPanel { grid-area: anomalies; min-width: 0; }
+.readingPanel { grid-area: reading; }
 
 .panelHead {
   display: grid;
@@ -365,101 +363,27 @@
   font-size: 12px;
   color: var(--color-neutral-600);
 }
-.anomalyGallery {
-  display: grid;
-  gap: 0;
-  margin: 0;
-}
-
+.anomaliesPanel { grid-column: 1 / -1; }
+.anomaliesPanel .panelHead { display: flex; align-items: center; gap: var(--space-2); }
+.anomaliesPanel .panelHead h2 { flex: 1; }
+.anomaliesLink { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.anomalyGallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin: 0; }
 .anomalyItem {
-  --anomaly-accent: var(--chart-data-primary);
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-  padding: 13px 0;
-  border-top: 1px solid var(--color-neutral-300);
-}
-.anomalyItem[data-signal="gdf-public-spending-fraud"] {
-  --anomaly-accent: var(--chart-category-blue);
-}
-.anomalyItem[data-signal="pnrr-beyond-2026"] {
-  --anomaly-accent: var(--chart-progress);
-}
-.anomalyItemHead {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  flex-direction: column;
   min-width: 0;
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
 }
-.anomalyMarker {
-  min-width: 24px;
-  flex: none;
-  color: var(--anomaly-accent);
-  border-bottom: 2px solid currentColor;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  line-height: 1.6;
-  text-align: center;
-}
-.anomalyArea {
-  min-width: 0;
-  overflow: hidden;
-  color: var(--color-neutral-600);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .07em;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.anomalyItem h3 {
-  margin: 1px 0 0;
-  font-size: 14px;
-  line-height: 1.2;
-}
-.anomalyValue {
-  display: block;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: -.03em;
-  line-height: 1.05;
-  font-variant-numeric: tabular-nums;
-}
-.anomalyBar {
-  display: block;
-  height: 6px;
-  margin-top: 2px;
-  background: var(--chart-data-track);
-}
-.anomalyBar i {
-  display: block;
-  height: 100%;
-  background: var(--anomaly-accent);
-}
-.anomalyMeta {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-  margin: 2px 0 0;
-  color: var(--color-neutral-600);
-  font-size: 11px;
-  line-height: 1.35;
-}
-.anomalyMeta span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.anomalyMeta a {
-  flex: none;
-  color: var(--anomaly-accent);
-  font-weight: 700;
-  text-align: end;
-}
+.anomalyItemHead { display: flex; align-items: center; gap: var(--space-2); }
+.anomalyArea { color: var(--color-neutral-600); font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.anomalyItem h3 { margin: 10px 0 0; min-height: 38px; font-size: 14px; font-weight: 500; line-height: 1.35; }
+.anomalyValue { display: block; margin-top: 12px; font-family: var(--font-heading); font-size: clamp(24px, 2.4vw, 32px); font-weight: var(--font-heading-weight); letter-spacing: -.03em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.anomalyMeta { display: flex; flex-direction: column; gap: 12px; flex: 1; margin: 10px 0 0; font-size: 11px; line-height: 1.4; color: var(--color-neutral-600); }
+.anomalyMeta span { flex: 1; }
+.anomalyMeta a { display: flex; align-items: center; min-height: 44px; padding-top: 8px; border-top: 1px solid var(--color-neutral-300); color: var(--color-neutral-700); font-weight: 500; }
 .anomalyCaveat,
 .anomalyFallback {
   margin: 0;
@@ -478,7 +402,7 @@
 .readingPanel {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(150px, 0.8fr) minmax(150px, 0.8fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-4);
   min-width: 0;
@@ -547,19 +471,10 @@
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
-@media (max-width: 1320px) {
-  .dashboard > .column:last-child > :global(.panel) > :global(.btn-block) {
-    margin-top: 0;
-  }
-}
-
 @media (max-width: 900px) {
-  .dashboard { grid-template-columns: minmax(0, 1fr); }
-  .dashboard > .column:last-child {
-    grid-column: auto;
-    display: flex;
-  }
-  .dashboard > .column:last-child > :global(.panel) { height: auto; }
+  .dashboard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "summary" "months" "map" "regions" "rank" "cohesion" "anomalies" "reading"; }
+  .summaryPanel > [data-composition-state] { flex: none; --composition-height: clamp(250px, 62cqw, 320px); }
+  .monthsPanel .monthList { gap: 10px; }
 }
 
 @media (max-width: 1100px) {
@@ -607,3 +522,29 @@
 @container regional-map (max-width: 360px) {
   .mapStats { grid-template-columns: minmax(0, 1fr); }
 }
+
+.sourceDetails summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.sourceDetails summary::after { content: "+"; font-size: 18px; }
+.sourceDetails[open] summary::after { content: "−"; }
+.sourceDetails .sourceList { margin-block: var(--space-3); }
+@media (max-width: 760px) {
+  .anomalyGallery { grid-template-columns: minmax(0, 1fr); }
+  .anomalyItem { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-4); padding: var(--space-4); }
+  .anomalyItemHead { grid-column: 1; }
+  .anomalyItem h3 { grid-column: 1; min-height: 0; margin-top: 6px; }
+  .anomalyValue { grid-column: 2; grid-row: 1 / 3; align-self: center; margin: 0; font-size: 25px; }
+  .anomalyMeta { grid-column: 1 / -1; flex-direction: row; align-items: center; margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--color-neutral-300); gap: 8px; }
+  .anomalyMeta a { padding: 0; border: 0; flex: none; }
+}
+@media (max-width: 480px) {
+  .anomaliesPanel .panelHead { flex-wrap: wrap; }
+  .anomaliesPanel .panelHead h2 { flex-basis: calc(100% - 44px); }
+  .anomaliesLink { order: 3; }
+  .anomalyItem { display: flex; gap: 0; }
+  .anomalyValue { align-self: flex-start; margin-top: 12px; }
+  .anomalyMeta { align-items: flex-start; flex-direction: column; }
+}
+
+
+.panelHead:has(> h2:only-child) { min-height: 0; margin-bottom: var(--space-3); }
+.sourcePanel { padding-block: var(--space-1); }

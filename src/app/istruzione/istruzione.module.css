@@ -49,7 +49,7 @@
 .headline {
   display: block;
   margin-top: var(--space-3);
-  color: var(--color-accent-900);
+  color: var(--color-text);
   font-family: var(--font-heading);
   font-size: clamp(38px, 5vw, 58px);
   font-weight: var(--font-heading-weight);
@@ -78,8 +78,8 @@
 .pathwayLabel { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 8px; font-size: 12px; }
 .pathwayLabel span { overflow: hidden; color: var(--color-neutral-800); text-overflow: ellipsis; white-space: nowrap; }
 .pathwayLabel strong { font-variant-numeric: tabular-nums; }
-.pathwayList i { display: block; height: 7px; margin-top: 5px; background: var(--color-neutral-200); }
-.pathwayList i b { display: block; height: 100%; background: var(--color-accent); }
+.pathwayList i { display: block; height: 7px; margin-top: 5px; background: var(--chart-data-track); }
+.pathwayList i b { display: block; height: 100%; background: var(--chart-data-primary); }
 .pathwayList small { display: block; margin-top: 3px; color: var(--color-neutral-600); font-size: 10px; }
 .emptyState { margin: 14px 0 0; padding: 14px; color: var(--color-neutral-700); background: var(--color-neutral-100); border-left: 2px solid var(--color-neutral-400); font-size: 12px; }
 
@@ -88,16 +88,16 @@
 .note { margin: 12px 0 0; color: var(--color-neutral-600); font-size: 11px; line-height: 1.45; }
 
 .trendDelta { margin: 12px 0 0; color: var(--color-neutral-700); font-size: 12px; }
-.trendDelta strong { color: var(--color-accent-700); }
+.trendDelta strong { color: var(--color-text); }
 
 .addressTable { max-height: 420px; margin-top: 8px; overflow: auto; }
 .addressTable :global(.table) { font-size: 12px; }
 .addressTable :global(.table th[scope="row"]) { min-width: 170px; max-width: 230px; overflow-wrap: anywhere; }
 .addressTable :global(.table td:nth-child(2)) { color: var(--color-neutral-600); font-size: 11px; }
 
-.coveragePanel { background: var(--color-neutral-100); border-color: var(--color-accent-300); }
-.coverageSignal { display: grid; gap: 3px; margin-top: 14px; padding: 14px; background: var(--color-accent-100); }
-.coverageSignal strong { color: var(--color-accent-900); font-size: 23px; letter-spacing: -.04em; }
+.coveragePanel { background: var(--color-neutral-100); border-color: var(--color-neutral-300); }
+.coverageSignal { display: grid; gap: 3px; margin-top: 14px; padding: 14px; background: var(--color-neutral-100); }
+.coverageSignal strong { color: var(--color-text); font-size: 23px; letter-spacing: -.04em; }
 .coverageSignal span { color: var(--color-neutral-700); font-size: 12px; }
 .sourceTitle { margin: 14px 0 2px; font-size: 16px; }
 .sourcePublisher { margin: 0; color: var(--color-neutral-600); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
@@ -125,3 +125,24 @@
   .factRows dd { max-width: 58%; overflow-wrap: anywhere; }
   .emptyState { padding: 12px; }
 }
+
+.sourceGrid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: var(--space-4); }
+.sourceGrid > section { min-width: 0; }
+@media (max-width: 800px) { .sourceGrid { grid-template-columns: 1fr; } }
+
+/* Panels follow shared rows; the map spans the summary and trend. */
+.dashboardGrid { grid-template-columns: minmax(300px, .85fr) minmax(0, 1.5fr); grid-template-areas: "summary map" "trend map" "pathways ranking" "addresses addresses"; align-items: stretch; }
+.dashboardGrid > .column, .dashboardGrid > .column:last-child { display: contents; }
+.summaryPanel { grid-area: summary; }
+.trendPanel { grid-area: trend; }
+.mapPanel { grid-area: map; display: flex; flex-direction: column; justify-content: space-between; --atlas-map-height: 560px; }
+.pathwaysPanel { grid-area: pathways; }
+.rankingPanel { grid-area: ranking; }
+.addressPanel { grid-area: addresses; }
+.pathwaysPanel { display: flex; flex-direction: column; }
+.pathwaysPanel .pathwayList { flex: 1; justify-content: space-evenly; }
+.addressTable :global(.table th[scope="row"]) { min-width: 0; max-width: none; width: 52%; }
+.addressTable { max-height: none; }
+.dashboardGrid :global(.table a) { color: var(--color-text); }
+.sourceGrid { align-items: start; }
+@media (max-width: 900px) { .dashboardGrid { grid-template-columns: 1fr; grid-template-areas: "summary" "map" "trend" "pathways" "ranking" "addresses"; } .sourceGrid { grid-template-columns: 1fr; } }

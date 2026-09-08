@@ -36,7 +36,7 @@ test("sport page stays fail-closed and wired into nav/discovery", async () => {
     source("../src/lib/global-search.ts"),
   ]);
 
-  assert.match(page, /Sport: missione di bilancio/);
+  assert.match(page, /Fondi pubblici per lo sport/);
   assert.match(page, /buildSportPublicSpendingView/);
   assert.match(page, /Non sommiamo queste[\s\S]*fonti in un totale unico/);
   assert.match(page, /Trasferimenti con destinatario riconoscibile/);

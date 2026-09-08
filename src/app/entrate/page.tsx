@@ -77,16 +77,6 @@ export default async function ReceiptsPage({ searchParams }: {
         {filters.code ? <p className={styles.note}>Codice selezionato: {filters.code}.</p> : null}
       </section>
 
-      <section className="notice scope-notice" aria-labelledby="receipts-scope-title">
-        <h2 id="receipts-scope-title">Incassi, non entrate di competenza</h2>
-        <p>
-          Qui vedi soldi entrati nei conti dei Comuni, non accertamenti né entrate di competenza.
-          I totali includono trasferimenti fra enti, prestiti e partite di giro: non misurano la pressione fiscale né entrate consolidate della PA.
-        </p>
-        {period.completeness === "partial" ? <p><strong>{receiptsPeriodLabel(period)}.</strong> Il mese finale può essere ancora incompleto. Non confrontare questo importo con un intero anno e non ricavarne una crescita annuale.</p> : null}
-        <p>I <Link href={`/spese?anno=${data.year}`}>pagamenti comunali</Link> restano un flusso distinto. Nessun saldo, residuo fiscale o classifica di efficienza o spreco.</p>
-      </section>
-
       <section aria-labelledby="receipts-national-title">
         <h2 className="panel-title" id="receipts-national-title">Quadro nazionale · {data.year}</h2>
         <div className="stat-strip">
@@ -95,11 +85,7 @@ export default async function ReceiptsPage({ searchParams }: {
           <div><span className="stat-label">Comuni con movimenti</span><span className="stat-value">{integer(data.coverage.withMovements)}</span><span className="stat-note">su {integer(data.coverage.activeSiopeMunicipalities)} Comuni nell’anagrafica</span></div>
           <div><span className="stat-label">Periodo osservato</span><span className="stat-value">Gennaio-{data.latestMonthLabel.toLocaleLowerCase("it-IT")}</span><span className="stat-note">{period.completeness === "partial" ? "Dati parziali" : "Anno completo"} · {data.year}</span></div>
         </div>
-        <p className={styles.note}>
-          Contesto nazionale, anche con filtri attivi. Il valore per abitante usa {exactEuro(data.receiptsWithPopulation)} di incassi
-          su {integer(data.populationCovered)} abitanti, nei {integer(data.coverage.withPopulation)} Comuni con popolazione disponibile.
-          Assenza di movimenti non significa zero incassi.
-        </p>
+
       </section>
 
       <div className={styles.split}>
@@ -171,10 +157,28 @@ export default async function ReceiptsPage({ searchParams }: {
         <p className={styles.note}>Per abitante: popolazione dell’anagrafica SIOPE, senza anno di riferimento dichiarato. Per km²: superficie ISTAT abbinata al Comune. La scheda è collegata solo quando è disponibile un identificativo IPA.</p>
       </section>
 
+      <details className="data-details">
+        <summary>Fonti, metodo e copertura</summary>
+      <section className="notice scope-notice" aria-labelledby="receipts-scope-title">
+        <h2 id="receipts-scope-title">Incassi, non entrate di competenza</h2>
+        <p>
+          Qui vedi soldi entrati nei conti dei Comuni, non accertamenti né entrate di competenza.
+          I totali includono trasferimenti fra enti, prestiti e partite di giro: non misurano la pressione fiscale né entrate consolidate della PA.
+        </p>
+        {period.completeness === "partial" ? <p><strong>{receiptsPeriodLabel(period)}.</strong> Il mese finale può essere ancora incompleto. Non confrontare questo importo con un intero anno e non ricavarne una crescita annuale.</p> : null}
+        <p>I <Link href={`/spese?anno=${data.year}`}>pagamenti comunali</Link> restano un flusso distinto. Nessun saldo, residuo fiscale o classifica di efficienza o spreco.</p>
+      </section>
+
+        <p className={styles.note}>
+          Contesto nazionale, anche con filtri attivi. Il valore per abitante usa {exactEuro(data.receiptsWithPopulation)} di incassi
+          su {integer(data.populationCovered)} abitanti, nei {integer(data.coverage.withPopulation)} Comuni con popolazione disponibile.
+          Assenza di movimenti non significa zero incassi.
+        </p>
       <section className="panel" aria-labelledby="receipts-sources-title">
         <h2 className="panel-title" id="receipts-sources-title">Fonti e metodo</h2>
         <ReceiptsSources data={data} />
       </section>
+      </details>
     </main>
   );
 }

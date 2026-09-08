@@ -58,8 +58,7 @@ test("appalti page separates CIG euro sums from the Relazione ANAC perimeter", (
 });
 
 test("appalti page treats threshold concentrations as screening signals, not findings", () => {
-  assert.match(pageSource, /indicano dove guardare\s*\n?\s*meglio negli atti/);
-  assert.match(pageSource, /serve a scegliere cosa verificare negli atti/);
+  assert.match(pageSource, /CIG di servizi e forniture da approfondire negli atti originali/);
   assert.match(pageSource, /Definizione stretta/);
   assert.match(pageSource, /thresholdBand\.strictContractDefinition/);
   assert.match(pageSource, /135\.000 €/);

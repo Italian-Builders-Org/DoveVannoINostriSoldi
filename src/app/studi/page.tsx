@@ -20,12 +20,12 @@ export default function StudiesPage() {
     <header className={styles.intro}>
       <span className={styles.eyebrow}>Ricerca civica · Pubblicazioni</span>
       <h1>Paper di ricerca</h1>
-      <p>Una domanda che merita tempo. Dati verificabili, analisi e limiti espliciti per capire come le risorse pubbliche diventano risultati.</p>
+      <p>Studi su risorse pubbliche e risultati, con dati, codice e materiali di ricerca.</p>
       <p className={styles.meta}>Uscite occasionali, distinte dagli articoli mensili. Ogni studio conserva il proprio periodo di osservazione, le versioni e i materiali per riprodurre i risultati.</p>
     </header>
     <section aria-labelledby="published-studies-title">
       <h2 id="published-studies-title">Studi pubblicati</h2>
-      {published.length === 0 ? <p>Non ci sono ancora studi pubblicati. Le bozze restano fuori dal catalogo pubblico.</p> : published.map((paper) => {
+      {published.length === 0 ? <p>Non ci sono ancora studi pubblicati.</p> : published.map((paper) => {
         const pdfHref = paper.pdfUrl.startsWith(`${PUBLIC_SITE_URL}/`) ? paper.pdfUrl.slice(PUBLIC_SITE_URL.length) : paper.pdfUrl;
         return <article className={styles.card} key={paper.slug} id={paper.slug}>
           <p className={styles.eyebrow}>Paper di ricerca · Versione {paper.version}</p>

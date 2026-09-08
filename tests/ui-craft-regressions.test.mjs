@@ -45,8 +45,8 @@ test("the home supporting rail forms a balanced grid without empty auto-fit cell
   assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.doesNotMatch(css, /repeat\(auto-fit, minmax\(280px, 1fr\)\)/);
   const anomalyRule = css.match(/\.anomalyItem \{([\s\S]*?)\n\}/)?.[1] ?? "";
-  assert.doesNotMatch(anomalyRule, /background:|border:\s*1px/);
-  assert.match(page, /className=\{styles\.anomalyMarker\}/);
+  assert.match(anomalyRule, /min-width: 0/);
+  assert.match(css, /\.anomaliesPanel \{ grid-column: 1 \/ -1; \}/);
   assert.doesNotMatch(page, /ContractsIcon|ShieldCheck|CalendarClockIcon/);
   assert.match(mapCss, /\.detail \{[\s\S]*?height: 88px;/);
 });
@@ -77,8 +77,8 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
     /\.tooltip\[data-open="true"\]\[data-positioned="false"\][\s\S]*?visibility: hidden;/,
   );
   assert.match(home, /\.panelHead > h2 \{[\s\S]*?flex: 1 1 auto;[\s\S]*?min-width: 0;/);
-  assert.match(globals, /@media \(min-width: 901px\) and \(max-width: 1099px\)/);
-  assert.match(globals, /\.header-search \{ order: 3; width: 100%; \}/);
+  assert.match(globals, /@media \(max-width: 1099px\)/);
+  assert.match(globals, /\.header-search-root\[data-expanded="true"\] \.header-search \{ display: block; \}/);
 });
 
 test("CI verifies every main commit and uses the current artifact runtime", async () => {
@@ -188,8 +188,8 @@ test("strong civic surfaces use defined foreground tokens", async () => {
   assert.match(tokens, /--color-on-strong:\s*#[0-9a-f]{6};/i);
   assert.match(tokens, /--color-on-strong-muted:\s*#[0-9a-f]{6};/i);
   assert.match(tokens, /--space-5:\s*20px;/);
-  assert.match(cohesionCss, /color:\s*var\(--color-on-strong\);/);
-  assert.match(cohesionCss, /color:\s*var\(--color-on-strong-muted\);/);
+  assert.match(cohesionCss, /color:\s*var\(--color-neutral-900\);/);
+  assert.match(cohesionCss, /color:\s*var\(--color-neutral-700\);/);
   assert.doesNotMatch(cohesionCss, /var\(--color-neutral-0\)/);
 });
 

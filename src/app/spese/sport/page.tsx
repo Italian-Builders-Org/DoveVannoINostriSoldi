@@ -32,11 +32,9 @@ export default async function SportSpendingPage() {
   return (
     <main className={`shell page ${styles.page}`}>
       <header className="page-intro">
-        <p className="eyebrow">Soldi · Sport</p>
-        <h1>Sport: missione di bilancio, capitoli MEF e società partecipate</h1>
+        <h1>Fondi pubblici per lo sport</h1>
         <p>
-          Verticale dedicata allo sport pubblico. Usiamo solo numeri già in piattaforma:
-          stanziamenti della missione <strong>{view.missionLabel}</strong>, dettaglio capitoli
+          Stanziamenti della missione <strong>{view.missionLabel}</strong>, dettaglio capitoli
           OpenBDAP (inclusi trasferimenti a Cortina e Taranto), impegni e pagamenti di Palazzo
           Chigi e del MEF, partecipate e affidamenti AT di Sport e Salute. Non sommiamo queste
           fonti in un totale unico.
@@ -49,23 +47,6 @@ export default async function SportSpendingPage() {
           <Link href="/dati/openbdap-capitoli-2024-2026">Capitoli OpenBDAP →</Link>
         </p>
       </header>
-
-      <div className="notice">
-        <strong>Cosa non è questa pagina</strong>
-        <p>
-          Non è il totale della spesa sportiva italiana, né il bilancio completo di Taranto 2026
-          o di Milano Cortina 2026. I capitoli MEF mostrano trasferimenti contabili verso
-          commissari ed enti, non le opere CUP né i bilanci dei comitati (issue{" "}
-          <a
-            href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/83"
-            target="_blank"
-            rel="noreferrer"
-          >
-            #83
-          </a>
-          ).
-        </p>
-      </div>
 
       <dl className={`stat-strip ${styles.stats}`}>
         <div>
@@ -162,7 +143,7 @@ export default async function SportSpendingPage() {
           2. Programmi e capitoli MEF (OpenBDAP)
         </h2>
         <p className={styles.sectionLead}>
-          Stesso perimetro missione, grano capitolo. Amministrazione:{" "}
+          Dettaglio per capitolo della stessa missione. Amministrazione:{" "}
           {chapters.administrationLabel}. {integer(chapters.missionRows)} righe nel corpus{" "}
           <Link href={`/dati/${chapters.datasetId}`}>{chapters.datasetTitle}</Link>.
         </p>
@@ -238,10 +219,10 @@ export default async function SportSpendingPage() {
                     <span className={styles.chapterDetail}>{row.chapterLabel}</span>
                   </td>
                   <td className="num">
-                    {row.paid2025Eur === null ? "n/d" : compactEuro(row.paid2025Eur)}
+                    {row.paid2025Eur === null ? "Non disponibile" : compactEuro(row.paid2025Eur)}
                   </td>
                   <td className="num">
-                    {row.forecast2026Eur === null ? "n/d" : compactEuro(row.forecast2026Eur)}
+                    {row.forecast2026Eur === null ? "Non disponibile" : compactEuro(row.forecast2026Eur)}
                   </td>
                 </tr>
               ))}
@@ -392,8 +373,7 @@ export default async function SportSpendingPage() {
           <div className={styles.procurementBox}>
             <h3 className={styles.subheading}>Affidamenti diretti · Sport e Salute</h3>
             <p className={styles.sectionLead}>
-              Estratto dal dataset hashed degli affidamenti delle partecipate. Deduplica per CIG
-              prima della somma.
+              Affidamenti delle partecipate: ogni CIG è contato una sola volta.
             </p>
             <dl className={styles.compareStats}>
               <div>
@@ -412,7 +392,7 @@ export default async function SportSpendingPage() {
                 <dt>Max singolo</dt>
                 <dd>
                   {procurement.maxSingleEur === null
-                    ? "n/d"
+                    ? "Non disponibile"
                     : compactEuro(procurement.maxSingleEur)}
                 </dd>
               </div>
@@ -428,6 +408,25 @@ export default async function SportSpendingPage() {
           </div>
         ) : null}
       </section>
+
+      <details className="data-details">
+        <summary>Metodo, limiti e approfondimenti</summary>
+      <div className="notice">
+        <strong>Copertura dei dati</strong>
+        <p>
+          Non è il totale della spesa sportiva italiana, né il bilancio completo di Taranto 2026
+          o di Milano Cortina 2026. I capitoli MEF mostrano trasferimenti contabili verso
+          commissari ed enti, non le opere CUP né i bilanci dei comitati (issue{" "}
+          <a
+            href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/83"
+            target="_blank"
+            rel="noreferrer"
+          >
+            #83
+          </a>
+          ).
+        </p>
+      </div>
 
       <section className={`panel ${styles.section}`} aria-labelledby="next-title">
         <h2 id="next-title" className="panel-title">
@@ -457,6 +456,7 @@ export default async function SportSpendingPage() {
           .
         </p>
       </section>
+      </details>
     </main>
   );
 }

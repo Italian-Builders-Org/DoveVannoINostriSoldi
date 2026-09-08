@@ -519,8 +519,8 @@ test("the server boundary and pages preserve missing, zero and async Next route 
   assert.match(detail, /dataset\.sourceMetadata\.canonicalUrls\.map/);
   assert.match(detail, /row\.sourceUrls\.map/);
   assert.match(detail, /DatasetInsightPanel|loadDatasetInsights/);
-  assert.match(detail, /Niente da scorrere qui|Torna ai numeri da leggere/);
-  assert.match(catalog, /Tutti i dataset integrati/);
+  assert.match(detail, /Righe non consultabili|Torna al catalogo/);
+  assert.match(catalog, /Catalogo dei dati/);
   assert.match(catalog, /parseCatalogQuery/);
   assert.match(catalog, /catalogViewHref/);
   assert.match(catalog, /filterBar/);

@@ -14,8 +14,12 @@ try {
   for (const width of [390, 1440]) {
     await runScenario(browser, {
       label: `Studi: archivio, dettaglio e download a ${width}px`,
-      suite: "studies", pathname: "/fonti", width,
+      suite: "studies", pathname: "/fonti", width, waitUntil: "networkidle2",
       validate: async (page) => {
+        assert.equal(await page.$eval(".footer-sitemap", (element) => element.open), false);
+        await page.focus(".footer-sitemap > summary");
+        await page.keyboard.press("Enter");
+        await page.waitForFunction(() => document.querySelector(".footer-sitemap")?.open);
         await page.click('footer a[href="/studi"]');
         await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Paper di ricerca");
         await page.waitForFunction(() => {

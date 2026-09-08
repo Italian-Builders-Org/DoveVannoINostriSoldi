@@ -171,7 +171,7 @@
   display: block;
   margin: var(--space-3) 0 var(--space-2);
   font-family: var(--font-heading);
-  font-size: clamp(38px, 5vw, 56px);
+  font-size: clamp(32px, 4vw, 42px);
   font-weight: var(--font-heading-weight);
   letter-spacing: -.035em;
   line-height: 1;
@@ -201,7 +201,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 20px;
   align-items: center;
-  padding: 25px 0 25px 30px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--color-neutral-200);
 }
 

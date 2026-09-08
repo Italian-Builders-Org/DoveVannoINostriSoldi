@@ -35,23 +35,7 @@ export default function MinistriesPage() {
       </div>
 
       <section className={styles.frameSection} aria-labelledby="quadro-cp" data-institutional-section>
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2 id="quadro-cp">Già pagato e ancora da pagare</h2>
-            <p>
-              <strong>Già pagato</strong> è uscito nel 2025. <strong>Ancora da pagare</strong> è
-              impegnato ma non ancora uscito. Insieme formano il totale impegnato: somma di già
-              pagato e ancora da pagare nell&apos;anno (nella fonte: Totale CP = Pagato CP + Rimasto
-              da pagare CP).
-            </p>
-          </div>
-          <span>Consuntivo · EUR</span>
-        </div>
-        <p className={styles.definitionNote}>
-          <strong>Economie / maggiori spese</strong>
-          Nella fonte indica soldi dell&apos;anno non usati rispetto al piano, oppure usati oltre
-          i limiti. È una voce diversa da “ancora da pagare”.
-        </p>
+        <h2 id="quadro-cp" className="sr-only">Già pagato e ancora da pagare</h2>
         <dl className="stat-strip">
           <div>
             <dt>Totale impegnato</dt>
@@ -80,7 +64,7 @@ export default function MinistriesPage() {
       <section className="panel" aria-labelledby="composizione-cp" data-institutional-section>
         <div className={styles.sectionHeader}>
           <div>
-            <h2 id="composizione-cp">Come si spezza il totale tra i ministeri</h2>
+            <h2 id="composizione-cp">Impegni per ministero</h2>
             <p>
               La superficie di ogni riquadro mostra quanto pesa un ministero sullo stesso
               rendiconto e sullo stesso totale impegnato.
@@ -96,8 +80,7 @@ export default function MinistriesPage() {
           <div>
             <h2 id="elenco-ministeri">Valori esatti per ministero</h2>
             <p>
-              Totale impegnato accanto a già pagato e ancora da pagare. Gli importi sono in euro
-              e partono da centesimi interi.
+              Impegnato, pagato e ancora da pagare, in euro.
             </p>
           </div>
           <span>5.395 righe riconciliate</span>
@@ -159,6 +142,25 @@ export default function MinistriesPage() {
         </div>
       </section>
 
+      <details className="data-details">
+        <summary>Fonti, definizioni e controlli</summary>
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 id="definizioni-cp">Già pagato e ancora da pagare</h2>
+            <p>
+              <strong>Già pagato</strong> è uscito nel 2025. <strong>Ancora da pagare</strong> è
+              impegnato ma non ancora uscito. Insieme formano il totale impegnato: somma di già
+              pagato e ancora da pagare nell&apos;anno (nella fonte: Totale CP = Pagato CP + Rimasto
+              da pagare CP).
+            </p>
+          </div>
+          <span>Consuntivo · EUR</span>
+        </div>
+        <p className={styles.definitionNote}>
+          <strong>Economie / maggiori spese</strong>
+          Nella fonte indica soldi dell&apos;anno non usati rispetto al piano, oppure usati oltre
+          i limiti. È una voce diversa da “ancora da pagare”.
+        </p>
       <section className="panel" aria-labelledby="fonte-ministeri" data-institutional-section>
         <h2 className="panel-title" id="fonte-ministeri">Fonte, perimetro e controlli</h2>
         <div className={styles.provenance}>
@@ -183,6 +185,7 @@ export default function MinistriesPage() {
           <a href={source.resourceUrl} target="_blank" rel="noreferrer">Scarica il CSV ufficiale ↗</a>
         </div>
       </section>
+      </details>
     </main>
   );
 }

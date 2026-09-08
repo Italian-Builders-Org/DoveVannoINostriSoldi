@@ -88,7 +88,7 @@
   display: block;
   height: 100%;
   min-width: 2px;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 
 .compositionAmount {

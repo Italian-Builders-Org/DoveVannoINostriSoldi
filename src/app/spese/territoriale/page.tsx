@@ -94,45 +94,11 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
     <main className={`shell page ${styles.page}`}>
       <header className="page-intro">
         <p className={styles.eyebrow}>Bilancio dello Stato · 2023</p>
-        <h1>Spesa statale per territorio destinatario</h1>
+        <h1>Spesa statale per territorio</h1>
         <p>
-          La distribuzione territoriale pubblicata da RGS conserva 5.067 combinazioni fra
-          territorio, titolo, categoria e missione. Valori assoluti, quota del PIL, pro capite e
-          per km² restano quattro misure separate.
+          Spesa del Bilancio dello Stato per regione, macroarea o Italia. Scegli il territorio e confronta totale, quota del PIL, importo per abitante o per km².
         </p>
       </header>
-
-      <section className={`stat-strip ${styles.stats}`} aria-label="Copertura RGS territoriale">
-        <div>
-          <span className="stat-label">Righe sorgente</span>
-          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.sourceRows)}</span>
-          <span className="stat-note">5.067 combinazioni per quattro misure</span>
-        </div>
-        <div>
-          <span className="stat-label">Combinazioni dimensionali</span>
-          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.dimensionRows)}</span>
-          <span className="stat-note">territorio, titolo, categoria e missione</span>
-        </div>
-        <div>
-          <span className="stat-label">Misure autonome</span>
-          <span className="stat-value">{integer(rgsTerritorialSnapshot.dimensions.measures.length)}</span>
-          <span className="stat-note">nessuna somma fra unità diverse</span>
-        </div>
-        <div>
-          <span className="stat-label">Zeri osservati</span>
-          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.zeroValues)}</span>
-          <span className="stat-note">una riga assente non diventa zero</span>
-        </div>
-      </section>
-
-      <section className="notice warning-notice scope-notice" aria-labelledby="territorial-boundary-title">
-        <h2 id="territorial-boundary-title">Non sommare Italia, macroaree e regioni</h2>
-        <p>
-          Sono tre livelli dello stesso conto e non devono essere sommati insieme. Ogni ricerca usa
-          un solo livello e una sola misura. PIL e euro per abitante usano denominatori calcolati
-          dall&apos;editore ma non versionati nel record: non li ricalcoliamo né li sommiamo.
-        </p>
-      </section>
 
       <nav className={styles.quickMeasures} aria-label="Scelte rapide della misura RGS">
         {rgsTerritorialMeasures.map((measure) => (
@@ -150,7 +116,7 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
         <div className={styles.sectionHead}>
           <div>
             <h2 className="panel-title" id="territorial-filter-title">Scegli livello, territorio e misura</h2>
-            <p>La pagina decodifica i dizionari dello snapshot e conserva gli interi scalati senza float.</p>
+            <p>Ogni tabella mostra una misura e un livello territoriale.</p>
           </div>
           <span className="tag tag-neutral">{integer(result.pagination.total)} combinazioni nel filtro</span>
         </div>
@@ -303,8 +269,42 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
         </div>
       </section>
 
+      <details className="data-details">
+        <summary>Fonte, copertura e limiti</summary>
+      <section className={`stat-strip ${styles.stats}`} aria-label="Copertura RGS territoriale">
+        <div>
+          <span className="stat-label">Righe sorgente</span>
+          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.sourceRows)}</span>
+          <span className="stat-note">5.067 combinazioni per quattro misure</span>
+        </div>
+        <div>
+          <span className="stat-label">Combinazioni dimensionali</span>
+          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.dimensionRows)}</span>
+          <span className="stat-note">territorio, titolo, categoria e missione</span>
+        </div>
+        <div>
+          <span className="stat-label">Misure autonome</span>
+          <span className="stat-value">{integer(rgsTerritorialSnapshot.dimensions.measures.length)}</span>
+          <span className="stat-note">nessuna somma fra unità diverse</span>
+        </div>
+        <div>
+          <span className="stat-label">Zeri osservati</span>
+          <span className="stat-value">{integer(rgsTerritorialSnapshot.coverage.zeroValues)}</span>
+          <span className="stat-note">una riga assente non diventa zero</span>
+        </div>
+      </section>
+
+      <section className="notice warning-notice scope-notice" aria-labelledby="territorial-boundary-title">
+        <h2 id="territorial-boundary-title">Non sommare Italia, macroaree e regioni</h2>
+        <p>
+          Sono tre livelli dello stesso conto e non devono essere sommati insieme. Ogni ricerca usa
+          un solo livello e una sola misura. PIL e euro per abitante usano denominatori calcolati
+          dall&apos;editore ma non versionati nel record: non li ricalcoliamo né li sommiamo.
+        </p>
+      </section>
+
       <section className={`notice ${styles.debtNotice}`} aria-labelledby="territorial-debt-title">
-        <h2 id="territorial-debt-title">Interessi e debito: etichette da non sommare a caso</h2>
+        <h2 id="territorial-debt-title">Interessi e debito: limiti della fonte</h2>
         <p>
           Per l’Italia, categoria 09 e missione 034 danno 8.057,70 milioni di euro. La scheda RGS
           parla di dati al netto degli interessi sul debito, ma il CSV tiene queste etichette. Qui non
@@ -338,6 +338,7 @@ export default async function RgsTerritorialPage({ searchParams }: TerritorialPa
           {rgsTerritorialSnapshot.caveats.map((caveat) => <li key={caveat}>{caveat}</li>)}
         </ul>
       </section>
+      </details>
     </main>
   );
 }

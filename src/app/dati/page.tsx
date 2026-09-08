@@ -29,7 +29,7 @@ import styles from "./dati.module.css";
 export const metadata: Metadata = {
   title: "Catalogo dei dati integrati",
   description:
-    "Destinatari, importi e ricorrenze nei dataset integrati, con i buchi di copertura in secondo piano.",
+    "Destinatari, importi, fonti e copertura dei dataset integrati.",
 };
 
 const VIEW_OPTIONS: ReadonlyArray<{ view: CatalogView; label: string }> = [
@@ -97,16 +97,16 @@ function DatasetCard({
       ) : (
         <p>
           {numbersBadge
-            ? "Apri per vedere i principali destinatari, i servizi ripetuti e le righe."
+            ? "Destinatari, servizi e importi."
             : dataset.queryable
               ? dataset.publicationNote
-              : "Niente società né importi da scorrere qui: scheda di copertura."}
+              : "Sono disponibili fonte e copertura, senza righe consultabili."}
         </p>
       )}
       <dl className={styles.cardMetadata}>
         <div>
           <dt>Autorità</dt>
-          <dd>{dataset.authority}</dd>
+          <dd>{dataset.authority === "mixed-official-records" ? "Fonti ufficiali diverse" : dataset.authority === "official-primary" ? "Fonte ufficiale primaria" : dataset.authority}</dd>
         </div>
         <div>
           <dt>Ambito</dt>
@@ -118,7 +118,7 @@ function DatasetCard({
           ? "Vedi destinatari e importi →"
           : dataset.queryable
             ? "Apri le righe →"
-            : "Apri scheda (senza numeri) →"}
+            : "Fonte e copertura →"}
       </Link>
       {related ? (
         <p className={styles.relatedLink}>
@@ -194,10 +194,10 @@ export default async function IntegratedDataPage({
         <p className={styles.eyebrow}>
           {view === "priorita" ? "Da controllare" : view === "ambito" ? "Per ambito" : "Registro completo"}
         </p>
-        <h1>Tutti i dataset integrati</h1>
+        <h1>Catalogo dei dati</h1>
         <p>
           {view === "priorita"
-            ? "Prima i dataset con società e importi da leggere. Poi i buchi di copertura, senza farli sembrare schede piene."
+            ? "Società, importi e documenti da esplorare, con le informazioni disponibili e quelle ancora mancanti."
             : view === "ambito"
               ? "Ogni dataset integrato nel suo ambito. Lo stato distingue le righe interrogabili dai materiali solo in catalogo."
               : `Elenco dei ${integer(overview.totals.datasets)} dataset: prima i numeri leggibili, poi le domande di verifica.`}
@@ -246,6 +246,8 @@ export default async function IntegratedDataPage({
         </div>
       </section>
 
+      <details className="data-details" open={activeFilterCount(filters) > 0}>
+        <summary>Filtri avanzati{activeFilterCount(filters) > 0 ? ` · ${activeFilterCount(filters)} attivi` : ""}</summary>
       <p className={styles.catalogHint}>
         Una ripetizione o un importo alto non dimostrano da soli spreco o illecito. I confronti con
         mediana restano in <Link href="/controlli">Cosa controllare</Link> e{" "}
@@ -316,6 +318,8 @@ export default async function IntegratedDataPage({
           </p>
         ) : null}
       </nav>
+
+      </details>
 
       {view === "priorita" && (prioritySplit.readable.length > 0 || prioritySplit.missing.length > 0) ? (
         <nav className={styles.domainIndex} aria-labelledby="priority-index-title">
@@ -457,8 +461,7 @@ export default async function IntegratedDataPage({
       <section className={`panel ${styles.finalLinks}`}>
         <h2 className="panel-title">Verifica la copertura</h2>
         <p>
-          Il catalogo si riconcilia con l&apos;inventario del corpus e con il registro delle identità
-          di fonte.
+          Consulta la copertura dei dataset e le fonti originali.
         </p>
         <div>
           <Link href="/fonti/copertura">Copertura elemento per elemento →</Link>

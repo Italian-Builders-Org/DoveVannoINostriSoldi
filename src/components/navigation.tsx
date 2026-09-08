@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HeaderSearch } from "@/components/header-search";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
+import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
@@ -97,13 +98,13 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
   );
 }
 
-export function Navigation() {
+export function Navigation({ announcements = [] }: Readonly<{ announcements?: readonly PublicationAnnouncementItem[] }>) {
   const pathname = usePathname();
   const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
     <>
       <Suspense fallback={null}><NavigationSearchSync onChange={setCurrentSearch} /></Suspense>
-      <NavigationContent pathname={pathname} currentSearch={currentSearch} />
+      <NavigationContent pathname={pathname} currentSearch={currentSearch} announcements={announcements} />
     </>
   );
 }
@@ -114,7 +115,7 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
   return null;
 }
 
-function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
+function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
   // Layout state survives client navigation; no storage-driven shift during hydration.
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -159,6 +160,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
   return (
     <>
       <header className="site-header">
+        <PublicationAnnouncement items={announcements} />
         <div className="shell header-inner">
           <button type="button" className="navigation-button mobile-menu-trigger" ref={mobileTriggerRef}
             aria-label="Apri menu di navigazione" aria-controls="mobile-navigation" aria-expanded={drawerOpen}
@@ -172,7 +174,7 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
           <span className="header-spacer" />
           <HeaderSearch />
           <div className="header-actions">
-            <Link className="header-action header-action-accent" href="/mcp">Istruzioni MCP</Link>
+            <Link className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</Link>
             <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
               aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
               <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />
@@ -188,7 +190,6 @@ function NavigationContent({ pathname, currentSearch }: NavigationLocation) {
           }
         }}>
         <div className="sidebar-toolbar">
-          <span className="sidebar-heading">Esplora</span>
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
             aria-label={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
             title={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}

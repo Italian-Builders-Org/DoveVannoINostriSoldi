@@ -67,7 +67,7 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
     <main className="shell page">
       <div className={styles.hero}>
         <div>
-          <h1>Da miliardi nazionali a un CUP verificabile</h1>
+          <h1>Asili e prima infanzia: i progetti PNRR</h1>
           <p>
             Cerca un asilo, una scuola dell’infanzia o un servizio educativo. Ogni risultato separa
             finanziamento, gara e aggiudicazione, con il collegamento esatto alla fonte.
@@ -144,7 +144,7 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
                 <h3><Link href={`/progetti/${project.cup}`}>{project.title}</Link></h3>
                 <p className={styles.place}>{[place?.municipality, place?.province, place?.region].filter(Boolean).join(" · ")}</p>
                 <dl className={styles.cardMetrics}>
-                  <div><dt>PNRR finanziato</dt><dd>{project.funding.pnrrCents === null ? "n.d." : compactEuro(project.funding.pnrrCents / 100)}</dd></div>
+                  <div><dt>PNRR finanziato</dt><dd>{project.funding.pnrrCents === null ? "Non disponibile" : compactEuro(project.funding.pnrrCents / 100)}</dd></div>
                   <div><dt>Gare</dt><dd>{integer(project.tenders.length)}</dd></div>
                   <div><dt>Aggiudicatari</dt><dd>{integer(project.awardees.length)}</dd></div>
                 </dl>
@@ -167,8 +167,7 @@ export default async function PnrrChildcareCatalog({ searchParams }: { searchPar
       <div className="notice">
         <strong>Pagamenti e ReGiS</strong>
         <p>
-          {pnrrChildcareMeta.methodology.fundingWarning} Il tracciato non contiene i pagamenti ReGiS. Se
-          mancano, li segniamo come mancanti: non li stimiamo.
+          {pnrrChildcareMeta.methodology.fundingWarning} I pagamenti ReGiS non sono disponibili in questa fonte.
         </p>
       </div>
     </main>

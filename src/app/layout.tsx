@@ -4,8 +4,8 @@ import { GoogleAnalytics } from "@/components/google-analytics";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
 import { SiteFooter } from "@/components/site-footer";
-import { mefIrpefSourceMeta } from "@/lib/data/mef-irpef-source";
-import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
+import { monthlyReports } from "@/lib/monthly-reports";
+import { papers } from "@/lib/papers";
 import "./design-system.css";
 import "./globals.css";
 
@@ -15,17 +15,12 @@ const geist = Geist({
   variable: "--font-geist",
 });
 
-/** The freshest verification timestamp among the two territorial tax/spending snapshots. */
-const latestTerritorialCheckAt = Math.max(
-  Date.parse(siopeMunicipalSnapshot.source.observedAt),
-  Date.parse(mefIrpefSourceMeta.period.observedAt),
-);
-const latestTerritorialCheckLabel = new Intl.DateTimeFormat("it-IT", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "Europe/Rome",
-}).format(new Date(latestTerritorialCheckAt));
+const latestReport = monthlyReports.listPublished()[0];
+const latestPaper = papers.listPublished()[0];
+const announcements = [
+  ...(latestReport ? [{ label: "Articolo", title: latestReport.title, description: latestReport.issueMonth === "2026-08" ? "Imprese e territori: cosa sta cambiando in Italia?" : latestReport.title, cta: "Leggi l’articolo", href: latestReport.href }] : []),
+  ...(latestPaper ? [{ label: "Paper", title: latestPaper.title, description: latestPaper.webPath === "/studi/dai-fondi-ai-posti" ? "Asili PNRR: i finanziamenti diventano posti disponibili?" : latestPaper.title, cta: "Scopri il paper", href: latestPaper.webPath ?? "/studi" }] : []),
+];
 
 export const metadata: Metadata = {
   title: {
@@ -53,11 +48,11 @@ export default function RootLayout({
       <body>
         <GoogleAnalytics />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
-        <Navigation />
+        <Navigation announcements={announcements} />
         <div className="site-content">
           <div id="contenuto-principale" tabIndex={-1}>{children}</div>
           <SectionNav />
-          <SiteFooter latestTerritorialCheckLabel={latestTerritorialCheckLabel} />
+          <SiteFooter />
         </div>
       </body>
     </html>

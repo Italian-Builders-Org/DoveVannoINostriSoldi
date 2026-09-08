@@ -38,11 +38,11 @@ function compactStudents(value: number): string {
 }
 
 function exactStudentLabel(value: number | null): string {
-  return value === null ? "n.d." : `${exactStudents.format(value)} studenti`;
+  return value === null ? "Non disponibile" : `${exactStudents.format(value)} studenti`;
 }
 
 function femaleLabel(point: EducationTrendPoint): string {
-  if (point.femaleCount === null || point.value === null || point.value === 0) return "n.d.";
+  if (point.femaleCount === null || point.value === null || point.value === 0) return "Non disponibile";
   const share = (point.femaleCount / point.value) * 100;
   return `${exactStudents.format(point.femaleCount)} (${percent(share)})`;
 }
@@ -104,12 +104,14 @@ export function EducationTrendChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 12, right: 12, bottom: 4, left: 4 }}
+            margin={{ top: 12, right: 28, bottom: 4, left: 0 }}
             accessibilityLayer
           >
             <CartesianGrid vertical={false} stroke="var(--color-neutral-300)" />
             <XAxis
               dataKey="periodLabel"
+              interval={0}
+              padding={{ left: 8, right: 8 }}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
@@ -117,7 +119,7 @@ export function EducationTrendChart({
             <YAxis
               axisLine={false}
               tickLine={false}
-              width={62}
+              width={56}
               domain={[0, "auto"]}
               tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
               tickFormatter={compactStudents}
@@ -141,7 +143,7 @@ export function EducationTrendChart({
         </ResponsiveContainer>
       </div>
       <figcaption id="education-trend-chart-title">
-        Studenti osservati nel perimetro selezionato. Il confronto descrive la serie pubblicata dal MIM, non un andamento della qualità scolastica.
+        Numero di studenti per anno scolastico.
       </figcaption>
       <ChartDataTable
         label="Trend degli studenti osservati per anno scolastico"

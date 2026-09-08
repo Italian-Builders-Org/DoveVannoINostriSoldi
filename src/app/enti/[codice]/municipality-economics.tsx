@@ -349,9 +349,9 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
                 <h3>Caratteristiche del territorio</h3>
                 <dl className={styles.definitions}>
                   <div><dt>Superficie</dt><dd>{decimal.format(geography.surfaceSquareKilometres)} km²</dd></div>
-                  <div><dt>Densità</dt><dd>{geography.densityPerSquareKilometre === null ? "n.d." : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`}</dd></div>
-                  <div><dt>Altimetria</dt><dd>{geography.altimetricZoneLabel ?? "n.d."}{geography.altitudeMetres === null ? "" : ` · ${integer(geography.altitudeMetres)} m`}</dd></div>
-                  <div><dt>Urbanizzazione</dt><dd>{geography.degreeUrbanizationLabel ?? "n.d."}</dd></div>
+                  <div><dt>Densità</dt><dd>{geography.densityPerSquareKilometre === null ? "Non disponibile" : `${integer(Math.round(geography.densityPerSquareKilometre))} ab./km²`}</dd></div>
+                  <div><dt>Altimetria</dt><dd>{geography.altimetricZoneLabel ?? "Non disponibile"}{geography.altitudeMetres === null ? "" : ` · ${integer(geography.altitudeMetres)} m`}</dd></div>
+                  <div><dt>Urbanizzazione</dt><dd>{geography.degreeUrbanizationLabel ?? "Non disponibile"}</dd></div>
                   <div><dt>Litoraneità</dt><dd>{geography.coastal ? "Comune litoraneo" : "Non litoraneo"}</dd></div>
                   <div><dt>Insularità</dt><dd>{geography.island ? "Comune isolano" : "Non isolano"}</dd></div>
                 </dl>
@@ -508,12 +508,12 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
             <dl className={styles.metricGrid} aria-label="Livelli OpenCivitas">
               <div>
                 <dt>Livello spesa</dt>
-                <dd>{openCivitas.record.spendingLevel === null ? "n.d." : `${openCivitas.record.spendingLevel} / 10`}</dd>
+                <dd>{openCivitas.record.spendingLevel === null ? "Non disponibile" : `${openCivitas.record.spendingLevel} / 10`}</dd>
                 <p className={styles.metricExplain}>{openCivitasLevelGuide(openCivitas.record.spendingLevel, "spending")}</p>
               </div>
               <div>
                 <dt>Livello servizi</dt>
-                <dd>{openCivitas.record.serviceLevel === null ? "n.d." : `${openCivitas.record.serviceLevel} / 10`}</dd>
+                <dd>{openCivitas.record.serviceLevel === null ? "Non disponibile" : `${openCivitas.record.serviceLevel} / 10`}</dd>
                 <p className={styles.metricExplain}>{openCivitasLevelGuide(openCivitas.record.serviceLevel, "services")}</p>
               </div>
             </dl>

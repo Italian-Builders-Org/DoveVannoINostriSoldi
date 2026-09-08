@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
   color: var(--color-neutral-600);
   font-size: 12px;
 }
@@ -18,9 +18,9 @@
 .header {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
-  gap: 64px;
-  align-items: end;
-  padding-bottom: 38px;
+  gap: 24px;
+  align-items: center;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
@@ -85,8 +85,8 @@
 .explainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  padding: 34px 0;
+  gap: 24px;
+  padding: 16px 0;
   border-bottom: 1px solid var(--color-neutral-200);
 }
 

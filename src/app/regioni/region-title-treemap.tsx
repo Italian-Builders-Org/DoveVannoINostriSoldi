@@ -7,12 +7,6 @@ import { institutionalCategoryColor } from "@/lib/chart-category-colors";
 import { siopeTitleCopy } from "@/lib/siope-titles";
 import styles from "./region-title-treemap.module.css";
 
-const compactEuro = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
 const exactEuro = new Intl.NumberFormat("it-IT", {
   style: "currency",
   currency: "EUR",
@@ -34,7 +28,7 @@ type TitleNode = TreemapNode & {
 
 function tile(props: TreemapNode) {
   const node = props as TitleNode;
-  const showLabel = node.width >= 118 && node.height >= 58;
+  const showLabel = node.width >= Math.max(118, (node.shortLabel?.length ?? 0) * 7.5 + 24) && node.height >= 62;
   const showShare = node.width >= 145 && node.height >= 88;
   return (
     <g>
@@ -43,18 +37,18 @@ function tile(props: TreemapNode) {
         y={node.y}
         width={node.width}
         height={node.height}
-        fill={institutionalCategoryColor(node.index)}
+        fill={`color-mix(in srgb, ${institutionalCategoryColor(node.index)} 40%, var(--color-raised))`}
         stroke="var(--color-raised)"
         strokeWidth={2}
       />
       {showLabel ? (
         <>
-          <text x={node.x + 12} y={node.y + 25} className={styles.tileLabel}>
+          <text x={node.x + node.width / 2} y={node.y + node.height / 2 - (showShare ? 12 : 0)} textAnchor="middle" className={styles.tileLabel}>
             {node.shortLabel}
           </text>
           {showShare ? (
-            <text x={node.x + 12} y={node.y + 45} className={styles.tileShare}>
-              {compactEuro.format((node.commitmentsCents ?? 0) / 100)} · {percentage.format(node.share ?? 0)}
+            <text x={node.x + node.width / 2} y={node.y + node.height / 2 + 18} textAnchor="middle" className={styles.tileShare}>
+              {percentage.format(node.share ?? 0)}
             </text>
           ) : null}
         </>
@@ -112,8 +106,7 @@ export function RegionTitleTreemap({ entity }: { entity: IstatRegionalAdministra
         </ResponsiveContainer>
       </div>
       <figcaption id="regioni-treemap-caption">
-        Ogni area rappresenta una voce del bilancio di {entity.label}. Al passaggio del cursore
-        compaiono descrizione, importo e quota. Le voci a zero restano nella tabella.
+        Quote sugli impegni 2024 di {entity.label}. Le voci a zero restano in tabella.
       </figcaption>
     </figure>
   );

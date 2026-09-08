@@ -7,13 +7,6 @@
   container-type: inline-size;
   container-name: composition;
 }
-.guide {
-  margin: 0;
-  color: var(--color-neutral-700);
-  font-size: 12px;
-  line-height: 1.45;
-}
-.guideMobile { display: none; }
 .visual {
   position: relative;
   width: 100%;
@@ -22,23 +15,23 @@
   /* Reserve one stable canvas for every snapshot.  The container query keeps
      wider single-column layouts proportional without letting the year-specific
      labels change the height of the panel. */
-  height: clamp(250px, 62cqw, 320px);
+  height: var(--composition-height, clamp(250px, 62cqw, 320px));
   min-height: 250px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-400);
+  background: var(--color-raised);
+  border: 0;
   contain: layout paint;
 }
 .tile {
   position: absolute;
   display: grid;
-  place-items: start;
-  align-content: start;
+  place-items: center;
+  align-content: center;
   min-width: 0;
   min-height: 0;
   padding: clamp(8px, 1.5cqw, var(--space-3));
   overflow: hidden;
   border: 2px solid var(--color-raised);
-  color: var(--color-on-strong);
+  color: var(--color-text);
   cursor: pointer;
 }
 .tile:hover,
@@ -49,7 +42,7 @@
   gap: 2px;
   min-width: 0;
   max-width: 100%;
-  text-align: left;
+  text-align: center;
   line-height: 1.2;
 }
 .tileCopy b {
@@ -60,9 +53,9 @@
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.tileCopy small {
-  font-size: 12px;
-  font-weight: 600;
+.tileCopy strong {
+  font-size: clamp(18px, 5cqw, 28px);
+  font-weight: 700;
   line-height: 1.15;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
@@ -73,22 +66,21 @@
   width: auto;
   height: auto;
   font-family: var(--font-heading);
-  font-size: 15px;
-  font-weight: var(--font-heading-weight);
+  font-size: clamp(10px, 3.1cqw, 13px);
+  font-weight: 650;
   line-height: 1;
 }
-/* Index-only tiles have no copy to establish a grid track.  Make the button
-   itself the centering context so the ordinal stays centered at every size. */
+/* Small tiles retain an index to the full label in the legend. */
 .tile[data-label-mode="index"] {
   place-items: center;
   align-content: center;
   padding: 0;
 }
-.services { background: var(--chart-category-blue); }
-.investment { background: var(--chart-category-purple); }
-.pass-through { background: var(--chart-category-amber); }
-.financing { background: var(--chart-category-teal); }
-.other { background: var(--chart-category-slate); }
+.services { background: color-mix(in srgb, var(--chart-category-blue) 40%, var(--color-raised)); }
+.investment { background: color-mix(in srgb, var(--chart-category-purple) 40%, var(--color-raised)); }
+.pass-through { background: color-mix(in srgb, var(--chart-category-amber) 40%, var(--color-raised)); }
+.financing { background: color-mix(in srgb, var(--chart-category-teal) 40%, var(--color-raised)); }
+.other { background: color-mix(in srgb, var(--chart-category-slate) 40%, var(--color-raised)); }
 
 /* Single column in the home rail (~360px); two columns only when the
    composition surface itself is wide enough for readable labels. */
@@ -106,12 +98,12 @@
 .legend li { min-width: 0; }
 .legend button {
   display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) auto;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-2);
   width: 100%;
-  min-height: 56px;
-  padding: 8px;
+  min-height: 44px;
+  padding: 6px 0;
   border: 1px solid transparent;
   background: transparent;
   color: var(--color-text);
@@ -121,9 +113,9 @@
 .legend button:hover,
 .legend button[aria-pressed="true"] { border-color: var(--color-neutral-400); background: var(--color-neutral-100); }
 .legendSwatch {
-  width: 10px;
-  align-self: stretch;
-  min-height: 28px;
+  width: 7px;
+  align-self: center;
+  min-height: 7px;
   margin-block: 2px;
   border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
 }
@@ -180,11 +172,6 @@
 .tableDetails summary { min-height: 44px; padding-block: 12px; font-weight: 600; cursor: pointer; }
 
 @media (max-width: 620px) {
-  .guideDesktop { display: none; }
-  .guideMobile { display: inline; }
-  .visual { display: none; }
   .legend { grid-template-columns: minmax(0, 1fr); }
   .legend button { min-height: 52px; }
-  .mobileBar { display: block; height: 4px; margin: 0 8px; background: var(--color-neutral-200); }
-  .mobileBar span { display: block; height: 100%; }
 }

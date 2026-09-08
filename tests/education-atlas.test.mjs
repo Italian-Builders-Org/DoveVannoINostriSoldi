@@ -210,7 +210,7 @@ test("education trend exposes the year-over-year series as a chart with an exact
   assert.match(chart, /ChartDataTable/);
   assert.match(chart, /Studenti osservati per anno scolastico/);
   assert.match(chart, /exactStudentLabel\(point\.value\)/);
-  assert.match(chart, /value === null \? "n\.d\."/);
+  assert.match(chart, /value === null \? "Non disponibile"/);
   assert.match(chart, /percent\(share\)/);
   assert.match(chart, /isAnimationActive=\{false\}/);
   assert.match(chart, /role="img"/);

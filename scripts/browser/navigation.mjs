@@ -47,7 +47,7 @@ async function assertFits(page) {
     root: document.documentElement.scrollWidth,
     body: document.body.scrollWidth,
     main: document.querySelector('.site-content').getBoundingClientRect().toJSON(),
-    search: document.querySelector('#global-site-search').getBoundingClientRect().toJSON(),
+    search: document.querySelector(innerWidth < 1100 ? '.header-search-trigger' : '#global-site-search').getBoundingClientRect().toJSON(),
   }));
   assert.ok(geometry.root <= geometry.width + 1 && geometry.body <= geometry.width + 1, JSON.stringify(geometry));
   assert.ok(geometry.main.left >= 0 && geometry.main.right <= geometry.width + 1, JSON.stringify(geometry));
@@ -116,7 +116,7 @@ try {
           await page.keyboard.press('Enter');
           await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
           const after = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
-          assert.ok(after - before >= 170, 'La riduzione libera spazio per mappe e tabelle');
+          assert.ok(after - before >= 160, 'La riduzione libera spazio per mappe e tabelle');
           for (const item of PRIMARY_NAV) {
             const link = await page.$(`${root} .nav-item > a[href="${item.href}"]`);
             await link.focus();

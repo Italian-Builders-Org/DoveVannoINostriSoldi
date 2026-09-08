@@ -57,10 +57,18 @@ jobs:
               const revision = checks.find((check) => check?.name === "health")?.revision;
               console.log("| Field | Value |");
               console.log("| --- | --- |");
-              console.log(`| Result | ${payload?.ok === true ? "pass" : "fail"} |`);
+              console.log(`| Application | ${payload?.ok === true ? "pass" : "fail"} |`);
               console.log(`| Checks | ${passed} pass, ${failed} fail, ${checks.length} total |`);
               console.log(`| Warnings | ${warnings} |`);
               console.log(`| Revision | ${/^[0-9a-f]{40}$/u.test(revision ?? "") ? revision : "unknown"} |`);
+              if (warnings > 0) {
+                console.log("");
+                console.log("Upstream degradation remains visible in Source health; it does not imply an application outage.");
+                for (const warning of payload.warnings) {
+                  const sources = Array.isArray(warning.down) ? warning.down.filter((id) => /^[a-z0-9-]+$/.test(id)) : [];
+                  console.log(`- Unreachable official sources: ${sources.join(", ")}`);
+                }
+              }
             } catch {
               console.log("_The health probe payload was not valid JSON._");
             }
@@ -68,8 +76,8 @@ jobs:
           NODE
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload runtime health evidence on failure
-        if: failure()
+      - name: Preserve runtime health evidence including upstream warnings
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: runtime-health

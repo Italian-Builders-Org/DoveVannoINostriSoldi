@@ -450,16 +450,15 @@ export function validateSourceHealthPayload(response, body) {
       code: "invalid_source_health_contract",
     });
   }
-  if (down.length > 0) {
-    throw new RuntimeHealthError(`${down.length} fonte/i ufficiale/i non raggiungibile/i`, {
-      code: "source_unreachable",
-    });
-  }
   return {
     status: response.status,
     active: active.length,
     reachable: reachable.length,
     notProbed: notProbed.length,
+    ...(down.length > 0 ? {
+      warning: `${down.length} fonte/i ufficiale/i non raggiungibile/i; dettagli nel monitor Source health`,
+      down: down.map((source) => source.sourceId),
+    } : {}),
   };
 }
 
@@ -630,7 +629,7 @@ function safeError(error) {
 function checkRecord(name, result, startedAt) {
   return {
     name,
-    status: "pass",
+    status: result.warning ? "warning" : "pass",
     durationMs: Math.max(0, Date.now() - startedAt),
     attempts: result.attempts ?? 1,
     ...Object.fromEntries(
@@ -860,9 +859,6 @@ function printSummary(report) {
   for (const check of report.checks) {
     const detail = check.error ?? (check.warning ?? "ok");
     lines.push(`| ${check.name} | ${check.status} | ${check.attempts} | ${check.durationMs} ms | ${detail} |`);
-  }
-  for (const warning of report.warnings) {
-    lines.push(`| ${warning.check} | warning | — | — | ${warning.warning} |`);
   }
   const summary = lines.join("\n");
   console.log(summary);

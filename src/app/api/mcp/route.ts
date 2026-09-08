@@ -204,6 +204,7 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
 
 export async function POST(request: Request) {
   const startedAt = performance.now();
+  let isSubscription = false;
   let operationalContext = extractMcpOperationalContext(request);
   const reportOperationalLimit = (
     outcome: "rate_limited" | "concurrency_limited" | "deadline_exceeded",
@@ -262,9 +263,11 @@ export async function POST(request: Request) {
         }
         if (boundedRequest instanceof Response) return boundedRequest;
         try {
+          const body = await boundedRequest.clone().json();
+          isSubscription = !Array.isArray(body) && body?.method === "subscriptions/listen";
           operationalContext = extractMcpOperationalContext(
             boundedRequest,
-            await boundedRequest.clone().json(),
+            body,
           );
         } catch {
           operationalContext = extractMcpOperationalContext(boundedRequest);
@@ -275,11 +278,14 @@ export async function POST(request: Request) {
       {
         requestId: () => operationalContext.requestId,
         onTimeout: () => reportOperationalLimit("deadline_exceeded", 504),
+        isSubscription: () => isSubscription,
+        onComplete: release,
       },
     );
     return secureResponse(response, request);
-  } finally {
+  } catch (error) {
     release();
+    throw error;
   }
 }
 

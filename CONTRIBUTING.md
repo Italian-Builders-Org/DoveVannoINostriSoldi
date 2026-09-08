@@ -189,6 +189,19 @@ osservare le fonti ufficiali esterne e aggiornare gli snapshot. Il validatore
 offline viene usato sia localmente sia nei workflow di refresh, garantendo una
 sola implementazione del contratto.
 
+### Disponibilità dell'app e delle fonti
+
+`Runtime health` controlla ogni 15 minuti homepage, health, contratto del registro
+fonti e chiamate MCP. Una risposta valida che segnala una fonte esterna `down`
+produce un avviso con gli ID delle fonti: non equivale a un down dell'app.
+Errori HTTP dell'endpoint DVNS, contratti malformati e guasti MCP restano bloccanti.
+Il report JSON viene conservato anche in presenza di soli avvisi.
+
+`Source health` resta il monitor dedicato, ogni sei ore, per indisponibilità
+upstream e validità dello snapshot SSN. Il monitor parlamentare conserva i propri
+retry e controlli. Gli avvisi runtime non rendono raggiungibile una fonte né
+aggiornano o convalidano nuovamente gli snapshot.
+
 ### Network guard
 
 La CI attiva un **application-level network guard** durante la verifica ETL e

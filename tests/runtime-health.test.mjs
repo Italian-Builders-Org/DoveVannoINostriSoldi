@@ -393,7 +393,7 @@ test("requestWithRetry aborts on timeout and never follows redirects", async () 
   assert.equal(redirect.response.status, 302);
 });
 
-test("runHealthMonitor fails on unreachable sources and performs checks sequentially", async () => {
+test("runHealthMonitor reports upstream degradation without declaring the application down", async () => {
   const calls = [];
   const report = await runHealthMonitor({
     baseUrl: "https://example.test/ignored?q=redact#fragment",
@@ -403,13 +403,13 @@ test("runHealthMonitor fails on unreachable sources and performs checks sequenti
     additionalAllowedOrigins: ["https://example.test"],
   });
 
-  assert.equal(report.ok, false);
+  assert.equal(report.ok, true);
   assert.equal(report.baseUrl, "https://example.test");
   assert.equal(report.checks.length, 7);
   assert.equal(report.checks.filter((check) => check.status === "pass").length, 6);
   const sourceHealth = report.checks.find((check) => check.name === "source-health");
-  assert.equal(sourceHealth.status, "fail");
-  assert.equal(sourceHealth.code, "source_unreachable");
+  assert.equal(sourceHealth.status, "warning");
+  assert.ok(sourceHealth.down.length > 0);
   assert.equal(sourceHealth.attempts, 1);
   assert.equal(report.checks.find((check) => check.name === "health").revision, REVISION);
   assert.deepEqual(calls.map((call) => call.path), [
@@ -421,7 +421,8 @@ test("runHealthMonitor fails on unreachable sources and performs checks sequenti
     "/mcp",
     "/api/mcp",
   ]);
-  assert.equal(report.warnings.length, 0);
+  assert.equal(report.warnings.length, 1);
+  assert.equal(report.warnings[0].check, "source-health");
   const queryCall = calls.at(-1);
   const queryRequest = JSON.parse(queryCall.body);
   assert.deepEqual(queryRequest.params.arguments, {

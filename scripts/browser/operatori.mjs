@@ -20,10 +20,14 @@ try {
         await page.screenshot({ path: path.join(screenshots, `list-${width}.png`) });
         await page.click('a[href="/appalti/operatori?vista=elenco&page=2"]');
         await page.waitForFunction(() => new URL(location.href).searchParams.get("page") === "2");
-        await page.waitForFunction((selector, previous) => document.querySelector(`${selector} h3 a`)?.getAttribute("href") !== previous, {}, list, firstRef);
+        await page.waitForFunction((selector, previous) => {
+          const first = document.querySelector(`${selector} h3 a`);
+          return first && first.getAttribute("href") !== previous;
+        }, {}, list, firstRef);
         assert.equal(await page.$$eval(`${list} > li`, (rows) => rows.length), 50);
         await page.click('a[href="/appalti/operatori?vista=elenco&ordine=valore"]');
         await page.waitForFunction(() => new URL(location.href).searchParams.get("ordine") === "valore");
+        await page.waitForSelector('[aria-label="Ordine dell\'elenco"] a[aria-current="page"][href*="ordine=valore"]');
         await page.waitForSelector(list);
         const ref = await page.$eval(`${list} h3 a`, (link) => link.getAttribute("href"));
         const name = await page.$eval(`${list} h3 a`, (link) => link.textContent);

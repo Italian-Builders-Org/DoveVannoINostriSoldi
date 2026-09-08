@@ -8,6 +8,8 @@ const { validateSourceHealthPayload } = await import('../scripts/runtime-health.
 
 test('cold source-health reports timed-out upstreams before the HTTP request expires', async () => {
   const originalFetch = globalThis.fetch;
+  const originalFetchMode = process.env.DVNS_SOURCE_FETCH_USE_GLOBAL;
+  process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = '1';
   const signals = [];
   globalThis.fetch = async (input, init = {}) => {
     const signal = init.signal ?? (input instanceof Request ? input.signal : undefined);
@@ -48,5 +50,7 @@ test('cold source-health reports timed-out upstreams before the HTTP request exp
   } finally {
     await getCachedSourceHealthOverview().catch(() => {});
     globalThis.fetch = originalFetch;
+    if (originalFetchMode === undefined) delete process.env.DVNS_SOURCE_FETCH_USE_GLOBAL;
+    else process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = originalFetchMode;
   }
 });

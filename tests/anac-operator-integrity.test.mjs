@@ -71,3 +71,13 @@ test('browse rejects stale source hashes, noncontiguous offsets and changed bloc
     invoke(cwd, 'adapter.listAnacOperatorsPage()', scenario === 'source' ? /non allineata alla fonte/ : scenario === 'offset' ? /non contigui/ : /SHA-256 blocco/);
   });
 });
+
+test('every browse gzip member has a platform-neutral header', () => {
+  const manifest = JSON.parse(readFileSync(join(root, browse, 'manifest.json')));
+  for (const [order, details] of Object.entries(manifest.orders)) {
+    const bytes = readFileSync(join(root, browse, `${order}.jsonl.gz`));
+    for (const block of details.blocks) {
+      assert.deepEqual([...bytes.subarray(block.offset, block.offset + 10)], [31, 139, 8, 0, 0, 0, 0, 0, 2, 255]);
+    }
+  }
+});

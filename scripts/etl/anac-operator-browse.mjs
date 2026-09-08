@@ -34,6 +34,9 @@ for (const by of OPERATOR_BROWSE_ORDERS) {
   for (let start = 0; start < sorted.length; start += OPERATOR_BROWSE_BLOCK_SIZE) {
     const slice = sorted.slice(start, start + OPERATOR_BROWSE_BLOCK_SIZE);
     const chunk = gzipSync(slice.map(row => JSON.stringify(row)).join('\n') + '\n', { level: 9 });
+    // RFC 1952 OS=255 (unknown): zlib otherwise writes macOS=19 or Unix=3.
+    // The platform marker does not affect the content or trailer checksum.
+    chunk[9] = 255;
     blocks.push({ offset, bytes: chunk.length, rows: slice.length, sha256: digest(chunk) });
     chunks.push(chunk);
     offset += chunk.length;

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { closeSync, existsSync, fstatSync, openSync, readFileSync } from "node:fs";
+import { closeSync, existsSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gunzipSync } from "node:zlib";
 import type { IpaEntity } from "@/lib/ipa";
@@ -1429,7 +1429,15 @@ function readStableFile(
     fd = openSync(path, "r");
     const before = fstatSync(fd);
     if (!before.isFile() || before.size > maxBytes) throw new Error(`ANAC entity page: ${label} oltre il limite.`);
-    const bytes = readFileSync(fd);
+    // Read only the checked size from the same descriptor. readFileSync(fd)
+    // is interpreted as a dynamic path by Turbopack and traces the whole repo.
+    const bytes = Buffer.alloc(before.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (!count) throw new Error(`ANAC entity page: ${label} cambiato durante la lettura.`);
+      offset += count;
+    }
     const after = fstatSync(fd);
     const beforeFingerprint = fingerprintFromStat(before);
     const afterFingerprint = fingerprintFromStat(after);

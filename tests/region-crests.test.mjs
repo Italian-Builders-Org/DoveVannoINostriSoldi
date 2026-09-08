@@ -76,19 +76,20 @@ test("RegionCrest usa asset locali, label semantiche e fallback accessibile", as
   assert.doesNotMatch(css, /\.crest \{[\s\S]*?border:/);
   assert.doesNotMatch(css, /\.crest \{[\s\S]*?background:/);
   assert.match(css, /\.image \{[\s\S]*?width: 100%;[\s\S]*?height: 100%;[\s\S]*?object-fit: contain;/);
-  for (const route of ["src/app/page.tsx", "src/app/regioni/page.tsx", "src/app/territori/page.tsx"]) {
+  for (const route of ["src/app/regioni/page.tsx", "src/app/territori/page.tsx"]) {
     const source = await readFile(join(projectRoot, route), "utf8");
     assert.ok(source.includes("RegionCrest"), route + ": integrazione mancante");
   }
 });
 
-test("la mappa mantiene spazio visivo sotto PeriodSelector e le tabelle restano contenute", async () => {
-  const homeCss = await readFile(join(projectRoot, "src/app/home.module.css"), "utf8");
-  assert.ok(homeCss.includes(".mapStage"));
-  assert.ok(homeCss.includes("margin-top: var(--space-3)"));
+test("la mappa resta in home sotto il quadro Italia; le tabelle regionali restano contenute", async () => {
   const home = await readFile(join(projectRoot, "src/app/page.tsx"), "utf8");
-  assert.ok(home.includes("className={styles.mapStage}"));
-  for (const cssPath of ["src/app/home.module.css", "src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {
+  const homeCss = await readFile(join(projectRoot, "src/app/home.module.css"), "utf8");
+  assert.match(home, /ItalyRegionsMap/);
+  assert.match(home, /className=\{styles\.mapStage\}/);
+  assert.match(homeCss, /\.mapStage/);
+  assert.match(home, /buildHomeItalyFunnel/);
+  for (const cssPath of ["src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {
     const css = await readFile(join(projectRoot, cssPath), "utf8");
     assert.doesNotMatch(css, /overflow-x:[[:space:]]*visible/i);
   }

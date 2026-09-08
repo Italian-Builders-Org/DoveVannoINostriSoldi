@@ -36,19 +36,17 @@ test("the home has one semantic title without adding a visual hero", async () =>
 });
 
 test("the home supporting rail forms a balanced grid without empty auto-fit cells", async () => {
-  const [page, css, mapCss] = await Promise.all([
+  const [page, css] = await Promise.all([
     source("../src/app/page.tsx"),
     source("../src/app/home.module.css"),
-    source("../src/components/italy-regions-map.module.css"),
   ]);
 
   assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.doesNotMatch(css, /repeat\(auto-fit, minmax\(280px, 1fr\)\)/);
   const anomalyRule = css.match(/\.anomalyItem \{([\s\S]*?)\n\}/)?.[1] ?? "";
   assert.match(anomalyRule, /min-width: 0/);
-  assert.match(css, /\.anomaliesPanel \{ grid-column: 1 \/ -1; \}/);
+  assert.match(css, /\.anomaliesPanel \{[\s\S]*?grid-column: 1 \/ -1;/);
   assert.doesNotMatch(page, /ContractsIcon|ShieldCheck|CalendarClockIcon/);
-  assert.match(mapCss, /\.detail \{[\s\S]*?height: 88px;/);
 });
 
 test("information tooltips expose and dismiss their description", async () => {

@@ -8,21 +8,53 @@ mkdirSync('artifacts/assistant-fixtures',{recursive:true});
 writeFileSync('artifacts/assistant-fixtures/corrotto.pdf','Not a PDF');
 writeFileSync('artifacts/assistant-fixtures/lungo.txt','x'.repeat(80001));
 const fixture=name=>resolve('tests/fixtures/assistant',name);
+// Scope interception to the mocked API. Page-wide Puppeteer interception can pause
+// worker importScripts requests on the page session and resume them on the worker
+// session, leaving a real asset blocked until the application's 15-second deadline.
+async function mockAssistant(page,requests,errors){
+  const session=await page.createCDPSession();
+  session.on('Fetch.requestPaused',({requestId,request})=>{
+    void (async()=>{
+      const payload=JSON.parse(request.postData);requests.push(payload);
+      const activities=[{id:'attachments',label:'Allegati disponibili',status:'done',resources:payload.messages.flatMap(m=>m.attachments?.map(f=>f.name)??[])},{id:'planning',label:'Fonti selezionate',status:'done'},{id:'answer',label:'Analisi approfondita completata',status:'done'}];
+      const answer={ok:true,kind:'ai_answer',provider:'openrouter',model:'openai/gpt-5.6-luna',text:`Risposta di prova ${requests.length}. Dati sintetici.\n\n| Voce | Stanziamento | Pagamenti | Residuo | Percentuale |\n|---|---:|---:|---:|---:|\n| Biblioteca | 120.000 euro | 90.000 euro | 30.000 euro | 75% |`,evidence:[]};
+      await session.send('Fetch.fulfillRequest',{requestId,responseCode:200,responseHeaders:[{name:'content-type',value:'text/event-stream'}],body:Buffer.from([...activities.map(activity=>({type:'activity',activity})),{type:'delta',text:answer.text},{type:'done',response:answer}].map(e=>`data: ${JSON.stringify(e)}\n\n`).join('')).toString('base64')});
+    })().catch(async error=>{
+      errors.push(error.message);
+      await session.send('Fetch.failRequest',{requestId,errorReason:'Failed'}).catch(()=>{});
+    });
+  });
+  await session.send('Fetch.enable',{patterns:[{urlPattern:new URL('/api/assistant/chat',defaultBaseUrl()).href,requestStage:'Request'}]});
+}
 let activePage,activeWidth;
 try {
+  // Fresh pages reproduce the worker lifecycle that exposed the interception race.
+  for(let batch=0;batch<12;batch++){
+    const page=await browser.newPage(),errors=[],requests=[];
+    activePage=page;activeWidth=`stress-${batch}`;
+    page.on('pageerror',error=>errors.push(error.message));
+    await mockAssistant(page,requests,errors);
+    await page.setViewport({width:390,height:844});
+    await page.goto(new URL('/assistente',defaultBaseUrl()).href,{waitUntil:'networkidle0'});
+    const input=await page.$('input[type="file"]');
+    await input.uploadFile(...['riepilogo.pdf','relazione.docx','pagamenti.xlsx','nota.txt','criteri.md','nota.txt','criteri.md','nota.txt'].map(fixture));
+    await page.waitForFunction(()=>{
+      const items=Array.from(document.querySelectorAll('[aria-label="Allegati da inviare"] li'));
+      return items.some(el=>el.dataset.error==='true')||(items.length===8&&items.every(el=>el.dataset.ready==='true'));
+    },{timeout:20_000});
+    const files=await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({name:el.title,ready:el.dataset.ready,error:el.dataset.error})));
+    assert.ok(files.length===8&&files.every(file=>file.ready==='true'&&file.error==='false'),JSON.stringify({batch,files}));
+    assert.equal(requests.length,0,'mixed-file preparation must not call the provider');
+    assert.deepEqual(errors,[]);
+    await page.close();
+  }
+  console.log('PASS attachments: 96 mixed files on 12 fresh pages without intercepting worker assets');
   for(const width of process.env.DVNS_ATTACHMENT_WIDTH ? [Number(process.env.DVNS_ATTACHMENT_WIDTH)] : [320,390,743,768,983,1280]) {
     const page=await browser.newPage(),errors=[],requests=[],workerEvents=[]; activePage=page;activeWidth=width;
     page.on('pageerror',error=>errors.push(error.message));
     for(const event of ['workercreated','workerdestroyed'])page.on(event,()=>{workerEvents.push({event,at:Date.now()});if(workerEvents.length>64)workerEvents.shift();});
     await page.setViewport({width,height:[743,768,983].includes(width)?695:844});
-    await page.setRequestInterception(true);
-    page.on('request',request=>{
-      if(new URL(request.url()).pathname!=='/api/assistant/chat'){void request.continue();return;}
-      const payload=JSON.parse(request.postData());requests.push(payload);
-      const activities=[{id:'attachments',label:'Allegati disponibili',status:'done',resources:payload.messages.flatMap(m=>m.attachments?.map(f=>f.name)??[])},{id:'planning',label:'Fonti selezionate',status:'done'},{id:'answer',label:'Analisi approfondita completata',status:'done'}];
-      const answer={ok:true,kind:'ai_answer',provider:'openrouter',model:'openai/gpt-5.6-luna',text:`Risposta di prova ${requests.length}. Dati sintetici.\n\n| Voce | Stanziamento | Pagamenti | Residuo | Percentuale |\n|---|---:|---:|---:|---:|\n| Biblioteca | 120.000 euro | 90.000 euro | 30.000 euro | 75% |`,evidence:[]};
-      void request.respond({status:200,contentType:'text/event-stream',body:[...activities.map(activity=>({type:'activity',activity})),{type:'delta',text:answer.text},{type:'done',response:answer}].map(e=>`data: ${JSON.stringify(e)}\n\n`).join('')});
-    });
+    await mockAssistant(page,requests,errors);
     await page.goto(new URL('/assistente',defaultBaseUrl()).href,{waitUntil:'networkidle0'});
     await page.evaluate(()=>{
       window.__progress=[];window.__preparationTimeline=[];
@@ -66,8 +98,7 @@ try {
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth));
     await click('Rigenera risposta');await complete(2);assert.deepEqual(requests[1].messages[0].attachments,requests[0].messages[0].attachments);
     await click('Modifica domanda');await page.waitForSelector('[id^="edit-message-"]');await page.$eval('[id^="edit-message-"]',el=>{el.focus();el.select();});await page.keyboard.press('Backspace');await page.type('[id^="edit-message-"]','Confronta soltanto la biblioteca nei file.');await page.click('button::-p-text(Invia modifica)');await complete(3);assert.deepEqual(requests[2].messages[0].attachments,requests[0].messages[0].attachments);
-    // Prefer tiny text fixtures here: re-parsing criteri.md under CI load has timed out.
-    await upload(['grafico.png','nota.txt','nota.txt'].map(fixture));await ready(3);
+    await upload(['grafico.png','nota.txt','criteri.md'].map(fixture));await ready(3);
     await click('Anteprima grafico.png');await page.waitForSelector('dialog[open] img');assert.equal(await page.$eval('dialog img',el=>el.naturalWidth),1000);await click('Chiudi anteprima allegato');
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-image-text.png`,fullPage:true});
     await page.type('#assistant-prompt','Leggi questi nuovi allegati.');await click('Invia domanda');await page.waitForFunction(()=>document.querySelectorAll('[data-assistant-reply] table').length===2&&!document.querySelector('button[aria-label="Interrompi ricerca"]'));

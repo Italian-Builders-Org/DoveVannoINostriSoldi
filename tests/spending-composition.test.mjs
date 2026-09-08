@@ -94,7 +94,7 @@ test("home reading guidance is a compact accessible aside", async () => {
     readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
   ]);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
-  assert.match(page, /<h2 id="reading-title" className="panel-title">Come leggere questi numeri<\/h2>/);
+  assert.match(page, /<h2 id="reading-title" className="panel-title">\s*Come leggere questi numeri\s*<\/h2>/);
   assert.match(page, /className=\{styles\.readingRules\}/);
   assert.match(page, /href="\/metodologia"/);
   assert.doesNotMatch(page, /panel-accent \$\{styles\.readingPanel\}/);

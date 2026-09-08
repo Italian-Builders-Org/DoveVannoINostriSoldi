@@ -394,6 +394,15 @@ export async function queryPublicDataset(
           sex: query.sex, limit: query.limit, offset: query.offset }),
       });
     }
+    case "istat_bes_istruzione": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesIstruzione } = await import("@/lib/istat-bes-istruzione-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesIstruzione({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

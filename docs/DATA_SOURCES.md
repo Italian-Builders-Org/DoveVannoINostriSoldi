@@ -558,3 +558,11 @@ osservazioni su 135 territori, di cui 107 province. Periodi e unità distinti pe
 indicatore; flag di significatività conservato, nessun dato comunale o indice
 composito. Fonte `istat-bes-salute`, API e MCP con selettore condiviso e pagine
 di massimo 100 righe. [Lock, denominatori, geografia e riproduzione](research/ISTAT_BES_SALUTE.md).
+
+### ISTAT BES dei territori — Istruzione e formazione
+
+Dominio BES_02, edizione 2025: nove indicatori, 14.952 osservazioni e 139
+territori (111 province), con periodi e denominatori propri. Percentuali e
+tasso specifico di coorte, non spesa o efficienza; 76 celle ignote `g`, nessuna
+imputazione comunale. Fonte `istat-bes-istruzione`, API/MCP paginati.
+[Lock, definizioni e limiti](research/ISTAT_BES_ISTRUZIONE.md).

@@ -236,3 +236,12 @@ test("source health registry fails closed when an adapter is omitted", () => {
   );
   assert.throws(() => orderSourceHealth(incomplete), /Adapter operativo senza probe/);
 });
+
+
+test("BES Istruzione source health reports a snapshot without inventing publication freshness", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-istruzione"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 14952);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.match(health.detail, /76 celle ignote/);
+});

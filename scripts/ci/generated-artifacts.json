@@ -1226,6 +1226,32 @@
       "trustModel": "Source lock dedicato a BES_01: CSV e struttura ufficiale vincolati per URL, byte e SHA-256. Sei indicatori, unità e definizioni da codelist; copertura per sesso/anno e geografia Parent CL_ITTER107, 135 territori e 107 province. Il flag n resta null con significato statistico conservato. Zero, null e riga assente distinti; nessuna somma o riconciliazione F/M/T economica. --check e contratto runtime verificano metadati, hash e copertura offline. Licenza not-declared, nessuna inferenza."
     },
     {
+      "id": "istat-bes-istruzione-2004-2024",
+      "owner": "ISTAT BesT BES_02 Istruzione, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-istruzione-2004-2024.data.json",
+        "src/data/generated/istat-bes-istruzione-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_istruzione.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_istruzione.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-istruzione.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_istruzione.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-istruzione-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_02: CSV e codelist ufficiali vincolati per URL, byte, SHA-256. Nove indicatori, 139 territori e 111 province. Copertura per indicatore/sesso/anno, Parent e compositi espliciti. 76 celle g restano null; nessuna somma o riconciliazione F/M/T trasferita da altri domini. Valori ufficiali sopra 100 conservati. Contratti ETL/runtime offline, licenza not-declared."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

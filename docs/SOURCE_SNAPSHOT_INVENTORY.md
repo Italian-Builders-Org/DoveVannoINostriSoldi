@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 53
+- Artefatti nel registro: 55
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 37 (PR umana dopo revisione)
+- manuale: 39 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -47,8 +47,8 @@ La revisione e il merge restano umani.
 | `anac-procurement-cpv` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_cpv.py --check` |
 | `pnrr-projects-index` | 2026-06-13 | non dichiarato | https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html | nessuno | nessuno | manuale | `python3 scripts/etl/pnrr_projects.py --check` |
 | `anac-awardees-coverage` | 2026-01-23 | 2026-08-30T18:30:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari | nessuno | nessuno | manuale | `python3 scripts/etl/anac_awardees_coverage.py --check` |
-| `anac-operator-awards-index` | 2026-01-23 | 2026-09-08T12:00:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari (+ CIG 2007-2025) | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_awards_index.py --check` + `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
-| `anac-cig-2007-2025` | 2026-01-23 | 2026-09-08T12:00:00Z | https://dati.anticorruzione.it/opendata/dataset/cig-2007 … cig-2025 | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
+| `anac-operator-awards-index` | non dichiarato nello snapshot | 2026-09-08T10:30:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_awards_index.py --check` |
+| `anac-cig-2007-2025` | non dichiarato nello snapshot | 2026-09-08T12:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |
 | `consulenti-pubblici` | 2026 | 2026-08-25T13:30:46Z | https://consulentipubblici.dfp.gov.it/progetto | `37 */6 * * *` | `.github/workflows/consulenti-refresh.yml` | PR automatica | `python scripts/etl/consulenti_snapshot.py --check` |

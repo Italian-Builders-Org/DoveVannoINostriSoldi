@@ -24,7 +24,7 @@ import tempfile
 import unicodedata
 import zipfile
 from collections import Counter
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Iterator, Mapping

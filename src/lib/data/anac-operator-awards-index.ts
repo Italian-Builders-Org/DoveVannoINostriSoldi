@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { closeSync, existsSync, fstatSync, openSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gunzipSync } from "node:zlib";
 
@@ -596,15 +596,39 @@ function loadSourceSpecSha(): string {
   return sha256Bytes(raw);
 }
 
+/** Read a committed artifact under an open fd so size checks cannot race the body. */
+function readStableUtf8(path: string, maxBytes: number, label: string): string {
+  let fd: number | null = null;
+  try {
+    fd = openSync(path, "r");
+    const before = fstatSync(fd);
+    if (!before.isFile()) throw new Error(`${label} non e un file`);
+    if (before.size > maxBytes) throw new Error(`${label} troppo grande`);
+    const bytes = readFileSync(fd);
+    const after = fstatSync(fd);
+    if (
+      before.size !== after.size ||
+      before.mtimeMs !== after.mtimeMs ||
+      before.ino !== after.ino ||
+      bytes.byteLength !== after.size
+    ) {
+      throw new Error(`${label} cambiato durante la lettura`);
+    }
+    return bytes.toString("utf8");
+  } catch (error) {
+    if (error instanceof Error && /troppo grande|cambiato durante|non e un file/.test(error.message)) {
+      throw error;
+    }
+    throw new Error(`${label} assente`);
+  } finally {
+    if (fd !== null) closeSync(fd);
+  }
+}
+
 export function loadAnacOperatorIndexMeta(): AnacOperatorIndexMeta {
   if (cachedMeta) return cachedMeta;
   const path = artifactPath("meta.json");
-  if (!existsSync(path)) {
-    throw new Error("indice operatori ANAC assente");
-  }
-  const size = statSync(path).size;
-  if (size > MAX_META_BYTES) throw new Error("meta operatori troppo grande");
-  const meta = assertAnacOperatorIndexMeta(JSON.parse(readFileSync(path, "utf8")));
+  const meta = assertAnacOperatorIndexMeta(JSON.parse(readStableUtf8(path, MAX_META_BYTES, "meta operatori")));
   if (meta.sourceSpecSha256 !== loadSourceSpecSha()) {
     throw new Error("sourceSpecSha256 operatori non allineato");
   }
@@ -645,10 +669,9 @@ export function loadAnacOperatorNationalSummaries(): AnacOperatorNationalSummari
     throw new Error("summaries nazionali assenti");
   }
   const path = artifactPath("summaries.json");
-  if (statSync(path).size > MAX_SUMMARIES_BYTES) {
-    throw new Error("summaries.json troppo grande");
-  }
-  const summaries = assertNationalSummaries(JSON.parse(readFileSync(path, "utf8")));
+  const summaries = assertNationalSummaries(
+    JSON.parse(readStableUtf8(path, MAX_SUMMARIES_BYTES, "summaries.json")),
+  );
   if (summaries.coverage.operators !== meta.totals.operators) {
     throw new Error("summaries.operators non riconcilia totals");
   }

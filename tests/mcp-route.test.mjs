@@ -951,6 +951,7 @@ test("MCP modern subscriptions acknowledge immediately, retain capacity and rele
       const response = await POST(request(headers, body));
       assert.equal(response.status, 200);
       assert.match(response.headers.get("content-type"), /text\/event-stream/);
+      assert.equal(response.headers.get("cache-control"), "private, no-store, no-transform");
       const reader = response.body.getReader(); streams.push(reader);
       const frame = new TextDecoder().decode((await reader.read()).value);
       assert.match(frame, /notifications\/subscriptions\/acknowledged/);

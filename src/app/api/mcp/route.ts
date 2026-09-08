@@ -28,8 +28,12 @@ const handler = createMcpHandler(createDvnsMcpServer, {
   onerror: reportMcpHandlerError,
 });
 
-function secureResponse(response: Response, request?: Request): Response {
-  response.headers.set("Cache-Control", "private, no-store");
+function secureResponse(response: Response, request?: Request, subscription = false): Response {
+  // The compatibility rewrite runs through Next's compression middleware.
+  // Compressing a small SSE acknowledgement buffers it until the stream ends.
+  response.headers.set("Cache-Control", subscription && response.headers.get("content-type")?.startsWith("text/event-stream")
+    ? "private, no-store, no-transform"
+    : "private, no-store");
   response.headers.set("X-Content-Type-Options", "nosniff");
   if (request && requestHostAllowed(request)) {
     const origin = request.headers.get("origin");
@@ -282,7 +286,7 @@ export async function POST(request: Request) {
         onComplete: release,
       },
     );
-    return secureResponse(response, request);
+    return secureResponse(response, request, isSubscription);
   } catch (error) {
     release();
     throw error;

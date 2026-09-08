@@ -11,8 +11,9 @@ const fixture=name=>resolve('tests/fixtures/assistant',name);
 let activePage,activeWidth;
 try {
   for(const width of process.env.DVNS_ATTACHMENT_WIDTH ? [Number(process.env.DVNS_ATTACHMENT_WIDTH)] : [320,390,743,768,983,1280]) {
-    const page=await browser.newPage(),errors=[],requests=[]; activePage=page;activeWidth=width;
+    const page=await browser.newPage(),errors=[],requests=[],workerEvents=[]; activePage=page;activeWidth=width;
     page.on('pageerror',error=>errors.push(error.message));
+    for(const event of ['workercreated','workerdestroyed'])page.on(event,()=>{workerEvents.push({event,at:Date.now()});if(workerEvents.length>64)workerEvents.shift();});
     await page.setViewport({width,height:[743,768,983].includes(width)?695:844});
     await page.setRequestInterception(true);
     page.on('request',request=>{
@@ -23,9 +24,21 @@ try {
       void request.respond({status:200,contentType:'text/event-stream',body:[...activities.map(activity=>({type:'activity',activity})),{type:'delta',text:answer.text},{type:'done',response:answer}].map(e=>`data: ${JSON.stringify(e)}\n\n`).join('')});
     });
     await page.goto(new URL('/assistente',defaultBaseUrl()).href,{waitUntil:'networkidle0'});
-    await page.evaluate(()=>{window.__progress=[];new MutationObserver(()=>{for(const el of document.querySelectorAll('[role="progressbar"]'))window.__progress.push(Number(el.getAttribute('aria-valuenow')));}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']});});
+    await page.evaluate(()=>{
+      window.__progress=[];window.__preparationTimeline=[];
+      new MutationObserver(()=>{
+        for(const el of document.querySelectorAll('[role="progressbar"]')){
+          const progress=Number(el.getAttribute('aria-valuenow'));window.__progress.push(progress);
+          const item=el.closest('li');
+          const record={slot:item?Array.from(item.parentElement.children).indexOf(item):-1,progress,at:performance.now()};
+          const previous=window.__preparationTimeline.at(-1);
+          if(!previous||previous.slot!==record.slot||previous.progress!==record.progress)window.__preparationTimeline.push(record);
+          if(window.__preparationTimeline.length>128)window.__preparationTimeline.shift();
+        }
+      }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']});
+    });
     const upload=async paths=>{const input=await page.$('input[type="file"]');await input.uploadFile(...paths);};
-    const ready=async count=>page.waitForFunction(count=>document.querySelectorAll('[aria-label="Allegati da inviare"] li[data-ready="true"][data-error="false"]').length===count,{},count).catch(async error=>{await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-failure.png`,fullPage:true});console.error(JSON.stringify({width,errors,files:await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({title:el.title,ready:el.dataset.ready,error:el.dataset.error}))),alerts:await page.$$eval('[role="alert"]',els=>els.map(el=>el.textContent))}));throw error;});
+    const ready=async count=>page.waitForFunction(count=>document.querySelectorAll('[aria-label="Allegati da inviare"] li[data-ready="true"][data-error="false"]').length===count,{},count).catch(async error=>{await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-failure.png`,fullPage:true});console.error(JSON.stringify({width,errors,workerEvents,preparationTimeline:await page.evaluate(()=>window.__preparationTimeline),files:await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({title:el.title,ready:el.dataset.ready,error:el.dataset.error}))),alerts:await page.$$eval('[role="alert"]',els=>els.map(el=>el.textContent))}));throw error;});
     const click=label=>page.click(`button[aria-label="${label}"]`);
     const complete=number=>page.waitForFunction(number=>!!document.querySelector('[data-assistant-reply] table')&&document.querySelector('[data-assistant-reply]')?.textContent.includes(`Risposta di prova ${number}.`)&&!document.querySelector('button[aria-label="Interrompi ricerca"]'),{},number);
     await upload(['riepilogo.pdf','relazione.docx','pagamenti.xlsx','nota.txt','criteri.md','nota.txt','criteri.md','nota.txt'].map(fixture));await ready(8);

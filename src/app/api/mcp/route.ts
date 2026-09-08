@@ -28,8 +28,12 @@ const handler = createMcpHandler(createDvnsMcpServer, {
   onerror: reportMcpHandlerError,
 });
 
-function secureResponse(response: Response, request?: Request): Response {
-  response.headers.set("Cache-Control", "private, no-store");
+function secureResponse(response: Response, request?: Request, subscription = false): Response {
+  // The compatibility rewrite runs through Next's compression middleware.
+  // Compressing a small SSE acknowledgement buffers it until the stream ends.
+  response.headers.set("Cache-Control", subscription && response.headers.get("content-type")?.startsWith("text/event-stream")
+    ? "private, no-store, no-transform"
+    : "private, no-store");
   response.headers.set("X-Content-Type-Options", "nosniff");
   if (request && requestHostAllowed(request)) {
     const origin = request.headers.get("origin");
@@ -204,6 +208,7 @@ async function requestWithBoundedBody(request: Request): Promise<Request | Respo
 
 export async function POST(request: Request) {
   const startedAt = performance.now();
+  let isSubscription = false;
   let operationalContext = extractMcpOperationalContext(request);
   const reportOperationalLimit = (
     outcome: "rate_limited" | "concurrency_limited" | "deadline_exceeded",
@@ -262,9 +267,11 @@ export async function POST(request: Request) {
         }
         if (boundedRequest instanceof Response) return boundedRequest;
         try {
+          const body = await boundedRequest.clone().json();
+          isSubscription = !Array.isArray(body) && body?.method === "subscriptions/listen";
           operationalContext = extractMcpOperationalContext(
             boundedRequest,
-            await boundedRequest.clone().json(),
+            body,
           );
         } catch {
           operationalContext = extractMcpOperationalContext(boundedRequest);
@@ -275,11 +282,14 @@ export async function POST(request: Request) {
       {
         requestId: () => operationalContext.requestId,
         onTimeout: () => reportOperationalLimit("deadline_exceeded", 504),
+        isSubscription: () => isSubscription,
+        onComplete: release,
       },
     );
-    return secureResponse(response, request);
-  } finally {
+    return secureResponse(response, request, isSubscription);
+  } catch (error) {
     release();
+    throw error;
   }
 }
 

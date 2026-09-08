@@ -535,6 +535,55 @@ for (const year of [2020, 2021, 2022]) {
   assert.equal(invalidApi.headers.get("cache-control"), "no-store");
 }
 
+// Let the existing public-client rate-limit window expire before the extra probes.
+await new Promise((resolve) => setTimeout(resolve, 60_100));
+
+// Exercise the real HTTP path: an internal rewrite may compress and buffer SSE
+// even when the route-level ReadableStream tests deliver frames immediately.
+for (const pathname of ["/api/mcp", "/mcp"]) {
+  const caller = new AbortController();
+  const timer = setTimeout(() => caller.abort(), 5_000);
+  let reader;
+  try {
+    const response = await fetch(new URL(pathname, baseUrl), {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/event-stream",
+        "Accept-Encoding": "gzip",
+        "Content-Type": "application/json",
+        "MCP-Protocol-Version": "2026-07-28",
+        "MCP-Method": "subscriptions/listen",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: "subscription-smoke", method: "subscriptions/listen", params: {
+        notifications: { toolsListChanged: true },
+        _meta: { "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {} },
+      } }),
+      signal: caller.signal,
+    });
+    assert.equal(response.status, 200, `${pathname}: subscription must succeed`);
+    assert.equal(response.headers.get("cache-control"), "private, no-store, no-transform");
+    assert.equal(response.headers.get("content-encoding"), null, `${pathname}: SSE must not be compressed`);
+    reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let frame = "";
+    while (!frame.includes("\n\n")) {
+      const chunk = await reader.read();
+      assert.equal(chunk.done, false, `${pathname}: stream closed before acknowledgement`);
+      frame += decoder.decode(chunk.value, { stream: true });
+      assert.ok(byteLength(frame) <= 8_192, `${pathname}: oversized acknowledgement`);
+    }
+    const data = frame.split("\n").find((line) => line.startsWith("data: "));
+    assert.ok(data, `${pathname}: missing acknowledgement`);
+    const ack = JSON.parse(data.slice(6));
+    assert.equal(ack.method, "notifications/subscriptions/acknowledged");
+    assert.equal(ack.params.notifications.toolsListChanged, true);
+  } finally {
+    clearTimeout(timer);
+    await reader?.cancel().catch(() => undefined);
+    caller.abort();
+  }
+}
+
 console.log(JSON.stringify({
   ok: true,
   baseUrl: baseUrl.origin,
@@ -552,6 +601,8 @@ console.log(JSON.stringify({
     "unsupported-detail-filter",
     "integrated-query",
     "education-query-pagination-provenance",
+    "modern-subscriptions",
+    "compatibility-modern-subscriptions",
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",

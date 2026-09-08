@@ -938,3 +938,30 @@ test("MCP tool responses stay below the wire-size budget", async () => {
   assert.notEqual(irpefEvent.result.isError, true);
   assert.equal(irpefEvent.result.structuredContent.data.pagination.returned, 100);
 });
+
+test("MCP modern subscriptions acknowledge immediately, retain capacity and release on cancellation", { timeout: 5_000 }, async () => {
+  const headers = { "MCP-Protocol-Version": "2026-07-28", "MCP-Method": "subscriptions/listen" };
+  const body = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "subscriptions/listen", params: {
+    notifications: { toolsListChanged: true },
+    _meta: { "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {} },
+  } });
+  const streams = [];
+  try {
+    for (let i = 0; i < 8; i++) {
+      const response = await POST(request(headers, body));
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get("content-type"), /text\/event-stream/);
+      assert.equal(response.headers.get("cache-control"), "private, no-store, no-transform");
+      const reader = response.body.getReader(); streams.push(reader);
+      const frame = new TextDecoder().decode((await reader.read()).value);
+      assert.match(frame, /notifications\/subscriptions\/acknowledged/);
+      assert.match(frame, /"toolsListChanged":true/);
+    }
+    assert.equal((await POST(request())).status, 503);
+    await streams.pop().cancel();
+    assert.equal((await POST(request())).status, 200);
+  } finally {
+    await Promise.all(streams.map((reader) => reader.cancel()));
+  }
+  assert.equal((await POST(request())).status, 200);
+});

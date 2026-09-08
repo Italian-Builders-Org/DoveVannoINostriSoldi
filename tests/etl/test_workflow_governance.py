@@ -106,7 +106,12 @@ class WorkflowGovernanceTests(unittest.TestCase):
         self.assertNotIn("Object.entries(payload)", text)
         self.assertIn("| Warnings |", text)
         self.assertIn("| Revision |", text)
-        self.assertRegex(text, r"(?m)^\s*if:\s*failure\(\)\s*$")
+        # Upstream warnings are non-fatal for app availability, but their
+        # evidence must be retained just like application failures.
+        self.assertRegex(
+            text,
+            r"(?m)^\s*if:\s*always\(\)\s*\n\s*uses:\s*actions/upload-artifact@",
+        )
         self.assertIn("name: runtime-health", text)
         self.assertIn("path: ${{ runner.temp }}/runtime-health.json", text)
         self.assertIn("if-no-files-found: ignore", text)

@@ -72,7 +72,7 @@ export default async function ProcurementPeersPage({ params, searchParams }: Pro
         <h2 className="panel-title" id="criteria-title">Criteri del gruppo</h2>
         <ul className={styles.criteria}>
           <li>Popolazione e numero di procedure: da metà al doppio del Comune selezionato.</li>
-          <li>Sovrapposizione delle categorie CPV a due cifre: almeno 80% delle procedure.</li>
+          <li>Sovrapposizione delle categorie CPV a due cifre: almeno 70% delle procedure.</li>
           <li>Almeno 30 aggiudicazioni; CPV interpretabile e aggiudicatari identificati in almeno il 90% dei rispettivi casi.</li>
           {dimension === "value" ? <li>Almeno 30 importi positivi attribuibili; copertura di almeno il 90% delle aggiudicazioni e del valore positivo dichiarato.</li> : null}
         </ul>

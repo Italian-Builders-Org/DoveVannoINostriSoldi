@@ -19,10 +19,10 @@ try {
     await runScenario(browser, {
       label: `procurement peers ${width}`, pathname: `${root}/confronti`, width, baseUrl, suite: "procurement-peers", readySelector: "#comparison-title",
       validate: async (page) => {
-        assert.equal(await page.$eval("#comparison-title", (el) => el.textContent), "Il confronto con 10 altri Comuni");
+        assert.equal(await page.$eval("#comparison-title", (el) => el.textContent), "Il confronto con 221 altri Comuni");
         assert.equal(await page.$$eval("main article", (els) => els.length), 3);
-        assert.equal(await page.$$eval("main tbody tr", (els) => els.length), 10);
-        assert.equal(await page.$eval("main", (el) => el.textContent.includes("80%") && el.textContent.includes("2024")), true);
+        assert.equal(await page.$$eval("main tbody tr", (els) => els.length), 25);
+        assert.equal(await page.$eval("main", (el) => el.textContent.includes("70%") && el.textContent.includes("2024")), true);
         const links = await page.$$eval("main article a", (els) => els.map((el) => el.getAttribute("href")));
         assert.deepEqual(links, ["top1", "top10", "all"].map((selection) => `${root}?view=concentration&metric=count&selection=${selection}`));
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true, `page overflow at ${width}px`);
@@ -44,7 +44,7 @@ try {
   }
   for (const [pathname, message] of [
     [`${root}/confronti?metric=value`, "Valore positivo attribuibile in meno del 90%"],
-    ["/enti/c_h477/appalti/confronti", "9 altri Comuni soddisfano i criteri"],
+    ["/enti/C_A403/appalti/confronti", "1 altri Comuni soddisfano i criteri"],
     ["/enti/no_such_municipality/appalti/confronti", "Comune non collegato univocamente"],
   ]) {
     await runScenario(browser, { label: message, pathname, width: 390, baseUrl, suite: "procurement-peers", readySelector: "#comparison-title",

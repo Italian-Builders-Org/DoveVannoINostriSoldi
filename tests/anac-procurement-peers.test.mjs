@@ -20,10 +20,12 @@ const snapshot = await peers.loadAnacPeerSnapshot();
 test("peer selection excludes the target and applies inclusive size, activity and CPV boundaries", () => {
   const target = row(1);
   const included = row(2, { population: 500, procedures: 200, mix: { "45": 160, "85": 40 } });
-  const excluded = [row(3, { population: 499 }), row(4, { population: 2001 }), row(5, { procedures: 49, mix: { "45": 49 } }), row(6, { procedures: 201, mix: { "45": 201 } }), row(7, { mix: { "45": 79, "85": 21 } }), row(8, { istatCode: target.istatCode })];
+  // 69% CPV overlap stays below the 70% floor; 79% would pass after the v1.1 revision.
+  const excluded = [row(3, { population: 499 }), row(4, { population: 2001 }), row(5, { procedures: 49, mix: { "45": 49 } }), row(6, { procedures: 201, mix: { "45": 201 } }), row(7, { mix: { "45": 69, "85": 31 } }), row(8, { istatCode: target.istatCode })];
   const result = peers.selectAnacPeers([included, ...excluded, target], target.codiceIpa, "count");
   assert.deepEqual(result.peers.map((p) => p.codiceIpa), [included.codiceIpa]);
   assert.deepEqual(peers.peerCpvOverlap(target, included), r(4, 5));
+  assert.equal(peers.comparePeerRatios(peers.peerCpvOverlap(target, excluded[4]), peers.ANAC_PEER_CPV_MINIMUM), -1);
   assert.equal(result.publish, false);
   assert.equal(peers.selectAnacPeers([target], "absent", "count").target, null);
 });
@@ -69,10 +71,11 @@ test("committed Veroli cohort reconciles every indicator with the original ANAC 
   assert.equal(snapshot.ambiguousProfilesExcluded, 0);
   const group = peers.selectAnacPeers(snapshot.rows, "c_l780", "count");
   assert.equal(group.eligibleCount, 3418);
-  assert.equal(group.peers.length, 10);
+  assert.equal(group.peers.length, 221);
   assert.equal(group.publish, true);
   assert.equal(peers.selectAnacPeers(snapshot.rows, "c_l780", "value").publish, false);
-  for (const record of [group.target, ...group.peers]) {
+  // Spot-check the selected Comune and a stable peer against the live profile shard.
+  for (const record of [group.target, group.peers.find((row) => row.codiceIpa === "c_h477") ?? group.peers[0]]) {
     const state = await domain.loadAnacEntityProcurementPage({ codiceIpa: record.codiceIpa, currentEntityCf: null, verifyLiveFiscalCode: false });
     assert.equal(state.status, "available");
     assert.equal(record.procedures, state.profile.summary.procedureCount);
@@ -84,9 +87,14 @@ test("committed Veroli cohort reconciles every indicator with the original ANAC 
     }
   }
   assert.deepEqual(peers.summarizeAnacPeers(group.target, group.peers, "count", "hhi10000"), {
-    value: r(30000, 169), median: r(6620575, 47089), percentile: r(7, 10),
+    value: r(30000, 169), median: r(2830000, 16641), percentile: r(126, 221),
   });
-  assert.equal(peers.selectAnacPeers(snapshot.rows, "c_h477", "count").peers.length, 9);
+  const rodengo = peers.selectAnacPeers(snapshot.rows, "c_h477", "count");
+  assert.equal(rodengo.peers.length, 201);
+  assert.equal(rodengo.publish, true);
+  const thin = peers.selectAnacPeers(snapshot.rows, "C_A403", "count");
+  assert.equal(thin.peers.length, 1);
+  assert.equal(thin.publish, false);
 });
 
 test("snapshot identity and coverage validation reject duplicates, impossible totals and invalid ratios", () => {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
 import {
@@ -389,14 +390,80 @@ function SummaryIntro({
   );
 }
 
+function shareOfMax(value: number, max: number): number {
+  if (!Number.isFinite(value) || !Number.isFinite(max) || max <= 0) return 0;
+  return Math.max(0, Math.min(100, (value / max) * 100));
+}
+
+function shortName(name: string, max = 48): string {
+  if (name.length <= max) return name;
+  return `${name.slice(0, max - 1).trimEnd()}…`;
+}
+
+function RankingPanel({
+  id,
+  title,
+  lead,
+  tag,
+  ariaLabel,
+  wide = false,
+  children,
+  exactTable,
+}: Readonly<{
+  id: string;
+  title: string;
+  lead: string;
+  tag: string;
+  ariaLabel: string;
+  wide?: boolean;
+  children: ReactNode;
+  exactTable: ReactNode;
+}>) {
+  return (
+    <article
+      className={`panel ${styles.rankingPanel} ${wide ? styles.rankingPanelWide : ""}`}
+      aria-labelledby={id}
+    >
+      <div className={styles.rankingHead}>
+        <div>
+          <h3 id={id} className="panel-title">
+            {title}
+          </h3>
+          <p className={styles.summaryLead}>{lead}</p>
+        </div>
+        <span className="tag tag-neutral">{tag}</span>
+      </div>
+      <ol className={styles.barList} aria-label={ariaLabel}>
+        {children}
+      </ol>
+      <details className={styles.exactDetails}>
+        <summary>Apri la tabella con i numeri esatti</summary>
+        {exactTable}
+      </details>
+    </article>
+  );
+}
+
 function OperatorSummaryTables({
   summaries,
 }: Readonly<{ summaries: AnacOperatorNationalSummaries }>) {
+  const chartLimit = 10;
   const valueReference = Math.max(
     ...summaries.topOperatorsByAttributedValue.map((row) => Number(row.attributedValue) || 0),
     1,
   );
   const matched = summaries.coverage.uniqueMatchedCigsCounted;
+  const countMax = summaries.topOperatorsByAwardCount[0]?.awardCount ?? 1;
+  const valueMax = Number(summaries.topOperatorsByAttributedValue[0]?.attributedValue) || 1;
+  const cpvMax = summaries.topCpv[0]?.count ?? 1;
+  const saMax = summaries.topContractingAuthorities[0]?.count ?? 1;
+  const oggettoMax = summaries.topProcedureObjects[0]?.count ?? 1;
+
+  const countChart = summaries.topOperatorsByAwardCount.slice(0, chartLimit);
+  const valueChart = summaries.topOperatorsByAttributedValue.slice(0, chartLimit);
+  const cpvChart = summaries.topCpv.slice(0, chartLimit);
+  const saChart = summaries.topContractingAuthorities.slice(0, chartLimit);
+  const oggettoChart = summaries.topProcedureObjects.slice(0, chartLimit);
 
   return (
     <section className={styles.summaries} aria-labelledby="operatori-summaries-title">
@@ -404,220 +471,332 @@ function OperatorSummaryTables({
         <div>
           <h2 id="operatori-summaries-title">Cosa compare più spesso</h2>
           <p className={styles.note}>
-            Prime {integer(summaries.basis.limit)} posizioni per ogni classifica. Fonte: full
-            snapshot aggiudicatari/aggiudicazioni + CIG 2007–2025.
+            Nei grafici vedi le prime {integer(chartLimit)} posizioni (barra = confronto col primo).
+            Nelle tabelle restano tutte le {integer(summaries.basis.limit)}. Fonte: full snapshot
+            aggiudicatari/aggiudicazioni + CIG 2007–2025.
           </p>
         </div>
       </div>
 
       <div className={styles.summaryGrid}>
-        <article className={styles.summaryCard} aria-labelledby="top-count-title">
-          <h3 id="top-count-title">Imprese con più aggiudicazioni</h3>
-          <p className={styles.summaryLead}>
-            Quante volte l&apos;impresa risulta aggiudicataria nello snapshot (tutti gli operatori
-            dell&apos;indice).
-          </p>
-          <ScrollRegion
-            className={`table-scroll ${styles.tableScroll}`}
-            role="region"
-            aria-label="Tabella imprese per numero di aggiudicazioni"
-            tabIndex={0}
-          >
-            <table className="table">
-              <caption>Top per numero di aggiudicazioni osservate</caption>
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Impresa</th>
-                  <th scope="col" className="num">
-                    Aggiudicazioni
-                  </th>
-                  <th scope="col" className="num">
-                    Valore attribuibile
-                  </th>
-                  <th scope="col">Anni</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.topOperatorsByAwardCount.map((row, index) => (
-                  <tr key={row.ref}>
-                    <td className="num">{integer(index + 1)}</td>
-                    <th scope="row">
-                      <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+        <RankingPanel
+          id="top-count-title"
+          title="Imprese con più aggiudicazioni"
+          lead="Quante volte l'impresa risulta aggiudicataria nello snapshot. Non è un giudizio: è solo la frequenza osservata."
+          tag={`Top ${chartLimit} · conteggio`}
+          ariaLabel="Classifica imprese per numero di aggiudicazioni"
+          exactTable={
+            <ScrollRegion
+              className={`table-scroll ${styles.tableScroll}`}
+              role="region"
+              aria-label="Tabella imprese per numero di aggiudicazioni"
+              tabIndex={0}
+            >
+              <table className="table">
+                <caption>Top per numero di aggiudicazioni osservate</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Impresa</th>
+                    <th scope="col" className="num">
+                      Aggiudicazioni
                     </th>
-                    <td className="num">{integer(row.awardCount)}</td>
-                    <td className="num" title={formatDecimalEuro(row.attributedValue)}>
-                      {formatCompactEuro(row.attributedValue, valueReference)}
-                    </td>
-                    <td>{yearRange(row.yearMin, row.yearMax)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollRegion>
-        </article>
-
-        <article className={styles.summaryCard} aria-labelledby="top-value-title">
-          <h3 id="top-value-title">Imprese con più valore attribuibile</h3>
-          <p className={styles.summaryLead}>
-            Somma degli importi di aggiudicazione dichiarati quando c&apos;è un solo aggiudicatario
-            (non è denaro ricevuto).
-          </p>
-          <ScrollRegion
-            className={`table-scroll ${styles.tableScroll}`}
-            role="region"
-            aria-label="Tabella imprese per valore attribuibile"
-            tabIndex={0}
-          >
-            <table className="table">
-              <caption>Top per valore di aggiudicazione attribuibile</caption>
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Impresa</th>
-                  <th scope="col" className="num">
-                    Valore attribuibile
-                  </th>
-                  <th scope="col" className="num">
-                    Aggiudicazioni
-                  </th>
-                  <th scope="col">Anni</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.topOperatorsByAttributedValue.map((row, index) => (
-                  <tr key={row.ref}>
-                    <td className="num">{integer(index + 1)}</td>
-                    <th scope="row">
-                      <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+                    <th scope="col" className="num">
+                      Valore attribuibile
                     </th>
-                    <td className="num" title={formatDecimalEuro(row.attributedValue)}>
+                    <th scope="col">Anni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summaries.topOperatorsByAwardCount.map((row, index) => (
+                    <tr key={row.ref}>
+                      <td className="num">{integer(index + 1)}</td>
+                      <th scope="row">
+                        <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+                      </th>
+                      <td className="num">{integer(row.awardCount)}</td>
+                      <td className="num" title={formatDecimalEuro(row.attributedValue)}>
+                        {formatCompactEuro(row.attributedValue, valueReference)}
+                      </td>
+                      <td>{yearRange(row.yearMin, row.yearMax)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+          }
+        >
+          {countChart.map((row, index) => (
+            <li key={row.ref}>
+              <div className={styles.barMeta}>
+                <Link href={`/appalti/operatori/${row.ref}`} title={row.name}>
+                  {shortName(row.name)}
+                </Link>
+                <strong>
+                  {integer(row.awardCount)}
+                  <small> aggiudicazioni</small>
+                  <span className={styles.barAmount}>
+                    {formatCompactEuro(row.attributedValue, valueReference)}
+                    <small> attribuibili</small>
+                  </span>
+                </strong>
+              </div>
+              <div className={styles.barTrack} aria-hidden="true">
+                <i style={{ width: `${shareOfMax(row.awardCount, countMax)}%` }} />
+              </div>
+              <span className={styles.barRank}>#{index + 1}</span>
+            </li>
+          ))}
+        </RankingPanel>
+
+        <RankingPanel
+          id="top-value-title"
+          title="Imprese con più valore attribuibile"
+          lead="Somma degli importi di aggiudicazione dichiarati solo quando c'è un unico aggiudicatario. Non è denaro ricevuto."
+          tag={`Top ${chartLimit} · valore`}
+          ariaLabel="Classifica imprese per valore attribuibile"
+          exactTable={
+            <ScrollRegion
+              className={`table-scroll ${styles.tableScroll}`}
+              role="region"
+              aria-label="Tabella imprese per valore attribuibile"
+              tabIndex={0}
+            >
+              <table className="table">
+                <caption>Top per valore di aggiudicazione attribuibile</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Impresa</th>
+                    <th scope="col" className="num">
+                      Valore attribuibile
+                    </th>
+                    <th scope="col" className="num">
+                      Aggiudicazioni
+                    </th>
+                    <th scope="col">Anni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summaries.topOperatorsByAttributedValue.map((row, index) => (
+                    <tr key={row.ref}>
+                      <td className="num">{integer(index + 1)}</td>
+                      <th scope="row">
+                        <Link href={`/appalti/operatori/${row.ref}`}>{row.name}</Link>
+                      </th>
+                      <td className="num" title={formatDecimalEuro(row.attributedValue)}>
+                        {formatCompactEuro(row.attributedValue, valueReference)}
+                      </td>
+                      <td className="num">{integer(row.awardCount)}</td>
+                      <td>{yearRange(row.yearMin, row.yearMax)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+          }
+        >
+          {valueChart.map((row, index) => {
+            const value = Number(row.attributedValue) || 0;
+            return (
+              <li key={row.ref}>
+                <div className={styles.barMeta}>
+                  <Link href={`/appalti/operatori/${row.ref}`} title={row.name}>
+                    {shortName(row.name)}
+                  </Link>
+                  <strong>
+                    <span title={formatDecimalEuro(row.attributedValue)}>
                       {formatCompactEuro(row.attributedValue, valueReference)}
-                    </td>
-                    <td className="num">{integer(row.awardCount)}</td>
-                    <td>{yearRange(row.yearMin, row.yearMax)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollRegion>
-        </article>
+                    </span>
+                    <span className={styles.barAmount}>
+                      {integer(row.awardCount)}
+                      <small> aggiudicazioni</small>
+                    </span>
+                  </strong>
+                </div>
+                <div className={styles.barTrack} aria-hidden="true">
+                  <i style={{ width: `${shareOfMax(value, valueMax)}%` }} />
+                </div>
+                <span className={styles.barRank}>#{index + 1}</span>
+              </li>
+            );
+          })}
+        </RankingPanel>
 
-        <article className={styles.summaryCard} aria-labelledby="top-cpv-title">
-          <h3 id="top-cpv-title">Categorie di lavoro più frequenti (CPV)</h3>
-          <p className={styles.summaryLead}>
-            Etichette CPV dei CIG abbinati ({integer(matched)} CIG unici tra le aggiudicazioni
-            pubblicate in scheda).
-          </p>
-          <ScrollRegion
-            className={`table-scroll ${styles.tableScroll}`}
-            role="region"
-            aria-label="Tabella categorie CPV ricorrenti"
-            tabIndex={0}
-          >
-            <table className="table">
-              <caption>Top categorie CPV per numero di CIG</caption>
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Categoria</th>
-                  <th scope="col">Codice</th>
-                  <th scope="col" className="num">
-                    CIG
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.topCpv.map((row, index) => (
-                  <tr key={`${row.code ?? "x"}-${row.label}`}>
-                    <td className="num">{integer(index + 1)}</td>
-                    <th scope="row">{row.label}</th>
-                    <td>
-                      <code>{row.code ?? "—"}</code>
-                    </td>
-                    <td className="num">{integer(row.count)}</td>
+        <RankingPanel
+          id="top-cpv-title"
+          title="Categorie di lavoro più frequenti"
+          lead={`Etichette CPV sui ${integer(matched)} CIG unici abbinati alle aggiudicazioni pubblicate in scheda.`}
+          tag="Top 10 · CPV"
+          ariaLabel="Classifica categorie CPV"
+          exactTable={
+            <ScrollRegion
+              className={`table-scroll ${styles.tableScroll}`}
+              role="region"
+              aria-label="Tabella categorie CPV ricorrenti"
+              tabIndex={0}
+            >
+              <table className="table">
+                <caption>Top categorie CPV per numero di CIG</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Codice</th>
+                    <th scope="col" className="num">
+                      CIG
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollRegion>
-        </article>
+                </thead>
+                <tbody>
+                  {summaries.topCpv.map((row, index) => (
+                    <tr key={`${row.code ?? "x"}-${row.label}`}>
+                      <td className="num">{integer(index + 1)}</td>
+                      <th scope="row">{row.label}</th>
+                      <td>
+                        <code>{row.code ?? "—"}</code>
+                      </td>
+                      <td className="num">{integer(row.count)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+          }
+        >
+          {cpvChart.map((row, index) => (
+            <li key={`${row.code ?? "x"}-${row.label}`}>
+              <div className={styles.barMeta}>
+                <span title={row.code ? `${row.label} (${row.code})` : row.label}>
+                  {shortName(row.label, 56)}
+                  {row.code ? <small className={styles.barCode}> · {row.code}</small> : null}
+                </span>
+                <strong>
+                  {integer(row.count)}
+                  <small> CIG</small>
+                </strong>
+              </div>
+              <div className={styles.barTrack} aria-hidden="true">
+                <i style={{ width: `${shareOfMax(row.count, cpvMax)}%` }} />
+              </div>
+              <span className={styles.barRank}>#{index + 1}</span>
+            </li>
+          ))}
+        </RankingPanel>
 
-        <article className={styles.summaryCard} aria-labelledby="top-sa-title">
-          <h3 id="top-sa-title">Chi bandisce più spesso</h3>
-          <p className={styles.summaryLead}>
-            Denominazione della stazione appaltante nei CIG abbinati (campo ANAC, non un registro
-            enti completo).
-          </p>
-          <ScrollRegion
-            className={`table-scroll ${styles.tableScroll}`}
-            role="region"
-            aria-label="Tabella stazioni appaltanti ricorrenti"
-            tabIndex={0}
-          >
-            <table className="table">
-              <caption>Top stazioni appaltanti per numero di CIG</caption>
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Stazione appaltante</th>
-                  <th scope="col" className="num">
-                    CIG
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.topContractingAuthorities.map((row, index) => (
-                  <tr key={row.label}>
-                    <td className="num">{integer(index + 1)}</td>
-                    <th scope="row">{row.label}</th>
-                    <td className="num">{integer(row.count)}</td>
+        <RankingPanel
+          id="top-sa-title"
+          title="Chi bandisce più spesso"
+          lead="Denominazione della stazione appaltante nei CIG abbinati (campo ANAC, non il registro enti completo)."
+          tag="Top 10 · stazioni"
+          ariaLabel="Classifica stazioni appaltanti"
+          exactTable={
+            <ScrollRegion
+              className={`table-scroll ${styles.tableScroll}`}
+              role="region"
+              aria-label="Tabella stazioni appaltanti ricorrenti"
+              tabIndex={0}
+            >
+              <table className="table">
+                <caption>Top stazioni appaltanti per numero di CIG</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Stazione appaltante</th>
+                    <th scope="col" className="num">
+                      CIG
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollRegion>
-        </article>
+                </thead>
+                <tbody>
+                  {summaries.topContractingAuthorities.map((row, index) => (
+                    <tr key={row.label}>
+                      <td className="num">{integer(index + 1)}</td>
+                      <th scope="row">{row.label}</th>
+                      <td className="num">{integer(row.count)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+          }
+        >
+          {saChart.map((row, index) => (
+            <li key={row.label}>
+              <div className={styles.barMeta}>
+                <span title={row.label}>{shortName(row.label, 56)}</span>
+                <strong>
+                  {integer(row.count)}
+                  <small> CIG</small>
+                </strong>
+              </div>
+              <div className={styles.barTrack} aria-hidden="true">
+                <i style={{ width: `${shareOfMax(row.count, saMax)}%` }} />
+              </div>
+              <span className={styles.barRank}>#{index + 1}</span>
+            </li>
+          ))}
+        </RankingPanel>
 
-        <article className={`${styles.summaryCard} ${styles.summaryCardWide}`} aria-labelledby="top-oggetto-title">
-          <h3 id="top-oggetto-title">Oggetti di gara più ripetuti</h3>
-          <p className={styles.summaryLead}>
-            Testo oggetto del CIG ripetuto alla lettera più volte. Esclude etichette vuote o non
-            pubblicabili in fonte.
-          </p>
-          <ScrollRegion
-            className={`table-scroll ${styles.tableScroll}`}
-            role="region"
-            aria-label="Tabella oggetti di gara ricorrenti"
-            tabIndex={0}
-          >
-            <table className="table">
-              <caption>Top oggetti procedura per numero di CIG</caption>
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Oggetto (testo ANAC)</th>
-                  <th scope="col" className="num">
-                    CIG
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.topProcedureObjects.map((row, index) => (
-                  <tr key={`${row.label}-${row.count}`}>
-                    <td className="num">{integer(index + 1)}</td>
-                    <th scope="row">{row.label}</th>
-                    <td className="num">{integer(row.count)}</td>
+        <RankingPanel
+          id="top-oggetto-title"
+          title="Oggetti di gara più ripetuti"
+          lead="Testo oggetto del CIG ripetuto alla lettera. Esclude etichette vuote o non pubblicabili in fonte."
+          tag="Top 10 · oggetti"
+          ariaLabel="Classifica oggetti di gara"
+          wide
+          exactTable={
+            <ScrollRegion
+              className={`table-scroll ${styles.tableScroll}`}
+              role="region"
+              aria-label="Tabella oggetti di gara ricorrenti"
+              tabIndex={0}
+            >
+              <table className="table">
+                <caption>Top oggetti procedura per numero di CIG</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Oggetto (testo ANAC)</th>
+                    <th scope="col" className="num">
+                      CIG
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollRegion>
-        </article>
+                </thead>
+                <tbody>
+                  {summaries.topProcedureObjects.map((row, index) => (
+                    <tr key={`${row.label}-${row.count}`}>
+                      <td className="num">{integer(index + 1)}</td>
+                      <th scope="row">{row.label}</th>
+                      <td className="num">{integer(row.count)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+          }
+        >
+          {oggettoChart.map((row, index) => (
+            <li key={`${row.label}-${row.count}`}>
+              <div className={styles.barMeta}>
+                <span title={row.label}>{shortName(row.label, 72)}</span>
+                <strong>
+                  {integer(row.count)}
+                  <small> CIG</small>
+                </strong>
+              </div>
+              <div className={styles.barTrack} aria-hidden="true">
+                <i style={{ width: `${shareOfMax(row.count, oggettoMax)}%` }} />
+              </div>
+              <span className={styles.barRank}>#{index + 1}</span>
+            </li>
+          ))}
+        </RankingPanel>
       </div>
     </section>
   );
 }
+
 
 function SearchSection({
   result,

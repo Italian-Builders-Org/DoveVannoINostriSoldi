@@ -10,12 +10,14 @@ test("operatori hub leads with summary tables and glossary", () => {
   assert.match(pageSource, /Cosa compare più spesso/);
   assert.match(pageSource, /Imprese con più aggiudicazioni/);
   assert.match(pageSource, /Imprese con più valore attribuibile/);
-  assert.match(pageSource, /Categorie di lavoro più frequenti \(CPV\)/);
+  assert.match(pageSource, /Categorie di lavoro più frequenti/);
   assert.match(pageSource, /Chi bandisce più spesso/);
   assert.match(pageSource, /Oggetti di gara più ripetuti/);
   assert.match(pageSource, /Vai all&apos;elenco completo/);
   assert.match(pageSource, /vista:\s*"elenco"/);
   assert.match(pageSource, /non sono giudizi, illeciti/);
+  assert.match(pageSource, /barTrack/);
+  assert.match(pageSource, /Apri la tabella con i numeri esatti/);
 });
 
 test("operatori full list stays behind vista=elenco with back link", () => {

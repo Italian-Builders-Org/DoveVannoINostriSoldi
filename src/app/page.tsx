@@ -409,33 +409,6 @@ export default async function HomePage({
             </p>
           )}
         </section>
-
-        <section className={`panel ${styles.rankPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">
-              I {topMunicipalities.length} Comuni con più pagamenti per abitante
-            </h2>
-          </div>
-          <ol className={styles.rankList}>
-            {topMunicipalities.map((municipality, index) => (
-              <li key={municipality.codiceFiscale}>
-                <span>{index + 1}</span>
-                <strong>
-                  {municipalityName(municipality.name)}
-                  <small>
-                    {municipality.population === null
-                      ? "popolazione non disponibile"
-                      : `${integer(municipality.population)} abitanti`}
-                  </small>
-                </strong>
-                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
-              </li>
-            ))}
-          </ol>
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi il confronto territoriale
-          </Link>
-        </section>
       </div>
 
       <div className={styles.rightRail}>
@@ -553,6 +526,33 @@ export default async function HomePage({
           <RegionCrestAttribution />
           <Link className="btn btn-block" href={`/territori?anno=${year}`}>
             Tutte le regioni
+          </Link>
+        </section>
+
+        <section className={`panel ${styles.rankPanel}`}>
+          <div className={styles.panelHead}>
+            <h2 className="panel-title">
+              I {topMunicipalities.length} Comuni con più pagamenti per abitante
+            </h2>
+          </div>
+          <ol className={styles.rankList}>
+            {topMunicipalities.map((municipality, index) => (
+              <li key={municipality.codiceFiscale}>
+                <span>{index + 1}</span>
+                <strong>
+                  {municipalityName(municipality.name)}
+                  <small>
+                    {municipality.population === null
+                      ? "popolazione non disponibile"
+                      : `${integer(municipality.population)} abitanti`}
+                  </small>
+                </strong>
+                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
+              </li>
+            ))}
+          </ol>
+          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+            Vedi il confronto territoriale
           </Link>
         </section>
 

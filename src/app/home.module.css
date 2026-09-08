@@ -8,7 +8,9 @@
   grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
   grid-template-areas:
     "italy italy"
-    "leftRail rightRail"
+    "summary map"
+    "months regions"
+    "rank cohesion"
     "anomalies anomalies"
     "reading reading";
   align-items: start;
@@ -69,26 +71,24 @@
 }
 
 .column { display: contents; }
+/* Rails stay in the markup for grouping, but never form a stretched row:
+   each panel owns its grid area so DOM order can keep the map before the
+   municipality ranking (browser production gate + screen readers). */
 .leftRail,
 .rightRail {
-  display: grid;
-  gap: var(--space-4);
-  align-content: start;
-  min-width: 0;
+  display: contents;
 }
-.leftRail { grid-area: leftRail; }
-.rightRail { grid-area: rightRail; }
-.summaryPanel { display: flex; flex-direction: column; min-width: 0; }
+.summaryPanel { grid-area: summary; display: flex; flex-direction: column; min-width: 0; }
 .summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(250px, 1fr) auto auto auto; --composition-height: 100%; }
 .summaryPanel .rule { width: 100%; }
-.mapPanel { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.mapPanel { grid-area: map; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
 .mapPanel .mapStage { display: block; flex: none; }
 .mapPanel .mapStage > div { width: 100%; }
-.monthsPanel { display: flex; flex-direction: column; min-width: 0; }
+.monthsPanel { grid-area: months; display: flex; flex-direction: column; min-width: 0; }
 .monthsPanel .monthList { flex: 1; justify-content: space-evenly; }
-.regionsPanel { min-width: 0; }
-.rankPanel { min-width: 0; }
-.cohesionPanel { min-width: 0; }
+.regionsPanel { grid-area: regions; min-width: 0; }
+.rankPanel { grid-area: rank; min-width: 0; }
+.cohesionPanel { grid-area: cohesion; min-width: 0; }
 .anomaliesPanel { grid-area: anomalies; min-width: 0; }
 .readingPanel { grid-area: reading; }
 
@@ -572,14 +572,6 @@
       "anomalies"
       "reading";
   }
-  .leftRail,
-  .rightRail { display: contents; }
-  .summaryPanel { grid-area: summary; }
-  .mapPanel { grid-area: map; }
-  .monthsPanel { grid-area: months; }
-  .regionsPanel { grid-area: regions; }
-  .rankPanel { grid-area: rank; }
-  .cohesionPanel { grid-area: cohesion; }
   .summaryPanel > [data-composition-state] { flex: none; --composition-height: clamp(250px, 62cqw, 320px); }
   .monthsPanel .monthList { gap: 10px; }
 

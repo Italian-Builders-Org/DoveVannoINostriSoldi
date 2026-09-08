@@ -83,11 +83,14 @@ test("home page leads with Italy charts then keeps the municipal map", async () 
   assert.match(css, /\.italySummary \{/);
   assert.match(css, /\.italySplit \{/);
   assert.match(css, /grid-area: italy;/);
-  assert.match(css, /\.leftRail \{/);
+  assert.match(css, /\.leftRail,/);
   assert.match(css, /\.rightRail \{/);
-  assert.match(css, /align-items: start;/);
+  assert.match(css, /display: contents;/);
+  assert.match(css, /"summary map"/);
+  assert.match(css, /"rank cohesion"/);
   assert.match(page, /styles\.leftRail/);
   assert.match(page, /styles\.rightRail/);
+  assert.match(page, /styles\.mapPanel[\s\S]*styles\.rankPanel/);
   assert.match(css, /\.mapStage/);
   assert.match(chartCss, /--chart-data-primary/);
   assert.doesNotMatch(charts, /HomeShareStrip|SpendingBarChart|chartColor/);

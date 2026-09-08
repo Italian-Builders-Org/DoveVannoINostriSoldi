@@ -235,11 +235,16 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
     files = tuple(item.get("files") or ())
     if not files or any(not isinstance(path, str) or not path for path in files):
         raise PublishError(f"artifact has no valid generated file allowlist: {artifact_id}")
+    offline_command = offline["command"]
+    if artifact_id == "siope-nonmunicipal":
+        # Publication mutates shared proofs; verify the full release at this boundary.
+        # CI already runs that real gate in its ETL suite, outside the native check.
+        offline_command = "python3 scripts/ci/check-siope-nonmunicipal-refresh.py"
     return Artifact(
         artifact_id=artifact_id,
         files=files,
         workflow=item["refreshWorkflow"],
-        offline_command=offline["command"],
+        offline_command=offline_command,
         node_tests=tuple(item.get("nodeTests") or ()),
         reconciliation_tests=tuple(item.get("reconciliationTests") or ()),
         publication=Publication(

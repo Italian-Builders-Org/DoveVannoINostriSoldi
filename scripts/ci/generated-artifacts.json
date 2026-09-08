@@ -844,7 +844,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python3 scripts/ci/check-siope-nonmunicipal-refresh.py",
+        "command": "python3 scripts/etl/siope_nonmunicipal.py --check",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
@@ -861,7 +861,7 @@
       },
       "refreshWorkflow": ".github/workflows/siope-nonmunicipal-refresh.yml",
       "sourceSpec": "scripts/etl/specs/siope-nonmunicipal.source.json",
-      "trustModel": "Receipt-verified 2024–2026 payments; bounded monthly acquisition, source-specific corpus promotion and managed PR candidate only. All non-SIOPE contributions remain pinned. Schedule configuration does not attest execution.",
+      "trustModel": "Receipt-verified 2024–2026 payments; bounded monthly acquisition, source-specific corpus promotion and managed PR candidate only. CI combines the native SIOPE check with the real integrated release gate in the ETL suite; refresh and publisher validate the complete correlated release. All non-SIOPE contributions remain pinned. Schedule configuration does not attest execution.",
       "publication": {
         "branch": "automation/data/siope-nonmunicipal",
         "commitTitle": "chore(data): refresh SIOPE nonmunicipal payments",

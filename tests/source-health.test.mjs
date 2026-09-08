@@ -24,7 +24,7 @@ test("source status page uses the persistent five-minute health cache", () => {
   assert.match(route, /observedAt:\s*checkedAt/);
   assert.doesNotMatch(route, /const observedAt = new Date\(\)\.toISOString\(\)/);
   assert.match(cache, /SOURCE_HEALTH_CACHE_SECONDS = 300/);
-  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 6_000 \}\)/);
+  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 4_000 \}\)/);
   assert.match(cache, /return \{ checkedAt: new Date\(\)\.toISOString\(\), sources \}/);
 });
 

@@ -13,7 +13,7 @@
     "brand:check": "node scripts/brand/generate-icons.mjs --check",
     "readme:screenshots": "node scripts/brand/capture-readme.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/ci/check-runtime-traces.mjs",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",

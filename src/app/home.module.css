@@ -1,15 +1,59 @@
 /*
- * The home dashboard keeps one reading rail, one geographic canvas and one
- * detail rail. DOM order survives when the rails collapse.
+ * Home: Italy PA/State band first, then the municipal reading rail + map.
+ * DOM order survives when the rails collapse.
  */
 
 .dashboard {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
-  grid-template-areas: "summary map" "months regions" "rank cohesion" "anomalies anomalies" "reading reading";
-  align-items: stretch;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  grid-template-areas:
+    "italy italy"
+    "leftRail rightRail"
+    "anomalies anomalies"
+    "reading reading";
+  align-items: start;
   gap: var(--space-4);
   padding-block: var(--space-4) 0;
+}
+
+.italyBand {
+  grid-area: italy;
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.italySummary {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.italySplit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.italyChartPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.italyChartPanel :global(.panel-title) {
+  margin-bottom: 0;
+}
+
+.comuniAnchor {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .pageTitle {
@@ -25,17 +69,29 @@
 }
 
 .column { display: contents; }
-.summaryPanel { grid-area: summary; display: flex; flex-direction: column; min-width: 0; }
+/* Two independent stacks: a tall left composition must not stretch the map
+   row or leave a blank band above the regions table. */
+.leftRail,
+.rightRail {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  align-self: start;
+  min-width: 0;
+}
+.leftRail { grid-area: leftRail; }
+.rightRail { grid-area: rightRail; }
+.summaryPanel { display: flex; flex-direction: column; min-width: 0; }
 .summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(250px, 1fr) auto auto auto; --composition-height: 100%; }
 .summaryPanel .rule { width: 100%; }
-.mapPanel { grid-area: map; display: flex; flex-direction: column; min-width: 0; }
-.mapPanel .mapStage { flex: 1; display: flex; align-items: center; }
+.mapPanel { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; height: fit-content; }
+.mapPanel .mapStage { display: block; flex: none; }
 .mapPanel .mapStage > div { width: 100%; }
-.monthsPanel { grid-area: months; display: flex; flex-direction: column; min-width: 0; }
-.monthsPanel .monthList { flex: 1; justify-content: space-evenly; }
-.regionsPanel { grid-area: regions; min-width: 0; }
-.rankPanel { grid-area: rank; min-width: 0; }
-.cohesionPanel { grid-area: cohesion; min-width: 0; }
+.monthsPanel { display: flex; flex-direction: column; min-width: 0; height: fit-content; }
+.monthsPanel .monthList { flex: none; }
+.regionsPanel { min-width: 0; height: fit-content; }
+.rankPanel { min-width: 0; height: fit-content; }
+.cohesionPanel { min-width: 0; height: fit-content; }
 .anomaliesPanel { grid-area: anomalies; min-width: 0; }
 .readingPanel { grid-area: reading; }
 
@@ -49,6 +105,7 @@
   column-gap: var(--space-2);
   row-gap: var(--space-2);
   min-height: 44px;
+  overflow: visible;
 }
 .panelHead :global(.panel-title),
 .panelHead > h2 {
@@ -67,9 +124,19 @@
 }
 
 .panelHead > :global([data-info-tooltip]),
-.panelHead > :global(nav) {
+.panelHead > :global(nav),
+.panelHeadActions {
   grid-area: action;
   align-self: start;
+}
+
+.panelHeadActions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Keep each compact card on one internal rhythm. A flex panel can anchor its
@@ -100,14 +167,15 @@
 .actionPanel .ratioHead,
 .actionPanel .ratioTrack { margin-top: 0; }
 .periodSelector {
-  justify-self: stretch;
+  justify-self: end;
   margin-bottom: 0;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .mapStage {
   container: regional-map / inline-size;
   min-width: 0;
-  margin-top: var(--space-3);
 }
 
 .regionNameCell {
@@ -236,12 +304,11 @@
 /* ── map side statistics ────────────────────────────────────────────────── */
 
 .mapStats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  gap: 8px;
 }
 .mapStats > div {
-  padding: 12px 14px;
+  padding: 8px 12px;
   background: var(--color-neutral-100);
   border: 1px solid var(--color-neutral-200);
 }
@@ -254,17 +321,17 @@
 }
 .mapStats strong {
   display: block;
-  margin: 6px 0 4px;
+  margin: 4px 0 2px;
   font-family: var(--font-heading);
-  font-size: 21px;
+  font-size: 18px;
   font-weight: var(--font-heading-weight);
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
 }
-.mapStats small {
-  display: block;
-  font-size: 12px;
-  color: var(--color-neutral-600);
+.mapStats a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
 }
 
 .attribution {
@@ -272,6 +339,7 @@
   font-size: 11px;
   color: var(--color-neutral-600);
 }
+.mapPanel .attribution { margin-top: 0; }
 
 /* ── month bars ─────────────────────────────────────────────────────────── */
 
@@ -471,10 +539,62 @@
 
 /* ── responsive ─────────────────────────────────────────────────────────── */
 
+@media (max-width: 980px) {
+  .italySplit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .italySummary .panelHead,
+  .italyChartPanel .panelHead {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "title"
+      "action"
+      "note";
+  }
+
+  .italySummary .panelHeadActions {
+    justify-self: stretch;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
 @media (max-width: 900px) {
-  .dashboard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "summary" "months" "map" "regions" "rank" "cohesion" "anomalies" "reading"; }
+  .dashboard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "italy"
+      "summary"
+      "map"
+      "regions"
+      "months"
+      "rank"
+      "cohesion"
+      "anomalies"
+      "reading";
+  }
+  .leftRail,
+  .rightRail { display: contents; }
+  .summaryPanel { grid-area: summary; }
+  .mapPanel { grid-area: map; }
+  .monthsPanel { grid-area: months; }
+  .regionsPanel { grid-area: regions; }
+  .rankPanel { grid-area: rank; }
+  .cohesionPanel { grid-area: cohesion; }
   .summaryPanel > [data-composition-state] { flex: none; --composition-height: clamp(250px, 62cqw, 320px); }
   .monthsPanel .monthList { gap: 10px; }
+
+  .mapPanel .panelHead,
+  .regionsPanel .panelHead,
+  .rankPanel .panelHead {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "title"
+      "action"
+      "note";
+  }
 }
 
 @media (max-width: 1100px) {
@@ -511,7 +631,7 @@
   }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 360px) {
   .mapStats { grid-template-columns: 1fr; }
 }
 

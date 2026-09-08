@@ -1,0 +1,1610 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-bes-salute",
+  "domain": {
+    "code": "BES_01",
+    "label": "Salute",
+    "edition": "2025"
+  },
+  "period": {
+    "from": 2004,
+    "to": 2024
+  },
+  "periodNote": "Il periodo complessivo non vale per tutti: speranza di vita 2004–2024, incidenti stradali 2004–2023, altri quattro indicatori 2004–2022; copertura per sesso/anno dichiarata per indicatore.",
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "dataflowId": "DF_BES_TERRIT_1",
+    "dataflowVersion": "1.0",
+    "dataStructure": "BES_TERRIT v1.1",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non dichiara una licenza; non viene inferita da altri dataset.",
+    "publicationDate": null,
+    "acquisitionDate": "2026-09-08",
+    "checkedAt": "2026-09-08",
+    "assets": {
+      "csv": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_1,1.0/A..BES_01.01SAL001+01SAL004+01SAL005+01SAL006+01SAL007+01SAL020.F+M+T.2025",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 5173261,
+        "sha256": "4c7a6de5c5b553a801f00391ef37f53164d847b8c6b7bad3365622c685d2f508"
+      },
+      "structure": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/DF_BES_TERRIT_1/1.0?references=all",
+        "format": "SDMX-ML Structure 2.1",
+        "bytes": 13319248,
+        "sha256": "3c86c4b4749eae51b3a527e1ad41b503fac022169c3f2717f6899efdbe7708fa"
+      }
+    }
+  },
+  "headers": [
+    "DATAFLOW",
+    "FREQ",
+    "REF_AREA",
+    "DOMAIN",
+    "DATA_TYPE",
+    "SEX",
+    "EDITION",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_STATUS",
+    "NOTE_DS",
+    "NOTE_REF_AREA",
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE",
+    "NOTE_DATA_TYPE",
+    "NOTE_DATA_TYPE_DESCR",
+    "NOTE_DATA_TYPE_SOURCE",
+    "NOTE_TIME_PERIOD",
+    "BASE_PER",
+    "UNIT_MEAS",
+    "UNIT_MULT"
+  ],
+  "fixedDimensions": {
+    "DATAFLOW": "IT1:DF_BES_TERRIT_1(1.0)",
+    "FREQ": "A",
+    "DOMAIN": "BES_01",
+    "EDITION": "2025"
+  },
+  "attributes": {
+    "NOTE_DS": [
+      ""
+    ],
+    "NOTE_REF_AREA": [
+      ""
+    ],
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE_DESCR": [
+      "01SAL001",
+      "01SAL004",
+      "01SAL005",
+      "01SAL006",
+      "01SAL007",
+      "01SAL020"
+    ],
+    "NOTE_DATA_TYPE_SOURCE": [
+      "01SAL001_SOU",
+      "01SAL004_SOU",
+      "01SAL005_SOU",
+      "01SAL006_SOU",
+      "01SAL007_SOU",
+      "01SAL020_SOU"
+    ],
+    "NOTE_TIME_PERIOD": [
+      ""
+    ],
+    "BASE_PER": [
+      ""
+    ],
+    "UNIT_MULT": [
+      ""
+    ]
+  },
+  "indicators": [
+    {
+      "code": "01SAL001",
+      "label": "speranza di vita alla nascita",
+      "description": "la speranza di vita esprime il numero medio di anni che un bambino che nasce in un certo anno di calendario può aspettarsi di vivere.",
+      "source": "istat - tavole di mortalità della popolazione italiana",
+      "unit": "AVG_NY",
+      "unitLabel": "Numero medio di anni",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2024
+      },
+      "observations": 8306,
+      "flagged": 0,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 135,
+        "F/2006": 135,
+        "F/2007": 135,
+        "F/2008": 135,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 135,
+        "F/2013": 135,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 115,
+        "F/2022": 135,
+        "F/2023": 135,
+        "F/2024": 135,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 135,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 135,
+        "M/2012": 135,
+        "M/2013": 135,
+        "M/2014": 134,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 135,
+        "M/2024": 128,
+        "T/2004": 111,
+        "T/2005": 135,
+        "T/2006": 135,
+        "T/2007": 135,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 84,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 77,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 107,
+        "T/2022": 125,
+        "T/2023": 135,
+        "T/2024": 135
+      },
+      "summableAcrossTerritories": false
+    },
+    {
+      "code": "01SAL004",
+      "label": "mortalità infantile",
+      "description": "decessi nel primo anno di vita per 1.000 nati vivi residenti.",
+      "source": "istat - per i decessi: indagine sui decessi e sulle cause di morte. per i nati vivi: rilevazione annuale movimento e calcolo della popolazione residente",
+      "unit": "PER_1THOU_LBIRTHS",
+      "unitLabel": "Per 1.000 nati vivi",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2022
+      },
+      "observations": 7473,
+      "flagged": 0,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 135,
+        "F/2006": 135,
+        "F/2007": 86,
+        "F/2008": 135,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 135,
+        "F/2013": 135,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 115,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 135,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 135,
+        "M/2012": 135,
+        "M/2013": 135,
+        "M/2014": 135,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 75,
+        "M/2021": 87,
+        "M/2022": 135,
+        "T/2004": 135,
+        "T/2005": 135,
+        "T/2006": 120,
+        "T/2007": 135,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 105,
+        "T/2022": 135
+      },
+      "summableAcrossTerritories": false
+    },
+    {
+      "code": "01SAL005",
+      "label": "mortalità per incidenti stradali (15-34 anni)",
+      "description": "tassi di mortalità per incidenti stradali standardizzati con la popolazione europea al 2013 all'interno della classe di età 15-34 anni, per 10.000 residenti.",
+      "source": "istat - per i decessi: rilevazione degli incidenti stradali con lesioni alle persone. per la popolazione: rilevazione sulla popolazione residente comunale per sesso, anno di nascita e stato civile",
+      "unit": "STA_RA_PER_10THOU",
+      "unitLabel": "Tassi standardizzati per 10.000 residenti",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2023
+      },
+      "observations": 7930,
+      "flagged": 1,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 135,
+        "F/2006": 135,
+        "F/2007": 135,
+        "F/2008": 28,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 135,
+        "F/2013": 135,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "F/2023": 135,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 135,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 135,
+        "M/2012": 135,
+        "M/2013": 135,
+        "M/2014": 135,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 115,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 135,
+        "T/2004": 135,
+        "T/2005": 135,
+        "T/2006": 135,
+        "T/2007": 135,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 134,
+        "T/2018": 115,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 113
+      },
+      "summableAcrossTerritories": false
+    },
+    {
+      "code": "01SAL006",
+      "label": "mortalità per tumore (20-64 anni)",
+      "description": "tassi di mortalità per tumori (causa iniziale) standardizzati con la popolazione europea al 2013 all'interno della classe di età 20-64 anni, per 10.000 residenti.",
+      "source": "istat - per i decessi: istat, indagine sui decessi e sulle cause di morte. per la popolazione: istat, rilevazione sulla popolazione residente comunale.",
+      "unit": "STA_RA_PER_10THOU",
+      "unitLabel": "Tassi standardizzati per 10.000 residenti",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2022
+      },
+      "observations": 7659,
+      "flagged": 0,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 135,
+        "F/2006": 135,
+        "F/2007": 135,
+        "F/2008": 122,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 135,
+        "F/2013": 135,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 128,
+        "F/2021": 132,
+        "F/2022": 135,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 135,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 135,
+        "M/2012": 122,
+        "M/2013": 135,
+        "M/2014": 135,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "T/2004": 135,
+        "T/2005": 135,
+        "T/2006": 135,
+        "T/2007": 135,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135
+      },
+      "summableAcrossTerritories": false
+    },
+    {
+      "code": "01SAL007",
+      "label": "mortalità per demenze e malattie del sistema nervoso (65 anni e più)",
+      "description": "tassi di mortalità per malattie del sistema nervoso e disturbi psichici e comportamentali (causa iniziale) standardizzati con la popolazione europea al 2013 all'interno della classe di età 65 anni e più, per 10.000 residenti.",
+      "source": "istat - per i decessi: istat, indagine sui decessi e sulle cause di morte. per la popolazione: istat, rilevazione sulla popolazione residente comunale.",
+      "unit": "STA_RA_PER_10THOU",
+      "unitLabel": "Tassi standardizzati per 10.000 residenti",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2022
+      },
+      "observations": 7376,
+      "flagged": 0,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 112,
+        "F/2006": 135,
+        "F/2007": 135,
+        "F/2008": 135,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 135,
+        "F/2013": 135,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 80,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 108,
+        "M/2012": 135,
+        "M/2013": 135,
+        "M/2014": 135,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "T/2004": 135,
+        "T/2005": 135,
+        "T/2006": 135,
+        "T/2007": 28,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 28,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135
+      },
+      "summableAcrossTerritories": false
+    },
+    {
+      "code": "01SAL020",
+      "label": "mortalità evitabile (0-74 anni)",
+      "description": "decessi di persone di 0-74 anni la cui causa di morte è identificata come trattabile (gran parte dei decessi per tale causa potrebbe essere evitata grazie a un'assistenza sanitaria tempestiva ed efficace, che include la prevenzione secondaria e i trattamenti) o prevenibile (gran parte dei decessi per tale causa potrebbe essere evitata con efficaci interventi di prevenzione primaria e di salute pubblica). la definizione delle liste di cause trattabili e prevenibili si basa sul lavoro congiunto oecd/eurostat, rivisto nel novembre 2019. tassi standardizzati con la popolazione europea al 2013 all'interno della classe di età 0-74 per 10.000 residenti.",
+      "source": "istat - indagine sui decessi e sulle cause di morte",
+      "unit": "STA_RA_PER_10THOU",
+      "unitLabel": "Tassi standardizzati per 10.000 residenti",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2022
+      },
+      "observations": 7413,
+      "flagged": 0,
+      "coverage": {
+        "F/2004": 135,
+        "F/2005": 135,
+        "F/2006": 135,
+        "F/2007": 128,
+        "F/2008": 135,
+        "F/2009": 135,
+        "F/2010": 135,
+        "F/2011": 135,
+        "F/2012": 131,
+        "F/2013": 86,
+        "F/2014": 135,
+        "F/2015": 135,
+        "F/2016": 135,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 101,
+        "F/2022": 115,
+        "M/2004": 135,
+        "M/2005": 135,
+        "M/2006": 135,
+        "M/2007": 135,
+        "M/2008": 135,
+        "M/2009": 135,
+        "M/2010": 135,
+        "M/2011": 135,
+        "M/2012": 135,
+        "M/2013": 135,
+        "M/2014": 135,
+        "M/2015": 135,
+        "M/2016": 135,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 92,
+        "M/2020": 90,
+        "M/2021": 135,
+        "M/2022": 135,
+        "T/2004": 135,
+        "T/2005": 135,
+        "T/2006": 115,
+        "T/2007": 135,
+        "T/2008": 135,
+        "T/2009": 135,
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 75,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135
+      },
+      "summableAcrossTerritories": false
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "country",
+      "depth": 0,
+      "parent": null
+    },
+    {
+      "code": "IT108",
+      "label": "Monza e della Brianza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "IT109",
+      "label": "Fermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "IT110",
+      "label": "Barletta-Andria-Trani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "IT111",
+      "label": "Sud Sardegna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITC",
+      "label": "Nord-ovest",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITC1",
+      "label": "Piemonte",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC11",
+      "label": "Torino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC12",
+      "label": "Vercelli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC13",
+      "label": "Biella",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC14",
+      "label": "Verbano-Cusio-Ossola",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC15",
+      "label": "Novara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC16",
+      "label": "Cuneo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC17",
+      "label": "Asti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC18",
+      "label": "Alessandria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC2",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC20",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC2"
+    },
+    {
+      "code": "ITC3",
+      "label": "Liguria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC31",
+      "label": "Imperia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC32",
+      "label": "Savona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC33",
+      "label": "Genova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC34",
+      "label": "La Spezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC4",
+      "label": "Lombardia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC41",
+      "label": "Varese",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC42",
+      "label": "Como",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC43",
+      "label": "Lecco",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC44",
+      "label": "Sondrio",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC45",
+      "label": "Milano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC46",
+      "label": "Bergamo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC47",
+      "label": "Brescia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC48",
+      "label": "Pavia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC49",
+      "label": "Lodi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4A",
+      "label": "Cremona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4B",
+      "label": "Mantova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITCD",
+      "label": "Nord",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITC",
+        "ITD"
+      ]
+    },
+    {
+      "code": "ITD",
+      "label": "Nord-est",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITD10",
+      "label": "Bolzano / Bozen",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD1"
+    },
+    {
+      "code": "ITD20",
+      "label": "Trento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD2"
+    },
+    {
+      "code": "ITD3",
+      "label": "Veneto",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD31",
+      "label": "Verona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD32",
+      "label": "Vicenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD33",
+      "label": "Belluno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD34",
+      "label": "Treviso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD35",
+      "label": "Venezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD36",
+      "label": "Padova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD37",
+      "label": "Rovigo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD4",
+      "label": "Friuli-Venezia Giulia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD41",
+      "label": "Pordenone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD42",
+      "label": "Udine",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD43",
+      "label": "Gorizia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD44",
+      "label": "Trieste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD5",
+      "label": "Emilia-Romagna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD51",
+      "label": "Piacenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD52",
+      "label": "Parma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD53",
+      "label": "Reggio nell'Emilia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD54",
+      "label": "Modena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD55",
+      "label": "Bologna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD56",
+      "label": "Ferrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD57",
+      "label": "Ravenna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD58",
+      "label": "Forlì-Cesena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD59",
+      "label": "Rimini",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITDA",
+      "label": "Trentino Alto Adige / Südtirol",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITE",
+      "label": "Centro",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITE1",
+      "label": "Toscana",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE11",
+      "label": "Massa-Carrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE12",
+      "label": "Lucca",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE13",
+      "label": "Pistoia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE14",
+      "label": "Firenze",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE15",
+      "label": "Prato",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE16",
+      "label": "Livorno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE17",
+      "label": "Pisa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE18",
+      "label": "Arezzo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE19",
+      "label": "Siena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE1A",
+      "label": "Grosseto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE2",
+      "label": "Umbria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE21",
+      "label": "Perugia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE22",
+      "label": "Terni",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE3",
+      "label": "Marche",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE31",
+      "label": "Pesaro e Urbino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE32",
+      "label": "Ancona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE33",
+      "label": "Macerata",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE34",
+      "label": "Ascoli Piceno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE4",
+      "label": "Lazio",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE41",
+      "label": "Viterbo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE42",
+      "label": "Rieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE43",
+      "label": "Roma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE44",
+      "label": "Latina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE45",
+      "label": "Frosinone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITF",
+      "label": "Sud",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITF1",
+      "label": "Abruzzo",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF11",
+      "label": "L'Aquila",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF12",
+      "label": "Teramo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF13",
+      "label": "Pescara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF14",
+      "label": "Chieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF2",
+      "label": "Molise",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF21",
+      "label": "Isernia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF22",
+      "label": "Campobasso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF3",
+      "label": "Campania",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF31",
+      "label": "Caserta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF32",
+      "label": "Benevento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF33",
+      "label": "Napoli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF34",
+      "label": "Avellino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF35",
+      "label": "Salerno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF4",
+      "label": "Puglia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF41",
+      "label": "Foggia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF42",
+      "label": "Bari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF43",
+      "label": "Taranto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF44",
+      "label": "Brindisi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF45",
+      "label": "Lecce",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF5",
+      "label": "Basilicata",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF51",
+      "label": "Potenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF52",
+      "label": "Matera",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF6",
+      "label": "Calabria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF61",
+      "label": "Cosenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF62",
+      "label": "Crotone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF63",
+      "label": "Catanzaro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF64",
+      "label": "Vibo Valentia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF65",
+      "label": "Reggio di Calabria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITFG",
+      "label": "Mezzogiorno",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITF",
+        "ITG"
+      ]
+    },
+    {
+      "code": "ITG",
+      "label": "Isole",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITG1",
+      "label": "Sicilia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG11",
+      "label": "Trapani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG12",
+      "label": "Palermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG13",
+      "label": "Messina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG14",
+      "label": "Agrigento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG15",
+      "label": "Caltanissetta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG16",
+      "label": "Enna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG17",
+      "label": "Catania",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG18",
+      "label": "Ragusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG19",
+      "label": "Siracusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG2",
+      "label": "Sardegna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG25",
+      "label": "Sassari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG26",
+      "label": "Nuoro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG27",
+      "label": "Cagliari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG28",
+      "label": "Oristano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    }
+  ],
+  "observations": 46157,
+  "nullCells": [
+    [
+      "01SAL005",
+      "ITC45",
+      "F",
+      2021
+    ]
+  ],
+  "flags": {
+    "attribute": "OBS_STATUS",
+    "codelist": "CL_FLAG",
+    "knownValues": {
+      "n": "dato statisticamente non significativo (vedasi metadati di dataset)"
+    },
+    "flaggedCells": 1
+  },
+  "caveats": [
+    "Non è spesa pubblica: sono esiti demografici e sanitari, non indicatori LEA o misure di efficienza amministrativa. Non dimostrano causalità politica.",
+    "Le unità differiscono per indicatore: anni medi, decessi per 1.000 nati vivi, tassi standardizzati per 10.000 residenti nelle classi di età indicate. Nessuna somma fra indicatori o territori.",
+    "Ogni indicatore dichiara il proprio periodo e la copertura per sesso e anno; il periodo complessivo 2004–2024 non vale per tutti.",
+    "Il totale T è pubblicato dalla fonte separatamente da F e M: non va sommato alle parti né ricostruito con una loro media. Non si applica ai tassi standardizzati o alla speranza di vita il vincolo delle medie economiche.",
+    "Nord e Mezzogiorno sono aree composite che si sovrappongono alle loro parti; non sono regioni. I dati provinciali non sono dati comunali.",
+    "Le 107 province sono i codici presenti complessivamente, non una copertura costante per ogni anno e indicatore. Le variazioni territoriali impediscono confronti implicitamente a perimetro costante.",
+    "Bolzano e Trento hanno padri regionali ITD1 e ITD2 esterni alla fetta, mentre la regione presente è ITDA: il legame della fonte resta dichiarato senza inventare un raccordo.",
+    "Il flag n significa dato statisticamente non significativo: null con flag conservato, distinto dallo zero osservato e dall’assenza di una riga. Non è una soppressione per privacy.",
+    "Per la mortalità infantile la descrizione inglese della fonte dice 10.000, ma UNIT_MEAS, la codelist bilingue e la descrizione italiana concordano su 1.000 nati vivi. Si conserva l’unità strutturata senza modificare i valori.",
+    "Nessun indice composito del benessere, ranking dei territori o imputazione. BES_01 Salute resta distinto da BES_04 economico, Bes nazionale e A misura di Comune."
+  ],
+  "reconciliation": {
+    "kind": "copertura-e-unicita",
+    "territorialSum": false,
+    "totalBetweenSexes": false,
+    "note": "Controlli di chiave univoca, copertura per indicatore/sesso/anno/territorio, unità, edizione, flag e integrità; nessuna riconciliazione per somma né media F/M/T."
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Non è spesa pubblica: sono esiti demografici e sanitari, non indicatori LEA o misure di efficienza amministrativa. Non dimostrano causalità politica."
+    },
+    "periodo": {
+      "referencePeriod": "2004–2024, intervalli per indicatore",
+      "note": "Ogni indicatore dichiara il proprio periodo e la copertura per sesso e anno; il periodo complessivo 2004–2024 non vale per tutti."
+    },
+    "provenance": {
+      "holder": "ISTAT",
+      "publicationEdition": "2025",
+      "publicationDate": null,
+      "acquisitionDate": "2026-09-08",
+      "checkedAt": "2026-09-08",
+      "license": "not-declared"
+    }
+  },
+  "integrity": {
+    "sourceLockSha256": "da5663711af18e84521440e6143db85c144f2a1c930b273188a2404ea1a457fb",
+    "dataArtifact": {
+      "path": "src/data/generated/istat-bes-salute-2004-2024.data.json",
+      "bytes": 4553646,
+      "sha256": "e7e281d3011e74044cf30194952c3f93b11a4d8033e5aa478656f1657345cc2c"
+    }
+  }
+}

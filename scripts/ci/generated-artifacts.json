@@ -1167,6 +1167,32 @@
       "trustModel": "Source-lock: la risposta SDMX-CSV ufficiale di DF_BES_TERRIT_4 (dominio BES_04, edizione 2025) e acquisita con FREQ, DOMAIN ed EDITION fissati e DATA_TYPE e SEX enumerati; REF_AREA resta aperta nella chiave ma l'anagrafica dei 139 territori e vincolata nel lock e un codice fuori elenco fallisce chiuso. --check valida il bundle committato senza rete. La copertura e verificata PER INDICATORE (periodo e modalita di sesso propri), i livelli territoriali vengono dalla gerarchia CL_ITTER107 e non dalla lunghezza del codice, i compositi ITCD e ITFG sono dichiarati perche la fonte non li marca, e la rottura della catena di parentela su Bolzano e Trento e dichiarata invece che rattoppata. Nessuna misura e un conteggio: la somma territoriale NON e una riconciliazione valida e il contratto la rifiuta; vale invece l'invariante delle medie, il totale fra i due sessi, verificato su 5113 terne. Il flag CL_FLAG «g» rende la cella null, mai zero. Nessuna licenza inferita."
     },
     {
+      "id": "istat-bes-salute-2004-2024",
+      "owner": "ISTAT BesT BES_01 Salute, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-salute-2004-2024.data.json",
+        "src/data/generated/istat-bes-salute-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_salute.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_salute.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-salute.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_salute.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-salute-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock dedicato a BES_01: CSV e struttura ufficiale vincolati per URL, byte e SHA-256. Sei indicatori, unità e definizioni da codelist; copertura per sesso/anno e geografia Parent CL_ITTER107, 135 territori e 107 province. Il flag n resta null con significato statistico conservato. Zero, null e riga assente distinti; nessuna somma o riconciliazione F/M/T economica. --check e contratto runtime verificano metadati, hash e copertura offline. Licenza not-declared, nessuna inferenza."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

@@ -54,6 +54,7 @@ export type HomeFunnelSlice = Readonly<{
   amountEuro: number;
   sharePercent: number;
   href: string | null;
+  linkLabel: string | null;
 }>;
 
 export type HomeItalyFunnel = Readonly<{
@@ -115,21 +116,44 @@ function resolveCofogYear(requested: number | undefined): number {
   return to;
 }
 
-function cofogHref(code: string): string | null {
-  if (code === "GF07") return "/spese/sanita";
-  if (code === "GF09") return "/istruzione";
-  if (code === "GF10") return "/spese/pensioni";
-  if (code === "GF02") return "/stato";
-  if (code === "GF05") return "/spese/ambiente";
+function cofogLink(code: string): { href: string; linkLabel: string } | null {
+  if (code === "GF01") return { href: "/debito", linkLabel: "Debito e interessi" };
+  if (code === "GF04") return { href: "/imprese", linkLabel: "Imprese" };
+  if (code === "GF05") return { href: "/spese/ambiente", linkLabel: "Protezione dell'ambiente" };
+  if (code === "GF06") return { href: "/territori", linkLabel: "Territori" };
+  if (code === "GF07") return { href: "/spese/sanita", linkLabel: "Sanità" };
+  if (code === "GF08") return { href: "/spese/sport", linkLabel: "Sport (parziale)" };
+  if (code === "GF09") return { href: "/istruzione", linkLabel: "Istruzione" };
+  if (code === "GF10") return { href: "/spese/pensioni", linkLabel: "Pensioni" };
   return null;
 }
 
-function stateHref(mission: string): string | null {
-  if (mission === "Politiche previdenziali") return "/spese/pensioni";
-  if (mission === "Tutela della salute") return "/spese/sanita";
-  if (mission.startsWith("Istruzione")) return "/istruzione";
-  if (mission === "Difesa e sicurezza del territorio") return "/stato";
-  return "/spese/legge-di-bilancio";
+function stateLink(mission: string): { href: string; linkLabel: string } {
+  if (mission === "Politiche previdenziali") {
+    return { href: "/spese/pensioni", linkLabel: "Pensioni" };
+  }
+  if (mission === "Tutela della salute") {
+    return { href: "/spese/sanita", linkLabel: "Sanità" };
+  }
+  if (mission.startsWith("Istruzione scolastica")) {
+    return { href: "/istruzione", linkLabel: "Scuola" };
+  }
+  if (mission.startsWith("Istruzione universitaria")) {
+    return { href: "/istruzione/universita-ricerca", linkLabel: "Università e ricerca" };
+  }
+  if (mission === "Difesa e sicurezza del territorio") {
+    return { href: "/stato", linkLabel: "Spese dello Stato" };
+  }
+  if (mission === "Relazioni finanziarie con le autonomie territoriali") {
+    return { href: "/regioni", linkLabel: "Regioni" };
+  }
+  if (mission === "Competitivita' e sviluppo delle imprese") {
+    return { href: "/imprese", linkLabel: "Imprese" };
+  }
+  if (mission === "Diritti sociali, politiche sociali e famiglia") {
+    return { href: "/poverta", linkLabel: "Povertà" };
+  }
+  return { href: "/spese/legge-di-bilancio", linkLabel: "Legge di Bilancio" };
 }
 
 /**
@@ -150,42 +174,19 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
     .sort((left, right) => right.amountCents - left.amountCents);
 
   const totalEuro = eurosFromCents(total.amountCents);
-  const top = divisions.slice(0, 6);
-  const rest = divisions.slice(6);
-  const restEuro = eurosFromCents(rest.reduce((sum, row) => sum + row.amountCents, 0));
-
-  const slices: HomeFunnelSlice[] = top.map((row) => ({
-    id: row.function,
-    label: COFOG_EVERYDAY_LABELS[row.function] ?? row.function,
-    note: COFOG_EVERYDAY_NOTES[row.function] ?? null,
-    amountEuro: eurosFromCents(row.amountCents),
-    sharePercent: sharePercent(row.amountCents, total.amountCents),
-    href: cofogHref(row.function),
-  }));
-
-  if (restEuro > 0) {
-    slices.push({
-      id: "other",
-      label: "Altro",
-      note: "Somma delle funzioni restanti pubblicate da Eurostat (non un residuo inventato).",
-      amountEuro: restEuro,
-      sharePercent: sharePercent(restEuro * 100, totalEuro * 100),
-      href: null,
-    });
-  }
-
-  // Recompute "Altro" share from cents for exactness
-  if (rest.length > 0) {
-    const restCents = rest.reduce((sum, row) => sum + row.amountCents, 0);
-    const other = slices[slices.length - 1];
-    if (other?.id === "other") {
-      slices[slices.length - 1] = {
-        ...other,
-        amountEuro: eurosFromCents(restCents),
-        sharePercent: sharePercent(restCents, total.amountCents),
-      };
-    }
-  }
+  // Show every COFOG division: the chart must read as a full composition, not a truncated list.
+  const slices: HomeFunnelSlice[] = divisions.map((row) => {
+    const link = cofogLink(row.function);
+    return {
+      id: row.function,
+      label: COFOG_EVERYDAY_LABELS[row.function] ?? row.function,
+      note: COFOG_EVERYDAY_NOTES[row.function] ?? null,
+      amountEuro: eurosFromCents(row.amountCents),
+      sharePercent: sharePercent(row.amountCents, total.amountCents),
+      href: link?.href ?? null,
+      linkLabel: link?.linkLabel ?? null,
+    };
+  });
 
   const budget = getCommittedBudgetLawMissionSeries(10);
   // Prefer the same calendar year as COFOG when present; otherwise the latest enacted year.
@@ -209,16 +210,20 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
     .sort((left, right) => right.amountEur - left.amountEur)
     .slice(0, 5);
 
-  const stateSlices: HomeFunnelSlice[] = stateTop.map((row) => ({
-    id: row.mission,
-    label: STATE_EVERYDAY_LABELS[row.mission] ?? row.mission,
-    note: row.mission === "Tutela della salute"
-      ? "Nel bilancio dello Stato questa missione è piccola: la sanità pesa soprattutto su Regioni e SSN."
-      : null,
-    amountEuro: row.amountEur,
-    sharePercent: sharePercent(row.amountEur, totalWithoutDebtEuro),
-    href: stateHref(row.mission),
-  }));
+  const stateSlices: HomeFunnelSlice[] = stateTop.map((row) => {
+    const link = stateLink(row.mission);
+    return {
+      id: row.mission,
+      label: STATE_EVERYDAY_LABELS[row.mission] ?? row.mission,
+      note: row.mission === "Tutela della salute"
+        ? "Nel bilancio dello Stato questa missione è piccola: la sanità pesa soprattutto su Regioni e SSN."
+        : null,
+      amountEuro: row.amountEur,
+      sharePercent: sharePercent(row.amountEur, totalWithoutDebtEuro),
+      href: link.href,
+      linkLabel: link.linkLabel,
+    };
+  });
 
   const siopeYear = availableSiopeYears[0];
   const siope = getSiopeMunicipalSnapshot(siopeYear);

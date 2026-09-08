@@ -82,9 +82,13 @@ test("RegionCrest usa asset locali, label semantiche e fallback accessibile", as
   }
 });
 
-test("le tabelle regionali restano contenute; la home Italia non usa più la mappa SIOPE", async () => {
+test("la mappa resta in home sotto il quadro Italia; le tabelle regionali restano contenute", async () => {
   const home = await readFile(join(projectRoot, "src/app/page.tsx"), "utf8");
-  assert.doesNotMatch(home, /ItalyRegionsMap|mapStage/);
+  const homeCss = await readFile(join(projectRoot, "src/app/home.module.css"), "utf8");
+  assert.match(home, /ItalyRegionsMap/);
+  assert.match(home, /className=\{styles\.mapStage\}/);
+  assert.match(homeCss, /\.mapStage/);
+  assert.match(home, /buildHomeItalyFunnel/);
   for (const cssPath of ["src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {
     const css = await readFile(join(projectRoot, cssPath), "utf8");
     assert.doesNotMatch(css, /overflow-x:[[:space:]]*visible/i);

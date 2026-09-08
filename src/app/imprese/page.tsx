@@ -46,8 +46,7 @@ function compactCount(value: number | null): string {
   return integer(Math.round(value));
 }
 
-function compactTurnover(value: number | null): string {
-  if (value === null) return "Non disponibile";
+function compactTurnover(value: number): string {
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 1, useGrouping: "always" })} mld €`;
@@ -58,8 +57,7 @@ function compactTurnover(value: number | null): string {
   return `${integer(Math.round(value))} mila €`;
 }
 
-function compactEuroPerEmployee(value: number | null): string {
-  if (value === null) return "Non disponibile";
+function compactEuroPerEmployee(value: number): string {
   const absolute = Math.abs(value);
   if (absolute >= 1_000_000) {
     return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 2, useGrouping: "always" })} mln € / addetto`;

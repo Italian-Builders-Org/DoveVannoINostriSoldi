@@ -1372,7 +1372,11 @@ try {
         assert.match(informationText, /Uffici non disponibili in questa scheda/i);
         assert.match(informationText, /Indice PA · Enti/i);
         assert.deepEqual(await page.evaluate(() => performance.getEntriesByType("resource")
-          .map((entry) => entry.name).filter((url) => /indicepa\.gov\.it|ipa\.gov\.it/.test(url))), [], "Il profilo verificato non richiede IPA dal browser");
+          .map((entry) => entry.name).filter((url) => {
+            const hostname = new URL(url).hostname;
+            return ["indicepa.gov.it", "ipa.gov.it"].some((domain) =>
+              hostname === domain || hostname.endsWith(`.${domain}`));
+          })), [], "Il profilo verificato non richiede IPA dal browser");
         assert.equal(await page.$("details[data-structure-details]"), null);
 
         const apiResponse = await page.evaluate(async () => {

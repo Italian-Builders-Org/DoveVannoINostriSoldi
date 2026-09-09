@@ -112,6 +112,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
     "giochi del mediterraneo",
   ],
   "/spese/ambiente": ["ambiente", "clima", "epea", "istat", "rifiuti", "cepa"],
+  "/spese/difesa": ["difesa", "spesa difesa", "cofog gf02", "difesa e sicurezza del territorio"],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [
     "pensioni",

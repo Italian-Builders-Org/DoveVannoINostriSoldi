@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { SourceHealth } from "@/lib/data/source-health";
-import { getCachedSourceHealthOverview } from "@/lib/data/cached-live-views";
+import { getCachedSourceHealthOverview } from "@/lib/data/cached-source-health";
 import styles from "./stato.module.css";
 
 export const dynamic = "force-dynamic";

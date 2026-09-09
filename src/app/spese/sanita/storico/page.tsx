@@ -4,7 +4,7 @@ import { compactEuro, longDate, percent } from "@/lib/format";
 import {
   type SsnNationalHistory,
 } from "@/lib/ssn-national-history";
-import { getCachedSsnNationalHistory } from "@/lib/data/cached-live-views";
+import { getCachedSsnNationalHistory } from "@/lib/data/cached-ssn-history";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { HealthSpendingHistoryChart } from "@/components/charts/health-spending-history-chart";
 import styles from "./storico.module.css";

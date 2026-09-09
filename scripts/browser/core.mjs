@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
+import { inspectDefence } from "./defence.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
@@ -901,6 +902,14 @@ try {
       });
       completed.push(label);
     }
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Spesa per la difesa ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/", width, validate: inspectDefence,
+    });
+    completed.push(label);
   }
 
   for (const width of [320, 390, 768, 1280]) {

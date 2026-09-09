@@ -65,6 +65,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/spese/ambiente",
   "/spese/consulenze",
   "/spese/cultura",
+  "/spese/difesa",
   "/spese/invalidita",
   "/spese/pensioni",
   "/spese/legge-di-bilancio",

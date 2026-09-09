@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -21,18 +21,26 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>("light");
+
   useEffect(() => {
-    applyTheme(getPreferredTheme());
+    const initialTheme = getPreferredTheme();
+
+    applyTheme(initialTheme);
+
+    const timeout = window.setTimeout(() => {
+      setTheme(initialTheme);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   const toggleTheme = () => {
-    const currentTheme =
-      document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-
-    const nextTheme: Theme = currentTheme === "dark" ? "light" : "dark";
+    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
 
     applyTheme(nextTheme);
     localStorage.setItem("theme", nextTheme);
+    setTheme(nextTheme);
   };
 
   return (
@@ -40,16 +48,12 @@ export function ThemeToggle() {
       type="button"
       className="header-action header-action-icon theme-toggle"
       onClick={toggleTheme}
-      aria-label="Cambia tema"
-      title="Cambia tema"
+      aria-label={
+        theme === "dark" ? "Attiva modalità chiara" : "Attiva modalità scura"
+      }
+      title={theme === "dark" ? "Modalità chiara" : "Modalità scura"}
     >
-      <span className="theme-toggle__moon" aria-hidden="true">
-        ☾
-      </span>
-
-      <span className="theme-toggle__sun" aria-hidden="true">
-        ☀
-      </span>
+      <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
     </button>
   );
 }

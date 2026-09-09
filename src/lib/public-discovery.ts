@@ -51,6 +51,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/mcp",
   "/metodologia",
   "/ministeri",
+  "/opere",
   "/palazzo-chigi",
   "/parlamento",
   "/partecipazioni",

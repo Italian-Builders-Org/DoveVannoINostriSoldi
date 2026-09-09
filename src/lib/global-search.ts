@@ -102,6 +102,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
   "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
   "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],
+  "/spese/cultura": ["cultura", "tempo libero", "spettacolo", "attivita ricreative", "culto", "gf08", "cofog cultura"],
   "/spese/sport": [
     "sport",
     "giovani e sport",
@@ -112,6 +113,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
     "giochi del mediterraneo",
   ],
   "/spese/ambiente": ["ambiente", "clima", "epea", "istat", "rifiuti", "cepa"],
+  "/spese/difesa": ["difesa", "spesa difesa", "cofog gf02", "difesa e sicurezza del territorio"],
   "/spese/sicurezza": ["ordine pubblico", "sicurezza", "cofog gf03", "spesa sicurezza"],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [

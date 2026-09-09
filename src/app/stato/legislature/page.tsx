@@ -4,7 +4,7 @@ import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import {
   type LegislatureSpendingCycle,
 } from "@/lib/state-spending-legislature";
-import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-live-views";
+import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-legislature-spending";
 import styles from "./legislature.module.css";
 
 export const dynamic = "force-dynamic";

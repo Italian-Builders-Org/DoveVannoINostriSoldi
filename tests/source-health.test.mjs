@@ -19,7 +19,7 @@ const {
 test("source status page uses the persistent five-minute health cache", () => {
   const page = readFileSync("src/app/fonti/stato/page.tsx", "utf8");
   const route = readFileSync("src/app/api/fonti/stato/route.ts", "utf8");
-  const cache = readFileSync("src/lib/data/cached-live-views.ts", "utf8");
+  const cache = readFileSync("src/lib/data/cached-source-health.ts", "utf8");
   assert.match(page, /getCachedSourceHealthOverview\(\)/);
   assert.match(page, /Ultimo controllo delle fonti:/);
   assert.doesNotMatch(page, /raggiungibili ora|Risponde ora\?|risponde in questo\s*\n?\s*momento/);

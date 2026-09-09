@@ -18,12 +18,20 @@ test("home Italy funnel exposes PA composition with everyday labels", () => {
   assert.equal(funnel.pa.slices[0]?.label, COFOG_EVERYDAY_LABELS.GF10);
   assert.match(funnel.pa.slices[0]?.label ?? "", /Pensioni/);
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF07" && slice.href === "/spese/sanita"));
-  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF02" && slice.href === null));
+  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF08" && slice.href === "/spese/cultura?anno=2024" && slice.linkLabel === "Cultura e tempo libero"));
+  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF02" && slice.href === "/spese/difesa?anno=2024"));
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF03" && slice.href === "/spese/sicurezza?anno=2024"));
   assert.match(funnel.pa.moneyNature, /SEC 2010/);
   assert.match(funnel.pa.source.href, /^https:\/\//);
   const shareSum = funnel.pa.slices.reduce((sum, slice) => sum + slice.sharePercent, 0);
   assert.ok(shareSum > 99 && shareSum < 101, `quote PA fuori tolleranza: ${shareSum}`);
+});
+
+test("home culture drill-down preserves the selected reference year", () => {
+  for (const year of [2014, 2020, 2024]) {
+    const slice = buildHomeItalyFunnel(year).pa.slices.find((row) => row.id === "GF08");
+    assert.equal(slice.href, `/spese/cultura?anno=${year}`);
+  }
 });
 
 test("home Italy funnel keeps State budget separate and excludes debt from bars", () => {

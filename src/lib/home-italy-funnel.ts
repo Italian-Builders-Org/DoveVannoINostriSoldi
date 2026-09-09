@@ -118,12 +118,13 @@ function resolveCofogYear(requested: number | undefined): number {
 
 function cofogLink(code: string, year: number): { href: string; linkLabel: string } | null {
   if (code === "GF01") return { href: "/debito", linkLabel: "Debito e interessi" };
+  if (code === "GF02") return { href: `/spese/difesa?anno=${year}`, linkLabel: "Difesa" };
   if (code === "GF03") return { href: `/spese/sicurezza?anno=${year}`, linkLabel: "Ordine pubblico e sicurezza" };
   if (code === "GF04") return { href: "/imprese", linkLabel: "Imprese" };
   if (code === "GF05") return { href: "/spese/ambiente", linkLabel: "Protezione dell'ambiente" };
   if (code === "GF06") return { href: "/territori", linkLabel: "Territori" };
   if (code === "GF07") return { href: "/spese/sanita", linkLabel: "Sanità" };
-  if (code === "GF08") return { href: "/spese/sport", linkLabel: "Sport (parziale)" };
+  if (code === "GF08") return { href: `/spese/cultura?anno=${year}`, linkLabel: "Cultura e tempo libero" };
   if (code === "GF09") return { href: "/istruzione", linkLabel: "Istruzione" };
   if (code === "GF10") return { href: "/spese/pensioni", linkLabel: "Pensioni" };
   return null;
@@ -143,7 +144,7 @@ function stateLink(mission: string): { href: string; linkLabel: string } {
     return { href: "/istruzione/universita-ricerca", linkLabel: "Università e ricerca" };
   }
   if (mission === "Difesa e sicurezza del territorio") {
-    return { href: "/stato", linkLabel: "Spese dello Stato" };
+    return { href: "/spese/difesa", linkLabel: "Difesa" };
   }
   if (mission === "Relazioni finanziarie con le autonomie territoriali") {
     return { href: "/regioni", linkLabel: "Regioni" };

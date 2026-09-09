@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCachedSourceHealthOverview } from "@/lib/data/cached-live-views";
+import { getCachedSourceHealthOverview } from "@/lib/data/cached-source-health";
 import { ConcurrencyLimiter } from "@/lib/report/rate-limit";
 import { runWithRequestBudget } from "@/lib/search/request-budget";
 

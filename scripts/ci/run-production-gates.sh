@@ -170,6 +170,7 @@ npm run test:browser:charts
 echo "::endgroup::"
 
 echo "::group::Interazioni e grafici in modalità scura"
+DVNS_COLOR_SCHEME=dark npm run test:browser:assistant
 DVNS_COLOR_SCHEME=dark npm run test:browser:core
 DVNS_COLOR_SCHEME=dark npm run test:browser:charts
 echo "::endgroup::"

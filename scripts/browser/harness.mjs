@@ -319,7 +319,10 @@ export async function navigate(
 // Creates a page with the shared viewport policy. Uses realistic browser cache
 // (no global setCacheEnabled(false)) per PR1.9.
 export async function createPage(browser, { width }) {
+  const colorScheme = process.env.DVNS_COLOR_SCHEME ?? "light";
+  assert.ok(["light", "dark"].includes(colorScheme), "DVNS_COLOR_SCHEME deve essere light o dark");
   const page = await browser.newPage();
+  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: colorScheme }]);
   page.setDefaultTimeout(10_000);
   page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT_MS);
   await page.setViewport({
@@ -354,9 +357,6 @@ export async function runScenario(
 ) {
   const id = scenarioId ?? scenarioIdFromLabel(label);
   const page = await createPage(browser, { width });
-  const colorScheme = process.env.DVNS_COLOR_SCHEME ?? "light";
-  assert.ok(["light", "dark"].includes(colorScheme), "DVNS_COLOR_SCHEME deve essere light o dark");
-  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: colorScheme }]);
   const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
   const requestedUrl = pageUrl(pathname, baseUrl);
   let thrown;

@@ -85,6 +85,24 @@ NEXT_PORT=3218 npm run test:production
 git diff --check
 ```
 
+Questi comandi definiscono il profilo **full** richiesto prima di una PR. Il
+profilo **quick** usa soltanto i test mirati del dominio modificato, come negli
+esempi in “Feedback rapido”, e serve durante lo sviluppo. `test:node` esegue la
+suite deterministica con il network guard: qualsiasi tentativo verso una rete
+esterna rende il comando fallito, anche se il codice sotto test intercetta
+l'errore.
+
+Le osservazioni che dipendono da fonti esterne sono separate nel profilo
+**live**:
+
+```bash
+npm run test:live
+```
+
+Eseguilo soltanto con rete disponibile per diagnosticare le fonti. Non fa parte
+dei gate offline della PR e un suo fallimento non sostituisce una regressione
+deterministica riproducibile.
+
 `ci:static` esegue lint, typecheck, design:check e brand:check.
 `typecheck` genera i tipi Next anche in una checkout appena installata.
 Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`

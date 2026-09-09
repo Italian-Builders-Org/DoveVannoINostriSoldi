@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
+process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
+
 const { ACTIVE_SOURCE_IDS, SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
 const {
   getSnapshotManagedSourceHealth,

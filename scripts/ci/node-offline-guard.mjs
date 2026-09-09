@@ -39,6 +39,15 @@ const isLoopback = (host) => {
 const blockMessage = (host, port) =>
   `offline verification attempted outbound connection to ${host}:${port}`;
 
+const blockedAttempts = [];
+
+const rejectExternal = (host, port) => {
+  const message = blockMessage(host, port || 443);
+  blockedAttempts.push(message);
+  process.exitCode = 1;
+  throw new Error(message);
+};
+
 const wrapUrl = (url) => {
   if (typeof url === "string") {
     try {
@@ -53,13 +62,24 @@ const wrapUrl = (url) => {
 const checkUrl = (parsed) => {
   if (!parsed || !parsed.hostname) return;
   if (!isLoopback(parsed.hostname)) {
-    throw new Error(blockMessage(parsed.hostname, parsed.port || 443));
+    rejectExternal(parsed.hostname, parsed.port);
   }
 };
 
 const active = process.env.DVNS_OFFLINE_GUARD === "1";
 
 if (active) {
+  process.on("beforeExit", () => {
+    if (blockedAttempts.length > 0) process.exitCode = 1;
+  });
+  process.on("exit", () => {
+    if (blockedAttempts.length === 0) return;
+    process.exitCode = 1;
+    process.stderr.write(
+      `[node-offline-guard] ${blockedAttempts.length} external attempt(s) recorded\n${blockedAttempts.join("\n")}\n`,
+    );
+  });
+
   // --- Patch globalThis.fetch ---
   if (typeof globalThis.fetch === "function") {
     const originalFetch = globalThis.fetch;
@@ -107,9 +127,7 @@ if (active) {
         }
       }
 
-      if (hostname && !isLoopback(hostname)) {
-        throw new Error(blockMessage(hostname, port || defaultPort));
-      }
+      if (hostname && !isLoopback(hostname)) rejectExternal(hostname, port || defaultPort);
 
       return originalRequest(urlOrOptions, optionsOrCallback, callback);
     };

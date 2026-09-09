@@ -21,18 +21,19 @@ test("external fetch is blocked under the guard", () => {
     try {
       await fetch("http://93.184.216.34/test");
       console.log("FAIL");
-      process.exit(1);
+      process.exitCode = 1;
     } catch (e) {
       if (e.message && e.message.includes("offline verification attempted outbound connection")) {
         console.log("BLOCKED");
-        process.exit(0);
+      } else {
+        console.log("UNEXPECTED:" + (e.message || e));
+        process.exitCode = 1;
       }
-      console.log("UNEXPECTED:" + (e.message || e));
-      process.exit(1);
     }
   `);
-  assert.equal(result.status, 0, `Expected exit 0, got ${result.status}\nstderr: ${result.stderr}`);
+  assert.equal(result.status, 1, `Expected guarded exit 1, got ${result.status}\nstderr: ${result.stderr}`);
   assert.match(result.stdout, /BLOCKED/);
+  assert.match(result.stderr, /external attempt.*recorded/i);
 });
 
 test("external https.request is blocked under the guard", () => {
@@ -41,18 +42,19 @@ test("external https.request is blocked under the guard", () => {
     try {
       https.request("https://93.184.216.34/test");
       console.log("FAIL");
-      process.exit(1);
+      process.exitCode = 1;
     } catch (e) {
       if (e.message && e.message.includes("offline verification attempted outbound connection")) {
         console.log("BLOCKED");
-        process.exit(0);
+      } else {
+        console.log("UNEXPECTED:" + (e.message || e));
+        process.exitCode = 1;
       }
-      console.log("UNEXPECTED:" + (e.message || e));
-      process.exit(1);
     }
   `);
-  assert.equal(result.status, 0, `Expected exit 0, got ${result.status}\nstderr: ${result.stderr}`);
+  assert.equal(result.status, 1, `Expected guarded exit 1, got ${result.status}\nstderr: ${result.stderr}`);
   assert.match(result.stdout, /BLOCKED/);
+  assert.match(result.stderr, /external attempt.*recorded/i);
 });
 
 test("loopback is not rejected by the guard", () => {

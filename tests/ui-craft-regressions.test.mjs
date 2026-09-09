@@ -187,8 +187,8 @@ test("strong civic surfaces use defined foreground tokens", async () => {
   assert.match(tokens, /--color-on-strong:\s*#[0-9a-f]{6};/i);
   assert.match(tokens, /--color-on-strong-muted:\s*#[0-9a-f]{6};/i);
   assert.match(tokens, /--space-5:\s*20px;/);
-  assert.match(cohesionCss, /color:\s*var\(--color-neutral-900\);/);
-  assert.match(cohesionCss, /color:\s*var\(--color-neutral-700\);/);
+  // The trace panel's component-specific foreground contrast is owned by
+  // tests/coesione-ui.test.mjs, including the mutation-sensitive WCAG check.
   assert.doesNotMatch(cohesionCss, /var\(--color-neutral-0\)/);
 });
 

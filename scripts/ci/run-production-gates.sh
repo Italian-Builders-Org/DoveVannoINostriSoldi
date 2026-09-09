@@ -12,6 +12,22 @@ READY_TIMEOUT="${READY_TIMEOUT:-90}"
 READY_PATH="/territori/irpef"
 BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
 
+# The MCP route allows 30 POSTs per public-client window. Keep the declared
+# production sequence auditable and fail before starting a server if it ever
+# exceeds that budget.
+MCP_WINDOW_POST_BUDGET=30
+MCP_CONTRACT_POSTS=29
+MCP_SUBSCRIPTION_POSTS=2
+MCP_LOAD_REQUESTS=15
+if (( MCP_CONTRACT_POSTS > MCP_WINDOW_POST_BUDGET )); then
+  echo "ERROR: MCP contract smoke declares ${MCP_CONTRACT_POSTS} POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
+  exit 1
+fi
+if (( MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS > MCP_WINDOW_POST_BUDGET )); then
+  echo "ERROR: MCP subscription + load declares $((MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS)) POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
+  exit 1
+fi
+
 # Next may represent an internal rewrite through `localhost` even when the
 # production-gate server is bound to 127.0.0.1. Keep browser CORS fail-closed
 # while explicitly allowing only this run-owned loopback origin.
@@ -83,6 +99,11 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+echo "::group::MCP HTTP smoke"
+npm run test:mcp:http -- --mode contract
+MCP_CONTRACT_WINDOW_COMPLETED_MS="$(node -e 'console.log(Date.now())')"
+echo "::endgroup::"
+
 echo "::group::Browser assistant chat suite"
 npm run test:browser:assistant
 echo "::endgroup::"
@@ -103,18 +124,23 @@ echo "::group::Browser papers suite"
 npm run test:browser:papers
 echo "::endgroup::"
 
-echo "::group::MCP HTTP smoke"
-npm run test:mcp:http
+echo "::group::MCP rate-limit window transition"
+# The 29 contract POSTs above share the local public-client window. Start the
+# conservative residual interval only after that group completes: every POST is
+# known to predate this timestamp. The two subscriptions and 15-sample load then
+# occupy only 17 POSTs in the next window. Browser suites that already consumed
+# the interval continue immediately.
+node scripts/ci/mcp-rate-limit-window.mjs "$MCP_CONTRACT_WINDOW_COMPLETED_MS"
+echo "::endgroup::"
+
+echo "::group::MCP subscription smoke"
+npm run test:mcp:http -- --mode subscription
 echo "::endgroup::"
 
 echo "::group::MCP local load test"
-# Smoke and load share the same local client IP. Give load its own public
-# rate-limit window as protocol coverage grows; do not weaken the limiter or
-# reduce the throughput sample. The 30 + 1 boundary is covered by route tests.
-node --input-type=module -e 'await new Promise((resolve) => setTimeout(resolve, 60000))'
 npm run test:mcp:load -- \
   --url "${BASE_URL}/api/mcp" \
-  --requests 15 \
+  --requests "$MCP_LOAD_REQUESTS" \
   --concurrency 6 \
   --p95-ms 3000
 echo "::endgroup::"

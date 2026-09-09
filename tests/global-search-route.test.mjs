@@ -213,10 +213,14 @@ test("il bulkhead limita a otto le ricerche IPA contemporanee e rilascia gli slo
 });
 
 test("il limiter locale consente sessanta ricerche al minuto per indirizzo", async () => {
-  globalThis.fetch = async () => new Response(JSON.stringify({ success: false }), {
-    status: 200,
-    headers: { "content-type": "application/json" },
-  });
+  let adapterCalls = 0;
+  globalThis.fetch = async () => {
+    adapterCalls += 1;
+    return new Response(JSON.stringify({ success: false }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
   const makeRequest = () => new Request("https://example.test/api/search?q=Roma&limit=8", {
     headers: { "X-Forwarded-For": "203.0.113.91" },
   });
@@ -227,4 +231,5 @@ test("il limiter locale consente sessanta ricerche al minuto per indirizzo", asy
   const limited = await GET(makeRequest());
   assert.equal(limited.status, 429);
   assert.equal(limited.headers.get("retry-after"), "60");
+  assert.equal(adapterCalls, 60, "la richiesta 61 non deve raggiungere l'adapter IPA");
 });

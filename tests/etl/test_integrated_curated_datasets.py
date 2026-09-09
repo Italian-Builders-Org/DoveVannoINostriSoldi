@@ -316,6 +316,99 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         self.assertEqual(receipt["publication"]["derivedOnlyRows"], 0)
         self.assertTrue(receipt["rowEquationClosed"])
 
+    def test_check_reuses_repeated_public_url_decisions_within_one_invocation(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+            "Beta||2|https://example.gov.it/atto/1|note\n"
+            "Gamma||3|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=3)
+        self.build()
+
+        original = ETL.is_safe_public_url
+        with mock.patch.object(ETL, "is_safe_public_url", wraps=original) as validator:
+            self.check()
+
+        self.assertEqual(validator.call_count, 1)
+
+    def test_check_reuses_url_decisions_across_metadata_and_rows(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+            "Beta||2|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        spec = self.write_fixture(payload, rows=2)
+        canonical_url = "https://example.gov.it/atto/1"
+        spec["sourceMetadata"]["default"]["canonicalUrls"] = [canonical_url]
+        spec["sourceMetadata"]["overrides"]["synthetic-ledger"] = {
+            "canonicalUrls": [canonical_url],
+        }
+        self.spec_path.write_text(
+            json.dumps(spec, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        self.build()
+
+        original = ETL.is_safe_public_url
+        with mock.patch.object(ETL, "is_safe_public_url", wraps=original) as validator:
+            self.check()
+
+        self.assertEqual(validator.call_count, 1)
+
+    def test_url_decision_cache_keeps_false_and_skips_long_or_raised_values(self) -> None:
+        calls: list[str] = []
+
+        def validator(url: str) -> bool:
+            calls.append(url)
+            if url == "raises":
+                raise RuntimeError("validator failure")
+            return url != "invalid"
+
+        cached = ETL._memoized_url_validator(validator)
+        self.assertFalse(cached("invalid"))
+        self.assertFalse(cached("invalid"))
+        long_url = "https://example.gov.it/" + ("a" * (ETL.PUBLIC_URL_CACHE_MAX_KEY_BYTES + 1))
+        self.assertTrue(cached(long_url))
+        self.assertTrue(cached(long_url))
+        for _ in range(2):
+            with self.assertRaisesRegex(RuntimeError, "validator failure"):
+                cached("raises")
+
+        self.assertEqual(calls.count("invalid"), 1)
+        self.assertEqual(calls.count(long_url), 2)
+        self.assertEqual(calls.count("raises"), 2)
+
+    def test_url_decision_cache_evicts_oldest_entry_at_the_limit(self) -> None:
+        calls: list[str] = []
+
+        def validator(url: str) -> bool:
+            calls.append(url)
+            return True
+
+        cached = ETL._memoized_url_validator(validator)
+        first = "https://example.gov.it/entry/0"
+        for index in range(ETL.PUBLIC_URL_CACHE_MAX_ENTRIES + 1):
+            cached(f"https://example.gov.it/entry/{index}")
+        cached(first)
+
+        self.assertEqual(calls.count(first), 2)
+
+    def test_check_does_not_share_url_decisions_between_invocations(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=1)
+        self.build()
+
+        original = ETL.is_safe_public_url
+        with mock.patch.object(ETL, "is_safe_public_url", wraps=original) as validator:
+            self.check()
+            self.check()
+
+        self.assertEqual(validator.call_count, 2)
+
     def test_public_rows_are_chunked_losslessly_at_one_thousand_rows(self) -> None:
         body = "".join(
             f"Name {index}||{index}|https://example.gov.it/atto/{index}|note\n"

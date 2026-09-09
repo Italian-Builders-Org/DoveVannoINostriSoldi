@@ -26,7 +26,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from importlib import metadata as importlib_metadata
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 from urllib.parse import parse_qsl, unquote, urlsplit
 
 try:
@@ -157,6 +157,8 @@ PUBLIC_ROW_CHUNK_MAX_RAW_BYTES = 2 * 1024 * 1024
 # Deflate overhead for a canonical chunk is small; this independent ceiling
 # also bounds allocations before the deterministic-byte check runs.
 PUBLIC_ROW_CHUNK_MAX_COMPRESSED_BYTES = PUBLIC_ROW_CHUNK_MAX_RAW_BYTES + 64 * 1024
+PUBLIC_URL_CACHE_MAX_ENTRIES = 4_096
+PUBLIC_URL_CACHE_MAX_KEY_BYTES = 8 * 1024
 ROW_CHUNK_NAME_RE = re.compile(
     r"^(?P<dataset>[a-z0-9]+(?:-[a-z0-9]+)*)\.part-(?P<ordinal>[0-9]{5})\.jsonl\.gz$"
 )
@@ -626,7 +628,11 @@ def inspection_receipt_projection(inspection: dict[str, Any]) -> dict[str, Any]:
 def validate_source_metadata(
     raw: object,
     dataset_ids: set[str],
+    *,
+    url_validator: Callable[[str], bool] | None = None,
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    if url_validator is None:
+        url_validator = is_safe_public_url
     metadata = require_dict(raw, "sourceMetadata")
     if set(metadata) != {"default", "overrides"}:
         raise DatasetBuildError("sourceMetadata deve contenere default e overrides")
@@ -647,7 +653,7 @@ def validate_source_metadata(
     if default.get("checkedAt") is None:
         raise DatasetBuildError("sourceMetadata.default.checkedAt e obbligatorio")
     urls = require_list(default.get("canonicalUrls"), "sourceMetadata.default.canonicalUrls")
-    if any(not isinstance(url, str) or not is_safe_public_url(url) for url in urls):
+    if any(not isinstance(url, str) or not url_validator(url) for url in urls):
         raise DatasetBuildError("sourceMetadata.default.canonicalUrls contiene URL non sicuri")
     if urls != sorted(set(urls)):
         raise DatasetBuildError("sourceMetadata.default.canonicalUrls deve essere ordinato e unico")
@@ -688,7 +694,7 @@ def validate_source_metadata(
                 f"sourceMetadata.overrides.{dataset_id}.canonicalUrls",
             )
             if any(
-                not isinstance(url, str) or not is_safe_public_url(url)
+                not isinstance(url, str) or not url_validator(url)
                 for url in override_urls
             ):
                 raise DatasetBuildError(
@@ -709,7 +715,11 @@ def resolved_source_metadata(spec: dict[str, Any], dataset_id: str) -> dict[str,
     return {**default, **override}
 
 
-def validate_spec(spec: dict[str, Any]) -> list[dict[str, Any]]:
+def validate_spec(
+    spec: dict[str, Any],
+    *,
+    url_validator: Callable[[str], bool] | None = None,
+) -> list[dict[str, Any]]:
     if require_int(spec.get("schemaVersion"), "schemaVersion") != 1:
         raise DatasetBuildError("schemaVersion non supportata")
     corpus = require_dict(spec.get("corpusContract"), "corpusContract")
@@ -945,11 +955,19 @@ def validate_spec(spec: dict[str, Any]) -> list[dict[str, Any]]:
                 + ", ".join(overlapping_fields)
             )
         validated.append(item)
-    validate_source_metadata(spec.get("sourceMetadata"), seen_ids)
+    validate_source_metadata(
+        spec.get("sourceMetadata"),
+        seen_ids,
+        url_validator=url_validator,
+    )
     return validated
 
 
-def load_spec(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def load_spec(
+    path: Path,
+    *,
+    url_validator: Callable[[str], bool] | None = None,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     try:
         spec = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
@@ -959,7 +977,7 @@ def load_spec(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if path.resolve() == DEFAULT_SPEC.resolve():
         from siope_nonmunicipal_contract import PROVENANCE, apply_manifest, load_manifest
         apply_manifest(spec, load_manifest(ROOT / PROVENANCE))
-    return spec, validate_spec(spec)
+    return spec, validate_spec(spec, url_validator=url_validator)
 
 
 def query_key_is_sensitive(key: str) -> bool:
@@ -2570,6 +2588,30 @@ def check_artifacts(artifacts: dict[str, bytes]) -> None:
         raise DatasetBuildError("artefatti non riproducibili:\n" + "\n".join(mismatches))
 
 
+def _memoized_url_validator(
+    validator: Callable[[str], bool],
+) -> Callable[[str], bool]:
+    cache: dict[str, bool] = {}
+
+    def validate(url: str) -> bool:
+        try:
+            cacheable = len(url.encode("utf-8")) <= PUBLIC_URL_CACHE_MAX_KEY_BYTES
+        except UnicodeError:
+            cacheable = False
+        if not cacheable:
+            return validator(url)
+        if url in cache:
+            return cache[url]
+
+        result = validator(url)
+        if len(cache) >= PUBLIC_URL_CACHE_MAX_ENTRIES:
+            cache.pop(next(iter(cache)))
+        cache[url] = result
+        return result
+
+    return validate
+
+
 def expected_committed_paths(
     datasets: list[dict[str, Any]],
     *,
@@ -2596,6 +2638,7 @@ def validate_public_rows(
     item: dict[str, Any],
     rows_payload: bytes,
     expected_rows: int,
+    url_validator: Callable[[str], bool] = is_safe_public_url,
 ) -> tuple[int, int]:
     dataset_id = item["id"]
     if expected_rows == 0:
@@ -2665,7 +2708,7 @@ def validate_public_rows(
                 or CREDENTIAL_RE.search(value)
                 or contains_sensitive_assignment(value)
                 or any(
-                    not is_safe_public_url(match.group(0).rstrip(".,)]}\"'"))
+                    not url_validator(match.group(0).rstrip(".,)]}\"'"))
                     for match in EMBEDDED_HTTP_URL_RE.finditer(value)
                 )
             ):
@@ -2676,7 +2719,7 @@ def validate_public_rows(
         urls = row.get("sourceUrls")
         if (
             not isinstance(urls, list)
-            or any(not isinstance(url, str) or not is_safe_public_url(url) for url in urls)
+            or any(not isinstance(url, str) or not url_validator(url) for url in urls)
             or urls != sorted(set(urls))
         ):
             raise DatasetBuildError(f"URL pubblici divergenti per {dataset_id}:{source_row}")
@@ -2719,7 +2762,8 @@ def check_committed(
     receipts_dir: Path,
     proof_path: Path,
 ) -> None:
-    spec, datasets = load_spec(spec_path)
+    url_validator = _memoized_url_validator(is_safe_public_url)
+    spec, datasets = load_spec(spec_path, url_validator=url_validator)
     try:
         proof_payload = proof_path.read_bytes()
         proof = json.loads(proof_payload)
@@ -2873,6 +2917,7 @@ def check_committed(
                 item=item,
                 rows_payload=rows_payload,
                 expected_rows=expected_public_rows,
+                url_validator=url_validator,
             )
             if (
                 publication.get("rowsWithPublicSource") != rows_with_source

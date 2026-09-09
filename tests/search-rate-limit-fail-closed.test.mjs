@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
+process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
+
 const originalFetch = globalThis.fetch;
 globalThis.fetch = async () => new Response(JSON.stringify({ success: false }), {
   status: 200,

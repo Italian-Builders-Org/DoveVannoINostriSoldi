@@ -41,7 +41,7 @@ test("Vercel skips only non-deployment changes since the last successful build",
   const pins = commit("scripts/ci/action-pins.json", "CI action versions");
   expect(tests, ci, 0);
   expect(tests, pins, 0);
-  expect("", pins, 1); // CI-only changes still need an initial deployment.
+  expect("", pins, 1); // Anche le sole modifiche CI richiedono un primo deployment.
   expect("", tests, 1); // First deployment: a preview must exist.
   expect(tests, tests, 1); // Manual redeploy may contain new environment settings.
   expect("--help", tests, 1);
@@ -53,7 +53,7 @@ test("Vercel skips only non-deployment changes since the last successful build",
   expect(tests, laterDocs, 1); // HEAD^ alone would incorrectly skip the code.
   expect(code, laterDocs, 0);
   const laterCi = commit(".github/workflows/ci.yml", "CI setup after a failed code build");
-  expect(tests, laterCi, 1); // CI changes must not hide undeployed source changes.
+  expect(tests, laterCi, 1); // Le modifiche CI non devono nascondere codice non ancora distribuito.
   expect(code, laterCi, 0);
 
   let previous = laterCi;

@@ -1,4 +1,4 @@
-// Cache coordination shared by live views; keep dataset imports in their owners.
+// Coordinamento cache condiviso; ogni vista importa i propri dataset.
 export const MCP_HISTORY_POPULATION_TIMEOUT_MS = 10_000;
 export const MCP_HISTORY_FAILURE_TTL_SECONDS = 60;
 
@@ -46,9 +46,9 @@ export async function readPersistentOrDirect<T>(
   try {
     return await cached();
   } catch (error) {
-    // Direct Node consumers (source-verification tests and scripts) do not
-    // install Next's request cache. They still receive the same bounded data,
-    // while App Router requests retain the persistent cross-instance cache.
+    // Test e script Node non installano la cache delle richieste Next.
+    // Ricevono comunque gli stessi dati entro i limiti previsti; App Router
+    // conserva la cache persistente condivisa fra le istanze.
     if (
       error instanceof Error
       && error.message.startsWith("Invariant: incrementalCache missing in unstable_cache")
@@ -59,7 +59,7 @@ export async function readPersistentOrDirect<T>(
   }
 }
 
-/** Collapse concurrent misses while Next's persistent cache is populated. */
+/** Riunisce le richieste concorrenti durante il popolamento della cache Next. */
 export function singleFlight<T>(
   current: Promise<T> | null,
   setCurrent: (value: Promise<T> | null) => void,

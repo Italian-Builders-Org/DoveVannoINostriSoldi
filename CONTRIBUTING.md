@@ -158,14 +158,16 @@ Vedi [misure e verifica dei bundle](docs/VERCEL_RUNTIME_BUNDLES.md).
 
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nel job
-`production` di GitHub Actions. `npm ci` locale e in CI conserva il download
-normale; TypeScript, audit delle dipendenze e tutti i gate restano attivi.
+`production` di GitHub Actions. Il download resta attivo con `npm ci` locale
+e nel job `production`; gli altri job CI lo saltano. TypeScript, audit delle
+dipendenze e tutti i gate restano attivi.
 
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
 attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
-Salta soltanto modifiche a documentazione Markdown, test e template di issue/PR.
-Non salta i dati sotto `docs/research/data`, le specifiche ETL, i workflow o
-percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
+Salta soltanto modifiche a documentazione Markdown, test, template di issue/PR,
+al workflow `.github/workflows/ci.yml` e al registro `scripts/ci/action-pins.json`.
+Non salta i dati sotto `docs/research/data`, le specifiche ETL, gli altri workflow
+o percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
 Primo deployment, redeploy della stessa SHA, metadati mancanti e cronologia
 Git incompleta eseguono sempre il build. Le preview del codice restano attive.
 La CI GitHub continua a eseguire tutti i controlli anche se Vercel salta il build.

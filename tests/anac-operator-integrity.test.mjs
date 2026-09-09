@@ -33,7 +33,7 @@ test('metadata reads do not require unrelated detail shards', () => fixture(({ c
   invoke(cwd, 'adapter.loadAnacOperatorIndexMeta()');
 }));
 
-test('operator listing, both rankings and search work without any detail shard', () => fixture(({ cwd, copy }) => {
+test('elenco operatori, entrambi gli ordinamenti e ricerca funzionano senza shard di dettaglio', () => fixture(({ cwd, copy }) => {
   for (const path of [
     `${artifact}/summaries.json`, `${artifact}/search.jsonl.gz`,
     `${browse}/manifest.json`, `${browse}/awardCount.jsonl.gz`, `${browse}/attributedValue.jsonl.gz`,

@@ -1,6 +1,6 @@
-import { getAnacOperatorByRef } from "@/lib/data/anac-operator-records";
 import "server-only";
 
+import { getAnacOperatorByRef } from "@/lib/data/anac-operator-records";
 import {
   ANAC_OPERATOR_INDEX,
   isAnacOperatorRef,

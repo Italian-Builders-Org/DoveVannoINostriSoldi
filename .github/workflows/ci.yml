@@ -212,9 +212,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Cache only compiler state. Runtime fetch responses must remain fresh
-      # for the production gates, and every run still builds and tests its tree.
-      - name: Restore Next compiler cache
+      # Conserva solo lo stato del compilatore. I test di produzione leggono
+      # risposte aggiornate; ogni run ricostruisce e verifica il proprio codice.
+      - name: Ripristina cache compilatore Next
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: .next/cache/turbopack

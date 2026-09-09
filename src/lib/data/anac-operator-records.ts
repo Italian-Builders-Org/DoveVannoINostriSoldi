@@ -13,7 +13,7 @@ import {
 const MAX_SHARD_BYTES = 64 * 1024 * 1024;
 const operatorCache = new Map<string, AnacOperatorRecord | null>();
 
-/** Load operator details for many refs with one shard read per bucket. */
+/** Carica le schede richieste leggendo una sola volta ciascuno shard. */
 export function loadAnacOperatorsByRefs(refs: readonly string[]): Map<string, AnacOperatorRecord> {
   const meta = loadAnacOperatorIndexMeta();
   const wanted = [...new Set(refs.filter(isAnacOperatorRef))];

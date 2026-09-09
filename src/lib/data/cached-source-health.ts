@@ -10,8 +10,8 @@ export type CachedSourceHealthStatus = Readonly<{
 }>;
 
 async function loadSourceHealthStatus(): Promise<CachedSourceHealthStatus> {
-  // Finish probes before the API's 6-second request deadline so aborted
-  // upstreams can become source-level results instead of an HTTP timeout.
+  // Termina i probe entro la scadenza API di 6 secondi: le fonti interrotte
+  // producono un esito nel registro, senza causare un timeout HTTP della route.
   const sources = await getSourceHealthOverview({ deadlineMs: 4_000 });
   return { checkedAt: new Date().toISOString(), sources };
 }

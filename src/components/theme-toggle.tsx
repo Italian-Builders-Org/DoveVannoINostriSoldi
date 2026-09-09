@@ -1,36 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 type Theme = "light" | "dark";
 
+function getPreferredTheme(): Theme {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "light" || savedTheme === "dark") {
+    return savedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+}
+
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
-
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setTheme(savedTheme);
-      document.documentElement.dataset.theme = savedTheme;
-      return;
-    }
-
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-
-    const initialTheme: Theme = prefersDark ? "dark" : "light";
-
-    setTheme(initialTheme);
-    document.documentElement.dataset.theme = initialTheme;
+    applyTheme(getPreferredTheme());
   }, []);
 
   const toggleTheme = () => {
-    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    const currentTheme =
+      document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 
-    setTheme(nextTheme);
-    document.documentElement.dataset.theme = nextTheme;
+    const nextTheme: Theme = currentTheme === "dark" ? "light" : "dark";
+
+    applyTheme(nextTheme);
     localStorage.setItem("theme", nextTheme);
   };
 
@@ -39,12 +40,16 @@ export function ThemeToggle() {
       type="button"
       className="header-action header-action-icon theme-toggle"
       onClick={toggleTheme}
-      aria-label={
-        theme === "dark" ? "Attiva modalità chiara" : "Attiva modalità scura"
-      }
-      title={theme === "dark" ? "Modalità chiara" : "Modalità scura"}
+      aria-label="Cambia tema"
+      title="Cambia tema"
     >
-      {theme === "dark" ? "☀" : "☾"}
+      <span className="theme-toggle__moon" aria-hidden="true">
+        ☾
+      </span>
+
+      <span className="theme-toggle__sun" aria-hidden="true">
+        ☀
+      </span>
     </button>
   );
 }

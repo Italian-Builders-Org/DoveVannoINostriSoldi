@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCachedSsnNationalHistory } from "@/lib/data/cached-live-views";
+import { getCachedSsnNationalHistory } from "@/lib/data/cached-ssn-history";
 import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const dynamic = "force-dynamic";

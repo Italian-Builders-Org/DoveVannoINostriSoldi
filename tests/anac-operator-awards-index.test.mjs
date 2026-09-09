@@ -4,14 +4,14 @@ import "./helpers/register-ts-alias.mjs";
 
 const {
   assertAnacOperatorIndexMeta,
-  getAnacOperatorByRef,
   listAnacOperatorsPage,
   listTopAnacOperators,
-  loadAnacOperatorsByRefs,
   loadAnacOperatorIndexMeta,
   loadAnacOperatorNationalSummaries,
   searchAnacOperators,
 } = await import("../src/lib/data/anac-operator-awards-index.ts");
+
+const { getAnacOperatorByRef, loadAnacOperatorsByRefs } = await import("../src/lib/data/anac-operator-records.ts");
 
 test("ANAC operator awards index meta is source-locked and CF-free", () => {
   const meta = loadAnacOperatorIndexMeta();

@@ -12,6 +12,29 @@
   ],
   "artifacts": [
     {
+      "id": "source-health-snapshots",
+      "owner": "DVNS - riepilogo stato delle fonti dagli snapshot validati",
+      "files": [
+        "src/data/generated/source-health-snapshots.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/source-health.test.mjs"
+      ],
+      "generator": {
+        "command": "npm run source-health:generate",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": null,
+      "trustModel": "Riepilogo deterministico di 30 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
+    },
+    {
       "id": "anac-procurement-peers",
       "owner": "Municipal ANAC peer comparison from committed ANAC and ISTAT snapshots",
       "files": [

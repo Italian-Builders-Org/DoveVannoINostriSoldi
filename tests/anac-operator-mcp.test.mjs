@@ -4,8 +4,10 @@ import './helpers/register-ts-alias.mjs';
 const { queryPublicDataset } = await import('../src/lib/mcp/datasets.ts');
 const { datasetCatalog } = await import('../src/lib/mcp/catalog.ts');
 const { datasetQuerySchema } = await import('../src/lib/mcp/query-schema.ts');
-const { getAnacOperatorByRef, loadAnacOperatorIndexMeta, loadAnacOperatorNationalSummaries } = await import('../src/lib/data/anac-operator-awards-index.ts');
+const { loadAnacOperatorIndexMeta, loadAnacOperatorNationalSummaries } = await import('../src/lib/data/anac-operator-awards-index.ts');
 const query = options => queryPublicDataset({ dataset: 'anac_operatori', ...options });
+
+const { getAnacOperatorByRef } = await import("../src/lib/data/anac-operator-records.ts");
 
 test('operator catalog exposes the shared bounded contract and all three source roles', () => {
   const entry = datasetCatalog.find(item => item.id === 'anac_operatori');

@@ -13,6 +13,19 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Prepara Node per il riepilogo delle fonti
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      with:
+        node-version-file: .nvmrc
+
+    - name: Installa i validator se assenti
+      shell: bash
+      run: |
+        set -euo pipefail
+        if [ ! -d node_modules/zod ]; then
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+        fi
+
     - name: Require data publisher credentials
       shell: bash
       env:

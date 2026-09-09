@@ -215,11 +215,11 @@ export async function queryPublicDataset(
       }));
     }
     case "openbdap_ssn_storico_nazionale": {
-      const { getMcpCachedSsnNationalHistory } = await import("@/lib/data/cached-live-views");
+      const { getMcpCachedSsnNationalHistory } = await import("@/lib/data/cached-ssn-history");
       return jsonSafe(await getMcpCachedSsnNationalHistory({ signal: options.signal }));
     }
     case "openbdap_spesa_legislature": {
-      const { getMcpCachedLegislatureSpendingCycles } = await import("@/lib/data/cached-live-views");
+      const { getMcpCachedLegislatureSpendingCycles } = await import("@/lib/data/cached-legislature-spending");
       return jsonSafe({
         cycles: await getMcpCachedLegislatureSpendingCycles({ signal: options.signal }),
       });

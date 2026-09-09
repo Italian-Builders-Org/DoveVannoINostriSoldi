@@ -37,6 +37,11 @@ test("Vercel skips only non-deployment changes since the last successful build",
   const tests = commit("tests/route.test.mjs", "Assertions");
   expect(initial, docs, 0);
   expect(initial, tests, 0);
+  const ci = commit(".github/workflows/ci.yml", "CI job setup");
+  const pins = commit("scripts/ci/action-pins.json", "CI action versions");
+  expect(tests, ci, 0);
+  expect(tests, pins, 0);
+  expect("", pins, 1); // CI-only changes still need an initial deployment.
   expect("", tests, 1); // First deployment: a preview must exist.
   expect(tests, tests, 1); // Manual redeploy may contain new environment settings.
   expect("--help", tests, 1);
@@ -47,13 +52,17 @@ test("Vercel skips only non-deployment changes since the last successful build",
   const laterDocs = commit("README.md", "Documentation after a failed code build");
   expect(tests, laterDocs, 1); // HEAD^ alone would incorrectly skip the code.
   expect(code, laterDocs, 0);
+  const laterCi = commit(".github/workflows/ci.yml", "CI setup after a failed code build");
+  expect(tests, laterCi, 1); // CI changes must not hide undeployed source changes.
+  expect(code, laterCi, 0);
 
-  let previous = laterDocs;
+  let previous = laterCi;
   for (const file of [
     "docs/research/data/anac.json", "docs/research/data/raw.md", "scripts/etl/specs/source.json",
     "src/data/generated/data.json", "data/source-ledger/receipt.json",
     "public/logo.svg", "package-lock.json", "next.config.ts", "vercel.json",
-    ".github/workflows/ci.yml", "unknown-new-input.txt",
+    "scripts/ci/check-runtime-traces.mjs", "scripts/ci/vercel-ignore-build.mjs",
+    ".github/workflows/custom-deploy.yml", "unknown-new-input.txt",
   ]) {
     const current = commit(file, "changed");
     expect(previous, current, 1);

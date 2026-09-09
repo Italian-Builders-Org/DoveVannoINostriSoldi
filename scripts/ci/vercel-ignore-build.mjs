@@ -26,13 +26,16 @@ function decide() {
     /^(README|CONTRIBUTING|AGENTS|CLAUDE|CODE_OF_CONDUCT|SECURITY)\.md$/.test(file) ||
     (/^docs\/.*\.md$/.test(file) && !file.startsWith("docs/research/data/")) ||
     file.startsWith("tests/") ||
+    // Vercel uses vercel.json and package.json, not the GitHub CI job setup.
+    file === ".github/workflows/ci.yml" ||
+    file === "scripts/ci/action-pins.json" ||
     file.startsWith(".github/ISSUE_TEMPLATE/") ||
     file === ".github/PULL_REQUEST_TEMPLATE.md"
   ));
   if (runtimeFile) return { skip: false, reason: `Deployment input changed: ${runtimeFile}` };
   // In particular, docs/research/data and scripts/etl/specs are runtime inputs.
   // Unknown paths build by default; don't turn this into a list of source paths.
-  return { skip: true, reason: `${files.length} changed files; only documentation/tests, or identical trees.` };
+  return { skip: true, reason: `${files.length} changed files; only documentation, tests or CI configuration, or identical trees.` };
 }
 
 const result = decide();

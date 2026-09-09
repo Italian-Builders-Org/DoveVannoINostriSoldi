@@ -110,6 +110,12 @@ were 69.59 s and 68.43 s; this single pair does not establish a compilation
 speedup. The hosted baseline `e6800070` took 6m38s, including 304.654 s in
 `Deploying outputs`; compare the subsequent deployment separately.
 
+The first [preview of `1427ec44`](https://vercel.com/doms-projects-579ef5cf/dove-vanno-i-nostri-soldi/J3UpB9aTFvfgC9Yb25pw3bX2FFq8)
+completed in 5m48s, excluding its build-slot queue. Its output-publication phase
+took 236.636 s (20:23:40.054 to 20:27:36.690 CEST), compared with 304.654 s
+in the production baseline. Both used 4 cores, 8 GB and restored build caches.
+The pair is observational: deployment environments and cache history differ.
+
 ## CI caches
 
 The production job restores only `.next/cache/turbopack`, keyed by runner OS,
@@ -119,8 +125,16 @@ its current tree and executes every production gate. Runtime fetch responses
 are not restored from CI cache.
 
 Static, Node and ETL jobs skip the Chromium download; the production job retains
-it. ETL caches pip downloads while retaining the hash-locked installation.
+it. The baseline pip installation took one second for one dependency, so it
+does not gain an additional cache to restore and maintain.
 Lighthouse uploads explicitly include its JSON/HTML files under the hidden
 `.lighthouseci` directory. Browser scenarios, deadlines and Lighthouse budgets
 are unchanged. The first run populates the compiler cache; assess reuse on a
 later run before claiming a hosted CI time reduction.
+
+Changes limited to `.github/workflows/ci.yml` and `scripts/ci/action-pins.json`
+can skip Vercel installation and compilation: Vercel takes its build commands
+from `vercel.json` and `package.json`. The comparison still starts at the last
+successful deployment. Missing history, an initial deployment, a manual
+redeploy, undeployed application changes or changes to the ignore script itself
+still build. Other workflow paths are not implicitly exempted.

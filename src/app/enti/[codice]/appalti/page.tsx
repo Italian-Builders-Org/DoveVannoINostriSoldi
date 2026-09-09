@@ -22,6 +22,7 @@ import { anacCpvOptions, anacCpvSource, filterAnacProcurementByCpv, loadAnacCpvR
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { EntityProcurementSection, EntityProcurementSourceDetails, EntityProcurementConcentration } from "../entity-procurement-section";
 import styles from "./appalti.module.css";
+import { EntityProcurementCoverage } from "../entity-procurement-coverage";
 
 type PageProps = {
   params: Promise<{ codice: string }>;
@@ -184,8 +185,6 @@ function scopeLine(): ReactElement {
       <span>snapshot cross-temporale</span>
       <span aria-hidden="true">·</span>
       <span>non è copertura nazionale corrente</span>
-      <span aria-hidden="true">·</span>
-      <span>tutti i mesi del 2025</span>
     </p>
   );
 }
@@ -565,6 +564,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <p>{"Dati IPA verificati al momento dell’acquisizione. Consulta Indice PA per eventuali aggiornamenti."}</p>
       </div>
       {scopeLine()}
+      <EntityProcurementCoverage />
       <AwardYearFilter codice={normalizedCode} profile={cpvProfile} selected={awardYear} matched={profile.awards.length} cpv={cpv} />
       {awardYear && profile.awards.length === 0 ? <div className="notice"><strong>Nessuna aggiudicazione nel periodo selezionato</strong><p>Questo risultato riguarda solo il profilo acquisito e la categoria selezionata.</p></div> : null}
       {cpvRecord ? <CpvFilter codice={normalizedCode} record={cpvRecord} selected={cpv} matched={cpvProfile.procedures.length} awardYear={awardYear} />
@@ -598,7 +598,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
         <p className={styles.note}>La tabella indica identità ambigue e importi non attribuibili. Quote Top 1 / Top 10 e HHI sono descrittivi e non indicano illecito.</p>
         <dl className={styles.sourceList}>
           <div><dt>Generato</dt><dd>{profile.meta.generatedAt}</dd></div>
-          <div><dt>Perimetro temporale</dt><dd>CIG pubblicati nel 2025 · tutti i mesi · snapshot cross-temporale</dd></div>
+          <div><dt>Perimetro temporale</dt><dd>File CIG dei dodici mesi del 2025 · copertura del singolo ente non accertata · snapshot cross-temporale</dd></div>
           <EntityProcurementSourceDetails profile={profile} />
           {cpvRecord ? <div><dt>Classificazione CPV</dt><dd><a href="https://dati.anticorruzione.it/opendata/dataset/cig-2025" target="_blank" rel="noreferrer">ANAC · CIG anno 2025</a> · file acquisiti il {anacCpvSource.acquiredAt}. Licenza CC BY-SA 4.0.</dd></div> : null}
         </dl>

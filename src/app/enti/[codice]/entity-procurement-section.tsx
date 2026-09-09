@@ -17,6 +17,7 @@ import {
   formatAnacConcentrationPercent,
 } from "@/lib/data/anac-entity-procurement-page";
 import styles from "./entity-procurement.module.css";
+import { EntityProcurementCoverage } from "./entity-procurement-coverage";
 
 const APPALTI_PATH = "/enti/:codice/appalti";
 
@@ -127,7 +128,7 @@ export function EntityProcurementSourceDetails({ profile }: { profile: AnacEntit
   );
 }
 
-function scopeLine(profile?: AnacEntityProcurementPageView): ReactElement {
+function scopeLine(): ReactElement {
   return (
     <p className={styles.scopeLine}>
       <strong>CIG pubblicati 2025</strong>
@@ -135,12 +136,6 @@ function scopeLine(profile?: AnacEntityProcurementPageView): ReactElement {
       <span>snapshot cross-temporale</span>
       <span aria-hidden="true">·</span>
       <span>non è copertura nazionale corrente</span>
-      {profile ? (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>tutti i mesi del 2025</span>
-        </>
-      ) : null}
     </p>
   );
 }
@@ -399,7 +394,8 @@ function Available({ profile }: { profile: AnacEntityProcurementPageView }) {
           <h2 className={styles.sectionTitle} id="anac-procurement-title">Contratti e aggiudicatari</h2>
         </div>
       </div>
-      {scopeLine(profile)}
+      {scopeLine()}
+      <EntityProcurementCoverage />
       <Summary profile={profile} />
       <p className={styles.note}>
         Il valore è quello dichiarato nell&apos;aggiudicazione e non misura pagamenti.{" "}

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-live-views";
+import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-legislature-spending";
 import { ConcurrencyLimiter, SlidingWindowLimiter, clientAddress } from "@/lib/report/rate-limit";
 
 export const dynamic = "force-dynamic";

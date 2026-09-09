@@ -24,6 +24,7 @@ fs.readSync = function (...args) {
 };
 syncBuiltinESMExports();
 const adapter = await import('../../src/lib/data/anac-operator-awards-index.ts');
+const records = await import('../../src/lib/data/anac-operator-records.ts');
 function measure(label, run) {
   bytes = 0;
   const start = performance.now();
@@ -43,7 +44,7 @@ try {
   measure('warm-list-page', () => adapter.listAnacOperatorsPage({ page: 1 }));
   measure('deep-list-page', () => adapter.listAnacOperatorsPage({ page: 1234 }));
   measure('value-list-page', () => adapter.listAnacOperatorsPage({ by: 'valore' }));
-  measure('operator-detail', () => adapter.getAnacOperatorByRef(first.result.hits[0].ref));
+  measure('operator-detail', () => records.getAnacOperatorByRef(first.result.hits[0].ref));
   measure('name-search', () => adapter.searchAnacOperators({ q: 'autostrade', limit: 50 }));
 } finally {
   fs.readFileSync = originalReadFile;

@@ -530,14 +530,17 @@ class PublishDataRefreshTests(TestCase):
 
     def test_remote_tree_digest_is_computed_from_allowlisted_blobs(self) -> None:
         artifact, branch, _ = self._managed_fixture()
+        self.assertIn(publisher.SOURCE_HEALTH_SUMMARY, artifact.files)
         def runner(args, **kwargs):
-            self.assertEqual(args[:3], ["git", "show", branch.tip + ":" + artifact.files[0]])
+            self.assertEqual(args[:2], ["git", "show"])
+            self.assertIn(args[2], [branch.tip + ":" + path for path in artifact.files])
             return subprocess.CompletedProcess(args, 0, "payload", "")
         expected = publisher.hashlib.sha256()
-        path = artifact.files[0].encode()
         payload = b"payload"
-        expected.update(len(path).to_bytes(8, "big")); expected.update(path)
-        expected.update(len(payload).to_bytes(8, "big")); expected.update(payload)
+        for file in sorted(artifact.files):
+            path = file.encode()
+            expected.update(len(path).to_bytes(8, "big")); expected.update(path)
+            expected.update(len(payload).to_bytes(8, "big")); expected.update(payload)
         self.assertEqual(publisher.ref_file_digest(branch.tip, artifact, runner=runner), expected.hexdigest())
 
     def test_ls_remote_failure_is_not_treated_as_absent(self) -> None:
@@ -571,6 +574,7 @@ class PublishDataRefreshTests(TestCase):
         }
 
     def test_publish_fake_runner_state_machine_create_nochurn_replace_merged_and_recovery(self) -> None:
+        self.enterContext(mock.patch.object(publisher, "run_command"))
         artifact, branch, open_pr = self._managed_fixture()
         base = branch.parent
         candidate = "d" * 40
@@ -612,6 +616,7 @@ class PublishDataRefreshTests(TestCase):
                 if expected == "CREATED": create.assert_called_once()
 
     def test_publish_push_failure_does_not_call_pr_api(self) -> None:
+        self.enterContext(mock.patch.object(publisher, "run_command"))
         artifact = publisher.load_artifact("consulenti-pubblici")
         env = self._publish_env(); base = "b" * 40
         with mock.patch.object(publisher, "validate_run"), mock.patch.object(publisher, "latest_main", return_value=base), mock.patch.object(publisher, "git_sha", return_value=base), mock.patch.object(publisher, "status_paths", return_value={artifact.files[0]}), mock.patch.object(publisher, "file_digest", return_value="c" * 64), mock.patch.object(publisher, "remote_branch_tip", return_value=None), mock.patch.object(publisher.GhClient, "setup_git"), mock.patch.object(publisher.GhClient, "prs", return_value=[]), mock.patch.object(publisher, "make_candidate", return_value="d" * 40), mock.patch.object(publisher, "push_candidate", side_effect=publisher.PublishError("push failed")), mock.patch.object(publisher.GhClient, "create_pr") as create:
@@ -620,6 +625,7 @@ class PublishDataRefreshTests(TestCase):
             create.assert_not_called()
 
     def test_main_movement_aborts_before_push_or_pr_mutation(self) -> None:
+        refresh = self.enterContext(mock.patch.object(publisher, "run_command"))
         artifact = publisher.load_artifact("consulenti-pubblici")
         env = self._publish_env(); base = "b" * 40; advanced = "c" * 40
         with mock.patch.object(publisher, "validate_run"), mock.patch.object(publisher, "latest_main", side_effect=[base, advanced]), mock.patch.object(publisher, "git_sha", return_value=base), mock.patch.object(publisher, "status_paths", return_value={artifact.files[0]}), mock.patch.object(publisher, "file_digest", return_value="d" * 64), mock.patch.object(publisher, "remote_branch_tip", return_value=None), mock.patch.object(publisher.GhClient, "setup_git"), mock.patch.object(publisher.GhClient, "prs", return_value=[]), mock.patch.object(publisher, "push_candidate") as push, mock.patch.object(publisher.GhClient, "create_pr") as create:
@@ -627,6 +633,16 @@ class PublishDataRefreshTests(TestCase):
                 publisher.publish(artifact.artifact_id, env=env)
             push.assert_not_called()
             create.assert_not_called()
+            self.assertEqual(refresh.call_args.kwargs["env"], {"DVNS_OFFLINE_GUARD": "1"})
+            self.assertIn("--write", refresh.call_args.args[0])
+
+    def test_riepilogo_non_verificabile_blocca_la_pubblicazione(self) -> None:
+        base = "b" * 40
+        with mock.patch.object(publisher, "validate_run"), mock.patch.object(publisher, "latest_main", return_value=base), mock.patch.object(publisher, "git_sha", return_value=base), mock.patch.object(publisher.GhClient, "setup_git"), mock.patch.object(publisher, "run_command", side_effect=publisher.PublishError("snapshot non valido")), mock.patch.object(publisher, "status_paths") as status, mock.patch.object(publisher, "push_candidate") as push:
+            with self.assertRaisesRegex(publisher.PublishError, "snapshot non valido"):
+                publisher.publish("consulenti-pubblici", env=self._publish_env())
+            status.assert_not_called()
+            push.assert_not_called()
 
 
 if __name__ == "__main__":

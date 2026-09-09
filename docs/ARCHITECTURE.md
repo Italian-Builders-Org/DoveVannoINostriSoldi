@@ -36,6 +36,14 @@ Non richiede un database locale, Docker o un servizio di ingestione per avviarsi
   parsing e cache. Le route applicano budget e limiti di concorrenza. Un errore
   della fonte deve restare visibile, senza trasformarsi in zero o successo.
 
+Lo stato delle fonti legge `source-health-snapshots.json`, una proiezione dei
+metadati riconciliata durante il build dagli adapter in
+`data/source-health-snapshots.ts`. Non ricarica tutti i dataset per contarne le
+righe. `data/source-health.ts` applica le policy correnti e i probe live;
+`data/cached-source-health.ts` conserva il controllo per cinque minuti.
+Il limite condiviso per le letture degli oggetti è in `integrated-load-limiter.ts`,
+senza dipendere dal lettore del corpus integrato.
+
 `src/lib/mcp/catalog.ts` descrive i dataset; `datasets.ts` li collega alle
 funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
 `OPTIONS /mcp` sono alias supportati; `GET /mcp` resta la pagina informativa.

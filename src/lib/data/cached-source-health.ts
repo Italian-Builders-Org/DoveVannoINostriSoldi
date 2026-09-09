@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache.js";
-import { getSourceHealthOverview, type SourceHealth } from "@/lib/data/source-health";
+import type { SourceHealth } from "@/lib/data/source-health";
 import { ProcessTtlCache, readPersistentOrDirect, singleFlight } from "@/lib/data/live-view-cache";
 
 const SOURCE_HEALTH_CACHE_SECONDS = 300;
@@ -10,9 +10,11 @@ export type CachedSourceHealthStatus = Readonly<{
 }>;
 
 async function loadSourceHealthStatus(): Promise<CachedSourceHealthStatus> {
-  // Termina i probe entro la scadenza API di 6 secondi: le fonti interrotte
-  // producono un esito nel registro, senza causare un timeout HTTP della route.
-  const sources = await getSourceHealthOverview({ deadlineMs: 4_000 });
+  // Il budget include il caricamento e la validazione degli snapshot. Una cache
+  // persistente disponibile evita anche questo costo all'avvio della funzione.
+  const signal = AbortSignal.timeout(4_000);
+  const { getSourceHealthOverview } = await import("@/lib/data/source-health");
+  const sources = await getSourceHealthOverview({ signal });
   return { checkedAt: new Date().toISOString(), sources };
 }
 

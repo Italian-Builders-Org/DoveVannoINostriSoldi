@@ -84,7 +84,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     const forbidden = route.startsWith("appalti/operatori/") ? [ENTITY, CPV]
       : route.startsWith("enti/") || route.startsWith("api/enti/") ? [OPERATOR] : [];
     if (route === "appalti/operatori/page.js.nft.json") forbidden.push(`${OPERATOR}/operators`);
-    if (HISTORY_ROUTES.has(route)) {
+    if (HISTORY_ROUTES.has(route) || route === "fonti/stato/page.js.nft.json"
+      || route === "api/fonti/stato/route.js.nft.json") {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
     results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden) });

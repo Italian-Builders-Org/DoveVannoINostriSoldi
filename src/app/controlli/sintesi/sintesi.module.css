@@ -129,7 +129,7 @@
   font-size: 22px;
   font-weight: var(--font-heading-weight);
   line-height: 1;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
 }
 
 .kind,
@@ -273,12 +273,12 @@
       var(--color-neutral-900) 0%,
       color-mix(in srgb, var(--color-neutral-900) 82%, var(--color-accent-700)) 100%
     );
-  color: #f7f4f2;
+  color: var(--color-on-strong);
 }
 
 .aiKicker {
   margin: 0;
-  color: color-mix(in srgb, #f7f4f2 72%, transparent);
+  color: color-mix(in srgb, var(--color-on-strong) 72%, transparent);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .06em;
@@ -289,9 +289,9 @@
   align-self: flex-start;
   margin-top: 2px;
   padding: 5px 9px;
-  border: 1px solid color-mix(in srgb, #f7f4f2 55%, transparent);
-  background: color-mix(in srgb, #f7f4f2 10%, transparent);
-  color: #f7f4f2;
+  border: 1px solid color-mix(in srgb, var(--color-on-strong) 55%, transparent);
+  background: color-mix(in srgb, var(--color-on-strong) 10%, transparent);
+  color: var(--color-on-strong);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .05em;
@@ -305,13 +305,13 @@
   font-weight: var(--font-heading-weight);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--color-on-strong);
 }
 
 .aiSubtitle {
   margin: 0;
   max-width: 40ch;
-  color: color-mix(in srgb, #f7f4f2 88%, transparent);
+  color: color-mix(in srgb, var(--color-on-strong) 88%, transparent);
   font-size: clamp(15px, 3.6vw, 18px);
   line-height: 1.4;
 }
@@ -319,7 +319,7 @@
 .aiLead {
   margin: var(--space-2) 0 0;
   max-width: 68ch;
-  color: color-mix(in srgb, #f7f4f2 76%, transparent);
+  color: color-mix(in srgb, var(--color-on-strong) 76%, transparent);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -328,9 +328,9 @@
   margin: var(--space-2) 0 0;
   max-width: 68ch;
   padding: var(--space-3);
-  border: 1px solid color-mix(in srgb, #f7f4f2 28%, transparent);
-  background: color-mix(in srgb, #f7f4f2 8%, transparent);
-  color: #f7f4f2;
+  border: 1px solid color-mix(in srgb, var(--color-on-strong) 28%, transparent);
+  background: color-mix(in srgb, var(--color-on-strong) 8%, transparent);
+  color: var(--color-on-strong);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -362,7 +362,7 @@
   min-width: 0;
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-400);
-  background: #fff;
+  background: var(--color-raised);
   color: inherit;
   text-decoration: none;
   scroll-snap-align: start;
@@ -402,7 +402,7 @@
 
 .aiRulesDetails {
   border: 1px solid var(--color-neutral-400);
-  background: #fff;
+  background: var(--color-raised);
 }
 
 .aiRulesDetails > summary {
@@ -457,7 +457,7 @@
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-400);
   border-top: 3px solid var(--color-neutral-900);
-  background: #fff;
+  background: var(--color-raised);
   scroll-margin-top: 5.5rem;
 }
 
@@ -482,7 +482,7 @@
   margin: 0;
   padding: var(--space-3);
   border: 1px solid color-mix(in srgb, var(--color-accent-700) 40%, var(--color-neutral-300));
-  background: color-mix(in srgb, var(--color-accent-700) 10%, white);
+  background: color-mix(in srgb, var(--color-accent-700) 10%, var(--color-raised));
   color: var(--color-neutral-900);
   font-size: 16px;
   line-height: 1.45;
@@ -511,13 +511,13 @@
   gap: 4px;
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-300);
-  background: var(--color-neutral-50, #fafafa);
+  background: var(--color-neutral-100);
   min-width: 0;
 }
 
 .aiBrief > div:nth-child(3) {
   border-color: color-mix(in srgb, var(--color-accent-700) 35%, var(--color-neutral-300));
-  background: color-mix(in srgb, var(--color-accent-700) 7%, white);
+  background: color-mix(in srgb, var(--color-accent-700) 7%, var(--color-raised));
 }
 
 .aiBrief dt {
@@ -543,7 +543,7 @@
   background: linear-gradient(
     160deg,
     var(--color-neutral-100) 0%,
-    color-mix(in srgb, var(--color-accent-700) 8%, white) 100%
+    color-mix(in srgb, var(--color-accent-700) 8%, var(--color-raised)) 100%
   );
   border: 1px solid var(--color-neutral-300);
   min-width: 0;
@@ -687,7 +687,7 @@
   min-width: 0;
   padding: var(--space-4) var(--space-3);
   border: 1px solid var(--color-neutral-400);
-  background: #fff;
+  background: var(--color-raised);
 }
 
 .aiMapList {
@@ -712,7 +712,7 @@
   min-width: 0;
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-300);
-  background: var(--color-neutral-50, #fafafa);
+  background: var(--color-neutral-100);
   color: inherit;
   text-decoration: none;
 }
@@ -730,7 +730,7 @@
   width: 2rem;
   height: 2rem;
   background: var(--color-neutral-900);
-  color: #fff;
+  color: var(--color-on-strong);
   font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 700;
@@ -756,7 +756,7 @@
 .aiMapArrow {
   display: block;
   padding-left: 0.85rem;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
   font-size: 14px;
   line-height: 1;
 }
@@ -777,7 +777,7 @@
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-300);
   border-top: 3px solid var(--color-accent-700);
-  background: var(--color-neutral-50, #fafafa);
+  background: var(--color-neutral-100);
 }
 
 .aiNextIndex {
@@ -785,7 +785,7 @@
   font-size: 20px;
   font-weight: var(--font-heading-weight);
   line-height: 1;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
 }
 
 .aiNextBody {
@@ -835,7 +835,7 @@
   gap: 2px;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-neutral-300);
-  background: #fff;
+  background: var(--color-raised);
 }
 
 .aiNextMetric span {

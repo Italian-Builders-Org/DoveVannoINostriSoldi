@@ -1,59 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons";
+import { getTheme, setTheme, subscribeToTheme } from "@/lib/theme";
 
-type Theme = "light" | "dark";
-
-function getPreferredTheme(): Theme {
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "light" || savedTheme === "dark") {
-    return savedTheme;
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-}
-
-function applyTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
-}
+function getServerTheme() { return "light" as const; }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const initialTheme = getPreferredTheme();
-
-    applyTheme(initialTheme);
-
-    const timeout = window.setTimeout(() => {
-      setTheme(initialTheme);
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
-
-    applyTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
-    setTheme(nextTheme);
-  };
+  const theme = useSyncExternalStore(subscribeToTheme, getTheme, getServerTheme);
+  const label = theme === "dark" ? "Attiva modalità chiara" : "Attiva modalità scura";
 
   return (
     <button
       type="button"
-      className="header-action header-action-icon theme-toggle"
-      onClick={toggleTheme}
-      aria-label={
-        theme === "dark" ? "Attiva modalità chiara" : "Attiva modalità scura"
-      }
-      title={theme === "dark" ? "Modalità chiara" : "Modalità scura"}
+      className="header-action header-action-icon"
+      onClick={() => setTheme(getTheme() === "dark" ? "light" : "dark")}
+      aria-label={label}
+      title={label}
     >
-      <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+      <HugeiconsIcon icon={theme === "dark" ? Sun03Icon : Moon02Icon} size={19} strokeWidth={1.7} aria-hidden="true" />
     </button>
   );
 }

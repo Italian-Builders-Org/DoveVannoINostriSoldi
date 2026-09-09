@@ -248,6 +248,7 @@ nav li a { text-decoration: none; }
 }
 
 .header-action {
+  background: transparent;
   flex: none;
   min-height: 44px;
   padding: 11px 18px;

@@ -354,6 +354,9 @@ export async function runScenario(
 ) {
   const id = scenarioId ?? scenarioIdFromLabel(label);
   const page = await createPage(browser, { width });
+  const colorScheme = process.env.DVNS_COLOR_SCHEME ?? "light";
+  assert.ok(["light", "dark"].includes(colorScheme), "DVNS_COLOR_SCHEME deve essere light o dark");
+  await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: colorScheme }]);
   const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
   const requestedUrl = pageUrl(pathname, baseUrl);
   let thrown;

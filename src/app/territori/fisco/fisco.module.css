@@ -156,4 +156,4 @@
   font-weight: 700;
   text-decoration: none;
 }
-.metricSelector a[aria-current="page"] { color: white; background: var(--color-accent-800); }
+.metricSelector a[aria-current="page"] { color: var(--color-on-strong); background: var(--color-accent-800); }

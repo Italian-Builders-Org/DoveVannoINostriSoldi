@@ -480,6 +480,12 @@
   color: var(--color-accent-300);
 }
 
+.contextTab[aria-current="page"] > small,
+.contextTab[aria-selected="true"] > small,
+.methodExplainer .sectionEyebrow {
+  color: var(--color-on-strong-muted);
+}
+
 .contextPanels {
   grid-column: 2;
   display: grid;

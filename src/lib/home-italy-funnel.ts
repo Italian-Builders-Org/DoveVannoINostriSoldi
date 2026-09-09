@@ -123,7 +123,7 @@ function cofogLink(code: string, year: number): { href: string; linkLabel: strin
   if (code === "GF05") return { href: "/spese/ambiente", linkLabel: "Protezione dell'ambiente" };
   if (code === "GF06") return { href: "/territori", linkLabel: "Territori" };
   if (code === "GF07") return { href: "/spese/sanita", linkLabel: "Sanità" };
-  if (code === "GF08") return { href: "/spese/sport", linkLabel: "Sport (parziale)" };
+  if (code === "GF08") return { href: `/spese/cultura?anno=${year}`, linkLabel: "Cultura e tempo libero" };
   if (code === "GF09") return { href: "/istruzione", linkLabel: "Istruzione" };
   if (code === "GF10") return { href: "/spese/pensioni", linkLabel: "Pensioni" };
   return null;

@@ -62,8 +62,11 @@ class WorkflowGovernanceTests(unittest.TestCase):
         self.assertIn("https://www.dovevannoinostrisoldi.com", text)
         self.assertNotIn("secrets.REFRESH_URL", text)
         self.assertNotIn("${{ secrets.REFRESH_URL }}", text)
+        self.assertIn("scripts/source-health.mjs", text)
+        self.assertIn("persist-credentials: false", text)
+        probe = (ROOT / "scripts" / "source-health.mjs").read_text()
         for fragment in (
-            "payload.ok",
+            "payload?.ok",
             "Array.isArray(payload.sources)",
             "offline-source-lock-and-snapshot-contract",
             "entities: 76124",
@@ -72,7 +75,7 @@ class WorkflowGovernanceTests(unittest.TestCase):
             "ssn.artifact.bytes !== 126487",
             "Active official sources unreachable",
         ):
-            self.assertIn(fragment, text)
+            self.assertIn(fragment, probe)
 
     def test_runtime_health_is_scheduled_pinned_and_secret_free(self):
         text = self.read("runtime-health.yml")

@@ -23,7 +23,7 @@ export const companyAtlasObservationSchema = z.object({
   sourceId: z.enum(["active-stock", "workforce", "production-value"]),
 }).strict();
 
-const sourceSchema = z.object({
+export const companyAtlasSourceSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   url: z.string().url(),
@@ -70,7 +70,7 @@ const companyAtlasSnapshotBaseSchema = z.object({
   observationType: z.literal("aggregate"),
   geographyVersion: z.string().min(1),
   atecoVersion: z.literal("ATECO 2025"),
-  sources: z.record(z.string(), sourceSchema),
+  sources: z.record(z.string(), companyAtlasSourceSchema),
   periods: z.object({
     activeStock: z.array(periodSchema).min(1),
     workforce: z.array(periodSchema).length(1),
@@ -281,7 +281,7 @@ export const companyAtlasSnapshotSchema = companyAtlasSnapshotBaseSchema.superRe
 
 export type CompanyAtlasMetric = z.infer<typeof companyAtlasMetricSchema>;
 export type CompanyAtlasObservation = z.infer<typeof companyAtlasObservationSchema>;
-export type CompanyAtlasSource = z.infer<typeof sourceSchema>;
+export type CompanyAtlasSource = z.infer<typeof companyAtlasSourceSchema>;
 export type CompanyAtlasSnapshot = z.infer<typeof companyAtlasSnapshotSchema>;
 
 export function validateCompanyAtlasSnapshot(input: unknown): CompanyAtlasSnapshot {

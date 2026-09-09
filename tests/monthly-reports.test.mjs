@@ -5,7 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-import companySnapshot from "../src/data/generated/company-atlas-snapshot.json" with { type: "json" };
+import companySnapshot from "./fixtures/monthly-report-companies.json" with { type: "json" };
 import debtSnapshot from "../src/data/generated/public-debt.json" with { type: "json" };
 import municipalSnapshot from "../src/data/generated/siope-municipal.json" with { type: "json" };
 import {
@@ -132,6 +132,14 @@ test("il generatore non trasforma stock mancanti in zero", () => {
   const row = companies.observations.find((item) => item.sourceId === "active-stock" && item.metric === "active_enterprises");
   row.value = null;
   assert.throws(() => buildMonthlyReportDraft({ month: "2026-08", cutoff: "2026-09-05", snapshots: { companies }, provenance }), /non può essere convertito in zero/);
+});
+
+test("uno snapshot acquisito dopo il cutoff resta escluso anche dopo un refresh", () => {
+  const companies = structuredClone(companySnapshot);
+  companies.sources["active-stock"].observedAt = "2026-09-09T00:00:00.000Z";
+  assert.throws(() => buildMonthlyReportDraft({
+    month: "2026-08", cutoff: "2026-09-05", snapshots: { companies }, provenance,
+  }), /contratto temporale/);
 });
 
 test("il contratto pubblicato accetta solo capsule complete e verificabili", () => {

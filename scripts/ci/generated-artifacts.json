@@ -1113,7 +1113,8 @@
       "id": "company-atlas",
       "owner": "Atlante Imprese Italia aggregate snapshot",
       "files": [
-        "src/data/generated/company-atlas-snapshot.json"
+        "src/data/generated/company-atlas-snapshot.json",
+        "src/data/generated/company-atlas-metadata.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -1123,7 +1124,8 @@
       "reconciliationTests": [],
       "nodeTests": [
         "tests/company-atlas.test.mjs",
-        "tests/company-atlas-performance.test.mjs"
+        "tests/company-atlas-performance.test.mjs",
+        "tests/company-atlas-refresh.test.mjs"
       ],
       "generator": {
         "command": "node scripts/etl/company_atlas_snapshot.mjs",

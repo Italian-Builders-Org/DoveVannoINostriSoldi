@@ -98,6 +98,23 @@ le righe prive di diagnostica dentro una classificazione presunta.
   saturazione; distinguere scadenza applicativa da saturazione della piattaforma.
 - Fonte esterna lenta o non disponibile: preservare l'errore e i limiti;
   continuare a rendere disponibili gli snapshot indipendenti dalla fonte.
+
+### Allarme Source health
+
+Il workflow controlla la risposta pubblica `/api/fonti/stato`, compresa
+l’integrità dichiarata dello snapshot SSN. L’API ha un budget breve per le
+fonti: un timeout di questa osservazione non dimostra un’interruzione della
+fonte. Se una fonte attiva risulta `down`, il monitor la verifica nuovamente
+con lo stesso adapter in Node, fuori dalla richiesta HTTP, entro 45 secondi.
+Restano attivi i timeout e i retry previsti dalla policy di ciascuna fonte.
+
+Il log conserva entrambe le osservazioni. Una conferma positiva produce un
+warning e non cancella il timeout originario; una conferma negativa, un
+adapter mancante o un contratto SSN non valido fanno fallire il job.
+Il monitor non aggiorna la cache pubblica, non modifica gli snapshot e non
+richiede credenziali di pubblicazione. Per un warning ricorrente verificare
+la latenza delle fonti e il budget dell’API, senza interpretarlo come un
+guasto generale del sito.
 - Regressione dopo un rilascio: confrontare SHA e log e valutare il rollback
   del deployment. Non ritentare automaticamente un'operazione con effetti
   esterni senza verificarne l'esito.

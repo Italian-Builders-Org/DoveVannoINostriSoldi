@@ -5,6 +5,7 @@ import { integer } from "@/lib/format";
 import { decodeEntityProcurementRouteCode, formatAnacConcentrationHhi, formatAnacConcentrationPercent } from "@/lib/data/anac-entity-procurement-page";
 import { ANAC_PEER_MINIMUM, anacPeerSource, loadAnacPeerSnapshot, peerCpvOverlap, selectAnacPeers, summarizeAnacPeers, type AnacPeerDimension, type AnacPeerMetric } from "@/lib/data/anac-procurement-peers";
 import styles from "./confronti.module.css";
+import { EntityProcurementCoverage } from "../../entity-procurement-coverage";
 
 type Props = { params: Promise<{ codice: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 export const dynamic = "force-dynamic";
@@ -44,6 +45,7 @@ export default async function ProcurementPeersPage({ params, searchParams }: Pro
         <p>Concentrazione degli aggiudicatari tra Comuni con dimensione, attività e categorie d’acquisto simili.</p>
       </div>
       <p className={styles.scope}>CIG pubblicati nel 2025 · Popolazione 2024 · Snapshot cross-temporale</p>
+      <EntityProcurementCoverage comparison />
       <nav aria-label="Base del confronto" className={styles.tabs}>
         <Link href={comparisonHref("count")} aria-current={dimension === "count" ? "page" : undefined}>Numero di aggiudicazioni</Link>
         <Link href={comparisonHref("value")} aria-current={dimension === "value" ? "page" : undefined}>Valore attribuibile</Link>

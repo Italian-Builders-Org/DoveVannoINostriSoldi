@@ -114,6 +114,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   ],
   "/spese/ambiente": ["ambiente", "clima", "epea", "istat", "rifiuti", "cepa"],
   "/spese/difesa": ["difesa", "spesa difesa", "cofog gf02", "difesa e sicurezza del territorio"],
+  "/spese/sicurezza": ["ordine pubblico", "sicurezza", "cofog gf03", "spesa sicurezza"],
   "/spese/invalidita": ["invalidita", "inps", "prestazioni"],
   "/spese/pensioni": [
     "pensioni",

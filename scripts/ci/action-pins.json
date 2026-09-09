@@ -11,6 +11,10 @@
       "tag": "v7",
       "sha": "820762786026740c76f36085b0efc47a31fe5020"
     },
+    "actions/cache": {
+      "tag": "v5",
+      "sha": "caa296126883cff596d87d8935842f9db880ef25"
+    },
     "actions/setup-python": {
       "tag": "v7",
       "sha": "5fda3b95a4ea91299a34e894583c3862153e4b97"

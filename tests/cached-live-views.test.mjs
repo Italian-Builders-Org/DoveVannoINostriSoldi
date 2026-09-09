@@ -3,7 +3,7 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const { ProcessTtlCache, readMcpProcessCached, readPersistentOrDirect } = await import(
-  "../src/lib/data/cached-live-views.ts"
+  "../src/lib/data/live-view-cache.ts"
 );
 
 test("process TTL cache reuses settled values and refreshes only after expiry", async () => {

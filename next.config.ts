@@ -73,6 +73,12 @@ const nextConfig: NextConfig = {
     "/api/mcp": ["data/source-ledger/elements/**/*"],
   },
   outputFileTracingIncludes: {
+    "/opere": [
+      "src/data/generated/mop-comparable-browse.meta.json",
+      "src/data/generated/mop-comparable-browse.data.jsonl.gz",
+      "scripts/etl/specs/mop-comparable-browse.source.json",
+    ],
+
     "/appalti/operatori": [
       "src/data/generated/anac-operator-awards-index/meta.json",
       "src/data/generated/anac-operator-awards-index/summaries.json",

@@ -140,6 +140,23 @@ Per ogni opera manteniamo distinti:
 - date previste e date effettive;
 - avvisi sulla qualità del dato.
 
+La sezione `/opere` (menu Fondi e progetti → Opere pubbliche) offre:
+
+1. riepilogo grafico (avanzamento; previsto vs effettivo per settore in scala
+   logaritmica) e subito sotto l’elenco sfogliabile offline del sottoinsieme
+   **confrontabile** (previsto e effettivo entrambi &gt; 0), con filtri settore /
+   categoria / avanzamento / stato;
+2. ricerca CUP live su OpenBDAP sotto l’elenco, per confronti fuori snapshot.
+
+Ogni riga mostra se l’opera è in corso o conclusa e, quando disponibili, le
+date di esecuzione previste ed effettive: su un’opera in corso lo scostamento
+non è un bilancio finale.
+
+Lo snapshot `mop-comparable-browse` non è l'intero catalogo nazionale e **non
+contiene regioni**: le colonne ufficiali MOP non le espongono. Sulla scheda
+`/progetti/[cup]` resta il blocco costi previsto/effettivo. API live:
+`GET /api/opere?cup=…`. Anteprima fuori snapshot asili: `/progetti/[cup]?fonte=mop`.
+
 Gli avvisi su tempi, costi o copertura finanziaria hanno uso di screening. Indicano cosa verificare e includono spiegazioni alternative plausibili. Non classificano automaticamente un'opera come spreco, irregolarità o illecito.
 
 ### Rendiconto RGS: consulenze e lavoro parasubordinato

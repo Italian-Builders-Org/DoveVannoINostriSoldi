@@ -217,6 +217,134 @@
   overflow-wrap: anywhere;
 }
 
+.mopPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mopOnlyNotice {
+  margin-bottom: var(--space-4);
+}
+
+.mopEvidence,
+.mopMissing {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.mopWorks {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.mopWork {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.mopWorkHead {
+  display: grid;
+  gap: 4px;
+}
+
+.mopWorkHead strong {
+  font-size: 13px;
+}
+
+.mopWorkHead span,
+.mopWorkHead small {
+  color: var(--color-neutral-700);
+  overflow-wrap: anywhere;
+}
+
+.mopWorkHead small {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.mopCostFacts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.mopCostFacts > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.mopCostFacts dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mopCostFacts dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.mopCostFacts small {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.mopCostNote,
+.mopProvenance {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.mopProvenanceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.mopProvenanceGrid > div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.mopProvenanceGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mopProvenanceGrid dd {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .mopCostFacts,
+  .mopProvenanceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .timeline {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

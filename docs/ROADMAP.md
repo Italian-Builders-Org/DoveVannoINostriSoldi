@@ -124,7 +124,9 @@ Lavoro dati già in corso, da non dimenticare quando si sceglie una verticale:
 - crawler Amministrazione Trasparente da IPA;
 - pagamenti ReGiS e gare PNRR nazionali: il catalogo completo progetti/localizzazioni è ora disponibile in `/pnrr`;
 - drill-down OpenCoesione con anti-doppio conteggio;
-- ingestione persistente opere OpenBDAP MOP;
+- ingestione persistente opere OpenBDAP MOP (in corso: sottoinsieme confrontabile
+  sfogliabile in `/opere?vista=elenco`; manca ancora il corpus completo e il join
+  geografico per CUP);
 - popolazione comunale ISTAT per denominatori annuali;
 - spesa statale regionalizzata RGS e bilanci regionali Istat, fasi esplicite;
 - indicatori automatici (concentrazione, soglie, proroghe) solo con test sui falsi positivi.

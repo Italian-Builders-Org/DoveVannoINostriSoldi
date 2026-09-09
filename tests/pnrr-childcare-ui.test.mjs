@@ -21,16 +21,38 @@ test("PNRR catalog is server-rendered, searchable, and semantically cautious", a
 });
 
 test("project trace labels observed, linked, derived and missing evidence", async () => {
-  const page = await source("../src/app/progetti/[cup]/page.tsx");
+  const [page, mopPanel] = await Promise.all([
+    source("../src/app/progetti/[cup]/page.tsx"),
+    source("../src/components/mop/mop-cost-panel.tsx"),
+  ]);
   for (const evidence of ["osservato", "collegato", "derivato", "mancante"]) {
     assert.match(page, new RegExp(`kind=\\"${evidence}\\"`));
   }
   assert.match(page, /Pagamenti ReGiS/);
   assert.match(page, /non vengono attribuite a una procedura per approssimazione/i);
   assert.doesNotMatch(page, /Promise\.race/);
-  assert.match(page, /getPublicWorksByCup\(cup,\s*\{\s*signal:\s*AbortSignal\.timeout\(3_500\),?\s*\}\)/);
-  assert.match(page, /3_500/);
-  assert.equal(page.match(/<h1\b/g)?.length, 1);
+  assert.match(page, /MopCostPanel/);
+  assert.match(mopPanel, /MOP_LOOKUP_TIMEOUT_MS/);
+  assert.match(mopPanel, /AbortSignal\.timeout\(MOP_LOOKUP_TIMEOUT_MS\)/);
+  assert.match(mopPanel, /MopCostComparisonChart/);
+  assert.match(mopPanel, /previsto|effettivo/i);
+  assert.match(mopPanel, /non sono\s+finanziamento PNRR/);
+  assert.match(page, /importi di gara/);
+  assert.match(mopPanel, /Landing OpenBDAP MOP|Landing ufficiale/);
+  assert.match(page, /\?fonte=mop|fonte=mop/);
+  assert.equal(page.match(/<h1\b/g)?.length, 2);
+});
+
+test("MOP cost comparison chart keeps planned and actual as separate series", async () => {
+  const chart = await source("../src/components/charts/mop-cost-comparison-chart.tsx");
+  assert.match(chart, /^["']use client["'];/m);
+  assert.match(chart, /plannedEuro/);
+  assert.match(chart, /actualEuro/);
+  assert.match(chart, /Previsto/);
+  assert.match(chart, /Effettivo/);
+  assert.match(chart, /ChartDataTable/);
+  assert.match(chart, /--chart-data-primary/);
+  assert.doesNotMatch(chart, /aggiudicazione|PNRR|ReGiS/);
 });
 
 test("OpenCUP-only projects explain that geography is outside the source release", async () => {

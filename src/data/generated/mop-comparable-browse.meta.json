@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 1,
+  "dataset": "mop-comparable-browse",
+  "observedAt": "2026-09-09T10:35:39Z",
+  "generatedAt": "2026-09-09T10:57:52Z",
+  "referenceDate": "2026-09-04",
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "dataset": "Progetti Opere Pubbliche MOP - Totale",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale",
+    "datasetId": "bda1676b-62ab-44b7-8f9a-ca93b8534488@rgs",
+    "license": "CC BY",
+    "sourceLastUpdate": "04/09/2026 12:20:20",
+    "declaredCadence": "periodica"
+  },
+  "coverage": {
+    "publishedWorks": 10033,
+    "scannedRows": 18000,
+    "droppedInvalidRows": 32,
+    "nonComparableAmongScanned": 7934,
+    "pagesFetched": 180,
+    "sourceCupCardinality": 542653,
+    "sourceLocalProjectCardinality": 561449,
+    "sourceColumnCount": 48
+  },
+  "scope": {
+    "distributionKind": "comparable-subset-from-live-odata",
+    "comparableRule": "plannedTotalCents>0 and actualTotalCents>0",
+    "acquisitionOrder": "ccosto_lavori_previsto desc",
+    "nationalPopulationClaim": "not-asserted",
+    "geography": "absent-in-mop-columns",
+    "note": "Sottoinsieme delle opere MOP con costo previsto e costo effettivo entrambi valorizzati, acquisito in ordine di costo lavori previsto decrescente. Non e l'intero catalogo nazionale e non contiene regioni."
+  },
+  "facets": {
+    "sectors": [
+      {
+        "label": "INFRASTRUTTURE DI TRASPORTO",
+        "count": 7242
+      },
+      {
+        "label": "INFRASTRUTTURE SOCIALI",
+        "count": 1876
+      },
+      {
+        "label": "INFRASTRUTTURE AMBIENTALI E RISORSE IDRICHE",
+        "count": 708
+      },
+      {
+        "label": "INFRASTRUTTURE DEL SETTORE ENERGETICO",
+        "count": 45
+      },
+      {
+        "label": "OPERE, IMPIANTI ED ATTREZZATURE PER ATTIVITA' PRODUTTIVE, E LA RICERCA E L'IMPRESA SOCIALE",
+        "count": 45
+      },
+      {
+        "label": "INFRASTRUTTURE PER TELECOMUNICAZIONI E TECNOLOGIE INFORMATICHE",
+        "count": 40
+      },
+      {
+        "label": "INFRASTRUTTURE PER L'ATTREZZATURA DI AREE PRODUTTIVE",
+        "count": 31
+      },
+      {
+        "label": "ISTRUZIONE, FORMAZIONE E SOSTEGNI PER IL MERCATO DEL LAVORO",
+        "count": 30
+      },
+      {
+        "label": "SERVIZI PER LA P.A. E PER LA COLLETTIVITA'",
+        "count": 11
+      },
+      {
+        "label": "RICERCA SVILUPPO TECNOLOGICO ED INNOVAZIONE",
+        "count": 6
+      }
+    ],
+    "categories": [
+      {
+        "label": "STRADE STATALI",
+        "count": 3481
+      },
+      {
+        "label": "LINEE FERROVIARIE",
+        "count": 1677
+      },
+      {
+        "label": "STRADE REGIONALI, PROVINCIALI E COMUNALI",
+        "count": 836
+      },
+      {
+        "label": "AUTOSTRADE",
+        "count": 531
+      },
+      {
+        "label": "FABBRICATI RESIDENZIALI URBANI",
+        "count": 259
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE FERROVIARIE",
+        "count": 250
+      },
+      {
+        "label": "STRUTTURE OSPEDALIERE",
+        "count": 249
+      },
+      {
+        "label": "SCUOLE ELEMENTARI, MEDIE E SUPERIORI",
+        "count": 210
+      },
+      {
+        "label": "ALTRI EDIFICI SCOLASTICI",
+        "count": 204
+      },
+      {
+        "label": "STAZIONE E TERMINALI",
+        "count": 199
+      },
+      {
+        "label": "ALTRE INFRASTRUTTURE",
+        "count": 131
+      },
+      {
+        "label": "CORSI D'ACQUA",
+        "count": 125
+      },
+      {
+        "label": "ALTRI EDIFICI ABITATIVI",
+        "count": 97
+      },
+      {
+        "label": "IMPIANTI SPORTIVI",
+        "count": 94
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE STRADALI",
+        "count": 87
+      },
+      {
+        "label": "REGIMAZIONE ACQUE",
+        "count": 87
+      },
+      {
+        "label": "ALTRE INFRASTRUTTURE/STRUTTURE DI DIFESA DEL SUOLO",
+        "count": 83
+      },
+      {
+        "label": "RESTAURO E RIQUALIFICAZIONE DI BENI CULTURALI",
+        "count": 79
+      },
+      {
+        "label": "SPIAGGE",
+        "count": 76
+      },
+      {
+        "label": "UNIVERSITA'",
+        "count": 66
+      },
+      {
+        "label": "STRUTTURE/INFRASTRUTTURE PER SEDI DELLA PUBBLICA AMMINISTRAZIONE",
+        "count": 63
+      },
+      {
+        "label": "PORTI COMMERCIALI",
+        "count": 55
+      },
+      {
+        "label": "RETI FOGNARIE",
+        "count": 49
+      },
+      {
+        "label": "SCUOLE MATERNE",
+        "count": 39
+      },
+      {
+        "label": "PISTE CICLABILI",
+        "count": 39
+      },
+      {
+        "label": "EDIFICI SOCIALI, CULTURALI E ASSISTENZIALI",
+        "count": 38
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE PER LA PROTEZIONE, VALORIZZAZIONE E FRUIZIONE AMBIENTALE",
+        "count": 31
+      },
+      {
+        "label": "ALTRE STRUTTURE SANITARIE",
+        "count": 30
+      },
+      {
+        "label": "MUSEI ARCHIVI E BIBLIOTECHE",
+        "count": 30
+      },
+      {
+        "label": "STRUTTURE/INFRASTRUTTURE PER LA CAPTAZIONE E ADDUZIONE DELL'ACQUA PER ESCLUSIVO USO AGRICOLO",
+        "count": 30
+      },
+      {
+        "label": "ALTRE INFRASTRUTTURE PER ATTREZZATURE DI AREE PRODUTTIVE",
+        "count": 26
+      },
+      {
+        "label": "RETI IDRICHE URBANE",
+        "count": 26
+      },
+      {
+        "label": "ALTRE OPERE ED IMPIANTI PER TECNOLOGIE INFORMATICHE",
+        "count": 26
+      },
+      {
+        "label": "IMPIANTI DEPURAZIONE ACQUE",
+        "count": 25
+      },
+      {
+        "label": "ALTRI BENI CULTURALI",
+        "count": 25
+      },
+      {
+        "label": "FORMAZIONE E ISTRUZIONE ALL'INTERNO DELL'OBBLIGO SCOLASTICO",
+        "count": 25
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE PER L'UTILIZZO DELLE RISORSE IDRICHE",
+        "count": 24
+      },
+      {
+        "label": "EDIFICI E INFRASTRUTTURE PER UFFICI",
+        "count": 23
+      },
+      {
+        "label": "ALTRE STRUTTURE RICREATIVE",
+        "count": 21
+      },
+      {
+        "label": "ALTRE STRUTTURE SOCIALI",
+        "count": 21
+      },
+      {
+        "label": "LINEE METROPOLITANE E TRAMVIARIE",
+        "count": 20
+      },
+      {
+        "label": "CIMITERI",
+        "count": 20
+      },
+      {
+        "label": "ALTRI PRESIDI SANITARI TERRITORIALI",
+        "count": 18
+      },
+      {
+        "label": "ARREDO URBANO",
+        "count": 18
+      },
+      {
+        "label": "RETI IDRICHE RURALI",
+        "count": 16
+      },
+      {
+        "label": "BACINI IRRIGUI, TRAVERSE E STRUTTURE MINORI DI ACCUMULO",
+        "count": 15
+      },
+      {
+        "label": "TEATRI ED ALTRE STRUTTURE PER LO SPETTACOLO",
+        "count": 15
+      },
+      {
+        "label": "MONUMENTI",
+        "count": 15
+      },
+      {
+        "label": "IMPIANTI E RETI IRRIGUE INTERAZIENDALI",
+        "count": 14
+      },
+      {
+        "label": "ABITATI",
+        "count": 14
+      },
+      {
+        "label": "SISTEMI DI PARCHEGGIO E INTERSCAMBIO",
+        "count": 13
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE DIREZIONALI E AMMINISTRATIVE",
+        "count": 13
+      },
+      {
+        "label": "IMPIANTI PER L'EFFICIENZA DELLE RETI E RISPARMIO ENERGETICO",
+        "count": 12
+      },
+      {
+        "label": "ALTRI IMPIANTI PRODUZIONE ENERGIE DA FONTI RINNOVABILI",
+        "count": 12
+      },
+      {
+        "label": "ALTRE STRUTTURE E IMPIANTI PER IL TURISMO",
+        "count": 12
+      },
+      {
+        "label": "BONIFICA DI SITI",
+        "count": 12
+      },
+      {
+        "label": "RESIDENZE SANITARIE ASSISTENZIALI",
+        "count": 12
+      },
+      {
+        "label": "ALTRE OPERE ED INFRASTRUTTURE PER LA RICERCA",
+        "count": 11
+      },
+      {
+        "label": "STRUTTURE PER LA FRUIZIONE DEL PATRIMONIO AMBIENTALE",
+        "count": 11
+      },
+      {
+        "label": "ALTRI SERVIZI PER LA COLLETTIVITA'",
+        "count": 11
+      },
+      {
+        "label": "AREE DISMESSE",
+        "count": 10
+      },
+      {
+        "label": "VERDE PUBBLICO",
+        "count": 10
+      },
+      {
+        "label": "IDROVIE E STRUTTURE/INFRASTRUTTURE FLUVIALI",
+        "count": 9
+      },
+      {
+        "label": "CHIESE",
+        "count": 9
+      },
+      {
+        "label": "PARCHI E RISERVE AREE PROTETTE",
+        "count": 9
+      },
+      {
+        "label": "ALTRI STRUTTURE/INFRASTRUTTURE DI TRASPORTO URBANE",
+        "count": 8
+      },
+      {
+        "label": "PRETURE E TRIBUNALI",
+        "count": 8
+      },
+      {
+        "label": "ALTRE STRUTTURE PER IL COMMERCIO ED I SERVIZI",
+        "count": 8
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE MARITTIME E FLUVIALI",
+        "count": 7
+      },
+      {
+        "label": "IMPIANTI DI TRATTAMENTO RIFIUTI URBANI",
+        "count": 7
+      },
+      {
+        "label": "ALTRE STRUTTURE/INFRASTRUTTURE PER LA PUBBLICA SICUREZZA",
+        "count": 7
+      },
+      {
+        "label": "ILLUMINAZIONE PUBBLICA",
+        "count": 7
+      },
+      {
+        "label": "CASERME",
+        "count": 7
+      },
+      {
+        "label": "SERBATOI ED IMPIANTI DI SOLLEVAMENTO",
+        "count": 6
+      },
+      {
+        "label": "AREE ARCHEOLOGICHE",
+        "count": 6
+      },
+      {
+        "label": "PORTI TURISTICI",
+        "count": 6
+      },
+      {
+        "label": "INFRASTRUTTURE VERDI",
+        "count": 6
+      },
+      {
+        "label": "IMPIANTI DI  TRASMISSIONE DI ENERGIA ELETTRICA",
+        "count": 5
+      },
+      {
+        "label": "ALTRI EDIFICI PER IL CULTO",
+        "count": 5
+      },
+      {
+        "label": "FUNIVIE, SEGGIOVIE, FUNICOLARI",
+        "count": 5
+      }
+    ],
+    "statuses": [
+      {
+        "label": "ATTIVO",
+        "count": 9023
+      },
+      {
+        "label": "CHIUSO",
+        "count": 1011
+      }
+    ],
+    "progress": [
+      {
+        "label": "concluso",
+        "count": 6096
+      },
+      {
+        "label": "in-corso",
+        "count": 3937
+      }
+    ]
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "dataArtifact": {
+      "path": "src/data/generated/mop-comparable-browse.data.jsonl.gz",
+      "bytes": 1238418,
+      "sha256": "15fb3b78d37f7c2dfbc21d4a2ede5261cd27bc6b11f0274020567caf13011a82"
+    },
+    "sourceSpecSha256": "3a9b86466e704f238017cf1ad28e974f8dd5dc782181dd65abf33d90e9aab81e"
+  },
+  "methodology": {
+    "moneyFamily": "Solo costi MOP (lavori + somme + oneri). I finanziamenti restano fuori.",
+    "delta": "changeBasisPoints solo con entrambi i totali > 0.",
+    "screeningOnly": "Nessuna classifica di spreco o illegalita.",
+    "regions": "Le colonne ufficiali MOP non espongono regione/provincia/comune.",
+    "ongoingWorks": "Uno scostamento previsto/effettivo su un'opera ancora in corso non prova un risparmio o un extra-costo finale."
+  },
+  "limitations": [
+    "Non e l'intero catalogo nazionale MOP: e il sottoinsieme confrontabile acquisito in ordine di costo lavori previsto",
+    "Le colonne ufficiali MOP non espongono regione, provincia o comune",
+    "I finanziamenti non entrano nel delta costi",
+    "I segnali e i ranking restano di screening e non indicano spreco o illecito",
+    "La lookup live per CUP resta disponibile per opere fuori da questo sottoinsieme"
+  ]
+}

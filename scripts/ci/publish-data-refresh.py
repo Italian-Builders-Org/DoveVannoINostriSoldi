@@ -235,6 +235,10 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
     files = tuple(item.get("files") or ())
     if not files or any(not isinstance(path, str) or not path for path in files):
         raise PublishError(f"artifact has no valid generated file allowlist: {artifact_id}")
+    if artifact_id == "company-atlas":
+        # The registry keeps one owner per file. This shared, generated document
+        # is a publication companion, verified by the atlas offline command.
+        files += ("docs/SOURCE_SNAPSHOT_INVENTORY.md",)
     offline_command = offline["command"]
     if artifact_id == "siope-nonmunicipal":
         # Publication mutates shared proofs; verify the full release at this boundary.
@@ -293,7 +297,12 @@ def allowlisted_paths(artifact: Artifact) -> set[str]:
             and path in {"scripts/etl/specs/openbdap-budget-law-missions.source.json", "docs/SOURCE_SNAPSHOT_INVENTORY.md"}
             and resolved == ROOT / path
         )
-        if resolved != root and root not in resolved.parents and not reviewed_budget_metadata:
+        reviewed_atlas_inventory = (
+            artifact.artifact_id == "company-atlas"
+            and path == "docs/SOURCE_SNAPSHOT_INVENTORY.md"
+            and resolved == ROOT / path
+        )
+        if resolved != root and root not in resolved.parents and not reviewed_budget_metadata and not reviewed_atlas_inventory:
             raise PublishError(f"generated file escapes the generated-data root: {path}")
         if (ROOT / path).is_symlink():
             raise PublishError(f"generated file must not be a symlink: {path}")

@@ -53,6 +53,22 @@ class PublishDataRefreshTests(TestCase):
         with self.assertRaises(publisher.PublishError):
             publisher.allowlisted_paths(replace(other, files=("scripts/etl/specs/openbdap-budget-law-missions.source.json",)))
 
+    def test_atlas_publication_includes_only_its_data_metadata_and_shared_inventory(self) -> None:
+        from dataclasses import replace
+        artifact = publisher.load_artifact("company-atlas")
+        self.assertEqual(publisher.allowlisted_paths(artifact), {
+            "src/data/generated/company-atlas-snapshot.json",
+            "src/data/generated/company-atlas-metadata.json",
+            "docs/SOURCE_SNAPSHOT_INVENTORY.md",
+        })
+        self.assertIn("docs/SOURCE_SNAPSHOT_INVENTORY.md", publisher.publication_file_labels(artifact))
+        for path in ("docs/ROADMAP.md", "src/lib/company-atlas.ts", "scripts/etl/specs/openbdap-budget-law-missions.source.json"):
+            with self.assertRaises(publisher.PublishError):
+                publisher.allowlisted_paths(replace(artifact, files=(path,)))
+        other = publisher.load_artifact("consulenti-pubblici")
+        with self.assertRaises(publisher.PublishError):
+            publisher.allowlisted_paths(replace(other, files=("docs/SOURCE_SNAPSHOT_INVENTORY.md",)))
+
     def test_registry_has_only_managed_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
         publications = {

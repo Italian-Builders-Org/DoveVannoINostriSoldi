@@ -2,10 +2,15 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeepStrictEqual } from "node:util";
+import { execFileSync } from "node:child_process";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-snapshot.json");
 const METADATA_OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-metadata.json");
+
+function sourceInventory(mode) {
+  execFileSync("python3", ["scripts/ci/source-snapshot-inventory.py", mode], { cwd: ROOT, stdio: "inherit" });
+}
 
 export const SOURCE_URLS = Object.freeze({
   activeStock: "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
@@ -686,6 +691,7 @@ async function main() {
     if (!isDeepStrictEqual(metadata, companyAtlasMetadata(snapshot))) {
       throw new Error("Company atlas metadata does not match its snapshot");
     }
+    sourceInventory("--check");
     console.log(`OK ${OUTPUT}: ${snapshot.observations.length} osservazioni aggregate`);
     return;
   }
@@ -698,6 +704,7 @@ async function main() {
     await writeFile(OUTPUT, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
   }
   await writeFile(METADATA_OUTPUT, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
+  sourceInventory("--write");
   console.log(`Scritto ${process.argv.includes("--metadata-only") ? METADATA_OUTPUT : OUTPUT}: ${snapshot.observations.length} osservazioni aggregate verificate`);
 }
 

@@ -272,6 +272,20 @@ Stato attuale:
 
 Non riscriviamo tutti gli adapter contemporaneamente soltanto per uniformità estetica: ogni migrazione deve mantenere gli stessi risultati e passare lint, typecheck, design gate e build.
 
+## Atlante Imprese: branch di pubblicazione
+
+Il publisher usa `automation/data/company-atlas-v2` per il candidato che include
+snapshot, metadati e inventario. Il precedente branch
+`automation/data/company-atlas` resta conservato con la PR #383 chiusa: il suo
+snapshot è incluso senza modifiche nella PR #384, ma il digest di provenienza
+precedente copriva soltanto lo snapshot e non è riutilizzabile per il nuovo insieme
+di file. La separazione dei branch conserva la verifica rigorosa dei digest.
+
+Entrambi i nomi ricadono nelle protezioni `automation/data/**`: soltanto il Data
+Bot può gestirli. Il workflow e l'approvazione `source-operations` restano gli
+stessi. I refresh futuri operano esclusivamente sul branch v2; non occorre
+cancellare, aggiornare o riaprire il candidato storico.
+
 ## Pagella dei governi: ciclo di aggiornamento
 
 Il workflow settimanale `government-scorecard-refresh.yml` usa

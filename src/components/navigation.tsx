@@ -6,13 +6,32 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HeaderSearch } from "@/components/header-search";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
-import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
+import {
+  PublicationAnnouncement,
+  type PublicationAnnouncementItem,
+} from "@/components/publication-announcement";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
-  GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
-  MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
-  AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
+  ArrowDown01Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Menu01Icon,
+  Cancel01Icon,
+  GithubIcon,
+  Home01Icon,
+  News01Icon,
+  Building03Icon,
+  School01Icon,
+  Money01Icon,
+  MapsGlobal01Icon,
+  Task01Icon,
+  Building04Icon,
+  Building06Icon,
+  Search01Icon,
+  AiChat01Icon,
+  BookSearchIcon,
+  BookOpen01Icon,
+  UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import {
   PRIMARY_NAV,
@@ -22,6 +41,8 @@ import {
   type NavLink,
 } from "@/lib/site-navigation";
 import { REPO_URL } from "@/lib/site";
+
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ICONS = {
   home: Home01Icon,
@@ -40,8 +61,10 @@ const NAV_ICONS = {
   research: BookOpen01Icon,
 } as const;
 
-
-type NavigationLocation = Readonly<{ pathname: string; currentSearch: string | null }>;
+type NavigationLocation = Readonly<{
+  pathname: string;
+  currentSearch: string | null;
+}>;
 
 function NavSubtree({
   links,
@@ -50,20 +73,29 @@ function NavSubtree({
   idPrefix,
   onNavigate,
   depth = 1,
-}: NavigationLocation & Readonly<{
-  links: readonly NavLink[];
-  idPrefix: string;
-  onNavigate?: () => void;
-  depth?: number;
-}>) {
+}: NavigationLocation &
+  Readonly<{
+    links: readonly NavLink[];
+    idPrefix: string;
+    onNavigate?: () => void;
+    depth?: number;
+  }>) {
   // Match top-level disclosure: an explicit null on this pathname means "closed",
   // even when the branch is route-active (otherwise Appalti cannot be collapsed
   // while viewing /appalti/*).
-  const [selection, setSelection] = useState<{ pathname: string; href: string | null } | null>(null);
-  const activeBranch = links.find((link) => link.children?.length && isNavBranchActive(pathname, link, currentSearch ?? ""));
-  const openNestedHref = selection?.pathname === pathname
-    ? selection.href
-    : (activeBranch?.href ?? null);
+  const [selection, setSelection] = useState<{
+    pathname: string;
+    href: string | null;
+  } | null>(null);
+  const activeBranch = links.find(
+    (link) =>
+      link.children?.length &&
+      isNavBranchActive(pathname, link, currentSearch ?? ""),
+  );
+  const openNestedHref =
+    selection?.pathname === pathname
+      ? selection.href
+      : (activeBranch?.href ?? null);
 
   return (
     <>
@@ -71,16 +103,21 @@ function NavSubtree({
         const hasNested = Boolean(child.children?.length);
         const nestedOpen = hasNested && openNestedHref === child.href;
         const nestedId = `${idPrefix}-${child.href.replace(/^\//, "").replace(/[/?=&]/g, "-")}`;
-        const current = currentSearch !== null
-          && isNavChildActive(pathname, child.href, links, currentSearch)
-          && !(
-            hasNested
-            && child.children!.some((nested) => isNavBranchActive(pathname, nested, currentSearch))
+        const current =
+          currentSearch !== null &&
+          isNavChildActive(pathname, child.href, links, currentSearch) &&
+          !(
+            hasNested &&
+            child.children!.some((nested) =>
+              isNavBranchActive(pathname, nested, currentSearch),
+            )
           );
         return (
           <li
             key={`${child.href}:${child.label}`}
-            className={hasNested ? "nav-subitem nav-subitem-has-menu" : "nav-subitem"}
+            className={
+              hasNested ? "nav-subitem nav-subitem-has-menu" : "nav-subitem"
+            }
             data-open={nestedOpen ? "true" : undefined}
           >
             <Link
@@ -97,15 +134,29 @@ function NavSubtree({
                 aria-expanded={nestedOpen}
                 aria-controls={nestedId}
                 aria-label={`Pagine in ${child.label}`}
-                onClick={() => setSelection({ pathname, href: nestedOpen ? null : child.href })}
+                onClick={() =>
+                  setSelection({
+                    pathname,
+                    href: nestedOpen ? null : child.href,
+                  })
+                }
               >
-                <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+                <HugeiconsIcon
+                  icon={ArrowDown01Icon}
+                  size={14}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
               </button>
             ) : null}
             {hasNested ? (
               <ul
                 id={nestedId}
-                className={depth >= 2 ? "nav-submenu nav-submenu-nested" : "nav-submenu nav-submenu-nested"}
+                className={
+                  depth >= 2
+                    ? "nav-submenu nav-submenu-nested"
+                    : "nav-submenu nav-submenu-nested"
+                }
                 hidden={!nestedOpen}
                 aria-label={`Pagine in ${child.label}`}
               >
@@ -127,48 +178,107 @@ function NavSubtree({
 }
 
 /** One link map and disclosure implementation for both responsive surfaces. */
-function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNavigate }:
-  NavigationLocation & Readonly<{ id: string; collapsed?: boolean; onNavigate?: () => void }>) {
-  const [selection, setSelection] = useState<{ pathname: string; href: string | null } | null>(null);
-  const activeSection = PRIMARY_NAV.find((item) => item.children?.length && isNavSectionActive(pathname, item));
-  const openHref = selection?.pathname === pathname ? selection.href : activeSection?.href;
+function NavigationLinks({
+  pathname,
+  currentSearch,
+  id,
+  collapsed = false,
+  onNavigate,
+}: NavigationLocation &
+  Readonly<{ id: string; collapsed?: boolean; onNavigate?: () => void }>) {
+  const [selection, setSelection] = useState<{
+    pathname: string;
+    href: string | null;
+  } | null>(null);
+  const activeSection = PRIMARY_NAV.find(
+    (item) => item.children?.length && isNavSectionActive(pathname, item),
+  );
+  const openHref =
+    selection?.pathname === pathname ? selection.href : activeSection?.href;
   return (
-    <nav id={id} className="primary-nav" aria-label="Navigazione principale"
+    <nav
+      id={id}
+      className="primary-nav"
+      aria-label="Navigazione principale"
       onKeyDown={(event) => {
         if (event.key === "Escape" && !onNavigate && openHref) {
-          event.currentTarget.querySelector<HTMLButtonElement>('button[aria-expanded="true"]')?.focus();
+          event.currentTarget
+            .querySelector<HTMLButtonElement>('button[aria-expanded="true"]')
+            ?.focus();
           setSelection({ pathname, href: null });
         }
-      }}>
+      }}
+    >
       <ul className="primary-nav-list">
         {PRIMARY_NAV.map((item) => {
           const active = isNavSectionActive(pathname, item);
           const hasChildren = Boolean(item.children?.length);
           const open = !collapsed && openHref === item.href;
           // Key off the section href, not the icon: icons can repeat (or collide).
-          const menuKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "home";
+          const menuKey =
+            item.href.replace(/^\//, "").replace(/\//g, "-") || "home";
           const menuId = `${id}-${menuKey}`;
           return (
-            <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
-              data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>
+            <li
+              key={item.href}
+              className={
+                hasChildren ? "nav-item nav-item-has-menu" : "nav-item"
+              }
+              data-section-active={active ? "true" : undefined}
+              data-open={open ? "true" : undefined}
+            >
               {item.href === "/imprese" || item.href === "/report" ? (
-                <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Esplora i dati"}</span>
+                <span className="sidebar-group">
+                  {item.href === "/report" ? "Pubblicazioni" : "Esplora i dati"}
+                </span>
               ) : null}
-              <Link href={item.href} title={collapsed ? item.label : undefined}
-                aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
-                data-section-active={active ? "true" : undefined} onNavigate={onNavigate}>
-                <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={19} strokeWidth={1.8} aria-hidden="true" />
+              <Link
+                href={item.href}
+                title={collapsed ? item.label : undefined}
+                aria-current={
+                  pathname === item.href &&
+                  currentSearch === "" &&
+                  (!hasChildren || !open)
+                    ? "page"
+                    : undefined
+                }
+                data-section-active={active ? "true" : undefined}
+                onNavigate={onNavigate}
+              >
+                <HugeiconsIcon
+                  icon={NAV_ICONS[item.icon]}
+                  size={19}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
                 <span className="nav-label">{item.label}</span>
               </Link>
               {hasChildren ? (
-                <button type="button" className="nav-item-toggle" aria-expanded={open}
-                  aria-controls={menuId} aria-label={`Pagine in ${item.label}`}
-                  onClick={() => setSelection({ pathname, href: open ? null : item.href })}>
-                  <HugeiconsIcon icon={ArrowDown01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
+                <button
+                  type="button"
+                  className="nav-item-toggle"
+                  aria-expanded={open}
+                  aria-controls={menuId}
+                  aria-label={`Pagine in ${item.label}`}
+                  onClick={() =>
+                    setSelection({ pathname, href: open ? null : item.href })
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={ArrowDown01Icon}
+                    size={16}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
                 </button>
               ) : null}
               {hasChildren ? (
-                <ul id={menuId} className="nav-submenu" hidden={!open} aria-label={`Pagine in ${item.label}`}>
+                <ul
+                  id={menuId}
+                  className="nav-submenu"
+                  hidden={!open}
+                  aria-label={`Pagine in ${item.label}`}
+                >
                   <NavSubtree
                     links={item.children!}
                     pathname={pathname}
@@ -186,24 +296,41 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
   );
 }
 
-export function Navigation({ announcements = [] }: Readonly<{ announcements?: readonly PublicationAnnouncementItem[] }>) {
+export function Navigation({
+  announcements = [],
+}: Readonly<{ announcements?: readonly PublicationAnnouncementItem[] }>) {
   const pathname = usePathname();
   const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
     <>
-      <Suspense fallback={null}><NavigationSearchSync onChange={setCurrentSearch} /></Suspense>
-      <NavigationContent pathname={pathname} currentSearch={currentSearch} announcements={announcements} />
+      <Suspense fallback={null}>
+        <NavigationSearchSync onChange={setCurrentSearch} />
+      </Suspense>
+      <NavigationContent
+        pathname={pathname}
+        currentSearch={currentSearch}
+        announcements={announcements}
+      />
     </>
   );
 }
 
-function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string) => void }>) {
+function NavigationSearchSync({
+  onChange,
+}: Readonly<{ onChange: (search: string) => void }>) {
   const currentSearch = useSearchParams().toString();
-  useLayoutEffect(() => { onChange(currentSearch); }, [currentSearch, onChange]);
+  useLayoutEffect(() => {
+    onChange(currentSearch);
+  }, [currentSearch, onChange]);
   return null;
 }
 
-function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
+function NavigationContent({
+  pathname,
+  currentSearch,
+  announcements,
+}: NavigationLocation &
+  Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
   // Layout state survives client navigation; no storage-driven shift during hydration.
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -214,11 +341,14 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   const openedLocationRef = useRef("");
   const backdropPointerRef = useRef(false);
 
-  function closeDrawer() { dialogRef.current?.close(); }
+  function closeDrawer() {
+    dialogRef.current?.close();
+  }
   function openDrawer() {
     const dialog = dialogRef.current;
     if (!dialog || dialog.open) return;
-    openedLocationRef.current = window.location.pathname + window.location.search;
+    openedLocationRef.current =
+      window.location.pathname + window.location.search;
     dialog.showModal();
     setDrawerOpen(true);
     closeRef.current?.focus();
@@ -226,7 +356,11 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
 
   useEffect(() => {
     // Also close on history navigation, without closing on the first query sync.
-    if (dialogRef.current?.open && openedLocationRef.current !== window.location.pathname + window.location.search) {
+    if (
+      dialogRef.current?.open &&
+      openedLocationRef.current !==
+        window.location.pathname + window.location.search
+    ) {
       dialogRef.current.close();
     }
   }, [pathname, currentSearch]);
@@ -237,7 +371,10 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
       if (media.matches && dialogRef.current?.open) {
         dialogRef.current.close();
         collapseRef.current?.focus();
-      } else if (!media.matches && document.activeElement?.closest(".desktop-sidebar")) {
+      } else if (
+        !media.matches &&
+        document.activeElement?.closest(".desktop-sidebar")
+      ) {
         mobileTriggerRef.current?.focus();
       }
     }
@@ -250,50 +387,132 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
       <header className="site-header">
         <PublicationAnnouncement items={announcements} />
         <div className="shell header-inner">
-          <button type="button" className="navigation-button mobile-menu-trigger" ref={mobileTriggerRef}
-            aria-label="Apri menu di navigazione" aria-controls="mobile-navigation" aria-expanded={drawerOpen}
-            aria-haspopup="dialog" onClick={openDrawer}>
-            <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+          <button
+            type="button"
+            className="navigation-button mobile-menu-trigger"
+            ref={mobileTriggerRef}
+            aria-label="Apri menu di navigazione"
+            aria-controls="mobile-navigation"
+            aria-expanded={drawerOpen}
+            aria-haspopup="dialog"
+            onClick={openDrawer}
+          >
+            <HugeiconsIcon
+              icon={Menu01Icon}
+              size={22}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
           </button>
-          <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
-            <Image className="brand-mark" src="/brand/dvns-mark-transparent.png" width={44} height={44} alt="" aria-hidden="true" priority />
-            <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
+          <Link
+            href="/"
+            className="brand"
+            aria-label="Dove vanno i nostri soldi, home"
+          >
+            <Image
+              className="brand-mark"
+              src="/brand/dvns-mark-transparent.png"
+              width={44}
+              height={44}
+              alt=""
+              aria-hidden="true"
+              priority
+            />
+            <span className="brand-text">
+              <strong>Dove vanno i nostri soldi?</strong>
+            </span>
           </Link>
           <span className="header-spacer" />
           <HeaderSearch />
           <div className="header-actions">
-            <Link className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</Link>
-            <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
-              aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
-              <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />
+            <ThemeToggle />
+
+            <Link
+              className="header-action header-action-accent"
+              href="/mcp"
+              aria-label="Istruzioni MCP"
+            >
+              MCP
+            </Link>
+
+            <a
+              className="header-action header-action-icon"
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Codice su GitHub, si apre in una nuova scheda"
+              title="Codice su GitHub"
+            >
+              <HugeiconsIcon
+                icon={GithubIcon}
+                size={19}
+                strokeWidth={1.7}
+                aria-hidden="true"
+              />
             </a>
           </div>
         </div>
       </header>
-      <aside className="desktop-sidebar" data-collapsed={collapsed} aria-label="Menu del sito"
+      <aside
+        className="desktop-sidebar"
+        data-collapsed={collapsed}
+        aria-label="Menu del sito"
         onBlurCapture={(event) => {
           // CSS can hide the focused control before the media change callback.
-          if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
+          if (
+            !event.relatedTarget &&
+            !window.matchMedia("(min-width: 1100px)").matches
+          ) {
             mobileTriggerRef.current?.focus();
           }
-        }}>
+        }}
+      >
         <div className="sidebar-toolbar">
-          <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
-            aria-label={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            title={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            aria-expanded={!collapsed} aria-controls="desktop-navigation" onClick={() => setCollapsed(!collapsed)}>
-            <HugeiconsIcon icon={collapsed ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+          <button
+            type="button"
+            className="navigation-button sidebar-collapse"
+            ref={collapseRef}
+            aria-label={
+              collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"
+            }
+            title={
+              collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"
+            }
+            aria-expanded={!collapsed}
+            aria-controls="desktop-navigation"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            <HugeiconsIcon
+              icon={collapsed ? ArrowRight01Icon : ArrowLeft01Icon}
+              size={20}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
           </button>
         </div>
-        <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={collapsed} />
-        <div className="sidebar-callout"><ReportProblemButton variant="sidebar" compact={collapsed} /></div>
+        <NavigationLinks
+          id="desktop-navigation"
+          pathname={pathname}
+          currentSearch={currentSearch}
+          collapsed={collapsed}
+        />
+        <div className="sidebar-callout">
+          <ReportProblemButton variant="sidebar" compact={collapsed} />
+        </div>
       </aside>
-      <dialog id="mobile-navigation" className="mobile-navigation" ref={dialogRef} aria-labelledby="mobile-navigation-title"
+      <dialog
+        id="mobile-navigation"
+        className="mobile-navigation"
+        ref={dialogRef}
+        aria-labelledby="mobile-navigation-title"
         onClose={() => setDrawerOpen(false)}
         onKeyDown={(event) => {
           if (event.key !== "Tab") return;
-          const controls = [...event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')]
-            .filter((node) => node.getClientRects().length > 0);
+          const controls = [
+            ...event.currentTarget.querySelectorAll<HTMLElement>(
+              "a[href], button:not([disabled])",
+            ),
+          ].filter((node) => node.getClientRects().length > 0);
           const first = controls[0];
           const last = controls.at(-1);
           if (event.shiftKey && document.activeElement === first) {
@@ -304,20 +523,53 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             first?.focus();
           }
         }}
-        onPointerDown={(event) => { backdropPointerRef.current = event.target === event.currentTarget; }}
+        onPointerDown={(event) => {
+          backdropPointerRef.current = event.target === event.currentTarget;
+        }}
         onClick={(event) => {
-          if (backdropPointerRef.current && event.target === event.currentTarget) closeDrawer();
+          if (
+            backdropPointerRef.current &&
+            event.target === event.currentTarget
+          )
+            closeDrawer();
           backdropPointerRef.current = false;
-        }}>
+        }}
+      >
         <div className="mobile-navigation-panel">
           <div className="sidebar-toolbar">
-            <h2 id="mobile-navigation-title" className="sidebar-heading">Esplora il sito</h2>
-            <button type="button" className="navigation-button" ref={closeRef} aria-label="Chiudi menu di navigazione" onClick={closeDrawer}>
-              <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+            <h2 id="mobile-navigation-title" className="sidebar-heading">
+              Esplora il sito
+            </h2>
+            <button
+              type="button"
+              className="navigation-button"
+              ref={closeRef}
+              aria-label="Chiudi menu di navigazione"
+              onClick={closeDrawer}
+            >
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={22}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
             </button>
           </div>
-          {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
-          <div className="sidebar-callout"><ReportProblemButton variant="sidebar" onOpen={closeDrawer} restoreFocusRef={mobileTriggerRef} /></div>
+          {drawerOpen ? (
+            <NavigationLinks
+              id="mobile-navigation-links"
+              pathname={pathname}
+              currentSearch={currentSearch}
+              onNavigate={closeDrawer}
+            />
+          ) : null}
+          <div className="sidebar-callout">
+            <ReportProblemButton
+              variant="sidebar"
+              onOpen={closeDrawer}
+              restoreFocusRef={mobileTriggerRef}
+            />
+          </div>
         </div>
       </dialog>
     </>

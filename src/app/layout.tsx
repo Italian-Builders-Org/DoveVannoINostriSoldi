@@ -18,8 +18,34 @@ const geist = Geist({
 const latestReport = monthlyReports.listPublished()[0];
 const latestPaper = papers.listPublished()[0];
 const announcements = [
-  ...(latestReport ? [{ label: "Articolo", title: latestReport.title, description: latestReport.issueMonth === "2026-08" ? "Imprese e territori: cosa sta cambiando in Italia?" : latestReport.title, cta: "Leggi l’articolo", href: latestReport.href }] : []),
-  ...(latestPaper ? [{ label: "Paper", title: latestPaper.title, description: latestPaper.webPath === "/studi/dai-fondi-ai-posti" ? "Asili PNRR: i finanziamenti diventano posti disponibili?" : latestPaper.title, cta: "Scopri il paper", href: latestPaper.webPath ?? "/studi" }] : []),
+  ...(latestReport
+    ? [
+        {
+          label: "Articolo",
+          title: latestReport.title,
+          description:
+            latestReport.issueMonth === "2026-08"
+              ? "Imprese e territori: cosa sta cambiando in Italia?"
+              : latestReport.title,
+          cta: "Leggi l’articolo",
+          href: latestReport.href,
+        },
+      ]
+    : []),
+  ...(latestPaper
+    ? [
+        {
+          label: "Paper",
+          title: latestPaper.title,
+          description:
+            latestPaper.webPath === "/studi/dai-fondi-ai-posti"
+              ? "Asili PNRR: i finanziamenti diventano posti disponibili?"
+              : latestPaper.title,
+          cta: "Scopri il paper",
+          href: latestPaper.webPath ?? "/studi",
+        },
+      ]
+    : []),
 ];
 
 export const metadata: Metadata = {
@@ -47,10 +73,14 @@ export default function RootLayout({
     <html lang="it" className={geist.variable} data-scroll-behavior="smooth">
       <body>
         <GoogleAnalytics />
-        <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
+        <a className="skip-link" href="#contenuto-principale">
+          Salta al contenuto principale
+        </a>
         <Navigation announcements={announcements} />
         <div className="site-content">
-          <div id="contenuto-principale" tabIndex={-1}>{children}</div>
+          <div id="contenuto-principale" tabIndex={-1}>
+            {children}
+          </div>
           <SectionNav />
           <SiteFooter />
         </div>

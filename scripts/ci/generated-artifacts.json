@@ -771,6 +771,32 @@
       "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
     },
     {
+      "id": "mop-comparable-browse",
+      "owner": "OpenBDAP MOP comparable works browse snapshot",
+      "files": [
+        "src/data/generated/mop-comparable-browse.data.jsonl.gz",
+        "src/data/generated/mop-comparable-browse.meta.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/mop_comparable_browse.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_mop_comparable_browse.py"
+      ],
+      "nodeTests": [
+        "tests/opere-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/mop_comparable_browse.py --max-pages 180 --page-size 100",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/mop-comparable-browse.source.json",
+      "trustModel": "Comparable-subset snapshot from official OpenBDAP MOP OData. Only rows with planned and actual totals both > 0 are published. Meta binds SHA-256 and byte size of the gzip JSONL; --check verifies offline without network. Not the full national catalog; MOP columns do not expose geography."
+    },
+    {
       "id": "government-scorecard",
       "owner": "European Commission, Eurostat and Presidency of the Republic government scorecard",
       "files": [

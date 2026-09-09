@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
-import { getPublicWorksByCup } from "@/lib/bdap-public-works";
+import {
+  MopCostPanel,
+  optionalMopLookup,
+} from "@/components/mop/mop-cost-panel";
 import { OPENCUP_PRODUCT_INTEGRATION } from "@/lib/data/source-policy";
 import { compactEuro, exactEuro, integer, longDate, shortDate } from "@/lib/format";
 import {
@@ -22,8 +25,9 @@ import type { PnrrChildcareProject } from "@/lib/data/pnrr-childcare-contract";
 import { OpenCupProjectPanel } from "./opencup-project-panel";
 import styles from "./project.module.css";
 
+
 type RouteParams = Promise<{ cup: string }>;
-type MopLookup = Awaited<ReturnType<typeof getPublicWorksByCup>>;
+type RouteSearchParams = Promise<{ fonte?: string | string[] }>;
 
 type ProjectLookup = {
   cup: string | null;
@@ -31,6 +35,16 @@ type ProjectLookup = {
   openCupUnavailable: boolean;
   pnrr: PnrrChildcareProject | null;
 };
+
+function firstSearchValue(value: string | string[] | undefined): string | null {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value) && typeof value[0] === "string") return value[0];
+  return null;
+}
+
+function wantsMopOnlyShell(fonte: string | null): boolean {
+  return fonte === "mop";
+}
 
 const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
   let cup: string;
@@ -67,23 +81,36 @@ const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
   }
 });
 
-export async function generateMetadata({ params }: { params: RouteParams }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: RouteParams;
+  searchParams: RouteSearchParams;
+}): Promise<Metadata> {
   const { cup: rawCup } = await params;
+  const query = await searchParams;
+  const mopOnly = wantsMopOnlyShell(firstSearchValue(query.fonte));
   const lookup = await loadProject(rawCup);
-  if (!lookup.cup || (!lookup.pnrr && !lookup.openCup && !lookup.openCupUnavailable) || (!lookup.pnrr && lookup.openCup?.matchedRows === 0)) notFound();
-  const title = lookup.pnrr?.title
-    ?? lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP
-    ?? `Progetto CUP ${lookup.cup}`;
-  return {
-    title: `${lookup.cup} · ${title}`,
-    description: `Traccia documentale del progetto ${lookup.cup} nei rilasci pubblici consultati.`,
-  };
-}
+  if (!lookup.cup) notFound();
 
-async function optionalMop(cup: string): Promise<MopLookup | null> {
-  return getPublicWorksByCup(cup, {
-    signal: AbortSignal.timeout(3_500),
-  }).catch(() => null);
+  if (lookup.pnrr || lookup.openCup || lookup.openCupUnavailable) {
+    if (!lookup.pnrr && lookup.openCup?.matchedRows === 0 && !mopOnly) notFound();
+    const title = lookup.pnrr?.title
+      ?? lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP
+      ?? `Progetto CUP ${lookup.cup}`;
+    return {
+      title: `${lookup.cup} · ${title}`,
+      description: `Traccia documentale del progetto ${lookup.cup} nei rilasci pubblici consultati.`,
+    };
+  }
+
+  if (!mopOnly) notFound();
+  return {
+    title: `${lookup.cup} · OpenBDAP MOP`,
+    description: `Confronto costi previsti ed effettivi OpenBDAP MOP per il CUP ${lookup.cup}.`,
+    robots: { index: false, follow: false },
+  };
 }
 
 function money(value: number | null): string {
@@ -103,23 +130,70 @@ function timelineRows(project: PnrrChildcareProject) {
   ] as const;
 }
 
-async function MopEvidence({ cup }: { cup: string }) {
-  const mop = await optionalMop(cup);
-  if (!mop) {
-    return <p><Evidence kind="mancante" /> Il controllo live non ha risposto entro 3,5 secondi. La scheda Italia Domani resta disponibile e verificabile.</p>;
-  }
-  return (
-    <>
-      <p><strong>{integer(mop.count)} opere trovate per lo stesso CUP.</strong> Il collegamento è esatto, ma la classificazione MOP può avere un perimetro diverso.</p>
-      <ul className={styles.mopList}>{mop.works.map((work) => <li key={work.localCode}><strong>{work.status}</strong><span>{work.description}</span><small>{work.holder.name}</small></li>)}</ul>
-    </>
-  );
-}
-
-export default async function ProjectPage({ params }: { params: RouteParams }) {
+export default async function ProjectPage({
+  params,
+  searchParams,
+}: {
+  params: RouteParams;
+  searchParams: RouteSearchParams;
+}) {
   const { cup: rawCup } = await params;
+  const query = await searchParams;
+  const mopOnly = wantsMopOnlyShell(firstSearchValue(query.fonte));
   const lookup = await loadProject(rawCup);
-  if (!lookup.cup || (!lookup.pnrr && !lookup.openCup && !lookup.openCupUnavailable) || (!lookup.pnrr && lookup.openCup?.matchedRows === 0)) notFound();
+  if (!lookup.cup) notFound();
+
+  const hasPrimaryTrace =
+    Boolean(lookup.pnrr) ||
+    Boolean(lookup.openCupUnavailable) ||
+    (lookup.openCup !== null && lookup.openCup.matchedRows > 0);
+
+  if (!hasPrimaryTrace && !mopOnly) notFound();
+  if (!hasPrimaryTrace && mopOnly) {
+    const mop = await optionalMopLookup(lookup.cup);
+    if (!mop || mop.count === 0) notFound();
+    const primary = mop.works[0];
+    return (
+      <main className="shell page">
+        <nav className={styles.breadcrumb} aria-label="Percorso">
+          <Link href="/coesione">Fondi e progetti</Link><span>/</span>
+          <strong>{lookup.cup}</strong>
+        </nav>
+
+        <header className={styles.hero}>
+          <div>
+            <div className={styles.heroMeta}>
+              <span>CUP {lookup.cup}</span>
+              <Evidence kind="collegato" />
+              <span>{primary.status}</span>
+            </div>
+            <h1>{primary.description || `Opera MOP ${lookup.cup}`}</h1>
+            <p>
+              Scheda di anteprima OpenBDAP MOP: il CUP non è nello snapshot PNRR
+              asili e OpenCUP prodotto non è attivo. Solo costi MOP previsto /
+              effettivo.
+            </p>
+          </div>
+        </header>
+
+        <div className={`notice ${styles.mopOnlyNotice}`}>
+          <strong>Anteprima locale · ?fonte=mop</strong>
+          <p>
+            Non è una scheda PNRR/OpenCUP. Serve a verificare il confronto costi
+            sulla fonte MOP senza inventare finanziamenti o gare.
+          </p>
+        </div>
+
+        <section className={`panel ${styles.mopPanel}`}>
+          <div className={styles.sectionHeading}>
+            <h2>Monitoraggio Opere Pubbliche · previsto e effettivo</h2>
+          </div>
+          <MopCostPanel cup={lookup.cup} initial={mop} />
+        </section>
+      </main>
+    );
+  }
+
   const cup = lookup.cup;
   const project = lookup.pnrr;
   const tenderTotal = project?.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0) ?? 0;
@@ -256,12 +330,13 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
       </section>
 
       <div className={styles.twoColumns}>
-        <section className="panel">
-          <div className={styles.sectionHeading}><h2>OpenBDAP MOP</h2></div>
+        <section className={`panel ${styles.mopPanel}`}>
+          <div className={styles.sectionHeading}>
+            <h2>Monitoraggio Opere Pubbliche · previsto e effettivo</h2>
+          </div>
           <Suspense fallback={<p>Controllo CUP in corso su OpenBDAP…</p>}>
-            <MopEvidence cup={project.cup} />
+            <MopCostPanel cup={project.cup} />
           </Suspense>
-          <a className="btn btn-secondary" href={`/api/opere?cup=${project.cup}`}>Apri il dato OpenBDAP</a>
         </section>
         <section className="panel">
           <div className={styles.sectionHeading}><h2>Fonte e limiti</h2></div>
@@ -272,6 +347,10 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
             <div><dt>Chiavi</dt><dd>CUP · CIG · PDA · procedura utente</dd></div>
           </dl>
           <p className={styles.caveat}>{pnrrChildcareMeta.methodology.territorialWarning}</p>
+          <p className={styles.caveat}>
+            Finanziamento PNRR e importi di gara/aggiudicazione non sono il «costo
+            effettivo» MOP: restano in sezioni separate.
+          </p>
           <div className={styles.actions}>
             <a className="btn btn-secondary" href={pnrrChildcareMeta.source.landingUrl} target="_blank" rel="noreferrer">Catalogo Italia Domani ↗</a>
             <a className="btn btn-secondary" href={`/api/pnrr/asili?cup=${project.cup}`}>JSON della scheda</a>
@@ -280,11 +359,18 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
         </section>
       </div>
       </> : (
-        <section className="panel">
-          <div className={styles.sectionHeading}><h2>Altre fonti per lo stesso CUP</h2></div>
-          <p>Il collegamento usa soltanto il CUP esatto. Aprire una ricerca non significa che OpenBDAP contenga già un’opera corrispondente.</p>
+        <section className={`panel ${styles.mopPanel}`}>
+          <div className={styles.sectionHeading}>
+            <h2>Monitoraggio Opere Pubbliche · previsto e effettivo</h2>
+          </div>
+          <p>
+            Il collegamento usa soltanto il CUP esatto. Se MOP risponde, mostriamo
+            i costi previsti ed effettivi della stessa famiglia di denaro.
+          </p>
+          <Suspense fallback={<p>Controllo CUP in corso su OpenBDAP…</p>}>
+            <MopCostPanel cup={cup} />
+          </Suspense>
           <div className={styles.actions}>
-            <a className="btn btn-secondary" href={`/api/opere?cup=${cup}`}>Cerca in OpenBDAP MOP</a>
             <Link className="btn btn-secondary" href="/metodologia">Metodologia</Link>
           </div>
         </section>

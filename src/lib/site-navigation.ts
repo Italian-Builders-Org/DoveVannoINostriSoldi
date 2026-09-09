@@ -97,7 +97,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/coesione",
     label: "Fondi e progetti",
     icon: "projects",
-    aliases: ["/confronti", "/pnrr", "/progetti"],
+    aliases: ["/confronti", "/pnrr", "/progetti", "/opere"],
     children: [
       {
         href: "/coesione",
@@ -108,6 +108,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
           { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
         ],
       },
+      { href: "/opere", label: "Opere pubbliche" },
       { href: "/confronti", label: "Confronti verificati" },
     ],
   },
@@ -249,6 +250,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/coesione", label: "Coesione e PNRR" },
       { href: "/pnrr", label: "Tutti i progetti PNRR" },
       { href: "/coesione/asili", label: "Asili e prima infanzia" },
+      { href: "/opere", label: "Opere pubbliche" },
       { href: "/confronti", label: "Confronti verificati" },
       { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
     ],

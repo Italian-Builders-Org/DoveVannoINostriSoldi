@@ -16,6 +16,7 @@ const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive,
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
+  assert.match(navigationSource, /href: "\/opere", label: "Opere pubbliche"/);
   assert.match(navigationSource, /title: "Fondi e progetti"/);
   assert.match(navigationSource, /FOOTER_SITEMAP_GROUPS/);
   assert.match(navigationSource, /FOOTER_SITEMAP_COLUMNS = 4/);

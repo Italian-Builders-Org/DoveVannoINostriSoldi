@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 56
+- Artefatti nel registro: 57
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 40 (PR umana dopo revisione)
+- manuale: 41 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -72,6 +72,7 @@ La revisione e il merge restano umani.
 | `parliament` | non dichiarato nello snapshot | 2026-08-20T14:00:00.000Z | non dichiarato nel registro | `37 */6 * * *` | `.github/workflows/parliament-sources.yml` | solo rilevamento | `python scripts/etl/parliament_sources.py --check` |
 | `pcm-financial-2024` | 2024 | 2026-08-22T16:54:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/pcm_financial_account.py --check` |
 | `pnrr-childcare` | 2026-06-13 | 2026-08-21T12:15:00Z | https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data.html | `37 5 * * 1` | `.github/workflows/pnrr-childcare-refresh.yml` | solo rilevamento | `python scripts/etl/pnrr_childcare_snapshot.py --check` |
+| `mop-comparable-browse` | 2026-09-04 | 2026-09-09T10:35:39Z | https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale | nessuno | nessuno | manuale | `python3 scripts/etl/mop_comparable_browse.py --check` |
 | `government-scorecard` | 2024 | 2026-08-29T23:11:43Z | https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en | `37 7 * * 2` | `.github/workflows/government-scorecard-refresh.yml` | PR automatica | `python3 scripts/ci/check-government-scorecard-artifacts.py` |
 | `public-debt` | 2026-06-30 | 2026-08-24T09:41:59Z | https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html | `17 6 * * *` | `.github/workflows/public-debt-refresh.yml` | PR automatica | `python scripts/etl/public_debt_snapshot.py --check` |
 | `rgs-consulting-payments` | non dichiarato nello snapshot | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |

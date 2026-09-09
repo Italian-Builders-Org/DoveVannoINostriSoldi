@@ -57,7 +57,7 @@ Ogni scheda usa quattro etichette:
 - `derivato`: valore calcolato da righe osservate;
 - `mancante`: valore non pubblicato o collegamento incompleto.
 
-La validazione Italia Domani viene riportata come campo fonte, non trasformata in un giudizio di qualità, efficienza o legalità. Il controllo live OpenBDAP MOP usa lo stesso CUP, ha un budget di 3,5 secondi e non blocca la scheda primaria se l'upstream non risponde.
+La validazione Italia Domani viene riportata come campo fonte, non trasformata in un giudizio di qualità, efficienza o legalità. Il controllo live OpenBDAP MOP usa lo stesso CUP, ha un budget di 8 secondi e non blocca la scheda primaria se l'upstream non risponde.
 
 ## Rigenerazione
 

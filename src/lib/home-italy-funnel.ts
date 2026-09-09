@@ -116,8 +116,9 @@ function resolveCofogYear(requested: number | undefined): number {
   return to;
 }
 
-function cofogLink(code: string): { href: string; linkLabel: string } | null {
+function cofogLink(code: string, year: number): { href: string; linkLabel: string } | null {
   if (code === "GF01") return { href: "/debito", linkLabel: "Debito e interessi" };
+  if (code === "GF03") return { href: `/spese/sicurezza?anno=${year}`, linkLabel: "Ordine pubblico e sicurezza" };
   if (code === "GF04") return { href: "/imprese", linkLabel: "Imprese" };
   if (code === "GF05") return { href: "/spese/ambiente", linkLabel: "Protezione dell'ambiente" };
   if (code === "GF06") return { href: "/territori", linkLabel: "Territori" };
@@ -176,7 +177,7 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
   const totalEuro = eurosFromCents(total.amountCents);
   // Show every COFOG division: the chart must read as a full composition, not a truncated list.
   const slices: HomeFunnelSlice[] = divisions.map((row) => {
-    const link = cofogLink(row.function);
+    const link = cofogLink(row.function, year);
     return {
       id: row.function,
       label: COFOG_EVERYDAY_LABELS[row.function] ?? row.function,

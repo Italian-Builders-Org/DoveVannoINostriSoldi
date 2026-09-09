@@ -19,7 +19,7 @@ test("home Italy funnel exposes PA composition with everyday labels", () => {
   assert.match(funnel.pa.slices[0]?.label ?? "", /Pensioni/);
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF07" && slice.href === "/spese/sanita"));
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF02" && slice.href === null));
-  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF03" && slice.href === null));
+  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF03" && slice.href === "/spese/sicurezza?anno=2024"));
   assert.match(funnel.pa.moneyNature, /SEC 2010/);
   assert.match(funnel.pa.source.href, /^https:\/\//);
   const shareSum = funnel.pa.slices.reduce((sum, slice) => sum + slice.sharePercent, 0);

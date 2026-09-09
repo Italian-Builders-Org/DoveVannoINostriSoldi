@@ -6,6 +6,7 @@ import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
+import { inspectPublicOrderSpending } from "./public-order-spending.mjs";
 import {
   NAVIGATION_TIMEOUT_MS,
   closeBrowser,
@@ -2426,6 +2427,14 @@ try {
           timeout: 3_000,
         });
       },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Ordine pubblico e sicurezza ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/spese/sicurezza", width, validate: inspectPublicOrderSpending,
     });
     completed.push(label);
   }

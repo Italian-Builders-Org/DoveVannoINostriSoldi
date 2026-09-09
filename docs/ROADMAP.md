@@ -70,6 +70,7 @@ Come usare questo file:
 
 | Iniziativa | Copertura | Implementabile | Effort | Issue / PR | Dove | Prossimo passo |
 |---|---|---|---|---|---|---|
+| Ordine pubblico e sicurezza (COFOG GF03) | Implementata nella PR collegata: serie italiana Eurostat 2014-2024 sullo snapshot verificato, quota PIL e PA, fonti e hash; collegamento dalla home | Sì | Basso | [#366](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/366) | `/spese/sicurezza` | Review della PR; il dettaglio polizia, vigili del fuoco e giustizia resta un gap dichiarato e richiede acquisizione ufficiale separata. Gli stanziamenti RGS restano una lettura distinta, non sommabile. |
 | Home quadro e territorio | Home con mappa e pagamenti su `main` | Sì | Medio | Nessuna issue | `/` | Densità e ordine da test utente, non da mockup. Feedback: X-023, X-038, X-042, T-003, T-023. |
 | Card statiche condivisibili | Assente | Sì | Medio | Nessuna issue | UI | Export PNG con fonte, data, caveat e testo alternativo. Feedback: X-024, X-025, T-016. |
 | Collegare spesa a outcome | Assente | Dipende | Alto | Nessuna issue; si innesta sulla verticale sanità | Verticale pilota | Una verticale con outcome ufficiale e latenza dichiarata. Feedback: A-003, X-035. |

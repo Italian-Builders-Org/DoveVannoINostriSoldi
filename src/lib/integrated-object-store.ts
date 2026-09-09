@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { sha256Hex } from "@/lib/integrated-source-contract";
-import { withIntegratedDatasetLoadSlot } from "@/lib/integrated-sources";
+import { withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
 
 const unzip = promisify(gunzip);
 const MAX_CACHE_RAW_BYTES = 64 * 1024 * 1024;

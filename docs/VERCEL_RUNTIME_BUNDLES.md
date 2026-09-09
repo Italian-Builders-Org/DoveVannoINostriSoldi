@@ -148,3 +148,44 @@ da `vercel.json` e `package.json`. Il confronto parte sempre dall'ultimo
 deployment riuscito. Cronologia mancante, primo deployment, redeploy manuale,
 modifiche applicative non ancora distribuite o modifiche allo script di skip
 richiedono la build. Gli altri workflow non sono esclusi implicitamente.
+
+
+## Stato fonti: avvio a cache vuota, 9 settembre 2026
+
+Dopo #390, la prima richiesta Production a `/api/fonti/stato` ha ricevuto
+`FUNCTION_INVOCATION_TIMEOUT` con un limite host di 10 secondi. Il controllo
+condiviso si è completato dopo la risposta di timeout; due richieste successive
+sono riuscite. I log non contengono un profilo CPU della funzione: da soli non
+separano l'inizializzazione della piattaforma dal caricamento applicativo.
+
+La riproduzione locale sul build di `eb7515e7` usa cache vuota, undici richieste
+upstream simulate che rispettano l'annullamento e un limite client di 10 secondi.
+Il solo server Next riceve 15 ms di esecuzione ogni 100 ms tramite SIGSTOP/SIGCONT.
+In queste condizioni, la richiesta originale supera 10 secondi. Il profilo
+mostra lettura, compilazione e validazione degli snapshot prima dei probe.
+Spostare il solo import dietro la cache non risolve il blocco sincrono.
+
+Il riepilogo di 30 fonti gestite occupa 7.639 byte. È derivato dagli stessi
+adapter validati e riconciliato integralmente prima di ogni build. A runtime
+si ricalcola la freschezza e si interrogano le fonti live con un budget comune.
+La coda condivisa delle letture è separata dal lettore del corpus: importare
+il limite di concorrenza non include più tutti i dati integrati nel pacchetto.
+I refresh automatici delle fonti interessate aggiornano anche il riepilogo.
+
+| Misura locale | Prima | Dopo |
+| --- | ---: | ---: |
+| Manifest `/api/fonti/stato` | 240,37 MiB | 2,56 MiB |
+| Richiesta a cache vuota con CPU limitata | timeout oltre 10 s | HTTP 200 in 4,15 s |
+| Fonti nel risultato | 34 | 34 |
+| Fonti simulate non raggiungibili | 4 | 4 |
+
+Il manifest `/fonti/stato` misura 2,86 MiB dopo la modifica. Il controllo del
+build rifiuta l'inclusione dei ledger e del corpus integrato in entrambe le route.
+Una verifica intermedia prima della separazione della coda risponde in 4,16 s,
+ma include ancora 210,68 MiB: latenza di esecuzione e dimensione del pacchetto
+sono costi distinti.
+
+Le misure sono locali, su Node 22.23.2, Next 16.3.3 e macOS arm64. La CPU
+limitata è una prova del budget in condizioni avverse, non un'emulazione delle
+risorse Vercel né una stima del risparmio economico. L'esito delle fonti esterne
+resta distinto dalla disponibilità HTTP dell'applicazione.

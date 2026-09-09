@@ -156,6 +156,14 @@ tracing accidentale di test, documentazione e ricerca, controlla gli artifact
 ANAC necessari e impedisce l'inclusione dell'indice operatori nelle route enti.
 Vedi [misure e verifica dei bundle](docs/VERCEL_RUNTIME_BUNDLES.md).
 
+Lo stato delle fonti usa un riepilogo dei metadati degli snapshot, riconciliato
+con i rispettivi validator prima di ogni build. Dopo un aggiornamento degli
+snapshot, esegui `npm run source-health:generate` e versiona il riepilogo
+aggiornato. Freschezza e raggiungibilità sono calcolate durante il controllo,
+senza incorporare timestamp di build o stati dei probe nel riepilogo.
+Il publisher dei refresh automatici aggiorna e include il riepilogo per le
+fonti interessate, usando gli stessi validator con il network guard attivo.
+
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nel job
 `production` di GitHub Actions. Il download resta attivo con `npm ci` locale

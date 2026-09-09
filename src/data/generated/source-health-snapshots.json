@@ -1,0 +1,182 @@
+[
+  {
+    "sourceId": "ameco",
+    "sourceTimestamp": "2026-08-29T23:11:43Z",
+    "detail": "Snapshot Spring 2026 Economic Forecast verificato · osservazioni fino al 2024 · previsioni 2025-2027 escluse dal voto.",
+    "recordCount": 1315
+  },
+  {
+    "sourceId": "governi-presidenza",
+    "sourceTimestamp": "2026-09-01",
+    "detail": "Cronologia Quirinale verificata · 17 governi dal 1995 · mandato corrente identificato esplicitamente.",
+    "recordCount": 17
+  },
+  {
+    "sourceId": "anac",
+    "sourceTimestamp": "2026-01-16",
+    "detail": "Snapshot verificato il 2026-08-20 · CIG 2025 · 12 distribuzioni mensili",
+    "recordCount": 1453918
+  },
+  {
+    "sourceId": "inps",
+    "sourceTimestamp": "2026-07-01",
+    "detail": "Snapshot verificato · spesa nazionale 2021-2025 · nuove pensioni per regione 2016-2024 · pensioni vigenti INPS 2026",
+    "recordCount": 167
+  },
+  {
+    "sourceId": "cpt",
+    "sourceTimestamp": null,
+    "detail": "Snapshot verificato il 2026-08-20 · dati 2000-2023 · 21 territori",
+    "recordCount": 504
+  },
+  {
+    "sourceId": "mef-irpef",
+    "sourceTimestamp": "2026-04-23",
+    "detail": "Snapshot verificato · 7.897 righe fonte, 7.896 Comuni e 1 riga Mancante/errata separata · anno d’imposta 2024",
+    "recordCount": 7896
+  },
+  {
+    "sourceId": "istat",
+    "sourceTimestamp": "2026-08-25",
+    "detail": "Snapshot SITUAS generato il 2026-08-25 · dati al 2026-08-25 · geografia comunale 2026 · 7894 comuni · serie 2022-2026",
+    "recordCount": 7894
+  },
+  {
+    "sourceId": "istat-casellario-pensioni",
+    "sourceTimestamp": "2026-08-30T17:24:00+02:00",
+    "detail": "Snapshot ISTAT Casellario dei pensionati verificato · dati 2012-2022 · pensioni e pensionati separati · 14.934 byte · check offline-source-lock-and-snapshot-contract",
+    "recordCount": 99
+  },
+  {
+    "sourceId": "consip",
+    "sourceTimestamp": "2026-09-03",
+    "detail": "Snapshot Consip ordini verificato · Convenzioni e MEPA 2024-2026 · importi come limiti inferiori con soppressioni dichiarate · 67.477 byte · check offline-source-lock-and-snapshot-contract",
+    "recordCount": 263
+  },
+  {
+    "sourceId": "opencoesione",
+    "sourceTimestamp": "2026-04-30",
+    "detail": "Snapshot ETL attivo; reachability controllata dal workflow dedicato, non da questo endpoint.",
+    "recordCount": 1838162
+  },
+  {
+    "sourceId": "italiadomani",
+    "sourceTimestamp": "2026-06-13",
+    "detail": "Catalogo nazionale ReGiS: 291398 registrazioni, 285992 CUP validi distinti al 13/06/2026; progetti e localizzazioni, senza pagamenti. Il verticale asili conserva un rilascio distinto. Reachability non verificata da questo endpoint.",
+    "recordCount": 291398
+  },
+  {
+    "sourceId": "opencivitas",
+    "sourceTimestamp": "2025-08-07",
+    "detail": "Snapshot ETL attivo · dati 2022",
+    "recordCount": 6557
+  },
+  {
+    "sourceId": "consulenti",
+    "sourceTimestamp": null,
+    "detail": "Snapshot estratto il 2026-08-25 · ultimo anno disponibile 2026, parziale",
+    "recordCount": 84161
+  },
+  {
+    "sourceId": "camera",
+    "sourceTimestamp": null,
+    "detail": "Snapshot verificato il 2026-08-20 · consuntivo e bilancio collegati ai documenti ufficiali della Camera.",
+    "recordCount": 2
+  },
+  {
+    "sourceId": "senato",
+    "sourceTimestamp": null,
+    "detail": "Metadati verificati il 2026-08-20 · importi esclusi finché i PDF contabili non sono acquisiti e verificati.",
+    "recordCount": 2
+  },
+  {
+    "sourceId": "pcm",
+    "sourceTimestamp": "2025-06-19",
+    "detail": "Rendiconto PCM 2024 · workbook XLSX verificato e 572 righe riconciliate.",
+    "recordCount": 572
+  },
+  {
+    "sourceId": "partecipazioni-pubbliche",
+    "sourceTimestamp": "2026-03-10",
+    "detail": "Snapshot ETL attivo · rilevazione 2023",
+    "recordCount": 53656
+  },
+  {
+    "sourceId": "bancaditalia",
+    "sourceTimestamp": "2026-06-30",
+    "detail": "Snapshot ETL attivo · stock al 2026-06-30 · quattro cubi BDS riconciliati.",
+    "recordCount": 13
+  },
+  {
+    "sourceId": "eurostat",
+    "sourceTimestamp": "2025-12-31",
+    "detail": "Snapshot ETL attivo · interessi e spesa totale 2025 riconciliati.",
+    "recordCount": 5
+  },
+  {
+    "sourceId": "eurostat-hicp",
+    "sourceTimestamp": "2026-09-01T23:00:00+0200",
+    "detail": "Snapshot ETL attivo · IPCA mensile fino a 2026-08 (prc_hicp_minr).",
+    "recordCount": 1424
+  },
+  {
+    "sourceId": "eurostat-cofog",
+    "sourceTimestamp": "2026-09-03",
+    "detail": "Snapshot ETL attivo · spesa per funzione COFOG 2014-2024 (gov_10a_exp) · copertura piena 4114/4114 celle, 219 con flag della fonte · 409.576 byte.",
+    "recordCount": 4114
+  },
+  {
+    "sourceId": "istat-cofog",
+    "sourceTimestamp": "2026-09-04",
+    "detail": "Snapshot ETL attivo · consumi finali della PA per funzione 1995-2023 (93_1227_DF_DCCN_TNA1_4, edizione 2025M12) · copertura piena 10208 celle · 739.262 byte.",
+    "recordCount": 10208
+  },
+  {
+    "sourceId": "istat-epea",
+    "sourceTimestamp": "2026-09-04",
+    "detail": "Snapshot ETL attivo · EPEA protezione ambiente 2016-2022 (edizione 2025M2, IT1,97_953,1.0) · 5656 osservazioni · 890.282 byte CSV pinnato.",
+    "recordCount": 5656
+  },
+  {
+    "sourceId": "istat-poverta",
+    "sourceTimestamp": "2026-09-05",
+    "detail": "Snapshot ETL attivo · povertà assoluta 2014-2024 (serie corrente post-revisione, 34_727_DF_DCCV_POVERTA_1) · 616 osservazioni su 8 territori e 7 misure · 71.951 byte CSV pinnato. Non è spesa pubblica.",
+    "recordCount": 616
+  },
+  {
+    "sourceId": "istat-poverta-relativa",
+    "sourceTimestamp": "2026-09-05",
+    "detail": "Snapshot ETL attivo · povertà relativa 2014-2024 (serie corrente post-revisione, 34_727_DF_DCCV_POVERTA_1) · 616 osservazioni su 8 territori e 7 misure · 72.008 byte CSV pinnato. Non è spesa pubblica e non si somma alla povertà assoluta.",
+    "recordCount": 616
+  },
+  {
+    "sourceId": "istat-bes-economico",
+    "sourceTimestamp": "2026-09-06",
+    "detail": "Snapshot ETL attivo · BES dei territori, benessere economico (edizione 2025, DF_BES_TERRIT_4) · 19.592 osservazioni su 5 indicatori e 139 territori, di cui 111 province · 2.107.955 byte CSV pinnato. Medie pro capite, non spesa pubblica e non sommabili fra territori.",
+    "recordCount": 19592
+  },
+  {
+    "sourceId": "istat-bes-salute",
+    "sourceTimestamp": null,
+    "detail": "BES Salute, edizione 2025: 46.157 osservazioni, sei indicatori e 135 territori, di cui 107 province. Periodi e unità distinti per indicatore; una cella statisticamente non significativa. Non è spesa pubblica né dato comunale.",
+    "recordCount": 46157
+  },
+  {
+    "sourceId": "istat-bes-istruzione",
+    "sourceTimestamp": null,
+    "detail": "Nove indicatori BES_02 Istruzione e formazione, edizione 2025; 14.952 osservazioni e 139 territori, di cui 111 province. Periodi e disponibilità per sesso distinti per indicatore fra 2004 e 2024. Non è spesa pubblica né dato comunale; 76 celle ignote.",
+    "recordCount": 14952
+  },
+  {
+    "sourceId": "inps-naspi",
+    "sourceTimestamp": "2026-09-04",
+    "detail": "Snapshot ETL attivo · NASpI beneficiari e trattamenti 2018-2022 · 9 tabelle SDMX, 53.362 osservazioni di cui 601 soppresse per privacy · riconciliazioni esatte · 7.312.525 byte.",
+    "recordCount": 53362
+  },
+  {
+    "sourceId": "mef-irpef-dettaglio",
+    "sourceTimestamp": "2026-09-05",
+    "detail": "Snapshot ETL attivo · dettaglio IRPEF dichiarazioni 2017-2025, anni di imposta 2016-2024 · 79 file su nove famiglie, 25.534 righe e 43.300 celle vuote distinte dagli zeri · 5.444.337 byte.",
+    "recordCount": 25534
+  }
+]

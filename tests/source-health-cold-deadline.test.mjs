@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict';
+import { statSync } from 'node:fs';
+import { registerHooks } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import './helpers/register-ts-alias.mjs';
+
+const importedArtifacts = new Map();
+registerHooks({
+  load(url, context, nextLoad) {
+    if (url.includes('/src/data/generated/')) {
+      importedArtifacts.set(url, statSync(fileURLToPath(url)).size);
+    }
+    return nextLoad(url, context);
+  },
+});
 
 const { GET } = await import('../src/app/api/fonti/stato/route.ts');
 const { getCachedSourceHealthOverview } = await import('../src/lib/data/cached-source-health.ts');
@@ -32,6 +45,10 @@ test('cold source-health reports timed-out upstreams before the HTTP request exp
     // A timed-out caller must not leave its shared population using real fetch.
     await getCachedSourceHealthOverview();
     assert.equal(response.status, 200, JSON.stringify(payload));
+    // Conta anche gli import prima di GET: il vecchio test escludeva quel costo.
+    const importedBytes = [...importedArtifacts.values()].reduce((sum, bytes) => sum + bytes, 0);
+    assert.ok(importedBytes < 1024 * 1024,
+      `L'avvio dello stato fonti carica ${importedBytes} byte di artifact, oltre il budget di 1 MiB`);
     assert.ok(signals.length > 0);
     assert.ok(signals.every(signal => signal.aborted));
     assert.equal(payload.summary.reachable, 0);

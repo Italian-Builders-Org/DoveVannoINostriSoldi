@@ -11,10 +11,21 @@ const {
   getSourceHealthOverview,
   orderSourceHealth,
   SOURCE_HEALTH_ADAPTERS,
-  validateIstatMunicipalityGeographyMetadata,
 } = await import(
   "../src/lib/data/source-health.ts"
 );
+const { validateIstatMunicipalityGeographyMetadata, buildSourceHealthSnapshots } = await import("../src/lib/data/source-health-snapshots.ts");
+
+test("il riepilogo runtime coincide con gli snapshot validati e ricalcola la freschezza", (context) => {
+  context.mock.timers.enable({ apis: ["Date"], now: Date.parse("2100-01-01T00:00:00Z") });
+  const expected = buildSourceHealthSnapshots();
+  const sources = getSnapshotManagedSourceHealth();
+  assert.deepEqual(sources.map(({ sourceId, freshness, detail, recordCount }) => ({
+    sourceId, sourceTimestamp: freshness.sourceTimestamp, detail, recordCount,
+  })), expected);
+  assert.ok(sources.every((source) => source.checkedAt === "2100-01-01T00:00:00.000Z"));
+  assert.equal(sources.find((source) => source.sourceId === "eurostat-cofog").freshness.state, "stale");
+});
 
 test("source status page uses the persistent five-minute health cache", () => {
   const page = readFileSync("src/app/fonti/stato/page.tsx", "utf8");
@@ -26,7 +37,6 @@ test("source status page uses the persistent five-minute health cache", () => {
   assert.match(route, /observedAt:\s*checkedAt/);
   assert.doesNotMatch(route, /const observedAt = new Date\(\)\.toISOString\(\)/);
   assert.match(cache, /SOURCE_HEALTH_CACHE_SECONDS = 300/);
-  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 4_000 \}\)/);
   assert.match(cache, /return \{ checkedAt: new Date\(\)\.toISOString\(\), sources \}/);
 });
 

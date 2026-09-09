@@ -346,7 +346,7 @@ textarea.input {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
 }
 .table td {
   padding: 11px var(--space-2);

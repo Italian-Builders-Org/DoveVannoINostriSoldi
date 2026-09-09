@@ -34,6 +34,7 @@ try {
   await expectTheme(page, "light");
   await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: "dark" }]);
   await expectTheme(page, "light");
+  await page.bringToFront();
   await page.click('footer a[href="/metodologia"]');
   await page.waitForFunction(() => location.pathname === "/metodologia");
   await expectTheme(page, "light");

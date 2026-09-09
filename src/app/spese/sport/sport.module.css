@@ -333,6 +333,7 @@
 }
 
 .atNote {
+  overflow-wrap: anywhere;
   margin: 0;
   color: var(--color-neutral-700);
   font-size: 12px;

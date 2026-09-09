@@ -1,9 +1,11 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-snapshot.json");
+const METADATA_OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-metadata.json");
 
 export const SOURCE_URLS = Object.freeze({
   activeStock: "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",
@@ -671,17 +673,32 @@ export async function buildSnapshot() {
   return snapshot;
 }
 
+export function companyAtlasMetadata(snapshot) {
+  validateSnapshot(snapshot);
+  return { schemaVersion: 1, sources: snapshot.sources };
+}
+
 async function main() {
   if (process.argv.includes("--check")) {
     const snapshot = JSON.parse(await readFile(OUTPUT, "utf8"));
     validateSnapshot(snapshot);
+    const metadata = JSON.parse(await readFile(METADATA_OUTPUT, "utf8"));
+    if (!isDeepStrictEqual(metadata, companyAtlasMetadata(snapshot))) {
+      throw new Error("Company atlas metadata does not match its snapshot");
+    }
     console.log(`OK ${OUTPUT}: ${snapshot.observations.length} osservazioni aggregate`);
     return;
   }
-  const snapshot = await buildSnapshot();
+  const snapshot = process.argv.includes("--metadata-only")
+    ? JSON.parse(await readFile(OUTPUT, "utf8"))
+    : await buildSnapshot();
+  const metadata = companyAtlasMetadata(snapshot);
   await mkdir(dirname(OUTPUT), { recursive: true });
-  await writeFile(OUTPUT, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
-  console.log(`Scritto ${OUTPUT}: ${snapshot.observations.length} osservazioni aggregate`);
+  if (!process.argv.includes("--metadata-only")) {
+    await writeFile(OUTPUT, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+  }
+  await writeFile(METADATA_OUTPUT, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
+  console.log(`Scritto ${process.argv.includes("--metadata-only") ? METADATA_OUTPUT : OUTPUT}: ${snapshot.observations.length} osservazioni aggregate verificate`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();

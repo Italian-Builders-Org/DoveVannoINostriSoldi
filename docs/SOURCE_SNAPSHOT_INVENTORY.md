@@ -83,7 +83,7 @@ La revisione e il merge restano umani.
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `ssn-cce-national-history` | non dichiarato nello snapshot | 2026-08-28T12:31:43.000Z | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `vive-roma-restoration` | non dichiarato nello snapshot | 2026-08-22 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
-| `company-atlas` | 2026-08-11 | 2026-08-26T00:00:00+02:00 | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
+| `company-atlas` | 2026-09-09 | 2026-09-09T00:00:00.000Z | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |
 | `consip-ordini-2024-2026` | 2024-2026 | non dichiarato | https://dati.consip.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/consip_ordini_snapshot.py --check` |
 | `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-03 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |

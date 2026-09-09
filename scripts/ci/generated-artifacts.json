@@ -1113,7 +1113,8 @@
       "id": "company-atlas",
       "owner": "Atlante Imprese Italia aggregate snapshot",
       "files": [
-        "src/data/generated/company-atlas-snapshot.json"
+        "src/data/generated/company-atlas-snapshot.json",
+        "src/data/generated/company-atlas-metadata.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {

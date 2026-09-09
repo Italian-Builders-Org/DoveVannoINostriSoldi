@@ -174,7 +174,8 @@ test("filter normalization handles defaults, casing, whitespace, and invalid val
   assert.equal(defaults.region, "all");
   assert.equal(defaults.sector, "all");
   assert.equal(defaults.band, "all");
-  assert.equal(defaults.period, "2026-07-31");
+  const available = companyAtlasPeriodOptions("active_enterprises").map((period) => period.id).sort();
+  assert.equal(defaults.period, available.at(-1));
 
   // Lookup region by exact Italian name (case insensitive, trimmed)
   const byName = normalizeCompanyAtlasFilters({ region: "  lombardia  " });

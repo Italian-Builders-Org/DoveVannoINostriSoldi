@@ -36,6 +36,11 @@ TRAILER_NAMES = (
 )
 BRANCH_RE = re.compile(r"^automation/data/[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+SOURCE_HEALTH_SUMMARY = "src/data/generated/source-health-snapshots.json"
+SOURCE_HEALTH_REFRESH_ARTIFACTS = frozenset({
+    "consulenti-pubblici", "government-scorecard", "mef-participations",
+    "opencivitas-2022", "opencoesione", "public-debt",
+})
 
 
 class PublishError(RuntimeError):
@@ -239,6 +244,8 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
         # The registry keeps one owner per file. This shared, generated document
         # is a publication companion, verified by the atlas offline command.
         files += ("docs/SOURCE_SNAPSHOT_INVENTORY.md",)
+    if artifact_id in SOURCE_HEALTH_REFRESH_ARTIFACTS:
+        files += (SOURCE_HEALTH_SUMMARY,)
     offline_command = offline["command"]
     if artifact_id == "siope-nonmunicipal":
         # Publication mutates shared proofs; verify the full release at this boundary.
@@ -817,6 +824,12 @@ def publish(
     head = git_sha("HEAD", runner=runner)
     if head != base_before:
         raise PublishError("checked-out HEAD is not the exact latest origin/main")
+    if artifact_id in SOURCE_HEALTH_REFRESH_ARTIFACTS:
+        run_command(
+            ["node", "--experimental-strip-types", "--import", "./scripts/ci/node-offline-guard.mjs",
+             "scripts/ci/source-health-snapshots.mjs", "--write"],
+            env={"DVNS_OFFLINE_GUARD": "1"}, runner=runner,
+        )
     changed = status_paths(artifact, runner=runner)
     digest = file_digest(artifact)
     observed_tip = remote_branch_tip(artifact.publication.branch, runner=runner)

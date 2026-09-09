@@ -6,6 +6,12 @@ const ENTITY = "src/data/generated/anac-entity-procurement-page";
 const CPV = "src/data/generated/anac-procurement-cpv";
 const OPERATOR = "src/data/generated/anac-operator-awards-index";
 const SPEC = "scripts/etl/specs";
+const HISTORY_ROUTES = new Set([
+  "spese/sanita/storico/page.js.nft.json",
+  "api/spese/sanita/storico/route.js.nft.json",
+  "stato/legislature/page.js.nft.json",
+  "api/spese/stato/legislature/route.js.nft.json",
+]);
 
 function walk(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -48,12 +54,17 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ...json(`${CPV}/meta.json`).shards.map((shard) => `${CPV}/${shard.id}.jsonl.gz`),
   ];
   const operatorMeta = json(`${OPERATOR}/meta.json`);
-  const operatorFiles = [
+  const operatorCommonFiles = [
     `${OPERATOR}/meta.json`, `${OPERATOR}/search.jsonl.gz`,
     `${SPEC}/anac-operator-awards-index.source.json`,
-    ...operatorMeta.shards.map((shard) => shard.path),
     ...(operatorMeta.summaries ? [operatorMeta.summaries.path] : []),
   ];
+  const browse = "src/data/generated/anac-operator-browse";
+  const operatorBrowseFiles = [
+    ...operatorCommonFiles, `${browse}/manifest.json`,
+    ...Object.keys(json(`${browse}/manifest.json`).orders).map((order) => `${browse}/${order}.jsonl.gz`),
+  ];
+  const operatorDetailFiles = [...operatorCommonFiles, ...operatorMeta.shards.map((shard) => shard.path)];
   const peers = "src/data/generated/anac-procurement-peers";
   const peerFiles = [
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
@@ -63,8 +74,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/confronti/page.js.nft.json", peerFiles],
-    ["appalti/operatori/page.js.nft.json", operatorFiles],
-    ["appalti/operatori/[ref]/page.js.nft.json", operatorFiles],
+    ["appalti/operatori/page.js.nft.json", operatorBrowseFiles],
+    ["appalti/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
   ]);
   const appRoot = resolve(root, ".next/server/app");
   const results = [];
@@ -72,6 +83,11 @@ export function checkRuntimeTraces(root = process.cwd()) {
     const route = relative(appRoot, manifest).replaceAll("\\", "/");
     const forbidden = route.startsWith("appalti/operatori/") ? [ENTITY, CPV]
       : route.startsWith("enti/") || route.startsWith("api/enti/") ? [OPERATOR] : [];
+    if (route === "appalti/operatori/page.js.nft.json") forbidden.push(`${OPERATOR}/operators`);
+    if (HISTORY_ROUTES.has(route) || route === "fonti/stato/page.js.nft.json"
+      || route === "api/fonti/stato/route.js.nft.json") {
+      forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
+    }
     results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden) });
     requirements.delete(route);
   }

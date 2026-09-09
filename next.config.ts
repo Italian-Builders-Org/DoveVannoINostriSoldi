@@ -86,7 +86,7 @@ const nextConfig: NextConfig = {
       "src/data/generated/anac-operator-browse/*",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
     ],
-    "/appalti/operatori/*": [
+    "/appalti/operatori/\\[ref\\]": [
       "src/data/generated/anac-operator-awards-index/**/*",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
     ],

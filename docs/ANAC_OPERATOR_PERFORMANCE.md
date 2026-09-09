@@ -33,13 +33,15 @@ verificati sui byte effettivamente consumati prima di pubblicarne i dati.
 Un errore in uno shard non richiesto viene quindi rilevato dal controllo offline
 o dalla sua prima lettura, non dall'apertura della pagina riassuntiva.
 
-La configurazione Next dichiara gli artefatti necessari e l'esclusione degli
-shard delle schede dalla funzione dell'elenco. Nel trace locale di Next 16.3.3
-i moduli condivisi includono ancora questi shard: il pacchetto osservato è
-circa 239 MiB, contro circa 209 MiB nella base che include già la correzione
-del tracing di #369. I circa 30 MiB aggiuntivi sono i due ordinamenti derivati:
-il beneficio di questa modifica riguarda le letture e la memoria del runtime.
-L'esclusione degli shard non viene considerata una prova di riduzione ulteriore.
+Il lettore delle schede è in `anac-operator-records.ts`; l'elenco importa
+soltanto `anac-operator-awards-index.ts`, che apre percorsi espliciti per
+metadati, riepiloghi e ricerca. I due moduli condividono i validatori e la
+lettura con hash senza collegare l'elenco agli archivi delle schede.
+La sola esclusione configurata in Next non bastava: il trace precedente
+conteneva ancora tutti i 256 shard, per circa 239 MiB. Dopo la separazione,
+il trace locale del 9 settembre 2026 misura 47,1 MiB; la scheda mantiene
+tutti gli shard. Il gate di build richiede entrambi gli ordinamenti e
+impedisce che gli shard di dettaglio rientrino nel pacchetto dell'elenco.
 Le letture con file descriptor mantengono i controlli su dimensione e stabilità,
 senza far tracciare l'intero repository.
 

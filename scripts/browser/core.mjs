@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
+import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
+import { inspectDefence } from "./defence.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
+import { inspectPublicOrderSpending } from "./public-order-spending.mjs";
 import {
   NAVIGATION_TIMEOUT_MS,
   closeBrowser,
@@ -900,6 +903,14 @@ try {
       });
       completed.push(label);
     }
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Spesa per la difesa ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/", width, validate: inspectDefence,
+    });
+    completed.push(label);
   }
 
   for (const width of [320, 390, 768, 1280]) {
@@ -2429,6 +2440,32 @@ try {
     });
     completed.push(label);
   }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Ordine pubblico e sicurezza ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/spese/sicurezza", width, validate: inspectPublicOrderSpending,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Cultura e tempo libero ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/spese/cultura", width, validate: inspectCulture,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Home cultura sport ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/?anno=2014", width, validate: inspectCultureJourney,
+    });
+    completed.push(label);
+  }
+  await inspectInvalidCultureYears(baseUrl);
+  completed.push("Cultura anni non validi");
 
   for (const width of [320, 390, 768, 1280]) {
     const label = `Spesa ambientale EPEA ${width}px`;

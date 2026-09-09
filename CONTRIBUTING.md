@@ -114,6 +114,10 @@ browser core/editoriale/report, CSP e Lighthouse. Rifiuta una porta occupata e
 termina il proprio server anche se un gate fallisce. Il log è in
 `artifacts/production/next.log`; i fallimenti browser salvano screenshot e
 diagnostica in `artifacts/browser/`; Lighthouse scrive in `.lighthouseci/`.
+In GitHub, il job `production` conserva la sola cache del compilatore
+`.next/cache/turbopack`, separata per runtime, dipendenze e configurazione.
+Il build e tutti i gate vengono comunque eseguiti; le risposte della Data Cache
+non vengono ripristinate. I job senza browser evitano il download di Chromium.
 `NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
 browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
 `DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.
@@ -152,16 +156,26 @@ tracing accidentale di test, documentazione e ricerca, controlla gli artifact
 ANAC necessari e impedisce l'inclusione dell'indice operatori nelle route enti.
 Vedi [misure e verifica dei bundle](docs/VERCEL_RUNTIME_BUNDLES.md).
 
+Lo stato delle fonti usa un riepilogo dei metadati degli snapshot, riconciliato
+con i rispettivi validator prima di ogni build. Dopo un aggiornamento degli
+snapshot, esegui `npm run source-health:generate` e versiona il riepilogo
+aggiornato. Freschezza e raggiungibilità sono calcolate durante il controllo,
+senza incorporare timestamp di build o stati dei probe nel riepilogo.
+Il publisher dei refresh automatici aggiorna e include il riepilogo per le
+fonti interessate, usando gli stessi validator con il network guard attivo.
+
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nel job
-`production` di GitHub Actions. `npm ci` locale e in CI conserva il download
-normale; TypeScript, audit delle dipendenze e tutti i gate restano attivi.
+`production` di GitHub Actions. Il download resta attivo con `npm ci` locale
+e nel job `production`; gli altri job CI lo saltano. TypeScript, audit delle
+dipendenze e tutti i gate restano attivi.
 
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
 attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
-Salta soltanto modifiche a documentazione Markdown, test e template di issue/PR.
-Non salta i dati sotto `docs/research/data`, le specifiche ETL, i workflow o
-percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
+Salta soltanto modifiche a documentazione Markdown, test, template di issue/PR,
+al workflow `.github/workflows/ci.yml` e al registro `scripts/ci/action-pins.json`.
+Non salta i dati sotto `docs/research/data`, le specifiche ETL, gli altri workflow
+o percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
 Primo deployment, redeploy della stessa SHA, metadati mancanti e cronologia
 Git incompleta eseguono sempre il build. Le preview del codice restano attive.
 La CI GitHub continua a eseguire tutti i controlli anche se Vercel salta il build.

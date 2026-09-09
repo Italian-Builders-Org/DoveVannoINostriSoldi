@@ -11,7 +11,7 @@ export async function inspectPublicOrderSpending(page) {
   assert.match(text, /39\.094\.000\.000/);
   assert.match(text, /SEC 2010/);
   assert.match(text, /Dettaglio non disponibile/);
-  assert.match(text, /Polizia, vigili del fuoco e giustizia/);
+  assert.equal(await page.$eval("#sicurezza-detail-title", (heading) => heading.textContent), "Polizia, vigili del fuoco e giustizia");
 
   const tableSummary = await page.$(".chart-data > summary");
   await tableSummary.focus();

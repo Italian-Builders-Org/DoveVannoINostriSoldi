@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (request.signal.aborted) throw request.signal.reason ?? error;
     if (error instanceof IntegratedQueryError) {
       return NextResponse.json(
         { error: error.message },

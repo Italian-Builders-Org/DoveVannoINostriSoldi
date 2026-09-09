@@ -34,7 +34,8 @@ const PLAN = z.object({
 // Full catalog coverage, compact metadata only: no source bodies or repeated caveats.
 // New registered datasets enter this list automatically with their existing adapter contract.
 const catalogForModel = datasetCatalog.map(({ id, title, filters, exampleQuery }) => ({
-  id, title, filters, exampleQuery,
+  id, title, filters,
+  exampleFilters: Object.fromEntries(Object.entries(exampleQuery).filter(([key]) => key !== "dataset")),
 }));
 const planContract = z.toJSONSchema(PLAN);
 
@@ -89,6 +90,7 @@ Per contribuenti, reddito complessivo e totali IRPEF territoriali usa mef_irpef_
 Se il catalogo non offre un filtro per il territorio richiesto, non interpretare le prime righe come risposta territoriale.
 Se bastano gli allegati, restituisci queries: [] e clarification: "": la fase successiva risponderà leggendo i file.
 Se la domanda non è coperta e non ci sono allegati utili, o richiede un chiarimento, restituisci queries: [] e una breve spiegazione senza cifre inventate.
+Nel catalogo id è il campo dataset della query; exampleFilters contiene soltanto i filtri di esempio.
 Catalogo verificato dall'applicazione: ${JSON.stringify(catalogForModel)}.
 Compila gli argomenti dello strumento: queries è un array, clarification una stringa anche vuota. Non rispondere con testo libero in questa fase.`;
   const activity = (value: AiActivity) => { options.signal.throwIfAborted(); options.onActivity?.(value); };

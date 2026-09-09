@@ -24,7 +24,7 @@ test("source status page uses the persistent five-minute health cache", () => {
   assert.match(route, /observedAt:\s*checkedAt/);
   assert.doesNotMatch(route, /const observedAt = new Date\(\)\.toISOString\(\)/);
   assert.match(cache, /SOURCE_HEALTH_CACHE_SECONDS = 300/);
-  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 6_000 \}\)/);
+  assert.match(cache, /getSourceHealthOverview\(\{ deadlineMs: 4_000 \}\)/);
   assert.match(cache, /return \{ checkedAt: new Date\(\)\.toISOString\(\), sources \}/);
 });
 
@@ -108,6 +108,13 @@ test("source health registry covers every operational source, including ANAC, IN
     assert.equal(health.sourceId, snapshot.sourceId);
   }
   const snapshotIds = new Set(snapshots.map((entry) => entry.sourceId));
+  for (const sourceId of ["istat-bes-salute", "istat-bes-istruzione"]) {
+    assert.equal(
+      snapshotIds.has(sourceId),
+      true,
+      `${sourceId} must be classified as snapshot-managed`,
+    );
+  }
   const live = ACTIVE_SOURCE_IDS
     .filter((sourceId) => !snapshotIds.has(sourceId))
     .map(fakeLiveHealth);
@@ -237,10 +244,17 @@ test("SIOPE health probes both cash flows and never hides missing or stale recei
 });
 
 test("source health registry fails closed when an adapter is omitted", () => {
-  const incomplete = getSnapshotManagedSourceHealth().filter(
+  const snapshots = getSnapshotManagedSourceHealth();
+  const snapshotIds = new Set(snapshots.map((entry) => entry.sourceId));
+  const live = ACTIVE_SOURCE_IDS
+    .filter((sourceId) => !snapshotIds.has(sourceId))
+    .map(fakeLiveHealth);
+  const complete = [...live, ...snapshots];
+  assert.deepEqual(orderSourceHealth(complete).map((entry) => entry.sourceId), ACTIVE_SOURCE_IDS);
+  const incomplete = complete.filter(
     (entry) => entry.sourceId !== "anac",
   );
-  assert.throws(() => orderSourceHealth(incomplete), /Adapter operativo senza probe/);
+  assert.throws(() => orderSourceHealth(incomplete), /Adapter operativo senza probe: anac/);
 });
 
 

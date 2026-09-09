@@ -129,9 +129,7 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
   const primaryPlace = project?.locations[0];
   const openCupPrimary = lookup.openCup?.rows[0];
   const title = project?.title ?? openCupPrimary?.cells.DESCRIZIONE_SINTETICA_CUP ?? `Progetto CUP ${cup}`;
-  const place = project
-    ? [primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region]
-    : [openCupPrimary?.cells.COMUNE, openCupPrimary?.cells.REGIONE];
+  const place = [primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region];
 
   return (
     <main className="shell page">
@@ -150,7 +148,9 @@ export default async function ProjectPage({ params }: { params: RouteParams }) {
             <span>{project?.status.validationOutcome ?? openCupPrimary?.cells.STATO_PROGETTO ?? "Stato non disponibile"}</span>
           </div>
           <h1>{title}</h1>
-          <p>{place.filter(Boolean).join(" · ") || "Localizzazione non disponibile"}</p>
+          <p>{project
+            ? place.filter(Boolean).join(" · ") || "Localizzazione non disponibile"
+            : "Il rilascio Progetti OpenCUP non include la localizzazione."}</p>
         </div>
       </header>
 

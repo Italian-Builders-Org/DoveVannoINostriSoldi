@@ -5,6 +5,7 @@ import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import { ipaRuntimeFetchOptions } from "@/lib/ipa-runtime-fetch";
 import {
   ACTIVE_SOURCE_IDS,
+  SOURCE_IDS,
   SOURCE_POLICIES,
   type SourceId,
   type SourcePolicy,
@@ -820,79 +821,60 @@ function snapshotManagedGovernmentScorecard(
   };
 }
 
+type SourceHealthAdapter = (signal?: AbortSignal) => SourceHealth | Promise<SourceHealth>;
+type SourceHealthRegistryEntry =
+  | { mode: "snapshot"; adapter: () => SourceHealth }
+  | { mode: "live"; adapter: SourceHealthAdapter };
+
+/** One adapter and one acquisition mode for every source policy. */
+const SOURCE_HEALTH_REGISTRY = Object.freeze({
+  ameco: { mode: "snapshot", adapter: () => snapshotManagedGovernmentScorecard("ameco") },
+  "governi-presidenza": { mode: "snapshot", adapter: () => snapshotManagedGovernmentScorecard("governi-presidenza") },
+  ipa: { mode: "live", adapter: probeIpa },
+  "ipa-struttura": { mode: "live", adapter: probeIpaStructure },
+  openbdap: { mode: "live", adapter: probeOpenBdap },
+  anac: { mode: "snapshot", adapter: snapshotManagedAnac },
+  inps: { mode: "snapshot", adapter: snapshotManagedInps },
+  cpt: { mode: "snapshot", adapter: snapshotManagedCpt },
+  "mef-irpef": { mode: "snapshot", adapter: snapshotManagedMefIrpef },
+  siope: { mode: "live", adapter: probeSiope },
+  istat: { mode: "snapshot", adapter: snapshotManagedIstat },
+  "istat-casellario-pensioni": { mode: "snapshot", adapter: snapshotManagedIstatCasellarioPensioni },
+  consip: { mode: "snapshot", adapter: snapshotManagedConsip },
+  opencoesione: { mode: "snapshot", adapter: snapshotManagedOpenCoesione },
+  opencup: { mode: "live", adapter: probeOpenCup },
+  italiadomani: { mode: "snapshot", adapter: snapshotManagedPnrr },
+  opencivitas: { mode: "snapshot", adapter: snapshotManagedOpenCivitas },
+  consulenti: { mode: "snapshot", adapter: snapshotManagedConsulenti },
+  camera: { mode: "snapshot", adapter: snapshotManagedCamera },
+  senato: { mode: "snapshot", adapter: snapshotManagedSenate },
+  pcm: { mode: "snapshot", adapter: snapshotManagedPcm },
+  "partecipazioni-pubbliche": { mode: "snapshot", adapter: snapshotManagedMefParticipations },
+  bancaditalia: { mode: "snapshot", adapter: () => snapshotManagedPublicDebt("bancaditalia") },
+  eurostat: { mode: "snapshot", adapter: () => snapshotManagedPublicDebt("eurostat") },
+  "eurostat-hicp": { mode: "snapshot", adapter: snapshotManagedGovernmentInflation },
+  "eurostat-cofog": { mode: "snapshot", adapter: snapshotManagedEurostatCofog },
+  "istat-cofog": { mode: "snapshot", adapter: snapshotManagedIstatCofog },
+  "istat-epea": { mode: "snapshot", adapter: snapshotManagedIstatEpea },
+  "istat-poverta": { mode: "snapshot", adapter: snapshotManagedIstatPoverta },
+  "istat-poverta-relativa": { mode: "snapshot", adapter: snapshotManagedIstatPovertaRelativa },
+  "istat-bes-economico": { mode: "snapshot", adapter: snapshotManagedIstatBesEconomico },
+  "istat-bes-salute": { mode: "snapshot", adapter: snapshotManagedIstatBesSalute },
+  "istat-bes-istruzione": { mode: "snapshot", adapter: snapshotManagedIstatBesIstruzione },
+  "inps-naspi": { mode: "snapshot", adapter: snapshotManagedInpsNaspi },
+  "mef-irpef-dettaglio": { mode: "snapshot", adapter: snapshotManagedMefIrpefDettaglio },
+} as const satisfies Record<SourceId, SourceHealthRegistryEntry>);
+
 export function getSnapshotManagedSourceHealth(): SourceHealth[] {
-  return [
-    snapshotManagedAnac(),
-    snapshotManagedInps(),
-    snapshotManagedCpt(),
-    snapshotManagedMefIrpef(),
-    snapshotManagedIstat(),
-    snapshotManagedIstatCasellarioPensioni(),
-    snapshotManagedConsip(),
-    snapshotManagedOpenCoesione(),
-    snapshotManagedPnrr(),
-    snapshotManagedOpenCivitas(),
-    snapshotManagedMefParticipations(),
-    snapshotManagedConsulenti(),
-    snapshotManagedCamera(),
-    snapshotManagedSenate(),
-    snapshotManagedPcm(),
-    snapshotManagedGovernmentScorecard("ameco"),
-    snapshotManagedGovernmentScorecard("governi-presidenza"),
-    snapshotManagedPublicDebt("bancaditalia"),
-    snapshotManagedPublicDebt("eurostat"),
-    snapshotManagedGovernmentInflation(),
-    snapshotManagedEurostatCofog(),
-    snapshotManagedIstatCofog(),
-    snapshotManagedIstatEpea(),
-    snapshotManagedIstatPoverta(),
-    snapshotManagedIstatPovertaRelativa(),
-    snapshotManagedIstatBesEconomico(),
-    snapshotManagedInpsNaspi(),
-    snapshotManagedMefIrpefDettaglio(),
-  ];
+  return SOURCE_IDS.flatMap((sourceId) => {
+    const entry: SourceHealthRegistryEntry = SOURCE_HEALTH_REGISTRY[sourceId];
+    return entry.mode === "snapshot" ? [entry.adapter()] : [];
+  });
 }
 
-type SourceHealthAdapter = (signal?: AbortSignal) => SourceHealth | Promise<SourceHealth>;
-
-/** One concrete health adapter for every source policy. */
-export const SOURCE_HEALTH_ADAPTERS = Object.freeze({
-  ameco: () => snapshotManagedGovernmentScorecard("ameco"),
-  "governi-presidenza": () => snapshotManagedGovernmentScorecard("governi-presidenza"),
-  ipa: probeIpa,
-  "ipa-struttura": probeIpaStructure,
-  openbdap: probeOpenBdap,
-  anac: snapshotManagedAnac,
-  inps: snapshotManagedInps,
-  cpt: snapshotManagedCpt,
-  "mef-irpef": snapshotManagedMefIrpef,
-  siope: probeSiope,
-  istat: snapshotManagedIstat,
-  "istat-casellario-pensioni": snapshotManagedIstatCasellarioPensioni,
-  consip: snapshotManagedConsip,
-  opencoesione: snapshotManagedOpenCoesione,
-  opencup: probeOpenCup,
-  italiadomani: snapshotManagedPnrr,
-  opencivitas: snapshotManagedOpenCivitas,
-  consulenti: snapshotManagedConsulenti,
-  camera: snapshotManagedCamera,
-  senato: snapshotManagedSenate,
-  pcm: snapshotManagedPcm,
-  "partecipazioni-pubbliche": snapshotManagedMefParticipations,
-  bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
-  eurostat: () => snapshotManagedPublicDebt("eurostat"),
-  "eurostat-hicp": snapshotManagedGovernmentInflation,
-  "eurostat-cofog": snapshotManagedEurostatCofog,
-  "istat-cofog": snapshotManagedIstatCofog,
-  "istat-epea": snapshotManagedIstatEpea,
-  "istat-poverta": snapshotManagedIstatPoverta,
-  "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
-  "istat-bes-economico": snapshotManagedIstatBesEconomico,
-  "istat-bes-salute": snapshotManagedIstatBesSalute,
-  "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
-  "inps-naspi": snapshotManagedInpsNaspi,
-  "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
-} satisfies Record<SourceId, SourceHealthAdapter>);
+export const SOURCE_HEALTH_ADAPTERS = Object.freeze(Object.fromEntries(
+  SOURCE_IDS.map((sourceId) => [sourceId, SOURCE_HEALTH_REGISTRY[sourceId].adapter]),
+) as Record<SourceId, SourceHealthAdapter>);
 
 /** Orders every adapter by the public registry and fails closed on omissions. */
 export function orderSourceHealth(entries: readonly SourceHealth[]): SourceHealth[] {

@@ -1,3 +1,4 @@
+import type { queryAnacOperatorAwards } from "@/lib/anac-operator-public-view";
 import type { DatasetQuery } from "@/lib/mcp/catalog";
 
 /** SIOPE's public response also carries national rankings and geographic distributions.
@@ -22,6 +23,23 @@ function mefEuroEvidence(value: unknown): unknown {
 }
 
 export function projectChatEvidence(query: DatasetQuery, data: unknown): unknown {
+  if (query.dataset === "anac_operatori" && data && typeof data === "object" && !Array.isArray(data)) {
+    const result = data as ReturnType<typeof queryAnacOperatorAwards>;
+    if (result.mode !== "detail") return data;
+    return {
+      ...result,
+      rows: result.rows.map((row) => ({
+        ...row,
+        awards: row.awards.slice(0, 3),
+        awardsReturned: Math.min(row.awards.length, 3),
+        awardsOmittedFromPublished: row.awardsOmittedFromPublished + Math.max(0, row.awards.length - 3),
+      })),
+      chatProjection: {
+        awardsLimit: 3,
+        caveat: "La chat mostra al massimo 3 CIG recenti della scheda. awardsOmittedFromPublished conta i CIG pubblicati omessi; awardCount e attributedValue restano i valori completi dello snapshot. Non ricostruire il totale sommando questo campione.",
+      },
+    };
+  }
   if (query.dataset === "mef_irpef_comunale" && data && typeof data === "object" && !Array.isArray(data)) {
     return {
       ...mefEuroEvidence(data) as Record<string, unknown>,

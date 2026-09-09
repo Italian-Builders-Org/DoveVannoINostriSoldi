@@ -139,6 +139,7 @@ export function ItalyRegionsMap({
         <svg
           className={styles.map}
           viewBox={ITALY_REGIONS_VIEWBOX}
+          preserveAspectRatio="xMinYMin meet"
           role="group"
           data-region-map="true"
           aria-labelledby="regional-map-title regional-map-description"

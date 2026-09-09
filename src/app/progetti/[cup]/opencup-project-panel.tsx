@@ -28,7 +28,6 @@ function OpenCupRecord({ row, ordinal }: { row: OpenCupRow; ordinal: number }) {
           <div><dt>Soggetto titolare</dt><dd>{shown(row.cells.SOGGETTO_TITOLARE)}</dd></div>
           <div><dt>Natura</dt><dd>{shown(row.cells.NATURA_INTERVENTO)}</dd></div>
           <div><dt>Tipologia</dt><dd>{shown(row.cells.TIPOLOGIA_INTERVENTO)}</dd></div>
-          <div><dt>Localizzazione dichiarata</dt><dd>{[row.cells.COMUNE, row.cells.REGIONE].filter(Boolean).join(" · ") || "non disponibile"}</dd></div>
         </dl>
       </div>
     </details>

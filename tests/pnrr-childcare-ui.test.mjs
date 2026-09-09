@@ -33,6 +33,23 @@ test("project trace labels observed, linked, derived and missing evidence", asyn
   assert.equal(page.match(/<h1\b/g)?.length, 1);
 });
 
+test("OpenCUP-only projects explain that geography is outside the source release", async () => {
+  const [page, panel, sourceSpecText] = await Promise.all([
+    source("../src/app/progetti/[cup]/page.tsx"),
+    source("../src/app/progetti/[cup]/opencup-project-panel.tsx"),
+    source("../scripts/etl/specs/opencup-projects.source.json"),
+  ]);
+  const sourceSpec = JSON.parse(sourceSpecText);
+  const projectUi = `${page}\n${panel}`;
+
+  for (const field of ["COMUNE", "REGIONE"]) {
+    assert.equal(sourceSpec.publicHeaders.includes(field), false);
+    assert.doesNotMatch(projectUi, new RegExp(`\\.cells\\.${field}\\b`));
+  }
+  assert.match(page, /rilascio Progetti OpenCUP non include la localizzazione/i);
+  assert.doesNotMatch(panel, /Localizzazione dichiarata/i);
+});
+
 test("PNRR layouts collapse every major grid on narrow screens", async () => {
   const [catalogCss, projectCss] = await Promise.all([
     source("../src/app/coesione/asili/pnrr-asili.module.css"),

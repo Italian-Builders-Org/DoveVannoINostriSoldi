@@ -427,8 +427,12 @@ async function assertSpendingComposition(page, label, width) {
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
       hasMetadata: /Quote sul totale dei pagamenti SIOPE.*Fonte acquisita/s.test(root.textContent ?? ""),
       compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      // Prefer visual order: independent desktop rails may put the ranking
+      // earlier in the DOM while the map still appears first on screen.
       mapBeforeMunicipalities: Boolean(
-        map && municipalityHeading && (map.compareDocumentPosition(municipalityHeading) & Node.DOCUMENT_POSITION_FOLLOWING)
+        map &&
+          municipalityHeading &&
+          map.getBoundingClientRect().top <= municipalityHeading.getBoundingClientRect().top + 1
       ),
       viewportWidth,
     };
@@ -2173,6 +2177,42 @@ try {
       width,
       validate: async (page) => {
         await assertInfoTooltips(page, label);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Anni storici homepage ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/?anno=2024&comuni=2025",
+      width,
+      validate: async (page) => {
+        const selector = 'nav[aria-label="Anno della spesa pubblica (Eurostat COFOG)"]';
+        const trigger = `${selector} button`;
+        await page.click(trigger);
+        await page.waitForSelector(`${selector} ul a`, { visible: true });
+        const olderHref = await page.$eval(`${selector} ul a`, (link) => link.getAttribute("href"));
+        const olderUrl = new URL(olderHref, baseUrl);
+        assert.equal(olderUrl.searchParams.get("comuni"), "2025", `${label}: periodo comunale perso`);
+        await page.focus(`${selector} ul a`);
+        await page.keyboard.press("Escape");
+        assert.equal(await page.$eval(trigger, (button) => document.activeElement === button), true);
+        assert.equal(await page.$eval(trigger, (button) => button.getAttribute("aria-expanded")), "false");
+        await page.click(trigger);
+        await page.click(`${selector} ul a`);
+        await page.waitForFunction((expected) => location.search === expected, {}, olderUrl.search);
+        await page.waitForFunction((nav) => document.querySelector(`${nav} button`)?.getAttribute("aria-current") === "true", {}, selector);
+        assert.equal(await page.$eval(trigger, (button) => button.getAttribute("aria-expanded")), "false");
+        await page.click(trigger);
+        assert.equal(await page.$eval(`${selector} ul a[aria-current="page"]`, (link) => link.textContent), olderUrl.searchParams.get("anno"));
+        const menu = await page.$eval(`${selector} ul`, (list) => {
+          const box = list.getBoundingClientRect();
+          return { left: box.left, right: box.right };
+        });
+        assert.ok(menu.left >= 0 && menu.right <= width + 1, `${label}: elenco fuori viewport`);
+        await assertResponsiveShell(page, label, width);
       },
     });
     completed.push(label);

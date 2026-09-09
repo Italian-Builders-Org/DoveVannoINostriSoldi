@@ -211,6 +211,21 @@ test("HTTP gate, query validation and source health follow the configured integr
   }
 });
 
+test("caller cancellation is not reported as an OpenCUP outage", async () => {
+  SOURCE_POLICIES.opencup.integration = "active";
+  const controller = new AbortController();
+  const reason = new Error("client disconnected");
+  controller.abort(reason);
+
+  await assert.rejects(
+    GET(new NextRequest(
+      "http://localhost/api/opencup/progetti?cup=A12B34567890001",
+      { signal: controller.signal },
+    )),
+    (error) => error === reason,
+  );
+});
+
 test("missing storage and corrupt objects return a non-cacheable 503", async () => {
   SOURCE_POLICIES.opencup.integration = "active";
   delete process.env.DVNS_OPENCUP_PROJECTS_MANIFEST;

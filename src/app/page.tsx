@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { HomeItalyCompositionChart } from "@/components/home-italy-charts";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
 import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
 import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
 import { getHomeAnomalySignals, type AuditSignal } from "@/lib/audit-data";
+import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import {
   billions,
   compactEuro,
@@ -16,6 +18,7 @@ import {
   longDate,
   percent,
 } from "@/lib/format";
+import { buildHomeItalyFunnel } from "@/lib/home-italy-funnel";
 import { municipalityName } from "@/lib/municipality-name";
 import { openCoesioneSnapshot as cohesion } from "@/lib/opencoesione-snapshot";
 import {
@@ -77,17 +80,30 @@ function anomalyValue(signal: AuditSignal): string {
   return formatted;
 }
 
-function selectedYear(value: string | string[] | undefined): number {
+function selectedSiopeYear(value: string | string[] | undefined): number {
   const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
   return availableSiopeYears.includes(parsed) ? parsed : availableSiopeYears[0];
+}
+
+function selectedPaYear(value: string | string[] | undefined): number {
+  const parsed = Number.parseInt(Array.isArray(value) ? value[0] ?? "" : value ?? "", 10);
+  const { from, to } = eurostatCofogData.period;
+  return Number.isSafeInteger(parsed) && parsed >= from && parsed <= to ? parsed : to;
 }
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ anno?: string | string[] }>;
+  searchParams: Promise<{ anno?: string | string[]; comuni?: string | string[] }>;
 }) {
-  const year = selectedYear((await searchParams).anno);
+  const params = await searchParams;
+  const paYear = selectedPaYear(params.anno);
+  const year = selectedSiopeYear(params.comuni ?? params.anno);
+  const funnel = buildHomeItalyFunnel(paYear);
+  const yearQuery = {
+    anno: String(paYear),
+    comuni: String(year),
+  };
   const siope = getSiopeMunicipalSnapshot(year);
   const monthLabel = siope.latestMonthLabel.toLocaleLowerCase("it-IT");
   const period = `da gennaio a ${monthLabel} ${siope.year}`;
@@ -131,7 +147,125 @@ export default async function HomePage({
   return (
     <main className={`shell ${styles.dashboard}`}>
       <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
-      <div className={styles.column}>
+
+      <section className={styles.italyBand} aria-labelledby="italy-band-title">
+        <section className={`panel ${styles.italySummary}`}>
+          <div className={styles.panelHead}>
+            <h2 id="italy-band-title" className="panel-title">
+              Spesa pubblica totale
+            </h2>
+            <div className={styles.panelHeadActions}>
+              <PeriodSelector
+                activeYear={funnel.pa.year}
+                years={[...funnel.pa.availableYears]}
+                pathname="/"
+                query={yearQuery}
+                yearParam="anno"
+                recentLimit={4}
+                label="Anno della spesa pubblica (Eurostat COFOG)"
+                className={styles.periodSelector}
+              />
+              <InfoTooltip id="pa-sec-tip" label="Che tipo di soldi sono?">
+                Competenza economica SEC 2010 sulle amministrazioni pubbliche (Stato, Regioni,
+                Comuni, enti). Non è un pagamento di cassa e non è solo il bilancio dello Stato.
+              </InfoTooltip>
+            </div>
+          </div>
+
+          <p className={styles.freshness}>
+            <i aria-hidden="true" />
+            Eurostat COFOG Italia: snapshot fino al {eurostatCofogData.period.to}
+          </p>
+
+          <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
+          <p className={styles.headlineNote}>
+            Italia {funnel.pa.year}, in tutta la pubblica amministrazione
+          </p>
+
+          <dl className={styles.factRows}>
+            <div>
+              <dt>Quota del PIL</dt>
+              <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
+            </div>
+            <div>
+              <dt>Natura del denaro</dt>
+              <dd>Competenza SEC 2010</dd>
+            </div>
+            <div>
+              <dt>Più recente altrove</dt>
+              <dd>
+                <Link href="/spese/legge-di-bilancio">Legge di Bilancio</Link>
+                {" · "}
+                <Link href={`/spese?anno=${availableSiopeYears[0]}`}>SIOPE Comuni</Link>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <div className={styles.italySplit}>
+          <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="pa-split-title">
+            <div className={styles.panelHead}>
+              <h3 id="pa-split-title" className="panel-title">
+                Dove va, in grandi voci
+              </h3>
+              <span className={styles.headNote}>Eurostat COFOG · {funnel.pa.year}</span>
+            </div>
+            <HomeItalyCompositionChart
+              slices={funnel.pa.slices}
+              ariaLabel={`Composizione spesa pubblica Italia ${funnel.pa.year}`}
+            />
+            <p className={styles.attribution}>
+              Fonte:{" "}
+              <a href={funnel.pa.source.href} target="_blank" rel="noreferrer">
+                {funnel.pa.source.label}
+              </a>
+              {" · "}
+              pubblicato {funnel.pa.source.observedAt}
+            </p>
+          </section>
+
+          <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="state-title">
+            <div className={styles.panelHead}>
+              <h3 id="state-title" className="panel-title">
+                Bilancio dello Stato
+              </h3>
+              <InfoTooltip id="state-lb-tip" label="Perché non è lo stesso totale?">
+                Spesa PA Eurostat e stanziamenti dello Stato hanno criteri contabili e perimetri
+                diversi: questi stanziamenti non sono una quota del totale Eurostat.
+              </InfoTooltip>
+            </div>
+            <strong className={styles.headline}>{billions(funnel.state.totalWithoutDebtEuro)} mld €</strong>
+            <p className={styles.headlineNote}>
+              Stanziamenti {funnel.state.year}, senza la missione Debito pubblico
+            </p>
+            <dl className={styles.factRows}>
+              <div>
+                <dt>Debito escluso dalle barre</dt>
+                <dd>{billions(funnel.state.debtEuro)} mld €</dd>
+              </div>
+              <div>
+                <dt>Natura del denaro</dt>
+                <dd>Stanziamenti di competenza</dd>
+              </div>
+            </dl>
+            <p className={styles.headNote}>Prime {funnel.state.slices.length} missioni</p>
+            <HomeItalyCompositionChart
+              slices={funnel.state.slices}
+              ariaLabel={`Missioni Legge di Bilancio ${funnel.state.year} senza debito`}
+            />
+            <p className={styles.note}>{funnel.state.caveat}</p>
+            <p className={styles.attribution}>
+              Fonte: <Link href={funnel.state.source.href}>{funnel.state.source.label}</Link>
+              {" · "}
+              <Link href="/stato">Pagamenti di cassa dello Stato</Link>
+            </p>
+          </section>
+        </div>
+
+        <p className={styles.comuniAnchor}>Poi i Comuni · cassa SIOPE</p>
+      </section>
+
+      <div className={styles.leftRail}>
         <section className={`panel ${styles.summaryPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Pagamenti effettuati dai Comuni</h2>
@@ -276,9 +410,35 @@ export default async function HomePage({
           )}
         </section>
 
+        <section className={`panel ${styles.rankPanel}`}>
+          <div className={styles.panelHead}>
+            <h2 className="panel-title">
+              I {topMunicipalities.length} Comuni con più pagamenti per abitante
+            </h2>
+          </div>
+          <ol className={styles.rankList}>
+            {topMunicipalities.map((municipality, index) => (
+              <li key={municipality.codiceFiscale}>
+                <span>{index + 1}</span>
+                <strong>
+                  {municipalityName(municipality.name)}
+                  <small>
+                    {municipality.population === null
+                      ? "popolazione non disponibile"
+                      : `${integer(municipality.population)} abitanti`}
+                  </small>
+                </strong>
+                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
+              </li>
+            ))}
+          </ol>
+          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+            Vedi il confronto territoriale
+          </Link>
+        </section>
       </div>
 
-      <div className={styles.column}>
+      <div className={styles.rightRail}>
         <section className={`panel ${styles.mapPanel}`}>
           <div className={styles.panelHead}>
             <h2 className="panel-title">Pagamenti dei Comuni per regione</h2>
@@ -286,6 +446,9 @@ export default async function HomePage({
               activeYear={year}
               years={availableSiopeYears}
               pathname="/"
+              query={yearQuery}
+              yearParam="comuni"
+              label="Anno dei pagamenti SIOPE dei Comuni"
               className={styles.periodSelector}
             />
           </div>
@@ -393,37 +556,6 @@ export default async function HomePage({
           </Link>
         </section>
 
-
-      </div>
-
-      <div className={styles.column}>
-        <section className={`panel ${styles.rankPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">
-              I {topMunicipalities.length} Comuni con più pagamenti per abitante
-            </h2>
-          </div>
-          <ol className={styles.rankList}>
-            {topMunicipalities.map((municipality, index) => (
-              <li key={municipality.codiceFiscale}>
-                <span>{index + 1}</span>
-                <strong>
-                  {municipalityName(municipality.name)}
-                  <small>
-                    {municipality.population === null
-                      ? "popolazione non disponibile"
-                      : `${integer(municipality.population)} abitanti`}
-                  </small>
-                </strong>
-                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
-              </li>
-            ))}
-          </ol>
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi il confronto territoriale
-          </Link>
-        </section>
-
         <section className={`panel ${styles.actionPanel} ${styles.cohesionPanel}`}>
           <div className={`${styles.panelHead} ${styles.compactHeader}`}>
             <h2 className="panel-title">Fondi e progetti</h2>
@@ -464,8 +596,9 @@ export default async function HomePage({
             Vai ai fondi
           </Link>
         </section>
+      </div>
 
-        <section className={`panel ${styles.actionPanel} ${styles.anomaliesPanel}`}>
+      <section className={`panel ${styles.actionPanel} ${styles.anomaliesPanel}`}>
           <div className={`${styles.panelHead} ${styles.compactHeader}`}>
             <h2 className="panel-title">Anomalie da approfondire</h2>
             <Link className={styles.anomaliesLink} href="/controlli">Tutti i controlli <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></Link>
@@ -512,31 +645,36 @@ export default async function HomePage({
             </p>
           ) : null}
 
-        </section>
+      </section>
 
-        <aside className={styles.readingPanel} aria-labelledby="reading-title">
+      <aside className={styles.readingPanel} aria-labelledby="reading-title">
           <div className={styles.readingIntro}>
             <h2 id="reading-title" className="panel-title">Come leggere questi numeri</h2>
             <p className={styles.readingNote}>
-              Nel confronto considera popolazione e servizi gestiti da ciascun Comune.
+              Spesa PA (Eurostat) e bilancio dello Stato non si sommano alla cassa dei Comuni.
+              Nel confronto territoriale considera popolazione e servizi gestiti da ciascun
+              Comune.
             </p>
           </div>
           <dl className={styles.readingRules}>
             <div>
-              <dt>Totale</dt>
-              <dd>Quanto è stato pagato</dd>
+              <dt>Spesa PA</dt>
+              <dd>Competenza SEC 2010, tutte le pubbliche amministrazioni</dd>
             </div>
             <div>
-              <dt>Per abitante</dt>
-              <dd>Importo diviso per la popolazione</dd>
+              <dt>Stato</dt>
+              <dd>Stanziamenti Legge di Bilancio, missione Debito esclusa dalle barre</dd>
+            </div>
+            <div>
+              <dt>Comuni</dt>
+              <dd>Pagamenti di cassa SIOPE; per abitante = importo / popolazione</dd>
             </div>
           </dl>
           <Link className={styles.readingLink} href="/metodologia">
             Metodo
             <HugeiconsIcon icon={ArrowRight01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
           </Link>
-        </aside>
-      </div>
+      </aside>
     </main>
   );
 }

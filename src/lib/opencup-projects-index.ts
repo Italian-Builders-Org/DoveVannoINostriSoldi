@@ -44,6 +44,11 @@ export const OPENCUP_PROJECT_HEADERS = [
   "CATEGORIA_INTERVENTO",
   "DATA_GENERAZIONE_CUP",
 ] as const;
+export type OpenCupProjectHeader = (typeof OPENCUP_PROJECT_HEADERS)[number];
+export type OpenCupProjectCells = Readonly<Record<OpenCupProjectHeader, string | null>>;
+export type OpenCupProjectRow = Omit<IntegratedPublicRow, "cells"> & {
+  cells: OpenCupProjectCells;
+};
 export const OPENCUP_CUP_PATTERN = /^[A-Z0-9]{15}$/;
 const OPENCUP_OFFICIAL_ORIGIN = "https://www.opencup.gov.it";
 const OPENCUP_LANDING_PATH = "/portale/web/opencup/accesso-agli-open-data";
@@ -236,6 +241,15 @@ function throwIfAborted(signal?: AbortSignal): void {
 
 function canonicalJsonBytes(value: unknown): Buffer {
   return Buffer.from(`${canonicalJson(value)}\n`, "utf8");
+}
+
+function isOpenCupProjectCells(
+  cells: IntegratedPublicRow["cells"],
+): cells is OpenCupProjectCells {
+  return (
+    Object.keys(cells).length === OPENCUP_PROJECT_HEADERS.length &&
+    OPENCUP_PROJECT_HEADERS.every((header) => header in cells)
+  );
 }
 
 function parseCanonicalJson(bytes: Buffer, label: string): unknown {
@@ -584,10 +598,10 @@ export async function openCupPostingRefs(
 export async function loadOpenCupRows(
   match: PostingMatch,
   signal?: AbortSignal,
-): Promise<{ rows: IntegratedPublicRow[]; loadedChunks: number }> {
-  const rows: IntegratedPublicRow[] = [];
+): Promise<{ rows: OpenCupProjectRow[]; loadedChunks: number }> {
+  const rows: OpenCupProjectRow[] = [];
   let loadedOrdinal: number | undefined;
-  let loadedRows: IntegratedPublicRow[] = [];
+  let loadedRows: OpenCupProjectRow[] = [];
   for (const ref of match.refs) {
     throwIfAborted(signal);
     if (loadedOrdinal !== ref.chunkOrdinal) {
@@ -632,6 +646,10 @@ export async function loadOpenCupRows(
         }
         if (canonicalJson(value) !== line) throw new OpenCupUnavailableError("Riga chunk OpenCUP non canonica.");
         const row = integratedPublicRowSchema.parse(value);
+        if (!isOpenCupProjectCells(row.cells)) {
+          throw new OpenCupUnavailableError("Schema o ordine riga OpenCUP divergente.");
+        }
+        const cells = row.cells;
         const publicDigest = sha256Hex(Buffer.from(`${canonicalJson(row.cells)}\n`, "utf8"));
         const expectedId = `row-${sha256Hex(`${OPENCUP_PROJECT_DATASET}:${row.sourceRow}:${publicDigest}`).slice(0, 24)}`;
         const fixtureMode = "fixtureOnly" in match.manifest;
@@ -642,8 +660,6 @@ export async function loadOpenCupRows(
         ] as const;
         if (
           row.sourceRow !== chunk.firstSourceRow + index ||
-          Object.keys(row.cells).length !== match.manifest.headers.length ||
-          match.manifest.headers.some((header) => !(header in row.cells)) ||
           row.sourceRowSha256 !== publicDigest ||
           row.id !== expectedId ||
           seenIds.has(row.id) ||
@@ -653,12 +669,12 @@ export async function loadOpenCupRows(
           ) ||
           row.sourceUrls.some((url) => !isSafePublicHttpUrl(url)) ||
           row.sourceUrls.join("\n") !== expectedSourceUrls.join("\n") ||
-          ["COSTO_PROGETTO", "FINANZIAMENTO_PROGETTO"].some((field) => {
-            const value = row.cells[field];
+          (["COSTO_PROGETTO", "FINANZIAMENTO_PROGETTO"] as const).some((field) => {
+            const value = cells[field];
             return value !== null && !/^[0-9]+$/.test(value);
           }) ||
           privateFields.some((field) => {
-            const cell = row.cells[field];
+            const cell = cells[field];
             const matchingRedactions = row.redactions.filter(
               (redaction) => redaction.field === field && redaction.reason === "personal-identifier",
             );
@@ -669,7 +685,7 @@ export async function loadOpenCupRows(
           throw new OpenCupUnavailableError("Schema o ordine riga OpenCUP divergente.");
         }
         seenIds.add(row.id);
-        return row;
+        return { ...row, cells };
       });
       loadedOrdinal = ref.chunkOrdinal;
       match.budget.loadedChunks.add(ref.chunkOrdinal);

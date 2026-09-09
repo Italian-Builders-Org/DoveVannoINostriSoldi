@@ -38,8 +38,8 @@ jobs:
         with:
           node-version: "22.23.2"
 
-      - name: Install locked dependencies
-        run: npm ci
+      - name: Install locked runtime dependencies
+        run: npm ci --omit=dev --ignore-scripts
 
       - name: Probe active source adapters
         shell: bash

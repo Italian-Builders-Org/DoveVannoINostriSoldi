@@ -71,12 +71,12 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
     "/api/mcp": ["data/source-ledger/elements/**/*"],
+    "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
   outputFileTracingIncludes: {
     "/opere": [
       "src/data/generated/mop-comparable-browse.meta.json",
       "src/data/generated/mop-comparable-browse.data.jsonl.gz",
-      "scripts/etl/specs/mop-comparable-browse.source.json",
     ],
 
     "/appalti/operatori": [

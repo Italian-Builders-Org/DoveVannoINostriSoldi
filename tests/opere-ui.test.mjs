@@ -36,6 +36,8 @@ test("opere page shows charts then browsable list with progress and search below
   assert.match(loader, /actualTotalCents/);
   assert.match(loader, /progress/);
   assert.match(loader, /getMopComparableSummaries/);
+  assert.match(loader, /readSync/);
+  assert.doesNotMatch(loader, /readFileSync\(/);
   assert.match(etl, /comparableRule/);
   assert.match(etl, /ccosto_lavori_previsto/);
   assert.match(etl, /cinizio_esecuzione_prevista/);

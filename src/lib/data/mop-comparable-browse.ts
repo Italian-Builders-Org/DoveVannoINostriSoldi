@@ -1,13 +1,16 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { z } from "zod";
 
 export const MOP_COMPARABLE_DATA = "src/data/generated/mop-comparable-browse.data.jsonl.gz";
 export const MOP_COMPARABLE_META = "src/data/generated/mop-comparable-browse.meta.json";
+export const MOP_COMPARABLE_DIR = "src/data/generated";
+export const MOP_COMPARABLE_META_FILE = "mop-comparable-browse.meta.json";
+export const MOP_COMPARABLE_DATA_FILE = "mop-comparable-browse.data.jsonl.gz";
 export const MOP_COMPARABLE_PAGE_SIZE = 50;
 export const MOP_COMPARABLE_ORDERS = ["deltaAbs", "planned", "actual"] as const;
 export const MOP_COMPARABLE_PROGRESS = ["in-corso", "concluso", "non-determinato"] as const;
@@ -168,18 +171,44 @@ function normalizeWork(raw: z.infer<typeof workSchema>): MopComparableWork {
   };
 }
 
-function readUtf8(pathFromRoot: string, maxBytes: number): Buffer {
-  const absolute = join(process.cwd(), pathFromRoot);
-  const bytes = readFileSync(absolute);
-  if (bytes.byteLength > maxBytes) throw new Error(`Artifact troppo grande: ${pathFromRoot}`);
-  return bytes;
+function readBoundedFile(absolutePath: string, maxBytes: number, label: string): Buffer {
+  // Bound the read to the checked descriptor without a dynamic readFileSync
+  // argument, which makes Turbopack trace unrelated repository files (docs/).
+  const fd = openSync(absolutePath, "r");
+  try {
+    const info = fstatSync(fd);
+    if (!info.isFile() || info.size <= 0) throw new Error(`Artifact assente: ${label}`);
+    if (info.size > maxBytes) throw new Error(`Artifact troppo grande: ${label}`);
+    const bytes = Buffer.alloc(info.size);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      if (!count) throw new Error(`Artifact incompleto: ${label}`);
+      offset += count;
+    }
+    const after = fstatSync(fd);
+    if (info.size !== after.size || info.mtimeMs !== after.mtimeMs || info.ino !== after.ino) {
+      throw new Error(`Artifact cambiato durante la lettura: ${label}`);
+    }
+    return bytes;
+  } finally {
+    closeSync(fd);
+  }
 }
 
 function loadBundle(): { meta: MopComparableMeta; works: readonly MopComparableWork[] } {
   if (cached) return cached;
-  const metaBytes = readUtf8(MOP_COMPARABLE_META, 512 * 1024);
+  const metaBytes = readBoundedFile(
+    join(process.cwd(), MOP_COMPARABLE_DIR, MOP_COMPARABLE_META_FILE),
+    512 * 1024,
+    MOP_COMPARABLE_META_FILE,
+  );
   const meta = metaSchema.parse(JSON.parse(metaBytes.toString("utf8")));
-  const dataBytes = readUtf8(MOP_COMPARABLE_DATA, 40 * 1024 * 1024);
+  const dataBytes = readBoundedFile(
+    join(process.cwd(), MOP_COMPARABLE_DIR, MOP_COMPARABLE_DATA_FILE),
+    40 * 1024 * 1024,
+    MOP_COMPARABLE_DATA_FILE,
+  );
   const digest = createHash("sha256").update(dataBytes).digest("hex");
   if (digest !== meta.integrity.dataArtifact.sha256) {
     throw new Error("Hash mop-comparable-browse non allineato");

@@ -40,6 +40,7 @@ export default async function SportSpendingPage() {
           fonti in un totale unico.
         </p>
         <p className={styles.leadLinks}>
+          <Link href="/spese/cultura">Cultura e tempo libero: totale COFOG →</Link>
           <Link href="/spese/legge-di-bilancio">Legge di Bilancio →</Link>
           <Link href="/palazzo-chigi">Palazzo Chigi →</Link>
           <Link href="/partecipazioni">Partecipazioni →</Link>
@@ -47,6 +48,12 @@ export default async function SportSpendingPage() {
           <Link href="/dati/openbdap-capitoli-2024-2026">Capitoli OpenBDAP →</Link>
         </p>
       </header>
+
+      <p className={styles.tableNote}>
+        Il totale nazionale per attività ricreative, cultura e culto (COFOG GF08) è nella pagina
+        {" "}<Link href="/spese/cultura">Cultura e tempo libero</Link>. Le fonti qui raccolte non
+        costituiscono una scomposizione di quel totale e non si sommano ad esso.
+      </p>
 
       <dl className={`stat-strip ${styles.stats}`}>
         <div>

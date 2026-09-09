@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
-  <title id="title">Dove vanno i nostri soldi</title>
-  <desc id="desc">Tre flussi tricolore confluiscono in un punto fonte azzurro.</desc>
-  <rect width="1024" height="1024" fill="#201e1d"/>
-  <path d="M96 128H320V330C320 430 354 490 430 540C470 566 492 590 510 620C500 642 494 666 494 692C470 660 438 628 382 596L276 536C156 470 96 398 96 296Z" fill="#4e9a6b"/>
-  <path d="M928 128H704V330C704 430 670 490 594 540C554 566 532 590 514 620C524 642 530 666 530 692C554 660 586 628 642 596L748 536C868 470 928 398 928 296Z" fill="#ec3013"/>
-  <path d="M416 128H608V344C608 448 574 510 530 570C518 586 526 602 544 628C554 642 560 660 560 682V800H464V682C464 660 470 642 480 628C498 602 506 586 494 570C450 510 416 448 416 344Z" fill="#f3f2f2"/>
-  <circle cx="512" cy="824" r="72" fill="#55b8ef"/>
-</svg>

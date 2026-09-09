@@ -21,7 +21,7 @@ La domanda sceglie la forma: mappa per geografia, linea per trend, barre o dot p
 
 L'ordine di lettura condiviso è: **dato principale → confronto → contesto → dettaglio → fonte**. Su mobile resta lo stesso ordine semantico: non si anticipa un elenco secondario davanti alla visualizzazione o al confronto che spiega la pagina. La gerarchia deve restare leggibile in scala di grigi attraverso posizione, dimensione, peso, spaziatura e linee; il colore non porta mai da solo la priorità.
 
-Il marchio “Confluenza” porta il tricolore nell'header come firma di identità. Nell'interfaccia usa la variante trasparente; favicon e icone installabili conservano il fondale inchiostro. Il punto azzurro appartiene all'asset ufficiale e non introduce un nuovo colore nell'interfaccia. Il tricolore non è la palette delle visualizzazioni.
+Il marchio “Confluenza” porta il tricolore nell'header come firma di identità. Nell'interfaccia usa la variante trasparente (`public/brand/dvns-mark-transparent.png`); favicon e icone installabili usano la variante su fondale inchiostro (`public/brand/dvns-mark.png`). Il tricolore non è la palette delle visualizzazioni.
 
 I token vivono in `src/app/design-system.css`; la base e la chrome dell'applicazione in `src/app/globals.css`. Nessun colore va scritto a mano in un componente: se manca un token, si aggiunge lì.
 

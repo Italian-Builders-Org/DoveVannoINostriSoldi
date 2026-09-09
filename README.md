@@ -6,6 +6,8 @@ Riunisce fonti pubbliche sparse su portali diversi e le rende leggibili in un un
 
 **Sito:** [dovevannoinostrisoldi.com](https://www.dovevannoinostrisoldi.com)
 
+<p><img src="docs/readme/brand-mark.png" alt="Marchio Confluenza" width="96" height="96" /></p>
+
 <a href="https://www.buymeacoffee.com/dovevannoinostrisoldi"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me an AI compute" height="32" width="114" /></a>
 
 Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
@@ -22,7 +24,7 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 - Capire rapidamente che cosa il dato misura, e che cosa non misura.
 - Fare domande al catalogo dati e al server MCP in sola lettura.
 
-Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 24 collegamenti. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 46 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
+Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, appalti ANAC, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 33 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 93 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
 
 ![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
 
@@ -52,22 +54,25 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | --- | --- |
 | [Home](https://www.dovevannoinostrisoldi.com/) | Pagamenti dei Comuni, mappa regionale, composizione della spesa |
 | [Imprese](https://www.dovevannoinostrisoldi.com/imprese) | Imprese attive, addetti, localizzazioni e fatturato aggregato (ISTAT) |
-| [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Studenti e percorsi della scuola secondaria di II grado per Regione (MIM) |
-| [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), sanità, invalidità, pensioni, debito e bilancio |
+| [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Scuola secondaria di II grado per Regione (MIM) e università/ricerca |
+| [Povertà](https://www.dovevannoinostrisoldi.com/poverta) | Povertà assoluta e relativa (ISTAT) |
+| [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), sanità, invalidità, pensioni, ambiente, consulenze |
 | [Territori](https://www.dovevannoinostrisoldi.com/territori) | Confronti per Regione e Comune, profili OpenCivitas, CPT e IRPEF MEF |
-| [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione) | OpenCoesione e traccia PNRR asili (Italia Domani) |
+| [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione) | OpenCoesione, PNRR Italia Domani, asili e incarichi PNRR |
 | [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato) | Pagamenti per funzione e amministrazione (OpenBDAP/RGS) |
 | [Debito pubblico](https://www.dovevannoinostrisoldi.com/debito) | Stock, detentori, scadenze e interessi (Banca d'Italia ed Eurostat) |
-| [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio) | Stanziamenti per missione e riallocazione ipotetica (OpenBDAP, competenza A1, non cassa) |
+| [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio) | Stanziamenti per missione e riallocazione ipotetica (OpenBDAP, competenza A1) |
 | [Istituzioni](https://www.dovevannoinostrisoldi.com/istituzioni) | Parlamento, Palazzo Chigi, pagella dei governi, ministeri e regioni |
-| [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF |
-| [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, appalti, incarichi e catalogo dati |
+| [Enti e società](https://www.dovevannoinostrisoldi.com/enti) | Indice PA, schede enti, partecipazioni MEF, appalti per ente |
+| [Appalti](https://www.dovevannoinostrisoldi.com/appalti) | Affidamenti, operatori ANAC, TED e confronti verificati |
+| [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli) | Segnali da fonti ufficiali, incarichi e catalogo dati |
 | [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Chat con la tua AI personale, dati verificati del sito e allegati |
-| [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, date di aggiornamento e calendario dei documenti programmatici |
+| [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, catalogo, copertura e calendario |
 | [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
-| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile |
+| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile (93 dataset) |
+| [Report](https://www.dovevannoinostrisoldi.com/report) | Articoli mensili e approfondimenti |
 
-Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni).
+Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [operatori ANAC](https://www.dovevannoinostrisoldi.com/appalti/operatori), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [studio asili PNRR](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti).
 
 ## Come leggere il progetto
 
@@ -152,6 +157,7 @@ Esempi:
 GET /api/spese/comuni
 GET /api/territori/irpef?anno=2024&livello=regione
 GET /api/controlli
+GET /api/opere?cup=…
 GET /api/dati/consulenze-legali?q=2024&limit=20
 ```
 

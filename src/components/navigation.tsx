@@ -256,7 +256,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
           </button>
           <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
-            <Image className="brand-mark" src="/brand/dvns-mark-transparent.svg" width={44} height={44} alt="" aria-hidden="true" priority />
+            <Image className="brand-mark" src="/brand/dvns-mark-transparent.png" width={44} height={44} alt="" aria-hidden="true" priority />
             <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
           </Link>
           <span className="header-spacer" />

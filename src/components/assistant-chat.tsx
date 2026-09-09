@@ -277,7 +277,7 @@ export function AssistantChat() {
                     </div></>}
                   </div>
                   <div className={styles.assistantMessage} data-assistant-reply aria-live={loading && !turn.response ? "off" : "polite"} aria-busy={!turn.response && !turn.stopped}>
-                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.svg" alt="" width={22} height={26} /><span>DVNS</span><small>AI</small></div>
+                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span>DVNS</span><small>AI</small></div>
                     {turn.contextReduced ? <p className={styles.contextNotice}>I nuovi allegati superano il limite del contesto: i file dei messaggi più vecchi non sono inclusi in questa risposta. Per confrontarli, riallega insieme i file utili (massimo 3).</p> : null}
                     <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} />
                     {turn.response ? <AssistantAiReply response={turn.response} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
@@ -291,7 +291,7 @@ export function AssistantChat() {
             </div>
           </div>
         ) : <div className={styles.welcome}>
-          <Image className={styles.heroMark} src="/brand/dvns-mark-transparent.svg" alt="" width={48} height={56} priority />
+          <Image className={styles.heroMark} src="/brand/dvns-mark-transparent.png" alt="" width={48} height={56} priority />
           <h1>Cosa vuoi sapere?</h1>
 
         </div>}

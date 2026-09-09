@@ -4,8 +4,10 @@ import sharp from "sharp";
 
 const root = process.cwd();
 const checkOnly = process.argv.includes("--check");
-const sourcePath = path.join(root, "public/brand/dvns-mark.svg");
+const sourcePath = path.join(root, "public/brand/dvns-mark.png");
+const transparentPath = path.join(root, "public/brand/dvns-mark-transparent.png");
 const source = await readFile(sourcePath);
+const transparent = await readFile(transparentPath);
 
 async function emit(relativePath, content) {
   const outputPath = path.join(root, relativePath);
@@ -33,7 +35,7 @@ const rasterTargets = [
 ];
 
 async function renderPng(size) {
-  return sharp(source, { density: 512 })
+  return sharp(source)
     .resize(size, size, { fit: "fill", kernel: sharp.kernel.lanczos3 })
     .png({ compressionLevel: 9 })
     .toBuffer();
@@ -54,8 +56,8 @@ let offset = 6 + faviconImages.length * 16;
 const entries = faviconImages.map((image, index) => {
   const size = faviconSizes[index];
   const entry = Buffer.alloc(16);
-  entry.writeUInt8(size, 0);
-  entry.writeUInt8(size, 1);
+  entry.writeUInt8(size === 256 ? 0 : size, 0);
+  entry.writeUInt8(size === 256 ? 0 : size, 1);
   entry.writeUInt8(0, 2);
   entry.writeUInt8(0, 3);
   entry.writeUInt16LE(1, 4);
@@ -70,10 +72,14 @@ await emit(
   "src/app/favicon.ico",
   Buffer.concat([header, ...entries, ...faviconImages]),
 );
-await emit("src/app/icon.svg", source);
+await emit("src/app/icon.png", await renderPng(512));
+await emit(
+  "public/brand/dvns-mark-transparent.png",
+  await sharp(transparent).png({ compressionLevel: 9 }).toBuffer(),
+);
 
 console.log(
   checkOnly
-    ? "Brand assets match the canonical SVG."
-    : "Generated favicon.ico, icon.svg, apple-icon.png, and 16/32/48/192/512/1024 PNG assets.",
+    ? "Brand assets match the canonical mark PNG."
+    : "Generated favicon.ico, icon.png, apple-icon.png, and 16/32/48/192/512/1024 PNG assets.",
 );

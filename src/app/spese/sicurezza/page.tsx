@@ -65,7 +65,7 @@ export default async function PublicOrderPage({ searchParams }: PageProps<"/spes
         <p>Stessa funzione GF03 e stesso perimetro nazionale. Euro correnti: la serie non è corretta per l’inflazione.</p>
         <figure className={styles.chart}>
           <svg height="244" role="img" aria-labelledby="sicurezza-chart-title sicurezza-chart-description">
-            <title id="sicurezza-chart-title">Spesa italiana per ordine pubblico e sicurezza, {view.period.from}-{view.period.to}</title>
+            <title id="sicurezza-chart-title">{`Spesa italiana per ordine pubblico e sicurezza, ${view.period.from}-${view.period.to}`}</title>
             <desc id="sicurezza-chart-description">Serie annuale in miliardi di euro correnti. Da {compactEuro(view.history[0].amountEuro)} nel {view.period.from} a {compactEuro(view.history.at(-1)!.amountEuro)} nel {view.period.to}. Tutti i valori sono disponibili nella tabella seguente.</desc>
             {[0, scale / 2, scale].map((value) => {
               const y = 200 - value / scale * 168;

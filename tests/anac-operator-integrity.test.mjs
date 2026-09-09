@@ -21,7 +21,7 @@ function fixture(run) {
   try { run({ cwd, copy }); } finally { rmSync(cwd, { recursive: true, force: true }); }
 }
 function invoke(cwd, expression, expected) {
-  const script = `import ${JSON.stringify(join(root, 'tests/helpers/register-ts-alias.mjs'))};\nconst adapter = await import(${JSON.stringify(join(root, 'src/lib/data/anac-operator-awards-index.ts'))});\n${expression};`;
+  const script = `import ${JSON.stringify(join(root, 'tests/helpers/register-ts-alias.mjs'))};\nconst adapter = await import(${JSON.stringify(join(root, 'src/lib/data/anac-operator-awards-index.ts'))});\nconst records = await import(${JSON.stringify(join(root, 'src/lib/data/anac-operator-records.ts'))});\n${expression};`;
   const result = spawnSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', script], { cwd, encoding: 'utf8' });
   if (expected) {
     assert.notEqual(result.status, 0, 'corrupt data must fail closed');
@@ -31,6 +31,21 @@ function invoke(cwd, expression, expected) {
 
 test('metadata reads do not require unrelated detail shards', () => fixture(({ cwd }) => {
   invoke(cwd, 'adapter.loadAnacOperatorIndexMeta()');
+}));
+
+test('operator listing, both rankings and search work without any detail shard', () => fixture(({ cwd, copy }) => {
+  for (const path of [
+    `${artifact}/summaries.json`, `${artifact}/search.jsonl.gz`,
+    `${browse}/manifest.json`, `${browse}/awardCount.jsonl.gz`, `${browse}/attributedValue.jsonl.gz`,
+  ]) copy(path);
+  invoke(cwd, `
+    const assert = (await import('node:assert/strict')).default;
+    assert.ok(adapter.loadAnacOperatorNationalSummaries().coverage.operators > 100_000);
+    for (const options of [{page: 1}, {page: 1234}, {by: 'valore'}]) {
+      assert.ok(adapter.listAnacOperatorsPage(options).hits.length > 0);
+    }
+    assert.ok(adapter.searchAnacOperators({q: 'autostrade'}).hits.length > 0);
+  `);
 }));
 
 test('changed summaries, search and requested detail shards fail their own integrity check', () => {
@@ -45,7 +60,7 @@ test('changed summaries, search and requested detail shards fail their own integ
     if (!operation) {
       // Pick a real ref from this shard before corrupting its compressed bytes.
       const ref = JSON.parse(gunzipSync(bytes).toString('utf8').split('\n')[0]).ref;
-      operation = `adapter.getAnacOperatorByRef(${JSON.stringify(ref)})`;
+      operation = `records.getAnacOperatorByRef(${JSON.stringify(ref)})`;
     }
     bytes[bytes.length - 1] ^= 1;
     writeFileSync(join(cwd, path), bytes);

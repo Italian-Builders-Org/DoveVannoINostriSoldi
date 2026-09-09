@@ -3,7 +3,7 @@ import test from 'node:test';
 import './helpers/register-ts-alias.mjs';
 
 const { GET } = await import('../src/app/api/fonti/stato/route.ts');
-const { getCachedSourceHealthOverview } = await import('../src/lib/data/cached-live-views.ts');
+const { getCachedSourceHealthOverview } = await import('../src/lib/data/cached-source-health.ts');
 const { validateSourceHealthPayload } = await import('../scripts/runtime-health.mjs');
 
 test('cold source-health reports timed-out upstreams before the HTTP request expires', async () => {

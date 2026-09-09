@@ -37,7 +37,8 @@ test("live source and OpenBDAP APIs cap fan-out duration and concurrency", () =>
 });
 
 test("multi-file OpenBDAP views use persistent cache, single-flight and narrow cold-miss guards", () => {
-  const cache = read("src/lib/data/cached-live-views.ts");
+  const cache = ["live-view-cache", "cached-ssn-history", "cached-legislature-spending"]
+    .map((name) => read(`src/lib/data/${name}.ts`)).join("\n");
   assert.match(cache, /unstable_cache/);
   assert.match(cache, /getSourcePolicy\("openbdap"\)\.dataRevalidateSeconds/);
   assert.match(cache, /getCachedSsnNationalHistory/);

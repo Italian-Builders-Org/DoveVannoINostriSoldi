@@ -1,10 +1,10 @@
+import { getAnacOperatorByRef } from "@/lib/data/anac-operator-records";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { integer, longDate } from "@/lib/format";
 import {
   ANAC_OPERATOR_INDEX,
-  getAnacOperatorByRef,
   isAnacOperatorRef,
   loadAnacOperatorIndexMeta,
 } from "@/lib/data/anac-operator-awards-index";

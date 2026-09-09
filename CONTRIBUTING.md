@@ -114,6 +114,10 @@ browser core/editoriale/report, CSP e Lighthouse. Rifiuta una porta occupata e
 termina il proprio server anche se un gate fallisce. Il log è in
 `artifacts/production/next.log`; i fallimenti browser salvano screenshot e
 diagnostica in `artifacts/browser/`; Lighthouse scrive in `.lighthouseci/`.
+In GitHub, il job `production` conserva la sola cache del compilatore
+`.next/cache/turbopack`, separata per runtime, dipendenze e configurazione.
+Il build e tutti i gate vengono comunque eseguiti; le risposte della Data Cache
+non vengono ripristinate. I job senza browser evitano il download di Chromium.
 `NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
 browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
 `DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.

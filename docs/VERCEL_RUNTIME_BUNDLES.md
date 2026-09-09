@@ -43,8 +43,9 @@ benchmark. The separate operator browsing index work addresses request latency.
 `npm run build` runs `scripts/ci/check-runtime-traces.mjs` after Next succeeds,
 both locally and on Vercel. The gate rejects accidental tracing of tests, docs
 or research, missing referenced files and cross-domain ANAC inclusion. It also
-requires every entity/CPV/operator shard and the source-lock inputs consumed by
-the affected routes, deriving the inventory from the committed manifests.
+requires the entity/CPV shards, operator detail shards or browsing blocks, and
+source-lock inputs consumed by each route, deriving the inventory from the
+committed manifests. The operator listing must not include detail shards.
 
 To inspect an existing build:
 
@@ -69,3 +70,57 @@ Compare deployments on the same build-machine configuration and record cache
 restoration, compilation, output publication, total duration and Vercel resource
 sizes. Build resources and runtime CPU/memory are separate settings. No larger
 machine or reduction of correctness checks is required by this change.
+
+## Route isolation, 9 September 2026
+
+Compared with `62ed2e33`, using the same checkout, committed corpus, Node
+22.23.2, Next 16.3.3 and macOS arm64. Values below use **MiB** (2^20 bytes),
+counting unique normalized paths from the emitted traces after each build.
+
+| Route | Before | After |
+| --- | ---: | ---: |
+| `/appalti/operatori` | 239.0 MiB | 47.1 MiB |
+| `/appalti/operatori/[ref]` | 239.0 MiB | 239.0 MiB |
+| `/spese/sanita/storico` | 241.1 MiB | 2.8 MiB |
+| `/api/spese/sanita/storico` | 240.4 MiB | 2.1 MiB |
+| `/stato/legislature` | 240.7 MiB | 2.3 MiB |
+| `/api/spese/stato/legislature` | 240.4 MiB | 2.0 MiB |
+
+Source health and the two historical views now own separate cache modules.
+The historical modules no longer import the full source-health registry and
+its unrelated snapshots. Shared cache coordination stays in `live-view-cache.ts`;
+persistent keys, TTLs, single-flight, cancellation and failure caching retain
+their existing behavior. Import each domain directly instead of adding a
+barrel that reconnects their dependency graphs.
+
+Five fresh Node processes per module, interleaved on the same machine, measured
+the import itself with `performance.now()` and RSS with `process.memoryUsage()`:
+
+| Import | Median time | Median process RSS |
+| --- | ---: | ---: |
+| Previous shared cache module | 2485.61 ms | 348.7 MiB |
+| SSN history cache | 204.51 ms | 107.6 MiB |
+| Legislature cache | 211.60 ms | 103.4 MiB |
+
+These are module-initialization measurements, not complete request latency or
+Vercel cold starts. The six operator benchmark operations retain identical
+result digests and byte-read counts across the split. Both builds emitted
+151 traces and passed the runtime inventory guard. Warm local build durations
+were 69.59 s and 68.43 s; this single pair does not establish a compilation
+speedup. The hosted baseline `e6800070` took 6m38s, including 304.654 s in
+`Deploying outputs`; compare the subsequent deployment separately.
+
+## CI caches
+
+The production job restores only `.next/cache/turbopack`, keyed by runner OS,
+architecture, Node version file, lockfile, Next configuration and commit. It can
+reuse compiler work from an earlier compatible commit. Every run still builds
+its current tree and executes every production gate. Runtime fetch responses
+are not restored from CI cache.
+
+Static, Node and ETL jobs skip the Chromium download; the production job retains
+it. ETL caches pip downloads while retaining the hash-locked installation.
+Lighthouse uploads explicitly include its JSON/HTML files under the hidden
+`.lighthouseci` directory. Browser scenarios, deadlines and Lighthouse budgets
+are unchanged. The first run populates the compiler cache; assess reuse on a
+later run before claiming a hosted CI time reduction.

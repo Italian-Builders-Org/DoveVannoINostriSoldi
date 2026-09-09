@@ -1133,7 +1133,7 @@
       },
       "refreshWorkflow": ".github/workflows/company-atlas-refresh.yml",
       "publication": {
-        "branch": "automation/data/company-atlas",
+        "branch": "automation/data/company-atlas-v2",
         "commitTitle": "chore(data): refresh Atlante Imprese snapshot",
         "prTitle": "data: refresh Atlante Imprese snapshot",
         "upstreamUrl": "https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json",

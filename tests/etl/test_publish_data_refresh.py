@@ -94,7 +94,7 @@ class PublishDataRefreshTests(TestCase):
         self.assertEqual(
             {item["branch"] for item in publications.values()},
             {
-                "automation/data/company-atlas",
+                "automation/data/company-atlas-v2",
                 "automation/data/consulenti",
                 "automation/data/government-scorecard",
                 "automation/data/mef-participations",

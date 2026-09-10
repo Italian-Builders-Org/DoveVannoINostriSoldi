@@ -65,6 +65,12 @@ export async function inspectHomeCompositionSpacing(page, { width }) {
     assert.equal(await page.$eval(selector, (button) => button.getAttribute("aria-expanded")), "false");
   }
   const theme = await page.$eval("html", (element) => element.dataset.theme);
+  console.log(JSON.stringify({
+    check: "home-composition-spacing", theme, width,
+    maxTitleAmountGap: Math.max(...rows.map((row) => row.amountBox.top - row.title.bottom)),
+    rowHeights: rows.map((row) => row.row.height),
+    tooltipTargets: rows.filter((row) => row.button).map((row) => row.button.width),
+  }));
   const directory = path.join(defaultArtifactsDir(), "home-composition", `${theme}-${width}`);
   await mkdir(directory, { recursive: true });
   await writeFile(path.join(directory, "geometry.json"), JSON.stringify(rows, null, 2));

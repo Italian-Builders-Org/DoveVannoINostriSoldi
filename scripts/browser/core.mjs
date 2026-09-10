@@ -700,6 +700,7 @@ try {
       label,
       pathname: "/",
       width,
+      touch: width === 390,
       validate: async (page) => {
         await inspectInstitutionalPalette(page, { label, width });
         await inspectHomeCompositionSpacing(page, { width });

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import { getDefencePublicSpendingView, parseDefenceYear } from "@/lib/defence-public-spending";
+import { CofogSpendingHistory } from "@/components/charts/cofog-spending-history";
 import styles from "./difesa.module.css";
 
 export const metadata: Metadata = {
@@ -16,9 +17,6 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
   if (year === null) notFound();
   const view = getDefencePublicSpendingView(year);
   const { selected, latestCofog, latestBudget, comparison } = view;
-  const maxCents = Math.max(...view.history.map((point) => point.amountCents), 1);
-  const x = (index: number) => 80 + index / Math.max(view.history.length - 1, 1) * 520;
-  const y = (cents: number) => 170 - cents / maxCents * 140;
   const eurostatApi = `/api/spese/cofog?paese=IT&funzione=GF02&anno=${year}`;
 
   return (
@@ -79,31 +77,9 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
 
       <section className="panel" aria-labelledby="defence-history-title">
         <h2 id="defence-history-title" className="panel-title">Spesa PA nel tempo · {view.cofog.period.from}-{view.cofog.period.to}</h2>
-        <figure className={styles.chart}>
-          <svg viewBox="0 0 640 205" role="img" aria-labelledby="defence-chart-title defence-chart-desc">
-            <title id="defence-chart-title">Spesa PA italiana per la difesa, Eurostat COFOG GF02</title>
-            <desc id="defence-chart-desc">Importi in euro correnti. Asse verticale da zero a {compactEuro(maxCents / 100)}. Tutti i valori sono nella tabella seguente.</desc>
-            {[0, maxCents / 2, maxCents].map((amount) => <g key={amount}>
-              <line x1="80" x2="600" y1={y(amount)} y2={y(amount)} className={styles.gridLine} />
-              <text x="72" y={y(amount) + 4} textAnchor="end">{compactEuro(amount / 100)}</text>
-            </g>)}
-            {view.history.map((point, index) => <g key={point.year}>
-              {index > 0 && point.flag !== "b" ? <line x1={x(index - 1)} y1={y(view.history[index - 1].amountCents)} x2={x(index)} y2={y(point.amountCents)} className={styles.seriesLine} /> : null}
-              <circle cx={x(index)} cy={y(point.amountCents)} r="3" className={styles.point} />
-              {index === 0 || index === view.history.length - 1 || index === Math.floor(view.history.length / 2)
-                ? <text x={x(index)} y="195" textAnchor="middle">{point.year}</text> : null}
-            </g>)}
-          </svg>
-          <ol className={styles.mobileHistory} aria-label="Spesa PA per la difesa per anno">
-            {view.history.map((point) => <li key={point.year}>
-              <span>{point.year}</span><strong>{compactEuro(point.amountCents / 100)}</strong>
-              <i aria-hidden="true"><b style={{ width: `${point.amountCents / maxCents * 100}%` }} /></i>
-              {point.flag ? <small>{view.flags[point.flag]}</small> : null}
-            </li>)}
-          </ol>
-          <figcaption>Solo COFOG GF02 · Eurostat. Prezzi correnti, senza correzione per l’inflazione.
-            Un’interruzione segnalata dalla fonte interrompe anche la linea.</figcaption>
-        </figure>
+        <CofogSpendingHistory history={view.history} flags={view.flags} id="defence-chart"
+          title="Spesa PA italiana per la difesa, Eurostat COFOG GF02"
+          listLabel="Spesa PA per la difesa per anno" functionCode="GF02" />
 
         <details className="chart-data" data-testid="defence-annual">
           <summary>Valori annuali e confronto con gli stanziamenti</summary>

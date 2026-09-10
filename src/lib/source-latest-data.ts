@@ -25,7 +25,7 @@ import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
-import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import { eurostatHicpData } from "@/lib/eurostat-hicp-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
 export type SourceLatestData =
@@ -53,10 +53,7 @@ const exhaustiveLatestDataBySlug = {
   eurostat: { kind: "period", label: String(getPublicDebtSnapshot().annualInterest.referenceYear) },
   "eurostat-hicp": {
     kind: "period",
-    label: `IPCA ${getGovernmentScorecardV6SupplementalSnapshot().series
-      .find((series) => series.indicator_id === "inflation")
-      ?.geographies.find((geography) => geography.geography === "IT")
-      ?.points.at(-1)?.period ?? "non disponibile"}`,
+    label: `IPCA Italia ${eurostatHicpData.period.total.to}; divisioni e confronto ${eurostatHicpData.period.divisions}`,
   },
   "eurostat-cofog": {
     kind: "period",

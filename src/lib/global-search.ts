@@ -100,6 +100,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/": ["inizio"],
   "/istruzione/universita-ricerca": ["universita", "ricerca e innovazione", "stanziamenti universita", "formazione post-universitaria"],
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
+  "/inflazione": ["inflazione", "ipca", "hicp", "prezzi", "costo della vita", "coicop", "paniere"],
   "/spese/sanita": ["salute", "ssn", "servizio sanitario", "ospedali"],
   "/spese/sanita/storico": ["trend sanita", "serie storica sanita", "anni sanita"],
   "/spese/servizi-generali": ["servizi generali", "cofog gf01", "operazioni sul debito", "affari generali", "ricerca di base"],

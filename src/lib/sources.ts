@@ -71,10 +71,10 @@ export const sourceCatalog: PublicSource[] = [
     owner: "Eurostat",
     area: "Prezzi al consumo armonizzati",
     cadence: "Mensile",
-    coverage: "Italia, Francia, Germania e Spagna dal 2022; indice e variazione annua per totale, alimentari e abitazione-energia",
+    coverage: "Italia 2022-01/2026-08: indice 2025=100 e tassi annuo/mensile; 13 divisioni ECOICOP v2 e pesi 2026; confronto UE27 e area euro al 2026-07",
     format: "Statistics API · JSON-stat · snapshot JSON verificato",
     url: "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
-    note: "L'IPCA descrive i prezzi osservati e non attribuisce causalmente il loro andamento a un governo. Indice e variazione annua mantengono unità distinte.",
+    note: "L'IPCA descrive prezzi, non spesa pubblica. Indice, tasso annuo, tasso mensile e peso del paniere mantengono unità distinte; il dettaglio italiano non viene trasformato in contributi additivi inventati.",
     joinKeys: ["periodo", "geo", "coicop18", "unità"],
   },
   {

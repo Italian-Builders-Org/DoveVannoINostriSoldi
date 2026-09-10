@@ -1,0 +1,129 @@
+{
+  "coverage": {
+    "note": "Serie mensile Italia 2022-01/2026-08 per indice 2025=100, variazione a/a e m/m; confronto IT/UE27/area euro e 13 divisioni ECOICOP v2 a 2026-07; pesi italiani 2025-2026.",
+    "observedAt": "2026-09-10"
+  },
+  "datasetId": "eurostat-hicp",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 10713,
+      "path": "src/data/generated/eurostat-hicp-2022-2026.data.json",
+      "sha256": "07d62290f25cfe209fa62a9706ddb451943dbafcf7edc4089ea12f86a28402ba"
+    },
+    "sourceLockSha256": "d796f8dff58ca62eba3749af271240e385b1dbe2f2de89d8848f7192437678f5"
+  },
+  "observedAt": "2026-09-10",
+  "period": {
+    "comparison": "2026-07",
+    "divisions": "2026-07",
+    "total": {
+      "from": "2022-01",
+      "to": "2026-08"
+    },
+    "weightYears": [
+      2025,
+      2026
+    ]
+  },
+  "referencePeriod": "2022-01/2026-08 (totale Italia); 2026-07 (confronto e divisioni); pesi 2025-2026",
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Ogni blocco conserva il periodo realmente disponibile; agosto 2026 non viene retro-riempito per confronto o divisioni.",
+      "referencePeriod": "totale Italia 2022-01/2026-08; confronto e divisioni 2026-07; pesi 2025-2026"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-10",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_iw/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/web/hicp/information-data",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=I25&unit=RCH_A&unit=RCH_M&coicop18=TOTAL&geo=IT&sinceTimePeriod=2022-01&untilTimePeriod=2026-08",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=EU27_2020&geo=EA21&sinceTimePeriod=2026-07&untilTimePeriod=2026-07",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&geo=IT&sinceTimePeriod=2026-07&untilTimePeriod=2026-07",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_iw?format=JSON&lang=EN&freq=A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&statinfo=IW&geo=IT&sinceTimePeriod=2025&untilTimePeriod=2026"
+      ],
+      "checkedAt": "2026-09-10",
+      "hashes": "SHA-256 per ciascuna risposta JSON-stat nel source lock e per l'artefatto normalizzato",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-09-01T23:00:00+0200"
+    },
+    "soldi": {
+      "applicable": false,
+      "nature": "indice dei prezzi al consumo armonizzato (IPCA/HICP), non flusso monetario pubblico",
+      "note": "Nessun importo viene derivato o sommato a SIOPE, bilanci o conti pubblici.",
+      "unit": "non applicabile"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-10",
+      "checkedAt": "2026-09-10",
+      "note": "Risposte JSON-stat 2.0 acquisite dagli endpoint ufficiali. Agosto 2026 è disponibile per il totale Italia ma non ancora per tutte le divisioni né per UE27; il confronto e la scomposizione usano quindi luglio 2026, ultimo mese comune completo."
+    },
+    "assets": {
+      "comparison": {
+        "bytes": 4583,
+        "datasetCode": "prc_hicp_minr",
+        "filename": "prc_hicp_minr-comparison.json",
+        "sha256": "978158c7dddf79397ee599afa54421ca2f213b678d2d08bac4749dd91488c338",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "PRC_HICP_MINR",
+          "version": "23.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=EU27_2020&geo=EA21&sinceTimePeriod=2026-07&untilTimePeriod=2026-07"
+      },
+      "divisions": {
+        "bytes": 5203,
+        "datasetCode": "prc_hicp_minr",
+        "filename": "prc_hicp_minr-divisions.json",
+        "sha256": "82161cb342ee49669f336ad8b9f3e88ddba863bbd6b653b4f70b2e71f7653a57",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "PRC_HICP_MINR",
+          "version": "23.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&geo=IT&sinceTimePeriod=2026-07&untilTimePeriod=2026-07"
+      },
+      "italy-total": {
+        "bytes": 8053,
+        "datasetCode": "prc_hicp_minr",
+        "filename": "prc_hicp_minr-italy-total.json",
+        "sha256": "67777fbd6e31e3208b1264f69334bb4e40d530e768314c43bcc5253d796bfda1",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "PRC_HICP_MINR",
+          "version": "23.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=I25&unit=RCH_A&unit=RCH_M&coicop18=TOTAL&geo=IT&sinceTimePeriod=2022-01&untilTimePeriod=2026-08"
+      },
+      "weights": {
+        "bytes": 4735,
+        "datasetCode": "prc_hicp_iw",
+        "filename": "prc_hicp_iw-weights.json",
+        "sha256": "a09acb851410a20c875fce1a504c8e9beb98c9380cdcaa31fe7a7db103d182af",
+        "sourceUpdated": "2026-09-01T11:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "PRC_HICP_IW",
+          "version": "9.1"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_iw?format=JSON&lang=EN&freq=A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&statinfo=IW&geo=IT&sinceTimePeriod=2025&untilTimePeriod=2026"
+      }
+    },
+    "informationUrl": "https://ec.europa.eu/eurostat/web/hicp/information-data",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-10.",
+    "owner": "Eurostat (Commissione europea)",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "weightsLandingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_iw/default/table?lang=en"
+  }
+}

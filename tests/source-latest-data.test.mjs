@@ -22,7 +22,7 @@ test("annual CPT coverage remains a period instead of an invented date", () => {
   assert.deepEqual(latestDataBySlug.eurostat, { kind: "period", label: "2025" });
   assert.deepEqual(latestDataBySlug["eurostat-hicp"], {
     kind: "period",
-    label: "IPCA 2026-08",
+    label: "IPCA Italia 2026-08; divisioni e confronto 2026-07",
   });
   assert.deepEqual(latestDataBySlug["istat-casellario-pensioni"], {
     kind: "period",

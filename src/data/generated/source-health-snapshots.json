@@ -116,8 +116,8 @@
   {
     "sourceId": "eurostat-hicp",
     "sourceTimestamp": "2026-09-01T23:00:00+0200",
-    "detail": "Snapshot ETL attivo · IPCA mensile fino a 2026-08 (prc_hicp_minr).",
-    "recordCount": 1424
+    "detail": "Snapshot Eurostat HICP verificato · totale Italia 2022-01/2026-08 · divisioni e confronto 2026-07 · pesi 2026 · prezzi, non spesa pubblica.",
+    "recordCount": 210
   },
   {
     "sourceId": "eurostat-cofog",

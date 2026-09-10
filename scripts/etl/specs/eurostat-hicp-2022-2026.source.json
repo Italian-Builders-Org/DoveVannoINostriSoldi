@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-hicp",
+  "period": {
+    "total": {
+      "from": "2022-01",
+      "to": "2026-08"
+    },
+    "comparison": "2026-07",
+    "divisions": "2026-07",
+    "weightYears": [
+      2025,
+      2026
+    ]
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+    "weightsLandingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_iw/default/table?lang=en",
+    "informationUrl": "https://ec.europa.eu/eurostat/web/hicp/information-data",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-10.",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "assets": {
+      "italy-total": {
+        "filename": "prc_hicp_minr-italy-total.json",
+        "datasetCode": "prc_hicp_minr",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=I25&unit=RCH_A&unit=RCH_M&coicop18=TOTAL&geo=IT&sinceTimePeriod=2022-01&untilTimePeriod=2026-08",
+        "bytes": 8053,
+        "sha256": "67777fbd6e31e3208b1264f69334bb4e40d530e768314c43bcc5253d796bfda1",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "id": "PRC_HICP_MINR",
+          "agencyId": "ESTAT",
+          "version": "23.0"
+        }
+      },
+      "comparison": {
+        "filename": "prc_hicp_minr-comparison.json",
+        "datasetCode": "prc_hicp_minr",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=EU27_2020&geo=EA21&sinceTimePeriod=2026-07&untilTimePeriod=2026-07",
+        "bytes": 4583,
+        "sha256": "978158c7dddf79397ee599afa54421ca2f213b678d2d08bac4749dd91488c338",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "id": "PRC_HICP_MINR",
+          "agencyId": "ESTAT",
+          "version": "23.0"
+        }
+      },
+      "divisions": {
+        "filename": "prc_hicp_minr-divisions.json",
+        "datasetCode": "prc_hicp_minr",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?format=JSON&lang=EN&freq=M&unit=RCH_A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&geo=IT&sinceTimePeriod=2026-07&untilTimePeriod=2026-07",
+        "bytes": 5203,
+        "sha256": "82161cb342ee49669f336ad8b9f3e88ddba863bbd6b653b4f70b2e71f7653a57",
+        "sourceUpdated": "2026-09-01T23:00:00+0200",
+        "structure": {
+          "id": "PRC_HICP_MINR",
+          "agencyId": "ESTAT",
+          "version": "23.0"
+        }
+      },
+      "weights": {
+        "filename": "prc_hicp_iw-weights.json",
+        "datasetCode": "prc_hicp_iw",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_iw?format=JSON&lang=EN&freq=A&coicop18=CP01&coicop18=CP02&coicop18=CP03&coicop18=CP04&coicop18=CP05&coicop18=CP06&coicop18=CP07&coicop18=CP08&coicop18=CP09&coicop18=CP10&coicop18=CP11&coicop18=CP12&coicop18=CP13&statinfo=IW&geo=IT&sinceTimePeriod=2025&untilTimePeriod=2026",
+        "bytes": 4735,
+        "sha256": "a09acb851410a20c875fce1a504c8e9beb98c9380cdcaa31fe7a7db103d182af",
+        "sourceUpdated": "2026-09-01T11:00:00+0200",
+        "structure": {
+          "id": "PRC_HICP_IW",
+          "agencyId": "ESTAT",
+          "version": "9.1"
+        }
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-10",
+      "checkedAt": "2026-09-10",
+      "note": "Risposte JSON-stat 2.0 acquisite dagli endpoint ufficiali. Agosto 2026 è disponibile per il totale Italia ma non ancora per tutte le divisioni né per UE27; il confronto e la scomposizione usano quindi luglio 2026, ultimo mese comune completo."
+    }
+  },
+  "expected": {
+    "knownFlags": {
+      "e": "stima Eurostat"
+    },
+    "total": {
+      "geo": "IT",
+      "coicop18": "TOTAL",
+      "units": [
+        "I25",
+        "RCH_A",
+        "RCH_M"
+      ],
+      "periods": [
+        "2022-01",
+        "2022-02",
+        "2022-03",
+        "2022-04",
+        "2022-05",
+        "2022-06",
+        "2022-07",
+        "2022-08",
+        "2022-09",
+        "2022-10",
+        "2022-11",
+        "2022-12",
+        "2023-01",
+        "2023-02",
+        "2023-03",
+        "2023-04",
+        "2023-05",
+        "2023-06",
+        "2023-07",
+        "2023-08",
+        "2023-09",
+        "2023-10",
+        "2023-11",
+        "2023-12",
+        "2024-01",
+        "2024-02",
+        "2024-03",
+        "2024-04",
+        "2024-05",
+        "2024-06",
+        "2024-07",
+        "2024-08",
+        "2024-09",
+        "2024-10",
+        "2024-11",
+        "2024-12",
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07",
+        "2026-08"
+      ],
+      "cells": 168
+    },
+    "comparison": {
+      "period": "2026-07",
+      "unit": "RCH_A",
+      "coicop18": "TOTAL",
+      "geographies": [
+        {
+          "code": "EU27_2020",
+          "label": "European Union - 27 countries (from 2020)",
+          "kind": "aggregate"
+        },
+        {
+          "code": "EA21",
+          "label": "Euro area – 21 countries (from 2026)",
+          "kind": "aggregate"
+        },
+        {
+          "code": "IT",
+          "label": "Italy",
+          "kind": "country"
+        }
+      ],
+      "cells": 3
+    },
+    "divisions": {
+      "period": "2026-07",
+      "unit": "RCH_A",
+      "geo": "IT",
+      "items": [
+        {
+          "code": "CP01",
+          "label": "Food and non-alcoholic beverages"
+        },
+        {
+          "code": "CP02",
+          "label": "Alcoholic beverages, tobacco and narcotics"
+        },
+        {
+          "code": "CP03",
+          "label": "Clothing and footwear"
+        },
+        {
+          "code": "CP04",
+          "label": "Housing, water, electricity, gas and other fuels"
+        },
+        {
+          "code": "CP05",
+          "label": "Furnishings, household equipment and routine household maintenance"
+        },
+        {
+          "code": "CP06",
+          "label": "Health"
+        },
+        {
+          "code": "CP07",
+          "label": "Transport"
+        },
+        {
+          "code": "CP08",
+          "label": "Information and communication"
+        },
+        {
+          "code": "CP09",
+          "label": "Recreation, sport and culture"
+        },
+        {
+          "code": "CP10",
+          "label": "Education services"
+        },
+        {
+          "code": "CP11",
+          "label": "Restaurants and accommodation services"
+        },
+        {
+          "code": "CP12",
+          "label": "Insurance and financial services"
+        },
+        {
+          "code": "CP13",
+          "label": "Personal care, social protection and miscellaneous goods and services"
+        }
+      ],
+      "cells": 13
+    },
+    "weights": {
+      "years": [
+        2025,
+        2026
+      ],
+      "geo": "IT",
+      "statinfo": "IW",
+      "items": [
+        {
+          "code": "CP01",
+          "label": "Food and non-alcoholic beverages"
+        },
+        {
+          "code": "CP02",
+          "label": "Alcoholic beverages, tobacco and narcotics"
+        },
+        {
+          "code": "CP03",
+          "label": "Clothing and footwear"
+        },
+        {
+          "code": "CP04",
+          "label": "Housing, water, electricity, gas and other fuels"
+        },
+        {
+          "code": "CP05",
+          "label": "Furnishings, household equipment and routine household maintenance"
+        },
+        {
+          "code": "CP06",
+          "label": "Health"
+        },
+        {
+          "code": "CP07",
+          "label": "Transport"
+        },
+        {
+          "code": "CP08",
+          "label": "Information and communication"
+        },
+        {
+          "code": "CP09",
+          "label": "Recreation, sport and culture"
+        },
+        {
+          "code": "CP10",
+          "label": "Education services"
+        },
+        {
+          "code": "CP11",
+          "label": "Restaurants and accommodation services"
+        },
+        {
+          "code": "CP12",
+          "label": "Insurance and financial services"
+        },
+        {
+          "code": "CP13",
+          "label": "Personal care, social protection and miscellaneous goods and services"
+        }
+      ],
+      "cells": 26,
+      "sumTargetHundredthsPerThousand": 100000,
+      "sumToleranceHundredthsPerThousand": 7
+    }
+  },
+  "coverage": {
+    "observedAt": "2026-09-10",
+    "note": "Serie mensile Italia 2022-01/2026-08 per indice 2025=100, variazione a/a e m/m; confronto IT/UE27/area euro e 13 divisioni ECOICOP v2 a 2026-07; pesi italiani 2025-2026."
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-hicp-2022-2026.data.json",
+      "bytes": 10713,
+      "sha256": "07d62290f25cfe209fa62a9706ddb451943dbafcf7edc4089ea12f86a28402ba"
+    },
+    "lockSha256": "d796f8dff58ca62eba3749af271240e385b1dbe2f2de89d8848f7192437678f5"
+  }
+}

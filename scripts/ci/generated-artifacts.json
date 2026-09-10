@@ -1247,6 +1247,33 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "eurostat-hicp-2022-2026",
+      "owner": "Eurostat HICP prezzi al consumo armonizzati 2022-2026",
+      "files": [
+        "src/data/generated/eurostat-hicp-2022-2026.data.json",
+        "src/data/generated/eurostat-hicp-2022-2026.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_hicp_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_hicp_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-hicp.test.mjs",
+        "tests/inflation-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_hicp_snapshot.py --input-dir <cartella con le quattro risposte JSON-stat> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-hicp-2022-2026.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: quattro risposte JSON-stat ufficiali Eurostat (prc_hicp_minr e prc_hicp_iw, CC BY 4.0) sono fissate per URL, struttura SDMX, timestamp upstream, byte e SHA-256. La serie Italia pretende 56 mesi e tre misure complete; confronto, 13 divisioni ECOICOP v2 e pesi hanno periodi distinti e copertura completa. I pesi riconciliano a 1000 per mille entro il solo arrotondamento; i tassi di divisione non vengono trasformati in contributi additivi inventati."
+    },
+    {
       "id": "eurostat-cofog-2014-2024",
       "owner": "Eurostat spesa pubblica per funzione COFOG 2014-2024",
       "files": [

@@ -81,6 +81,35 @@ Contratto, formule, ultimi periodi disponibili e procedura di manutenzione sono
 documentati in
 [PAGELLA_POLITICO_ECONOMICA.md](PAGELLA_POLITICO_ECONOMICA.md).
 
+## Inflazione IPCA / HICP
+
+La pagina `/inflazione` usa uno snapshot tipizzato dedicato di Eurostat, separato
+dalla lettura sintetica presente in `/governi`. La fonte principale è
+`prc_hicp_minr` (ECOICOP v2): per l'Italia conserva da gennaio 2022 ad agosto
+2026 indice con base 2025=100, variazione annua e variazione mensile. Il dato
+di agosto 2026 porta il flag Eurostat `e` e viene quindi mostrato come stima.
+
+Il confronto con UE27 e area euro e le 13 divisioni ECOICOP v2 usano luglio
+2026, ultimo mese comune completo osservato al controllo del 10 settembre 2026.
+I pesi italiani 2025-2026 arrivano dal dataset `prc_hicp_iw` e sono pubblicati
+in per mille: le 13 divisioni riconciliano a 1000 entro il solo errore di
+arrotondamento a due decimali. Tasso per divisione e peso del paniere restano
+due misure distinte; DVNS non li moltiplica per costruire un presunto contributo
+italiano all'inflazione. Eurostat pubblica una serie ufficiale di contributi
+all'inflazione annua per l'area euro, ma non è la stessa cosa e non viene usata
+come scorciatoia per l'Italia.
+
+IPCA misura prezzi al consumo e non denaro pubblico: non entra nei totali SIOPE,
+nei bilanci o nei conti COFOG. NIC e FOI sono indici nazionali ISTAT con pesi,
+popolazioni di riferimento e finalità differenti; la pagina rimanda alla nota
+ISTAT 2026 invece di trattarli come sinonimi dell'IPCA. Differenze di inflazione
+tra paesi o periodi non sono attribuite automaticamente al governo in carica.
+
+Le quattro risposte JSON-stat sono source-locked per endpoint ufficiale,
+struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
+è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
+`scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

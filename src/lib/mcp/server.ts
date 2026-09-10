@@ -77,10 +77,9 @@ const queryDatasetToolConfig = {
   description: "Interroga un dataset del portale. Usa prima list_datasets per conoscere filtri e limiti. Le fonti live possono essere temporaneamente indisponibili.",
   inputSchema: querySchema,
   outputSchema: queryDatasetOutputSchema,
-  // Tool di sola lettura su fonti interne: openWorldHint resta false perché non
-  // modifichiamo stato visibile su internet né inviamo dati a terze parti
-  // (checklist Manufact tool-hints-present: readOnlyHint true richiede openWorldHint false).
-  annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  // Alcuni adapter interrogano fonti pubbliche live: l'accesso a internet è
+  // indipendente dall'assenza di scritture o effetti distruttivi.
+  annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
   _meta: { securitySchemes: noAuthSecuritySchemes },
 };
 

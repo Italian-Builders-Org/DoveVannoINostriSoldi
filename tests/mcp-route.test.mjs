@@ -401,7 +401,7 @@ test("MCP list tool declares no-auth access and a structured output contract", a
   );
 });
 
-test("MCP tools declare consistent read-only annotations (Manufact tool-hints-present)", async () => {
+test("MCP tools distinguish read-only behavior from public-internet access", async () => {
   const response = await POST(request({ Origin: "https://example.test" }));
   const rpcEvent = parseRpcEvent(await response.text());
   for (const name of ["list_datasets", "query_dataset"]) {
@@ -410,10 +410,11 @@ test("MCP tools declare consistent read-only annotations (Manufact tool-hints-pr
     assert.equal(tool.annotations?.readOnlyHint, true, `${name} must remain read-only`);
     assert.equal(
       tool.annotations?.openWorldHint,
-      false,
-      `${name} reads internal sources only: openWorldHint true contradicts readOnlyHint`,
+      name === "query_dataset",
+      `${name} must declare whether it can query live public sources`,
     );
     assert.equal(tool.annotations?.destructiveHint, false, `${name} must not be destructive`);
+    assert.equal(tool.annotations?.idempotentHint, true, `${name} must remain idempotent`);
   }
 });
 

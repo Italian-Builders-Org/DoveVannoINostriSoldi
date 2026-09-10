@@ -17,25 +17,23 @@ export function HomeItalyCompositionChart({
     <ol className={styles.bars} aria-label={ariaLabel}>
       {slices.map((slice) => {
         const width = maxShare > 0 ? (slice.sharePercent / maxShare) * 100 : 0;
-        const label = (
-          <span className={styles.barName}>
-            {slice.href ? <Link href={slice.href}>{slice.label}</Link> : slice.label}
-            {slice.note ? (
-              <InfoTooltip
-                id={`home-slice-${slice.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`}
-                label={`Perimetro: ${slice.label}`}
-              >
-                {slice.note}
-              </InfoTooltip>
-            ) : null}
-          </span>
-        );
-
         return (
           <li key={slice.id}>
             <div className={styles.barCopy}>
-              {label}
-              <span className={styles.barAmount}>{billions(slice.amountEuro)} mld €</span>
+              <div className={styles.barText}>
+                <span className={styles.barName}>
+                  {slice.href ? <Link href={slice.href}>{slice.label}</Link> : slice.label}
+                </span>
+                <span className={styles.barAmount}>{billions(slice.amountEuro)} mld €</span>
+              </div>
+              {slice.note ? (
+                <InfoTooltip
+                  id={`home-slice-${slice.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`}
+                  label={`Perimetro: ${slice.label}`}
+                >
+                  {slice.note}
+                </InfoTooltip>
+              ) : null}
             </div>
             <i aria-hidden="true">
               <b style={{ width: `${width}%` }} />

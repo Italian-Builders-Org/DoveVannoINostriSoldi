@@ -26,6 +26,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/assistente",
   "/coesione",
   "/coesione/asili",
+  "/coesione/logistica-mercati",
   "/confronti",
   "/controlli",
   "/controlli/sintesi",

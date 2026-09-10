@@ -122,7 +122,7 @@ export default async function PnrrPage({ searchParams }: { searchParams: Promise
         <p>I file ufficiali sono Progetti e Localizzazione del 13 giugno 2026. Gare, aggiudicatari e pagamenti ReGiS non fanno parte di questa vista. Il verticale asili mantiene il proprio rilascio verificato e le proprie definizioni.</p>
         <div className={styles.links}><a href="https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data/Progetti_del_PNRR.html">Catalogo ufficiale Italia Domani</a><Link href="/dati/pnrr-progetti">Tabella completa e provenienza</Link><Link href="/fonti/copertura#dataset-pnrr-progetti">Ricevuta di copertura</Link><Link href="/mcp">Accesso MCP · pnrr_progetti</Link></div>
       </section>
-      <nav className={styles.verticals} aria-label="Approfondimenti PNRR"><Link href="/coesione/asili"><strong>Asili e prima infanzia →</strong><span>Il verticale curato: progetti, gare e aggiudicatari.</span></Link><Link href="/pnrr/incarichi"><strong>Incarichi INDIRE →</strong><span>Incarichi esterni e compensi contrattuali dichiarati.</span></Link></nav>
+      <nav className={styles.verticals} aria-label="Approfondimenti PNRR"><Link href="/coesione/asili"><strong>Asili e prima infanzia →</strong><span>Il verticale curato: progetti, gare e aggiudicatari.</span></Link><Link href="/coesione/logistica-mercati"><strong>Logistica mercati agroalimentari →</strong><span>Graduatoria MASAF, concessioni e avanzamento ReGiS documentato.</span></Link><Link href="/pnrr/incarichi"><strong>Incarichi INDIRE →</strong><span>Incarichi esterni e compensi contrattuali dichiarati.</span></Link></nav>
     </main>
   );
 }

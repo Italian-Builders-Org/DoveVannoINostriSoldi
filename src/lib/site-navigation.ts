@@ -101,7 +101,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/coesione",
     label: "Fondi e progetti",
     icon: "projects",
-    aliases: ["/confronti", "/pnrr", "/progetti", "/opere"],
+    aliases: ["/confronti", "/pnrr", "/progetti", "/opere", "/coesione/logistica-mercati"],
     children: [
       {
         href: "/coesione",
@@ -109,6 +109,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         children: [
           { href: "/pnrr", label: "Tutti i progetti PNRR" },
           { href: "/coesione/asili", label: "Asili e prima infanzia" },
+          { href: "/coesione/logistica-mercati", label: "Logistica mercati agroalimentari" },
           { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
         ],
       },
@@ -259,6 +260,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/coesione", label: "Coesione e PNRR" },
       { href: "/pnrr", label: "Tutti i progetti PNRR" },
       { href: "/coesione/asili", label: "Asili e prima infanzia" },
+      { href: "/coesione/logistica-mercati", label: "Logistica mercati agroalimentari" },
       { href: "/opere", label: "Opere pubbliche" },
       { href: "/confronti", label: "Confronti verificati" },
       { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },

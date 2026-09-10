@@ -14,6 +14,12 @@ import {
   selectOpenCupProjects,
   type OpenCupProjectSelection,
 } from "@/lib/integrated-public-view";
+import {
+  MasafMercatiQueryError,
+  getMasafMercatiProject,
+  masafMercatiMeta,
+  type MasafMercatiProject,
+} from "@/lib/masaf-logistica-mercati-snapshot";
 import { OpenCupUnavailableError } from "@/lib/opencup-projects-index";
 import {
   PnrrChildcareQueryError,
@@ -34,6 +40,7 @@ type ProjectLookup = {
   openCup: OpenCupProjectSelection | null;
   openCupUnavailable: boolean;
   pnrr: PnrrChildcareProject | null;
+  masaf: MasafMercatiProject | null;
 };
 
 function firstSearchValue(value: string | string[] | undefined): string | null {
@@ -52,7 +59,7 @@ const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
     cup = normalizeOpenCupCup(rawCup);
   } catch (error) {
     if (error instanceof IntegratedQueryError) {
-      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null };
+      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null, masaf: null };
     }
     throw error;
   }
@@ -62,20 +69,30 @@ const loadProject = cache(async (rawCup: string): Promise<ProjectLookup> => {
     pnrr = getPnrrChildcareProject(cup);
   } catch (error) {
     if (error instanceof PnrrChildcareQueryError) {
-      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null };
+      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null, masaf: null };
+    }
+    throw error;
+  }
+
+  let masaf: MasafMercatiProject | null;
+  try {
+    masaf = getMasafMercatiProject(cup);
+  } catch (error) {
+    if (error instanceof MasafMercatiQueryError) {
+      return { cup: null, openCup: null, openCupUnavailable: false, pnrr: null, masaf: null };
     }
     throw error;
   }
 
   try {
     if (OPENCUP_PRODUCT_INTEGRATION !== "active") {
-      return { cup, openCup: null, openCupUnavailable: false, pnrr };
+      return { cup, openCup: null, openCupUnavailable: false, pnrr, masaf };
     }
     const openCup = await selectOpenCupProjects({ cup, limit: 20 });
-    return { cup, openCup, openCupUnavailable: false, pnrr };
+    return { cup, openCup, openCupUnavailable: false, pnrr, masaf };
   } catch (error) {
     if (error instanceof OpenCupUnavailableError) {
-      return { cup, openCup: null, openCupUnavailable: true, pnrr };
+      return { cup, openCup: null, openCupUnavailable: true, pnrr, masaf };
     }
     throw error;
   }
@@ -94,11 +111,14 @@ export async function generateMetadata({
   const lookup = await loadProject(rawCup);
   if (!lookup.cup) notFound();
 
-  if (lookup.pnrr || lookup.openCup || lookup.openCupUnavailable) {
-    if (!lookup.pnrr && lookup.openCup?.matchedRows === 0 && !mopOnly) notFound();
-    const title = lookup.pnrr?.title
-      ?? lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP
-      ?? `Progetto CUP ${lookup.cup}`;
+  if (lookup.pnrr || lookup.masaf || lookup.openCup || lookup.openCupUnavailable) {
+    if (!lookup.pnrr && !lookup.masaf && lookup.openCup?.matchedRows === 0 && !mopOnly) notFound();
+    const title =
+      lookup.pnrr?.title ??
+      lookup.masaf?.titoloProgettoRegis ??
+      lookup.masaf?.beneficiario ??
+      lookup.openCup?.rows[0]?.cells.DESCRIZIONE_SINTETICA_CUP ??
+      `Progetto CUP ${lookup.cup}`;
     return {
       title: `${lookup.cup} · ${title}`,
       description: `Traccia documentale del progetto ${lookup.cup} nei rilasci pubblici consultati.`,
@@ -117,6 +137,15 @@ function money(value: number | null): string {
   return value === null ? "non disponibile" : exactEuro(value / 100);
 }
 
+function moneyEuro(value: number | null | undefined): string {
+  return value === null || value === undefined ? "non disponibile" : exactEuro(value);
+}
+
+function displayItDate(value: string | null | undefined): string {
+  const cleaned = value?.trim();
+  return cleaned || "non disponibile";
+}
+
 function Evidence({ kind }: { kind: "osservato" | "collegato" | "derivato" | "mancante" }) {
   return <span className={`${styles.evidence} ${styles[kind]}`}>{kind}</span>;
 }
@@ -128,6 +157,120 @@ function timelineRows(project: PnrrChildcareProject) {
     ["Fine prevista", project.timeline.plannedEnd, "osservato"],
     ["Fine effettiva", project.timeline.actualEnd, project.timeline.actualEnd ? "osservato" : "mancante"],
   ] as const;
+}
+
+function MasafMercatiPanel({ project }: { project: MasafMercatiProject }) {
+  return (
+    <>
+      <section className={styles.flow} aria-labelledby="masaf-flow-title">
+        <div className={styles.sectionHeading}>
+          <h2 id="masaf-flow-title">Agevolazioni e monitoraggio</h2>
+        </div>
+        <div className={styles.flowGrid}>
+          <div>
+            <span>Agevolazione richiesta (graduatoria)</span>
+            <strong>{moneyEuro(project.agevolazioneRichiestaEuro)}</strong>
+            <Evidence kind="osservato" />
+          </div>
+          <div>
+            <span>Agevolazione concessa (decreto)</span>
+            <strong>{moneyEuro(project.agevolazioneConcessaEuro)}</strong>
+            <Evidence kind={project.agevolazioneConcessaEuro === null ? "mancante" : "osservato"} />
+          </div>
+          <div>
+            <span>Finanziamento PNRR ReGiS</span>
+            <strong>{moneyEuro(project.finanziamentoPnrrEuro)}</strong>
+            <Evidence kind={project.finanziamentoPnrrEuro === null ? "mancante" : "collegato"} />
+          </div>
+          <div>
+            <span>Erogazioni / pagamenti</span>
+            <strong>non disponibili</strong>
+            <Evidence kind="mancante" />
+          </div>
+        </div>
+        <p className={styles.caveat}>
+          Richiesta, concessione e finanziamento ReGiS restano nature contabili distinte. Un finanziamento
+          registrato non è un pagamento osservato.
+        </p>
+      </section>
+
+      <div className={styles.twoColumns}>
+        <section className="panel">
+          <div className={styles.sectionHeading}>
+            <h2>Beneficiario e perimetro MASAF</h2>
+          </div>
+          <dl className={styles.definitionGrid}>
+            <div><dt>Beneficiario in graduatoria</dt><dd>{project.beneficiario}</dd></div>
+            <div><dt>Codice domanda</dt><dd>{project.codiceDomanda}</dd></div>
+            <div><dt>Ordine / punteggio</dt><dd>#{project.ordine} · {integer(project.punteggio)}</dd></div>
+            <div><dt>Macro-area</dt><dd>{project.macroArea}</dd></div>
+            <div>
+              <dt>Stato documentato</dt>
+              <dd>
+                {project.statoDocumentato === "concessione-pubblicata"
+                  ? "Concessione pubblicata"
+                  : "Solo in graduatoria"}
+              </dd>
+            </div>
+            <div>
+              <dt>Territorio ReGiS</dt>
+              <dd>
+                {[project.comune, project.provincia, project.regione].filter(Boolean).join(" · ") ||
+                  "non disponibile"}
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className="panel">
+          <div className={styles.sectionHeading}>
+            <h2>Tempi ReGiS</h2>
+          </div>
+          <dl className={styles.definitionGrid}>
+            <div><dt>Avanzamento</dt><dd>{project.statoAvanzamentoRegis ?? "non disponibile"}</dd></div>
+            <div><dt>Inizio previsto</dt><dd>{displayItDate(project.dataInizioPrevista)}</dd></div>
+            <div><dt>Inizio effettivo</dt><dd>{displayItDate(project.dataInizioEffettiva)}</dd></div>
+            <div><dt>Fine prevista</dt><dd>{displayItDate(project.dataFinePrevista)}</dd></div>
+            <div><dt>Fine effettiva</dt><dd>{displayItDate(project.dataFineEffettiva)}</dd></div>
+            <div><dt>Estrazione ReGiS</dt><dd>{displayItDate(project.dataEstrazioneRegis)}</dd></div>
+          </dl>
+        </section>
+      </div>
+
+      <section className={`panel ${styles.mopPanel}`}>
+        <div className={styles.sectionHeading}>
+          <h2>Fonte e limiti</h2>
+        </div>
+        <dl className={styles.definitionGrid}>
+          <div>
+            <dt>Misura</dt>
+            <dd>{masafMercatiMeta.measure.pnrrCode} · linea {masafMercatiMeta.measure.line}</dd>
+          </div>
+          <div><dt>Titolare</dt><dd>{masafMercatiMeta.measure.holder}</dd></div>
+          <div><dt>Titolo ReGiS</dt><dd>{project.titoloProgettoRegis ?? "non disponibile"}</dd></div>
+          <div><dt>Licenza atti MASAF</dt><dd>{masafMercatiMeta.licenseStatus}</dd></div>
+        </dl>
+        <div className={styles.actions}>
+          <Link className="btn btn-secondary" href="/coesione/logistica-mercati">
+            Elenco logistica mercati
+          </Link>
+          {project.concessione ? (
+            <a className="btn btn-secondary" href={project.concessione.url} rel="noreferrer" target="_blank">
+              Decreto di concessione ↗
+            </a>
+          ) : null}
+          <a
+            className="btn btn-secondary"
+            href={masafMercatiMeta.sources.graduatoriaConsolidata.url}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Graduatoria ufficiale ↗
+          </a>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export default async function ProjectPage({
@@ -145,6 +288,7 @@ export default async function ProjectPage({
 
   const hasPrimaryTrace =
     Boolean(lookup.pnrr) ||
+    Boolean(lookup.masaf) ||
     Boolean(lookup.openCupUnavailable) ||
     (lookup.openCup !== null && lookup.openCup.matchedRows > 0);
 
@@ -196,35 +340,57 @@ export default async function ProjectPage({
 
   const cup = lookup.cup;
   const project = lookup.pnrr;
+  const masaf = lookup.masaf;
   const tenderTotal = project?.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0) ?? 0;
   const awardTotal = project?.tenders.reduce((sum, tender) => sum + (tender.awardAmountCents ?? 0), 0) ?? 0;
   const linkedAwardees = new Set(project?.tenders.flatMap((tender) => awardeesForTender(project, tender)) ?? []);
   const unmatchedAwardees = project?.awardees.filter((awardee) => !linkedAwardees.has(awardee)) ?? [];
   const primaryPlace = project?.locations[0];
   const openCupPrimary = lookup.openCup?.rows[0];
-  const title = project?.title ?? openCupPrimary?.cells.DESCRIZIONE_SINTETICA_CUP ?? `Progetto CUP ${cup}`;
-  const place = [primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region];
+  const title =
+    project?.title ??
+    masaf?.titoloProgettoRegis ??
+    masaf?.beneficiario ??
+    openCupPrimary?.cells.DESCRIZIONE_SINTETICA_CUP ??
+    `Progetto CUP ${cup}`;
+  const place = project
+    ? [primaryPlace?.municipality, primaryPlace?.province, primaryPlace?.region]
+    : [masaf?.comune, masaf?.provincia, masaf?.regione];
 
   return (
     <main className="shell page">
       <nav className={styles.breadcrumb} aria-label="Percorso">
         <Link href="/coesione">Fondi e progetti</Link><span>/</span>
-        {project ? <><Link href="/coesione/asili">PNRR asili</Link><span>/</span></> : null}<strong>{cup}</strong>
+        {project ? <><Link href="/coesione/asili">PNRR asili</Link><span>/</span></> : null}
+        {masaf && !project ? (
+          <>
+            <Link href="/coesione/logistica-mercati">Logistica mercati</Link>
+            <span>/</span>
+          </>
+        ) : null}
+        <strong>{cup}</strong>
       </nav>
 
       <header className={styles.hero}>
         <div>
           <div className={styles.heroMeta}>
             <span>CUP {cup}</span>
-            {!project && openCupPrimary?.evidenceLabel === "synthetic-fixture"
+            {!project && !masaf && openCupPrimary?.evidenceLabel === "synthetic-fixture"
               ? <span>Fixture sintetica</span>
               : <Evidence kind="osservato" />}
-            <span>{project?.status.validationOutcome ?? openCupPrimary?.cells.STATO_PROGETTO ?? "Stato non disponibile"}</span>
+            <span>
+              {project?.status.validationOutcome ??
+                masaf?.statoAvanzamentoRegis ??
+                openCupPrimary?.cells.STATO_PROGETTO ??
+                "Stato non disponibile"}
+            </span>
           </div>
           <h1>{title}</h1>
-          <p>{project
-            ? place.filter(Boolean).join(" · ") || "Localizzazione non disponibile"
-            : "Il rilascio Progetti OpenCUP non include la localizzazione."}</p>
+          <p>
+            {project || masaf
+              ? place.filter(Boolean).join(" · ") || "Localizzazione non disponibile"
+              : "Il rilascio Progetti OpenCUP non include la localizzazione."}
+          </p>
         </div>
       </header>
 
@@ -241,10 +407,12 @@ export default async function ProjectPage({
           <div className={styles.sectionHeading}><h2 id="opencup-title">Registrazioni OpenCUP</h2></div>
           <div className="notice">
             <strong>OpenCUP temporaneamente non disponibile</strong>
-            <p>{project ? "Le altre evidenze della scheda restano disponibili." : "Riprova più tardi: l’indisponibilità della fonte non dimostra che il CUP sia assente."}</p>
+            <p>{project || masaf ? "Le altre evidenze della scheda restano disponibili." : "Riprova più tardi: l’indisponibilità della fonte non dimostra che il CUP sia assente."}</p>
           </div>
         </section>
       )) : null}
+
+      {masaf && !project ? <MasafMercatiPanel project={masaf} /> : null}
 
       {project ? <>
       <section className={styles.flow} aria-labelledby="flow-title">
@@ -358,7 +526,16 @@ export default async function ProjectPage({
           </div>
         </section>
       </div>
-      </> : (
+      </> : masaf ? (
+        <section className={`panel ${styles.mopPanel}`}>
+          <div className={styles.sectionHeading}>
+            <h2>Monitoraggio Opere Pubbliche · previsto e effettivo</h2>
+          </div>
+          <Suspense fallback={<p>Controllo CUP in corso su OpenBDAP…</p>}>
+            <MopCostPanel cup={cup} />
+          </Suspense>
+        </section>
+      ) : (
         <section className={`panel ${styles.mopPanel}`}>
           <div className={styles.sectionHeading}>
             <h2>Monitoraggio Opere Pubbliche · previsto e effettivo</h2>

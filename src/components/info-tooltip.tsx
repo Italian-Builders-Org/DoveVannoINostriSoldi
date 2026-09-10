@@ -21,6 +21,7 @@ export function InfoTooltip({
   const pointerInteraction = useRef(false);
 
   const closeTooltip = useCallback(() => {
+    pointerInteraction.current = false;
     setTooltipLeft(null);
     setOpen(false);
   }, []);
@@ -109,10 +110,9 @@ export function InfoTooltip({
         aria-describedby={open ? id : undefined}
         aria-expanded={open}
         onPointerDown={() => {
+          // Touch can focus after pointerup, before click. Keep the pointer
+          // intent until click so focus and click do not toggle it twice.
           pointerInteraction.current = true;
-        }}
-        onPointerUp={() => {
-          pointerInteraction.current = false;
         }}
         onPointerCancel={() => {
           pointerInteraction.current = false;

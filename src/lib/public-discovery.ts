@@ -34,6 +34,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/enti",
   "/entrate",
   "/esplora",
+  "/esplora/serie",
   "/fonti",
   "/fonti/calendario",
   "/fonti/catalogo",

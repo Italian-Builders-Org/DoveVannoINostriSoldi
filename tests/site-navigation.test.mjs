@@ -167,7 +167,7 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   assert.equal(isNavChildActive("/appalti", "/appalti", appalti.children), true);
   assert.deepEqual(
     appalti?.children?.map((child) => child.label),
-    ["Appalti", "Incarichi", "Catalogo dati", "Segnali", "Sintesi", "Esplora relazioni"],
+    ["Appalti", "Incarichi", "Catalogo dati", "Segnali", "Sintesi", "Esplora relazioni", "Confronta serie ufficiali"],
   );
   assert.ok(
     appalti?.children
@@ -186,6 +186,11 @@ test("activeNavSection resolves nested routes to the parent menu", () => {
   const sintesi = activeNavSection("/controlli/sintesi");
   assert.equal(sintesi?.href, "/controlli");
   assert.equal(isNavChildActive("/controlli/sintesi", "/controlli/sintesi", sintesi.children), true);
+
+  const series = activeNavSection("/esplora/serie");
+  assert.equal(series?.href, "/controlli");
+  assert.equal(isNavChildActive("/esplora/serie", "/esplora/serie", series.children), true);
+  assert.equal(isNavChildActive("/esplora/serie", "/esplora", series.children), false);
 
   const catalog = activeNavSection("/dati/vincitori");
   assert.equal(catalog?.href, "/controlli");

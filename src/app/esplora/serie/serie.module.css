@@ -1,0 +1,29 @@
+.intro { margin-bottom: var(--space-6); }
+.intro p { max-width: 80ch; }
+.selectors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin-block: var(--space-4); }
+.selectors label { display: grid; gap: var(--space-2); min-width: 0; }
+.selectors select { width: 100%; min-width: 0; padding: var(--space-3); border: 1px solid var(--color-neutral-400); background: var(--color-raised); color: var(--color-text); font: inherit; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
+.legend { display: grid; gap: var(--space-2); list-style: none; padding: 0; }
+.legend li { display: flex; gap: var(--space-2); align-items: baseline; }
+.swatch { width: 32px; flex: 0 0 32px; border-top: 3px solid; }
+.line0 { stroke: var(--chart-primary); color: var(--chart-primary); fill: var(--chart-primary); }
+.line1 { stroke: var(--color-text); color: var(--color-text); fill: var(--color-text); stroke-dasharray: 8 4; border-top-style: dashed; }
+.line2 { stroke: var(--chart-secondary); color: var(--chart-secondary); fill: var(--chart-secondary); stroke-dasharray: 2 4; border-top-style: dotted; }
+.line3 { stroke: var(--chart-tertiary); color: var(--chart-tertiary); fill: var(--chart-tertiary); stroke-dasharray: 12 3 2 3; border-top-style: double; }
+.chart { margin-block: var(--space-4); }
+.chart svg { display: block; width: 100%; height: 220px; }
+.grid { stroke: var(--color-neutral-300); }
+.zero { stroke: var(--color-neutral-600); }
+.tick, .periods { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--color-neutral-700); }
+.periods { display: flex; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-2); }
+.note { font-size: 12px; color: var(--color-neutral-700); }
+.tableRegion { max-height: 480px; }
+.tableRegion th { min-width: 100px; }
+.tableRegion td small { display: block; white-space: normal; min-width: 140px; color: var(--color-neutral-700); }
+.sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.sources article { min-width: 0; border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-3); scroll-margin-top: var(--space-8); }
+.hash { overflow-wrap: anywhere; }
+@media (max-width: 620px) {
+  .selectors, .sources { grid-template-columns: minmax(0, 1fr); }
+}

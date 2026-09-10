@@ -28,6 +28,12 @@ export default function EsploraPage() {
 
       </section>
 
+      <section className="panel" aria-labelledby="official-series-entry">
+        <h2 className="panel-title" id="official-series-entry">Cerchi un confronto nel tempo?</h2>
+        <p>Confronta da due a quattro serie Eurostat su spesa pubblica o prezzi, con unità compatibili, tabella e fonti per ogni serie.</p>
+        <Link href="/esplora/serie">Confronta serie ufficiali</Link>
+      </section>
+
       <EsploraSearch initialCount={searchable} />
 
       <details className="data-details">

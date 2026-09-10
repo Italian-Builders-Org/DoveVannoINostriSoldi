@@ -4,7 +4,7 @@
 
 **Direzione: “Il registro pubblico.”**
 
-DoveVannoINostriSoldi è un prodotto operativo di consultazione e verifica. Deve sembrare un documento pubblico contemporaneo: carta chiara, inchiostro nero, un accento rosso per azioni ed evidenze e toni petrolio per i dati. Niente pannelli traslucidi, niente bagliori, niente angoli arrotondati.
+DoveVannoINostriSoldi è un prodotto operativo di consultazione e verifica. Deve sembrare un documento pubblico contemporaneo: carta fredda, inchiostro blu scuro, un accento rosso per azioni ed evidenze e toni petrolio per i dati. Niente pannelli traslucidi, niente bagliori, niente angoli arrotondati.
 
 La direzione è **dati subito, fonte vicina, superfici piatte**.
 
@@ -27,21 +27,21 @@ I token vivono in `src/app/design-system.css`; la base e la chrome dell'applicaz
 
 ## 02 Colors
 
-La palette è grigio-carta caldo con rosso di segnalazione e petrolio per mappe e serie quantitative. Evitare neon, glow e colori decorativi in competizione con i dati.
+La palette è carta fredda istituzionale con rosso di segnalazione e petrolio per mappe e serie quantitative. Evitare neon, glow e colori decorativi in competizione con i dati.
 
 ### Core tokens
 
-- `--color-bg: #f3f2f2` — fondo applicazione;
-- `--color-surface: #eae9e9` — fondo secondario;
+- `--color-bg: #f3f5f7` — fondo applicazione;
+- `--color-surface: #e8edf2` — fondo secondario;
 - `--color-raised: #ffffff` — superficie dei pannelli;
-- `--color-text: #201e1d` — testo principale e fondo dei tooltip;
-- `--color-accent: #ec3013` — azione ed evidenza;
-- `--color-accent-2: #e15b47` — accento secondario, usato di rado;
+- `--color-text: #182b3a` — testo principale e fondo dei tooltip;
+- `--color-accent: #b42332` — azione ed evidenza;
+- `--color-accent-2: #a82b3b` — accento secondario, usato di rado;
 - `--color-divider` — separatore calcolato dal testo.
 
 ### Rampe tonali
 
-Nel tema chiaro, `--color-neutral-100…900` e `--color-accent-100…900` sono generate in OKLCH su un'unica scala di luminosità: lo stesso passo di due rampe diverse ha lo stesso valore visivo. Le regole d'uso:
+Nel tema chiaro, `--color-neutral-100…900` usa grigi freddi ordinati per luminosità; `--color-accent-100…900` riserva il rosso ad azioni e stati. I passi non implicano un identico contrasto fra famiglie: si verificano le coppie effettive. Palette, motivazioni e soglie sono in [Palette istituzionale](docs/INSTITUTIONAL_PALETTE.md). Le regole d'uso:
 
 - `neutral-200` separatori interni di tabelle ed elenchi;
 - `neutral-300` bordo dei pannelli e delle bande;
@@ -76,7 +76,7 @@ Il blocco `[data-theme="dark"]` ridefinisce superfici, rampe, stati e serie. Le 
 
 Per le sole composizioni additive istituzionali (treemap Ministeri / Palazzo Chigi / Regioni) esistono `--chart-category-blue|teal|purple|amber|green|slate`: famiglie miscelate al 40% con il bianco, con testo inchiostro leggibile, senza usare il rosso come colore di categoria. Il rosso resta per CTA, evidenza e warning.
 
-Le coroplete regionali usano cinque passi sequenziali `--chart-map-1…5`, dal petrolio chiaro allo scuro, con contorno `--color-neutral-500` da 1px. Il passo più chiaro deve distinguersi dal pannello bianco; i confini restano leggibili anche fra due regioni chiare. `--chart-data-primary` e `--chart-data-track` sono i ruoli per serie quantitative senza significato di allarme.
+Le coroplete regionali usano cinque passi sequenziali `--chart-map-1…5`, dal petrolio chiaro allo scuro, con contorno `--color-neutral-500` da 1px e valori testuali associati. Il passo più chiaro deve distinguersi dal pannello bianco; i confini restano leggibili anche fra due regioni chiare. Nel tema scuro la quantità crescente usa passi progressivamente più chiari, con la stessa legenda. `--chart-data-primary` e `--chart-data-track` sono i ruoli per serie quantitative senza significato di allarme.
 
 Regione selezionata: contorno `--color-text` da 2px. Regione senza dato: `--color-neutral-200`.
 
@@ -157,13 +157,13 @@ Use: fotografia additiva dello stesso totale, categorie mutuamente esclusive, co
 
 ### Bar rows
 
-Il pattern ricorrente `etichetta | traccia | valore`: traccia `neutral-200`, riempimento accento, valore tabulare a destra.
+Il pattern ricorrente `etichetta | traccia | valore`: traccia `--chart-data-track`, riempimento `--chart-data-primary`, valore tabulare a destra.
 
-**Il mese ancora in corso usa `neutral-500` invece dell'accento** e porta un asterisco: è un numero destinato a salire e non va confrontato con i mesi chiusi. Un anno già concluso non ha nessun mese in corso — tutte le barre sono accento e la nota dice “Anno chiuso: tutti i mesi sono definitivi”. La regola sta in `src/lib/siope-calendar.ts` e decide in base all'anno in cui abbiamo scaricato il file, non al numero del mese.
+**Il mese ancora in corso usa `neutral-500` invece del petrolio quantitativo** e porta un asterisco: è un numero destinato a salire e non va confrontato con i mesi chiusi. Un anno già concluso non ha nessun mese in corso — tutte le barre usano il ruolo quantitativo e la nota dice “Anno chiuso: tutti i mesi sono definitivi”. La regola sta in `src/lib/siope-calendar.ts` e decide in base all'anno in cui abbiamo scaricato il file, non al numero del mese.
 
 ### Charts
 
-Recharts legge i token: assi e griglia in `--color-neutral-300/600`, serie dai `--chart-*`. I tooltip sono l'unica superficie scura del sistema: fondo `--color-text`, testo `--color-neutral-100`, valore in bianco.
+Recharts legge i token: assi e griglia in `--color-neutral-300/600`, serie dai `--chart-*`. I tooltip usano una superficie inversa: fondo `--color-text`, testo `--color-on-strong-muted`, valore `--color-on-strong`.
 
 Dove basta, il grafico è HTML e CSS (barre, donut in `conic-gradient`) invece di una libreria: meno JavaScript e stessa leggibilità.
 

@@ -15,6 +15,8 @@ test("home Italy funnel exposes PA composition with everyday labels", () => {
   assert.ok(funnel.pa.totalEuro > 1_000_000_000_000);
   assert.ok(funnel.pa.gdpSharePercent > 40);
   assert.equal(funnel.pa.slices.length, 10);
+  assert.deepEqual(funnel.pa.trend.map((point) => point.year), [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]);
+  assert.equal(funnel.pa.trend.at(-1)?.totalEuro, funnel.pa.totalEuro);
   assert.equal(funnel.pa.slices[0]?.label, COFOG_EVERYDAY_LABELS.GF10);
   assert.match(funnel.pa.slices[0]?.label ?? "", /Pensioni/);
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF07" && slice.href === "/spese/sanita"));
@@ -99,7 +101,10 @@ test("home page leads with Italy charts then keeps the municipal map", async () 
   assert.match(css, /"leftRail rightRail"/);
   assert.match(page, /styles\.leftRail/);
   assert.match(page, /styles\.rightRail/);
-  assert.match(page, /styles\.rankPanel[\s\S]*styles\.mapPanel/);
+  assert.match(page, /styles\.municipalLower/);
+  assert.match(page, /styles\.monthsPanel[\s\S]*styles\.rankPanel/);
+  assert.match(page, /styles\.rankPanel[\s\S]*styles\.cohesionPanel/);
+  assert.match(page, /styles\.regionsPanel/);
   assert.match(css, /\.mapStage/);
   assert.match(chartCss, /--chart-data-primary/);
   assert.doesNotMatch(charts, /HomeShareStrip|SpendingBarChart|chartColor/);

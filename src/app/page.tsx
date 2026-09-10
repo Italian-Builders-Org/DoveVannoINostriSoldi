@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { HomeItalyCompositionChart } from "@/components/home-italy-charts";
+import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/home-italy-charts";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
@@ -33,6 +33,7 @@ import {
   municipalitiesByPerCapita,
   regionsByPerCapita,
   partialMonth,
+  type SiopeMunicipalSnapshot,
 } from "@/lib/siope-snapshot";
 import styles from "./home.module.css";
 
@@ -91,6 +92,14 @@ function selectedPaYear(value: string | string[] | undefined): number {
   return Number.isSafeInteger(parsed) && parsed >= from && parsed <= to ? parsed : to;
 }
 
+function regionRanks(snapshot: SiopeMunicipalSnapshot): Map<string, number> {
+  return new Map(
+    regionsByPerCapita(snapshot)
+      .filter((region) => region.perCapita !== null)
+      .map((region, index) => [region.region, index + 1] as const),
+  );
+}
+
 export default async function HomePage({
   searchParams,
 }: {
@@ -131,10 +140,19 @@ export default async function HomePage({
     };
   });
 
-  const topRegions = regionsByPerCapita(siope).slice(0, 6);
+  const rankedRegions = regionsByPerCapita(siope);
+  const topRegions = rankedRegions.slice(0, 6);
+  const highestRegion = rankedRegions.find((region) => region.perCapita !== null) ?? null;
+  const lowestRegion = [...rankedRegions].reverse().find((region) => region.perCapita !== null) ?? null;
+  const mappedRegionCount = rankedRegions.filter((region) => region.perCapita !== null).length;
   const topMunicipalities = municipalitiesByPerCapita(siope).slice(0, 5);
   /* One unit for the absolute-value comparison column. */
   const topRegionScale = topRegions[0]?.value ?? 0;
+  const previousSiopeYear = availableSiopeYears.find((candidate) => candidate < year) ?? null;
+  const currentRegionRanks = regionRanks(siope);
+  const previousRegionRanks = previousSiopeYear === null
+    ? null
+    : regionRanks(getSiopeMunicipalSnapshot(previousSiopeYear));
   const maxFlow = Math.max(...siope.monthly.map((point) => point.flow), 0);
 
   const cohesionForYear = cohesion.annualSeries.find((point) => point.year === year) ?? null;
@@ -151,20 +169,10 @@ export default async function HomePage({
       <section className={styles.italyBand} aria-labelledby="italy-band-title">
         <section className={`panel ${styles.italySummary}`}>
           <div className={styles.panelHead}>
-            <h2 id="italy-band-title" className="panel-title">
-              Spesa pubblica totale
-            </h2>
-            <div className={styles.panelHeadActions}>
-              <PeriodSelector
-                activeYear={funnel.pa.year}
-                years={[...funnel.pa.availableYears]}
-                pathname="/"
-                query={yearQuery}
-                yearParam="anno"
-                recentLimit={4}
-                label="Anno della spesa pubblica (Eurostat COFOG)"
-                className={styles.periodSelector}
-              />
+            <div className={styles.headingWithTooltip}>
+              <h2 id="italy-band-title" className="panel-title">
+                Spesa pubblica totale
+              </h2>
               <InfoTooltip id="pa-sec-tip" label="Che tipo di soldi sono?">
                 Competenza economica SEC 2010 sulle amministrazioni pubbliche (Stato, Regioni,
                 Comuni, enti). Non è un pagamento di cassa e non è solo il bilancio dello Stato.
@@ -172,34 +180,53 @@ export default async function HomePage({
             </div>
           </div>
 
-          <p className={styles.freshness}>
-            <i aria-hidden="true" />
-            Eurostat COFOG Italia: snapshot fino al {eurostatCofogData.period.to}
-          </p>
+          <div className={styles.italySummaryBody}>
+            <div className={styles.italySummaryFacts}>
+              <p className={styles.freshness}>
+                <i aria-hidden="true" />
+                Eurostat COFOG Italia: snapshot fino al {eurostatCofogData.period.to}
+              </p>
 
-          <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
-          <p className={styles.headlineNote}>
-            Italia {funnel.pa.year}, in tutta la pubblica amministrazione
-          </p>
+              <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
+              <p className={styles.headlineNote}>
+                Italia {funnel.pa.year}, in tutta la pubblica amministrazione
+              </p>
 
-          <dl className={styles.factRows}>
-            <div>
-              <dt>Quota del PIL</dt>
-              <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
+              <dl className={styles.factRows}>
+                <div>
+                  <dt>Quota del PIL</dt>
+                  <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
+                </div>
+                <div>
+                  <dt>Natura del denaro</dt>
+                  <dd>Competenza SEC 2010</dd>
+                </div>
+                <div>
+                  <dt>Più recente altrove</dt>
+                  <dd>
+                    <Link href="/spese/legge-di-bilancio">Legge di Bilancio</Link>
+                    {" · "}
+                    <Link href={`/spese?anno=${availableSiopeYears[0]}`}>SIOPE Comuni</Link>
+                  </dd>
+                </div>
+              </dl>
             </div>
-            <div>
-              <dt>Natura del denaro</dt>
-              <dd>Competenza SEC 2010</dd>
-            </div>
-            <div>
-              <dt>Più recente altrove</dt>
-              <dd>
-                <Link href="/spese/legge-di-bilancio">Legge di Bilancio</Link>
-                {" · "}
-                <Link href={`/spese?anno=${availableSiopeYears[0]}`}>SIOPE Comuni</Link>
-              </dd>
-            </div>
-          </dl>
+
+            <HomeItalyTrendChart points={funnel.pa.trend} selectedYear={funnel.pa.year} />
+          </div>
+
+          <div className={styles.italySummaryPeriod}>
+            <PeriodSelector
+              activeYear={funnel.pa.year}
+              years={[...funnel.pa.availableYears]}
+              pathname="/"
+              query={yearQuery}
+              yearParam="anno"
+              recentLimit={4}
+              label="Anno della spesa pubblica (Eurostat COFOG)"
+              className={styles.periodSelector}
+            />
+          </div>
         </section>
 
         <div className={styles.italySplit}>
@@ -226,13 +253,15 @@ export default async function HomePage({
 
           <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="state-title">
             <div className={styles.panelHead}>
-              <h3 id="state-title" className="panel-title">
-                Bilancio dello Stato
-              </h3>
-              <InfoTooltip id="state-lb-tip" label="Perché non è lo stesso totale?">
-                Spesa PA Eurostat e stanziamenti dello Stato hanno criteri contabili e perimetri
-                diversi: questi stanziamenti non sono una quota del totale Eurostat.
-              </InfoTooltip>
+              <div className={styles.headingWithTooltip}>
+                <h3 id="state-title" className="panel-title">
+                  Bilancio dello Stato
+                </h3>
+                <InfoTooltip id="state-lb-tip" label="Perché non è lo stesso totale?">
+                  Spesa PA Eurostat e stanziamenti dello Stato hanno criteri contabili e perimetri
+                  diversi: questi stanziamenti non sono una quota del totale Eurostat.
+                </InfoTooltip>
+              </div>
             </div>
             <strong className={styles.headline}>{billions(funnel.state.totalWithoutDebtEuro)} mld €</strong>
             <p className={styles.headlineNote}>
@@ -268,11 +297,13 @@ export default async function HomePage({
       <div className={styles.leftRail}>
         <section className={`panel ${styles.summaryPanel}`}>
           <div className={styles.panelHead}>
-            <h2 className="panel-title">Pagamenti effettuati dai Comuni</h2>
-            <InfoTooltip id="cash-payments-tip" label="Che cosa sono i pagamenti di cassa?">
-              Uscite di cassa registrate dai Comuni, mese per mese. Il totale riguarda i Comuni;
-              restano fuori Stato centrale, Regioni e sanità.
-            </InfoTooltip>
+            <div className={styles.headingWithTooltip}>
+              <h2 className="panel-title">Pagamenti effettuati dai Comuni</h2>
+              <InfoTooltip id="cash-payments-tip" label="Che cosa sono i pagamenti di cassa?">
+                Uscite di cassa registrate dai Comuni, mese per mese. Il totale riguarda i Comuni;
+                restano fuori Stato centrale, Regioni e sanità.
+              </InfoTooltip>
+            </div>
           </div>
 
           <p className={styles.freshness}>
@@ -375,127 +406,101 @@ export default async function HomePage({
           </details>
         </section>
 
-        <section className={`panel ${styles.monthsPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">Mese per mese</h2>
-            <span className={styles.headNote}>miliardi di €</span>
-            <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
-              Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
-              Il mese in corso è grigio perché può ancora cambiare.
-            </InfoTooltip>
-          </div>
-          <ul className={styles.monthList}>
-            {siope.monthly.map((point) => {
-              const running = point.month === runningMonth;
-              return (
-                <li key={point.month}>
-                  <span>{point.label}</span>
-                  <i aria-hidden="true">
-                    <b
-                      className={running ? styles.running : undefined}
-                      style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
-                    />
-                  </i>
-                  <b className="num-tabular">{billions(point.flow)}</b>
-                </li>
-              );
-            })}
-          </ul>
-          {runningMonth === null ? (
-            <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
-          ) : (
-            <p className={styles.note}>
-              {siope.latestMonthLabel} è parziale: il dato può cambiare.
-            </p>
-          )}
-        </section>
-
-        <section className={`panel ${styles.rankPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">
-              I {topMunicipalities.length} Comuni con più pagamenti per abitante
-            </h2>
-          </div>
-          <ol className={styles.rankList}>
-            {topMunicipalities.map((municipality, index) => (
-              <li key={municipality.codiceFiscale}>
-                <span>{index + 1}</span>
-                <strong>
-                  {municipalityName(municipality.name)}
-                  <small>
-                    {municipality.population === null
-                      ? "popolazione non disponibile"
-                      : `${integer(municipality.population)} abitanti`}
-                  </small>
-                </strong>
-                <b>{exactEuro(municipality.perCapita ?? 0)}</b>
-              </li>
-            ))}
-          </ol>
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Vedi il confronto territoriale
-          </Link>
-        </section>
       </div>
 
       <div className={styles.rightRail}>
-        <section className={`panel ${styles.mapPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">Pagamenti dei Comuni per regione</h2>
-            <PeriodSelector
-              activeYear={year}
-              years={availableSiopeYears}
-              pathname="/"
-              query={yearQuery}
-              yearParam="comuni"
-              label="Anno dei pagamenti SIOPE dei Comuni"
-              className={styles.periodSelector}
+        <section className={`panel ${styles.mapPanel}`} aria-labelledby="regional-map-panel-title">
+          <div className={styles.mapStage}>
+            <ItalyRegionsMap
+              heading="Pagamenti dei Comuni per regione"
+              headingId="regional-map-panel-title"
+              periodSelector={
+                <PeriodSelector
+                  activeYear={year}
+                  years={availableSiopeYears}
+                  pathname="/"
+                  query={yearQuery}
+                  yearParam="comuni"
+                  label="Anno dei pagamenti SIOPE dei Comuni"
+                  className={styles.periodSelector}
+                />
+              }
+              regions={siope.regions}
+              period={period}
+              aside={
+                <div className={styles.mapStats}>
+                  <div>
+                    <span>Da gennaio a {monthLabel}</span>
+                    <strong>{compactEuro(siope.totalPaid)}</strong>
+                    <small>
+                      totale nazionale dei Comuni · {compactEuro(siope.coverage.paymentsWithoutRegion)}
+                      {" "}senza Regione IPA non mappati
+                    </small>
+                  </div>
+                  <div>
+                    <span>Ultimo mese completo</span>
+                    <strong>{lastCompleted ? compactEuro(lastCompleted.flow) : "Non disponibile"}</strong>
+                    <small>
+                      {lastCompleted
+                        ? `${lastCompleted.label.toLocaleLowerCase("it-IT")} ${siope.year}`
+                        : "nessun mese chiuso"}
+                    </small>
+                  </div>
+                  <div>
+                    <span>In media per abitante</span>
+                    <strong>
+                      {siope.nationalPerCapita === null
+                        ? "Non disponibile"
+                        : exactEuro(siope.nationalPerCapita)}
+                    </strong>
+                    <small>su {integer(siope.populationCovered)} persone</small>
+                  </div>
+                  <div>
+                    <span>Comuni inclusi</span>
+                    <strong>{integer(siope.coverage.withMovements)}</strong>
+                    <small>
+                      su {integer(siope.coverage.activeSiopeMunicipalities)} validi nel periodo
+                    </small>
+                  </div>
+                </div>
+              }
             />
           </div>
 
-          <div className={styles.mapStage}>
-          <ItalyRegionsMap
-            regions={siope.regions}
-            period={period}
-            aside={
-              <div className={styles.mapStats}>
-                <div>
-                  <span>Da gennaio a {monthLabel}</span>
-                  <strong>{compactEuro(siope.totalPaid)}</strong>
-                  <small>
-                    totale nazionale dei Comuni · {compactEuro(siope.coverage.paymentsWithoutRegion)}
-                    {" "}senza Regione IPA non mappati
-                  </small>
-                </div>
-                <div>
-                  <span>Ultimo mese completo</span>
-                  <strong>{lastCompleted ? compactEuro(lastCompleted.flow) : "Non disponibile"}</strong>
-                  <small>
-                    {lastCompleted
-                      ? `${lastCompleted.label.toLocaleLowerCase("it-IT")} ${siope.year}`
-                      : "nessun mese chiuso"}
-                  </small>
-                </div>
-                <div>
-                  <span>In media per abitante</span>
-                  <strong>
-                    {siope.nationalPerCapita === null
-                      ? "Non disponibile"
-                      : exactEuro(siope.nationalPerCapita)}
-                  </strong>
-                  <small>su {integer(siope.populationCovered)} persone</small>
-                </div>
-                <div>
-                  <span>Comuni inclusi</span>
-                  <strong>{integer(siope.coverage.withMovements)}</strong>
-                  <small>
-                    su {integer(siope.coverage.activeSiopeMunicipalities)} validi nel periodo
-                  </small>
-                </div>
+          <section className={styles.mapHighlights} aria-labelledby="regional-map-highlights-title">
+            <div className={styles.mapHighlightsHead}>
+              <h3 id="regional-map-highlights-title" className="panel-title">Lettura rapida</h3>
+              <span>per abitante</span>
+            </div>
+            <div className={styles.mapHighlightsGrid}>
+              <div className={styles.mapHighlightItem}>
+                <span>Valore più alto</span>
+                <strong>{highestRegion?.region ?? "Non disponibile"}</strong>
+                <small>
+                  {highestRegion?.perCapita === null || !highestRegion
+                    ? "dato non disponibile"
+                    : exactEuro(highestRegion.perCapita)}
+                </small>
               </div>
-            }
-          />
-          </div>
+              <div className={styles.mapHighlightItem}>
+                <span>Valore più basso</span>
+                <strong>{lowestRegion?.region ?? "Non disponibile"}</strong>
+                <small>
+                  {lowestRegion?.perCapita === null || !lowestRegion
+                    ? "dato non disponibile"
+                    : exactEuro(lowestRegion.perCapita)}
+                </small>
+              </div>
+              <div className={styles.mapHighlightItem}>
+                <span>Regioni con dato</span>
+                <strong>{mappedRegionCount} su {rankedRegions.length}</strong>
+                <small>pagamenti per abitante disponibili</small>
+              </div>
+            </div>
+            <p className={styles.note}>
+              La scala confronta i pagamenti per abitante; non misura il totale pagato da ciascuna regione.
+            </p>
+          </section>
 
           <p className={styles.attribution}>
             Confini: {" "}
@@ -514,88 +519,212 @@ export default async function HomePage({
           </p>
         </section>
 
-        <section className={`panel ${styles.regionsPanel}`}>
-          <div className={styles.panelHead}>
-            <h2 className="panel-title">Regioni: pagamenti per abitante</h2>
-            <span className={styles.headNote}>Comuni con sede nella regione</span>
-          </div>
-          <div className="table-scroll" role="region" aria-label="Regioni ordinate per pagamenti pro capite" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Regione</th>
-                  <th scope="col" className="num">Per abitante</th>
-                  <th scope="col" className="num">Totale pagato</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topRegions.map((region) => (
-                  <tr key={region.region}>
-                    <th scope="row">
-                      <span className={styles.regionNameCell}>
-                        <RegionCrest
-                          regionCode={istatCodeOfRegion(region.region)}
-                          regionName={region.region}
-                          decorative
-                        />
-                        <span>{region.region}</span>
-                      </span>
-                    </th>
-                    <td className="num">
-                      {region.perCapita === null ? "Non disponibile" : exactEuro(region.perCapita)}
-                    </td>
-                    <td className="num">{compactEuroLike(region.value, topRegionScale)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <RegionCrestAttribution />
-          <Link className="btn btn-block" href={`/territori?anno=${year}`}>
-            Tutte le regioni
-          </Link>
-        </section>
+      </div>
 
-        <section className={`panel ${styles.actionPanel} ${styles.cohesionPanel}`}>
-          <div className={`${styles.panelHead} ${styles.compactHeader}`}>
-            <h2 className="panel-title">Fondi e progetti</h2>
-            <span className={styles.headNote}>OpenCoesione</span>
-            <InfoTooltip id="cohesion-ratio-tip" label="Che cosa confrontiamo?">
-              Gli impegni sono somme assegnate ai progetti; i pagamenti sono somme già erogate.
-              Il rapporto non indica da solo che i progetti siano conclusi.
-            </InfoTooltip>
-          </div>
-          {cohesionForYear ? (
-            <>
-              <dl className={styles.factRows}>
-                <div>
-                  <dt>Impegni registrati entro il {year}</dt>
-                  <dd>{compactEuro(cohesionCommitted)}</dd>
-                </div>
-                <div>
-                  <dt>Pagamenti registrati entro il {year}</dt>
-                  <dd>{compactEuro(cohesionPaid)}</dd>
-                </div>
-              </dl>
-              <div className={styles.ratioHead}>
-                <span>Pagato rispetto agli impegni</span>
-                <b>{percent(cohesionRatio)}</b>
-              </div>
-              <div className={styles.ratioTrack} aria-hidden="true">
-                <i style={{ width: `${Math.min(cohesionRatio, 100)}%` }} />
-              </div>
+      <div className={styles.municipalLower}>
+        <div className={styles.municipalLowerLeft}>
+          <section className={`panel ${styles.monthsPanel}`}>
+            <div className={styles.panelHead}>
+              <h2 className="panel-title">Mese per mese</h2>
+              <span className={styles.headNote}>miliardi di €</span>
+              <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
+                Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
+                Il mese in corso è grigio perché può ancora cambiare.
+              </InfoTooltip>
+            </div>
+            <ul className={styles.monthList}>
+              {siope.monthly.map((point) => {
+                const running = point.month === runningMonth;
+                return (
+                  <li key={point.month}>
+                    <span>{point.label}</span>
+                    <i aria-hidden="true">
+                      <b
+                        className={running ? styles.running : undefined}
+                        style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
+                      />
+                    </i>
+                    <b className="num-tabular">{billions(point.flow)}</b>
+                  </li>
+                );
+              })}
+            </ul>
+            {runningMonth === null ? (
+              <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
+            ) : (
               <p className={styles.note}>
-                Serie cumulata al {year}, aggiornata al {longDate(cohesion.referenceDate)}.
-                Un pagamento non prova che il progetto sia finito.
+                {siope.latestMonthLabel} è parziale: il dato può cambiare.
               </p>
-            </>
-          ) : (
-            <p className={styles.note}>La serie OpenCoesione non contiene dati per il {year}.</p>
-          )}
-          <Link className="btn btn-block" href="/coesione">
-            Vai ai fondi
-          </Link>
-        </section>
+            )}
+          </section>
+
+          <div className={styles.municipalLowerFeaturePair}>
+            <section className={`panel ${styles.rankPanel}`}>
+              <div className={styles.panelHead}>
+                <h2 className="panel-title">
+                  I {topMunicipalities.length} Comuni con più pagamenti per abitante
+                </h2>
+              </div>
+              <ol className={styles.rankList}>
+                {topMunicipalities.map((municipality, index) => (
+                  <li key={municipality.codiceFiscale}>
+                    <span>{index + 1}</span>
+                    <strong>
+                      {municipalityName(municipality.name)}
+                      <small>
+                        {municipality.population === null
+                          ? "popolazione non disponibile"
+                          : `${integer(municipality.population)} abitanti`}
+                      </small>
+                    </strong>
+                    <b>{exactEuro(municipality.perCapita ?? 0)}</b>
+                  </li>
+                ))}
+              </ol>
+              <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+                Vedi il confronto territoriale
+              </Link>
+            </section>
+
+            <section className={`panel ${styles.actionPanel} ${styles.cohesionPanel}`}>
+            <div className={`${styles.panelHead} ${styles.compactHeader}`}>
+              <h2 className="panel-title">Fondi e progetti</h2>
+              <span className={styles.headNote}>OpenCoesione</span>
+              <InfoTooltip id="cohesion-ratio-tip" label="Che cosa confrontiamo?">
+                Gli impegni sono somme assegnate ai progetti; i pagamenti sono somme già erogate.
+                Il rapporto non indica da solo che i progetti siano conclusi.
+              </InfoTooltip>
+            </div>
+            {cohesionForYear ? (
+              <>
+                <dl className={styles.factRows}>
+                  <div>
+                    <dt>Impegni registrati entro il {year}</dt>
+                    <dd>{compactEuro(cohesionCommitted)}</dd>
+                  </div>
+                  <div>
+                    <dt>Pagamenti registrati entro il {year}</dt>
+                    <dd>{compactEuro(cohesionPaid)}</dd>
+                  </div>
+                </dl>
+                <div className={styles.ratioHead}>
+                  <span>Pagato rispetto agli impegni</span>
+                  <b>{percent(cohesionRatio)}</b>
+                </div>
+                <div className={styles.ratioTrack} aria-hidden="true">
+                  <i style={{ width: `${Math.min(cohesionRatio, 100)}%` }} />
+                </div>
+                <p className={styles.note}>
+                  Serie cumulata al {year}, aggiornata al {longDate(cohesion.referenceDate)}.
+                  Un pagamento non prova che il progetto sia finito.
+                </p>
+              </>
+            ) : (
+              <p className={styles.note}>La serie OpenCoesione non contiene dati per il {year}.</p>
+            )}
+            <Link className="btn btn-block" href="/coesione">
+              Vai ai fondi
+            </Link>
+            </section>
+          </div>
+        </div>
+
+        <div className={styles.municipalLowerRight}>
+          <section className={`panel ${styles.regionsPanel}`}>
+            <div className={styles.panelHead}>
+              <h2 className="panel-title">Regioni ordinate per pagamenti per abitante</h2>
+              <span className={styles.headNote}>
+                Comuni con sede nella regione · totale pagato mostrato a parte
+              </span>
+            </div>
+            <div className="table-scroll" role="region" aria-label="Regioni ordinate per pagamenti per abitante" tabIndex={0}>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Regione</th>
+                    <th scope="col" className="num">Per abitante</th>
+                    <th scope="col" className="num">Totale pagato</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topRegions.map((region) => {
+                    const currentRank = currentRegionRanks.get(region.region) ?? null;
+                    const previousRank = previousRegionRanks?.get(region.region) ?? null;
+                    const rankDelta =
+                      currentRank !== null && previousRank !== null ? previousRank - currentRank : null;
+                    const rankChangeClass =
+                      rankDelta === null
+                        ? styles.regionRankChangeNeutral
+                        : rankDelta > 0
+                          ? styles.regionRankChangeUp
+                          : rankDelta < 0
+                            ? styles.regionRankChangeDown
+                            : styles.regionRankChangeSame;
+                    const rankChangeLabel =
+                      rankDelta === null
+                        ? previousSiopeYear === null
+                          ? "Confronto annuale non disponibile"
+                          : `Confronto di posizione non disponibile rispetto al ${previousSiopeYear}`
+                        : rankDelta > 0
+                          ? `Sale di ${rankDelta} posizion${rankDelta === 1 ? "e" : "i"} rispetto al ${previousSiopeYear}`
+                          : rankDelta < 0
+                            ? `Scende di ${Math.abs(rankDelta)} posizion${Math.abs(rankDelta) === 1 ? "e" : "i"} rispetto al ${previousSiopeYear}`
+                            : `Resta alla stessa posizione rispetto al ${previousSiopeYear}`;
+
+                    return (
+                      <tr key={region.region}>
+                        <th scope="row">
+                          <span className={styles.regionNameCell}>
+                            <RegionCrest
+                              regionCode={istatCodeOfRegion(region.region)}
+                              regionName={region.region}
+                              decorative
+                            />
+                            <span>{region.region}</span>
+                          </span>
+                        </th>
+                        <td className="num">
+                          <span className={styles.regionMetricCell}>
+                            <strong className={styles.regionPrimaryMetric}>
+                              {region.perCapita === null ? "Non disponibile" : exactEuro(region.perCapita)}
+                            </strong>
+                            <span
+                              className={`${styles.regionRankChange} ${rankChangeClass}`}
+                              title={rankChangeLabel}
+                              aria-label={rankChangeLabel}
+                            >
+                              <span aria-hidden="true">
+                                {rankDelta === null ? "n/d" : rankDelta > 0 ? "↑" : rankDelta < 0 ? "↓" : "="}
+                              </span>
+                              {rankDelta !== null && rankDelta !== 0 ? (
+                                <small aria-hidden="true">{Math.abs(rankDelta)}</small>
+                              ) : null}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="num">
+                          <span className={styles.regionSecondaryMetric}>
+                            {compactEuroLike(region.value, topRegionScale)}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className={styles.note}>
+              {previousSiopeYear === null
+                ? "Nessun confronto annuale disponibile per questo periodo."
+                : `↑/↓ indica la posizione rispetto al ${previousSiopeYear}, non una variazione di spesa.`}
+              {siope.latestMonth < 12 ? ` Il ${year} copre gennaio-${monthLabel}.` : ""}
+            </p>
+            <RegionCrestAttribution />
+            <Link className="btn btn-block" href={`/territori?anno=${year}`}>
+              Tutte le regioni
+            </Link>
+          </section>
+        </div>
       </div>
 
       <section className={`panel ${styles.actionPanel} ${styles.anomaliesPanel}`}>

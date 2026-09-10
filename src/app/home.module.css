@@ -1,6 +1,6 @@
 /*
- * Home: Italy PA/State band first, then the municipal reading rail + map.
- * DOM order survives when the rails collapse.
+ * Home: the DOM keeps the Italy PA/State band first for the narrow layout;
+ * desktop grid areas bring the municipal map and cash summary to the top.
  */
 
 .dashboard {
@@ -13,7 +13,7 @@
     "reading reading";
   align-items: start;
   gap: var(--space-4);
-  padding-block: var(--space-4) 0;
+  padding-block: var(--gutter) 0;
 }
 
 .italyBand {
@@ -26,6 +26,33 @@
 .italySummary {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.italySummaryBody {
+  display: grid;
+  grid-template-columns: minmax(280px, .78fr) minmax(420px, 1.22fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  min-width: 0;
+}
+
+.italySummaryFacts {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  min-width: 0;
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+.italySummaryFacts .freshness { margin-top: 0; }
+.italySummaryFacts .factRows { margin-top: var(--space-3); }
+
+.italySummaryPeriod {
+  display: flex;
+  justify-content: flex-end;
   min-width: 0;
 }
 
@@ -69,8 +96,9 @@
 }
 
 .column { display: contents; }
-/* Two independent stacks: a tall left composition must not stretch the map
-   row or leave a blank band above the regions table. */
+/* The two rails are flattened on desktop so the overview cards can swap sides.
+   Lower cards use an explicit pair of stacks to avoid waiting for the tallest
+   table before the next card can begin. */
 .leftRail,
 .rightRail {
   display: grid;
@@ -82,16 +110,38 @@
 .leftRail { grid-area: leftRail; }
 .rightRail { grid-area: rightRail; }
 .summaryPanel { display: flex; flex-direction: column; min-width: 0; }
-.summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(250px, 1fr) auto auto auto; --composition-height: 100%; }
+.summaryPanel > [data-composition-state] { flex: 1; grid-template-rows: minmax(240px, 1fr) auto auto auto; --composition-height: clamp(240px, 45cqw, 290px); }
 .summaryPanel .rule { width: 100%; }
 .mapPanel { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; height: fit-content; }
 .mapPanel .mapStage { display: block; flex: none; }
 .mapPanel .mapStage > div { width: 100%; }
+.mapHighlights { display: none; }
 .monthsPanel { display: flex; flex-direction: column; min-width: 0; height: fit-content; }
 .monthsPanel .monthList { flex: none; }
 .regionsPanel { min-width: 0; height: fit-content; }
 .rankPanel { min-width: 0; height: fit-content; }
 .cohesionPanel { min-width: 0; height: fit-content; }
+.municipalLower {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+}
+.municipalLowerLeft,
+.municipalLowerRight {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.municipalLowerFeaturePair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, .85fr);
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+}
 .anomaliesPanel { grid-area: anomalies; min-width: 0; }
 .readingPanel { grid-area: reading; }
 
@@ -116,6 +166,23 @@
   line-height: 1.12;
 }
 
+.headingWithTooltip {
+  grid-area: title;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.headingWithTooltip :global(.panel-title),
+.headingWithTooltip > h2,
+.headingWithTooltip > h3 {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.12;
+}
+.headingWithTooltip > :global([data-info-tooltip]) { flex: none; }
+
 .headNote {
   grid-area: note;
   min-width: 0;
@@ -129,6 +196,12 @@
   grid-area: action;
   align-self: start;
 }
+.panelHead:has(> .headingWithTooltip:only-child) {
+  grid-template-areas: "title";
+  min-height: 0;
+}
+
+.italyChartPanel > .headline { margin-top: 0; }
 
 .panelHeadActions {
   display: flex;
@@ -191,6 +264,63 @@
   overflow-wrap: anywhere;
 }
 
+.regionMetricCell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  min-width: 0;
+}
+
+.regionPrimaryMetric {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.regionRankChange {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 34px;
+  min-height: 20px;
+  padding: 2px 5px;
+  border: 1px solid var(--color-neutral-300);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.regionRankChange small {
+  font-size: 10px;
+  font-weight: 700;
+}
+.regionRankChangeUp {
+  color: var(--chart-category-teal);
+  border-color: color-mix(in srgb, var(--chart-category-teal) 45%, var(--color-neutral-300));
+  background: color-mix(in srgb, var(--chart-category-teal) 8%, transparent);
+}
+.regionRankChangeDown {
+  color: var(--color-accent-700);
+  border-color: color-mix(in srgb, var(--color-accent-700) 35%, var(--color-neutral-300));
+  background: color-mix(in srgb, var(--color-accent-700) 7%, transparent);
+}
+.regionRankChangeSame,
+.regionRankChangeNeutral {
+  color: var(--color-neutral-600);
+}
+
+.regionSecondaryMetric {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
 /* ── headline block ─────────────────────────────────────────────────────── */
 
 .freshness {
@@ -248,7 +378,7 @@
 .rule {
   height: 1px;
   border: 0;
-  margin: var(--space-4) 0;
+  margin: var(--space-3) 0;
   background: var(--color-neutral-300);
 }
 
@@ -470,14 +600,13 @@
 .readingPanel {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr) auto;
   align-items: center;
   gap: var(--space-4);
   min-width: 0;
   padding: var(--space-3) var(--space-4);
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-300);
-  border-top: 2px solid var(--chart-category-blue);
+  border: 2px solid var(--chart-category-blue);
 }
 .readingIntro { min-width: 0; }
 .readingKicker {
@@ -502,7 +631,7 @@
 }
 .readingRules {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
   min-width: 0;
   margin: 0;
@@ -544,8 +673,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .italySummary .panelHead,
-  .italyChartPanel .panelHead {
+  .italySummaryBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .italySummary .panelHead {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "title"
@@ -576,7 +708,11 @@
       "reading";
   }
   .leftRail,
-  .rightRail { display: contents; }
+  .rightRail,
+  .municipalLower,
+  .municipalLowerLeft,
+  .municipalLowerRight,
+  .municipalLowerFeaturePair { display: contents; }
   .summaryPanel { grid-area: summary; }
   .mapPanel { grid-area: map; }
   .monthsPanel { grid-area: months; }
@@ -586,7 +722,6 @@
   .summaryPanel > [data-composition-state] { flex: none; --composition-height: clamp(250px, 62cqw, 320px); }
   .monthsPanel .monthList { gap: 10px; }
 
-  .mapPanel .panelHead,
   .regionsPanel .panelHead,
   .rankPanel .panelHead {
     grid-template-columns: minmax(0, 1fr);
@@ -594,6 +729,149 @@
       "title"
       "action"
       "note";
+  }
+
+}
+
+@media (min-width: 901px) {
+  .dashboard {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+    align-items: start;
+    grid-template-areas:
+      "map summary"
+      "italy italy"
+      "lower lower"
+      "anomalies anomalies"
+      "reading reading";
+  }
+
+  .leftRail,
+  .rightRail { display: contents; }
+
+  .municipalLower { grid-area: lower; }
+  .municipalLowerLeft,
+  .municipalLowerRight { min-width: 0; }
+
+  .summaryPanel { grid-area: summary; }
+  .mapPanel { grid-area: map; }
+  .monthsPanel { grid-area: months; }
+  .regionsPanel { grid-area: regions; }
+  .rankPanel { grid-area: rank; }
+  .cohesionPanel { grid-area: cohesion; }
+
+  .summaryPanel,
+  .mapPanel,
+  .monthsPanel,
+  .regionsPanel,
+  .rankPanel,
+  .cohesionPanel {
+    align-self: start;
+    height: fit-content;
+  }
+
+  .mapPanel {
+    align-self: stretch;
+    height: auto;
+  }
+  .mapPanel .attribution { margin-top: auto; }
+
+  .summaryPanel {
+    align-self: stretch;
+    height: auto;
+  }
+
+  .municipalLowerFeaturePair {
+    align-items: stretch;
+  }
+  .municipalLowerRight {
+    align-self: stretch;
+    align-content: stretch;
+  }
+  .regionsPanel {
+    align-self: stretch;
+    height: auto;
+  }
+  .municipalLowerFeaturePair > .rankPanel,
+  .municipalLowerFeaturePair > .cohesionPanel {
+    align-self: stretch;
+    height: auto;
+  }
+
+  .municipalLower .monthsPanel,
+  .municipalLower .rankPanel,
+  .municipalLower .regionsPanel,
+  .municipalLower .cohesionPanel { grid-area: auto; }
+
+  .italySplit { align-items: stretch; }
+  .italyChartPanel { height: auto; }
+  .italyChartPanel .attribution { margin-top: auto; }
+}
+
+@media (min-width: 1201px) {
+  .mapPanel .attribution { margin-top: var(--space-3); }
+  .mapHighlights {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 190px;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-neutral-100);
+    border: 1px solid var(--color-neutral-300);
+  }
+  .mapHighlightsHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .mapHighlightsHead :global(.panel-title) { margin: 0; }
+  .mapHighlightsHead > span {
+    color: var(--color-neutral-600);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+  }
+  .mapHighlightsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .mapHighlightItem {
+    display: grid;
+    align-content: start;
+    gap: 4px;
+    min-width: 0;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--chart-category-teal);
+  }
+  .mapHighlightItem > span,
+  .mapHighlightItem > small {
+    color: var(--color-neutral-600);
+    font-size: 11px;
+  }
+  .mapHighlightItem > span {
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .mapHighlightItem > strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+  .mapHighlightItem > small { font-variant-numeric: tabular-nums; }
+  .mapHighlights .note { margin: 0; }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+  .municipalLowerFeaturePair {
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+  }
+  .cohesionPanel .factRows dd {
+    white-space: nowrap;
+    font-size: 12px;
   }
 }
 
@@ -622,11 +900,29 @@
   .readingRules,
   .readingLink { grid-column: auto; }
   .readingLink { justify-self: start; }
+  .readingRules { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 421px) and (max-width: 620px) {
+  .readingRules {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .readingRules > div { padding-inline-start: var(--space-2); }
+  .readingRules dt { font-size: 11px; }
+  .readingRules dd { font-size: 10px; }
 }
 
 @media (max-width: 560px) {
   .panelHead > :global(nav).periodSelector {
     grid-area: 2 / 1 / auto / -1;
+    width: 100%;
+  }
+  .panelHeadActions > :global(nav).periodSelector { width: 100%; }
+  .italySummaryPeriod {
+    justify-content: flex-start;
+  }
+  .italySummaryPeriod > :global(nav).periodSelector {
     width: 100%;
   }
 }

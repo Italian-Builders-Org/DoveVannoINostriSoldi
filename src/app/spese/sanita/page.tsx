@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { parseHealthYear } from "@/lib/health-public-spending";
 import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { ssnCceSnapshot as data } from "@/lib/ssn-cce-snapshot";
 import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { SsnAccountingComparison } from "./ssn-accounting-comparison";
 import HospitalBeds from "./hospital-beds";
+import { HealthPublicOverview } from "./health-public-overview";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
-  title: "Conto Economico della sanità",
+  title: "Spesa pubblica per la sanità e serie storica",
   description:
-    "Conto Economico consuntivo 2024 degli enti del Servizio Sanitario Nazionale: costi del personale, servizi e prestazioni di lavoro secondo OpenBDAP.",
+    "Andamento della spesa sanitaria PA Eurostat COFOG e dettaglio del Conto Economico SSN OpenBDAP, con anni, fonti e perimetri distinti.",
+  alternates: { canonical: "/spese/sanita" },
 };
 
 const metricOrder: SsnCceMetricId[] = [
@@ -45,7 +49,9 @@ function sourceMetric(metric: SsnCceMetricId) {
   return definition;
 }
 
-export default function HealthSpendingPage() {
+export default async function HealthSpendingPage({ searchParams }: PageProps<"/spese/sanita">) {
+  const year = parseHealthYear((await searchParams).anno);
+  if (year === null) notFound();
   const national = data.national.values;
   const production = national.productionCosts;
   const personnelShare = share(national.personnelCost, production);
@@ -66,12 +72,30 @@ export default function HealthSpendingPage() {
   return (
     <main className="shell page">
       <header className="page-intro">
-        <h1>Sanità: costi del personale e dei servizi</h1>
+        <p className="eyebrow">Italia · Spesa pubblica</p>
+        <h1>Quanto spendiamo per la sanità</h1>
         <p>
-          Un confronto tra voci contabili del consuntivo 2024 degli enti del Servizio Sanitario
-          Nazionale. Il dataset misura costi di competenza economica.
+          La spesa delle amministrazioni pubbliche per la funzione Sanità, anno per anno secondo Eurostat.
+          A seguire, i costi del personale e dei servizi degli enti SSN secondo OpenBDAP, con un perimetro distinto.
+        </p>
+        <p className={styles.links}>
+          <a href="#health-history-title">Andamento della spesa PA ↓</a>
+          <Link href="/spese/sanita/storico">Serie storica dei costi SSN · 2012-2024 →</Link>
+          <a href="#ssn-accounting-title">Dettaglio SSN · 2024 ↓</a>
+          <Link href={`/?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
         </p>
       </header>
+
+      <HealthPublicOverview year={year} />
+
+      <section className="panel" aria-labelledby="ssn-accounting-title">
+        <h2 className="panel-title" id="ssn-accounting-title">Conto Economico SSN · dettaglio 2024</h2>
+        <p>Un confronto tra voci contabili del consuntivo 2024 degli enti del Servizio Sanitario Nazionale.
+          Il dataset misura costi di competenza economica. Il dettaglio seguente resta riferito al 2024,
+          indipendentemente dall’anno selezionato per la spesa PA COFOG.</p>
+        <p>Perimetro e classificazione differiscono dalla serie Eurostat: non sommare gli importi.
+          {" "}<Link href="/spese/sanita/storico">Consulta l’andamento dei costi SSN dal 2012 al 2024 →</Link></p>
+      </section>
 
       <div className={`stat-strip ${styles.stats}`}>
         <div>
@@ -268,14 +292,6 @@ export default function HealthSpendingPage() {
         </p>
       </div>
 
-      <div className="notice">
-        <strong>Serie storica nazionale, dal 2012</strong>
-        <p>
-          Questa pagina mostra solo il 2024. Il totale nazionale delle stesse voci contabili è
-          disponibile dal 2012 al 2024.{" "}
-          <Link href="/spese/sanita/storico">Apri la serie storica →</Link>
-        </p>
-      </div>
     </main>
   );
 }

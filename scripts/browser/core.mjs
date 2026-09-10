@@ -5,6 +5,7 @@ import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } fro
 import { inspectOfficialSeries } from "./official-series.mjs";
 import { inspectDefence } from "./defence.mjs";
 import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
+import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
@@ -700,7 +701,11 @@ try {
       label,
       pathname: "/",
       width,
-      validate: (page) => inspectInstitutionalPalette(page, { label, width }),
+      touch: width === 390,
+      validate: async (page) => {
+        await inspectInstitutionalPalette(page, { label, width });
+        await inspectHomeCompositionSpacing(page, { width });
+      },
     });
     completed.push(label);
   }

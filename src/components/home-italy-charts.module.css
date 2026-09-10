@@ -15,15 +15,22 @@
 }
 
 .barCopy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  /* Keep the 44px touch target beside both lines, not in the title row. */
+  min-height: 44px;
+}
+
+.barText {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
 
 .barName {
-  display: flex;
-  align-items: start;
-  gap: 4px;
+  display: block;
   min-width: 0;
   color: var(--color-neutral-800);
   font-size: 13px;

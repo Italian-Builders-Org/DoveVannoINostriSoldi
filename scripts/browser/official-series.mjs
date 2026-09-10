@@ -47,21 +47,34 @@ export async function inspectOfficialSeries(page) {
   await submit(page, ids);
   await page.waitForSelector('[data-testid="series-comparison"]');
   assert.equal(await page.$$eval('[data-testid="series-source"]', (elements) => elements.length), 4);
+  const lineStyles = await page.evaluate(() => {
+    const style = (element) => ({ stroke: getComputedStyle(element).stroke, dash: getComputedStyle(element).strokeDasharray });
+    return {
+      legend: [...document.querySelectorAll('[data-testid="series-comparison"] ol svg line')].map(style),
+      chart: [...document.querySelectorAll('[data-testid="series-chart"] > g')].map(style),
+    };
+  });
+  assert.deepEqual(lineStyles.legend, lineStyles.chart, "Legend and plot must use identical line styles");
   const inflation = scorecard.series.find((series) => series.indicator_id === "inflation");
   const actual = await page.$$eval('[data-testid="series-table"] tbody tr', (elements) => elements.map((row) => ({
     period: row.cells[0].textContent,
     values: [...row.querySelectorAll("[data-value]")].map((element) => Number(element.dataset.value)),
   })));
-  assert.equal(actual.length, 356);
+  const expectedPeriods = [...new Set(inflation.geographies.flatMap((geography) => geography.points.map((point) => point.period)))].sort();
+  assert.deepEqual(actual.map((row) => row.period), expectedPeriods);
   for (const row of actual) assert.deepEqual(row.values, ["IT", "FR", "DE", "ES"].map((geo) => inflation.geographies.find((entry) => entry.geography === geo).points.find((point) => point.period === row.period)?.value));
-  assert.match(await page.$eval('[data-testid="series-table"] tbody tr:last-child', (element) => element.textContent), /Stimato dalla fonte/);
+  const lastPeriod = expectedPeriods.at(-1);
+  const expectedEstimated = inflation.geographies.filter((geography) => geography.points.find((point) => point.period === lastPeriod)?.status === "estimated").length;
+  const lastRow = await page.$eval('[data-testid="series-table"] tbody tr:last-child', (element) => element.textContent);
+  assert.equal((lastRow.match(/Stimato dalla fonte/g) ?? []).length, expectedEstimated);
   const sources = await page.$$eval('[data-testid="series-source"]', (elements) => elements.map((element) => ({
     text: element.textContent,
     url: element.querySelector('a[href*="databrowser"]').href,
   })));
-  for (const source of sources) {
+  for (const [index, source] of sources.entries()) {
+    const points = inflation.geographies.find((geography) => ids[index] === `hicp-${geography.geography}`).points;
     assert.match(source.text, /Eurostat/);
-    assert.match(source.text, /1997-01 al 2026-08/);
+    assert.ok(source.text.includes(`${points[0].period} al ${points.at(-1).period}`));
     assert.match(source.text, /% rispetto allo stesso mese/);
     assert.match(source.url, /prc_hicp_minr/);
   }

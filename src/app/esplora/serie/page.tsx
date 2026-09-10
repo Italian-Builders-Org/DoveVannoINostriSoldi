@@ -71,7 +71,9 @@ export default async function OfficialSeriesPage({ searchParams }: {
         <p>{selected[0].scope}. Nessuna normalizzazione o somma delle serie.</p>
         <ol className={styles.legend}>
           {selected.map((series, index) => <li key={series.id}>
-            <span className={`${styles.swatch} ${styles[`line${index}`]}`} aria-hidden="true" />
+            <svg className={`${styles.swatch} ${styles[`line${index}`]}`} viewBox="0 0 32 10" aria-hidden="true">
+              <line x1="0" x2="32" y1="5" y2="5" strokeWidth="2.5" />
+            </svg>
             <span>{index + 1}. {series.label} · <a href={`#fonte-${series.id}`}>Fonte e periodo</a></span>
           </li>)}
         </ol>

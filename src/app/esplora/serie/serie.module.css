@@ -6,11 +6,11 @@
 .actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
 .legend { display: grid; gap: var(--space-2); list-style: none; padding: 0; }
 .legend li { display: flex; gap: var(--space-2); align-items: baseline; }
-.swatch { width: 32px; flex: 0 0 32px; border-top: 3px solid; }
+.swatch { width: 32px; height: 10px; flex: 0 0 32px; }
 .line0 { stroke: var(--chart-primary); color: var(--chart-primary); fill: var(--chart-primary); }
-.line1 { stroke: var(--color-text); color: var(--color-text); fill: var(--color-text); stroke-dasharray: 8 4; border-top-style: dashed; }
-.line2 { stroke: var(--chart-secondary); color: var(--chart-secondary); fill: var(--chart-secondary); stroke-dasharray: 2 4; border-top-style: dotted; }
-.line3 { stroke: var(--chart-tertiary); color: var(--chart-tertiary); fill: var(--chart-tertiary); stroke-dasharray: 12 3 2 3; border-top-style: double; }
+.line1 { stroke: var(--color-text); color: var(--color-text); fill: var(--color-text); stroke-dasharray: 8 4; }
+.line2 { stroke: var(--chart-secondary); color: var(--chart-secondary); fill: var(--chart-secondary); stroke-dasharray: 2 4; }
+.line3 { stroke: var(--chart-tertiary); color: var(--chart-tertiary); fill: var(--chart-tertiary); stroke-dasharray: 12 3 2 3; }
 .chart { margin-block: var(--space-4); }
 .chart svg { display: block; width: 100%; height: 220px; }
 .grid { stroke: var(--color-neutral-300); }

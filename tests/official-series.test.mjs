@@ -40,10 +40,13 @@ test("HICP keeps the original annual rates at monthly frequency and estimated ob
     assert.equal(series.source.updatedAt, source.upstream_updated_at);
     assert.equal(series.source.acquiredAt, source.retrieved_at);
     assert.equal(series.source.checkedAt, null);
-    assert.match(series.points.at(-1).status, /Stimato dalla fonte.*e/);
+    for (const [index, point] of points.entries()) {
+      if (point.status === "estimated") assert.match(series.points[index].status, /Stimato dalla fonte/);
+      if (point.upstream_status_or_null) assert.ok(series.points[index].status.includes(`flag ${point.upstream_status_or_null}`));
+    }
     assert.equal(series.points.filter((point) => point.status.startsWith("Stimato")).length, points.filter((point) => point.status === "estimated").length);
   }
-  assert.equal(catalog.find((series) => series.id === "hicp-IT").points.at(-1).value, 3.2);
+  assert.equal(catalog.find((series) => series.id === "hicp-IT").points.at(-1).value, inflation.geographies.find((geography) => geography.geography === "IT").points.at(-1).value);
 });
 
 test("two and four compatible selections preserve order and all original values", () => {

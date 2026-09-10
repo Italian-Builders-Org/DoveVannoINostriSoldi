@@ -141,6 +141,13 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/coesione": ["fondi", "progetti", "coesione", "pnrr"],
   "/pnrr": ["pnrr", "progetti pnrr", "italia domani", "regis", "missioni pnrr"],
   "/coesione/asili": ["asili", "prima infanzia", "nidi", "pnrr asili"],
+  "/coesione/logistica-mercati": [
+    "logistica mercati",
+    "mercati agroalimentari",
+    "masaf",
+    "pnrr logistica",
+    "invitalia mercati",
+  ],
   "/confronti": ["confronti", "benchmark", "comparazioni"],
   "/esplora/serie": ["confronta serie ufficiali", "serie storiche", "Eurostat", "IPCA", "inflazione", "COFOG"],
   "/pnrr/incarichi": ["incarichi pnrr", "indire"],

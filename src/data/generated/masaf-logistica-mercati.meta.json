@@ -1,0 +1,74 @@
+{
+  "datasetId": "masaf-logistica-mercati",
+  "schemaVersion": 1,
+  "measure": {
+    "officialName": "Sviluppo della logistica agroalimentare tramite il miglioramento della capacità logistica dei mercati agroalimentari all'ingrosso",
+    "pnrrCode": "M2C1I2.01",
+    "line": "mercati",
+    "holder": "Ministero dell'agricoltura, della sovranità alimentare e delle foreste (MASAF)",
+    "gestore": "Invitalia S.p.A.",
+    "dotazioneDichiarataEuro": 150000000,
+    "maxAgevolazionePerProgettoEuro": 10000000
+  },
+  "sources": {
+    "avviso": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/18702",
+      "label": "Avviso pubblico 19 ottobre 2022"
+    },
+    "dm": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/18790",
+      "label": "DM 5 agosto 2022"
+    },
+    "graduatoria": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/19021",
+      "label": "Graduatoria finale 22 dicembre 2022"
+    },
+    "graduatoriaConsolidata": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/19279",
+      "label": "Graduatoria consolidata",
+      "pdfUrl": "https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/1%252F7%252Fc%252FD.a7cf9be48b23ec5120b0/P/BLOB%3AID%3D19279/E/pdf?mode=download"
+    },
+    "concessioni": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/24565",
+      "label": "Decreti di concessione"
+    },
+    "hubMisura": {
+      "url": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/17913",
+      "label": "Hub investimento 2.1"
+    },
+    "italiaDomani": {
+      "url": "https://www.italiadomani.gov.it/content/sogei-ng/it/it/Interventi/investimenti/sviluppo-logistica-per-i-settori-agroalimentare-pesca-e-acquacoltura-silvicoltura-floricoltura-e-vivaismo.html",
+      "label": "Italia Domani M2C1I2.01"
+    },
+    "regisCatalog": {
+      "url": "https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data.html",
+      "label": "Catalogo open data Italia Domani",
+      "license": "CC BY 4.0"
+    }
+  },
+  "referencePeriod": {
+    "label": "Avviso 2022 · concessioni 2023-2025 · monitoraggio ReGiS al 13 giugno 2026",
+    "avvisoYear": 2022
+  },
+  "acquisition": {
+    "acquiredAt": "2026-09-10T13:17:05.382013+00:00",
+    "concessioniPageUrl": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/24565",
+    "regisExtractionDate": "2026-06-13"
+  },
+  "licenseStatus": "not-declared",
+  "caveats": [
+    "Perimetro: sola linea Mercati dell'investimento PNRR M2C1I2.01 (DM 5 agosto 2022 / avviso 19 ottobre 2022). Escluse le linee Imprese e Porti, anche se condividono lo stesso codice misura ReGiS.",
+    "Agevolazione richiesta (graduatoria) e agevolazione concessa (decreto) restano distinte. Finanziamento PNRR ReGiS non e' un pagamento osservato.",
+    "Erogazioni e pagamenti non risultano in forma strutturata pubblica negli atti usati: i campi restano nulli, non zero.",
+    "Assenza di aggiornamento non implica mancato avvio. Stato avanzamento proviene da ReGiS solo se il CUP del decreto e' presente nel catalogo.",
+    "La fascia 4-6 mln EUR non e' usata come filtro ne' come dato acquisito.",
+    "Licenza degli atti MASAF non dichiarata in modo machine-readable: riuso cautelativo (not-declared)."
+  ],
+  "counts": {
+    "projects": 36,
+    "withCup": 24,
+    "withGranted": 23,
+    "withRegis": 24,
+    "denials": 3
+  }
+}

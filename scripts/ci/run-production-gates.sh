@@ -116,6 +116,10 @@ echo "::group::Browser assistant voice suite"
 npm run test:browser:voice
 echo "::endgroup::"
 
+echo "::group::Tema e preferenze browser"
+npm run test:browser:theme
+echo "::endgroup::"
+
 echo "::group::Browser navigation suite"
 npm run test:browser:navigation
 echo "::endgroup::"
@@ -163,6 +167,12 @@ echo "::endgroup::"
 
 echo "::group::Browser chart interactions"
 npm run test:browser:charts
+echo "::endgroup::"
+
+echo "::group::Interazioni e grafici in modalità scura"
+DVNS_COLOR_SCHEME=dark npm run test:browser:assistant
+DVNS_COLOR_SCHEME=dark npm run test:browser:core
+DVNS_COLOR_SCHEME=dark npm run test:browser:charts
 echo "::endgroup::"
 
 echo "::group::Browser editorial suite"

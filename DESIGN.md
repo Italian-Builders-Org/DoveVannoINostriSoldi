@@ -41,7 +41,7 @@ La palette è grigio-carta caldo con rosso di segnalazione e petrolio per mappe 
 
 ### Rampe tonali
 
-`--color-neutral-100…900` e `--color-accent-100…900` sono generate in OKLCH su un'unica scala di luminosità: lo stesso passo di due rampe diverse ha lo stesso valore visivo. Le regole d'uso:
+Nel tema chiaro, `--color-neutral-100…900` e `--color-accent-100…900` sono generate in OKLCH su un'unica scala di luminosità: lo stesso passo di due rampe diverse ha lo stesso valore visivo. Le regole d'uso:
 
 - `neutral-200` separatori interni di tabelle ed elenchi;
 - `neutral-300` bordo dei pannelli e delle bande;
@@ -54,7 +54,13 @@ La palette è grigio-carta caldo con rosso di segnalazione e petrolio per mappe 
 
 `--color-positive`, `--color-warning` e `--color-critical` (con i rispettivi `-bg` e `-border`) servono solo agli stati delle fonti e alla freschezza dei dati. Restano dentro il valore tonale del testo: un badge di stato non deve mai gridare più forte di un numero.
 
-`--color-on-strong` e `--color-on-strong-muted` sono i soli ruoli testuali ammessi sulle superfici scure. Non usare un passo della rampa neutra come se fosse bianco: i token di foreground dichiarano il rapporto con la superficie e devono essere provati nel browser.
+`--color-on-strong` e `--color-on-strong-muted` sono i ruoli testuali per le superfici inverse, come i tooltip con fondo `--color-text`. Non usare un passo della rampa neutra come se fosse bianco: i token di foreground dichiarano il rapporto con la superficie e devono essere provati nel browser.
+
+### Tema scuro
+
+Il selettore nell'header salva la scelta nel browser. In assenza di una scelta segue il sistema; se lo storage è bloccato, la selezione resta valida durante la navigazione. Lo script costante di `src/lib/theme.ts` imposta `data-theme` su `<html>` prima del primo rendering, senza rendere dinamiche le pagine statiche. Il controllo React osserva lo stesso attributo e sincronizza cambi di sistema e altre schede.
+
+Il blocco `[data-theme="dark"]` ridefinisce superfici, rampe, stati e serie. Le rampe crescono verso il testo chiaro; il testo sulle superfici inverse diventa scuro. Gli annunci hanno una coppia di token propria. Usa questi ruoli anche per selezioni, hover e tooltip: sfondi bianchi fissi o testo bianco su `--color-text` interrompono il cambio di tema. `npm run test:browser:theme` verifica la preferenza iniziale prima dell'idratazione, persistenza, tastiera, navigazione, sincronizzazione e storage bloccato.
 
 ### Significato, confronto e direzione
 

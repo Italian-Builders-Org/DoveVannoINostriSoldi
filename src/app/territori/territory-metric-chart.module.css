@@ -27,7 +27,7 @@
   padding: 8px 34px 8px 10px;
   border: 1px solid var(--color-neutral-300);
   border-radius: 0;
-  background: white;
+  background: var(--color-raised);
   color: var(--color-neutral-900);
   font: inherit;
 }
@@ -81,7 +81,7 @@
   padding: 4px 6px;
   outline: 2px solid var(--color-accent-700);
   outline-offset: 2px;
-  background: color-mix(in srgb, var(--color-accent-100) 55%, white);
+  background: color-mix(in srgb, var(--color-accent-100) 55%, var(--color-raised));
 }
 
 .regionName {
@@ -186,7 +186,7 @@
   min-height: 38px;
   padding: 8px 12px;
   border: 1px solid var(--color-accent-700);
-  background: white;
+  background: var(--color-raised);
   color: var(--color-accent-800);
   font-size: 12px;
   font-weight: 700;
@@ -277,7 +277,7 @@
 
 .trendTrack {
   height: 8px;
-  background: white;
+  background: var(--color-raised);
 }
 
 .trendTrack i {

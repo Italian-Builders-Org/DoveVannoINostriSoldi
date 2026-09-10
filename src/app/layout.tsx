@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -34,8 +35,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  colorScheme: "light",
-  themeColor: "#f3f2f2",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -44,7 +44,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it" className={geist.variable} data-scroll-behavior="smooth">
+    <html lang="it" className={geist.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         <GoogleAnalytics />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>

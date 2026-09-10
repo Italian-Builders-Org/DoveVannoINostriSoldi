@@ -123,7 +123,7 @@
   min-width: 0;
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-300);
-  background: var(--color-neutral-50, #fafafa);
+  background: var(--color-neutral-100);
 }
 
 .compare h3 {
@@ -194,6 +194,7 @@
 
 .entityList > li {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   min-width: 0;
   padding: var(--space-3);
@@ -250,6 +251,7 @@
 }
 
 .entityLinks a {
+  overflow-wrap: anywhere;
   font-weight: 650;
   color: var(--color-accent-800);
   font-size: 13px;
@@ -331,6 +333,7 @@
 }
 
 .atNote {
+  overflow-wrap: anywhere;
   margin: 0;
   color: var(--color-neutral-700);
   font-size: 12px;
@@ -343,7 +346,7 @@
   padding: var(--space-3);
   border: 1px solid var(--color-neutral-300);
   border-top: 3px solid var(--color-neutral-800);
-  background: var(--color-neutral-50, #fafafa);
+  background: var(--color-neutral-100);
 }
 
 .follow {

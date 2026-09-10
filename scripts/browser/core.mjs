@@ -132,10 +132,7 @@ async function assertCohesionTracePanelContrast(page, label) {
   });
 
   assert.ok(state, `${label}: pannello traccia PNRR non trovato`);
-  assert.ok(
-    state.background?.every((channel) => channel > 240),
-    `${label}: sfondo del pannello traccia non risulta chiaro`,
-  );
+  assert.ok(state.background, `${label}: colore del pannello traccia non misurabile`);
   for (const sample of state.samples) {
     assert.ok(sample.ratio !== null, `${label}: colore ${sample.name} non misurabile`);
     assert.ok(
@@ -644,8 +641,14 @@ async function runScenario(browser, {
         isMobile: true,
       });
     }
-    if (mediaFeatures) await page.emulateMediaFeatures(mediaFeatures);
+    if (mediaFeatures) {
+      await page.emulateMediaFeatures([
+        { name: "prefers-color-scheme", value: process.env.DVNS_COLOR_SCHEME ?? "light" },
+        ...mediaFeatures,
+      ]);
+    }
     await navigate(page, { url: requestedUrl, label });
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), process.env.DVNS_COLOR_SCHEME ?? "light", `${label}: tema inatteso`);
     await assertResponsiveShell(page, label, width);
     await validate(page);
     await assertNoErrors(expectedFailure);

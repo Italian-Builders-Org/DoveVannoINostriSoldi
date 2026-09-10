@@ -7,6 +7,9 @@
  */
 
 :root {
+  color-scheme: light;
+  --color-announcement-bg: #201e1d;
+  --color-announcement-text: #ffffff;
   --color-bg: #f3f2f2;
   --color-surface: #eae9e9;
   --color-raised: #ffffff;
@@ -131,6 +134,75 @@
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --focus-ring: var(--color-accent);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #141313;
+  --color-surface: #1c1a1a;
+  --color-raised: #242222;
+  --color-text: #f3eeee;
+
+  --color-on-strong: #242222;
+  --color-on-strong-muted: #514b4b;
+
+  --color-divider: color-mix(in srgb, #f3eeee 24%, transparent);
+
+  --color-neutral-100: #1d1b1b;
+  --color-neutral-200: #272424;
+  --color-neutral-300: #373333;
+  --color-neutral-400: #504b4b;
+  --color-neutral-500: #746e6e;
+  --color-neutral-600: #9f9898;
+  --color-neutral-700: #bdb6b6;
+  --color-neutral-800: #d8d2d2;
+  --color-neutral-900: #f0ecec;
+
+  --color-accent-100: #321711;
+  --color-accent-200: #4b1b13;
+  --color-accent-300: #702317;
+  --color-accent-400: #a92a17;
+  --color-accent-500: #ec3013;
+  --color-accent-600: #ff4a2c;
+  --color-accent-700: #ff765f;
+  --color-accent-800: #ffa493;
+  --color-accent-900: #ffd1c8;
+
+  --color-accent-2-100: #321b17;
+  --color-accent-2-200: #48251f;
+  --color-accent-2-300: #66372d;
+  --color-accent-2-400: #915040;
+  --color-accent-2-500: #d06e59;
+  --color-accent-2-600: #ef927e;
+  --color-accent-2-700: #ffae9c;
+  --color-accent-2-800: #ffcbbf;
+  --color-accent-2-900: #ffe3dc;
+
+  --color-positive: #84cda5;
+  --color-positive-bg: #182d22;
+  --color-positive-border: #375d48;
+  --color-warning: #e9bc68;
+  --color-warning-bg: #302619;
+  --color-warning-border: #695333;
+
+  --chart-data-primary: #65b7bf;
+  --chart-data-track: #283a3b;
+  --chart-progress: #b3c576;
+  --chart-progress-track: #333924;
+  --chart-country-italy: #75b4ff;
+  --chart-country-france: #ef91a2;
+  --chart-country-germany: #baa0f2;
+  --chart-country-spain: #e4ba68;
+  --chart-category-blue: #88b1f5;
+  --chart-category-teal: #67c9bf;
+  --chart-category-purple: #bca0ed;
+  --chart-category-amber: #e2b672;
+  --chart-category-green: #87c89a;
+  --chart-category-slate: #9db7ca;
+
+  --color-announcement-bg: #2b2828;
+  --color-announcement-text: #f5f1f1;
 }
 
 /* — rules — */
@@ -274,7 +346,7 @@ textarea.input {
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
 }
 .table td {
   padding: 11px var(--space-2);

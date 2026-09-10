@@ -1,8 +1,8 @@
 .bar {
   height: var(--announcement-height, 44px);
-  color: var(--color-on-strong);
-  background: var(--color-text);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-on-strong) 12%, transparent);
+  color: var(--color-announcement-text);
+  background: var(--color-announcement-bg);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-announcement-text) 12%, transparent);
 }
 .inner { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; padding-inline: 24px; }
 .messages { display: grid; min-width: 0; max-width: 100%; }
@@ -21,14 +21,14 @@
   pointer-events: none;
   transition: opacity 200ms var(--ease-out), filter 200ms var(--ease-out), transform 200ms var(--ease-out);
 }
-.bar .link:hover { color: var(--color-on-strong); }
+.bar .link:hover { color: var(--color-announcement-text); }
 .link[data-active="true"] { opacity: 1; filter: blur(0); transform: translateY(0); pointer-events: auto; }
 .title { min-width: 0; font-size: 13px; font-weight: 500; letter-spacing: -.01em; line-height: 1.4; }
-.cta { display: inline-flex; align-items: center; gap: 8px; flex: none; padding-left: 22px; border-left: 1px solid color-mix(in srgb, var(--color-on-strong) 22%, transparent); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.cta { display: inline-flex; align-items: center; gap: 8px; flex: none; padding-left: 22px; border-left: 1px solid color-mix(in srgb, var(--color-announcement-text) 22%, transparent); font-size: 13px; font-weight: 600; white-space: nowrap; }
 .cta svg { opacity: .7; }
 .controls { position: absolute; right: 8px; top: 0; display: flex; }
 .controls button { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; padding: 0; }
-.controls button:focus-visible { position: static; width: auto; height: 44px; padding: 0 12px; clip-path: none; color: var(--color-on-strong); background: var(--color-text); }
+.controls button:focus-visible { position: static; width: auto; height: 44px; padding: 0 12px; clip-path: none; color: var(--color-announcement-text); background: var(--color-announcement-bg); }
 .controls button:disabled { display: none; }
 .bar :focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
 @media (max-width: 760px) {

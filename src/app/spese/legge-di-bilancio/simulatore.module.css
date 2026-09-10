@@ -212,7 +212,7 @@
 .tileMeta {
   flex-shrink: 0;
   overflow: hidden;
-  color: color-mix(in srgb, var(--color-raised) 82%, transparent);
+  color: var(--color-raised);
   font-size: 10px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -865,7 +865,7 @@
 
 .sliderValue {
   margin-top: 4px;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
   font-size: 34px;
   font-weight: 660;
   font-variant-numeric: tabular-nums;
@@ -897,7 +897,7 @@
 }
 
 .controlImpactMuted {
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
   font-size: 12px;
   line-height: 1.45;
 }

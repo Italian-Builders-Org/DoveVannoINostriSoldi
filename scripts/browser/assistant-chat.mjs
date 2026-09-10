@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import { mkdirSync } from 'node:fs';
-import { launchBrowser, closeBrowser, defaultBaseUrl } from './harness.mjs';
+import { launchBrowser, closeBrowser, createPage, defaultBaseUrl } from './harness.mjs';
 
 const browser=await launchBrowser();
 const base=defaultBaseUrl();
 mkdirSync('artifacts/browser',{recursive:true});
 try {
   for(const width of [320,390,768,1280]) {
-    const page=await browser.newPage();
+    const page=await createPage(browser,{width});
     const errors=[],requests=[];
     let hold=false,held;
     page.on('pageerror',error=>errors.push(error.message));
@@ -30,8 +30,9 @@ try {
     const complete=async count=>{await page.waitForFunction(count=>document.querySelectorAll('[data-assistant-reply] a[href="https://www.siope.it/"]').length===count && !document.querySelector('button[aria-label="Interrompi ricerca"]'),{},count);await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running'));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));};
     await page.waitForSelector(field);
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth),`${width}: overflow`);
-    assert.equal(await page.$$eval('button[aria-label*="scura"]',els=>els.length),0);
-    await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-light.png`,fullPage:true});
+    const themeLabel=process.env.DVNS_COLOR_SCHEME==='dark'?'Attiva modalità chiara':'Attiva modalità scura';
+    assert.equal(await page.$$eval(`button[aria-label="${themeLabel}"]`,els=>els.length),1);
+    await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
     await page.type(field,'@');await page.waitForSelector('[role="listbox"]');
     await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
     assert.match(await page.$eval(field,el=>el.value),/Calabria/);assert.equal(requests.length,0);

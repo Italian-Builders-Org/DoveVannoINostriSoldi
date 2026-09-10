@@ -36,7 +36,7 @@
   text-decoration: none;
 }
 .metricSelector a[aria-current="page"] {
-  color: white;
+  color: var(--color-on-strong);
   background: var(--color-accent-800);
 }
 
@@ -52,7 +52,7 @@
   width: fit-content;
   padding: 3px;
   border: 1px solid var(--color-neutral-300);
-  background: white;
+  background: var(--color-raised);
 }
 
 .viewSelector button {
@@ -69,7 +69,7 @@
 
 .viewSelector button[aria-selected="true"] {
   background: var(--color-neutral-900);
-  color: white;
+  color: var(--color-on-strong);
 }
 
 .municipalityPanel {
@@ -136,7 +136,7 @@
   padding: 8px 10px;
   border: 1px solid var(--color-neutral-300);
   border-radius: 0;
-  background: white;
+  background: var(--color-raised);
   color: var(--color-neutral-900);
   font: inherit;
   font-size: 12px;
@@ -154,7 +154,7 @@
   padding: 9px 13px;
   border: 1px solid var(--color-accent-800);
   background: var(--color-accent-800);
-  color: white;
+  color: var(--color-on-strong);
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;

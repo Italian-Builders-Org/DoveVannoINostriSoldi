@@ -4,6 +4,7 @@ import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
 import { inspectDefence } from "./defence.mjs";
 import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
+import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
@@ -699,7 +700,10 @@ try {
       label,
       pathname: "/",
       width,
-      validate: (page) => inspectInstitutionalPalette(page, { label, width }),
+      validate: async (page) => {
+        await inspectInstitutionalPalette(page, { label, width });
+        await inspectHomeCompositionSpacing(page, { width });
+      },
     });
     completed.push(label);
   }

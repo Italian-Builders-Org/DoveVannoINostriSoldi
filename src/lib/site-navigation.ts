@@ -166,6 +166,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/controlli", label: "Segnali" },
       { href: "/controlli/sintesi", label: "Sintesi" },
       { href: "/esplora", label: "Esplora relazioni" },
+      { href: "/esplora/serie", label: "Confronta serie ufficiali" },
     ],
   },
   { href: "/assistente", label: "Assistente", icon: "assistant" },

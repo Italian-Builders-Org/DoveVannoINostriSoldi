@@ -34,6 +34,20 @@ Per aggiungere una nuova fonte in modo ripetibile (contributor o agente), usa
 
 ## Pagella politico-economica dei governi
 
+### Confronto di serie esistenti
+
+`/esplora/serie` permette di confrontare da due a quattro serie della stessa
+famiglia: undici funzioni COFOG Italia (`gov_10a_exp`, annuale 2014–2024), in
+milioni di euro correnti oppure % del PIL, e IPCA totale IT/FR/DE/ES
+(`prc_hicp_minr`, `RCH_A`, mensile 1997-01–2026-08). Usa gli snapshot già
+validati e non acquisisce nuove fonti. Fonte, copertura, unità, date e hash
+restano associati a ogni selezione; i flag stimati/provvisori e le interruzioni
+non vengono eliminati. Unità, frequenze o definizioni incompatibili bloccano
+il confronto; lacune e zero restano distinti. Specifica e limiti in
+[CONFRONTO_SERIE.md](CONFRONTO_SERIE.md).
+
+### Serie della pagella
+
 La pagina `/governi` combina due perimetri che non vanno confusi:
 
 - **voto:** sei serie annuali AMECO della Commissione europea, per Italia,

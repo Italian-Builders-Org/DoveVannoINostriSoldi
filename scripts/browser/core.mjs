@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
+import { inspectOfficialSeries } from "./official-series.mjs";
 import { inspectDefence } from "./defence.mjs";
 import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
 import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
@@ -923,6 +924,14 @@ try {
       });
       completed.push(label);
     }
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Confronto serie ufficiali ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/esplora", width, validate: inspectOfficialSeries,
+    });
+    completed.push(label);
   }
 
   for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {

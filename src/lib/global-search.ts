@@ -142,6 +142,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/pnrr": ["pnrr", "progetti pnrr", "italia domani", "regis", "missioni pnrr"],
   "/coesione/asili": ["asili", "prima infanzia", "nidi", "pnrr asili"],
   "/confronti": ["confronti", "benchmark", "comparazioni"],
+  "/esplora/serie": ["confronta serie ufficiali", "serie storiche", "Eurostat", "IPCA", "inflazione", "COFOG"],
   "/pnrr/incarichi": ["incarichi pnrr", "indire"],
   "/istituzioni": ["istituzioni", "enti istituzionali"],
   "/parlamento": ["camera", "senato", "assemblee"],

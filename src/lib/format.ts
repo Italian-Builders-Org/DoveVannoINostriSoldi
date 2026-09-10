@@ -58,6 +58,11 @@ export function integer(value: number): string {
   return integerFormatter.format(value);
 }
 
+/** A published decimal in a column whose unit is declared separately. */
+export function decimal(value: number, digits = 1): string {
+  return value.toLocaleString("it-IT", { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: "always" });
+}
+
 export function compactEuro(value: number): string {
   return compactEuroLike(value, value);
 }

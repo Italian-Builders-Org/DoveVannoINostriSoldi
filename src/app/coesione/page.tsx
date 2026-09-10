@@ -178,6 +178,23 @@ export default function CohesionPage() {
         </div>
       </section>
 
+      <section className={styles.tracePanel}>
+        <div>
+          <span>Logistica mercati · MASAF</span>
+          <h2>Mercati agroalimentari all&apos;ingrosso</h2>
+          <p>
+            Linea Mercati del PNRR M2C1I2.01: graduatoria ufficiale, agevolazioni richieste e concesse,
+            CUP da decreto e avanzamento ReGiS quando documentati.
+          </p>
+        </div>
+        <div className={styles.traceAction}>
+          <strong>36 progetti</strong>
+          <span>perimetro graduatoria consolidata</span>
+          <Link className="btn btn-primary" href="/coesione/logistica-mercati">Apri logistica mercati →</Link>
+          <Link className="btn btn-secondary" href="/opere">Opere pubbliche →</Link>
+        </div>
+      </section>
+
       <div className={`${styles.tables} ${styles.dimensionTables}`}>
         <section className="panel">
           <h2 className="panel-title">Dove vanno questi soldi · per tema</h2>

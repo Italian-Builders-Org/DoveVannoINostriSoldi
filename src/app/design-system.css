@@ -1,5 +1,5 @@
 /*
- * Modernist — token layer and component primitives.
+ * Registro pubblico — institutional token layer and component primitives.
  *
  * Retuning the look starts here: every surface in the app reads these
  * variables instead of hard-coding a colour. See DESIGN.md for the rules that
@@ -8,49 +8,49 @@
 
 :root {
   color-scheme: light;
-  --color-announcement-bg: #201e1d;
+  --color-announcement-bg: #182b3a;
   --color-announcement-text: #ffffff;
-  --color-bg: #f3f2f2;
-  --color-surface: #eae9e9;
+  --color-bg: #f3f5f7;
+  --color-surface: #e8edf2;
   --color-raised: #ffffff;
-  --color-text: #201e1d;
+  --color-text: #182b3a;
   --color-on-strong: #ffffff;
-  --color-on-strong-muted: #d7d3d3;
-  --color-accent: #ec3013;
-  --color-accent-2: #e15b47;
-  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+  --color-on-strong-muted: #c5cfd8;
+  --color-accent: #b42332;
+  --color-accent-2: #a82b3b;
+  --color-divider: color-mix(in srgb, #182b3a 40%, transparent);
 
-  /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
-     same step of any role matches the others in visual value. */
-  --color-neutral-100: #f8f4f4;
-  --color-neutral-200: #eae7e7;
-  --color-neutral-300: #d7d3d3;
-  --color-neutral-400: #bab6b6;
-  --color-neutral-500: #9b9797;
-  --color-neutral-600: #6a6666;
-  --color-neutral-700: #605d5d;
-  --color-neutral-800: #444141;
-  --color-neutral-900: #2d2b2b;
+  /* Cool paper and blue ink: restrained surfaces, AA text and 3:1 controls.
+     See docs/INSTITUTIONAL_PALETTE.md for measured role pairs. */
+  --color-neutral-100: #f6f8fa;
+  --color-neutral-200: #e5eaf0;
+  --color-neutral-300: #c5cfd8;
+  --color-neutral-400: #71808e;
+  --color-neutral-500: #657786;
+  --color-neutral-600: #536474;
+  --color-neutral-700: #435565;
+  --color-neutral-800: #2d4050;
+  --color-neutral-900: #1d3040;
 
-  --color-accent-100: #fff2ef;
-  --color-accent-200: #ffe0d9;
-  --color-accent-300: #ffc4b8;
-  --color-accent-400: #ff9783;
-  --color-accent-500: #ff563c;
-  --color-accent-600: #dd2b0f;
-  --color-accent-700: #ae1800;
-  --color-accent-800: #7c1405;
-  --color-accent-900: #4d170e;
+  --color-accent-100: #fff1f2;
+  --color-accent-200: #fbdde1;
+  --color-accent-300: #f1b9c1;
+  --color-accent-400: #df8795;
+  --color-accent-500: #c94c60;
+  --color-accent-600: #b42332;
+  --color-accent-700: #a51d2d;
+  --color-accent-800: #811827;
+  --color-accent-900: #5d1723;
 
-  --color-accent-2-100: #fff2ef;
-  --color-accent-2-200: #ffe0da;
-  --color-accent-2-300: #ffc4b9;
-  --color-accent-2-400: #ff9784;
-  --color-accent-2-500: #ef6853;
-  --color-accent-2-600: #c94b39;
-  --color-accent-2-700: #9e3526;
-  --color-accent-2-800: #71261b;
-  --color-accent-2-900: #471d16;
+  --color-accent-2-100: #fff1f2;
+  --color-accent-2-200: #f7dfe3;
+  --color-accent-2-300: #eabfc7;
+  --color-accent-2-400: #d7929e;
+  --color-accent-2-500: #bd6072;
+  --color-accent-2-600: #a82b3b;
+  --color-accent-2-700: #872438;
+  --color-accent-2-800: #651f30;
+  --color-accent-2-900: #451c27;
 
   /* Status — reused by freshness badges and source health. Kept inside the
      neutral/accent value range so a status chip never outshouts a number. */
@@ -84,9 +84,9 @@
 
   /* Elevation — derived from the ground: soft ink-tinted shadows on a
      light theme. */
-  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
-  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
-  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #1d3040 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #1d3040 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #1d3040 22%, transparent);
 
   /* Layout — the shell is fluid; these only bound it on very wide screens. */
   --max: 1560px;
@@ -98,7 +98,7 @@
   --chart-secondary: var(--color-neutral-800);
   --chart-tertiary: var(--color-neutral-500);
   --chart-quaternary: var(--color-neutral-400);
-  --chart-quinary: var(--color-accent-300);
+  --chart-quinary: var(--chart-category-slate);
   --chart-negative: var(--color-accent-700);
   /* Country comparison palette. Shape and dash patterns remain redundant so
      the lines stay distinguishable without relying on colour alone. */
@@ -114,22 +114,22 @@
 
   /* Neutral quantities and completion use their own roles. Red is reserved
      for actions, warnings and genuinely critical states. */
-  --chart-data-primary: #176b73;
-  --chart-data-track: #dce9e9;
-  --chart-map-1: #deebeb;
-  --chart-map-2: #b9d4d6;
-  --chart-map-3: #86b3b7;
-  --chart-map-4: #4b9097;
-  --chart-map-5: #176b73;
-  --chart-progress: #73833a;
-  --chart-progress-track: #e5e8d9;
+  --chart-data-primary: #176575;
+  --chart-data-track: #dce7ec;
+  --chart-map-1: #dbe8ed;
+  --chart-map-2: #b4ced8;
+  --chart-map-3: #7eabbc;
+  --chart-map-4: #477f94;
+  --chart-map-5: #176575;
+  --chart-progress: #526b36;
+  --chart-progress-track: #e1e8d9;
 
   /* Additive part-to-whole charts only. Red stays for CTA and warnings. */
-  --chart-category-blue: #2855a5;
-  --chart-category-teal: #087c74;
-  --chart-category-purple: #6b46a3;
-  --chart-category-amber: #9a5b00;
-  --chart-category-green: #2f6f44;
+  --chart-category-blue: #285a80;
+  --chart-category-teal: #176b65;
+  --chart-category-purple: #625675;
+  --chart-category-amber: #805b22;
+  --chart-category-green: #386848;
   --chart-category-slate: #405b70;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -138,6 +138,8 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
+  --color-accent: #ff8897;
+  --color-accent-2: #efa0ad;
 
   --color-bg: #141313;
   --color-surface: #1c1a1a;
@@ -152,8 +154,8 @@
   --color-neutral-100: #1d1b1b;
   --color-neutral-200: #272424;
   --color-neutral-300: #373333;
-  --color-neutral-400: #504b4b;
-  --color-neutral-500: #746e6e;
+  --color-neutral-400: #7e858d;
+  --color-neutral-500: #939ba3;
   --color-neutral-600: #9f9898;
   --color-neutral-700: #bdb6b6;
   --color-neutral-800: #d8d2d2;
@@ -188,6 +190,11 @@
 
   --chart-data-primary: #65b7bf;
   --chart-data-track: #283a3b;
+  --chart-map-1: #324e59;
+  --chart-map-2: #416775;
+  --chart-map-3: #558797;
+  --chart-map-4: #70a7b6;
+  --chart-map-5: #a1cbd4;
   --chart-progress: #b3c576;
   --chart-progress-track: #333924;
   --chart-country-italy: #75b4ff;

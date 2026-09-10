@@ -205,7 +205,7 @@
   width: 7px;
   height: 7px;
   flex: none;
-  background: var(--color-accent);
+  background: var(--color-neutral-600);
 }
 
 .headline {

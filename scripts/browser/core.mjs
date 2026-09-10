@@ -4,6 +4,7 @@ import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
 import { inspectOfficialSeries } from "./official-series.mjs";
 import { inspectDefence } from "./defence.mjs";
+import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
@@ -692,6 +693,17 @@ const completed = [];
 
 try {
   browser = await launchBrowser();
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Palette istituzionale ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/",
+      width,
+      validate: (page) => inspectInstitutionalPalette(page, { label, width }),
+    });
+    completed.push(label);
+  }
 
   for (const width of [390, 768, 1280]) {
     const label = `Pagella governi ${width}px`;

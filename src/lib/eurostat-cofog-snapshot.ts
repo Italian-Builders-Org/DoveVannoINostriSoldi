@@ -5,6 +5,8 @@ import metadataArtifact from "@/data/generated/eurostat-cofog-2014-2024.meta.jso
 import {
   validateEurostatCofogBundle,
   type EurostatCofogData,
+  type EurostatCofogDetailFunction,
+  type EurostatCofogDetailObservation,
   type EurostatCofogFunction,
   type EurostatCofogGeography,
   type EurostatCofogMetadata,
@@ -16,9 +18,8 @@ const validated = validateEurostatCofogBundle(dataArtifact, metadataArtifact);
 export const eurostatCofogData: EurostatCofogData = validated.data;
 export const eurostatCofogMetadata: EurostatCofogMetadata = validated.metadata;
 
-const GEOGRAPHY_CODES = new Set(eurostatCofogData.geographies.map((geography) => geography.code));
+const GEOGRAPHY_CODES = new Set(eurostatCofogData.geographies.map((entry) => entry.code));
 const FUNCTION_CODES = new Set(eurostatCofogData.functions.map((entry) => entry.code));
-
 export type EurostatCofogQuery = Readonly<{
   geo?: string;
   year?: number;
@@ -44,6 +45,21 @@ export type EurostatCofogQueryResult = Readonly<{
     coverageNote: string;
   }>;
 }>;
+export type EurostatCofogDetailQueryResult = Readonly<{
+  datasetId: string;
+  parentFunction: "GF01";
+  geo: "IT";
+  period: EurostatCofogData["period"];
+  functions: readonly EurostatCofogDetailFunction[];
+  observations: readonly EurostatCofogDetailObservation[];
+  reconciliation: EurostatCofogData["details"]["GF01"]["reconciliation"];
+  source: Readonly<{
+    owner: string;
+    landingUrl: string;
+    datasetCode: string;
+    publicationDate: string;
+  }>;
+}>;
 
 function normalizeYear(year: number | undefined): number | undefined {
   if (year === undefined) return undefined;
@@ -53,7 +69,6 @@ function normalizeYear(year: number | undefined): number | undefined {
   }
   return year;
 }
-
 function normalizeGeo(geo: string | undefined): string | undefined {
   if (geo === undefined) return undefined;
   const code = geo.toUpperCase();
@@ -83,7 +98,6 @@ export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofo
       (year === undefined || observation.year === year) &&
       (cofogFunction === undefined || observation.function === cofogFunction),
   );
-
   return {
     datasetId: eurostatCofogData.datasetId,
     period: eurostatCofogData.period,
@@ -93,7 +107,7 @@ export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofo
     functions: eurostatCofogData.functions,
     geographies: geo === undefined
       ? eurostatCofogData.geographies
-      : eurostatCofogData.geographies.filter((geography) => geography.code === geo),
+      : eurostatCofogData.geographies.filter((entry) => entry.code === geo),
     observations,
     reconciliation: eurostatCofogData.reconciliation,
     source: {
@@ -103,6 +117,28 @@ export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofo
       datasetCode: eurostatCofogMetadata.source.datasetCode,
       publicationDate: eurostatCofogMetadata.semantics.provenance.publicationDate,
       coverageNote: eurostatCofogMetadata.coverage.note,
+    },
+  };
+}
+
+export function queryEurostatCofogGf01Detail(year?: number): EurostatCofogDetailQueryResult {
+  const selectedYear = normalizeYear(year);
+  const detail = eurostatCofogData.details.GF01;
+  return {
+    datasetId: eurostatCofogData.datasetId,
+    parentFunction: detail.parentFunction,
+    geo: detail.geo,
+    period: eurostatCofogData.period,
+    functions: detail.functions,
+    observations: detail.observations.filter(
+      (observation) => selectedYear === undefined || observation.year === selectedYear,
+    ),
+    reconciliation: detail.reconciliation,
+    source: {
+      owner: eurostatCofogMetadata.source.owner,
+      landingUrl: eurostatCofogMetadata.source.landingUrl,
+      datasetCode: eurostatCofogMetadata.source.datasetCode,
+      publicationDate: eurostatCofogMetadata.semantics.provenance.publicationDate,
     },
   };
 }

@@ -310,13 +310,14 @@ function snapshotManagedGovernmentInflation(): SourceHealth {
 function snapshotManagedEurostatCofog(): SourceHealth {
   const artifact = eurostatCofogMetadata.integrity.dataArtifact;
   const { flagged, observedCells } = eurostatCofogData.coverage;
+  const gf01DetailCells = eurostatCofogData.details.GF01.coverage.observedCells;
   return {
     ...baseHealth("eurostat-cofog"),
     reachability: "not-probed",
     freshness: freshnessFor("eurostat-cofog", eurostatCofogMetadata.coverage.observedAt),
     latencyMs: null,
-    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · copertura piena ${observedCells}/${observedCells} celle, ${flagged} con flag della fonte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
-    recordCount: eurostatCofogData.observations.length,
+    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · livello principale ${observedCells}/${observedCells} celle, dettaglio GF01 Italia ${gf01DetailCells}/${gf01DetailCells}, ${flagged} flag sul livello principale · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatCofogData.observations.length + eurostatCofogData.details.GF01.observations.length,
   };
 }
 

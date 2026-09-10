@@ -31,7 +31,7 @@ export async function inspectPublicOrderSpending(page) {
   await page.waitForSelector("#sicurezza-fonti[open]");
   const sourceText = await page.$eval("#sicurezza-fonti", (element) => element.innerText);
   assert.match(sourceText, /21 luglio 2026/);
-  assert.match(sourceText, /3 settembre 2026/);
+  assert.match(sourceText, /10 settembre 2026/);
   assert.match(sourceText, /CP A1/);
   assert.match(sourceText, /non si sommano/);
   const hashes = await page.$("#sicurezza-fonti details > summary");

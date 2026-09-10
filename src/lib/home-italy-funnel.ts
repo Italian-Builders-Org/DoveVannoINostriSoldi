@@ -117,7 +117,7 @@ function resolveCofogYear(requested: number | undefined): number {
 }
 
 function cofogLink(code: string, year: number): { href: string; linkLabel: string } | null {
-  if (code === "GF01") return { href: "/debito", linkLabel: "Debito e interessi" };
+  if (code === "GF01") return { href: `/spese/servizi-generali?anno=${year}`, linkLabel: "Servizi generali" };
   if (code === "GF02") return { href: `/spese/difesa?anno=${year}`, linkLabel: "Difesa" };
   if (code === "GF03") return { href: `/spese/sicurezza?anno=${year}`, linkLabel: "Ordine pubblico e sicurezza" };
   if (code === "GF04") return { href: "/imprese", linkLabel: "Imprese" };

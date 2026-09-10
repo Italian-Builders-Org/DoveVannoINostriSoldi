@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { eurostatCofogData, eurostatCofogMetadata, queryEurostatCofog } = await import(
+const { eurostatCofogData, eurostatCofogMetadata, queryEurostatCofog, queryEurostatCofogGf01Detail } = await import(
   "../src/lib/eurostat-cofog-snapshot.ts"
 );
 const { validateEurostatCofogBundle } = await import("../src/lib/data/eurostat-cofog-contract.ts");
@@ -120,4 +120,28 @@ test("il contratto boccia una provenienza non ufficiale", () => {
   // Passerebbe un controllo di prefisso senza la barra finale.
   broken.source.landingUrl = "https://ec.europa.eu/eurostat.example.org/table";
   assert.throws(() => validateEurostatCofogBundle(eurostatCofogData, broken));
+});
+
+test("il dettaglio italiano GF01 è completo e riconcilia con il parent", () => {
+  const detail = eurostatCofogData.details.GF01;
+  assert.equal(detail.geo, "IT");
+  assert.equal(detail.parentFunction, "GF01");
+  assert.equal(detail.functions.length, 8);
+  assert.equal(detail.observations.length, 88);
+  for (let year = 2014; year <= 2024; year += 1) {
+    const rows = queryEurostatCofogGf01Detail(year).observations;
+    assert.equal(rows.length, 8, year);
+    const parent = queryEurostatCofog({ geo: "IT", year, function: "GF01" }).observations[0];
+    const sum = rows.reduce((total, row) => total + row.amountCents, 0);
+    assert.ok(Math.abs(parent.amountCents - sum) <= detail.reconciliation.toleranceCents, year);
+  }
+});
+
+test("il contratto fallisce chiuso se il dettaglio GF01 viene alterato", () => {
+  const broken = structuredClone(eurostatCofogData);
+  broken.details.GF01.observations[0].amountCents += 100_000_000;
+  assert.throws(
+    () => validateEurostatCofogBundle(broken, eurostatCofogMetadata),
+    /GF01 non riconcilia/i,
+  );
 });

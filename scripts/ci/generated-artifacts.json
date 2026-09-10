@@ -1233,10 +1233,12 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_eurostat_cofog_snapshot.py"
+        "tests/etl/test_eurostat_cofog_snapshot.py",
+        "tests/etl/test_eurostat_cofog_gf01_detail.py"
       ],
       "nodeTests": [
-        "tests/eurostat-cofog.test.mjs"
+        "tests/eurostat-cofog.test.mjs",
+        "tests/general-public-services-spending.test.mjs"
       ],
       "generator": {
         "command": "python3 scripts/etl/eurostat_cofog_snapshot.py --input-dir <cartella con le due risposte JSON-stat> --write",
@@ -1244,7 +1246,7 @@
       },
       "sourceSpec": "scripts/etl/specs/eurostat-cofog-2014-2024.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_exp (milioni di euro e quota di PIL, CC BY 4.0) sono acquisite localmente e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle committato senza rete. La copertura piena, l'assenza di duplicati e lo scarto fra totale pubblicato e somma delle divisioni entro la sola tolleranza di arrotondamento falliscono chiusi."
+      "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_exp (milioni di euro e quota di PIL, CC BY 4.0) sono acquisite localmente e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle committato senza rete. Il livello principale pretende copertura piena e riconcilia TOTAL con le dieci divisioni; il dettaglio italiano GF0101-GF0108 pretende 88 celle per unità e riconcilia separatamente con GF01, senza trasformare le assenze di secondo livello nelle altre geografie in zero."
     },
     {
       "id": "istat-cofog-1995-2023",

@@ -72,6 +72,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/spese/operative",
   "/spese/sanita",
   "/spese/sanita/storico",
+  "/spese/servizi-generali",
   "/spese/sicurezza",
   "/spese/sport",
   "/spese/territoriale",

@@ -59,6 +59,10 @@ HUNDREDTHS_PER_POINT = 100
 # rounding itself, not a licence to absorb a real divergence.
 TOLERANCE_CENTS = 6 * CENTS_PER_MILLION_EUR // 10
 TOLERANCE_SHARE = 6 * HUNDREDTHS_PER_POINT // 10
+# GF01 has eight level-II groups plus the published parent. Nine independently
+# rounded figures can differ by at most 0.45 in the source unit.
+DETAIL_TOLERANCE_CENTS = 45 * CENTS_PER_MILLION_EUR // 100
+DETAIL_TOLERANCE_SHARE = 45 * HUNDREDTHS_PER_POINT // 100
 
 KNOWN_FLAGS = {"p": "provvisorio", "b": "interruzione della serie storica"}
 
@@ -75,6 +79,9 @@ CAVEATS = (
     "li contengono già.",
     "Il 2025 non è pubblicato: alla data di acquisizione la fonte lo espone per il solo "
     "Lussemburgo, e un singolo Stato membro non è un confronto europeo.",
+    "Per l’Italia lo snapshot conserva anche le otto sottofunzioni di GF01. GF0107 «Public "
+    "debt transactions» è una funzione COFOG: include gli interessi D.41 e il consumo intermedio "
+    "P.2 legato al FISIM secondo il manuale Eurostat, quindi non coincide con la sola serie D.41.",
 )
 
 
@@ -175,20 +182,26 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
     if sorted(functions) != sorted(f["code"] for f in spec["expected"]["functions"]):
         raise SnapshotError(f"bundle {unit}: funzioni COFOG diverse da quelle del lock")
 
+    primary_codes = {f["code"] for f in spec["expected"]["primaryFunctions"]}
+    detail = spec["expected"]["detail"]
+    detail_codes = {f["code"] for f in detail["functions"]}
+    detail_geo = detail["geo"]
     n_geo, n_time = len(geos), len(years)
     values = doc["value"]
     statuses = doc.get("status") or {}
     scale = CENTS_PER_MILLION_EUR if unit == "MIO_EUR" else HUNDREDTHS_PER_POINT
 
     out: dict[tuple[str, int, str], tuple[int, str | None]] = {}
-    missing: list[str] = []
+    missing_required: list[str] = []
     for function, fi in functions.items():
         for geo, gi in geos.items():
             for year, ti in years.items():
                 cell = str((fi * n_geo + gi) * n_time + ti)
                 raw = values.get(cell)
+                required = function in primary_codes or (geo == detail_geo and function in detail_codes)
                 if raw is None:
-                    missing.append(f"{geo}/{year}/{function}")
+                    if required:
+                        missing_required.append(f"{geo}/{year}/{function}")
                     continue
                 flag = statuses.get(cell)
                 if flag is not None and flag not in KNOWN_FLAGS:
@@ -198,16 +211,19 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
                     flag,
                 )
 
-    expected_cells = spec["expected"]["cellsPerUnit"]
-    if missing:
+    expected_required = spec["expected"]["cellsPerUnit"] + detail["cellsPerUnit"]
+    observed_required = sum(
+        1 for geo, _year, function in out
+        if function in primary_codes or (geo == detail_geo and function in detail_codes)
+    )
+    if missing_required:
         raise SnapshotError(
-            f"bundle {unit}: copertura incompleta, {len(missing)} celle assenti "
-            f"(prime: {', '.join(missing[:5])}) — il lock pretende {expected_cells} celle piene"
+            f"bundle {unit}: copertura richiesta incompleta, {len(missing_required)} celle assenti "
+            f"(prime: {', '.join(missing_required[:5])})"
         )
-    if len(out) != expected_cells:
-        raise SnapshotError(f"bundle {unit}: {len(out)} celle, attese {expected_cells}")
+    if observed_required != expected_required:
+        raise SnapshotError(f"bundle {unit}: {observed_required} celle richieste, attese {expected_required}")
     return out
-
 
 def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]:
     bundles = {
@@ -219,10 +235,15 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
     if set(amounts) != set(shares):
         raise SnapshotError("le due unità coprono celle diverse: il confronto non sarebbe onesto")
 
-    observations = []
-    for (geo, year, function) in sorted(amounts):
-        amount_cents, amount_flag = amounts[(geo, year, function)]
-        share, share_flag = shares[(geo, year, function)]
+    primary_codes = {f["code"] for f in spec["expected"]["primaryFunctions"]}
+    detail_spec = spec["expected"]["detail"]
+    detail_codes = {f["code"] for f in detail_spec["functions"]}
+    detail_geo = detail_spec["geo"]
+
+    def make_observation(key: tuple[str, int, str]) -> dict[str, Any]:
+        geo, year, function = key
+        amount_cents, amount_flag = amounts[key]
+        share, share_flag = shares[key]
         if amount_flag != share_flag:
             raise SnapshotError(
                 f"flag discordanti fra unità su {geo}/{year}/{function}: {amount_flag!r} vs {share_flag!r}"
@@ -236,7 +257,30 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
         }
         if amount_flag:
             observation["flag"] = amount_flag
-        observations.append(observation)
+        return observation
+
+    observations = [
+        make_observation(key)
+        for key in sorted(amounts)
+        if key[2] in primary_codes
+    ]
+    detail_observations = [
+        make_observation(key)
+        for key in sorted(amounts)
+        if key[0] == detail_geo and key[2] in detail_codes
+    ]
+    detail_payload = {
+        "parentFunction": detail_spec["parentFunction"],
+        "geo": detail_geo,
+        "functions": [dict(f) for f in detail_spec["functions"]],
+        "observations": detail_observations,
+        "coverage": {
+            "expectedCells": detail_spec["cellsPerUnit"],
+            "observedCells": len(detail_observations),
+            "flagged": sum(1 for o in detail_observations if "flag" in o),
+        },
+    }
+    detail_payload["reconciliation"] = _reconcile_detail(observations, detail_payload)
 
     return {
         "schemaVersion": 1,
@@ -248,7 +292,7 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
             "shareOfGdpHundredths": "centesimi di punto percentuale di PIL",
         },
         "flags": dict(KNOWN_FLAGS),
-        "functions": [dict(f) for f in spec["expected"]["functions"]],
+        "functions": [dict(f) for f in spec["expected"]["primaryFunctions"]],
         "geographies": [dict(g) for g in spec["expected"]["geographies"]],
         "observations": observations,
         "coverage": {
@@ -257,8 +301,8 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
             "flagged": sum(1 for o in observations if "flag" in o),
         },
         "reconciliation": _reconcile(observations),
+        "details": {detail_spec["parentFunction"]: detail_payload},
     }
-
 
 def _reconcile(observations: list[dict[str, Any]]) -> dict[str, Any]:
     """Compare the source's own TOTAL with the sum of its ten divisions.
@@ -305,9 +349,53 @@ def _reconcile(observations: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _reconcile_detail(
+    observations: list[dict[str, Any]],
+    detail: dict[str, Any],
+) -> dict[str, Any]:
+    """Reconcile the eight Italian GF01 groups to the published GF01 parent."""
+    parent_code = detail["parentFunction"]
+    geo = detail["geo"]
+    detail_codes = {f["code"] for f in detail["functions"]}
+    parent_by_year = {
+        row["year"]: row
+        for row in observations
+        if row["geo"] == geo and row["function"] == parent_code
+    }
+    parts_by_year: dict[int, list[dict[str, Any]]] = {}
+    for row in detail["observations"]:
+        parts_by_year.setdefault(row["year"], []).append(row)
+
+    worst_amount = 0
+    worst_share = 0
+    for year, parent in sorted(parent_by_year.items()):
+        parts = parts_by_year.get(year, [])
+        if {row["function"] for row in parts} != detail_codes:
+            raise SnapshotError(f"{geo}/{year}/{parent_code}: dettaglio COFOG incompleto")
+        gap_amount = abs(parent["amountCents"] - sum(row["amountCents"] for row in parts))
+        gap_share = abs(parent["shareOfGdpHundredths"] - sum(row["shareOfGdpHundredths"] for row in parts))
+        if gap_amount > DETAIL_TOLERANCE_CENTS or gap_share > DETAIL_TOLERANCE_SHARE:
+            raise SnapshotError(
+                f"{geo}/{year}/{parent_code}: il dettaglio si scosta dal parent oltre l'arrotondamento "
+                f"({gap_amount} centesimi, {gap_share} centesimi di punto)"
+            )
+        worst_amount = max(worst_amount, gap_amount)
+        worst_share = max(worst_share, gap_share)
+
+    return {
+        "note": (
+            "Le otto sottofunzioni italiane GF0101–GF0108 sono confrontate con GF01 dello stesso anno. "
+            "Il parent resta quello pubblicato dalla fonte; gli scarti ammessi coprono soltanto l'arrotondamento."
+        ),
+        "toleranceCents": DETAIL_TOLERANCE_CENTS,
+        "toleranceShareHundredths": DETAIL_TOLERANCE_SHARE,
+        "maxGapCents": worst_amount,
+        "maxGapShareHundredths": worst_share,
+    }
+
 def validate_snapshot(data: dict[str, Any]) -> None:
     for key in ("schemaVersion", "datasetId", "period", "caveats", "functions",
-                "geographies", "observations", "coverage", "reconciliation"):
+                "geographies", "observations", "coverage", "reconciliation", "details"):
         if key not in data:
             raise SnapshotError(f"data artifact: campo {key} mancante")
     if data["datasetId"] != DATASET_ID or data["schemaVersion"] != 1:
@@ -332,8 +420,6 @@ def validate_snapshot(data: dict[str, Any]) -> None:
             raise SnapshotError(f"data artifact: codice fuori anagrafica in {key}")
         if observation["year"] not in years:
             raise SnapshotError(f"data artifact: anno fuori periodo in {key}")
-        # La spesa pubblica per funzione non è negativa in questa fonte, ma il
-        # controllo resta sul tipo: un intero, mai un float arrivato di straforo.
         for field in ("amountCents", "shareOfGdpHundredths"):
             if not isinstance(observation[field], int) or isinstance(observation[field], bool):
                 raise SnapshotError(f"data artifact: {field} non intero in {key}")
@@ -344,6 +430,35 @@ def validate_snapshot(data: dict[str, Any]) -> None:
     if len(seen) != data["coverage"]["expectedCells"]:
         raise SnapshotError("data artifact: celle attese non tutte presenti")
 
+    detail = data.get("details", {}).get("GF01")
+    if not isinstance(detail, dict) or detail.get("parentFunction") != "GF01" or detail.get("geo") != "IT":
+        raise SnapshotError("data artifact: dettaglio GF01 italiano mancante o inatteso")
+    detail_codes = {f["code"] for f in detail.get("functions", [])}
+    if detail_codes != {f"GF010{n}" for n in range(1, 9)}:
+        raise SnapshotError("data artifact: anagrafica dettaglio GF01 inattesa")
+    if detail["coverage"]["observedCells"] != detail["coverage"]["expectedCells"]:
+        raise SnapshotError("data artifact: copertura dettaglio GF01 incompleta")
+    if len(detail["observations"]) != detail["coverage"]["expectedCells"]:
+        raise SnapshotError("data artifact: osservazioni dettaglio GF01 e copertura non coincidono")
+    detail_seen = set()
+    for observation in detail["observations"]:
+        key = (observation["geo"], observation["year"], observation["function"])
+        if key in detail_seen:
+            raise SnapshotError(f"data artifact: osservazione dettaglio duplicata {key}")
+        detail_seen.add(key)
+        if observation["geo"] != "IT" or observation["function"] not in detail_codes or observation["year"] not in years:
+            raise SnapshotError(f"data artifact: codice dettaglio fuori perimetro in {key}")
+        for field in ("amountCents", "shareOfGdpHundredths"):
+            if not isinstance(observation[field], int) or isinstance(observation[field], bool) or observation[field] < 0:
+                raise SnapshotError(f"data artifact: {field} dettaglio non valido in {key}")
+        if "flag" in observation and observation["flag"] not in data["flags"]:
+            raise SnapshotError(f"data artifact: flag dettaglio sconosciuto in {key}")
+    if sum(1 for o in detail["observations"] if "flag" in o) != detail["coverage"]["flagged"]:
+        raise SnapshotError("data artifact: conteggio flag dettaglio divergente")
+    expected_detail_cells = len(detail_codes) * len(list(years))
+    if len(detail_seen) != expected_detail_cells:
+        raise SnapshotError("data artifact: celle dettaglio GF01 attese non tutte presenti")
+    _reconcile_detail(data["observations"], detail)
 
 def build_metadata(spec: dict[str, Any], data_bytes: bytes, data: dict[str, Any]) -> dict[str, Any]:
     source = spec["source"]
@@ -426,6 +541,8 @@ def _check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
         raise SnapshotError("data artifact: periodo divergente dal lock")
     if data["coverage"]["expectedCells"] != spec["expected"]["cellsPerUnit"]:
         raise SnapshotError("data artifact: celle attese divergenti dal lock")
+    if data["details"]["GF01"]["coverage"]["expectedCells"] != spec["expected"]["detail"]["cellsPerUnit"]:
+        raise SnapshotError("data artifact: celle dettaglio GF01 divergenti dal lock")
     metadata = json.loads(meta_path.read_text(encoding="utf-8"))
     artifact = metadata["integrity"]["dataArtifact"]
     if artifact["sha256"] != sha256_bytes(data_bytes) or artifact["bytes"] != len(data_bytes):
@@ -466,8 +583,9 @@ def main() -> int:
         data_bytes = canonical_bytes(data)
         if not args.write:
             print(
-                f"eurostat-cofog: build ok ({len(data['observations'])} osservazioni, "
-                f"{len(data_bytes)} byte) — usa --write per salvare"
+                f"eurostat-cofog: build ok ({len(data['observations'])} osservazioni principali + "
+                f"{len(data['details']['GF01']['observations'])} di dettaglio GF01, {len(data_bytes)} byte) "
+                "— usa --write per salvare"
             )
             return 0
         args.data.write_text(data_bytes.decode("utf-8"), encoding="utf-8")

@@ -31,8 +31,8 @@ test("public order view retains the three semantic axes and hashed official prov
   assert.equal(view.selected.year, 2014);
   assert.match(view.semantics.soldi.nature, /SEC 2010/);
   assert.equal(view.semantics.periodo.referencePeriod, "2014-2024");
-  assert.equal(view.semantics.provenance.acquisitionDate, "2026-09-03");
-  assert.equal(view.semantics.provenance.checkedAt, "2026-09-03");
+  assert.equal(view.semantics.provenance.acquisitionDate, "2026-09-10");
+  assert.equal(view.semantics.provenance.checkedAt, "2026-09-10");
   assert.match(view.semantics.provenance.publicationDate, /^2026-07-21/);
   assert.equal(view.source.licenseId, "CC-BY-4.0");
   for (const source of Object.values(view.source.assets)) {

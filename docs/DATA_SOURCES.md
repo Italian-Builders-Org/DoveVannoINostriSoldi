@@ -530,6 +530,25 @@ nullo) rimangono distinti da zero. Catalogo, API e MCP usano le stesse righe;
 non viene aggiunto un indicatore aggregato alle schede Comune. Vedi
 [fonte, caveat e riproduzione](ISTAT_MISURA_COMUNE.md).
 
+### Eurostat COFOG · servizi generali della PA (GF01)
+
+Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.
+Dal rilascio acquisito e riverificato il 10 settembre 2026 conserva, oltre a totale e dieci
+divisioni per le geografie già pubblicate, le otto sottofunzioni GF01 per l'Italia dal 2014
+al 2024. Le 88 celle di dettaglio per unità sono obbligatorie e riconciliano con il parent
+GF01 entro la sola tolleranza di arrotondamento; una cella assente ferma la pubblicazione.
+
+La pagina `/spese/servizi-generali` espone GF0101–GF0108 senza trasformare GF01 in «debito».
+In particolare GF0107, *Public debt transactions*, non coincide con la sola spesa per
+interessi D.41: il manuale COFOG Eurostat registra in 01.7 sia D.41 sia il consumo
+intermedio P.2 relativo al FISIM, mentre i costi amministrativi di gestione del debito
+sono classificati in 01.1. La pagina `/debito` resta quindi un approfondimento distinto
+su stock, detentori, scadenze e interessi e non una scomposizione dell'intero GF01.
+
+Gli importi sono spesa delle Amministrazioni pubbliche in competenza economica SEC 2010,
+non pagamenti SIOPE né stanziamenti del bilancio dello Stato. Il secondo livello viene
+pubblicato solo per l'Italia: assenze osservate per altre geografie non sono convertite in zero.
+
 ### Debito pubblico italiano
 
 La pagina `/debito` usa esclusivamente i cubi BDS di Banca d'Italia

@@ -129,10 +129,13 @@ export default function PrivacyPage() {
       <section className="panel">
         <h2 className="panel-title">I tuoi diritti</h2>
         <p>
-          Un canale privato per accesso, correzione, cancellazione, limitazione, portabilità quando
-          applicabile o opposizione non è ancora indicato sul sito. Le issue GitHub sono pubbliche:
-          non inviare dati personali. Puoi presentare reclamo al Garante per la protezione dei dati
-          personali. La pagina <a href="/supporto">Supporto</a> resta per problemi tecnici del sito.
+          Per accesso, correzione, cancellazione, limitazione, portabilità quando applicabile o
+          opposizione, usa il canale privato{" "}
+          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>.
+          Invia soltanto le informazioni necessarie a gestire la richiesta, senza password o
+          altre credenziali. Le issue GitHub sono pubbliche: non usarle per richieste privacy o
+          dati personali. Puoi presentare reclamo al Garante per la protezione dei dati personali.
+          Per assistenza tecnica consulta la pagina <a href="/supporto">Supporto</a>.
         </p>
       </section>
     </main>

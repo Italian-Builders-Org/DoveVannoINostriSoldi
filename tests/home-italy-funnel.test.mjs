@@ -19,7 +19,7 @@ test("home Italy funnel exposes PA composition with everyday labels", () => {
   assert.equal(funnel.pa.trend.at(-1)?.totalEuro, funnel.pa.totalEuro);
   assert.equal(funnel.pa.slices[0]?.label, COFOG_EVERYDAY_LABELS.GF10);
   assert.match(funnel.pa.slices[0]?.label ?? "", /Pensioni/);
-  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF07" && slice.href === "/spese/sanita"));
+  assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF07" && slice.href === "/spese/sanita?anno=2024"));
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF08" && slice.href === "/spese/cultura?anno=2024" && slice.linkLabel === "Cultura e tempo libero"));
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF02" && slice.href === "/spese/difesa?anno=2024"));
   assert.ok(funnel.pa.slices.some((slice) => slice.id === "GF03" && slice.href === "/spese/sicurezza?anno=2024"));

@@ -794,6 +794,32 @@
       "trustModel": "Source-lock: four upstream CSVs are pinned by SHA-256 and byte size. PR validation checks the committed artifacts offline; the scheduled workflow verifies the pinned hashes."
     },
     {
+      "id": "masaf-logistica-mercati",
+      "owner": "MASAF PNRR logistica mercati agroalimentari (linea Mercati)",
+      "files": [
+        "src/data/generated/masaf-logistica-mercati.data.json",
+        "src/data/generated/masaf-logistica-mercati.meta.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/masaf_logistica_mercati_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_masaf_logistica_mercati.py"
+      ],
+      "nodeTests": [
+        "tests/masaf-logistica-mercati.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/masaf_logistica_mercati_snapshot.py --check",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/masaf-logistica-mercati.source.json",
+      "trustModel": "Seed ufficiale committato (graduatoria, decreti, CUP) pinnato per byte/SHA-256. --check valida offline copertura, nature contabili distinte e pagamenti assenti. Non include Imprese e Porti."
+    },
+    {
       "id": "mop-comparable-browse",
       "owner": "OpenBDAP MOP comparable works browse snapshot",
       "files": [

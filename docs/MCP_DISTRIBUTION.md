@@ -15,7 +15,13 @@ In Manufact Cloud scegliere `Servers → New Server → Connect an existing serv
 l'endpoint canonico. Questa modalità usa il server già pubblicato per chat, test e publish checks;
 non richiede una migrazione a `mcp-use` né un secondo deployment.
 
-Questa è la configurazione attuale. Una migrazione a `mcp-use` avrebbe senso soltanto se in futuro
+Il proxy nativo Manufact inoltra le richieste del dominio pubblico
+`https://mcp.dovevannoinostrisoldi.com/mcp` a questo stesso endpoint canonico.
+Il gateway non contiene snapshot, adapter o workflow ETL propri: gli aggiornamenti
+passano dal normale rilascio DVNS. Non usare il vecchio deployment della copia
+trasferita come sorgente dei dati per nuove integrazioni.
+
+Una migrazione a `mcp-use` avrebbe senso soltanto se in futuro
 si decidesse di spostare anche il runtime su Manufact o di sviluppare interfacce MCP Apps native;
 in quel caso va pianificata come modifica architetturale, con test di parità prima del passaggio.
 
@@ -25,6 +31,7 @@ privacy. Non includere prompt o dati personali nei test: i tool DVNS interrogano
 Riferimenti ufficiali:
 
 - [Manufact: creare o collegare un server](https://docs.manufact.com/dashboard/servers)
+- [Manufact: server esterno e proxy nativo](https://docs.manufact.com/dashboard/connect-existing-server)
 - [Manufact Cloud](https://docs.manufact.com/dashboard)
 
 ## ChatGPT
@@ -43,6 +50,14 @@ Materiale da verificare prima dell'invio:
 - almeno cinque casi positivi e tre negativi eseguiti sul deployment di produzione;
 - release notes coerenti con ciò che è già online;
 - piano Vercel attivo e relativa retention dei log registrati nella scheda di review;
+
+Le annotazioni descrivono aspetti indipendenti del comportamento. Entrambi i tool
+sono `readOnlyHint: true`, `destructiveHint: false` e `idempotentHint: true`.
+`list_datasets` restituisce il catalogo locale (`openWorldHint: false`);
+`query_dataset` può consultare fonti pubbliche live (`openWorldHint: true`), anche
+se altre query leggono snapshot. La sola lettura non implica un ambiente chiuso.
+Riportare questa distinzione anche nelle giustificazioni del submission pack;
+non cambiare le annotazioni per adattarsi a un punteggio automatico.
 
 Riferimenti ufficiali:
 

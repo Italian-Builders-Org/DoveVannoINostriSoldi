@@ -255,6 +255,15 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Upload health spending history evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: health-spending-history
+          path: artifacts/browser/health-history/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

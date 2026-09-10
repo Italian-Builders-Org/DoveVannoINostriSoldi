@@ -4,6 +4,7 @@ import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
 import { inspectOfficialSeries } from "./official-series.mjs";
 import { inspectDefence } from "./defence.mjs";
+import { inspectHealthHistory, inspectInvalidHealthYears } from "./health-public-spending.mjs";
 import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
 import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
@@ -521,6 +522,9 @@ async function assertHealthSpendingTables(page, label) {
   assertTextMatches(tableText, /Trento/, label);
   assert.doesNotMatch(tableText, /€/);
   assert.ok(await page.$('#posti-letto a[href="/dati/salute-posti-letto-2023"]'));
+  await page.focus('[data-testid="health-annual"] summary');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => document.querySelector('[data-testid="health-annual"]').open);
   const selector = '[role="region"].table-scroll';
   const tableStates = await page.$$eval(selector, (regions) =>
     regions.map((region) => ({
@@ -531,7 +535,7 @@ async function assertHealthSpendingTables(page, label) {
     })),
   );
 
-  assert.equal(tableStates.length, 4, `${label}: sono attese quattro tabelle`);
+  assert.equal(tableStates.length, 5, `${label}: sono attese le quattro tabelle SSN e la serie COFOG`);
   for (const [index, state] of tableStates.entries()) {
     assert.equal(state.hasTable, true, `${label}: tabella ${index + 1} assente`);
     assert.equal(state.tabIndex, 0, `${label}: tabella ${index + 1} non raggiungibile da tastiera`);
@@ -941,6 +945,16 @@ try {
     });
     completed.push(label);
   }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Andamento sanità ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/?anno=2014", width, validate: inspectHealthHistory,
+    });
+    completed.push(label);
+  }
+  await inspectInvalidHealthYears();
+  completed.push("Sanità: anni non validi rifiutati");
 
   for (const width of [320, 390, 768, 1280]) {
     const label = `Atlante Imprese ${width}px`;

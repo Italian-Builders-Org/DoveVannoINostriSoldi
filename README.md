@@ -24,9 +24,9 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 - Capire rapidamente che cosa il dato misura, e che cosa non misura.
 - Fare domande al catalogo dati e al server MCP in sola lettura.
 
-Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, enti, appalti ANAC, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 33 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 93 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
+Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, **opere pubbliche (previsto vs effettivo)**, enti, appalti ANAC, povertà, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 33 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 93 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
 
-![Home: pagamenti dei Comuni, mappa regionale e composizione della spesa](docs/readme/home.jpg)
+![Home: spesa pubblica Eurostat COFOG, bilancio dello Stato e pagamenti dei Comuni](docs/readme/home.jpg)
 
 | Territori | Pagella dei governi |
 | --- | --- |
@@ -36,6 +36,10 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | --- | --- |
 | ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Atlante Imprese: imprese attive per Regione, settore ATECO e periodo](docs/readme/imprese.jpg) |
 
+| Opere pubbliche | Operatori ANAC |
+| --- | --- |
+| ![Opere pubbliche: confronto costo previsto e costo effettivo OpenBDAP MOP](docs/readme/opere.jpg) | ![Appalti: indice nazionale operatori ANAC](docs/readme/appalti-operatori.jpg) |
+
 | Cosa controllare | Catalogo dati |
 | --- | --- |
 | ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) | ![Catalogo dati: dataset integrati, filtri per evidenza e pubblicazione](docs/readme/dati.jpg) |
@@ -44,21 +48,30 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | --- | --- |
 | ![Confronto Comuni: quattro profili OpenCivitas e perimetro 2022](docs/readme/confronto-territori.jpg) | ![Debito pubblico: stock, detentori e interessi da Banca d'Italia ed Eurostat](docs/readme/debito.jpg) |
 
-| Sanità | MCP |
+| Sanità | Spese dello Stato |
 | --- | --- |
-| ![Sanità: voci del Conto economico SSN, personale e servizi](docs/readme/sanita.jpg) | ![Pagina MCP: endpoint pubblico, strumenti list_datasets e query_dataset](docs/readme/mcp.jpg) |
+| ![Sanità: voci del Conto economico SSN, personale e servizi](docs/readme/sanita.jpg) | ![Spese dello Stato: pagamenti OpenBDAP per funzione e amministrazione](docs/readme/stato.jpg) |
+
+| Povertà | Assistente |
+| --- | --- |
+| ![Povertà: indicatori ISTAT assoluta e relativa](docs/readme/poverta.jpg) | ![Assistente: chat sui dati verificati del sito](docs/readme/assistente.jpg) |
+
+| MCP |
+| --- |
+| ![Pagina MCP: endpoint pubblico, strumenti list_datasets e query_dataset](docs/readme/mcp.jpg) |
 
 ## Cosa trovi sul sito
 
 | Sezione | In sintesi |
 | --- | --- |
-| [Home](https://www.dovevannoinostrisoldi.com/) | Pagamenti dei Comuni, mappa regionale, composizione della spesa |
+| [Home](https://www.dovevannoinostrisoldi.com/) | Spesa PA (Eurostat COFOG), bilancio dello Stato e pagamenti dei Comuni |
 | [Imprese](https://www.dovevannoinostrisoldi.com/imprese) | Imprese attive, addetti, localizzazioni e fatturato aggregato (ISTAT) |
 | [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Scuola secondaria di II grado per Regione (MIM) e università/ricerca |
 | [Povertà](https://www.dovevannoinostrisoldi.com/poverta) | Povertà assoluta e relativa (ISTAT) |
 | [Soldi](https://www.dovevannoinostrisoldi.com/spese) | Uscite di cassa comunali (SIOPE), sanità, invalidità, pensioni, ambiente, consulenze |
 | [Territori](https://www.dovevannoinostrisoldi.com/territori) | Confronti per Regione e Comune, profili OpenCivitas, CPT e IRPEF MEF |
 | [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione) | OpenCoesione, PNRR Italia Domani, asili e incarichi PNRR |
+| [Opere pubbliche](https://www.dovevannoinostrisoldi.com/opere) | Costo previsto vs effettivo (OpenBDAP MOP), avanzamento e filtri |
 | [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato) | Pagamenti per funzione e amministrazione (OpenBDAP/RGS) |
 | [Debito pubblico](https://www.dovevannoinostrisoldi.com/debito) | Stock, detentori, scadenze e interessi (Banca d'Italia ed Eurostat) |
 | [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio) | Stanziamenti per missione e riallocazione ipotetica (OpenBDAP, competenza A1) |
@@ -72,7 +85,7 @@ Oggi il portale copre pagamenti comunali, imprese, istruzione, sanità, pensioni
 | [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato interrogabile (93 dataset) |
 | [Report](https://www.dovevannoinostrisoldi.com/report) | Articoli mensili e approfondimenti |
 
-Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [operatori ANAC](https://www.dovevannoinostrisoldi.com/appalti/operatori), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [studio asili PNRR](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti).
+Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [operatori ANAC](https://www.dovevannoinostrisoldi.com/appalti/operatori), [opere pubbliche](https://www.dovevannoinostrisoldi.com/opere), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [studio asili PNRR](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti).
 
 ## Come leggere il progetto
 

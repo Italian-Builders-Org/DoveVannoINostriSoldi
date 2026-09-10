@@ -24,6 +24,11 @@ const shots = [
   { pathname: "/debito", file: "debito.jpg", wait: "main h1" },
   { pathname: "/spese/sanita", file: "sanita.jpg", wait: "main h1" },
   { pathname: "/mcp", file: "mcp.jpg", wait: "main h1" },
+  { pathname: "/opere", file: "opere.jpg", wait: "main h1" },
+  { pathname: "/appalti/operatori", file: "appalti-operatori.jpg", wait: "main h1" },
+  { pathname: "/assistente", file: "assistente.jpg", wait: "main h1" },
+  { pathname: "/poverta", file: "poverta.jpg", wait: "main h1" },
+  { pathname: "/stato", file: "stato.jpg", wait: "main h1" },
 ];
 
 function chromeExecutable() {
@@ -58,14 +63,17 @@ try {
       await page.evaluate(() => {
         document.querySelector(".skip-link")?.setAttribute("hidden", "");
         document.querySelector("nextjs-portal")?.remove();
-        document.querySelector('[data-nextjs-dev-overlay]')?.remove();
+        document.querySelector("[data-nextjs-dev-overlay]")?.remove();
         document.querySelector('button[aria-label="Open Next.js Dev Tools"]')?.remove();
       });
       await page.evaluate(() => document.fonts.ready);
       await page.waitForNetworkIdle({ idleTime: 500, timeout: 20_000 }).catch(() => {});
-      await page.evaluate(() => new Promise((resolve) => {
-        requestAnimationFrame(() => requestAnimationFrame(resolve));
-      }));
+      await page.evaluate(
+        () =>
+          new Promise((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+          }),
+      );
 
       const layout = await page.evaluate(() => {
         const root = document.documentElement;

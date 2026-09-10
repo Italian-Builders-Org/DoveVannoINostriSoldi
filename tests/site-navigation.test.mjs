@@ -60,14 +60,15 @@ test("every page offers the rest of its section without the header menu", async 
   assert.doesNotMatch(css, /border-radius\s*:/);
 });
 
-test("public legal pages do not expose a personal mailbox", async () => {
+test("public legal pages expose only the authorized support mailbox", async () => {
   const files = await Promise.all([
     readFile(new URL("../src/app/privacy/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/app/supporto/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/lib/site.ts", import.meta.url), "utf8"),
   ]);
   for (const source of files) {
-    assert.doesNotMatch(source, /mailto:/i);
+    const mailtoLinks = [...source.matchAll(/mailto:([^"\s]+)/gi)].map((match) => match[1]);
+    assert.ok(mailtoLinks.every((address) => address === "info@mantoventure.com"));
     assert.doesNotMatch(source, /@gmail\.com/i);
   }
   assert.doesNotMatch(files[0], /panel-title">Titolare/i);

@@ -64,3 +64,16 @@ test("unpatched vulnerabilities are routed to the private GitHub advisory form",
   assert.match(privacy, /Le issue GitHub sono pubbliche/);
   assert.match(privacy, /canale privato/);
 });
+
+test("privacy and support publish the authorized private contact without routing requests to public issues", async () => {
+  const pages = await Promise.all([
+    source("../src/app/privacy/page.tsx"),
+    source("../src/app/supporto/page.tsx"),
+  ]);
+  for (const page of pages) {
+    assert.match(page, /href="mailto:info@mantoventure\.com"/);
+    assert.match(page, />info@mantoventure\.com<\/a>/);
+    assert.match(page, /Le issue GitHub sono pubbliche/);
+    assert.doesNotMatch(page, /non è ancora indicato/);
+  }
+});

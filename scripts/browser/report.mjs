@@ -166,6 +166,13 @@ try {
       validate: async (page) => {
         const label = `${width}px`;
         const selector = await sidebarTrigger(page);
+        if (width === 1280) {
+          // Desktop starts compact. Expand through the keyboard before checking
+          // the full card; the compact trigger is checked separately below.
+          await page.focus('.sidebar-collapse');
+          await page.keyboard.press('Enter');
+          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
+        }
         const trigger = await triggerGeometry(page, selector);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
         assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);

@@ -145,6 +145,13 @@ try {
           await page.waitForSelector('#mobile-navigation', { hidden: true });
         } else {
           await expandDesktopSidebar(page);
+          await page.click('.sidebar-collapse');
+          await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
+          assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-expanded')), 'false', 'Riduci chiude anche il menu espanso al passaggio del puntatore');
+          await leaveDesktopSidebar(page);
+          await page.focus('.sidebar-collapse');
+          await page.keyboard.press('Enter');
+          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
           const before = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
           await collapseDesktopSidebar(page);
           const after = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);

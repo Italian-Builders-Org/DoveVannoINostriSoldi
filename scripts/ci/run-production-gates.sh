@@ -19,12 +19,13 @@ MCP_WINDOW_POST_BUDGET=30
 MCP_CONTRACT_POSTS=29
 MCP_SUBSCRIPTION_POSTS=2
 MCP_LOAD_REQUESTS=15
+MCP_IVA_POSTS=5
 if (( MCP_CONTRACT_POSTS > MCP_WINDOW_POST_BUDGET )); then
   echo "ERROR: MCP contract smoke declares ${MCP_CONTRACT_POSTS} POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
   exit 1
 fi
-if (( MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS > MCP_WINDOW_POST_BUDGET )); then
-  echo "ERROR: MCP subscription + load declares $((MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS)) POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
+if (( MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS > MCP_WINDOW_POST_BUDGET )); then
+  echo "ERROR: MCP subscription + load + IVA declares $((MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS)) POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
   exit 1
 fi
 
@@ -147,6 +148,10 @@ npm run test:mcp:load -- \
   --requests "$MCP_LOAD_REQUESTS" \
   --concurrency 6 \
   --p95-ms 3000
+echo "::endgroup::"
+
+echo "::group::MEF IVA API and MCP HTTP"
+node scripts/mef_iva_http_smoke.mjs
 echo "::endgroup::"
 
 echo "::group::Browser core suite"

@@ -13,6 +13,7 @@ import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -350,6 +351,18 @@ function snapshotManagedIstatEpea(): SourceHealth {
   };
 }
 
+function snapshotManagedMefIva(): SourceHealth {
+  const publicationDate = mefIvaData.tables.map((table) => table.publicationDate).sort().at(-1)!;
+  return {
+    ...baseHealth("mef-iva"),
+    reachability: "not-probed",
+    freshness: freshnessFor("mef-iva", publicationDate),
+    latencyMs: null,
+    detail: `Snapshot IVA dichiarazioni 2024–2025 (imposta 2023–2024): ${mefIvaMetadata.coverage.tables} tabelle e ${mefIvaMetadata.coverage.rows} righe per regione e attività, senza incrocio. Ultima pubblicazione ${publicationDate}; acquisito ${mefIvaMetadata.source.acquiredAt}; controllato ${mefIvaMetadata.source.checkedAt}.`,
+    recordCount: mefIvaMetadata.coverage.rows,
+  };
+}
+
 function snapshotManagedMefIrpefDettaglio(): SourceHealth {
   const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
   const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
@@ -476,6 +489,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
+  "mef-iva": snapshotManagedMefIva,
 };
 
 export function buildSourceHealthSnapshots() {

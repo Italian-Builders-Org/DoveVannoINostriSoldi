@@ -35,6 +35,7 @@ export type SourceId =
   | "istat-bes-istruzione"
   | "inps-naspi"
   | "mef-irpef-dettaglio"
+  | "mef-iva"
   | "ameco"
   | "governi-presidenza";
 
@@ -564,6 +565,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-naspi", "domain:social-benefits"],
+  },
+  "mef-iva": {
+    id: "mef-iva",
+    label: "MEF · principali grandezze IVA",
+    owner: "MEF - Dipartimento delle Finanze",
+    sourceUrl: "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201",
+    cadence: "annuale",
+    cadenceNote: "Dichiarazioni 2024 e 2025, anni di imposta 2023 e 2024. Quattro export verificati per regione e attività, aggiornabili solo dopo nuova acquisizione e validazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-iva", "domain:taxation"],
   },
   "mef-irpef-dettaglio": {
     id: "mef-irpef-dettaglio",

@@ -355,6 +355,31 @@ su evasione, frode, responsabilità individuali o qualità amministrativa.
 Manifest, hash, schema, definizioni e procedura di refresh sono documentati in
 [MEF_IRPEF_COMUNALE.md](MEF_IRPEF_COMUNALE.md).
 
+### Principali grandezze IVA MEF
+
+**Issue #388.** Quattro export ufficiali della Navigazione dinamica del
+Dipartimento delle Finanze: dichiarazioni 2024 e 2025 (anni d’imposta 2023 e
+2024), classificazioni Regione e Sezione di attività, mantenute separate.
+Pubblicazioni del 16 aprile 2025 e 23 aprile 2026, acquisite e controllate
+l’11 settembre 2026. Licenza **CC BY 3.0 IT**, verificata sulle singole tabelle.
+
+Il bundle espone 93 righe, compresi i totali pubblicati dalla fonte. Ammontare
+e media, originariamente in migliaia di euro, sono convertiti esattamente in
+centesimi; frequenze e numero contribuenti restano conteggi distinti. Celle
+soppresse, mancanti e zeri osservati sono stati diversi. I codici attività
+sono qualificati per edizione; Trento e Bolzano hanno ID distinti anche quando
+condividono il codice sorgente `04`.
+
+Sono dichiarazioni, non incassi, stime di evasione o valore aggiunto dei conti
+nazionali. Non è disponibile un incrocio regione × attività. IRES e IRAP non
+sono inclusi. Questa integrazione espone fonte, API e MCP, senza nuova UI.
+
+- API: `/api/tributi/iva?anno=2025&taglio=regione&limit=50&offset=0`.
+- MCP: `query_dataset` con `dataset: "mef_iva"`, `year: 2025`,
+  `breakdown: "regione"` (oppure `"attivita"`). Anno e taglio obbligatori.
+- [Contratto, URL, acquisizione e verifiche](research/MEF_IVA.md).
+- [Tabella ufficiale 2025 per regione](https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201).
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

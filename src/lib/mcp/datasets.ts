@@ -360,6 +360,12 @@ export async function queryPublicDataset(
         ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
       });
     }
+    case "mef_iva": {
+      const { queryMefIva } = await import("@/lib/mef-iva-snapshot");
+      return jsonSafe({ dataset: query.dataset, ...queryMefIva({
+        year: query.year, breakdown: query.breakdown, limit: query.limit, offset: query.offset,
+      }) });
+    }
     case "mef_irpef_dettaglio": {
       const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
       return jsonSafe({

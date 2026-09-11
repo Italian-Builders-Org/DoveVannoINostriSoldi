@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 60
+- Artefatti nel registro: 61
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 44 (PR umana dopo revisione)
+- manuale: 45 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -103,6 +103,7 @@ La revisione e il merge restano umani.
 | `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |
 | `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
+| `mef-iva-2024-2025` | 2023-2024 (anni di imposta) | 2026-09-11 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | nessuno | nessuno | manuale | `python3 scripts/etl/mef_iva_snapshot.py --check` |
 
 ## Prossimo passo
 

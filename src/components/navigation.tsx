@@ -287,7 +287,11 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
             aria-label={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
             title={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            aria-expanded={!compact} aria-controls="desktop-navigation" onClick={() => setCollapsed(!collapsed)}>
+            aria-expanded={!compact} aria-controls="desktop-navigation" onClick={() => {
+              // Toggle the state the button announces, including hover expansion.
+              setCollapsed(!compact);
+              setPointerInside(false);
+            }}>
             <HugeiconsIcon icon={compact ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </div>

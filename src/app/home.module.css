@@ -299,16 +299,8 @@
   font-size: 10px;
   font-weight: 700;
 }
-.regionRankChangeUp {
-  color: var(--chart-category-teal);
-  border-color: color-mix(in srgb, var(--chart-category-teal) 45%, var(--color-neutral-300));
-  background: color-mix(in srgb, var(--chart-category-teal) 8%, transparent);
-}
-.regionRankChangeDown {
-  color: var(--color-accent-700);
-  border-color: color-mix(in srgb, var(--color-accent-700) 35%, var(--color-neutral-300));
-  background: color-mix(in srgb, var(--color-accent-700) 7%, transparent);
-}
+.regionRankChangeUp,
+.regionRankChangeDown,
 .regionRankChangeSame,
 .regionRankChangeNeutral {
   color: var(--color-neutral-600);

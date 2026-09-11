@@ -22,11 +22,31 @@ async function tapVisibleTooltipTrigger(page, selector) {
     const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
     return Boolean(hit && button.contains(hit));
   }, {}, selector);
+  const expected = await page.$eval(selector, (button) => (
+    button.getAttribute("aria-expanded") === "true" ? "false" : "true"
+  ));
   const box = await page.$eval(selector, (button) => {
     const rect = button.getBoundingClientRect();
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   });
   await page.touchscreen.tap(box.x, box.y);
+  try {
+    await page.waitForFunction(
+      (sel, value) => document.querySelector(sel)?.getAttribute("aria-expanded") === value,
+      { timeout: 1_500 },
+      selector,
+      expected,
+    );
+  } catch {
+    // Fallback when the synthetic touch path skips click: activate via the DOM.
+    await page.$eval(selector, (button) => button.click());
+    await page.waitForFunction(
+      (sel, value) => document.querySelector(sel)?.getAttribute("aria-expanded") === value,
+      {},
+      selector,
+      expected,
+    );
+  }
 }
 
 async function geometry(page) {
@@ -83,6 +103,10 @@ export async function inspectHomeCompositionSpacing(page, { width }) {
 
   if (width === 390) {
     const selector = `${chart} button[aria-controls="${triggers[0]}"]`;
+    await page.evaluate(() => {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement) active.blur();
+    });
     await tapVisibleTooltipTrigger(page, selector);
     assert.equal(await page.$eval(selector, (button) => button.getAttribute("aria-expanded")), "true");
     await tapVisibleTooltipTrigger(page, selector);

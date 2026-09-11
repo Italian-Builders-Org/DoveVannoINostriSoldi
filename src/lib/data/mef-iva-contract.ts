@@ -135,9 +135,9 @@ export function validateMefIvaBundle(dataInput: unknown, metadataInput: unknown)
     // published amounts are rounded independently to thousands of euros.
     const reconcile = (cells: MefIvaCell[], monetary: boolean) => {
       if (cells.some((cell) => cell.value === null)) return;
-      const sum = cells.slice(0, -1).reduce((acc, cell) => acc + BigInt(cell.value!), 0n);
+      const sum = cells.slice(0, -1).reduce((acc, cell) => acc + BigInt(cell.value!), BigInt(0));
       const difference = sum - BigInt(cells.at(-1)!.value!);
-      const tolerance = monetary ? BigInt(cells.length * 50_000) : 0n;
+      const tolerance = monetary ? BigInt(cells.length * 50_000) : BigInt(0);
       if (difference > tolerance || difference < -tolerance) throw new Error("MEF IVA: riconciliazione del totale fallita.");
     };
     reconcile(current.rows.map((item) => item.taxpayers), false);

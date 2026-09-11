@@ -25,7 +25,7 @@ import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
-import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import { eurostatHicpData, eurostatHicpMetadata } from "@/lib/eurostat-hicp-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
@@ -283,27 +283,18 @@ function snapshotManagedPublicDebt(sourceId: "bancaditalia" | "eurostat"): Sourc
   };
 }
 
-function snapshotManagedGovernmentInflation(): SourceHealth {
-  const snapshot = getGovernmentScorecardV6SupplementalSnapshot();
-  const inflation = snapshot.series.find((series) => series.indicator_id === "inflation");
-  if (!inflation) throw new Error("serie IPCA assente dalla pagella governi");
-  const latestPeriod = inflation.geographies
-    .find((geography) => geography.geography === "IT")
-    ?.points.at(-1)?.period;
-  const sourceId = inflation.geographies[0]?.points[0]?.source_id;
-  const source = snapshot.sources.find((candidate) => candidate.id === sourceId);
-  if (!latestPeriod || !source) throw new Error("provenienza IPCA incompleta nella pagella governi");
-  const recordCount = inflation.geographies.reduce(
-    (total, geography) => total + geography.points.length,
-    0,
-  );
+function snapshotManagedEurostatHicp(): SourceHealth {
+  const latestSourceUpdate = Object.values(eurostatHicpMetadata.source.assets)
+    .map((asset) => asset.sourceUpdated)
+    .sort()
+    .at(-1) ?? null;
   return {
     ...baseHealth("eurostat-hicp"),
     reachability: "not-probed",
-    freshness: freshnessFor("eurostat-hicp", source.upstream_updated_at),
+    freshness: freshnessFor("eurostat-hicp", latestSourceUpdate),
     latencyMs: null,
-    detail: `Snapshot ETL attivo · IPCA mensile fino a ${latestPeriod} (${source.dataset_code}).`,
-    recordCount,
+    detail: `Snapshot Eurostat HICP verificato · totale Italia ${eurostatHicpData.period.total.from}/${eurostatHicpData.period.total.to} · divisioni e confronto ${eurostatHicpData.period.divisions} · pesi ${eurostatHicpData.period.weightYears.at(-1)} · prezzi, non spesa pubblica.`,
+    recordCount: eurostatHicpData.coverage.observedCells,
   };
 }
 
@@ -474,7 +465,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "partecipazioni-pubbliche": snapshotManagedMefParticipations,
   bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
   eurostat: () => snapshotManagedPublicDebt("eurostat"),
-  "eurostat-hicp": snapshotManagedGovernmentInflation,
+  "eurostat-hicp": snapshotManagedEurostatHicp,
   "eurostat-cofog": snapshotManagedEurostatCofog,
   "istat-cofog": snapshotManagedIstatCofog,
   "istat-epea": snapshotManagedIstatEpea,

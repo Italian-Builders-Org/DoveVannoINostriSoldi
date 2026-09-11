@@ -57,6 +57,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
       {
         href: "/spese/sanita",
@@ -226,6 +227,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     links: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
       { href: "/spese/sanita", label: "Sanità" },
       { href: "/spese/sanita/storico", label: "Sanità · serie storica" },

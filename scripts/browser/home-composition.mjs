@@ -5,6 +5,30 @@ import { defaultArtifactsDir } from "./harness.mjs";
 
 const chart = 'ol[aria-label^="Composizione spesa pubblica Italia"]';
 
+async function tapVisibleTooltipTrigger(page, selector) {
+  // page.tap() scrolls the control to the top of the viewport. On this
+  // homepage the sticky announcement+header cover that strip, so the tap
+  // hits the ticker instead of the COFOG trigger and aria-expanded stays false.
+  await page.$eval(selector, (button) => {
+    button.scrollIntoView({ block: "center", inline: "nearest", behavior: "instant" });
+  });
+  await page.waitForFunction((sel) => {
+    const button = document.querySelector(sel);
+    if (!(button instanceof HTMLElement)) return false;
+    const rect = button.getBoundingClientRect();
+    const headerBottom = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
+    if (rect.width < 44 || rect.height < 44) return false;
+    if (rect.top < headerBottom + 1 || rect.bottom > window.innerHeight - 1) return false;
+    const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    return Boolean(hit && button.contains(hit));
+  }, {}, selector);
+  const box = await page.$eval(selector, (button) => {
+    const rect = button.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  });
+  await page.touchscreen.tap(box.x, box.y);
+}
+
 async function geometry(page) {
   return page.$$eval(`${chart} > li`, (rows) => rows.map((row) => {
     const copy = row.querySelector(":scope > div");
@@ -59,9 +83,9 @@ export async function inspectHomeCompositionSpacing(page, { width }) {
 
   if (width === 390) {
     const selector = `${chart} button[aria-controls="${triggers[0]}"]`;
-    await page.tap(selector);
+    await tapVisibleTooltipTrigger(page, selector);
     assert.equal(await page.$eval(selector, (button) => button.getAttribute("aria-expanded")), "true");
-    await page.tap(selector);
+    await tapVisibleTooltipTrigger(page, selector);
     assert.equal(await page.$eval(selector, (button) => button.getAttribute("aria-expanded")), "false");
   }
   const theme = await page.$eval("html", (element) => element.dataset.theme);

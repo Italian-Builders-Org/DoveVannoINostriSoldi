@@ -1,5 +1,6 @@
 .bar {
   height: var(--announcement-height, 44px);
+  overflow: hidden;
   color: var(--color-announcement-text);
   background: var(--color-announcement-bg);
   border-bottom: 1px solid color-mix(in srgb, var(--color-announcement-text) 12%, transparent);

@@ -7,6 +7,7 @@ import {
   type EurostatCofogData,
   type EurostatCofogDetailFunction,
   type EurostatCofogDetailObservation,
+  type EurostatCofogDetailParent,
   type EurostatCofogFunction,
   type EurostatCofogGeography,
   type EurostatCofogMetadata,
@@ -20,6 +21,8 @@ export const eurostatCofogMetadata: EurostatCofogMetadata = validated.metadata;
 
 const GEOGRAPHY_CODES = new Set(eurostatCofogData.geographies.map((entry) => entry.code));
 const FUNCTION_CODES = new Set(eurostatCofogData.functions.map((entry) => entry.code));
+const DETAIL_PARENTS = new Set(Object.keys(eurostatCofogData.details));
+
 export type EurostatCofogQuery = Readonly<{
   geo?: string;
   year?: number;
@@ -45,14 +48,15 @@ export type EurostatCofogQueryResult = Readonly<{
     coverageNote: string;
   }>;
 }>;
+
 export type EurostatCofogDetailQueryResult = Readonly<{
   datasetId: string;
-  parentFunction: "GF01";
+  parentFunction: EurostatCofogDetailParent;
   geo: "IT";
   period: EurostatCofogData["period"];
   functions: readonly EurostatCofogDetailFunction[];
   observations: readonly EurostatCofogDetailObservation[];
-  reconciliation: EurostatCofogData["details"]["GF01"]["reconciliation"];
+  reconciliation: EurostatCofogData["details"][EurostatCofogDetailParent]["reconciliation"];
   source: Readonly<{
     owner: string;
     landingUrl: string;
@@ -69,6 +73,7 @@ function normalizeYear(year: number | undefined): number | undefined {
   }
   return year;
 }
+
 function normalizeGeo(geo: string | undefined): string | undefined {
   if (geo === undefined) return undefined;
   const code = geo.toUpperCase();
@@ -85,6 +90,14 @@ function normalizeFunction(code: string | undefined): string | undefined {
     throw new Error("Funzione COFOG non riconosciuta: usare TOTAL oppure GF01…GF10.");
   }
   return value;
+}
+
+function normalizeDetailParent(parent: string): EurostatCofogDetailParent {
+  const value = parent.toUpperCase();
+  if (!DETAIL_PARENTS.has(value)) {
+    throw new Error("Dettaglio COFOG non pubblicato: usare GF01, GF02, GF03 o GF08.");
+  }
+  return value as EurostatCofogDetailParent;
 }
 
 export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofogQueryResult {
@@ -121,9 +134,13 @@ export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofo
   };
 }
 
-export function queryEurostatCofogGf01Detail(year?: number): EurostatCofogDetailQueryResult {
+export function queryEurostatCofogDetail(
+  parent: EurostatCofogDetailParent | string,
+  year?: number,
+): EurostatCofogDetailQueryResult {
+  const parentFunction = normalizeDetailParent(parent);
   const selectedYear = normalizeYear(year);
-  const detail = eurostatCofogData.details.GF01;
+  const detail = eurostatCofogData.details[parentFunction];
   return {
     datasetId: eurostatCofogData.datasetId,
     parentFunction: detail.parentFunction,
@@ -141,4 +158,9 @@ export function queryEurostatCofogGf01Detail(year?: number): EurostatCofogDetail
       publicationDate: eurostatCofogMetadata.semantics.provenance.publicationDate,
     },
   };
+}
+
+/** @deprecated Prefer queryEurostatCofogDetail("GF01", year). Kept for existing GF01 callers. */
+export function queryEurostatCofogGf01Detail(year?: number): EurostatCofogDetailQueryResult {
+  return queryEurostatCofogDetail("GF01", year);
 }

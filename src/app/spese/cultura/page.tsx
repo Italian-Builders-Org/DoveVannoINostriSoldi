@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CofogDetailBreakdown } from "@/components/cofog-detail-breakdown";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import { buildCulturePublicSpendingView, parseCultureYear } from "@/lib/culture-public-spending";
 import styles from "./cultura.module.css";
 
 export const metadata: Metadata = {
   title: "Cultura e tempo libero: la spesa pubblica",
-  description: "Spesa pubblica italiana per cultura, attività ricreative e culto: Eurostat COFOG GF08, serie 2014-2024. Stanziamenti statali e sport in perimetri distinti.",
+  description: "Spesa pubblica italiana per cultura, attività ricreative e culto: Eurostat COFOG GF08 con sottofunzioni ufficiali, serie 2014-2024. Stanziamenti statali e sport in perimetri distinti.",
   alternates: { canonical: "/spese/cultura" },
 };
 
@@ -51,6 +52,18 @@ export default async function CultureSpendingPage({ searchParams }: PageProps<"/
           {" "}· controllati il {longDate(sourceMetadata.semantics.provenance.checkedAt)}.</p>
       </section>
 
+      <CofogDetailBreakdown
+        parentCode="GF08"
+        year={year}
+        rows={view.detail}
+        flags={view.flags}
+        reconciliationNote={view.detailReconciliation.note}
+        testId="culture-detail"
+        headingId="culture-detail-title"
+        title={`Attività ricreative, cultura e culto · ${year}`}
+        intro="Eurostat pubblica sei sottofunzioni per l’Italia. Sport e spettacolo restano dentro le voci ufficiali GF0801–GF0806: non inventiamo una categoria «spettacolo» se la fonte non la separa."
+      />
+
       <div className={styles.columns}>
         <section className="panel" aria-labelledby="culture-history-title">
           <h2 id="culture-history-title" className="panel-title">Come cambia nel tempo</h2>
@@ -81,8 +94,8 @@ export default async function CultureSpendingPage({ searchParams }: PageProps<"/
             <h2 id="culture-scope-title" className="panel-title">Che cosa comprende</h2>
             <p>GF08 è la divisione «Recreation, culture and religion»: attività ricreative, cultura e culto.
               Il nome breve in homepage, «Cultura e tempo libero», indica questo intero perimetro.</p>
-            <p>Le sottofunzioni non sono disponibili nello snapshot utilizzato: non pubblichiamo quote separate
-              per sport, spettacolo o culto e non ricaviamo una spesa culturale sottraendo altri bilanci.</p>
+            <p>Il dettaglio ufficiale distingue servizi ricreativi e sportivi, culturali, radiodiffusione ed editoria,
+              servizi religiosi e comunità, R&amp;S e residuo. Non ricaviamo beneficiari, pubblico o qualità culturale dagli importi.</p>
             <p><Link href="/spese/sport">Approfondisci fondi per lo sport e grandi eventi →</Link></p>
             <p className={styles.note}>La pagina Sport raccoglie missioni, trasferimenti, rendiconti e affidamenti con perimetri propri.
               Quegli importi non sono una scomposizione contabile di GF08 e non si aggiungono a questo totale.</p>

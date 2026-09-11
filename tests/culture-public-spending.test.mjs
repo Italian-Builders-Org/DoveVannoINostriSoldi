@@ -9,6 +9,15 @@ const { activeNavSection, flattenNavLinks, FOOTER_SITEMAP_GROUPS } = await impor
 const { PUBLIC_INDEXABLE_PATHS } = await import("../src/lib/public-discovery.ts");
 const { searchSiteDocuments } = await import("../src/lib/global-search.ts");
 
+test("culture exposes the six official GF08 subfunctions without inventing spectacle", () => {
+  const view = buildCulturePublicSpendingView(2024);
+  assert.equal(view.detail.length, 6);
+  assert.deepEqual(view.detail.map((row) => row.function), ["GF0801", "GF0802", "GF0803", "GF0804", "GF0805", "GF0806"]);
+  assert.equal(view.detail.reduce((sum, row) => sum + row.amountCents, 0), view.selected.amountCents);
+  assert.match(view.detail.find((row) => row.function === "GF0801").label, /sportiv/i);
+  assert.match(view.detail.find((row) => row.function === "GF0802").label, /cultural/i);
+});
+
 test("culture uses the entire Italian GF08 series with original flags and provenance", () => {
   const view = buildCulturePublicSpendingView();
   assert.equal(view.year, 2024);

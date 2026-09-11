@@ -1,5 +1,6 @@
 import "server-only";
 
+import { buildEurostatCofogDetailRows } from "@/lib/eurostat-cofog-detail-view";
 import {
   eurostatCofogData,
   eurostatCofogMetadata,
@@ -38,13 +39,17 @@ export function getPublicOrderSpendingView(year: number = eurostatCofogData.peri
   });
   const selected = history.find((point) => point.year === year);
   if (!selected) throw new Error("Anno non disponibile per la spesa di ordine pubblico e sicurezza.");
+  const detail = buildEurostatCofogDetailRows("GF03", year);
   return {
     selected,
     history,
+    detail: detail.rows,
+    detailReconciliation: detail.reconciliation,
     period: spending.period,
     flags: spending.flags,
     source: eurostatCofogMetadata.source,
     semantics: eurostatCofogMetadata.semantics,
     integrity: eurostatCofogMetadata.integrity,
+    caveats: spending.caveats,
   };
 }

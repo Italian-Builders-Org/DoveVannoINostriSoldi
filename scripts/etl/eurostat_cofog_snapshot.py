@@ -59,10 +59,19 @@ HUNDREDTHS_PER_POINT = 100
 # rounding itself, not a licence to absorb a real divergence.
 TOLERANCE_CENTS = 6 * CENTS_PER_MILLION_EUR // 10
 TOLERANCE_SHARE = 6 * HUNDREDTHS_PER_POINT // 10
-# GF01 has eight level-II groups plus the published parent. Nine independently
-# rounded figures can differ by at most 0.45 in the source unit.
+# A level-II group plus its published parent are rounded independently. The
+# largest Italian partition we publish is GF01 (eight parts + parent = nine
+# figures), so 0.45 in the source unit covers every detail we keep.
 DETAIL_TOLERANCE_CENTS = 45 * CENTS_PER_MILLION_EUR // 100
 DETAIL_TOLERANCE_SHARE = 45 * HUNDREDTHS_PER_POINT // 100
+
+# Official second-level inventories published for Italy in gov_10a_exp.
+DETAIL_PARENT_CODES = {
+    "GF01": tuple(f"GF010{n}" for n in range(1, 9)),
+    "GF02": tuple(f"GF020{n}" for n in range(1, 6)),
+    "GF03": tuple(f"GF030{n}" for n in range(1, 7)),
+    "GF08": tuple(f"GF080{n}" for n in range(1, 7)),
+}
 
 KNOWN_FLAGS = {"p": "provvisorio", "b": "interruzione della serie storica"}
 
@@ -79,9 +88,10 @@ CAVEATS = (
     "li contengono già.",
     "Il 2025 non è pubblicato: alla data di acquisizione la fonte lo espone per il solo "
     "Lussemburgo, e un singolo Stato membro non è un confronto europeo.",
-    "Per l’Italia lo snapshot conserva anche le otto sottofunzioni di GF01. GF0107 «Public "
-    "debt transactions» è una funzione COFOG: include gli interessi D.41 e il consumo intermedio "
-    "P.2 legato al FISIM secondo il manuale Eurostat, quindi non coincide con la sola serie D.41.",
+    "Per l’Italia lo snapshot conserva le sottofunzioni ufficiali di GF01, GF02, GF03 e "
+    "GF08. GF0107 «Public debt transactions» è una funzione COFOG: include gli interessi "
+    "D.41 e il consumo intermedio P.2 legato al FISIM secondo il manuale Eurostat, quindi "
+    "non coincide con la sola serie D.41.",
 )
 
 
@@ -183,9 +193,10 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
         raise SnapshotError(f"bundle {unit}: funzioni COFOG diverse da quelle del lock")
 
     primary_codes = {f["code"] for f in spec["expected"]["primaryFunctions"]}
-    detail = spec["expected"]["detail"]
-    detail_codes = {f["code"] for f in detail["functions"]}
-    detail_geo = detail["geo"]
+    detail_specs = _detail_specs(spec)
+    detail_codes_by_geo: dict[str, set[str]] = {}
+    for detail in detail_specs:
+        detail_codes_by_geo.setdefault(detail["geo"], set()).update(f["code"] for f in detail["functions"])
     n_geo, n_time = len(geos), len(years)
     values = doc["value"]
     statuses = doc.get("status") or {}
@@ -198,7 +209,7 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
             for year, ti in years.items():
                 cell = str((fi * n_geo + gi) * n_time + ti)
                 raw = values.get(cell)
-                required = function in primary_codes or (geo == detail_geo and function in detail_codes)
+                required = function in primary_codes or function in detail_codes_by_geo.get(geo, set())
                 if raw is None:
                     if required:
                         missing_required.append(f"{geo}/{year}/{function}")
@@ -211,10 +222,10 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
                     flag,
                 )
 
-    expected_required = spec["expected"]["cellsPerUnit"] + detail["cellsPerUnit"]
+    expected_required = spec["expected"]["cellsPerUnit"] + sum(detail["cellsPerUnit"] for detail in detail_specs)
     observed_required = sum(
         1 for geo, _year, function in out
-        if function in primary_codes or (geo == detail_geo and function in detail_codes)
+        if function in primary_codes or function in detail_codes_by_geo.get(geo, set())
     )
     if missing_required:
         raise SnapshotError(
@@ -224,6 +235,30 @@ def _read_bundle(payload: bytes, unit: str, spec: dict[str, Any]) -> dict[tuple[
     if observed_required != expected_required:
         raise SnapshotError(f"bundle {unit}: {observed_required} celle richieste, attese {expected_required}")
     return out
+
+
+def _detail_specs(spec: dict[str, Any]) -> list[dict[str, Any]]:
+    details = spec["expected"].get("details")
+    if not isinstance(details, list) or not details:
+        raise SnapshotError("source lock: expected.details mancante o vuoto")
+    seen_parents: set[str] = set()
+    for detail in details:
+        parent = detail.get("parentFunction")
+        if parent not in DETAIL_PARENT_CODES:
+            raise SnapshotError(f"source lock: parent dettaglio inatteso {parent!r}")
+        if parent in seen_parents:
+            raise SnapshotError(f"source lock: parent dettaglio duplicato {parent}")
+        seen_parents.add(parent)
+        codes = tuple(f["code"] for f in detail.get("functions", []))
+        if codes != DETAIL_PARENT_CODES[parent]:
+            raise SnapshotError(f"source lock: anagrafica dettaglio {parent} inattesa")
+        if detail.get("geo") != "IT":
+            raise SnapshotError(f"source lock: dettaglio {parent} deve essere limitato all'Italia")
+        if detail.get("cellsPerUnit") != len(codes) * len(spec["expected"]["years"]):
+            raise SnapshotError(f"source lock: cellsPerUnit dettaglio {parent} incoerente")
+    if seen_parents != set(DETAIL_PARENT_CODES):
+        raise SnapshotError("source lock: dettagli COFOG incompleti rispetto all'inventario ufficiale")
+    return details
 
 def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]:
     bundles = {
@@ -236,9 +271,7 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
         raise SnapshotError("le due unità coprono celle diverse: il confronto non sarebbe onesto")
 
     primary_codes = {f["code"] for f in spec["expected"]["primaryFunctions"]}
-    detail_spec = spec["expected"]["detail"]
-    detail_codes = {f["code"] for f in detail_spec["functions"]}
-    detail_geo = detail_spec["geo"]
+    detail_specs = _detail_specs(spec)
 
     def make_observation(key: tuple[str, int, str]) -> dict[str, Any]:
         geo, year, function = key
@@ -264,23 +297,28 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
         for key in sorted(amounts)
         if key[2] in primary_codes
     ]
-    detail_observations = [
-        make_observation(key)
-        for key in sorted(amounts)
-        if key[0] == detail_geo and key[2] in detail_codes
-    ]
-    detail_payload = {
-        "parentFunction": detail_spec["parentFunction"],
-        "geo": detail_geo,
-        "functions": [dict(f) for f in detail_spec["functions"]],
-        "observations": detail_observations,
-        "coverage": {
-            "expectedCells": detail_spec["cellsPerUnit"],
-            "observedCells": len(detail_observations),
-            "flagged": sum(1 for o in detail_observations if "flag" in o),
-        },
-    }
-    detail_payload["reconciliation"] = _reconcile_detail(observations, detail_payload)
+    details: dict[str, dict[str, Any]] = {}
+    for detail_spec in detail_specs:
+        detail_codes = {f["code"] for f in detail_spec["functions"]}
+        detail_geo = detail_spec["geo"]
+        detail_observations = [
+            make_observation(key)
+            for key in sorted(amounts)
+            if key[0] == detail_geo and key[2] in detail_codes
+        ]
+        detail_payload = {
+            "parentFunction": detail_spec["parentFunction"],
+            "geo": detail_geo,
+            "functions": [dict(f) for f in detail_spec["functions"]],
+            "observations": detail_observations,
+            "coverage": {
+                "expectedCells": detail_spec["cellsPerUnit"],
+                "observedCells": len(detail_observations),
+                "flagged": sum(1 for o in detail_observations if "flag" in o),
+            },
+        }
+        detail_payload["reconciliation"] = _reconcile_detail(observations, detail_payload)
+        details[detail_spec["parentFunction"]] = detail_payload
 
     return {
         "schemaVersion": 1,
@@ -301,7 +339,7 @@ def build_data(inputs: dict[str, bytes], spec: dict[str, Any]) -> dict[str, Any]
             "flagged": sum(1 for o in observations if "flag" in o),
         },
         "reconciliation": _reconcile(observations),
-        "details": {detail_spec["parentFunction"]: detail_payload},
+        "details": details,
     }
 
 def _reconcile(observations: list[dict[str, Any]]) -> dict[str, Any]:
@@ -353,7 +391,7 @@ def _reconcile_detail(
     observations: list[dict[str, Any]],
     detail: dict[str, Any],
 ) -> dict[str, Any]:
-    """Reconcile the eight Italian GF01 groups to the published GF01 parent."""
+    """Reconcile Italian level-II groups to their published COFOG parent."""
     parent_code = detail["parentFunction"]
     geo = detail["geo"]
     detail_codes = {f["code"] for f in detail["functions"]}
@@ -382,10 +420,12 @@ def _reconcile_detail(
         worst_amount = max(worst_amount, gap_amount)
         worst_share = max(worst_share, gap_share)
 
+    codes = sorted(detail_codes)
     return {
         "note": (
-            "Le otto sottofunzioni italiane GF0101–GF0108 sono confrontate con GF01 dello stesso anno. "
-            "Il parent resta quello pubblicato dalla fonte; gli scarti ammessi coprono soltanto l'arrotondamento."
+            f"Le sottofunzioni italiane {'–'.join([codes[0], codes[-1]])} sono confrontate con "
+            f"{parent_code} dello stesso anno. Il parent resta quello pubblicato dalla fonte; "
+            "gli scarti ammessi coprono soltanto l'arrotondamento."
         ),
         "toleranceCents": DETAIL_TOLERANCE_CENTS,
         "toleranceShareHundredths": DETAIL_TOLERANCE_SHARE,
@@ -430,35 +470,39 @@ def validate_snapshot(data: dict[str, Any]) -> None:
     if len(seen) != data["coverage"]["expectedCells"]:
         raise SnapshotError("data artifact: celle attese non tutte presenti")
 
-    detail = data.get("details", {}).get("GF01")
-    if not isinstance(detail, dict) or detail.get("parentFunction") != "GF01" or detail.get("geo") != "IT":
-        raise SnapshotError("data artifact: dettaglio GF01 italiano mancante o inatteso")
-    detail_codes = {f["code"] for f in detail.get("functions", [])}
-    if detail_codes != {f"GF010{n}" for n in range(1, 9)}:
-        raise SnapshotError("data artifact: anagrafica dettaglio GF01 inattesa")
-    if detail["coverage"]["observedCells"] != detail["coverage"]["expectedCells"]:
-        raise SnapshotError("data artifact: copertura dettaglio GF01 incompleta")
-    if len(detail["observations"]) != detail["coverage"]["expectedCells"]:
-        raise SnapshotError("data artifact: osservazioni dettaglio GF01 e copertura non coincidono")
-    detail_seen = set()
-    for observation in detail["observations"]:
-        key = (observation["geo"], observation["year"], observation["function"])
-        if key in detail_seen:
-            raise SnapshotError(f"data artifact: osservazione dettaglio duplicata {key}")
-        detail_seen.add(key)
-        if observation["geo"] != "IT" or observation["function"] not in detail_codes or observation["year"] not in years:
-            raise SnapshotError(f"data artifact: codice dettaglio fuori perimetro in {key}")
-        for field in ("amountCents", "shareOfGdpHundredths"):
-            if not isinstance(observation[field], int) or isinstance(observation[field], bool) or observation[field] < 0:
-                raise SnapshotError(f"data artifact: {field} dettaglio non valido in {key}")
-        if "flag" in observation and observation["flag"] not in data["flags"]:
-            raise SnapshotError(f"data artifact: flag dettaglio sconosciuto in {key}")
-    if sum(1 for o in detail["observations"] if "flag" in o) != detail["coverage"]["flagged"]:
-        raise SnapshotError("data artifact: conteggio flag dettaglio divergente")
-    expected_detail_cells = len(detail_codes) * len(list(years))
-    if len(detail_seen) != expected_detail_cells:
-        raise SnapshotError("data artifact: celle dettaglio GF01 attese non tutte presenti")
-    _reconcile_detail(data["observations"], detail)
+    details = data.get("details")
+    if not isinstance(details, dict) or set(details) != set(DETAIL_PARENT_CODES):
+        raise SnapshotError("data artifact: dettagli COFOG italiani mancanti o inattesi")
+    for parent, expected_codes in DETAIL_PARENT_CODES.items():
+        detail = details[parent]
+        if not isinstance(detail, dict) or detail.get("parentFunction") != parent or detail.get("geo") != "IT":
+            raise SnapshotError(f"data artifact: dettaglio {parent} italiano mancante o inatteso")
+        detail_codes = {f["code"] for f in detail.get("functions", [])}
+        if detail_codes != set(expected_codes):
+            raise SnapshotError(f"data artifact: anagrafica dettaglio {parent} inattesa")
+        if detail["coverage"]["observedCells"] != detail["coverage"]["expectedCells"]:
+            raise SnapshotError(f"data artifact: copertura dettaglio {parent} incompleta")
+        if len(detail["observations"]) != detail["coverage"]["expectedCells"]:
+            raise SnapshotError(f"data artifact: osservazioni dettaglio {parent} e copertura non coincidono")
+        detail_seen = set()
+        for observation in detail["observations"]:
+            key = (observation["geo"], observation["year"], observation["function"])
+            if key in detail_seen:
+                raise SnapshotError(f"data artifact: osservazione dettaglio duplicata {key}")
+            detail_seen.add(key)
+            if observation["geo"] != "IT" or observation["function"] not in detail_codes or observation["year"] not in years:
+                raise SnapshotError(f"data artifact: codice dettaglio fuori perimetro in {key}")
+            for field in ("amountCents", "shareOfGdpHundredths"):
+                if not isinstance(observation[field], int) or isinstance(observation[field], bool) or observation[field] < 0:
+                    raise SnapshotError(f"data artifact: {field} dettaglio non valido in {key}")
+            if "flag" in observation and observation["flag"] not in data["flags"]:
+                raise SnapshotError(f"data artifact: flag dettaglio sconosciuto in {key}")
+        if sum(1 for o in detail["observations"] if "flag" in o) != detail["coverage"]["flagged"]:
+            raise SnapshotError(f"data artifact: conteggio flag dettaglio {parent} divergente")
+        expected_detail_cells = len(detail_codes) * len(list(years))
+        if len(detail_seen) != expected_detail_cells:
+            raise SnapshotError(f"data artifact: celle dettaglio {parent} attese non tutte presenti")
+        _reconcile_detail(data["observations"], detail)
 
 def build_metadata(spec: dict[str, Any], data_bytes: bytes, data: dict[str, Any]) -> dict[str, Any]:
     source = spec["source"]
@@ -541,8 +585,10 @@ def _check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
         raise SnapshotError("data artifact: periodo divergente dal lock")
     if data["coverage"]["expectedCells"] != spec["expected"]["cellsPerUnit"]:
         raise SnapshotError("data artifact: celle attese divergenti dal lock")
-    if data["details"]["GF01"]["coverage"]["expectedCells"] != spec["expected"]["detail"]["cellsPerUnit"]:
-        raise SnapshotError("data artifact: celle dettaglio GF01 divergenti dal lock")
+    detail_by_parent = {detail["parentFunction"]: detail for detail in _detail_specs(spec)}
+    for parent, detail_spec in detail_by_parent.items():
+        if data["details"][parent]["coverage"]["expectedCells"] != detail_spec["cellsPerUnit"]:
+            raise SnapshotError(f"data artifact: celle dettaglio {parent} divergenti dal lock")
     metadata = json.loads(meta_path.read_text(encoding="utf-8"))
     artifact = metadata["integrity"]["dataArtifact"]
     if artifact["sha256"] != sha256_bytes(data_bytes) or artifact["bytes"] != len(data_bytes):
@@ -581,10 +627,11 @@ def main() -> int:
         data = build_data(inputs, spec)
         validate_snapshot(data)
         data_bytes = canonical_bytes(data)
+        detail_cells = sum(len(detail["observations"]) for detail in data["details"].values())
         if not args.write:
             print(
                 f"eurostat-cofog: build ok ({len(data['observations'])} osservazioni principali + "
-                f"{len(data['details']['GF01']['observations'])} di dettaglio GF01, {len(data_bytes)} byte) "
+                f"{detail_cells} di dettaglio IT, {len(data_bytes)} byte) "
                 "— usa --write per salvare"
             )
             return 0

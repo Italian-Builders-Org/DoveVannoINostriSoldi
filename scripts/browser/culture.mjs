@@ -31,7 +31,9 @@ export async function inspectCulture(page) {
   assert.equal(await page.$eval("main h1", (element) => element.textContent), "Cultura e tempo libero");
   assert.equal(await page.$$eval('[data-testid="culture-history"] tbody tr', (rows) => rows.length), 11);
   assert.match(await page.$eval("main", (element) => element.textContent), /cultura e culto/);
-  assert.match(await page.$eval("main", (element) => element.textContent), /Le sottofunzioni non sono disponibili nello snapshot/);
+  assert.match(await page.$eval("main", (element) => element.textContent), /Servizi culturali/);
+  assert.match(await page.$eval("main", (element) => element.textContent), /GF0802/);
+  assert.equal(await page.$$eval('[data-testid="culture-detail-table"] tbody tr', (rows) => rows.length), 6);
   await inspectSelectedCulture(page, 2024);
   assert.match(await page.$eval('[data-testid="culture-budget-selected"]', (element) => element.textContent), /3\.286\.989\.285,00/);
   const artifactDirectory = path.join(defaultArtifactsDir(), "culture", `${page.viewport().width}px`);

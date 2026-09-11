@@ -193,6 +193,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "sesso", "classe di età", "durata teorica"],
   },
   {
+    slug: "mef-iva",
+    name: "MEF · principali grandezze IVA",
+    owner: "MEF — Dipartimento delle Finanze",
+    area: "Dichiarazioni IVA",
+    cadence: "Annuale; dichiarazioni 2024 e 2025, anni di imposta 2023 e 2024",
+    coverage: "Italia: tabelle per regione e sezione di attività, separate per edizione",
+    format: "CSV UTF-8 delimitato da punto e virgola · snapshot JSON verificato",
+    url: "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201",
+    note: "Dati dichiarati, non gettito riscosso o stime di evasione. Ammontare e media in migliaia di euro, frequenze e contribuenti distinti. Il valore aggiunto fiscale non è quello dei conti nazionali. Le celle soppresse restano assenti; regione e attività non formano un incrocio e non si sommano.",
+    joinKeys: ["anno di dichiarazione", "classificazione", "codice e denominazione della fonte"],
+  },
+  {
     slug: "mef-irpef-dettaglio",
     name: "MEF · dettaglio IRPEF per regione, età e sesso",
     owner: "MEF — Dipartimento delle Finanze",

@@ -68,6 +68,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "inps-naspi": [],
   // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   "mef-irpef-dettaglio": [],
+  // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.
+  "mef-iva": [],
   // Snapshot-only: i CSV Consip sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   consip: [],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,

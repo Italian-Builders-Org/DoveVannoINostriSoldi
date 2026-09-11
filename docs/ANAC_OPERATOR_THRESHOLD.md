@@ -56,6 +56,8 @@ procedura per ogni riga.
 
 ## Cosa è pubblicato al posto del conteggio
 
+![Elenco nazionale delle imprese ordinato per numero di aggiudicazioni](appalti/operatori/elenco-operatori.jpg)
+
 - conteggi e importi dichiarati in fonte, con stato dell'importo esplicito
   (`positivo`, `zero`, `mancante`, `non valido`, `conflittuale`);
 - numero di **stazioni appaltanti distinte** fra le aggiudicazioni pubblicate e
@@ -82,6 +84,27 @@ procedura per ogni riga.
 Finché questi input non sono disponibili, un numero sotto soglia nella scheda
 operatore sarebbe una stima presentata come dato: la scelta del progetto è
 lasciarlo fuori e dichiararlo.
+
+## Come appare
+
+La scheda dichiara lo stato e gli input mancanti senza mostrare alcun numero al
+posto del dato:
+
+![Sezione «Sotto soglia: stato pubblicato» nella scheda operatore](appalti/operatori/scheda-operatore-sotto-soglia.jpg)
+
+Ogni CIG pubblicato apre il dettaglio ufficiale ANAC, così il conteggio resta
+riconducibile al record di origine:
+
+![Tabella delle aggiudicazioni con il link ufficiale per ogni CIG](appalti/operatori/scheda-operatore-cig-fonte.jpg)
+
+Lo stesso contenuto e la stessa gerarchia restano leggibili a 390 px:
+
+![La sezione a 390 px](appalti/operatori/scheda-operatore-mobile.jpg)
+
+L'hub riporta la stessa dichiarazione nel glossario, prima delle tabelle, così
+la limitazione è visibile anche a chi non apre una scheda:
+
+![Voce di glossario sull'hub operatori](appalti/operatori/glossario-sotto-soglia.jpg)
 
 ## Verifica
 

@@ -2,6 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { integer, longDate } from "@/lib/format";
+import {
+  BELOW_THRESHOLD_REQUIRED_INPUTS,
+  BELOW_THRESHOLD_STATUS,
+  OPERATOR_THRESHOLD_METHODOLOGY_URL,
+  anacCigDetailUrl,
+  describeDistinctContractingAuthorities,
+  distinctContractingAuthorities,
+  publishedProcedureFields,
+} from "@/lib/anac-operator-award-insights";
 import { getAnacOperatorByRef } from "@/lib/data/anac-operator-records";
 import {
   ANAC_OPERATOR_INDEX,
@@ -74,6 +83,7 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
   const operator = getAnacOperatorByRef(ref);
   if (!operator) notFound();
   const meta = loadAnacOperatorIndexMeta();
+  const authorityCount = distinctContractingAuthorities(operator.topContractingAuthorities);
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -126,11 +136,12 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
         ) : null}
         {operator.topContractingAuthorities && operator.topContractingAuthorities.length > 0 ? (
           <p>
-            Stazioni appaltanti:{" "}
+            {describeDistinctContractingAuthorities(authorityCount)} tra le aggiudicazioni
+            pubblicate e abbinate ai CIG annuali:{" "}
             {operator.topContractingAuthorities
               .map((item) => `${item.label} (${integer(item.count)})`)
               .join(" · ")}
-            .
+            {authorityCount.capped ? " (elenco limitato alle prime 5 voci)" : ""}.
           </p>
         ) : null}
       </aside>
@@ -162,10 +173,19 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
             </thead>
             <tbody>
               {operator.awards.map((award) => {
-                const procedure = award.procedure?.matched ? award.procedure : null;
+                const procedure = publishedProcedureFields(award.procedure);
+                const cigUrl = anacCigDetailUrl(award.cig);
                 return (
                 <tr key={`${award.cig}-${award.awardId}`}>
-                  <th scope="row">{award.cig}</th>
+                  <th scope="row">
+                    {cigUrl ? (
+                      <a href={cigUrl} target="_blank" rel="noreferrer">
+                        {award.cig} ↗
+                      </a>
+                    ) : (
+                      award.cig
+                    )}
+                  </th>
                   <td>
                     {procedure ? (
                       <>
@@ -203,10 +223,39 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
         </div>
       </section>
 
+      <section className="panel" aria-labelledby="operatore-sotto-soglia-title">
+        <h2 id="operatore-sotto-soglia-title" className="panel-title">Sotto soglia: stato pubblicato</h2>
+        <p>
+          Per questi affidamenti lo stato è <strong>{BELOW_THRESHOLD_STATUS}</strong>. Non
+          pubblichiamo un numero di affidamenti sotto soglia, né per l&apos;impresa né per il
+          singolo CIG, perché non è determinabile dai campi che abbiamo: una soglia unica applicata
+          a tutti gli importi sarebbe sbagliata, dato che la soglia dipende dal periodo, dalla
+          categoria e dal settore della gara.
+        </p>
+        <p className={styles.note}>Per classificare un affidamento servirebbero, riga per riga:</p>
+        <ul className={styles.requiredInputs}>
+          {BELOW_THRESHOLD_REQUIRED_INPUTS.map((input) => (
+            <li key={input}>{input}.</li>
+          ))}
+        </ul>
+        <p className={styles.note}>
+          L&apos;importo in tabella è l&apos;importo di aggiudicazione dichiarato in ANAC, non il
+          valore stimato a base di gara, e non è un pagamento. Essere aggiudicatari frequenti, o
+          avere importi vicini a una soglia, non indica di per sé un illecito.{" "}
+          <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
+            Metodo e dati richiesti ↗
+          </a>
+          {" · "}
+          <Link href="/appalti">Fascia di soglia sui CIG 2025 →</Link>
+        </p>
+      </section>
+
       <section className="panel" aria-labelledby="operatore-source-title">
         <h2 id="operatore-source-title">Fonte</h2>
         <p>
-          Snapshot osservato il {meta.observedAt.slice(0, 10)}. Licenza CC BY-SA 4.0.{" "}
+          Snapshot osservato il {meta.observedAt.slice(0, 10)}. Licenza CC BY-SA 4.0. Ogni CIG in
+          tabella apre il dettaglio ufficiale ANAC, così il numero resta riconducibile al record di
+          origine.{" "}
           <Link href="/appalti/operatori">Torna alla ricerca</Link>.
         </p>
       </section>

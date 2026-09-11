@@ -11,6 +11,7 @@ import {
   type AnacOperatorNationalSummaries,
   type AnacOperatorSearchHit,
 } from "@/lib/data/anac-operator-awards-index";
+import { OPERATOR_THRESHOLD_METHODOLOGY_URL } from "@/lib/anac-operator-award-insights";
 import { ScrollRegion } from "../scroll-region";
 import styles from "./operatori.module.css";
 
@@ -276,6 +277,14 @@ function SummaryIntro({
           <li>
             Le classifiche descrivono ricorrenze nello snapshot:{" "}
             <strong>non sono giudizi, illeciti o ranking di affidabilità</strong>.
+          </li>
+          <li>
+            <strong>Sotto soglia</strong> = stato “non disponibile”: l&apos;indice non contiene il
+            valore stimato a base di gara, la categoria e la soglia applicabile. Non pubblichiamo
+            una cifra al posto di quei campi.{" "}
+            <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
+              Metodo ↗
+            </a>
           </li>
         </ul>
       </aside>
@@ -851,6 +860,17 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
           i campi procedura dei CIG annuali 2007-2025. Snapshot aggiudicatari/aggiudicazioni
           osservato il {meta.observedAt.slice(0, 10)}. Non dichiara una popolazione nazionale
           corrente: i delta mensili successivi non sono sommati. {summaries.basis.note}
+        </p>
+        <p>
+          I conteggi di questa pagina sono ricorrenze dichiarate in fonte. L&apos;indice non
+          contiene il valore stimato a base di gara, la categoria del contratto, il settore e la
+          soglia applicabile al periodo: per questo la classificazione <strong>sotto soglia</strong>{" "}
+          resta <strong>non disponibile</strong> e non viene stimata.{" "}
+          <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
+            Metodo e dati richiesti ↗
+          </a>
+          {" · "}
+          <Link href="/appalti">Fascia di soglia sui CIG 2025 →</Link>
         </p>
         <div className={styles.links}>
           <a href="https://dati.anticorruzione.it/opendata/dataset/aggiudicatari">Aggiudicatari ANAC</a>

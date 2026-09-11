@@ -17,7 +17,6 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/u);
 const sha256 = z.string().regex(/^[a-f0-9]{64}$/u);
 const year = z.number().int().min(2000).max(2025);
 const signedInt = z.number().int().safe();
-const nonNegativeInt = z.number().int().min(0).safe();
 
 const geographyCode = z.enum(["ITA", "FRA", "DEU", "ESP", "OECD_REP"]);
 const measureCode = z.enum(["AV_TW", "AV_ITR", "AV_R_EMPEE_SSC", "AV_R_EMPER_SSC", "AV_RITEESSC", "NPATR"]);

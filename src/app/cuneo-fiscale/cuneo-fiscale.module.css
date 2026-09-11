@@ -1,0 +1,175 @@
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.35fr);
+  gap: var(--space-6);
+  align-items: end;
+}
+
+.heroRate {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-heading);
+  font-size: clamp(44px, 7vw, 76px);
+  font-weight: 650;
+  letter-spacing: -.045em;
+  line-height: .95;
+  font-variant-numeric: tabular-nums;
+}
+
+.heroLabel {
+  max-width: 44ch;
+  margin: 10px 0 0;
+  color: var(--color-neutral-700);
+}
+
+.heroMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.heroMetrics > div {
+  min-width: 0;
+  padding: var(--space-4);
+  border-right: 1px solid var(--color-neutral-300);
+}
+
+.heroMetrics > div:last-child {
+  border-right: 0;
+}
+
+.heroMetrics dt {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.heroMetrics dd {
+  margin: 6px 0 0;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.heroMetrics small {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.sourceLine {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.sectionHead p {
+  max-width: 62ch;
+  margin: 6px 0 0;
+  color: var(--color-neutral-700);
+}
+
+.periodBadge {
+  align-self: start;
+  padding: 4px 8px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-50);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.componentList,
+.comparisonList,
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.componentList li,
+.comparisonList li,
+.historyList li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.barTrack {
+  grid-column: 1 / -1;
+  height: 10px;
+  background: var(--color-neutral-200);
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  background: var(--color-ink);
+}
+
+.componentMeta,
+.comparisonMeta,
+.historyMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.value {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.caveats {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--color-neutral-800);
+}
+
+.caveats li + li {
+  margin-top: 8px;
+}
+
+@media (max-width: 820px) {
+  .hero,
+  .heroMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .heroMetrics > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .heroMetrics > div:last-child {
+    border-bottom: 0;
+  }
+}

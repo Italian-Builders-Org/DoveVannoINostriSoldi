@@ -9,7 +9,7 @@ export type NavLink = Readonly<{
   children?: readonly NavLink[];
 }>;
 
-export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "economy" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
 
 export type NavSection = Readonly<{
   href: string;
@@ -57,7 +57,6 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
-      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
       {
         href: "/spese/sanita",
@@ -85,6 +84,17 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         ],
       },
       { href: "/debito", label: "Debito pubblico" },
+    ],
+  },
+  {
+    href: "/economia",
+    label: "Economia",
+    icon: "economy",
+    aliases: ["/inflazione", "/cuneo-fiscale"],
+    children: [
+      { href: "/economia", label: "Panoramica" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
+      { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
     ],
   },
   {
@@ -227,7 +237,6 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     links: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
-      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
       { href: "/spese/sanita", label: "Sanità" },
       { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
@@ -245,6 +254,14 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/debito", label: "Debito pubblico" },
       { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
+    ],
+  },
+  {
+    title: "Economia",
+    links: [
+      { href: "/economia", label: "Panoramica" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
+      { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
     ],
   },
   {

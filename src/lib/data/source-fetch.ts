@@ -100,6 +100,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   bancaditalia: [],
   eurostat: [],
   "eurostat-hicp": [],
+  // Snapshot-only: i CSV SDMX OECD Taxing Wages sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  "oecd-taxing-wages": [],
   // Snapshot-only: le risposte JSON-stat sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
   "eurostat-cofog": [],
 };

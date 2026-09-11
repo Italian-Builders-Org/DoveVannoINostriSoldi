@@ -27,6 +27,7 @@ import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { eurostatHicpData, eurostatHicpMetadata } from "@/lib/eurostat-hicp-snapshot";
+import { oecdTaxingWagesData, oecdTaxingWagesMetadata } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
 
@@ -299,6 +300,17 @@ function snapshotManagedEurostatHicp(): SourceHealth {
   };
 }
 
+function snapshotManagedOecdTaxingWages(): SourceHealth {
+  return {
+    ...baseHealth("oecd-taxing-wages"),
+    reachability: "not-probed",
+    freshness: freshnessFor("oecd-taxing-wages", oecdTaxingWagesMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot OECD Taxing Wages verificato · Italia ${oecdTaxingWagesData.period.from}-${oecdTaxingWagesData.period.to} profilo S_C0 AW100 · confronto peer ${oecdTaxingWagesData.period.peersFrom}-${oecdTaxingWagesData.period.peersTo} · aliquote su profilo tipo, non spesa pubblica.`,
+    recordCount: oecdTaxingWagesData.coverage.observedCells,
+  };
+}
+
 function snapshotManagedEurostatCofog(): SourceHealth {
   const artifact = eurostatCofogMetadata.integrity.dataArtifact;
   const { flagged, observedCells } = eurostatCofogData.coverage;
@@ -482,6 +494,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
   eurostat: () => snapshotManagedPublicDebt("eurostat"),
   "eurostat-hicp": snapshotManagedEurostatHicp,
+  "oecd-taxing-wages": snapshotManagedOecdTaxingWages,
   "eurostat-cofog": snapshotManagedEurostatCofog,
   "istat-cofog": snapshotManagedIstatCofog,
   "istat-epea": snapshotManagedIstatEpea,

@@ -45,6 +45,8 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/governi/confronta",
   "/imprese",
   "/inflazione",
+  "/economia",
+  "/cuneo-fiscale",
   "/incarichi",
   "/incarichi/dettaglio",
   "/istituzioni",

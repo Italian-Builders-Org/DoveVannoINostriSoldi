@@ -36,9 +36,11 @@ test("inflation chart is accessible, tokenized and has an exact table equivalent
 });
 
 test("inflation is discoverable from navigation, search, sitemap and source docs", () => {
-  const money = PRIMARY_NAV.find((section) => section.href === "/spese");
-  assert.ok(money?.children?.some((entry) => entry.href === "/inflazione" && /prezzi/i.test(entry.label)));
-  assert.ok(SITE_MAP_GROUPS.some((group) => group.links.some((entry) => entry.href === "/inflazione")));
+  const economy = PRIMARY_NAV.find((section) => section.href === "/economia");
+  assert.ok(economy?.children?.some((entry) => entry.href === "/inflazione" && /prezzi/i.test(entry.label)));
+  assert.equal(economy?.icon, "economy");
+  assert.ok(!PRIMARY_NAV.find((section) => section.href === "/spese")?.children?.some((entry) => entry.href === "/inflazione"));
+  assert.ok(SITE_MAP_GROUPS.some((group) => group.title === "Economia" && group.links.some((entry) => entry.href === "/inflazione")));
   assert.ok(PUBLIC_INDEXABLE_PATHS.includes("/inflazione"));
   for (const query of ["inflazione", "IPCA", "HICP", "paniere"]) {
     assert.ok(searchSiteDocuments(query).some((result) => result.href === "/inflazione"), query);

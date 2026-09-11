@@ -32,7 +32,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": null,
-      "trustModel": "Riepilogo deterministico di 30 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
+      "trustModel": "Riepilogo deterministico di 31 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
     },
     {
       "id": "anac-procurement-peers",
@@ -1272,6 +1272,33 @@
       "sourceSpec": "scripts/etl/specs/eurostat-hicp-2022-2026.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source-lock: quattro risposte JSON-stat ufficiali Eurostat (prc_hicp_minr e prc_hicp_iw, CC BY 4.0) sono fissate per URL, struttura SDMX, timestamp upstream, byte e SHA-256. La serie Italia pretende 56 mesi e tre misure complete; confronto, 13 divisioni ECOICOP v2 e pesi hanno periodi distinti e copertura completa. I pesi riconciliano a 1000 per mille entro il solo arrotondamento; i tassi di divisione non vengono trasformati in contributi additivi inventati."
+    },
+    {
+      "id": "oecd-taxing-wages-2000-2025",
+      "owner": "OECD Taxing Wages cuneo fiscale 2000-2025",
+      "files": [
+        "src/data/generated/oecd-taxing-wages-2000-2025.data.json",
+        "src/data/generated/oecd-taxing-wages-2000-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/oecd_taxing_wages_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_oecd_taxing_wages_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/oecd-taxing-wages.test.mjs",
+        "tests/tax-wedge-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/oecd_taxing_wages_snapshot.py --input-dir <cartella con i quattro CSV SDMX> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/oecd-taxing-wages-2000-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: quattro CSV SDMX ufficiali OECD DF_TW_COMP 2.1 (Taxing Wages, CC BY 4.0) sono fissati per URL, byte e SHA-256. Il profilo prodotto è S_C0 AW100; le componenti sul lordo riconciliano il cuneo sul costo del lavoro entro 1 milionesimo di punto; AW67 resta solo controllo. Runtime offline."
     },
     {
       "id": "eurostat-cofog-2014-2024",

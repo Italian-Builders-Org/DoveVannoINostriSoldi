@@ -27,6 +27,7 @@ import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { eurostatHicpData } from "@/lib/eurostat-hicp-snapshot";
+import { oecdTaxingWagesData } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
 export type SourceLatestData =
@@ -55,6 +56,10 @@ const exhaustiveLatestDataBySlug = {
   "eurostat-hicp": {
     kind: "period",
     label: `IPCA Italia ${eurostatHicpData.period.total.to}; divisioni e confronto ${eurostatHicpData.period.divisions}`,
+  },
+  "oecd-taxing-wages": {
+    kind: "period",
+    label: `Taxing Wages Italia ${oecdTaxingWagesData.period.from}-${oecdTaxingWagesData.period.to}; peer ${oecdTaxingWagesData.period.peersFrom}-${oecdTaxingWagesData.period.peersTo}`,
   },
   "eurostat-cofog": {
     kind: "period",

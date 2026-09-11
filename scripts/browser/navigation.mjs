@@ -61,6 +61,31 @@ async function assertFits(page) {
   assert.ok(geometry.search.width > 0 && geometry.search.left >= 0 && geometry.search.right <= geometry.width + 1, 'Ricerca sempre visibile');
 }
 
+async function leaveDesktopSidebar(page) {
+  await page.mouse.move(420, 240);
+  await page.evaluate(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) active.blur();
+  });
+}
+
+async function expandDesktopSidebar(page) {
+  const box = await page.$eval('.desktop-sidebar', (node) => {
+    const rect = node.getBoundingClientRect();
+    return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+  });
+  await page.mouse.move(box.x + Math.min(24, box.width / 2), box.y + Math.min(40, box.height / 2));
+  await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
+}
+
+async function collapseDesktopSidebar(page) {
+  await leaveDesktopSidebar(page);
+  if (await page.$eval('.desktop-sidebar', (node) => node.dataset.collapsed === 'true')) return;
+  await page.click('.sidebar-collapse');
+  await leaveDesktopSidebar(page);
+  await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
+}
+
 const browser = await launchBrowser();
 try {
   for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600]) {
@@ -70,6 +95,7 @@ try {
         await assertFits(page);
         const mobile = width < 1100;
         if (mobile) await openMobile(page);
+        else await expandDesktopSidebar(page);
         const root = mobile ? '#mobile-navigation-links' : '#desktop-navigation';
         const hrefs = await page.$$eval(`${root} a`, (links) => [...new Set(links.map((link) => link.getAttribute('href')))]);
         assert.deepEqual(hrefs, destinations, 'Tutte le destinazioni restano nel menu');
@@ -118,10 +144,9 @@ try {
           await tap(page, '[aria-label="Chiudi menu di navigazione"]');
           await page.waitForSelector('#mobile-navigation', { hidden: true });
         } else {
+          await expandDesktopSidebar(page);
           const before = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
-          await page.focus('.sidebar-collapse');
-          await page.keyboard.press('Enter');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
+          await collapseDesktopSidebar(page);
           const after = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
           assert.ok(after - before >= 160, 'La riduzione libera spazio per mappe e tabelle');
           for (const item of PRIMARY_NAV) {
@@ -134,8 +159,7 @@ try {
           }
           await assertFits(page);
           await page.screenshot({path:`artifacts/browser/sidebar-compact-${width}.png`});
-          await page.click('.sidebar-collapse');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
+          await expandDesktopSidebar(page);
         }
         await assertFits(page);
         await page.screenshot({path:`artifacts/browser/sidebar-${width}.png`});
@@ -147,7 +171,8 @@ try {
     label: `Sidebar e mappa home ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
       for (const compact of [false, true]) {
-        if (compact) await page.click('.sidebar-collapse');
+        if (compact) await collapseDesktopSidebar(page);
+        else await expandDesktopSidebar(page);
         await assertFits(page);
         const map = await page.$('[data-region-map="true"]');
         const geometry = await map.evaluate((node) => {
@@ -179,6 +204,7 @@ try {
     label:`Sidebar navigazione query ${width}px`, pathname:'/imprese?metric=employees', width, suite:'navigation',
     validate:async(page) => {
       if (width < 1100) await openMobile(page);
+      else await expandDesktopSidebar(page);
       const root = width < 1100 ? '#mobile-navigation-links' : '#desktop-navigation';
       await page.click(`${root} .nav-submenu a[href="/imprese?metric=active_local_units"]`);
       await page.waitForFunction(() => new URL(location.href).searchParams.get('metric') === 'active_local_units');
@@ -187,11 +213,11 @@ try {
         await openMobile(page);
       }
       await page.waitForFunction((selector) => document.querySelector(`${selector} .nav-submenu a[aria-current="page"]`)?.textContent.trim() === 'Localizzazioni attive', {}, root);
-      if (width < 1100) await page.keyboard.press('Escape');
-      else await page.click('.sidebar-collapse');
-      await page.goBack();
-      await page.waitForFunction(() => new URL(location.href).searchParams.get('metric') === 'employees');
-      if (width >= 1100) assert.equal(await page.$eval('.desktop-sidebar', (node) => node.dataset.collapsed), 'true', 'La preferenza sopravvive alla navigazione');
+        if (width < 1100) await page.keyboard.press('Escape');
+        else await collapseDesktopSidebar(page);
+        await page.goBack();
+        await page.waitForFunction(() => new URL(location.href).searchParams.get('metric') === 'employees');
+        if (width >= 1100) assert.equal(await page.$eval('.desktop-sidebar', (node) => node.dataset.collapsed), 'true', 'La preferenza sopravvive alla navigazione');
       await assertFits(page);
     },
   });

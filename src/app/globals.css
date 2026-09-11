@@ -389,9 +389,7 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
     width: var(--sidebar-width);
     background: var(--color-bg);
     border-right: 1px solid var(--color-neutral-300);
-    transition: width 160ms ease;
   }
-  .site-content { transition: margin-left 160ms ease; }
   .desktop-sidebar .primary-nav { flex: 1; padding-bottom: 8px; }
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle { min-height: 36px; padding-block: 7px; }
   .desktop-sidebar .sidebar-group { padding-block: 12px 5px; }
@@ -406,11 +404,6 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
   .desktop-sidebar[data-collapsed="true"] .nav-item { display: block; }
   .desktop-sidebar[data-collapsed="true"] .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .desktop-sidebar[data-collapsed="true"] .nav-item > a { justify-content: center; padding-inline: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .desktop-sidebar,
-  .site-content { transition: none; }
 }
 
 /* ── page shells ────────────────────────────────────────────────────────── */

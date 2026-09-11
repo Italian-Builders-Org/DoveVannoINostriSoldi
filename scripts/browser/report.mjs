@@ -191,7 +191,14 @@ try {
         assert.equal(focusBack, true, `${label}: dopo Esc il focus deve tornare al controllo visibile`);
         assert.equal(await page.$eval(selector, node => node.getAttribute("aria-expanded")), "false");
         if (width === 1280) {
-          await page.click('button[aria-label="Riduci menu a icone"]');
+          await page.mouse.move(420, 240);
+          await page.evaluate(() => {
+            const active = document.activeElement;
+            if (active instanceof HTMLElement) active.blur();
+          });
+          const collapseLabel = await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-label'));
+          if (collapseLabel === 'Riduci menu a icone') await page.click('button[aria-label="Riduci menu a icone"]');
+          await page.mouse.move(420, 240);
           await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
           const compact = await triggerGeometry(page, selector);
           assert.ok(compact.width>=44 && compact.width<=56, JSON.stringify(compact));

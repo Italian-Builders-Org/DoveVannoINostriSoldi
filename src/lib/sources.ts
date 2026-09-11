@@ -78,6 +78,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["periodo", "geo", "coicop18", "unità"],
   },
   {
+    slug: "oecd-taxing-wages",
+    name: "OECD · Taxing Wages (cuneo fiscale)",
+    owner: "OECD",
+    area: "Cuneo fiscale sul lavoro per profili tipo",
+    cadence: "Annuale; Taxing Wages 2025",
+    coverage:
+      "Italia 2000-2025: cuneo medio e componenti IRPEF/SSC per single senza figli al 100% del salario medio; confronto IT/FR/DE/ES e media OECD 2015-2025; AW67 solo come controllo",
+    format: "SDMX REST · CSV con etichette · snapshot JSON verificato",
+    url: "https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html",
+    note: "Profilo tipo OECD, non busta paga reale. Il cuneo è % del costo del lavoro; le componenti sono % del lordo. Distinto da IRPEF MEF e da SIOPE. Licenza CC BY 4.0 della pubblicazione Taxing Wages 2025.",
+    joinKeys: ["paese", "anno", "profilo", "misura", "unità"],
+  },
+  {
     slug: "eurostat-cofog",
     name: "Eurostat · spesa pubblica per funzione (COFOG)",
     owner: "Eurostat (Commissione europea)",

@@ -25,6 +25,7 @@ export type SourceId =
   | "bancaditalia"
   | "eurostat"
   | "eurostat-hicp"
+  | "oecd-taxing-wages"
   | "eurostat-cofog"
   | "istat-cofog"
   | "istat-epea"
@@ -432,6 +433,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 2,
     tags: ["source:eurostat-hicp", "domain:inflation", "domain:government-scorecard"],
+  },
+  "oecd-taxing-wages": {
+    id: "oecd-taxing-wages",
+    label: "OECD · Taxing Wages (cuneo fiscale)",
+    owner: "OECD",
+    sourceUrl: "https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html",
+    cadence: "annuale",
+    cadenceNote:
+      "Taxing Wages è annuale: lo snapshot resta bloccato sui CSV SDMX verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione delle componenti.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:oecd-taxing-wages", "domain:labour-taxation"],
   },
   "eurostat-cofog": {
     id: "eurostat-cofog",

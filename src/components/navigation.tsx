@@ -12,7 +12,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
   GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
-  MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
+  Analytics01Icon, MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
   AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import {
@@ -31,6 +31,7 @@ const NAV_ICONS = {
   education: School01Icon,
   society: UserGroupIcon,
   money: Money01Icon,
+  economy: Analytics01Icon,
   map: MapsGlobal01Icon,
   projects: Task01Icon,
   institutions: Building04Icon,

@@ -1953,7 +1953,7 @@ try {
         const columns = await page.$(".footer-sitemap-columns");
         assert.ok(columns, `${label}: contenitore dei gruppi assente`);
         const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
-        assert.equal(groupCount, 13, `${label}: attesi 13 gruppi nella mappa, inclusi report, studi e povertà`);
+        assert.equal(groupCount, 14, `${label}: attesi 14 gruppi nella mappa, inclusi report, studi, povertà ed economia`);
         const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>
           items.map((item) => item.textContent?.trim() ?? ""),
         );
@@ -1961,11 +1961,12 @@ try {
         assert.ok(headings.includes("Report mensili"), `${label}: sezione Report mensili assente`);
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
         assert.ok(headings.includes("Povertà"), `${label}: sezione Povertà assente`);
+        assert.ok(headings.includes("Economia"), `${label}: sezione Economia assente`);
         assert.ok(headings.includes("Istituzioni"), `${label}: sezione Istituzioni assente`);
         assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
         assert.ok(headings.includes("Studi"), `${label}: sezione Studi assente`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
-        for (const href of ["/report", "/report/2026-08", "/poverta"]) {
+        for (const href of ["/report", "/report/2026-08", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione"]) {
           assert.ok(
             await page.$(`.footer-sitemap-group a[href='${href}']`),
             `${label}: link ${href} assente dalla mappa`,

@@ -110,6 +110,25 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
 
+## Cuneo fiscale · OECD Taxing Wages
+
+La pagina `/cuneo-fiscale` pubblica il cuneo fiscale italiano da OECD Taxing
+Wages (dataflow `DSD_TAX_WAGES_COMP@DF_TW_COMP` v2.1). Il profilo prodotto è
+persona single senza figli al 100% del salario medio (`S_C0`, `AW100`): non è
+una busta paga reale, non è IRPEF MEF territoriale e non è un pagamento SIOPE.
+
+Il cuneo medio (`AV_TW`) è in percentuale del costo del lavoro. Le componenti
+IRPEF e contributi lavoratore/datore restano in percentuale del lordo: i due
+denominatori non vengono confusi. Per ogni anno italiano lo snapshot verifica
+che `(IRPEF + SSC lavoratore + SSC datore) / (100 + SSC datore)` riconcili
+`AV_TW` entro un milionesimo di punto. Il confronto con Francia, Germania,
+Spagna e media OECD usa lo stesso profilo dal 2015 al 2025. La serie AW67 è
+conservata solo come controllo rispetto a Eurostat `earn_nt_taxwedge`.
+
+La pubblicazione [Taxing Wages 2025](https://doi.org/10.1787/b3a95829-en) è
+CC BY 4.0. I quattro CSV SDMX sono source-locked per URL, byte e SHA-256.
+Controllo offline: `python3 scripts/etl/oecd_taxing_wages_snapshot.py --check`.
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

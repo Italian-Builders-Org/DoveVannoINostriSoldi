@@ -30,6 +30,7 @@ const SOURCE_IDS = [
   "consip", "opencoesione", "italiadomani", "opencivitas", "consulenti", "camera", "senato",
   "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-cofog", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "istat-bes-salute", "istat-bes-istruzione", "inps-naspi", "mef-irpef-dettaglio", "ameco",
   "governi-presidenza",
+  "mef-iva",
 ];
 const MCP_HEADERS = {
   "content-type": "application/json",

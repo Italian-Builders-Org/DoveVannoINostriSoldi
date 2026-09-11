@@ -166,6 +166,13 @@ try {
       validate: async (page) => {
         const label = `${width}px`;
         const selector = await sidebarTrigger(page);
+        if (width === 1280) {
+          // Desktop starts compact. Expand through the keyboard before checking
+          // the full card; the compact trigger is checked separately below.
+          await page.focus('.sidebar-collapse');
+          await page.keyboard.press('Enter');
+          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
+        }
         const trigger = await triggerGeometry(page, selector);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
         assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);
@@ -191,7 +198,14 @@ try {
         assert.equal(focusBack, true, `${label}: dopo Esc il focus deve tornare al controllo visibile`);
         assert.equal(await page.$eval(selector, node => node.getAttribute("aria-expanded")), "false");
         if (width === 1280) {
-          await page.click('button[aria-label="Riduci menu a icone"]');
+          await page.mouse.move(420, 240);
+          await page.evaluate(() => {
+            const active = document.activeElement;
+            if (active instanceof HTMLElement) active.blur();
+          });
+          const collapseLabel = await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-label'));
+          if (collapseLabel === 'Riduci menu a icone') await page.click('button[aria-label="Riduci menu a icone"]');
+          await page.mouse.move(420, 240);
           await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
           const compact = await triggerGeometry(page, selector);
           assert.ok(compact.width>=44 && compact.width<=56, JSON.stringify(compact));

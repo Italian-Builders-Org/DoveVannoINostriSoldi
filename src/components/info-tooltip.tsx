@@ -117,6 +117,18 @@ export function InfoTooltip({
         onPointerCancel={() => {
           pointerInteraction.current = false;
         }}
+        onPointerUp={(event) => {
+          // Some Chromium touch paths (CI touchscreen.tap) deliver pointerdown
+          // + focus without a click. Fall back to toggling on the next frame
+          // only when click has not already cleared the pointer intent.
+          if (event.pointerType !== "touch" || !pointerInteraction.current) return;
+          window.requestAnimationFrame(() => {
+            if (!pointerInteraction.current) return;
+            pointerInteraction.current = false;
+            setTooltipLeft(null);
+            setOpen((current) => !current);
+          });
+        }}
         onFocus={() => {
           if (!pointerInteraction.current) {
             setTooltipLeft(null);

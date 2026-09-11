@@ -93,7 +93,7 @@ try {
     assert.equal(requests[0].reasoning,"medium");assert.equal(requests[0].messages[0].attachments.length,8);assert.ok(requests[0].messages[0].attachments.every(f=>f.kind==='text'));assert.equal(await page.$$eval('[aria-label="Allegati da inviare"]',els=>els.length),0);
     assert.ok(await page.$eval('[aria-label="Allegati del messaggio"]',el=>el.firstElementChild.getBoundingClientRect().left>=el.getBoundingClientRect().left), 'the first sent attachment remains reachable when the strip overflows');
     const activity=await page.$('[data-assistant-activity] > button');assert.equal(await activity.evaluate(el=>el.getAttribute('aria-expanded')),'false');await activity.click();
-    await page.waitForFunction(()=>!!document.querySelector('[aria-label="Conversazione di questa pagina"] [aria-expanded="true"]'));await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running'));
+    await page.waitForFunction(()=>!!document.querySelector('[aria-label="Conversazione di questa pagina"] [aria-expanded="true"]'));await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running' && animation.effect?.getComputedTiming?.().iterations!==Infinity));
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-answer.png`,fullPage:true});
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth));
     await click('Rigenera risposta');await complete(2);assert.deepEqual(requests[1].messages[0].attachments,requests[0].messages[0].attachments);

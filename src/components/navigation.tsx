@@ -208,7 +208,6 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   // Layout state survives client navigation; no storage-driven shift during hydration.
   const [collapsed, setCollapsed] = useState(true);
   const [pointerInside, setPointerInside] = useState(false);
-  const [focusInside, setFocusInside] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
@@ -216,7 +215,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   const closeRef = useRef<HTMLButtonElement>(null);
   const openedLocationRef = useRef("");
   const backdropPointerRef = useRef(false);
-  const compact = collapsed && !pointerInside && !focusInside;
+  const compact = collapsed && !pointerInside;
 
   function closeDrawer() { dialogRef.current?.close(); }
   function openDrawer() {
@@ -278,11 +277,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
       <aside className="desktop-sidebar" data-collapsed={compact} aria-label="Menu del sito"
         onPointerEnter={() => setPointerInside(true)}
         onPointerLeave={() => setPointerInside(false)}
-        onFocusCapture={() => setFocusInside(true)}
         onBlurCapture={(event) => {
-          const relatedTarget = event.relatedTarget;
-          if (relatedTarget instanceof Node && event.currentTarget.contains(relatedTarget)) return;
-          setFocusInside(false);
           // CSS can hide the focused control before the media change callback.
           if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
             mobileTriggerRef.current?.focus();

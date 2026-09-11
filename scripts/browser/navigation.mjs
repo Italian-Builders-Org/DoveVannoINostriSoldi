@@ -152,10 +152,19 @@ try {
           for (const item of PRIMARY_NAV) {
             const link = await page.$(`${root} .nav-item > a[href="${item.href}"]`);
             await link.focus();
-            assert.equal(await link.evaluate((node) => {
+            const icon = await link.evaluate((node) => {
               const box = node.getBoundingClientRect();
-              return node.title === node.textContent.trim() && box.width >= 44 && box.height >= 44 && box.left >= 0 && box.right <= 69;
-            }), true, 'Icona raggiungibile con nome e tooltip');
+              return {
+                title: node.title,
+                label: node.textContent.trim(),
+                width: box.width,
+                height: box.height,
+                left: box.left,
+                right: box.right,
+              };
+            });
+            assert.equal(icon.title, icon.label, JSON.stringify(icon));
+            assert.ok(icon.width >= 44 && icon.height >= 44 && icon.left >= 0 && icon.right <= 69, JSON.stringify(icon));
           }
           await assertFits(page);
           await page.screenshot({path:`artifacts/browser/sidebar-compact-${width}.png`});

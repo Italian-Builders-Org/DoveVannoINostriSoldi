@@ -41,7 +41,7 @@
 .italySummaryFacts {
   display: flex;
   flex-direction: column;
-  align-self: start;
+  align-self: stretch;
   min-width: 0;
   padding: var(--space-4);
   background: var(--color-neutral-100);

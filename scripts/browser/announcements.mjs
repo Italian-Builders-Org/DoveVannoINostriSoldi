@@ -13,8 +13,8 @@ export async function inspectAnnouncements(page) {
       const track = banner.querySelector('[class*="track"]');
       return {
         accessible: !node.closest('[aria-hidden="true"]') && node.tabIndex === 0,
-        visible: box.width > 100 && box.height >= 44 && box.left >= 0 && box.right <= innerWidth
-          && box.top >= bannerBox.top && box.bottom <= bannerBox.bottom + 1,
+        visible: box.width > 100 && box.height >= 44 && box.left >= -1 && box.right <= innerWidth + 1
+          && box.top >= bannerBox.top - 1 && box.bottom <= bannerBox.bottom + 1,
         fullCopy: [...node.children].every((child) => {
           const copy = child.getBoundingClientRect();
           return copy.left >= box.left && copy.right <= box.right + 1

@@ -27,7 +27,7 @@ try {
     const field='#assistant-prompt';
     const click=label=>page.click(`button[aria-label="${label}"]`);
     const replace=async(selector,value)=>{await page.$eval(selector,el=>{el.focus();el.select();});await page.keyboard.press('Backspace');await page.type(selector,value);};
-    const complete=async count=>{await page.waitForFunction(count=>document.querySelectorAll('[data-assistant-reply] a[href="https://www.siope.it/"]').length===count && !document.querySelector('button[aria-label="Interrompi ricerca"]'),{},count);await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running'));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));};
+    const complete=async count=>{await page.waitForFunction(count=>document.querySelectorAll('[data-assistant-reply] a[href="https://www.siope.it/"]').length===count && !document.querySelector('button[aria-label="Interrompi ricerca"]'),{},count);await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running' && animation.effect?.getComputedTiming?.().iterations!==Infinity));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));};
     await page.waitForSelector(field);
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth),`${width}: overflow`);
     const themeLabel=process.env.DVNS_COLOR_SCHEME==='dark'?'Attiva modalità chiara':'Attiva modalità scura';

@@ -206,7 +206,8 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
 
 function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
   // Layout state survives client navigation; no storage-driven shift during hydration.
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [pointerInside, setPointerInside] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
@@ -214,6 +215,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   const closeRef = useRef<HTMLButtonElement>(null);
   const openedLocationRef = useRef("");
   const backdropPointerRef = useRef(false);
+  const compact = collapsed && !pointerInside;
 
   function closeDrawer() { dialogRef.current?.close(); }
   function openDrawer() {
@@ -272,7 +274,9 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           </div>
         </div>
       </header>
-      <aside className="desktop-sidebar" data-collapsed={collapsed} aria-label="Menu del sito"
+      <aside className="desktop-sidebar" data-collapsed={compact} aria-label="Menu del sito"
+        onPointerEnter={() => setPointerInside(true)}
+        onPointerLeave={() => setPointerInside(false)}
         onBlurCapture={(event) => {
           // CSS can hide the focused control before the media change callback.
           if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
@@ -281,14 +285,18 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
         }}>
         <div className="sidebar-toolbar">
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
-            aria-label={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            title={collapsed ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            aria-expanded={!collapsed} aria-controls="desktop-navigation" onClick={() => setCollapsed(!collapsed)}>
-            <HugeiconsIcon icon={collapsed ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+            aria-label={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
+            title={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
+            aria-expanded={!compact} aria-controls="desktop-navigation" onClick={() => {
+              // Toggle the state the button announces, including hover expansion.
+              setCollapsed(!compact);
+              setPointerInside(false);
+            }}>
+            <HugeiconsIcon icon={compact ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </div>
-        <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={collapsed} />
-        <div className="sidebar-callout"><ReportProblemButton variant="sidebar" compact={collapsed} /></div>
+        <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={compact} />
+        <div className="sidebar-callout"><ReportProblemButton variant="sidebar" compact={compact} /></div>
       </aside>
       <dialog id="mobile-navigation" className="mobile-navigation" ref={dialogRef} aria-labelledby="mobile-navigation-title"
         onClose={() => setDrawerOpen(false)}

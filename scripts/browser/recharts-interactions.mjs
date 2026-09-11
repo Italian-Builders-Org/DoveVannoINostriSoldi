@@ -11,8 +11,23 @@ export const RECHARTS_ROUTES = [
 ];
 
 export async function inspectRecharts(page, minimumCharts) {
-  await page.waitForFunction((minimum) => document.querySelectorAll('.recharts-wrapper svg').length >= minimum, {}, minimumCharts);
+  // Some callers (notably /enti) still hit a live registry. When that budget
+  // expires the panel stays empty on purpose — do not treat it as a chart bug.
+  await page.waitForFunction((minimum) => {
+    if (document.querySelectorAll(".recharts-wrapper svg").length >= minimum) return true;
+    return /Distribuzione non disponibile dalla fonte IPA|non è disponibile ora/i.test(
+      document.body?.innerText ?? "",
+    );
+  }, { timeout: 45_000 }, minimumCharts);
+
   const charts = await page.$$(".recharts-wrapper");
+  if (charts.length < minimumCharts) {
+    assert.ok(
+      await page.evaluate(() => /Distribuzione non disponibile dalla fonte IPA|non è disponibile ora/i.test(document.body?.innerText ?? "")),
+      `attesi almeno ${minimumCharts} grafici Recharts`,
+    );
+    return;
+  }
   for (const [index, chart] of charts.entries()) {
     await chart.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
     const targets = await chart.evaluate((element) => {

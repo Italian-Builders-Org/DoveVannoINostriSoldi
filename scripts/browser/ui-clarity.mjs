@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { inspectAnnouncements } from './announcements.mjs';
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { EDITORIAL_TOPICS } from '../../src/lib/integrated-editorial.ts';
 import { STATE_ADMINISTRATION_IPA_CODES } from '../../src/lib/data/state-administration-identities.ts';
@@ -94,24 +95,7 @@ try {
   if (process.env.DVNS_CLARITY_ROUTES_ONLY !== '1') await runScenario(browser, {
     label: 'Annunci, pausa, tastiera e movimento ridotto', pathname: '/', width: 1440, baseUrl, suite: 'ui-clarity', waitUntil: 'networkidle2',
     validate: async (page) => {
-      const active = () => page.$eval('[data-announcement] a[data-active="true"]', (node) => ({ text: node.textContent.trim(), href: node.getAttribute('href') }));
-      assert.equal((await active()).href, '/report/2026-08');
-      await page.waitForFunction(() => document.querySelector('[data-announcement] a[data-active="true"]')?.getAttribute('href') === '/studi/dai-fondi-ai-posti', { timeout: 10_000 });
-      await page.focus('[data-announcement] button[aria-pressed]'); await page.keyboard.press('Enter');
-      await page.mouse.move(1400, 850);
-      const paused = await active();
-      await new Promise((resolve) => setTimeout(resolve, 7_200));
-      assert.deepEqual(await active(), paused, 'Pausa mantiene articolo e URL');
-      await page.focus('[data-announcement] button[aria-label^="Mostra:"]'); await page.keyboard.press('Enter');
-      assert.equal((await active()).href, '/report/2026-08');
-      assert.equal(await page.$eval('[data-announcement]', (node) => node.dataset.instant), 'true');
-      assert.equal(await page.$$eval('[data-announcement] a:not([tabindex="-1"])', (nodes) => nodes.length), 1);
-      await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
-      await page.reload({ waitUntil: 'networkidle2' });
-      const reduced = await active();
-      await new Promise((resolve) => setTimeout(resolve, 7_200));
-      assert.deepEqual(await active(), reduced, 'Movimento ridotto ferma la rotazione');
-      assert.ok(['none', 'blur(0px)'].includes(await page.$eval('[data-announcement] a[data-active="true"]', (node) => getComputedStyle(node).filter)));
+      await inspectAnnouncements(page);
       await page.focus('#global-site-search');
       await page.setViewport({ ...page.viewport(), width: 743 });
       await page.waitForFunction(() => document.activeElement?.id === 'global-site-search' && document.querySelector('#global-site-search').getBoundingClientRect().width > 0);

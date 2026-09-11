@@ -206,15 +206,17 @@ export function SpendingComposition({
            * The geometry is expressed in the deterministic 100 × 62 layout
            * units.  Keep a generous safety margin around the copy: a tile is
            * allowed to show its name only when both dimensions leave room for
-           * the padding, two lines of type and the percentage.  Smaller
-           * tiles intentionally show only their ordinal; the complete name,
-           * amount and share remain in the legend and exact table below.
+           * the padding, two lines of type and the percentage.  The smallest
+           * cells use a compact version of the same label; only cells that
+           * cannot carry readable copy fall back to their ordinal.
            */
           const labelMode = rectangle.width >= 42 && rectangle.height >= 28
             ? "detail"
             : rectangle.width >= 28 && rectangle.height >= 21
               ? "label"
-              : "index";
+              : rectangle.width >= 15 && rectangle.height >= 14
+                ? "compact"
+                : "index";
           return (
             <button
               type="button"
@@ -247,12 +249,7 @@ export function SpendingComposition({
                 }
               }}
             >
-              {labelMode === "detail" ? (
-                <span className={styles.tileCopy}>
-                  <b>{item.shortLabel ?? item.label}</b>
-                  <strong>{percent(share(item))}</strong>
-                </span>
-              ) : labelMode === "label" ? (
+              {labelMode !== "index" ? (
                 <span className={styles.tileCopy}>
                   <b>{item.shortLabel ?? item.label}</b>
                   <strong>{percent(share(item))}</strong>

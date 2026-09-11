@@ -68,6 +68,119 @@
   font-variant-numeric: tabular-nums;
 }
 
+.trendFigure {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.trendHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.trendHeader > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.trendKicker {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.trendHeader strong {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 650;
+}
+.trendUnit {
+  flex: none;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.trendChart {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 164px;
+  overflow: visible;
+}
+.trendGrid {
+  stroke: var(--color-neutral-300);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.trendTick,
+.trendYear {
+  fill: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.trendYear { font-size: 10px; }
+.trendArea {
+  fill: color-mix(in srgb, var(--chart-category-teal) 22%, transparent);
+}
+.trendLine {
+  fill: none;
+  stroke: var(--chart-category-teal);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.trendPoint {
+  fill: var(--color-raised);
+  stroke: var(--chart-category-teal);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.trendPointSelected {
+  fill: var(--chart-category-teal);
+  stroke: var(--color-text);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.trendCaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.3;
+}
+.trendCaption strong {
+  color: var(--color-text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.srOnly table { width: 1px; min-width: 1px; max-width: 1px; table-layout: fixed; }
+
 @media (max-width: 640px) {
   .bars li {
     grid-template-columns: minmax(0, 1fr) 3.4rem;
@@ -79,4 +192,10 @@
   .barCopy { grid-area: copy; }
   .bars i { grid-area: bar; }
   .bars strong { grid-area: share; align-self: center; }
+
+  .trendFigure { padding-inline: var(--space-3); }
+  .trendChart { min-height: 156px; }
+  .trendTick { font-size: 10px; }
+  .trendYear { font-size: 9px; }
+  .trendCaption { align-items: flex-start; flex-direction: column; gap: 2px; }
 }

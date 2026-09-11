@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { inspectInflation } from "./inflation.mjs";
+import { inspectAnnouncements } from "./announcements.mjs";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
@@ -699,6 +700,14 @@ const completed = [];
 
 try {
   browser = await launchBrowser();
+
+  for (const width of [390, 1440]) {
+    const label = `Annunci accessibili ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/", width, validate: inspectAnnouncements,
+    });
+    completed.push(label);
+  }
 
   for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
     const label = `Palette istituzionale ${width}px`;

@@ -76,6 +76,20 @@
   align-content: center;
   padding: 0;
 }
+.tile[data-label-mode="compact"] {
+  padding: 3px;
+}
+.tile[data-label-mode="compact"] .tileCopy {
+  gap: 1px;
+}
+.tile[data-label-mode="compact"] .tileCopy b {
+  font-size: clamp(8px, 2.4cqw, 11px);
+  line-height: 1.05;
+}
+.tile[data-label-mode="compact"] .tileCopy strong {
+  font-size: clamp(10px, 3.6cqw, 15px);
+  line-height: 1.05;
+}
 .services { background: color-mix(in srgb, var(--chart-category-blue) 40%, var(--color-raised)); }
 .investment { background: color-mix(in srgb, var(--chart-category-purple) 40%, var(--color-raised)); }
 .pass-through { background: color-mix(in srgb, var(--chart-category-amber) 40%, var(--color-raised)); }

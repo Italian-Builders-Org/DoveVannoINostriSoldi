@@ -8,7 +8,7 @@ export async function inspectInflation(page) {
   assert.equal(await page.$$eval("#ipca-andamento .recharts-line-curve", (nodes) => nodes.length), 2);
   assert.equal(await page.$$eval("#ipca-capitoli ol > li", (rows) => rows.length), 13);
   assert.equal(await page.$$eval("#ipca-capitoli tbody tr", (rows) => rows.length), 13);
-  assert.match(await page.$eval("#ipca-capitoli", (node) => node.innerText), /Non sono contributi additivi/);
+  assert.match(await page.$eval("#ipca-capitoli", (node) => node.innerText), /Non sono contributi additivi/i);
   const comparison = await page.$eval("#ipca-confronto", (node) => node.innerText);
   assert.match(comparison, /luglio 2026/);
   assert.match(comparison, /Unione europea.*\+3,0%.*Area euro.*\+3,0%.*Italia.*\+2,9%/s);

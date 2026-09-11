@@ -432,14 +432,29 @@ main { display: block; }
 /* ── footer ─────────────────────────────────────────────────────────────── */
 
 .site-footer {
-  display: flex; flex-direction: column; gap: 16px;
-  margin-top: var(--space-8); padding-block: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: var(--space-8);
+  padding-block: var(--space-6) var(--space-8);
   border-top: 1px solid var(--color-neutral-300);
-  color: var(--color-neutral-700); font-size: 12px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
 }
 .footer-top { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 24px; align-items: center; }
 .footer-support { min-width: 0; }
-.footer-support-action { display: flex; align-items: flex-start; gap: 14px; width: 100%; padding: 18px; border: 1px solid var(--color-neutral-300); border-radius: 14px; background: var(--color-raised); color: var(--color-text); }
+.footer-support-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  background: var(--color-raised);
+  color: var(--color-text);
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
 .footer-support-action > svg { flex: none; margin-top: 2px; }
 .footer-support-copy { display: grid; gap: 4px; min-width: 0; }
 .footer-support-copy strong { color: var(--color-text); font-size: 14px; font-weight: 600; }
@@ -448,10 +463,19 @@ main { display: block; }
 .site-footer .footer-support-action:hover { color: var(--color-text); background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
 .footer-directory { display: grid; justify-items: end; gap: 8px; min-width: 0; }
 .footer-social ul { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
-.footer-social .footer-link { display: grid; place-items: center; width: 44px; min-height: 44px; border-radius: 8px; color: var(--color-neutral-700); }
+.footer-social .footer-link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  color: var(--color-neutral-700);
+  transition: background-color 140ms ease, color 140ms ease;
+}
 .footer-social .footer-link:hover { color: var(--color-text); background: var(--color-neutral-200); }
 .footer-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0 18px; }
 .footer-actions a { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; color: var(--color-neutral-700); }
+.footer-actions a:hover { color: var(--color-text); }
 .footer-disclaimer {
   margin: 0;
   padding-top: 12px;
@@ -466,6 +490,7 @@ main { display: block; }
 .footer-credits { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; padding-top: 4px; }
 .footer-makers, .footer-backer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .footer-makers a, .footer-backer a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); }
+.footer-makers a:hover, .footer-backer a:hover { color: var(--color-text); }
 .footer-backer > span { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 5px; }
 .footer-sitemap { border-top: 1px solid var(--color-neutral-300); }
 .footer-sitemap > summary { display: list-item; width: fit-content; min-height: 44px; padding-block: 12px; cursor: pointer; font-weight: 550; }
@@ -474,6 +499,7 @@ main { display: block; }
 .footer-sitemap-group h3 { margin: 0 0 4px; font-size: 11px; color: var(--color-neutral-600); }
 .footer-sitemap-group ul { margin: 0; padding: 0; list-style: none; }
 .footer-sitemap-group a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); }
+.footer-sitemap-group a:hover { color: var(--color-text); }
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .footer-directory { justify-items: start; }

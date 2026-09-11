@@ -57,12 +57,19 @@ export type HomeFunnelSlice = Readonly<{
   linkLabel: string | null;
 }>;
 
+export type HomeItalyTrendPoint = Readonly<{
+  year: number;
+  totalEuro: number;
+  gdpSharePercent: number;
+}>;
+
 export type HomeItalyFunnel = Readonly<{
   pa: Readonly<{
     year: number;
     availableYears: readonly number[];
     totalEuro: number;
     gdpSharePercent: number;
+    trend: readonly HomeItalyTrendPoint[];
     slices: readonly HomeFunnelSlice[];
     moneyNature: string;
     source: Readonly<{
@@ -165,6 +172,7 @@ function stateLink(mission: string): { href: string; linkLabel: string } {
 export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
   const year = resolveCofogYear(requestedYear);
   const cofog = queryEurostatCofog({ geo: "IT", year });
+  const totalSeries = queryEurostatCofog({ geo: "IT", function: "TOTAL" });
   const total = cofog.observations.find((row) => row.function === "TOTAL");
   if (!total) {
     throw new Error(`Manca il totale Eurostat COFOG Italia per ${year}.`);
@@ -176,6 +184,14 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
     .sort((left, right) => right.amountCents - left.amountCents);
 
   const totalEuro = eurosFromCents(total.amountCents);
+  const trend: HomeItalyTrendPoint[] = totalSeries.observations
+    .slice()
+    .sort((left, right) => left.year - right.year)
+    .map((row) => ({
+      year: row.year,
+      totalEuro: eurosFromCents(row.amountCents),
+      gdpSharePercent: row.shareOfGdpHundredths / 100,
+    }));
   // Show every COFOG division: the chart must read as a full composition, not a truncated list.
   const slices: HomeFunnelSlice[] = divisions.map((row) => {
     const link = cofogLink(row.function, year);
@@ -239,6 +255,7 @@ export function buildHomeItalyFunnel(requestedYear?: number): HomeItalyFunnel {
       ).reverse(),
       totalEuro,
       gdpSharePercent: total.shareOfGdpHundredths / 100,
+      trend,
       slices,
       moneyNature:
         "Spesa delle amministrazioni pubbliche (S13) in competenza economica SEC 2010: non è cassa e non è solo lo Stato centrale.",

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 59
+- Artefatti nel registro: 60
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 43 (PR umana dopo revisione)
+- manuale: 44 (PR umana dopo revisione)
 
 ## Rollback per modo
 

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectInflation } from "./inflation.mjs";
 import { inspectReceipts } from "./receipts.mjs";
 import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
@@ -1298,6 +1299,15 @@ try {
     await runScenario(browser, {
       label, width, pathname: "/enti/c_h501/appalti?view=summary",
       validate: inspectAnacConcentration,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
+    const label = `Inflazione IPCA ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/inflazione", width, touch: width === 390,
+      validate: inspectInflation,
     });
     completed.push(label);
   }

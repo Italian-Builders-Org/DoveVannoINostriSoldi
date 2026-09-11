@@ -43,11 +43,14 @@ export default function SupportPage() {
       </section>
 
       <section className="panel">
-        <h2 className="panel-title">Privacy</h2>
+        <h2 className="panel-title">Contatto privato e privacy</h2>
         <p>
-          Le issue GitHub sono pubbliche. Non usarle per diritti privacy, dati personali o
-          segnalazioni riservate. Un canale privato per queste richieste non è ancora indicato su
-          questa pagina. Puoi presentare reclamo al{" "}
+          Per assistenza riservata e richieste relative ai tuoi diritti privacy scrivi a{" "}
+          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>.
+          Le issue GitHub sono pubbliche: non usarle per dati personali o segnalazioni riservate.
+          Invia soltanto le informazioni necessarie, senza password o altre credenziali.
+          Consulta l&apos;<a href="/privacy">informativa privacy</a>.
+          Puoi presentare reclamo al{" "}
           <a href="https://www.garanteprivacy.it/" target="_blank" rel="noreferrer">
             Garante per la protezione dei dati personali
           </a>.

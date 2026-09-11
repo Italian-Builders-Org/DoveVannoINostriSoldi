@@ -85,6 +85,29 @@ class EurostatHicpSnapshotTest(unittest.TestCase):
         with self.assertRaises(etl.SnapshotError):
             etl.validate_data(broken, self.spec)
 
+    def test_rehashed_data_still_must_match_the_source_lock(self) -> None:
+        data = copy.deepcopy(self.data)
+        data["totalObservations"][-1]["annualRateTenths"] += 1
+        payload = etl.canonical_bytes(data)
+        metadata = etl.build_metadata(self.spec, data, payload)
+        with tempfile.TemporaryDirectory() as directory:
+            data_path = Path(directory) / "data.json"
+            meta_path = Path(directory) / "meta.json"
+            data_path.write_bytes(payload)
+            meta_path.write_text(json.dumps(metadata), encoding="utf-8")
+            with self.assertRaisesRegex(etl.SnapshotError, "divergenti dal source lock"):
+                etl.check(SPEC_PATH, data_path, meta_path)
+
+    def test_metadata_provenance_must_match_the_source_lock(self) -> None:
+        for field, value in (("licenseId", "invented-license"), ("landingUrl", "https://example.org")):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as directory:
+                metadata = copy.deepcopy(self.metadata)
+                metadata["source"][field] = value
+                meta_path = Path(directory) / "meta.json"
+                meta_path.write_text(json.dumps(metadata), encoding="utf-8")
+                with self.assertRaisesRegex(etl.SnapshotError, "provenance o semantica divergenti"):
+                    etl.check(SPEC_PATH, DATA_PATH, meta_path)
+
     def test_broken_weight_reconciliation_fails_closed(self) -> None:
         broken = copy.deepcopy(self.data)
         broken["weights"][-1]["weightHundredthsPerThousand"] += 100

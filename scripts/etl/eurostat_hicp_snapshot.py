@@ -340,10 +340,14 @@ def check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
     artifact = meta.get("integrity",{}).get("dataArtifact",{})
     if artifact.get("bytes") != len(data_bytes) or artifact.get("sha256") != sha256_bytes(data_bytes):
         raise SnapshotError("meta: hash o byte del data artifact divergenti")
+    if artifact != spec["integrity"]["dataArtifact"]:
+        raise SnapshotError("data artifact: hash, byte o percorso divergenti dal source lock")
     if meta.get("integrity",{}).get("sourceLockSha256") != spec["integrity"]["lockSha256"]:
         raise SnapshotError("meta: sourceLockSha256 divergente")
     if meta.get("datasetId") != DATASET_ID or meta.get("period") != spec["period"]:
         raise SnapshotError("meta: identità o periodo divergente")
+    if meta != build_metadata(spec, data, data_bytes):
+        raise SnapshotError("meta: provenance o semantica divergenti dal source lock")
 
 
 def main() -> int:

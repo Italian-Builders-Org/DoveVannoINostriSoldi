@@ -50,6 +50,7 @@ const EXPECTED_SOURCE_IDS = [
   "bancaditalia",
   "eurostat",
   "eurostat-hicp",
+  "oecd-taxing-wages",
   "eurostat-cofog",
   "istat-cofog",
   "istat-epea",

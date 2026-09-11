@@ -23,24 +23,24 @@
       "mio-eur": {
         "unit": "MIO_EUR",
         "unitLabel": "Million euro",
-        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&sinceTimePeriod=2014&untilTimePeriod=2024",
-        "bytes": 106856,
-        "sha256": "989c608df464f9f469db1d36eb3ef9c3fb153c56792e99a475cc5f6643a3c0b5",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 196481,
+        "sha256": "a385a865649e8d41c83597a7c8528d8b5607b4f2f4f6d722539910e3cdf9a9d8",
         "sourceUpdated": "2026-07-21T11:00:00+0200"
       },
       "pc-gdp": {
         "unit": "PC_GDP",
         "unitLabel": "Percentage of gross domestic product (GDP)",
-        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&sinceTimePeriod=2014&untilTimePeriod=2024",
-        "bytes": 86879,
-        "sha256": "f2d196c93a95786dc4c8296f9d64a1917bab43ddfc4fe015b08dfa5f8116d7af",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 164862,
+        "sha256": "c81844428c4bdf8cd3275ef7fdddba0793f24b2df467ff801f5f1394a6312bf7",
         "sourceUpdated": "2026-07-21T11:00:00+0200"
       }
     },
     "acquisition": {
-      "acquiredAt": "2026-09-10",
-      "checkedAt": "2026-09-10",
-      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici il 2026-09-10 con estremi temporali espliciti. Il lock include le divisioni COFOG per tutte le geografie e le otto sottofunzioni GF01; il prodotto pubblica il dettaglio di secondo livello solo per l’Italia, dove la copertura 2014-2024 è completa."
+      "acquiredAt": "2026-09-11",
+      "checkedAt": "2026-09-11",
+      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici il 2026-09-11 con estremi temporali espliciti. Il lock include le divisioni COFOG per tutte le geografie e le sottofunzioni italiane GF01, GF02, GF03 e GF08; il prodotto pubblica il dettaglio di secondo livello solo per l’Italia, dove la copertura 2014-2024 è completa."
     }
   },
   "expected": {
@@ -139,6 +139,74 @@
       {
         "code": "GF0108",
         "label": "Transfers of a general character between different levels of government"
+      },
+      {
+        "code": "GF0201",
+        "label": "Military defence"
+      },
+      {
+        "code": "GF0202",
+        "label": "Civil defence"
+      },
+      {
+        "code": "GF0203",
+        "label": "Foreign military aid"
+      },
+      {
+        "code": "GF0204",
+        "label": "R&D Defence"
+      },
+      {
+        "code": "GF0205",
+        "label": "Defence n.e.c."
+      },
+      {
+        "code": "GF0301",
+        "label": "Police services"
+      },
+      {
+        "code": "GF0302",
+        "label": "Fire-protection services"
+      },
+      {
+        "code": "GF0303",
+        "label": "Law courts"
+      },
+      {
+        "code": "GF0304",
+        "label": "Prisons"
+      },
+      {
+        "code": "GF0305",
+        "label": "R&D Public order and safety"
+      },
+      {
+        "code": "GF0306",
+        "label": "Public order and safety n.e.c."
+      },
+      {
+        "code": "GF0801",
+        "label": "Recreational and sporting services"
+      },
+      {
+        "code": "GF0802",
+        "label": "Cultural services"
+      },
+      {
+        "code": "GF0803",
+        "label": "Broadcasting and publishing services"
+      },
+      {
+        "code": "GF0804",
+        "label": "Religious and other community services"
+      },
+      {
+        "code": "GF0805",
+        "label": "R&D Recreation, culture and religion"
+      },
+      {
+        "code": "GF0806",
+        "label": "Recreation, culture and religion n.e.c."
       }
     ],
     "geographies": [
@@ -361,49 +429,140 @@
         "label": "Social protection"
       }
     ],
-    "detail": {
-      "parentFunction": "GF01",
-      "geo": "IT",
-      "functions": [
-        {
-          "code": "GF0101",
-          "label": "Executive and legislative organs, financial and fiscal affairs, external affairs"
-        },
-        {
-          "code": "GF0102",
-          "label": "Foreign economic aid"
-        },
-        {
-          "code": "GF0103",
-          "label": "General services"
-        },
-        {
-          "code": "GF0104",
-          "label": "Basic research"
-        },
-        {
-          "code": "GF0105",
-          "label": "R&D General public services"
-        },
-        {
-          "code": "GF0106",
-          "label": "General public services n.e.c."
-        },
-        {
-          "code": "GF0107",
-          "label": "Public debt transactions"
-        },
-        {
-          "code": "GF0108",
-          "label": "Transfers of a general character between different levels of government"
-        }
-      ],
-      "cellsPerUnit": 88
-    }
+    "details": [
+      {
+        "parentFunction": "GF01",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0101",
+            "label": "Executive and legislative organs, financial and fiscal affairs, external affairs"
+          },
+          {
+            "code": "GF0102",
+            "label": "Foreign economic aid"
+          },
+          {
+            "code": "GF0103",
+            "label": "General services"
+          },
+          {
+            "code": "GF0104",
+            "label": "Basic research"
+          },
+          {
+            "code": "GF0105",
+            "label": "R&D General public services"
+          },
+          {
+            "code": "GF0106",
+            "label": "General public services n.e.c."
+          },
+          {
+            "code": "GF0107",
+            "label": "Public debt transactions"
+          },
+          {
+            "code": "GF0108",
+            "label": "Transfers of a general character between different levels of government"
+          }
+        ],
+        "cellsPerUnit": 88
+      },
+      {
+        "parentFunction": "GF02",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0201",
+            "label": "Military defence"
+          },
+          {
+            "code": "GF0202",
+            "label": "Civil defence"
+          },
+          {
+            "code": "GF0203",
+            "label": "Foreign military aid"
+          },
+          {
+            "code": "GF0204",
+            "label": "R&D Defence"
+          },
+          {
+            "code": "GF0205",
+            "label": "Defence n.e.c."
+          }
+        ],
+        "cellsPerUnit": 55
+      },
+      {
+        "parentFunction": "GF03",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0301",
+            "label": "Police services"
+          },
+          {
+            "code": "GF0302",
+            "label": "Fire-protection services"
+          },
+          {
+            "code": "GF0303",
+            "label": "Law courts"
+          },
+          {
+            "code": "GF0304",
+            "label": "Prisons"
+          },
+          {
+            "code": "GF0305",
+            "label": "R&D Public order and safety"
+          },
+          {
+            "code": "GF0306",
+            "label": "Public order and safety n.e.c."
+          }
+        ],
+        "cellsPerUnit": 66
+      },
+      {
+        "parentFunction": "GF08",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0801",
+            "label": "Recreational and sporting services"
+          },
+          {
+            "code": "GF0802",
+            "label": "Cultural services"
+          },
+          {
+            "code": "GF0803",
+            "label": "Broadcasting and publishing services"
+          },
+          {
+            "code": "GF0804",
+            "label": "Religious and other community services"
+          },
+          {
+            "code": "GF0805",
+            "label": "R&D Recreation, culture and religion"
+          },
+          {
+            "code": "GF0806",
+            "label": "Recreation, culture and religion n.e.c."
+          }
+        ],
+        "cellsPerUnit": 66
+      }
+    ]
   },
   "coverage": {
-    "observedAt": "2026-09-10",
-    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio GF01 comprende 88 celle su 88 (otto sottofunzioni × undici anni) per ciascuna unità e deve riconciliare con GF01. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
+    "observedAt": "2026-09-11",
+    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio comprende GF0101–GF0108 (88 celle), GF0201–GF0205 (55), GF0301–GF0306 (66) e GF0801–GF0806 (66) per ciascuna unità e deve riconciliare con il rispettivo parent. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
     "excludedYears": {
       "2025": "Escluso: al 2026-09-10 la fonte pubblica il 2025 per il solo Lussemburgo (11 celle su 374). Il rilascio anticipato di un singolo Stato membro non è un confronto UE e non viene pubblicato."
     }
@@ -411,9 +570,9 @@
   "integrity": {
     "dataArtifact": {
       "path": "src/data/generated/eurostat-cofog-2014-2024.data.json",
-      "bytes": 419369,
-      "sha256": "16dc03792a126f9db3d822b6caee3d47c5d3ba1b6d88729d7ce4478c42113881"
+      "bytes": 439701,
+      "sha256": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8"
     },
-    "lockSha256": "39e4da0fe77a52fd0d11420a6b971a35f5efcb48fbe95a91cfc96c2054323305"
+    "lockSha256": "693c51cd675263c084547ed411fa6ae3d7aa6c826b7616076a2e6230000e0a46"
   }
 }

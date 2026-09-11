@@ -1,5 +1,6 @@
 import "server-only";
 
+import { EUROSTAT_COFOG_DETAIL_LABELS, shareOfParentBasisPoints } from "@/lib/eurostat-cofog-detail-labels";
 import {
   eurostatCofogMetadata,
   queryEurostatCofog,
@@ -8,23 +9,9 @@ import {
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 
 const DEFAULT_YEAR = 2024;
-const DETAIL_LABELS = {
-  GF0101: "Organi esecutivi e legislativi, affari finanziari e fiscali, affari esteri",
-  GF0102: "Aiuti economici all’estero",
-  GF0103: "Servizi generali",
-  GF0104: "Ricerca di base",
-  GF0105: "R&S nei servizi generali",
-  GF0106: "Altri servizi generali",
-  GF0107: "Operazioni sul debito pubblico",
-  GF0108: "Trasferimenti generali tra livelli di governo",
-} as const;
 
 export const COFOG_MANUAL_URL =
   "https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/ks-gq-19-010";
-
-function shareBasisPoints(numerator: number, denominator: number): number {
-  return Number((BigInt(numerator) * BigInt(10_000) + BigInt(denominator) / BigInt(2)) / BigInt(denominator));
-}
 export function parseGeneralPublicServicesYear(
   value: string | string[] | undefined,
 ): number | null {
@@ -46,8 +33,8 @@ export function getGeneralPublicServicesView(year = DEFAULT_YEAR) {
 
   const detail = detailResult.observations.map((row) => ({
     ...row,
-    label: DETAIL_LABELS[row.function],
-    shareOfGf01BasisPoints: shareBasisPoints(row.amountCents, parent.amountCents),
+    label: EUROSTAT_COFOG_DETAIL_LABELS[row.function],
+    shareOfGf01BasisPoints: shareOfParentBasisPoints(row.amountCents, parent.amountCents),
   }));
   const debtTransactions = detail.find((row) => row.function === "GF0107");
   if (!debtTransactions) throw new Error(`GF01 ${year}: GF0107 assente`);
@@ -66,7 +53,7 @@ export function getGeneralPublicServicesView(year = DEFAULT_YEAR) {
     years: history.map((row) => row.year),
     parent: {
       ...parent,
-      shareOfPublicSpendingBasisPoints: shareBasisPoints(parent.amountCents, publicTotal.amountCents),
+      shareOfPublicSpendingBasisPoints: shareOfParentBasisPoints(parent.amountCents, publicTotal.amountCents),
     },
     publicTotalCents: publicTotal.amountCents,
     detail,

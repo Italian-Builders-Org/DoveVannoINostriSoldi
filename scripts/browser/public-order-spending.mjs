@@ -10,8 +10,10 @@ export async function inspectPublicOrderSpending(page) {
   assert.match(text, /39,09 mld €/);
   assert.match(text, /39\.094\.000\.000/);
   assert.match(text, /SEC 2010/);
-  assert.match(text, /Dettaglio non disponibile/);
-  assert.equal(await page.$eval("#sicurezza-detail-title", (heading) => heading.textContent), "Polizia, vigili del fuoco e giustizia");
+  assert.match(text, /Servizi di polizia/);
+  assert.match(text, /GF0301/);
+  assert.equal(await page.$eval("#sicurezza-detail-title", (heading) => heading.textContent), "Polizia, vigili del fuoco, giustizia e altre voci · 2024");
+  assert.equal(await page.$$eval('[data-testid="sicurezza-detail-table"] tbody tr', (rows) => rows.length), 6);
 
   const tableSummary = await page.$(".chart-data > summary");
   await tableSummary.focus();
@@ -31,7 +33,7 @@ export async function inspectPublicOrderSpending(page) {
   await page.waitForSelector("#sicurezza-fonti[open]");
   const sourceText = await page.$eval("#sicurezza-fonti", (element) => element.innerText);
   assert.match(sourceText, /21 luglio 2026/);
-  assert.match(sourceText, /10 settembre 2026/);
+  assert.match(sourceText, /11 settembre 2026/);
   assert.match(sourceText, /CP A1/);
   assert.match(sourceText, /non si sommano/);
   const hashes = await page.$("#sicurezza-fonti details > summary");

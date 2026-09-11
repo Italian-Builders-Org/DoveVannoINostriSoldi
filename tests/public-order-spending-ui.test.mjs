@@ -13,6 +13,7 @@ const cssUrl = `data:text/javascript,${encodeURIComponent("export default new Pr
 const componentUrls = new Set([
   new URL("../src/app/spese/sicurezza/page.tsx", import.meta.url).href,
   new URL("../src/components/charts/chart-data-table.tsx", import.meta.url).href,
+  new URL("../src/components/cofog-detail-breakdown.tsx", import.meta.url).href,
 ]);
 registerHooks({
   resolve(specifier, context, nextResolve) {

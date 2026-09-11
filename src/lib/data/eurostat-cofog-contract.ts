@@ -13,8 +13,8 @@ import { z } from "zod";
  * - i flag della fonte viaggiano con l'osservazione. «b» segna una interruzione
  *   della serie storica: chi traccia una tendenza attraverso quel punto sta
  *   affermando qualcosa che la fonte non dice;
- * - il dettaglio italiano GF01 contiene esattamente le otto sottofunzioni
- *   GF0101-GF0108 per gli stessi 11 anni e deve riconciliare con il parent GF01.
+ * - il dettaglio italiano contiene le sottofunzioni ufficiali di GF01, GF02, GF03
+ *   e GF08 per gli stessi 11 anni e deve riconciliare con il rispettivo parent.
  *
  * Blocca inoltre identità inattesa, caveats assenti, provenienza non ufficiale,
  * licenza diversa da quella verificata, duplicati e importi non interi.
@@ -31,16 +31,15 @@ const sha256 = z.string().regex(/^[a-f0-9]{64}$/);
 const nonNegativeInt = z.number().int().min(0);
 
 const functionCode = z.union([z.literal("TOTAL"), z.string().regex(/^GF(0[1-9]|10)$/)]);
-const detailFunctionCode = z.enum([
-  "GF0101",
-  "GF0102",
-  "GF0103",
-  "GF0104",
-  "GF0105",
-  "GF0106",
-  "GF0107",
-  "GF0108",
-]);
+export const EUROSTAT_COFOG_DETAIL_CODES = {
+  GF01: ["GF0101", "GF0102", "GF0103", "GF0104", "GF0105", "GF0106", "GF0107", "GF0108"],
+  GF02: ["GF0201", "GF0202", "GF0203", "GF0204", "GF0205"],
+  GF03: ["GF0301", "GF0302", "GF0303", "GF0304", "GF0305", "GF0306"],
+  GF08: ["GF0801", "GF0802", "GF0803", "GF0804", "GF0805", "GF0806"],
+} as const;
+export type EurostatCofogDetailParent = keyof typeof EUROSTAT_COFOG_DETAIL_CODES;
+const ALL_DETAIL_CODES = Object.values(EUROSTAT_COFOG_DETAIL_CODES).flat();
+const detailFunctionCode = z.enum(ALL_DETAIL_CODES as [typeof ALL_DETAIL_CODES[number], ...typeof ALL_DETAIL_CODES[number][]]);
 const flagCode = z.enum(["p", "b"]);
 
 const observationSchema = z
@@ -82,6 +81,35 @@ const geographySchema = z
   })
   .strict();
 
+const detailReconciliationSchema = z
+  .object({
+    note: z.string().min(1),
+    toleranceCents: z.literal(45_000_000),
+    toleranceShareHundredths: z.literal(45),
+    maxGapCents: nonNegativeInt,
+    maxGapShareHundredths: nonNegativeInt,
+  })
+  .strict();
+
+function detailBlockSchema(parent: EurostatCofogDetailParent, functionCount: number, cells: number) {
+  return z
+    .object({
+      parentFunction: z.literal(parent),
+      geo: z.literal("IT"),
+      functions: z.array(detailFunctionSchema).length(functionCount),
+      observations: z.array(detailObservationSchema).length(cells),
+      coverage: z
+        .object({
+          expectedCells: z.literal(cells),
+          observedCells: z.literal(cells),
+          flagged: nonNegativeInt,
+        })
+        .strict(),
+      reconciliation: detailReconciliationSchema,
+    })
+    .strict();
+}
+
 export const eurostatCofogDataSchema = z
   .object({
     schemaVersion: z.literal(1),
@@ -114,30 +142,10 @@ export const eurostatCofogDataSchema = z
       .strict(),
     details: z
       .object({
-        GF01: z
-          .object({
-            parentFunction: z.literal("GF01"),
-            geo: z.literal("IT"),
-            functions: z.array(detailFunctionSchema).length(8),
-            observations: z.array(detailObservationSchema).length(88),
-            coverage: z
-              .object({
-                expectedCells: z.literal(88),
-                observedCells: z.literal(88),
-                flagged: nonNegativeInt,
-              })
-              .strict(),
-            reconciliation: z
-              .object({
-                note: z.string().min(1),
-                toleranceCents: z.literal(45_000_000),
-                toleranceShareHundredths: z.literal(45),
-                maxGapCents: nonNegativeInt,
-                maxGapShareHundredths: nonNegativeInt,
-              })
-              .strict(),
-          })
-          .strict(),
+        GF01: detailBlockSchema("GF01", 8, 88),
+        GF02: detailBlockSchema("GF02", 5, 55),
+        GF03: detailBlockSchema("GF03", 6, 66),
+        GF08: detailBlockSchema("GF08", 6, 66),
       })
       .strict(),
   })
@@ -232,6 +240,7 @@ export const eurostatCofogMetadataSchema = z
   })
   .strict();
 
+
 export type EurostatCofogData = z.infer<typeof eurostatCofogDataSchema>;
 export type EurostatCofogMetadata = z.infer<typeof eurostatCofogMetadataSchema>;
 export type EurostatCofogObservation = z.infer<typeof observationSchema>;
@@ -241,16 +250,71 @@ export type EurostatCofogFunction = z.infer<typeof functionSchema>;
 export type EurostatCofogDetailFunction = z.infer<typeof detailFunctionSchema>;
 
 const DIVISIONS = Array.from({ length: 10 }, (_, index) => `GF${String(index + 1).padStart(2, "0")}`);
-const GF01_DETAILS = [
-  "GF0101",
-  "GF0102",
-  "GF0103",
-  "GF0104",
-  "GF0105",
-  "GF0106",
-  "GF0107",
-  "GF0108",
-] as const;
+
+function reconcileDetailParent(
+  data: EurostatCofogData,
+  byCell: Map<string, EurostatCofogObservation>,
+  parent: EurostatCofogDetailParent,
+): void {
+  const expectedCodes = EUROSTAT_COFOG_DETAIL_CODES[parent];
+  const detail = data.details[parent];
+  const detailFunctions = new Set(detail.functions.map((entry) => entry.code));
+  if (expectedCodes.some((code) => !detailFunctions.has(code))) {
+    throw new Error(`Snapshot Eurostat COFOG: anagrafica dettaglio ${parent} incompleta.`);
+  }
+
+  const detailByCell = new Map<string, EurostatCofogDetailObservation>();
+  let detailFlagged = 0;
+  for (const observation of detail.observations) {
+    const key = `${observation.year}/${observation.function}`;
+    if (detailByCell.has(key)) {
+      throw new Error(`Snapshot Eurostat COFOG: osservazione dettaglio duplicata IT/${key}.`);
+    }
+    if (!detailFunctions.has(observation.function)) {
+      throw new Error(`Snapshot Eurostat COFOG: codice dettaglio fuori parent in IT/${key}.`);
+    }
+    detailByCell.set(key, observation);
+    if (observation.flag) detailFlagged += 1;
+  }
+  if (detailFlagged !== detail.coverage.flagged) {
+    throw new Error(`Snapshot Eurostat COFOG: conteggio flag dettaglio ${parent} divergente.`);
+  }
+
+  let maxGapCents = 0;
+  let maxGapShareHundredths = 0;
+  for (let year = data.period.from; year <= data.period.to; year += 1) {
+    const parentRow = byCell.get(`IT/${year}/${parent}`);
+    if (!parentRow) {
+      throw new Error(`Snapshot Eurostat COFOG: manca IT/${year}/${parent}.`);
+    }
+    let sumCents = 0;
+    let sumShareHundredths = 0;
+    for (const code of expectedCodes) {
+      const part = detailByCell.get(`${year}/${code}`);
+      if (!part) {
+        throw new Error(`Snapshot Eurostat COFOG: manca IT/${year}/${code}.`);
+      }
+      sumCents += part.amountCents;
+      sumShareHundredths += part.shareOfGdpHundredths;
+    }
+    const gapCents = Math.abs(parentRow.amountCents - sumCents);
+    const gapShareHundredths = Math.abs(parentRow.shareOfGdpHundredths - sumShareHundredths);
+    if (
+      gapCents > detail.reconciliation.toleranceCents
+      || gapShareHundredths > detail.reconciliation.toleranceShareHundredths
+    ) {
+      throw new Error(`Snapshot Eurostat COFOG: IT/${year}/${parent} non riconcilia col dettaglio.`);
+    }
+    maxGapCents = Math.max(maxGapCents, gapCents);
+    maxGapShareHundredths = Math.max(maxGapShareHundredths, gapShareHundredths);
+  }
+  if (
+    detail.reconciliation.maxGapCents !== maxGapCents
+    || detail.reconciliation.maxGapShareHundredths !== maxGapShareHundredths
+  ) {
+    throw new Error(`Snapshot Eurostat COFOG: riconciliazione ${parent} dichiarata diversa dai dati.`);
+  }
+}
 
 function reconcile(data: EurostatCofogData): void {
   if (data.coverage.observedCells !== data.coverage.expectedCells) {
@@ -312,59 +376,8 @@ function reconcile(data: EurostatCofogData): void {
     }
   }
 
-  const detail = data.details.GF01;
-  const detailFunctions = new Set(detail.functions.map((entry) => entry.code));
-  if (GF01_DETAILS.some((code) => !detailFunctions.has(code))) {
-    throw new Error("Snapshot Eurostat COFOG: anagrafica dettaglio GF01 incompleta.");
-  }
-
-  const detailByCell = new Map<string, EurostatCofogDetailObservation>();
-  let detailFlagged = 0;
-  for (const observation of detail.observations) {
-    const key = `${observation.year}/${observation.function}`;
-    if (detailByCell.has(key)) {
-      throw new Error(`Snapshot Eurostat COFOG: osservazione dettaglio duplicata IT/${key}.`);
-    }
-    detailByCell.set(key, observation);
-    if (observation.flag) detailFlagged += 1;
-  }
-  if (detailFlagged !== detail.coverage.flagged) {
-    throw new Error("Snapshot Eurostat COFOG: conteggio flag dettaglio GF01 divergente.");
-  }
-
-  let maxGapCents = 0;
-  let maxGapShareHundredths = 0;
-  for (let year = data.period.from; year <= data.period.to; year += 1) {
-    const parent = byCell.get(`IT/${year}/GF01`);
-    if (!parent) {
-      throw new Error(`Snapshot Eurostat COFOG: manca IT/${year}/GF01.`);
-    }
-    let sumCents = 0;
-    let sumShareHundredths = 0;
-    for (const code of GF01_DETAILS) {
-      const part = detailByCell.get(`${year}/${code}`);
-      if (!part) {
-        throw new Error(`Snapshot Eurostat COFOG: manca IT/${year}/${code}.`);
-      }
-      sumCents += part.amountCents;
-      sumShareHundredths += part.shareOfGdpHundredths;
-    }
-    const gapCents = Math.abs(parent.amountCents - sumCents);
-    const gapShareHundredths = Math.abs(parent.shareOfGdpHundredths - sumShareHundredths);
-    if (
-      gapCents > detail.reconciliation.toleranceCents
-      || gapShareHundredths > detail.reconciliation.toleranceShareHundredths
-    ) {
-      throw new Error(`Snapshot Eurostat COFOG: IT/${year}/GF01 non riconcilia col dettaglio.`);
-    }
-    maxGapCents = Math.max(maxGapCents, gapCents);
-    maxGapShareHundredths = Math.max(maxGapShareHundredths, gapShareHundredths);
-  }
-  if (
-    detail.reconciliation.maxGapCents !== maxGapCents
-    || detail.reconciliation.maxGapShareHundredths !== maxGapShareHundredths
-  ) {
-    throw new Error("Snapshot Eurostat COFOG: riconciliazione GF01 dichiarata diversa dai dati.");
+  for (const parent of Object.keys(EUROSTAT_COFOG_DETAIL_CODES) as EurostatCofogDetailParent[]) {
+    reconcileDetailParent(data, byCell, parent);
   }
 }
 

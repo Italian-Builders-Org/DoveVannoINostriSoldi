@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getCommittedBudgetLawMissionSeries, selectBudgetLawMission } from "@/lib/bdap-legge-bilancio";
+import { buildEurostatCofogDetailRows } from "@/lib/eurostat-cofog-detail-view";
 import { eurostatCofogData, eurostatCofogMetadata, queryEurostatCofog } from "@/lib/eurostat-cofog-snapshot";
 
 export const CULTURE_COFOG_FUNCTION = "GF08";
@@ -23,12 +24,15 @@ export function buildCulturePublicSpendingView(year: number = eurostatCofogData.
   const history = queryEurostatCofog({ geo: "IT", function: CULTURE_COFOG_FUNCTION })
     .observations.slice().sort((left, right) => left.year - right.year);
   const budget = selectBudgetLawMission(getCommittedBudgetLawMissionSeries(10), CULTURE_BUDGET_MISSION);
+  const detail = buildEurostatCofogDetailRows("GF08", year);
 
   return {
     year,
     selected,
     history,
     years: history.map((row) => row.year),
+    detail: detail.rows,
+    detailReconciliation: detail.reconciliation,
     shareOfPublicSpendingPercent: total.amountCents > 0 ? selected.amountCents / total.amountCents * 100 : null,
     totalPublicSpendingCents: total.amountCents,
     metadata: eurostatCofogMetadata,

@@ -31,9 +31,13 @@ test("public order view retains the three semantic axes and hashed official prov
   assert.equal(view.selected.year, 2014);
   assert.match(view.semantics.soldi.nature, /SEC 2010/);
   assert.equal(view.semantics.periodo.referencePeriod, "2014-2024");
-  assert.equal(view.semantics.provenance.acquisitionDate, "2026-09-10");
-  assert.equal(view.semantics.provenance.checkedAt, "2026-09-10");
+  assert.equal(view.semantics.provenance.acquisitionDate, "2026-09-11");
+  assert.equal(view.semantics.provenance.checkedAt, "2026-09-11");
   assert.match(view.semantics.provenance.publicationDate, /^2026-07-21/);
+  assert.equal(view.detail.length, 6);
+  assert.equal(view.detail[0].function, "GF0301");
+  assert.match(view.detail[0].label, /polizia/i);
+  assert.equal(view.detail.reduce((sum, row) => sum + row.amountCents, 0), queryEurostatCofog({ geo: "IT", year: 2014, function: "GF03" }).observations[0].amountCents);
   assert.equal(view.source.licenseId, "CC-BY-4.0");
   for (const source of Object.values(view.source.assets)) {
     assert.ok(source.url.startsWith("https://ec.europa.eu/eurostat/"));

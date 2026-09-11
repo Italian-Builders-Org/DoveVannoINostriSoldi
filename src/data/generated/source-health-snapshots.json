@@ -121,9 +121,9 @@
   },
   {
     "sourceId": "eurostat-cofog",
-    "sourceTimestamp": "2026-09-10",
-    "detail": "Snapshot ETL attivo · spesa per funzione COFOG 2014-2024 (gov_10a_exp) · livello principale 4114/4114 celle, dettaglio GF01 Italia 88/88, 219 flag sul livello principale · 419.369 byte.",
-    "recordCount": 4202
+    "sourceTimestamp": "2026-09-11",
+    "detail": "Snapshot ETL attivo · spesa per funzione COFOG 2014-2024 (gov_10a_exp) · livello principale 4114/4114 celle, dettaglio Italia GF01/GF02/GF03/GF08 275/275, 219 flag sul livello principale · 439.701 byte.",
+    "recordCount": 4389
   },
   {
     "sourceId": "istat-cofog",

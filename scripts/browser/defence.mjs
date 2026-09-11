@@ -37,6 +37,9 @@ export async function inspectDefence(page) {
   assert.match(body, /SEC 2010/);
   assert.match(body, /non sommare/i);
   assert.match(body, /CP A1/);
+  assert.match(body, /Difesa militare/);
+  assert.match(body, /GF0201/);
+  assert.equal(await page.$$eval('[data-testid="defence-detail-table"] tbody tr', (elements) => elements.length), 5);
 
   await page.focus('[data-testid="defence-annual"] summary');
   await page.keyboard.press("Enter");

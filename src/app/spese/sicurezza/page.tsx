@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChartDataTable } from "@/components/charts/chart-data-table";
+import { CofogDetailBreakdown } from "@/components/cofog-detail-breakdown";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import { getPublicOrderSpendingView, parsePublicOrderYear } from "@/lib/public-order-spending";
 import styles from "./sicurezza.module.css";
 
 export const metadata: Metadata = {
   title: "Ordine pubblico e sicurezza: spesa pubblica",
-  description: "Spesa pubblica italiana per ordine pubblico e sicurezza, COFOG GF03: serie Eurostat 2014-2024, quote di PIL e spesa PA, fonti e limiti.",
+  description: "Spesa pubblica italiana per ordine pubblico e sicurezza, COFOG GF03 con sottofunzioni ufficiali: serie Eurostat 2014-2024, quote di PIL e spesa PA, fonti e limiti.",
   alternates: { canonical: "/spese/sicurezza" },
 };
 
@@ -87,11 +88,17 @@ export default async function PublicOrderPage({ searchParams }: PageProps<"/spes
         />
       </section>
 
-      <section className="panel" aria-labelledby="sicurezza-detail-title">
-        <h2 id="sicurezza-detail-title" className="panel-title">Polizia, vigili del fuoco e giustizia</h2>
-        <p>Dettaglio non disponibile in questa pagina. Lo snapshot verificato espone le divisioni COFOG, non le sottofunzioni di GF03: non attribuiamo quote a questi servizi e non trasformiamo il dato mancante in zero.</p>
-        <p>Per separare i servizi occorre acquisire e verificare un dettaglio ufficiale con lo stesso perimetro, anno e natura contabile. La serie aggregata non misura da sola qualità dei servizi, sicurezza del territorio o efficienza.</p>
-      </section>
+      <CofogDetailBreakdown
+        parentCode="GF03"
+        year={year}
+        rows={view.detail}
+        flags={view.flags}
+        reconciliationNote={view.detailReconciliation.note}
+        testId="sicurezza-detail"
+        headingId="sicurezza-detail-title"
+        title={`Polizia, vigili del fuoco, giustizia e altre voci · ${year}`}
+        intro="Eurostat pubblica sei sottofunzioni per l’Italia, incluse polizia, antincendio, tribunali e carceri. Le quote usano GF03 come denominatore; non stimiamo qualità dei servizi, criminalità o efficienza dalla sola spesa."
+      />
 
       <details className="data-details" id="sicurezza-fonti">
         <summary>Fonti, metodo e limiti</summary>
@@ -105,8 +112,8 @@ export default async function PublicOrderPage({ searchParams }: PageProps<"/spes
             <div><dt>Controllato da noi</dt><dd>{longDate(provenance.checkedAt)}</dd></div>
             <div><dt>Licenza dichiarata</dt><dd><a href={view.source.termsUrl}>{provenance.license}</a></dd></div>
           </dl>
-          <p>Selezione: Italia (IT), amministrazioni pubbliche (S13), spesa totale (TE), funzione GF03. La fonte pubblica milioni di euro con un decimale: gli importi esatti riportano la conversione di queste celle, non una precisione aggiuntiva.</p>
-          <p>La quota della spesa PA divide GF03 per il totale ufficiale TOTAL dello stesso anno, senza ricostruirlo sommando divisioni arrotondate. La quota del PIL è quella pubblicata da Eurostat.</p>
+          <p>Selezione: Italia (IT), amministrazioni pubbliche (S13), spesa totale (TE), funzione GF03. Il dettaglio usa GF0301-GF0306 dello stesso dataset. La fonte pubblica milioni di euro con un decimale: gli importi esatti riportano la conversione di queste celle, non una precisione aggiuntiva.</p>
+          <p>La quota della spesa PA divide GF03 per il totale ufficiale TOTAL dello stesso anno, senza ricostruirlo sommando divisioni arrotondate. La quota del PIL è quella pubblicata da Eurostat. Il nome di una missione RGS non prova l’equivalenza con una sottofunzione COFOG.</p>
           <p><a href={api}>API della selezione</a> · <Link href="/mcp">Interroga il dataset COFOG via MCP</Link></p>
           <details>
             <summary>URL dei file e impronte SHA-256</summary>

@@ -16,6 +16,14 @@ function inputs() {
   };
 }
 
+test("defence exposes the five official GF02 subfunctions without changing the parent total", () => {
+  const view = getDefencePublicSpendingView(2024);
+  assert.equal(view.detail.length, 5);
+  assert.deepEqual(view.detail.map((row) => row.function), ["GF0201", "GF0202", "GF0203", "GF0204", "GF0205"]);
+  assert.equal(view.detail.reduce((sum, row) => sum + row.amountCents, 0), view.selected.amountCents);
+  assert.match(view.detailReconciliation.note, /GF0201/);
+});
+
 test("defence preserves every source observation, unit and independent period", () => {
   const view = getDefencePublicSpendingView();
   const { cofog, budget } = inputs();

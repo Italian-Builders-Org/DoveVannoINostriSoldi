@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CofogDetailBreakdown } from "@/components/cofog-detail-breakdown";
+import { CofogSpendingHistory } from "@/components/charts/cofog-spending-history";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import { getDefencePublicSpendingView, parseDefenceYear } from "@/lib/defence-public-spending";
-import { CofogSpendingHistory } from "@/components/charts/cofog-spending-history";
 import styles from "./difesa.module.css";
 
 export const metadata: Metadata = {
   title: "Spesa pubblica per la difesa",
-  description: "Difesa in Italia: spesa PA Eurostat COFOG GF02 e stanziamenti della missione di bilancio, con anni, fonti e perimetri distinti.",
+  description: "Difesa in Italia: spesa PA Eurostat COFOG GF02 con sottofunzioni ufficiali e stanziamenti della missione di bilancio, con anni, fonti e perimetri distinti.",
   alternates: { canonical: "/spese/difesa" },
 };
 
@@ -53,6 +54,18 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
           {" "}Ultimo anno nello snapshot: {view.cofog.period.to}. Importi a prezzi correnti,
           pubblicati dalla fonte in milioni con un decimale. Questo non è il dato NATO.</p>
       </section>
+
+      <CofogDetailBreakdown
+        parentCode="GF02"
+        year={year}
+        rows={view.detail}
+        flags={view.flags}
+        reconciliationNote={view.detailReconciliation.note}
+        testId="defence-detail"
+        headingId="defence-detail-title"
+        title={`Che cosa c’è dentro GF02 · ${year}`}
+        intro="Eurostat pubblica cinque sottofunzioni per l’Italia. Le barre mostrano la quota sul totale GF02; i valori esatti restano nella tabella. Zero osservato e dato mancante restano distinti."
+      />
 
       <section className="panel" aria-labelledby="defence-comparison-title">
         <h2 id="defence-comparison-title" className="panel-title">Due conti diversi · stesso anno {comparison.year}</h2>
@@ -112,10 +125,10 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
             in COFOG e differire per pensioni, contributi e momento della registrazione.
             Il valore qui mostrato non verifica il raggiungimento degli obiettivi NATO.</p>
           <p><a href="https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_on_defence">Definizioni e confronto metodologico Eurostat</a>.</p>
-          <p>Il nostro snapshot espone GF02 aggregata, senza dettaglio per operazione o Paese destinatario:
-            non permette di isolare il costo delle singole missioni estere. La missione di bilancio
-            non equivale all’intero bilancio del Ministero della Difesa. Non ricostruiamo un totale
-            aggiungendo stanziamenti, aiuti e pagamenti.</p>
+          <p>Il dettaglio GF0201-GF0205 riconcilia con GF02 entro la sola tolleranza di arrotondamento.
+            Non permette di isolare il costo delle singole missioni estere né di leggere obiettivi NATO.
+            La missione di bilancio non equivale all’intero bilancio del Ministero della Difesa.
+            Non ricostruiamo un totale aggiungendo stanziamenti, aiuti e pagamenti.</p>
         </section>
 
         <div className={styles.sources}>

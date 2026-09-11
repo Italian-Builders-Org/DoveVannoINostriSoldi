@@ -6,6 +6,7 @@ import {
   selectBudgetLawMission,
   type BudgetLawMissionSeries,
 } from "@/lib/bdap-legge-bilancio";
+import { buildEurostatCofogDetailRows } from "@/lib/eurostat-cofog-detail-view";
 import {
   eurostatCofogMetadata,
   queryEurostatCofog,
@@ -74,9 +75,12 @@ export function getDefencePublicSpendingView(year: number = eurostatCofogMetadat
   const series = buildDefenceSeries(cofog, budget);
   const selected = series.history.find((point) => point.year === year);
   if (!selected) throw new Error("Difesa: anno COFOG non disponibile.");
+  const detail = buildEurostatCofogDetailRows("GF02", year);
   return {
     ...series,
     selected,
+    detail: detail.rows,
+    detailReconciliation: detail.reconciliation,
     comparison: {
       year: selected.year,
       cofog: selected,

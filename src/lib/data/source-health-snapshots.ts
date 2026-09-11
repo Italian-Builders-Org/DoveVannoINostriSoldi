@@ -302,14 +302,17 @@ function snapshotManagedEurostatHicp(): SourceHealth {
 function snapshotManagedEurostatCofog(): SourceHealth {
   const artifact = eurostatCofogMetadata.integrity.dataArtifact;
   const { flagged, observedCells } = eurostatCofogData.coverage;
-  const gf01DetailCells = eurostatCofogData.details.GF01.coverage.observedCells;
+  const detailCells = Object.values(eurostatCofogData.details).reduce(
+    (total, detail) => total + detail.coverage.observedCells,
+    0,
+  );
   return {
     ...baseHealth("eurostat-cofog"),
     reachability: "not-probed",
     freshness: freshnessFor("eurostat-cofog", eurostatCofogMetadata.coverage.observedAt),
     latencyMs: null,
-    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · livello principale ${observedCells}/${observedCells} celle, dettaglio GF01 Italia ${gf01DetailCells}/${gf01DetailCells}, ${flagged} flag sul livello principale · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
-    recordCount: eurostatCofogData.observations.length + eurostatCofogData.details.GF01.observations.length,
+    detail: `Snapshot ETL attivo · spesa per funzione COFOG ${eurostatCofogData.period.from}-${eurostatCofogData.period.to} (${eurostatCofogMetadata.source.datasetCode}) · livello principale ${observedCells}/${observedCells} celle, dettaglio Italia GF01/GF02/GF03/GF08 ${detailCells}/${detailCells}, ${flagged} flag sul livello principale · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatCofogData.observations.length + detailCells,
   };
 }
 

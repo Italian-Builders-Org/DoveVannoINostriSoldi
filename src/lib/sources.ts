@@ -84,7 +84,7 @@ export const sourceCatalog: PublicSource[] = [
     area: "Spesa delle Amministrazioni pubbliche per funzione",
     cadence: "Annuale; rilascio verificato del 21 luglio 2026",
     coverage:
-      "UE27, area euro e 30 Stati, 2014–2024: totale e dieci divisioni; per l’Italia anche GF0101–GF0108. Milioni di euro e quota di PIL",
+      "UE27, area euro e 30 Stati, 2014–2024: totale e dieci divisioni; per l’Italia anche GF0101–GF0108, GF0201–GF0205, GF0301–GF0306 e GF0801–GF0806. Milioni di euro e quota di PIL",
     format: "Statistics API · JSON-stat · snapshot JSON verificato",
     url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
     note: "Competenza economica SEC 2010, non pagamenti di cassa: non è confrontabile con SIOPE né sommabile alle missioni del bilancio dello Stato. Il dettaglio di secondo livello è pubblicato solo per l’Italia, dove è completo; le assenze osservate altrove non diventano zero. GF0107 include interessi D.41 e FISIM P.2 e non coincide con la sola serie degli interessi.",

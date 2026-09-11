@@ -89,7 +89,7 @@ La revisione e il merge restano umani.
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |
 | `consip-ordini-2024-2026` | 2024-2026 | non dichiarato | https://dati.consip.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/consip_ordini_snapshot.py --check` |
 | `eurostat-hicp-2022-2026` | 2022-01/2026-08 (totale Italia); 2026-07 (confronto e divisioni); pesi 2025-2026 | 2026-09-10 | https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_hicp_snapshot.py --check` |
-| `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-10 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |
+| `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-11 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |
 | `istat-cofog-1995-2023` | 1995-2023 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_cofog_snapshot.py --check` |
 | `istat-poverta-assoluta-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family assoluta --check` |
 | `istat-poverta-relativa-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family relativa --check` |

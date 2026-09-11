@@ -60,6 +60,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-bes-istruzione",
   "inps-naspi",
   "mef-irpef-dettaglio",
+  "mef-iva",
   "ameco",
   "governi-presidenza",
 ];

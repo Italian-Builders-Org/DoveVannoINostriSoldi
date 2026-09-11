@@ -61,7 +61,7 @@ export default async function CultureSpendingPage({ searchParams }: PageProps<"/
         testId="culture-detail"
         headingId="culture-detail-title"
         title={`Attività ricreative, cultura e culto · ${year}`}
-        intro="Eurostat pubblica sei sottofunzioni per l’Italia. Sport e spettacolo restano dentro le voci ufficiali GF0801–GF0806: non inventiamo una categoria «spettacolo» se la fonte non la separa."
+        intro="Eurostat pubblica sei sottofunzioni per l’Italia. Sport e spettacolo restano dentro le voci ufficiali GF0801-GF0806: non inventiamo una categoria «spettacolo» se la fonte non la separa."
       />
 
       <div className={styles.columns}>

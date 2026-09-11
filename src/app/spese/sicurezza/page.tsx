@@ -112,7 +112,7 @@ export default async function PublicOrderPage({ searchParams }: PageProps<"/spes
             <div><dt>Controllato da noi</dt><dd>{longDate(provenance.checkedAt)}</dd></div>
             <div><dt>Licenza dichiarata</dt><dd><a href={view.source.termsUrl}>{provenance.license}</a></dd></div>
           </dl>
-          <p>Selezione: Italia (IT), amministrazioni pubbliche (S13), spesa totale (TE), funzione GF03. Il dettaglio usa GF0301–GF0306 dello stesso dataset. La fonte pubblica milioni di euro con un decimale: gli importi esatti riportano la conversione di queste celle, non una precisione aggiuntiva.</p>
+          <p>Selezione: Italia (IT), amministrazioni pubbliche (S13), spesa totale (TE), funzione GF03. Il dettaglio usa GF0301-GF0306 dello stesso dataset. La fonte pubblica milioni di euro con un decimale: gli importi esatti riportano la conversione di queste celle, non una precisione aggiuntiva.</p>
           <p>La quota della spesa PA divide GF03 per il totale ufficiale TOTAL dello stesso anno, senza ricostruirlo sommando divisioni arrotondate. La quota del PIL è quella pubblicata da Eurostat. Il nome di una missione RGS non prova l’equivalenza con una sottofunzione COFOG.</p>
           <p><a href={api}>API della selezione</a> · <Link href="/mcp">Interroga il dataset COFOG via MCP</Link></p>
           <details>

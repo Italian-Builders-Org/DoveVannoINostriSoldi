@@ -125,7 +125,7 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
             in COFOG e differire per pensioni, contributi e momento della registrazione.
             Il valore qui mostrato non verifica il raggiungimento degli obiettivi NATO.</p>
           <p><a href="https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Government_expenditure_on_defence">Definizioni e confronto metodologico Eurostat</a>.</p>
-          <p>Il dettaglio GF0201–GF0205 riconcilia con GF02 entro la sola tolleranza di arrotondamento.
+          <p>Il dettaglio GF0201-GF0205 riconcilia con GF02 entro la sola tolleranza di arrotondamento.
             Non permette di isolare il costo delle singole missioni estere né di leggere obiettivi NATO.
             La missione di bilancio non equivale all’intero bilancio del Ministero della Difesa.
             Non ricostruiamo un totale aggiungendo stanziamenti, aiuti e pagamenti.</p>

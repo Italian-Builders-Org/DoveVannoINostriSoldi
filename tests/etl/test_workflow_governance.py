@@ -10,6 +10,7 @@ class WorkflowGovernanceTests(unittest.TestCase):
     SOURCE_WORKFLOWS = {
         "company-atlas-refresh.yml": "company-atlas",
         "consulenti-refresh.yml": "consulenti-pubblici",
+        "education-atlas-refresh.yml": "education-atlas",
         "government-scorecard-refresh.yml": "government-scorecard",
         "opencivitas-refresh.yml": "opencivitas-2022",
         "opencoesione-refresh.yml": "opencoesione",

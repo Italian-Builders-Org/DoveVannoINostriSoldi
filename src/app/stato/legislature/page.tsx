@@ -85,6 +85,12 @@ function LegislaturePanel({ cycle }: { cycle: LegislatureSpendingCycle }) {
                 ? " Non è una prova di spesa elettorale: l'anno include anche la spesa straordinaria dichiarata sopra, il cui peso specifico su questa differenza non isoliamo."
                 : " Non è una prova di spesa elettorale: la spesa statale cresce anche per motivi indipendenti dal voto, che questo confronto non isola."}
             </p>
+          ) : legislature.endDate === null ? (
+            <p className={styles.note}>
+              La legislatura è in corso: qui sopra ci sono gli anni completi già pubblicati dal
+              consuntivo OpenBDAP. Non c&apos;è ancora un anno pre-elettorale da confrontare, perché
+              non si è conclusa con un&apos;elezione.
+            </p>
           ) : null}
         </>
       )}

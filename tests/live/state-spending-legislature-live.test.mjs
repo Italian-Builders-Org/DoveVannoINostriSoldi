@@ -32,7 +32,13 @@ test(
 
       const nineteenth = cycles.find((cycle) => cycle.legislature.number === "XIX");
       assert.ok(nineteenth);
-      assert.deepEqual(nineteenth.years, []);
+      assert.ok(nineteenth.years.length >= 2, "la XIX deve esporre almeno i consuntivi 2023 e 2024");
+      assert.deepEqual(
+        nineteenth.years.map((entry) => entry.year).slice(0, 2),
+        [2023, 2024],
+      );
+      assert.ok(nineteenth.years.every((entry) => entry.totalPaid > 0));
+      assert.ok(nineteenth.years.every((entry) => entry.isPreElectionYear === false));
       assert.equal(nineteenth.preElectionYear, null);
       assert.equal(nineteenth.otherYearsAverage, null);
       assert.equal(nineteenth.differenceFromAverage, null);
@@ -48,6 +54,10 @@ test("openbdap_spesa_legislature MCP live result preserves the offline filter co
   await runLiveOpenBdap(context, async () => {
     const result = await queryPublicDataset({ dataset: "openbdap_spesa_legislature" });
     assert.equal(result.cycles.length, LEGISLATURES.length);
+    const nineteenth = result.cycles.find((cycle) => cycle.legislature.number === "XIX");
+    assert.ok(nineteenth);
+    assert.ok(nineteenth.years.length >= 2);
+    assert.equal(nineteenth.preElectionYear, null);
     assert.ok(JSON.stringify(result).length < 750 * 1024);
   });
 });

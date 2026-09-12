@@ -15,7 +15,7 @@ const OPENBDAP_HISTORY_CACHE_SECONDS = getSourcePolicy("openbdap").dataRevalidat
 
 const readCachedLegislatureCycles = unstable_cache(
   () => getLegislatureSpendingCycles(),
-  ["state-spending-legislatures-v1"],
+  ["state-spending-legislatures-v2"],
   { revalidate: OPENBDAP_HISTORY_CACHE_SECONDS, tags: ["openbdap-legislatures"] },
 );
 

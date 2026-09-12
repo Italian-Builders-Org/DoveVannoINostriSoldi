@@ -33,7 +33,7 @@ function LegislaturePanel({ cycle }: { cycle: LegislatureSpendingCycle }) {
       {years.length === 0 ? (
         <p className={styles.note}>
           {legislature.endDate === null
-            ? "Legislatura in corso: non ha ancora un'elezione successiva, quindi non c'è un anno pre-elettorale da confrontare."
+            ? "Legislatura in corso: nessun anno completo è ancora disponibile nel consuntivo OpenBDAP dal 2014 in poi."
             : "Nessun anno completo di questa legislatura rientra nel consuntivo OpenBDAP dal 2014 in poi."}
         </p>
       ) : (
@@ -84,6 +84,12 @@ function LegislaturePanel({ cycle }: { cycle: LegislatureSpendingCycle }) {
               {preElectionYear.extraordinaryContext
                 ? " Non è una prova di spesa elettorale: l'anno include anche la spesa straordinaria dichiarata sopra, il cui peso specifico su questa differenza non isoliamo."
                 : " Non è una prova di spesa elettorale: la spesa statale cresce anche per motivi indipendenti dal voto, che questo confronto non isola."}
+            </p>
+          ) : legislature.endDate === null ? (
+            <p className={styles.summary}>
+              Legislatura in corso: mostriamo gli anni solari completi già pubblicati dal consuntivo
+              OpenBDAP. Non c&apos;è ancora un&apos;elezione successiva, quindi nessun anno è
+              etichettato come pre-elettorale e non calcoliamo media né differenza.
             </p>
           ) : null}
         </>

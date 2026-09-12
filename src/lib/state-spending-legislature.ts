@@ -49,18 +49,29 @@ export const LEGISLATURES: readonly Legislature[] = [
 
 /**
  * Calendar years fully covered by a legislature's own budget cycle: excludes the partial
- * first year (the legislature is seated mid-year) and the year of the election that ends
- * it (`nextElectionYear`), since that year's budget only partly reflects this legislature.
- * A legislature still in progress (no successor yet) has no pre-election year to compare.
+ * first year (the legislature is seated mid-year) and, when a successor election exists,
+ * the year of that election (`nextElectionYear`), since that year's budget only partly
+ * reflects this legislature.
+ *
+ * A legislature still in progress has no successor election yet: pass `observedThroughYear`
+ * (latest published OpenBDAP consuntivo year in scope) so full calendar years already
+ * published can surface without inventing a pre-election year.
+ *
  * Exported so this boundary arithmetic is unit-tested against synthetic legislatures,
  * including edge cases (a single-year term) the three real ones never happen to exercise.
  */
-export function fullYearsWithinLegislature(legislature: Legislature, nextElectionYear: number | null): number[] {
-  if (nextElectionYear === null) return [];
+export function fullYearsWithinLegislature(
+  legislature: Legislature,
+  nextElectionYear: number | null,
+  observedThroughYear: number | null = null,
+): number[] {
   const startYear = Number(legislature.startDate.slice(0, 4));
   const firstFullYear = startYear + 1;
-  const lastFullYear = nextElectionYear - 1;
-  if (lastFullYear < firstFullYear) return [];
+  const lastFullYear =
+    nextElectionYear !== null
+      ? nextElectionYear - 1
+      : observedThroughYear;
+  if (lastFullYear === null || lastFullYear < firstFullYear) return [];
   const years: number[] = [];
   for (let year = firstFullYear; year <= lastFullYear; year += 1) years.push(year);
   return years;
@@ -102,11 +113,17 @@ export type LegislatureSpendingCycle = {
 };
 
 const MIN_CONSUNTIVO_YEAR = 2014;
+/** Upper bound of the verified OpenBDAP annual consuntivo window used by this view. */
+export const MAX_CONSUNTIVO_YEAR = 2025;
 export const LEGISLATURE_SPENDING_DEADLINE_MS = 50_000;
 
 type TotalsLoader = (
   years: readonly number[],
-  options: { signal?: AbortSignal; concurrency?: number },
+  options: {
+    signal?: AbortSignal;
+    concurrency?: number;
+    optionalYears?: ReadonlySet<number>;
+  },
 ) => Promise<Map<number, StateAnnualSpendingTotal>>;
 
 function abortReason(signal: AbortSignal): unknown {
@@ -141,6 +158,10 @@ async function withAbort<T>(promise: Promise<T>, signal: AbortSignal): Promise<T
  * legislature's other complete years. Does not compute or claim statistical significance,
  * does not attribute the difference to electoral motive, and flags known confounding
  * years (COVID-19 emergency spending) explicitly instead of silently averaging over them.
+ *
+ * Ongoing legislatures still publish every full calendar year already available in the
+ * consuntivo window, but leave `preElectionYear` / averages null until a successor election
+ * exists.
  */
 export async function getLegislatureSpendingCycles(
   options: {
@@ -165,14 +186,21 @@ export async function getLegislatureSpendingCycles(
   const plans = LEGISLATURES.map((legislature, index) => {
     const next = LEGISLATURES[index + 1];
     const nextElectionYear = next ? Number(next.electionDate.slice(0, 4)) : null;
+    const ongoing = nextElectionYear === null;
     return {
       legislature,
-      candidateYears: fullYearsWithinLegislature(legislature, nextElectionYear).filter(
-        (year) => year >= MIN_CONSUNTIVO_YEAR,
-      ),
+      ongoing,
+      candidateYears: fullYearsWithinLegislature(
+        legislature,
+        nextElectionYear,
+        ongoing ? MAX_CONSUNTIVO_YEAR : null,
+      ).filter((year) => year >= MIN_CONSUNTIVO_YEAR && year <= MAX_CONSUNTIVO_YEAR),
     };
   });
   const allYears = plans.flatMap((plan) => plan.candidateYears);
+  const optionalYears = new Set(
+    plans.filter((plan) => plan.ongoing).flatMap((plan) => plan.candidateYears),
+  );
   let totals: Map<number, StateAnnualSpendingTotal>;
   try {
     totals = await withAbort(
@@ -180,6 +208,7 @@ export async function getLegislatureSpendingCycles(
         (options.loadTotals ?? getStateSpendingTotalsForYears)(allYears, {
           signal,
           concurrency: STATE_SPENDING_HISTORY_MAX_CONCURRENCY,
+          optionalYears,
         }),
       ),
       signal,
@@ -188,13 +217,17 @@ export async function getLegislatureSpendingCycles(
     clearTimeout(deadlineTimer);
   }
 
-  return plans.map(({ legislature, candidateYears }) => {
+  return plans.map(({ legislature, ongoing, candidateYears }) => {
+    const publishedYears = ongoing
+      ? candidateYears.filter((year) => totals.has(year))
+      : candidateYears;
+
     // Only a truly empty range skips the fetch entirely (nothing to show). A legislature
     // with exactly one full year still gets fetched and shown as real data further below;
     // it simply ends up with no otherYearsAverage/differenceFromAverage to compare against
     // (computed further down, not hardcoded here) rather than being hidden as if OpenBDAP
     // had nothing for it.
-    if (candidateYears.length === 0) {
+    if (publishedYears.length === 0) {
       return {
         legislature,
         years: [],
@@ -204,8 +237,9 @@ export async function getLegislatureSpendingCycles(
       };
     }
 
-    const preElectionYearNumber = Math.max(...candidateYears);
-    const years = candidateYears.map((year): LegislatureYearSpending => {
+    // Pre-election year exists only when a successor election closed the legislature.
+    const preElectionYearNumber = ongoing ? null : Math.max(...publishedYears);
+    const years = publishedYears.map((year): LegislatureYearSpending => {
       const annual = totals.get(year);
       if (!annual) throw new Error(`Totale OpenBDAP mancante per il ${year}`);
       return {
@@ -222,6 +256,16 @@ export async function getLegislatureSpendingCycles(
         },
       };
     });
+
+    if (ongoing) {
+      return {
+        legislature,
+        years,
+        otherYearsAverage: null,
+        preElectionYear: null,
+        differenceFromAverage: null,
+      };
+    }
 
     const preElectionYear = years.find((entry) => entry.isPreElectionYear) ?? null;
     const otherYears = years.filter((entry) => !entry.isPreElectionYear);

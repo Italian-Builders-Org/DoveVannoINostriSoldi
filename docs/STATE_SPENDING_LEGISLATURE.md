@@ -18,10 +18,10 @@ e non prova né implica spesa elettorale o responsabilità individuale.
 ## Metodo
 
 Per ogni legislatura, gli anni considerati sono quelli **completi**: si esclude l'anno di
-insediamento (parziale, la legislatura si insedia a metà anno) e l'anno dell'elezione che la
-conclude (anch'esso parziale dal punto di vista del bilancio). L'anno pre-elettorale è l'ultimo
-anno completo della legislatura; viene confrontato con la media aritmetica degli altri anni
-completi.
+insediamento (parziale, la legislatura si insedia a metà anno) e, quando esiste un'elezione
+successiva, l'anno di quell'elezione (anch'esso parziale dal punto di vista del bilancio).
+L'anno pre-elettorale è l'ultimo anno completo della legislatura chiusa; viene confrontato
+con la media aritmetica degli altri anni completi.
 
 ```text
 differenza = spesa(anno pre-elettorale) - media(spesa negli altri anni completi)
@@ -29,8 +29,9 @@ differenza = spesa(anno pre-elettorale) - media(spesa negli altri anni completi)
 
 Nella finestra di dati disponibile (2014-2025) questo produce due legislature complete: la
 XVII (anni 2014-2017, pre-elettorale 2017) e la XVIII (anni 2019-2021, pre-elettorale 2021).
-La XIX è in corso e non ha ancora un'elezione successiva: non figura nel confronto.
-
+La XIX è in corso: pubblica gli anni solari completi già presenti nel consuntivo OpenBDAP
+(almeno 2023-2024; 2025 se il catalogo lo espone), senza etichetta pre-elettorale e senza
+media/differenza finché non c'è un'elezione successiva.
 ## Cosa questo confronto non dimostra
 
 - **Non è un test di significatività statistica**: sono due sole legislature complete

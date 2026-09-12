@@ -482,7 +482,12 @@ export type StateAnnualSpendingTotal = {
  */
 export async function getStateSpendingTotalsForYears(
   years: readonly number[],
-  options: { signal?: AbortSignal; concurrency?: number } = {},
+  options: {
+    signal?: AbortSignal;
+    concurrency?: number;
+    /** Years that may be absent from the catalog without failing the batch. */
+    optionalYears?: ReadonlySet<number>;
+  } = {},
 ): Promise<Map<number, StateAnnualSpendingTotal>> {
   const requestedYears = [...new Set(years)];
   for (const year of requestedYears) {
@@ -507,8 +512,14 @@ export async function getStateSpendingTotalsForYears(
     }
     byYear.set(dataset.referenceYear, dataset);
   }
+  const availableYears: number[] = [];
   for (const year of requestedYears) {
-    if (!byYear.has(year)) throw new StatePaymentPeriodUnavailableError(year, null);
+    if (byYear.has(year)) {
+      availableYears.push(year);
+      continue;
+    }
+    if (options.optionalYears?.has(year)) continue;
+    throw new StatePaymentPeriodUnavailableError(year, null);
   }
 
   const totals = new Map<number, StateAnnualSpendingTotal>();
@@ -517,14 +528,15 @@ export async function getStateSpendingTotalsForYears(
   if (!Number.isFinite(requestedConcurrency) || requestedConcurrency < 1) {
     throw new Error("Concorrenza OpenBDAP non valida");
   }
+  if (availableYears.length === 0) return totals;
   const workerCount = Math.min(
-    requestedYears.length,
+    availableYears.length,
     Math.max(1, Math.trunc(requestedConcurrency)),
   );
   async function runWorker(): Promise<void> {
-    while (cursor < requestedYears.length) {
+    while (cursor < availableYears.length) {
       if (options.signal?.aborted) throw options.signal.reason;
-      const year = requestedYears[cursor];
+      const year = availableYears[cursor];
       cursor += 1;
       const dataset = byYear.get(year)!;
       const rows = normalizeMissionRows(await fetchDatasetRows(dataset, options.signal), dataset);

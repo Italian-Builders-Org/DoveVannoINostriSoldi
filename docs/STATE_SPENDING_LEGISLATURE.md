@@ -29,7 +29,11 @@ differenza = spesa(anno pre-elettorale) - media(spesa negli altri anni completi)
 
 Nella finestra di dati disponibile (2014-2025) questo produce due legislature complete: la
 XVII (anni 2014-2017, pre-elettorale 2017) e la XVIII (anni 2019-2021, pre-elettorale 2021).
-La XIX è in corso e non ha ancora un'elezione successiva: non figura nel confronto.
+
+La XIX è in corso: espone gli anni completi già pubblicati dal consuntivo (2023, 2024 e 2025),
+ma non ha anno pre-elettorale né media di confronto, perché l'elezione che la chiuderà non è
+ancora avvenuta. L'elenco non è fissato nel codice: si estende quando OpenBDAP pubblica il
+consuntivo dell'anno successivo, e resta vuoto finché non ne esiste almeno uno.
 
 ## Cosa questo confronto non dimostra
 

@@ -1301,6 +1301,33 @@
       "trustModel": "Source-lock: quattro CSV SDMX ufficiali OECD DF_TW_COMP 2.1 (Taxing Wages, CC BY 4.0) sono fissati per URL, byte e SHA-256. Il profilo prodotto è S_C0 AW100; le componenti sul lordo riconciliano il cuneo sul costo del lavoro entro 1 milionesimo di punto; AW67 resta solo controllo. Runtime offline."
     },
     {
+      "id": "eurostat-gdp-2015-2026",
+      "owner": "Eurostat PIL e conti nazionali 2015-2026",
+      "files": [
+        "src/data/generated/eurostat-gdp-2015-2026.data.json",
+        "src/data/generated/eurostat-gdp-2015-2026.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_gdp_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_gdp_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-gdp.test.mjs",
+        "tests/gdp-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_gdp_snapshot.py --input-dir <cartella con le cinque risposte JSON-stat> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-gdp-2015-2026.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: cinque risposte JSON-stat ufficiali Eurostat (namq_10_gdp e nama_10_gdp, CC BY 4.0) sono fissate per URL, struttura SDMX, timestamp upstream, byte e SHA-256. Livelli, variazioni e quote sul PIL restano nature distinte; copertura trimestrale/annuale/peer completa offline."
+    },
+    {
       "id": "eurostat-cofog-2014-2024",
       "owner": "Eurostat spesa pubblica per funzione COFOG 2014-2024",
       "files": [

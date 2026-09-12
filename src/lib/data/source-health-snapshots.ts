@@ -27,6 +27,7 @@ import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { eurostatHicpData, eurostatHicpMetadata } from "@/lib/eurostat-hicp-snapshot";
+import { eurostatGdpData, eurostatGdpMetadata } from "@/lib/eurostat-gdp-snapshot";
 import { oecdTaxingWagesData, oecdTaxingWagesMetadata } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 import istatMunicipalityGeographyMetadata from "@/data/generated/istat-municipality-geography.meta.json";
@@ -300,6 +301,17 @@ function snapshotManagedEurostatHicp(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatGdp(): SourceHealth {
+  return {
+    ...baseHealth("eurostat-gdp"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-gdp", eurostatGdpMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Eurostat PIL verificato · trimestrale Italia ${eurostatGdpData.period.quarterly.from}/${eurostatGdpData.period.quarterly.to} · annuale ${eurostatGdpData.period.annual.from}-${eurostatGdpData.period.annual.to} · peer ${eurostatGdpData.period.peers.from}/${eurostatGdpData.period.peers.to} · conti nazionali, non cassa pubblica.`,
+    recordCount: eurostatGdpData.coverage.observedCells,
+  };
+}
+
 function snapshotManagedOecdTaxingWages(): SourceHealth {
   return {
     ...baseHealth("oecd-taxing-wages"),
@@ -494,6 +506,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   bancaditalia: () => snapshotManagedPublicDebt("bancaditalia"),
   eurostat: () => snapshotManagedPublicDebt("eurostat"),
   "eurostat-hicp": snapshotManagedEurostatHicp,
+  "eurostat-gdp": snapshotManagedEurostatGdp,
   "oecd-taxing-wages": snapshotManagedOecdTaxingWages,
   "eurostat-cofog": snapshotManagedEurostatCofog,
   "istat-cofog": snapshotManagedIstatCofog,

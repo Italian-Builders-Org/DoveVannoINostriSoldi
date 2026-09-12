@@ -129,6 +129,24 @@ La pubblicazione [Taxing Wages 2025](https://doi.org/10.1787/b3a95829-en) è
 CC BY 4.0. I quattro CSV SDMX sono source-locked per URL, byte e SHA-256.
 Controllo offline: `python3 scripts/etl/oecd_taxing_wages_snapshot.py --check`.
 
+## PIL e conti nazionali · Eurostat
+
+La pagina `/pil` pubblica il prodotto interno lordo italiano da Eurostat SEC 2010
+(`namq_10_gdp` trimestrale e `nama_10_gdp` annuale). Livelli nominali
+(`CP_MEUR`) e reali a volumi concatenati 2020 (`CLV20_MEUR`), crescita a/a e
+t/t, quote della domanda (`P3`, `P51G`, `P6`, `P7` in `PC_GDP`) e confronto di
+crescita reale con Francia, Germania e Spagna restano nature e serie distinte.
+
+Non è cassa SIOPE né uno stanziamento di bilancio. L’export netto mostrato in UI
+è solo la differenza ufficiale P6 − P7, dichiarata come derivata. Nessuna
+attribuzione automatica al governo in carica: la stessa famiglia macro della
+pagella `/governi` viene letta qui senza voto.
+
+Le cinque risposte JSON-stat sono source-locked per endpoint ufficiale, struttura
+SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline è
+`python3 scripts/etl/eurostat_gdp_snapshot.py --check`; il source lock è
+`scripts/etl/specs/eurostat-gdp-2015-2026.source.json`.
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

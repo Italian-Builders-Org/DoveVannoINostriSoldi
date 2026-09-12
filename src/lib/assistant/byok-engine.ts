@@ -20,8 +20,8 @@ const PLAN = z.object({
 // Full catalog coverage, compact metadata only: no source bodies or repeated caveats.
 // New registered datasets enter this list automatically with their existing adapter contract.
 const catalogForModel = datasetCatalog.map(({ id, title, filters, exampleQuery }) => ({
-  id, title, filters,
-  exampleFilters: Object.fromEntries(Object.entries(exampleQuery).filter(([key]) => key !== "dataset")),
+  id, t: title, f: filters,
+  e: Object.fromEntries(Object.entries(exampleQuery).filter(([key]) => key !== "dataset")),
 }));
 const planContract = z.toJSONSchema(PLAN);
 
@@ -78,7 +78,7 @@ Per domande su identità, progetto o capacità, restituisci queries: [] e in cla
 Se bastano gli allegati, restituisci queries: [] e clarification: "": la fase successiva risponderà leggendo i file.
 Non sostituire un anno richiesto non disponibile con quello più recente: chiedi conferma. Se la domanda contiene riferimenti come 'stesso anno' o 'e in Calabria' ma manca una conversazione che chiarisca anno e comparto, chiedi un chiarimento e non scegliere tu il perimetro.
 Se la domanda non è coperta e non ci sono allegati utili, o richiede un chiarimento, restituisci queries: [] e una domanda di chiarimento in una o due frasi semplici, senza parlare di richieste interne e senza cifre inventate.
-Nel catalogo id è il campo dataset della query; exampleFilters contiene soltanto i filtri di esempio.
+Nel catalogo id è il campo dataset della query; t è il titolo, f elenca i filtri ammessi ed e contiene soltanto i filtri di esempio.
 Catalogo verificato dall'applicazione: ${JSON.stringify(catalogForModel)}.
 Compila gli argomenti dello strumento: queries è un array, clarification una stringa anche vuota. Non rispondere con testo libero in questa fase.`;
   const activity = (value: AiActivity) => { options.signal.throwIfAborted(); options.onActivity?.(value); };

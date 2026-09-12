@@ -1,6 +1,11 @@
 .page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .page .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .eyebrow { color: var(--color-neutral-700); font-size: 0.875rem; }
+.requiredInputs {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+  color: var(--color-neutral-700);
+}
 .glossary ul {
   margin: 0.75rem 0 0;
   padding-inline-start: 1.15rem;

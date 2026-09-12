@@ -36,6 +36,9 @@ try {
         assert.equal(new URL(page.url()).pathname, ref);
         assert.equal(await page.$eval("h1", (heading) => heading.textContent), name);
         assert.ok(await page.$$eval('main tbody tr', (rows) => rows.length > 0 && rows.length <= 15));
+        assert.ok(await page.$$eval('tbody a[href*="dettaglio_cig"]', (links) => links.length > 0));
+        assert.match(await page.$eval('#operatore-sotto-soglia-title', (node) => node.textContent), /Sotto soglia/);
+        assert.match(await page.$eval('main', (node) => node.textContent), /non disponibile/);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
         await page.screenshot({ path: path.join(screenshots, `detail-${width}.png`) });
         await navigate(page, { url: new URL('/appalti/operatori?q=autostrade', baseUrl).toString(), label: "operator name search", readySelector: results });

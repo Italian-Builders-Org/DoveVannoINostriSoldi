@@ -184,6 +184,32 @@
       "trustModel": "Deterministic complete rankings derived offline from the hash-pinned public operator search index. Manifest binds source hashes and each gzip block; runtime verifies only consumed blocks. No additional source or fiscal identifiers."
     },
     {
+      "id": "anac-operator-history",
+      "owner": "ANAC complete operator award history",
+      "files": [
+        "src/data/generated/anac-operator-history"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/etl/anac-operator-history-check.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_operator_history.py"
+      ],
+      "nodeTests": [
+        "tests/anac-operator-history.test.mjs",
+        "tests/anac-operator-history-reader.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_operator_history_build.py --awards-cache ... --cig-cache ... --database ... --output ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "trustModel": "Complete typed derivative of the same hash-pinned ANAC awards, awardees and 2007-2025 CIG archives. The manifest binds the parent index and CIG source lock, every summary shard and packed detail file. Runtime verifies bounded detail blocks independently. Operator and authority fiscal identifiers remain private; all identities exposed are opaque references. Screening uses unique eligible 2025 CIG lot amounts and explicit denominators, never a historical legal classification."
+    },
+    {
       "id": "anac-cig-2007-2025",
       "owner": "ANAC CIG annual monthly snapshots used to enrich operator procedures",
       "files": [

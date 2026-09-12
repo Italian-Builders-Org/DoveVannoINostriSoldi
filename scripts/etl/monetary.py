@@ -1,12 +1,13 @@
 """Explicit source formats and exact Decimal-to-cents conversion for ETL adapters."""
 
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 import re
 from typing import Literal
 
 
 MAX_SAFE_CENTS = 9_007_199_254_740_991
+MAX_AGGREGATION_DIGITS = 128
 
 
 class AmountError(ValueError):
@@ -15,6 +16,27 @@ class AmountError(ValueError):
 
 class AmountRangeError(AmountError):
     """The converted amount exceeds the safe publication interval."""
+
+
+def add_decimals(left: Decimal, right: Decimal) -> Decimal:
+    """Add source decimals exactly, independent of the ambient precision."""
+    if not all(
+        isinstance(value, Decimal) and value.is_finite() for value in (left, right)
+    ):
+        raise AmountError("Finite Decimals are required")
+    parts = [value.as_tuple() for value in (left, right)]
+    precision = (
+        max(len(part.digits) + part.exponent for part in parts)
+        - min(part.exponent for part in parts)
+        + 1
+    )
+    if precision > MAX_AGGREGATION_DIGITS or any(
+        abs(part.exponent) > MAX_AGGREGATION_DIGITS for part in parts
+    ):
+        raise AmountRangeError("Exact decimal addition exceeds the aggregation budget")
+    with localcontext() as context:
+        context.prec = max(1, precision)
+        return left + right
 
 
 @dataclass(frozen=True)
@@ -28,7 +50,10 @@ class MoneyPolicy:
     thousands_separator: str | None = None
 
     def __post_init__(self) -> None:
-        if self.decimal_separator not in (".", ",") or self.unit not in ("euros", "cents"):
+        if self.decimal_separator not in (".", ",") or self.unit not in (
+            "euros",
+            "cents",
+        ):
             raise ValueError("Unsupported monetary format or unit")
         if self.rounding not in ("reject", "half_up"):
             raise ValueError("Unsupported monetary rounding policy")

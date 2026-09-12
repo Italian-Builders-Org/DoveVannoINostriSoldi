@@ -70,6 +70,12 @@ const nextConfig: NextConfig = {
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
+    "/appalti/operatori/\\[ref\\]": [
+      "src/data/generated/anac-operator-awards-index/operators/*",
+      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
+      "src/data/generated/anac-operator-awards-index/summaries.json",
+      "src/data/generated/anac-operator-browse/*",
+    ],
     "/api/mcp": ["data/source-ledger/elements/**/*"],
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
@@ -87,8 +93,10 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-operator-awards-index.source.json",
     ],
     "/appalti/operatori/\\[ref\\]": [
-      "src/data/generated/anac-operator-awards-index/**/*",
+      "src/data/generated/anac-operator-history/*",
+      "src/data/generated/anac-operator-awards-index/meta.json",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
     "/enti/*": entityProcurementRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,

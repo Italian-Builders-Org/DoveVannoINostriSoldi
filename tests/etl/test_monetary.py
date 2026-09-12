@@ -3,7 +3,7 @@ import unittest
 from dataclasses import replace
 from decimal import Decimal, Inexact, ROUND_DOWN, localcontext
 
-from monetary import AmountError, AmountRangeError, MAX_SAFE_CENTS, MoneyPolicy, decimal_to_cents, parse_cents
+from monetary import AmountError, AmountRangeError, MAX_SAFE_CENTS, MoneyPolicy, add_decimals, decimal_to_cents, parse_cents
 
 
 EUROS = MoneyPolicy(
@@ -17,6 +17,25 @@ CENTS = MoneyPolicy(
 
 
 class MonetaryTests(unittest.TestCase):
+    def test_aggregation_preserves_source_digits_under_low_precision(self):
+        with localcontext() as context:
+            context.prec = 3
+            context.traps[Inexact] = True
+            self.assertEqual(
+                add_decimals(Decimal("13967918771.31369701537537695"), Decimal("0.0000000000000000054")),
+                Decimal("13967918771.3136970153753769554"),
+            )
+            self.assertEqual(add_decimals(Decimal("999.99"), Decimal("0.01")), Decimal("1000.00"))
+            self.assertEqual(add_decimals(Decimal("999.99"), Decimal("-999.99")), Decimal(0))
+
+    def test_aggregation_rejects_nonfinite_and_unbounded_values(self):
+        for value in (Decimal("NaN"), Decimal("Infinity"), None):
+            with self.subTest(value=value), self.assertRaises(AmountError):
+                add_decimals(Decimal(0), value)
+        for value in (Decimal("1e10000000"), Decimal("1e-10000000")):
+            with self.subTest(value=value), self.assertRaises(AmountRangeError):
+                add_decimals(Decimal(0), value)
+
     def test_units_sign_zero_and_declared_precision(self):
         for raw, policy, expected in (
             ("123", EUROS, 12300), ("123", CENTS, 123),

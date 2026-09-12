@@ -104,6 +104,17 @@ contabili e dichiara l’esclusione di classifiche, distribuzioni e normalizzazi
 geografica. Con filtro regionale, `totalPaid` resta nazionale e il valore regionale
 è in `regions`: il contesto lo dichiara esplicitamente.
 
+`monetary-evidence.ts` converte gli interi in centesimi degli adapter MEF, SSN e
+COFOG in stringhe decimali esatte in euro, senza arrotondamento floating-point.
+I campi diventano `amountEuros`, `knownAmountEuros` o `valuesEuros`; anche le unità
+del payload e gli scarti monetari di riconciliazione sono riallineati. La quota di
+PIL Eurostat è espressa come `shareOfGdpPercent`. I valori SSN marcati mancanti
+diventano `null`, conservando il flag originale: non sono zeri osservati.
+La proiezione non modifica gli snapshot né i contratti pubblici MCP. I test
+riconciliano i valori con gli adapter reali, preservano fonti, flag e perimetri e
+controllano il budget di un confronto SSN/COFOG. Questa preparazione riduce gli
+errori di scala; non certifica la correttezza di ogni risposta generata.
+
 Limiti per domanda: massimo due chiamate AI, due query, 5 righe dove è supportato `limit`,
 offset 100, nessun cursore, evidenza entro 24.000 caratteri e risposta entro 2.048 token /
 8.000 caratteri. Se l’evidenza è troppo grande, la ricerca chiede di restringere il campo,
@@ -119,7 +130,7 @@ memoria: 20 richieste/minuto per IP, 10 per hash della chiave, 4 concorrenti per
 Non sono limiti distribuiti; l’hosting/edge resta una protezione operativa separata.
 
 `Accept: text/event-stream` abilita il protocollo DVNS (`activity`, `delta`, `done`, `error`).
-Il server decodifica SSE dai tre provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
+Il server decodifica SSE dai quattro provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
 errori, budget e cancellazione. Nessun evento di ragionamento, header, testo di errore
 upstream o credenziale viene riversato nel client. Risposte parziali non vengono marcate
 come complete; il pulsante stop abortisce la richiesta e non annulla costi già maturati.

@@ -22,6 +22,7 @@ import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/is
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
+import { istatBesLavoroData, istatBesLavoroMetadata } from "@/lib/istat-bes-lavoro-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -467,6 +468,18 @@ function snapshotManagedIstatBesIstruzione(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesLavoro(): SourceHealth {
+  const { source } = istatBesLavoroMetadata;
+  return {
+    ...baseHealth("istat-bes-lavoro"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-lavoro", source.publicationDate),
+    latencyMs: null,
+    detail: "Sei indicatori BES_03 Lavoro e conciliazione, edizione 2025; 19.120 osservazioni e 135 territori, di cui 107 province. Periodi distinti fra 2008 e 2024; 122 celle ignote. Tassi non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesLavoroData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -516,6 +529,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
+  "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,

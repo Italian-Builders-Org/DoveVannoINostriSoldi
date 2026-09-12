@@ -1538,6 +1538,32 @@
       "trustModel": "Lock dedicato BES_02: CSV e codelist ufficiali vincolati per URL, byte, SHA-256. Nove indicatori, 139 territori e 111 province. Copertura per indicatore/sesso/anno, Parent e compositi espliciti. 76 celle g restano null; nessuna somma o riconciliazione F/M/T trasferita da altri domini. Valori ufficiali sopra 100 conservati. Contratti ETL/runtime offline, licenza not-declared."
     },
     {
+      "id": "istat-bes-lavoro-2008-2024",
+      "owner": "ISTAT BesT BES_03 Lavoro e conciliazione, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
+        "src/data/generated/istat-bes-lavoro-2008-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_lavoro.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_lavoro.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-lavoro.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_lavoro.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-lavoro-2008-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_03: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Sei indicatori, 19.120 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. 122 celle g restano null; zero osservato e riga assente restano distinti. Percentuali e infortuni per 10.000 occupati conservano unità e denominatori propri; nessuna somma geografica, media F/M/T o invariante economica. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

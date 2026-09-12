@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { NextRequest } from "next/server.js";
 import "./helpers/register-ts-alias.mjs";
@@ -79,6 +80,20 @@ test("runtime rejects value, flag, geography, unit and provenance tampering", ()
   const badMetadata = structuredClone(metadata);
   badMetadata.source.publicationDate = "2025-06-30";
   assert.throws(() => validate(data, badMetadata), /metadati diversi/);
+});
+
+test("large snapshot stays out of TypeScript inference and is traced into every server entry point", () => {
+  const runtime = readFileSync(new URL("../src/lib/istat-bes-lavoro-snapshot.ts", import.meta.url), "utf8");
+  assert.doesNotMatch(runtime, /import dataArtifact from/);
+  assert.match(runtime, /openSync\(join\(process\.cwd\(\), ISTAT_BES_LAVORO_DATA_PATH\)/);
+});
+
+test("Next traces the runtime-loaded snapshot into every server entry point", async () => {
+  const { default: config } = await import("../next.config.ts");
+  const tracing = config.outputFileTracingIncludes;
+  for (const route of ["/api/territori/bes-lavoro", "/api/assistant/chat", "/mcp", "/api/mcp"]) {
+    assert.ok(tracing[route].includes("src/data/generated/istat-bes-lavoro-2008-2024.data.json"), route);
+  }
 });
 
 test("cancellation stops selectors and MCP without affecting another caller", async () => {

@@ -121,11 +121,12 @@ const mandatoryDatasetIds = [
   "url-morti",
   "vincitori",
   "vincitori-cig",
+  "eurostat-disuguaglianza-redditi",
 ].sort();
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 93,
+  datasets: 94,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -164,6 +165,7 @@ const expectedReferencePeriods = {
   "consip-winners-2026": "2026",
   "consulenze-legali": "2024-2026",
   "cv-incarichi": "date dichiarate negli incarichi: 2020-2029",
+  "eurostat-disuguaglianza-redditi": "EU-SILC anni di indagine 2014-2025; redditi di riferimento 2013-2024 (Italia, t-1)",
   "eventi-convegni": "2024-2026",
   "fuori-consip": "2024-2026",
   "indennita-organi": "date dichiarate nei mandati: 2020-2028",

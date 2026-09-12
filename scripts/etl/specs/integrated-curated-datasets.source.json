@@ -384,6 +384,23 @@
           "https://dati-coll.dfp.gov.it/dataset/80b49214-fa00-4e25-aafb-2c122a523df6/resource/f4e810e7-72d9-4041-9d63-9e819823e3e0/download/occupazione_2020.csv",
           "https://dati-coll.dfp.gov.it/dataset/occupazione"
         ]
+      },
+      "eurostat-disuguaglianza-redditi": {
+        "holder": "Eurostat (Commissione europea)",
+        "referencePeriod": "EU-SILC anni di indagine 2014-2025; redditi di riferimento 2013-2024 (Italia, t-1)",
+        "publicationDate": null,
+        "acquisitionDate": "2026-09-12",
+        "checkedAt": "2026-09-12",
+        "updateFrequency": "annuale; EU-SILC",
+        "canonicalUrls": [
+          "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_di11?format=JSON&lang=EN&freq=A&age=TOTAL&sex=T&unit=RAT&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025",
+          "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_di12?format=JSON&lang=EN&freq=A&age=TOTAL&statinfo=GINI_HND&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025",
+          "https://ec.europa.eu/eurostat/cache/metadata/en/ilc_sieusilc.htm",
+          "https://ec.europa.eu/eurostat/databrowser/view/ilc_di11/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/databrowser/view/ilc_di12/default/table?lang=en",
+          "https://ec.europa.eu/eurostat/web/income-and-living-conditions/information-data",
+          "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+        ]
       }
     }
   },
@@ -748,7 +765,28 @@
         "sha256": "9f36b8b9c0d8671205d78b3dcc0c8481bdf95af2f93446dc1b25ee4b78606979",
         "rows": 201,
         "columns": 20,
-        "headers": ["entityType", "year", "registryRows", "distinctSiopeCodes", "distinctTaxCodes", "validAtObservationCodes", "observedSiopeCodes", "withoutMovementsCodes", "observedMonths", "rawMovementRows", "knownAmountCents", "ipaMatched", "ipaUnmatched", "ipaAmbiguous", "ipaMatchedAmountCents", "ipaUnmatchedAmountCents", "ipaAmbiguousAmountCents", "coverageStatus", "coverageNote", "productStatus"]
+        "headers": [
+          "entityType",
+          "year",
+          "registryRows",
+          "distinctSiopeCodes",
+          "distinctTaxCodes",
+          "validAtObservationCodes",
+          "observedSiopeCodes",
+          "withoutMovementsCodes",
+          "observedMonths",
+          "rawMovementRows",
+          "knownAmountCents",
+          "ipaMatched",
+          "ipaUnmatched",
+          "ipaAmbiguous",
+          "ipaMatchedAmountCents",
+          "ipaUnmatchedAmountCents",
+          "ipaAmbiguousAmountCents",
+          "coverageStatus",
+          "coverageNote",
+          "productStatus"
+        ]
       }
     },
     {
@@ -814,8 +852,37 @@
       "evidenceLabel": "documented-fact",
       "sourceFields": [],
       "privateFields": [],
-      "caveats": ["Pagamenti di cassa delle amministrazioni provinciali, non spesa consolidata nel territorio.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
-      "expected": {"bytes": 62793689, "sha256": "f99489aaae1716d50a8940a125ace96899e740fb9bcfbf634f78cdf7f17499e6", "rows": 270194, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+      "caveats": [
+        "Pagamenti di cassa delle amministrazioni provinciali, non spesa consolidata nel territorio.",
+        "Il file 2026 è un anno in corso e non va trattato come annualità completa."
+      ],
+      "expected": {
+        "bytes": 62793689,
+        "sha256": "f99489aaae1716d50a8940a125ace96899e740fb9bcfbf634f78cdf7f17499e6",
+        "rows": 270194,
+        "columns": 19,
+        "headers": [
+          "entityCode",
+          "taxCode",
+          "codiceIpa",
+          "entityType",
+          "entityName",
+          "validFrom",
+          "validTo",
+          "region",
+          "province",
+          "ipaJoinStatus",
+          "regionJoinStatus",
+          "year",
+          "month",
+          "managementCode",
+          "compartment",
+          "managementLabel",
+          "titleCode",
+          "titleLabel",
+          "amountCents"
+        ]
+      }
     },
     {
       "id": "siope-uscite-regioni",
@@ -830,8 +897,38 @@
       "evidenceLabel": "documented-fact",
       "sourceFields": [],
       "privateFields": [],
-      "caveats": ["Comprende Regioni e Province autonome presenti nell'anagrafica SIOPE, non una somma dei Comuni.", "Pagamenti di cassa dell'amministrazione, non spesa sanitaria né spesa consolidata nel territorio.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
-      "expected": {"bytes": 33742102, "sha256": "05bbb02bbba60e7e15da18c2dd193c7223fd6e865c2f82a0a0fc1896822e9c3a", "rows": 150088, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+      "caveats": [
+        "Comprende Regioni e Province autonome presenti nell'anagrafica SIOPE, non una somma dei Comuni.",
+        "Pagamenti di cassa dell'amministrazione, non spesa sanitaria né spesa consolidata nel territorio.",
+        "Il file 2026 è un anno in corso e non va trattato come annualità completa."
+      ],
+      "expected": {
+        "bytes": 33742102,
+        "sha256": "05bbb02bbba60e7e15da18c2dd193c7223fd6e865c2f82a0a0fc1896822e9c3a",
+        "rows": 150088,
+        "columns": 19,
+        "headers": [
+          "entityCode",
+          "taxCode",
+          "codiceIpa",
+          "entityType",
+          "entityName",
+          "validFrom",
+          "validTo",
+          "region",
+          "province",
+          "ipaJoinStatus",
+          "regionJoinStatus",
+          "year",
+          "month",
+          "managementCode",
+          "compartment",
+          "managementLabel",
+          "titleCode",
+          "titleLabel",
+          "amountCents"
+        ]
+      }
     },
     {
       "id": "siope-uscite-citta-metropolitane",
@@ -846,8 +943,37 @@
       "evidenceLabel": "documented-fact",
       "sourceFields": [],
       "privateFields": [],
-      "caveats": ["Pagamenti di cassa delle Città metropolitane; comparto PRO, separato da Province e Comuni.", "Il file 2026 è un anno in corso e non va trattato come annualità completa."],
-      "expected": {"bytes": 12821784, "sha256": "50418065768722dc3b88ec5695f0383105832914d39582228ed7235eef6b55f5", "rows": 56188, "columns": 19, "headers": ["entityCode", "taxCode", "codiceIpa", "entityType", "entityName", "validFrom", "validTo", "region", "province", "ipaJoinStatus", "regionJoinStatus", "year", "month", "managementCode", "compartment", "managementLabel", "titleCode", "titleLabel", "amountCents"]}
+      "caveats": [
+        "Pagamenti di cassa delle Città metropolitane; comparto PRO, separato da Province e Comuni.",
+        "Il file 2026 è un anno in corso e non va trattato come annualità completa."
+      ],
+      "expected": {
+        "bytes": 12821784,
+        "sha256": "50418065768722dc3b88ec5695f0383105832914d39582228ed7235eef6b55f5",
+        "rows": 56188,
+        "columns": 19,
+        "headers": [
+          "entityCode",
+          "taxCode",
+          "codiceIpa",
+          "entityType",
+          "entityName",
+          "validFrom",
+          "validTo",
+          "region",
+          "province",
+          "ipaJoinStatus",
+          "regionJoinStatus",
+          "year",
+          "month",
+          "managementCode",
+          "compartment",
+          "managementLabel",
+          "titleCode",
+          "titleLabel",
+          "amountCents"
+        ]
+      }
     },
     {
       "id": "affidamenti-diretti",
@@ -5498,6 +5624,44 @@
           "Part time <50% donne",
           "Part time >50% uomini",
           "Part time >50% donne",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "eurostat-disuguaglianza-redditi",
+      "title": "Disuguaglianza del reddito · Italia · EU-SILC 2014-2025",
+      "domain": "social-conditions",
+      "relativePath": "eurostat-disuguaglianza-redditi.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-eu-reuse",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Sono due indicatori distinti della distribuzione del reddito disponibile equivalizzato: Gini (scala 0-100) e S80/S20 (rapporto). Non sono importi di spesa pubblica e non vanno sommati.",
+        "Anno rilevazione è l'anno di indagine EU-SILC; per l'Italia Anno redditi è l'anno solare precedente. Le 24 righe coprono Italia (IT), popolazione totale e anni 2014-2025.",
+        "La risposta API Eurostat dichiara sourceUpdated 2026-06-08; la data di pubblicazione della distribuzione non è dichiarata e publicationDate resta null.",
+        "Riuso limitato ai dati statistici Eurostat secondo la Decisione 2011/833/UE e il copyright notice; non si attribuisce ai contenuti editoriali una licenza CC BY.",
+        "La disuguaglianza del reddito resta separata dagli indicatori di povertà e BES. Il perimetro non contiene confronti territoriali, ranking o inferenze causali."
+      ],
+      "expected": {
+        "bytes": 5219,
+        "sha256": "0735449a829896d98a2fe46beb55e63d38877ffa6090e46a5b9720ba99797dfe",
+        "rows": 24,
+        "columns": 7,
+        "headers": [
+          "Indicatore",
+          "Anno rilevazione",
+          "Anno redditi",
+          "Valore",
+          "Unità",
+          "Stato",
           "URL fonte"
         ]
       }

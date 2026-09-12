@@ -147,6 +147,30 @@ SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline è
 `python3 scripts/etl/eurostat_gdp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-gdp-2015-2026.source.json`.
 
+## Disuguaglianza del reddito · Eurostat EU-SILC
+
+Il corpus integrato pubblica per l'Italia due indicatori annuali della
+distribuzione del reddito disponibile equivalizzato: `gini` (coefficiente di
+Gini, scala da 0 a 100) e `s80s20` (rapporto tra il quintile superiore e quello
+inferiore). Sono 24 righe per gli anni di indagine EU-SILC 2014-2025. `Anno
+redditi` conserva separatamente il 2013-2024 di riferimento: per l'Italia
+Eurostat usa il precedente anno solare.
+
+Le risposte JSON-stat ufficiali `ilc_di12` e `ilc_di11` sono fissate per URL,
+filtri, dimensioni, struttura SDMX, `sourceUpdated`, byte e SHA-256. Il parser
+legge i numeri come decimali e genera il PSV con le colonne `Indicatore`, `Anno
+rilevazione`, `Anno redditi`, `Valore`, `Unità`, `Stato` e `URL fonte`; uno zero
+resta distinto da una cella mancante e il flag Eurostat `b` viene conservato.
+La fonte dichiara aggiornamento 8 giugno 2026; la data di pubblicazione della
+distribuzione non è dichiarata.
+
+Il riuso riguarda i dati statistici Eurostat secondo la Decisione 2011/833/UE
+e il copyright notice della fonte, senza estendere una licenza ai contenuti
+editoriali. L'indicatore è separato dalle serie di povertà e BES, non misura
+spesa pubblica e non costruisce classifiche. Controllo offline:
+`python3 scripts/etl/eurostat_inequality_corpus.py check`; source lock:
+`scripts/etl/specs/eurostat-inequality.source.json`.
+
 Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto

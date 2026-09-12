@@ -452,7 +452,8 @@
         "tests/etl/test_mim_school_services.py",
         "tests/etl/test_ted_notices.py",
         "tests/etl/test_pnrr_projects.py",
-        "tests/etl/test_conto_annuale.py"
+        "tests/etl/test_conto_annuale.py",
+        "tests/etl/test_eurostat_inequality_corpus.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",

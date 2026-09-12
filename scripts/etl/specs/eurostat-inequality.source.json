@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-disuguaglianza-redditi",
+  "period": {
+    "from": 2014,
+    "to": 2025
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/ilc_di12/default/table?lang=en",
+    "informationUrl": "https://ec.europa.eu/eurostat/web/income-and-living-conditions/information-data",
+    "metadataUrl": "https://ec.europa.eu/eurostat/cache/metadata/en/ilc_sieusilc.htm",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "licenseId": "verified-open-eu-reuse",
+    "licenseNote": "Riuso dei dati statistici Eurostat secondo la Decisione 2011/833/UE e il copyright notice; non si estende ai contenuti editoriali.",
+    "assets": {
+      "gini": {
+        "filename": "ilc_di12.json",
+        "path": "tests/fixtures/eurostat-inequality/ilc_di12.json",
+        "datasetCode": "ilc_di12",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_di12?format=JSON&lang=EN&freq=A&age=TOTAL&statinfo=GINI_HND&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025",
+        "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/ilc_di12/default/table?lang=en",
+        "bytes": 3513,
+        "sha256": "3583d651f4693abf73b79968736bf955295a15e0aed92292a3da39c7ecf933cf",
+        "sourceUpdated": "2026-06-08T23:00:00+0200",
+        "dimensions": [
+          "freq",
+          "age",
+          "statinfo",
+          "geo",
+          "time"
+        ],
+        "codes": {
+          "freq": [
+            "A"
+          ],
+          "age": [
+            "TOTAL"
+          ],
+          "statinfo": [
+            "GINI_HND"
+          ],
+          "geo": [
+            "IT"
+          ],
+          "time": [
+            "2014",
+            "2015",
+            "2016",
+            "2017",
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
+            "2025"
+          ]
+        },
+        "structure": {
+          "id": "ILC_DI12",
+          "agencyId": "ESTAT",
+          "version": "36.0"
+        }
+      },
+      "s80s20": {
+        "filename": "ilc_di11.json",
+        "path": "tests/fixtures/eurostat-inequality/ilc_di11.json",
+        "datasetCode": "ilc_di11",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ilc_di11?format=JSON&lang=EN&freq=A&age=TOTAL&sex=T&unit=RAT&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025",
+        "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/ilc_di11/default/table?lang=en",
+        "bytes": 3563,
+        "sha256": "60dafcc481e14e2aefdb95c99beeac108765a9cedce4677fd1bc1e625d765bc3",
+        "sourceUpdated": "2026-06-08T23:00:00+0200",
+        "dimensions": [
+          "freq",
+          "age",
+          "sex",
+          "unit",
+          "geo",
+          "time"
+        ],
+        "codes": {
+          "freq": [
+            "A"
+          ],
+          "age": [
+            "TOTAL"
+          ],
+          "sex": [
+            "T"
+          ],
+          "unit": [
+            "RAT"
+          ],
+          "geo": [
+            "IT"
+          ],
+          "time": [
+            "2014",
+            "2015",
+            "2016",
+            "2017",
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
+            "2025"
+          ]
+        },
+        "structure": {
+          "id": "ILC_DI11",
+          "agencyId": "ESTAT",
+          "version": "76.0"
+        }
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-12",
+      "checkedAt": "2026-09-12",
+      "note": "Due risposte JSON-stat 2.0 ufficiali, filtrate su Italia, popolazione totale e anni di indagine 2014-2025."
+    }
+  },
+  "projection": {
+    "path": "eurostat-disuguaglianza-redditi.psv",
+    "bytes": 5219,
+    "sha256": "0735449a829896d98a2fe46beb55e63d38877ffa6090e46a5b9720ba99797dfe",
+    "rows": 24,
+    "columns": 7,
+    "headers": [
+      "Indicatore",
+      "Anno rilevazione",
+      "Anno redditi",
+      "Valore",
+      "Unità",
+      "Stato",
+      "URL fonte"
+    ]
+  },
+  "integrity": {
+    "lockSha256": "b3497c30b76622df2adde7e8efced1782ad3c09ba04c6ab8a48b42a0d9042274"
+  }
+}

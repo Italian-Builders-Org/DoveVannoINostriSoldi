@@ -152,6 +152,79 @@ class SiopeNonMunicipalCorpusTests(TestCase):
         self.assertEqual(view.read_bytes(), b"old-view\n")
         self.assertEqual(self.catalog.read_bytes(), catalog_payload)
 
+    def test_failed_aggregate_release_seal_rolls_back_appended_corpus(self) -> None:
+        release_proof = self.root / "ledger/release-proof.json"
+        release_proof.write_bytes(b"old-release\n")
+        before = {
+            path.relative_to(self.root): path.read_bytes()
+            for path in self.root.rglob("*")
+            if path.is_file() and "source" not in path.parts
+        }
+
+        def fail_seal(paths) -> None:
+            paths.output.write_bytes(b"mixed-release\n")
+            raise RuntimeError("aggregate seal failure")
+
+        with mock.patch.object(append_release.integrated_source_release, "build_release", side_effect=fail_seal):
+            with self.assertRaisesRegex(RuntimeError, "aggregate seal failure"):
+                append_release.append(
+                    spec_path=self.spec,
+                    source_root=self.source,
+                    dataset_ids={"siope-projection"},
+                    catalog_path=self.catalog,
+                    rows_dir=self.rows,
+                    receipts_dir=self.receipts,
+                    proof_path=self.proof,
+                    corpus_release_proof_path=release_proof,
+                )
+
+        after = {
+            path.relative_to(self.root): path.read_bytes()
+            for path in self.root.rglob("*")
+            if path.is_file() and "source" not in path.parts
+        }
+        self.assertEqual(after, before)
+
+    def test_failed_correlated_reseal_rolls_back_aggregate_release_and_corpus(self) -> None:
+        release_proof = self.root / "ledger/release-proof.json"
+        view_proof = self.root / "generated/view-proof.json"
+        release_proof.write_bytes(b"old-release\n")
+        view_proof.write_bytes(b"old-view\n")
+        before = {
+            path.relative_to(self.root): path.read_bytes()
+            for path in self.root.rglob("*")
+            if path.is_file() and "source" not in path.parts
+        }
+
+        def seal_release(paths) -> None:
+            paths.output.write_bytes(b"new-release\n")
+
+        def fail_view() -> None:
+            view_proof.write_bytes(b"mixed-view\n")
+            raise RuntimeError("view reseal failure")
+
+        with mock.patch.object(append_release.integrated_source_release, "build_release", side_effect=seal_release):
+            with self.assertRaisesRegex(RuntimeError, "view reseal failure"):
+                append_release.append(
+                    spec_path=self.spec,
+                    source_root=self.source,
+                    dataset_ids={"siope-projection"},
+                    catalog_path=self.catalog,
+                    rows_dir=self.rows,
+                    receipts_dir=self.receipts,
+                    proof_path=self.proof,
+                    corpus_release_proof_path=release_proof,
+                    correlated_paths={view_proof},
+                    after_release_seal=fail_view,
+                )
+
+        after = {
+            path.relative_to(self.root): path.read_bytes()
+            for path in self.root.rglob("*")
+            if path.is_file() and "source" not in path.parts
+        }
+        self.assertEqual(after, before)
+
 
 class ClosedSiopePromotionBuilder:
     """Build a complete, small SIOPE promotion corpus without private fixtures."""

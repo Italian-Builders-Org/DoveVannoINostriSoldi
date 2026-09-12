@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PROVENANCE = "src/data/generated/siope-nonmunicipal-provenance.json"
 DATASET_IDS = frozenset({"siope-inventario-enti", "siope-uscite-asl", "siope-uscite-province", "siope-uscite-regioni", "siope-uscite-citta-metropolitane"})
 # Reviewed main@b7d5bef7 minus the five SIOPE projections (811150 rows).
-FIXED_ROWS = {"sourceRows": 13_992_818, "publicRows": 1_010_472, "catalogOnlyRows": 12_979_505, "derivedOnlyRows": 2_841}
+FIXED_ROWS = {"sourceRows": 13_992_842, "publicRows": 1_010_496, "catalogOnlyRows": 12_979_505, "derivedOnlyRows": 2_841}
 
 
 def load_manifest(path: Path | None = None) -> dict:

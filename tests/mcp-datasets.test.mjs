@@ -164,11 +164,15 @@ test("SIOPE national MCP query carries only compact full-population aggregates",
   assert.ok(JSON.stringify(result.distribution).length < 64 * 1024);
 });
 
-test("non-municipal SIOPE MCP datasets use bounded corpus selectors and reject semantic filters", async () => {
+test("non-municipal SIOPE MCP datasets accept year, region and code filters over the corpus", async () => {
   const inventory = await queryPublicDataset({ dataset: "siope_inventario_enti", limit: 2 });
   assert.equal(inventory.dataset.id, "siope-inventario-enti");
   assert.equal(inventory.rows.length, 2);
   assert.equal(inventory.rows[0].cells.productStatus === "published-payments" || inventory.rows[0].cells.productStatus === "census-only", true);
+
+  const inventoryYear = await queryPublicDataset({ dataset: "siope_inventario_enti", year: 2025, limit: 5 });
+  assert.ok(inventoryYear.rows.length > 0);
+  assert.ok(inventoryYear.rows.every((row) => row.cells.year === "2025"));
 
   const province = await queryPublicDataset({ dataset: "siope_province", limit: 2 });
   assert.equal(province.dataset.id, "siope-uscite-province");
@@ -190,9 +194,34 @@ test("non-municipal SIOPE MCP datasets use bounded corpus selectors and reject s
   assert.ok(asl.rows.every((row) => row.cells.titleCode === row.cells.managementCode && row.cells.titleLabel === row.cells.managementLabel));
   const nextAsl = await queryPublicDataset({ dataset: "siope_asl", limit: 2, cursor: asl.pagination.nextCursor });
   assert.ok(nextAsl.rows[0].sourceRow > asl.rows.at(-1).sourceRow);
-  await assert.rejects(queryPublicDataset({ dataset: "siope_asl", year: 2025 }), /Filtri non supportati.*year/);
-  await assert.rejects(queryPublicDataset({ dataset: "siope_regioni", year: 2025 }), /Filtri non supportati.*year/);
-  await assert.rejects(queryPublicDataset({ dataset: "siope_province", region: "Lazio" }), /Filtri non supportati.*region/);
+
+  const puglia = await queryPublicDataset({
+    dataset: "siope_regioni",
+    region: "PUGLIA",
+    year: 2024,
+    limit: 5,
+  });
+  assert.ok(puglia.rows.length > 0, "region+year must find Puglia without scanning by free text");
+  assert.ok(puglia.rows.every((row) => row.cells.region === "Puglia" && row.cells.year === "2024"));
+  assert.ok(puglia.pagination.scannedRows > 8_000 || puglia.pagination.exhausted || puglia.rows.length > 0);
+
+  const byIpa = await queryPublicDataset({
+    dataset: "siope_regioni",
+    code: puglia.rows[0].cells.codiceIpa,
+    year: 2024,
+    limit: 3,
+  });
+  assert.ok(byIpa.rows.length > 0);
+  assert.ok(byIpa.rows.every((row) => row.cells.codiceIpa === puglia.rows[0].cells.codiceIpa));
+
+  await assert.rejects(
+    queryPublicDataset({ dataset: "siope_regioni", region: "Atlantis" }),
+    /regione/i,
+  );
+  await assert.rejects(
+    queryPublicDataset({ dataset: "siope_asl", month: 3 }),
+    /Filtri non supportati.*month/,
+  );
 });
 
 test("OpenCivitas query bounds pagination and rejects unavailable years", async () => {

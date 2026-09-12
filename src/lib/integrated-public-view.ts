@@ -94,6 +94,13 @@ export type PublicSourceResult = {
 type DatasetSelectorInput = {
   datasetId: unknown;
   q?: unknown;
+  /** Exact cell matches on public headers; used with cursor pagination, not offset. */
+  equals?: Readonly<Record<string, string>>;
+  /**
+   * Alternative exact matches: a row is kept if it satisfies `equals` and at least one
+   * entry of `matchAnyEquals` (each entry is an AND over its own columns).
+   */
+  matchAnyEquals?: readonly Readonly<Record<string, string>>[];
   limit?: unknown;
   offset?: unknown;
   cursor?: unknown;
@@ -159,7 +166,7 @@ type IntegratedCursorPayload = {
   nextSourceRow: number;
   querySha256: string;
   releaseSetSha256: string;
-  v: 1;
+  v: 2;
 };
 
 const CURSOR_KEYS = [
@@ -170,22 +177,71 @@ const CURSOR_KEYS = [
   "v",
 ] as const;
 
-function cursorQuerySha256(query: string | null): string {
-  return sha256Hex(canonicalJson(query?.toLocaleLowerCase("it-IT") ?? null));
+type DatasetScanFilter = {
+  q: string | null;
+  equals: Readonly<Record<string, string>>;
+  matchAnyEquals: readonly Readonly<Record<string, string>>[];
+};
+
+function normalizeEquals(
+  value: DatasetSelectorInput["equals"],
+  headers: readonly string[],
+): Readonly<Record<string, string>> {
+  if (value === undefined) return {};
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    throw new IntegratedQueryError("Il parametro equals non è valido.");
+  }
+  const allowed = new Set(headers);
+  const normalized: Record<string, string> = {};
+  for (const [rawKey, rawValue] of Object.entries(value)) {
+    const key = rawKey.trim();
+    if (!allowed.has(key)) {
+      throw new IntegratedQueryError(`Il filtro colonna ${key} non appartiene a questo dataset.`);
+    }
+    if (typeof rawValue !== "string" || rawValue.trim() === "") {
+      throw new IntegratedQueryError(`Il filtro colonna ${key} deve essere una stringa non vuota.`);
+    }
+    if (rawValue.length > INTEGRATED_MAX_QUERY_LENGTH) {
+      throw new IntegratedQueryError(
+        `Il filtro colonna ${key} non può superare ${INTEGRATED_MAX_QUERY_LENGTH} caratteri.`,
+      );
+    }
+    normalized[key] = rawValue.trim();
+  }
+  return Object.fromEntries(Object.entries(normalized).sort(([left], [right]) => left.localeCompare(right)));
+}
+
+function normalizeMatchAnyEquals(
+  value: DatasetSelectorInput["matchAnyEquals"],
+  headers: readonly string[],
+): readonly Readonly<Record<string, string>>[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new IntegratedQueryError("Il parametro matchAnyEquals non è valido.");
+  }
+  return value.map((entry) => normalizeEquals(entry, headers));
+}
+
+function cursorFilterSha256(filter: DatasetScanFilter): string {
+  return sha256Hex(canonicalJson({
+    equals: filter.equals,
+    matchAnyEquals: filter.matchAnyEquals,
+    q: filter.q?.toLocaleLowerCase("it-IT") ?? null,
+  }));
 }
 
 function encodeDatasetCursor(
   dataset: IntegratedDatasetCatalogEntry,
   releaseSetSha256: string,
-  query: string | null,
+  filter: DatasetScanFilter,
   nextSourceRow: number,
 ): string {
   const payload: IntegratedCursorPayload = {
     datasetId: dataset.id,
     nextSourceRow,
-    querySha256: cursorQuerySha256(query),
+    querySha256: cursorFilterSha256(filter),
     releaseSetSha256,
-    v: 1,
+    v: 2,
   };
   return Buffer.from(canonicalJson(payload), "utf8").toString("base64url");
 }
@@ -194,7 +250,7 @@ function decodeDatasetCursor(
   value: unknown,
   dataset: IntegratedDatasetCatalogEntry,
   releaseSetSha256: string,
-  query: string | null,
+  filter: DatasetScanFilter,
 ): IntegratedCursorPayload | null {
   const token = singleString(value, "cursor");
   if (token === undefined) return null;
@@ -225,10 +281,10 @@ function decodeDatasetCursor(
   }
   const cursor = raw as Record<string, unknown>;
   if (
-    cursor.v !== 1 ||
+    cursor.v !== 2 ||
     cursor.datasetId !== dataset.id ||
     cursor.releaseSetSha256 !== releaseSetSha256 ||
-    cursor.querySha256 !== cursorQuerySha256(query) ||
+    cursor.querySha256 !== cursorFilterSha256(filter) ||
     typeof cursor.querySha256 !== "string" ||
     !/^[0-9a-f]{64}$/.test(cursor.querySha256) ||
     typeof cursor.releaseSetSha256 !== "string" ||
@@ -313,6 +369,30 @@ function rowContains(row: IntegratedPublicRow, foldedQuery: string): boolean {
   );
 }
 
+function rowMatchesEquals(
+  row: IntegratedPublicRow,
+  equals: Readonly<Record<string, string>>,
+): boolean {
+  for (const [header, expected] of Object.entries(equals)) {
+    const actual = row.cells[header];
+    if (actual === null || actual === undefined) return false;
+    if (actual.toLocaleLowerCase("it-IT") !== expected.toLocaleLowerCase("it-IT")) return false;
+  }
+  return true;
+}
+
+function rowMatchesFilter(row: IntegratedPublicRow, filter: DatasetScanFilter): boolean {
+  if (Object.keys(filter.equals).length > 0 && !rowMatchesEquals(row, filter.equals)) return false;
+  if (
+    filter.matchAnyEquals.length > 0
+    && !filter.matchAnyEquals.some((candidate) => rowMatchesEquals(row, candidate))
+  ) {
+    return false;
+  }
+  if (filter.q === null) return true;
+  return rowContains(row, filter.q.toLocaleLowerCase("it-IT"));
+}
+
 export async function getIntegratedDataOverview() {
   const bundle = await loadIntegratedSourceBundle();
   return {
@@ -337,14 +417,19 @@ export async function selectIntegratedDataset(
   const dataset = bundle.datasetsById.get(datasetId);
   if (!dataset) throw new IntegratedDatasetNotFoundError(datasetId);
   const metadata = publicMetadata(dataset);
+  const equals = normalizeEquals(input.equals, dataset.headers);
+  const matchAnyEquals = normalizeMatchAnyEquals(input.matchAnyEquals, dataset.headers);
+  const filter: DatasetScanFilter = { q, equals, matchAnyEquals };
+  const hasStructuredFilter = Object.keys(equals).length > 0 || matchAnyEquals.length > 0;
+  const hasScanFilter = q !== null || hasStructuredFilter;
   const offsetProvided = input.offset !== undefined && input.offset !== null && input.offset !== "";
   const cursorProvided = input.cursor !== undefined && input.cursor !== null && input.cursor !== "";
   if (offsetProvided && cursorProvided) {
     throw new IntegratedQueryError("Usa offset oppure cursor, non entrambi.");
   }
-  if (q !== null && offsetProvided) {
+  if (hasScanFilter && offsetProvided) {
     throw new IntegratedQueryError(
-      "Offset è disponibile soltanto senza ricerca testuale; per continuare una ricerca usa cursor.",
+      "Offset è disponibile soltanto senza ricerca o filtri di colonna; per continuare usa cursor.",
     );
   }
   if (!metadata.queryable) {
@@ -373,7 +458,7 @@ export async function selectIntegratedDataset(
     input.cursor,
     dataset,
     bundle.release.releaseSetSha256,
-    q,
+    filter,
   );
   const maximumOffset = dataset.publicRows === 0 ? 0 : dataset.publicRows - 1;
   const offset = cursor === null
@@ -386,24 +471,26 @@ export async function selectIntegratedDataset(
   let loadedChunks = 0;
   let loadedRawBytes = 0;
   const selected: IntegratedPublicRow[] = [];
-  const foldedQuery = q?.toLocaleLowerCase("it-IT") ?? null;
+  // Free-text search stays budgeted; structured equals may scan the whole public corpus.
+  const maxSearchChunks = hasStructuredFilter ? Number.POSITIVE_INFINITY : INTEGRATED_MAX_SEARCH_CHUNKS;
+  const maxSearchRows = hasStructuredFilter ? Number.POSITIVE_INFINITY : INTEGRATED_MAX_SEARCH_ROWS;
 
   scan: while (nextSourceRow <= dataset.publicRows && selected.length < limit) {
     const ordinal = Math.floor((nextSourceRow - 1) / INTEGRATED_ROW_CHUNK_ROWS);
-    if (foldedQuery !== null && loadedChunks >= INTEGRATED_MAX_SEARCH_CHUNKS) break;
+    if (hasScanFilter && loadedChunks >= maxSearchChunks) break;
     const chunk = await loadIntegratedDatasetChunk(bundle, dataset, ordinal, input.signal);
     loadedChunks += 1;
     loadedRawBytes += chunk.uncompressedBytes;
     if (
       chunk.uncompressedBytes > INTEGRATED_ROW_CHUNK_MAX_RAW_BYTES ||
-      loadedRawBytes > INTEGRATED_MAX_SEARCH_RAW_BYTES
+      (!hasStructuredFilter && loadedRawBytes > INTEGRATED_MAX_SEARCH_RAW_BYTES)
     ) {
       throw new Error(`Budget di decompressione superato per ${dataset.id}.`);
     }
     const chunkFirstSourceRow = ordinal * INTEGRATED_ROW_CHUNK_ROWS + 1;
     const startIndex = nextSourceRow - chunkFirstSourceRow;
     for (let index = startIndex; index < chunk.rows.length; index += 1) {
-      if (foldedQuery !== null && scannedRows >= INTEGRATED_MAX_SEARCH_ROWS) break scan;
+      if (hasScanFilter && scannedRows >= maxSearchRows) break scan;
       const row = chunk.rows[index];
       if (!row || row.sourceRow !== nextSourceRow) {
         throw new Error(`Ordine chunk divergente durante la lettura di ${dataset.id}.`);
@@ -411,7 +498,7 @@ export async function selectIntegratedDataset(
       scannedRows += 1;
       scanEndSourceRow = row.sourceRow;
       nextSourceRow = row.sourceRow + 1;
-      if (foldedQuery === null || rowContains(row, foldedQuery)) selected.push(row);
+      if (!hasScanFilter || rowMatchesFilter(row, filter)) selected.push(row);
       if (selected.length >= limit) break scan;
     }
   }
@@ -421,7 +508,7 @@ export async function selectIntegratedDataset(
     : encodeDatasetCursor(
         dataset,
         bundle.release.releaseSetSha256,
-        q,
+        filter,
         nextSourceRow,
       );
   return {
@@ -430,7 +517,7 @@ export async function selectIntegratedDataset(
     limit,
     offset,
     matchedRows:
-      q === null
+      !hasScanFilter
         ? dataset.publicRows
         : scanStartSourceRow === 1 && exhausted
           ? selected.length

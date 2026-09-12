@@ -11,6 +11,16 @@ import {
 
 const directory = "src/data/generated/anac-operator-history";
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const attributableStatuses = new Set([
+  "positive-exact-cent",
+  "positive-subcent",
+  "zero",
+]);
+function decimalUnits(value) {
+  // The contract caps decimal strings at 100 characters, so this scale is exact.
+  const [whole, fraction = ""] = value.split(".");
+  return BigInt(whole + fraction.padEnd(100, "0"));
+}
 const manifest = historyManifestSchema.parse(
   JSON.parse(readFileSync(join(directory, "manifest.json"), "utf8")),
 );
@@ -83,7 +93,21 @@ for (const [shardIndex, shard] of manifest.shards.entries()) {
           record.detail.filterRows[data.start + offset],
           `${record.ref} filter row ${data.start + offset}`,
         );
-        annualCounts.set(fields[0], (annualCounts.get(fields[0]) ?? 0) + 1);
+        const annual = annualCounts.get(fields[0]) ?? {
+          count: 0,
+          attributedCount: 0,
+          value: BigInt(0),
+        };
+        annual.count++;
+        if (
+          award.attribution === "single-operator" &&
+          attributableStatuses.has(award.amountStatus)
+        ) {
+          assert.notEqual(award.amount, null, record.ref);
+          annual.attributedCount++;
+          annual.value += decimalUnits(award.amount);
+        }
+        annualCounts.set(fields[0], annual);
         if (fields[1] === null) missingAuthority++;
         else
           authorityCounts.set(
@@ -94,8 +118,20 @@ for (const [shardIndex, shard] of manifest.shards.entries()) {
       }
     }
     assert.equal(annualCounts.size, record.yearly.length, record.ref);
-    for (const year of record.yearly)
-      assert.equal(annualCounts.get(year.year), year.awardCount, record.ref);
+    for (const year of record.yearly) {
+      const actual = annualCounts.get(year.year);
+      assert.equal(actual?.count, year.awardCount, record.ref);
+      assert.equal(
+        actual?.attributedCount,
+        year.attributedAwardCount,
+        record.ref,
+      );
+      assert.equal(
+        actual?.value,
+        decimalUnits(year.attributedValue ?? "0"),
+        record.ref,
+      );
+    }
     assert.equal(
       authorityCounts.size,
       record.distinctContractingAuthorityCount,

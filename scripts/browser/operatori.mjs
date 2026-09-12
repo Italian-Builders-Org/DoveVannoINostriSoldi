@@ -210,6 +210,10 @@ try {
       readySelector: "#history-title",
       validate: async (page) => {
         assert.equal(await page.$$eval(historyRows, (rows) => rows.length), 25);
+        await page.screenshot({
+          path: path.join(screenshots, `complete-history-${width}.png`),
+          fullPage: true,
+        });
         assert.ok(
           await page.$eval(
             historySection,
@@ -228,6 +232,16 @@ try {
             ?.textContent.includes("Pagina 2 di"),
         );
         assert.equal(new URL(page.url()).searchParams.get("page"), "2");
+        const jump = '[aria-label="Pagine aggiudicazioni"] input[name="page"]';
+        await page.$eval(jump, (input) => {
+          input.value = "3";
+        });
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          page.click('[aria-label="Pagine aggiudicazioni"] button'),
+        ]);
+        assert.equal(new URL(page.url()).searchParams.get("page"), "3");
+        assert.equal(await page.$$eval(historyRows, (rows) => rows.length), 25);
         const last = Math.ceil(history.awardCount / 25);
         await navigate(page, {
           url: new URL(`${detailPath}?page=999999`, baseUrl).toString(),
@@ -263,10 +277,13 @@ try {
           Math.min(25, matching.length),
         );
         assert.equal(
-          await page.$$eval(`${historyRows} td:nth-child(3)`, (cells) =>
-            cells.every(
-              (cell) => cell.textContent.trim() === cells[0].textContent.trim(),
-            ),
+          await page.$$eval(
+            `${historyRows} td:nth-child(3)`,
+            (cells, expected) =>
+              cells.every(
+                (cell) => cell.textContent.trim() === expected.trim(),
+              ),
+            combo[2],
           ),
           true,
         );

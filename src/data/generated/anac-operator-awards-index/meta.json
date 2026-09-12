@@ -107,14 +107,14 @@
     "operators": 478418,
     "awardRelations": 5337887,
     "attributedAwards": 4478728,
-    "attributedValue": "2992894511245.748503028282110",
+    "attributedValue": "2992894511245.7485030282821097094",
     "awardsPublished": 1896866,
     "awardsTruncatedOperators": 44570
   },
   "search": {
     "path": "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
-    "bytes": 15551053,
-    "sha256": "ebc8d09201d03caaca1aa433b644a7d4c6d0492b36fc2be3d360fe29b3ce1652",
+    "bytes": 15551055,
+    "sha256": "d88fa348f05004299a69a1367381e76ff85bcd3825093f0b488f432c9cefe4db",
     "operators": 478418
   },
   "shards": [
@@ -1507,8 +1507,8 @@
     {
       "id": "c6",
       "path": "src/data/generated/anac-operator-awards-index/operators/c6.jsonl.gz",
-      "bytes": 771266,
-      "sha256": "0f45187f87c7c61814ce7f6beee2c19aa433609ac029d722d899d16cacec8069",
+      "bytes": 771268,
+      "sha256": "3720fdaa11a7d8d1ab54ca8e4c47b01775b7a348c8a2beebb219c90117316c60",
       "operators": 1875
     },
     {
@@ -3575,8 +3575,8 @@
   },
   "summaries": {
     "path": "src/data/generated/anac-operator-awards-index/summaries.json",
-    "bytes": 15879,
-    "sha256": "70ee46f36010116a25775e0bb004b6dffdca5f713afbb2f448cc2cb723b52c0f",
+    "bytes": 15881,
+    "sha256": "a500761fca1d2ded2bad5323ab7d8eeb4e4eb4b07094d1104b90d8683a3964ae",
     "limit": 20,
     "coverage": {
       "operators": 478418,

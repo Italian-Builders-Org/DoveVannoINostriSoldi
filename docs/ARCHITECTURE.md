@@ -101,6 +101,10 @@ I riepiloghi riconciliano tutte le relazioni operatore/aggiudicazione, le serie
 annuali e gli enti identificati; lo screening 2025 conta CIG unici classificabili.
 Gli importi discordanti della stessa aggiudicazione vengono esclusi dal valore,
 conservando l’affidamento nel conteggio.
+Le somme mantengono tutti i decimali della fonte, indipendentemente dalla
+precisione Decimal del processo. Gli enti sono deduplicati per codice fiscale
+valido; i riferimenti opachi pubblicati sono relativi allo snapshot, come quelli
+degli operatori, e non costituiscono identificativi persistenti tra refresh.
 
 `anac-operator-history.ts` legge uno shard di riepiloghi e soltanto i blocchi
 compressi necessari alla pagina (25 righe). Il selettore applica i filtri a un

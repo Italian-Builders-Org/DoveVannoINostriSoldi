@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2017,
+  "family": "FC40TOT",
+  "releaseVersion": 1,
+  "publishedAt": "2021-03-15",
+  "modifiedAt": "2021-03-15",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2017_Ind_FC40TOT_1_csv.zip",
+      "bytes": 5368963,
+      "sha256": "266a1dd568df603039e0615cbbf6e9f9484abaeaa03b0dce0deca1ded35729d6"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2017_xlsx.zip",
+      "bytes": 345720,
+      "sha256": "49fcf34d7381d9fc7613a00bc890c033d3742a95efc54377c3ec6f5295a0c854"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2017_Metadati_Ind_FC40TOT_1_xlsx.zip",
+      "bytes": 8989,
+      "sha256": "df9a1565e197dc9b0e1edda20ef61bf1cca4c6909b162e2c3397c3a86da4e282"
+    }
+  },
+  "csvHeaders": ["USERNAME", "Indicatore/Determinante", "Valore", "Anomalia", "Privacy"],
+  "municipalities": 6627,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 405,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 333,
+    "LAZIO": 378,
+    "LIGURIA": 235,
+    "LOMBARDIA": 1523,
+    "MARCHE": 229,
+    "MOLISE": 136,
+    "PIEMONTE": 1202,
+    "PUGLIA": 258,
+    "TOSCANA": 276,
+    "UMBRIA": 92,
+    "VENETO": 574
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001", "ZZ999ARE002", "ZZ999ARE003", "ZZ999ARE004",
+    "ZZ999FAS001", "ZZ999FAS002", "ZZ999FAS003", "ZZ999FAS004", "ZZ999FAS005",
+    "ZZ999FAS006", "ZZ999FAS007", "ZZ999FAS008", "ZZ999FAS009", "ZZ999FAS010",
+    "ZZ999ITA001", "ZZ999REG001", "ZZ999REG003", "ZZ999REG005", "ZZ999REG007",
+    "ZZ999REG008", "ZZ999REG009", "ZZ999REG010", "ZZ999REG011", "ZZ999REG012",
+    "ZZ999REG013", "ZZ999REG014", "ZZ999REG015", "ZZ999REG016", "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

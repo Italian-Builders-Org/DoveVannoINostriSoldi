@@ -10,6 +10,7 @@
 - [Soldi](https://www.dovevannoinostrisoldi.com/spese): uscite di cassa dei Comuni da SIOPE, con serie temporali e voci contabili.
 - [Incassi comunali](https://www.dovevannoinostrisoldi.com/entrate): incassi di cassa SIOPE 2024–2026, con periodo osservato e stato completo o parziale espliciti, aggregati nazionali e regionali e dettaglio comunale paginato; non accertamenti né entrate di competenza, nessun saldo o classifica.
 - [Inflazione IPCA](https://www.dovevannoinostrisoldi.com/inflazione): prezzi al consumo armonizzati Eurostat, con tasso annuo e mensile Italia, indice 2025=100, divisioni ECOICOP v2, pesi del paniere e confronto UE27/area euro; non è spesa pubblica.
+- [PIL e conti nazionali](https://www.dovevannoinostrisoldi.com/pil): prodotto interno lordo Eurostat SEC 2010, livelli reali e nominali, crescita trimestrale e annuale, quote della domanda e confronto con Francia, Germania e Spagna; non è cassa SIOPE né uno stanziamento di bilancio.
 - [Protezione dell’ambiente](https://www.dovevannoinostrisoldi.com/spese/ambiente): conti ISTAT EPEA 2016-2022, settori e classi CEPA separati, prezzi correnti, edizione 2025M2. Non è cassa SIOPE.
 - [Pensioni e pensionati](https://www.dovevannoinostrisoldi.com/spese/pensioni): serie ISTAT 2012–2022 del Casellario dei pensionati, con prestazioni e persone tenute separate, importi lordi nominali e fonti verificabili.
 - [Territori](https://www.dovevannoinostrisoldi.com/territori): confronti territoriali sui pagamenti comunali e collegamenti a CPT e MEF IRPEF.

@@ -90,11 +90,12 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/economia",
     label: "Economia",
     icon: "economy",
-    aliases: ["/inflazione", "/cuneo-fiscale"],
+    aliases: ["/inflazione", "/cuneo-fiscale", "/pil"],
     children: [
       { href: "/economia", label: "Panoramica" },
       { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
+      { href: "/pil", label: "PIL e conti nazionali" },
     ],
   },
   {
@@ -262,6 +263,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/economia", label: "Panoramica" },
       { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
+      { href: "/pil", label: "PIL e conti nazionali" },
     ],
   },
   {

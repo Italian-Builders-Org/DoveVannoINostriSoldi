@@ -3,9 +3,9 @@ import Link from "next/link";
 import styles from "./economia.module.css";
 
 export const metadata: Metadata = {
-  title: "Economia: prezzi e cuneo fiscale",
+  title: "Economia: prezzi, cuneo fiscale e PIL",
   description:
-    "Indicatori economici ufficiali distinti dalla spesa pubblica: inflazione IPCA Eurostat e cuneo fiscale OECD Taxing Wages.",
+    "Indicatori economici ufficiali distinti dalla spesa pubblica: inflazione IPCA Eurostat, cuneo fiscale OECD e PIL Eurostat SEC 2010.",
   alternates: { canonical: "/economia" },
 };
 
@@ -24,6 +24,13 @@ const dossiers = [
     description:
       "Quanto pesano IRPEF e contributi su un lavoratore tipo. Non è la busta paga di una persona reale né l’IRPEF territoriale.",
   },
+  {
+    href: "/pil",
+    title: "PIL e conti nazionali",
+    period: "Eurostat SEC 2010 · trimestrale e annuale",
+    description:
+      "Livello, crescita e quote della domanda del prodotto interno lordo. Non è cassa SIOPE e non assegna meriti a un governo.",
+  },
 ] as const;
 
 export default function EconomiaPage() {
@@ -33,7 +40,7 @@ export default function EconomiaPage() {
         <p className="eyebrow">Contesto economico</p>
         <h1>Economia</h1>
         <p>
-          Qui ci sono indicatori su prezzi e costo del lavoro. Restano fuori dalla sezione Soldi:
+          Qui ci sono indicatori su prezzi, costo del lavoro e PIL. Restano fuori dalla sezione Soldi:
           non sono pagamenti, stanziamenti o debiti della pubblica amministrazione.
         </p>
       </header>

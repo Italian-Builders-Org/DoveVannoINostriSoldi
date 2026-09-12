@@ -120,6 +120,12 @@
     "recordCount": 210
   },
   {
+    "sourceId": "eurostat-gdp",
+    "sourceTimestamp": "2026-09-12",
+    "detail": "Snapshot Eurostat PIL verificato · trimestrale Italia 2015-Q1/2026-Q2 · annuale 2015-2025 · peer 2019-Q1/2026-Q2 · conti nazionali, non cassa pubblica.",
+    "recordCount": 521
+  },
+  {
     "sourceId": "oecd-taxing-wages",
     "sourceTimestamp": "2026-09-11",
     "detail": "Snapshot OECD Taxing Wages verificato · Italia 2000-2025 profilo S_C0 AW100 · confronto peer 2015-2025 · aliquote su profilo tipo, non spesa pubblica.",

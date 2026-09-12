@@ -101,7 +101,8 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/istruzione/universita-ricerca": ["universita", "ricerca e innovazione", "stanziamenti universita", "formazione post-universitaria"],
   "/spese": ["spesa", "pagamenti", "pagamenti comuni", "uscite", "soldi", "comuni"],
   "/inflazione": ["inflazione", "ipca", "hicp", "prezzi", "costo della vita", "coicop", "paniere"],
-  "/economia": ["economia", "prezzi e lavoro", "contesto economico"],
+  "/economia": ["economia", "prezzi e lavoro", "contesto economico", "pil"],
+  "/pil": ["pil", "prodotto interno lordo", "conti nazionali", "crescita", "gdp", "eurostat"],
   "/cuneo-fiscale": [
     "cuneo fiscale",
     "tax wedge",

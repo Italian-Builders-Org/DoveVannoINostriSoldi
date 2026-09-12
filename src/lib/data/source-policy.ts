@@ -25,6 +25,7 @@ export type SourceId =
   | "bancaditalia"
   | "eurostat"
   | "eurostat-hicp"
+  | "eurostat-gdp"
   | "oecd-taxing-wages"
   | "eurostat-cofog"
   | "istat-cofog"
@@ -45,6 +46,7 @@ export type SourceCadence =
   | "settimanale"
   | "mensile"
   | "bimestrale"
+  | "trimestrale"
   | "annuale"
   | "periodica"
   | "per-amministrazione"
@@ -433,6 +435,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 2,
     tags: ["source:eurostat-hicp", "domain:inflation", "domain:government-scorecard"],
+  },
+  "eurostat-gdp": {
+    id: "eurostat-gdp",
+    label: "Eurostat · PIL e conti nazionali",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+    cadence: "trimestrale",
+    cadenceNote:
+      "I conti nazionali trimestrali e annuali vengono rivisti: lo snapshot resta bloccato sulle risposte JSON-stat verificate e si aggiorna solo dopo nuova acquisizione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 120 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat-gdp", "domain:national-accounts", "domain:economy"],
   },
   "oecd-taxing-wages": {
     id: "oecd-taxing-wages",

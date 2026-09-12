@@ -450,7 +450,7 @@ class CommittedReleaseProofTests(unittest.TestCase):
         proof = release.check_release()
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
-        self.assertEqual(proof["contract"]["datasets"], 93)
+        self.assertEqual(proof["contract"]["datasets"], 95)
 
 
 if __name__ == "__main__":

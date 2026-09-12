@@ -118,6 +118,7 @@ export default function PovertaPage() {
           dalla spesa media delle famiglie italiane.
         </p>
         <p className={styles.leadLinks}>
+          <Link href="/disuguaglianza">Distribuzione dei redditi →</Link>
           <Link href="/fonti">Registro delle fonti →</Link>
           <Link href="/dati">Catalogo dati →</Link>
         </p>

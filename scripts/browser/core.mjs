@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectInequality } from "./inequality.mjs";
 import { inspectInflation } from "./inflation.mjs";
 import { inspectAnnouncements } from "./announcements.mjs";
 import { inspectReceipts } from "./receipts.mjs";
@@ -2558,6 +2559,14 @@ try {
     const label = `Catalogo progetti PNRR ${width}px`;
     await runScenario(browser, {
       label, pathname: "/pnrr", width, validate: inspectPnrrProjects,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Disuguaglianza dei redditi ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/disuguaglianza", width, validate: inspectInequality,
     });
     completed.push(label);
   }

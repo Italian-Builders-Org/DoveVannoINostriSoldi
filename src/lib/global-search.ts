@@ -103,6 +103,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/inflazione": ["inflazione", "ipca", "hicp", "prezzi", "costo della vita", "coicop", "paniere"],
   "/economia": ["economia", "prezzi e lavoro", "contesto economico", "pil"],
   "/pil": ["pil", "prodotto interno lordo", "conti nazionali", "crescita", "gdp", "eurostat"],
+  "/disuguaglianza": ["disuguaglianza", "distribuzione dei redditi", "gini", "s80 s20", "quintili"],
   "/cuneo-fiscale": [
     "cuneo fiscale",
     "tax wedge",

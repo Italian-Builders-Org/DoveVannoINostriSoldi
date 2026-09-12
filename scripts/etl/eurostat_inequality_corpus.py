@@ -34,6 +34,7 @@ RECEIPTS_DIR = ROOT / "data/source-ledger/datasets"
 DATASET_PROOF = ROOT / "data/source-ledger/dataset-proof.json"
 RELEASE_PROOF = ROOT / "data/source-ledger/release-proof.json"
 PROJECTION_RELATIVE_PATH = "eurostat-disuguaglianza-redditi.psv"
+ACQUISITION_DATE = "2026-09-12"
 SURVEY_YEARS = list(range(2014, 2026))
 HEADERS = [
     "Indicatore",
@@ -304,6 +305,13 @@ def load_spec(path: Path = SOURCE_SPEC) -> dict[str, Any]:
     source = spec.get("source")
     if not isinstance(source, dict) or source.get("licenseId") != "verified-open-eu-reuse":
         raise SourceError("source lock: licenza Eurostat inattesa")
+    acquisition = source.get("acquisition")
+    if (
+        not isinstance(acquisition, dict)
+        or acquisition.get("acquiredAt") != ACQUISITION_DATE
+        or acquisition.get("checkedAt") != ACQUISITION_DATE
+    ):
+        raise SourceError("source lock: date di acquisizione/verifica inattese")
     assets = source.get("assets")
     if not isinstance(assets, dict) or set(assets) != set(ASSET_DEFINITIONS):
         raise SourceError("source lock: asset inattesi")
@@ -349,6 +357,36 @@ def _locked_projection(spec: dict[str, Any]) -> bytes:
     return projection_bytes(spec, ROOT)
 
 
+def _validate_corpus_contract(
+    source_spec: dict[str, Any],
+    corpus_spec: dict[str, Any],
+    item: dict[str, Any],
+) -> dict[str, Any]:
+    source = source_spec["source"]
+    acquisition = source["acquisition"]
+    metadata = corpus.resolved_source_metadata(corpus_spec, DATASET_ID)
+    if (
+        metadata.get("acquisitionDate") != acquisition.get("acquiredAt")
+        or metadata.get("checkedAt") != acquisition.get("checkedAt")
+        or metadata.get("publicationDate") is not None
+        or metadata.get("holder") != source.get("owner")
+        or item.get("licenseStatus") != source.get("licenseId")
+    ):
+        raise SourceError("metadata corpus inequality divergenti dalla source lock")
+    return metadata
+
+
+def _load_corpus_contract(
+    source_spec: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    corpus_spec, datasets = corpus.load_spec(CORPUS_SPEC)
+    item = next((item for item in datasets if item["id"] == DATASET_ID), None)
+    if item is None:
+        raise SourceError("dataset inequality assente dalla specifica corpus")
+    metadata = _validate_corpus_contract(source_spec, corpus_spec, item)
+    return corpus_spec, item, metadata
+
+
 def check_committed() -> None:
     spec = load_spec()
     payload = _locked_projection(spec)
@@ -356,13 +394,10 @@ def check_committed() -> None:
     with tempfile.TemporaryDirectory() as directory:
         source_root = Path(directory)
         (source_root / PROJECTION_RELATIVE_PATH).write_bytes(payload)
-        corpus_spec, datasets = corpus.load_spec(CORPUS_SPEC)
-        item = next((item for item in datasets if item["id"] == DATASET_ID), None)
-        if item is None:
-            raise SourceError("dataset inequality assente dalla specifica corpus")
+        _, item, metadata = _load_corpus_contract(spec)
         parsed = corpus.parse_dataset(source_root, item)
         entry, rows_payload, receipt, _ = corpus.build_dataset(
-            item, parsed, corpus.resolved_source_metadata(corpus_spec, DATASET_ID)
+            item, parsed, metadata
         )
         actual_rows = b"".join(
             gzip.decompress(path.read_bytes())
@@ -379,6 +414,7 @@ def publish() -> None:
     spec = load_spec()
     payload = _locked_projection(spec)
     validate_projection(payload, spec)
+    _load_corpus_contract(spec)
     with tempfile.TemporaryDirectory() as directory:
         source_root = Path(directory)
         (source_root / PROJECTION_RELATIVE_PATH).write_bytes(payload)

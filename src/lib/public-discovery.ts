@@ -32,6 +32,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/controlli/sintesi",
   "/dati",
   "/debito",
+  "/disuguaglianza",
   "/enti",
   "/entrate",
   "/esplora",

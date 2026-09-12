@@ -333,3 +333,9 @@ test("municipal snapshot search finds major cities by keyword", async () => {
     globalThis.fetch = originalFetch;
   }
 });
+
+test("distribution indicators lead to the inequality page", () => {
+  for (const query of ["gini", "S80 S20", "distribuzione dei redditi"]) {
+    assert.ok(searchSiteDocuments(query).some((result) => result.href === "/disuguaglianza"), query);
+  }
+});

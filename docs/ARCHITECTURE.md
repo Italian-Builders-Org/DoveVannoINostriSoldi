@@ -95,6 +95,6 @@ in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).
 
 Il client legge `/api/assistant/quota` e invia richieste esplicite `mode: free` a
 `/api/assistant/chat`. `free-quota.ts` (server-only) valida cookie firmato e IP Vercel,
-prenota atomicamente un credito su Redis e fornisce la chiave Regolo soltanto al
+prenota atomicamente un credito tramite RPC PostgreSQL su Supabase e fornisce la chiave Regolo soltanto al
 client HTTP del server. Il catalogo/query/evidence e il protocollo SSE sono condivisi
 con BYOK. Configurazione e limiti: `docs/ASSISTENTE.md`.

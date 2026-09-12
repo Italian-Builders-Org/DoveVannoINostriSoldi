@@ -43,12 +43,12 @@ export class FreeQuotaError extends Error {
 function configuration() {
   const apiKey = process.env.REGOLO_API_KEY ?? "";
   const secret = process.env.ASSISTANT_QUOTA_SECRET ?? "";
-  const endpoint = process.env.UPSTASH_REDIS_REST_URL ?? "";
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? "";
-  if (!AI_KEY_PATTERN.test(apiKey) || secret.length < 32 || !AI_KEY_PATTERN.test(token)) throw new FreeQuotaError("free_unavailable");
+  const endpoint = process.env.ASSISTANT_SUPABASE_URL ?? "";
+  const token = process.env.ASSISTANT_SUPABASE_SECRET_KEY ?? "";
+  if (!AI_KEY_PATTERN.test(apiKey) || secret.length < 32 || !/^sb_secret_[A-Za-z0-9_-]{20,}$/u.test(token)) throw new FreeQuotaError("free_unavailable");
   let url: URL;
   try { url = new URL(endpoint); } catch { throw new FreeQuotaError("free_unavailable"); }
-  if (url.protocol !== "https:" || !url.hostname.endsWith(".upstash.io") || url.port || url.username || url.password || url.search || url.hash || url.pathname !== "/") throw new FreeQuotaError("free_unavailable");
+  if (url.protocol !== "https:" || !/^[a-z0-9]{20}\.supabase\.co$/u.test(url.hostname) || url.port || url.username || url.password || url.search || url.hash || url.pathname !== "/") throw new FreeQuotaError("free_unavailable");
   return { apiKey, secret, endpoint: url.href, token };
 }
 
@@ -69,39 +69,17 @@ function identity(request: Request, secret: string, create: boolean, now: number
   const id = valid ? match![2] : randomBytes(16).toString("hex");
   const cookie = valid ? undefined : `${name}=${day}.${id}.${sign(`cookie:${day}:${id}`)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${Math.ceil((end - now) / 1000)}${local ? "" : "; Secure"}`;
   const scope = process.env.VERCEL_ENV === "production" ? "production" : process.env.VERCEL ? "preview" : "local";
-  const prefix = `dvns:assistant:v1:${scope}:${day}`;
-  const browser = `${prefix}:browser:${sign(`browser:${day}:${id}`)}`;
-  const ip = `${prefix}:network:${sign(`network:${day}:${network}`)}`;
-  return { keys: [browser, ip, `${browser}:active`, `${ip}:active`, `${ip}:burst`], cookie, end, resetAt };
+  const browser = sign(`browser:${day}:${id}`);
+  const ip = sign(`network:${day}:${network}`);
+  return { scope, day, browser, ip, cookie, resetAt };
 }
 
-// One atomic primary-store operation: status reads never reserve a question.
-// Counts are bounded independently by browser and network; no process-local fallback.
-export const QUOTA_SCRIPT = `
-local a = tonumber(redis.call('GET', KEYS[1]) or '0')
-local b = tonumber(redis.call('GET', KEYS[2]) or '0')
-local used = math.max(a, b)
-local burst = redis.call('INCR', KEYS[5])
-if burst == 1 then redis.call('PEXPIRE', KEYS[5], 60000) end
-if burst > 60 then return {-2, used} end
-if ARGV[1] == 'status' then return {1, used} end
-if used >= tonumber(ARGV[2]) then return {0, used} end
-if redis.call('EXISTS', KEYS[3]) == 1 or redis.call('EXISTS', KEYS[4]) == 1 then return {-1, used} end
-redis.call('SET', KEYS[3], ARGV[4], 'PX', 90000)
-redis.call('SET', KEYS[4], ARGV[4], 'PX', 90000)
-for i = 1, 2 do
-  redis.call('INCR', KEYS[i])
-  redis.call('PEXPIREAT', KEYS[i], ARGV[3])
-end
-return {1, used + 1}
-`;
-const RELEASE_SCRIPT = `for i = 1, 2 do if redis.call('GET', KEYS[i]) == ARGV[1] then redis.call('DEL', KEYS[i]) end end return 1`;
-
-async function command(config: ReturnType<typeof configuration>, body: unknown[], signal: AbortSignal): Promise<unknown> {
+// RPCs run as service_role: no browser credential, public table or fallback counter.
+async function command(config: ReturnType<typeof configuration>, operation: "assistant_quota" | "assistant_quota_release", body: Record<string, unknown>, signal: AbortSignal): Promise<unknown> {
   const boundedSignal = AbortSignal.any([signal, AbortSignal.timeout(2500)]);
   try {
     boundedSignal.throwIfAborted();
-    const response = await fetch(config.endpoint, { method: "POST", headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json" },
+    const response = await fetch(new URL(`rest/v1/rpc/${operation}`, config.endpoint).href, { method: "POST", headers: { apikey: config.token, "Content-Type": "application/json" },
       body: JSON.stringify(body), signal: boundedSignal, cache: "no-store", redirect: "error", credentials: "omit" });
     if (!response.ok || !response.body) { await response.body?.cancel(); throw new Error(); }
     const reader = response.body.getReader();
@@ -114,7 +92,7 @@ async function command(config: ReturnType<typeof configuration>, body: unknown[]
       while (true) { const next = await reader.read(); boundedSignal.throwIfAborted(); if (next.done) break; size += next.value.byteLength; if (size > 4096) throw new Error(); text += decoder.decode(next.value, { stream: true }); }
       const payload = JSON.parse(text + decoder.decode());
       if (!payload || Object.hasOwn(payload, "error")) throw new Error();
-      return payload.result;
+      return payload;
     } finally { boundedSignal.removeEventListener("abort", cancel); await reader.cancel().catch(() => undefined); }
   } catch { throw new FreeQuotaError("free_unavailable"); }
 }
@@ -123,7 +101,8 @@ export async function freeQuota(request: Request, reserve = false, now = Date.no
   const config = configuration();
   const owner = identity(request, config.secret, !reserve, now);
   const lease = randomBytes(16).toString("hex");
-  const result = await command(config, ["EVAL", QUOTA_SCRIPT, 5, ...owner.keys, reserve ? "reserve" : "status", FREE_DAILY_QUESTIONS, owner.end + 120_000, lease], request.signal);
+  const parameters = { p_scope: owner.scope, p_day: owner.day, p_browser: owner.browser, p_network: owner.ip, p_lease: lease };
+  const result = await command(config, "assistant_quota", { ...parameters, p_reserve: reserve }, request.signal);
   if (!Array.isArray(result) || result.length !== 2 || !Number.isInteger(result[0]) || !Number.isInteger(result[1]) || result[1] < 0 || result[1] > FREE_DAILY_QUESTIONS) throw new FreeQuotaError("free_unavailable");
   if (result[0] === 0) throw new FreeQuotaError("free_limit");
   if (result[0] === -1 || result[0] === -2) throw new FreeQuotaError("free_busy");
@@ -136,7 +115,7 @@ export async function freeQuota(request: Request, reserve = false, now = Date.no
       if (!reserve || released) return;
       released = true;
       // Independent cancellation: clean up a disconnected caller's lease, or let its TTL expire.
-      await command(config, ["EVAL", RELEASE_SCRIPT, 2, ...owner.keys.slice(2, 4), lease], AbortSignal.timeout(2500)).catch(() => undefined);
+      await command(config, "assistant_quota_release", parameters, AbortSignal.timeout(2500)).catch(() => undefined);
     },
   };
 }

@@ -107,10 +107,10 @@ export default function PrivacyPage() {
           chi condivide la stessa rete può condividerne il limite. Il contatore riparte a mezzanotte,
           ora italiana; anche gli invii interrotti o falliti dopo l’accettazione consumano una domanda.
           Ricaricare la pagina o iniziare una nuova chat non azzera la quota.
-          Il servizio Redis di Upstash conserva solo contatori e identificativi pseudonimi
+          Il database Supabase conserva solo contatori e identificativi pseudonimi
           derivati con HMAC, diversi ogni giorno, senza indirizzi IP in chiaro, credenziali o
-          conversazioni. I contatori scadono entro due minuti dal reset; i blocchi tecnici temporanei
-          entro 90 secondi. Consulta l’<a href="https://upstash.com/trust/privacy.pdf" target="_blank" rel="noreferrer">informativa di Upstash</a>.
+          conversazioni. I contatori vengono rimossi dal processo di pulizia ogni dieci minuti dopo la scadenza giornaliera;
+          i blocchi tecnici temporanei cessano entro 90 secondi. Consulta l’<a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">informativa di Supabase</a>.
         </p>
         <p>
           La dettatura facoltativa usa il riconoscimento locale del browser, quando disponibile per

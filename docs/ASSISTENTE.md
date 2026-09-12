@@ -212,16 +212,16 @@ tempo, frequenza e concorrenza.
 
 `POST /api/assistant/quota` crea un cookie giornaliero firmato, HttpOnly, Secure,
 SameSite=Strict, con prefisso `__Host-` in hosting. Non contiene credenziali o messaggi.
-I contatori sono aggiornati con uno script Lua atomico in Redis, senza fallback in
+I contatori sono aggiornati con una transazione PostgreSQL su Supabase, senza fallback in
 memoria: dieci domande per browser **e** rete, una richiesta attiva per entrambi,
 lock con scadenza di 90 secondi e massimo 60 operazioni quota/minuto per rete.
 Su Vercel si usa esclusivamente l’IP attestato da `x-vercel-forwarded-for`; fuori Vercel
 è disponibile soltanto il percorso locale loopback per sviluppo. IPv6 è normalizzato
 alla rete /64 e gli indirizzi IPv4-mapped condividono il contatore IPv4.
 
-Redis riceve identificativi HMAC diversi ogni giorno, non IP, cookie originali o
+Supabase riceve identificativi HMAC diversi ogni giorno, non IP, cookie originali o
 conversazioni. Il reset è a mezzanotte Europe/Rome, compresi i cambi di ora legale;
-i contatori scadono entro due minuti dal reset. Anteprime e produzione hanno namespace
+i contatori scadono due minuti dopo il reset e pg_cron li elimina ogni dieci minuti. Anteprime e produzione hanno namespace
 diversi. Gli utenti dietro una stessa rete possono condividere il limite: senza auth
 browser e IP non equivalgono a una persona. Cambiare solo browser, cancellare cookie,
 ricaricare o aprire una nuova chat non azzera il contatore della rete.
@@ -230,15 +230,45 @@ Configurare esclusivamente sul server (mai con prefisso `NEXT_PUBLIC_`):
 
 - `REGOLO_API_KEY`: chiave del conto condiviso.
 - `ASSISTANT_QUOTA_SECRET`: segreto casuale di almeno 32 caratteri per le firme HMAC.
-- `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`: database dedicato con REST API.
+- `ASSISTANT_SUPABASE_URL`: URL HTTPS del progetto dedicato.
+- `ASSISTANT_SUPABASE_SECRET_KEY`: chiave server `sb_secret_...`; mai publishable/anon.
 
-Il backend Redis deve essere persistente e condiviso dalle istanze del deployment.
+Il database Supabase deve essere dedicato e condiviso dalle istanze del deployment.
 Non riutilizzare database di altri progetti. Se configurazione, identità attestata o
-Redis non sono disponibili, il percorso gratuito si chiude prima di contattare Regolo;
+Supabase non sono disponibili, il percorso gratuito si chiude prima di contattare Regolo;
 le chiavi personali restano utilizzabili. Il sito e i test offline non richiedono segreti.
 Le risposte pubbliche espongono solo disponibilità, domande residue e orario del reset.
 
 Fonti: [Regolo Chat Completions](https://docs.regolo.ai/models/families/completions/),
 [Regolo reasoning](https://docs.regolo.ai/models/features/reasoning/),
-[Upstash REST](https://upstash.com/docs/redis/features/restapi),
+[Supabase database functions](https://supabase.com/docs/guides/database/functions),
 [header Vercel](https://vercel.com/docs/headers/request-headers).
+
+
+### Migrazioni Supabase e costi
+
+Applicare nell'ordine le migrazioni in `supabase/migrations/`: schema/RPC e job di
+pulizia pg_cron. Le tabelle stanno in `assistant_private`, fuori dalla Data API,
+con RLS attiva e nessun grant anon/authenticated. Le due RPC pubbliche sono
+`SECURITY INVOKER`, con `search_path` vuoto ed EXECUTE riservato a `service_role`.
+Nessuna connessione database rimane aperta mentre il modello risponde.
+
+Il database verifica anche il giorno Europe/Rome e limita a dieci gli invii senza
+fidarsi del numero trasmesso dal client. Acquisisce sempre prima la riga rete e poi
+quella browser; la pulizia segue l'indice `expires_at`. La cronologia e le chiavi API
+personali restano nella memoria della pagina. Non vengono attivati Auth, Storage,
+Realtime, Edge Functions, repliche, backup a pagamento o branch Supabase.
+
+Il piano Free verificato il 12 settembre 2026 include 500 MB database e 5 GB egress,
+con massimo due progetti attivi per account. Può sospendere il progetto dopo sette
+giorni di inattività: il sito mostra gratuito non disponibile e consente BYOK.
+Nessun keepalive artificiale e nessun upgrade automatico. La sospensione o un errore
+del job possono ritardare la pulizia: controllare `cron.job_run_details` e gli advisor.
+Non promettere capacità illimitata: misurare `pg_total_relation_size` e traffico nella
+dashboard, conservando soltanto le righe giornaliere. [Listino](https://supabase.com/pricing).
+
+Verifica PostgreSQL locale (server temporaneo dedicato, senza costi remoti):
+`DVNS_POSTGRES_BIN=/percorso/bin node --experimental-strip-types --test tests/live/assistant-quota-postgres.test.mjs`.
+Il test crea un database vuoto, applica la prima migrazione e verifica realmente
+concorrenza, confini quota e permessi. La schedulazione pg_cron si verifica nel
+progetto Supabase dopo la seconda migrazione, separatamente dal test locale.

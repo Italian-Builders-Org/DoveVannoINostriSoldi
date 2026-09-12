@@ -7,7 +7,7 @@ import importlib.util
 import json
 import sys
 from pathlib import Path
-from unittest import TestCase
+from unittest import TestCase, main
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +52,4 @@ class GeneratedArtifactsRegistryTests(TestCase):
 
 
 if __name__ == "__main__":
-    import unittest
-
-    unittest.main()
+    main()

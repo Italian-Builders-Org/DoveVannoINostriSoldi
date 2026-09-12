@@ -15,7 +15,7 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted" | "/pnrr";
+  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted" | "/pnrr" | "/disuguaglianza";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -989,6 +989,12 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 ] as const;
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
+  {
+    surface: "/disuguaglianza",
+    title: "Distribuzione dei redditi in Italia",
+    description: "Gini e rapporto S80/S20, con anni dei redditi e della rilevazione distinti.",
+    datasets: [{ id: "eurostat-disuguaglianza-redditi", label: "Disuguaglianza dei redditi · Eurostat" }],
+  },
   {
     surface: "/pnrr",
     title: "Tutti i progetti PNRR",

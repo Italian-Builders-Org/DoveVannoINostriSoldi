@@ -149,3 +149,9 @@ test("dati page wires views, filters and reading links without median inventing"
   assert.match(css, /\.filterBar \{/);
   assert.match(css, /\.filterGroup a\[aria-current="page"\]/);
 });
+
+test("inequality catalog links back to its income methodology", () => {
+  assert.deepEqual(relatedReadingForDataset({ id: "eurostat-disuguaglianza-redditi", domain: "benchmarks" }), {
+    href: "/disuguaglianza", label: "Disuguaglianza dei redditi",
+  });
+});

@@ -192,6 +192,9 @@ export function matchesCatalogFilters(
 export function relatedReadingForDataset(
   dataset: Pick<CatalogDatasetSummary, "id" | "domain">,
 ): RelatedReading | null {
+  if (dataset.id === "eurostat-disuguaglianza-redditi") {
+    return { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" };
+  }
   if (dataset.id === "pnrr-progetti") return { href: "/pnrr", label: "Cerca tutti i progetti PNRR" };
   if (dataset.id === "ted-avvisi-italia-2026-08") {
     return { href: "/appalti/ted", label: "Avvisi TED con committenti in Italia" };

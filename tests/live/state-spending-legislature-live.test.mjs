@@ -32,10 +32,31 @@ test(
 
       const nineteenth = cycles.find((cycle) => cycle.legislature.number === "XIX");
       assert.ok(nineteenth);
-      assert.deepEqual(nineteenth.years, []);
-      assert.equal(nineteenth.preElectionYear, null);
+      const nineteenthYears = nineteenth.years.map((entry) => entry.year);
+      assert.equal(nineteenthYears[0], 2023, "il 2023 è il primo anno completo della XIX legislatura");
+      assert.deepEqual(
+        nineteenthYears,
+        Array.from({ length: nineteenthYears.length }, (_, index) => 2023 + index),
+        "la legislatura in corso non deve saltare anni pubblicati",
+      );
+      assert.ok(
+        nineteenthYears.includes(2023) && nineteenthYears.includes(2024),
+        "i consuntivi 2023 e 2024 sono pubblicati e devono comparire",
+      );
+      assert.ok(nineteenth.years.every((entry) => entry.totalPaid > 0));
+      assert.ok(nineteenth.years.every((entry) => entry.source.releaseKind === "consuntivo"));
+      assert.ok(nineteenth.years.every((entry) => entry.isPreElectionYear === false));
+      assert.equal(nineteenth.preElectionYear, null, "la XIX legislatura non ha ancora un anno pre-elettorale");
       assert.equal(nineteenth.otherYearsAverage, null);
       assert.equal(nineteenth.differenceFromAverage, null);
+
+      // The observed year must be the annual consuntivo the same connector returns for that
+      // year, not a monthly cumulative release read as a full year.
+      const annual2023 = await queryPublicDataset({ dataset: "openbdap_spesa_stato", year: 2023 });
+      assert.equal(annual2023.period.releaseKind, "consuntivo");
+      const legislature2023 = nineteenth.years.find((entry) => entry.year === 2023);
+      assert.equal(legislature2023.totalPaid, annual2023.totalPaid);
+      assert.equal(legislature2023.source.packageId, annual2023.sources.mission.packageId);
     });
   },
 );

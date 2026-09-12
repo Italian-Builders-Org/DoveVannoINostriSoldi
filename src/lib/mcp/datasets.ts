@@ -103,10 +103,31 @@ export async function queryPublicDataset(
         siope_regioni: "siope-uscite-regioni",
         siope_citta_metropolitane: "siope-uscite-citta-metropolitane",
       } as const;
+      const equals: Record<string, string> = {};
+      const matchAnyEquals: Record<string, string>[] = [];
+      if (query.year !== undefined) equals.year = String(query.year);
+      if (query.dataset !== "siope_inventario_enti") {
+        const regionInput = query.region?.trim();
+        if (regionInput) {
+          const canonicalRegion = resolveCanonicalRegionName(regionInput);
+          if (!canonicalRegion) throw new Error(formatRegionNotFoundError(regionInput));
+          equals.region = canonicalRegion;
+        }
+        const code = query.code?.trim();
+        if (code) {
+          matchAnyEquals.push({ codiceIpa: code }, { taxCode: code });
+        }
+      }
       const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
       return jsonSafe(await selectIntegratedDataset({
-        datasetId: canonicalDatasetId[query.dataset], q: query.query, limit,
-        offset: query.offset, cursor: query.cursor, signal: options.signal,
+        datasetId: canonicalDatasetId[query.dataset],
+        q: query.query,
+        equals,
+        matchAnyEquals: matchAnyEquals.length > 0 ? matchAnyEquals : undefined,
+        limit,
+        offset: query.offset,
+        cursor: query.cursor,
+        signal: options.signal,
       }));
     }
     case "siope_entrate_comuni": {

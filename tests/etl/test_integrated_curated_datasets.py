@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import gzip
 import hashlib
-import importlib.util
 import io
 import json
 import sys
@@ -17,14 +16,9 @@ from urllib.parse import quote
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = REPOSITORY_ROOT / "scripts/etl/integrated_curated_datasets.py"
-
-MODULE_SPEC = importlib.util.spec_from_file_location(
-    "integrated_curated_datasets",
-    SCRIPT_PATH,
-)
-ETL = importlib.util.module_from_spec(MODULE_SPEC)
-sys.modules[MODULE_SPEC.name] = ETL
-MODULE_SPEC.loader.exec_module(ETL)
+if str(SCRIPT_PATH.parent) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_PATH.parent))
+import integrated_curated_datasets as ETL
 
 
 def sha256(payload: bytes) -> str:

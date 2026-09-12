@@ -27,11 +27,11 @@ export async function readProviderStream(response: Response, connection: AiConne
   const event = () => {
     if (!eventData.length) return;
     const data = eventData.join("\n"); eventData = [];
-    if (data === "[DONE]") { if (connection.provider === "openrouter" && complete) stopped = true; return; }
+    if (data === "[DONE]") { if ((connection.provider === "openrouter" || connection.provider === "regolo") && complete) stopped = true; return; }
     const item = record(JSON.parse(data));
     if (item.error || item.type === "error" || item.type === "response.failed" || item.type === "response.incomplete") throw new Error("stream_error");
     let delta: unknown;
-    if (connection.provider === "openrouter") {
+    if (connection.provider === "openrouter" || connection.provider === "regolo") {
       const choice = record(Array.isArray(item.choices) ? item.choices[0] : null);
       delta = record(choice.delta).content;
       if (choice.finish_reason) {

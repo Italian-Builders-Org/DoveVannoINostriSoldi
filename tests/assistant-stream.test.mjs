@@ -69,3 +69,13 @@ test('browser protocol rejects interrupted or forged stream events',async()=>{
     await assert.rejects(readChatStream(response(events.map(appFrame).join('')),signal(),()=>{}));
   }
 });
+
+test('Regolo streams Unicode content, hides reasoning and credentials, and requires terminal completion',async()=>{
+ const regolo={...connection,provider:'regolo',model:'glm5.2'},chunks=[];
+ const body=frame({choices:[{delta:{reasoning_content:'private reasoning'},finish_reason:null}]})+frame(router('Il totale è 1.234 €. '+connection.apiKey.slice(0,10)))+frame(router(connection.apiKey.slice(10)))+frame(stop())+frame('[DONE]');
+ const result=await completeProviderText(regolo,'System',[{role:'user',content:'Totale?'}],{signal:signal(),onDelta:text=>chunks.push(text),fetcher:async(url,init)=>{
+  assert.equal(url,'https://api.regolo.ai/v1/chat/completions');const payload=JSON.parse(init.body);assert.equal(payload.stream,true);assert.equal(payload.reasoning_effort,'none');assert.equal(payload.provider,undefined);return response(body,1);
+ }});
+ assert.equal(result,'Il totale è 1.234 €. [chiave rimossa]');assert.equal(chunks.join(''),result);assert.ok(!chunks.join('').includes('private reasoning'));
+ for(const incomplete of [frame(router('Incomplete')),frame(router('Incomplete'))+frame('[DONE]'),frame(router('Incomplete'))+frame({choices:[{delta:{},finish_reason:'length'}]})+frame('[DONE]')])await assert.rejects(readProviderStream(response(incomplete),regolo,signal(),()=>{}));
+});

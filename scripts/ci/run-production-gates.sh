@@ -107,6 +107,7 @@ echo "::endgroup::"
 
 echo "::group::Browser assistant chat suite"
 npm run test:browser:assistant
+npm run test:browser:assistant-free
 echo "::endgroup::"
 
 echo "::group::Browser assistant attachments suite"
@@ -176,6 +177,7 @@ echo "::endgroup::"
 
 echo "::group::Interazioni e grafici in modalità scura"
 DVNS_COLOR_SCHEME=dark npm run test:browser:assistant
+DVNS_COLOR_SCHEME=dark npm run test:browser:assistant-free
 DVNS_COLOR_SCHEME=dark npm run test:browser:core
 DVNS_COLOR_SCHEME=dark npm run test:browser:charts
 echo "::endgroup::"

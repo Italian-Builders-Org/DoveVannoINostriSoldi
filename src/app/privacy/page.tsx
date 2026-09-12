@@ -77,7 +77,7 @@ export default function PrivacyPage() {
         <h2 className="panel-title">Assistente del portale e dettatura</h2>
         <p>
           L&apos;assistente in <a href="/assistente">/assistente</a> permette di conversare con un
-          provider AI usando la tua API key OpenRouter, OpenAI o Anthropic.
+          provider AI usando la tua API key Regolo, OpenRouter, OpenAI o Anthropic, oppure usare dieci domande gratuite al giorno con Regolo, quando disponibili.
           Collegando un provider autorizzi l’invio della domanda, di un contesto limitato della
           conversazione, degli allegati che scegli di inviare e degli estratti dei dataset pubblici necessari alla risposta. Chiave e
           contenuti transitano attraverso il backend DVNS e il servizio selezionato; OpenRouter
@@ -92,13 +92,25 @@ export default function PrivacyPage() {
           descritto sopra. Le risposte AI sono indicate come tali e possono contenere errori.
         </p>
         <p>
-          I consumi sono a carico del tuo conto presso il provider. L’abbonamento ChatGPT non
+          Con una chiave personale, i consumi sono a carico del tuo conto presso il provider. L’abbonamento ChatGPT non
           include i consumi delle API OpenAI. La conservazione da parte del provider dipende
           dalle sue condizioni e dalle impostazioni del tuo conto: consulta le informative di{" "}
           <a href="https://openrouter.ai/privacy" target="_blank" rel="noreferrer">OpenRouter</a>,{" "}
           <a href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noreferrer">OpenAI</a> e{" "}
-          <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noreferrer">Anthropic</a>.
+          <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noreferrer">Anthropic</a> e <a href="https://regolo.ai/privacy-policy/" target="_blank" rel="noreferrer">Regolo</a>.
           Non inserire dati personali, informazioni riservate o altre credenziali nelle domande.
+        </p>
+        <p>
+          Per le domande gratuite, dopo il tuo consenso inviamo domanda, contesto e allegati a Regolo.
+          Un cookie tecnico giornaliero firmato e non leggibile dagli script della pagina mantiene
+          il contatore del browser. Per limitare gli abusi, il server controlla anche la rete:
+          chi condivide la stessa rete può condividerne il limite. Il contatore riparte a mezzanotte,
+          ora italiana; anche gli invii interrotti o falliti dopo l’accettazione consumano una domanda.
+          Ricaricare la pagina o iniziare una nuova chat non azzera la quota.
+          Il database Supabase conserva solo contatori e identificativi pseudonimi
+          derivati con HMAC, diversi ogni giorno, senza indirizzi IP in chiaro, credenziali o
+          conversazioni. I contatori vengono rimossi dal processo di pulizia ogni dieci minuti dopo la scadenza giornaliera;
+          i blocchi tecnici temporanei cessano entro 90 secondi. Consulta l’<a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">informativa di Supabase</a>.
         </p>
         <p>
           La dettatura facoltativa usa il riconoscimento locale del browser, quando disponibile per

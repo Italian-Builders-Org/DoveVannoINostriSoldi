@@ -2,6 +2,11 @@ import type { AiAttachment } from "./attachment-contracts";
 
 /** Shared UI contract: no credentials, model results or provider state are persisted. */
 export const AI_PROVIDERS = {
+  regolo: {
+    label: "Regolo", defaultModel: "glm5.2",
+    models: ["glm5.2"],
+    keysUrl: "https://dashboard.regolo.ai", privacyUrl: "https://regolo.ai/privacy-policy/",
+  },
   openrouter: {
     label: "OpenRouter", defaultModel: "openai/gpt-5.6-luna",
     models: ["openai/gpt-5.6-luna", "openai/gpt-4.1-mini", "openai/gpt-5-mini", "anthropic/claude-haiku-4.5"],

@@ -57,5 +57,8 @@ __pycache__/
 # Vercel CLI local link
 .vercel
 
+# Supabase CLI local metadata
+/supabase/.temp/
+
 # Local ETL caches (ANAC ZIPs, etc.)
 .cache/

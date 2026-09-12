@@ -1,8 +1,10 @@
 # Chat AI sui dati pubblici
 
-`/assistente` è una chat con chiave personale OpenRouter, OpenAI o Anthropic.
-Ogni domanda passa dall’AI; senza collegamento, l’invio apre le impostazioni e conserva
-la bozza. La pagina non usa risposte deterministiche o un conto API DVNS.
+`/assistente` offre dieci domande gratuite al giorno con Regolo `glm5.2`, senza account,
+quando il servizio gratuito è configurato. Il primo invio richiede il consenso al
+trattamento della domanda e del contesto. Esaurita la quota, si può continuare la
+conversazione con una chiave personale Regolo, OpenRouter, OpenAI o Anthropic.
+Se il servizio gratuito non è disponibile, l’invio apre il pannello della chiave e conserva la bozza.
 `/assistente/anteprima` reindirizza permanentemente alla pagina pubblica.
 
 ## Interazione e contesto
@@ -16,14 +18,12 @@ I link alle fonti vengono dal catalogo server.
 Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
 La copia della risposta comprende i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
-richiede un invio esplicito e può essere annullata. Rigenerare comporta nuove chiamate
-a pagamento, come una nuova domanda.
+richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.
 
 Il client conserva i messaggi solo nella memoria della pagina: massimo 12 domande;
 per il contesto invia fino a 6 messaggi precedenti, entro 16.000 caratteri complessivi.
 Risposte interrotte o fallite non entrano nella cronologia inviata al modello.
-“Nuova chat” svuota la conversazione e mantiene la chiave. Salvare un nuovo collegamento
-o scollegarlo avvia una nuova conversazione. Nessun archivio server, analytics o logging
+“Nuova chat” svuota la conversazione e mantiene la chiave. Salvare un nuovo collegamento conserva la conversazione: il consenso autorizza l’invio del contesto al provider scelto. Scollegarlo avvia una nuova conversazione. Nessun archivio server, analytics o logging
 delle domande. La finestra di contesto evita chiamate aggiuntive di riassunto a pagamento.
 
 Lo scorrimento segue la generazione finché l’utente resta vicino al fondo. Se legge
@@ -81,7 +81,7 @@ OpenAI usa Responses con `store: false`, che non equivale a Zero Data Retention.
 Anthropic usa Messages. OpenRouter usa Chat Completions con `data_collection: deny`
 e `allow_fallbacks: false`. Il modello predefinito OpenRouter è `openai/gpt-5.6-luna`;
 il campo resta modificabile. Servono modelli che supportano chiamate agli strumenti.
-Nessuna chiave da environment, endpoint arbitrario, redirect, retry automatico o
+Nel percorso personale non si usano chiavi da environment. Nessun endpoint arbitrario, redirect, retry automatico o
 fallback su altri conti/provider.
 
 ## Dati e costi
@@ -104,6 +104,17 @@ contabili e dichiara l’esclusione di classifiche, distribuzioni e normalizzazi
 geografica. Con filtro regionale, `totalPaid` resta nazionale e il valore regionale
 è in `regions`: il contesto lo dichiara esplicitamente.
 
+`monetary-evidence.ts` converte gli interi in centesimi degli adapter MEF, SSN e
+COFOG in stringhe decimali esatte in euro, senza arrotondamento floating-point.
+I campi diventano `amountEuros`, `knownAmountEuros` o `valuesEuros`; anche le unità
+del payload e gli scarti monetari di riconciliazione sono riallineati. La quota di
+PIL Eurostat è espressa come `shareOfGdpPercent`. I valori SSN marcati mancanti
+diventano `null`, conservando il flag originale: non sono zeri osservati.
+La proiezione non modifica gli snapshot né i contratti pubblici MCP. I test
+riconciliano i valori con gli adapter reali, preservano fonti, flag e perimetri e
+controllano il budget di un confronto SSN/COFOG. Questa preparazione riduce gli
+errori di scala; non certifica la correttezza di ogni risposta generata.
+
 Limiti per domanda: massimo due chiamate AI, due query, 5 righe dove è supportato `limit`,
 offset 100, nessun cursore, evidenza entro 24.000 caratteri e risposta entro 2.048 token /
 8.000 caratteri. Se l’evidenza è troppo grande, la ricerca chiede di restringere il campo,
@@ -119,17 +130,28 @@ memoria: 20 richieste/minuto per IP, 10 per hash della chiave, 4 concorrenti per
 Non sono limiti distribuiti; l’hosting/edge resta una protezione operativa separata.
 
 `Accept: text/event-stream` abilita il protocollo DVNS (`activity`, `delta`, `done`, `error`).
-Il server decodifica SSE dai tre provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
+Il server decodifica SSE dai quattro provider, gestisce UTF-8 spezzato, heartbeat, terminazioni,
 errori, budget e cancellazione. Nessun evento di ragionamento, header, testo di errore
 upstream o credenziale viene riversato nel client. Risposte parziali non vengono marcate
 come complete; il pulsante stop abortisce la richiesta e non annulla costi già maturati.
 Il parser richiede una terminazione valida e applica un budget anche ai byte ricevuti.
 
-Il system prompt privilegia i dati DVNS, distingue misure e periodi, vieta cifre inventate,
-accuse e l’esecuzione di istruzioni dentro domanda, cronologia o fonti. Un controllo
-blocca alcuni tentativi espliciti di cambiare istruzioni. Non è una garanzia contro
-jailbreak o allucinazioni: i vincoli effettivi sono egress fisso, schema validato,
-adapter read-only, output escapato e budget. Non ci sono segreti nel contesto del modello.
+Il system prompt condiviso è in `src/lib/assistant/system-prompt.ts`: definisce DVNS
+come progetto civico open source e indipendente, l'ambito dell'assistente e il tono
+semplice e neutrale. Impone fedeltà a unità e perimetri, distinzione tra osservazioni,
+calcoli e interpretazioni, chiarimenti mirati, protezione di dati riservati e celle
+oscurate. Il testo resta compatto e chiede risposte entro 350 parole, con soli limiti
+pertinenti. Domande sul progetto possono ricevere una spiegazione nella prima chiamata,
+senza query o fonti che facciano credere a una consultazione mai avvenuta.
+
+Pianificazione e risposta usano la stessa policy nei canali di sistema dei quattro
+provider; cronologia, allegati ed evidenze restano contenuti non fidati nel canale
+conversazionale. `tests/assistant-system-prompt.test.mjs` verifica questo confine
+nei payload e il percorso senza dataset. Un controllo blocca alcuni tentativi
+espliciti di cambiare istruzioni. Questi controlli non certificano il comportamento
+del modello contro ogni jailbreak o allucinazione: i vincoli effettivi restano egress
+fisso, schema validato, adapter read-only, output escapato e budget. Le credenziali di
+trasporto non entrano nel contesto del modello.
 
 BYOK non costituisce un’esenzione generale dal GDPR o dall’AI Act; ruoli e obblighi
 vanno valutati sul servizio concreto. Informativa e pannello dichiarano il transito dei dati.
@@ -191,3 +213,87 @@ Gli adapter pubblici/MCP restano invariati. La proiezione mantiene copertura,
 frequenze, celle parziali, periodo e provenance, evitando che il modello legga
 un importo in centesimi come euro. Il piano distingue inoltre i totali IRPEF
 territoriali dalle tabelle di dettaglio prive di filtro per singola regione.
+
+
+## Regolo e quota gratuita
+
+La modalità `free` accetta esclusivamente `regolo` / `glm5.2`, senza header Authorization
+né opzioni di ragionamento dal client. La chiave condivisa viene letta esclusivamente
+nel modulo `server-only` `free-quota.ts`. Il percorso personale non ripiega mai sulla
+chiave condivisa. Regolo usa Chat Completions, uno strumento nominato per il piano e
+SSE per la risposta; `reasoning_effort: none` evita di consumare il budget della chat
+in ragionamento privato. GLM 5.2 non supporta immagini: il server le rifiuta prima della
+prenotazione. I documenti con testo estratto sono supportati.
+
+Una domanda accettata riserva un credito prima di contattare il modello; può generare
+al massimo due chiamate, senza retry. Errori del provider, interruzioni e rigenerazioni
+non restituiscono il credito: anche una risposta interrotta può aver consumato token.
+Richieste malformate e immagini non supportate non consumano crediti.
+Non è previsto un tetto economico globale. Restano i limiti tecnici di dimensione,
+tempo, frequenza e concorrenza.
+
+`POST /api/assistant/quota` crea un cookie giornaliero firmato, HttpOnly, Secure,
+SameSite=Strict, con prefisso `__Host-` in hosting. Non contiene credenziali o messaggi.
+I contatori sono aggiornati con una transazione PostgreSQL su Supabase, senza fallback in
+memoria: dieci domande per browser **e** rete, una richiesta attiva per entrambi,
+lock con scadenza di 90 secondi e massimo 60 operazioni quota/minuto per rete.
+Un prefiltro in memoria, limitato a 5.000 identificativi HMAC, ferma inoltre oltre
+60 consultazioni/prenotazioni al minuto sulla stessa istanza prima di Supabase.
+Non sostituisce il controllo distribuito e non impedisce traffico da reti diverse.
+Su Vercel si usa esclusivamente l’IP attestato da `x-vercel-forwarded-for`; fuori Vercel
+è disponibile soltanto il percorso locale loopback per sviluppo. IPv6 è normalizzato
+alla rete /64 e gli indirizzi IPv4-mapped condividono il contatore IPv4.
+
+Supabase riceve identificativi HMAC diversi ogni giorno, non IP, cookie originali o
+conversazioni. Il reset è a mezzanotte Europe/Rome, compresi i cambi di ora legale;
+i contatori scadono due minuti dopo il reset e pg_cron li elimina ogni dieci minuti. Anteprime e produzione hanno namespace
+diversi. Gli utenti dietro una stessa rete possono condividere il limite: senza auth
+browser e IP non equivalgono a una persona. Cambiare solo browser, cancellare cookie,
+ricaricare o aprire una nuova chat non azzera il contatore della rete.
+
+Configurare esclusivamente sul server (mai con prefisso `NEXT_PUBLIC_`):
+
+- `REGOLO_API_KEY`: chiave del conto condiviso.
+- `ASSISTANT_QUOTA_SECRET`: segreto casuale di almeno 32 caratteri per le firme HMAC.
+- `ASSISTANT_SUPABASE_URL`: URL HTTPS del progetto dedicato.
+- `ASSISTANT_SUPABASE_SECRET_KEY`: chiave server `sb_secret_...`; mai publishable/anon.
+
+Il database Supabase deve essere dedicato e condiviso dalle istanze del deployment.
+Non riutilizzare database di altri progetti. Se configurazione, identità attestata o
+Supabase non sono disponibili, il percorso gratuito si chiude prima di contattare Regolo;
+le chiavi personali restano utilizzabili. Il sito e i test offline non richiedono segreti.
+Le risposte pubbliche espongono solo disponibilità, domande residue e orario del reset.
+
+Fonti: [Regolo Chat Completions](https://docs.regolo.ai/models/families/completions/),
+[Regolo reasoning](https://docs.regolo.ai/models/features/reasoning/),
+[Supabase database functions](https://supabase.com/docs/guides/database/functions),
+[header Vercel](https://vercel.com/docs/headers/request-headers).
+
+
+### Migrazioni Supabase e costi
+
+Applicare nell'ordine le migrazioni in `supabase/migrations/`: schema/RPC e job di
+pulizia pg_cron. Le tabelle stanno in `assistant_private`, fuori dalla Data API,
+con RLS attiva e nessun grant anon/authenticated. Le due RPC pubbliche sono
+`SECURITY INVOKER`, con `search_path` vuoto ed EXECUTE riservato a `service_role`.
+Nessuna connessione database rimane aperta mentre il modello risponde.
+
+Il database verifica anche il giorno Europe/Rome e limita a dieci gli invii senza
+fidarsi del numero trasmesso dal client. Acquisisce sempre prima la riga rete e poi
+quella browser; la pulizia segue l'indice `expires_at`. La cronologia e le chiavi API
+personali restano nella memoria della pagina. Non vengono attivati Auth, Storage,
+Realtime, Edge Functions, repliche, backup a pagamento o branch Supabase.
+
+Il piano Free verificato il 12 settembre 2026 include 500 MB database e 5 GB egress,
+con massimo due progetti attivi per account. Può sospendere il progetto dopo sette
+giorni di inattività: il sito mostra gratuito non disponibile e consente BYOK.
+Nessun keepalive artificiale e nessun upgrade automatico. La sospensione o un errore
+del job possono ritardare la pulizia: controllare `cron.job_run_details` e gli advisor.
+Non promettere capacità illimitata: misurare `pg_total_relation_size` e traffico nella
+dashboard, conservando soltanto le righe giornaliere. [Listino](https://supabase.com/pricing).
+
+Verifica PostgreSQL locale (server temporaneo dedicato, senza costi remoti):
+`DVNS_POSTGRES_BIN=/percorso/bin node --experimental-strip-types --test tests/live/assistant-quota-postgres.test.mjs`.
+Il test crea un database vuoto, applica la prima migrazione e verifica realmente
+concorrenza, confini quota e permessi. La schedulazione pg_cron si verifica nel
+progetto Supabase dopo la seconda migrazione, separatamente dal test locale.

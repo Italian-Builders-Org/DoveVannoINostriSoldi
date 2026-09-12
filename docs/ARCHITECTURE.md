@@ -47,8 +47,8 @@ senza dipendere dal lettore del corpus integrato.
 `src/lib/mcp/catalog.ts` descrive i dataset; `datasets.ts` li collega alle
 funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
 `OPTIONS /mcp` sono alias supportati; `GET /mcp` resta la pagina informativa.
-La chat in `src/lib/assistant/` usa AI per ogni domanda. La route `/api/assistant/chat` usa la chiave personale ricevuta nella singola richiesta
-per OpenAI, Anthropic o OpenRouter. Il modello propone al massimo due query, validate
+La chat in `src/lib/assistant/` usa AI per ogni domanda. La route `/api/assistant/chat` usa la quota gratuita Regolo oppure la chiave personale ricevuta nella singola richiesta
+per Regolo, OpenAI, Anthropic o OpenRouter. Il modello propone al massimo due query, validate
 con lo stesso schema MCP e il catalogo prima di chiamare `queryPublicDataset`.
 La risposta viene trasmessa in streaming SSE. Le fonti sono aggiunte dall'applicazione; testo, chiave e conversazione non sono
 persistiti. Dettagli e limiti: `docs/ASSISTENTE.md`.
@@ -72,7 +72,8 @@ La regola generale è [Git per gli artifact del prodotto](architecture/ADR-001-g
 Per OpenCUP è proposta una
 [eccezione su Cloudflare R2](architecture/ADR-002-opencup-object-storage.md),
 ancora inattiva finché provisioning e ripristino non saranno verificati.
-PostgreSQL non è una dipendenza presente.
+Supabase PostgreSQL conserva soltanto i contatori della quota gratuita dell’assistente;
+non serve per leggere gli snapshot, usare BYOK o avviare il sito locale.
 Le credenziali dei refresh e dell'App GitHub per le segnalazioni sono soltanto
 server-side; l'avvio locale non le richiede.
 
@@ -90,3 +91,11 @@ loro CPV e dalla geografia ISTAT SITUAS già verificati. Il loader e selettore
 Il corpus integrato non cambia: l’indice non aggiunge righe raw e i valori
 rimandano alle aggiudicazioni esistenti. Metodo, denominatori e comandi sono
 in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).
+
+### Quota gratuita dell’assistente
+
+Il client legge `/api/assistant/quota` e invia richieste esplicite `mode: free` a
+`/api/assistant/chat`. `free-quota.ts` (server-only) valida cookie firmato e IP Vercel,
+prenota atomicamente un credito tramite RPC PostgreSQL su Supabase e fornisce la chiave Regolo soltanto al
+client HTTP del server. Il catalogo/query/evidence e il protocollo SSE sono condivisi
+con BYOK. Configurazione e limiti: `docs/ASSISTENTE.md`.

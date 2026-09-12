@@ -10,12 +10,12 @@ const messages = [{role:'user',content:'Quali dati economici puoi cercare?'}];
 const signal = () => new AbortController().signal;
 const textResponse = text => Response.json({ status:'completed',output: text.startsWith('{') ? [{type:'function_call',name:'query_dvns',arguments:text}] : [{type:'reasoning',summary:[]},{type:'message',content:[{type:'output_text',text}]}] });
 
-for (const provider of ['openai','anthropic','openrouter']) {
+for (const provider of ['openai','anthropic','openrouter','regolo']) {
   test(`BYOK ${provider} uses fixed egress, private headers and bounded non-persistent calls`, async()=>{
     let calls=0;
-    const result=await completeProviderText({...connection,provider},'System instructions',messages,{signal:signal(),json:true,fetcher:async(url,init)=>{
+    const result=await completeProviderText({...connection,provider,model:provider==='regolo'?'glm5.2':connection.model},'System instructions',messages,{signal:signal(),json:true,fetcher:async(url,init)=>{
       calls++;
-      assert.equal(new URL(url).origin,{openai:'https://api.openai.com',anthropic:'https://api.anthropic.com',openrouter:'https://openrouter.ai'}[provider]);
+      assert.equal(new URL(url).origin,{openai:'https://api.openai.com',anthropic:'https://api.anthropic.com',openrouter:'https://openrouter.ai',regolo:'https://api.regolo.ai'}[provider]);
       assert.equal(init.redirect,'error'); assert.equal(init.cache,'no-store'); assert.equal(init.credentials,'omit');
       const body=JSON.parse(init.body);
       assert.ok(body.max_tokens===2048 || body.max_output_tokens===2048);
@@ -23,7 +23,7 @@ for (const provider of ['openai','anthropic','openrouter']) {
       assert.equal(body.stream,false);
       if(provider==='openai') {assert.equal(body.store,false);assert.equal(init.headers.Authorization,`Bearer ${connection.apiKey}`); return textResponse('Risposta');}
       if(provider==='anthropic') {assert.equal(init.headers['x-api-key'],connection.apiKey);assert.equal(init.headers['anthropic-version'],'2023-06-01');return Response.json({stop_reason:'end_turn',content:[{type:'text',text:'Risposta'}]});}
-      assert.deepEqual(body.provider,{data_collection:'deny',allow_fallbacks:false});
+      if(provider==='openrouter')assert.deepEqual(body.provider,{data_collection:'deny',allow_fallbacks:false});else{assert.equal(body.provider,undefined);assert.equal(body.reasoning_effort,'none');}
       return Response.json({choices:[{finish_reason:'stop',message:{content:'Risposta'}}]});
     }});
     assert.equal(result,'Risposta'); assert.equal(calls,1);
@@ -144,11 +144,11 @@ test('BYOK planner receives all registered datasets within a compact metadata bu
   assert.equal(calls,1);
 });
 
-for(const provider of ['openai','anthropic','openrouter']) {
+for(const provider of ['openai','anthropic','openrouter','regolo']) {
   test(`BYOK ${provider} uses one named native tool with the canonical schema`,async()=>{
     const args=JSON.stringify({queries:[],clarification:'Indica un anno.'});
     const schema={type:'object',properties:{queries:{type:'array',items:{type:'object'}}},required:['queries'],additionalProperties:false};
-    const result=await completeProviderText({...connection,provider},'System',messages,{signal:signal(),toolSchema:schema,fetcher:async(url,init)=>{
+    const result=await completeProviderText({...connection,provider,model:provider==='regolo'?'glm5.2':connection.model},'System',messages,{signal:signal(),toolSchema:schema,fetcher:async(url,init)=>{
       const body=JSON.parse(init.body);
       assert.equal(body.tools.length,1);assert.equal(body.stream,false);
       if(provider==='anthropic') {
@@ -184,4 +184,21 @@ test('MEF chat evidence expresses exact euros while preserving partial cells and
   assert.deepEqual(source,untouched);assert.deepEqual(projected.provenance,source.provenance);assert.deepEqual(projected.period,source.period);
   assert.throws(()=>projectChatEvidence({dataset:'mef_irpef_comunale'},{amountCents:1.5}));
   assert.deepEqual(projectChatEvidence({dataset:'other'},source),source);
+});
+
+test('SIOPE unavailable years use the canonical year list and stop before data or a second model call',async()=>{
+ let calls=0,reads=0;
+ const {availableSiopeYears}=await import('../src/lib/siope-snapshot.ts');
+ const result=await executeByokChat(connection,[{role:'user',content:'Pagamenti nel 2035?'}],{signal:signal(),queryDataset:async()=>{reads++;throw Error('not reached');},fetcher:async()=>{calls++;return textResponse(JSON.stringify({queries:[{dataset:'siope_comuni',year:2035}],clarification:''}));}});
+ assert.equal(calls,1);assert.equal(reads,0);assert.match(result.text,/2035/);for(const year of availableSiopeYears)assert.ok(result.text.includes(String(year)));assert.deepEqual(result.evidence,[]);
+});
+
+test('a two-year comparison keeps both queries but lists identical sources only once',async()=>{
+ let calls=0;const queries=[];
+ const result=await executeByokChat(connection,messages,{signal:signal(),queryDataset:async(q)=>{queries.push(q);return {year:q.year,total:100};},fetcher:async()=>{calls++;return textResponse(calls===1?JSON.stringify({queries:[{dataset:'siope_comuni',year:2024},{dataset:'siope_comuni',year:2025}],clarification:''}):'I dati hanno periodi distinti.');}});
+ assert.equal(calls,2);assert.equal(queries.length,2);assert.equal(result.evidence.length,1);
+});
+
+test('Regolo personal models do not inherit GLM-specific reasoning parameters',async()=>{
+ const result=await completeProviderText({...connection,provider:'regolo',model:'other-account-model'},'System',messages,{signal:signal(),fetcher:async(url,init)=>{assert.equal(JSON.parse(init.body).reasoning_effort,undefined);return Response.json({choices:[{finish_reason:'stop',message:{content:'Testo'}}]});}});assert.equal(result,'Testo');
 });

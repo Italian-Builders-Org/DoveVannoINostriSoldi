@@ -3,6 +3,7 @@ import { AI_MAX_OUTPUT_TOKENS, AI_MAX_PROVIDER_RESPONSE_BYTES, AI_MAX_TEXT_CHARS
 
 // Fixed destinations only. The public route never accepts an endpoint or request headers.
 const ENDPOINTS = {
+  regolo: "https://api.regolo.ai/v1/chat/completions",
   openai: "https://api.openai.com/v1/responses",
   anthropic: "https://api.anthropic.com/v1/messages",
   openrouter: "https://openrouter.ai/api/v1/chat/completions",
@@ -94,11 +95,12 @@ export async function completeProviderText(
       };
     } else {
       body = { model, messages: [{ role: "system", content: system }, ...inputMessages], max_tokens: AI_MAX_OUTPUT_TOKENS, stream: false,
-        provider: { data_collection: "deny", allow_fallbacks: false },
+        ...(provider === "openrouter" ? { provider: { data_collection: "deny", allow_fallbacks: false } } : {}),
         ...(options.json ? { response_format: { type: "json_object" } } : {}),
       };
     }
   }
+  if (provider === "regolo" && model === "glm5.2") body.reasoning_effort = "none";
   if (options.reasoning && provider === "openrouter" && model === "openai/gpt-5.6-luna") body.reasoning = { effort: options.reasoning, exclude: true };
   if (options.toolSchema) {
     const parameters = { ...options.toolSchema };

@@ -1,8 +1,9 @@
 import {
-  getPublishedStateConsuntivoYears,
+  getPublishedStateConsuntivi,
   getStateSpendingTotalsForYears,
   STATE_SPENDING_HISTORY_MAX_CONCURRENCY,
   type StateAnnualSpendingTotal,
+  type ConsuntivoBdapDataset,
 } from "@/lib/bdap-payments";
 
 /**
@@ -120,10 +121,10 @@ export const LEGISLATURE_SPENDING_DEADLINE_MS = 50_000;
 
 type TotalsLoader = (
   years: readonly number[],
-  options: { signal?: AbortSignal; concurrency?: number },
+  options: { signal?: AbortSignal; concurrency?: number; datasets: readonly ConsuntivoBdapDataset[] },
 ) => Promise<Map<number, StateAnnualSpendingTotal>>;
 
-type PublishedYearsLoader = (options: { signal?: AbortSignal }) => Promise<number[]>;
+type ConsuntiviLoader = (options: { signal?: AbortSignal }) => Promise<ConsuntivoBdapDataset[]>;
 
 function abortReason(signal: AbortSignal): unknown {
   return signal.reason ?? new Error("Operazione OpenBDAP annullata");
@@ -165,7 +166,7 @@ export async function getLegislatureSpendingCycles(
     signal?: AbortSignal;
     deadlineMs?: number;
     /** Deterministic test seam; production reads the live OpenBDAP catalog. */
-    loadPublishedYears?: PublishedYearsLoader;
+    loadConsuntivi?: ConsuntiviLoader;
     /** Deterministic test seam; production uses the OpenBDAP batch reader. */
     loadTotals?: TotalsLoader;
   } = {},
@@ -184,13 +185,13 @@ export async function getLegislatureSpendingCycles(
     : deadlineController.signal;
 
   try {
-    const publishedYears = await withAbort(
+    const datasets = await withAbort(
       Promise.resolve().then(() =>
-        (options.loadPublishedYears ?? getPublishedStateConsuntivoYears)({ signal }),
+        (options.loadConsuntivi ?? getPublishedStateConsuntivi)({ signal }),
       ),
       signal,
     );
-    const latestObservedYear = publishedYears.length > 0 ? Math.max(...publishedYears) : null;
+    const latestObservedYear = datasets.length > 0 ? Math.max(...datasets.map((dataset) => dataset.referenceYear)) : null;
     const plans = LEGISLATURES.map((legislature, index) => {
       const next = LEGISLATURES[index + 1];
       const nextElectionYear = next ? Number(next.electionDate.slice(0, 4)) : null;
@@ -204,12 +205,16 @@ export async function getLegislatureSpendingCycles(
         ).filter((year) => year >= MIN_CONSUNTIVO_YEAR),
       };
     });
+    // Keep the complete interval for the current legislature too: if the catalog
+    // contains 2023 and 2025 but not 2024, the batch reader reports the missing
+    // release before any CSV download rather than silently shortening the series.
     const allYears = plans.flatMap((plan) => plan.candidateYears);
     const totals = await withAbort(
       Promise.resolve().then(() =>
         (options.loadTotals ?? getStateSpendingTotalsForYears)(allYears, {
           signal,
           concurrency: STATE_SPENDING_HISTORY_MAX_CONCURRENCY,
+          datasets,
         }),
       ),
       signal,

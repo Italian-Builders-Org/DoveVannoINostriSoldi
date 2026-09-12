@@ -469,24 +469,23 @@ export async function getStatePaymentDatasetForYear(
 export const STATE_SPENDING_HISTORY_MAX_CONCURRENCY = 3;
 
 /**
- * Calendar years with a published annual mission consuntivo in the live OpenBDAP
- * catalog, ascending. The catalog is the only place that knows which years exist:
+ * Published annual mission consuntivi from one live OpenBDAP discovery. Reuse
+ * these descriptors for both year selection and totals, preserving provenance.
+ * The catalog is the only place that knows which years exist:
  * the consuntivo for a year is published during the following one, so a caller that
  * bounds an open-ended range (a legislature still in progress) must read this instead
  * of deriving the last year from the current date.
  */
-export async function getPublishedStateConsuntivoYears(
+export async function getPublishedStateConsuntivi(
   options: { signal?: AbortSignal } = {},
-): Promise<number[]> {
+): Promise<ConsuntivoBdapDataset[]> {
   const datasets = await searchProduct(
     consuntivoProductCode("mission"),
     "mission",
     "consuntivo",
     options.signal,
   );
-  const years = new Set<number>();
-  for (const dataset of datasets) years.add(dataset.referenceYear);
-  return [...years].sort((left, right) => left - right);
+  return datasets.filter((dataset): dataset is ConsuntivoBdapDataset => dataset.releaseKind === "consuntivo");
 }
 
 export type StateAnnualSpendingTotal = {
@@ -503,7 +502,7 @@ export type StateAnnualSpendingTotal = {
  */
 export async function getStateSpendingTotalsForYears(
   years: readonly number[],
-  options: { signal?: AbortSignal; concurrency?: number } = {},
+  options: { signal?: AbortSignal; concurrency?: number; datasets?: readonly ConsuntivoBdapDataset[] } = {},
 ): Promise<Map<number, StateAnnualSpendingTotal>> {
   const requestedYears = [...new Set(years)];
   for (const year of requestedYears) {
@@ -513,12 +512,7 @@ export async function getStateSpendingTotalsForYears(
   }
   if (requestedYears.length === 0) return new Map();
 
-  const datasets = await searchProduct(
-    consuntivoProductCode("mission"),
-    "mission",
-    "consuntivo",
-    options.signal,
-  );
+  const datasets = options.datasets ?? await getPublishedStateConsuntivi(options);
   const requested = new Set(requestedYears);
   const byYear = new Map<number, ConsuntivoBdapDataset>();
   for (const dataset of datasets) {

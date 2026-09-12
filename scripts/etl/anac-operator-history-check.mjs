@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, statSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import {
@@ -39,10 +39,26 @@ assert.equal(
 function checkedFile(file, suffix, maxBytes) {
   const path = join(directory, file.id + suffix);
   assert.ok(file.bytes <= maxBytes, `File exceeds the read budget: ${path}`);
-  assert.equal(statSync(path).size, file.bytes);
-  const bytes = readFileSync(path);
-  assert.equal(digest(bytes), file.sha256, path);
-  return bytes;
+  const fd = openSync(path, "r");
+  try {
+    const before = fstatSync(fd);
+    assert.ok(before.isFile(), path);
+    assert.equal(before.size, file.bytes, path);
+    const bytes = Buffer.alloc(file.bytes);
+    let offset = 0;
+    while (offset < bytes.length) {
+      const received = readSync(fd, bytes, offset, bytes.length - offset, offset);
+      assert.ok(received > 0, `Incomplete read: ${path}`);
+      offset += received;
+    }
+    const after = fstatSync(fd);
+    assert.equal(after.size, before.size, path);
+    assert.equal(after.mtimeMs, before.mtimeMs, path);
+    assert.equal(digest(bytes), file.sha256, path);
+    return bytes;
+  } finally {
+    closeSync(fd);
+  }
 }
 
 const refs = new Set();

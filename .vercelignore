@@ -20,6 +20,8 @@ outputs
 .freebuff
 AGENTS.md
 *.tsbuildinfo
+next-env.d.ts
+supabase/.temp
 **/__pycache__
 **/*.pyc
 docs/research/PROJECT_AND_PRIORITIES_2026-08-24.md

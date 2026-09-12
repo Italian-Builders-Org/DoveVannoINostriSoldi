@@ -215,6 +215,9 @@ SameSite=Strict, con prefisso `__Host-` in hosting. Non contiene credenziali o m
 I contatori sono aggiornati con una transazione PostgreSQL su Supabase, senza fallback in
 memoria: dieci domande per browser **e** rete, una richiesta attiva per entrambi,
 lock con scadenza di 90 secondi e massimo 60 operazioni quota/minuto per rete.
+Un prefiltro in memoria, limitato a 5.000 identificativi HMAC, ferma inoltre oltre
+60 consultazioni/prenotazioni al minuto sulla stessa istanza prima di Supabase.
+Non sostituisce il controllo distribuito e non impedisce traffico da reti diverse.
 Su Vercel si usa esclusivamente l’IP attestato da `x-vercel-forwarded-for`; fuori Vercel
 è disponibile soltanto il percorso locale loopback per sviluppo. IPv6 è normalizzato
 alla rete /64 e gli indirizzi IPv4-mapped condividono il contatore IPv4.

@@ -118,3 +118,22 @@ test('Supabase configuration accepts only project HTTPS URLs and server secret k
  for(const key of ['sb_publishable_test_key','legacy-jwt','']){env(t,'ASSISTANT_SUPABASE_SECRET_KEY',key);await assert.rejects(freeQuota(request()),{code:'free_unavailable'});}
  assert.equal(calls,0);
 });
+
+test('warm-instance burst protection bounds database calls and expires without granting credit', async (t) => {
+ config(t);
+ let databaseCalls = 0;
+ t.mock.method(globalThis, 'fetch', async () => {
+  databaseCalls++;
+  return Response.json([1, 10]);
+ });
+ const ip = '192.0.2.201';
+ for (let i = 0; i < 60; i++) {
+  const result = await freeQuota(request('', undefined, ip), false, fixed);
+  assert.equal(result.quota.remaining, 0);
+ }
+ await assert.rejects(freeQuota(request('', undefined, ip), false, fixed), { code: 'free_busy' });
+ assert.equal(databaseCalls, 60);
+ const refreshed = await freeQuota(request('', undefined, ip), false, fixed + 60_000);
+ assert.equal(refreshed.quota.remaining, 0);
+ assert.equal(databaseCalls, 61);
+});

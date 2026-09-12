@@ -4,6 +4,11 @@ import { isIP } from "node:net";
 import { isLoopbackHost } from "@/lib/http/public-post-guard";
 import { AI_KEY_PATTERN } from "@/lib/assistant/byok-contracts";
 import { FREE_DAILY_QUESTIONS, type FreeQuota } from "@/lib/assistant/free-contracts";
+import { SlidingWindowLimiter } from "@/lib/report/rate-limit";
+
+// A bounded warm-instance prefilter saves database traffic. PostgreSQL remains
+// authoritative across instances; dropping an in-memory entry never grants credit.
+const databaseRequests = new SlidingWindowLimiter({ windowMs: 60_000, max: 60 });
 
 const dayFormat = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" });
 const offsetFormat = new Intl.DateTimeFormat("en", { timeZone: "Europe/Rome", timeZoneName: "longOffset" });
@@ -100,6 +105,9 @@ async function command(config: ReturnType<typeof configuration>, operation: "ass
 export async function freeQuota(request: Request, reserve = false, now = Date.now()) {
   const config = configuration();
   const owner = identity(request, config.secret, !reserve, now);
+  if (!databaseRequests.consume(`${owner.scope}:${owner.ip}`, now)) {
+    throw new FreeQuotaError("free_busy");
+  }
   const lease = randomBytes(16).toString("hex");
   const parameters = { p_scope: owner.scope, p_day: owner.day, p_browser: owner.browser, p_network: owner.ip, p_lease: lease };
   const result = await command(config, "assistant_quota", { ...parameters, p_reserve: reserve }, request.signal);

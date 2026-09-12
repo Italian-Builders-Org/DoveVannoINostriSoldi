@@ -78,6 +78,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["periodo", "geo", "coicop18", "unità"],
   },
   {
+    slug: "eurostat-gdp",
+    name: "Eurostat · PIL e conti nazionali",
+    owner: "Eurostat",
+    area: "Prodotto interno lordo SEC 2010",
+    cadence: "Trimestrale e annuale",
+    coverage:
+      "Italia trimestrale 2015-Q1/2026-Q2: livelli nominali/reali, crescita e quote domanda; annuale 2015-2025; confronto IT/FR/DE/ES sulla crescita reale a/a",
+    format: "Statistics API · JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+    note: "Conti nazionali di competenza, non cassa SIOPE né stanziamenti. Livelli, variazioni e quote sul PIL restano nature distinte; nessuna attribuzione automatica al governo in carica.",
+    joinKeys: ["periodo", "geo", "na_item", "unità", "s_adj"],
+  },
+  {
     slug: "oecd-taxing-wages",
     name: "OECD · Taxing Wages (cuneo fiscale)",
     owner: "OECD",

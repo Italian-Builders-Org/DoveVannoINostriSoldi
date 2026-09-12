@@ -132,5 +132,6 @@ Lavoro dati già in corso, da non dimenticare quando si sceglie una verticale:
   sfogliabile in `/opere?vista=elenco`; manca ancora il corpus completo e il join
   geografico per CUP);
 - popolazione comunale ISTAT per denominatori annuali;
-- spesa statale regionalizzata RGS e bilanci regionali Istat, fasi esplicite;
+- spesa statale regionalizzata RGS;
+- [#453](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/453): i consuntivi regionali Istat 2024 sono pubblicati con fasi esplicite; i bilanci armonizzati BDAP restano catalogati senza valori finché licenza di riuso e schema del bulk ZIP non sono verificati;
 - indicatori automatici (concentrazione, soglie, proroghe) solo con test sui falsi positivi.

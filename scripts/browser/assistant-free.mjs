@@ -31,6 +31,9 @@ try{
   await page.waitForFunction(()=>document.querySelector('[data-free-quota]').textContent.includes('esaurite'));
   await page.type('#assistant-prompt','Continua con la mia chiave');await page.keyboard.press('Enter');await page.waitForSelector('#assistant-provider');assert.equal(requests.length,2);
   await page.select('#assistant-provider','regolo');assert.equal(await page.$eval('#assistant-model',e=>e.value),'glm5.2');await page.type('#assistant-api-key','test-only-regolo-personal-key');await page.click('dialog input[type="checkbox"]');await page.click('button[type="submit"]::-p-text(Usa in questa scheda)');
+  // Closing settings restores focus in requestAnimationFrame. Wait for that
+  // accessibility transition before focusing the composer, or Enter can reopen settings.
+  await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')?.startsWith('Impostazioni AI:'));
   assert.equal(await page.$$eval('[data-assistant-reply]',es=>es.length),2,'key handoff retains conversation');
   await page.focus('#assistant-prompt');await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelectorAll('button[aria-label="Copia risposta"]').length===3);
   assert.equal(requests[2].headers.authorization,'Bearer test-only-regolo-personal-key');assert.equal(requests[2].body.messages.length,5);assert.ok(!JSON.stringify(requests[2].body).includes('test-only-regolo-personal-key'));

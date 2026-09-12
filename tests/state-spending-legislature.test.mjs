@@ -90,7 +90,7 @@ test("fullYearsWithinLegislature returns exactly one year for a two-calendar-yea
 test("legislature cycles load all annual totals in one bounded batch", async () => {
   const requestedYears = [];
   const cycles = await getLegislatureSpendingCycles({
-    loadPublishedYears: async () => [2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024, 2025],
+    loadConsuntivi: async () => [...totalsFor([2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024, 2025]).values()].map((item) => item.source),
     loadTotals: async (years, options) => {
       requestedYears.push(years);
       assert.equal(options.concurrency, 3);
@@ -114,7 +114,7 @@ test("a legislature still in progress exposes its published years without a pre-
   const cycles = await getLegislatureSpendingCycles({
     // The annual consuntivo of the newest year is published during the following year, so the
     // last observed year is not simply the year before the current date.
-    loadPublishedYears: async () => [2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024],
+    loadConsuntivi: async () => [...totalsFor([2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024]).values()].map((item) => item.source),
     loadTotals: async (years) => totalsFor(years),
   });
   const nineteenth = cycles.find((cycle) => cycle.legislature.number === "XIX");
@@ -129,7 +129,7 @@ test("a legislature still in progress exposes its published years without a pre-
 test("a legislature still in progress stays empty until its first annual consuntivo is published", async () => {
   const requestedYears = [];
   const cycles = await getLegislatureSpendingCycles({
-    loadPublishedYears: async () => [],
+    loadConsuntivi: async () => [...totalsFor([]).values()].map((item) => item.source),
     loadTotals: async (years) => {
       requestedYears.push(years);
       return totalsFor(years);
@@ -146,7 +146,7 @@ test("a legislature still in progress stays empty until its first annual consunt
 test("a closed legislature still reports a missing annual total as an error", async () => {
   await assert.rejects(
     getLegislatureSpendingCycles({
-      loadPublishedYears: async () => [2014, 2015, 2016, 2017, 2019, 2020, 2021, 2025],
+      loadConsuntivi: async () => [...totalsFor([2014, 2015, 2016, 2017, 2019, 2020, 2021, 2025]).values()].map((item) => item.source),
       loadTotals: async (years) => {
         const totals = totalsFor(years);
         totals.delete(2016);
@@ -162,7 +162,7 @@ test("legislature cycles enforce one global deadline even if a loader ignores ab
   await assert.rejects(
     getLegislatureSpendingCycles({
       deadlineMs: 20,
-      loadPublishedYears: async () => [2014, 2015, 2016, 2017, 2019, 2020, 2021, 2025],
+      loadConsuntivi: async () => [...totalsFor([2014, 2015, 2016, 2017, 2019, 2020, 2021, 2025]).values()].map((item) => item.source),
       loadTotals: async (_years, options) => {
         loaderSignal = options.signal;
         return new Promise(() => {});
@@ -178,4 +178,55 @@ test("openbdap_spesa_legislature MCP dataset rejects any filter offline", async 
     queryPublicDataset({ dataset: "openbdap_spesa_legislature", year: 2024 }),
     /Filtri non supportati/,
   );
+});
+
+test('current legislature keeps a missing intermediate release as an explicit error', async (t) => {
+  let networkCalls = 0;
+  t.mock.method(globalThis, 'fetch', async () => { networkCalls++; throw Error('Unexpected download'); });
+  await assert.rejects(getLegislatureSpendingCycles({
+    loadConsuntivi: async () => [...totalsFor([2014,2015,2016,2017,2019,2020,2021,2023,2025]).values()].map(item => item.source),
+  }), /2024/);
+  assert.equal(networkCalls, 0, 'detect the catalog gap before downloading any annual data');
+});
+
+test('default legislature reader performs one catalog discovery for years and totals', async (t) => {
+  const years = [2014,2015,2016,2017,2019,2020,2021,2023,2024,2025];
+  let discoveries = 0;
+  const downloads = [];
+  t.mock.method(globalThis, 'fetch', async (input) => {
+    const url = new URL(String(input));
+    if (url.pathname.endsWith('/package_search')) {
+      discoveries++;
+      const code = url.searchParams.get('q');
+      assert.equal(code, 'PBS_SPE_RND_MISS_001');
+      return Response.json({success:true,result:{results:years.map(year => ({
+        id:`12345678-1234-4abc-8def-${String(year).padStart(12,'0')}`,
+        name:`consuntivo-${year}`,
+        title:`${year} - Pagamenti Bilancio dello Stato per Missione Consuntivo`,
+        notes:`pagamenti Bilancio dello Stato per l'esercizio finanziario di riferimento - [${code}]`,
+        metadata_modified:'2026-09-12T00:00:00.000000',
+      }))}});
+    }
+    const year = Number(url.pathname.match(/(\d{12})\.csv$/)?.[1]);
+    assert.ok(years.includes(year), url.pathname);
+    downloads.push(year);
+    return new Response([
+      'Esercizio finanziario;Codice Missione;Missione;OP Erario;OP Tesoreria;OP Esterno;OA Tesoreria;OA Spesa Funz Deleg;RSF Stipendi;RSF Altro;Note Imputazione;Totale pagato',
+      [year,'001','Missione',year*100,0,0,0,0,0,0,0,year*100].join(';'),
+    ].join('\n'), {headers:{'content-type':'text/csv'}});
+  });
+  const cycles = await getLegislatureSpendingCycles();
+  assert.equal(discoveries, 1);
+  assert.deepEqual(downloads.sort((a,b)=>a-b), years);
+  assert.deepEqual(cycles.at(-1).years.map(row=>row.year), [2023,2024,2025]);
+  assert.equal(cycles.at(-1).preElectionYear, null);
+});
+
+test('reused catalog still rejects duplicate annual releases before downloads', async (t) => {
+  const {getStateSpendingTotalsForYears} = await import('../src/lib/bdap-payments.ts');
+  const source = totalsFor([2025]).get(2025).source;
+  let calls=0;
+  t.mock.method(globalThis,'fetch',async()=>{calls++;throw Error('Unexpected download');});
+  await assert.rejects(getStateSpendingTotalsForYears([2025],{datasets:[source,{...source,packageId:'duplicate'}]}), /più consuntivi/);
+  assert.equal(calls,0);
 });

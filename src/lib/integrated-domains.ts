@@ -15,6 +15,7 @@ export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
   operations: "Spese operative",
   health: "Dotazione sanitaria",
   demography: "Contesto demografico",
+  "social-conditions": "Condizioni sociali",
   education: "Servizi scolastici",
   transparency: "Trasparenza",
   oversight: "Controlli e atti",

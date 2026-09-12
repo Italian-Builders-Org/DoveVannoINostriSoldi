@@ -52,7 +52,7 @@ export function IncomeIndicatorSection({ indicator }: { indicator: IncomeIndicat
                   <th scope="row">{point.incomeYear}</th>
                   <td>{point.surveyYear}</td>
                   <td className="num">{valueLabel(point.value)}</td>
-                  <td>{point.note ?? "—"}</td>
+                  <td>{point.note ?? ""}</td>
                 </tr>
               ))}
             </tbody>

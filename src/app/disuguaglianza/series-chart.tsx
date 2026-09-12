@@ -29,7 +29,7 @@ export function IncomeSeriesChart({
   return (
     <figure className={styles.figure}>
       <svg viewBox="0 0 540 195" role="img" aria-labelledby={`${id}-chart-title ${id}-chart-description`}>
-        <title id={`${id}-chart-title`}>{`${label}, redditi ${firstYear}–${lastYear}`}</title>
+        <title id={`${id}-chart-title`}>{`${label}, redditi dal ${firstYear} al ${lastYear}`}</title>
         <desc id={`${id}-chart-description`}>Serie annuale italiana. Valori esatti nella tabella. Le interruzioni di serie e i dati mancanti interrompono la linea.</desc>
         {[0, ceiling / 2, ceiling].map((value) => (
           <g key={value}>

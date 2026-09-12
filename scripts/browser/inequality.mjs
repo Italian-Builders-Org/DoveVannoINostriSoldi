@@ -13,7 +13,7 @@ export async function inspectInequality(page) {
     await page.waitForSelector(`${selector}[open] tbody tr`, { visible: true });
     const rows = await page.$$eval(`${selector} tbody tr`, (nodes) => nodes.map((row) => [...row.cells].map((cell) => cell.textContent)));
     assert.equal(rows.length, 12);
-    assert.deepEqual(rows.at(-1), ["2024", "2025", key === "gini" ? "31,0" : "5,13", "—"]);
+    assert.deepEqual(rows.at(-1), ["2024", "2025", key === "gini" ? "31,0" : "5,13", ""]);
     await page.focus(`${selector} [role="region"]`);
     assert.equal(await page.$eval(`${selector} [role="region"]`, (node) => node === document.activeElement), true);
   }

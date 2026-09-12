@@ -635,6 +635,18 @@ nullo) rimangono distinti da zero. Catalogo, API e MCP usano le stesse righe;
 non viene aggiunto un indicatore aggregato alle schede Comune. Vedi
 [fonte, caveat e riproduzione](ISTAT_MISURA_COMUNE.md).
 
+### ISTAT · economia non osservata
+
+Il corpus integra le Tavole 1 e 3 del workbook ISTAT pubblicato il 17 ottobre
+2025: 104 righe di componenti nazionali e 624 righe di incidenza dell'economia
+sommersa per branca, entrambe dal 2011 al 2023. Valori, unità e denominatori
+restano distinti; le celle decimali sono conservate senza arrotondamento.
+
+Sono stime di contabilità nazionale, non evasione accertata o risultati dei
+controlli. Le branche sono aggregati nazionali: non vengono inventati territori
+né incroci territorio per settore. Catalogo, API e MCP interrogano gli stessi
+dataset integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
+
 ### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08
 
 Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.

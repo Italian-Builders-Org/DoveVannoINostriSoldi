@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/387",
+  "source": {
+    "holder": "Istituto nazionale di statistica (ISTAT)",
+    "url": "https://www.istat.it/wp-content/uploads/2025/10/Tavole-Economia-non-osservata_2025.xlsx",
+    "landingUrl": "https://www.istat.it/comunicato-stampa/economia-non-osservata-nei-conti-nazionali-anni-2020-2023/",
+    "licenseUrl": "https://www.istat.it/note-legali/",
+    "license": "CC-BY-4.0",
+    "licenseScope": "Salvo diversa indicazione, contenuti pubblicati sul sito ISTAT; attribuzione e indicazione delle modifiche richieste.",
+    "path": "tests/fixtures/istat-economia-non-osservata/Tavole-Economia-non-osservata_2025.xlsx",
+    "bytes": 99140,
+    "sha256": "e59fcdd7e7fe553f55398846229baf5c2d94ec17dfb8d3240c06e879a270e55a",
+    "acquiredAt": "2026-09-12",
+    "checkedAt": "2026-09-12",
+    "publicationDate": "2025-10-17",
+    "referenceYears": [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+    "geography": "Italia; nessun dettaglio territoriale",
+    "updateFrequency": "annuale"
+  },
+  "workbook": {
+    "member": "xl/workbook.xml",
+    "relationshipsMember": "xl/_rels/workbook.xml.rels",
+    "sharedStringsMember": "xl/sharedStrings.xml",
+    "expectedSheetNames": [
+      "TAVOLA 8 (2)",
+      "LEGENDA ",
+      "TAVOLA 1",
+      "TAVOLA 2 ",
+      "TAVOLA 3",
+      "TAVOLA 4",
+      "TAVOLA 5",
+      "TAVOLA 6",
+      "TAVOLA 7",
+      "TAVOLA 8"
+    ]
+  },
+  "tables": [
+    {
+      "datasetId": "istat-economia-non-osservata-componenti",
+      "sheetName": "TAVOLA 1",
+      "sheetMember": "xl/worksheets/sheet3.xml",
+      "title": "Tavola 1 - Economia sommersa e attività illegali, Valori correnti (milioni di euro) ed incidenza percentuale delle componenti sul Pil. Anni 2011-2023",
+      "yearRow": 4,
+      "measureRow": 5,
+      "firstDataRow": 7,
+      "lastDataRow": 14,
+      "expectedComponents": [
+        "Economia sommersa ",
+        " - da Sottodichiarazione",
+        " - da Lavoro irregolare",
+        " - Altro",
+        "Attività illegali ",
+        "Economia non osservata",
+        "Valore aggiunto",
+        "PIL"
+      ],
+      "valueTolerance": "0.000000001",
+      "percentageTolerance": "0.000000000001"
+    },
+    {
+      "datasetId": "istat-economia-sommersa-branche",
+      "sheetName": "TAVOLA 3",
+      "sheetMember": "xl/worksheets/sheet5.xml",
+      "title": "Tavola 3 -  Incidenza delle componeneti dell'economia sommersa sul valore aggiunto totale e per attività economica.  Valori percentuali, Anni 2011-2023\n",
+      "yearRow": 4,
+      "measureRow": 5,
+      "firstDataRow": 6,
+      "lastDataRow": 17,
+      "expectedBranches": [
+        "Agricoltura, silvicoltura e pesca",
+        "Produz. beni alimentari e di consumo",
+        "Produz. beni di investim.",
+        "Produz. beni intermedi, energia e rifiuti",
+        "Costruzioni",
+        "Commercio all'ingrosso e al dettaglio, trasporti e magazzinaggio, attività di alloggio e ristorazione",
+        "Servizi professionali",
+        "Altri servizi alle imprese",
+        "Servizi generali delle A.A.P.P.",
+        "Istruzione, sanità e assistenza sociale",
+        "Altri servizi alle persone",
+        "Totale "
+      ],
+      "expectedComponents": [
+        "Sottodichiarazione",
+        "Lavoro irregolare",
+        "Altro",
+        "Totale Economia sommersa "
+      ],
+      "percentageTolerance": "0.000000000001"
+    }
+  ]
+}

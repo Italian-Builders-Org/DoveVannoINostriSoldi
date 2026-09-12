@@ -452,7 +452,8 @@
         "tests/etl/test_mim_school_services.py",
         "tests/etl/test_ted_notices.py",
         "tests/etl/test_pnrr_projects.py",
-        "tests/etl/test_conto_annuale.py"
+        "tests/etl/test_conto_annuale.py",
+        "tests/etl/test_istat_economia_non_osservata.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",
@@ -460,7 +461,8 @@
         "tests/mim-school-services.test.mjs",
         "tests/ted-notices.test.mjs",
         "tests/pnrr-projects.test.mjs",
-        "tests/conto-annuale.test.mjs"
+        "tests/conto-annuale.test.mjs",
+        "tests/istat-economia-non-osservata.test.mjs"
       ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",

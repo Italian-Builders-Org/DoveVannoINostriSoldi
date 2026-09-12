@@ -38,6 +38,7 @@
     "test:browser:theme": "node scripts/browser/theme.mjs",
     "test:browser:navigation": "node --experimental-strip-types scripts/browser/navigation.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
+    "test:browser:assistant-free": "node scripts/browser/assistant-free.mjs",
     "test:browser:assistant": "node scripts/browser/assistant-chat.mjs",
     "test:browser:attachments": "node scripts/browser/assistant-attachments.mjs",
     "test:browser:voice": "node scripts/browser/assistant-voice.mjs",

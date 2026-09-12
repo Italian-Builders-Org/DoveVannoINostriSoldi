@@ -1,8 +1,10 @@
 # Chat AI sui dati pubblici
 
-`/assistente` è una chat con chiave personale OpenRouter, OpenAI o Anthropic.
-Ogni domanda passa dall’AI; senza collegamento, l’invio apre le impostazioni e conserva
-la bozza. La pagina non usa risposte deterministiche o un conto API DVNS.
+`/assistente` offre dieci domande gratuite al giorno con Regolo `glm5.2`, senza account,
+quando il servizio gratuito è configurato. Il primo invio richiede il consenso al
+trattamento della domanda e del contesto. Esaurita la quota, si può continuare la
+conversazione con una chiave personale Regolo, OpenRouter, OpenAI o Anthropic.
+Se il servizio gratuito non è disponibile, l’invio apre il pannello della chiave e conserva la bozza.
 `/assistente/anteprima` reindirizza permanentemente alla pagina pubblica.
 
 ## Interazione e contesto
@@ -16,14 +18,12 @@ I link alle fonti vengono dal catalogo server.
 Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
 La copia della risposta comprende i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
-richiede un invio esplicito e può essere annullata. Rigenerare comporta nuove chiamate
-a pagamento, come una nuova domanda.
+richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.
 
 Il client conserva i messaggi solo nella memoria della pagina: massimo 12 domande;
 per il contesto invia fino a 6 messaggi precedenti, entro 16.000 caratteri complessivi.
 Risposte interrotte o fallite non entrano nella cronologia inviata al modello.
-“Nuova chat” svuota la conversazione e mantiene la chiave. Salvare un nuovo collegamento
-o scollegarlo avvia una nuova conversazione. Nessun archivio server, analytics o logging
+“Nuova chat” svuota la conversazione e mantiene la chiave. Salvare un nuovo collegamento conserva la conversazione: il consenso autorizza l’invio del contesto al provider scelto. Scollegarlo avvia una nuova conversazione. Nessun archivio server, analytics o logging
 delle domande. La finestra di contesto evita chiamate aggiuntive di riassunto a pagamento.
 
 Lo scorrimento segue la generazione finché l’utente resta vicino al fondo. Se legge
@@ -81,7 +81,7 @@ OpenAI usa Responses con `store: false`, che non equivale a Zero Data Retention.
 Anthropic usa Messages. OpenRouter usa Chat Completions con `data_collection: deny`
 e `allow_fallbacks: false`. Il modello predefinito OpenRouter è `openai/gpt-5.6-luna`;
 il campo resta modificabile. Servono modelli che supportano chiamate agli strumenti.
-Nessuna chiave da environment, endpoint arbitrario, redirect, retry automatico o
+Nel percorso personale non si usano chiavi da environment. Nessun endpoint arbitrario, redirect, retry automatico o
 fallback su altri conti/provider.
 
 ## Dati e costi
@@ -191,3 +191,54 @@ Gli adapter pubblici/MCP restano invariati. La proiezione mantiene copertura,
 frequenze, celle parziali, periodo e provenance, evitando che il modello legga
 un importo in centesimi come euro. Il piano distingue inoltre i totali IRPEF
 territoriali dalle tabelle di dettaglio prive di filtro per singola regione.
+
+
+## Regolo e quota gratuita
+
+La modalità `free` accetta esclusivamente `regolo` / `glm5.2`, senza header Authorization
+né opzioni di ragionamento dal client. La chiave condivisa viene letta esclusivamente
+nel modulo `server-only` `free-quota.ts`. Il percorso personale non ripiega mai sulla
+chiave condivisa. Regolo usa Chat Completions, uno strumento nominato per il piano e
+SSE per la risposta; `reasoning_effort: none` evita di consumare il budget della chat
+in ragionamento privato. GLM 5.2 non supporta immagini: il server le rifiuta prima della
+prenotazione. I documenti con testo estratto sono supportati.
+
+Una domanda accettata riserva un credito prima di contattare il modello; può generare
+al massimo due chiamate, senza retry. Errori del provider, interruzioni e rigenerazioni
+non restituiscono il credito: anche una risposta interrotta può aver consumato token.
+Richieste malformate e immagini non supportate non consumano crediti.
+Non è previsto un tetto economico globale. Restano i limiti tecnici di dimensione,
+tempo, frequenza e concorrenza.
+
+`POST /api/assistant/quota` crea un cookie giornaliero firmato, HttpOnly, Secure,
+SameSite=Strict, con prefisso `__Host-` in hosting. Non contiene credenziali o messaggi.
+I contatori sono aggiornati con uno script Lua atomico in Redis, senza fallback in
+memoria: dieci domande per browser **e** rete, una richiesta attiva per entrambi,
+lock con scadenza di 90 secondi e massimo 60 operazioni quota/minuto per rete.
+Su Vercel si usa esclusivamente l’IP attestato da `x-vercel-forwarded-for`; fuori Vercel
+è disponibile soltanto il percorso locale loopback per sviluppo. IPv6 è normalizzato
+alla rete /64 e gli indirizzi IPv4-mapped condividono il contatore IPv4.
+
+Redis riceve identificativi HMAC diversi ogni giorno, non IP, cookie originali o
+conversazioni. Il reset è a mezzanotte Europe/Rome, compresi i cambi di ora legale;
+i contatori scadono entro due minuti dal reset. Anteprime e produzione hanno namespace
+diversi. Gli utenti dietro una stessa rete possono condividere il limite: senza auth
+browser e IP non equivalgono a una persona. Cambiare solo browser, cancellare cookie,
+ricaricare o aprire una nuova chat non azzera il contatore della rete.
+
+Configurare esclusivamente sul server (mai con prefisso `NEXT_PUBLIC_`):
+
+- `REGOLO_API_KEY`: chiave del conto condiviso.
+- `ASSISTANT_QUOTA_SECRET`: segreto casuale di almeno 32 caratteri per le firme HMAC.
+- `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`: database dedicato con REST API.
+
+Il backend Redis deve essere persistente e condiviso dalle istanze del deployment.
+Non riutilizzare database di altri progetti. Se configurazione, identità attestata o
+Redis non sono disponibili, il percorso gratuito si chiude prima di contattare Regolo;
+le chiavi personali restano utilizzabili. Il sito e i test offline non richiedono segreti.
+Le risposte pubbliche espongono solo disponibilità, domande residue e orario del reset.
+
+Fonti: [Regolo Chat Completions](https://docs.regolo.ai/models/families/completions/),
+[Regolo reasoning](https://docs.regolo.ai/models/features/reasoning/),
+[Upstash REST](https://upstash.com/docs/redis/features/restapi),
+[header Vercel](https://vercel.com/docs/headers/request-headers).

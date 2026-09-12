@@ -90,3 +90,11 @@ loro CPV e dalla geografia ISTAT SITUAS già verificati. Il loader e selettore
 Il corpus integrato non cambia: l’indice non aggiunge righe raw e i valori
 rimandano alle aggiudicazioni esistenti. Metodo, denominatori e comandi sono
 in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).
+
+### Quota gratuita dell’assistente
+
+Il client legge `/api/assistant/quota` e invia richieste esplicite `mode: free` a
+`/api/assistant/chat`. `free-quota.ts` (server-only) valida cookie firmato e IP Vercel,
+prenota atomicamente un credito su Redis e fornisce la chiave Regolo soltanto al
+client HTTP del server. Il catalogo/query/evidence e il protocollo SSE sono condivisi
+con BYOK. Configurazione e limiti: `docs/ASSISTENTE.md`.

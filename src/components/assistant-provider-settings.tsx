@@ -83,7 +83,7 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
         {connection ? <button type="button" className={styles.inlineAction} onClick={() => { setApiKey(""); onSave(null); onClose(); }}>Scollega e rimuovi chiave</button> : <button type="button" className={styles.inlineAction} onClick={onClose}>Annulla</button>}
         <button type="submit" className={styles.providerSave}>Usa in questa scheda</button>
       </div>
-      <small>La configurazione avvia una nuova conversazione. Le chiavi non vengono verificate finché non invii una domanda; ricaricando o lasciando la pagina vengono rimosse.</small>
+      <small>La conversazione resta disponibile: inviando una nuova domanda, il contesto sarà trasmesso al provider scelto. Le chiavi non vengono verificate finché non invii una domanda; ricaricando o lasciando la pagina vengono rimosse.</small>
     </form>
   </dialog>;
 }

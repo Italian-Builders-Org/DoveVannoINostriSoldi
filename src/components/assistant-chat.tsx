@@ -5,6 +5,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEve
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
 import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_PROMPT_CHARS, AI_PROVIDERS, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
+import { FREE_MODEL } from "@/lib/assistant/free-contracts";
+import { useAssistantQuota } from "@/components/use-assistant-quota";
+import { AssistantFreeConsent } from "@/components/assistant-free-consent";
 import { AssistantProviderSettings } from "@/components/assistant-provider-settings";
 import { AssistantAiReply } from "@/components/assistant-ai-reply";
 import { AssistantMarkdown } from "@/components/assistant-markdown";
@@ -43,6 +46,9 @@ export function AssistantChat() {
   const [connection, setConnection] = useState<AiConnection | null>(null);
   const connectionRef = useRef<AiConnection | null>(null);
   const [settings, setSettings] = useState(false);
+  const free = useAssistantQuota();
+  const freeConsent = useRef(false);
+  const [freeRequest, setFreeRequest] = useState<{ value: string; retryId?: number } | null>(null);
   const [editing, setEditing] = useState<{ id: number; value: string } | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const [copyError, setCopyError] = useState(false);
@@ -76,7 +82,7 @@ export function AssistantChat() {
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    const leave = () => { connectionRef.current = null; pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };
+    const leave = () => { connectionRef.current = null; freeConsent.current = false; setFreeRequest(null); pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };
     window.addEventListener("pagehide", leave);
     return () => { window.removeEventListener("pagehide", leave); pending.current?.abort(); if (copyTimer.current) clearTimeout(copyTimer.current); };
   }, []);
@@ -138,7 +144,8 @@ export function AssistantChat() {
   async function ask(value: string, retryId?: number) {
     if ((retryId === undefined && attachments.blocked) || pending.current || !value.trim() || value.length > AI_MAX_PROMPT_CHARS || (atLimit && retryId === undefined)) return;
     const ai = connectionRef.current;
-    if (!ai) { setSettings(true); return; }
+    if (!ai && (!free.quota?.available || free.quota.remaining === 0)) { setSettings(true); return; }
+    if (!ai && !freeConsent.current) { setFreeRequest({ value, retryId }); return; }
     if (!hasConversation) beforeComposer.current = composerArea.current?.getBoundingClientRect() ?? null;
     followBottom.current = true;
     setAwayFromBottom(false);
@@ -156,7 +163,7 @@ export function AssistantChat() {
       attachments.clear();
     } else setTurns((current) => current.slice(0, current.findIndex((turn) => turn.id === id) + 1).map((turn) => turn.id === id ? { id, prompt: value.trim(), response: null, attachments: files, startedAt: Date.now() } : turn));
     const history: AiMessage[] = [];
-    if (ai) {
+    {
       for (const turn of turns) {
         if (turn.id === retryId) break;
         if (turn.response?.ok && turn.response.kind === "ai_answer") {
@@ -176,10 +183,11 @@ export function AssistantChat() {
     const deadline = setTimeout(() => controller.abort(), 55_000);
     try {
       const result = await fetch("/api/assistant/chat", {
-        method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream", Authorization: `Bearer ${ai.apiKey}` },
-        body: JSON.stringify({ provider: ai.provider, model: ai.model, ...(ai.reasoning ? { reasoning: ai.reasoning } : {}), consent: true, messages }), signal: controller.signal,
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream", ...(ai ? { Authorization: `Bearer ${ai.apiKey}` } : {}) },
+        body: JSON.stringify({ ...(ai ? { provider: ai.provider, model: ai.model, ...(ai.reasoning ? { reasoning: ai.reasoning } : {}) } : { mode: "free", provider: "regolo", model: FREE_MODEL }), consent: true, messages }), signal: controller.signal,
         cache: "no-store", credentials: "same-origin",
       });
+      if (!ai) free.readHeaders(result);
       const response = await readChatStream(result, controller.signal, (partial) => {
         if (pending.current === controller) setTurns((current) => current.map((turn) => turn.id === id ? { ...turn, partial } : turn));
       }, (activity) => {
@@ -199,6 +207,7 @@ export function AssistantChat() {
       } } : turn));
     } finally {
       clearTimeout(deadline);
+      if (!ai) void free.refresh();
       if (pending.current === controller) {
         pending.current = null;
         setLoading(false);
@@ -373,7 +382,11 @@ export function AssistantChat() {
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
             {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}
           </div> : null}
-          <p className={styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : "Collega la tua AI per iniziare a conversare sui dati."}</p>
+          {!connection && free.quota?.available ? <p className={styles.composerHint} role="status" aria-live="polite" data-free-quota>
+            {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita" : "domande gratuite"} oggi · Regolo` : "Domande gratuite esaurite. Nuova quota a mezzanotte."}
+            {free.quota.remaining === 0 ? <> <button type="button" className={styles.inlineAction} onClick={() => setSettings(true)}>Usa la tua chiave</button></> : null}
+          </p> : null}
+          <p className={styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Collega la tua AI per iniziare a conversare sui dati."}</p>
         </div>
       </div>
 
@@ -381,13 +394,14 @@ export function AssistantChat() {
         <span>L’AI può commettere errori. Verifica le fonti.</span>
         <div><button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button><a href="/privacy">Privacy</a></div>
       </footer>
-      {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setTurns([]); setEditing(null); if (!next) { attachments.clear(); setPreview(null); } }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
+      {freeRequest ? <AssistantFreeConsent onClose={() => { setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); }} onAccept={() => { const request = freeRequest; freeConsent.current = true; setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); void ask(request.value, request.retryId); }} /> : null}
+      {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setEditing(null); freeConsent.current = false; }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
       {preview ? <AssistantAttachmentPreview file={preview} onClose={() => { setPreview(null); requestAnimationFrame(() => { if (previewTrigger.current?.isConnected) previewTrigger.current.focus({ preventScroll: true }); else input.current?.focus(); }); }} /> : null}
       <span className={styles.srOnly} role="status">{copied ? "Testo copiato" : copyError ? "Copia non disponibile: seleziona il testo e copialo manualmente." : loading ? "L’assistente sta rispondendo" : ""}</span>
       {info ? <div className={styles.infoPanel} id="assistant-info" role="region" aria-label="Come funziona l’assistente">
         <button type="button" className={styles.iconButton} aria-label="Chiudi informazioni" onClick={() => setInfo(false)}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>
         <h2>Dati e conversazione</h2>
-        <p>Collega la tua chiave per conversare con l’AI: il modello consulta i dataset del sito attraverso ricerche validate e può commettere errori. Controlla sempre periodo, fonti e limiti.</p>
+        <p>Usa le domande gratuite con Regolo oppure collega la tua chiave: il modello consulta i dataset del sito attraverso ricerche validate e può commettere errori. Controlla sempre periodo, fonti e limiti.</p>
         <p>La conversazione resta nella memoria di questa pagina. “Nuova chat” la svuota. La voce usa il riconoscimento locale nei browser compatibili: nessun audio viene inviato a DVNS.</p>
       </div> : null}
     </main>

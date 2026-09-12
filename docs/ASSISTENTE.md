@@ -136,11 +136,22 @@ upstream o credenziale viene riversato nel client. Risposte parziali non vengono
 come complete; il pulsante stop abortisce la richiesta e non annulla costi già maturati.
 Il parser richiede una terminazione valida e applica un budget anche ai byte ricevuti.
 
-Il system prompt privilegia i dati DVNS, distingue misure e periodi, vieta cifre inventate,
-accuse e l’esecuzione di istruzioni dentro domanda, cronologia o fonti. Un controllo
-blocca alcuni tentativi espliciti di cambiare istruzioni. Non è una garanzia contro
-jailbreak o allucinazioni: i vincoli effettivi sono egress fisso, schema validato,
-adapter read-only, output escapato e budget. Non ci sono segreti nel contesto del modello.
+Il system prompt condiviso è in `src/lib/assistant/system-prompt.ts`: definisce DVNS
+come progetto civico open source e indipendente, l'ambito dell'assistente e il tono
+semplice e neutrale. Impone fedeltà a unità e perimetri, distinzione tra osservazioni,
+calcoli e interpretazioni, chiarimenti mirati, protezione di dati riservati e celle
+oscurate. Il testo resta compatto e chiede risposte entro 350 parole, con soli limiti
+pertinenti. Domande sul progetto possono ricevere una spiegazione nella prima chiamata,
+senza query o fonti che facciano credere a una consultazione mai avvenuta.
+
+Pianificazione e risposta usano la stessa policy nei canali di sistema dei quattro
+provider; cronologia, allegati ed evidenze restano contenuti non fidati nel canale
+conversazionale. `tests/assistant-system-prompt.test.mjs` verifica questo confine
+nei payload e il percorso senza dataset. Un controllo blocca alcuni tentativi
+espliciti di cambiare istruzioni. Questi controlli non certificano il comportamento
+del modello contro ogni jailbreak o allucinazione: i vincoli effettivi restano egress
+fisso, schema validato, adapter read-only, output escapato e budget. Le credenziali di
+trasporto non entrano nel contesto del modello.
 
 BYOK non costituisce un’esenzione generale dal GDPR o dall’AI Act; ruoli e obblighi
 vanno valutati sul servizio concreto. Informativa e pannello dichiarano il transito dei dati.

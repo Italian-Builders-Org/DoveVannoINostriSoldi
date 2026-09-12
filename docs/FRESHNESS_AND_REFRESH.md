@@ -220,6 +220,7 @@ di governo. La procedura completa è in
 | OpenCoesione | bimestrale prevista | 6 h · workflow snapshot | 6 h · cache API |
 | OpenCivitas | irregolare | 24 h · workflow snapshot | 24 h · cache API |
 | MEF IRPEF comunale | annuale | 24 h · discovery snapshot | snapshot versionato |
+| MIM · Atlante Istruzione | annuale; URL fissati per 2022/23–2024/25 | lunedì 06:17 UTC · verifica dei file registrati | snapshot versionato solo se cambiano i file |
 | ReGiS | periodica | 6 h | 12 h |
 | Art. 4-bis | dipende dall'ente | 3 h | 6 h |
 | Consulenti Pubblici | dipende dall'ente | 6 h | 6 h |
@@ -285,6 +286,24 @@ Entrambi i nomi ricadono nelle protezioni `automation/data/**`: soltanto il Data
 Bot può gestirli. Il workflow e l'approvazione `source-operations` restano gli
 stessi. I refresh futuri operano esclusivamente sul branch v2; non occorre
 cancellare, aggiornare o riaprire il candidato storico.
+
+## Atlante Istruzione MIM: verifica dei file fissati
+
+Il workflow `education-atlas-refresh.yml` controlla ogni lunedì i dodici CSV
+ufficiali MIM già registrati per gli anni scolastici 2022/23–2024/25. È una
+verifica dei file e della loro trasformazione aggregata, non una promessa di
+scoperta automatica della prossima annualità: gli URL, i periodi e le date di
+pubblicazione restano fissati nel generatore e richiedono una revisione quando
+il MIM pubblica un nuovo ciclo.
+
+Le ricevute conservano URL, byte, SHA-256, righe, data di riferimento e data di
+pubblicazione della fonte. Se i file non cambiano, il generatore lascia invariati
+snapshot e manifest, quindi il publisher non apre una PR solo per il passaggio
+del tempo. Quando una risposta cambia, la nuova osservazione usa il timestamp
+corrente del controllo e deve superare lo stesso contratto offline prima di
+entrare nella PR del data bot. Il prodotto resta aggregato per Regione, tipo di
+scuola, percorso e indirizzo: non pubblica identificativi o indirizzi delle
+singole scuole.
 
 ## Pagella dei governi: ciclo di aggiornamento
 

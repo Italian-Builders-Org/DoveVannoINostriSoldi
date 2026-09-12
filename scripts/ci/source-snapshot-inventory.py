@@ -23,6 +23,7 @@ REGISTRY_PATH = ROOT / "scripts" / "ci" / "generated-artifacts.json"
 DOC_PATH = ROOT / "docs" / "SOURCE_SNAPSHOT_INVENTORY.md"
 MAX_SNAPSHOT_BYTES = 2_000_000
 CRON_RE = re.compile(r"cron:\s*[\"']([^\"']+)[\"']")
+ACADEMIC_PERIOD_RE = re.compile(r"^[0-9]{4}/[0-9]{2}$")
 PUBLISH_RE = re.compile(r"uses:\s*\./\.github/actions/publish-data-refresh")
 HEAD_FIELD_RE = re.compile(
     r'"(referenceDate|referenceYear|referencePeriod|latestYear|year|taxYear|'
@@ -69,6 +70,11 @@ def load_json(path: Path) -> Any | None:
         payload: dict[str, Any] = {}
         for match in HEAD_FIELD_RE.finditer(head):
             payload.setdefault(match.group(1), match.group(2) or match.group(3))
+        periods_match = re.search(r'"periods"\s*:\s*\[(?P<items>.*?)\]', head, re.DOTALL)
+        if periods_match:
+            labels = re.findall(r'"label"\s*:\s*"([^"]+)"', periods_match.group("items"))
+            if labels:
+                payload["periods"] = [{"label": label} for label in labels]
         return payload or None
     except (OSError, json.JSONDecodeError):
         return None
@@ -103,6 +109,15 @@ def pick_period(payload: Any) -> str | None:
     tax_period = payload.get("taxPeriod")
     if isinstance(tax_period, dict) and all(type(tax_period.get(key)) is int for key in ("from", "to")):
         return f"{tax_period['from']}-{tax_period['to']} (anni di imposta)"
+    periods = payload.get("periods")
+    if (
+        isinstance(periods, list)
+        and periods
+        and all(isinstance(item, dict) and isinstance(item.get("label"), str) for item in periods)
+    ):
+        labels = [item["label"].strip() for item in periods if item["label"].strip()]
+        if labels and all(ACADEMIC_PERIOD_RE.fullmatch(label) for label in labels):
+            return f"{labels[0]}-{labels[-1]}" if len(labels) > 1 else labels[0]
     years = payload.get("series", {}).get("years") if isinstance(payload.get("series"), dict) else None
     if isinstance(years, list) and years and all(isinstance(year, int) for year in years):
         return f"{min(years)}-{max(years)}"

@@ -1,0 +1,43 @@
+name: Atlante Istruzione MIM snapshot
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: education-atlas-snapshot
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: refresh
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: source-operations
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+      - name: Refresh pinned official MIM releases
+        run: python scripts/etl/education_atlas_snapshot.py
+      - name: Validate offline snapshot
+        run: python scripts/etl/education_atlas_snapshot.py --check
+      - name: Update generated snapshot inventory
+        run: python scripts/ci/source-snapshot-inventory.py --write
+      - name: Verify candidate diff
+        run: git diff --check
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: education-atlas
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

@@ -35,6 +35,8 @@ const istatBesLavoroRuntimeFiles = [
 
 const euVatGapItalyRuntimeFiles = [
   "src/data/generated/eu-vat-gap-italy.data.json",
+  "src/data/generated/eu-vat-gap-italy.meta.json",
+  "scripts/etl/specs/eu-vat-gap-italy.source.json",
 ];
 
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];

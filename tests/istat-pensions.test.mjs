@@ -218,3 +218,27 @@ test("la query territoriale resta nazionale per difetto", () => {
   assert.ok(province.pensionBenefits.length > 0);
   assert.throws(() => queryIstatPensions({ territory: "ITZZZ" }), /Territorio non riconosciuto/);
 });
+
+test("i metadati descrivono le righe territoriali e tutte le riconciliazioni restano richieste", () => {
+  assert.equal(istatPensionsMetadata.transformation.pensionBenefitsRows, istatPensionsData.pensionBenefits.observations.length);
+  assert.equal(istatPensionsMetadata.transformation.pensionerRows, istatPensionsData.pensioners.observations.length);
+  const incomplete = structuredClone(istatPensionsData);
+  incomplete.pensionBenefits.amountReconciliations.pop();
+  assert.throws(() => validateIstatPensionsSnapshot(incomplete), /riconciliazioni incomplete/i);
+});
+
+test("il catalogo MCP dichiara e applica il territorio senza mescolare prestazioni e persone", async () => {
+  const { datasetCatalog } = await import('../src/lib/mcp/catalog.ts');
+  const { queryPublicDataset } = await import('../src/lib/mcp/datasets.ts');
+  for (const [dataset, field, other] of [
+    ['istat_pensioni_prestazioni', 'pensionBenefits', 'pensioners'],
+    ['istat_pensionati_persone', 'pensioners', 'pensionBenefits'],
+  ]) {
+    assert.ok(datasetCatalog.find((entry) => entry.id === dataset).filters.includes('territory'));
+    const result = await queryPublicDataset({ dataset, territory: 'ITF3', year: 2022 });
+    assert.equal(result.territory, 'ITF3');
+    assert.ok(result[field].length > 0);
+    assert.ok(result[field].every((row) => row.territory === 'ITF3' && row.year === 2022));
+    assert.equal(result[other], undefined);
+  }
+});

@@ -27,6 +27,21 @@ class IstatPensionsSnapshotTest(unittest.TestCase):
         cls.data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
         cls.metadata = json.loads(META_PATH.read_text(encoding="utf-8"))
 
+    def test_metadata_counts_and_reconciliations_follow_territorial_rows(self) -> None:
+        metadata = etl.build_metadata(self.data, self.spec, etl.canonical_bytes(self.data))
+        self.assertEqual(metadata["transformation"]["pensionBenefitsRows"], 12224)
+        self.assertEqual(metadata["transformation"]["pensionerRows"], 1537)
+        incomplete = copy.deepcopy(self.data)
+        incomplete["pensionBenefits"]["amountReconciliations"].pop()
+        with self.assertRaisesRegex(etl.SnapshotError, "riconciliazioni incomplete"):
+            etl.validate_snapshot(incomplete)
+        forged = copy.deepcopy(self.data)
+        row = forged["pensionBenefits"]["amountReconciliations"][0]
+        row["totalCount"] += 1
+        row["categoryCount"] += 1
+        with self.assertRaisesRegex(etl.SnapshotError, "non coerente con le righe"):
+            etl.validate_snapshot(forged)
+
     def test_source_lock_and_committed_pair_validate_offline(self) -> None:
         etl.validate_snapshot(self.data)
         self.assertEqual(etl.canonical_lock_sha256(self.spec), self.spec["integrity"]["lockSha256"])

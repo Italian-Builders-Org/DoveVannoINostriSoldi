@@ -146,8 +146,8 @@ export const istatPensionsMetadataSchema = z.object({
   transformation: z.object({
     version: z.literal(1),
     description: z.string().min(1),
-    pensionBenefitsRows: z.literal(88),
-    pensionerRows: z.literal(11),
+    pensionBenefitsRows: z.literal(12224),
+    pensionerRows: z.literal(1537),
     units: z.object({
       grossAnnualThousandEuros: z.literal("migliaia di euro"),
       grossAnnualMeanEuros: z.literal("euro"),
@@ -275,6 +275,18 @@ function validateDataInvariants(data: IstatPensionsData, ctx: z.RefinementCtx): 
     ) {
       addIssue(ctx, path, "Riconciliazione non coerente con le righe");
     }
+  }
+
+  const expectedReconciliations = new Set(
+    data.pensionBenefits.observations
+      .filter((row) => row.pensionType === "ALL" && ISTAT_PENSION_CATEGORIES.every(
+        (category) => benefitKeys.has(`${row.territory}|${row.year}|${category}`),
+      ))
+      .map((row) => `${row.territory}|${row.year}`),
+  );
+  if (reconciliationKeys.size !== expectedReconciliations.size
+    || [...expectedReconciliations].some((key) => !reconciliationKeys.has(key))) {
+    addIssue(ctx, ["pensionBenefits", "amountReconciliations"], "Riconciliazioni incomplete o fuori perimetro");
   }
 
   // Le identita territoriali: ESATTE sui conteggi, limite di arrotondamento sugli

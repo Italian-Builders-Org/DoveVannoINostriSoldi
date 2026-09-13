@@ -12,6 +12,7 @@ import argparse
 import json
 import tempfile
 from pathlib import Path
+from typing import Callable
 
 try:
     from . import integrated_curated_datasets as corpus
@@ -82,11 +83,36 @@ def commit_atomically(artifacts: dict[Path, bytes], *, removals: set[Path], prot
                     corpus.write_bytes(path, payload)
             raise
 
-def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog_path: Path, rows_dir: Path, receipts_dir: Path, proof_path: Path, candidate_detail_path: Path | None = None, candidate_manifest_path: Path | None = None, detail_path: Path | None = None, view_proof_path: Path | None = None, release_proof_path: Path | None = None) -> None:
+def append(
+    *,
+    spec_path: Path,
+    source_root: Path,
+    dataset_ids: set[str],
+    catalog_path: Path,
+    rows_dir: Path,
+    receipts_dir: Path,
+    proof_path: Path,
+    candidate_detail_path: Path | None = None,
+    candidate_manifest_path: Path | None = None,
+    detail_path: Path | None = None,
+    view_proof_path: Path | None = None,
+    release_proof_path: Path | None = None,
+    corpus_release_proof_path: Path | None = None,
+    correlated_paths: set[Path] | None = None,
+    after_release_seal: Callable[[], None] | None = None,
+) -> None:
     detail_paths = (candidate_detail_path, candidate_manifest_path, detail_path, view_proof_path, release_proof_path)
     promotes_detail = any(path is not None for path in detail_paths)
     if promotes_detail and (any(path is None for path in detail_paths) or dataset_ids != {"siope-inventario-enti", *[policy.dataset_id for policy in detail_etl.POLICIES]}):
         raise AppendError("vista, proof e tutti i dataset SIOPE devono essere promossi insieme")
+    if (
+        corpus_release_proof_path is not None
+        and release_proof_path is not None
+        and corpus_release_proof_path.resolve() != release_proof_path.resolve()
+    ):
+        raise AppendError("proof globale e proof usata dalla vista SIOPE devono coincidere")
+    if after_release_seal is not None and corpus_release_proof_path is None and not promotes_detail:
+        raise AppendError("reseal correlato richiede una proof globale")
     if promotes_detail:
         assert candidate_detail_path is not None and candidate_manifest_path is not None
         detail_etl.validate_candidate_detail(detail_path=candidate_detail_path, projection_dir=source_root, manifest_path=candidate_manifest_path)
@@ -161,39 +187,53 @@ def append(*, spec_path: Path, source_root: Path, dataset_ids: set[str], catalog
     for path, payload in artifacts.items(): hashes[path.relative_to(ROOT).as_posix()] = corpus.sha256_bytes(payload)
     proof = {"schemaVersion": 1, "generatedAt": spec["generatedAt"], "complete": True, "totals": totals, "catalogSha256": corpus.sha256_bytes(catalog_payload), "artifactSha256": dict(sorted(hashes.items()))}
     artifacts[proof_path] = corpus.canonical_json(proof)
-    protected_paths: set[Path] = set()
+    protected_paths: set[Path] = set(correlated_paths or ())
     after_write = None
+    effective_release_proof = corpus_release_proof_path or (release_proof_path if promotes_detail else None)
+    if effective_release_proof is not None:
+        protected_paths.add(effective_release_proof)
+    if promotes_detail or effective_release_proof is not None:
+        release_paths = integrated_source_release.ReleasePaths(
+            ledger_dir=(effective_release_proof or proof_path).parent,
+            dataset_spec=spec_path,
+            dataset_catalog=catalog_path,
+            dataset_rows_dir=rows_dir,
+            output=effective_release_proof or proof_path,
+        )
+
+        def seal_release() -> None:
+            if promotes_detail:
+                assert candidate_detail_path is not None and candidate_manifest_path is not None
+                assert detail_path is not None and view_proof_path is not None
+                candidate_detail_payload = candidate_detail_path.read_bytes()
+                candidate_manifest_payload = candidate_manifest_path.read_bytes()
+                provenance_path = detail_path.parent / "siope-nonmunicipal-provenance.json"
+                corpus.write_bytes(detail_path, candidate_detail_payload)
+                corpus.write_bytes(provenance_path, candidate_manifest_payload)
+            integrated_source_release.build_release(release_paths)
+            if promotes_detail:
+                assert detail_path is not None and view_proof_path is not None and release_proof_path is not None
+                provenance_path = detail_path.parent / "siope-nonmunicipal-provenance.json"
+                detail_etl.build_committed_view_proof(
+                    detail_path=detail_path, provenance_path=provenance_path, view_proof_path=view_proof_path, catalog_path=catalog_path,
+                    rows_dir=rows_dir, receipts_dir=receipts_dir, dataset_proof_path=proof_path,
+                    release_proof_path=release_proof_path,
+                )
+                detail_etl.validate_committed_detail(
+                    detail_path, provenance_path=provenance_path, view_proof_path=view_proof_path, catalog_path=catalog_path,
+                    rows_dir=rows_dir, receipts_dir=receipts_dir, dataset_proof_path=proof_path,
+                    release_proof_path=release_proof_path,
+                )
+            if after_release_seal is not None:
+                after_release_seal()
+
+        after_write = seal_release
     if promotes_detail:
         assert candidate_detail_path is not None and detail_path is not None and view_proof_path is not None and release_proof_path is not None
         provenance_path = detail_path.parent / "siope-nonmunicipal-provenance.json"
-        protected_paths = {detail_path, view_proof_path, release_proof_path, provenance_path}
-        candidate_detail_payload = candidate_detail_path.read_bytes()
         candidate_manifest_payload = candidate_manifest_path.read_bytes()
         artifacts[provenance_path] = candidate_manifest_payload
-
-        def seal_release() -> None:
-            corpus.write_bytes(detail_path, candidate_detail_payload)
-            corpus.write_bytes(provenance_path, candidate_manifest_payload)
-            release_paths = integrated_source_release.ReleasePaths(
-                ledger_dir=release_proof_path.parent,
-                dataset_spec=spec_path,
-                dataset_catalog=catalog_path,
-                dataset_rows_dir=rows_dir,
-                output=release_proof_path,
-            )
-            integrated_source_release.build_release(release_paths)
-            detail_etl.build_committed_view_proof(
-                detail_path=detail_path, provenance_path=provenance_path, view_proof_path=view_proof_path, catalog_path=catalog_path,
-                rows_dir=rows_dir, receipts_dir=receipts_dir, dataset_proof_path=proof_path,
-                release_proof_path=release_proof_path,
-            )
-            detail_etl.validate_committed_detail(
-                detail_path, provenance_path=provenance_path, view_proof_path=view_proof_path, catalog_path=catalog_path,
-                rows_dir=rows_dir, receipts_dir=receipts_dir, dataset_proof_path=proof_path,
-                release_proof_path=release_proof_path,
-            )
-
-        after_write = seal_release
+        protected_paths.update({detail_path, view_proof_path, release_proof_path, provenance_path})
     commit_atomically(
         artifacts, removals=removals - set(artifacts), protected_paths=protected_paths, after_write=after_write,
         spec_path=spec_path, catalog_path=catalog_path, rows_dir=rows_dir,
@@ -218,6 +258,7 @@ def main() -> int:
         detail_path=ROOT / "src/data/generated/siope-nonmunicipal-detail.json",
         view_proof_path=ROOT / "src/data/generated/siope-nonmunicipal-view-proof.json",
         release_proof_path=ROOT / "data/source-ledger/release-proof.json",
+        corpus_release_proof_path=ROOT / "data/source-ledger/release-proof.json",
     )
     return 0
 

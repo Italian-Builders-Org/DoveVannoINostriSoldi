@@ -384,6 +384,32 @@
           "https://dati-coll.dfp.gov.it/dataset/80b49214-fa00-4e25-aafb-2c122a523df6/resource/f4e810e7-72d9-4041-9d63-9e819823e3e0/download/occupazione_2020.csv",
           "https://dati-coll.dfp.gov.it/dataset/occupazione"
         ]
+      },
+      "istat-economia-non-osservata-componenti": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "Anni 2011-2023; valori nazionali correnti e incidenza sul PIL",
+        "publicationDate": "2025-10-17",
+        "acquisitionDate": "2026-09-12",
+        "checkedAt": "2026-09-12",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/comunicato-stampa/economia-non-osservata-nei-conti-nazionali-anni-2020-2023/",
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/wp-content/uploads/2025/10/Tavole-Economia-non-osservata_2025.xlsx"
+        ]
+      },
+      "istat-economia-sommersa-branche": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "Anni 2011-2023; incidenza nazionale per branca di attività economica",
+        "publicationDate": "2025-10-17",
+        "acquisitionDate": "2026-09-12",
+        "checkedAt": "2026-09-12",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/comunicato-stampa/economia-non-osservata-nei-conti-nazionali-anni-2020-2023/",
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/wp-content/uploads/2025/10/Tavole-Economia-non-osservata_2025.xlsx"
+        ]
       }
     }
   },
@@ -5400,6 +5426,86 @@
           "url_affidamenti_diretti",
           "flag_bandi",
           "note"
+        ]
+      }
+    },
+    {
+      "id": "istat-economia-non-osservata-componenti",
+      "title": "ISTAT · economia non osservata · componenti nazionali",
+      "domain": "benchmarks",
+      "relativePath": "istat-economia-non-osservata-componenti.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Stime ISTAT di contabilità nazionale: economia sommersa e attività illegali compongono l'economia non osservata. Non sono evasione fiscale accertata, esiti di controlli o somme recuperate.",
+        "Valori nazionali correnti in milioni di euro e incidenza percentuale sul PIL restano misure distinte. Valore aggiunto e PIL sono denominatori pubblicati dalla tavola; le loro celle di incidenza vuote restano vuote, non zero.",
+        "Le componenti Sottodichiarazione, Lavoro irregolare e Altro restano separate e riconciliate con Economia sommersa; questa e Attività illegali restano separate e riconciliate con Economia non osservata.",
+        "Serie 2011-2023 della Tavola 1 pubblicata il 17 ottobre 2025. I valori decimali sono conservati dalle celle XLSX senza arrotondamento DVNS.",
+        "Geografia esclusivamente nazionale. Nessun valore è distribuito fra regioni, province o Comuni e non esiste un incrocio territorio per settore.",
+        "Fonte ISTAT, CC BY 4.0 secondo le note legali del sito salvo diversa indicazione; proiezione DVNS in forma lunga con attribuzione e trasformazione dichiarate."
+      ],
+      "expected": {
+        "bytes": 18586,
+        "sha256": "38dc25d2dbb19415940b6da1712aa78c15907b32efe4a251e2b03a8882a0087b",
+        "rows": 104,
+        "columns": 8,
+        "headers": [
+          "Anno",
+          "Componente",
+          "Valore",
+          "Unità valore",
+          "Incidenza percentuale",
+          "Denominatore incidenza",
+          "Tavola",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "istat-economia-sommersa-branche",
+      "title": "ISTAT · economia sommersa · incidenza per branca",
+      "domain": "benchmarks",
+      "relativePath": "istat-economia-sommersa-branche.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Stime ISTAT di contabilità nazionale sull'economia sommersa, non evasione fiscale accertata, esiti di controlli o somme recuperate. Le attività illegali non fanno parte di questa specifica tavola per branca.",
+        "Ogni valore è una percentuale del valore aggiunto totale della stessa branca; la riga Totale usa il valore aggiunto totale nazionale. Percentuali di branche diverse non si sommano e non sono quote territoriali.",
+        "Sottodichiarazione, Lavoro irregolare e Altro restano componenti distinte e sono riconciliate con Totale Economia sommersa per ciascuna branca e anno.",
+        "Serie 2011-2023 della Tavola 3, dodici righe sorgente incluso il totale nazionale. I valori decimali sono conservati dalle celle XLSX senza arrotondamento DVNS.",
+        "Le branche sono aggregati nazionali di attività economica. Non esiste geografia regionale, provinciale o comunale né un incrocio territorio per settore.",
+        "Fonte ISTAT, CC BY 4.0 secondo le note legali del sito salvo diversa indicazione; proiezione DVNS in forma lunga con attribuzione e trasformazione dichiarate."
+      ],
+      "expected": {
+        "bytes": 138498,
+        "sha256": "d1829a9763b2df88ddca9d7192cabd9999d0b80f24d0e7447e54a20966cda710",
+        "rows": 624,
+        "columns": 8,
+        "headers": [
+          "Anno",
+          "Branca",
+          "Componente",
+          "Incidenza percentuale",
+          "Unità",
+          "Denominatore",
+          "Tavola",
+          "URL fonte"
         ]
       }
     },

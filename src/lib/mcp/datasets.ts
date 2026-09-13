@@ -458,6 +458,15 @@ export async function queryPublicDataset(
           sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }
+    case "istat_bes_lavoro": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesLavoro } = await import("@/lib/istat-bes-lavoro-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesLavoro({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

@@ -13,22 +13,25 @@ function parseYear(value: string | null): number | undefined {
 
 export function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
+  for (const key of params.keys()) {
+    if (!["anno", "territorio"].includes(key) || params.getAll(key).length !== 1) {
+      return Response.json({ error: `Parametro sconosciuto o ripetuto: ${key}.` },
+        { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const year = parseYear(params.get("anno"));
-
-  // Il territorio e opzionale e vale IT per difetto: una chiamata invariata
-  // continua a ricevere il dato nazionale.
   const territoryValue = params.get("territorio");
   if (territoryValue !== null && !/^[A-Za-z0-9]{2,6}$/.test(territoryValue)) {
     return Response.json(
       { error: "Il parametro territorio accetta un codice ISTAT, per esempio IT, ITF3 o ITF33." },
-      { status: 400 },
+      { status: 400, headers: { "Cache-Control": "no-store" } },
     );
   }
 
   if (Number.isNaN(year)) {
     return Response.json(
       { error: "Il parametro anno deve essere un anno a quattro cifre." },
-      { status: 400 },
+      { status: 400, headers: { "Cache-Control": "no-store" } },
     );
   }
 

@@ -374,12 +374,43 @@ def _validate_reconciliation(data: dict[str, Any]) -> None:
                     f"oltre il limite di arrotondamento"
                 )
 
+    benefit_cells = {
+        (row["territory"], row["year"], row["pensionType"]): row
+        for row in data["pensionBenefits"]["observations"]
+    }
+    expected_reconciliations = {
+        (territory, year)
+        for territory, year, category in benefit_cells
+        if category == "ALL" and all(
+            (territory, year, kind) in benefit_cells for kind in PENSION_CATEGORIES
+        )
+    }
+    seen_reconciliations: set[tuple[str, int]] = set()
     for reconciliation in data["pensionBenefits"]["amountReconciliations"]:
+        key = (reconciliation["territory"], reconciliation["year"])
+        if key in seen_reconciliations or key not in expected_reconciliations:
+            raise SnapshotError("riconciliazione duplicata o fuori perimetro")
+        seen_reconciliations.add(key)
+        total = benefit_cells[(*key, "ALL")]
+        categories = [benefit_cells[(*key, kind)] for kind in PENSION_CATEGORIES if kind != "ALL"]
+        category_count = sum(row["pensionCount"] for row in categories)
+        category_amount = sum(row["grossAnnualThousandEuros"] for row in categories)
+        if (
+            reconciliation["categoryCount"] != category_count
+            or reconciliation["totalCount"] != total["pensionCount"]
+            or reconciliation["categoryGrossAnnualThousandEuros"] != category_amount
+            or reconciliation["totalGrossAnnualThousandEuros"] != total["grossAnnualThousandEuros"]
+            or reconciliation["deltaThousandEuros"] != total["grossAnnualThousandEuros"] - category_amount
+        ):
+            raise SnapshotError("riconciliazione non coerente con le righe")
         where = f"{reconciliation['territory']}/{reconciliation['year']}"
         if abs(reconciliation["deltaThousandEuros"]) > 2:
             raise SnapshotError(f"somma importi categorie fuori tolleranza per {where}")
         if reconciliation["totalCount"] != reconciliation["categoryCount"]:
             raise SnapshotError(f"somma conteggi categorie non riconcilia per {where}")
+
+    if seen_reconciliations != expected_reconciliations:
+        raise SnapshotError("riconciliazioni incomplete")
 
     # Le identita territoriali sono ESATTE sui conteggi, che sono numeri interi di
     # pensioni. Sugli IMPORTI no: la fonte li pubblica in migliaia di euro
@@ -569,9 +600,9 @@ def build_metadata(data: dict[str, Any], spec: dict[str, Any], data_bytes: bytes
         "source": spec["source"],
         "transformation": {
             "version": 1,
-            "description": "Le tre misure per ciascun flusso sono ricomposte per anno e categoria senza fondere pensioni e pensionati.",
-            "pensionBenefitsRows": 88,
-            "pensionerRows": 11,
+            "description": "Le tre misure per ciascun flusso sono ricomposte per territorio, anno e categoria senza fondere pensioni e pensionati.",
+            "pensionBenefitsRows": len(data["pensionBenefits"]["observations"]),
+            "pensionerRows": len(data["pensioners"]["observations"]),
             "units": {"grossAnnualThousandEuros": "migliaia di euro", "grossAnnualMeanEuros": "euro", "counts": "unità"},
         },
         "overlap": {
@@ -638,6 +669,8 @@ def main() -> None:
         validate_snapshot(data)
         if meta.get("schemaVersion") != 1 or meta.get("datasetId") != "istat-pensions" or meta.get("period") != spec["period"] or meta.get("source") != spec["source"] or meta.get("integrity", {}).get("sourceLockSha256") != spec["integrity"]["lockSha256"]:
             raise SnapshotError("metadata non legata al source lock")
+        if meta.get("transformation") != build_metadata(data, spec, canonical_bytes(data))["transformation"]:
+            raise SnapshotError("metadati della trasformazione non coerenti con le righe territoriali")
         data_bytes = canonical_bytes(data)
         if meta.get("integrity", {}).get("dataArtifact") != {"path": "src/data/generated/istat-pensions-2012-2022.data.json", "bytes": len(data_bytes), "sha256": sha256_bytes(data_bytes)}:
             raise SnapshotError("binding hash/bytes del data artifact non valido")

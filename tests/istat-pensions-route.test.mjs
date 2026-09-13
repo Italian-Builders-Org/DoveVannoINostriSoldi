@@ -32,3 +32,22 @@ test("the pensions API rejects years outside the committed ISTAT snapshot", () =
   const response = GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2024"));
   assert.equal(response.status, 400);
 });
+
+
+test("territorial pension queries preserve the national default and reject ambiguous filters", async () => {
+  for (const query of ["territorio=", "territorio=ITZZZ", "territorio=IT&territorio=ITF3", "anno=2022&anno=2021", "regione=Campania"]) {
+    const response = GET(new NextRequest(`http://localhost/api/spese/pensioni?${query}`));
+    assert.equal(response.status, 400, query);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+  }
+  const national = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022")).json();
+  assert.equal(national.territory, "IT");
+  assert.equal(national.pensionBenefits.length, 8);
+  const regional = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=itf3")).json();
+  assert.equal(regional.territory, "ITF3");
+  assert.ok(regional.pensionBenefits.length > 0);
+  assert.ok(regional.pensionBenefits.every((row) => row.territory === "ITF3" && row.year === 2022));
+  const abolished = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=ITG29")).json();
+  assert.deepEqual(abolished.pensionBenefits, []);
+  assert.deepEqual(abolished.pensioners, []);
+});

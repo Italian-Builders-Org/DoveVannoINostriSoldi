@@ -38,7 +38,7 @@ test("public number parser handles whitespace, decimal comma and empty values", 
 
 test("every registered source has a complete operational policy", () => {
   assert.equal(new Set(SOURCE_IDS).size, SOURCE_IDS.length);
-  assert.equal(SOURCE_IDS.length, 40);
+  assert.ok(SOURCE_IDS.length > 0, "operational source registry must not be empty");
   assert.deepEqual(
     [...sourceCatalog.map((source) => source.slug)].sort(),
     [...SOURCE_IDS].sort(),

@@ -25,6 +25,11 @@ senza questo header lo stesso endpoint restituisce SDMX-ML. La query chiede
 `F+M+T`, ma il payload restituito contiene soltanto `SEX=T`: le serie F/M non
 vengono inventate.
 
+La struttura SDMX include un ID e un istante di preparazione della risposta.
+Il suo hash identifica la cattura originale, non una rappresentazione stabile
+dell’endpoint: un nuovo download va verificato e non deve aggiornare il lock
+automaticamente. Il checksum del CSV resta verificato prima della proiezione.
+
 La risposta SDMX non dichiara una licenza: il source lock usa
 `not-declared`. Le pagine generali ISTAT [Open Data](https://www.istat.it/dati/open-data/)
 e [Note legali](https://www.istat.it/note-legali/) dichiarano CC BY 4.0 per i

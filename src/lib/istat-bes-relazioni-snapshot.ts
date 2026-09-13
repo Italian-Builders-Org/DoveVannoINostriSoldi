@@ -1,38 +1,12 @@
 import "server-only";
-import { closeSync, constants, fstatSync, openSync, readSync } from "node:fs";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import { join } from "node:path";
 import metadataArtifact from "@/data/generated/istat-bes-relazioni-2011-2024.meta.json";
 import { validateIstatBesRelazioniBundle } from "@/lib/data/istat-bes-relazioni-contract";
 
 export const ISTAT_BES_RELAZIONI_DATA_PATH = "src/data/generated/istat-bes-relazioni-2011-2024.data.json";
 
-function readDataArtifact(): unknown {
-  // Keep the observation rows out of TypeScript's JSON type inference while
-  // retaining the same fail-closed validation at the server boundary.
-  const fd = openSync(join(process.cwd(), ISTAT_BES_RELAZIONI_DATA_PATH), constants.O_RDONLY | constants.O_NOFOLLOW);
-  try {
-    const before = fstatSync(fd);
-    if (!before.isFile() || before.size <= 0 || before.size > 3 * 1024 * 1024) {
-      throw new Error("Snapshot BesT Relazioni sociali assente o troppo grande.");
-    }
-    const bytes = Buffer.alloc(before.size);
-    let offset = 0;
-    while (offset < bytes.length) {
-      const count = readSync(fd, bytes, offset, bytes.length - offset, offset);
-      if (!count) throw new Error("Snapshot BesT Relazioni sociali incompleto.");
-      offset += count;
-    }
-    const after = fstatSync(fd);
-    if (before.size !== after.size || before.mtimeMs !== after.mtimeMs || before.ino !== after.ino) {
-      throw new Error("Snapshot BesT Relazioni sociali cambiato durante la lettura.");
-    }
-    return JSON.parse(bytes.toString("utf8")) as unknown;
-  } finally {
-    closeSync(fd);
-  }
-}
-
-const dataArtifact = readDataArtifact();
+const dataArtifact = readJsonSnapshot(join(process.cwd(), ISTAT_BES_RELAZIONI_DATA_PATH), 3 * 1024 * 1024);
 const validated = validateIstatBesRelazioniBundle(dataArtifact, metadataArtifact);
 export const istatBesRelazioniData = validated.data;
 export const istatBesRelazioniMetadata = validated.metadata;

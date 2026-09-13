@@ -1,6 +1,7 @@
 import "server-only";
+import { join } from "node:path";
 
-import dataArtifact from "@/data/generated/inps-naspi-2018-2022.data.json";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import metadataArtifact from "@/data/generated/inps-naspi-2018-2022.meta.json";
 import {
   validateInpsNaspiBundle,
@@ -10,7 +11,10 @@ import {
   type InpsNaspiTable,
 } from "@/lib/data/inps-naspi-contract";
 
-const validated = validateInpsNaspiBundle(dataArtifact, metadataArtifact);
+const validated = validateInpsNaspiBundle(
+  readJsonSnapshot(join(process.cwd(), "src/data/generated/inps-naspi-2018-2022.data.json"), 10 * 1024 * 1024),
+  metadataArtifact,
+);
 
 export const inpsNaspiData: InpsNaspiData = validated.data;
 export const inpsNaspiMetadata: InpsNaspiMetadata = validated.metadata;

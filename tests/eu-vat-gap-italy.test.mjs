@@ -64,3 +64,17 @@ test("contract validation rejects provenance or money tampering", () => {
   broken.years[0].complianceGapCents.value += 1;
   assert.throws(() => validate(broken, metadata));
 });
+
+test("runtime locks every source field and repeated provenance to the reviewed source", () => {
+  for (const mutate of [
+    (copy) => { copy.source.filename = "different-workbook.xlsx"; },
+    (copy) => { copy.source.geography = "Unione europea"; },
+    (copy) => { copy.source.evidenceUrls = ["https://taxation-customs.ec.europa.eu/other"]; },
+    (copy) => { copy.semantics.provenance.publicationDate = "2025-01-01"; },
+    (copy) => { copy.semantics.provenance.checkedAt = "2026-09-12"; },
+  ]) {
+    const copy = structuredClone(metadata);
+    mutate(copy);
+    assert.throws(() => validate(data, copy), /fonte|provenance/);
+  }
+});

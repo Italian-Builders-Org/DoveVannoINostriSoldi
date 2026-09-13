@@ -152,15 +152,13 @@ export function validateEuVatGapItalyBundle(
   requireEqual(metadata.integrity.dataSha256, digest(artifact), "hash artifact");
   requireEqual(metadata.integrity.dataBytes, Buffer.byteLength(artifact, "utf8"), "byte artifact");
   requireEqual(metadata.observedAt, sourceLock.source.acquiredAt, "osservazione");
-  requireEqual(metadata.source.owner, sourceLock.source.owner, "titolare");
-  requireEqual(metadata.source.url, sourceLock.source.url, "url");
-  requireEqual(metadata.source.landingUrl, sourceLock.source.landingUrl, "landing");
-  requireEqual(metadata.source.licenseId, sourceLock.source.licenseId, "licenza");
-  requireEqual(metadata.source.bytes, sourceLock.source.bytes, "bytes");
-  requireEqual(metadata.source.sha256, sourceLock.source.sha256, "sha256 sorgente");
-  requireEqual(metadata.source.publicationDate, sourceLock.source.publicationDate, "pubblicazione");
-  requireEqual(metadata.source.acquiredAt, sourceLock.source.acquiredAt, "acquisizione");
-  requireEqual(metadata.source.checkedAt, sourceLock.source.checkedAt, "controllo");
+  requireEqual(metadata.source, sourceLock.source, "provenance fonte");
+  requireEqual(metadata.semantics.provenance, {
+    holder: sourceLock.source.owner,
+    publicationDate: sourceLock.source.publicationDate,
+    acquiredAt: sourceLock.source.acquiredAt,
+    checkedAt: sourceLock.source.checkedAt,
+  }, "provenance semantica");
   if (metadata.source.checkedAt < metadata.source.acquiredAt) {
     throw new Error("EU VAT gap Italy: verifica precedente all'acquisizione.");
   }

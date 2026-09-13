@@ -362,6 +362,7 @@ test("MCP query tool describes every input parameter for clients and directories
     "table",
     "family",
     "breakdown",
+    "tax",
     "measure",
     "cofog",
     "period",

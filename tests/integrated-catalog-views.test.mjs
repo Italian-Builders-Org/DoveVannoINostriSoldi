@@ -149,3 +149,9 @@ test("dati page wires views, filters and reading links without median inventing"
   assert.match(css, /\.filterBar \{/);
   assert.match(css, /\.filterGroup a\[aria-current="page"\]/);
 });
+
+test("national NOE estimates are not linked to oversight signals", () => {
+  for (const id of ["istat-economia-non-osservata-componenti", "istat-economia-sommersa-branche"]) {
+    assert.equal(relatedReadingForDataset({ id, domain: "oversight" }), null);
+  }
+});

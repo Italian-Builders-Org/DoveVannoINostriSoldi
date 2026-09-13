@@ -1,5 +1,6 @@
 import "server-only";
-import snapshotJson from "@/data/generated/opencivitas-2017.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import {
   assertOpenCivitas2017Snapshot,
   type OpenCivitas2017Snapshot,
@@ -7,7 +8,10 @@ import {
 import { resolveOpenCivitasRegionName } from "@/lib/region-query";
 
 export const openCivitas2017Snapshot: OpenCivitas2017Snapshot =
-  assertOpenCivitas2017Snapshot(snapshotJson);
+  assertOpenCivitas2017Snapshot(readJsonSnapshot(
+    join(process.cwd(), "src/data/generated/opencivitas-2017.json"),
+    2 * 1024 * 1024,
+  ));
 
 export function queryOpenCivitas2017(filters: {
   region?: string;

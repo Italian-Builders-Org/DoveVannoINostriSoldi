@@ -34,6 +34,7 @@ const istatBesLavoroRuntimeFiles = [
 ];
 
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
+const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
 const naspiRuntimeFiles = ["src/data/generated/inps-naspi-2018-2022.data.json"];
 
 // Keep this policy observational until browser and production checks show it
@@ -98,6 +99,7 @@ const nextConfig: NextConfig = {
     "/api/pnrr/asili": childcareRuntimeFiles,
     "/api/enti/*": childcareRuntimeFiles,
     "/api/lavoro/naspi": naspiRuntimeFiles,
+    "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
     "/fonti": naspiRuntimeFiles,
 
     "/appalti/operatori": [
@@ -132,9 +134,9 @@ const nextConfig: NextConfig = {
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
-    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles],
-    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles],
-    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles],
+    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...openCivitas2017RuntimeFiles],
   },
 };
 

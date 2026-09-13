@@ -173,3 +173,13 @@ test("unknown recipient placeholders cannot become catalog subjects", async () =
   assert.equal(insights.rowsWithAmount, 1);
   assert.equal(insights.totalEuro, 100);
 });
+
+
+test("explicit units keep inequality indices and ratios out of euro columns", () => {
+  const headers = ["Indicatore", "Valore", "Unità"];
+  const row = (value, unit) => ({ cells: { Valore: value, Unità: unit } });
+  assert.equal(amountColumnKeys(headers, [row("31.0", "scala da 0 a 100"), row("5.13", "rapporto")]).has("Valore"), false);
+  assert.equal(amountColumnKeys(headers, [row("100", "EUR"), row("0", "euro")]).has("Valore"), true);
+  assert.equal(amountColumnKeys(headers, [row("100", "EUR"), row("5.13", "rapporto")]).has("Valore"), false);
+  assert.equal(amountColumnKeys(headers, [row("31.0", null)]).has("Valore"), false);
+});

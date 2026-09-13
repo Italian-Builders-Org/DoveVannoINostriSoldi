@@ -109,9 +109,13 @@ export function amountColumnKeys(
   headers: readonly string[],
   rows: readonly Readonly<{ cells: Readonly<Record<string, string | null>> }>[],
 ): ReadonlySet<string> {
+  const unitHeader = headers.find((header) => /^unit[àa]$/i.test(header.trim()));
   return new Set(
     headers.filter((header) => {
       if (!looksLikeAmountHeader(header)) return false;
+      // An explicit unit overrides the ambiguous "Valore" header.
+      if (/^valore$/i.test(header.trim()) && unitHeader
+        && rows.some((row) => !/^(eur|euro|€)$/i.test(row.cells[unitHeader]?.trim() ?? ""))) return false;
       let sawNumber = false;
       for (const row of rows) {
         const raw = row.cells[header];

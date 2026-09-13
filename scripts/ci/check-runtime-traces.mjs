@@ -84,6 +84,15 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["appalti/operatori/page.js.nft.json", operatorBrowseFiles],
     ["appalti/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
   ]);
+  for (const [file, routes] of [
+    ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+  ]) {
+    for (const route of routes) {
+      const manifest = `${route}.js.nft.json`;
+      requirements.set(manifest, [...(requirements.get(manifest) ?? []), `src/data/generated/${file}`]);
+    }
+  }
   const appRoot = resolve(root, ".next/server/app");
   const results = [];
   for (const manifest of walk(appRoot).filter((path) => path.endsWith(".nft.json"))) {

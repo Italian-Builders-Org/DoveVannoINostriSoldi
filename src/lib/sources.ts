@@ -206,6 +206,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-lavoro",
+    name: "ISTAT · BES dei territori, Lavoro",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Sei indicatori BES_03; 19.120 osservazioni e 135 territori, di cui 107 province. Periodi propri fra 2008 e 2024.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Tassi percentuali e infortuni per 10.000 occupati con denominatori propri: non sono spesa e non si sommano. F, M e T restano serie distinte; il flag g resta null. Nessuna imputazione comunale, classifica, causalità politica o giudizio sulla sicurezza di una singola impresa. Compositi, padri esterni e geografia variabile sono dichiarati. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -168,11 +168,14 @@ export function publicSitemap(
 
 export function publicRobots(siteUrl: string): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/enti/"],
-    },
+    rules: [
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
+      {
+        userAgent: "ClaudeBot",
+        allow: "/",
+        disallow: ["/api/", "/enti/", "/appalti/operatori/"],
+      },
+    ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

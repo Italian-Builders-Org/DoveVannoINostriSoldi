@@ -73,6 +73,8 @@ const mandatoryDatasetIds = [
   "incarichi-nominativi-shard",
   "indennita-organi",
   "indice-enti",
+  "istat-economia-non-osservata-componenti",
+  "istat-economia-sommersa-branche",
   "missioni",
   "missioni-cdp",
   "missioni-cdp-buchi",
@@ -125,7 +127,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 93,
+  datasets: 95,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -137,6 +139,8 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "istat-economia-non-osservata-componenti": "Anni 2011-2023; valori nazionali correnti e incidenza sul PIL",
+  "istat-economia-sommersa-branche": "Anni 2011-2023; incidenza nazionale per branca di attività economica",
   "rgs-conto-annuale-costo-2020": "Anno 2020; costo del lavoro annuale",
   "rgs-conto-annuale-personale-2020": "Anno 2020; personale al 31 dicembre",
   "pnrr-progetti": "2026-06-13",

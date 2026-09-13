@@ -29,6 +29,10 @@ const entityProcurementRuntimeFiles = [
   "scripts/etl/specs/anac-awardees.source.json",
 ];
 
+const istatBesLavoroRuntimeFiles = [
+  "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
+];
+
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
 // scripts/styles; switching to nonces would also make static pages dynamic.
@@ -116,9 +120,10 @@ const nextConfig: NextConfig = {
     "/fonti/copertura": integratedSourceRuntimeFiles,
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,
-    "/api/assistant/chat": operatorRuntimeFiles,
-    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
-    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
+    "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
+    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
   },
 };
 

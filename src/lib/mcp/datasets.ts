@@ -403,6 +403,13 @@ export async function queryPublicDataset(
       const { queryEuVatGapItaly } = await import("@/lib/eu-vat-gap-italy-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryEuVatGapItaly({ year: query.year }) });
     }
+    case "mef_tax_gap_nazionale": {
+      const { queryMefTaxGapNazionale } = await import("@/lib/mef-tax-gap-nazionale-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryMefTaxGapNazionale({ year: query.year, tax: query.tax }),
+      });
+    }
     case "mef_irpef_dettaglio": {
       const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
       return jsonSafe({

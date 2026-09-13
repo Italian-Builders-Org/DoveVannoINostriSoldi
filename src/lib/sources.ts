@@ -267,6 +267,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["anno", "estimateKind"],
   },
   {
+    slug: "mef-tax-gap-nazionale",
+    name: "MEF · tax gap nazionale",
+    owner: "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+    area: "Stime ufficiali del gap tributario e contributivo",
+    cadence: "Annuale; Relazione evasione 2025, Tab. I.1 e I.2, anni 2018–2022",
+    coverage: "Italia soltanto: gap in euro e propensione per tipologia di imposta; forchette min/max dove la fonte le pubblica",
+    format: "PDF ufficiale · snapshot JSON verificato (layer testuale)",
+    url: "https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    note: "Stima top-down, non evasione accertata né recupero. Il 2022 è semi-definitivo. Distinto dal VAT gap UE e dall'economia non osservata ISTAT. Licenza PDF non dichiarata sul file.",
+    joinKeys: ["anno", "tipologia di imposta"],
+  },
+  {
     slug: "mef-irpef-dettaglio",
     name: "MEF · dettaglio IRPEF per regione, età e sesso",
     owner: "MEF — Dipartimento delle Finanze",

@@ -66,6 +66,7 @@ const EXPECTED_SOURCE_IDS = [
   "mef-irpef-dettaglio",
   "mef-iva",
   "eu-vat-gap-italy",
+  "mef-tax-gap-nazionale",
   "ameco",
   "governi-presidenza",
 ];

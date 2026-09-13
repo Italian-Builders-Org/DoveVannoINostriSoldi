@@ -41,6 +41,7 @@ export type SourceId =
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
+  | "mef-tax-gap-nazionale"
   | "ameco"
   | "governi-presidenza";
 
@@ -657,6 +658,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:eu-vat-gap-italy", "domain:taxation"],
+  },
+  "mef-tax-gap-nazionale": {
+    id: "mef-tax-gap-nazionale",
+    label: "MEF · tax gap nazionale (Relazione evasione 2025)",
+    owner: "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+    sourceUrl: "https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/",
+    cadence: "annuale",
+    cadenceNote: "Tab. I.1 e I.2 della Relazione 2025: gap e propensione 2018-2022 (2022 semi-definitivo). Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline del PDF.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-tax-gap-nazionale", "domain:taxation"],
   },
   "mef-irpef-dettaglio": {
     id: "mef-irpef-dettaglio",

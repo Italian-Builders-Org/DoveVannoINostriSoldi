@@ -15,6 +15,7 @@ import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-s
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
+import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -404,6 +405,17 @@ function snapshotManagedEuVatGapItaly(): SourceHealth {
   };
 }
 
+function snapshotManagedMefTaxGapNazionale(): SourceHealth {
+  return {
+    ...baseHealth("mef-tax-gap-nazionale"),
+    reachability: "not-probed",
+    freshness: freshnessFor("mef-tax-gap-nazionale", mefTaxGapNazionaleMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot MEF tax gap nazionale ${mefTaxGapNazionaleData.period.from}–${mefTaxGapNazionaleData.period.to} (Tab. I.1/I.2 Relazione 2025): ${mefTaxGapNazionaleMetadata.coverage.taxRows} voci e ${mefTaxGapNazionaleMetadata.coverage.years} anni. Pubblicato ${mefTaxGapNazionaleMetadata.source.publicationDate}; acquisito ${mefTaxGapNazionaleMetadata.source.acquiredAt}; controllato ${mefTaxGapNazionaleMetadata.source.checkedAt}.`,
+    recordCount: mefTaxGapNazionaleMetadata.coverage.taxRows * mefTaxGapNazionaleMetadata.coverage.years,
+  };
+}
+
 function snapshotManagedMefIrpefDettaglio(): SourceHealth {
   const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
   const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
@@ -560,6 +572,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
+  "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
 };
 
 export function buildSourceHealthSnapshots() {

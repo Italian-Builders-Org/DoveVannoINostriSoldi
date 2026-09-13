@@ -29,6 +29,7 @@ import type { SourceId } from "@/lib/data/source-policy";
 import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { eurostatHicpData } from "@/lib/eurostat-hicp-snapshot";
 import { eurostatGdpData } from "@/lib/eurostat-gdp-snapshot";
+import { mefTaxGapNazionaleData } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { oecdTaxingWagesData } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
@@ -122,6 +123,10 @@ const exhaustiveLatestDataBySlug = {
   "eu-vat-gap-italy": {
     kind: "period",
     label: `${euVatGapItalyData.period.from}-${euVatGapItalyData.period.to} (2024 stima rapida)`,
+  },
+  "mef-tax-gap-nazionale": {
+    kind: "period",
+    label: `${mefTaxGapNazionaleData.period.from}-${mefTaxGapNazionaleData.period.to} (2022 semi-definitivo)`,
   },
   siope: {
     kind: "period",

@@ -54,6 +54,9 @@ export const datasetQuerySchema = z.object({
   breakdown: z.string().max(20)
     .describe("Taglio dimensionale del dataset selezionato, per esempio regione, classeEta o sesso.")
     .optional(),
+  tax: z.string().max(80)
+    .describe("Id della voce di imposta/contributo del tax gap MEF, per esempio iva o totale-entrate-tributarie.")
+    .optional(),
   measure: z.string().max(20)
     .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti; anac_operatori accetta awardCount o attributedValue.")
     .optional(),

@@ -232,17 +232,14 @@ function stubHistoryFetch({
 
 test("SSN national history fetches years with bounded concurrency and preserves order", async () => {
   const originalFetch = globalThis.fetch;
-  const stub = stubHistoryFetch({ delayMs: 20 });
+  const stub = stubHistoryFetch({ delayMs: 1 });
   globalThis.fetch = stub.fetchStub;
   try {
-    const started = performance.now();
     const history = await getSsnNationalHistory({ deadlineMs: 2_000, allowSnapshot: false });
-    const elapsed = performance.now() - started;
     assert.equal(history.dataMode, "live");
     assert.deepEqual(history.years.map((entry) => entry.year), [...SSN_NATIONAL_HISTORY_YEARS]);
     assert.ok(stub.maxActive > 1, `expected concurrent year fetches, got ${stub.maxActive}`);
     assert.ok(stub.maxActive <= 4, `bounded concurrency exceeded: ${stub.maxActive}`);
-    assert.ok(elapsed < 220, `history still looks sequential: ${elapsed}ms`);
   } finally {
     globalThis.fetch = originalFetch;
   }

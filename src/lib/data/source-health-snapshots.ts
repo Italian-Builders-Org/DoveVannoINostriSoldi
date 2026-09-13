@@ -187,7 +187,7 @@ function snapshotManagedIstatCasellarioPensioni(): SourceHealth {
     reachability: "not-probed",
     freshness: freshnessFor("istat-casellario-pensioni", observedAt),
     latencyMs: null,
-    detail: `Snapshot ISTAT Casellario dei pensionati verificato · dati ${data.period.from}-${data.period.to} · pensioni e pensionati separati · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
+    detail: `Snapshot ISTAT Casellario dei pensionati verificato · dati ${data.period.from}-${data.period.to} · pensioni e pensionati separati · ${data.territories.length} territori, di cui ${data.territories.filter((entry) => entry.kind === "provincia").length} province · ${artifact.bytes.toLocaleString("it-IT")} byte · check offline-source-lock-and-snapshot-contract`,
     recordCount: pensionBenefits.length + pensioners.length,
   };
 }

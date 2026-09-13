@@ -40,13 +40,13 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
   assert.deepEqual(debt.sourceIds, ["bancaditalia", "eurostat"]);
   const pensionBenefits = datasetCatalog.find((dataset) => dataset.id === "istat_pensioni_prestazioni");
   assert.deepEqual(pensionBenefits.sourceIds, ["istat-casellario-pensioni"]);
-  assert.deepEqual(pensionBenefits.filters, ["year"]);
+  assert.deepEqual(pensionBenefits.filters, ["year", "territory"]);
   assert.match(pensionBenefits.caveat, /denominatore.*prestazioni/i);
   assert.match(pensionBenefits.caveat, /importi.*lordi/i);
   assert.match(pensionBenefits.caveat, /non.*sommabile/i);
   const pensioners = datasetCatalog.find((dataset) => dataset.id === "istat_pensionati_persone");
   assert.deepEqual(pensioners.sourceIds, ["istat-casellario-pensioni"]);
-  assert.deepEqual(pensioners.filters, ["year"]);
+  assert.deepEqual(pensioners.filters, ["year", "territory"]);
   assert.match(pensioners.caveat, /denominatore.*persone/i);
   assert.match(pensioners.caveat, /importi.*lordi/i);
   assert.match(pensioners.caveat, /non.*sommabile/i);
@@ -82,6 +82,13 @@ test("ISTAT pension MCP projections keep benefits and persons separate", async (
   assert.equal(pensioners.pensioners.length, 1);
   assert.equal(pensioners.pensioners[0].year, 2022);
   assert.equal(Object.hasOwn(pensioners, "pensionBenefits"), false);
+  for (const [dataset, key] of [["istat_pensioni_prestazioni", "pensionBenefits"], ["istat_pensionati_persone", "pensioners"]]) {
+    const regional = await queryPublicDataset({ dataset, year: 2022, territory: "ITF3" });
+    assert.equal(regional.territory, "ITF3");
+    assert.ok(regional[key].length > 0);
+    assert.ok(regional[key].every((row) => row.territory === "ITF3" && row.year === 2022));
+  }
+
 
   await assert.rejects(
     queryPublicDataset({ dataset: "istat_pensioni_prestazioni", region: "Lazio" }),

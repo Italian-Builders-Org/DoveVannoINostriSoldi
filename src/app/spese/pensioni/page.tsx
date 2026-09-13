@@ -79,19 +79,25 @@ function toCentsFromThousandEuros(value: number): number {
   return cents;
 }
 
+// Lo snapshot copre 142 territori: questa pagina resta quella nazionale, quindi
+// filtra esplicitamente invece di ereditare tutto.
+const NATIONAL = "IT";
+
 const benefitSeries = istatPensionsData.pensionBenefits.observations
-  .filter((row) => row.pensionType === "ALL")
+  .filter((row) => row.territory === NATIONAL && row.pensionType === "ALL")
   .map((row) => ({
     year: row.year,
     pensionCount: row.pensionCount,
     grossAmountCents: toCentsFromThousandEuros(row.grossAnnualThousandEuros),
     averagePensionCents: Math.round(row.grossAnnualMeanEuros * 100),
   }));
-const pensionerSeries = istatPensionsData.pensioners.observations.map((row) => ({
-  year: row.year,
-  pensionerCount: row.pensionerCount,
-  averagePensionerIncomeCents: Math.round(row.grossAnnualMeanEuros * 100),
-}));
+const pensionerSeries = istatPensionsData.pensioners.observations
+  .filter((row) => row.territory === NATIONAL)
+  .map((row) => ({
+    year: row.year,
+    pensionerCount: row.pensionerCount,
+    averagePensionerIncomeCents: Math.round(row.grossAnnualMeanEuros * 100),
+  }));
 const latestBenefit = benefitSeries.at(-1);
 const latestPensioner = pensionerSeries.at(-1);
 
@@ -105,7 +111,7 @@ const data: PensionsPageSnapshot = {
     latest: {
       ...latestBenefit,
       categories: istatPensionsData.pensionBenefits.observations
-        .filter((row) => row.year === latestBenefit.year && row.pensionType !== "ALL")
+        .filter((row) => row.territory === NATIONAL && row.year === latestBenefit.year && row.pensionType !== "ALL")
         .map((row) => {
           if (row.pensionType === "ALL") {
             throw new Error("Il totale ISTAT non può essere una categoria di composizione");

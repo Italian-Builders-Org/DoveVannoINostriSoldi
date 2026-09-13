@@ -17,6 +17,7 @@ BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
 # exceeds that budget.
 MCP_WINDOW_POST_BUDGET=30
 MCP_CONTRACT_POSTS=30
+MCP_PENSION_POSTS=6
 MCP_SUBSCRIPTION_POSTS=2
 MCP_LOAD_REQUESTS=15
 MCP_IVA_POSTS=5
@@ -24,8 +25,8 @@ if (( MCP_CONTRACT_POSTS > MCP_WINDOW_POST_BUDGET )); then
   echo "ERROR: MCP contract smoke declares ${MCP_CONTRACT_POSTS} POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
   exit 1
 fi
-if (( MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS > MCP_WINDOW_POST_BUDGET )); then
-  echo "ERROR: MCP subscription + load + IVA declares $((MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS)) POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
+if (( MCP_PENSION_POSTS + MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS > MCP_WINDOW_POST_BUDGET )); then
+  echo "ERROR: MCP pensions + subscription + load + IVA declares $((MCP_PENSION_POSTS + MCP_SUBSCRIPTION_POSTS + MCP_LOAD_REQUESTS + MCP_IVA_POSTS)) POSTs, above the ${MCP_WINDOW_POST_BUDGET}-POST window budget." >&2
   exit 1
 fi
 
@@ -133,10 +134,14 @@ echo "::endgroup::"
 echo "::group::MCP rate-limit window transition"
 # The 30 contract POSTs above share the local public-client window. Start the
 # conservative residual interval only after that group completes: every POST is
-# known to predate this timestamp. The two subscriptions and 15-sample load then
-# occupy only 17 POSTs in the next window. Browser suites that already consumed
+# known to predate this timestamp. Pension, subscription, load and IVA checks
+# occupy 28 POSTs in the next window. Browser suites that already consumed
 # the interval continue immediately.
 node scripts/ci/mcp-rate-limit-window.mjs "$MCP_CONTRACT_WINDOW_COMPLETED_MS"
+echo "::endgroup::"
+
+echo "::group::MCP pension territory smoke"
+npm run test:mcp:http -- --mode pensions
 echo "::endgroup::"
 
 echo "::group::MCP subscription smoke"

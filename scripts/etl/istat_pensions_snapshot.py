@@ -83,6 +83,45 @@ def _load_json(path: Path, label: str) -> dict[str, Any]:
     return _dict(value, label)
 
 
+NON_GEOGRAPHIC = ("ITTOT", "ITS", "ITNI")
+TERRITORY_KINDS = {"totale", "country", "ripartizione", "regione", "provincia", "estero", "non-indicato"}
+
+
+def _validate_territories(expected: dict[str, Any]) -> None:
+    """L'anagrafica non e solo geografica: tre codici non sono territori."""
+    territories = expected.get("territories")
+    if not isinstance(territories, list) or len(territories) != 142:
+        raise SnapshotError("anagrafica territoriale: attesi 142 codici")
+    codes: set[str] = set()
+    for entry in territories:
+        item = _dict(entry, "expected.territories[]")
+        code = _text(item.get("code"), "territory.code")
+        if code in codes:
+            raise SnapshotError(f"anagrafica: codice duplicato {code}")
+        codes.add(code)
+        if item.get("kind") not in TERRITORY_KINDS:
+            raise SnapshotError(f"anagrafica: kind inatteso per {code}")
+        geographic = item.get("geographic")
+        if not isinstance(geographic, bool):
+            raise SnapshotError(f"anagrafica: {code} non dichiara se e geografico")
+        # ITTOT, ITS e ITNI non sono luoghi: vanno marcati, non dedotti.
+        if (code in NON_GEOGRAPHIC) != (geographic is False):
+            raise SnapshotError(f"anagrafica: {code} tipizzato in modo incoerente")
+    for code in NON_GEOGRAPHIC:
+        if code not in codes:
+            raise SnapshotError(f"anagrafica: manca il codice non geografico {code}")
+
+    identities = expected.get("territorialIdentities")
+    if not isinstance(identities, list) or len(identities) != 2:
+        raise SnapshotError("attese due identita territoriali dichiarate")
+    for identity in identities:
+        item = _dict(identity, "territorialIdentities[]")
+        if item.get("exactOn") != "conteggi":
+            raise SnapshotError("le identita territoriali devono dichiarare su cosa sono esatte")
+        if item.get("whole") not in codes or not set(item.get("parts", [])) <= codes:
+            raise SnapshotError("identita territoriale che cita codici fuori anagrafica")
+
+
 def _validate_asset_lock(asset: dict[str, Any], label: str, *, expected_id: str, expected_title: str, expected_dataflow: str, expected_dsd: str, expected_rows: int, expected_bytes: int, expected_sha256: str, expected_header_sha256: str, expected_columns: list[str]) -> None:
     for key in ("id", "title", "url", "queryKey", "dataflowId", "dsd", "format", "encoding", "delimiter", "lineEnding", "observedAt"):
         _text(asset.get(key), f"{label}.{key}")
@@ -91,8 +130,8 @@ def _validate_asset_lock(asset: dict[str, Any], label: str, *, expected_id: str,
     if asset["id"] != expected_id or asset["title"] != expected_title or asset["dataflowId"] != expected_dataflow or asset["dsd"] != expected_dsd:
         raise SnapshotError(f"{label}: dataflow/DSD non autorizzati")
     expected_key = {
-        "IT1,46_813,1.0": "A.IT.P_NSNU+ANP_NS+AMEP_NS.ALL+OLSEN1+SURV+DISAB1+CIVDIS+NOCONT+COMP+WAR.TOTAL.9.9.TOTAL.99",
-        "IT1,46_812,1.0": "A.IT.P_RSNU+ANP_RS+AMEP_RS.ALL.TOTAL.9.TOTAL",
+        "IT1,46_813,1.0": "A..P_NSNU+ANP_NS+AMEP_NS.ALL+OLSEN1+SURV+DISAB1+CIVDIS+NOCONT+COMP+WAR.TOTAL.9.9.TOTAL.99",
+        "IT1,46_812,1.0": "A..P_RSNU+ANP_RS+AMEP_RS.ALL.TOTAL.9.TOTAL",
     }[expected_dataflow]
     if asset["queryKey"] != expected_key or not asset["url"].endswith(expected_key):
         raise SnapshotError(f"{label}: query key non autorizzata")
@@ -150,16 +189,16 @@ def validate_source_spec(spec: dict[str, Any], *, allow_unbound_artifact: bool =
     _validate_asset_lock(
         _dict(assets.get("pensionBenefits"), "source.assets.pensionBenefits"),
         "source.assets.pensionBenefits", expected_id="istat-pension-benefits-2012-2022", expected_title="Istat - Pensioni (Casellario dei pensionati)", expected_dataflow="IT1,46_813,1.0", expected_dsd="DCAR_PENSIONI2",
-        expected_rows=264, expected_bytes=21835,
-        expected_sha256="e6479f690a4030dfbab3a19b07b8822ffc5d553bfaa94b70165ea81c0d0b1325",
+        expected_rows=36672, expected_bytes=3035542,
+        expected_sha256="7c18d7a3c4c952a71913dda4d29b2529d8900753fb5ae04a50e031f0b4896f26",
         expected_header_sha256="6314996849e1e4057a915ad2e569be3c304ec9a1b2ad76a57bc6ffce7ac7459e",
         expected_columns=expected_pension_columns,
     )
     _validate_asset_lock(
         _dict(assets.get("pensioners"), "source.assets.pensioners"),
         "source.assets.pensioners", expected_id="istat-pensioners-2012-2022", expected_title="Istat - Pensionati (Casellario dei pensionati)", expected_dataflow="IT1,46_812,1.0", expected_dsd="DCAR_PENSIONATI2",
-        expected_rows=33, expected_bytes=2685,
-        expected_sha256="1d11b46a3cf52456766487b566d3a371a36b32d15c3a79a7631ef146716fbd72",
+        expected_rows=4611, expected_bytes=345803,
+        expected_sha256="376d151aa54f7c282fede4a9980c1fe027746962f0def63ff566e74ea19ffdf1",
         expected_header_sha256="44a46feb3a8a987da32e6bfdc244ad7ed7877e76a31e37718dc92174b1f74cc9",
         expected_columns=expected_pensioner_columns,
     )
@@ -167,7 +206,8 @@ def validate_source_spec(spec: dict[str, Any], *, allow_unbound_artifact: bool =
     expected = _dict(spec.get("expected"), "expected")
     if expected.get("years") != list(PENSION_YEARS) or expected.get("pensionCategories") != list(PENSION_CATEGORIES):
         raise SnapshotError("anni/categorie source lock inattesi")
-    if expected.get("pensionBenefitRows") != 88 or expected.get("pensionerRows") != 11:
+    _validate_territories(expected)
+    if expected.get("pensionBenefitRows") != 12224 or expected.get("pensionerRows") != 1537:
         raise SnapshotError("cardinalità trasformata inattesa")
     integrity = _dict(spec.get("integrity"), "integrity")
     artifact = _dict(integrity.get("dataArtifact"), "integrity.dataArtifact")
@@ -241,9 +281,11 @@ def _read_csv(payload: bytes, label: str, expected_columns: list[str], expected_
     return rows
 
 
-def _validate_common(row: dict[str, str], label: str, *, expected_dataflow: str, pension_benefits: bool) -> None:
+def _validate_common(row: dict[str, str], label: str, *, expected_dataflow: str, pension_benefits: bool, territories: set[str]) -> None:
+    if row.get("REF_AREA") not in territories:
+        raise SnapshotError(f"{label}.REF_AREA fuori anagrafica: {row.get('REF_AREA')!r}")
     expected = {
-        "DATAFLOW": expected_dataflow, "FREQ": "A", "REF_AREA": "IT", "MONTHLY_AMOUNT_CLASS": "TOTAL",
+        "DATAFLOW": expected_dataflow, "FREQ": "A", "MONTHLY_AMOUNT_CLASS": "TOTAL",
         "SEX": "9", "AGE": "TOTAL", "OBS_STATUS": "", "NOTE_DS": "",
         "NOTE_REF_AREA": "", "NOTE_DATA_TYPE": "", "NOTE_PENSION_TYPE": "",
         "NOTE_MONTHLY_AMOUNT_CLASS": "", "NOTE_SEX": "", "NOTE_AGE": "",
@@ -277,102 +319,205 @@ def _number(value: Decimal, label: str) -> int | float:
     return result
 
 
-def _validate_and_index(rows: list[dict[str, str]], *, label: str, expected_dataflow: str, pension_benefits: bool, data_types: set[str], categories: set[str], expected_count: int) -> dict[tuple[str, str, int], Decimal]:
+def _validate_and_index(rows: list[dict[str, str]], *, label: str, expected_dataflow: str, pension_benefits: bool, data_types: set[str], categories: set[str], expected_count: int, territories: set[str]) -> dict[tuple[str, str, str, int], Decimal]:
     if len(rows) != expected_count:
         raise SnapshotError(f"{label}: attese {expected_count} righe, trovate {len(rows)}")
-    indexed: dict[tuple[str, str, int], Decimal] = {}
+    indexed: dict[tuple[str, str, str, int], Decimal] = {}
     for index, row in enumerate(rows):
         row_label = f"{label}[{index}]"
-        _validate_common(row, row_label, expected_dataflow=expected_dataflow, pension_benefits=pension_benefits)
+        _validate_common(row, row_label, expected_dataflow=expected_dataflow, pension_benefits=pension_benefits, territories=territories)
         data_type = row.get("DATA_TYPE", "")
+        territory = row["REF_AREA"]
         category = row.get("PENSION_TYPE", "")
         year = int(row["TIME_PERIOD"])
         if data_type not in data_types or category not in categories:
             raise SnapshotError(f"{row_label}: data type/categoria non autorizzati")
-        key = (data_type, category, year)
+        key = (data_type, territory, category, year)
         if key in indexed:
             raise SnapshotError(f"{label}: riga duplicata {key}")
         indexed[key] = _parse_decimal(row["OBS_VALUE"], f"{row_label}.OBS_VALUE")
-    expected_keys = {(data_type, category, year) for data_type in data_types for category in categories for year in PENSION_YEARS}
-    if set(indexed) != expected_keys:
-        raise SnapshotError(f"{label}: combinazioni data type/categoria/anno incomplete o extra")
+    # La griglia NON e un prodotto cartesiano: cinque territori sardi esistono solo
+    # in parte del periodo per la riforma del 2016, e Estero e Non indicato non
+    # hanno tutte le categorie. Si pretende invece che le tre misure stiano sempre
+    # insieme: una cella con il conteggio ma senza importo sarebbe inutilizzabile.
+    triples: dict[tuple[str, str, int], set[str]] = {}
+    for data_type, territory, category, year in indexed:
+        triples.setdefault((territory, category, year), set()).add(data_type)
+    for cell, seen in triples.items():
+        if seen != data_types:
+            raise SnapshotError(f"{label}: misure incomplete per {cell}, trovate {sorted(seen)}")
     return indexed
 
 
+def _mean_bound(count: int) -> Decimal:
+    """Limite derivato, non scelto.
+
+    Il totale e pubblicato in MIGLIAIA di euro arrotondate: l'incertezza sulla media
+    derivata vale quindi 500 / conteggio euro, piu mezzo centesimo per
+    l'arrotondamento della media stessa. A livello nazionale il limite e strettissimo;
+    su una cella con poche pensioni si allarga quanto la fonte impone, e non oltre.
+    """
+    return Decimal(500) / Decimal(count) + Decimal("0.005")
+
+
 def _validate_reconciliation(data: dict[str, Any]) -> None:
-    rows = data["pensionBenefits"]["observations"]
-    for row in rows:
-        expected_mean = Decimal(str(row["grossAnnualThousandEuros"])) * Decimal(1000) / Decimal(row["pensionCount"])
-        actual_mean = Decimal(str(row["grossAnnualMeanEuros"]))
-        if abs(expected_mean - actual_mean) > Decimal("0.01"):
-            raise SnapshotError(f"media pensione non riconcilia per {row['year']}/{row['pensionType']}")
+    for scope, count_field in (("pensionBenefits", "pensionCount"), ("pensioners", "pensionerCount")):
+        for row in data[scope]["observations"]:
+            count = row[count_field]
+            if count <= 0:
+                raise SnapshotError(f"{scope}: conteggio non positivo in {row['territory']}/{row['year']}")
+            expected_mean = Decimal(str(row["grossAnnualThousandEuros"])) * Decimal(1000) / Decimal(count)
+            actual_mean = Decimal(str(row["grossAnnualMeanEuros"]))
+            if abs(expected_mean - actual_mean) > _mean_bound(count):
+                raise SnapshotError(
+                    f"{scope}: media non riconcilia per {row['territory']}/{row['year']}/{row['pensionType']} "
+                    f"oltre il limite di arrotondamento"
+                )
+
+    benefit_cells = {
+        (row["territory"], row["year"], row["pensionType"]): row
+        for row in data["pensionBenefits"]["observations"]
+    }
+    expected_reconciliations = {
+        (territory, year)
+        for territory, year, category in benefit_cells
+        if category == "ALL" and all(
+            (territory, year, kind) in benefit_cells for kind in PENSION_CATEGORIES
+        )
+    }
+    seen_reconciliations: set[tuple[str, int]] = set()
     for reconciliation in data["pensionBenefits"]["amountReconciliations"]:
+        key = (reconciliation["territory"], reconciliation["year"])
+        if key in seen_reconciliations or key not in expected_reconciliations:
+            raise SnapshotError("riconciliazione duplicata o fuori perimetro")
+        seen_reconciliations.add(key)
+        total = benefit_cells[(*key, "ALL")]
+        categories = [benefit_cells[(*key, kind)] for kind in PENSION_CATEGORIES if kind != "ALL"]
+        category_count = sum(row["pensionCount"] for row in categories)
+        category_amount = sum(row["grossAnnualThousandEuros"] for row in categories)
+        if (
+            reconciliation["categoryCount"] != category_count
+            or reconciliation["totalCount"] != total["pensionCount"]
+            or reconciliation["categoryGrossAnnualThousandEuros"] != category_amount
+            or reconciliation["totalGrossAnnualThousandEuros"] != total["grossAnnualThousandEuros"]
+            or reconciliation["deltaThousandEuros"] != total["grossAnnualThousandEuros"] - category_amount
+        ):
+            raise SnapshotError("riconciliazione non coerente con le righe")
+        where = f"{reconciliation['territory']}/{reconciliation['year']}"
         if abs(reconciliation["deltaThousandEuros"]) > 2:
-            raise SnapshotError(f"somma importi categorie fuori tolleranza per l'anno {reconciliation['year']}")
+            raise SnapshotError(f"somma importi categorie fuori tolleranza per {where}")
         if reconciliation["totalCount"] != reconciliation["categoryCount"]:
-            raise SnapshotError(f"somma conteggi categorie non riconcilia per l'anno {reconciliation['year']}")
-    for row in data["pensioners"]["observations"]:
-        expected_mean = Decimal(str(row["grossAnnualThousandEuros"])) * Decimal(1000) / Decimal(row["pensionerCount"])
-        actual_mean = Decimal(str(row["grossAnnualMeanEuros"]))
-        if abs(expected_mean - actual_mean) > Decimal("0.01"):
-            raise SnapshotError(f"media pensionati non riconcilia per l'anno {row['year']}")
+            raise SnapshotError(f"somma conteggi categorie non riconcilia per {where}")
+
+    if seen_reconciliations != expected_reconciliations:
+        raise SnapshotError("riconciliazioni incomplete")
+
+    # Le identita territoriali sono ESATTE sui conteggi, che sono numeri interi di
+    # pensioni. Sugli IMPORTI no: la fonte li pubblica in migliaia di euro
+    # arrotondate, quindi sommare le parti puo scostarsi di qualche unita. Il limite
+    # e derivato dall'arrotondamento — mezza unita per ciascuna parte piu mezza per
+    # il totale — non scelto a occhio.
+    by_cell = {(r["territory"], r["year"]): r for r in data["pensionBenefits"]["observations"] if r["pensionType"] == "ALL"}
+    for identity in data["territorialIdentities"]:
+        whole, parts = identity["whole"], identity["parts"]
+        amount_bound = -(-(len(parts) + 1) // 2)
+        for year in PENSION_YEARS:
+            total = by_cell.get((whole, year))
+            if total is None:
+                continue
+            pieces = [by_cell.get((part, year)) for part in parts]
+            if any(piece is None for piece in pieces):
+                raise SnapshotError(f"identita {whole}: manca una parte nell'anno {year}")
+            if total["pensionCount"] != sum(piece["pensionCount"] for piece in pieces):
+                raise SnapshotError(
+                    f"identita {whole} = {' + '.join(parts)} non esatta sui conteggi nell'anno {year}"
+                )
+            delta = abs(total["grossAnnualThousandEuros"] - sum(piece["grossAnnualThousandEuros"] for piece in pieces))
+            if delta > amount_bound:
+                raise SnapshotError(
+                    f"identita {whole}: scarto {delta} migliaia sugli importi nell'anno {year}, "
+                    f"oltre il limite di arrotondamento {amount_bound}"
+                )
 
 
 def build_data(pensions_payload: bytes, pensioners_payload: bytes, spec: dict[str, Any]) -> dict[str, Any]:
     assets = spec["source"]["assets"]
+    expected = spec["expected"]
+    territories = [dict(t) for t in expected["territories"]]
+    territory_codes = {t["code"] for t in territories}
     pension_columns = assets["pensionBenefits"]["columns"]
     pensioner_columns = assets["pensioners"]["columns"]
-    pension_rows = _read_csv(pensions_payload, "pensionBenefits", pension_columns, 21835, "e6479f690a4030dfbab3a19b07b8822ffc5d553bfaa94b70165ea81c0d0b1325")
-    pensioner_rows = _read_csv(pensioners_payload, "pensioners", pensioner_columns, 2685, "1d11b46a3cf52456766487b566d3a371a36b32d15c3a79a7631ef146716fbd72")
-    pension_index = _validate_and_index(pension_rows, label="pensionBenefits", expected_dataflow="IT1:46_813(1.0)", pension_benefits=True, data_types=PENSION_DATA_TYPES, categories=set(PENSION_CATEGORIES), expected_count=264)
-    pensioner_index = _validate_and_index(pensioner_rows, label="pensioners", expected_dataflow="IT1:46_812(1.0)", pension_benefits=False, data_types=PENSIONER_DATA_TYPES, categories={"ALL"}, expected_count=33)
+    pension_rows = _read_csv(pensions_payload, "pensionBenefits", pension_columns, 3035542, "7c18d7a3c4c952a71913dda4d29b2529d8900753fb5ae04a50e031f0b4896f26")
+    pensioner_rows = _read_csv(pensioners_payload, "pensioners", pensioner_columns, 345803, "376d151aa54f7c282fede4a9980c1fe027746962f0def63ff566e74ea19ffdf1")
+    pension_index = _validate_and_index(pension_rows, label="pensionBenefits", expected_dataflow="IT1:46_813(1.0)", pension_benefits=True, data_types=PENSION_DATA_TYPES, categories=set(PENSION_CATEGORIES), expected_count=36672, territories=territory_codes)
+    pensioner_index = _validate_and_index(pensioner_rows, label="pensioners", expected_dataflow="IT1:46_812(1.0)", pension_benefits=False, data_types=PENSIONER_DATA_TYPES, categories={"ALL"}, expected_count=4611, territories=territory_codes)
 
+    # Si itera su cio che la fonte pubblica, non su un prodotto cartesiano: la
+    # copertura e per territorio (riforma sarda 2016) e per categoria (Estero e
+    # Non indicato non hanno tutte le tipologie).
     benefits: list[dict[str, Any]] = []
-    for year in PENSION_YEARS:
-        for category in PENSION_CATEGORIES:
-            count = pension_index["P_NSNU", category, year]
-            amount = pension_index["ANP_NS", category, year]
-            mean = pension_index["AMEP_NS", category, year]
-            benefits.append({
-                "year": year,
-                "pensionType": category,
-                "pensionCount": _number(count, "pensionCount"),
-                "grossAnnualThousandEuros": _number(amount, "grossAnnualThousandEuros"),
-                "grossAnnualMeanEuros": _number(mean, "grossAnnualMeanEuros"),
-            })
-    pensioners: list[dict[str, Any]] = []
-    for year in PENSION_YEARS:
-        pensioners.append({
+    for territory, category, year in sorted({(t, c, y) for _, t, c, y in pension_index}):
+        benefits.append({
+            "territory": territory,
             "year": year,
-            "pensionType": "ALL",
-            "pensionerCount": _number(pensioner_index["P_RSNU", "ALL", year], "pensionerCount"),
-            "grossAnnualThousandEuros": _number(pensioner_index["ANP_RS", "ALL", year], "grossAnnualThousandEuros"),
-            "grossAnnualMeanEuros": _number(pensioner_index["AMEP_RS", "ALL", year], "grossAnnualMeanEuros"),
+            "pensionType": category,
+            "pensionCount": _number(pension_index["P_NSNU", territory, category, year], "pensionCount"),
+            "grossAnnualThousandEuros": _number(pension_index["ANP_NS", territory, category, year], "grossAnnualThousandEuros"),
+            "grossAnnualMeanEuros": _number(pension_index["AMEP_NS", territory, category, year], "grossAnnualMeanEuros"),
+        })
+    pensioners: list[dict[str, Any]] = []
+    for territory, category, year in sorted({(t, c, y) for _, t, c, y in pensioner_index}):
+        pensioners.append({
+            "territory": territory,
+            "year": year,
+            "pensionType": category,
+            "pensionerCount": _number(pensioner_index["P_RSNU", territory, category, year], "pensionerCount"),
+            "grossAnnualThousandEuros": _number(pensioner_index["ANP_RS", territory, category, year], "grossAnnualThousandEuros"),
+            "grossAnnualMeanEuros": _number(pensioner_index["AMEP_RS", territory, category, year], "grossAnnualMeanEuros"),
         })
 
+    by_cell = {(row["territory"], row["year"], row["pensionType"]): row for row in benefits}
     amount_reconciliations = []
-    for year in PENSION_YEARS:
-        total = next(row for row in benefits if row["year"] == year and row["pensionType"] == "ALL")
-        categories = [row for row in benefits if row["year"] == year and row["pensionType"] != "ALL"]
-        amount_reconciliations.append({
-            "year": year,
-            "categoryCount": sum(row["pensionCount"] for row in categories),
-            "totalCount": total["pensionCount"],
-            "categoryGrossAnnualThousandEuros": sum(row["grossAnnualThousandEuros"] for row in categories),
-            "totalGrossAnnualThousandEuros": total["grossAnnualThousandEuros"],
-            "deltaThousandEuros": total["grossAnnualThousandEuros"] - sum(row["grossAnnualThousandEuros"] for row in categories),
-        })
+    for territory in sorted(territory_codes):
+        for year in PENSION_YEARS:
+            total = by_cell.get((territory, year, "ALL"))
+            if total is None:
+                continue
+            parts = [by_cell[(territory, year, c)] for c in PENSION_CATEGORIES if c != "ALL" and (territory, year, c) in by_cell]
+            if len(parts) != len(PENSION_CATEGORIES) - 1:
+                continue
+            amount_reconciliations.append({
+                "territory": territory,
+                "year": year,
+                "categoryCount": sum(row["pensionCount"] for row in parts),
+                "totalCount": total["pensionCount"],
+                "categoryGrossAnnualThousandEuros": sum(row["grossAnnualThousandEuros"] for row in parts),
+                "totalGrossAnnualThousandEuros": total["grossAnnualThousandEuros"],
+                "deltaThousandEuros": total["grossAnnualThousandEuros"] - sum(row["grossAnnualThousandEuros"] for row in parts),
+            })
 
     data = {
         "schemaVersion": 1,
         "datasetId": "istat-pensions",
         "period": {"from": 2012, "to": 2022},
+        "territories": territories,
+        "territorialIdentities": [dict(i) for i in expected["territorialIdentities"]],
+        "territorialNotes": dict(expected["territorialNotes"]),
+        # La copertura NON e uniforme fra i due asset: le province sarde soppresse
+        # chiudono nel 2016 sulle pensioni e nel 2017 sui pensionati.
+        "partialCoverage": {
+            name: {code: list(span) for code, span in assets[name].get("partialCoverage", {}).items()}
+            for name in ("pensionBenefits", "pensioners")
+        },
         "pensionBenefits": {"observations": benefits, "amountReconciliations": amount_reconciliations},
         "pensioners": {"observations": pensioners},
         "caveats": {
             "amounts": "Importi lordi annuali; la somma delle categorie ANP_NS può differire dal totale di pochi migliaia di euro per arrotondamenti della fonte.",
             "invalidityOverlap": "CIVDIS è mantenuto separato dall'invalidità civile INPS: fonte, periodo e perimetro non sono sommabili.",
             "nominal": "Valori nominali; non viene mostrata una variazione reale senza un deflatore verificato.",
+            "nonGeographic": "ITTOT non è l'Italia: è Italia più Estero (ITS) più Non indicato (ITNI). Nessuno dei tre è un luogo e non vanno messi su una mappa né sommati alle regioni.",
+            "partialCoverage": "Cinque territori coprono solo parte del periodo per la riforma delle province sarde del 2016: non sono dati mancanti.",
+            "derivedMean": "La media pubblicata è coerente col totale diviso il conteggio entro l'arrotondamento del totale al migliaio di euro, che su celle piccole vale parecchi euro per pensione.",
         },
     }
     _validate_reconciliation(data)
@@ -382,45 +527,68 @@ def build_data(pensions_payload: bytes, pensioners_payload: bytes, spec: dict[st
 def validate_snapshot(data: dict[str, Any]) -> None:
     if data.get("schemaVersion") != 1 or data.get("datasetId") != "istat-pensions" or data.get("period") != {"from": 2012, "to": 2022}:
         raise SnapshotError("schema/periodo snapshot inattesi")
+    territories = data.get("territories")
+    if not isinstance(territories, list) or len(territories) != 142:
+        raise SnapshotError("anagrafica territoriale assente dallo snapshot")
+    territory_codes = {t["code"] for t in territories}
+    non_geographic = {t["code"] for t in territories if t.get("geographic") is False}
+    if non_geographic != set(NON_GEOGRAPHIC):
+        raise SnapshotError("i codici non geografici devono restare marcati come tali")
+    coverage = data.get("partialCoverage")
+    if not isinstance(coverage, dict) or set(coverage) != {"pensionBenefits", "pensioners"}:
+        raise SnapshotError("copertura parziale non dichiarata per asset")
+
     benefits = _dict(data.get("pensionBenefits"), "pensionBenefits")
     pensioners = _dict(data.get("pensioners"), "pensioners")
     benefit_rows = benefits.get("observations")
     pensioner_rows = pensioners.get("observations")
-    if not isinstance(benefit_rows, list) or len(benefit_rows) != 88 or not isinstance(pensioner_rows, list) or len(pensioner_rows) != 11:
+    if not isinstance(benefit_rows, list) or len(benefit_rows) != 12224 or not isinstance(pensioner_rows, list) or len(pensioner_rows) != 1537:
         raise SnapshotError("cardinalità snapshot inattesa")
-    keys: set[tuple[int, str]] = set()
-    for index, row in enumerate(benefit_rows):
-        item = _dict(row, f"pensionBenefits.observations[{index}]")
-        if set(item) != {"year", "pensionType", "pensionCount", "grossAnnualThousandEuros", "grossAnnualMeanEuros"}:
-            raise SnapshotError("campi pensionBenefits inattesi")
-        if item["year"] not in PENSION_YEARS or item["pensionType"] not in PENSION_CATEGORIES or not isinstance(item["pensionCount"], int) or item["pensionCount"] <= 0 or not isinstance(item["grossAnnualThousandEuros"], int) or item["grossAnnualThousandEuros"] < 0 or not isinstance(item["grossAnnualMeanEuros"], (int, float)):
-            raise SnapshotError("valore pensionBenefits non valido")
-        key = (item["year"], item["pensionType"])
-        if key in keys:
-            raise SnapshotError(f"osservazione pensionBenefits duplicata: {key}")
-        keys.add(key)
-    if keys != {(year, category) for year in PENSION_YEARS for category in PENSION_CATEGORIES}:
-        raise SnapshotError("copertura pensionBenefits incompleta")
-    pkeys: set[int] = set()
-    for index, row in enumerate(pensioner_rows):
-        item = _dict(row, f"pensioners.observations[{index}]")
-        if set(item) != {"year", "pensionType", "pensionerCount", "grossAnnualThousandEuros", "grossAnnualMeanEuros"}:
-            raise SnapshotError("campi pensioners inattesi")
-        if item["year"] not in PENSION_YEARS or item["pensionType"] != "ALL" or not isinstance(item["pensionerCount"], int) or item["pensionerCount"] <= 0 or not isinstance(item["grossAnnualThousandEuros"], int) or item["grossAnnualThousandEuros"] < 0 or not isinstance(item["grossAnnualMeanEuros"], (int, float)):
-            raise SnapshotError("valore pensioners non valido")
-        if item["year"] in pkeys:
-            raise SnapshotError(f"osservazione pensioners duplicata: {item['year']}")
-        pkeys.add(item["year"])
-    if pkeys != set(PENSION_YEARS):
-        raise SnapshotError("copertura pensioners incompleta")
+
+    def check(rows: list[Any], label: str, count_field: str, categories: set[str]) -> set[tuple[str, int, str]]:
+        seen: set[tuple[str, int, str]] = set()
+        for index, row in enumerate(rows):
+            item = _dict(row, f"{label}.observations[{index}]")
+            if set(item) != {"territory", "year", "pensionType", count_field, "grossAnnualThousandEuros", "grossAnnualMeanEuros"}:
+                raise SnapshotError(f"campi {label} inattesi")
+            if item["territory"] not in territory_codes:
+                raise SnapshotError(f"{label}: territorio fuori anagrafica {item['territory']}")
+            if item["year"] not in PENSION_YEARS or item["pensionType"] not in categories:
+                raise SnapshotError(f"{label}: anno o categoria non validi")
+            # Un territorio non puo comparire fuori dalla sua copertura dichiarata:
+            # e cosi che la riforma sarda del 2016 resta un fatto e non un buco.
+            low, high = coverage[label].get(item["territory"], [2012, 2022])
+            if not low <= item["year"] <= high:
+                raise SnapshotError(f"{label}: {item['territory']} fuori dalla copertura dichiarata nel {item['year']}")
+            if not isinstance(item[count_field], int) or item[count_field] <= 0:
+                raise SnapshotError(f"{label}: conteggio non valido")
+            if not isinstance(item["grossAnnualThousandEuros"], int) or item["grossAnnualThousandEuros"] < 0:
+                raise SnapshotError(f"{label}: importo non valido")
+            if not isinstance(item["grossAnnualMeanEuros"], (int, float)):
+                raise SnapshotError(f"{label}: media non valida")
+            key = (item["territory"], item["year"], item["pensionType"])
+            if key in seen:
+                raise SnapshotError(f"osservazione {label} duplicata: {key}")
+            seen.add(key)
+        return seen
+
+    check(benefit_rows, "pensionBenefits", "pensionCount", set(PENSION_CATEGORIES))
+    check(pensioner_rows, "pensioners", "pensionerCount", {"ALL"})
+
     reconciliations = benefits.get("amountReconciliations")
-    if not isinstance(reconciliations, list) or len(reconciliations) != 11:
+    if not isinstance(reconciliations, list) or not reconciliations:
         raise SnapshotError("riconciliazioni importi mancanti")
     for item in reconciliations:
         row = _dict(item, "amountReconciliations[]")
-        required = {"year", "categoryCount", "totalCount", "categoryGrossAnnualThousandEuros", "totalGrossAnnualThousandEuros", "deltaThousandEuros"}
-        if set(row) != required or row["year"] not in PENSION_YEARS or not all(isinstance(row[key], int) for key in required - {"year"}):
+        required = {"territory", "year", "categoryCount", "totalCount", "categoryGrossAnnualThousandEuros", "totalGrossAnnualThousandEuros", "deltaThousandEuros"}
+        if set(row) != required or row["year"] not in PENSION_YEARS or row["territory"] not in territory_codes:
             raise SnapshotError("riconciliazione importi non valida")
+        if not all(isinstance(row[key], int) for key in required - {"year", "territory"}):
+            raise SnapshotError("riconciliazione importi non numerica")
+
+    identities = data.get("territorialIdentities")
+    if not isinstance(identities, list) or len(identities) != 2:
+        raise SnapshotError("identità territoriali assenti dallo snapshot")
     _validate_reconciliation(data)
 
 
@@ -432,9 +600,9 @@ def build_metadata(data: dict[str, Any], spec: dict[str, Any], data_bytes: bytes
         "source": spec["source"],
         "transformation": {
             "version": 1,
-            "description": "Le tre misure per ciascun flusso sono ricomposte per anno e categoria senza fondere pensioni e pensionati.",
-            "pensionBenefitsRows": 88,
-            "pensionerRows": 11,
+            "description": "Le tre misure per ciascun flusso sono ricomposte per territorio, anno e categoria senza fondere pensioni e pensionati.",
+            "pensionBenefitsRows": len(data["pensionBenefits"]["observations"]),
+            "pensionerRows": len(data["pensioners"]["observations"]),
             "units": {"grossAnnualThousandEuros": "migliaia di euro", "grossAnnualMeanEuros": "euro", "counts": "unità"},
         },
         "overlap": {
@@ -501,6 +669,8 @@ def main() -> None:
         validate_snapshot(data)
         if meta.get("schemaVersion") != 1 or meta.get("datasetId") != "istat-pensions" or meta.get("period") != spec["period"] or meta.get("source") != spec["source"] or meta.get("integrity", {}).get("sourceLockSha256") != spec["integrity"]["lockSha256"]:
             raise SnapshotError("metadata non legata al source lock")
+        if meta.get("transformation") != build_metadata(data, spec, canonical_bytes(data))["transformation"]:
+            raise SnapshotError("metadati della trasformazione non coerenti con le righe territoriali")
         data_bytes = canonical_bytes(data)
         if meta.get("integrity", {}).get("dataArtifact") != {"path": "src/data/generated/istat-pensions-2012-2022.data.json", "bytes": len(data_bytes), "sha256": sha256_bytes(data_bytes)}:
             raise SnapshotError("binding hash/bytes del data artifact non valido")
@@ -530,7 +700,12 @@ def main() -> None:
     metadata = build_metadata(data, spec, data_payload)
     meta_payload = canonical_bytes(metadata)
     _write_pair_atomically(args.data_output, args.meta_output, data_payload, meta_payload)
-    print(f"Scritto {args.data_output} + {args.meta_output}: 88 pensioni e 11 righe pensionati")
+    print(
+        f"Scritto {args.data_output} + {args.meta_output}: "
+        f"{len(data['pensionBenefits']['observations'])} righe pensioni e "
+        f"{len(data['pensioners']['observations'])} pensionati su "
+        f"{len(data['territories'])} territori"
+    )
 
 
 if __name__ == "__main__":

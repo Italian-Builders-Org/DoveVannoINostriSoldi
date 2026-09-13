@@ -380,7 +380,7 @@ export async function queryPublicDataset(
     case "istat_pensioni_prestazioni":
     case "istat_pensionati_persone": {
       const { queryIstatPensions } = await import("@/lib/istat-pensions-snapshot");
-      const result = queryIstatPensions({ year: query.year });
+      const result = queryIstatPensions({ year: query.year, territory: query.territory });
       const { pensionBenefits, pensioners, ...shared } = result;
       return query.dataset === "istat_pensioni_prestazioni"
         ? jsonSafe({ ...shared, dataset: query.dataset, pensionBenefits })

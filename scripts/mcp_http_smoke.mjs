@@ -5,8 +5,8 @@ const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
 const MAX_RESPONSE_BYTES = 750_000;
 const modeIndex = process.argv.indexOf("--mode");
 const mode = modeIndex === -1 ? "complete" : process.argv[modeIndex + 1];
-assert.ok(["contract", "subscription", "complete"].includes(mode),
-  "--mode deve essere contract, subscription oppure complete");
+assert.ok(["contract", "subscription", "pensions", "complete"].includes(mode),
+  "--mode deve essere contract, subscription, pensions oppure complete");
 let contractPostCount = 0;
 
 function byteLength(value) {
@@ -65,6 +65,28 @@ async function mcpRequest(
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.equal(response.url, new URL(pathname, baseUrl).href, "MCP alias must not redirect");
   return text;
+}
+
+async function runPensionSmoke() {
+  const before = contractPostCount;
+  for (const territory of ["IT", "ITF3", "ITG29"]) {
+    const pensionApi = await fetch(new URL(`/api/spese/pensioni?anno=2022&territorio=${territory}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
+    assert.equal(pensionApi.status, 200);
+    const pensionData = await pensionApi.json();
+    assert.equal(pensionData.territory, territory);
+    assert.equal(pensionData.inpsOsservatorio === null, territory !== "IT");
+    for (const [dataset, key] of [["istat_pensioni_prestazioni", "pensionBenefits"], ["istat_pensionati_persone", "pensioners"]]) {
+      const result = await mcpRequest({
+        jsonrpc: "2.0", id: `pensions-${territory}-${key}`, method: "tools/call",
+        params: { name: "query_dataset", arguments: { dataset, year: 2022, territory } },
+      });
+      const data = successfulMcpToolResult(result, dataset).data;
+      assert.equal(data.territory, territory);
+      assert.deepEqual(data[key], pensionData[key]);
+    }
+  }
+
+  assert.equal(contractPostCount - before, 6);
 }
 
 async function runSubscriptionSmoke() {
@@ -609,7 +631,10 @@ for (const year of [2020, 2021, 2022]) {
 assert.equal(contractPostCount, 30, "contract smoke must keep exactly 30 POST requests");
 }
 
-if (mode === "subscription") {
+if (mode === "pensions") {
+  await waitForServer();
+  await runPensionSmoke();
+} else if (mode === "subscription") {
   await waitForServer();
   await runSubscriptionSmoke();
 } else {
@@ -617,11 +642,14 @@ if (mode === "subscription") {
   if (mode === "complete") {
     // Let the existing public-client rate-limit window expire before the extra probes.
     await new Promise((resolve) => setTimeout(resolve, 60_100));
+    await runPensionSmoke();
     await runSubscriptionSmoke();
   }
 }
 
-const checks = mode === "subscription"
+const checks = mode === "pensions"
+  ? ["pension-territories-api-mcp-parity"]
+  : mode === "subscription"
   ? ["modern-subscriptions", "compatibility-modern-subscriptions"]
   : [
     "page",
@@ -637,6 +665,7 @@ const checks = mode === "subscription"
     "unsupported-detail-filter",
     "integrated-query",
     "education-query-pagination-provenance",
+    ...(mode === "complete" ? ["pension-territories-api-mcp-parity"] : []),
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",

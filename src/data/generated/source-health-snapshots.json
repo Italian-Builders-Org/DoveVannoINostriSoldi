@@ -43,9 +43,9 @@
   },
   {
     "sourceId": "istat-casellario-pensioni",
-    "sourceTimestamp": "2026-08-30T17:24:00+02:00",
-    "detail": "Snapshot ISTAT Casellario dei pensionati verificato · dati 2012-2022 · pensioni e pensionati separati · 14.934 byte · check offline-source-lock-and-snapshot-contract",
-    "recordCount": 99
+    "sourceTimestamp": "2026-09-12T11:00:00+02:00",
+    "detail": "Snapshot ISTAT Casellario dei pensionati verificato · dati 2012-2022 · pensioni e pensionati separati · 142 territori, di cui 111 province · 2.242.731 byte · check offline-source-lock-and-snapshot-contract",
+    "recordCount": 13761
   },
   {
     "sourceId": "consip",

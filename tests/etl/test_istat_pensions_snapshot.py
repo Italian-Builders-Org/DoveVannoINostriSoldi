@@ -43,14 +43,17 @@ class IstatPensionsSnapshotTest(unittest.TestCase):
     def test_exact_coverage_and_domain_separation(self) -> None:
         benefits = self.data["pensionBenefits"]["observations"]
         pensioners = self.data["pensioners"]["observations"]
-        self.assertEqual(len(benefits), 88)
-        self.assertEqual(len(pensioners), 11)
+        # Lo snapshot copre 142 territori; il nazionale resta 88 e 11 righe.
+        self.assertEqual(len(benefits), 12224)
+        self.assertEqual(len(pensioners), 1537)
+        self.assertEqual(len([r for r in benefits if r["territory"] == "IT"]), 88)
+        self.assertEqual(len([r for r in pensioners if r["territory"] == "IT"]), 11)
         self.assertEqual({row["pensionType"] for row in benefits}, set(etl.PENSION_CATEGORIES))
-        self.assertEqual({row["year"] for row in pensioners}, set(etl.PENSION_YEARS))
+        self.assertEqual({row["year"] for row in pensioners if row["territory"] == "IT"}, set(etl.PENSION_YEARS))
         self.assertTrue(all("pensionCount" in row and "pensionerCount" not in row for row in benefits))
         self.assertTrue(all("pensionerCount" in row and "pensionCount" not in row for row in pensioners))
-        self.assertEqual(next(row for row in benefits if row["year"] == 2022 and row["pensionType"] == "ALL")["pensionCount"], 22365288)
-        self.assertEqual(next(row for row in pensioners if row["year"] == 2022)["pensionerCount"], 15759676)
+        self.assertEqual(next(row for row in benefits if row["territory"] == "IT" and row["year"] == 2022 and row["pensionType"] == "ALL")["pensionCount"], 22365288)
+        self.assertEqual(next(row for row in pensioners if row["territory"] == "IT" and row["year"] == 2022)["pensionerCount"], 15759676)
 
     @unittest.skipUnless(RAW_INPUTS_AVAILABLE, "raw ISTAT acquisition files are not committed fixtures")
     def test_local_raw_inputs_rebuild_the_committed_data(self) -> None:
@@ -84,7 +87,7 @@ class IstatPensionsSnapshotTest(unittest.TestCase):
             self.assertIn("metadata non legata", result.stderr)
 
     def test_generation_timestamp_must_match_the_source_lock(self) -> None:
-        etl.validate_generation_observed_at(self.spec, "2026-08-30T17:24:00+02:00")
+        etl.validate_generation_observed_at(self.spec, "2026-09-12T11:00:00+02:00")
         with self.assertRaises(etl.SnapshotError):
             etl.validate_generation_observed_at(self.spec, "2026-08-31T00:00:00+02:00")
 

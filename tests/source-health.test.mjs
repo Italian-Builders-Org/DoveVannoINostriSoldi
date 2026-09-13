@@ -190,9 +190,11 @@ test("source health registry covers every operational source, including ANAC, IN
   assert.match(istat?.detail ?? "", /7894 comuni/);
   const istatPensions = overview.find((entry) => entry.sourceId === "istat-casellario-pensioni");
   assert.equal(istatPensions?.reachability, "not-probed");
-  assert.equal(istatPensions?.recordCount, 99);
-  assert.equal(istatPensions?.freshness.sourceTimestamp, "2026-08-30T17:24:00+02:00");
+  // 12.224 righe pensioni + 1.537 pensionati su 142 territori.
+  assert.equal(istatPensions?.recordCount, 13_761);
+  assert.equal(istatPensions?.freshness.sourceTimestamp, "2026-09-12T11:00:00+02:00");
   assert.match(istatPensions?.detail ?? "", /pensioni e pensionati separati/);
+  assert.match(istatPensions?.detail ?? "", /142 territori, di cui 111 province/);
   assert.match(istatPensions?.detail ?? "", /check offline-source-lock-and-snapshot-contract/);
   const eurostat = overview.find((entry) => entry.sourceId === "eurostat");
   assert.equal(eurostat?.freshness.sourceTimestamp, "2025-12-31");

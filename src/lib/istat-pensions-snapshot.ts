@@ -1,7 +1,8 @@
 import "server-only";
 
-import dataArtifact from "@/data/generated/istat-pensions-2012-2022.data.json";
-import metadataArtifact from "@/data/generated/istat-pensions-2012-2022.meta.json";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import {
   validateIstatPensionsBundle,
   type IstatPensionBenefitObservation,
@@ -10,7 +11,29 @@ import {
   type IstatPensionsMetadata,
 } from "@/lib/data/istat-pensions-contract";
 
-const validated = validateIstatPensionsBundle(dataArtifact, metadataArtifact);
+// L'artefatto dati e letto a runtime invece che importato come modulo: con
+// `resolveJsonModule` TypeScript inferisce il tipo letterale dell'intero file, e sulle
+// 12.224 osservazioni territoriali questo costa circa 900 MB di heap in fase di
+// typecheck, oltre il tetto predefinito di Node. Stesso schema gia usato per
+// l'artefatto piu grande del repo (src/lib/investigative-explorer.ts). I tipi
+// continuano a venire dal contratto Zod, che valida entrambi gli artefatti qui sotto,
+// quindi la garanzia fail-closed resta invariata e nello stesso istante di prima.
+// I percorsi restano letterali perche il tracer di Next li risolve staticamente:
+// e cosi che i due artefatti finiscono nel bundle di deploy senza doverli dichiarare
+// in `outputFileTracingIncludes`.
+const DATA_PATH = join(
+  process.cwd(),
+  "src/data/generated/istat-pensions-2012-2022.data.json",
+);
+const METADATA_PATH = join(
+  process.cwd(),
+  "src/data/generated/istat-pensions-2012-2022.meta.json",
+);
+
+const validated = validateIstatPensionsBundle(
+  JSON.parse(readFileSync(DATA_PATH, "utf8")) as unknown,
+  JSON.parse(readFileSync(METADATA_PATH, "utf8")) as unknown,
+);
 
 export const istatPensionsData: IstatPensionsData = validated.data;
 export const istatPensionsMetadata: IstatPensionsMetadata = validated.metadata;
@@ -38,13 +61,29 @@ export const istatPensionsSources: readonly IstatPensionSource[] = [
 
 export const istatPensionsSnapshot = { ...validated, sources: istatPensionsSources };
 
+/**
+ * Il territorio e OPZIONALE e vale `IT` per difetto.
+ *
+ * Lo snapshot copre 142 codici, ma la superficie pubblica ha sempre restituito il
+ * dato nazionale: cambiarlo in silenzio significherebbe che una chiamata invariata
+ * riceve d'un tratto 142 volte le righe. Il dettaglio territoriale si chiede.
+ */
 export type IstatPensionsQuery = Readonly<{
   year?: number;
+  territory?: string;
 }>;
+
+export const ISTAT_PENSIONS_DEFAULT_TERRITORY = "IT";
+
+const ISTAT_PENSION_TERRITORY_CODES = new Set(istatPensionsData.territories.map((entry) => entry.code));
 
 export type IstatPensionsQueryResult = Readonly<{
   datasetId: "istat-pensions";
   period: Readonly<{ from: 2012; to: 2022 }>;
+  territory: string;
+  territories: IstatPensionsData["territories"];
+  territorialIdentities: IstatPensionsData["territorialIdentities"];
+  territorialNotes: IstatPensionsData["territorialNotes"];
   pensionBenefits: readonly IstatPensionBenefitObservation[];
   pensioners: readonly IstatPensionerObservation[];
   sources: readonly IstatPensionSource[];
@@ -64,17 +103,28 @@ function normalizeYear(year: number | undefined): number | undefined {
   return year;
 }
 
+function normalizeTerritory(territory: string | undefined): string {
+  const code = (territory ?? ISTAT_PENSIONS_DEFAULT_TERRITORY).toUpperCase();
+  if (!ISTAT_PENSION_TERRITORY_CODES.has(code)) {
+    throw new RangeError("Territorio non riconosciuto: usare un codice fra quelli pubblicati dallo snapshot");
+  }
+  return code;
+}
+
 export function queryIstatPensions(query: IstatPensionsQuery = {}): IstatPensionsQueryResult {
   const year = normalizeYear(query.year);
-  const pensionBenefits = year === undefined
-    ? istatPensionsData.pensionBenefits.observations
-    : istatPensionsData.pensionBenefits.observations.filter((row) => row.year === year);
-  const pensioners = year === undefined
-    ? istatPensionsData.pensioners.observations
-    : istatPensionsData.pensioners.observations.filter((row) => row.year === year);
+  const territory = normalizeTerritory(query.territory);
+  const matches = (row: { year: number; territory: string }) =>
+    row.territory === territory && (year === undefined || row.year === year);
+  const pensionBenefits = istatPensionsData.pensionBenefits.observations.filter(matches);
+  const pensioners = istatPensionsData.pensioners.observations.filter(matches);
   return {
     datasetId: "istat-pensions",
     period: istatPensionsData.period,
+    territory,
+    territories: istatPensionsData.territories,
+    territorialIdentities: istatPensionsData.territorialIdentities,
+    territorialNotes: istatPensionsData.territorialNotes,
     pensionBenefits,
     pensioners,
     sources: istatPensionsSources,

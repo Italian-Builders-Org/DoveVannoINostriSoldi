@@ -233,12 +233,10 @@ try {
         );
         assert.equal(new URL(page.url()).searchParams.get("page"), "2");
         const jump = '[aria-label="Pagine aggiudicazioni"] input[name="page"]';
-        await page.$eval(jump, (input) => {
-          input.value = "3";
-        });
+        await page.locator(jump).fill("3");
         await Promise.all([
           page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-          page.click('[aria-label="Pagine aggiudicazioni"] button'),
+          page.locator('[aria-label="Pagine aggiudicazioni"] button').click(),
         ]);
         assert.equal(new URL(page.url()).searchParams.get("page"), "3");
         assert.equal(await page.$$eval(historyRows, (rows) => rows.length), 25);
@@ -261,7 +259,7 @@ try {
         await page.select('select[name="procedure"]', combo[2]);
         await Promise.all([
           page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-          page.click('form[aria-label="Filtri delle aggiudicazioni"] button'),
+          page.locator('form[aria-label="Filtri delle aggiudicazioni"] button').click(),
         ]);
         await page.waitForFunction(
           (selector, prefix) =>
@@ -287,14 +285,14 @@ try {
           ),
           true,
         );
+        // Streamed HTML can already match the assertions while its form is
+        // still hidden. Locators wait for visible, stable controls before acting.
         for (const name of ["minAmount", "maxAmount"]) {
-          await page.$eval(`input[name="${name}"]`, (element) => {
-            element.value = "0";
-          });
+          await page.locator(`input[name="${name}"]`).fill("0");
         }
         await Promise.all([
           page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-          page.click('form[aria-label="Filtri delle aggiudicazioni"] button'),
+          page.locator('form[aria-label="Filtri delle aggiudicazioni"] button').click(),
         ]);
         const zeroCount = matching.filter(
           (row) => row[3] !== null && /^-?0(?:\.0+)?$/.test(row[3]),

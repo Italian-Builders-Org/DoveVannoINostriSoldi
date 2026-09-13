@@ -279,9 +279,9 @@ function SummaryIntro({
             <strong>non sono giudizi, illeciti o ranking di affidabilità</strong>.
           </li>
           <li>
-            <strong>Sotto soglia</strong> = stato “non disponibile”: l&apos;indice non contiene il
-            valore stimato a base di gara, la categoria e la soglia applicabile. Non pubblichiamo
-            una cifra al posto di quei campi.{" "}
+            <strong>Sotto soglia storico</strong>: non viene stimata una classificazione unica.
+            Le schede operatore mostrano uno screening descrittivo dei servizi e forniture 2025,
+            con importo lotto, denominatore e copertura.{" "}
             <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
               Metodo ↗
             </a>
@@ -862,10 +862,9 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
           corrente: i delta mensili successivi non sono sommati. {summaries.basis.note}
         </p>
         <p>
-          I conteggi di questa pagina sono ricorrenze dichiarate in fonte. L&apos;indice non
-          contiene il valore stimato a base di gara, la categoria del contratto, il settore e la
-          soglia applicabile al periodo: per questo la classificazione <strong>sotto soglia</strong>{" "}
-          resta <strong>non disponibile</strong> e non viene stimata.{" "}
+          I conteggi descrivono ricorrenze dichiarate in fonte. Le schede permettono di esplorare
+          tutte le aggiudicazioni e lo screening dei servizi e forniture 2025. Una classificazione
+          normativa <strong>sotto soglia</strong> sull’intero storico non viene stimata.{" "}
           <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
             Metodo e dati richiesti ↗
           </a>

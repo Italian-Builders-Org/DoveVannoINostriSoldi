@@ -1022,6 +1022,15 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     ],
   },
   {
+    surface: "/dati",
+    title: "Economia non osservata",
+    description: "Stime ISTAT nazionali 2011–2023: componenti e branche, con unità e denominatori distinti.",
+    datasets: [
+      { id: "istat-economia-non-osservata-componenti", label: "Componenti dell’economia non osservata" },
+      { id: "istat-economia-sommersa-branche", label: "Economia sommersa per branca" },
+    ],
+  },
+  {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",
     description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",

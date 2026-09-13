@@ -92,6 +92,26 @@ Il corpus integrato non cambia: l’indice non aggiunge righe raw e i valori
 rimandano alle aggiudicazioni esistenti. Metodo, denominatori e comandi sono
 in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).
 
+### Storico completo degli operatori ANAC
+
+`anac_operator_history_build.py` deriva lo storico dagli stessi archivi bloccati
+per aggiudicazioni, aggiudicatari e CIG 2007–2025. SQLite è temporaneo e serve solo
+all’ETL. Non contiene stato necessario al sito e non viene distribuito.
+I riepiloghi riconciliano tutte le relazioni operatore/aggiudicazione, le serie
+annuali e gli enti identificati; lo screening 2025 conta CIG unici classificabili.
+Gli importi discordanti della stessa aggiudicazione vengono esclusi dal valore,
+conservando l’affidamento nel conteggio.
+Le somme mantengono tutti i decimali della fonte, indipendentemente dalla
+precisione Decimal del processo. Gli enti sono deduplicati per codice fiscale
+valido; i riferimenti opachi pubblicati sono relativi allo snapshot, come quelli
+degli operatori, e non costituiscono identificativi persistenti tra refresh.
+
+`anac-operator-history.ts` legge uno shard di riepiloghi e soltanto i blocchi
+compressi necessari alla pagina (25 righe). Il selettore applica i filtri a un
+indice compatto per operatore; nessun archivio completo raggiunge il browser.
+Il manifest e gli hash dei blocchi proteggono il confine dello snapshot. La
+verifica offline riconcilia contatori, copertura dei file e blocchi senza buchi.
+
 ### Quota gratuita dell’assistente
 
 Il client legge `/api/assistant/quota` e invia richieste esplicite `mode: free` a

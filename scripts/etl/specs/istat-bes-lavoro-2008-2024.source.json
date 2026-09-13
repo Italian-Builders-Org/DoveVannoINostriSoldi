@@ -1,0 +1,2128 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-bes-lavoro",
+  "domain": {
+    "code": "BES_03",
+    "label": "Lavoro e conciliazione dei tempi di vita",
+    "edition": "2025"
+  },
+  "period": {
+    "from": 2008,
+    "to": 2024
+  },
+  "periodNote": "Il periodo complessivo non vale per tutti: gli indicatori del mercato del lavoro coprono il 2018–2024, le giornate retribuite il 2008–2023 e gli infortuni il 2018–2022; copertura territoriale e per sesso sono dichiarate per ogni anno.",
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    "dataflowId": "DF_BES_TERRIT_3",
+    "dataflowVersion": "1.0",
+    "dataStructure": "BES_TERRIT v1.1",
+    "dataflowLastUpdate": "2025-06-30T15:22:06.201Z",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non dichiara una licenza; le condizioni generali ISTAT CC BY 4.0 sono documentate separatamente e non vengono promosse a licenza incorporata nel payload.",
+    "reuseTermsEvidence": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "publicationDate": "2025-07-01",
+    "acquisitionDate": "2026-09-12",
+    "checkedAt": "2026-09-12",
+    "assets": {
+      "csv": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_3,1.0/A..BES_03.03LAV001-N22+03LAV002-N22+03LAV003P-N22+03LAV004P+03LAV006P-N22+03LAV007.F+M+T.2025",
+        "requestHeaders": {
+          "Accept": "text/csv"
+        },
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 2194924,
+        "sha256": "b44db9455f6b49b6b27856e2cfc4e68fbaccfcc5d94e29875f7a02e3da151c0f"
+      },
+      "structure": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/DF_BES_TERRIT_3/1.0?references=all",
+        "format": "SDMX-ML Structure 2.1",
+        "bytes": 13319297,
+        "sha256": "0496adb473f213a11560da1d4f707729319bcfc1eace7ea68e06b0afb243a5da"
+      }
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Non è spesa pubblica: sono tassi del lavoro con denominatori distinti, non importi, qualità o efficienza amministrativa."
+    },
+    "periodo": {
+      "referencePeriod": "2008–2024, intervalli per indicatore",
+      "note": "Edizione, aggiornamento del dataflow, pubblicazione, acquisizione e anni delle osservazioni restano date distinte."
+    },
+    "provenance": {
+      "holder": "ISTAT",
+      "publicationEdition": "2025",
+      "publicationDate": "2025-07-01",
+      "dataflowLastUpdate": "2025-06-30T15:22:06.201Z",
+      "acquisitionDate": "2026-09-12",
+      "checkedAt": "2026-09-12",
+      "license": "not-declared"
+    }
+  },
+  "headers": [
+    "DATAFLOW",
+    "FREQ",
+    "REF_AREA",
+    "DOMAIN",
+    "DATA_TYPE",
+    "SEX",
+    "EDITION",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_STATUS",
+    "NOTE_DS",
+    "NOTE_REF_AREA",
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE",
+    "NOTE_DATA_TYPE",
+    "NOTE_DATA_TYPE_DESCR",
+    "NOTE_DATA_TYPE_SOURCE",
+    "NOTE_TIME_PERIOD",
+    "BASE_PER",
+    "UNIT_MEAS",
+    "UNIT_MULT"
+  ],
+  "fixedDimensions": {
+    "DATAFLOW": "IT1:DF_BES_TERRIT_3(1.0)",
+    "FREQ": "A",
+    "DOMAIN": "BES_03",
+    "EDITION": "2025"
+  },
+  "attributes": {
+    "NOTE_DS": [
+      ""
+    ],
+    "NOTE_REF_AREA": [
+      ""
+    ],
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE_DESCR": [
+      "03LAV001-N22",
+      "03LAV002-N22",
+      "03LAV003P-N22",
+      "03LAV004P",
+      "03LAV006P-N22",
+      "03LAV007"
+    ],
+    "NOTE_DATA_TYPE_SOURCE": [
+      "03LAV001-N22_SOU",
+      "03LAV002-N22_SOU",
+      "03LAV003P-N22_SOU",
+      "03LAV004P_SOU",
+      "03LAV006P-N22_SOU",
+      "03LAV007_SOU"
+    ],
+    "NOTE_TIME_PERIOD": [
+      ""
+    ],
+    "BASE_PER": [
+      ""
+    ],
+    "UNIT_MULT": [
+      ""
+    ]
+  },
+  "indicators": [
+    {
+      "code": "03LAV001-N22",
+      "label": "tasso di occupazione (20-64 anni)",
+      "description": "percentuale di occupati di 20-64 anni sulla popolazione di 20-64 anni.",
+      "sourceLabel": "istat - rilevazione sulle forze di lavoro",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2018,
+        "to": 2024
+      },
+      "observations": 2458,
+      "coverage": {
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 134,
+        "F/2023": 28,
+        "F/2024": 80,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 28,
+        "M/2024": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 28,
+        "T/2023": 135,
+        "T/2024": 135
+      }
+    },
+    {
+      "code": "03LAV002-N22",
+      "label": "tasso di mancata partecipazione al lavoro",
+      "description": "rapporto tra la somma di disoccupati e inattivi \"disponibili\" (persone che non hanno cercato lavoro nelle ultime 4 settimane ma sono disponibili a lavorare), e la somma di forze lavoro (insieme di occupati e disoccupati) e inattivi \"disponibili\", riferito alla popolazione tra 15 e 74 anni.",
+      "sourceLabel": "istat - rilevazione sulle forze di lavoro",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2018,
+        "to": 2024
+      },
+      "observations": 2767,
+      "coverage": {
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "F/2023": 135,
+        "F/2024": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 129,
+        "M/2024": 135,
+        "T/2018": 135,
+        "T/2019": 134,
+        "T/2020": 133,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 76,
+        "T/2024": 135
+      }
+    },
+    {
+      "code": "03LAV003P-N22",
+      "label": "tasso di occupazione giovanile (15-29 anni)",
+      "description": "percentuale di occupati di 15-29 anni sulla popolazione di 15-29 anni.",
+      "sourceLabel": "istat - rilevazione sulle forze di lavoro",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2018,
+        "to": 2024
+      },
+      "observations": 2767,
+      "coverage": {
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "F/2023": 135,
+        "F/2024": 83,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 135,
+        "M/2024": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 126,
+        "T/2023": 128,
+        "T/2024": 135
+      }
+    },
+    {
+      "code": "03LAV004P",
+      "label": "giornate retribuite nell'anno (lavoratori dipendenti)",
+      "description": "rapporto percentuale tra il numero medio di giornate di lavoro effettivamente retribuite nell'anno a un lavoratore dipendente assicurato inps ed il numero teorico delle giornate retribuite in un anno a un lavoratore dipendente occupato a tempo pieno (312 giorni).",
+      "sourceLabel": "istat - elaborazioni su dati inps - osservatorio sui lavoratori dipendenti",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2008,
+        "to": 2023
+      },
+      "observations": 6339,
+      "coverage": {
+        "F/2008": 131,
+        "F/2009": 131,
+        "F/2010": 134,
+        "F/2011": 134,
+        "F/2012": 134,
+        "F/2013": 134,
+        "F/2014": 134,
+        "F/2015": 134,
+        "F/2016": 134,
+        "F/2017": 135,
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "F/2023": 85,
+        "M/2008": 131,
+        "M/2009": 131,
+        "M/2010": 134,
+        "M/2011": 88,
+        "M/2012": 134,
+        "M/2013": 134,
+        "M/2014": 134,
+        "M/2015": 134,
+        "M/2016": 134,
+        "M/2017": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 135,
+        "T/2008": 131,
+        "T/2009": 131,
+        "T/2010": 134,
+        "T/2011": 134,
+        "T/2012": 134,
+        "T/2013": 134,
+        "T/2014": 134,
+        "T/2015": 134,
+        "T/2016": 134,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135
+      }
+    },
+    {
+      "code": "03LAV006P-N22",
+      "label": "tasso di mancata partecipazione al lavoro giovanile (15-29 anni)",
+      "description": "percentuale di disoccupati di 15-29 anni + forze di lavoro potenziali di 15-29 anni che non cercano lavoro nelle 4 settimane ma sono disponibili a lavorare sul totale delle forze di lavoro 15-29 anni + forze di lavoro potenziali 15-29 anni che non cercano lavoro nelle 4 settimane ma sono disponibili a lavorare.",
+      "sourceLabel": "istat - rilevazione sulle forze di lavoro",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2018,
+        "to": 2024
+      },
+      "observations": 2765,
+      "coverage": {
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 121,
+        "F/2022": 135,
+        "F/2023": 135,
+        "F/2024": 135,
+        "M/2018": 135,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "M/2023": 79,
+        "M/2024": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135,
+        "T/2024": 135
+      }
+    },
+    {
+      "code": "03LAV007",
+      "label": "tasso di infortuni sul lavoro mortali e con inabilità permanente",
+      "description": "numero di infortuni sul lavoro mortali e con inabilità permanente sul totale degli occupati (al netto delle forze armate) per 10.000.",
+      "sourceLabel": "inail",
+      "unit": "PER_10THOU_EMPL",
+      "unitLabel": "Per 10.000 occupati",
+      "sexes": [
+        "F",
+        "M",
+        "T"
+      ],
+      "period": {
+        "from": 2018,
+        "to": 2022
+      },
+      "observations": 2024,
+      "coverage": {
+        "F/2018": 135,
+        "F/2019": 135,
+        "F/2020": 135,
+        "F/2021": 135,
+        "F/2022": 135,
+        "M/2018": 134,
+        "M/2019": 135,
+        "M/2020": 135,
+        "M/2021": 135,
+        "M/2022": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135
+      }
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "italia",
+      "depth": 0,
+      "parent": null
+    },
+    {
+      "code": "IT108",
+      "label": "Monza e della Brianza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "IT109",
+      "label": "Fermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "IT110",
+      "label": "Barletta-Andria-Trani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "IT111",
+      "label": "Sud Sardegna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITC",
+      "label": "Nord-ovest",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITC1",
+      "label": "Piemonte",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC11",
+      "label": "Torino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC12",
+      "label": "Vercelli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC13",
+      "label": "Biella",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC14",
+      "label": "Verbano-Cusio-Ossola",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC15",
+      "label": "Novara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC16",
+      "label": "Cuneo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC17",
+      "label": "Asti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC18",
+      "label": "Alessandria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC2",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC20",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC2"
+    },
+    {
+      "code": "ITC3",
+      "label": "Liguria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC31",
+      "label": "Imperia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC32",
+      "label": "Savona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC33",
+      "label": "Genova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC34",
+      "label": "La Spezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC4",
+      "label": "Lombardia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC41",
+      "label": "Varese",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC42",
+      "label": "Como",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC43",
+      "label": "Lecco",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC44",
+      "label": "Sondrio",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC45",
+      "label": "Milano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC46",
+      "label": "Bergamo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC47",
+      "label": "Brescia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC48",
+      "label": "Pavia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC49",
+      "label": "Lodi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4A",
+      "label": "Cremona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4B",
+      "label": "Mantova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITCD",
+      "label": "Nord",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITC",
+        "ITD"
+      ]
+    },
+    {
+      "code": "ITD",
+      "label": "Nord-est",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITD10",
+      "label": "Bolzano / Bozen",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD1"
+    },
+    {
+      "code": "ITD20",
+      "label": "Trento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD2"
+    },
+    {
+      "code": "ITD3",
+      "label": "Veneto",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD31",
+      "label": "Verona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD32",
+      "label": "Vicenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD33",
+      "label": "Belluno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD34",
+      "label": "Treviso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD35",
+      "label": "Venezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD36",
+      "label": "Padova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD37",
+      "label": "Rovigo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD4",
+      "label": "Friuli-Venezia Giulia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD41",
+      "label": "Pordenone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD42",
+      "label": "Udine",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD43",
+      "label": "Gorizia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD44",
+      "label": "Trieste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD5",
+      "label": "Emilia-Romagna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD51",
+      "label": "Piacenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD52",
+      "label": "Parma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD53",
+      "label": "Reggio nell'Emilia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD54",
+      "label": "Modena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD55",
+      "label": "Bologna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD56",
+      "label": "Ferrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD57",
+      "label": "Ravenna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD58",
+      "label": "Forlì-Cesena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD59",
+      "label": "Rimini",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITDA",
+      "label": "Trentino Alto Adige / Südtirol",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITE",
+      "label": "Centro",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITE1",
+      "label": "Toscana",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE11",
+      "label": "Massa-Carrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE12",
+      "label": "Lucca",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE13",
+      "label": "Pistoia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE14",
+      "label": "Firenze",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE15",
+      "label": "Prato",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE16",
+      "label": "Livorno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE17",
+      "label": "Pisa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE18",
+      "label": "Arezzo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE19",
+      "label": "Siena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE1A",
+      "label": "Grosseto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE2",
+      "label": "Umbria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE21",
+      "label": "Perugia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE22",
+      "label": "Terni",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE3",
+      "label": "Marche",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE31",
+      "label": "Pesaro e Urbino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE32",
+      "label": "Ancona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE33",
+      "label": "Macerata",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE34",
+      "label": "Ascoli Piceno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE4",
+      "label": "Lazio",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE41",
+      "label": "Viterbo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE42",
+      "label": "Rieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE43",
+      "label": "Roma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE44",
+      "label": "Latina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE45",
+      "label": "Frosinone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITF",
+      "label": "Sud",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITF1",
+      "label": "Abruzzo",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF11",
+      "label": "L'Aquila",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF12",
+      "label": "Teramo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF13",
+      "label": "Pescara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF14",
+      "label": "Chieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF2",
+      "label": "Molise",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF21",
+      "label": "Isernia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF22",
+      "label": "Campobasso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF3",
+      "label": "Campania",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF31",
+      "label": "Caserta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF32",
+      "label": "Benevento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF33",
+      "label": "Napoli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF34",
+      "label": "Avellino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF35",
+      "label": "Salerno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF4",
+      "label": "Puglia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF41",
+      "label": "Foggia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF42",
+      "label": "Bari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF43",
+      "label": "Taranto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF44",
+      "label": "Brindisi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF45",
+      "label": "Lecce",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF5",
+      "label": "Basilicata",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF51",
+      "label": "Potenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF52",
+      "label": "Matera",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF6",
+      "label": "Calabria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF61",
+      "label": "Cosenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF62",
+      "label": "Crotone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF63",
+      "label": "Catanzaro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF64",
+      "label": "Vibo Valentia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF65",
+      "label": "Reggio di Calabria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITFG",
+      "label": "Mezzogiorno",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITF",
+        "ITG"
+      ]
+    },
+    {
+      "code": "ITG",
+      "label": "Isole",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITG1",
+      "label": "Sicilia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG11",
+      "label": "Trapani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG12",
+      "label": "Palermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG13",
+      "label": "Messina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG14",
+      "label": "Agrigento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG15",
+      "label": "Caltanissetta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG16",
+      "label": "Enna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG17",
+      "label": "Catania",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG18",
+      "label": "Ragusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG19",
+      "label": "Siracusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG2",
+      "label": "Sardegna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG25",
+      "label": "Sassari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG26",
+      "label": "Nuoro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG27",
+      "label": "Cagliari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG28",
+      "label": "Oristano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    }
+  ],
+  "flags": {
+    "attribute": "OBS_STATUS",
+    "codelist": "CL_FLAG",
+    "knownValues": {
+      "g": "il fenomeno esiste, ma i dati non si conoscono per qualsiasi ragione"
+    },
+    "flaggedCells": 122
+  },
+  "observations": 19120,
+  "nullCells": [
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "F",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "M",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT108",
+      "T",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "F",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "M",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT109",
+      "T",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "F",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "M",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2010
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2011
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2012
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2013
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2014
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2015
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2016
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT110",
+      "T",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "F",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "F",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "F",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "F",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "F",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "M",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "M",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "M",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "M",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "M",
+      2021
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "T",
+      2017
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "T",
+      2018
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "T",
+      2019
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "T",
+      2020
+    ],
+    [
+      "03LAV004P",
+      "IT111",
+      "T",
+      2021
+    ]
+  ],
+  "caveats": [
+    "Non è spesa pubblica: sono tassi del lavoro con denominatori distinti, non importi, qualità o efficienza amministrativa. Nessuna correlazione causale con SIOPE.",
+    "Percentuali di occupazione, mancata partecipazione, giornate retribuite e infortuni per 10.000 occupati hanno denominatori diversi: non si sommano né formano un indice composito.",
+    "Il periodo complessivo 2008–2024 non vale per tutti; nessun anno mancante viene riempito o concatenato con serie precedenti.",
+    "F, M e T sono serie pubblicate separatamente: T non è la somma né una media ricostruita di F e M.",
+    "Il flag g conserva un dato ignoto, distinto da zero osservato e da una riga assente; nessuna imputazione.",
+    "Nord e Mezzogiorno sono compositi sovrapposti alle parti; Bolzano e Trento hanno padri esterni dichiarati. Dati provinciali, non comunali, con geografia non costante.",
+    "Gli infortuni includono eventi mortali o con inabilità permanente sul totale occupati escluso forze armate: non misurano la sicurezza di una singola impresa.",
+    "Le giornate retribuite confrontano giornate medie INPS con 312 giornate teoriche: non sono durata contrattuale, reddito o numero di occupati.",
+    "Nessun ranking, giudizio di regolarità, causalità politica o confronto implicito a perimetro costante."
+  ],
+  "reconciliation": {
+    "kind": "copertura-e-unicita",
+    "territorialSum": false,
+    "totalBetweenSexes": false,
+    "note": "Chiavi, copertura per indicatore/sesso/anno, unità, edizione, flag e integrità; nessuna somma geografica o media F/M/T."
+  },
+  "integrity": {
+    "sourceLockSha256": "a6bd7d1a8699954bc9578785d883e7ec5ddf456ce49ebc0dfe0385b07c9cea9e",
+    "dataArtifact": {
+      "path": "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
+      "bytes": 1959138,
+      "sha256": "70f8087c66622da47d153c29bcba5bcd2af9ed78c6ae08750cf15fcc567bee8d"
+    }
+  }
+}

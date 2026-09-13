@@ -64,7 +64,14 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ...operatorCommonFiles, `${browse}/manifest.json`,
     ...Object.keys(json(`${browse}/manifest.json`).orders).map((order) => `${browse}/${order}.jsonl.gz`),
   ];
-  const operatorDetailFiles = [...operatorCommonFiles, ...operatorMeta.shards.map((shard) => shard.path)];
+  const history = "src/data/generated/anac-operator-history";
+  const historyManifest = json(`${history}/manifest.json`);
+  const operatorDetailFiles = [
+    `${OPERATOR}/meta.json`, `${SPEC}/anac-operator-awards-index.source.json`,
+    `${SPEC}/anac-cig-2007-2025.source.json`, `${history}/manifest.json`,
+    ...historyManifest.shards.map(shard => `${history}/${shard.id}.jsonl.gz`),
+    ...historyManifest.packs.map(pack => `${history}/${pack.id}.pack`),
+  ];
   const peers = "src/data/generated/anac-procurement-peers";
   const peerFiles = [
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
@@ -83,7 +90,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     const route = relative(appRoot, manifest).replaceAll("\\", "/");
     const forbidden = route.startsWith("appalti/operatori/") ? [ENTITY, CPV]
       : route.startsWith("enti/") || route.startsWith("api/enti/") ? [OPERATOR] : [];
-    if (route === "appalti/operatori/page.js.nft.json") forbidden.push(`${OPERATOR}/operators`);
+    if (route !== "appalti/operatori/[ref]/page.js.nft.json") forbidden.push(history);
+    if (route.startsWith("appalti/operatori/")) forbidden.push(`${OPERATOR}/operators`);
     if (HISTORY_ROUTES.has(route) || route === "fonti/stato/page.js.nft.json"
       || route === "api/fonti/stato/route.js.nft.json") {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);

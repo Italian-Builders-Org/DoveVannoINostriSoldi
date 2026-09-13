@@ -29,6 +29,10 @@ const entityProcurementRuntimeFiles = [
   "scripts/etl/specs/anac-awardees.source.json",
 ];
 
+const istatBesLavoroRuntimeFiles = [
+  "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
+];
+
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
 // scripts/styles; switching to nonces would also make static pages dynamic.
@@ -70,6 +74,12 @@ const nextConfig: NextConfig = {
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
+    "/appalti/operatori/\\[ref\\]": [
+      "src/data/generated/anac-operator-awards-index/operators/*",
+      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
+      "src/data/generated/anac-operator-awards-index/summaries.json",
+      "src/data/generated/anac-operator-browse/*",
+    ],
     "/api/mcp": ["data/source-ledger/elements/**/*"],
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
@@ -87,8 +97,10 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-operator-awards-index.source.json",
     ],
     "/appalti/operatori/\\[ref\\]": [
-      "src/data/generated/anac-operator-awards-index/**/*",
+      "src/data/generated/anac-operator-history/*",
+      "src/data/generated/anac-operator-awards-index/meta.json",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
     "/enti/*": entityProcurementRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
@@ -108,9 +120,10 @@ const nextConfig: NextConfig = {
     "/fonti/copertura": integratedSourceRuntimeFiles,
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,
-    "/api/assistant/chat": operatorRuntimeFiles,
-    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
-    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles],
+    "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
+    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles],
   },
 };
 

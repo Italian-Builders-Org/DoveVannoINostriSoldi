@@ -3,7 +3,7 @@
   "dataset": "anac-operator-awards-index",
   "distributionKind": "sharded-public-operator-index",
   "observedAt": "2026-09-08T10:30:00Z",
-  "generatedAt": "2026-09-08T12:20:00Z",
+  "generatedAt": "2026-09-12T17:54:59Z",
   "scope": {
     "distributionKind": "full-snapshot",
     "deltasApplied": [],
@@ -34,7 +34,8 @@
       "descrizione_cpv",
       "denominazione_amministrazione_appaltante",
       "anno_pubblicazione"
-    ]
+    ],
+    "duplicateAwardPolicy": "coalesce-only-known-date; reject-conflicting-known-dates; quarantine-conflicting-amounts"
   },
   "privacy": {
     "containsOperatorTaxIds": false,
@@ -50,7 +51,7 @@
     "la copertura nazionale corrente non e dichiarata",
     "il valore e importo di aggiudicazione dichiarato, non pagamento o incasso",
     "gli award multi-operatore restano nel conteggio ma non nel valore attributo",
-    "la scheda pubblica al massimo 15 aggiudicazioni recenti per operatore",
+    "l'indice di ricerca/MCP conserva un campione massimo di 15 aggiudicazioni per operatore; la scheda web usa lo storico completo",
     "ranking e drill-down sono descrittivi e non indicano illeciti",
     "i campi procedura CIG (oggetto/CPV/stazione) derivano dagli snapshot annuali CIG 2007-2025 e possono mancare se il CIG non compare in quei file",
     "per CIG multi-lotto si preferisce la riga con flag_prevalente, altrimenti oggetto_lotto piu informativo",
@@ -87,7 +88,7 @@
         "awardsSourceLastModified": "2026-01-15"
       },
       "acquisition": "2026-09-08T10:30:00Z",
-      "checkedAt": "2026-09-08T10:30:00Z"
+      "checkedAt": "2026-09-12T17:54:59Z"
     }
   },
   "coverage": {
@@ -105,15 +106,15 @@
   "totals": {
     "operators": 478418,
     "awardRelations": 5337887,
-    "attributedAwards": 4478729,
-    "attributedValue": "2992894556327.748503028282110",
+    "attributedAwards": 4478728,
+    "attributedValue": "2992894511245.7485030282821097094",
     "awardsPublished": 1896866,
     "awardsTruncatedOperators": 44570
   },
   "search": {
     "path": "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
-    "bytes": 15551050,
-    "sha256": "20844b9fd8456cd56fd1e901cf79cec417f68f01e2bbbad467a33d272b927a28",
+    "bytes": 15551055,
+    "sha256": "d88fa348f05004299a69a1367381e76ff85bcd3825093f0b488f432c9cefe4db",
     "operators": 478418
   },
   "shards": [
@@ -1114,8 +1115,8 @@
     {
       "id": "8e",
       "path": "src/data/generated/anac-operator-awards-index/operators/8e.jsonl.gz",
-      "bytes": 814533,
-      "sha256": "4d96809b4cd84ae9b4f25970fe2445e1884d584ac1ed44dddb3065e561cfe479",
+      "bytes": 814545,
+      "sha256": "b05edffa4c87a8f40577956f325c1fc638e15f7e5a8c8ac4b8eaa4c14f1fbb0c",
       "operators": 1898
     },
     {
@@ -1506,8 +1507,8 @@
     {
       "id": "c6",
       "path": "src/data/generated/anac-operator-awards-index/operators/c6.jsonl.gz",
-      "bytes": 771266,
-      "sha256": "0f45187f87c7c61814ce7f6beee2c19aa433609ac029d722d899d16cacec8069",
+      "bytes": 771268,
+      "sha256": "3720fdaa11a7d8d1ab54ca8e4c47b01775b7a348c8a2beebb219c90117316c60",
       "operators": 1875
     },
     {
@@ -1910,7 +1911,7 @@
       "operators": 1850
     }
   ],
-  "sourceSpecSha256": "72c0924d6852cf7011c0fc59b6af16b8b432618abaf7fb019c4a66d70d036aa8",
+  "sourceSpecSha256": "f06f5b52243a1e0903ba22ad8d1f8f41c37da681acf44499abecb2f880f1aca0",
   "cigEnrichment": {
     "years": [
       2007,
@@ -3574,8 +3575,8 @@
   },
   "summaries": {
     "path": "src/data/generated/anac-operator-awards-index/summaries.json",
-    "bytes": 15879,
-    "sha256": "70ee46f36010116a25775e0bb004b6dffdca5f713afbb2f448cc2cb723b52c0f",
+    "bytes": 15881,
+    "sha256": "a500761fca1d2ded2bad5323ab7d8eeb4e4eb4b07094d1104b90d8683a3964ae",
     "limit": 20,
     "coverage": {
       "operators": 478418,

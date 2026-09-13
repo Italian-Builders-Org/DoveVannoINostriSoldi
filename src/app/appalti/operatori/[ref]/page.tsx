@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { integer, longDate } from "@/lib/format";
+import { anacCigDetailUrl } from "@/lib/anac-operator-award-insights";
 import {
-  BELOW_THRESHOLD_REQUIRED_INPUTS,
-  BELOW_THRESHOLD_STATUS,
-  OPERATOR_THRESHOLD_METHODOLOGY_URL,
-  anacCigDetailUrl,
-  describeDistinctContractingAuthorities,
-  distinctContractingAuthorities,
-  publishedProcedureFields,
-} from "@/lib/anac-operator-award-insights";
-import { getAnacOperatorByRef } from "@/lib/data/anac-operator-records";
+  getOperatorHistory,
+  readOperatorHistoryAwards,
+} from "@/lib/data/anac-operator-history";
 import {
-  ANAC_OPERATOR_INDEX,
   isAnacOperatorRef,
   loadAnacOperatorIndexMeta,
 } from "@/lib/data/anac-operator-awards-index";
+import {
+  parseOperatorHistorySearch,
+  operatorHistoryHref,
+  selectOperatorHistoryPage,
+  type OperatorHistoryQuery,
+} from "@/lib/anac-operator-history-query";
 import styles from "../operatori.module.css";
 
 type PageProps = {
   params: Promise<{ ref: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 function formatDecimalEuro(value: string | null): string {
@@ -61,14 +62,22 @@ function amountStatusLabel(status: string): string {
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { ref } = await params;
   if (!isAnacOperatorRef(ref)) {
-    return { title: "Operatore non trovato", robots: { index: false, follow: false } };
+    return {
+      title: "Operatore non trovato",
+      robots: { index: false, follow: false },
+    };
   }
-  const operator = getAnacOperatorByRef(ref);
+  const operator = getOperatorHistory(ref);
   if (!operator) {
-    return { title: "Operatore non trovato", robots: { index: false, follow: false } };
+    return {
+      title: "Operatore non trovato",
+      robots: { index: false, follow: false },
+    };
   }
   return {
     title: `${operator.name} · aggiudicazioni ANAC`,
@@ -77,14 +86,46 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function OperatoreDetailPage({ params }: PageProps) {
+export default async function OperatoreDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { ref } = await params;
   if (!isAnacOperatorRef(ref)) notFound();
-  const operator = getAnacOperatorByRef(ref);
+  const operator = getOperatorHistory(ref);
   if (!operator) notFound();
   const meta = loadAnacOperatorIndexMeta();
-  const authorityCount = distinctContractingAuthorities(operator.topContractingAuthorities);
-
+  const screening = operator.screening2025;
+  const raw = await searchParams;
+  let query: OperatorHistoryQuery;
+  let page: ReturnType<typeof selectOperatorHistoryPage>;
+  try {
+    query = parseOperatorHistorySearch(raw);
+    page = selectOperatorHistoryPage(operator, query);
+  } catch {
+    return (
+      <main className="shell page">
+        <h1>Filtri non validi</h1>
+        <p>Controlla anno, pagina e intervallo degli importi.</p>
+        <Link href={`/appalti/operatori/${ref}`}>Rimuovi i filtri</Link>
+      </main>
+    );
+  }
+  if (page.page > Math.max(1, page.pageCount)) {
+    redirect(
+      operatorHistoryHref(ref, { ...query, page: Math.max(1, page.pageCount) }),
+    );
+  }
+  const awards = readOperatorHistoryAwards(operator, page.positions);
+  const href = (number: number) =>
+    operatorHistoryHref(ref, { ...query, page: number });
+  const procedures = [
+    ...new Set(
+      operator.detail.filterRows
+        .map((row) => row[2])
+        .filter((value): value is string => value !== null),
+    ),
+  ].sort();
   return (
     <main className={`shell page ${styles.page}`}>
       <nav aria-label="Percorso">
@@ -92,173 +133,375 @@ export default async function OperatoreDetailPage({ params }: PageProps) {
         <Link href="/appalti/operatori">Imprese aggiudicatarie</Link> / Scheda
       </nav>
       <div className="page-intro">
-        <p className={styles.eyebrow}>Scheda operatore · ref opaco {operator.ref}</p>
         <h1>{operator.name}</h1>
         <p>
-          Riepilogo delle aggiudicazioni nei full snapshot ANAC. Il codice fiscale non è
-          pubblicato. Varianti di denominazione osservate: {integer(operator.nameVariants)}.
+          Aggiudicazioni ANAC · {yearRange(operator.yearMin, operator.yearMax)}
         </p>
       </div>
-
-      <div className={`stat-strip ${styles.stats}`} aria-label="Riepilogo operatore">
+      <div
+        className={`stat-strip ${styles.stats}`}
+        aria-label="Riepilogo operatore"
+      >
         <div>
           <span className="stat-label">Aggiudicazioni</span>
           <strong className="stat-value">{integer(operator.awardCount)}</strong>
-          <span className="stat-note">{yearRange(operator.yearMin, operator.yearMax)}</span>
         </div>
         <div>
           <span className="stat-label">Valore attribuibile</span>
-          <strong className="stat-value">{formatDecimalEuro(operator.attributedValue)}</strong>
+          <strong className="stat-value">
+            {formatDecimalEuro(
+              operator.attributedAwardCount ? operator.attributedValue : null,
+            )}
+          </strong>
           <span className="stat-note">
-            {integer(operator.attributedAwardCount)} aggiudicazioni a operatore unico
+            {integer(operator.attributedAwardCount)} aggiudicazioni a operatore
+            unico
+          </span>
+        </div>
+        <div>
+          <span className="stat-label">Enti distinti identificati</span>
+          <strong className="stat-value">
+            {integer(operator.distinctContractingAuthorityCount)}
+          </strong>
+          <span className="stat-note">
+            {integer(operator.awardsWithoutAuthority)} aggiudicazioni senza ente
+            identificato
           </span>
         </div>
       </div>
-
-      <aside className="notice" aria-labelledby="operatore-caveat">
-        <h2 id="operatore-caveat">Chi è questo soggetto (da fonte)</h2>
+      <section className="panel" aria-labelledby="screening-title">
+        <h2 id="screening-title">Servizi e forniture 2025</h2>
+        {screening.classifiableCigs > 0 ? (
+          <p>
+            <strong>
+              {integer(screening.below140000)} /{" "}
+              {integer(screening.classifiableCigs)}
+            </strong>{" "}
+            CIG classificabili con importo lotto positivo inferiore a €140.000.
+          </p>
+        ) : (
+          <p>Nessun CIG 2025 classificabile in questo perimetro.</p>
+        )}
         <p>
-          Denominazione e aggiudicazioni da snapshot ANAC aggiudicatari/aggiudicazioni; oggetto,
-          CPV e stazione appaltante dai CIG annuali 2007-2025 quando il CIG è presente in quei file.
-          Qui sotto: fino a {ANAC_OPERATOR_INDEX.maxAwardsPublished} CIG più recenti. Gli euro sono
-          importi di aggiudicazione, non pagamenti. Varianti di nome:{" "}
-          {integer(operator.nameVariants)}
-          {operator.procedureMatchedAwards !== undefined
-            ? ` · procedure CIG abbinate: ${integer(operator.procedureMatchedAwards)}/${integer(operator.awardsPublished)}`
-            : ""}
-          .
+          Da €135.000 a meno di €140.000:{" "}
+          <strong>{integer(screening.band135000To140000)}</strong>. Affidamento
+          diretto tra quelli inferiori a €140.000:{" "}
+          <strong>{integer(screening.directBelow140000)}</strong>.
         </p>
-        {operator.topCpv && operator.topCpv.length > 0 ? (
+        <details className={styles.exactDetails}>
+          <summary>Perimetro e limiti dello screening</summary>
           <p>
-            CPV osservati:{" "}
-            {operator.topCpv.map((item) => `${item.label} (${integer(item.count)})`).join(" · ")}.
+            CIG unici, prevalenti, attivi, con categoria servizi o forniture e
+            modalità «CONTRATTO D’APPALTO». L’anno è quello del CIG, non della
+            data di aggiudicazione. {integer(screening.excludedCigs)} dei{" "}
+            {integer(screening.matchedCigs)} CIG 2025 abbinati sono esclusi dal
+            denominatore per categoria, stato, modalità o importo non
+            classificabile.
           </p>
-        ) : null}
-        {operator.topContractingAuthorities && operator.topContractingAuthorities.length > 0 ? (
           <p>
-            {describeDistinctContractingAuthorities(authorityCount)} tra le aggiudicazioni
-            pubblicate e abbinate ai CIG annuali:{" "}
-            {operator.topContractingAuthorities
-              .map((item) => `${item.label} (${integer(item.count)})`)
-              .join(" · ")}
-            {authorityCount.capped ? " (elenco limitato alle prime 5 voci)" : ""}.
+            Procedura mancante tra i CIG inferiori a €140.000:{" "}
+            {integer(screening.missingProcedureBelow140000)}. Lo screening usa
+            l’importo lotto, distinto dall’importo di aggiudicazione. È
+            descrittivo e non valuta la legittimità; frequenza e vicinanza a una
+            soglia non dimostrano illeciti. Nessuna soglia unica viene applicata
+            allo storico.
           </p>
-        ) : null}
-      </aside>
-
-      <section aria-labelledby="operatore-awards-title">
-        <h2 id="operatore-awards-title">Aggiudicazioni pubblicate</h2>
+          <Link href="/appalti">Analisi dei CIG 2025</Link>
+        </details>
+      </section>
+      <section aria-labelledby="history-title">
+        <h2 id="history-title">Tutte le aggiudicazioni</h2>
+        <form
+          className={styles.historyFilters}
+          aria-label="Filtri delle aggiudicazioni"
+          action={`/appalti/operatori/${ref}`}
+        >
+          <label>
+            Anno di aggiudicazione
+            <select name="year" defaultValue={query.year ?? ""}>
+              <option value="">Tutti</option>
+              {operator.yearly.map((row) => (
+                <option
+                  key={row.year ?? "missing"}
+                  value={row.year ?? "missing"}
+                >
+                  {row.year ?? "Data non disponibile"}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Stazione appaltante
+            <select name="authority" defaultValue={query.authority ?? ""}>
+              <option value="">Tutte</option>
+              {operator.authorities.map((row) => (
+                <option key={row.ref} value={row.ref}>
+                  {row.label ?? row.ref} ({integer(row.awardCount)})
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Procedura
+            <select name="procedure" defaultValue={query.procedure ?? ""}>
+              <option value="">Tutte</option>
+              {procedures.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Importo minimo (€)
+            <input
+              name="minAmount"
+              type="number"
+              min="0"
+              step="any"
+              defaultValue={query.minAmount}
+            />
+          </label>
+          <label>
+            Importo massimo (€)
+            <input
+              name="maxAmount"
+              type="number"
+              min="0"
+              step="any"
+              defaultValue={query.maxAmount}
+            />
+          </label>
+          <button className="btn" type="submit">
+            Filtra
+          </button>
+          <Link href={`/appalti/operatori/${ref}`}>Azzera filtri</Link>
+        </form>
         <p className={styles.note}>
-          Mostrate {integer(operator.awardsPublished)} di {integer(operator.awardCount)}{" "}
-          aggiudicazioni
-          {operator.awardsTruncated
-            ? ` (massimo ${ANAC_OPERATOR_INDEX.maxAwardsPublished} più recenti)`
-            : ""}
-          .
+          {integer(page.total)} risultati su {integer(operator.awardCount)}{" "}
+          aggiudicazioni. Gli importi filtrati e mostrati sono quelli di
+          aggiudicazione, non pagamenti.
         </p>
-        <div className="table-scroll" role="region" aria-label="Tabella aggiudicazioni" tabIndex={0}>
+        {awards.length ? (
+          <div
+            className="table-scroll"
+            role="region"
+            aria-label="Tabella aggiudicazioni"
+            tabIndex={0}
+          >
+            <table className="table">
+              <caption>
+                Aggiudicazioni, dalla data più recente; date mancanti in fondo
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">CIG / data</th>
+                  <th scope="col">Oggetto e stazione appaltante</th>
+                  <th scope="col">Procedura</th>
+                  <th scope="col" className="num">
+                    Importo dichiarato
+                  </th>
+                  <th scope="col">Attribuzione</th>
+                </tr>
+              </thead>
+              <tbody>
+                {awards.map((award) => {
+                  const url = anacCigDetailUrl(award.cig);
+                  return (
+                    <tr key={`${award.cig}-${award.awardId}`}>
+                      <th scope="row">
+                        {url ? (
+                          <a href={url} target="_blank" rel="noreferrer">
+                            {award.cig} ↗
+                          </a>
+                        ) : (
+                          award.cig
+                        )}
+                        <div className={styles.note}>
+                          {award.awardedAt
+                            ? longDate(award.awardedAt)
+                            : "Data n.d."}
+                        </div>
+                      </th>
+                      <td>
+                        {award.procedure?.description ?? "Oggetto n.d."}
+                        <div className={styles.note}>
+                          {award.procedure?.authorityLabel ??
+                            "Stazione appaltante n.d."}
+                        </div>
+                        {award.procedure?.cpvCode ? (
+                          <div className={styles.note}>
+                            CPV {award.procedure.cpvCode} ·{" "}
+                            {award.procedure.cpvLabel}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td>{award.procedure?.procedure ?? "n.d."}</td>
+                      <td className="num">
+                        {formatDecimalEuro(award.amount)}
+                        <div className={styles.note}>
+                          {amountStatusLabel(award.amountStatus)}
+                        </div>
+                      </td>
+                      <td>
+                        {award.attribution === "single-operator"
+                          ? "Unico operatore identificato"
+                          : "Multi-operatore"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>
+            Nessuna aggiudicazione in questa pagina con i filtri selezionati.
+          </p>
+        )}
+        {page.pageCount > 0 ? (
+          <nav
+            className={styles.paginationRow}
+            aria-label="Pagine aggiudicazioni"
+          >
+            {page.page > 1 ? <Link href={href(1)}>Prima</Link> : null}
+            {page.page > 1 ? (
+              <Link href={href(Math.min(page.page - 1, page.pageCount))}>
+                Precedente
+              </Link>
+            ) : null}
+            <span className={styles.pageStatus}>
+              Pagina {integer(page.page)} di {integer(page.pageCount)}
+            </span>
+            {page.page < page.pageCount ? (
+              <Link href={href(page.page + 1)}>Successiva</Link>
+            ) : null}
+            {page.page < page.pageCount ? (
+              <Link href={href(page.pageCount)}>Ultima</Link>
+            ) : null}
+            {page.pageCount > 1 ? (
+              <form
+                className={styles.pageJump}
+                action={`/appalti/operatori/${ref}`}
+              >
+                {Object.entries(query)
+                  .filter(
+                    ([key, value]) => key !== "page" && value !== undefined,
+                  )
+                  .map(([key, value]) => (
+                    <input
+                      key={key}
+                      type="hidden"
+                      name={key}
+                      value={String(value)}
+                    />
+                  ))}
+                <label>
+                  Vai alla pagina
+                  <input
+                    name="page"
+                    type="number"
+                    min="1"
+                    max={page.pageCount}
+                    defaultValue={page.page}
+                    required
+                  />
+                </label>
+                <button className="btn" type="submit">
+                  Vai
+                </button>
+              </form>
+            ) : null}
+          </nav>
+        ) : null}
+      </section>
+      <section aria-labelledby="yearly-title">
+        <h2 id="yearly-title">Andamento annuale</h2>
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Serie annuale"
+          tabIndex={0}
+        >
           <table className="table">
-            <caption>CIG, procedura ANAC, data, importo dichiarato e attributo</caption>
+            <caption>Anno della data di aggiudicazione</caption>
             <thead>
               <tr>
-                <th scope="col">CIG</th>
-                <th scope="col">Oggetto / CPV / SA</th>
-                <th scope="col">Data</th>
+                <th scope="col">Anno</th>
                 <th scope="col" className="num">
-                  Importo dichiarato
+                  Aggiudicazioni
                 </th>
-                <th scope="col">Stato importo</th>
-                <th scope="col">Attributo</th>
+                <th scope="col" className="num">
+                  Con valore attribuibile
+                </th>
+                <th scope="col" className="num">
+                  Valore attribuibile
+                </th>
               </tr>
             </thead>
             <tbody>
-              {operator.awards.map((award) => {
-                const procedure = publishedProcedureFields(award.procedure);
-                const cigUrl = anacCigDetailUrl(award.cig);
-                return (
-                <tr key={`${award.cig}-${award.awardId}`}>
-                  <th scope="row">
-                    {cigUrl ? (
-                      <a href={cigUrl} target="_blank" rel="noreferrer">
-                        {award.cig} ↗
-                      </a>
-                    ) : (
-                      award.cig
-                    )}
-                  </th>
-                  <td>
-                    {procedure ? (
-                      <>
-                        <div>{procedure.oggetto ?? "oggetto n.d. in CIG"}</div>
-                        <div className={styles.note}>
-                          {[
-                            procedure.cpvLabel || procedure.cpvCode
-                              ? `CPV ${procedure.cpvLabel ?? procedure.cpvCode}`
-                              : null,
-                            procedure.contractingAuthority
-                              ? `SA ${procedure.contractingAuthority}`
-                              : null,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ") || "dettaglio procedura parziale"}
-                        </div>
-                      </>
-                    ) : (
-                      <span className={styles.note}>CIG non abbinato agli snapshot 2007-2025</span>
-                    )}
-                  </td>
-                  <td>{award.awardedAt ? longDate(award.awardedAt) : "n.d."}</td>
-                  <td className="num">{formatDecimalEuro(award.amount)}</td>
-                  <td>{amountStatusLabel(award.amountStatus)}</td>
-                  <td>
-                    {award.attribution === "single-operator"
-                      ? "operatore unico"
-                      : "multi-operatore"}
+              {operator.yearly.map((row) => (
+                <tr key={row.year ?? "missing"}>
+                  <th scope="row">{row.year ?? "Data n.d."}</th>
+                  <td className="num">{integer(row.awardCount)}</td>
+                  <td className="num">{integer(row.attributedAwardCount)}</td>
+                  <td className="num">
+                    {formatDecimalEuro(row.attributedValue)}
                   </td>
                 </tr>
-                );
-              })}
+              ))}
             </tbody>
           </table>
         </div>
       </section>
-
-      <section className="panel" aria-labelledby="operatore-sotto-soglia-title">
-        <h2 id="operatore-sotto-soglia-title" className="panel-title">Sotto soglia: stato pubblicato</h2>
+      <section aria-labelledby="authorities-title">
+        <h2 id="authorities-title">Stazioni appaltanti ricorrenti</h2>
         <p>
-          Per questi affidamenti lo stato è <strong>{BELOW_THRESHOLD_STATUS}</strong>. Non
-          pubblichiamo un numero di affidamenti sotto soglia, né per l&apos;impresa né per il
-          singolo CIG, perché non è determinabile dai campi che abbiamo: una soglia unica applicata
-          a tutti gli importi sarebbe sbagliata, dato che la soglia dipende dal periodo, dalla
-          categoria e dal settore della gara.
+          {integer(operator.distinctContractingAuthorityCount)} enti distinti
+          identificati sull’intera storia abbinata ai CIG.{" "}
+          {integer(operator.awardsWithoutAuthority)} aggiudicazioni senza
+          identità dell’ente; {integer(operator.awardsWithoutCigMatch)} senza
+          CIG abbinato.
         </p>
-        <p className={styles.note}>Per classificare un affidamento servirebbero, riga per riga:</p>
-        <ul className={styles.requiredInputs}>
-          {BELOW_THRESHOLD_REQUIRED_INPUTS.map((input) => (
-            <li key={input}>{input}.</li>
+        <ol>
+          {operator.authorities.slice(0, 10).map((row) => (
+            <li key={row.ref}>
+              <Link href={operatorHistoryHref(ref, { authority: row.ref })}>
+                {row.label ?? row.ref}
+              </Link>{" "}
+              · {integer(row.awardCount)} aggiudicazioni
+            </li>
           ))}
-        </ul>
-        <p className={styles.note}>
-          L&apos;importo in tabella è l&apos;importo di aggiudicazione dichiarato in ANAC, non il
-          valore stimato a base di gara, e non è un pagamento. Essere aggiudicatari frequenti, o
-          avere importi vicini a una soglia, non indica di per sé un illecito.{" "}
-          <a href={OPERATOR_THRESHOLD_METHODOLOGY_URL} target="_blank" rel="noreferrer">
-            Metodo e dati richiesti ↗
-          </a>
-          {" · "}
-          <Link href="/appalti">Fascia di soglia sui CIG 2025 →</Link>
-        </p>
+        </ol>
+        {operator.authorities.length > 10 ? (
+          <p className={styles.note}>
+            Mostrati i primi 10 enti. Tutti gli enti identificati sono
+            disponibili nel filtro stazione appaltante.
+          </p>
+        ) : null}
       </section>
-
-      <section className="panel" aria-labelledby="operatore-source-title">
-        <h2 id="operatore-source-title">Fonte</h2>
+      <details className={`panel ${styles.exactDetails}`}>
+        <summary>Fonti e metodo</summary>
         <p>
-          Snapshot osservato il {meta.observedAt.slice(0, 10)}. Licenza CC BY-SA 4.0. Ogni CIG in
-          tabella apre il dettaglio ufficiale ANAC, così il numero resta riconducibile al record di
-          origine.{" "}
-          <Link href="/appalti/operatori">Torna alla ricerca</Link>.
+          Snapshot ANAC osservato il {meta.observedAt.slice(0, 10)}. Licenza CC
+          BY-SA 4.0. Aggiudicazioni e aggiudicatari completi, abbinati ai CIG
+          annuali dal 2007 al 2025. Ogni collegamento CIG apre la fonte
+          ufficiale ANAC.
         </p>
-      </section>
+        <p>
+          Il valore attribuibile somma solo importi validi non negativi delle
+          aggiudicazioni a unico operatore identificato. I contratti
+          multi-operatore restano nei conteggi senza assegnare l’intero valore a
+          ciascun soggetto. Importi mancanti, invalidi o conflittuali restano
+          non disponibili. Le serie non rappresentano pagamenti.
+        </p>
+        <p>
+          Gli enti sono distinti mediante l’identificativo in fonte, non la
+          denominazione. Gli identificativi fiscali non sono pubblicati.
+          Varianti del nome operatore osservate:{" "}
+          {integer(operator.nameVariants)}.
+        </p>
+      </details>
     </main>
   );
 }

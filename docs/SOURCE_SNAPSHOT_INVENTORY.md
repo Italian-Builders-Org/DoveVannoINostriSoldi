@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 64
+- Artefatti nel registro: 66
 - PR automatica: 10 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 48 (PR umana dopo revisione)
+- manuale: 50 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -50,6 +50,7 @@ La revisione e il merge restano umani.
 | `anac-awardees-coverage` | 2026-01-23 | 2026-08-30T18:30:00Z | https://dati.anticorruzione.it/opendata/dataset/aggiudicatari | nessuno | nessuno | manuale | `python3 scripts/etl/anac_awardees_coverage.py --check` |
 | `anac-operator-awards-index` | non dichiarato nello snapshot | 2026-09-08T10:30:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_awards_index.py --check` |
 | `anac-operator-browse` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/etl/anac-operator-browse.mjs --check` |
+| `anac-operator-history` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/etl/anac-operator-history-check.mjs` |
 | `anac-cig-2007-2025` | non dichiarato nello snapshot | 2026-09-08T12:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |
@@ -99,6 +100,7 @@ La revisione e il merge restano umani.
 | `istat-bes-economico-2004-2024` | 2004-2024 | 2026-09-06 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_snapshot.py --check` |
 | `istat-bes-salute-2004-2024` | 2004-2024 | 2026-09-08 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_salute.py --check` |
 | `istat-bes-istruzione-2004-2024` | 2004-2024 | 2026-09-08 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_istruzione.py --check` |
+| `istat-bes-lavoro-2008-2024` | 2008-2024 | 2026-09-12 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_lavoro.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `mef-irpef-dettaglio-2017-2025` | 2016-2024 (anni di imposta) | 2026-09-05 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes | nessuno | nessuno | manuale | `python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check` |

@@ -1593,6 +1593,32 @@
       "trustModel": "Lock dedicato BES_03: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Sei indicatori, 19.120 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. 122 celle g restano null; zero osservato e riga assente restano distinti. Percentuali e infortuni per 10.000 occupati conservano unità e denominatori propri; nessuna somma geografica, media F/M/T o invariante economica. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
     },
     {
+      "id": "istat-bes-relazioni-2011-2024",
+      "owner": "ISTAT BesT BES_05 Relazioni sociali, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-relazioni-2011-2024.data.json",
+        "src/data/generated/istat-bes-relazioni-2011-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_relazioni.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_relazioni.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-relazioni.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_relazioni.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-relazioni-2011-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_05: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Due indicatori, 1.330 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. 8 celle n restano null; zero osservato e riga assente restano distinti. Percentuale e organizzazioni per 10.000 abitanti conservano unità e denominatori propri; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

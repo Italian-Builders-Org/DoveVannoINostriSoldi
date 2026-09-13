@@ -218,6 +218,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-relazioni",
+    name: "ISTAT · BES dei territori, Relazioni sociali",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Due indicatori BES_05; 1.330 osservazioni e 135 territori, di cui 107 province. Periodi propri fra 2011 e 2024; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Percentuale di scuole accessibili e organizzazioni non profit per 10.000 abitanti con denominatori propri: non sono spesa e non si sommano. Solo SEX=T nel payload ufficiale; il flag n resta null. Nessuna imputazione comunale, classifica o correlazione SIOPE. Compositi, padri esterni e geografia variabile sono dichiarati. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -33,6 +33,10 @@ const istatBesLavoroRuntimeFiles = [
   "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
 ];
 
+const istatBesRelazioniRuntimeFiles = [
+  "src/data/generated/istat-bes-relazioni-2011-2024.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
@@ -140,9 +144,10 @@ const nextConfig: NextConfig = {
     "/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/fonti/catalogo": integratedSourceRuntimeFiles,
     "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
-    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
-    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
-    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/api/territori/bes-relazioni": istatBesRelazioniRuntimeFiles,
+    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
   },
 };
 

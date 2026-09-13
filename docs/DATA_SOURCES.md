@@ -716,10 +716,15 @@ Il corpus integra le Tavole 1 e 3 del workbook ISTAT pubblicato il 17 ottobre
 sommersa per branca, entrambe dal 2011 al 2023. Valori, unità e denominatori
 restano distinti; le celle decimali sono conservate senza arrotondamento.
 
-Sono stime di contabilità nazionale, non evasione accertata o risultati dei
-controlli. Le branche sono aggregati nazionali: non vengono inventati territori
-né incroci territorio per settore. Catalogo, API e MCP interrogano gli stessi
-dataset integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
+Aggiunge inoltre la Tav. 6 dei Conti economici territoriali (landing
+22 dicembre 2025): 108 righe di incidenza percentuale 2023 sul valore aggiunto
+per 19 regioni, 2 province autonome, Italia e cinque ripartizioni pubblicate.
+Sono percentuali, non euro; Italia e ripartizioni non si ricostruiscono
+sommando le regioni.
+
+Sono stime di contabilità nazionale o territoriale, non evasione accertata o
+risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
+integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
 ### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08

@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/387",
+  "source": {
+    "holder": "Istituto nazionale di statistica (ISTAT)",
+    "url": "https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx",
+    "landingUrl": "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/",
+    "licenseUrl": "https://www.istat.it/note-legali/",
+    "license": "CC-BY-4.0",
+    "licenseScope": "Salvo diversa indicazione, contenuti pubblicati sul sito ISTAT; attribuzione e indicazione delle modifiche richieste.",
+    "path": "tests/fixtures/istat-economia-non-osservata-territoriale/Tavole-allegate-2025-1.xlsx",
+    "bytes": 92647,
+    "sha256": "c5faf1bd6797b3a1bb7513a75d4433414dc1ffa96bd5ac7560c04d9d0eb3e528",
+    "acquiredAt": "2026-09-13",
+    "checkedAt": "2026-09-13",
+    "publicationDate": "2025-12-22",
+    "referenceYear": 2023,
+    "geography": "19 regioni, 2 province autonome, Italia e 5 ripartizioni pubblicate; nessun dettaglio provinciale o comunale",
+    "updateFrequency": "annuale"
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "I valori pubblicati sono percentuali di incidenza dell'economia non osservata sul valore aggiunto totale, non importi in euro né tax gap monetari."
+    },
+    "periodo": {
+      "referencePeriod": "Anno 2023",
+      "publicationDate": "2025-12-22",
+      "acquisitionDate": "2026-09-13",
+      "checkedAt": "2026-09-13"
+    },
+    "provenance": {
+      "holder": "Istituto nazionale di statistica (ISTAT)",
+      "canonicalUrls": [
+        "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/",
+        "https://www.istat.it/note-legali/",
+        "https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx"
+      ],
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.istat.it/note-legali/"
+    }
+  },
+  "workbook": {
+    "member": "xl/workbook.xml",
+    "relationshipsMember": "xl/_rels/workbook.xml.rels",
+    "sharedStringsMember": "xl/sharedStrings.xml",
+    "expectedSheetNames": [
+      "Indice",
+      "Tav.1",
+      "Tav.2",
+      "Tav.3",
+      "Tav.4",
+      "Tav. 5",
+      "Tav.6",
+      "Tav. 7",
+      "Tav. 8",
+      "Tav. 9",
+      "Tav. 10",
+      "Tav. 11"
+    ]
+  },
+  "tables": [
+    {
+      "datasetId": "istat-economia-non-osservata-territori",
+      "sheetName": "Tav.6",
+      "sheetMember": "xl/worksheets/sheet7.xml",
+      "title": "Tav. 6 - Incidenza dell'economia non osservata sul valore aggiunto totale. Anno 2023 (valori percentuali)",
+      "titleRow": 1,
+      "headerRow": 3,
+      "firstDataRow": 4,
+      "lastDataRow": 30,
+      "footnoteRow": 31,
+      "expectedHeaders": [
+        "TERRITORI",
+        "Rivalutazione",
+        "Lavoro irregolare",
+        "Altro*",
+        "TOTALE"
+      ],
+      "expectedTerritories": [
+        "Piemonte",
+        "Valle d'Aosta / Vallée d'Aoste",
+        "Lombardia",
+        "Provincia Autonoma Bolzano / Bozen",
+        "Provincia Autonoma Trento",
+        "Veneto",
+        "Friuli-Venezia Giulia",
+        "Liguria",
+        "Emilia-Romagna",
+        "Toscana",
+        "Umbria",
+        "Marche",
+        "Lazio",
+        "Abruzzo",
+        "Molise",
+        "Campania",
+        "Puglia",
+        "Basilicata",
+        "Calabria",
+        "Sicilia",
+        "Sardegna",
+        "Italia",
+        "Nord-ovest",
+        "Nord-est",
+        "Centro",
+        "Centro-nord",
+        "Mezzogiorno"
+      ],
+      "publishedAggregates": [
+        "Italia",
+        "Nord-ovest",
+        "Nord-est",
+        "Centro",
+        "Centro-nord",
+        "Mezzogiorno"
+      ],
+      "componentLabels": {
+        "Rivalutazione": "Rivalutazione",
+        "Lavoro irregolare": "Lavoro irregolare",
+        "Altro*": "Altro",
+        "TOTALE": "Totale"
+      },
+      "footnote": "*attività  illegale, mance, fitti in nero e integrazione domanda-offerta.",
+      "percentageTolerance": "0.00000000000001"
+    }
+  ]
+}

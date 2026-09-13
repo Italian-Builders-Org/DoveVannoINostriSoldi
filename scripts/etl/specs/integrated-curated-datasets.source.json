@@ -411,6 +411,19 @@
           "https://www.istat.it/wp-content/uploads/2025/10/Tavole-Economia-non-osservata_2025.xlsx"
         ]
       },
+      "istat-economia-non-osservata-territori": {
+        "holder": "Istituto nazionale di statistica (ISTAT)",
+        "referencePeriod": "Anno 2023; incidenza percentuale regionale e di ripartizione sul valore aggiunto totale",
+        "publicationDate": "2025-12-22",
+        "acquisitionDate": "2026-09-13",
+        "checkedAt": "2026-09-13",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/",
+          "https://www.istat.it/note-legali/",
+          "https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx"
+        ]
+      },
       "eurostat-disuguaglianza-redditi": {
         "holder": "Eurostat (Commissione europea)",
         "referencePeriod": "EU-SILC anni di indagine 2014-2025; redditi di riferimento 2013-2024 (Italia, t-1)",
@@ -5630,6 +5643,46 @@
           "Incidenza percentuale",
           "Unità",
           "Denominatore",
+          "Tavola",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "istat-economia-non-osservata-territori",
+      "title": "ISTAT · economia non osservata · incidenza territoriale 2023",
+      "domain": "benchmarks",
+      "relativePath": "istat-economia-non-osservata-territori.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Stime ISTAT di contabilità territoriale: incidenza percentuale dell'economia non osservata sul valore aggiunto totale. Non sono evasione fiscale accertata, esiti di controlli, tax gap MEF, VAT gap UE o risultati della vigilanza INL.",
+        "I valori sono percentuali, non importi in euro. Rivalutazione, Lavoro irregolare e Altro (nella fonte Altro*, con nota su attività illegale, mance, fitti in nero e integrazione domanda-offerta) restano componenti distinte e sono riconciliate con Totale per ciascun territorio.",
+        "Geografia pubblicata: 19 regioni, 2 province autonome, Italia e le ripartizioni Nord-ovest, Nord-est, Centro, Centro-nord e Mezzogiorno. Italia e le ripartizioni sono aggregati pubblicati dalla fonte: non vanno ricostruiti sommando le regioni e non esistono province o Comuni in questa tavola.",
+        "Distinto dal workbook nazionale sull'economia non osservata (Tavole 1 e 3): altra pubblicazione, altra unità di misura pubblicata qui (solo percentuali sul VA) e anno 2023 soltanto.",
+        "Tav. 6 dei Conti economici territoriali, pubblicazione ufficiale del 22 dicembre 2025. I valori decimali sono conservati dalle celle XLSX senza arrotondamento DVNS.",
+        "Fonte ISTAT, CC BY 4.0 secondo le note legali del sito salvo diversa indicazione; proiezione DVNS in forma lunga con attribuzione e trasformazione dichiarate."
+      ],
+      "expected": {
+        "bytes": 19521,
+        "sha256": "17518458dd77e7a8b244d4c837a1361b56281c14ab4b14510b0af5ae2456776e",
+        "rows": 108,
+        "columns": 8,
+        "headers": [
+          "Territorio",
+          "Componente",
+          "Incidenza percentuale",
+          "Unità",
+          "Denominatore",
+          "Anno",
           "Tavola",
           "URL fonte"
         ]

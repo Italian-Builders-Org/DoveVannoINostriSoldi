@@ -156,8 +156,12 @@ test("inequality catalog links back to its income methodology", () => {
   });
 });
 
-test("national NOE estimates are not linked to oversight signals", () => {
-  for (const id of ["istat-economia-non-osservata-componenti", "istat-economia-sommersa-branche"]) {
+test("national and territorial NOE estimates are not linked to oversight signals", () => {
+  for (const id of [
+    "istat-economia-non-osservata-componenti",
+    "istat-economia-sommersa-branche",
+    "istat-economia-non-osservata-territori",
+  ]) {
     assert.equal(relatedReadingForDataset({ id, domain: "oversight" }), null);
   }
 });

@@ -11,16 +11,8 @@ import {
   type IstatPensionsMetadata,
 } from "@/lib/data/istat-pensions-contract";
 
-// L'artefatto dati e letto a runtime invece che importato come modulo: con
-// `resolveJsonModule` TypeScript inferisce il tipo letterale dell'intero file, e sulle
-// 12.224 osservazioni territoriali questo costa circa 900 MB di heap in fase di
-// typecheck, oltre il tetto predefinito di Node. Stesso schema gia usato per
-// l'artefatto piu grande del repo (src/lib/investigative-explorer.ts). I tipi
-// continuano a venire dal contratto Zod, che valida entrambi gli artefatti qui sotto,
-// quindi la garanzia fail-closed resta invariata e nello stesso istante di prima.
-// I percorsi restano letterali perche il tracer di Next li risolve staticamente:
-// e cosi che i due artefatti finiscono nel bundle di deploy senza doverli dichiarare
-// in `outputFileTracingIncludes`.
+// La lettura runtime evita di inferire i tipi di tutte le righe durante il build.
+// I percorsi letterali consentono a Next di includere gli snapshot nel deploy.
 const DATA_PATH = join(
   process.cwd(),
   "src/data/generated/istat-pensions-2012-2022.data.json",

@@ -1,4 +1,7 @@
 import copy
+import csv
+import hashlib
+import io
 import json
 import subprocess
 import sys
@@ -75,12 +78,43 @@ class IstatPensionsSnapshotTest(unittest.TestCase):
         rebuilt = etl.build_data(PENSIONS_INPUT.read_bytes(), PENSIONERS_INPUT.read_bytes(), self.spec)
         self.assertEqual(rebuilt, self.data)
 
-    @unittest.skipUnless(RAW_INPUTS_AVAILABLE, "raw ISTAT acquisition files are not committed fixtures")
-    def test_raw_hash_and_byte_drift_fail_closed(self) -> None:
-        payload = bytearray(PENSIONS_INPUT.read_bytes())
-        payload[-1] = ord("\n") if payload[-1] != ord("\n") else ord(" ")
-        with self.assertRaises(etl.SnapshotError):
-            etl.build_data(bytes(payload), PENSIONERS_INPUT.read_bytes(), self.spec)
+    def test_csv_intake_rejects_byte_drift_and_incomplete_measure_groups(self) -> None:
+        for name, count_type, amount_type, mean_type in [
+            ("pensionBenefits", "P_NSNU", "ANP_NS", "AMEP_NS"),
+            ("pensioners", "P_RSNU", "ANP_RS", "AMEP_RS"),
+        ]:
+            asset = self.spec["source"]["assets"][name]
+            rows = []
+            for measure, value in [(count_type, "100"), (amount_type, "1200"), (mean_type, "12000")]:
+                row = dict.fromkeys(asset["columns"], "")
+                row.update({
+                    "DATAFLOW": asset["dataflowId"], "FREQ": "A", "REF_AREA": "ITF3",
+                    "DATA_TYPE": measure, "PENSION_TYPE": "ALL", "MONTHLY_AMOUNT_CLASS": "TOTAL",
+                    "SEX": "9", "AGE": "TOTAL", "TIME_PERIOD": "2022", "OBS_VALUE": value,
+                })
+                if name == "pensionBenefits":
+                    row.update({"PENSIONER_SECTOR_PUBPRIV": "9", "EX_PROF_STATUS": "99"})
+                rows.append(row)
+            stream = io.StringIO(newline="")
+            writer = csv.DictWriter(stream, fieldnames=asset["columns"], lineterminator="\r\n")
+            writer.writeheader()
+            writer.writerows(rows)
+            payload = stream.getvalue().encode("utf-8")
+            digest = hashlib.sha256(payload).hexdigest()
+            parsed = etl._read_csv(payload, name, asset["columns"], len(payload), digest)
+            self.assertEqual(parsed, rows)
+            for damaged in [payload + b" ", payload.replace(b"12000", b"12001")]:
+                with self.subTest(asset=name, size=len(damaged)):
+                    with self.assertRaisesRegex(etl.SnapshotError, "bytes/SHA-256"):
+                        etl._read_csv(damaged, name, asset["columns"], len(payload), digest)
+            options = dict(label=name, expected_dataflow=asset["dataflowId"],
+                           pension_benefits=name == "pensionBenefits",
+                           data_types={count_type, amount_type, mean_type},
+                           categories={"ALL"}, territories={"ITF3"})
+            indexed = etl._validate_and_index(parsed, expected_count=3, **options)
+            self.assertEqual(indexed[(count_type, "ITF3", "ALL", 2022)], 100)
+            with self.assertRaisesRegex(etl.SnapshotError, "misure incomplete"):
+                etl._validate_and_index(parsed[:2], expected_count=2, **options)
 
     def test_offline_check_rejects_metadata_source_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

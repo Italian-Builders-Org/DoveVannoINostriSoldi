@@ -137,7 +137,10 @@ test('BYOK planner receives all registered datasets within a compact metadata bu
   await executeByokChat(connection,messages,{signal:signal(),fetcher:async(url,init)=>{
     calls++;
     const body=JSON.parse(init.body);
-    for(const dataset of datasetCatalog)assert.ok(body.instructions.includes(`"id":"${dataset.id}"`));
+    for(const dataset of datasetCatalog) {
+      const compact={id:dataset.id,t:dataset.title,f:dataset.filters,e:Object.fromEntries(Object.entries(dataset.exampleQuery).filter(([key])=>key!=="dataset"))};
+      assert.ok(body.instructions.includes(JSON.stringify(compact)),`planner metadata missing for ${dataset.id}`);
+    }
     assert.ok(body.instructions.length<14000,'catalog and query contract should remain compact');
     return textResponse(JSON.stringify({queries:[],clarification:'Indica un tema.'}));
   }});

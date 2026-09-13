@@ -640,6 +640,32 @@
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
+      "id": "opencivitas-2017",
+      "owner": "OpenCivitas municipal 2017 FC40TOT",
+      "files": [
+        "src/data/generated/opencivitas-2017.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2017_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2017_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2017-contract.test.mjs",
+        "tests/opencivitas-2017-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2017_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC40TOT 2017 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto dalle annualità 2018, 2019, 2021 e 2022. Join di 6627 Comuni RSO; aggregati esclusi. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2017.source.json"
+    },
+    {
       "id": "opencivitas-2018",
       "owner": "OpenCivitas municipal 2018 FC50TOT",
       "files": [
@@ -1668,7 +1694,8 @@
       "owner": "Atlante Istruzione MIM aggregate snapshot",
       "files": [
         "src/data/generated/education-atlas-snapshot.json",
-        "src/data/generated/education-atlas-source-files.json"
+        "src/data/generated/education-atlas-source-files.json",
+        "docs/SOURCE_SNAPSHOT_INVENTORY.md"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
@@ -1685,8 +1712,18 @@
         "command": "python3 scripts/etl/education_atlas_snapshot.py",
         "requiresNetworkInput": true
       },
-      "refreshWorkflow": null,
-      "trustModel": "The committed snapshot and source-file manifest are derived from official MIM IODL 2.0 CSV releases. The offline check validates source hashes, schema, duplicate protection, school-code joins, regional coverage gaps, student/gender reconciliations and the aggregate-only boundary; fixture reconciliation tests cover malformed schemas, incoherent periods or roles, duplicate source URLs and orphan school codes before a future refresh is reviewed for publication."
+      "refreshWorkflow": ".github/workflows/education-atlas-refresh.yml",
+      "publication": {
+        "branch": "automation/data/education-atlas",
+        "commitTitle": "chore(data): refresh Atlante Istruzione snapshot",
+        "prTitle": "data: refresh Atlante Istruzione snapshot",
+        "upstreamUrl": "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Studenti",
+        "upstreamUrls": [
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Studenti",
+          "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Scuole"
+        ]
+      },
+      "trustModel": "Scheduled workflow verifies the 12 currently pinned official MIM IODL 2.0 CSV releases and creates a bot-authored managed PR candidate only when source receipts or the normalized aggregate change. The current observation time is retained for no-op checks and refreshed when bytes change. New school years are outside this slice: changing the pinned URLs, periods or publication dates requires a reviewed generator update. Offline validation covers source hashes, schema, duplicate protection, school-code joins, regional coverage gaps, student/gender reconciliations and the aggregate-only boundary."
     },
     {
       "id": "source-ledger-proofs",

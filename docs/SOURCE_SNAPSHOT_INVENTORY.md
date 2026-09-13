@@ -22,8 +22,8 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 65
-- PR automatica: 10 (data bot, branch `automation/data/*`, PR)
+- Artefatti nel registro: 66
+- PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
 - manuale: 49 (PR umana dopo revisione)
@@ -67,6 +67,7 @@ La revisione e il merge restano umani.
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
+| `opencivitas-2017` | 2017 | 2026-09-12T17:26:20Z | https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2017_snapshot.py --check` |
 | `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
 | `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
@@ -104,7 +105,7 @@ La revisione e il merge restano umani.
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `mef-irpef-dettaglio-2017-2025` | 2016-2024 (anni di imposta) | 2026-09-05 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes | nessuno | nessuno | manuale | `python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
-| `education-atlas` | 2026-02-23 | 2026-08-27T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/education_atlas_snapshot.py --check` |
+| `education-atlas` | 2022/23-2024/25 | 2026-08-27T00:00:00+02:00 | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Studenti | `17 6 * * 1` | `.github/workflows/education-atlas-refresh.yml` | PR automatica | `python3 scripts/etl/education_atlas_snapshot.py --check` |
 | `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
 | `mef-iva-2024-2025` | 2023-2024 (anni di imposta) | 2026-09-11 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | nessuno | nessuno | manuale | `python3 scripts/etl/mef_iva_snapshot.py --check` |

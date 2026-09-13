@@ -69,6 +69,19 @@ class PublishDataRefreshTests(TestCase):
         with self.assertRaises(publisher.PublishError):
             publisher.allowlisted_paths(replace(other, files=("docs/SOURCE_SNAPSHOT_INVENTORY.md",)))
 
+    def test_education_publication_includes_only_its_snapshot_manifest_and_shared_inventory(self) -> None:
+        from dataclasses import replace
+        artifact = publisher.load_artifact("education-atlas")
+        self.assertEqual(publisher.allowlisted_paths(artifact), {
+            "src/data/generated/education-atlas-snapshot.json",
+            "src/data/generated/education-atlas-source-files.json",
+            "docs/SOURCE_SNAPSHOT_INVENTORY.md",
+        })
+        self.assertIn("docs/SOURCE_SNAPSHOT_INVENTORY.md", publisher.publication_file_labels(artifact))
+        for path in ("docs/ROADMAP.md", "src/lib/education-atlas.ts", "scripts/etl/specs/other.json"):
+            with self.assertRaises(publisher.PublishError):
+                publisher.allowlisted_paths(replace(artifact, files=(path,)))
+
     def test_registry_has_only_managed_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
         publications = {
@@ -80,6 +93,7 @@ class PublishDataRefreshTests(TestCase):
             set(publications),
             {
                 "company-atlas",
+                "education-atlas",
                 "consulenti-pubblici",
                 "government-scorecard",
                 "mef-participations",
@@ -95,6 +109,7 @@ class PublishDataRefreshTests(TestCase):
             {item["branch"] for item in publications.values()},
             {
                 "automation/data/company-atlas-v2",
+                "automation/data/education-atlas",
                 "automation/data/consulenti",
                 "automation/data/government-scorecard",
                 "automation/data/mef-participations",

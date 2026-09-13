@@ -483,6 +483,15 @@ export async function queryPublicDataset(
           sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }
+    case "istat_bes_relazioni": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesRelazioni } = await import("@/lib/istat-bes-relazioni-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesRelazioni({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

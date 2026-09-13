@@ -61,6 +61,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-bes-salute",
   "istat-bes-istruzione",
   "istat-bes-lavoro",
+  "istat-bes-relazioni",
   "inps-naspi",
   "mef-irpef-dettaglio",
   "mef-iva",

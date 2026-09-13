@@ -784,3 +784,11 @@ territori (111 province), con periodi e denominatori propri. Percentuali e
 tasso specifico di coorte, non spesa o efficienza; 76 celle ignote `g`, nessuna
 imputazione comunale. Fonte `istat-bes-istruzione`, API/MCP paginati.
 [Lock, definizioni e limiti](research/ISTAT_BES_ISTRUZIONE.md).
+
+### ISTAT BES dei territori — Relazioni sociali
+
+Dominio BES_05, edizione 2025: due indicatori, 1.330 osservazioni e 135
+territori (107 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 8 celle non significative `n`, nessuna imputazione. Fonte
+`istat-bes-relazioni`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_RELAZIONI.md).

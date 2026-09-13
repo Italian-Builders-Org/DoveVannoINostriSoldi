@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import copy
 import hashlib
 import io
 import json
@@ -19,6 +20,7 @@ import sys
 import unicodedata
 import urllib.request
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -26,8 +28,6 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = ROOT / "src/data/generated/education-atlas-snapshot.json"
 DEFAULT_SOURCE_FILES_OUTPUT = ROOT / "src/data/generated/education-atlas-source-files.json"
-OBSERVED_AT_DEFAULT = "2026-08-27T00:00:00+02:00"
-
 PERIODS = (
     ("202223", "2022/23"),
     ("202324", "2023/24"),
@@ -752,6 +752,23 @@ def source_file_manifest(snapshot: dict[str, Any], snapshot_path: Path) -> dict[
     }
 
 
+def observation_timestamp() -> str:
+    """Return the platform observation time in a stable, second-precision form."""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def stable_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Remove polling timestamps before comparing two generated snapshots."""
+    result = copy.deepcopy(snapshot)
+    result.pop("generatedAt", None)
+    result.pop("verifiedAt", None)
+    for source in result.get("sources", []):
+        if isinstance(source, dict):
+            source.pop("observedAt", None)
+            source.pop("verifiedAt", None)
+    return result
+
+
 def assert_source_file_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> None:
     if manifest.get("schemaVersion") != 1:
         raise ValueError("Versione manifest source file inattesa")
@@ -769,7 +786,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--source-files-output", type=Path, default=DEFAULT_SOURCE_FILES_OUTPUT)
     parser.add_argument("--input-dir", type=Path, help="Directory con i 12 CSV già scaricati.")
-    parser.add_argument("--observed-at", default=OBSERVED_AT_DEFAULT)
+    parser.add_argument("--observed-at", help="Timestamp ISO dell'osservazione; per default viene generato in UTC.")
     parser.add_argument("--check", action="store_true", help="Valida lo snapshot già committato senza rete.")
     return parser.parse_args()
 
@@ -784,10 +801,23 @@ def main() -> int:
             assert_source_file_manifest(manifest, snapshot)
             print(f"OK education atlas snapshot: {args.output}")
             return 0
-        snapshot = build_snapshot(args.observed_at, args.input_dir)
+        snapshot = build_snapshot(args.observed_at or observation_timestamp(), args.input_dir)
         assert_snapshot(snapshot)
         manifest = source_file_manifest(snapshot, args.output)
         assert_source_file_manifest(manifest, snapshot)
+
+        if args.output.is_file() and args.source_files_output.is_file():
+            try:
+                committed = json.loads(args.output.read_text(encoding="utf-8"))
+                committed_manifest = json.loads(args.source_files_output.read_text(encoding="utf-8"))
+                assert_snapshot(committed)
+                assert_source_file_manifest(committed_manifest, committed)
+            except (OSError, ValueError, json.JSONDecodeError):
+                committed = None
+            if committed is not None and stable_snapshot(snapshot) == stable_snapshot(committed):
+                print("Education atlas: fonti invariate; nessun nuovo artefatto da pubblicare")
+                return 0
+
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(
             json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n",

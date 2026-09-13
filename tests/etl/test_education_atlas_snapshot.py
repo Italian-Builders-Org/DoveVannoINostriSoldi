@@ -6,6 +6,8 @@ import copy
 import csv
 import io
 import json
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -233,6 +235,76 @@ class EducationAtlasSnapshotETLTests(unittest.TestCase):
         manifest = etl.source_file_manifest(snapshot, etl.DEFAULT_OUTPUT)
         etl.assert_source_file_manifest(manifest, snapshot)
         self.assertEqual(len(manifest["files"]), 12)
+
+    def test_refresh_with_same_receipts_preserves_committed_bytes(self) -> None:
+        committed = self.committed_snapshot()
+        candidate = copy.deepcopy(committed)
+        candidate["generatedAt"] = "2026-09-12T12:00:00Z"
+        candidate["verifiedAt"] = candidate["generatedAt"]
+        for source in candidate["sources"]:
+            source["observedAt"] = candidate["generatedAt"]
+            source["verifiedAt"] = candidate["generatedAt"]
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "snapshot.json"
+            manifest_output = Path(directory) / "source-files.json"
+            output.write_text(json.dumps(committed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            manifest_output.write_text(
+                json.dumps(etl.source_file_manifest(committed, output), ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            output_before = output.read_bytes()
+            manifest_before = manifest_output.read_bytes()
+            with patch.object(etl, "build_snapshot", return_value=candidate), patch.object(
+                sys,
+                "argv",
+                [
+                    "education_atlas_snapshot.py",
+                    "--output",
+                    str(output),
+                    "--source-files-output",
+                    str(manifest_output),
+                ],
+            ):
+                self.assertEqual(etl.main(), 0)
+            self.assertEqual(output.read_bytes(), output_before)
+            self.assertEqual(manifest_output.read_bytes(), manifest_before)
+
+    def test_refresh_with_changed_receipt_writes_fresh_observation(self) -> None:
+        committed = self.committed_snapshot()
+        candidate = copy.deepcopy(committed)
+        candidate["generatedAt"] = "2026-09-12T12:00:00Z"
+        candidate["verifiedAt"] = candidate["generatedAt"]
+        candidate["sourceFiles"][0]["sha256"] = "0" * 64
+        for source in candidate["sources"]:
+            source["observedAt"] = candidate["generatedAt"]
+            source["verifiedAt"] = candidate["generatedAt"]
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "snapshot.json"
+            manifest_output = Path(directory) / "source-files.json"
+            output.write_text(json.dumps(committed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            manifest_output.write_text(
+                json.dumps(etl.source_file_manifest(committed, output), ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(etl, "build_snapshot", return_value=candidate), patch.object(
+                sys,
+                "argv",
+                [
+                    "education_atlas_snapshot.py",
+                    "--output",
+                    str(output),
+                    "--source-files-output",
+                    str(manifest_output),
+                ],
+            ):
+                self.assertEqual(etl.main(), 0)
+            written = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(written["verifiedAt"], "2026-09-12T12:00:00Z")
+            self.assertEqual(written["sourceFiles"][0]["sha256"], "0" * 64)
+            self.assertEqual(written["sourceFiles"][0]["publishedAt"], committed["sourceFiles"][0]["publishedAt"])
+            self.assertEqual(written["sourceFiles"][0]["dataAsOf"], committed["sourceFiles"][0]["dataAsOf"])
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import runpy
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -39,6 +40,30 @@ class SourceSnapshotInventoryTests(unittest.TestCase):
         module = runpy.run_path(str(SCRIPT))
         payload = {"period": {"from": 2017, "to": 2025}, "taxPeriod": {"from": 2016, "to": 2024}}
         self.assertEqual(module["pick_period"](payload), "2016-2024 (anni di imposta)")
+
+    def test_period_labels_preserve_multi_year_school_coverage(self):
+        module = runpy.run_path(str(SCRIPT))
+        payload = {
+            "periods": [
+                {"id": "202223", "label": "2022/23"},
+                {"id": "202324", "label": "2023/24"},
+                {"id": "202425", "label": "2024/25"},
+            ]
+        }
+        self.assertEqual(module["pick_period"](payload), "2022/23-2024/25")
+        self.assertIsNone(module["pick_period"]({"periods": [{"label": "released"}]}))
+
+    def test_large_snapshot_header_keeps_period_labels_for_inventory(self):
+        module = runpy.run_path(str(SCRIPT))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "large.json"
+            path.write_text(
+                '{"periods":[{"id":"202223","label":"2022/23"},{"id":"202425","label":"2024/25"}],'
+                '"padding":"' + ("x" * (module["MAX_SNAPSHOT_BYTES"] + 1)) + '"}',
+                encoding="utf-8",
+            )
+            payload = module["load_json"](path)
+        self.assertEqual(module["pick_period"](payload), "2022/23-2024/25")
 
     def test_compact_entity_snapshot_exposes_its_years_and_acquisition(self):
         module = runpy.run_path(str(SCRIPT))

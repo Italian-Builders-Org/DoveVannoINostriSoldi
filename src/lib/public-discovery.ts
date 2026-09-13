@@ -170,11 +170,6 @@ export function publicRobots(siteUrl: string): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
-      {
-        userAgent: ["ClaudeBot", "GPTBot", "CCBot", "meta-externalagent"],
-        allow: "/",
-        disallow: ["/api/", "/enti/", "/appalti/operatori"],
-      },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

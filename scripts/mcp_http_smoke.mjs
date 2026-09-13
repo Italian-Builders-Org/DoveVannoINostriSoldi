@@ -70,7 +70,7 @@ async function mcpRequest(
 async function runPensionSmoke() {
   const before = contractPostCount;
   for (const territory of ["IT", "ITF3", "ITG29"]) {
-    const pensionApi = await fetch(new URL(`/api/spese/pensioni?anno=2022&territorio=${territory}`, baseUrl));
+    const pensionApi = await fetch(new URL(`/api/spese/pensioni?anno=2022&territorio=${territory}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
     assert.equal(pensionApi.status, 200);
     const pensionData = await pensionApi.json();
     assert.equal(pensionData.territory, territory);

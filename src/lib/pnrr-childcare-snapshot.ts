@@ -1,6 +1,7 @@
 import "server-only";
+import { join } from "node:path";
 
-import rawData from "@/data/generated/pnrr-childcare.data.json";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import rawMeta from "@/data/generated/pnrr-childcare.meta.json";
 import {
   assertPnrrChildcareReconciliation,
@@ -9,7 +10,9 @@ import {
   type PnrrChildcareProject,
 } from "@/lib/data/pnrr-childcare-contract";
 
-export const pnrrChildcareData = assertPnrrChildcareData(rawData);
+export const pnrrChildcareData = assertPnrrChildcareData(
+  readJsonSnapshot(join(process.cwd(), "src/data/generated/pnrr-childcare.data.json"), 24 * 1024 * 1024),
+);
 export const pnrrChildcareMeta = assertPnrrChildcareMeta(rawMeta);
 
 if (pnrrChildcareData.referenceDate !== pnrrChildcareMeta.referenceDate) {

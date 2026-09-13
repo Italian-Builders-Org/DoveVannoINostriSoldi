@@ -12,8 +12,10 @@ test("ISTAT territorial NOE percentages keep lexical precision through API and M
   const selected = await selectIntegratedDataset({ datasetId, q: "Calabria", limit: 20 });
   assert.equal(selected.dataset.publicRows, 108);
   assert.equal(selected.dataset.licenseStatus, "verified-open-cc-by-4.0");
-  assert.equal(selected.dataset.sourceMetadata.publicationDate, "2025-01-28");
+  assert.equal(selected.dataset.sourceMetadata.publicationDate, "2025-12-22");
   assert.equal(selected.dataset.sourceMetadata.acquisitionDate, "2026-09-13");
+  assert.ok(selected.dataset.sourceMetadata.canonicalUrls.includes("https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/"));
+  assert.match(selected.dataset.caveats.join(" "), /19 regioni, 2 province autonome/);
   assert.match(selected.dataset.sourceMetadata.referencePeriod, /2023/);
   assert.match(selected.dataset.caveats.join(" "), /non (?:sono )?evasione fiscale accertata/i);
   assert.match(selected.dataset.caveats.join(" "), /percentuali/i);

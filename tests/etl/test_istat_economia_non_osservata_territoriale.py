@@ -102,3 +102,16 @@ class IstatEconomiaNonOsservataTerritorialeTests(TestCase):
 
     def test_committed_corpus_is_rederived_from_the_locked_workbook(self) -> None:
         noe.check_committed(noe.projections(self.spec))
+
+    def test_rejects_repeated_provenance_drift(self) -> None:
+        for axis, key, value in [
+            ("periodo", "publicationDate", "2025-01-28"),
+            ("periodo", "checkedAt", "2026-09-12"),
+            ("provenance", "holder", "altro titolare"),
+            ("provenance", "canonicalUrls", []),
+        ]:
+            with self.subTest(axis=axis, key=key):
+                changed = deepcopy(self.spec)
+                changed["semantics"][axis][key] = value
+                with self.assertRaises(noe.SourceError):
+                    noe.validate_contract(changed)

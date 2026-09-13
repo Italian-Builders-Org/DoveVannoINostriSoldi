@@ -55,13 +55,13 @@ def validate_contract(spec: dict) -> None:
         source.get("holder") != "Istituto nazionale di statistica (ISTAT)"
         or source.get("url") != "https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx"
         or source.get("landingUrl")
-        != "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-anni-2021-2023/"
+        != "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/"
         or source.get("licenseUrl") != "https://www.istat.it/note-legali/"
         or source.get("license") != "CC-BY-4.0"
-        or source.get("publicationDate") != "2025-01-28"
+        or source.get("publicationDate") != "2025-12-22"
         or source.get("referenceYear") != 2023
         or source.get("geography")
-        != "20 regioni, 2 province autonome, Italia e 5 ripartizioni pubblicate; nessun dettaglio provinciale o comunale"
+        != "19 regioni, 2 province autonome, Italia e 5 ripartizioni pubblicate; nessun dettaglio provinciale o comunale"
         or source.get("updateFrequency") != "annuale"
     ):
         raise SourceError("identità, licenza, periodo o geografia della fonte divergenti")
@@ -76,9 +76,19 @@ def validate_contract(spec: dict) -> None:
         raise SourceError("asse soldi deve dichiarare present=false per le percentuali")
     periodo = semantics.get("periodo")
     provenance = semantics.get("provenance")
-    if not isinstance(periodo, dict) or periodo.get("referencePeriod") != "Anno 2023":
+    if periodo != {
+        "referencePeriod": "Anno 2023",
+        "publicationDate": source["publicationDate"],
+        "acquisitionDate": source["acquiredAt"],
+        "checkedAt": source["checkedAt"],
+    }:
         raise SourceError("asse periodo divergente")
-    if not isinstance(provenance, dict) or provenance.get("license") != "CC-BY-4.0":
+    if provenance != {
+        "holder": source["holder"],
+        "canonicalUrls": [source["landingUrl"], source["licenseUrl"], source["url"]],
+        "license": source["license"],
+        "licenseUrl": source["licenseUrl"],
+    }:
         raise SourceError("asse provenance divergente")
 
     corpus_spec = json.loads(CORPUS_SPEC.read_text())

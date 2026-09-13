@@ -6,7 +6,7 @@ Questa integrazione copre due fonti ufficiali ISTAT distinte.
    nazionali — Anni 2020-2023*, pubblicato il 17 ottobre 2025 (Tavole 1 e 3,
    geografia nazionale).
 2. La Tav. 6 delle tavole allegate ai *Conti economici territoriali — Anni
-   2021-2023*, con data di pubblicazione sul landing ufficiale **28 gennaio
+   2022-2024*, con data di pubblicazione sul landing ufficiale **22 dicembre
    2025** (incidenza regionale e di ripartizione sul valore aggiunto, anno
    2023).
 
@@ -30,17 +30,23 @@ I workbook sono acquisiti come fixture ufficiali per i controlli offline.
 ## Source lock territoriale (Tav. 6)
 
 - titolare: Istituto nazionale di statistica (ISTAT);
-- [pagina ufficiale](https://www.istat.it/comunicato-stampa/conti-economici-territoriali-anni-2021-2023/);
+- [pagina ufficiale](https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/);
 - [workbook ufficiale](https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx);
 - formato: XLSX, 92.647 byte;
 - SHA-256: `c5faf1bd6797b3a1bb7513a75d4433414dc1ffa96bd5ac7560c04d9d0eb3e528`;
-- pubblicazione dichiarata dal landing: 28 gennaio 2025;
+- pubblicazione dichiarata dal landing: 22 dicembre 2025;
 - acquisizione e controllo: 13 settembre 2026;
 - periodo di riferimento: anno 2023;
-- geografia: 20 regioni, 2 province autonome, Italia e cinque ripartizioni
+- geografia: 19 regioni, 2 province autonome, Italia e cinque ripartizioni
   pubblicate (Nord-ovest, Nord-est, Centro, Centro-nord, Mezzogiorno);
 - aggiornamento: annuale;
 - licenza: CC BY 4.0 via le [note legali ISTAT](https://www.istat.it/note-legali/).
+
+Il workbook è collegato dal comunicato del 22 dicembre 2025 (edizione
+2022–2024); la Tav. 6 riguarda soltanto il 2023. Il comunicato del 28 gennaio
+2025 rinvia a un altro workbook e non identifica questa edizione. Le due
+province autonome sostituiscono il Trentino-Alto Adige nella tavola: 21 unità
+regionali, più Italia e cinque ripartizioni, per 27 territori complessivi.
 
 Il parser legge i valori lessicali delle celle XLSX: non converte i numeri in
 float e non arrotonda i decimali pubblicati. L'asse `soldi` dichiara

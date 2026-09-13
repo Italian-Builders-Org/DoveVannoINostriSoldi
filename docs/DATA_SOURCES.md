@@ -694,8 +694,8 @@ sommersa per branca, entrambe dal 2011 al 2023. Valori, unità e denominatori
 restano distinti; le celle decimali sono conservate senza arrotondamento.
 
 Aggiunge inoltre la Tav. 6 dei Conti economici territoriali (landing
-28 gennaio 2025): 108 righe di incidenza percentuale 2023 sul valore aggiunto
-per 20 regioni, 2 province autonome, Italia e cinque ripartizioni pubblicate.
+22 dicembre 2025): 108 righe di incidenza percentuale 2023 sul valore aggiunto
+per 19 regioni, 2 province autonome, Italia e cinque ripartizioni pubblicate.
 Sono percentuali, non euro; Italia e ripartizioni non si ricostruiscono
 sommando le regioni.
 

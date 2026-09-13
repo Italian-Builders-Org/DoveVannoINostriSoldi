@@ -414,12 +414,12 @@
       "istat-economia-non-osservata-territori": {
         "holder": "Istituto nazionale di statistica (ISTAT)",
         "referencePeriod": "Anno 2023; incidenza percentuale regionale e di ripartizione sul valore aggiunto totale",
-        "publicationDate": "2025-01-28",
+        "publicationDate": "2025-12-22",
         "acquisitionDate": "2026-09-13",
         "checkedAt": "2026-09-13",
         "updateFrequency": "annuale; acquisizione e promozione manuali",
         "canonicalUrls": [
-          "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-anni-2021-2023/",
+          "https://www.istat.it/comunicato-stampa/conti-economici-territoriali-2022-2024/",
           "https://www.istat.it/note-legali/",
           "https://www.istat.it/wp-content/uploads/2025/12/Tavole-allegate-2025-1.xlsx"
         ]
@@ -5666,9 +5666,9 @@
       "caveats": [
         "Stime ISTAT di contabilità territoriale: incidenza percentuale dell'economia non osservata sul valore aggiunto totale. Non sono evasione fiscale accertata, esiti di controlli, tax gap MEF, VAT gap UE o risultati della vigilanza INL.",
         "I valori sono percentuali, non importi in euro. Rivalutazione, Lavoro irregolare e Altro (nella fonte Altro*, con nota su attività illegale, mance, fitti in nero e integrazione domanda-offerta) restano componenti distinte e sono riconciliate con Totale per ciascun territorio.",
-        "Geografia pubblicata: 20 regioni, 2 province autonome, Italia e le ripartizioni Nord-ovest, Nord-est, Centro, Centro-nord e Mezzogiorno. Italia e le ripartizioni sono aggregati pubblicati dalla fonte: non vanno ricostruiti sommando le regioni e non esistono province o Comuni in questa tavola.",
+        "Geografia pubblicata: 19 regioni, 2 province autonome, Italia e le ripartizioni Nord-ovest, Nord-est, Centro, Centro-nord e Mezzogiorno. Italia e le ripartizioni sono aggregati pubblicati dalla fonte: non vanno ricostruiti sommando le regioni e non esistono province o Comuni in questa tavola.",
         "Distinto dal workbook nazionale sull'economia non osservata (Tavole 1 e 3): altra pubblicazione, altra unità di misura pubblicata qui (solo percentuali sul VA) e anno 2023 soltanto.",
-        "Tav. 6 dei Conti economici territoriali, pubblicazione ufficiale del 28 gennaio 2025. I valori decimali sono conservati dalle celle XLSX senza arrotondamento DVNS.",
+        "Tav. 6 dei Conti economici territoriali, pubblicazione ufficiale del 22 dicembre 2025. I valori decimali sono conservati dalle celle XLSX senza arrotondamento DVNS.",
         "Fonte ISTAT, CC BY 4.0 secondo le note legali del sito salvo diversa indicazione; proiezione DVNS in forma lunga con attribuzione e trasformazione dichiarate."
       ],
       "expected": {

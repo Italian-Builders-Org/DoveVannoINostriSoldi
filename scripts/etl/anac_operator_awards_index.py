@@ -29,6 +29,8 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Iterator, Mapping
 
+from monetary import add_decimals
+
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SPEC = ROOT / "scripts" / "etl" / "specs" / "anac-operator-awards-index.source.json"
@@ -200,6 +202,23 @@ def prepare_db(connection: sqlite3.Connection) -> None:
 
 
 def load_awards(connection: sqlite3.Connection, path: Path, member_name: str, encoding: str, observed: date) -> int:
+    def same_amount(left: str | None, right: str | None) -> bool:
+        if left is None or right is None:
+            return left is right
+        return Decimal(left) == Decimal(right)
+
+    connection.create_function("same_award_amount", 2, same_amount, deterministic=True)
+    connection.execute("""CREATE TEMP TRIGGER IF NOT EXISTS reject_conflicting_award_dates BEFORE INSERT ON awards
+        WHEN EXISTS (SELECT 1 FROM awards WHERE cig=NEW.cig AND award_id=NEW.award_id
+            AND awarded_at IS NOT NULL AND NEW.awarded_at IS NOT NULL AND awarded_at != NEW.awarded_at)
+        BEGIN SELECT RAISE(ABORT, 'Conflicting non-empty award dates in source'); END""")
+    insert = """INSERT INTO awards(cig, award_id, awarded_at, amount, amount_status) VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(cig, award_id) DO UPDATE SET
+            awarded_at=COALESCE(awards.awarded_at, excluded.awarded_at),
+            amount=CASE WHEN awards.amount_status=excluded.amount_status AND same_award_amount(awards.amount, excluded.amount)
+                THEN awards.amount ELSE NULL END,
+            amount_status=CASE WHEN awards.amount_status=excluded.amount_status AND same_award_amount(awards.amount, excluded.amount)
+                THEN awards.amount_status ELSE 'conflicting' END"""
     handle, reader = open_csv_member(path, member_name, encoding)
     try:
         assert_headers(reader, AWARD_HEADERS, "aggiudicazioni")
@@ -219,22 +238,16 @@ def load_awards(connection: sqlite3.Connection, path: Path, member_name: str, en
             amount_status, amount, _scale = base.parse_amount(raw.get("importo_aggiudicazione", ""))
             batch.append((cig, award_id, awarded_at, amount, amount_status))
             if len(batch) >= 20_000:
-                connection.executemany(
-                    "INSERT OR IGNORE INTO awards(cig, award_id, awarded_at, amount, amount_status) "
-                    "VALUES (?, ?, ?, ?, ?)",
-                    batch,
-                )
+                connection.executemany(insert, batch)
                 batch.clear()
             if rows % 1_000_000 == 0:
                 print(f"anac operator index: awards rows={rows}", file=sys.stderr, flush=True)
         if batch:
-            connection.executemany(
-                "INSERT OR IGNORE INTO awards(cig, award_id, awarded_at, amount, amount_status) "
-                "VALUES (?, ?, ?, ?, ?)",
-                batch,
-            )
+            connection.executemany(insert, batch)
         connection.commit()
         return rows
+    except sqlite3.IntegrityError as exc:
+        raise ContractError(f"Aggiudicazioni non riconciliabili: {exc}") from exc
     finally:
         close_csv(handle)
 
@@ -324,6 +337,8 @@ def most_frequent_name(names: list[str]) -> str:
 def project_operator(
     ref: str,
     rows: list[tuple[object, ...]],
+    *,
+    award_limit: int | None = MAX_AWARDS_PUBLISHED,
 ) -> dict[str, object]:
     names = [str(row[2]) for row in rows]
     display = most_frequent_name(names) if names else FALLBACK_NAME
@@ -349,19 +364,19 @@ def project_operator(
             if attribution == "single-operator" and amount is not None and amount_status in {
                 "positive-exact-cent", "positive-subcent", "zero",
             }:
-                attributed_value += Decimal(str(amount))
+                attributed_value = add_decimals(attributed_value, Decimal(str(amount)))
                 attributed_award_count += 1
     award_list = sorted(
         awards_by_key.values(),
         key=lambda item: (
-            item["awardedAt"] is None,
+            item["awardedAt"] is not None,
             str(item["awardedAt"] or ""),
             str(item["cig"]),
             str(item["awardId"]),
         ),
         reverse=True,
     )
-    published = award_list[:MAX_AWARDS_PUBLISHED]
+    published = award_list if award_limit is None else award_list[:award_limit]
     year_min = min(years) if years else None
     year_max = max(years) if years else None
     return {
@@ -381,7 +396,11 @@ def project_operator(
     }
 
 
-def build_operator_records(connection: sqlite3.Connection) -> Iterator[dict[str, object]]:
+def build_operator_records(
+    connection: sqlite3.Connection,
+    *,
+    award_limit: int | None = MAX_AWARDS_PUBLISHED,
+) -> Iterator[dict[str, object]]:
     cursor = connection.execute(
         """
         SELECT r.cf, r.cig, r.award_id, r.name, a.awarded_at, a.amount, a.amount_status, c.cf_count
@@ -401,7 +420,7 @@ def build_operator_records(connection: sqlite3.Connection) -> Iterator[dict[str,
             current_cf = cf
         if cf != current_cf:
             index += 1
-            yield project_operator(f"op-{index:08d}", buffer)
+            yield project_operator(f"op-{index:08d}", buffer, award_limit=award_limit)
             if index % 50_000 == 0:
                 print(f"anac operator index: projected {index}", file=sys.stderr, flush=True)
             current_cf = cf
@@ -410,7 +429,7 @@ def build_operator_records(connection: sqlite3.Connection) -> Iterator[dict[str,
             buffer.append(payload)
     if current_cf is not None and buffer:
         index += 1
-        yield project_operator(f"op-{index:08d}", buffer)
+        yield project_operator(f"op-{index:08d}", buffer, award_limit=award_limit)
         print(f"anac operator index: projected {index}", file=sys.stderr, flush=True)
 
 
@@ -474,7 +493,7 @@ def write_artifacts(
                     totals["awardsPublished"] += int(record["awardsPublished"])
                     if record["awardsTruncated"]:
                         totals["awardsTruncatedOperators"] += 1
-                    attributed_value_total += Decimal(str(record["attributedValue"]))
+                    attributed_value_total = add_decimals(attributed_value_total, Decimal(str(record["attributedValue"])))
             finally:
                 search_gz.close()
     finally:

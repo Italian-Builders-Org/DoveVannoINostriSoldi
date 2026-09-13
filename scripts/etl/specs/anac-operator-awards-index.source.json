@@ -3,7 +3,7 @@
   "dataset": "anac-operator-awards-index",
   "distributionKind": "sharded-public-operator-index",
   "observedAt": "2026-09-08T10:30:00Z",
-  "generatedAt": "2026-09-08T10:30:00Z",
+  "generatedAt": "2026-09-12T17:54:59Z",
   "scope": {
     "distributionKind": "full-snapshot",
     "deltasApplied": [],
@@ -41,7 +41,8 @@
       "descrizione_cpv",
       "denominazione_amministrazione_appaltante",
       "anno_pubblicazione"
-    ]
+    ],
+    "duplicateAwardPolicy": "coalesce-only-known-date; reject-conflicting-known-dates; quarantine-conflicting-amounts"
   },
   "privacy": {
     "containsOperatorTaxIds": false,
@@ -57,7 +58,7 @@
     "la copertura nazionale corrente non e dichiarata",
     "il valore e importo di aggiudicazione dichiarato, non pagamento o incasso",
     "gli award multi-operatore restano nel conteggio ma non nel valore attributo",
-    "la scheda pubblica al massimo 15 aggiudicazioni recenti per operatore",
+    "l'indice di ricerca/MCP conserva un campione massimo di 15 aggiudicazioni per operatore; la scheda web usa lo storico completo",
     "ranking e drill-down sono descrittivi e non indicano illeciti",
     "i campi procedura CIG (oggetto/CPV/stazione) derivano dagli snapshot annuali CIG 2007-2025 e possono mancare se il CIG non compare in quei file",
     "per CIG multi-lotto si preferisce la riga con flag_prevalente, altrimenti oggetto_lotto piu informativo",

@@ -184,6 +184,32 @@
       "trustModel": "Deterministic complete rankings derived offline from the hash-pinned public operator search index. Manifest binds source hashes and each gzip block; runtime verifies only consumed blocks. No additional source or fiscal identifiers."
     },
     {
+      "id": "anac-operator-history",
+      "owner": "ANAC complete operator award history",
+      "files": [
+        "src/data/generated/anac-operator-history"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/etl/anac-operator-history-check.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_anac_operator_history.py"
+      ],
+      "nodeTests": [
+        "tests/anac-operator-history.test.mjs",
+        "tests/anac-operator-history-reader.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/anac_operator_history_build.py --awards-cache ... --cig-cache ... --database ... --output ...",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "trustModel": "Complete typed derivative of the same hash-pinned ANAC awards, awardees and 2007-2025 CIG archives. The manifest binds the parent index and CIG source lock, every summary shard and packed detail file. Runtime verifies bounded detail blocks independently. Operator and authority fiscal identifiers remain private; all identities exposed are opaque references. Screening uses unique eligible 2025 CIG lot amounts and explicit denominators, never a historical legal classification."
+    },
+    {
       "id": "anac-cig-2007-2025",
       "owner": "ANAC CIG annual monthly snapshots used to enrich operator procedures",
       "files": [
@@ -426,7 +452,8 @@
         "tests/etl/test_mim_school_services.py",
         "tests/etl/test_ted_notices.py",
         "tests/etl/test_pnrr_projects.py",
-        "tests/etl/test_conto_annuale.py"
+        "tests/etl/test_conto_annuale.py",
+        "tests/etl/test_istat_economia_non_osservata.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",
@@ -434,7 +461,8 @@
         "tests/mim-school-services.test.mjs",
         "tests/ted-notices.test.mjs",
         "tests/pnrr-projects.test.mjs",
-        "tests/conto-annuale.test.mjs"
+        "tests/conto-annuale.test.mjs",
+        "tests/istat-economia-non-osservata.test.mjs"
       ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",
@@ -1510,6 +1538,32 @@
       "sourceSpec": "scripts/etl/specs/istat-bes-istruzione-2004-2024.source.json",
       "refreshWorkflow": null,
       "trustModel": "Lock dedicato BES_02: CSV e codelist ufficiali vincolati per URL, byte, SHA-256. Nove indicatori, 139 territori e 111 province. Copertura per indicatore/sesso/anno, Parent e compositi espliciti. 76 celle g restano null; nessuna somma o riconciliazione F/M/T trasferita da altri domini. Valori ufficiali sopra 100 conservati. Contratti ETL/runtime offline, licenza not-declared."
+    },
+    {
+      "id": "istat-bes-lavoro-2008-2024",
+      "owner": "ISTAT BesT BES_03 Lavoro e conciliazione, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-lavoro-2008-2024.data.json",
+        "src/data/generated/istat-bes-lavoro-2008-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_lavoro.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_lavoro.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-lavoro.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_lavoro.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-lavoro-2008-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_03: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Sei indicatori, 19.120 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. 122 celle g restano null; zero osservato e riga assente restano distinti. Percentuali e infortuni per 10.000 occupati conservano unità e denominatori propri; nessuna somma geografica, media F/M/T o invariante economica. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
     },
     {
       "id": "istat-epea-2016-2022",

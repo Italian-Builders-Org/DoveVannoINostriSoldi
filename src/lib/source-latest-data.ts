@@ -98,6 +98,10 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: "2004–2024; periodo distinto per indicatore",
   },
+  "istat-bes-lavoro": {
+    kind: "period",
+    label: "2008–2024; periodo distinto per indicatore",
+  },
   "inps-naspi": {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,

@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 93 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 95 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 93 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 93 | 71 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 14.803.968 | 1.821.622 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.065.988.108 | somma dei byte impegnati nelle 93 ricevute |
+| Dataset correnti | 95 | 73 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 14.804.696 | 1.822.350 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.066.145.192 | somma dei byte impegnati nelle 95 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 1.821.622 righe della proiezione pubblica restano invece interrogabili anche
+Le 1.822.350 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -40,6 +40,11 @@ GUUE verificato; nessuna somma o join con ANAC. [Contratto e riproduzione](TED_N
 Il dataset `pnrr-progetti` aggiunge 291.398 registrazioni nazionali ReGiS,
 con 285.992 CUP validi distinti e localizzazioni collegate esattamente.
 Finanziamenti e pagamenti restano distinti. [Contratto e riproduzione](PNRR_PROJECTS.md).
+I dataset `istat-economia-non-osservata-componenti` e
+`istat-economia-sommersa-branche` aggiungono 728 righe dalle Tavole 1 e 3
+ISTAT, 2011-2023. Valori, percentuali e denominatori restano distinti; sono
+stime di contabilità nazionale, non evasione accertata. [Contratto e
+riproduzione](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -99,6 +104,8 @@ fornisce comunque un percorso di provenienza verificabile.
 | `incarichi-nominativi-shard` | Incarichi nominativi: fonti estese | appointments | 39.685 | 39.685 | 39.685 | rows | documented-fact | not-declared |
 | `indennita-organi` | Indennità degli organi | personnel | 131 | 131 | 131 | rows | documented-fact | not-declared |
 | `indice-enti` | Indice degli enti | entities | 170 | 170 | 12 | source-index | documented-fact | not-declared |
+| `istat-economia-non-osservata-componenti` | ISTAT · economia non osservata · componenti nazionali | benchmarks | 104 | 104 | 104 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `istat-economia-sommersa-branche` | ISTAT · economia sommersa · incidenza per branca | benchmarks | 624 | 624 | 624 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `istat-misura-comune-dipendenza-anziani` | A misura di Comune · Indice di dipendenza anziani | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |
 | `istat-misura-comune-dipendenza-strutturale` | A misura di Comune · Indice di dipendenza strutturale | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |
 | `istat-misura-comune-vecchiaia` | A misura di Comune · Indice di vecchiaia | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |

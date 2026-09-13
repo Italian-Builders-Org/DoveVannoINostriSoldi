@@ -31,6 +31,7 @@ const SOURCE_IDS = [
   "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-gdp", "oecd-taxing-wages", "eurostat-cofog", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "istat-bes-salute", "istat-bes-istruzione", "istat-bes-lavoro", "inps-naspi", "mef-irpef-dettaglio", "ameco",
   "governi-presidenza",
   "mef-iva",
+  "eu-vat-gap-italy",
 ];
 const MCP_HEADERS = {
   "content-type": "application/json",

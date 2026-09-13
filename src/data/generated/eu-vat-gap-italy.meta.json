@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eu-vat-gap-italy",
+  "period": {
+    "from": 2019,
+    "to": 2024
+  },
+  "observedAt": "2026-09-13",
+  "source": {
+    "owner": "Commissione europea, DG TAXUD",
+    "landingUrl": "https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en",
+    "url": "https://taxation-customs.ec.europa.eu/document/download/c4ce2e13-0a9b-4a26-8f49-7238a8b4dc7a_en",
+    "filename": "VAT-GAP-2025-Tables-of-Country-Chapters.xlsx",
+    "licenseId": "not-declared",
+    "licenseNote": "Il workbook XLSX non dichiara una licenza sul file. Il report PDF documentale è citato come evidenza CC BY 4.0 sulle pagine DG TAXUD / Publications Office, senza inventare un license id per l'XLSX.",
+    "evidenceUrls": [
+      "https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en",
+      "https://op.europa.eu/en/publication-detail/-/publication/b5c7403b-d67f-11f0-8da2-01aa75ed71a1/language-en"
+    ],
+    "publicationDate": "2025-12-08",
+    "acquiredAt": "2026-09-13",
+    "checkedAt": "2026-09-13",
+    "bytes": 102793,
+    "sha256": "7662fdd6da02d5acca385cca5f1ed5a5fbad3655105f8f0f490d433e472c75fa",
+    "path": "tests/fixtures/eu-vat-gap/VAT-GAP-2025-Tables-of-Country-Chapters.xlsx",
+    "geography": "Italia (foglio IT); nessun aggregato UE in questa slice",
+    "updateFrequency": "annuale"
+  },
+  "coverage": {
+    "years": 6,
+    "coreMeasures": 4,
+    "compositionRows": 5
+  },
+  "integrity": {
+    "sourceLockSha256": "08745a38b95b6c90c43ea845440b85847b21bef3a3f0a95e2a46b1db0cf3fc87",
+    "dataSha256": "f57521a758c44effd26d80de47155e1fff75e706f40103d8d3b754d6275ab05c",
+    "dataBytes": 11805
+  },
+  "semantics": {
+    "soldi": {
+      "unit": "euro-cents",
+      "sourceUnit": "million-euro",
+      "nature": "stima compliance gap / VTTL / VAT revenue DG TAXUD; non gettito riscosso MEF né NOE ISTAT"
+    },
+    "periodo": {
+      "referencePeriod": "2019-2024",
+      "rapidEstimateYear": 2024
+    },
+    "provenance": {
+      "holder": "Commissione europea, DG TAXUD",
+      "publicationDate": "2025-12-08",
+      "acquiredAt": "2026-09-13",
+      "checkedAt": "2026-09-13"
+    }
+  }
+}

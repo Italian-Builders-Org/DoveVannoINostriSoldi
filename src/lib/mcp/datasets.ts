@@ -399,6 +399,10 @@ export async function queryPublicDataset(
         year: query.year, breakdown: query.breakdown, limit: query.limit, offset: query.offset,
       }) });
     }
+    case "eu_vat_gap_italy": {
+      const { queryEuVatGapItaly } = await import("@/lib/eu-vat-gap-italy-snapshot");
+      return jsonSafe({ dataset: query.dataset, ...queryEuVatGapItaly({ year: query.year }) });
+    }
     case "mef_irpef_dettaglio": {
       const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
       return jsonSafe({

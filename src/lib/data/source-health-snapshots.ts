@@ -14,6 +14,7 @@ import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snap
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
+import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -391,6 +392,17 @@ function snapshotManagedMefIva(): SourceHealth {
   };
 }
 
+function snapshotManagedEuVatGapItaly(): SourceHealth {
+  return {
+    ...baseHealth("eu-vat-gap-italy"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eu-vat-gap-italy", euVatGapItalyMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot DG TAXUD VAT gap Italia ${euVatGapItalyData.period.from}–${euVatGapItalyData.period.to} (2024 stima rapida): ${euVatGapItalyMetadata.coverage.years} anni, ${euVatGapItalyMetadata.coverage.coreMeasures} misure core e ${euVatGapItalyMetadata.coverage.compositionRows} componenti VTTL. Pubblicato ${euVatGapItalyMetadata.source.publicationDate}; acquisito ${euVatGapItalyMetadata.source.acquiredAt}; controllato ${euVatGapItalyMetadata.source.checkedAt}.`,
+    recordCount: euVatGapItalyMetadata.coverage.years,
+  };
+}
+
 function snapshotManagedMefIrpefDettaglio(): SourceHealth {
   const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
   const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
@@ -533,6 +545,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
+  "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
 };
 
 export function buildSourceHealthSnapshots() {

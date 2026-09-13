@@ -243,6 +243,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["anno di dichiarazione", "classificazione", "codice e denominazione della fonte"],
   },
   {
+    slug: "eu-vat-gap-italy",
+    name: "DG TAXUD · VAT gap Italia",
+    owner: "Commissione europea, DG TAXUD",
+    area: "VAT compliance gap (stima ufficiale UE)",
+    cadence: "Annuale; Report 2025, foglio IT 2019–2023 e 2024 stima rapida",
+    coverage: "Italia soltanto: VTTL, VAT revenue, compliance gap in euro e quota sul VTTL",
+    format: "XLSX Country Chapters · snapshot JSON verificato",
+    url: "https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en",
+    note: "Stima di compliance rispetto al VTTL, non evasione accertata e non dichiarazioni MEF né economia non osservata ISTAT. Il 2024 è una stima rapida. Le celle X e vuote restano non osservate. Licenza XLSX non dichiarata sul file.",
+    joinKeys: ["anno", "estimateKind"],
+  },
+  {
     slug: "mef-irpef-dettaglio",
     name: "MEF · dettaglio IRPEF per regione, età e sesso",
     owner: "MEF — Dipartimento delle Finanze",

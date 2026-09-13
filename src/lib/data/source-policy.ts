@@ -39,6 +39,7 @@ export type SourceId =
   | "inps-naspi"
   | "mef-irpef-dettaglio"
   | "mef-iva"
+  | "eu-vat-gap-italy"
   | "ameco"
   | "governi-presidenza";
 
@@ -627,6 +628,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:mef-iva", "domain:taxation"],
+  },
+  "eu-vat-gap-italy": {
+    id: "eu-vat-gap-italy",
+    label: "DG TAXUD · VAT gap Italia",
+    owner: "Commissione europea, DG TAXUD",
+    sourceUrl: "https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en",
+    cadence: "annuale",
+    cadenceNote: "Foglio IT del workbook Country Chapters 2025: 2019-2023 e 2024 stima rapida. Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eu-vat-gap-italy", "domain:taxation"],
   },
   "mef-irpef-dettaglio": {
     id: "mef-irpef-dettaglio",

@@ -441,6 +441,29 @@ sono inclusi. Questa integrazione espone fonte, API e MCP, senza nuova UI.
 - [Contratto, URL, acquisizione e verifiche](research/MEF_IVA.md).
 - [Tabella ufficiale 2025 per regione](https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201).
 
+### VAT gap Italia DG TAXUD
+
+**Issue #387 (fonte #4).** Workbook ufficiale *VAT-GAP-2025-Tables-of-Country-Chapters.xlsx*
+della Commissione europea (DG TAXUD), foglio **IT** soltanto. Report 2025,
+pubblicazione 8 dicembre 2025; acquisizione e controllo 13 settembre 2026.
+Byte 102793, SHA-256
+`7662fdd6da02d5acca385cca5f1ed5a5fbad3655105f8f0f490d433e472c75fa`.
+
+Lo snapshot tipizzato espone VTTL, VAT revenue e VAT compliance gap per
+2019–2023 più la stima rapida 2024 (`2024 (e)`), con composizione o/w del VTTL
+dove la fonte la pubblica (nel 2024 le componenti sono `X` → `unavailable`).
+Gli importi in milioni di euro diventano centesimi esatti; la quota gap sul
+VTTL è in milionesimi di unità. Licenza XLSX: `not-declared` (evidenza PDF
+CC BY 4.0 citata senza inventare un id sul workbook).
+
+Non è evasione accertata, non è il tax gap MEF e non è l’economia non osservata
+ISTAT. Nessuna media UE in questa slice. Fonte + API + MCP, senza pagina UI.
+
+- API: `/api/tributi/vat-gap` e `/api/tributi/vat-gap?anno=2023`.
+- MCP: `query_dataset` con `dataset: "eu_vat_gap_italy"` e `year` opzionale.
+- [Contratto, celle e verifiche](research/EU_VAT_GAP_ITALY.md).
+- [Landing ufficiale VAT gap](https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en).
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 
@@ -674,6 +697,7 @@ Sono stime di contabilità nazionale, non evasione accertata o risultati dei
 controlli. Le branche sono aggregati nazionali: non vengono inventati territori
 né incroci territorio per settore. Catalogo, API e MCP interrogano gli stessi
 dataset integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
+
 
 ### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08
 

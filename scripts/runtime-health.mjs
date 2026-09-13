@@ -64,6 +64,7 @@ const EXPECTED_SOURCE_IDS = [
   "inps-naspi",
   "mef-irpef-dettaglio",
   "mef-iva",
+  "eu-vat-gap-italy",
   "ameco",
   "governi-presidenza",
 ];

@@ -7,6 +7,7 @@ import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
+import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
@@ -113,6 +114,10 @@ const exhaustiveLatestDataBySlug = {
   "mef-iva": {
     kind: "period",
     label: `${mefIvaMetadata.taxPeriod.from}-${mefIvaMetadata.taxPeriod.to} (anni di imposta); dichiarazioni ${mefIvaMetadata.period.from}-${mefIvaMetadata.period.to}`,
+  },
+  "eu-vat-gap-italy": {
+    kind: "period",
+    label: `${euVatGapItalyData.period.from}-${euVatGapItalyData.period.to} (2024 stima rapida)`,
   },
   siope: {
     kind: "period",

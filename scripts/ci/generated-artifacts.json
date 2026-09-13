@@ -1806,6 +1806,33 @@
       "sourceSpec": "scripts/etl/specs/mef-iva-2024-2025.source.json",
       "refreshWorkflow": null,
       "trustModel": "Quattro export CSV ufficiali MEF, dichiarazioni IVA 2024 e 2025 per regione e attività. URL, byte, SHA-256, licenza, intestazioni e dizionari di edizione bloccati. Ammontari e medie in migliaia di euro convertiti esattamente in centesimi; frequenze, contribuenti, celle soppresse e mancanti restano distinti. Nessun incrocio regione per attività o stima di evasione."
+    },
+    {
+      "id": "eu-vat-gap-italy",
+      "owner": "DG TAXUD VAT gap Italia, Report 2025 (foglio IT)",
+      "files": [
+        "src/data/generated/eu-vat-gap-italy.data.json",
+        "src/data/generated/eu-vat-gap-italy.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eu_vat_gap_italy_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eu-vat-gap-italy.test.mjs",
+        "tests/eu-vat-gap-italy-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eu_vat_gap_italy_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/eu-vat-gap-italy.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock su XLSX ufficiale DG TAXUD (URL, byte, SHA-256, foglio IT, celle pinnate). Importi in centesimi da milioni di euro; quota gap in milionesimi; 2024 rapid-estimate; X e vuoti non-osservati. Riconciliazione VTTL−revenue=gap. Nessuna media UE né mescolanza con MEF/NOE. Licenza XLSX not-declared."
     }
   ]
 }

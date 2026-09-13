@@ -71,6 +71,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "mef-irpef-dettaglio": [],
   // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.
   "mef-iva": [],
+  // Snapshot-only: il workbook DG TAXUD VAT gap è acquisito e vincolato dall'ETL.
+  "eu-vat-gap-italy": [],
   // Snapshot-only: i CSV Consip sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   consip: [],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,

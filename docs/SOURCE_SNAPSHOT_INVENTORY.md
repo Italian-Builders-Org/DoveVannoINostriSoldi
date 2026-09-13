@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 66
+- Artefatti nel registro: 67
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 49 (PR umana dopo revisione)
+- manuale: 50 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -109,6 +109,7 @@ La revisione e il merge restano umani.
 | `source-ledger-proofs` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
 | `mef-iva-2024-2025` | 2023-2024 (anni di imposta) | 2026-09-11 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | nessuno | nessuno | manuale | `python3 scripts/etl/mef_iva_snapshot.py --check` |
+| `eu-vat-gap-italy` | 2019-2024 | 2026-09-13 | https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en | nessuno | nessuno | manuale | `python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check` |
 
 ## Prossimo passo
 

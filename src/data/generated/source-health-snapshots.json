@@ -198,6 +198,12 @@
     "recordCount": 93
   },
   {
+    "sourceId": "eu-vat-gap-italy",
+    "sourceTimestamp": "2026-09-13",
+    "detail": "Snapshot DG TAXUD VAT gap Italia 2019–2024 (2024 stima rapida): 6 anni, 4 misure core e 5 componenti VTTL. Pubblicato 2025-12-08; acquisito 2026-09-13; controllato 2026-09-13.",
+    "recordCount": 6
+  },
+  {
     "sourceId": "mef-irpef-dettaglio",
     "sourceTimestamp": "2026-09-05",
     "detail": "Snapshot ETL attivo · dettaglio IRPEF dichiarazioni 2017-2025, anni di imposta 2016-2024 · 79 file su nove famiglie, 25.534 righe e 43.300 celle vuote distinte dagli zeri · 5.444.337 byte.",

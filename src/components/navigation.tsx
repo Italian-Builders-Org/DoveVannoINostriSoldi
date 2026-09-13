@@ -8,9 +8,10 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { HeaderSearch } from "@/components/header-search";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
+import { readStoredSidebarState, setSidebarState } from "@/lib/sidebar";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon, ArrowLeft01Icon, ArrowRight01Icon, Menu01Icon, Cancel01Icon,
+  ArrowDown01Icon, ArrowLeft01Icon, PinIcon, Menu01Icon, Cancel01Icon,
   GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
   Analytics01Icon, MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
   AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
@@ -206,7 +207,9 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
 }
 
 function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
-  // Layout state survives client navigation; no storage-driven shift during hydration.
+  // La preferenza di ancoraggio e scritta su <html> da SIDEBAR_INIT_SCRIPT prima
+  // del paint, quindi il primo render del client coincide con quello del server
+  // (entrambi "rail") e la lettura avviene dopo il mount, senza spostamenti.
   const [collapsed, setCollapsed] = useState(true);
   const [pointerInside, setPointerInside] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -217,6 +220,24 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   const openedLocationRef = useRef("");
   const backdropPointerRef = useRef(false);
   const compact = collapsed && !pointerInside;
+
+  useEffect(() => {
+    const sync = () => setCollapsed(readStoredSidebarState() !== "pinned");
+    sync();
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+
+  function togglePinned() {
+    // Agisce sulla PREFERENZA, non su cio che si vede: se agisse sullo stato
+    // dipinto, avvicinare il puntatore per premere il bottone lo espanderebbe e
+    // il bottone si ritroverebbe a significare "riduci", rendendo impossibile
+    // ancorare la sidebar con il mouse.
+    const next = !collapsed;
+    setCollapsed(next);
+    setSidebarState(next ? "rail" : "pinned");
+    setPointerInside(false);
+  }
 
   function closeDrawer() { dialogRef.current?.close(); }
   function openDrawer() {
@@ -286,14 +307,10 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
         }}>
         <div className="sidebar-toolbar">
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
-            aria-label={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            title={compact ? "Espandi menu di navigazione" : "Riduci menu a icone"}
-            aria-expanded={!compact} aria-controls="desktop-navigation" onClick={() => {
-              // Toggle the state the button announces, including hover expansion.
-              setCollapsed(!compact);
-              setPointerInside(false);
-            }}>
-            <HugeiconsIcon icon={compact ? ArrowRight01Icon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+            aria-label={collapsed ? "Ancora il menu aperto" : "Sblocca il menu e riducilo a icone"}
+            title={collapsed ? "Ancora il menu aperto" : "Sblocca il menu e riducilo a icone"}
+            aria-pressed={!collapsed} aria-controls="desktop-navigation" onClick={togglePinned}>
+            <HugeiconsIcon icon={collapsed ? PinIcon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </div>
         <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={compact} />

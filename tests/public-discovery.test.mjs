@@ -79,7 +79,7 @@ test("search results stay crawlable for noindex while remaining outside the site
   assert.match(searchPage, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*,?\s*\}/);
 
   const robots = publicRobots(PUBLIC_SITE_URL);
-  assert.equal(robots.rules.disallow.includes("/cerca"), false);
+  assert.ok(robots.rules.every((rule) => !rule.disallow.includes("/cerca")));
 });
 
 test("all and only the statically generated editorial topics are in the sitemap catalog", () => {
@@ -126,14 +126,13 @@ test("sitemap exposes only canonical HTTPS public pages", async () => {
 
 test("robots permits public pages without blocking Next assets", () => {
   const robots = publicRobots(PUBLIC_SITE_URL);
-  assert.deepEqual(robots.rules, {
-    userAgent: "*",
-    allow: "/",
-    disallow: ["/api/", "/enti/"],
-  });
+  assert.deepEqual(robots.rules, [
+    { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
+    { userAgent: "ClaudeBot", allow: "/", disallow: ["/api/", "/enti/", "/appalti/operatori/"] },
+  ]);
   assert.equal(robots.sitemap, `${PUBLIC_SITE_URL}/sitemap.xml`);
-  assert.equal(robots.rules.disallow.includes("/_next/"), false);
-  assert.equal(robots.rules.disallow.includes("/enti/"), true);
+  assert.ok(robots.rules.every((rule) => !rule.disallow.includes("/_next/")));
+  assert.ok(robots.rules.every((rule) => rule.disallow.includes("/enti/")));
 });
 
 test("llms discovery paths are indexable and resolve to public pages", async () => {

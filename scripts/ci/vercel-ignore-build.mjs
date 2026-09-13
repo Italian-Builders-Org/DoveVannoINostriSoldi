@@ -26,6 +26,8 @@ function decide() {
     /^(README|CONTRIBUTING|AGENTS|CLAUDE|CODE_OF_CONDUCT|SECURITY)\.md$/.test(file) ||
     (/^docs\/.*\.md$/.test(file) && !file.startsWith("docs/research/data/")) ||
     file.startsWith("tests/") ||
+    file.startsWith("scripts/browser/") ||
+    file.startsWith("scripts/bench/") ||
     // I comandi Vercel provengono da vercel.json e package.json; la CI è separata.
     file === ".github/workflows/ci.yml" ||
     file === "scripts/ci/action-pins.json" ||

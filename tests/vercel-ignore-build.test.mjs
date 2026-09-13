@@ -41,6 +41,10 @@ test("Vercel skips only non-deployment changes since the last successful build",
   const pins = commit("scripts/ci/action-pins.json", "CI action versions");
   expect(tests, ci, 0);
   expect(tests, pins, 0);
+  const browser = commit("scripts/browser/core.mjs", "Browser assertions");
+  const benchmark = commit("scripts/bench/runtime.mjs", "Local benchmark");
+  expect(pins, browser, 0);
+  expect(pins, benchmark, 0);
   expect("", pins, 1); // Anche le sole modifiche CI richiedono un primo deployment.
   expect("", tests, 1); // First deployment: a preview must exist.
   expect(tests, tests, 1); // Manual redeploy may contain new environment settings.

@@ -256,7 +256,10 @@ function sorted(values) {
   return [...values].sort();
 }
 
+const validatedPublicUrls = new Set();
+
 function assertPublicUrlSafe(rawUrl, context) {
+  if (validatedPublicUrls.has(rawUrl)) return;
   const parsed = new URL(rawUrl);
   assert.ok(["http:", "https:"].includes(parsed.protocol), `${context}: protocollo URL`);
   assert.equal(parsed.username, "", `${context}: username nell'URL pubblico`);
@@ -267,6 +270,9 @@ function assertPublicUrlSafe(rawUrl, context) {
       `${context}: parametro sensibile ${key}`,
     );
   }
+  // Many rows cite the same official source. Cache successful URL checks only;
+  // keep the cache bounded for datasets with a distinct URL on every row.
+  if (validatedPublicUrls.size < 4096) validatedPublicUrls.add(rawUrl);
 }
 
 function assertNoInternalProvenance(value, context) {
@@ -286,12 +292,25 @@ function assertNoInternalProvenance(value, context) {
     /(?<![\/\w:-])(?:dashboard|affidamenti-work|at-catalog|buchi|releases|voce-della-spesa)\//i,
     `${context}: percorso relativo del pacchetto`,
   );
-  assert.doesNotMatch(
-    text,
-    /(?<![\/\w:-])(?:[a-z0-9][a-z0-9._-]*-)?README\.md\b/i,
-    `${context}: README interno`,
-  );
+  // The filename is rare in public rows; avoid prefix backtracking on every value.
+  if (text.toLowerCase().includes("readme.md")) {
+    assert.doesNotMatch(
+      text,
+      /(?<![\/\w:-])(?:[a-z0-9][a-z0-9._-]*-)?README\.md\b/i,
+      `${context}: README interno`,
+    );
+  }
 }
+
+test("public provenance rejects internal README names while retaining official URLs", () => {
+  for (const value of ["README.md", "source-README.md", "Source-ReAdMe.MD"]) {
+    assert.throws(() => assertNoInternalProvenance({ note: value }, "fixture"), /README interno/);
+  }
+  assert.doesNotThrow(() => assertNoInternalProvenance({
+    source: "https://example.gov.it/catalog/README.md",
+    note: "Dato pubblico senza nomi di file interni",
+  }, "fixture"));
+});
 
 test("the committed curated corpus has an exact, closed artifact and row ledger", () => {
   const spec = readJson(specPath);
@@ -491,18 +510,20 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
           plainChunk.length <= rowChunkMaxRawBytes,
           `${dataset.id}:${ordinal}: chunk raw oltre 2 MiB`,
         );
+        const lines = plainChunk.toString("utf8").slice(0, -1).split("\n");
         assert.equal(
-          plainChunk.toString("utf8").trimEnd().split("\n").length,
+          lines.length,
           Math.min(rowChunkRows, dataset.expected.rows - ordinal * rowChunkRows),
           `${dataset.id}:${ordinal}: cardinalità chunk`,
         );
-        yield* plainChunk.toString("utf8").slice(0, -1).split("\n");
+        yield* lines;
       }
     }
     let sourceRow = 0;
     let rowsWithPublicSource = 0;
     let redactions = 0;
     const rowIds = new Set();
+    const expectedCellFields = sorted(receipt.source.headers);
     for (const line of datasetLines()) {
       const row = JSON.parse(line);
       sourceRow += 1;
@@ -524,7 +545,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
       assert.ok(!rowIds.has(row.id), `${dataset.id}: duplicate row id ${row.id}`);
       rowIds.add(row.id);
       assert.equal(row.evidenceLabel, dataset.evidenceLabel);
-      assert.deepEqual(sorted(Object.keys(row.cells)), sorted(receipt.source.headers));
+      assert.deepEqual(sorted(Object.keys(row.cells)), expectedCellFields);
       assertNoInternalProvenance(row.cells, `${dataset.id}:${sourceRow}`);
 
       for (const privateField of dataset.privateFields) {

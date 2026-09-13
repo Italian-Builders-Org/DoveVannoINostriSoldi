@@ -15,7 +15,9 @@ in questa integrazione (la UI arriva con l’ultima PR dell’epic #387).
 - foglio: `IT` → `xl/worksheets/sheet12.xml`;
 - periodo: 2019–2023 e **2024 stima rapida** (`2024 (e)`);
 - geografia: Italia soltanto; nessuna media UE pubblicata in questa slice;
-- pubblicazione report: 2025-12-08; acquisizione/controllo: 2026-09-13;
+- rilascio nel catalogo Publications Office: 2025-12-08; la scheda DG TAXUD indica
+  2025-12-11. `publicationDate` conserva la prima data, verificabile nel catalogo
+  citato; acquisizione/controllo: 2026-09-13;
 - licenza XLSX: `not-declared` (il file non dichiara termini di riuso). Evidenza
   documentale PDF citata come CC BY 4.0 su DG TAXUD / Publications Office,
   senza inventare un license id per l’XLSX.

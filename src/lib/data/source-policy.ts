@@ -36,6 +36,7 @@ export type SourceId =
   | "istat-bes-salute"
   | "istat-bes-istruzione"
   | "istat-bes-lavoro"
+  | "istat-bes-relazioni"
   | "inps-naspi"
   | "mef-irpef-dettaglio"
   | "mef-iva"
@@ -599,6 +600,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-bes-lavoro", "domain:work"],
+  },
+  "istat-bes-relazioni": {
+    id: "istat-bes-relazioni",
+    label: "ISTAT · BES dei territori, Relazioni sociali",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-relazioni", "domain:social-relationships"],
   },
   "inps-naspi": {
     id: "inps-naspi",

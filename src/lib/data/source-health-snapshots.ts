@@ -24,6 +24,7 @@ import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
 import { istatBesLavoroData, istatBesLavoroMetadata } from "@/lib/istat-bes-lavoro-snapshot";
+import { istatBesRelazioniData, istatBesRelazioniMetadata } from "@/lib/istat-bes-relazioni-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -492,6 +493,18 @@ function snapshotManagedIstatBesLavoro(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesRelazioni(): SourceHealth {
+  const { source } = istatBesRelazioniMetadata;
+  return {
+    ...baseHealth("istat-bes-relazioni"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-relazioni", source.publicationDate),
+    latencyMs: null,
+    detail: "Due indicatori BES_05 Relazioni sociali, edizione 2025; 1.330 osservazioni e 135 territori, di cui 107 province. Periodi distinti fra 2011 e 2024; 8 celle non significative. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesRelazioniData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -542,6 +555,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
   "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
+  "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "inps-naspi": snapshotManagedInpsNaspi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,

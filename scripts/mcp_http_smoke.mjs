@@ -5,8 +5,8 @@ const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
 const MAX_RESPONSE_BYTES = 750_000;
 const modeIndex = process.argv.indexOf("--mode");
 const mode = modeIndex === -1 ? "complete" : process.argv[modeIndex + 1];
-assert.ok(["contract", "subscription", "pensions", "complete"].includes(mode),
-  "--mode deve essere contract, subscription, pensions oppure complete");
+assert.ok(["contract", "subscription", "pensions", "relazioni", "vat-gap", "complete"].includes(mode),
+  "--mode deve essere contract, subscription, pensions, relazioni, vat-gap oppure complete");
 let contractPostCount = 0;
 
 function byteLength(value) {
@@ -65,6 +65,45 @@ async function mcpRequest(
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.equal(response.url, new URL(pathname, baseUrl).href, "MCP alias must not redirect");
   return text;
+}
+
+async function runVatGapSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/tributi/vat-gap?anno=2024", baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "vat-gap-rapid-estimate", method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "eu_vat_gap_italy", year: 2024 } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "eu_vat_gap_italy").data;
+  assert.equal(dataset, "eu_vat_gap_italy");
+  assert.deepEqual(projection, api);
+  assert.equal(api.years.length, 1);
+  assert.equal(api.years[0].estimateKind, "rapid-estimate");
+  assert.ok(api.years[0].vttlComposition.every(row => row.amountCents.status === "unavailable" && row.amountCents.value === null));
+  assert.equal(api.years[0].vttlCents.value - api.years[0].vatRevenueCents.value, api.years[0].complianceGapCents.value);
+  assert.equal(contractPostCount - before, 1);
+}
+
+async function runRelazioniSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/territori/bes-relazioni?territorio=ITC33&indicatore=05REL007P&sesso=T&anno=2024", baseUrl), {
+    signal: AbortSignal.timeout(10_000),
+  });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "bes-relazioni-null", method: "tools/call",
+    params: { name: "query_dataset", arguments: {
+      dataset: "istat_bes_relazioni", territory: "ITC33", measure: "05REL007P", sex: "T", year: 2024,
+    } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "istat_bes_relazioni").data;
+  assert.equal(dataset, "istat_bes_relazioni");
+  assert.deepEqual(projection, api);
+  assert.deepEqual(api.observations, [{ indicator: "05REL007P", territory: "ITC33", sex: "T", year: 2024, valueTenths: null, status: "n" }]);
+  assert.equal(contractPostCount - before, 1);
 }
 
 async function runPensionSmoke() {
@@ -631,7 +670,13 @@ for (const year of [2020, 2021, 2022]) {
 assert.equal(contractPostCount, 30, "contract smoke must keep exactly 30 POST requests");
 }
 
-if (mode === "pensions") {
+if (mode === "vat-gap") {
+  await waitForServer();
+  await runVatGapSmoke();
+} else if (mode === "relazioni") {
+  await waitForServer();
+  await runRelazioniSmoke();
+} else if (mode === "pensions") {
   await waitForServer();
   await runPensionSmoke();
 } else if (mode === "subscription") {
@@ -643,11 +688,17 @@ if (mode === "pensions") {
     // Let the existing public-client rate-limit window expire before the extra probes.
     await new Promise((resolve) => setTimeout(resolve, 60_100));
     await runPensionSmoke();
+    await runRelazioniSmoke();
+    await runVatGapSmoke();
     await runSubscriptionSmoke();
   }
 }
 
-const checks = mode === "pensions"
+const checks = mode === "vat-gap"
+  ? ["vat-gap-api-mcp-parity"]
+  : mode === "relazioni"
+  ? ["bes-relazioni-api-mcp-parity"]
+  : mode === "pensions"
   ? ["pension-territories-api-mcp-parity"]
   : mode === "subscription"
   ? ["modern-subscriptions", "compatibility-modern-subscriptions"]
@@ -665,7 +716,7 @@ const checks = mode === "pensions"
     "unsupported-detail-filter",
     "integrated-query",
     "education-query-pagination-provenance",
-    ...(mode === "complete" ? ["pension-territories-api-mcp-parity"] : []),
+    ...(mode === "complete" ? ["pension-territories-api-mcp-parity", "bes-relazioni-api-mcp-parity", "vat-gap-api-mcp-parity"] : []),
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",

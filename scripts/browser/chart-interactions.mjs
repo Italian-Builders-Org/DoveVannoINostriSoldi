@@ -84,7 +84,7 @@ try {
   }
   for (const { width, id } of scenarios) {
     await runScenario(browser, {
-      suite: "chart-interactions", label: `government-chart-${id}-${width}`, pathname: `/governi/${id}`, width, baseUrl, waitUntil: "networkidle2",
+      suite: "chart-interactions", label: `government-chart-${id}-${width}`, pathname: `/governi/${id}`, width, baseUrl, readySelector: "[data-slide-id]",
       validate: async (page) => {
         await page.waitForSelector('[data-slide-id]');
         await inspectGovernmentChart(page, await page.$('[data-slide-id]'));

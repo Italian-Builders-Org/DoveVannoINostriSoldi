@@ -107,3 +107,23 @@ test("pagina tutto lo storico e combina filtri senza confondere mancante e zero 
   );
   assert.throws(() => selectOperatorHistoryPage(history, { page: 0 }));
 });
+
+test("la paginazione conserva il totale filtrato anche oltre la pagina richiesta", () => {
+  const history = historySummarySchema.parse(fixture);
+  history.detail.filterRows = Array.from({ length: 105 }, (_, index) => [
+    index % 2 ? 2024 : 2025, null, null, "0",
+  ]);
+  assert.deepEqual(selectOperatorHistoryPage(history, { year: 2025, page: 3 }), {
+    total: 53, page: 3, pageCount: 3, positions: [100, 102, 104],
+  });
+  assert.deepEqual(selectOperatorHistoryPage(history, { year: 2025, page: 4 }), {
+    total: 53, page: 4, pageCount: 3, positions: [],
+  });
+  assert.deepEqual(selectOperatorHistoryPage(history, { page: 5 }), {
+    total: 105, page: 5, pageCount: 5, positions: [100, 101, 102, 103, 104],
+  });
+  history.detail.filterRows = [];
+  assert.deepEqual(selectOperatorHistoryPage(history, {}), {
+    total: 0, page: 1, pageCount: 0, positions: [],
+  });
+});

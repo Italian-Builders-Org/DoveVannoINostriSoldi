@@ -171,9 +171,9 @@ export function publicRobots(siteUrl: string): MetadataRoute.Robots {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
       {
-        userAgent: "ClaudeBot",
+        userAgent: ["ClaudeBot", "GPTBot", "CCBot", "meta-externalagent"],
         allow: "/",
-        disallow: ["/api/", "/enti/", "/appalti/operatori/"],
+        disallow: ["/api/", "/enti/", "/appalti/operatori"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

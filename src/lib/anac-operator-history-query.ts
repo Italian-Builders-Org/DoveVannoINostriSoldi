@@ -80,8 +80,29 @@ export function selectOperatorHistoryPage(
     compareAmounts(query.minAmount, query.maxAmount) > 0
   )
     throw new Error("L’importo minimo supera il massimo");
+  const start = (query.page - 1) * OPERATOR_HISTORY_PAGE_SIZE;
+  const end = start + OPERATOR_HISTORY_PAGE_SIZE;
+  const rows = history.detail.filterRows;
+  const unfiltered =
+    query.year === undefined &&
+    query.authority === undefined &&
+    query.procedure === undefined &&
+    query.minAmount === undefined &&
+    query.maxAmount === undefined;
+  if (unfiltered) {
+    return {
+      total: rows.length,
+      page: query.page,
+      pageCount: Math.ceil(rows.length / OPERATOR_HISTORY_PAGE_SIZE),
+      positions: Array.from(
+        { length: Math.max(0, Math.min(end, rows.length) - start) },
+        (_, index) => start + index,
+      ),
+    };
+  }
+  let total = 0;
   const positions: number[] = [];
-  history.detail.filterRows.forEach(
+  rows.forEach(
     ([year, authority, procedure, amount], index) => {
       if (
         query.year !== undefined &&
@@ -102,14 +123,15 @@ export function selectOperatorHistoryPage(
         (amount === null || compareAmounts(amount, query.maxAmount) > 0)
       )
         return;
-      positions.push(index);
+      // Count every match, but retain only this page rather than the full result set.
+      if (total >= start && total < end) positions.push(index);
+      total++;
     },
   );
-  const start = (query.page - 1) * OPERATOR_HISTORY_PAGE_SIZE;
   return {
-    total: positions.length,
+    total,
     page: query.page,
-    pageCount: Math.ceil(positions.length / OPERATOR_HISTORY_PAGE_SIZE),
-    positions: positions.slice(start, start + OPERATOR_HISTORY_PAGE_SIZE),
+    pageCount: Math.ceil(total / OPERATOR_HISTORY_PAGE_SIZE),
+    positions,
   };
 }

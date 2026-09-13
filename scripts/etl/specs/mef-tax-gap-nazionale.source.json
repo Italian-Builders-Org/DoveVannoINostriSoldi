@@ -16,11 +16,12 @@
     "sha256": "6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef",
     "licenseId": "not-declared",
     "licenseNote": "Il PDF ufficiale non dichiara una licenza di riuso sul file. Si pubblica not-declared senza inferenze.",
-    "publicationDate": "2025-10-23",
+    "publicationDate": null,
     "acquiredAt": "2026-09-13",
     "checkedAt": "2026-09-13",
     "geography": "Italia (solo nazionale in questa slice)",
-    "updateFrequency": "annuale"
+    "updateFrequency": "annuale",
+    "versionDate": "2025-10-23"
   },
   "pdf": {
     "tableI1PageIndex": 8,
@@ -50,8 +51,8 @@
       "totale-entrate-tributarie-e-contributive"
     ]
   },
-  "dataCanonicalSha256": "12e5e8924b842f12a65aacf226752e26cfabe25d79aad63f6826679c056000d4",
+  "dataCanonicalSha256": "7a7075e39bfbfe5f3f18d2f396f8d3848ab61063dac9958abc1e40b1f7076e16",
   "integrity": {
-    "lockSha256": "f941a2096c8775ba505c79f0e69c779573bcc8d4b5ac110fdda5f75ae36a283e"
+    "lockSha256": "9e544a422b63ecdaf95587fa27030f1047d913352e4fc23e9267f05e66807ac4"
   }
 }

@@ -467,8 +467,8 @@ ISTAT. Nessuna media UE in questa slice. Fonte + API + MCP, senza pagina UI.
 ### Tax gap nazionale MEF (Relazione evasione 2025)
 
 **Issue #474 (epic #387, fonte #1).** PDF ufficiale *Relazione sull'economia non
-osservata e sull'evasione fiscale e contributiva 2025*, pubblicazione
-23 ottobre 2025; acquisizione e controllo 13 settembre 2026. Byte 3840500,
+osservata e sull'evasione fiscale e contributiva 2025*, versione del file
+23 ottobre 2025 (data di pubblicazione non verificata); acquisizione e controllo 13 settembre 2026. Byte 3840500,
 SHA-256
 `6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef`.
 

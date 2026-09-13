@@ -28,7 +28,8 @@ test("MEF tax gap preserves national Tab. I.1/I.2 units and 2022 semi-definitive
   assert.equal(year2022.gap.valueCents, 28_966 * 100_000_000);
   assert.equal(year2022.propensione.valueTenthsPp, 184);
   assert.equal(metadata.source.licenseId, "not-declared");
-  assert.equal(metadata.source.publicationDate, "2025-10-23");
+  assert.equal(metadata.source.publicationDate, null);
+  assert.equal(metadata.source.versionDate, "2025-10-23");
   assert.equal(metadata.pdf.tableI1PageIndex, 8);
   assert.match(data.caveats.join(" "), /non è evasione accertata/i);
 });
@@ -74,12 +75,14 @@ test("runtime locks every source field and repeated provenance to the reviewed s
   for (const mutate of [
     (copy) => { copy.source.filename = "different.pdf"; },
     (copy) => { copy.source.geography = "Unione europea"; },
+    (copy) => { copy.pdf.tableI1Title = "Different table"; },
+    (copy) => { copy.pdf.tableI2Title = "Different table"; },
     (copy) => { copy.pdf.tableI1TextSha256 = "0".repeat(64); },
     (copy) => { copy.semantics.provenance.publicationDate = "2025-01-01"; },
     (copy) => { copy.semantics.provenance.checkedAt = "2026-09-12"; },
   ]) {
     const copy = structuredClone(metadata);
     mutate(copy);
-    assert.throws(() => validate(data, copy), /fonte|provenance|hash|pagina|testo/i);
+    assert.throws(() => validate(data, copy), /fonte|provenance|hash|pagina|testo|PDF/i);
   }
 });

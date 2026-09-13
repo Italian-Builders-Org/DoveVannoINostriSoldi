@@ -37,7 +37,7 @@ PCT_TOKEN = re.compile(r"-?\d+,\d%")
 SUM_TOLERANCE_MILLION = 1  # source rounding on range endpoints
 
 CAVEATS = (
-    "Il tax gap MEF è una stima top-down con ipotesi di modello: non è evasione accertata, "
+    "Il tax gap MEF è una stima con ipotesi di modello: non è evasione accertata, "
     "né recupero, né gettito riscosso.",
     "Il 2022 è semi-definitivo nella Relazione 2025; le forchette min/max restano forchette "
     "e non vanno collassate in un unico punto.",
@@ -49,6 +49,8 @@ CAVEATS = (
     "distinte: i totali pubblicati dalla fonte non vengono ricostruiti sommando pezzi assenti.",
     "La revisione dei conti nazionali può rendere edizioni precedenti non confrontabili senza "
     "avvertenza: questa fetta pubblica solo i valori della Relazione 2025.",
+    "Valori dell’edizione iniziale della Relazione 2025 (2018-2022). L’aggiornamento MEF "
+    "successivo per il 2019-2023 rivede anche il 2022 e non è incluso in questo snapshot.",
     "La licenza del PDF non è dichiarata sul file: resta not-declared, senza inferenze.",
 )
 
@@ -132,7 +134,7 @@ def verified_payload(spec: dict[str, Any], path: Path | None = None) -> bytes:
     except OSError as error:
         raise SnapshotError(f"fixture PDF illeggibile: {error}") from error
     if len(payload) != source["bytes"]:
-        raise SnapshotError("fixture PDF: byte divergeni dal lock")
+        raise SnapshotError("fixture PDF: byte divergenti dal lock")
     if sha256_bytes(payload) != source["sha256"]:
         raise SnapshotError("fixture PDF: SHA-256 divergente dal lock")
     if not payload.startswith(b"%PDF"):
@@ -443,6 +445,7 @@ def metadata(spec: dict[str, Any], payload: bytes, data: dict[str, Any]) -> dict
             "landingUrl": source["landingUrl"],
             "url": source["url"],
             "filename": source["filename"],
+            "versionDate": source["versionDate"],
             "licenseId": source["licenseId"],
             "licenseNote": source["licenseNote"],
             "publicationDate": source["publicationDate"],
@@ -555,33 +558,9 @@ def main() -> int:
         if not args.write:
             raise SnapshotError("specificare --write oppure --check")
 
-        draft = json.loads(args.spec.read_text(encoding="utf-8")) if args.spec.exists() else {}
-        source = draft.setdefault("source", {})
-        pdf_meta = draft.setdefault("pdf", {})
-        pdf_path = args.input or ROOT / source.get(
-            "path",
-            "tests/fixtures/mef-evasione/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
-        )
-        pdf_payload = pdf_path.read_bytes()
-        # Allow first write to fill text hashes before lockSha256 is enforced.
-        page_i1 = normalize_text(page_text(pdf_payload, pdf_meta.get("tableI1PageIndex", 8)))
-        page_i2 = normalize_text(page_text(pdf_payload, pdf_meta.get("tableI2PageIndex", 9)))
-        pdf_meta["tableI1TextSha256"] = sha256_bytes(page_i1.encode("utf-8"))
-        pdf_meta["tableI2TextSha256"] = sha256_bytes(page_i2.encode("utf-8"))
-        draft.setdefault("integrity", {})["lockSha256"] = ""
-        # Temporary unlock for extraction helpers that call load_spec only after write.
-        draft["schemaVersion"] = 1
-        draft["datasetId"] = DATASET_ID
-        draft["expected"] = {"taxRowIds": [row_id for row_id, _, _ in GAP_ROWS]}
-        # Build with local parsers (bypass lock hash until end).
-        gap_rows = parse_gap_table(
-            page_text(pdf_payload, pdf_meta["tableI1PageIndex"]),
-            pdf_meta["tableI1Title"],
-        )
-        prop_rows = parse_propensione_table(
-            page_text(pdf_payload, pdf_meta["tableI2PageIndex"]),
-            pdf_meta["tableI2Title"],
-        )
+        draft = load_spec(args.spec)
+        pdf_payload = verified_payload(draft, args.input)
+        gap_rows, prop_rows, _, _ = extract_tables(draft, pdf_payload)
         data = build_data(gap_rows, prop_rows)
         validate_data(data, draft)
         draft["dataCanonicalSha256"] = sha256_bytes(canonical_bytes(data))
@@ -590,7 +569,7 @@ def main() -> int:
         args.spec.write_text(json.dumps(draft, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         write_artifacts(draft, data, args.data, args.meta)
         check(args.spec, args.data, args.meta)
-        print(f"mef-tax-gap-nazionale: scritto {args.data.relative_to(ROOT)}")
+        print(f"mef-tax-gap-nazionale: scritto {args.data}")
         return 0
     except SnapshotError as error:
         print(f"mef-tax-gap-nazionale: {error}", file=sys.stderr)

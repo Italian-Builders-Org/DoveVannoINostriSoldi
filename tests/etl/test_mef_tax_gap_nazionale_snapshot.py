@@ -5,6 +5,8 @@ from __future__ import annotations
 import copy
 import json
 import tempfile
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -19,10 +21,23 @@ class MefTaxGapNazionaleTests(unittest.TestCase):
 
     def test_committed_bundle_and_pdf_reprojection(self):
         gap.check()
-        payload = gap.verified_payload(self.spec)
-        gap_rows, prop_rows, _, _ = gap.extract_tables(self.spec, payload)
-        rebuilt = gap.build_data(gap_rows, prop_rows)
-        self.assertEqual(gap.canonical_bytes(rebuilt), gap.canonical_bytes(self.data))
+
+    def test_write_rejects_unlocked_input_without_changing_outputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            spec_path, data_path, meta_path = [root / name for name in ("source.json", "data.json", "meta.json")]
+            spec_path.write_bytes(gap.DEFAULT_SPEC.read_bytes())
+            data_path.write_bytes(b"previous data")
+            meta_path.write_bytes(b"previous metadata")
+            before = {path: path.read_bytes() for path in (spec_path, data_path, meta_path)}
+            pdf_path = root / "changed.pdf"
+            pdf_path.write_bytes(gap.verified_payload(self.spec) + b"\nchanged source bytes\n")
+            result = subprocess.run([
+                sys.executable, str(Path(gap.__file__)), "--write", "--spec", str(spec_path),
+                "--data", str(data_path), "--meta", str(meta_path), "--input", str(pdf_path),
+            ], capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual({path: path.read_bytes() for path in before}, before)
 
     def test_iva_2022_and_scales(self):
         iva = next(row for row in self.data["taxRows"] if row["id"] == "iva")

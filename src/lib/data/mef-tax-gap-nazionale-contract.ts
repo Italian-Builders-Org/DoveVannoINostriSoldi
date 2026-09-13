@@ -104,9 +104,10 @@ export const mefTaxGapNazionaleMetadataSchema = z.object({
     landingUrl: officialMefUrl,
     url: officialMefUrl,
     filename: z.string().min(1),
+    versionDate: date,
     licenseId: z.literal("not-declared"),
     licenseNote: z.string().min(1),
-    publicationDate: date,
+    publicationDate: date.nullable(),
     acquiredAt: date,
     checkedAt: date,
     bytes: integer.refine((value) => value > 0),
@@ -146,7 +147,7 @@ export const mefTaxGapNazionaleMetadataSchema = z.object({
     }).strict(),
     provenance: z.object({
       holder: z.literal("MEF — Commissione ex art. 10-bis.1 L. 196/2009"),
-      publicationDate: date,
+      publicationDate: date.nullable(),
       acquiredAt: date,
       checkedAt: date,
     }).strict(),
@@ -191,10 +192,7 @@ export function validateMefTaxGapNazionaleBundle(
   requireEqual(metadata.integrity.dataBytes, Buffer.byteLength(artifact, "utf8"), "byte artifact");
   requireEqual(metadata.observedAt, sourceLock.source.acquiredAt, "osservazione");
   requireEqual(metadata.source, sourceLock.source, "provenance fonte");
-  requireEqual(metadata.pdf.tableI1PageIndex, sourceLock.pdf.tableI1PageIndex, "pagina I.1");
-  requireEqual(metadata.pdf.tableI2PageIndex, sourceLock.pdf.tableI2PageIndex, "pagina I.2");
-  requireEqual(metadata.pdf.tableI1TextSha256, sourceLock.pdf.tableI1TextSha256, "hash testo I.1");
-  requireEqual(metadata.pdf.tableI2TextSha256, sourceLock.pdf.tableI2TextSha256, "hash testo I.2");
+  requireEqual(metadata.pdf, sourceLock.pdf, "riferimenti PDF");
   requireEqual(metadata.semantics.provenance, {
     holder: sourceLock.source.owner,
     publicationDate: sourceLock.source.publicationDate,
@@ -204,7 +202,7 @@ export function validateMefTaxGapNazionaleBundle(
   if (metadata.source.checkedAt < metadata.source.acquiredAt) {
     throw new Error("MEF tax gap nazionale: verifica precedente all'acquisizione.");
   }
-  if (metadata.source.publicationDate > metadata.source.acquiredAt) {
+  if (metadata.source.publicationDate !== null && metadata.source.publicationDate > metadata.source.acquiredAt) {
     throw new Error("MEF tax gap nazionale: pubblicazione successiva all'acquisizione.");
   }
   requireEqual(

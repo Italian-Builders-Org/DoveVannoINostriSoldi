@@ -411,7 +411,7 @@ function snapshotManagedMefTaxGapNazionale(): SourceHealth {
     reachability: "not-probed",
     freshness: freshnessFor("mef-tax-gap-nazionale", mefTaxGapNazionaleMetadata.observedAt),
     latencyMs: null,
-    detail: `Snapshot MEF tax gap nazionale ${mefTaxGapNazionaleData.period.from}–${mefTaxGapNazionaleData.period.to} (Tab. I.1/I.2 Relazione 2025): ${mefTaxGapNazionaleMetadata.coverage.taxRows} voci e ${mefTaxGapNazionaleMetadata.coverage.years} anni. Pubblicato ${mefTaxGapNazionaleMetadata.source.publicationDate}; acquisito ${mefTaxGapNazionaleMetadata.source.acquiredAt}; controllato ${mefTaxGapNazionaleMetadata.source.checkedAt}.`,
+    detail: `Snapshot MEF tax gap nazionale ${mefTaxGapNazionaleData.period.from}–${mefTaxGapNazionaleData.period.to} (Tab. I.1/I.2 Relazione 2025): ${mefTaxGapNazionaleMetadata.coverage.taxRows} voci e ${mefTaxGapNazionaleMetadata.coverage.years} anni. Versione file ${mefTaxGapNazionaleMetadata.source.versionDate}; data di pubblicazione non verificata; acquisito ${mefTaxGapNazionaleMetadata.source.acquiredAt}; controllato ${mefTaxGapNazionaleMetadata.source.checkedAt}.`,
     recordCount: mefTaxGapNazionaleMetadata.coverage.taxRows * mefTaxGapNazionaleMetadata.coverage.years,
   };
 }

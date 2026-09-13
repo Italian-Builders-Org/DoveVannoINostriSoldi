@@ -5,8 +5,8 @@ const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
 const MAX_RESPONSE_BYTES = 750_000;
 const modeIndex = process.argv.indexOf("--mode");
 const mode = modeIndex === -1 ? "complete" : process.argv[modeIndex + 1];
-assert.ok(["contract", "subscription", "pensions", "relazioni", "vat-gap", "complete"].includes(mode),
-  "--mode deve essere contract, subscription, pensions, relazioni, vat-gap oppure complete");
+assert.ok(["contract", "subscription", "pensions", "relazioni", "vat-gap", "mef-tax-gap", "complete"].includes(mode),
+  "--mode deve essere contract, subscription, pensions, relazioni, vat-gap, mef-tax-gap oppure complete");
 let contractPostCount = 0;
 
 function byteLength(value) {
@@ -65,6 +65,28 @@ async function mcpRequest(
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.equal(response.url, new URL(pathname, baseUrl).href, "MCP alias must not redirect");
   return text;
+}
+
+async function runMefTaxGapSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/tributi/tax-gap?anno=2022&imposta=totale-entrate-tributarie-e-contributive", baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "mef-tax-gap-range", method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "mef_tax_gap_nazionale", year: 2022, tax: "totale-entrate-tributarie-e-contributive" } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "mef_tax_gap_nazionale").data;
+  assert.equal(dataset, "mef_tax_gap_nazionale");
+  assert.deepEqual(projection, api);
+  assert.equal(api.taxRows.length, 1);
+  assert.equal(api.taxRows[0].series.length, 1);
+  assert.deepEqual(api.taxRows[0].series[0], {
+    year: 2022,
+    gap: { status: "observed", shape: "range", minCents: 98123 * 100_000_000, maxCents: 102482 * 100_000_000, valueCents: null },
+    propensione: { status: "absent", shape: "absent", minTenthsPp: null, maxTenthsPp: null, valueTenthsPp: null },
+  });
+  assert.equal(contractPostCount - before, 1);
 }
 
 async function runVatGapSmoke() {
@@ -670,7 +692,10 @@ for (const year of [2020, 2021, 2022]) {
 assert.equal(contractPostCount, 30, "contract smoke must keep exactly 30 POST requests");
 }
 
-if (mode === "vat-gap") {
+if (mode === "mef-tax-gap") {
+  await waitForServer();
+  await runMefTaxGapSmoke();
+} else if (mode === "vat-gap") {
   await waitForServer();
   await runVatGapSmoke();
 } else if (mode === "relazioni") {
@@ -690,11 +715,14 @@ if (mode === "vat-gap") {
     await runPensionSmoke();
     await runRelazioniSmoke();
     await runVatGapSmoke();
+    await runMefTaxGapSmoke();
     await runSubscriptionSmoke();
   }
 }
 
-const checks = mode === "vat-gap"
+const checks = mode === "mef-tax-gap"
+  ? ["mef-tax-gap-api-mcp-range-parity"]
+  : mode === "vat-gap"
   ? ["vat-gap-api-mcp-parity"]
   : mode === "relazioni"
   ? ["bes-relazioni-api-mcp-parity"]

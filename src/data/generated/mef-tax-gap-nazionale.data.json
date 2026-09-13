@@ -15,12 +15,13 @@
     "propensione": "tenths-of-a-percentage-point"
   },
   "caveats": [
-    "Il tax gap MEF è una stima top-down con ipotesi di modello: non è evasione accertata, né recupero, né gettito riscosso.",
+    "Il tax gap MEF è una stima con ipotesi di modello: non è evasione accertata, né recupero, né gettito riscosso.",
     "Il 2022 è semi-definitivo nella Relazione 2025; le forchette min/max restano forchette e non vanno collassate in un unico punto.",
     "Questa slice è solo nazionale (Tab. I.1 e I.2). Non pubblica ripartizioni, regioni o province e non le inventa.",
     "Non si somma né si confronta in silenzio con il VAT compliance gap DG TAXUD, con l'economia non osservata ISTAT o con i risultati di vigilanza INL.",
     "Le stime delle entrate contributive convivono con quelle tributarie ma restano nature distinte: i totali pubblicati dalla fonte non vengono ricostruiti sommando pezzi assenti.",
     "La revisione dei conti nazionali può rendere edizioni precedenti non confrontabili senza avvertenza: questa fetta pubblica solo i valori della Relazione 2025.",
+    "Valori dell’edizione iniziale della Relazione 2025 (2018-2022). L’aggiornamento MEF successivo per il 2019-2023 rivede anche il 2022 e non è incluso in questo snapshot.",
     "La licenza del PDF non è dichiarata sul file: resta not-declared, senza inferenze."
   ],
   "taxRows": [

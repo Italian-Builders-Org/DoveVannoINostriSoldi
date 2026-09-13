@@ -275,7 +275,7 @@ export const sourceCatalog: PublicSource[] = [
     coverage: "Italia soltanto: gap in euro e propensione per tipologia di imposta; forchette min/max dove la fonte le pubblica",
     format: "PDF ufficiale · snapshot JSON verificato (layer testuale)",
     url: "https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
-    note: "Stima top-down, non evasione accertata né recupero. Il 2022 è semi-definitivo. Distinto dal VAT gap UE e dall'economia non osservata ISTAT. Licenza PDF non dichiarata sul file.",
+    note: "Stima MEF, non evasione accertata né recupero. Il 2022 è semi-definitivo. Distinto dal VAT gap UE e dall'economia non osservata ISTAT. Licenza PDF non dichiarata sul file.",
     joinKeys: ["anno", "tipologia di imposta"],
   },
   {

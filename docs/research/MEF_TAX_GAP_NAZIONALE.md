@@ -21,7 +21,8 @@ MCP. Closes issue #474; refs epic #387.
 | URL | https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf |
 | Bytes | 3840500 |
 | SHA-256 | `6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef` |
-| Publication | 2025-10-23 |
+| File version (filename) | 2025-10-23 |
+| Publication date | Not independently verified (`null`) |
 | Acquired / checked | 2026-09-13 |
 | License | `not-declared` |
 
@@ -42,3 +43,15 @@ pinned in the source lock.
 - INL vigilance rates
 - Accertamenti / recuperi AdE–GdF
 - Regional or municipal gap estimates
+
+## Edition boundary
+
+This is the initial 2025 report, not the subsequent MEF update for 2019–2023.
+The [official update](https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_Aggiornamento_11_12.pdf)
+revises earlier estimates too; it must be acquired as a separate reviewed edition,
+never silently spliced into this series. The report records Commission approval
+on 13 October 2025; the locked filename identifies its 23 October version.
+
+The generator verifies PDF bytes and text hashes before writing any output.
+A changed input leaves the previous source lock, data and metadata untouched.
+Runtime validates every PDF reference, including the two table titles.

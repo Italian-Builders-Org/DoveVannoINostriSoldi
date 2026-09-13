@@ -11,9 +11,10 @@
     "landingUrl": "https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/",
     "url": "https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
     "filename": "Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "versionDate": "2025-10-23",
     "licenseId": "not-declared",
     "licenseNote": "Il PDF ufficiale non dichiara una licenza di riuso sul file. Si pubblica not-declared senza inferenze.",
-    "publicationDate": "2025-10-23",
+    "publicationDate": null,
     "acquiredAt": "2026-09-13",
     "checkedAt": "2026-09-13",
     "bytes": 3840500,
@@ -40,9 +41,9 @@
     "tableI2TextSha256": "f132e804ef028028cb50da652281ea95e33e017a2f87dd10f2476019858978fa"
   },
   "integrity": {
-    "sourceLockSha256": "f941a2096c8775ba505c79f0e69c779573bcc8d4b5ac110fdda5f75ae36a283e",
-    "dataSha256": "2ced99bdbfcb202a15eee1653149129784b027086160a6fc935b9957fb71688c",
-    "dataBytes": 52657
+    "sourceLockSha256": "9e544a422b63ecdaf95587fa27030f1047d913352e4fc23e9267f05e66807ac4",
+    "dataSha256": "df33db72d6d95b29f304171d624c83defe9ced2e8ec60e7145f1236743e8b1a4",
+    "dataBytes": 52829
   },
   "semantics": {
     "soldi": {
@@ -56,7 +57,7 @@
     },
     "provenance": {
       "holder": "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
-      "publicationDate": "2025-10-23",
+      "publicationDate": null,
       "acquiredAt": "2026-09-13",
       "checkedAt": "2026-09-13"
     }

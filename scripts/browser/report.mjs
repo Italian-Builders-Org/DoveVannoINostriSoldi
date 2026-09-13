@@ -203,8 +203,11 @@ try {
             const active = document.activeElement;
             if (active instanceof HTMLElement) active.blur();
           });
-          const collapseLabel = await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-label'));
-          if (collapseLabel === 'Riduci menu a icone') await page.click('button[aria-label="Riduci menu a icone"]');
+          // Lo stato si legge da aria-pressed, non dall'etichetta: agganciarsi al
+          // testo rende il controllo fragile a ogni riformulazione della copy, ed
+          // e cosi che questo passo era gia rimasto indietro una volta.
+          const pinned = await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-pressed') === 'true');
+          if (pinned) await page.click('.sidebar-collapse');
           await page.mouse.move(420, 240);
           await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
           const compact = await triggerGeometry(page, selector);

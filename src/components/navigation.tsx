@@ -207,9 +207,7 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
 }
 
 function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
-  // La preferenza di ancoraggio e scritta su <html> da SIDEBAR_INIT_SCRIPT prima
-  // del paint, quindi il primo render del client coincide con quello del server
-  // (entrambi "rail") e la lettura avviene dopo il mount, senza spostamenti.
+  // The prepaint script reserves the saved width before React hydrates.
   const [collapsed, setCollapsed] = useState(true);
   const [pointerInside, setPointerInside] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -222,17 +220,21 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   const compact = collapsed && !pointerInside;
 
   useEffect(() => {
-    const sync = () => setCollapsed(readStoredSidebarState() !== "pinned");
+    const sync = () => {
+      const state = readStoredSidebarState();
+      document.documentElement.dataset.sidebar = state;
+      setCollapsed(state !== "pinned");
+    };
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === "sidebar" || event.key === null) sync();
+    };
     sync();
-    window.addEventListener("storage", sync);
-    return () => window.removeEventListener("storage", sync);
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   function togglePinned() {
-    // Agisce sulla PREFERENZA, non su cio che si vede: se agisse sullo stato
-    // dipinto, avvicinare il puntatore per premere il bottone lo espanderebbe e
-    // il bottone si ritroverebbe a significare "riduci", rendendo impossibile
-    // ancorare la sidebar con il mouse.
+    // Hover expands the preview before a mouse click; toggle the saved preference.
     const next = !collapsed;
     setCollapsed(next);
     setSidebarState(next ? "rail" : "pinned");

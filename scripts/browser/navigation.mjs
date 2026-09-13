@@ -144,18 +144,17 @@ try {
           await tap(page, '[aria-label="Chiudi menu di navigazione"]');
           await page.waitForSelector('#mobile-navigation', { hidden: true });
         } else {
-          // L'anteprima al passaggio del puntatore GALLEGGIA: allarga la sidebar ma
-          // non sposta il contenuto. Prima bastava avvicinare il mouse al bordo
-          // sinistro per far scorrere la pagina di 164px.
+          await collapseDesktopSidebar(page);
+          const pinLeftAtRest = await page.$eval('.sidebar-collapse', (node) => node.getBoundingClientRect().left);
           const contentLeftAtRest = await page.$eval('.site-content', (node) => node.getBoundingClientRect().left);
           await expandDesktopSidebar(page);
           assert.equal(await page.$eval('.site-content', (node) => node.getBoundingClientRect().left), contentLeftAtRest,
             'L\'anteprima al passaggio del puntatore non sposta il contenuto');
 
-          // Il bottone si raggiunge SOLO passando col puntatore sulla sidebar, il
-          // che la espande: se agisse su cio che si vede invece che sulla
-          // preferenza, si ritroverebbe a significare "riduci" e ancorare il menu
-          // con il mouse sarebbe impossibile. Questo e il caso che lo dimostra.
+          assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getBoundingClientRect().left), pinLeftAtRest,
+            'Il pulsante non si sposta sotto il puntatore durante l’anteprima');
+          await collapseDesktopSidebar(page);
+          // Clicking must pin even though moving the pointer opens the preview first.
           await page.click('.sidebar-collapse');
           await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
           assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-pressed')), 'true',
@@ -181,6 +180,24 @@ try {
             'L\'ancoraggio sopravvive al ricaricamento');
           await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
           await collapseDesktopSidebar(page);
+          if (width === 1280) {
+            const other = await page.browserContext().newPage();
+            try {
+              await other.setViewport({ width, height: 900 });
+              await other.goto(new URL('/imprese', baseUrl).toString(), { waitUntil: 'networkidle2' });
+              await other.click('.sidebar-collapse');
+              await leaveDesktopSidebar(page);
+              await page.waitForFunction(() => document.documentElement.dataset.sidebar === 'pinned'
+                && document.querySelector('.sidebar-collapse')?.getAttribute('aria-pressed') === 'true'
+                && document.querySelector('.site-content').getBoundingClientRect().left === 232);
+              await other.click('.sidebar-collapse');
+              await page.waitForFunction(() => document.documentElement.dataset.sidebar === 'rail'
+                && document.querySelector('.sidebar-collapse')?.getAttribute('aria-pressed') === 'false'
+                && document.querySelector('.site-content').getBoundingClientRect().left === 68);
+            } finally {
+              await other.close();
+            }
+          }
           for (const item of PRIMARY_NAV) {
             const link = await page.$(`${root} .nav-item > a[href="${item.href}"]`);
             await link.focus();

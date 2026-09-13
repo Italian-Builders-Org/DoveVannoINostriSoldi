@@ -376,10 +376,7 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
 @media (min-width: 1100px) {
   body { --sidebar-width: 232px; --sidebar-open-width: 232px; --sidebar-rail-width: 68px; --site-header-height: 64px; }
   body:has([data-announcement]) { --site-header-height: 108px; }
-  /* Lo spazio riservato nel layout segue l'ANCORAGGIO, non cio che si vede: senza
-     questa distinzione l'anteprima al passaggio del puntatore sposterebbe tutti i
-     contenuti di 164px, cioe basterebbe avvicinare il mouse al bordo sinistro per
-     far ballare la pagina. Ancorata, la sidebar occupa spazio; in anteprima, galleggia. */
+  /* Hover previews overlay the content; only pinning reserves layout space. */
   html[data-sidebar="rail"] body { --sidebar-width: var(--sidebar-rail-width); }
   .header-inner { height: 64px; max-width: none; padding-block: 10px; gap: 20px; }
   .site-content { margin-left: var(--sidebar-width); }
@@ -395,8 +392,8 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
     border-right: 1px solid var(--color-neutral-300);
   }
   html[data-sidebar="rail"] .desktop-sidebar[data-collapsed="true"] { width: var(--sidebar-rail-width); }
-  /* In anteprima la sidebar copre il contenuto: l'ombra dice che sta sopra, non accanto. */
   html[data-sidebar="rail"] .desktop-sidebar[data-collapsed="false"] { box-shadow: 0 14px 38px rgb(0 0 0 / 22%); }
+  .desktop-sidebar .sidebar-toolbar { justify-content: flex-start; }
   .desktop-sidebar .primary-nav { flex: 1; padding-bottom: 8px; }
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle { min-height: 36px; padding-block: 7px; }
   .desktop-sidebar .sidebar-group { padding-block: 12px 5px; }

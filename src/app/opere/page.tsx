@@ -187,7 +187,7 @@ export default async function OperePage({
     order: ordine,
     page,
   });
-  const discovery = !cup ? await loadDiscovery() : null;
+  const discovery = !cup && !comparableMeta ? await loadDiscovery() : null;
   const mop = cup ? await optionalMopLookup(cup) : null;
 
   let pnrrLink: { cup: string; title: string } | null = null;
@@ -259,7 +259,7 @@ export default async function OperePage({
               <small>Solo previsto e effettivo entrambi &gt; 0</small>
             </article>
             <article>
-              <span>CUP distinti nella fonte live</span>
+              <span>CUP distinti nella fonte</span>
               <strong>
                 {discovery
                   ? integer(discovery.schema.cupCardinality)
@@ -267,7 +267,11 @@ export default async function OperePage({
                     ? integer(comparableMeta.coverage.sourceCupCardinality)
                     : "non disponibile ora"}
               </strong>
-              <small>Cardinalità ufficiale OpenBDAP</small>
+              <small>
+                {comparableMeta
+                  ? `Rilevazione OpenBDAP del ${longDate(comparableMeta.observedAt)}`
+                  : "Cardinalità ufficiale OpenBDAP"}
+              </small>
             </article>
             <article>
               <span>Data di riferimento fonte</span>

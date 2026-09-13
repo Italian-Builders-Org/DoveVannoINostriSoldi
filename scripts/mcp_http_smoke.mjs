@@ -640,6 +640,7 @@ const checks = mode === "subscription"
     "modern-discovery",
     "compatibility-modern-discovery",
     "modern-query",
+    "fc40-2017-api-mcp-provenance-year-separation",
     "fc50-2018-api-mcp-provenance-year-separation",
     "fc60-2019-api-mcp-provenance-year-separation",
     ...(mode === "complete" ? ["modern-subscriptions", "compatibility-modern-subscriptions"] : []),

@@ -704,7 +704,12 @@ try {
   for (const width of [390, 1440]) {
     const label = `Annunci accessibili ${width}px`;
     await runScenario(browser, {
-      label, pathname: "/", width, validate: inspectAnnouncements,
+      label, pathname: "/", width,
+      // Timer behavior is shared across layouts; exercise real elapsed time once,
+      // while preserving interaction, visibility and reduced-motion checks in each.
+      validate: (page) => inspectAnnouncements(page, {
+        testTiming: width === 390 && (process.env.DVNS_COLOR_SCHEME ?? "light") === "light",
+      }),
     });
     completed.push(label);
   }

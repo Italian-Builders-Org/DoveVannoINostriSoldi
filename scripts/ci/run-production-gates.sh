@@ -16,7 +16,7 @@ BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
 # production sequence auditable and fail before starting a server if it ever
 # exceeds that budget.
 MCP_WINDOW_POST_BUDGET=30
-MCP_CONTRACT_POSTS=29
+MCP_CONTRACT_POSTS=30
 MCP_SUBSCRIPTION_POSTS=2
 MCP_LOAD_REQUESTS=15
 MCP_IVA_POSTS=5
@@ -131,7 +131,7 @@ npm run test:browser:papers
 echo "::endgroup::"
 
 echo "::group::MCP rate-limit window transition"
-# The 29 contract POSTs above share the local public-client window. Start the
+# The 30 contract POSTs above share the local public-client window. Start the
 # conservative residual interval only after that group completes: every POST is
 # known to predate this timestamp. The two subscriptions and 15-sample load then
 # occupy only 17 POSTs in the next window. Browser suites that already consumed

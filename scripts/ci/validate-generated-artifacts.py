@@ -44,6 +44,7 @@ PUBLICATION_IDS = frozenset(
     {
         "company-atlas",
         "consulenti-pubblici",
+        "education-atlas",
         "government-scorecard",
         "mef-participations",
         "openbdap-budget-law",
@@ -54,6 +55,14 @@ PUBLICATION_IDS = frozenset(
         "siope-nonmunicipal",
     }
 )
+# These source artifacts publish the same generated inventory as a companion to
+# their own snapshot. Keep the exception explicit so an unrelated artifact
+# cannot claim ownership of a shared generated file by accident.
+SHARED_FILE_OWNERS = {
+    "docs/SOURCE_SNAPSHOT_INVENTORY.md": frozenset(
+        {"education-atlas", "openbdap-budget-law"}
+    )
+}
 PUBLICATION_BRANCH_RE = re.compile(r"^automation/data/[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
@@ -120,10 +129,14 @@ def validate_schema(registry: dict) -> list[str]:
                     errors.append(f"{art_id}: file entry must be a string, got {type(f).__name__}.")
                     continue
                 if f in seen_files and seen_files[f] != art_id:
-                    errors.append(
-                        f"{art_id}: file '{f}' is also owned by '{seen_files[f]}' "
-                        f"(duplicate file mapping)."
-                    )
+                    shared_owners = SHARED_FILE_OWNERS.get(f)
+                    if not shared_owners or not {
+                        seen_files[f], art_id
+                    } <= shared_owners:
+                        errors.append(
+                            f"{art_id}: file '{f}' is also owned by '{seen_files[f]}' "
+                            f"(duplicate file mapping)."
+                        )
                 else:
                     seen_files[f] = art_id
 

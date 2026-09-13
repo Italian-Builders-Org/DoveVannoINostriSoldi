@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -47,6 +48,7 @@ export default function RootLayout({
     <html lang="it" className={geist.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
       </head>
       <body>
         <GoogleAnalytics />

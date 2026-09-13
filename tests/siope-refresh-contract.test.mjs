@@ -16,9 +16,9 @@ test("SIOPE refresh measurements vary without changing other corpus contribution
   const after = siopeProjectionMeasurements(seal(candidate));
   assert.equal(after.rows - before.rows, 12);
   assert.equal(after.bytes - before.bytes, 120);
-  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceRows - before.rows, 13_993_570);
-  assert.equal(INTEGRATED_CORPUS_CONTRACT.publicRows - before.rows, 1_011_224);
-  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceBytes - before.bytes, 2_866_149_143);
+  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceRows - before.rows, 13_993_678);
+  assert.equal(INTEGRATED_CORPUS_CONTRACT.publicRows - before.rows, 1_011_332);
+  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceBytes - before.bytes, 2_866_168_664);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.catalogOnlyRows, 12_979_505);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.derivedOnlyRows, 2_841);
 });

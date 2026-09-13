@@ -196,7 +196,8 @@ export function relatedReadingForDataset(
     return { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" };
   }
   if (dataset.id === "istat-economia-non-osservata-componenti" ||
-      dataset.id === "istat-economia-sommersa-branche") return null;
+      dataset.id === "istat-economia-sommersa-branche" ||
+      dataset.id === "istat-economia-non-osservata-territori") return null;
   if (dataset.id === "pnrr-progetti") return { href: "/pnrr", label: "Cerca tutti i progetti PNRR" };
   if (dataset.id === "ted-avvisi-italia-2026-08") {
     return { href: "/appalti/ted", label: "Avvisi TED con committenti in Italia" };

@@ -53,13 +53,7 @@ export const istatPensionsSources: readonly IstatPensionSource[] = [
 
 export const istatPensionsSnapshot = { ...validated, sources: istatPensionsSources };
 
-/**
- * Il territorio e OPZIONALE e vale `IT` per difetto.
- *
- * Lo snapshot copre 142 codici, ma la superficie pubblica ha sempre restituito il
- * dato nazionale: cambiarlo in silenzio significherebbe che una chiamata invariata
- * riceve d'un tratto 142 volte le righe. Il dettaglio territoriale si chiede.
- */
+/** Mantiene il default nazionale delle query esistenti; il dettaglio territoriale va richiesto. */
 export type IstatPensionsQuery = Readonly<{
   year?: number;
   territory?: string;

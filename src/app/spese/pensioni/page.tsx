@@ -94,10 +94,10 @@ const benefitSeries = istatPensionsData.pensionBenefits.observations
 const pensionerSeries = istatPensionsData.pensioners.observations
   .filter((row) => row.territory === NATIONAL)
   .map((row) => ({
-  year: row.year,
-  pensionerCount: row.pensionerCount,
-  averagePensionerIncomeCents: Math.round(row.grossAnnualMeanEuros * 100),
-}));
+    year: row.year,
+    pensionerCount: row.pensionerCount,
+    averagePensionerIncomeCents: Math.round(row.grossAnnualMeanEuros * 100),
+  }));
 const latestBenefit = benefitSeries.at(-1);
 const latestPensioner = pensionerSeries.at(-1);
 

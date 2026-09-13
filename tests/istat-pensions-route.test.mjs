@@ -43,8 +43,11 @@ test("territorial pension queries preserve the national default and reject ambig
   const national = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022")).json();
   assert.equal(national.territory, "IT");
   assert.equal(national.pensionBenefits.length, 8);
+  assert.equal(national.inpsOsservatorio.stock.pensionCount, 21_257_999);
   const regional = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=itf3")).json();
   assert.equal(regional.territory, "ITF3");
+  assert.equal(regional.inpsOsservatorio, null);
+  assert.match(regional.inpsOsservatorioNote, /filtro territoriale/);
   assert.ok(regional.pensionBenefits.length > 0);
   assert.ok(regional.pensionBenefits.every((row) => row.territory === "ITF3" && row.year === 2022));
   const abolished = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=ITG29")).json();

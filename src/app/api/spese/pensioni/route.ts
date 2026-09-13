@@ -36,9 +36,13 @@ export function GET(request: NextRequest) {
   }
 
   try {
+    const istat = queryIstatPensions({ year, territory: territoryValue ?? undefined });
     return Response.json({
-      ...queryIstatPensions({ year, territory: territoryValue ?? undefined }),
-      inpsOsservatorio: queryInpsPensionsOsservatorio(),
+      ...istat,
+      inpsOsservatorio: istat.territory === "IT" ? queryInpsPensionsOsservatorio() : null,
+      ...(istat.territory === "IT" ? {} : {
+        inpsOsservatorioNote: "L’Osservatorio INPS non è disponibile con filtro territoriale in questo endpoint.",
+      }),
     }, {
       headers: { "Cache-Control": CACHE_CONTROL },
     });

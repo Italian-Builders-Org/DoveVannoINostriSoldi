@@ -4,36 +4,158 @@ on:
     branches: [codex/report-overall-verification-20260914]
     paths: [.github/workflows/report-workspace.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
   workspace:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - name: Archivio mirato dei file tracciati
-        shell: bash
+          path: transfer
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: 74e88fab72e718c5f1ca885a1b7dc6adcebe71db
+          path: project
+      - name: Applica solo i file revisionati con hash prima e dopo
+        id: apply
+        working-directory: project
+        run: |
+          mkdir -p /tmp/report-results
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, pathlib
+          encoded = ''.join(pathlib.Path('../transfer/report-transfer/part-%d.b64' % i).read_text().strip() for i in range(1,5))
+          raw = lzma.decompress(base64.b64decode(encoded, validate=True))
+          assert hashlib.sha256(raw).hexdigest() == '8fd8326f008fe7fa9d69a1c07ca5f7566363a73ec9db3471cdfec1cb407e69e7'
+          changes = json.loads(raw)
+          for name, entry in changes.items():
+              p = pathlib.Path(name)
+              assert not p.is_absolute() and '..' not in p.parts and p.parts[0] in {'docs','scripts','src','tests'}
+              assert not p.is_symlink()
+              old = p.read_text() if p.exists() else ''
+              assert hashlib.sha256(old.encode()).hexdigest() == entry['before'], name + ': input cambiato'
+              if 'json' in entry:
+                  data = json.loads(old)
+                  for route, op, value in entry['json']:
+                      target = data
+                      for key in route[:-1]: target = target[key]
+                      if op == 'del': del target[route[-1]]
+                      else: target[route[-1]] = value
+                  new = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
+              else:
+                  new = old
+                  for begin, end, value in reversed(entry['edits']):
+                      new = new[:begin] + value + new[end:]
+              assert hashlib.sha256(new.encode()).hexdigest() == entry['after'], name + ': output divergente'
+              p.parent.mkdir(parents=True,exist_ok=True)
+              p.write_text(new)
+          pathlib.Path('/tmp/report-results/changed-files.json').write_text(json.dumps(list(changes)))
+          print('Applicati e verificati', len(changes), 'file')
+          PY
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: project/.nvmrc
+          cache: npm
+          cache-dependency-path: project/package-lock.json
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - name: Dipendenze del progetto e del renderer
+        working-directory: project
+        run: |
+          npm ci
+          python -m pip install --no-deps --only-binary=:all: --require-hashes -r requirements-etl.txt
+          python -m pip install 'weasyprint==68.0'
+      - name: Rigenera PDF dalla stessa fonte della pagina
+        id: pdf
+        working-directory: project
+        run: REPORT_HTML_OUTPUT=/tmp/report-results/report.html node --experimental-strip-types scripts/reports/render-state-budget.mjs weasyprint
+      - name: Static checks
+        id: static
+        continue-on-error: true
+        working-directory: project
+        run: |
+          set -o pipefail
+          npm run ci:static 2>&1 | tee /tmp/report-results/static.log
+      - name: Test Node completi
+        id: node
+        continue-on-error: true
+        working-directory: project
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee /tmp/report-results/node.log
+      - name: Prove indipendenti report originale e ampliamento
+        id: proof
+        continue-on-error: true
+        working-directory: project
+        env:
+          DVNS_OFFLINE_GUARD: '1'
+          PYTHONPATH: scripts/etl:scripts/ci
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests/etl -p 'test_state_budget_report.py' 2>&1 | tee /tmp/report-results/proof-original.log
+          python -m unittest discover -s tests/etl -p 'test_public_spending_report.py' 2>&1 | tee /tmp/report-results/proof-overall.log
+      - name: Build di produzione completa
+        id: build
+        continue-on-error: true
+        working-directory: project
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee /tmp/report-results/build.log
+      - name: Browser report in entrambi i temi e quattro viewport
+        id: browser
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        working-directory: project
+        run: |
+          set -o pipefail
+          npm run start > /tmp/report-results/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          npm run test:browser:monthly-report 2>&1 | tee /tmp/report-results/browser.log
+      - name: Prepara oggetti Git, senza aggiornare branch o effettuare merge
+        if: always() && steps.pdf.outcome == 'success'
+        working-directory: project
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKS: '{"static":"${{ steps.static.outcome }}","node":"${{ steps.node.outcome }}","proof":"${{ steps.proof.outcome }}","build":"${{ steps.build.outcome }}","browser":"${{ steps.browser.outcome }}"}'
         run: |
           python3 - <<'PY'
-          import pathlib, subprocess, tarfile
-          paths = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
-          with tarfile.open('/tmp/report-workspace-small.tar.gz','w:gz') as archive:
-              for name in paths:
-                  if not name: continue
-                  p = pathlib.Path(name)
-                  if not p.is_file(): continue
-                  if name.startswith(('data/','src/data/','docs/research/')) and not any(x in name for x in ('cofog','state-budget','STATE_BUDGET')): continue
-                  if p.stat().st_size > 3_000_000 and not name.endswith('state-budget-2025/evidence.zip'): continue
-                  archive.add(p,arcname=name,recursive=False)
+          import base64, json, os, pathlib, subprocess, urllib.request
+          parent = '74e88fab72e718c5f1ca885a1b7dc6adcebe71db'
+          repo = os.environ['GITHUB_REPOSITORY']
+          def api(path, data=None):
+              body = None if data is None else json.dumps(data).encode()
+              req = urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path, data=body, headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+              with urllib.request.urlopen(req, timeout=60) as r: return json.load(r)
+          changes = json.loads(pathlib.Path('/tmp/report-results/changed-files.json').read_text())
+          changes += ['public/report/bilancio-stato-2025.pdf','docs/research/state-budget-2025/pdf-receipt.json']
+          entries = []
+          for name in changes:
+              blob = api('git/blobs', {'content':base64.b64encode(pathlib.Path(name).read_bytes()).decode(),'encoding':'base64'})
+              entries.append({'path':name,'mode':'100644','type':'blob','sha':blob['sha']})
+          base = api('git/commits/'+parent)['tree']['sha']
+          tree = api('git/trees',{'base_tree':base,'tree':entries})
+          result = {'parent':parent,'tree':tree['sha'],'files':entries,'checks':json.loads(os.environ['CHECKS'])}
+          pathlib.Path('/tmp/report-results/candidate-tree.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+          subprocess.run(['git','add','--']+changes,check=True)
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          pathlib.Path('/tmp/report-results/final.patch').write_bytes(subprocess.check_output(['git','diff','--cached','--binary']))
           PY
-          git rev-parse HEAD > /tmp/report-workspace-sha.txt
+          cp public/report/bilancio-stato-2025.pdf /tmp/report-results/
+          cp docs/research/state-budget-2025/pdf-receipt.json /tmp/report-results/
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
         with:
-          name: report-workspace-small
+          name: report-review-results
+          include-hidden-files: true
+          retention-days: 3
           path: |
-            /tmp/report-workspace-small.tar.gz
-            /tmp/report-workspace-sha.txt
-          retention-days: 1
-          if-no-files-found: error
+            /tmp/report-results/
+            project/.impeccable/review/
+            project/artifacts/browser/

@@ -410,6 +410,13 @@ export async function queryPublicDataset(
         ...queryMefTaxGapNazionale({ year: query.year, tax: query.tax }),
       });
     }
+    case "eurostat_taxag": {
+      const { queryEurostatTaxag } = await import("@/lib/eurostat-taxag-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatTaxag({ year: query.year, sector: query.sector, tax: query.tax }),
+      });
+    }
     case "mef_irpef_dettaglio": {
       const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
       return jsonSafe({

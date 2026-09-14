@@ -279,6 +279,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["anno", "tipologia di imposta"],
   },
   {
+    slug: "eurostat-taxag",
+    name: "Eurostat · aggregati fiscali PA",
+    owner: "Eurostat (Commissione europea)",
+    area: "Gettito SEC 2010 per tipo di imposta e sottosettore",
+    cadence: "Annuale; snapshot 2014–2025",
+    coverage: "Italia: S13 e sottosettori S1311/S1313/S1314; 14 voci pubblicate (IVA, IRPEF-like, IRES-like, contributi, …)",
+    format: "Statistics API JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+    note: "Competenza SEC, non cassa SIOPE né dichiarazioni MEF né tax gap. S1311 non significa denaro trattenuto a Roma. Celle assenti (es. imposte su S1314) restano assenti. CC BY 4.0.",
+    joinKeys: ["anno", "settore ESA", "voce na_item"],
+  },
+  {
     slug: "mef-irpef-dettaglio",
     name: "MEF · dettaglio IRPEF per regione, età e sesso",
     owner: "MEF — Dipartimento delle Finanze",

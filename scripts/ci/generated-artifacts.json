@@ -1888,6 +1888,32 @@
       "sourceSpec": "scripts/etl/specs/mef-tax-gap-nazionale.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock sul PDF ufficiale MEF (URL, byte, SHA-256, pagine 9-10, titoli Tab. I.1/I.2 e hash del layer testuale). Estrazione senza OCR. Importi in centesimi da milioni di euro; propensione in decimi di punto percentuale; forchette min/max preservate. Solo nazionale; distinto da VAT gap UE e NOE ISTAT. Licenza PDF not-declared."
+    },
+    {
+      "id": "eurostat-taxag-2014-2025",
+      "owner": "Eurostat aggregati fiscali PA gov_10a_taxag 2014-2025",
+      "files": [
+        "src/data/generated/eurostat-taxag-2014-2025.data.json",
+        "src/data/generated/eurostat-taxag-2014-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_taxag_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_taxag_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-taxag.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_taxag_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-taxag-2014-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sulla risposta JSON-stat ufficiale gov_10a_taxag (URL, struttura SDMX, updated, byte, SHA-256). Pubblica 14 voci × sottosettori ESA; riconcilia D2_D5_D91=D2+D5+D91 e totale=tasse+D61. Celle assenti restano assenti. Importi in centesimi. CC BY 4.0."
     }
   ]
 }

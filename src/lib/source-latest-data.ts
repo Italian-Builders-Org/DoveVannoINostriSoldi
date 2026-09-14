@@ -30,6 +30,7 @@ import { getPublicDebtSnapshot } from "@/lib/public-debt";
 import { eurostatHicpData } from "@/lib/eurostat-hicp-snapshot";
 import { eurostatGdpData } from "@/lib/eurostat-gdp-snapshot";
 import { mefTaxGapNazionaleData } from "@/lib/mef-tax-gap-nazionale-snapshot";
+import { eurostatTaxagData } from "@/lib/eurostat-taxag-snapshot";
 import { oecdTaxingWagesData } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
@@ -127,6 +128,10 @@ const exhaustiveLatestDataBySlug = {
   "mef-tax-gap-nazionale": {
     kind: "period",
     label: `${mefTaxGapNazionaleData.period.from}-${mefTaxGapNazionaleData.period.to} (2022 semi-definitivo)`,
+  },
+  "eurostat-taxag": {
+    kind: "period",
+    label: `${eurostatTaxagData.period.from}-${eurostatTaxagData.period.to}`,
   },
   siope: {
     kind: "period",

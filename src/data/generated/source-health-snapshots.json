@@ -216,6 +216,12 @@
     "recordCount": 80
   },
   {
+    "sourceId": "eurostat-taxag",
+    "sourceTimestamp": "2026-09-14",
+    "detail": "Snapshot Eurostat gov_10a_taxag 2014–2025: 14 voci, 516 celle osservate su 672. Pubblicato 2026-07-21; acquisito 2026-09-14; controllato 2026-09-14.",
+    "recordCount": 516
+  },
+  {
     "sourceId": "mef-irpef-dettaglio",
     "sourceTimestamp": "2026-09-05",
     "detail": "Snapshot ETL attivo · dettaglio IRPEF dichiarazioni 2017-2025, anni di imposta 2016-2024 · 79 file su nove famiglie, 25.534 righe e 43.300 celle vuote distinte dagli zeri · 5.444.337 byte.",

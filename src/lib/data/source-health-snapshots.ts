@@ -16,6 +16,7 @@ import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
+import { eurostatTaxagData, eurostatTaxagMetadata } from "@/lib/eurostat-taxag-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -416,6 +417,17 @@ function snapshotManagedMefTaxGapNazionale(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatTaxag(): SourceHealth {
+  return {
+    ...baseHealth("eurostat-taxag"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-taxag", eurostatTaxagMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Eurostat gov_10a_taxag ${eurostatTaxagData.period.from}–${eurostatTaxagData.period.to}: ${eurostatTaxagData.coverage.publishedItems} voci, ${eurostatTaxagData.coverage.observedCells} celle osservate su ${eurostatTaxagData.coverage.totalCells}. Pubblicato ${eurostatTaxagMetadata.source.publicationDate}; acquisito ${eurostatTaxagMetadata.source.acquiredAt}; controllato ${eurostatTaxagMetadata.source.checkedAt}.`,
+    recordCount: eurostatTaxagData.coverage.observedCells,
+  };
+}
+
 function snapshotManagedMefIrpefDettaglio(): SourceHealth {
   const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
   const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
@@ -573,6 +585,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
   "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
+  "eurostat-taxag": snapshotManagedEurostatTaxag,
 };
 
 export function buildSourceHealthSnapshots() {

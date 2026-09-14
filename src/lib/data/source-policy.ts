@@ -42,6 +42,7 @@ export type SourceId =
   | "mef-iva"
   | "eu-vat-gap-italy"
   | "mef-tax-gap-nazionale"
+  | "eurostat-taxag"
   | "ameco"
   | "governi-presidenza";
 
@@ -672,6 +673,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:mef-tax-gap-nazionale", "domain:taxation"],
+  },
+  "eurostat-taxag": {
+    id: "eurostat-taxag",
+    label: "Eurostat · aggregati fiscali PA (gov_10a_taxag)",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote: "Gettito SEC 2010 Italia 2014-2025 per voce e sottosettore ESA. Snapshot aggiornabile solo dopo nuova acquisizione JSON-stat e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-taxag", "domain:taxation", "domain:government-finance"],
   },
   "mef-irpef-dettaglio": {
     id: "mef-irpef-dettaglio",

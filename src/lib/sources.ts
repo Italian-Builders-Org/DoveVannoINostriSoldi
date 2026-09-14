@@ -243,6 +243,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "sesso", "classe di età", "durata teorica"],
   },
   {
+    slug: "inps-assegno-unico",
+    name: "INPS · Assegno Unico (nuclei e figli)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    area: "Assegno Unico e Universale a domanda",
+    cadence: "Annuale; package aggiornati al 2026-01-17",
+    coverage:
+      "Italia per 106 province, 2022–2024; nuclei e figli con flag disabilità; package figli anche per classe ISEE ed età",
+    format: "CSV UTF-8 · snapshot JSON verificato",
+    url: "https://opendata.inps.it/opendata",
+    note: "AUU a domanda esclusi beneficiari RdC. Importi erogati in millesimi di euro. Nuclei, figli e mesi sono nature distinte; numero_figli nel package nuclei non è documentato come conteggio di figli distinti. Licenza cc-by, distinta da IODL 2.0 NASpI.",
+    joinKeys: ["provincia", "anno", "tabella", "flag disabilità", "classe ISEE", "classe età"],
+  },
+  {
     slug: "mef-iva",
     name: "MEF · principali grandezze IVA",
     owner: "MEF — Dipartimento delle Finanze",

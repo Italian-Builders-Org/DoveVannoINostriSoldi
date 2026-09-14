@@ -438,6 +438,18 @@ export async function queryPublicDataset(
         ...queryInpsNaspi({ table: query.table, measure: query.measure, year: query.year, territory: query.territory }),
       });
     }
+    case "inps_assegno_unico": {
+      const { queryInpsAssegnoUnico } = await import("@/lib/inps-assegno-unico-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsAssegnoUnico({
+          table: query.table,
+          year: query.year,
+          province: query.province,
+          region: query.region,
+        }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

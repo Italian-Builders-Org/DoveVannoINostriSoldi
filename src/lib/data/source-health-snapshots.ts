@@ -13,6 +13,7 @@ import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { inpsAssegnoUnicoData, inpsAssegnoUnicoMetadata } from "@/lib/inps-assegno-unico-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
@@ -372,6 +373,18 @@ function snapshotManagedInpsNaspi(): SourceHealth {
   };
 }
 
+function snapshotManagedInpsAssegnoUnico(): SourceHealth {
+  const artifact = inpsAssegnoUnicoMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-assegno-unico"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-assegno-unico", inpsAssegnoUnicoMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · Assegno Unico ${inpsAssegnoUnicoData.period.from}-${inpsAssegnoUnicoData.period.to} · ${inpsAssegnoUnicoData.coverage.observedRows.toLocaleString("it-IT")} righe provinciali (AUU a domanda, esclusi RdC) · importi in millesimi · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsAssegnoUnicoData.coverage.observedRows,
+  };
+}
+
 function snapshotManagedIstatEpea(): SourceHealth {
   const { source, edition, referencePeriod } = istatEpeaMetadata;
   return {
@@ -593,6 +606,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "inps-naspi": snapshotManagedInpsNaspi,
+  "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,

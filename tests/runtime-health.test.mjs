@@ -34,6 +34,7 @@ const SOURCE_IDS = [
   "eu-vat-gap-italy",
   "mef-tax-gap-nazionale",
   "eurostat-taxag",
+  "eurostat-sha-health",
 ];
 const MCP_HEADERS = {
   "content-type": "application/json",

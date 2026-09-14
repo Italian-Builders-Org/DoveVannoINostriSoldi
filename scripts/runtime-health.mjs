@@ -68,6 +68,7 @@ const EXPECTED_SOURCE_IDS = [
   "eu-vat-gap-italy",
   "mef-tax-gap-nazionale",
   "eurostat-taxag",
+  "eurostat-sha-health",
   "ameco",
   "governi-presidenza",
 ];

@@ -417,6 +417,13 @@ export async function queryPublicDataset(
         ...queryEurostatTaxag({ year: query.year, sector: query.sector, tax: query.tax }),
       });
     }
+    case "eurostat_sha_health": {
+      const { queryEurostatShaHealth } = await import("@/lib/eurostat-sha-health-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatShaHealth({ year: query.year, scheme: query.code }),
+      });
+    }
     case "mef_irpef_dettaglio": {
       const { queryMefIrpefDettaglio } = await import("@/lib/mef-irpef-dettaglio-snapshot");
       return jsonSafe({

@@ -13,15 +13,27 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - name: Archivio dei soli file tracciati
+      - name: Archivio mirato dei file tracciati
+        shell: bash
         run: |
-          git archive --format=tar.gz --output=/tmp/report-workspace.tar.gz HEAD
+          python3 - <<'PY'
+          import pathlib, subprocess, tarfile
+          paths = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          with tarfile.open('/tmp/report-workspace-small.tar.gz','w:gz') as archive:
+              for name in paths:
+                  if not name: continue
+                  p = pathlib.Path(name)
+                  if not p.is_file(): continue
+                  if name.startswith(('data/','src/data/','docs/research/')) and not any(x in name for x in ('cofog','state-budget','STATE_BUDGET')): continue
+                  if p.stat().st_size > 3_000_000 and not name.endswith('state-budget-2025/evidence.zip'): continue
+                  archive.add(p,arcname=name,recursive=False)
+          PY
           git rev-parse HEAD > /tmp/report-workspace-sha.txt
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: report-workspace
+          name: report-workspace-small
           path: |
-            /tmp/report-workspace.tar.gz
+            /tmp/report-workspace-small.tar.gz
             /tmp/report-workspace-sha.txt
           retention-days: 1
           if-no-files-found: error

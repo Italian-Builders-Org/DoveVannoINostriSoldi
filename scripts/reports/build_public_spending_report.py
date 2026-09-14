@@ -14,7 +14,6 @@ import html
 import io
 import json
 import re
-import sys
 from decimal import Decimal, ROUND_HALF_UP, localcontext
 from pathlib import Path
 from typing import Any

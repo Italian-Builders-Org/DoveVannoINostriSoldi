@@ -1,3 +1,19 @@
+# Rapporto sulla spesa pubblica: revisione della PR #509
+
+La pagina pubblica e il PDF conservano `/report/bilancio-stato-2025`.
+Il contenuto di lettura ora vive in `src/content/reports/state-budget-reader.json`;
+il generatore è `scripts/reports/build_state_budget_reader.py`.
+`READER_INTEGRATION.md` descrive la revisione, i controlli e i limiti della ricerca.
+`reader-source-register.json` contiene la provenienza di ogni riferimento.
+
+Il manoscritto `state-budget-2025.json` e `evidence.zip` della #506 restano
+immutati come prove storiche. I test sui loro dati originali sono conservati;
+solo le verifiche della presentazione PDF seguono la revisione editoriale.
+L'artefatto `public-spending-2026` importato inizialmente dalla #509 resta
+congelato per compatibilità tecnica, ma non ha una seconda pagina pubblica.
+
+## Documentazione storica della prima analisi
+
 # Bilancio dello Stato 2025
 
 Rapporto per la sezione esistente `/report`. Unica PR, merge subordinato

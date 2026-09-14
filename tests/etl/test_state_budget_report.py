@@ -32,46 +32,48 @@ class StateBudgetReportTests(unittest.TestCase):
         return list(csv.DictReader(io.StringIO(raw.decode("cp1252")), delimiter=";"))
 
     def test_pdf_contains_all_findings_limits_and_verifiable_source_links(self):
+        report = json.loads((ROOT / "src/content/reports/state-budget-reader.json").read_text())
         reader = PdfReader(ROOT / "public/report/bilancio-stato-2025.pdf")
-        # PDF text extractors may insert spaces inside kerned words (e.g. "T olentino").
-        # Compare the full character sequence, preserving punctuation and every digit.
-        normalize = lambda text: re.sub(r"\s+", "", unicodedata.normalize("NFKC", text))
-        text = "\n".join(page.extract_text() for page in reader.pages)
+        normalize = lambda value: re.sub(r"\s+", "", unicodedata.normalize("NFKC", value))
+        text = normalize("\n".join(page.extract_text() for page in reader.pages))
         self.assertNotIn("\u2014", text)
-        expected = [self.report["title"], self.report["summary"],
-                    *self.report["introduction"], *self.report["readingGuide"],
-                    *(item["text"] for item in self.report["controls"]), *self.report["method"]]
-        for case in self.report["cases"]:
-            expected.extend(case[key] for key in ("title", "summary", "record", "calculation", "nextStep"))
+        expected = [report["title"], report["summary"], report["lead"], *report["method"],
+                    *report["municipal"]["paragraphs"]]
+        for case in report["cases"]:
+            expected.extend(case[key] for key in ("title", "number", "numberLabel", "period", "lead", "conclusion", "improve"))
             expected.extend(case["paragraphs"])
-        for area in self.report["coverage"]:
-            expected.extend(area.values())
-        for source in self.report["sources"]:
+            if case["math"]:
+                expected.append(case["math"]["explanation"])
+        for source in report["sources"]:
             expected.extend([source["title"], source["locator"]])
         for paragraph in expected:
             with self.subTest(paragraph=paragraph[:80]):
-                self.assertTrue(normalize(paragraph) in normalize(text), f"Missing PDF text: {paragraph}")
+                self.assertIn(normalize(paragraph), text)
+        self.assertEqual({case["id"] for case in self.report["cases"]},
+                         {case["legacyId"] for case in report["cases"] if case["legacyId"]})
         links = {str(annotation.get_object().get("/A", {}).get("/URI", ""))
                  for page in reader.pages for annotation in page.get("/Annots", [])}
-        self.assertLessEqual({source["url"] for source in self.report["sources"]}, links)
-        self.assertIn(self.report["evidenceUrl"], links)
-        self.assertRegex(self.report["evidenceUrl"],
-                         r"^https://github\.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/[0-9a-f]{40}/docs/research/state-budget-2025$")
+        self.assertLessEqual({source["url"] for source in report["sources"]}, links)
+        self.assertIn(report["legacyEvidenceUrl"], links)
 
-    def test_pdf_uses_only_monochrome_vector_and_text_content(self):
+    def test_pdf_uses_dvns_palette_and_reviewed_logo(self):
         reader = PdfReader(ROOT / "public/report/bilancio-stato-2025.pdf")
-        for number, page in enumerate(reader.pages, 1):
-            with self.subTest(page=number):
-                # This report has no images or forms. Fail closed if a future renderer
-                # introduces content whose colour cannot be checked by these operators.
-                self.assertFalse(page["/Resources"].get("/XObject"))
-                for values, operator in page.get_contents().operations:
-                    self.assertNotIn(operator, (b"Do", b"BI", b"INLINE IMAGE", b"sh",
-                                                b"cs", b"CS", b"sc", b"SC", b"scn", b"SCN"))
-                    if operator in (b"rg", b"RG"):
-                        self.assertEqual(len(set(values)), 1, f"Chromatic RGB on page {number}: {values}")
-                    elif operator in (b"k", b"K"):
-                        self.assertEqual(list(values[:3]), [0, 0, 0])
+        colours, images = set(), []
+        for page in reader.pages:
+            for values, operator in page.get_contents().operations:
+                if operator in (b"rg", b"RG"):
+                    colours.add(tuple(round(float(value), 3) for value in values))
+            for reference in page["/Resources"].get("/XObject", {}).values():
+                image = reference.get_object()
+                self.assertEqual(image["/Subtype"], "/Image")
+                images.append((int(image["/Width"]), int(image["/Height"])))
+        for rgb in ((24/255, 43/255, 58/255), (23/255, 101/255, 117/255), (180/255, 35/255, 50/255)):
+            self.assertIn(tuple(round(value, 3) for value in rgb), colours)
+        self.assertTrue(images)
+        self.assertEqual(set(images), {(48, 48)})
+        logo = (ROOT / "public/brand/icon-48.png").read_bytes()
+        receipt = json.loads((PROOF / "pdf-receipt.json").read_text())
+        self.assertEqual(receipt["rendering"]["logoSha256"], hashlib.sha256(logo).hexdigest())
 
     def test_evidence_bytes_and_source_identity(self):
         manifest = json.loads((PROOF / "evidence-manifest.json").read_text())
@@ -127,7 +129,11 @@ class StateBudgetReportTests(unittest.TestCase):
             self.assertTrue(source["url"].startswith("https://"))
         self.assertNotIn("\u2014", CONTENT.read_text())
         receipt = json.loads((PROOF / "pdf-receipt.json").read_text())
-        self.assertEqual(hashlib.sha256(CONTENT.read_bytes()).hexdigest(), receipt["manuscriptSha256"])
+        legacy = CONTENT.read_bytes()
+        legacy_blob = hashlib.sha1(b"blob " + str(len(legacy)).encode() + b"\0" + legacy).hexdigest()
+        self.assertEqual(legacy_blob, receipt["legacyManuscriptGitBlob"])
+        current = (ROOT / "src/content/reports/state-budget-reader.json").read_bytes()
+        self.assertEqual(hashlib.sha256(current).hexdigest(), receipt["readerManuscriptSha256"])
         pdf = (ROOT / "public/report/bilancio-stato-2025.pdf").read_bytes()
         self.assertTrue(pdf.startswith(b"%PDF-"))
         self.assertEqual(hashlib.sha256(pdf).hexdigest(), receipt["pdfSha256"])

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { inspectStateBudgetReader } from "./state-budget-reader.mjs";
 import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -135,43 +136,9 @@ async function inspectArchive(page, width) {
 }
 
 async function inspectStateBudget(page, width) {
-  assert.deepEqual(await page.$$eval('section[aria-labelledby="lettura-title"] p', (elements) => elements.map((element) => element.textContent)), budgetReport.readingGuide);
-  assert.ok(await page.$$eval('main a[href^="#source-"]', (links) => links.every((link) => document.getElementById(link.hash.slice(1)))), "Riferimento a fonte mancante");
-  assert.equal(await page.$eval("main h1", (element) => element.textContent), budgetReport.title);
-  assert.equal(await page.$eval('link[rel="canonical"]', (element) => element.href),
-    `https://www.dovevannoinostrisoldi.com/report/${budgetReport.slug}`);
-  assert.equal(await page.$eval('meta[property="article:published_time"]', (element) => element.content), budgetReport.date);
-  assert.deepEqual(await page.$$eval('nav[aria-label="Casi del rapporto"] a', (links) => links.map((link) => link.hash)),
-    budgetReport.cases.map((item) => `#${item.id}`));
-  assert.equal(await page.$eval("main a[download]", (element) => element.getAttribute("href")), `/report/${budgetReport.slug}.pdf`);
-  const sourceUrls = new Map(budgetReport.sources.map((source) => [source.id, source.url]));
-  for (const item of budgetReport.cases) {
-    const section = await page.$(`main section#${item.id}`);
-    assert.ok(section, `Caso assente: ${item.id}`);
-    assert.equal(await section.$eval("h2", (element) => element.textContent), item.title);
-    assert.deepEqual(await section.$$eval("details a", (links) => links.map((link) => link.getAttribute("href"))),
-      item.sourceIds.map((id) => sourceUrls.get(id)));
-    const summary = await section.$("details > summary");
-    await summary.focus();
-    await page.keyboard.press("Enter");
-    await page.waitForFunction((element) => element.parentElement.open, {}, summary);
-    assert.ok(await section.$eval("details", (element) => element.innerText.includes("Fonti e calcolo")));
-  }
-  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-    `Bilancio ${width}px: fonti aperte causano overflow`);
-  const links = await page.$$eval("main a[href]", (elements) => elements.map((element) => element.getAttribute("href")));
-  for (const source of budgetReport.sources) assert.ok(links.includes(source.url), `Fonte assente: ${source.id}`);
-  assert.ok(links.includes(budgetReport.evidenceUrl), "Collegamento alle prove congelate assente");
-  for (const summary of await page.$$("main details > summary")) {
-    await summary.focus();
-    await page.keyboard.press("Space");
-    await page.waitForFunction((element) => !element.parentElement.open, {}, summary);
-  }
-  await page.click(`nav[aria-label="Casi del rapporto"] a[href="#${budgetReport.cases[0].id}"]`);
-  assert.equal(new URL(page.url()).hash, `#${budgetReport.cases[0].id}`);
-  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
-    `Bilancio ${width}px: overflow con fonti chiuse`);
-  await page.screenshot({ path: path.join(reviewDirectory, `state-budget-${width}.png`), fullPage: true });
+  await inspectStateBudgetReader(page, width);
+  await page.screenshot({ path: path.join(reviewDirectory,
+    `state-budget-${process.env.DVNS_COLOR_SCHEME ?? "light"}-${width}.png`), fullPage: true });
 }
 
 await waitForServer(baseUrl);
@@ -183,6 +150,9 @@ assert.match(pdfResponse.headers.get("content-type") ?? "", /^application\/pdf(?
 assert.deepEqual(Buffer.from(await pdfResponse.arrayBuffer()),
   readFileSync(path.join(root, `public/report/${budgetReport.slug}.pdf`)), "Il PDF servito diverge da quello revisionato");
 
+const compatibility = await fetch(new URL("/report/spesa-pubblica-italiana-2026", baseUrl), { redirect: "manual" });
+assert.equal(compatibility.status, 308, "The previous entry must redirect, not publish another edition");
+assert.equal(new URL(compatibility.headers.get("location"), baseUrl).pathname, "/report/bilancio-stato-2025");
 const browser = await launchBrowser();
 try {
   const previousScheme = process.env.DVNS_COLOR_SCHEME;

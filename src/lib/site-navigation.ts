@@ -209,7 +209,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Report",
     links: [
       { href: "/report", label: "Archivio dei report" },
-      { href: "/report/bilancio-stato-2025", label: "Bilancio dello Stato 2025: possibili sprechi, anomalie ed errori" },
+      { href: "/report/bilancio-stato-2025", label: "Spesa pubblica: costi evitabili, anomalie ed errori" },
       { href: "/report/2026-08", label: "Agosto 2026: Imprese e territori" },
     ],
   },

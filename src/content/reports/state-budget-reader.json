@@ -1,0 +1,1935 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-09-14-pr509-reader",
+  "title": "Spesa pubblica: costi evitabili, anomalie ed errori",
+  "summary": "Sanzioni pagate, ritardi, varianti contestate e numeri che non tornano. Il quadro della spesa pubblica e 17 riscontri spiegati con le loro fonti.",
+  "route": "/report/bilancio-stato-2025",
+  "pdfPath": "/report/bilancio-stato-2025.pdf",
+  "publishedOn": "2026-09-14",
+  "modifiedOn": "2026-09-14",
+  "basePr": 509,
+  "baseCommit": "b9e7d5c347bbd027bab4ed0111b84fd8015de3ba",
+  "macro": {
+    "year": 2024,
+    "totalCents": "110915400000000",
+    "gdpPercent": "50.4",
+    "sourceId": "cofog",
+    "snapshotSha256": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8",
+    "note": "Spesa di tutte le amministrazioni pubbliche, in competenza economica. Non è il solo bilancio dello Stato e non è un totale di bonifici."
+  },
+  "lead": "Le fonti documentano sanzioni e indennizzi pagati, varianti ai lavori contestate, servizi non conformi ed errori nei dati. Il rapporto distingue questi problemi e spiega cosa comportano.",
+  "kindLabels": {
+    "costo": "Costo dell’inadempimento",
+    "irregolarita": "Irregolarità documentata",
+    "attuazione": "Risultato insufficiente",
+    "possibile": "Possibile spreco",
+    "anomalia": "Anomalia documentata",
+    "errore": "Errore documentale o di attribuzione"
+  },
+  "sectors": [
+    {
+      "code": "GF01",
+      "label": "Servizi generali",
+      "amountCents": "17041400000000",
+      "note": "Comprende anche la gestione del debito: non è una misura della sola burocrazia.",
+      "reading": "Errori di rendicontazione, affidamenti e ritardi energetici sono approfonditi nelle schede. Gli interessi non vengono classificati come spreco.",
+      "caseIds": [
+        "prepac",
+        "affidamenti",
+        "rti",
+        "personale",
+        "entrate",
+        "date"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF02",
+      "label": "Difesa",
+      "amountCents": "2830100000000",
+      "note": "La funzione COFOG non coincide con il bilancio del Ministero né con il perimetro NATO.",
+      "reading": "Non attribuiamo un risparmio alla difesa senza prove sul singolo programma. Il confronto utile è tra costo lungo la vita del mezzo, disponibilità e capacità ottenuta.",
+      "caseIds": [],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF03",
+      "label": "Ordine pubblico e sicurezza",
+      "amountCents": "3909400000000",
+      "note": "Include polizia, giustizia, carceri e protezione antincendio.",
+      "reading": "Indennizzi per processi troppo lunghi e obiettivi dell’edilizia penitenziaria collegano spesa e risultati concreti.",
+      "caseIds": [
+        "processi-lenti",
+        "carceri"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF04",
+      "label": "Economia e infrastrutture",
+      "amountCents": "11238080000000",
+      "note": "Comprende trasporti, attività economiche e interventi a sostegno delle imprese.",
+      "reading": "Il rifacimento dei progetti e i fondi che non arrivano a interventi avviabili mostrano dove può rompersi l’attuazione.",
+      "caseIds": [
+        "impianti",
+        "tolentino"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF05",
+      "label": "Ambiente",
+      "amountCents": "1982800000000",
+      "note": "Comprende la protezione dell’ambiente, non tutta la politica climatica.",
+      "reading": "Le sanzioni per discariche e depurazione sono costi dell’inadempimento, distinti dalle risorse per risolverlo.",
+      "caseIds": [
+        "discariche",
+        "depurazione"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF06",
+      "label": "Casa e territorio",
+      "amountCents": "1697270000000",
+      "note": "La funzione raccoglie interventi su abitazioni e servizi collettivi.",
+      "reading": "Un edificio completato non è ancora un servizio utilizzato. Non ricaviamo sprechi o risparmi dal solo totale di questa funzione.",
+      "caseIds": [],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF07",
+      "label": "Sanità",
+      "amountCents": "14607500000000",
+      "note": "Comprende la spesa sanitaria dell’insieme delle amministrazioni pubbliche.",
+      "reading": "Camerano e i controlli sulle mense riguardano costi dei lavori e qualità dei servizi. Non rappresentano tutti gli ospedali italiani.",
+      "caseIds": [
+        "ospedale-camerano",
+        "mense-ospedaliere"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF08",
+      "label": "Cultura e tempo libero",
+      "amountCents": "1877360000000",
+      "note": "Include cultura, sport, servizi ricreativi e altre attività della funzione.",
+      "reading": "Gli incassi dei musei e gli indicatori degli Archivi mostrano problemi diversi: coerenza dei numeri e verificabilità dei risultati.",
+      "caseIds": [
+        "musei-incassi",
+        "archivi"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF09",
+      "label": "Istruzione",
+      "amountCents": "8917990000000",
+      "note": "Comprende diversi livelli di istruzione, non soltanto la scuola statale.",
+      "reading": "Gli errori percentuali non dimostrano un danno economico. Il risultato da valutare resta ciò che gli studenti apprendono.",
+      "caseIds": [
+        "percentuali"
+      ],
+      "sourceIds": [
+        "cofog"
+      ]
+    },
+    {
+      "code": "GF10",
+      "label": "Protezione sociale",
+      "amountCents": "46813500000000",
+      "note": "Include pensioni e altre prestazioni sociali: non sono tutte pensioni.",
+      "reading": "Non assumiamo che una prestazione sia inutile perché costosa. Servono copertura dei beneficiari, bisogno soddisfatto ed errori di erogazione documentati.",
+      "caseIds": [],
+      "sourceIds": [
+        "cofog"
+      ]
+    }
+  ],
+  "metrics": {
+    "landfill-total": {
+      "value": "270",
+      "unit": "milioni di euro",
+      "sourceId": "discariche-pagamenti",
+      "label": "Pagamenti cumulati, circa"
+    },
+    "landfill-start": {
+      "value": "42.8",
+      "unit": "milioni di euro per semestre",
+      "sourceId": "discariche-semestre",
+      "label": "Penalità iniziale"
+    },
+    "landfill-end": {
+      "value": "0.8",
+      "unit": "milioni di euro per semestre",
+      "sourceId": "discariche-semestre",
+      "label": "Penalità al 4 marzo 2026"
+    },
+    "pinto-central": {
+      "value": "121.3",
+      "unit": "milioni di euro",
+      "sourceId": "pinto",
+      "label": "Pagamenti della sede centrale"
+    },
+    "pinto-courts": {
+      "value": "86.1",
+      "unit": "milioni di euro",
+      "sourceId": "pinto",
+      "label": "Pagamenti delle Corti d’appello"
+    },
+    "hospital-days-start": {
+      "value": "870",
+      "unit": "giorni",
+      "sourceId": "anac-camerano",
+      "label": "Durata iniziale"
+    },
+    "hospital-days-end": {
+      "value": "3045",
+      "unit": "giorni",
+      "sourceId": "anac-camerano",
+      "label": "Durata rideterminata"
+    },
+    "depurazione-fixed": {
+      "value": "10000000",
+      "unit": "euro",
+      "sourceId": "depurazione",
+      "label": "Somma forfettaria"
+    },
+    "depurazione-half": {
+      "value": "13687500",
+      "unit": "euro per semestre",
+      "sourceId": "depurazione",
+      "label": "Penalità semestrale di base"
+    },
+    "nas-total": {
+      "value": "558",
+      "unit": "strutture",
+      "sourceId": "nas-mense",
+      "label": "Strutture controllate"
+    },
+    "nas-irregular": {
+      "value": "238",
+      "unit": "strutture",
+      "sourceId": "nas-mense",
+      "label": "Strutture non conformi"
+    },
+    "nas-food": {
+      "value": "525",
+      "unit": "strutture",
+      "sourceId": "nas-mense",
+      "label": "Dettaglio ristorazione collettiva"
+    },
+    "nas-health": {
+      "value": "31",
+      "unit": "strutture",
+      "sourceId": "nas-mense",
+      "label": "Dettaglio ambito sanitario"
+    },
+    "lifts-allocation": {
+      "value": "80000000",
+      "unit": "euro",
+      "sourceId": "indicatori",
+      "label": "Disponibilità 2025"
+    },
+    "lifts-committed": {
+      "value": "2438888.18",
+      "unit": "euro",
+      "sourceId": "indicatori",
+      "label": "Impegni sulla disponibilità 2025"
+    },
+    "prepac-completed": {
+      "value": "7.8",
+      "unit": "% di superficie",
+      "sourceId": "enea",
+      "label": "Superficie con lavori conclusi"
+    },
+    "prepac-tested": {
+      "value": "4.6",
+      "unit": "% di superficie",
+      "sourceId": "enea",
+      "label": "Superficie con collaudo"
+    },
+    "prison-target": {
+      "value": "52000",
+      "unit": "posti",
+      "sourceId": "indicatori",
+      "label": "Obiettivo di capienza"
+    },
+    "prison-actual": {
+      "value": "51277",
+      "unit": "posti",
+      "sourceId": "indicatori",
+      "label": "Capienza rilevata"
+    },
+    "prison-space-target": {
+      "value": "16000",
+      "unit": "metri quadrati",
+      "sourceId": "indicatori",
+      "label": "Obiettivo spazi comuni"
+    },
+    "prison-space-actual": {
+      "value": "4800",
+      "unit": "metri quadrati",
+      "sourceId": "indicatori",
+      "label": "Spazi comuni realizzati"
+    },
+    "tolentino-mit": {
+      "value": "206718750",
+      "unit": "euro",
+      "sourceId": "mit-allegato",
+      "label": "Costo nel quadro MIT/ANAS"
+    },
+    "tolentino-mop": {
+      "value": "384642946.39",
+      "unit": "euro",
+      "sourceId": "mop",
+      "label": "Costo nella riga MOP"
+    },
+    "ads-0": {
+      "value": "70000",
+      "unit": "euro netti",
+      "sourceId": "sport-corriere",
+      "label": "Corriere dello Sport"
+    },
+    "ads-1": {
+      "value": "60000",
+      "unit": "euro netti",
+      "sourceId": "sport-fatto",
+      "label": "Fatto Quotidiano"
+    },
+    "ads-2": {
+      "value": "60000",
+      "unit": "euro netti",
+      "sourceId": "sport-giornale",
+      "label": "Giornale"
+    },
+    "ads-3": {
+      "value": "40000",
+      "unit": "euro netti",
+      "sourceId": "sport-libero",
+      "label": "Libero"
+    },
+    "ads-4": {
+      "value": "30000",
+      "unit": "euro netti",
+      "sourceId": "sport-tempo",
+      "label": "Tempo"
+    },
+    "ads-5": {
+      "value": "50000",
+      "unit": "euro netti",
+      "sourceId": "sport-tuttosport",
+      "label": "Tuttosport"
+    },
+    "rti-all-company": {
+      "value": "59279167.72",
+      "unit": "euro",
+      "sourceId": "dvns-rti",
+      "label": "Importo associato ad Accenture nel confronto"
+    },
+    "rti-all-total": {
+      "value": "186277425.17",
+      "unit": "euro",
+      "sourceId": "dvns-rti",
+      "label": "Totale del confronto originario"
+    },
+    "rti-contract": {
+      "value": "48191320",
+      "unit": "euro",
+      "sourceId": "cloud",
+      "label": "Contratto del raggruppamento"
+    },
+    "staff-heads": {
+      "value": "3",
+      "unit": "persone",
+      "sourceId": "mase-performance",
+      "label": "Capi dipartimento"
+    },
+    "staff-first": {
+      "value": "11",
+      "unit": "persone",
+      "sourceId": "mase-performance",
+      "label": "Dirigenti di prima fascia"
+    },
+    "staff-second": {
+      "value": "43",
+      "unit": "persone",
+      "sourceId": "mase-performance",
+      "label": "Dirigenti di seconda fascia"
+    },
+    "staff-areas": {
+      "value": "878",
+      "unit": "persone",
+      "sourceId": "mase-performance",
+      "label": "Personale delle aree"
+    },
+    "staff-published": {
+      "value": "922",
+      "unit": "persone",
+      "sourceId": "mase-performance",
+      "label": "Totale pubblicato"
+    },
+    "mim-target-a": {
+      "value": "13",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo previsto, primo indicatore"
+    },
+    "mim-result-a": {
+      "value": "5",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo effettivo, primo indicatore"
+    },
+    "mim-target-b": {
+      "value": "30",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo previsto, secondo indicatore"
+    },
+    "mim-result-b": {
+      "value": "11.69",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo effettivo, secondo indicatore"
+    },
+    "mim-target-c": {
+      "value": "28",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo previsto, terzo indicatore"
+    },
+    "mim-result-c": {
+      "value": "15",
+      "unit": "giorni",
+      "sourceId": "indicatori",
+      "label": "Tempo effettivo, terzo indicatore"
+    },
+    "mic-current": {
+      "value": "382004344",
+      "unit": "euro",
+      "sourceId": "mic-incassi",
+      "label": "Incassi 2024 riportati nel corpo"
+    },
+    "mic-before": {
+      "value": "313888163",
+      "unit": "euro",
+      "sourceId": "mic-incassi",
+      "label": "Incassi 2023 riportati nel corpo"
+    },
+    "mic-title": {
+      "value": "328000000",
+      "unit": "euro",
+      "sourceId": "mic-incassi",
+      "label": "Valore arrotondato nel titolo"
+    },
+    "archives-missing": {
+      "value": "4",
+      "unit": "indicatori",
+      "sourceId": "indicatori",
+      "label": "Risultati non confrontabili"
+    },
+    "archives-total": {
+      "value": "5",
+      "unit": "indicatori",
+      "sourceId": "indicatori",
+      "label": "Indicatori del programma"
+    },
+    "nidi-centro": {
+      "value": "40.4",
+      "unit": "posti per 100 bambini",
+      "sourceId": "nidi",
+      "label": "Centro"
+    },
+    "nidi-sud": {
+      "value": "19.0",
+      "unit": "posti per 100 bambini",
+      "sourceId": "nidi",
+      "label": "Sud"
+    },
+    "nidi-isole": {
+      "value": "19.5",
+      "unit": "posti per 100 bambini",
+      "sourceId": "nidi",
+      "label": "Isole"
+    },
+    "waste-north": {
+      "value": "35.0",
+      "unit": "centesimi per kg",
+      "sourceId": "rifiuti-costi",
+      "label": "Nord"
+    },
+    "waste-centre": {
+      "value": "47.4",
+      "unit": "centesimi per kg",
+      "sourceId": "rifiuti-costi",
+      "label": "Centro"
+    },
+    "waste-south": {
+      "value": "49.8",
+      "unit": "centesimi per kg",
+      "sourceId": "rifiuti-costi",
+      "label": "Sud"
+    }
+  },
+  "calculations": [
+    {
+      "id": "landfill-drop",
+      "operation": "reduction-percent",
+      "inputs": [
+        "landfill-start",
+        "landfill-end"
+      ],
+      "expected": "98.13",
+      "digits": 2,
+      "label": "Riduzione della penalità semestrale",
+      "unit": "%"
+    },
+    {
+      "id": "pinto-total",
+      "operation": "sum",
+      "inputs": [
+        "pinto-central",
+        "pinto-courts"
+      ],
+      "expected": "207.4",
+      "digits": 1,
+      "label": "Totale dei due canali di pagamento",
+      "unit": "mln €"
+    },
+    {
+      "id": "hospital-days-extra",
+      "operation": "difference",
+      "inputs": [
+        "hospital-days-end",
+        "hospital-days-start"
+      ],
+      "expected": "2175",
+      "digits": 0,
+      "label": "Giorni aggiuntivi rispetto al programma iniziale",
+      "unit": "giorni"
+    },
+    {
+      "id": "hospital-days-ratio",
+      "operation": "ratio",
+      "inputs": [
+        "hospital-days-end",
+        "hospital-days-start"
+      ],
+      "expected": "3.50",
+      "digits": 2,
+      "label": "Durata rideterminata rispetto a quella iniziale",
+      "unit": "volte"
+    },
+    {
+      "id": "nas-rate",
+      "operation": "ratio-percent",
+      "inputs": [
+        "nas-irregular",
+        "nas-total"
+      ],
+      "expected": "42.7",
+      "digits": 1,
+      "label": "Non conformità tra le strutture controllate",
+      "unit": "%"
+    },
+    {
+      "id": "nas-detail",
+      "operation": "sum",
+      "inputs": [
+        "nas-food",
+        "nas-health"
+      ],
+      "expected": "556",
+      "digits": 0,
+      "label": "Somma delle due categorie pubblicate",
+      "unit": "strutture"
+    },
+    {
+      "id": "lifts-rate",
+      "operation": "ratio-percent",
+      "inputs": [
+        "lifts-committed",
+        "lifts-allocation"
+      ],
+      "expected": "3.05",
+      "digits": 2,
+      "label": "Quota impegnata della disponibilità 2025",
+      "unit": "%"
+    },
+    {
+      "id": "lifts-carried",
+      "operation": "difference",
+      "inputs": [
+        "lifts-allocation",
+        "lifts-committed"
+      ],
+      "expected": "77561111.82",
+      "digits": 2,
+      "label": "Risorse rinviate al 2026",
+      "unit": "€"
+    },
+    {
+      "id": "prison-gap",
+      "operation": "difference",
+      "inputs": [
+        "prison-target",
+        "prison-actual"
+      ],
+      "expected": "723",
+      "digits": 0,
+      "label": "Posti sotto l’obiettivo",
+      "unit": "posti"
+    },
+    {
+      "id": "prison-space-rate",
+      "operation": "ratio-percent",
+      "inputs": [
+        "prison-space-actual",
+        "prison-space-target"
+      ],
+      "expected": "30",
+      "digits": 0,
+      "label": "Spazi comuni realizzati rispetto all’obiettivo",
+      "unit": "%"
+    },
+    {
+      "id": "tolentino-gap",
+      "operation": "difference",
+      "inputs": [
+        "tolentino-mop",
+        "tolentino-mit"
+      ],
+      "expected": "177924196.39",
+      "digits": 2,
+      "label": "Differenza tra i due quadri pubblicati",
+      "unit": "€"
+    },
+    {
+      "id": "ads-total",
+      "operation": "sum",
+      "inputs": [
+        "ads-0",
+        "ads-1",
+        "ads-2",
+        "ads-3",
+        "ads-4",
+        "ads-5"
+      ],
+      "expected": "310000",
+      "digits": 0,
+      "label": "Valore dei sei affidamenti",
+      "unit": "€ netti"
+    },
+    {
+      "id": "rti-company-rest",
+      "operation": "difference",
+      "inputs": [
+        "rti-all-company",
+        "rti-contract"
+      ],
+      "expected": "11087847.72",
+      "digits": 2,
+      "label": "Altri contratti associati alla capofila",
+      "unit": "€"
+    },
+    {
+      "id": "rti-total-rest",
+      "operation": "difference",
+      "inputs": [
+        "rti-all-total",
+        "rti-contract"
+      ],
+      "expected": "138086105.17",
+      "digits": 2,
+      "label": "Totale degli altri contratti del confronto",
+      "unit": "€"
+    },
+    {
+      "id": "rti-before",
+      "operation": "ratio-percent",
+      "inputs": [
+        "rti-all-company",
+        "rti-all-total"
+      ],
+      "expected": "31.82",
+      "digits": 2,
+      "label": "Quota visualizzata includendo il contratto del gruppo",
+      "unit": "%"
+    },
+    {
+      "id": "rti-without",
+      "operation": "ratio-percent",
+      "inputs": [
+        "rti-company-rest",
+        "rti-total-rest"
+      ],
+      "expected": "8.03",
+      "digits": 2,
+      "label": "Quota degli altri contratti, escluso il contratto del gruppo",
+      "unit": "%"
+    },
+    {
+      "id": "staff-sum",
+      "operation": "sum",
+      "inputs": [
+        "staff-heads",
+        "staff-first",
+        "staff-second",
+        "staff-areas"
+      ],
+      "expected": "935",
+      "digits": 0,
+      "label": "Somma delle categorie",
+      "unit": "persone"
+    },
+    {
+      "id": "staff-gap",
+      "operation": "difference",
+      "inputs": [
+        "staff-sum",
+        "staff-published"
+      ],
+      "expected": "13",
+      "digits": 0,
+      "label": "Differenza rispetto al totale pubblicato",
+      "unit": "persone"
+    },
+    {
+      "id": "mim-a",
+      "operation": "reduction-percent",
+      "inputs": [
+        "mim-target-a",
+        "mim-result-a"
+      ],
+      "expected": "61.54",
+      "digits": 2,
+      "label": "Riduzione del tempo, indicatore A",
+      "unit": "%"
+    },
+    {
+      "id": "mim-b",
+      "operation": "reduction-percent",
+      "inputs": [
+        "mim-target-b",
+        "mim-result-b"
+      ],
+      "expected": "61.03",
+      "digits": 2,
+      "label": "Riduzione del tempo, indicatore B",
+      "unit": "%"
+    },
+    {
+      "id": "mim-c",
+      "operation": "reduction-percent",
+      "inputs": [
+        "mim-target-c",
+        "mim-result-c"
+      ],
+      "expected": "46.43",
+      "digits": 2,
+      "label": "Riduzione del tempo, indicatore C",
+      "unit": "%"
+    },
+    {
+      "id": "mic-growth",
+      "operation": "relative-change-percent",
+      "inputs": [
+        "mic-current",
+        "mic-before"
+      ],
+      "expected": "21.70",
+      "digits": 2,
+      "label": "Incremento calcolato sugli incassi pubblicati",
+      "unit": "%"
+    },
+    {
+      "id": "archives-rate",
+      "operation": "ratio-percent",
+      "inputs": [
+        "archives-missing",
+        "archives-total"
+      ],
+      "expected": "80",
+      "digits": 0,
+      "label": "Indicatori non rendicontabili sul metro iniziale",
+      "unit": "%"
+    },
+    {
+      "id": "nidi-gap",
+      "operation": "difference",
+      "inputs": [
+        "nidi-centro",
+        "nidi-sud"
+      ],
+      "expected": "21.4",
+      "digits": 1,
+      "label": "Divario Centro-Sud nell’offerta autorizzata",
+      "unit": "posti per 100 bambini"
+    },
+    {
+      "id": "waste-gap",
+      "operation": "relative-change-percent",
+      "inputs": [
+        "waste-south",
+        "waste-north"
+      ],
+      "expected": "42.3",
+      "digits": 1,
+      "label": "Differenziale del costo medio Sud-Nord",
+      "unit": "%"
+    }
+  ],
+  "cases": [
+    {
+      "id": "discariche",
+      "sector": "GF05",
+      "kind": "costo",
+      "title": "Discariche: circa 270 milioni pagati in sanzioni",
+      "number": "circa 270 mln €",
+      "numberLabel": "Pagati all’UE nel 2014-2024",
+      "period": "2014-2024; aggiornamento al 4 marzo 2026",
+      "lead": "È denaro versato per il mancato rispetto degli obblighi ambientali, non per realizzare le bonifiche.",
+      "paragraphs": [
+        "Il Commissario alle bonifiche indica circa 270 milioni di euro pagati all’Unione europea nel 2014-2024. È un costo pubblico documentato dell’inadempimento, attribuito alla fonte istituzionale.",
+        "Le regolarizzazioni hanno ridotto la penalità semestrale: da 42,8 milioni iniziali a 800 mila euro nel comunicato del 4 marzo 2026. I siti usciti dalla procedura erano 197 su 200."
+      ],
+      "conclusion": "Le sanzioni sono una spesa evitabile rispettando gli obblighi in tempo. I 270 milioni sono cumulati su undici anni; gli 800 mila sono una penalità semestrale a una data precisa. Non sono importi da sommare.",
+      "improve": "Completare la regolarizzazione anche sul piano documentale: lavori conclusi e accettazione europea devono avanzare insieme.",
+      "sourceIds": [
+        "discariche-pagamenti",
+        "discariche-semestre"
+      ],
+      "math": {
+        "calculationIds": [
+          "landfill-drop"
+        ],
+        "explanation": "La riduzione confronta due importi per lo stesso periodo di sei mesi. Il 98,13% non è una stima dei risparmi cumulati.",
+        "rows": []
+      },
+      "chart": {
+        "title": "La penalità semestrale si è ridotta",
+        "unit": "mln € per semestre",
+        "rows": [
+          {
+            "label": "Iniziale",
+            "metric": "landfill-start"
+          },
+          {
+            "label": "Al 4 marzo 2026",
+            "metric": "landfill-end"
+          }
+        ],
+        "note": "Il confronto riguarda la penalità per semestre, non i pagamenti cumulati."
+      },
+      "legacyId": null
+    },
+    {
+      "id": "processi-lenti",
+      "sector": "GF03",
+      "kind": "costo",
+      "title": "Processi troppo lunghi: oltre 207 milioni di indennizzi",
+      "number": "207,4 mln €",
+      "numberLabel": "Somma di importi arrotondati, pagati nel 2025",
+      "period": "Pagamenti 2025, inclusi arretrati",
+      "lead": "Quando un processo dura irragionevolmente a lungo, lo Stato deve risarcire chi ne subisce il ritardo.",
+      "paragraphs": [
+        "Il Ministero della Giustizia riporta 121,3 milioni pagati dalla sede centrale e 86,1 milioni dalle Corti d’appello nel 2025. La somma è 207,4 milioni, usando gli importi arrotondati pubblicati.",
+        "Parte dei pagamenti chiude debiti accumulati negli anni precedenti. Pagare più rapidamente i risarcimenti è un miglioramento, non la prova che i processi siano peggiorati nel 2025."
+      ],
+      "conclusion": "Il costo evitabile nasce dai ritardi eccessivi. L’indennizzo è invece un diritto: negarlo non sarebbe un risparmio virtuoso.",
+      "improve": "Valutare gli uffici anche sulla durata dei procedimenti e sui nuovi indennizzi generati, separando questi ultimi dallo smaltimento dei debiti pregressi.",
+      "sourceIds": [
+        "pinto"
+      ],
+      "math": {
+        "calculationIds": [
+          "pinto-total"
+        ],
+        "explanation": "Sommiamo due canali distinti descritti dal Ministero. Non dividiamo per il numero delle pratiche: una pratica non equivale necessariamente a una persona.",
+        "rows": []
+      },
+      "chart": {
+        "title": "Da dove arrivano i pagamenti",
+        "unit": "mln €",
+        "rows": [
+          {
+            "label": "Sede centrale",
+            "metric": "pinto-central"
+          },
+          {
+            "label": "Corti d’appello",
+            "metric": "pinto-courts"
+          }
+        ],
+        "note": "Entrambe le voci riguardano pagamenti 2025."
+      },
+      "legacyId": null
+    },
+    {
+      "id": "ospedale-camerano",
+      "sector": "GF07",
+      "kind": "irregolarita",
+      "title": "Camerano: varianti contestate e tempi più che triplicati",
+      "number": "3,5 volte",
+      "numberLabel": "Durata rideterminata rispetto a quella iniziale",
+      "period": "Rilievi ANAC del 15 ottobre 2025",
+      "lead": "L’Autorità nazionale anticorruzione (ANAC) ha contestato sette varianti non giustificate: modifiche al progetto durante i lavori.",
+      "paragraphs": [
+        "Per l’ospedale Ancona Sud-Camerano, ANAC riporta lavori passati da circa 44 milioni a 134.615.997 euro e durata da 870 a 3.045 giorni.",
+        "La Regione descrive anche un’opera cambiata: posti letto da 255 a 318, adeguamenti funzionali e normativi, isolamento sismico. Il suo quadro complessivo di circa 185 milioni ha un perimetro diverso dal solo importo lavori citato da ANAC."
+      ],
+      "conclusion": "I rilievi sulle varianti sono documentati. L’aumento dei costi riguarda anche un progetto cambiato e non coincide con uno spreco quantificato. La scheda fotografa i rilievi del 2025, non dichiara lo stato attuale del cantiere.",
+      "improve": "Rendere confrontabili progetto iniziale e modifiche approvate, con costo e ragione di ciascuna variazione.",
+      "sourceIds": [
+        "anac-camerano",
+        "regione-camerano"
+      ],
+      "math": {
+        "calculationIds": [
+          "hospital-days-extra",
+          "hospital-days-ratio"
+        ],
+        "explanation": "3.045 diviso 870 dà 3,5. Il confronto riguarda la durata complessiva rideterminata, non giorni di inattività del cantiere.",
+        "rows": []
+      },
+      "chart": {
+        "title": "Durata iniziale e rideterminata",
+        "unit": "giorni",
+        "rows": [
+          {
+            "label": "Iniziale",
+            "metric": "hospital-days-start"
+          },
+          {
+            "label": "Rideterminata",
+            "metric": "hospital-days-end"
+          }
+        ],
+        "note": "Rilievo ANAC del 2025. Non è un aggiornamento sull’apertura dell’ospedale."
+      },
+      "legacyId": null
+    },
+    {
+      "id": "depurazione",
+      "sector": "GF05",
+      "kind": "costo",
+      "title": "Depurazione: una condanna da 10 milioni, oltre alle penalità",
+      "number": "10 mln €",
+      "numberLabel": "Somma forfettaria imposta dalla sentenza",
+      "period": "Sentenza del 27 marzo 2025, causa C-515/23",
+      "lead": "Non adeguare gli impianti costa due volte: resta il problema ambientale e si aggiunge la sanzione.",
+      "paragraphs": [
+        "La Corte di giustizia dell’UE ha imposto all’Italia una somma forfettaria di 10 milioni di euro e una penalità semestrale di base di 13.687.500 euro, riducibile con la progressiva conformità.",
+        "La cifra semestrale non è una multa fissa da moltiplicare per ogni semestre trascorso. La sentenza e i pagamenti effettivi sono documenti diversi."
+      ],
+      "conclusion": "La condanna quantifica il costo dell’inadempimento; non certifica quanto sia già uscito dalla cassa dello Stato. Non calcoliamo un cumulato 2026 senza i relativi atti.",
+      "improve": "Dare priorità agli adeguamenti che eliminano le violazioni, collegando avanzamento tecnico e riduzione delle penalità.",
+      "sourceIds": [
+        "depurazione"
+      ],
+      "math": null,
+      "chart": null,
+      "legacyId": null
+    },
+    {
+      "id": "mense-ospedaliere",
+      "sector": "GF07",
+      "kind": "irregolarita",
+      "title": "Mense ospedaliere: non conformità in 238 strutture",
+      "number": "238 su 558",
+      "numberLabel": "Strutture non conformi tra quelle ispezionate",
+      "period": "Campagna NAS, 19 febbraio - 22 marzo 2026",
+      "lead": "I NAS, il reparto dei Carabinieri che tutela la salute, hanno rilevato problemi nel servizio effettivo, non soltanto nelle procedure di acquisto.",
+      "paragraphs": [
+        "Il Ministero della Salute riporta carenze igieniche, manutentive e nella gestione degli alimenti e delle diete speciali. Le 238 strutture non conformi rappresentano il 42,7% delle 558 controllate.",
+        "Il comunicato contiene anche un dettaglio che non quadra: 525 strutture della ristorazione più 31 dell’ambito sanitario fanno 556, due meno del totale dichiarato. Conserviamo il totale pubblicato e segnaliamo la differenza, senza correggerlo di nostra iniziativa."
+      ],
+      "conclusion": "Le non conformità sono documentate; non sono una percentuale di spesa sprecata. Il campione ispezionato non rappresenta automaticamente tutte le mense italiane e non distingue qui i soli contratti pubblici.",
+      "improve": "Affiancare ai controlli sulle gare la verifica dei pasti e delle condizioni di erogazione, con applicazione delle conseguenze previste dai contratti.",
+      "sourceIds": [
+        "nas-mense"
+      ],
+      "math": {
+        "calculationIds": [
+          "nas-rate",
+          "nas-detail"
+        ],
+        "explanation": "La prima divisione descrive il campione controllato. La seconda operazione controlla la coerenza del comunicato: il dettaglio non ricostruisce il totale.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": null
+    },
+    {
+      "id": "impianti",
+      "sector": "GF04",
+      "kind": "attuazione",
+      "title": "Impianti di risalita: impegnato solo il 3,05% dei fondi 2025",
+      "number": "77,56 mln €",
+      "numberLabel": "Risorse rinviate al 2026",
+      "period": "Disponibilità di competenza 2025",
+      "lead": "Degli 80 milioni disponibili per il 2025, solo 2,44 milioni sono diventati obblighi di spesa registrati.",
+      "paragraphs": [
+        "Il resto, 77,56 milioni, è stato rinviato al 2026. L’obiettivo era impegnare almeno il 70%. Questo non significa che l’intero fondo abbia pagato soltanto 2,44 milioni: includendo le dotazioni precedenti, i pagamenti dell’anno sono 25 milioni.",
+        "Un caso distinto nella stessa procedura è Lagazuoi: finanziamento da 10 milioni revocato nel 2026 dopo il mancato avvio. Il decreto precisa che non era stato impegnato né erogato."
+      ],
+      "conclusion": "Il ritardo nell’attuazione è documentato. I 10 milioni revocati non sono denaro perso: l’esborso non è avvenuto. Il costo delle istruttorie e dei benefici rinviati non è quantificato dai documenti acquisiti.",
+      "improve": "Legare l’assegnazione alla maturità dei progetti e riallocare tempestivamente le risorse dei progetti non avviabili.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "lagazuoi"
+      ],
+      "math": {
+        "calculationIds": [
+          "lifts-rate",
+          "lifts-carried"
+        ],
+        "explanation": "Un impegno è un obbligo registrato, non un bonifico. Il denominatore di 80 milioni riguarda soltanto la disponibilità 2025.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "impianti"
+    },
+    {
+      "id": "prepac",
+      "sector": "GF01",
+      "kind": "attuazione",
+      "title": "Edifici pubblici: i ritardi rinviano i risparmi energetici",
+      "number": "7,8%",
+      "numberLabel": "Superficie ammessa con lavori conclusi",
+      "period": "Rapporto 2024 sui programmi ammessi nel 2014-2021",
+      "lead": "Finanziare l’isolamento di un edificio non riduce la bolletta finché i lavori non entrano in funzione.",
+      "paragraphs": [
+        "Il rapporto ENEA-GSE del 2024 indica lavori conclusi sul 7,8% della superficie ammessa al programma PREPAC e collaudati sul 4,6%. Il collaudo verifica che l’opera sia stata realizzata correttamente.",
+        "Il documento segnala ritardi nelle approvazioni, nelle convenzioni e nell’esecuzione. Questi valori riguardano superfici, non quote di finanziamento sprecato, e non descrivono l’avanzamento aggiornato al 2026."
+      ],
+      "conclusion": "Il programma presenta lentezze documentate. I mancati risparmi sono una conseguenza economica plausibile, ma senza consumi, date e costi per edificio non sono monetizzabili.",
+      "improve": "Misurare i risultati con edifici funzionanti e consumi effettivi, non con il solo numero di approvazioni.",
+      "sourceIds": [
+        "enea",
+        "indicatori"
+      ],
+      "math": null,
+      "chart": null,
+      "legacyId": "prepac"
+    },
+    {
+      "id": "carceri",
+      "sector": "GF03",
+      "kind": "attuazione",
+      "title": "Carceri: 723 posti sotto l’obiettivo e spazi comuni al 30%",
+      "number": "723 posti",
+      "numberLabel": "Differenza rispetto all’obiettivo di capienza",
+      "period": "Risultati delle Note integrative 2025",
+      "lead": "La capienza dichiarata è 51.277 posti contro almeno 52.000 previsti.",
+      "paragraphs": [
+        "Gli spazi comuni realizzati sono 4.800 metri quadrati contro 16.000. L’amministrazione motiva il ritardo con la priorità data al recupero dei posti indisponibili.",
+        "I 181,19 milioni di impegni e i 237,41 milioni di pagamenti dell’azione edilizia coprono più interventi e periodi. Non possono essere divisi per i 723 posti mancanti per inventare un costo per posto."
+      ],
+      "conclusion": "Gli obiettivi non sono stati raggiunti. La diversa priorità spiega una scelta operativa, ma non dimostra la congruità di ogni costo o il rispetto di ogni consegna.",
+      "improve": "Pubblicare per ciascun intervento posti effettivamente disponibili, spazi consegnati, tempi e costi riferiti alla stessa opera.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "carceri-programma"
+      ],
+      "math": {
+        "calculationIds": [
+          "prison-gap",
+          "prison-space-rate"
+        ],
+        "explanation": "La capienza e gli spazi comuni sono due risultati diversi. Non si sommano tra loro e non misurano direttamente quanto denaro sia stato sprecato.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "carceri"
+    },
+    {
+      "id": "tolentino",
+      "sector": "GF04",
+      "kind": "possibile",
+      "title": "Tolentino: un progetto da rifare e due costi non riconciliati",
+      "number": "177,92 mln €",
+      "numberLabel": "Differenza tra quadri, non spreco misurato",
+      "period": "Progettazione 2007-2015; documenti e banca dati acquisiti nel 2026",
+      "lead": "Gli atti descrivono una progettazione superata dagli eventi e sostituita: una pista concreta di lavoro reso inutilizzabile.",
+      "paragraphs": [
+        "Dopo la scadenza del vincolo sul tracciato, nel 2009 un impianto fotovoltaico ne compromette il percorso. Seguono una revisione, il recesso del contraente nel 2012 e un nuovo studio di fattibilità nel 2015.",
+        "Per il progetto identificato dal CUP F71B16000830001, il quadro MIT/ANAS riporta 206,72 milioni e la riga MOP 384,64 milioni. Il CUP è il codice che consente di riconoscere lo stesso progetto nei diversi archivi."
+      ],
+      "conclusion": "Il rifacimento può aver generato costi evitabili. La differenza di 177,92 milioni, invece, resta un disallineamento tra quadri: non prova un esborso aggiuntivo né misura la progettazione perduta.",
+      "improve": "Proteggere tempestivamente il tracciato e mantenere un quadro economico versionato, con indicazione degli elaborati riutilizzati.",
+      "sourceIds": [
+        "tolentino-progetto",
+        "mit-allegato",
+        "mit-anas",
+        "mop"
+      ],
+      "math": {
+        "calculationIds": [
+          "tolentino-gap"
+        ],
+        "explanation": "Sottrarre due importi rivela un disallineamento. Per chiamarlo extracosto devono essere omogenei lavori inclusi, prezzi e data della versione: qui tale equivalenza non è dimostrata.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "tolentino"
+    },
+    {
+      "id": "affidamenti",
+      "sector": "GF01",
+      "kind": "anomalia",
+      "title": "Pubblicità: sei affidamenti allo stesso concessionario",
+      "number": "310.000 €",
+      "numberLabel": "Valore netto dei sei affidamenti",
+      "period": "Determine del 23 settembre e aggiudicazioni del 30 ottobre 2025",
+      "lead": "Il Ministero del Lavoro ha acquistato spazi su sei testate attraverso Sport Network, con sei procedure separate.",
+      "paragraphs": [
+        "Le decisioni di acquisto hanno la stessa data, così come le aggiudicazioni. Le sei testate possono raggiungere pubblici diversi; ciò spiega la scelta dei canali, non dimostra che negoziarli separatamente fosse più conveniente.",
+        "Altri cinque affidamenti da 139.000 euro della campagna si distribuiscono su due anni: 417.000 euro aggiudicati nel 2025 e 278.000 nel 2026. Non li imputiamo tutti al 2025."
+      ],
+      "conclusion": "La ricorrenza di fornitore, date e campagna costituisce un’anomalia concreta. Gli atti non dimostrano un sovrapprezzo; 310.000 euro è il valore acquistato, non la somma sprecata.",
+      "improve": "Valutare il fabbisogno della campagna nel suo insieme e motivare la separazione degli acquisti con risultati e condizioni economiche confrontabili.",
+      "sourceIds": [
+        "sport-corriere",
+        "sport-fatto",
+        "sport-giornale",
+        "sport-libero",
+        "sport-tempo",
+        "sport-tuttosport",
+        "ads-corriere",
+        "ads-sole",
+        "ads-subasio",
+        "ads-mediaset",
+        "adnkronos"
+      ],
+      "math": {
+        "calculationIds": [
+          "ads-total"
+        ],
+        "explanation": "Sommiamo sei acquisti distinti una sola volta. Il CIG, indicato nelle fonti, è il codice della singola procedura.",
+        "rows": []
+      },
+      "chart": {
+        "title": "Sei acquisti, un concessionario",
+        "unit": "€ netti",
+        "rows": [
+          {
+            "label": "Corriere dello Sport",
+            "metric": "ads-0"
+          },
+          {
+            "label": "Fatto Quotidiano",
+            "metric": "ads-1"
+          },
+          {
+            "label": "Giornale",
+            "metric": "ads-2"
+          },
+          {
+            "label": "Libero",
+            "metric": "ads-3"
+          },
+          {
+            "label": "Tempo",
+            "metric": "ads-4"
+          },
+          {
+            "label": "Tuttosport",
+            "metric": "ads-5"
+          }
+        ],
+        "note": "La dimensione della barra è il valore affidato, non un indicatore di spreco."
+      },
+      "legacyId": "affidamenti"
+    },
+    {
+      "id": "rti",
+      "sector": "GF01",
+      "kind": "errore",
+      "title": "Il contratto cloud è di nove imprese, non di una sola",
+      "number": "48,19 mln €",
+      "numberLabel": "Contratto affidato a un gruppo di nove imprese",
+      "period": "Decreto MLPS 289 del 3 aprile 2025; confronto DVNS della prima analisi",
+      "lead": "Accenture guida il gruppo. Questo non significa che incassi da sola tutto il valore del contratto.",
+      "paragraphs": [
+        "Un raggruppamento temporaneo di imprese, o RTI, è una squadra di aziende che partecipa insieme a una gara. Il decreto indica nove imprese e Accenture come capofila, cioè referente del gruppo.",
+        "Nel confronto iniziale del sito, quel contratto pesava dentro i 59,28 milioni associati ad Accenture. Abbiamo tolto il contratto sia da quella cifra sia dal totale confrontato. La quota degli altri contratti scende così dal 31,82% all’8,03%."
+      ],
+      "conclusion": "È un errore di attribuzione nel confronto descritto dalla prima analisi. L’8,03% non è la quota corretta di Accenture: mostra solo quanto pesa quel contratto. Le quote delle nove imprese non sono ricostruite da questi dati.",
+      "improve": "Mostrare il raggruppamento come tale, senza attribuire l’intero importo alla capofila o dividerlo arbitrariamente per nove.",
+      "sourceIds": [
+        "cloud",
+        "dvns-rti"
+      ],
+      "math": {
+        "calculationIds": [
+          "rti-company-rest",
+          "rti-total-rest",
+          "rti-before",
+          "rti-without"
+        ],
+        "explanation": "Pensala come una spesa fatta da una squadra. Se il contratto della squadra è contato tutto su un solo membro, il suo peso appare maggiore. Togliere la stessa spesa dal membro e dal totale isola l’effetto; non ci dice come la squadra si divide il compenso.",
+        "rows": [
+          {
+            "label": "Con il contratto del gruppo",
+            "numerator": "rti-all-company",
+            "denominator": "rti-all-total",
+            "result": "rti-before"
+          },
+          {
+            "label": "Senza il contratto del gruppo",
+            "numerator": "rti-company-rest",
+            "denominator": "rti-total-rest",
+            "result": "rti-without"
+          }
+        ]
+      },
+      "chart": {
+        "title": "Due confronti, non due quote di mercato",
+        "unit": "%",
+        "rows": [
+          {
+            "label": "Con contratto RTI",
+            "metric": "rti-before"
+          },
+          {
+            "label": "Senza contratto RTI",
+            "metric": "rti-without"
+          }
+        ],
+        "note": "L’8,03% non ricostruisce il ricavo effettivo di Accenture."
+      },
+      "legacyId": "rti"
+    },
+    {
+      "id": "personale",
+      "sector": "GF01",
+      "kind": "errore",
+      "title": "MASE: le categorie sommano 935 persone, il totale dice 922",
+      "number": "13 persone",
+      "numberLabel": "Differenza aritmetica nella tabella",
+      "period": "Relazione sulla performance 2025, pubblicata nel luglio 2026",
+      "lead": "La tabella del personale del Ministero dell’Ambiente e della Sicurezza Energetica (MASE) non supera un controllo elementare: la somma delle righe.",
+      "paragraphs": [
+        "Le categorie riportano 3 capi dipartimento, 11 dirigenti di prima fascia, 43 di seconda fascia e 878 addetti delle aree. La somma è 935, mentre il totale pubblicato è 922.",
+        "Un’altra tabella riporta 935 ma contiene un’intestazione temporale incoerente. Il documento non consente quindi di scegliere un totale senza dichiarare il problema."
+      ],
+      "conclusion": "L’errore di coerenza è verificato. Non dimostra la presenza di dipendenti inesistenti e non consente di calcolare stipendi pagati in eccesso.",
+      "improve": "Validare automaticamente le somme e indicare un unico anno e perimetro per tutte le tabelle del personale.",
+      "sourceIds": [
+        "mase-performance"
+      ],
+      "math": {
+        "calculationIds": [
+          "staff-sum",
+          "staff-gap"
+        ],
+        "explanation": "Prima sommiamo le quattro categorie. Poi sottraiamo il totale pubblicato. La differenza è nel documento, non una prova di persone pagate indebitamente.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "personale"
+    },
+    {
+      "id": "percentuali",
+      "sector": "GF09",
+      "kind": "errore",
+      "title": "Scuola: tre percentuali descrivono male il tempo risparmiato",
+      "number": "3 errori",
+      "numberLabel": "Riduzioni percentuali non coerenti con i giorni indicati",
+      "period": "Note integrative al Rendiconto 2025, record 824, 825 e 828",
+      "lead": "Passare da 13 a 5 giorni significa risparmiarne 8: la riduzione è il 61,54%, non il 38%.",
+      "paragraphs": [
+        "Gli altri due confronti danno lo stesso problema: da 30 a 11,69 giorni la riduzione è il 61,03%, non il 40%; da 28 a 15 giorni è il 46,43%, non il 53,5%.",
+        "Le percentuali dichiarate si avvicinano invece alla parte di tempo rimasta. Confondere “tempo rimasto” e “tempo risparmiato” cambia il significato dell’indicatore."
+      ],
+      "conclusion": "I giorni pubblicati indicano un miglioramento, non un peggioramento. L’errore è nella descrizione del risultato e non documenta un danno finanziario.",
+      "improve": "Calcolare e descrivere ogni percentuale a partire dagli stessi tempi di riferimento, mantenendo visibili entrambi i valori.",
+      "sourceIds": [
+        "indicatori"
+      ],
+      "math": {
+        "calculationIds": [
+          "mim-a",
+          "mim-b",
+          "mim-c"
+        ],
+        "explanation": "Tempo risparmiato = tempo previsto meno tempo effettivo. Dividendo il risparmio per il tempo previsto e moltiplicando per 100 otteniamo la riduzione percentuale.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "percentuali"
+    },
+    {
+      "id": "musei-incassi",
+      "sector": "GF08",
+      "kind": "errore",
+      "title": "Musei: titolo, incassi e crescita non raccontano gli stessi numeri",
+      "number": "21,70%",
+      "numberLabel": "Crescita calcolata, non il 23% dichiarato",
+      "period": "Comunicato MiC del 10 maggio 2025, incassi 2024",
+      "lead": "Nel comunicato il titolo indica 328 milioni; il corpo riporta 382.004.344 euro.",
+      "paragraphs": [
+        "Anche la crescita dichiarata non coincide con gli importi: 382.004.344 euro contro 313.888.163 dell’anno prima implicano un aumento del 21,70%, non del 23%. Una successiva pubblicazione ministeriale conferma circa 382 milioni.",
+        "Il confronto segnala un problema di coerenza nella comunicazione ufficiale. Non sono 54 milioni scomparsi: un valore arrotondato nel titolo non è una registrazione di cassa."
+      ],
+      "conclusion": "L’incoerenza documentale è riproducibile. Gli incassi crescono; è la loro presentazione a richiedere una correzione.",
+      "improve": "Generare titolo, tabelle e percentuali dalla stessa base dati, evitando trascrizioni manuali separate.",
+      "sourceIds": [
+        "mic-incassi",
+        "mic-conferma"
+      ],
+      "math": {
+        "calculationIds": [
+          "mic-growth"
+        ],
+        "explanation": "Sottraiamo gli incassi precedenti da quelli nuovi, poi dividiamo per gli incassi precedenti. Il risultato misura la crescita, non la quota del nuovo totale.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": null
+    },
+    {
+      "id": "entrate",
+      "sector": "GF01",
+      "kind": "errore",
+      "title": "Entrate: una previsione non quadra per 1.894 euro",
+      "number": "1.894 €",
+      "numberLabel": "Differenza nelle previsioni, non negli incassi",
+      "period": "Rendiconto 2025, capitolo 3458, articolo 1, record 1.404",
+      "lead": "La previsione iniziale più le variazioni non coincide con la previsione definitiva pubblicata.",
+      "paragraphs": [
+        "Il controllo delle uguaglianze contabili individua una differenza di 1.894 euro. Per “previsione” si intende quanto era atteso in bilancio, non quanto è stato effettivamente incassato.",
+        "Il valore deriva dalla verifica sulle colonne originali del file RGS conservata nelle prove della prima analisi."
+      ],
+      "conclusion": "La contraddizione aritmetica è verificata. Presentarla come denaro perso o sottratto sarebbe sbagliato.",
+      "improve": "Bloccare la pubblicazione delle righe che non rispettano le uguaglianze del tracciato, con una correzione tracciabile.",
+      "sourceIds": [
+        "entrate",
+        "schema-entrate"
+      ],
+      "math": null,
+      "chart": null,
+      "legacyId": "entrate"
+    },
+    {
+      "id": "date",
+      "sector": "GF01",
+      "kind": "anomalia",
+      "title": "Adnkronos: l’atto di aggiudicazione è del 2026",
+      "number": "139.000 €",
+      "numberLabel": "Valore del contratto, non pagamento dell’anno",
+      "period": "CIG B9859A6F52; atti del gennaio e febbraio 2026",
+      "lead": "Il confronto iniziale del sito collocava nel 2025 un affidamento il cui decreto di aggiudicazione è del 30 gennaio 2026.",
+      "paragraphs": [
+        "Il profilo riportava il 10 dicembre 2025. Il contratto è stato stipulato il 19 febbraio e approvato il 23 febbraio 2026. Sono momenti diversi: pubblicare una procedura, assegnarla e pagare il fornitore non sono la stessa operazione.",
+        "Il dato del profilo proveniva dal campo ANAC relativo all’aggiudicazione definitiva. La divergenza con l’atto non si risolve quindi scegliendo semplicemente un altro nome per la data."
+      ],
+      "conclusion": "L’attribuzione al 2025 non è sostenuta dall’atto acquisito. La scheda documenta il problema rilevato nella prima analisi, non certifica lo stato attuale del dato a monte.",
+      "improve": "Mostrare separatamente le date della procedura e preservare la provenienza delle eventuali rettifiche.",
+      "sourceIds": [
+        "adnkronos"
+      ],
+      "math": null,
+      "chart": null,
+      "legacyId": "date"
+    },
+    {
+      "id": "archivi",
+      "sector": "GF08",
+      "kind": "anomalia",
+      "title": "Archivi: quattro risultati su cinque non sono confrontabili",
+      "number": "4 su 5",
+      "numberLabel": "Indicatori dichiarati non consuntivabili",
+      "period": "Programma 021.009, risultati 2025",
+      "lead": "Gli obiettivi sono cambiati durante l’anno, ma il rendiconto non permette di confrontare quattro risultati con le promesse iniziali.",
+      "paragraphs": [
+        "Le note indicano modifiche introdotte a luglio e non recepite tempestivamente. “Non consuntivabile” significa che non viene fornito un risultato misurabile con il criterio originario.",
+        "Le tre azioni collegate sommano 55,74 milioni di impegni. È la spesa interessata dal problema di verifica: non è denaro automaticamente privo di utilità."
+      ],
+      "conclusion": "La mancanza di confrontabilità è documentata. Autorizzare un cambio degli obiettivi non equivale a dimostrare che i risultati siano stati raggiunti.",
+      "improve": "Conservare obiettivi iniziali, revisioni motivate e risultati su entrambi i criteri, senza cancellare il confronto originario.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "archivi-senato"
+      ],
+      "math": {
+        "calculationIds": [
+          "archives-rate"
+        ],
+        "explanation": "Quattro diviso cinque dà l’80% degli indicatori. Non è l’80% della spesa: gli indicatori non sono quote di bilancio.",
+        "rows": []
+      },
+      "chart": null,
+      "legacyId": "archivi"
+    }
+  ],
+  "sources": [
+    {
+      "id": "cofog",
+      "publisher": "Eurostat",
+      "title": "Spesa delle amministrazioni pubbliche per funzione",
+      "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+      "period": "2024",
+      "publishedOn": "2026-07-21",
+      "checkedOn": "2026-09-14",
+      "locator": "gov_10a_exp; geo IT; sector S13; na_item TE. Snapshot DVNS acquisito l’11 settembre 2026.",
+      "access": "Undici celle del repository lette via connettore; il rilascio completo resta vincolato all’hash nel test di integrazione.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "discariche-pagamenti",
+      "publisher": "Commissario unico per la bonifica delle discariche",
+      "title": "Presentazione della XV relazione semestrale",
+      "url": "https://www.commissariobonificadiscariche.governo.it/it/comunicazione/comunicati-stampa-e-notizie/2025-60/20250320_xv-relazione-semestrale/",
+      "period": "Pagamenti cumulati 2014-2024",
+      "publishedOn": "2025-03-20",
+      "checkedOn": "2026-09-14",
+      "locator": "Riquadro informativo: circa 270 milioni pagati all’UE. Non usiamo i risparmi cumulati auto-dichiarati né il valore iniziale incoerente di 42,2 milioni presente nel comunicato.",
+      "access": "Testo della fonte istituzionale consultato online.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "discariche-semestre",
+      "publisher": "Commissario unico per la bonifica delle discariche",
+      "title": "XX semestre: approvato un sito",
+      "url": "https://www.commissariobonificadiscariche.governo.it/it/comunicazione/comunicati-stampa-e-notizie/2026-70/20260304-xx-semestre-approvato-1-sito/",
+      "period": "Situazione comunicata il 4 marzo 2026",
+      "publishedOn": "2026-03-04",
+      "checkedOn": "2026-09-14",
+      "locator": "Apertura del comunicato: 197 siti su 200 espunti; penalità semestrale da 42,8 a 0,8 milioni. Non utilizziamo i calcoli cumulativi nella parte successiva.",
+      "access": "Testo della pagina istituzionale restituito dal motore di ricerca; apertura diretta non riuscita.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "pinto",
+      "publisher": "Ministero della Giustizia, gNews",
+      "title": "Legge Pinto: pagamenti al 31 dicembre 2025",
+      "url": "https://www.gnewsonline.it/legge-pinto-al-31-dicembre-erogati-oltre-207-milioni-di-euro/",
+      "period": "Pagamenti 2025, anche su arretrati",
+      "publishedOn": "2026-01-20",
+      "checkedOn": "2026-09-14",
+      "locator": "Primi due paragrafi: 121,3 milioni della sede centrale e 86,1 milioni delle Corti d’appello. Il PDF allegato non è stato acquisito.",
+      "access": "Testo della fonte istituzionale consultato online.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "anac-camerano",
+      "publisher": "ANAC",
+      "title": "Ospedale Ancona Sud-Camerano: rilievi su costi e tempi",
+      "url": "https://www.anticorruzione.it/-/newsletter-n-21-del-29-ottobre-2025",
+      "period": "Rilievi della delibera 407/2025",
+      "publishedOn": "2025-10-29",
+      "checkedOn": "2026-09-14",
+      "locator": "Sezione Ospedale Ancona Sud-Camerano; delibera 407 del 15 ottobre 2025. La newsletter riporta 44 milioni arrotondati, 134.615.997 euro, 870 e 3.045 giorni.",
+      "access": "Testo della newsletter istituzionale restituito dal motore di ricerca. PDF della delibera non acquisito; nessuna affermazione basata su dettagli non letti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "regione-camerano",
+      "publisher": "Regione Marche",
+      "title": "Nuovo INRCA e ospedale di rete della zona sud di Ancona",
+      "url": "https://www.regione.marche.it/Regione-Utile/Infrastrutture/Ospedali",
+      "period": "Scheda di progetto consultata il 14 settembre 2026",
+      "publishedOn": null,
+      "checkedOn": "2026-09-14",
+      "locator": "Sezione sul nuovo INRCA: posti letto da 255 a 318; adeguamenti funzionali, normativi e isolamento sismico. I circa 185 milioni riguardano l’intera opera, non il solo importo lavori.",
+      "access": "Testo della pagina istituzionale restituito dal motore di ricerca.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "depurazione",
+      "publisher": "Corte di giustizia dell’Unione europea",
+      "title": "Sentenza del 27 marzo 2025, causa C-515/23",
+      "url": "https://eur-lex.europa.eu/eli/C/2025/2826/oj/eng",
+      "period": "Condanna del 27 marzo 2025",
+      "publishedOn": "2025-06-02",
+      "checkedOn": "2026-09-14",
+      "locator": "Dispositivo: somma forfettaria di 10 milioni e penalità semestrale di base di 13.687.500 euro, riducibile in relazione alla conformità.",
+      "access": "Riscontro documentato nell’ampliamento della PR #509; riferimento istituzionale ricontrollato. Non è una ricevuta di pagamento.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "nas-mense",
+      "publisher": "Ministero della Salute / Carabinieri NAS",
+      "title": "Controlli nelle mense ospedaliere, comunicato 2288",
+      "url": "https://www.salute.gov.it/new/it/nas-notizia/controlli-nas-nelle-mense-ospedaliere-oltre-550-strutture-ispezionate-irregolarita-nel/",
+      "period": "Ispezioni dal 19 febbraio al 22 marzo 2026",
+      "publishedOn": "2026-03-31",
+      "checkedOn": "2026-09-14",
+      "locator": "Apertura: 558 strutture, 238 non conformi; dettaglio di 525 più 31 strutture. Quest’ultima somma dà 556, non 558.",
+      "access": "Testo istituzionale restituito dal motore di ricerca; apertura diretta bloccata dalla protezione del sito.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mic-incassi",
+      "publisher": "Ministero della Cultura",
+      "title": "Musei: comunicato del 10 maggio 2025",
+      "url": "https://cultura.gov.it/comunicato/27577",
+      "period": "Incassi 2024 e confronto con il 2023",
+      "publishedOn": "2025-05-10",
+      "checkedOn": "2026-09-14",
+      "locator": "Titolo: 328 milioni; corpo: 382.004.344 euro nel 2024 contro 313.888.163 nel 2023. Incremento dichiarato: 23%.",
+      "access": "Riscontro già presente nei materiali precedenti, conservato e ricalcolato.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mic-conferma",
+      "publisher": "Ministero della Cultura",
+      "title": "Statistiche della cultura: presentazione 2025",
+      "url": "https://cultura.gov.it/comunicato/28286",
+      "period": "Musei statali, 2022-2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-14",
+      "locator": "Conferma circa 382 milioni di introiti nel 2024.",
+      "access": "Riscontro ripreso dai materiali precedenti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "nidi",
+      "publisher": "Istat",
+      "title": "Offerta di nidi e servizi integrativi per la prima infanzia",
+      "url": "https://www.istat.it/comunicato-stampa/offerta-di-nidi-e-servizi-integrativi-per-la-prima-infanzia-anno-educativo-2023-2024/",
+      "period": "Anno educativo 2023/24",
+      "publishedOn": null,
+      "checkedOn": "2026-09-14",
+      "locator": "Posti autorizzati pubblici e privati per 100 bambini: Centro 40,4; Sud 19,0; Isole 19,5.",
+      "access": "Riscontro ripreso dai materiali precedenti, non nuova acquisizione dei microdati.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "rifiuti-costi",
+      "publisher": "ISPRA",
+      "title": "Costi di gestione dei rifiuti urbani",
+      "url": "https://indicatoriambientali.isprambiente.it/it/rifiuti/costi-di-gestione-rifiuti-urbani",
+      "period": "2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-14",
+      "locator": "Costo medio per chilogrammo: Nord 35,0 centesimi; Centro 47,4; Sud 49,8.",
+      "access": "Riscontro ripreso dai materiali precedenti; non benchmark corretto per qualità e condizioni territoriali.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "entrate",
+      "publisher": "RGS",
+      "title": "Rendiconto 2025, entrate per articolo",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-entrate-articolo",
+      "locator": "Record 1.404; pubblicazione aggiornata il 14 luglio 2026.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "schema-entrate",
+      "publisher": "RGS",
+      "title": "Tracciato delle entrate",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5506_Rendiconto%20Pubblicato%20Elaborabile%20Entrate.pdf",
+      "locator": "Pagina 6: previsione definitiva.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "indicatori",
+      "publisher": "RGS",
+      "title": "Note integrative 2025, indicatori",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-note-integrative-al-rendiconto-indicatori",
+      "locator": "Record indicati in ciascuna scheda; osservazione 14 luglio 2026.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "azioni",
+      "publisher": "RGS",
+      "title": "Note integrative 2025, azioni",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-note-integrative-al-rendiconto-azioni",
+      "locator": "Impegni e pagamenti per azione; osservazione 14 luglio 2026.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "cloud",
+      "publisher": "Ministero del Lavoro",
+      "title": "Ordine definitivo del contratto cloud",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_267_566_1.html",
+      "locator": "Decreto 289 del 3 aprile 2025, pagine PDF 9-10.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "adnkronos",
+      "publisher": "Ministero del Lavoro",
+      "title": "Affidamento contenuti video",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_449_566_1.html",
+      "locator": "Decreto 42/2026, pagine PDF 1 e 3-4; decreto 85/2026, pagine 3-4.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mit-anas",
+      "publisher": "MIT",
+      "title": "Aggiornamento 2025 del Contratto di programma ANAS",
+      "url": "https://mit.gov.it/nfsmitgov/files/media/documentazione/2025-10/Articolato_AllegatiAggiornamento2025CdP2021-2025-signed.pdf",
+      "locator": "Pagine PDF 132 e 234; CUP F71B16000830001.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "tolentino-progetto",
+      "publisher": "ANAS, deposito VIA presso MASE",
+      "title": "Tolentino-San Severino: relazione progettuale",
+      "url": "https://va.mite.gov.it/File/Documento/1393467",
+      "locator": "Pagine PDF 8-9: iter e revisioni del progetto; documento acquisito il 14 settembre 2026.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mit-allegato",
+      "publisher": "MIT",
+      "title": "CdP ANAS 2021-2025, Allegato A",
+      "url": "https://www.mit.gov.it/nfsmitgov/files/media/normativa/2024-12/CdP_2021-2025_Allegato_A_-_Elenco_Interventi_CdP_21-25-signed.pdf",
+      "locator": "Pagina PDF 292: componenti del costo per il CUP F71B16000830001.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "enea",
+      "publisher": "ENEA e GSE",
+      "title": "Rapporto sul PREPAC",
+      "url": "https://www.efficienzaenergetica.enea.it/component/jdownloads/?Itemid=101&catid=9&id=650&task=download.send",
+      "locator": "Pubblicato il 28 marzo 2024; pagine PDF 6-8 e 21.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "lagazuoi",
+      "publisher": "Ministero del Turismo",
+      "title": "Revoca Lagazuoi S.p.A., ID 16779",
+      "url": "https://www.ministeroturismo.gov.it/wp-content/uploads/2026/06/DDG-revoca-Lagazuoi-SpA.pdf",
+      "locator": "Pagine PDF 3-6: mancato avvio, revoca e assenza di impegni ed erogazioni; atto del 2026.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "carceri-programma",
+      "publisher": "Ministero della Giustizia",
+      "title": "Programma di edilizia penitenziaria",
+      "url": "https://www.giustizia.it/giustizia/page/it/csc_programma_interventi",
+      "locator": "Aggiornato il 5 agosto 2025; linee di intervento e posti inutilizzabili.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mase-performance",
+      "publisher": "MASE",
+      "title": "Relazione sulla performance 2025",
+      "url": "https://www.mase.gov.it/portale/documents/d/guest/m_amte-mase-udcm_decreti_ministro_r_-0000211-10-07-2026-pdf",
+      "locator": "D.M. 211 del 10 luglio 2026, pagine PDF 114-115, tabelle 5 e 7.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "archivi-senato",
+      "publisher": "Senato della Repubblica",
+      "title": "Bilancio 2026-2028, Tabella 14, Cultura",
+      "url": "https://www.senato.it/service/PDF/PDFServer/BGT/01477094.pdf",
+      "locator": "A.S. 1689, comunicato il 22 ottobre 2025; pagine PDF 43-45: nuovi indicatori degli Archivi.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-corriere",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Corriere dello Sport",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_406_566_1.html",
+      "locator": "CIG B89A063116; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-fatto",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Fatto Quotidiano",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_405_566_1.html",
+      "locator": "CIG B89A1882E0; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-giornale",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Giornale",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_403_566_1.html",
+      "locator": "CIG B89A2297BB; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-libero",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Libero",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_407_566_1.html",
+      "locator": "CIG B89A5053CD; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-tempo",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Tempo",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_404_566_1.html",
+      "locator": "CIG B89A3D69C0; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "sport-tuttosport",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Tuttosport",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_408_566_1.html",
+      "locator": "CIG B89A54BD8E; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ads-corriere",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Corriere della Sera",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_402_566_1.html",
+      "locator": "CIG B899EF63E0; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ads-sole",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Sole 24 Ore",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_399_566_1.html",
+      "locator": "CIG B89A390FFA; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ads-subasio",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Radio Subasio",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_392_566_1.html",
+      "locator": "CIG B8DDC0B402; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ads-mediaset",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Mediaset TV e CTV",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_451_566_1.html",
+      "locator": "CIG B985E8760A; determine e decreti di aggiudicazione allegati alla scheda.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mop",
+      "publisher": "RGS",
+      "title": "Progetti opere pubbliche MOP, totale",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale",
+      "locator": "Rilascio del 4 settembre 2026; CUP F71B16000830001. Ricevuta della verifica OData del 14 settembre nel pacchetto delle prove.",
+      "access": "Prove della PR #506, conservate nella repository.",
+      "checkedOn": "2026-09-14",
+      "publishedOn": null,
+      "period": "Periodo specificato nella scheda",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "dvns-rti",
+      "publisher": "DoveVannoINostriSoldi",
+      "title": "Prove congelate del confronto sul contratto cloud",
+      "url": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/62c70b65716c1e5b2ce784950e081b6bd41d52ad/docs/research/state-budget-2025",
+      "period": "Confronto del profilo MLPS nella prima analisi del 14 settembre 2026",
+      "publishedOn": "2026-09-14",
+      "checkedOn": "2026-09-14",
+      "locator": "Confronto relativo al profilo IPA m_lps: 59.279.167,72 euro su 186.277.425,17 euro; contratto CIG B654A948AF da 48.191.320 euro. È il perimetro del confronto DVNS, non tutto il mercato cloud.",
+      "access": "Confronto ripreso dalle prove e dal manoscritto della PR #506. Il decreto prova l’identità del raggruppamento; i denominatori provengono dal confronto DVNS.",
+      "originalBytesSha256": null
+    }
+  ],
+  "municipal": {
+    "title": "Comuni: il servizio conta più del bonifico",
+    "paragraphs": [
+      "I Comuni sono un livello amministrativo, non un’undicesima funzione da sommare alle altre: la loro spesa è già ripartita nelle funzioni nazionali.",
+      "Nel 2023/24 i posti autorizzati nei nidi erano 40,4 ogni 100 bambini al Centro, 19,0 al Sud e 19,5 nelle Isole. Sono posti pubblici e privati, non bambini frequentanti. Per capire il servizio servono anche accessibilità, orari e personale.",
+      "Nel 2024 il costo medio dei rifiuti era 35,0 centesimi al chilo al Nord e 49,8 al Sud. Il differenziale del 42,3% non è una stima dello spreco: territorio, trasporto, impianti e qualità del servizio possono incidere."
+    ],
+    "charts": [
+      {
+        "title": "Posti autorizzati nei nidi",
+        "unit": "per 100 bambini",
+        "rows": [
+          {
+            "label": "Centro",
+            "metric": "nidi-centro"
+          },
+          {
+            "label": "Sud",
+            "metric": "nidi-sud"
+          },
+          {
+            "label": "Isole",
+            "metric": "nidi-isole"
+          }
+        ],
+        "note": "Anno educativo 2023/24. Offerta pubblica e privata, non frequenza effettiva."
+      },
+      {
+        "title": "Costo medio dei rifiuti urbani",
+        "unit": "centesimi/kg",
+        "rows": [
+          {
+            "label": "Nord",
+            "metric": "waste-north"
+          },
+          {
+            "label": "Centro",
+            "metric": "waste-centre"
+          },
+          {
+            "label": "Sud",
+            "metric": "waste-south"
+          }
+        ],
+        "note": "2024. Medie territoriali non corrette per le condizioni del servizio."
+      }
+    ],
+    "sourceIds": [
+      "nidi",
+      "rifiuti-costi"
+    ]
+  },
+  "method": [
+    "Il quadro contabile copre dieci funzioni della spesa pubblica nel 2024. Le singole schede usano periodi diversi, riportati accanto ai numeri. Non è un controllo di ogni fattura o di ogni amministrazione.",
+    "Sanzioni pagate, somme imposte da una sentenza, valori contrattuali e differenze nei dati hanno significati diversi. Per questo non pubblichiamo un totale nazionale degli sprechi.",
+    "Le risultanze di ANAC, NAS e altre istituzioni sono attribuite a chi le ha prodotte. Le verifiche aritmetiche e le letture dei documenti sono nostre elaborazioni. Un risultato statistico non prova da solo spreco, frode o responsabilità individuale.",
+    "Le undici schede iniziali sono state riscritte mantenendo il collegamento alle prove congelate della prima analisi. Le nuove fonti online hanno date e modalità di consultazione nel registro tecnico. Questa elaborazione con assistenza AI non equivale a una revisione indipendente umana."
+  ],
+  "glossary": [
+    {
+      "term": "Stanziamento",
+      "definition": "Quanto il bilancio autorizza a spendere. Non significa che il denaro sia già stato versato."
+    },
+    {
+      "term": "Impegno",
+      "definition": "Un obbligo di spesa registrato. Il pagamento può avvenire anche dopo."
+    },
+    {
+      "term": "Pagamento",
+      "definition": "Denaro effettivamente versato. Può saldare un obbligo di un anno precedente."
+    },
+    {
+      "term": "Residui",
+      "definition": "Obblighi o entrate di anni precedenti ancora da pagare o riscuotere."
+    },
+    {
+      "term": "CIG e CUP",
+      "definition": "Il CIG identifica una procedura di acquisto; il CUP un progetto pubblico. Servono a ritrovare gli stessi atti."
+    },
+    {
+      "term": "RTI",
+      "definition": "Un gruppo di imprese che partecipa insieme alla gara. La capofila rappresenta il gruppo, ma non è necessariamente l’unica a ricevere il compenso."
+    },
+    {
+      "term": "Competenza economica",
+      "definition": "Registra la spesa secondo il momento economico dell’operazione, che può essere diverso dal momento del pagamento."
+    }
+  ],
+  "legacyEvidenceUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/62c70b65716c1e5b2ce784950e081b6bd41d52ad/docs/research/state-budget-2025",
+  "noNationalWasteTotal": true
+}

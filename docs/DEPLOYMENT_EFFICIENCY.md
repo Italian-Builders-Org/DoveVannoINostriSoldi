@@ -44,13 +44,19 @@ Configurazione verificata nel dashboard Vercel il 14 settembre 2026:
 | Regola | Ambito | Richieste per IP / 60 secondi |
 | --- | --- | --- |
 | `training-bot-operator-cap` | `/appalti/operatori`, ClaudeBot/GPTBot/CCBot/Meta-ExternalAgent | 30 |
+| `search-bot-operator-cap` | catalogo e schede operatori, Claude-SearchBot | 30 |
 | `operator-crawl-cap` | catalogo, filtri e schede `/appalti/operatori` con qualsiasi User-Agent | 120 |
 | `enti-crawl-cap` | `/enti` e sottopagine, qualsiasi User-Agent | 30 |
 
+La regola per Claude-SearchBot è stata aggiunta dopo aver osservato circa 20.000
+richieste del crawler di ricerca contro 6.200 di ClaudeBot sugli operatori nelle
+ultime 12 ore in produzione. I conteggi arrotondati non sono stime di risparmio.
+
 Le regole restituiscono 429 senza ban persistenti, prima dell'esecuzione della
 pagina. Sono attive anche `mcp-post-cap` e `costly-api-cap`. Claude-User e
-Claude-SearchBot non corrispondono al filtro dei crawler di training; restano
-soggetti ai limiti generali. Il limite per IP impedisce che cambiare User-Agent
+Claude-SearchBot non corrispondono al filtro dei crawler di training: il primo
+resta sui limiti generali, il secondo ha una quota dedicata per l’indicizzazione.
+Il limite per IP impedisce che cambiare User-Agent
 azzerri la quota, ma non costituisce un tetto globale per bot distribuiti.
 Vercel conta separatamente le regioni. Sul piano Pro il filtro può usare lo
 User-Agent, mentre usarlo come chiave di conteggio richiede Enterprise: non
@@ -59,7 +65,8 @@ serve cambiare piano per le regole sopra.
 Il proxy conserva un limite locale di emergenza: crawler di training sugli
 enti e API hanno contatori separati, rispettivamente 30 e 120 richieste/minuto
 per IP e 600/minuto per istanza. Gli agenti user/search non corrispondono al
-filtro locale dei crawler; il firewall applica comunque il limite generale. Le risposte 429 sono `private, no-store` con `Retry-After: 60`.
+filtro locale dei crawler; il firewall applica comunque il limite generale.
+Le risposte 429 sono `private, no-store` con `Retry-After: 60`.
 Non sostituisce il firewall distribuito. Non applicare un 403 fisso a ClaudeBot:
 lo scraping entro i limiti è ammesso. `robots.txt` resta un'indicazione ai client
 collaborativi; le schede enti sono ancora escluse dalla scansione annunciata.

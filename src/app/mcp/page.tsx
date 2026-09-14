@@ -52,10 +52,7 @@ export default function McpPage() {
       <section className="panel" aria-labelledby="clients-title">
         <h2 id="clients-title">Collegalo ai client compatibili</h2>
         <p>
-          Usa sempre l&apos;endpoint canonico qui sopra: Claude può aggiungerlo come connettore MCP
-          remoto e Manufact può collegarlo come server esistente. L&apos;inclusione nelle directory
-          pubbliche di ChatGPT o Claude richiede una candidatura e una review separate; non è
-          implicita nel collegamento tecnico.
+          Aggiungi l’endpoint come connettore MCP remoto in Claude o come server esistente in Manufact.
         </p>
         <p>
           Prima di inviare contesto tramite un servizio esterno, consulta <a href="/privacy">privacy</a>,{" "}

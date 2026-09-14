@@ -89,7 +89,7 @@ test("home page leads with Italy charts then keeps the municipal map", async () 
   assert.match(page, /recentLimit=\{4\}/);
   assert.match(page, /snapshot fino al/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
-  assert.match(page, /Come leggere questi numeri/);
+  assert.match(page, /Perimetri diversi/);
   assert.match(css, /\.italyBand \{/);
   assert.match(css, /\.italySummary \{/);
   assert.match(css, /\.italySplit \{/);

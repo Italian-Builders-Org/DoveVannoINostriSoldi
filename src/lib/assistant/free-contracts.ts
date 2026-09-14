@@ -1,6 +1,7 @@
 /** Public configuration only. Credentials and quota decisions stay on the server. */
 export const FREE_DAILY_QUESTIONS = 10;
 export const FREE_MODEL = "glm5.2";
+export const FREE_FALLBACK_MODEL = "qwen3.8-27b";
 export type FreeQuota = { available: boolean; remaining: number; resetAt: string };
 export function isFreeQuota(value: unknown): value is FreeQuota {
   if (!value || typeof value !== "object") return false;

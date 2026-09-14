@@ -198,11 +198,11 @@ export default async function HomePage({
                   <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
                 </div>
                 <div>
-                  <dt>Natura del denaro</dt>
+                  <dt>Criterio contabile</dt>
                   <dd>Competenza SEC 2010</dd>
                 </div>
                 <div>
-                  <dt>Più recente altrove</dt>
+                  <dt>Dati più recenti</dt>
                   <dd>
                     <Link href="/spese/legge-di-bilancio">Legge di Bilancio</Link>
                     {" · "}
@@ -273,7 +273,7 @@ export default async function HomePage({
                 <dd>{billions(funnel.state.debtEuro)} mld €</dd>
               </div>
               <div>
-                <dt>Natura del denaro</dt>
+                <dt>Criterio contabile</dt>
                 <dd>Stanziamenti di competenza</dd>
               </div>
             </dl>
@@ -433,8 +433,8 @@ export default async function HomePage({
                     <span>Da gennaio a {monthLabel}</span>
                     <strong>{compactEuro(siope.totalPaid)}</strong>
                     <small>
-                      totale nazionale dei Comuni · {compactEuro(siope.coverage.paymentsWithoutRegion)}
-                      {" "}senza Regione IPA non mappati
+                      Italia · {compactEuro(siope.coverage.paymentsWithoutRegion)}
+                      {" "}senza regione IPA, esclusi dalla mappa
                     </small>
                   </div>
                   <div>
@@ -634,7 +634,7 @@ export default async function HomePage({
             <div className={styles.panelHead}>
               <h2 className="panel-title">Regioni ordinate per pagamenti per abitante</h2>
               <span className={styles.headNote}>
-                Comuni con sede nella regione · totale pagato mostrato a parte
+                Comuni con sede nella regione
               </span>
             </div>
             <div className="table-scroll" role="region" aria-label="Regioni ordinate per pagamenti per abitante" tabIndex={0}>
@@ -732,8 +732,8 @@ export default async function HomePage({
             <h2 className="panel-title">Anomalie da approfondire</h2>
             <Link className={styles.anomaliesLink} href="/controlli">Tutti i controlli <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></Link>
             <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
-              Un valore insolito rispetto a enti simili o a una soglia statistica. È un segnale
-              statistico da verificare con le fonti, non una prova di spreco o illecito.
+              Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
+              con le fonti: non dimostra sprechi o illeciti.
             </InfoTooltip>
           </div>
           <div className={styles.anomalyGallery}>
@@ -778,7 +778,7 @@ export default async function HomePage({
 
       <aside className={styles.readingPanel} aria-labelledby="reading-title">
           <div className={styles.readingIntro}>
-            <h2 id="reading-title" className="panel-title">Come leggere questi numeri</h2>
+            <h2 id="reading-title" className="panel-title">Perimetri diversi</h2>
             <p className={styles.readingNote}>
               Spesa PA (Eurostat) e bilancio dello Stato non si sommano alla cassa dei Comuni.
               Nel confronto territoriale considera popolazione e servizi gestiti da ciascun

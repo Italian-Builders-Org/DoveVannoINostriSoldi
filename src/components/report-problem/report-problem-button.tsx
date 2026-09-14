@@ -64,8 +64,6 @@ export function ReportProblemButton({ variant = "inline", compact = false, onOpe
         <HugeiconsIcon icon={Flag02Icon} size={variant === "sidebar" ? 18 : 16} strokeWidth={1.8} aria-hidden="true" />
         {variant === "sidebar" ? (
           <span className={styles.sidebarCopy}>
-            <strong>Qualcosa non torna?</strong>
-            <span>Aiutaci a migliorare il sito.</span>
             <span className={styles.sidebarAction}>Segnala un problema <HugeiconsIcon icon={ArrowRight02Icon} size={15} aria-hidden="true" /></span>
           </span>
         ) : (

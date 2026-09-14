@@ -13,7 +13,7 @@ const { PRIMARY_NAV, SITE_MAP_GROUPS } = await import("../src/lib/site-navigatio
 
 test("inflation page leads with prices and keeps public spending outside the frame", () => {
   assert.match(page, /<h1>Inflazione IPCA<\/h1>/);
-  assert.match(page, /prezzi al consumo, non di spesa pubblica/i);
+  assert.match(page, /prezzi al consumo in Italia/i);
   assert.match(page, /data-testid="hicp-annual-rate"/);
   assert.match(page, /base 2025=100/);
   assert.match(page, /Non sono contributi additivi/);

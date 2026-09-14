@@ -94,7 +94,6 @@ export default async function IntegratedDomainHub({
       </section>
 
       <aside className="notice">
-        <strong>Come leggere questi dati</strong>
         <p>{interpretation}</p>
       </aside>
 

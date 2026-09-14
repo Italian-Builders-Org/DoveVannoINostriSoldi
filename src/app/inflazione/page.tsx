@@ -43,8 +43,7 @@ export default function InflationPage() {
         <p className="eyebrow">Prezzi · Eurostat HICP</p>
         <h1>Inflazione IPCA</h1>
         <p>
-          Quanto cambiano i prezzi in Italia, quali gruppi del paniere si muovono di più e come si confronta
-          lo stesso indicatore con Unione europea e area euro. Qui parliamo di prezzi al consumo, non di spesa pubblica.
+          Prezzi al consumo in Italia: andamento, capitoli del paniere e confronto con UE e area euro.
         </p>
         <p className={styles.links}>
           <a href="#ipca-andamento">Andamento Italia ↓</a>

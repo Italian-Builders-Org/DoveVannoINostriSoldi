@@ -7,7 +7,7 @@
 
 .tables > section { display: flex; flex-direction: column; }
 .tables .shareList { flex: 1; justify-content: space-between; }
-.tables:has(details[open]) > section:last-child { align-self: start; }
+.historyTables { align-items: start; }
 
 .tracePanel {
   display: grid;

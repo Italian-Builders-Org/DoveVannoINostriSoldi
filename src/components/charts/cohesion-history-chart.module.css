@@ -74,8 +74,8 @@
 }
 
 .tableWrap {
-  margin-top: 22px;
-  overflow-x: auto;
+  max-height: 426px;
+  overflow: auto;
 }
 
 .tableWrap table {
@@ -97,7 +97,7 @@
   padding: 10px;
   border-bottom: 1px solid var(--color-neutral-200);
   color: var(--color-text);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 520;
   text-align: right;
   white-space: nowrap;
@@ -109,7 +109,7 @@
 
 .tableWrap thead th {
   color: var(--color-neutral-600);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 720;
   letter-spacing: .07em;
   text-transform: uppercase;
@@ -119,4 +119,29 @@
   .chart {
     height: 320px;
   }
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-bottom-color: var(--chart-primary);
+  color: var(--color-text);
+  font-weight: 650;
 }

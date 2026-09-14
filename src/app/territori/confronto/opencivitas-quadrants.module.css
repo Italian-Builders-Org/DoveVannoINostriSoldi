@@ -323,11 +323,7 @@
   overflow-wrap: anywhere;
 }
 
-.scrollInstruction {
-  margin: 0 0 var(--space-2);
-  color: var(--color-neutral-600);
-  font-size: 11px;
-}
+
 
 @media (max-width: 760px) {
   .header,

@@ -14,12 +14,10 @@
 }
 .inlineTrigger:hover { color: var(--color-accent-800); }
 
-.sidebarTrigger { display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 44px; padding: 14px 12px; border: 1px solid var(--color-neutral-300); border-radius: 14px; color: var(--color-text); background: var(--color-raised); text-align: left; cursor: pointer; transition: transform 140ms cubic-bezier(.23,1,.32,1), border-color 140ms ease; }
+.sidebarTrigger { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 14px 12px; border: 1px solid var(--color-neutral-300); border-radius: 14px; color: var(--color-text); background: var(--color-raised); text-align: left; cursor: pointer; transition: transform 140ms cubic-bezier(.23,1,.32,1), border-color 140ms ease; }
 .sidebarTrigger > svg { flex: none; margin-top: 2px; color: var(--color-neutral-700); }
 .sidebarCopy { display: grid; gap: 4px; min-width: 0; }
-.sidebarCopy strong { font-size: 13px; font-weight: 650; }
-.sidebarCopy > span { color: var(--color-neutral-700); font-size: 11px; line-height: 1.5; }
-.sidebarCopy .sidebarAction { display: flex; align-items: center; gap: 5px; margin-top: 7px; color: var(--color-text); font-size: 11px; font-weight: 600; }
+.sidebarCopy .sidebarAction { display: flex; align-items: center; gap: 5px; color: var(--color-text); font-size: 11px; font-weight: 600; }
 .sidebarTrigger[data-compact="true"] { justify-content: center; padding: 11px; }
 .sidebarTrigger[data-compact="true"] .sidebarCopy { display: none; }
 .sidebarTrigger[data-compact="true"] > svg { margin: 0; }
@@ -213,10 +211,4 @@
 
 @media (min-width: 1100px) and (max-height: 860px) {
   .sidebarTrigger { padding: 10px; align-items: center; }
-  .sidebarCopy > span:not(.sidebarAction) { display: none; }
-  .sidebarCopy .sidebarAction { margin-top: 0; }
-}
-@media (min-width: 1100px) and (max-height: 740px) {
-  .sidebarCopy .sidebarAction { display: none; }
-  .sidebarCopy strong { font-size: 12px; }
 }

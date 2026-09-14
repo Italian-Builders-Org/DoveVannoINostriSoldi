@@ -92,7 +92,6 @@ export default async function EducationAtlasPage({
         </div>
         <div className={styles.heroMeta}>
           <span>Fonte: MIM · 2022/23 al 2024/25</span>
-          <Link href="/istruzione/universita-ricerca">Università e ricerca →</Link>
         </div>
       </header>
 

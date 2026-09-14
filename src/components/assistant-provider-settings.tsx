@@ -39,11 +39,10 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
     setApiKey("");
     onClose();
   }
-  return <dialog ref={dialog} className={styles.providerDialog} aria-labelledby="assistant-provider-title" aria-describedby="assistant-provider-description"
+  return <dialog ref={dialog} className={styles.providerDialog} aria-labelledby="assistant-provider-title"
     onCancel={(event) => { event.preventDefault(); onClose(); }}>
     <button type="button" className={styles.iconButton} aria-label="Chiudi impostazioni AI" onClick={onClose}><HugeiconsIcon icon={Cancel01Icon} size={20} aria-hidden="true" /></button>
-    <h2 id="assistant-provider-title">La tua AI, la tua chiave</h2>
-    <p id="assistant-provider-description">Scegli il servizio che vuoi usare per conversare sui dati del sito.</p>
+    <h2 id="assistant-provider-title">Servizio AI personale</h2>
     <form onSubmit={save} autoComplete="off">
       <label htmlFor="assistant-provider">Provider</label>
       <div className={styles.providerSelect}>
@@ -55,7 +54,7 @@ export function AssistantProviderSettings({ connection, onSave, onClose }: {
       <label htmlFor="assistant-model">Modello</label>
       <input id="assistant-model" list="assistant-models" value={model} maxLength={120} onChange={(event) => setModel(event.target.value)} autoComplete="off" spellCheck={false} required />
       <datalist id="assistant-models">{description.models.map((id) => <option key={id} value={id} />)}</datalist>
-      <small>Scegli un esempio o inserisci l’ID di un modello disponibile sul tuo conto. Per allegare immagini serve un modello che le legga.</small>
+      <small>ID di un modello disponibile sul tuo conto. Le immagini richiedono un modello compatibile.</small>
       {supportsReasoning ? <>
         <label htmlFor="assistant-reasoning">Analisi</label>
         <div className={styles.providerSelect}>

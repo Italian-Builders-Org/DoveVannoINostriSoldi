@@ -106,7 +106,7 @@ export async function POST(request: Request) {
           const result = await runWithRequestBudget(caller, AI_REQUEST_TIMEOUT_MS, async (signal) => {
             try {
               return await executeByokChat(connection, parsed.messages, {
-                signal, onDelta: (text) => { if (!signal.aborted) send({ type: "delta", text }); },
+                signal, regoloFallback: free, onDelta: (text) => { if (!signal.aborted) send({ type: "delta", text }); },
                 onActivity: (activity) => { if (!signal.aborted) send({ type: "activity", activity }); },
               });
             } finally { await release(); }
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
   try {
     const outcome = await runWithRequestBudget(request.signal, AI_REQUEST_TIMEOUT_MS, async (signal) => {
       // A timed-out response must not release the slot while work is still cancelling.
-      try { return await executeByokChat(connection, parsed.messages, { signal }); }
+      try { return await executeByokChat(connection, parsed.messages, { signal, regoloFallback: free }); }
       finally { await release(); }
     });
     if (outcome.timedOut) return failure("timeout", "La risposta ha superato il tempo disponibile. Puoi riprovare.", 504);

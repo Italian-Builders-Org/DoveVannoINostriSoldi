@@ -179,7 +179,7 @@ export function OpenCivitasQuadrants({
           </div>
           <span className={styles.completeTag}>Totale completo: {integer(summary.completeMunicipalities)}</span>
         </div>
-        <p className={styles.scrollInstruction} id="opencivitas-exact-description">
+        <p className="sr-only" id="opencivitas-exact-description">
           Su schermi stretti puoi scorrere la tabella orizzontalmente; quando la regione è a fuoco,
           Freccia destra/sinistra e Home/Fine spostano la vista.
         </p>

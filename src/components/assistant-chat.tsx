@@ -75,11 +75,17 @@ export function AssistantChat() {
 
   useLayoutEffect(() => {
     const header = document.querySelector(".site-header");
-    const update = () => { if (header) pageRoot.current?.style.setProperty("--assistant-header-height", `${header.getBoundingClientRect().height}px`); };
+    const viewport = window.visualViewport;
+    const update = () => {
+      if (header) pageRoot.current?.style.setProperty("--assistant-header-height", `${header.getBoundingClientRect().height}px`);
+      if (!viewport || viewport.scale === 1) pageRoot.current?.style.setProperty("--assistant-viewport-height", `${viewport?.height ?? window.innerHeight}px`);
+    };
     update();
     const observer = new ResizeObserver(update);
     if (header) observer.observe(header);
-    return () => observer.disconnect();
+    viewport?.addEventListener("resize", update);
+    window.addEventListener("resize", update);
+    return () => { observer.disconnect(); viewport?.removeEventListener("resize", update); window.removeEventListener("resize", update); };
   }, []);
   useEffect(() => {
     const leave = () => { connectionRef.current = null; freeConsent.current = false; setFreeRequest(null); pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };
@@ -91,7 +97,7 @@ export function AssistantChat() {
     if (!field) return;
     const resize = () => {
       field.style.height = "0px";
-      field.style.height = `${Math.min(180, Math.max(hasConversation ? 58 : 94, field.scrollHeight))}px`;
+      field.style.height = `${Math.min(hasConversation ? 140 : 180, Math.max(hasConversation ? 44 : 94, field.scrollHeight))}px`;
     };
     resize();
     window.addEventListener("resize", resize);
@@ -259,8 +265,8 @@ export function AssistantChat() {
       <header className={styles.toolbar}>
         <div className={styles.toolbarTitle}><span>Assistente</span></div>
         <div className={styles.toolbarActions}>
-          <button ref={providerButton} type="button" className={styles.providerButton} onClick={() => setSettings(true)} aria-haspopup="dialog" aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Collega la tua AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "Collega AI"}</span>
+          <button ref={providerButton} type="button" className={styles.providerButton} onClick={() => setSettings(true)} aria-haspopup="dialog" aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Utilizza il tuo servizio AI"}>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "Utilizza il tuo servizio AI"}</span>
           </button>
           <button type="button" className={styles.newChat} aria-label="Nuova chat" onClick={reset}><HugeiconsIcon icon={Edit02Icon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
         </div>
@@ -386,7 +392,7 @@ export function AssistantChat() {
             {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita" : "domande gratuite"} oggi · Regolo` : "Domande gratuite esaurite. Nuova quota a mezzanotte."}
             {free.quota.remaining === 0 ? <> <button type="button" className={styles.inlineAction} onClick={() => setSettings(true)}>Usa la tua chiave</button></> : null}
           </p> : null}
-          <p className={styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Collega la tua AI per iniziare a conversare sui dati."}</p>
+          <p className={hasConversation && !connection && !voice.active ? styles.srOnly : styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Configura il tuo servizio AI per iniziare."}</p>
         </div>
       </div>
 

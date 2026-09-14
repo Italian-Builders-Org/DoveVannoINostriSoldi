@@ -102,6 +102,8 @@ export default function PrivacyPage() {
         </p>
         <p>
           Per le domande gratuite, dopo il tuo consenso inviamo domanda, contesto e allegati a Regolo.
+          Regolo dichiara di non conservare domande, risposte e allegati né usarli per il training
+          (<a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">zero data retention</a>).
           Un cookie tecnico giornaliero firmato e non leggibile dagli script della pagina mantiene
           il contatore del browser. Per limitare gli abusi, il server controlla anche la rete:
           chi condivide la stessa rete può condividerne il limite. Il contatore riparte a mezzanotte,

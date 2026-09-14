@@ -773,14 +773,14 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
         )}
       </nav>
       <div className="page-intro">
-        <p className={styles.eyebrow}>Full snapshot ANAC · aggiudicatari, aggiudicazioni e CIG</p>
+        <p className={styles.eyebrow}>ANAC · aggiudicatari, aggiudicazioni e CIG</p>
         <h1>{showList ? "Elenco completo delle imprese" : "Imprese aggiudicatarie"}</h1>
         <p>
           {showList
             ? "Tutte le imprese con CF valido nello snapshot, ordinate per conteggio o valore attribuibile."
-            : "Prima le classifiche più leggibili (imprese, categorie, stazioni, oggetti). Poi puoi aprire l’elenco completo o cercare una denominazione. Non è la pagina "}
+            : "Classifiche degli aggiudicatari di appalti pubblici. Per gli aggregati CCIAA/ISTAT: "}
           {showList ? null : <Link href="/imprese">Atlante imprese</Link>}
-          {showList ? null : " (aggregati CCIAA/ISTAT)."}
+          {showList ? null : "."}
         </p>
       </div>
 
@@ -789,11 +789,9 @@ export default async function OperatoriPage({ searchParams }: { searchParams: Pr
           <SummaryIntro metaTotals={meta.totals} summaries={summaries} />
           <OperatorSummaryTables summaries={summaries} />
           <section className={styles.listCta} aria-labelledby="operatori-list-cta">
-            <h2 id="operatori-list-cta">Vuoi scorrere tutte le imprese?</h2>
+            <h2 id="operatori-list-cta">Elenco nazionale</h2>
             <p>
-              L&apos;elenco nazionale ha {integer(meta.totals.operators)} operatori su{" "}
-              {integer(Math.ceil(meta.totals.operators / ANAC_OPERATOR_INDEX.defaultPageSize))}{" "}
-              pagine. Le tabelle sopra mostrano solo le prime posizioni.
+              {integer(meta.totals.operators)} operatori. Le classifiche mostrano le prime posizioni.
             </p>
             <Link className="btn btn-primary" href={listHref({ vista: "elenco" })}>
               Vai all&apos;elenco completo

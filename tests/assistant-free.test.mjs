@@ -137,3 +137,26 @@ test('warm-instance burst protection bounds database calls and expires without g
  assert.equal(refreshed.quota.remaining, 0);
  assert.equal(databaseCalls, 61);
 });
+
+
+test('free fallback reserves one question and releases its lease once', async (t) => {
+ config(t);
+ const db = store(t);
+ const original = globalThis.fetch;
+ const models = [];
+ t.mock.method(globalThis, 'fetch', async (url, init) => {
+  if (String(url).includes('supabase.co')) return original(url, init);
+  models.push(JSON.parse(init.body).model);
+  return models.length === 1 ? new Response(null, { status: 503 }) : original(url, init);
+ });
+ const ip = '192.0.2.230';
+ const res = await status(request('', undefined, ip));
+ const cookie = res.headers.get('set-cookie').split(';')[0];
+ const reply = await chat(request(cookie, payload, ip));
+ assert.equal(reply.status, 200);
+ assert.equal(reply.headers.get('x-assistant-remaining'), '9');
+ assert.equal((await reply.json()).model, 'qwen3.8-27b');
+ assert.deepEqual(models, ['glm5.2', 'qwen3.8-27b']);
+ assert.equal(db.commands.filter(command => command.p_reserve).length, 1);
+ assert.equal(db.locks.size, 0);
+});

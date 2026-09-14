@@ -71,12 +71,12 @@ function providerMessages(provider: AiConnection["provider"], messages: readonly
   });
 }
 
-/** One paid request, without retries, redirects, persistence or cross-provider fallback. */
+/** One HTTP request; application retries belong to the caller. */
 export async function completeProviderText(
   connection: AiConnection,
   system: string,
   messages: readonly AiMessage[],
-  options: { signal: AbortSignal; fetcher?: typeof fetch; json?: boolean; toolSchema?: Record<string, unknown>; onDelta?: (text: string) => void; reasoning?: "none" | "medium" },
+  options: { signal: AbortSignal; disableRegoloFallbacks?: boolean; fetcher?: typeof fetch; json?: boolean; toolSchema?: Record<string, unknown>; onDelta?: (text: string) => void; reasoning?: "none" | "medium" },
 ): Promise<string> {
   const { provider, model, apiKey } = connection;
   const inputMessages = providerMessages(provider, messages);
@@ -100,6 +100,7 @@ export async function completeProviderText(
       };
     }
   }
+  if (provider === "regolo" && options.disableRegoloFallbacks) body.disable_fallbacks = true;
   if (provider === "regolo" && model === "glm5.2") body.reasoning_effort = "none";
   if (options.reasoning && provider === "openrouter" && model === "openai/gpt-5.6-luna") body.reasoning = { effort: options.reasoning, exclude: true };
   if (options.toolSchema) {

@@ -55,8 +55,8 @@ export default function RootLayout({
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
         <Navigation announcements={announcements} />
         <div className="site-content">
-          <div id="contenuto-principale" tabIndex={-1}>{children}</div>
           <SectionNav />
+          <div id="contenuto-principale" tabIndex={-1}>{children}</div>
           <SiteFooter />
         </div>
       </body>

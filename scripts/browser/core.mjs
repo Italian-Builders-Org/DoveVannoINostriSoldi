@@ -2227,6 +2227,21 @@ try {
         await assertCohesionTracePanelContrast(page, label);
         await assertCohesionStatusLayout(page, label);
         await assertCohesionPathwayContrast(page, label);
+        const neighborHeight = () => page.$eval('section:has([role="tablist"]) + section', el => el.getBoundingClientRect().height);
+        const initialHeight = await neighborHeight();
+        await page.click('[role="tab"]::-p-text(Dati)');
+        assert.equal(await page.$$eval('[role="tabpanel"] tbody tr', rows => rows.length), 17);
+        await page.keyboard.press('ArrowRight');
+        assert.equal(await page.$$eval('[role="tabpanel"] tbody tr', rows => rows.length), 5);
+        assert.match(await page.$eval('[role="tabpanel"]', el => el.textContent), /Pagato \/ impegni/);
+        assert.ok(Math.abs(await neighborHeight() - initialHeight) < 1, `${label}: adjacent panel remains stable`);
+        await page.keyboard.press('Home');
+        assert.equal(await page.$eval('[role="tab"][aria-selected="true"]', el => el.textContent), 'Grafico');
+        if (width === 390) {
+          await page.setJavaScriptEnabled(false);
+          await page.reload({ waitUntil: 'domcontentloaded' });
+          assert.equal(await page.$$eval('noscript tbody tr', rows => rows.length), 17, 'annual data remains readable without JavaScript');
+        }
       },
     });
     completed.push(label);
@@ -2397,7 +2412,7 @@ try {
         await page.type("#assistant-prompt", "Quanto hanno speso i Comuni nel 2025?");
         await page.click('main form button[type="submit"]');
         await page.waitForSelector('dialog[open]');
-        assertTextMatches(await bodyText(page), /La tua AI, la tua chiave/i, label);
+        assertTextMatches(await bodyText(page), /Servizio AI personale/i, label);
         assert.equal(await page.$('[data-assistant-reply]'), null, "nessuna risposta prima del collegamento");
       },
     });

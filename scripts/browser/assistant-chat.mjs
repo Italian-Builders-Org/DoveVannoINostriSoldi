@@ -89,18 +89,18 @@ try {
     await click('Nuova chat');assert.equal(await page.$$eval('[data-assistant-reply]',els=>els.length),0);
     assert.ok(await page.$('button[aria-label^="Impostazioni AI:"]'));
     await page.click('button[aria-label^="Impostazioni AI:"]');await page.click('button::-p-text(Scollega e rimuovi chiave)');
-    await page.waitForSelector('button[aria-label="Collega la tua AI"]');
-    await click('Collega la tua AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
+    await page.waitForSelector('button[aria-label="Utilizza il tuo servizio AI"]');
+    await click('Utilizza il tuo servizio AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     await page.select('#assistant-provider','anthropic');await page.type('#assistant-api-key','test-only-anthropic-key-123');
     await page.click('dialog input[type="checkbox"]');await page.click('button[type="submit"]::-p-text(Usa in questa scheda)');
     await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));
-    await page.waitForSelector('button[aria-label="Collega la tua AI"]');await click('Collega la tua AI');
+    await page.waitForSelector('button[aria-label="Utilizza il tuo servizio AI"]');await click('Utilizza il tuo servizio AI');
     assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     await page.type('#assistant-api-key','test-only-unsaved-key-123');await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));
     await page.waitForFunction(()=>!document.querySelector('dialog[open]'));await page.reload({waitUntil:'networkidle0'});
-    await click('Collega la tua AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
+    await click('Utilizza il tuo servizio AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     assert.equal(await page.evaluate(()=>[...Object.values(localStorage),...Object.values(sessionStorage)].some(value=>value.includes('test-only-'))),false);
-    await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Collega la tua AI');
+    await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Utilizza il tuo servizio AI');
     assert.deepEqual(errors,[]);await page.close();
     console.log(`PASS assistant ${width}px: key consent, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
   }

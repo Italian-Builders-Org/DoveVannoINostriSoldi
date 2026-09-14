@@ -233,9 +233,9 @@
 }
 
 /* The viewport holds the conversation; only the message list scrolls. */
-.page { height: auto; min-height: calc(100dvh - var(--assistant-header-height, var(--site-header-height, 132px))); }
+.page { height: auto; min-height: calc(var(--assistant-viewport-height, 100dvh) - var(--assistant-header-height, var(--site-header-height, 132px))); }
 .page[data-conversation="false"] .stage { min-height: auto; padding-top: 24px; }
-.page[data-conversation="true"] { height: calc(100dvh - var(--assistant-header-height, var(--site-header-height, 132px))); min-height: 0; overflow: hidden; }
+.page[data-conversation="true"] { height: calc(var(--assistant-viewport-height, 100dvh) - var(--assistant-header-height, var(--site-header-height, 132px))); min-height: 0; overflow: hidden; }
 .page[data-conversation="true"] .stage { padding-bottom: 0; }
 .page[data-conversation="true"] .composerArea { position: relative; padding-top: 8px; margin-top: auto; }
 .page[data-conversation="true"] .composer { border-radius: 24px; padding: 0; }
@@ -243,10 +243,10 @@
 .page[data-conversation="true"] .inputSurface textarea { min-height: 44px; max-height: 140px; padding-bottom: 8px; }
 .page[data-conversation="true"] .composerFoot { display: none; }
 .page[data-conversation="true"] .composerHint { margin: 8px 0 0; font-size: 10px; }
-.page[data-conversation="true"] .footer { justify-content: center; padding-block: 0 5px; }
+.page[data-conversation="true"] .footer { justify-content: center; padding-block: 0 max(5px, env(safe-area-inset-bottom)); }
 .page[data-conversation="true"] .footer > span { display: none; }
 .page[data-conversation="true"] .footer > div { padding-right: 0; gap: 16px; }
-.page[data-conversation="true"] .footer button, .page[data-conversation="true"] .footer a { min-height: 30px; }
+.page[data-conversation="true"] .footer button, .page[data-conversation="true"] .footer a { min-height: 44px; }
 .thread { padding-bottom: 14px; }
 .turn { gap: 20px; margin-bottom: 28px; }
 .userBlock { display: flex; flex-direction: column; align-items: flex-end; }
@@ -364,3 +364,14 @@
 .answerTable tr:last-child td { border-bottom: 0; }
 
 .contextNotice { padding: 9px 12px; border-left: 2px solid var(--assistant-stroke); color: var(--assistant-muted); font-size: 11px; line-height: 1.6; }
+
+:global(html):has(.page), :global(body):has(.page) { background: var(--color-raised); }
+.providerDialog a { display: inline; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .page[data-conversation="true"] .footer { padding-inline: 16px; }
+  .providerButton { max-width: min(230px, 62vw); white-space: normal; text-align: left; }
+}
+
+@media (max-width: 720px) {
+  :global(body:has([data-conversation="true"]) [data-announcement]) { display: none; }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, useState, useRef } from "react";
 import {
   Area,
   AreaChart,
@@ -26,7 +27,41 @@ function compactEuro(value: number): string {
   return `${(value / 1_000_000).toLocaleString("it-IT", { maximumFractionDigits: 0 })} mln`;
 }
 
+type HistoryPoint = OpenCoesioneAnnualPoint & { commitmentsEuro: number; paymentsEuro: number };
+
+function HistoryTable({ data, recent = false }: { data: HistoryPoint[]; recent?: boolean }) {
+  return (
+    <div className={styles.tableWrap} role="region" aria-label="Totali annuali OpenCoesione" tabIndex={0}>
+      <table>
+        <caption className="sr-only">Totali cumulati OpenCoesione</caption>
+        <thead>
+          <tr>
+            <th scope="col">Anno</th>
+            <th scope="col">Impegni</th>
+            <th scope="col">Pagamenti</th>
+            {recent && <th scope="col">Pagato / impegni</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {(recent ? data.slice(-5) : data).map((point) => (
+            <tr key={point.year}>
+              <th scope="row">{point.year}</th>
+              <td>{exactEuro.format(point.commitmentsEuro)}</td>
+              <td>{exactEuro.format(point.paymentsEuro)}</td>
+              {recent && <td>{(point.commitmentsCents > 0 ? point.paymentsCents / point.commitmentsCents : 0).toLocaleString("it-IT", { style: "percent", maximumFractionDigits: 1 })}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[] }) {
+  const id = useId();
+  const [view, setView] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const labels = ["Grafico", "Dati", "Ultimi 5 anni"];
   const chartData = data.slice(-17).map((point) => ({
     ...point,
     commitmentsEuro: point.commitmentsCents / 100,
@@ -35,6 +70,29 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
 
   return (
     <figure className={styles.figure}>
+      <div className={styles.tabs} role="tablist" aria-label="Serie storica">
+        {labels.map((label, index) => (
+          <button
+            key={label}
+            ref={(node) => { tabs.current[index] = node; }}
+            type="button" role="tab" id={`${id}-tab-${index}`}
+            aria-controls={`${id}-panel`} aria-selected={view === index}
+            tabIndex={view === index ? 0 : -1}
+            onClick={() => setView(index)}
+            onKeyDown={(event) => {
+              const next = event.key === "ArrowRight" ? (index + 1) % labels.length
+                : event.key === "ArrowLeft" ? (index + labels.length - 1) % labels.length
+                : event.key === "Home" ? 0 : event.key === "End" ? labels.length - 1 : null;
+              if (next === null) return;
+              event.preventDefault();
+              setView(next);
+              tabs.current[next]?.focus();
+            }}
+          >{label}</button>
+        ))}
+      </div>
+      <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${view}`} tabIndex={0}>
+      {view === 0 ? <>
       <div
         className={styles.chart}
         role="img"
@@ -69,8 +127,8 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
                 return (
                   <div className={styles.tooltip}>
                     <strong>{point.year}</strong>
-                    <span>Impegni fino all&apos;anno <b>{exactEuro.format(point.commitmentsEuro)}</b></span>
-                    <span>Pagamenti fino all&apos;anno <b>{exactEuro.format(point.paymentsEuro)}</b></span>
+                    <span>Impegni <b>{exactEuro.format(point.commitmentsEuro)}</b></span>
+                    <span>Pagamenti <b>{exactEuro.format(point.paymentsEuro)}</b></span>
                   </div>
                 );
               }}
@@ -99,36 +157,15 @@ export function CohesionHistoryChart({ data }: { data: OpenCoesioneAnnualPoint[]
         </ResponsiveContainer>
       </div>
       <div className={styles.legend} aria-hidden="true">
-        <span><i className={styles.commitments} /> Impegni fino all&apos;anno</span>
-        <span><i className={styles.payments} /> Pagamenti fino all&apos;anno</span>
+        <span><i className={styles.commitments} /> Impegni</span>
+        <span><i className={styles.payments} /> Pagamenti</span>
       </div>
-      <figcaption>
-        Ogni punto contiene il totale registrato fino a quell&apos;anno.
-      </figcaption>
-      <details className="chart-data">
-        <summary>Dati del grafico in tabella</summary>
-      <div className={styles.tableWrap} role="region" aria-label="Totali annuali OpenCoesione" tabIndex={0}>
-        <table>
-          <caption>Totali annuali pubblicati da OpenCoesione</caption>
-          <thead>
-            <tr>
-              <th scope="col">Anno</th>
-              <th scope="col">Impegni fino all&apos;anno</th>
-              <th scope="col">Pagamenti fino all&apos;anno</th>
-            </tr>
-          </thead>
-          <tbody>
-            {chartData.map((point) => (
-              <tr key={point.year}>
-                <th scope="row">{point.year}</th>
-                <td>{exactEuro.format(point.commitmentsEuro)}</td>
-                <td>{exactEuro.format(point.paymentsEuro)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      </> :
+      <HistoryTable data={chartData} recent={view === 2} />
+      }
       </div>
-      </details>
+      <noscript><HistoryTable data={chartData} /></noscript>
+      <figcaption>Totali cumulati dal 1990 fino all’anno indicato.</figcaption>
     </figure>
   );
 }

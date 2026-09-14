@@ -11,7 +11,7 @@ import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/com
 import { readStoredSidebarState, setSidebarState } from "@/lib/sidebar";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon, ArrowLeft01Icon, PinIcon, Menu01Icon, Cancel01Icon,
+  ArrowDown01Icon, Menu01Icon, Cancel01Icon,
   GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
   Analytics01Icon, MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
   AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
@@ -155,7 +155,7 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
             <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
               data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>
               {item.href === "/imprese" || item.href === "/report" ? (
-                <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Esplora i dati"}</span>
+                <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Dati"}</span>
               ) : null}
               <Link href={item.href} title={collapsed ? item.label : undefined}
                 aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
@@ -309,10 +309,10 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
         }}>
         <div className="sidebar-toolbar">
           <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
-            aria-label={collapsed ? "Ancora il menu aperto" : "Sblocca il menu e riducilo a icone"}
-            title={collapsed ? "Ancora il menu aperto" : "Sblocca il menu e riducilo a icone"}
+            aria-label={collapsed ? "Espandi menu laterale" : "Riduci menu laterale"}
+            title={collapsed ? "Espandi menu laterale" : "Riduci menu laterale"}
             aria-pressed={!collapsed} aria-controls="desktop-navigation" onClick={togglePinned}>
-            <HugeiconsIcon icon={collapsed ? PinIcon : ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" strokeWidth="1.8" /><path d="M9 4v16" stroke="currentColor" strokeWidth="1.8" /></svg>
           </button>
         </div>
         <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={compact} />
@@ -341,7 +341,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
         }}>
         <div className="mobile-navigation-panel">
           <div className="sidebar-toolbar">
-            <h2 id="mobile-navigation-title" className="sidebar-heading">Esplora il sito</h2>
+            <h2 id="mobile-navigation-title" className="sr-only">Menu del sito</h2>
             <button type="button" className="navigation-button" ref={closeRef} aria-label="Chiudi menu di navigazione" onClick={closeDrawer}>
               <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
             </button>

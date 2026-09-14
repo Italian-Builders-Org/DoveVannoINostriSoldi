@@ -74,10 +74,8 @@ export function SiteFooter() {
         </div>
       </details>
       <p className="footer-disclaimer">
-        Parte dei dati pubblicati è stata raggruppata e presentata con l&apos;uso massivo di
-        intelligenza artificiale. Controlliamo continuamente le fonti ufficiali e i vincoli di
-        lettura, ma l&apos;AI può sbagliare: verifica sempre sulla fonte originale prima di
-        qualsiasi decisione. Il sito non sostituisce i dati pubblici e non fornisce consulenza.{" "}
+        Usiamo anche l’AI per organizzare e presentare i dati. Sono possibili errori:
+        verifica le fonti originali prima di decidere. Il sito non fornisce consulenza.{" "}
         <Link href="/metodologia">Metodo</Link>
         {" · "}
         <Link href="/termini">Termini</Link>

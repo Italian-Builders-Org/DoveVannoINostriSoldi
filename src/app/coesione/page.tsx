@@ -119,7 +119,6 @@ export default function CohesionPage() {
 
   /* The full series starts in 1990; the table only shows the recent years,
      where the numbers actually move. */
-  const recentYears = snapshot.annualSeries.slice(-5);
 
   return (
     <main className="shell page">
@@ -235,41 +234,10 @@ export default function CohesionPage() {
         </p>
       </section>
 
-      <div className={styles.tables}>
+      <div className={`${styles.tables} ${styles.historyTables}`}>
         <section className="panel">
-          <h2 className="panel-title">La serie storica · cumulata</h2>
+          <h2 className="panel-title">Serie storica</h2>
           <CohesionHistoryChart data={snapshot.annualSeries} />
-          <details className="chart-data">
-            <summary>Ultimi cinque anni: importi e quota pagata</summary>
-          <div className="table-scroll" role="region" aria-label="Serie annuale OpenCoesione" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Anno</th>
-                  <th scope="col" className="num">Impegni</th>
-                  <th scope="col" className="num">Pagamenti</th>
-                  <th scope="col" className="num">Pagato</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentYears.map((point) => (
-                  <tr key={point.year}>
-                    <th scope="row">{point.year}</th>
-                    <td className="num">{compactEuro(euros(point.commitmentsCents))}</td>
-                    <td className="num">{compactEuro(euros(point.paymentsCents))}</td>
-                    <td className="num">
-                      {percent(share(point.paymentsCents, point.commitmentsCents))}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          </details>
-          <p className={styles.note}>
-            La serie cresce nel tempo perché è cumulata dal 1990: ogni punto somma i totali fino a
-            quell&apos;anno.
-          </p>
         </section>
 
         <section className="panel">

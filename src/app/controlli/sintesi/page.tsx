@@ -255,7 +255,7 @@ export default function ControlliSintesiPage() {
 
                   <div className={styles.aiCardBody}>
                     <details className={styles.aiWhyDetails}>
-                      <summary>Dato di origine (osservazione)</summary>
+                      <summary>Dato di origine</summary>
                       <p>{move.why}</p>
                     </details>
                     <p className={styles.aiLinks}>
@@ -271,7 +271,7 @@ export default function ControlliSintesiPage() {
             <h3 id="ai-map-title" className={styles.aiBlockTitle}>Mappa degli interventi</h3>
             <p className={styles.aiBlockLead}>
               L&apos;ordine che seguirebbe l&apos;agente: dal vincolo del debito fino alle ipotesi
-              pubbliche. Tocca un passo per saltare alla priorità.
+              pubbliche.
             </p>
             <ol className={styles.aiMapList}>
               {interventionMap.map((step, index) => (

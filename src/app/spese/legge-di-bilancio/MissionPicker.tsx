@@ -487,8 +487,8 @@ export function MissionPicker({
 
       {hasScenario ? (
         <p className={styles.treemapBadge}>
-          I riquadri qui sotto sono dimensionati sulla <b>tua ipotesi di riallocazione</b>, non sullo
-          stanziamento pubblicato {latestYear}. Le voci toccate sono a righe e con bordo tratteggiato.
+          Riquadri proporzionali alla <b>tua ipotesi</b>. Tratteggio e righe indicano le voci modificate
+          rispetto agli stanziamenti {latestYear}.
         </p>
       ) : null}
 
@@ -626,11 +626,9 @@ export function MissionPicker({
         </div>
       ) : null}
 
-      <p className={styles.pickerCaption}>
-        {hasScenario
-          ? `Il treemap è dimensionato sulla tua ipotesi. «Ricomincia» rimette tutto sullo stanziamento pubblicato ${latestYear}.`
-          : "Tocca − / + su un riquadro per aumentarlo o tagliarlo; la barra in basso segue il saldo."}
-      </p>
+      {hasScenario && <p className={styles.pickerCaption}>
+        «Ricomincia» ripristina gli stanziamenti {latestYear}.
+      </p>}
     </div>
   );
 }

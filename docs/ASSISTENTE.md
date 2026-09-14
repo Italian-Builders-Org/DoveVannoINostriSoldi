@@ -115,7 +115,8 @@ riconciliano i valori con gli adapter reali, preservano fonti, flag e perimetri 
 controllano il budget di un confronto SSN/COFOG. Questa preparazione riduce gli
 errori di scala; non certifica la correttezza di ogni risposta generata.
 
-Limiti per domanda: massimo due chiamate AI, due query, 5 righe dove è supportato `limit`,
+Limiti per domanda: due chiamate AI ordinarie (più un solo tentativo di fallback nella
+modalità gratuita), due query, 5 righe dove è supportato `limit`,
 offset 100, nessun cursore, evidenza entro 24.000 caratteri e risposta entro 2.048 token /
 8.000 caratteri. Se l’evidenza è troppo grande, la ricerca chiede di restringere il campo,
 senza troncamenti silenziosi. Il catalogo compatto iniziale è di circa 9.600 caratteri,
@@ -221,16 +222,28 @@ La modalità `free` accetta esclusivamente `regolo` / `glm5.2`, senza header Aut
 né opzioni di ragionamento dal client. La chiave condivisa viene letta esclusivamente
 nel modulo `server-only` `free-quota.ts`. Il percorso personale non ripiega mai sulla
 chiave condivisa. Regolo usa Chat Completions, uno strumento nominato per il piano e
-SSE per la risposta; `reasoning_effort: none` evita di consumare il budget della chat
+SSE per la risposta; su GLM `reasoning_effort: none` evita di consumare il budget della chat
 in ragionamento privato. GLM 5.2 non supporta immagini: il server le rifiuta prima della
 prenotazione. I documenti con testo estratto sono supportati.
 
 Una domanda accettata riserva un credito prima di contattare il modello; può generare
-al massimo due chiamate, senza retry. Errori del provider, interruzioni e rigenerazioni
+due chiamate ordinarie e un solo tentativo aggiuntivo verso `qwen3.8-27b` se GLM fallisce
+prima di mostrare testo. Il fallback vale per l’intero turno: se usato nel piano, anche la
+risposta usa Qwen senza ulteriori retry. Condivide deadline, limiti di input/output e
+prenotazione originale; non raddoppia la quota. Errori di autenticazione, credito o rate
+limit del provider, annullamenti e stream già parziali non avviano il fallback. La modalità
+personale resta senza retry automatici di DVNS. Le richieste gratuite inviano
+`disable_fallbacks: true` per evitare le sostituzioni trasparenti di modello documentate
+[da Regolo](https://docs.regolo.ai/models/features/fallbacks/).
+Errori del provider, interruzioni e rigenerazioni
 non restituiscono il credito: anche una risposta interrotta può aver consumato token.
 Richieste malformate e immagini non supportate non consumano crediti.
 Non è previsto un tetto economico globale. Restano i limiti tecnici di dimensione,
 tempo, frequenza e concorrenza.
+
+Il consenso gratuito rimanda alla [dichiarazione zero data retention di Regolo](https://regolo.ai/zero-data-retention/):
+il provider dichiara di non conservare domande, risposte e allegati né usarli per training.
+La dichiarazione del provider non comprende i contatori tecnici DVNS, descritti separatamente.
 
 `POST /api/assistant/quota` crea un cookie giornaliero firmato, HttpOnly, Secure,
 SameSite=Strict, con prefisso `__Host-` in hosting. Non contiene credenziali o messaggi.

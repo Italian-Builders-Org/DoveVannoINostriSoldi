@@ -189,7 +189,7 @@ export default async function ControlsPage({ searchParams }: PageProps) {
       </nav>
 
       <nav className={styles.pageIndex} aria-labelledby="page-index-title">
-        <h2 id="page-index-title">In questa pagina</h2>
+        <h2 id="page-index-title" className="sr-only">Indice</h2>
         <ul>
           {pageSections.map((section) => (
             <li key={section.id}>

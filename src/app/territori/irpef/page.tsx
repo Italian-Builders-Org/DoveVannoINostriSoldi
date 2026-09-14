@@ -407,13 +407,13 @@ export default async function MefIrpefPage({
             <Link className="btn btn-secondary" href={resetUrl}>Azzera</Link>
           </div>
         </Form>
-        <p className={styles.filterHint}>
+        {displayLevel !== "region" && <p className={styles.filterHint}>
           {displayLevel === "municipality"
             ? "Indica almeno una Regione, una Provincia o un testo di ricerca. Le Province accettano la sigla o il codice ISTAT a tre cifre."
             : displayLevel === "province"
-              ? "Puoi restringere l’elenco per Regione, sigla provinciale o codice ISTAT a tre cifre."
-              : "Puoi mostrare tutte le Regioni oppure selezionarne una."}
-        </p>
+              ? "Province: sigla o codice ISTAT a tre cifre."
+              : ""}
+        </p>}
       </section>
 
       <section className="panel" aria-labelledby="irpef-results-title">

@@ -282,7 +282,7 @@ export default async function ImpresePage({
                   </tbody>
                 </table>
               </div>
-              <p className={styles.note}>Sono mostrate le prime 10 regioni per {turnoverView.metricShortLabel.toLowerCase()}. Clicca una regione per fissarla nella mappa e nel perimetro.</p>
+              <p className={styles.note}>Prime 10 regioni per {turnoverView.metricShortLabel.toLowerCase()}.</p>
             </section>
           </div>
 
@@ -459,7 +459,7 @@ export default async function ImpresePage({
                 </tbody>
               </table>
             </div>
-            <p className={styles.note}>Sono mostrate le prime 10 regioni per valore assoluto. Clicca una regione per fissarla nella mappa e nel perimetro.</p>
+            <p className={styles.note}>Prime 10 regioni per valore assoluto.</p>
           </section>
         </div>
 

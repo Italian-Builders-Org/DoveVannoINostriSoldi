@@ -176,7 +176,7 @@ try {
         const trigger = await triggerGeometry(page, selector);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
         assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);
-        assert.ok(trigger.text.includes("Qualcosa non torna?"), `${label}: messaggio della card`);
+        assert.ok(trigger.text.includes("Segnala un problema"), `${label}: messaggio della card`);
         assert.ok(trigger.height >= 44, `${label}: area di tocco ${trigger.height}px < 44px`);
         assert.ok(trigger.width > 100, `${label}: la card deve essere leggibile`);
         assert.ok(trigger.left >= 0 && trigger.right <= trigger.innerWidth + 1, `${label}: trigger fuori viewport`);

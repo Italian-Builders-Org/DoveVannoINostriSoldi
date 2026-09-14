@@ -319,7 +319,7 @@ export default async function OperePage({
               {comparableMeta
                 ? ` · acquisito il ${longDate(comparableMeta.observedAt)}`
                 : ""}
-              . Filtra qui sotto; la ricerca CUP live è più in basso.
+              .
             </p>
           </div>
           <ComparableBrowse listing={listing} />

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 export async function inspectInflation(page) {
   assert.equal(await page.$eval("h1", (heading) => heading.textContent), "Inflazione IPCA");
   assert.equal(await page.$eval('[data-testid="hicp-annual-rate"]', (node) => node.textContent), "+3,2%");
-  assert.match(await page.$eval("main", (node) => node.innerText), /prezzi al consumo, non di spesa pubblica/);
+  assert.match(await page.$eval("main", (node) => node.innerText), /Prezzi al consumo in Italia/);
   await page.waitForSelector("#ipca-andamento .recharts-line-curve", { visible: true });
   assert.equal(await page.$$eval("#ipca-andamento .recharts-line-curve", (nodes) => nodes.length), 2);
   assert.equal(await page.$$eval("#ipca-capitoli ol > li", (rows) => rows.length), 13);
@@ -31,6 +31,7 @@ export async function inspectInflation(page) {
   await page.focus("#ipca-fonti > summary");
   await page.keyboard.press("Enter");
   await page.waitForSelector("#ipca-fonti[open] section", { visible: true });
+  assert.match(await page.$eval("#ipca-fonti", (node) => node.innerText), /non è spesa pubblica/);
   assert.match(await page.$eval("#ipca-fonti", (node) => node.innerText), /CC-BY-4\.0/);
   await page.focus("#ipca-fonti details > summary");
   await page.keyboard.press("Enter");

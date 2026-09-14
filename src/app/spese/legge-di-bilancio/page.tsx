@@ -176,13 +176,10 @@ export default async function LeggeDiBilancioPage({
 
       {series ? (
         <div className="notice">
-          <strong>Come leggere il treemap</strong>
+          <strong>Dimensioni e variazioni</strong>
           <p>
-            Ogni riquadro è una missione: più è grande, più pesa sullo stanziamento pubblicato
-            (somma su tutte le amministrazioni). Il numero sotto il nome è la variazione dello
-            stanziamento pubblicato rispetto all&apos;anno prima. Quando sposti lo slider, le voci
-            che tocchi restano segnate con una trama a righe e il treemap si ridisegna sulla nuova
-            ripartizione; &laquo;Ricomincia&raquo; azzera lo scenario.
+            Riquadri proporzionali agli stanziamenti per missione, sommati su tutte le amministrazioni.
+            Sotto il nome: variazione rispetto all’anno precedente.
           </p>
         </div>
       ) : null}

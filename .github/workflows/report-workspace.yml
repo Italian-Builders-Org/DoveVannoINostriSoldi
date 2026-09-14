@@ -43,6 +43,7 @@ jobs:
                       for key in route[:-1]: target = target[key]
                       if op == 'del': del target[route[-1]]
                       else: target[route[-1]] = value
+                  data['findings'] = [{k: item[k] for k in ('id','label','title','text','sourceIds','href')} for item in data['findings']]
                   new = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
               else:
                   new = old

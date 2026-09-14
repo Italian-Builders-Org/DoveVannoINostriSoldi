@@ -94,14 +94,9 @@ CAVEATS = (
     "li contengono già.",
     "Il 2025 non è pubblicato: alla data di acquisizione la fonte lo espone per il solo "
     "Lussemburgo, e un singolo Stato membro non è un confronto europeo.",
-    "Per l’Italia lo snapshot conserva le sottofunzioni ufficiali di tutte e dieci le "
-    "divisioni, da GF01 a GF10. GF0107 «Public debt transactions» è una funzione COFOG: "
-    "include gli interessi D.41 e il consumo intermedio P.2 legato al FISIM secondo il "
-    "manuale Eurostat, quindi non coincide con la sola serie D.41.",
-    "GF10 «Social protection» non è la sola spesa pensionistica: comprende malattia e "
-    "invalidità, famiglia, disoccupazione, abitazione ed esclusione sociale. GF07 e GF05 "
-    "restano classificazioni COFOG: non si sommano al Conto economico SSN né ai conti "
-    "ambientali EPEA, che hanno perimetri propri.",
+    "Per l’Italia lo snapshot conserva le sottofunzioni ufficiali di GF01–GF10. GF0107 "
+    "include interessi D.41 e FISIM P.2, non la sola serie D.41; GF10 non è la sola spesa "
+    "pensionistica.",
 )
 
 

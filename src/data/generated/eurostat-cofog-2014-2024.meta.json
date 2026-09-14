@@ -3,7 +3,7 @@
     "excludedYears": {
       "2025": "Escluso: al 2026-09-10 la fonte pubblica il 2025 per il solo Lussemburgo (11 celle su 374). Il rilascio anticipato di un singolo Stato membro non è un confronto UE e non viene pubblicato."
     },
-    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio comprende GF0101–GF0108 (88 celle), GF0201–GF0205 (55), GF0301–GF0306 (66), GF0401–GF0409 (99), GF0501–GF0506 (66), GF0601–GF0606 (66), GF0701–GF0706 (66), GF0801–GF0806 (66), GF0901–GF0908 (88), GF1001–GF1009 (99) per ciascuna unità e deve riconciliare con il rispettivo parent. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
+    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio comprende GF0101–GF1009 (759 celle) per ciascuna unità e deve riconciliare con il rispettivo parent. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
     "observedAt": "2026-09-11"
   },
   "datasetId": "eurostat-cofog",
@@ -11,11 +11,11 @@
     "algorithm": "sha256",
     "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
     "dataArtifact": {
-      "bytes": 492426,
+      "bytes": 492002,
       "path": "src/data/generated/eurostat-cofog-2014-2024.data.json",
-      "sha256": "0962a8c5abfa9af33f308422c23d1ec9e4a227bad8ea328a915b0051c701af65"
+      "sha256": "c2cf3151a230ec1d173968772230a66db3057a792da385f151c9cc62e6db02dd"
     },
-    "sourceLockSha256": "a3fa2fd9254741a8601adee93e3d9b6f2ec37d74d49fdb8b8b494bc3d58762fa"
+    "sourceLockSha256": "28c612c32e3277d2e4d258962db56173b3806397d1210dddcd810196753d1376"
   },
   "observedAt": "2026-09-11",
   "period": {

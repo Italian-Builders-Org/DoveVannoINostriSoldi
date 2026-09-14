@@ -8,6 +8,7 @@ import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { SsnAccountingComparison } from "./ssn-accounting-comparison";
 import HospitalBeds from "./hospital-beds";
 import { HealthPublicOverview } from "./health-public-overview";
+import { EurostatShaHealthPanel } from "./eurostat-sha-health-panel";
 import styles from "./sanita.module.css";
 
 export const metadata: Metadata = {
@@ -80,6 +81,7 @@ export default async function HealthSpendingPage({ searchParams }: PageProps<"/s
         </p>
         <p className={styles.links}>
           <a href="#health-history-title">Andamento della spesa PA ↓</a>
+          <a href="#sha-health-title">Chi paga (SHA Eurostat) ↓</a>
           <Link href="/spese/sanita/storico">Serie storica dei costi SSN · 2012-2024 →</Link>
           <a href="#ssn-accounting-title">Dettaglio SSN · 2024 ↓</a>
           <Link href={`/?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
@@ -87,6 +89,8 @@ export default async function HealthSpendingPage({ searchParams }: PageProps<"/s
       </header>
 
       <HealthPublicOverview year={year} />
+
+      <EurostatShaHealthPanel year={year} />
 
       <section className="panel" aria-labelledby="ssn-accounting-title">
         <h2 className="panel-title" id="ssn-accounting-title">Conto Economico SSN · dettaglio 2024</h2>

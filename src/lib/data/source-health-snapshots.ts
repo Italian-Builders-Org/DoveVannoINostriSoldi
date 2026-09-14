@@ -17,6 +17,7 @@ import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { eurostatTaxagData, eurostatTaxagMetadata } from "@/lib/eurostat-taxag-snapshot";
+import { eurostatShaHealthData, eurostatShaHealthMetadata } from "@/lib/eurostat-sha-health-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -428,6 +429,17 @@ function snapshotManagedEurostatTaxag(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatShaHealth(): SourceHealth {
+  return {
+    ...baseHealth("eurostat-sha-health"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-sha-health", eurostatShaHealthMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Eurostat SHA hlth_sha11_hf ${eurostatShaHealthData.period.from}–${eurostatShaHealthData.period.to}: ${eurostatShaHealthData.coverage.publishedSchemes} schemi e ${eurostatShaHealthData.coverage.observedCells} celle (2025 provvisorio). Pubblicato ${eurostatShaHealthMetadata.source.publicationDate}; acquisito ${eurostatShaHealthMetadata.source.acquiredAt}; controllato ${eurostatShaHealthMetadata.source.checkedAt}.`,
+    recordCount: eurostatShaHealthData.coverage.observedCells,
+  };
+}
+
 function snapshotManagedMefIrpefDettaglio(): SourceHealth {
   const artifact = mefIrpefDettaglioMetadata.integrity.dataArtifact;
   const { observedFiles, observedRows, emptyCells } = mefIrpefDettaglioData.coverage;
@@ -586,6 +598,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
   "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
   "eurostat-taxag": snapshotManagedEurostatTaxag,
+  "eurostat-sha-health": snapshotManagedEurostatShaHealth,
 };
 
 export function buildSourceHealthSnapshots() {

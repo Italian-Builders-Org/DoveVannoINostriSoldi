@@ -291,6 +291,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["anno", "settore ESA", "voce na_item"],
   },
   {
+    slug: "eurostat-sha-health",
+    name: "Eurostat · spesa sanitaria SHA",
+    owner: "Eurostat (Commissione europea)",
+    area: "Spesa sanitaria per schema di finanziamento (SHA)",
+    cadence: "Annuale; snapshot 2014–2025 (2025 provvisorio)",
+    coverage: "Italia: totale e schemi pubblici, volontari e out-of-pocket",
+    format: "Statistics API JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+    note: "Distinto dal Conto Economico SSN e da COFOG GF07: non si sommano. HF31/HF32/HF4 non pubblicati per IT. CC BY 4.0.",
+    joinKeys: ["anno", "schema SHA"],
+  },
+  {
     slug: "mef-irpef-dettaglio",
     name: "MEF · dettaglio IRPEF per regione, età e sesso",
     owner: "MEF — Dipartimento delle Finanze",

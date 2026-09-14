@@ -222,6 +222,12 @@
     "recordCount": 516
   },
   {
+    "sourceId": "eurostat-sha-health",
+    "sourceTimestamp": "2026-09-14",
+    "detail": "Snapshot Eurostat SHA hlth_sha11_hf 2014–2025: 13 schemi e 156 celle (2025 provvisorio). Pubblicato 2026-09-09; acquisito 2026-09-14; controllato 2026-09-14.",
+    "recordCount": 156
+  },
+  {
     "sourceId": "mef-irpef-dettaglio",
     "sourceTimestamp": "2026-09-05",
     "detail": "Snapshot ETL attivo · dettaglio IRPEF dichiarazioni 2017-2025, anni di imposta 2016-2024 · 79 file su nove famiglie, 25.534 righe e 43.300 celle vuote distinte dagli zeri · 5.444.337 byte.",

@@ -513,6 +513,31 @@ Non è cassa SIOPE `/entrate`, non sono dichiarazioni MEF, non è tax gap.
 - Offline: `python3 scripts/etl/eurostat_taxag_snapshot.py --check`.
 - Guida API: [Eurostat API getting started](https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started).
 
+### Spesa sanitaria per schema di finanziamento · Eurostat `hlth_sha11_hf`
+
+**Issue #488 (epic #484).** Statistics API JSON-stat 2.0, Italia, unità
+`MIO_EUR`, anni 2014–2025. Asset pinnato: 5 951 byte, SHA-256
+`b9601fbbb402abbad1471a071c08eda56d0819d41a2add43ddc8d57236fd066e`,
+`updated` 2026-09-09T23:00:00+0200, struttura `HLTH_SHA11_HF` 70.0.
+Acquisizione e controllo 14 settembre 2026. Licenza `CC-BY-4.0`.
+
+Lo snapshot tipizzato espone 13 schemi pubblicati per l’Italia
+(`TOT_HF`, `HF1`…`HF3`, `HF_UNK`; non pubblicati: `HF31`, `HF32`, `HF4`)
+in centesimi di euro (156 celle). Riconciliazioni fail-closed:
+`TOT_HF = HF1+HF2+HF3+HF_UNK`, `HF1 = HF11+HF12_13`,
+`HF2 = HF21+HF22+HF23`. L’anno 2025 porta il flag Eurostat `p`
+(provvisorio).
+
+Distinto dal Conto Economico SSN OpenBDAP e da COFOG GF07: i tre
+perimetri non si sommano. UI: pannello su `/spese/sanita` allineato
+all’anno COFOG selezionato (2014–2024).
+
+- API: `/api/sanita/sha`, `/api/sanita/sha?anno=2024&schema=HF3`.
+- MCP: `query_dataset` con `dataset: "eurostat_sha_health"` e filtri
+  opzionali `year` / `code` (schema SHA).
+- Source lock: `scripts/etl/specs/eurostat-sha-health-2014-2025.source.json`.
+- Offline: `python3 scripts/etl/eurostat_sha_health_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

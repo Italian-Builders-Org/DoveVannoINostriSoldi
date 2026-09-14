@@ -43,6 +43,7 @@ export type SourceId =
   | "eu-vat-gap-italy"
   | "mef-tax-gap-nazionale"
   | "eurostat-taxag"
+  | "eurostat-sha-health"
   | "ameco"
   | "governi-presidenza";
 
@@ -687,6 +688,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:eurostat-taxag", "domain:taxation", "domain:government-finance"],
+  },
+  "eurostat-sha-health": {
+    id: "eurostat-sha-health",
+    label: "Eurostat · spesa sanitaria SHA per schema di finanziamento",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote: "hlth_sha11_hf Italia 2014-2025 (2025 provvisorio). Snapshot aggiornabile solo dopo nuova acquisizione JSON-stat e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-sha-health", "domain:health"],
   },
   "mef-irpef-dettaglio": {
     id: "mef-irpef-dettaglio",

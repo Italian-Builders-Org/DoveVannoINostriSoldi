@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-sha-health",
+  "period": {
+    "from": 2014,
+    "to": 2025
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "datasetCode": "hlth_sha11_hf",
+    "datasetLabel": "Health care expenditure by financing scheme",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-14.",
+    "updateFrequency": "annuale",
+    "assets": {
+      "mio-eur": {
+        "filename": "hlth_sha11_hf-mio-eur.json",
+        "path": "tests/fixtures/eurostat-sha-health/hlth_sha11_hf-mio-eur.json",
+        "datasetCode": "hlth_sha11_hf",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/hlth_sha11_hf?format=JSON&lang=EN&freq=A&unit=MIO_EUR&geo=IT&sinceTimePeriod=2014",
+        "bytes": 5951,
+        "sha256": "b9601fbbb402abbad1471a071c08eda56d0819d41a2add43ddc8d57236fd066e",
+        "sourceUpdated": "2026-09-09T23:00:00+0200",
+        "structure": {
+          "id": "HLTH_SHA11_HF",
+          "agencyId": "ESTAT",
+          "version": "70.0"
+        }
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-14",
+      "checkedAt": "2026-09-14"
+    }
+  },
+  "expected": {
+    "knownFlags": [
+      "p"
+    ],
+    "publishedSchemes": [
+      "TOT_HF",
+      "HF1",
+      "HF11",
+      "HF12_13",
+      "HF121",
+      "HF122",
+      "HF13",
+      "HF2",
+      "HF21",
+      "HF22",
+      "HF23",
+      "HF3",
+      "HF_UNK"
+    ],
+    "observedCells": 156
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-sha-health-2014-2025.data.json",
+      "bytes": 31960,
+      "sha256": "c56ade92e6d6377d8ef9ad0b90b27d4f892da34b4c39112987b4e1c4fdb062ac"
+    },
+    "lockSha256": "d0e4f58f50cb319fd9c2f19ad28592900a89941943933ee960b2fd82428fdb64"
+  }
+}

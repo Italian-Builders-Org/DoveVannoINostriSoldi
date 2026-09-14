@@ -77,6 +77,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "mef-tax-gap-nazionale": [],
   // Snapshot-only: la risposta JSON-stat gov_10a_taxag è acquisita e vincolata dall'ETL.
   "eurostat-taxag": [],
+  // Snapshot-only: la risposta JSON-stat hlth_sha11_hf è acquisita e vincolata dall'ETL.
+  "eurostat-sha-health": [],
   // Snapshot-only: i CSV Consip sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   consip: [],
   "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,

@@ -35,7 +35,7 @@ dell'originale e pagine fisiche. Le copie integrali acquisite rimangono negli
 archivi di lavoro locali. La selezione riduce il pacchetto pubblico a circa
 22,6 MB; nessuno di questi file viene servito o letto dal runtime del sito.
 
-I sei test di pubblicazione sotto indicati sono interamente offline. Per
+I test di pubblicazione sotto indicati sono interamente offline. Per
 rieseguire **tutti** gli script di ricerca, estrarre il pacchetto in un checkout
 separato della revisione `b4da7e4226dd30c116fb0d87280d1fe2d9e8760d`,
 riacquisire gli originali omessi usando gli URL e verificare gli hash prima
@@ -120,9 +120,52 @@ negli artefatti locali della consegna.
 La somma osservata degli spostamenti senza input recente è 0,012 durante la
 sequenza che comprende i cambi di viewport; le osservazioni mobile/tablet
 precedenti erano zero. Non è una misura sul traffico reale. Non è stato usato
-un iPhone fisico. Il collegamento alle prove su GitHub `main` diventa disponibile
-dopo il merge approvato; in revisione le prove sono nei file della PR.
+un iPhone fisico. Queste verifiche descrivono la prima consegna. Il collegamento
+alle prove è ora fissato al commit della consegna originale, disponibile anche
+prima del merge.
 
 La verifica locale non sostituisce i controlli CI sull’integrazione con `main`.
 Il commit successivo presente su `main` al controllo finale riguarda i dati
 sanitari e non modifica i file di questa consegna. Nessun merge eseguito.
+
+
+## Aggiornamento della revisione
+
+Pagina e PDF includono una guida a impegni, pagamenti, competenza, cassa e
+identificativi delle fonti. I passaggi su edilizia pubblica, personale e
+contratti sono stati riscritti senza modificare importi e conclusioni. Anche
+le verifiche secondarie hanno riferimenti espliciti. Il banner scorrevole
+include il rapporto insieme alle pubblicazioni già presenti.
+
+Il collegamento `evidenceUrl` punta alla revisione immutabile
+`62c70b65716c1e5b2ce784950e081b6bd41d52ad`: identifica le prove congelate,
+non una copia aggiornata del testo editoriale. L'archivio delle prove non cambia.
+
+Gli 11 test offline ora estraggono il testo del PDF e verificano conclusioni,
+limiti, guida alla lettura, link alle 33 fonti, assenza di em dash e uso esclusivo
+di colori neutri. I nuovi controlli confrontano anche posti e spazi nelle
+carceri, azioni degli Archivi e tabella MASE con i documenti congelati.
+La suite browser obbligatoria copre la nuova pagina a 320/390/768/1280 px,
+chiaro/scuro, tastiera, fonti, archivio e PDF servito byte per byte. La suite
+banner verifica anche l'apertura del nuovo rapporto da tastiera.
+
+In ambienti senza Chromium avviabile è disponibile un secondo motore offline,
+che usa lo stesso HTML. Richiede WeasyPrint 70.0 e le sue librerie di sistema,
+installati in un ambiente di authoring separato; non sono dipendenze del sito.
+
+```sh
+python3 -m pip install weasyprint==70.0
+node scripts/reports/render-state-budget.mjs weasyprint
+```
+
+`PYTHON` può indicare l'interprete del virtualenv. Entrambi i motori bloccano
+le risorse esterne, conservano i link e aggiornano la ricevuta. Font disponibili
+e motore possono modificare l'impaginazione: rileggere sempre il PDF generato.
+Questa revisione usa WeasyPrint: 14 pagine, controllate visivamente, senza
+colori cromatici. Il testo e tutti i link alle fonti superano i test offline.
+
+I risultati della prima consegna sopra riportati restano distinti da questa
+revisione. Nel sandbox Linux la build e un test Node sulla memoria incontrano
+`uv_resident_set_memory`; l'avvio di produzione e Chromium non sono disponibili.
+I controlli browser devono quindi completarsi nella CI della PR prima del merge.
+Nessun controllo è stato disattivato per superare questi limiti.

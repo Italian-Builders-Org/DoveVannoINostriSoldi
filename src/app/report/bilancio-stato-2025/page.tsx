@@ -34,6 +34,10 @@ export default function StateBudgetReport() {
         </header>
 
         <div className={styles.introduction}>{report.introduction.map((text) => <p key={text}>{text}</p>)}</div>
+        <section className={styles.case} aria-labelledby="lettura-title">
+          <h2 id="lettura-title">Come leggere importi e risultati</h2>
+          {report.readingGuide.map((text) => <p key={text}>{text}</p>)}
+        </section>
         <nav className={styles.contents} aria-label="Casi del rapporto">
           <ol>{report.cases.map((item) => <li key={item.id}><a href={`#${item.id}`}>{item.title}</a></li>)}</ol>
         </nav>
@@ -59,17 +63,20 @@ export default function StateBudgetReport() {
 
         <section className={styles.case} aria-labelledby="controlli-title">
           <h2 id="controlli-title">Altre verifiche</h2>
-          {report.controls.map((text) => <p key={text}>{text}</p>)}
+          {report.controls.map((item) => <div key={item.text}>
+            <p>{item.text}</p>
+            <p>Fonti: {item.sourceIds.map((id, index) => <span key={id}>{index > 0 && "; "}<a href={`#source-${id}`}>{sources.get(id)!.publisher}: {sources.get(id)!.title}</a></span>)}.</p>
+          </div>)}
         </section>
         <section className={styles.case} id="copertura" aria-labelledby="copertura-title">
           <h2 id="copertura-title">Copertura e metodo</h2>
           <dl className={styles.coverage}>{report.coverage.map((item) => <div key={item.area}><dt>{item.area}</dt><dd><p>{item.checked}</p><p>{item.limit}</p></dd></div>)}</dl>
           {report.method.map((text) => <p key={text}>{text}</p>)}
-          <p><a href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/main/docs/research/state-budget-2025">Dati, calcoli e istruzioni di riproduzione</a></p>
+          <p><a href={report.evidenceUrl}>Dati, calcoli e istruzioni di riproduzione</a></p>
         </section>
         <section className={styles.case} aria-labelledby="fonti-title">
           <h2 id="fonti-title">Fonti</h2>
-          <ol className={styles.sources}>{report.sources.map((source) => <li key={source.id}><a href={source.url}>{source.publisher}: {source.title}</a><p>{source.locator}</p></li>)}</ol>
+          <ol className={styles.sources}>{report.sources.map((source) => <li id={`source-${source.id}`} key={source.id}><a href={source.url}>{source.publisher}: {source.title}</a><p>{source.locator}</p></li>)}</ol>
         </section>
       </article>
     </main>

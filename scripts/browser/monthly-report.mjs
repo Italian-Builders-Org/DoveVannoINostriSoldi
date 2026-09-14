@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -13,6 +13,7 @@ import {
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const baseUrl = defaultBaseUrl();
 const reviewDirectory = path.join(root, ".impeccable", "review");
+const budgetReport = JSON.parse(readFileSync(path.join(root, "src/content/reports/state-budget-2025.json"), "utf8"));
 
 assert.ok(["http:", "https:"].includes(baseUrl.protocol), "DVNS_BASE_URL non valido");
 mkdirSync(reviewDirectory, { recursive: true });
@@ -129,15 +130,76 @@ async function inspectArchive(page, width) {
   assert.equal(state.h1, "Report", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
   assert.ok(state.issueLinks.includes("/report/2026-08"), `${label}: edizione assente`);
+  assert.ok(state.issueLinks.includes(`/report/${budgetReport.slug}`), `${label}: analisi del bilancio assente`);
   assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
+}
+
+async function inspectStateBudget(page, width) {
+  assert.deepEqual(await page.$$eval('section[aria-labelledby="lettura-title"] p', (elements) => elements.map((element) => element.textContent)), budgetReport.readingGuide);
+  assert.ok(await page.$$eval('main a[href^="#source-"]', (links) => links.every((link) => document.getElementById(link.hash.slice(1)))), "Riferimento a fonte mancante");
+  assert.equal(await page.$eval("main h1", (element) => element.textContent), budgetReport.title);
+  assert.equal(await page.$eval('link[rel="canonical"]', (element) => element.href),
+    `https://www.dovevannoinostrisoldi.com/report/${budgetReport.slug}`);
+  assert.equal(await page.$eval('meta[property="article:published_time"]', (element) => element.content), budgetReport.date);
+  assert.deepEqual(await page.$$eval('nav[aria-label="Casi del rapporto"] a', (links) => links.map((link) => link.hash)),
+    budgetReport.cases.map((item) => `#${item.id}`));
+  assert.equal(await page.$eval("main a[download]", (element) => element.getAttribute("href")), `/report/${budgetReport.slug}.pdf`);
+  const sourceUrls = new Map(budgetReport.sources.map((source) => [source.id, source.url]));
+  for (const item of budgetReport.cases) {
+    const section = await page.$(`main section#${item.id}`);
+    assert.ok(section, `Caso assente: ${item.id}`);
+    assert.equal(await section.$eval("h2", (element) => element.textContent), item.title);
+    assert.deepEqual(await section.$$eval("details a", (links) => links.map((link) => link.getAttribute("href"))),
+      item.sourceIds.map((id) => sourceUrls.get(id)));
+    const summary = await section.$("details > summary");
+    await summary.focus();
+    await page.keyboard.press("Enter");
+    await page.waitForFunction((element) => element.parentElement.open, {}, summary);
+    assert.ok(await section.$eval("details", (element) => element.innerText.includes("Fonti e calcolo")));
+  }
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    `Bilancio ${width}px: fonti aperte causano overflow`);
+  const links = await page.$$eval("main a[href]", (elements) => elements.map((element) => element.getAttribute("href")));
+  for (const source of budgetReport.sources) assert.ok(links.includes(source.url), `Fonte assente: ${source.id}`);
+  assert.ok(links.includes(budgetReport.evidenceUrl), "Collegamento alle prove congelate assente");
+  for (const summary of await page.$$("main details > summary")) {
+    await summary.focus();
+    await page.keyboard.press("Space");
+    await page.waitForFunction((element) => !element.parentElement.open, {}, summary);
+  }
+  await page.click(`nav[aria-label="Casi del rapporto"] a[href="#${budgetReport.cases[0].id}"]`);
+  assert.equal(new URL(page.url()).hash, `#${budgetReport.cases[0].id}`);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    `Bilancio ${width}px: overflow con fonti chiuse`);
+  await page.screenshot({ path: path.join(reviewDirectory, `state-budget-${width}.png`), fullPage: true });
 }
 
 await waitForServer(baseUrl);
 const missingResponse = await fetch(new URL("/report/2026-09", baseUrl));
 assert.equal(missingResponse.status, 404, "Un mese sconosciuto deve restituire 404");
+const pdfResponse = await fetch(new URL(`/report/${budgetReport.slug}.pdf`, baseUrl));
+assert.equal(pdfResponse.status, 200, "PDF del bilancio non disponibile");
+assert.match(pdfResponse.headers.get("content-type") ?? "", /^application\/pdf(?:;|$)/i);
+assert.deepEqual(Buffer.from(await pdfResponse.arrayBuffer()),
+  readFileSync(path.join(root, `public/report/${budgetReport.slug}.pdf`)), "Il PDF servito diverge da quello revisionato");
 
 const browser = await launchBrowser();
 try {
+  const previousScheme = process.env.DVNS_COLOR_SCHEME;
+  for (const scheme of ["light", "dark"]) {
+    process.env.DVNS_COLOR_SCHEME = scheme;
+    for (const width of [320, 390, 768, 1280]) {
+      await runScenario(browser, {
+        label: `Bilancio dello Stato ${scheme} ${width}px`,
+        pathname: `/report/${budgetReport.slug}`,
+        width,
+        suite: "monthly-report",
+        validate: (page) => inspectStateBudget(page, width),
+      });
+    }
+  }
+  if (previousScheme === undefined) delete process.env.DVNS_COLOR_SCHEME;
+  else process.env.DVNS_COLOR_SCHEME = previousScheme;
   for (const width of [390, 768, 1280]) {
     await runScenario(browser, {
       label: `Archivio report ${width}px`,

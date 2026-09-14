@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { execFileSync } from "node:child_process";
 import puppeteer from "puppeteer";
 
 const root = resolve(import.meta.dirname, "../..");
@@ -36,33 +37,50 @@ dd { margin: 0; }
 <h1>${escape(report.title)}</h1><p class="lead">${escape(report.summary)}</p>
 ${paragraphs(report.introduction)}
 <h2>Indice</h2><ol>${report.cases.map((item) => `<li><a href="#${escape(item.id)}">${escape(item.title)}</a></li>`).join("")}</ol>
+<section style="break-before:page"><h2>Come leggere importi e risultati</h2>${paragraphs(report.readingGuide)}
+</section>
 ${report.cases.map((item, index) => `<section id="${escape(item.id)}">
 <p class="label">${index + 1}. ${escape(item.label)}</p><h2>${escape(item.title)}</h2>
 <p><b>${escape(item.summary)}</b></p>${paragraphs(item.paragraphs)}
 <div class="proof"><p>${escape(item.record)}</p><p>${escape(item.calculation)}</p>
 <p>Fonti: ${item.sourceIds.map((id) => `<a href="#source-${escape(id)}">[${sourceNumbers.get(id)}]</a>`).join(", ")}.</p></div>
 <p><b>Da verificare.</b> ${escape(item.nextStep)}</p></section>`).join("")}
-<h2>Altre verifiche</h2>${paragraphs(report.controls)}
+<h2>Altre verifiche</h2>${report.controls.map((item) => `<p>${escape(item.text)} Fonti: ${item.sourceIds.map((id) => `<a href="#source-${escape(id)}">[${sourceNumbers.get(id)}]</a>`).join(", ")}.</p>`).join("")}
 <section class="section"><h2>Copertura e metodo</h2><dl>${report.coverage.map((item) => `<dt>${escape(item.area)}</dt><dd>${paragraphs([item.checked, item.limit])}</dd>`).join("")}</dl>
 ${paragraphs(report.method)}</section>
 <section class="section sources"><h2>Fonti</h2><ol>${report.sources.map((source) => `<li id="source-${escape(source.id)}"><b>${escape(source.publisher)}: ${escape(source.title)}</b><br>${escape(source.locator)}<br><a href="${escape(source.url)}">${escape(source.url)}</a></li>`).join("")}</ol>
-<p>Calcoli e ricevute: github.com/Italian-Builders-Org/DoveVannoINostriSoldi, docs/research/state-budget-2025.</p>
+<p>Calcoli e ricevute, versione congelata delle prove:<br><a href="${escape(report.evidenceUrl)}">${escape(report.evidenceUrl)}</a></p>
 <p>SHA-256 del contenuto: ${createHash("sha256").update(input).digest("hex")}</p></section></body></html>`;
 
 const destination = resolve(root, "public/report/bilancio-stato-2025.pdf");
 await mkdir(resolve(root, "public/report"), { recursive: true });
-const browser = await puppeteer.launch({ headless: true });
-try {
-  const page = await browser.newPage();
-  await page.setRequestInterception(true);
-  page.on("request", (request) => request.abort());
-  await page.setContent(html, { waitUntil: "load" });
-  await page.pdf({ path: destination, preferCSSPageSize: true, tagged: true,
-    displayHeaderFooter: true, headerTemplate: "<span></span>",
-    footerTemplate: '<div style="font-size:8px;width:100%;text-align:center;color:#000">DVNS · Bilancio dello Stato 2025 · <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-  });
-} finally {
-  await browser.close();
+const engine = process.argv[2] ?? "chromium";
+if (!["chromium", "weasyprint"].includes(engine)) throw new Error("Engine: chromium | weasyprint");
+if (engine === "weasyprint") {
+  // Optional offline fallback for environments that cannot start Chromium.
+  // It consumes exactly the same HTML and manuscript as the default renderer.
+  const footer = '<style>@page { @bottom-center { content: "DVNS · Bilancio dello Stato 2025 · " counter(page) " / " counter(pages); font: 8pt Arial, sans-serif; color: #000; } }</style>';
+  execFileSync(process.env.PYTHON ?? "python3", ["-c", `
+import sys
+from weasyprint import HTML
+def offline_fetcher(url, **kwargs):
+    raise ValueError("Network and external resources are disabled: " + url)
+HTML(string=sys.stdin.read(), url_fetcher=offline_fetcher).write_pdf(sys.argv[1], pdf_variant="pdf/ua-1")
+`, destination], { input: html.replace("</style>", `</style>${footer}`), stdio: ["pipe", "inherit", "inherit"] });
+} else {
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on("request", (request) => request.abort());
+    await page.setContent(html, { waitUntil: "load" });
+    await page.pdf({ path: destination, preferCSSPageSize: true, tagged: true,
+      displayHeaderFooter: true, headerTemplate: "<span></span>",
+      footerTemplate: '<div style="font-size:8px;width:100%;text-align:center;color:#000">DVNS · Bilancio dello Stato 2025 · <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
+    });
+  } finally {
+    await browser.close();
+  }
 }
 const pdf = await readFile(destination);
 await writeFile(resolve(root, "docs/research/state-budget-2025/pdf-receipt.json"), `${JSON.stringify({

@@ -48,10 +48,14 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
   if (testTiming) await new Promise((resolve) => setTimeout(resolve, 7_200));
   assert.deepEqual(await active(), paused, 'Pausa mantiene articolo e URL');
   await page.focus('[data-announcement] button[aria-label^="Mostra:"]'); await page.keyboard.press('Enter');
-  assert.equal((await active()).href, '/report/2026-08');
+  assert.equal((await active()).href, '/report/bilancio-stato-2025');
   assert.equal(await page.$eval('[data-announcement]', (node) => node.dataset.instant), 'true');
   assert.equal(await page.$$eval('[data-announcement] a:not([tabindex="-1"])', (nodes) => nodes.length), 1);
   await assertStationaryLink();
+  await page.focus('[data-announcement] a[data-active="true"]');
+  await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
+  assert.equal(new URL(page.url()).pathname, '/report/bilancio-stato-2025', 'Il nuovo rapporto si apre dal banner da tastiera');
+  await page.goto(homeUrl, { waitUntil: 'networkidle2' });
   await page.emulateMediaFeatures([
     { name: 'prefers-color-scheme', value: colorScheme },
     { name: 'prefers-reduced-motion', value: 'reduce' },

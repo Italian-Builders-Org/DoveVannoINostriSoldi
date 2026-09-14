@@ -8,6 +8,7 @@ import { SectionNav } from "@/components/section-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { monthlyReports } from "@/lib/monthly-reports";
 import { papers } from "@/lib/papers";
+import stateBudgetReport from "@/content/reports/state-budget-2025.json";
 import "./design-system.css";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ const latestPaper = papers.listPublished()[0];
 const announcements = [
   ...(latestReport ? [{ label: "Articolo", title: latestReport.title, description: latestReport.issueMonth === "2026-08" ? "Imprese e territori: cosa sta cambiando in Italia?" : latestReport.title, cta: "Leggi l’articolo", href: latestReport.href }] : []),
   ...(latestPaper ? [{ label: "Paper", title: latestPaper.title, description: latestPaper.webPath === "/studi/dai-fondi-ai-posti" ? "Asili PNRR: i finanziamenti diventano posti disponibili?" : latestPaper.title, cta: "Scopri il paper", href: latestPaper.webPath ?? "/studi" }] : []),
+  { label: "Analisi", title: stateBudgetReport.title, description: "Bilancio dello Stato 2025: undici casi da verificare", cta: "Leggi l’analisi", href: `/report/${stateBudgetReport.slug}` },
 ];
 
 export const metadata: Metadata = {

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 69
+- Artefatti nel registro: 70
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 52 (PR umana dopo revisione)
+- manuale: 53 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -112,6 +112,7 @@ La revisione e il merge restano umani.
 | `mef-iva-2024-2025` | 2023-2024 (anni di imposta) | 2026-09-11 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | nessuno | nessuno | manuale | `python3 scripts/etl/mef_iva_snapshot.py --check` |
 | `eu-vat-gap-italy` | 2019-2024 | 2026-09-13 | https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en | nessuno | nessuno | manuale | `python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check` |
 | `mef-tax-gap-nazionale` | 2018-2022 | 2026-09-13 | https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/ | nessuno | nessuno | manuale | `python3 scripts/etl/mef_tax_gap_nazionale_snapshot.py --check` |
+| `eurostat-taxag-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_taxag_snapshot.py --check` |
 
 ## Prossimo passo
 

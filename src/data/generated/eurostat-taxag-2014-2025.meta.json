@@ -1,0 +1,75 @@
+{
+  "coverage": {
+    "absentCells": 156,
+    "observedCells": 516,
+    "publishedItems": 14,
+    "sectors": 4,
+    "totalCells": 672,
+    "years": 12
+  },
+  "datasetId": "eurostat-taxag",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 174792,
+      "path": "src/data/generated/eurostat-taxag-2014-2025.data.json",
+      "sha256": "f3bc8c6cf310de32c398ff14f69398cad557555897ad9e01115c39d5899503d5"
+    },
+    "sourceLockSha256": "d4723da0bec7be870601711d30daab9fd4f94016bcb69f71755d37d70074924c"
+  },
+  "observedAt": "2026-09-14",
+  "period": {
+    "from": 2014,
+    "to": 2025
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "frequency": "annuale",
+      "referencePeriod": "2014-2025"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-14",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_taxag?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&sector=S1311&sector=S1313&sector=S1314&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025"
+      ],
+      "checkedAt": "2026-09-14",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-07-21"
+    },
+    "soldi": {
+      "nature": "gettito SEC 2010 (competenza); non cassa e non tax gap",
+      "sourceUnit": "million-euro",
+      "unit": "euro-cents"
+    }
+  },
+  "source": {
+    "acquiredAt": "2026-09-14",
+    "assets": {
+      "mio-eur": {
+        "bytes": 60453,
+        "sha256": "bf54d20f263e6e3083a19e2ca48580639cc2ec90930050c8bc6ec073884802a1",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "GOV_10A_TAXAG",
+          "version": "68.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_taxag?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&sector=S1311&sector=S1313&sector=S1314&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025"
+      }
+    },
+    "checkedAt": "2026-09-14",
+    "datasetCode": "gov_10a_taxag",
+    "datasetLabel": "Main national accounts tax aggregates",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-14.",
+    "owner": "Eurostat (Commissione europea)",
+    "publicationDate": "2026-07-21",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "updateFrequency": "annuale"
+  }
+}

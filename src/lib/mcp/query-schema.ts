@@ -55,7 +55,7 @@ export const datasetQuerySchema = z.object({
     .describe("Taglio dimensionale del dataset selezionato, per esempio regione, classeEta o sesso.")
     .optional(),
   tax: z.string().max(80)
-    .describe("Id della voce di imposta/contributo del tax gap MEF, per esempio iva o totale-entrate-tributarie.")
+    .describe("Id voce imposta: tax gap MEF (es. iva) oppure codice na_item Eurostat taxag (es. D211).")
     .optional(),
   measure: z.string().max(20)
     .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti; anac_operatori accetta awardCount o attributedValue.")
@@ -70,7 +70,7 @@ export const datasetQuerySchema = z.object({
     .describe("Modalità di sesso per i dataset che la espongono: F, M oppure T (totale, che NON è la somma di F e M).")
     .optional(),
   sector: z.string().max(20)
-    .describe("Codice della sezione ATECO accettato dal dataset selezionato.")
+    .describe("Codice settore: ATECO per imprese, CEPA/EPEA per ambiente, oppure ESA S13/S1311/S1313/S1314 per Eurostat taxag.")
     .optional(),
   band: z.string().max(30)
     .describe("Codice della fascia di valore della produzione, solo per il dataset che la dichiara.")

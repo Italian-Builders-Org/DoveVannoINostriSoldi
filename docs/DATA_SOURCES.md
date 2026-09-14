@@ -487,6 +487,32 @@ ISTAT. Fonte + API + MCP, senza pagina UI.
 - [Contratto, pagine e verifiche](research/MEF_TAX_GAP_NAZIONALE.md).
 - [PDF ufficiale](https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf).
 
+### Aggregati fiscali PA · Eurostat `gov_10a_taxag`
+
+**Issue #486 (epic #484).** Statistics API JSON-stat 2.0, Italia, settori
+`S13` / `S1311` / `S1313` / `S1314`, anni 2014–2025. Asset pinnato:
+60 453 byte, SHA-256
+`bf54d20f263e6e3083a19e2ca48580639cc2ec90930050c8bc6ec073884802a1`,
+`updated` 2026-07-21, struttura `GOV_10A_TAXAG` 68.0. Acquisizione e
+controllo 14 settembre 2026. Licenza `CC-BY-4.0`.
+
+Lo snapshot tipizzato espone 14 voci (totale imposte+contributi, gettito
+fiscale, IVA, imposte sul reddito persone/società, contributi, ecc.) in
+centesimi di euro. Le celle non pubblicate dalla fonte (es. imposte su
+`S1314`) restano assenti. Riconciliazioni fail-closed:
+`D2_D5_D91 = D2 + D5 + D91` e totale = tasse + `D61` dove entrambe le parti
+esistono.
+
+Non è cassa SIOPE `/entrate`, non sono dichiarazioni MEF, non è tax gap.
+`S1311` non significa denaro trattenuto a Roma. Fonte + API + MCP, senza UI.
+
+- API: `/api/tributi/taxag`, `/api/tributi/taxag?anno=2025&settore=S13&voce=D211`.
+- MCP: `query_dataset` con `dataset: "eurostat_taxag"` e filtri opzionali
+  `year` / `sector` / `tax`.
+- Source lock: `scripts/etl/specs/eurostat-taxag-2014-2025.source.json`.
+- Offline: `python3 scripts/etl/eurostat_taxag_snapshot.py --check`.
+- Guida API: [Eurostat API getting started](https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started).
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

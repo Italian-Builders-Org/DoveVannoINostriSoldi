@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-taxag",
+  "period": {
+    "from": 2014,
+    "to": 2025
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "datasetCode": "gov_10a_taxag",
+    "datasetLabel": "Main national accounts tax aggregates",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-14.",
+    "updateFrequency": "annuale",
+    "assets": {
+      "mio-eur": {
+        "filename": "gov_10a_taxag-mio-eur.json",
+        "path": "tests/fixtures/eurostat-taxag/gov_10a_taxag-mio-eur.json",
+        "datasetCode": "gov_10a_taxag",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_taxag?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&sector=S1311&sector=S1313&sector=S1314&geo=IT&sinceTimePeriod=2014&untilTimePeriod=2025",
+        "bytes": 60453,
+        "sha256": "bf54d20f263e6e3083a19e2ca48580639cc2ec90930050c8bc6ec073884802a1",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "structure": {
+          "id": "GOV_10A_TAXAG",
+          "agencyId": "ESTAT",
+          "version": "68.0"
+        }
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-14",
+      "checkedAt": "2026-09-14"
+    }
+  },
+  "expected": {
+    "knownFlags": [],
+    "publishedItems": [
+      "D2_D5_D91_D61_M_D995",
+      "D2_D5_D91",
+      "D2",
+      "D21",
+      "D211",
+      "D214",
+      "D5",
+      "D51",
+      "D51A",
+      "D51B",
+      "D61",
+      "D611",
+      "D91",
+      "D29A"
+    ],
+    "sectors": [
+      "S13",
+      "S1311",
+      "S1313",
+      "S1314"
+    ],
+    "observedCells": 516,
+    "totalCells": 672
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-taxag-2014-2025.data.json",
+      "bytes": 174792,
+      "sha256": "f3bc8c6cf310de32c398ff14f69398cad557555897ad9e01115c39d5899503d5"
+    },
+    "lockSha256": "d4723da0bec7be870601711d30daab9fd4f94016bcb69f71755d37d70074924c"
+  }
+}

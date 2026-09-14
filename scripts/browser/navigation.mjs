@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
+import { inspectNavigationPrefetch } from "./navigation-prefetch.mjs";
 import { PRIMARY_NAV, flattenNavLinks } from "../../src/lib/site-navigation.ts";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario, waitForServer } from "./harness.mjs";
 
@@ -88,6 +89,7 @@ async function collapseDesktopSidebar(page) {
 
 const browser = await launchBrowser();
 try {
+  await inspectNavigationPrefetch(browser, baseUrl);
   for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600]) {
     await runScenario(browser, {
       label: `Sidebar ${width}px`, pathname: '/imprese?metric=employees', width, touch: width < 1100, suite: 'navigation',

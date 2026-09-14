@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { IntentLink } from "@/components/intent-link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -86,13 +86,13 @@ function NavSubtree({
             className={hasNested ? "nav-subitem nav-subitem-has-menu" : "nav-subitem"}
             data-open={nestedOpen ? "true" : undefined}
           >
-            <Link
+            <IntentLink
               href={child.href}
               onNavigate={onNavigate}
               aria-current={current ? "page" : undefined}
             >
               {child.label}
-            </Link>
+            </IntentLink>
             {hasNested ? (
               <button
                 type="button"
@@ -157,12 +157,12 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
               {item.href === "/imprese" || item.href === "/report" ? (
                 <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Dati"}</span>
               ) : null}
-              <Link href={item.href} title={collapsed ? item.label : undefined}
+              <IntentLink href={item.href} title={collapsed ? item.label : undefined}
                 aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
                 data-section-active={active ? "true" : undefined} onNavigate={onNavigate}>
                 <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={19} strokeWidth={1.8} aria-hidden="true" />
                 <span className="nav-label">{item.label}</span>
-              </Link>
+              </IntentLink>
               {hasChildren ? (
                 <button type="button" className="nav-item-toggle" aria-expanded={open}
                   aria-controls={menuId} aria-label={`Pagine in ${item.label}`}
@@ -282,15 +282,15 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             aria-haspopup="dialog" onClick={openDrawer}>
             <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
           </button>
-          <Link href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
+          <IntentLink href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
             <Image className="brand-mark" src="/brand/dvns-mark-transparent.png" width={44} height={44} alt="" aria-hidden="true" priority />
             <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
-          </Link>
+          </IntentLink>
           <span className="header-spacer" />
           <HeaderSearch />
           <div className="header-actions">
             <ThemeToggle />
-            <Link className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</Link>
+            <IntentLink className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</IntentLink>
             <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
               aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
               <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />

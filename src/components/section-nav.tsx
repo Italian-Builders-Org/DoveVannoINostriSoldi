@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { IntentLink } from "@/components/intent-link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-navigation";
@@ -47,9 +47,9 @@ function SectionNavContent({
                   {page.label}
                 </span>
               ) : (
-                <Link className={styles.link} href={page.href}>
+                <IntentLink className={styles.link} href={page.href}>
                   {page.label}
-                </Link>
+                </IntentLink>
               )}
             </li>
           );

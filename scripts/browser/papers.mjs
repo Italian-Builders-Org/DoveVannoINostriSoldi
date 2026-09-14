@@ -37,7 +37,7 @@ try {
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
         const navLabels = await page.$$eval('#desktop-navigation .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
         assert.deepEqual(navLabels.slice(0, 7), ['Home', 'Imprese', 'Istruzione', 'Povertà', 'Soldi', 'Economia', 'Territori']);
-        assert.deepEqual(navLabels.slice(-2), ['Report mensili', 'Studi']);
+        assert.deepEqual(navLabels.slice(-2), ['Report', 'Studi']);
         assert.equal(await page.$$eval('#desktop-navigation .nav-item > a > svg', (icons) => icons.length), navLabels.length);
         const details = await page.$("main details summary");
         await details.focus();

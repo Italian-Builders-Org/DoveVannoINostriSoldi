@@ -1,0 +1,48 @@
+.report {
+  max-width: 58rem;
+  padding-block: var(--space-6);
+  color: var(--color-neutral-900);
+  overflow-wrap: anywhere;
+}
+
+.report a { color: inherit; text-underline-offset: 0.2em; }
+.report a:focus-visible,
+.report summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.report p,
+.report li { line-height: 1.7; }
+.report p { margin-block: 0.85rem; }
+.header { margin-block: 2.5rem; }
+.header h1 { font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.06; letter-spacing: -0.04em; max-width: 22ch; }
+.eyebrow { font-size: 0.82rem; font-weight: 650; letter-spacing: 0.035em; }
+.summary { font-size: 1.2rem; max-width: 62ch; }
+.actions { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; margin-top: 1.5rem; }
+.actions a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
+.introduction,
+.case { max-width: 72ch; }
+.contents { border-block: 1px solid var(--color-neutral-300); margin-block: 2rem; padding-block: 1rem; }
+.contents ol { padding-left: 1.4rem; }
+.contents li { padding-block: 0.35rem; }
+.case { margin-block: 3.5rem; scroll-margin-top: 10rem; }
+.case h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -0.02em; }
+.finding { font-weight: 600; font-size: 1.08rem; }
+.case details { border-block: 1px solid var(--color-neutral-300); margin-block: 1.5rem; padding-block: 0.3rem; }
+.case summary { cursor: pointer; padding-block: 0.8rem; min-height: 44px; font-weight: 600; }
+.case details ul { padding-left: 1.25rem; }
+.case details li { margin-block: 0.65rem; }
+.calculation { font-variant-numeric: tabular-nums; }
+.next { font-size: 0.95rem; }
+.coverage { margin-block: 1.5rem 2.5rem; }
+.coverage > div { padding-block: 1rem; border-bottom: 1px solid var(--color-neutral-300); }
+.coverage dt { font-weight: 700; }
+.coverage dd { margin: 0; }
+.sources { padding-left: 1.3rem; }
+.sources li { margin-bottom: 1.4rem; }
+.sources p { margin-block: 0.25rem; font-size: 0.9rem; }
+
+@media print {
+  .report { max-width: none; color: black; }
+  .actions,
+  .report > nav { display: none; }
+  .case { margin-block: 1.5rem; }
+  .case h2 { break-after: avoid; }
+}

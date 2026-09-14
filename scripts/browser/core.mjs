@@ -1964,7 +1964,7 @@ try {
           items.map((item) => item.textContent?.trim() ?? ""),
         );
         assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
-        assert.ok(headings.includes("Report mensili"), `${label}: sezione Report mensili assente`);
+        assert.ok(headings.includes("Report"), `${label}: sezione Report assente`);
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
         assert.ok(headings.includes("Povertà"), `${label}: sezione Povertà assente`);
         assert.ok(headings.includes("Economia"), `${label}: sezione Economia assente`);

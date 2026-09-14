@@ -198,7 +198,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/metodologia", label: "Metodo" },
     ],
   },
-  { href: "/report", label: "Report mensili", icon: "news" },
+  { href: "/report", label: "Report", icon: "news" },
   { href: "/studi", label: "Studi", icon: "research", aliases: ["/paper"] },
 ] as const;
 
@@ -206,9 +206,10 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   { title: "Home", links: [{ href: "/", label: "Home" }] },
   { title: "Studi", links: [{ href: "/studi", label: "Paper di ricerca" }] },
   {
-    title: "Report mensili",
+    title: "Report",
     links: [
       { href: "/report", label: "Archivio dei report" },
+      { href: "/report/bilancio-stato-2025", label: "Bilancio dello Stato 2025: possibili sprechi, anomalie ed errori" },
       { href: "/report/2026-08", label: "Agosto 2026: Imprese e territori" },
     ],
   },

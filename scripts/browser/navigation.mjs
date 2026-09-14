@@ -247,7 +247,7 @@ try {
   });
 
   // Route aliases, nested pages and query-backed children keep their identity.
-  for (const [pathname, label] of [['/controlli','Cosa controllare'], ['/territori/irpef','Territori'], ['/appalti','Cosa controllare'], ['/parlamento','Istituzioni'], ['/debito','Soldi'], ['/paper','Studi'], ['/report/2026-08','Report mensili']]) {
+  for (const [pathname, label] of [['/controlli','Cosa controllare'], ['/territori/irpef','Territori'], ['/appalti','Cosa controllare'], ['/parlamento','Istituzioni'], ['/debito','Soldi'], ['/paper','Studi'], ['/report/2026-08','Report']]) {
     for (const width of [390, 1280]) await runScenario(browser, {
       label:`Sidebar attiva ${pathname} ${width}px`, pathname, width, suite:'navigation',
       validate: async(page) => {

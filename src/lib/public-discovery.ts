@@ -65,6 +65,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/pnrr",
   "/pnrr/incarichi",
   "/report",
+  "/report/bilancio-stato-2025",
   ...PUBLISHED_MONTHLY_REPORT_PATHS,
   "/privacy",
   "/regioni",

@@ -1413,6 +1413,33 @@
       "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_exp (milioni di euro e quota di PIL, CC BY 4.0) sono acquisite localmente e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle committato senza rete. Il livello principale pretende copertura piena e riconcilia TOTAL con le dieci divisioni; il dettaglio italiano GF0101-GF0108 pretende 88 celle per unità e riconcilia separatamente con GF01, senza trasformare le assenze di secondo livello nelle altre geografie in zero."
     },
     {
+      "id": "eurostat-gov-main-1995-2025",
+      "owner": "Eurostat entrate e uscite delle Amministrazioni pubbliche 1995-2025",
+      "files": [
+        "src/data/generated/eurostat-gov-main-1995-2025.data.json",
+        "src/data/generated/eurostat-gov-main-1995-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_gov_main_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_gov_main_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-gov-main.test.mjs",
+        "tests/eurostat-gov-main-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_gov_main_snapshot.py --input-dir <cartella con le due risposte JSON-stat> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-gov-main-1995-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: le due risposte JSON-stat ufficiali di gov_10a_main per l'Italia, settore S13, 1995-2025 (milioni di euro e quota di PIL, CC BY 4.0), acquisite senza filtro su na_item e vincolate per URL, struttura SDMX, istante di pubblicazione, byte e SHA-256; --check valida il bundle senza rete. Pretende copertura piena di 24 voci per 31 anni, riconcilia TR, TE e B9 con le componenti delle identità SEC entro l'arrotondamento dichiarato e verifica che D41PAY e TE coincidano al centesimo con public-debt.json sugli anni in comune."
+    },
+    {
       "id": "istat-cofog-1995-2023",
       "owner": "ISTAT consumi finali della PA per funzione COFOG 1995-2023",
       "files": [

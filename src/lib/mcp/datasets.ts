@@ -393,6 +393,10 @@ export async function queryPublicDataset(
         ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
       });
     }
+    case "eurostat_conti_pa": {
+      const { queryEurostatGovMain } = await import("@/lib/eurostat-gov-main-snapshot");
+      return jsonSafe({ dataset: query.dataset, ...queryEurostatGovMain({ year: query.year, naItem: query.code }) });
+    }
     case "mef_iva": {
       const { queryMefIva } = await import("@/lib/mef-iva-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryMefIva({

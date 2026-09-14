@@ -138,6 +138,12 @@
     "recordCount": 4389
   },
   {
+    "sourceId": "eurostat-gov-main",
+    "sourceTimestamp": "2026-09-14",
+    "detail": "Snapshot ETL attivo · entrate e uscite PA 1995-2025 (gov_10a_main) · 24 voci, 744/744 celle, 0 flag · 68.205 byte.",
+    "recordCount": 744
+  },
+  {
     "sourceId": "istat-cofog",
     "sourceTimestamp": "2026-09-04",
     "detail": "Snapshot ETL attivo · consumi finali della PA per funzione 1995-2023 (93_1227_DF_DCCN_TNA1_4, edizione 2025M12) · copertura piena 10208 celle · 739.262 byte.",

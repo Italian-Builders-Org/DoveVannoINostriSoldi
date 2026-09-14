@@ -831,6 +831,23 @@ risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
 integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
+### Eurostat gov_10a_main · entrate e uscite delle Amministrazioni pubbliche
+
+Lo snapshot `eurostat-gov-main-1995-2025` (#485, figlia dell'epic #484) usa `gov_10a_main` per
+l'Italia, settore S13, dal 1995 al 2025, in milioni di euro e in quota di PIL. Il lock blocca le
+due risposte intere della Statistics API, senza filtro su `na_item`; il contratto pubblica i
+totali `TR`, `TE` e `B9`, le 8 componenti di entrata e le 12 di spesa delle identità SEC e gli
+interessi `D41PAY` come voce «di cui» di `D4PAY`.
+
+Le identità `TR = Σ entrate`, `TE = Σ uscite` e `B9 = TR − TE` sono verificate entro 0,5 milioni
+di euro e 0,65 punti di PIL; su 1995-2025 lo scarto osservato è 0,1 milioni e 0,3 punti. I totali
+restano quelli della fonte. `D41PAY` e `TE` devono coincidere al centesimo con `public-debt.json`
+sugli anni in comune: è la stessa voce usata su `/debito`, non una seconda fonte.
+
+Competenza economica SEC: non è confrontabile con i pagamenti SIOPE di `/entrate` né sommabile a
+CPT, OpenBDAP o COFOG. Superficie v1: API `/api/finanza-pubblica/conti-pa` e dataset MCP
+`eurostat_conti_pa`, nessuna pagina.
+
 ### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08
 
 Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.

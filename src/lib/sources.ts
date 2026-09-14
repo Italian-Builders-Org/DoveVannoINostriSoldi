@@ -117,6 +117,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["geo", "anno", "funzione COFOG", "unità"],
   },
   {
+    slug: "eurostat-gov-main",
+    name: "Eurostat · entrate e uscite delle Amministrazioni pubbliche",
+    owner: "Eurostat (Commissione europea)",
+    area: "Entrate, uscite e saldo delle Amministrazioni pubbliche (SEC 2010)",
+    cadence: "Annuale; rilascio verificato del 21 luglio 2026",
+    coverage:
+      "Italia, settore S13, 1995–2025: entrate totali TR, uscite totali TE, saldo B9, le 8 componenti di entrata e le 12 di spesa delle identità SEC e gli interessi D41PAY. Milioni di euro e quota di PIL",
+    format: "Statistics API · JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    note: "Competenza economica SEC 2010, non incassi né pagamenti di cassa: non è confrontabile con i pagamenti SIOPE di /entrate né sommabile a CPT, OpenBDAP o COFOG. D41PAY è la stessa voce degli interessi usata su /debito, verificata uguale al centesimo: non è una seconda fonte.",
+    joinKeys: ["anno", "voce SEC (na_item)", "unità"],
+  },
+  {
     slug: "istat-cofog",
     name: "ISTAT · consumi finali della PA per funzione (COFOG)",
     owner: "ISTAT — Istituto nazionale di statistica",

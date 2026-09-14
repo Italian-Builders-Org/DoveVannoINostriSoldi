@@ -2,17 +2,19 @@ import type { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
-const CLAUDEBOT_USER_AGENT = /(?:^|[ (])ClaudeBot(?:\/|[ )]|$)/i;
+const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent)(?:\/|[ );]|$)/i;
 
-// ── Per-instance API rate limiting ──────────────────────────────────
+// Local fallback only; Vercel WAF enforces the cross-instance limits.
 const PER_IP_WINDOW_MS = 60_000;
-const PER_IP_MAX = 120;
+const API_PER_IP_MAX = 120;
+const ENTITY_PER_IP_MAX = 30;
 const GLOBAL_WINDOW_MS = 60_000;
 const GLOBAL_MAX = 600;
 const MAX_TRACKED_IPS = 10_000;
 
-const ipHits = new Map<string, number[]>();
-const globalHits: number[] = [];
+type RateState = { ipHits: Map<string, number[]>; globalHits: number[] };
+const apiState: RateState = { ipHits: new Map(), globalHits: [] };
+const entityState: RateState = { ipHits: new Map(), globalHits: [] };
 
 function slidingCount(timestamps: number[], now: number, windowMs: number): number {
   const floor = now - windowMs;
@@ -24,7 +26,7 @@ function slidingCount(timestamps: number[], now: number, windowMs: number): numb
   return write;
 }
 
-function evictStaleIps(floor: number): void {
+function evictStaleIps(ipHits: Map<string, number[]>, floor: number): void {
   if (ipHits.size <= MAX_TRACKED_IPS) return;
   for (const [key, ts] of ipHits) {
     if (ts.every((t) => t <= floor)) ipHits.delete(key);
@@ -43,8 +45,9 @@ function getClientIp(request: NextRequest): string {
   return "unknown";
 }
 
-function apiRateLimit(request: NextRequest): NextResponse | null {
+function rateLimit(request: NextRequest, state: RateState, perIpMax: number): NextResponse | null {
   const now = Date.now();
+  const { ipHits, globalHits } = state;
 
   slidingCount(globalHits, now, GLOBAL_WINDOW_MS);
   if (globalHits.length >= GLOBAL_MAX) {
@@ -56,7 +59,7 @@ function apiRateLimit(request: NextRequest): NextResponse | null {
   const ip = getClientIp(request);
   const timestamps = ipHits.get(ip) ?? [];
   slidingCount(timestamps, now, PER_IP_WINDOW_MS);
-  if (timestamps.length >= PER_IP_MAX) {
+  if (timestamps.length >= perIpMax) {
     ipHits.set(ip, timestamps);
     return NextResponse.json(
       { error: "Too many requests" },
@@ -68,7 +71,7 @@ function apiRateLimit(request: NextRequest): NextResponse | null {
   globalHits.push(now);
   timestamps.push(now);
   ipHits.set(ip, timestamps);
-  evictStaleIps(now - PER_IP_WINDOW_MS);
+  evictStaleIps(ipHits, now - PER_IP_WINDOW_MS);
 
   return null;
 }
@@ -76,23 +79,15 @@ function apiRateLimit(request: NextRequest): NextResponse | null {
 // ── Proxy handler ───────────────────────────────────────────────────
 
 export function proxy(request: NextRequest) {
-  // Rate-limit all API endpoints
-  if (request.nextUrl.pathname.startsWith("/api/")) {
-    const blocked = apiRateLimit(request);
+  const pathname = request.nextUrl.pathname;
+  if (pathname.startsWith("/api/")) {
+    const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
   }
-
-  if (
-    request.nextUrl.pathname.startsWith("/enti/") &&
-    CLAUDEBOT_USER_AGENT.test(request.headers.get("user-agent") ?? "")
-  ) {
-    return new NextResponse("Automated crawling of entity detail pages is temporarily unavailable.", {
-      status: 403,
-      headers: {
-        "Cache-Control": "private, no-store",
-        "X-Robots-Tag": "noindex, nofollow",
-      },
-    });
+  if ((pathname === "/enti" || pathname.startsWith("/enti/"))
+    && TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? "")) {
+    const blocked = rateLimit(request, entityState, ENTITY_PER_IP_MAX);
+    if (blocked) return blocked;
   }
 
   const acceptsEventStream = request.headers

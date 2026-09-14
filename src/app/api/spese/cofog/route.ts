@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { queryEurostatCofog } from "@/lib/eurostat-cofog-snapshot";
+import { queryEurostatCofogPublic } from "@/lib/eurostat-cofog-snapshot";
 
 const CACHE_CONTROL = "public, max-age=3600, stale-while-revalidate=86400";
 
@@ -39,7 +39,10 @@ export function GET(request: NextRequest) {
   const cofogFunction = parseCode(params.get("funzione"));
   if (cofogFunction === null) {
     return Response.json(
-      { error: "Il parametro funzione accetta TOTAL oppure una divisione COFOG da GF01 a GF10." },
+      {
+        error:
+          "Il parametro funzione accetta TOTAL, una divisione COFOG da GF01 a GF10 oppure, per l’Italia, una sottofunzione come GF1002.",
+      },
       { status: 400 },
     );
   }
@@ -58,7 +61,7 @@ export function GET(request: NextRequest) {
   }
 
   try {
-    return Response.json(queryEurostatCofog({ geo, year, function: cofogFunction }), {
+    return Response.json(queryEurostatCofogPublic({ geo, year, function: cofogFunction }), {
       headers: { "Cache-Control": CACHE_CONTROL },
     });
   } catch (error) {

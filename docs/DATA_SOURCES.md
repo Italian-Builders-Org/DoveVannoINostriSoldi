@@ -778,14 +778,22 @@ risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
 integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
-### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08
+### Eurostat COFOG · dettaglio italiano delle dieci divisioni
 
 Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.
-Dal rilascio acquisito e riverificato l'11 settembre 2026 conserva, oltre a totale e dieci
-divisioni per le geografie già pubblicate, le sottofunzioni ufficiali italiane di GF01
-(otto voci), GF02 (cinque), GF03 (sei) e GF08 (sei) dal 2014 al 2024. Le celle di dettaglio
-per unità sono obbligatorie e riconciliano con il rispettivo parent entro la sola tolleranza
-di arrotondamento; una cella assente ferma la pubblicazione.
+Oltre a totale e dieci divisioni per le geografie già pubblicate, conserva le sottofunzioni
+ufficiali italiane dal 2014 al 2024 di tutte le divisioni: GF01 (otto voci), GF02 (cinque),
+GF03 (sei), GF04 (nove), GF05 (sei), GF06 (sei), GF07 (sei), GF08 (sei), GF09 (otto) e
+GF10 (nove). GF01, GF02, GF03 e GF08 sono stati acquisiti l'11 settembre 2026, le altre
+sei divisioni il 14 settembre 2026 dallo stesso rilascio (`updated` 2026-07-21). Le celle di
+dettaglio per unità sono obbligatorie e riconciliano con il rispettivo parent entro la sola
+tolleranza di arrotondamento, 0,5 nell'unità della fonte: nove parti più il parent, arrotondati
+indipendentemente a un decimale. Una cella assente ferma la pubblicazione.
+
+`/api/spese/cofog` e il dataset MCP `eurostat_cofog` accettano nel filtro funzione anche un
+codice di secondo livello (per esempio `GF1002`, vecchiaia), solo per l'Italia. GF10 non è
+la sola spesa pensionistica, GF07 non si somma al Conto economico SSN e GF05 non si somma ai
+conti ambientali EPEA: sono classificazioni COFOG con perimetri propri.
 
 La pagina `/spese/servizi-generali` espone GF0101–GF0108 senza trasformare GF01 in «debito».
 In particolare GF0107, *Public debt transactions*, non coincide con la sola spesa per

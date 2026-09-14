@@ -511,6 +511,15 @@ test("la proiezione MCP eurostat_cofog filtra per paese, anno e funzione", async
 
   const health = await queryPublicDataset({ dataset: "eurostat_cofog", country: "IT", cofog: "GF07" });
   assert.equal(health.observations.every((row) => row.function === "GF07"), true);
+
+  const oldAge = await queryPublicDataset({ dataset: "eurostat_cofog", country: "IT", year: 2024, cofog: "GF1002" });
+  assert.equal(oldAge.level, "subfunction");
+  assert.equal(oldAge.parentFunction, "GF10");
+  assert.equal(oldAge.observations.length, 1);
+  await assert.rejects(
+    () => queryPublicDataset({ dataset: "eurostat_cofog", country: "FR", cofog: "GF1002" }),
+    /solo per l’Italia/,
+  );
 });
 
 test("la proiezione MCP eurostat_cofog rifiuta filtri non dichiarati", async () => {

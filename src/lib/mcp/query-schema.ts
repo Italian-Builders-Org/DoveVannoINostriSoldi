@@ -61,7 +61,7 @@ export const datasetQuerySchema = z.object({
     .describe("Misura richiesta dal dataset selezionato, per esempio beneficiari oppure trattamenti; anac_operatori accetta awardCount o attributedValue.")
     .optional(),
   cofog: z.string().max(8)
-    .describe("Funzione COFOG: per Eurostat TOTAL o GF01…GF10; per ISTAT il totale G oppure una divisione da G010 a G100.")
+    .describe("Funzione COFOG: per Eurostat TOTAL, GF01…GF10 oppure, solo per l’Italia, una sottofunzione da GF0101 a GF1009; per ISTAT il totale G oppure una divisione da G010 a G100.")
     .optional(),
   period: z.string().max(20)
     .describe("Periodo dichiarato dal dataset, per esempio 2026-07-31 o 2026-Q2.")

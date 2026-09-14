@@ -22,6 +22,20 @@ export const eurostatCofogMetadata: EurostatCofogMetadata = validated.metadata;
 const GEOGRAPHY_CODES = new Set(eurostatCofogData.geographies.map((entry) => entry.code));
 const FUNCTION_CODES = new Set(eurostatCofogData.functions.map((entry) => entry.code));
 const DETAIL_PARENTS = new Set(Object.keys(eurostatCofogData.details));
+const DETAIL_CODE_TO_PARENT = new Map<string, EurostatCofogDetailParent>(
+  (Object.keys(eurostatCofogData.details) as EurostatCofogDetailParent[]).flatMap((parent) =>
+    eurostatCofogData.details[parent].functions.map((entry) => [entry.code, parent] as const),
+  ),
+);
+
+const SOURCE_SUMMARY = {
+  owner: eurostatCofogMetadata.source.owner,
+  landingUrl: eurostatCofogMetadata.source.landingUrl,
+  licenseId: eurostatCofogMetadata.source.licenseId,
+  datasetCode: eurostatCofogMetadata.source.datasetCode,
+  publicationDate: eurostatCofogMetadata.semantics.provenance.publicationDate,
+  coverageNote: eurostatCofogMetadata.coverage.note,
+} as const;
 
 export type EurostatCofogQuery = Readonly<{
   geo?: string;
@@ -65,6 +79,21 @@ export type EurostatCofogDetailQueryResult = Readonly<{
   }>;
 }>;
 
+export type EurostatCofogSubfunctionQueryResult = Readonly<{
+  datasetId: string;
+  level: "subfunction";
+  parentFunction: EurostatCofogDetailParent;
+  period: EurostatCofogData["period"];
+  caveats: readonly string[];
+  units: EurostatCofogData["units"];
+  flags: EurostatCofogData["flags"];
+  functions: readonly EurostatCofogDetailFunction[];
+  geographies: readonly EurostatCofogGeography[];
+  observations: readonly EurostatCofogDetailObservation[];
+  reconciliation: EurostatCofogData["details"][EurostatCofogDetailParent]["reconciliation"];
+  source: EurostatCofogQueryResult["source"];
+}>;
+
 function normalizeYear(year: number | undefined): number | undefined {
   if (year === undefined) return undefined;
   const { from, to } = eurostatCofogData.period;
@@ -87,7 +116,9 @@ function normalizeFunction(code: string | undefined): string | undefined {
   if (code === undefined) return undefined;
   const value = code.toUpperCase();
   if (!FUNCTION_CODES.has(value)) {
-    throw new Error("Funzione COFOG non riconosciuta: usare TOTAL oppure GF01…GF10.");
+    throw new Error(
+      "Funzione COFOG non riconosciuta: usare TOTAL, una divisione GF01…GF10 oppure, per l’Italia, una sottofunzione da GF0101 a GF1009.",
+    );
   }
   return value;
 }
@@ -95,7 +126,7 @@ function normalizeFunction(code: string | undefined): string | undefined {
 function normalizeDetailParent(parent: string): EurostatCofogDetailParent {
   const value = parent.toUpperCase();
   if (!DETAIL_PARENTS.has(value)) {
-    throw new Error("Dettaglio COFOG non pubblicato: usare GF01, GF02, GF03 o GF08.");
+    throw new Error("Dettaglio COFOG non pubblicato: usare una divisione da GF01 a GF10.");
   }
   return value as EurostatCofogDetailParent;
 }
@@ -123,14 +154,44 @@ export function queryEurostatCofog(query: EurostatCofogQuery = {}): EurostatCofo
       : eurostatCofogData.geographies.filter((entry) => entry.code === geo),
     observations,
     reconciliation: eurostatCofogData.reconciliation,
-    source: {
-      owner: eurostatCofogMetadata.source.owner,
-      landingUrl: eurostatCofogMetadata.source.landingUrl,
-      licenseId: eurostatCofogMetadata.source.licenseId,
-      datasetCode: eurostatCofogMetadata.source.datasetCode,
-      publicationDate: eurostatCofogMetadata.semantics.provenance.publicationDate,
-      coverageNote: eurostatCofogMetadata.coverage.note,
-    },
+    source: SOURCE_SUMMARY,
+  };
+}
+
+/**
+ * Superficie pubblica di API e MCP: totale e divisioni per ogni geografia, oppure
+ * una sottofunzione di secondo livello. Il secondo livello è pubblicato solo per
+ * l’Italia, quindi un altro paese viene rifiutato invece di restituire zero righe.
+ */
+export function queryEurostatCofogPublic(
+  query: EurostatCofogQuery = {},
+): EurostatCofogQueryResult | EurostatCofogSubfunctionQueryResult {
+  const code = query.function?.toUpperCase();
+  const parent = code === undefined ? undefined : DETAIL_CODE_TO_PARENT.get(code);
+  if (code === undefined || parent === undefined) {
+    return queryEurostatCofog(query);
+  }
+  const geo = normalizeGeo(query.geo);
+  if (geo !== undefined && geo !== "IT") {
+    throw new Error("Le sottofunzioni COFOG sono pubblicate solo per l’Italia: usare il paese IT.");
+  }
+  const year = normalizeYear(query.year);
+  const detail = eurostatCofogData.details[parent];
+  return {
+    datasetId: eurostatCofogData.datasetId,
+    level: "subfunction",
+    parentFunction: detail.parentFunction,
+    period: eurostatCofogData.period,
+    caveats: eurostatCofogData.caveats,
+    units: eurostatCofogData.units,
+    flags: eurostatCofogData.flags,
+    functions: detail.functions.filter((entry) => entry.code === code),
+    geographies: eurostatCofogData.geographies.filter((entry) => entry.code === "IT"),
+    observations: detail.observations.filter(
+      (observation) => observation.function === code && (year === undefined || observation.year === year),
+    ),
+    reconciliation: detail.reconciliation,
+    source: SOURCE_SUMMARY,
   };
 }
 

@@ -35,6 +35,21 @@ test("la route COFOG rifiuta anni non canonici o fuori periodo", async () => {
   assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?anno=2025")).status, 400);
 });
 
+test("la route COFOG serve le sottofunzioni italiane e rifiuta gli altri paesi", async () => {
+  const response = GET(new NextRequest("http://localhost/api/spese/cofog?funzione=GF1002&anno=2024"));
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.level, "subfunction");
+  assert.equal(payload.parentFunction, "GF10");
+  assert.equal(payload.observations.length, 1);
+  assert.equal(payload.observations[0].geo, "IT");
+  assert.equal(payload.source.licenseId, "CC-BY-4.0");
+
+  assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?paese=IT&funzione=gf0405")).status, 200);
+  assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?paese=FR&funzione=GF1002")).status, 400);
+  assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?funzione=GF1010")).status, 400);
+});
+
 test("la route COFOG rifiuta codici malformati e sconosciuti", async () => {
   assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?paese=IT'--")).status, 400);
   assert.equal(GET(new NextRequest("http://localhost/api/spese/cofog?paese=ZZ")).status, 400);

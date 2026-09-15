@@ -13,7 +13,13 @@ DETAIL_BY_PARENT = {
     "GF01": {f"GF010{index}" for index in range(1, 9)},
     "GF02": {f"GF020{index}" for index in range(1, 6)},
     "GF03": {f"GF030{index}" for index in range(1, 7)},
+    "GF04": {f"GF040{index}" for index in range(1, 10)},
+    "GF05": {f"GF050{index}" for index in range(1, 7)},
+    "GF06": {f"GF060{index}" for index in range(1, 7)},
+    "GF07": {f"GF070{index}" for index in range(1, 7)},
     "GF08": {f"GF080{index}" for index in range(1, 7)},
+    "GF09": {f"GF090{index}" for index in range(1, 9)},
+    "GF10": {f"GF100{index}" for index in range(1, 10)},
 }
 
 
@@ -21,6 +27,14 @@ class EurostatCofogDetailTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
+
+    def test_detail_tolerance_is_only_the_rounding_of_the_largest_partition(self) -> None:
+        # Parts and parent are rounded independently to 0.1: n parts + parent can
+        # drift by (n + 1) * 0.05 at most. GF04 and GF10 have nine parts each.
+        largest = max(len(codes) for codes in etl.DETAIL_PARENT_CODES.values())
+        self.assertEqual(largest, 9)
+        self.assertEqual(etl.DETAIL_TOLERANCE_CENTS, (largest + 1) * etl.CENTS_PER_MILLION_EUR // 20)
+        self.assertEqual(etl.DETAIL_TOLERANCE_SHARE, (largest + 1) * etl.HUNDREDTHS_PER_POINT // 20)
 
     def test_all_italian_details_are_complete_for_2014_2024(self) -> None:
         self.assertEqual(set(self.data["details"]), set(DETAIL_BY_PARENT))

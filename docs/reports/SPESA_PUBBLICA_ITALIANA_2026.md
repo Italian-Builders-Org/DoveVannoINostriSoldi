@@ -535,7 +535,7 @@ Fonti: S13.
 [Spesa PA per funzione: gov_10a_exp, S13, TE](https://www.dovevannoinostrisoldi.com/)
 Periodo: 2024. Pubblicazione: 2026-07-21. Consultata: 2026-09-14.
 Composizione della spesa pubblica: dieci divisioni COFOG e totale.
-Valori del report trascritti dalla superficie pubblica, arrotondati a 0,01 miliardi. Il controllo sui byte del dataset completo non è stato eseguito in questa sessione. Il metadato nel repository dichiara SHA-256 5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8 per il proprio artefatto. Verifica obbligatoria in repository prima del rilascio.
+Valori del report trascritti dalla superficie pubblica, arrotondati a 0,01 miliardi. Il controllo sui byte del dataset completo non è stato eseguito in questa sessione. Il metadato nel repository dichiara SHA-256 c2cf3151a230ec1d173968772230a66db3057a792da385f151c9cc62e6db02dd per il proprio artefatto. Verifica obbligatoria in repository prima del rilascio.
 Modalità di verifica: existing-project-snapshot. Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.
 
 ### S02 · Eurostat

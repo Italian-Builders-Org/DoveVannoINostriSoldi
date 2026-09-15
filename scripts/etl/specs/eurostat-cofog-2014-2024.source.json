@@ -23,24 +23,24 @@
       "mio-eur": {
         "unit": "MIO_EUR",
         "unitLabel": "Million euro",
-        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&sinceTimePeriod=2014&untilTimePeriod=2024",
-        "bytes": 196481,
-        "sha256": "a385a865649e8d41c83597a7c8528d8b5607b4f2f4f6d722539910e3cdf9a9d8",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=MIO_EUR&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&cofog99=GF0401&cofog99=GF0402&cofog99=GF0403&cofog99=GF0404&cofog99=GF0405&cofog99=GF0406&cofog99=GF0407&cofog99=GF0408&cofog99=GF0409&cofog99=GF0501&cofog99=GF0502&cofog99=GF0503&cofog99=GF0504&cofog99=GF0505&cofog99=GF0506&cofog99=GF0601&cofog99=GF0602&cofog99=GF0603&cofog99=GF0604&cofog99=GF0605&cofog99=GF0606&cofog99=GF0701&cofog99=GF0702&cofog99=GF0703&cofog99=GF0704&cofog99=GF0705&cofog99=GF0706&cofog99=GF0901&cofog99=GF0902&cofog99=GF0903&cofog99=GF0904&cofog99=GF0905&cofog99=GF0906&cofog99=GF0907&cofog99=GF0908&cofog99=GF1001&cofog99=GF1002&cofog99=GF1003&cofog99=GF1004&cofog99=GF1005&cofog99=GF1006&cofog99=GF1007&cofog99=GF1008&cofog99=GF1009&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 443174,
+        "sha256": "aef44640fc001c0ea15d01b41577f080d7562057c2d25eb7dcaa1cf5f9409c91",
         "sourceUpdated": "2026-07-21T11:00:00+0200"
       },
       "pc-gdp": {
         "unit": "PC_GDP",
         "unitLabel": "Percentage of gross domestic product (GDP)",
-        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&sinceTimePeriod=2014&untilTimePeriod=2024",
-        "bytes": 164862,
-        "sha256": "c81844428c4bdf8cd3275ef7fdddba0793f24b2df467ff801f5f1394a6312bf7",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_exp?format=JSON&lang=EN&freq=A&sector=S13&na_item=TE&unit=PC_GDP&cofog99=TOTAL&cofog99=GF01&cofog99=GF02&cofog99=GF03&cofog99=GF04&cofog99=GF05&cofog99=GF06&cofog99=GF07&cofog99=GF08&cofog99=GF09&cofog99=GF10&cofog99=GF0101&cofog99=GF0102&cofog99=GF0103&cofog99=GF0104&cofog99=GF0105&cofog99=GF0106&cofog99=GF0107&cofog99=GF0108&cofog99=GF0201&cofog99=GF0202&cofog99=GF0203&cofog99=GF0204&cofog99=GF0205&cofog99=GF0301&cofog99=GF0302&cofog99=GF0303&cofog99=GF0304&cofog99=GF0305&cofog99=GF0306&cofog99=GF0801&cofog99=GF0802&cofog99=GF0803&cofog99=GF0804&cofog99=GF0805&cofog99=GF0806&cofog99=GF0401&cofog99=GF0402&cofog99=GF0403&cofog99=GF0404&cofog99=GF0405&cofog99=GF0406&cofog99=GF0407&cofog99=GF0408&cofog99=GF0409&cofog99=GF0501&cofog99=GF0502&cofog99=GF0503&cofog99=GF0504&cofog99=GF0505&cofog99=GF0506&cofog99=GF0601&cofog99=GF0602&cofog99=GF0603&cofog99=GF0604&cofog99=GF0605&cofog99=GF0606&cofog99=GF0701&cofog99=GF0702&cofog99=GF0703&cofog99=GF0704&cofog99=GF0705&cofog99=GF0706&cofog99=GF0901&cofog99=GF0902&cofog99=GF0903&cofog99=GF0904&cofog99=GF0905&cofog99=GF0906&cofog99=GF0907&cofog99=GF0908&cofog99=GF1001&cofog99=GF1002&cofog99=GF1003&cofog99=GF1004&cofog99=GF1005&cofog99=GF1006&cofog99=GF1007&cofog99=GF1008&cofog99=GF1009&sinceTimePeriod=2014&untilTimePeriod=2024",
+        "bytes": 374865,
+        "sha256": "7eacb62d213755c701bfe5b0de2ebddb179596f79d509a9f192eacaa7805a7e2",
         "sourceUpdated": "2026-07-21T11:00:00+0200"
       }
     },
     "acquisition": {
-      "acquiredAt": "2026-09-11",
-      "checkedAt": "2026-09-11",
-      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici il 2026-09-11 con estremi temporali espliciti. Il lock include le divisioni COFOG per tutte le geografie e le sottofunzioni italiane GF01, GF02, GF03 e GF08; il prodotto pubblica il dettaglio di secondo livello solo per l’Italia, dove la copertura 2014-2024 è completa."
+      "acquiredAt": "2026-09-14",
+      "checkedAt": "2026-09-14",
+      "note": "Due risposte JSON-stat 2.0 scaricate dagli URL canonici con estremi temporali espliciti. Il 2026-09-14 gli URL sono stati estesi alle sottofunzioni italiane di GF04, GF05, GF06, GF07, GF09 e GF10; nello stesso giorno gli URL precedenti (acquisiti il 2026-09-11) restituivano ancora byte identici al lock, e ogni cella già vincolata resta identica per valore e flag nelle nuove risposte. Il lock include le divisioni COFOG per tutte le geografie e le sottofunzioni di tutte e dieci le divisioni; il prodotto pubblica il secondo livello solo per l’Italia, dove la copertura 2014-2024 è completa."
     }
   },
   "expected": {
@@ -185,6 +185,114 @@
         "label": "Public order and safety n.e.c."
       },
       {
+        "code": "GF0401",
+        "label": "General economic, commercial and labour affairs"
+      },
+      {
+        "code": "GF0402",
+        "label": "Agriculture, forestry, fishing and hunting"
+      },
+      {
+        "code": "GF0403",
+        "label": "Fuel and energy"
+      },
+      {
+        "code": "GF0404",
+        "label": "Mining, manufacturing and construction"
+      },
+      {
+        "code": "GF0405",
+        "label": "Transport"
+      },
+      {
+        "code": "GF0406",
+        "label": "Communication"
+      },
+      {
+        "code": "GF0407",
+        "label": "Other industries"
+      },
+      {
+        "code": "GF0408",
+        "label": "R&D Economic affairs"
+      },
+      {
+        "code": "GF0409",
+        "label": "Economic affairs n.e.c."
+      },
+      {
+        "code": "GF0501",
+        "label": "Waste management"
+      },
+      {
+        "code": "GF0502",
+        "label": "Waste water management"
+      },
+      {
+        "code": "GF0503",
+        "label": "Pollution abatement"
+      },
+      {
+        "code": "GF0504",
+        "label": "Protection of biodiversity and landscape"
+      },
+      {
+        "code": "GF0505",
+        "label": "R&D Environmental protection"
+      },
+      {
+        "code": "GF0506",
+        "label": "Environmental protection n.e.c."
+      },
+      {
+        "code": "GF0601",
+        "label": "Housing development"
+      },
+      {
+        "code": "GF0602",
+        "label": "Community development"
+      },
+      {
+        "code": "GF0603",
+        "label": "Water supply"
+      },
+      {
+        "code": "GF0604",
+        "label": "Street lighting"
+      },
+      {
+        "code": "GF0605",
+        "label": "R&D Housing and community amenities"
+      },
+      {
+        "code": "GF0606",
+        "label": "Housing and community amenities n.e.c."
+      },
+      {
+        "code": "GF0701",
+        "label": "Medical products, appliances and equipment"
+      },
+      {
+        "code": "GF0702",
+        "label": "Outpatient services"
+      },
+      {
+        "code": "GF0703",
+        "label": "Hospital services"
+      },
+      {
+        "code": "GF0704",
+        "label": "Public health services"
+      },
+      {
+        "code": "GF0705",
+        "label": "R&D Health"
+      },
+      {
+        "code": "GF0706",
+        "label": "Health n.e.c."
+      },
+      {
         "code": "GF0801",
         "label": "Recreational and sporting services"
       },
@@ -207,6 +315,74 @@
       {
         "code": "GF0806",
         "label": "Recreation, culture and religion n.e.c."
+      },
+      {
+        "code": "GF0901",
+        "label": "Pre-primary and primary education"
+      },
+      {
+        "code": "GF0902",
+        "label": "Secondary education"
+      },
+      {
+        "code": "GF0903",
+        "label": "Post-secondary non-tertiary education"
+      },
+      {
+        "code": "GF0904",
+        "label": "Tertiary education"
+      },
+      {
+        "code": "GF0905",
+        "label": "Education not definable by level"
+      },
+      {
+        "code": "GF0906",
+        "label": "Subsidiary services to education"
+      },
+      {
+        "code": "GF0907",
+        "label": "R&D Education"
+      },
+      {
+        "code": "GF0908",
+        "label": "Education n.e.c."
+      },
+      {
+        "code": "GF1001",
+        "label": "Sickness and disability"
+      },
+      {
+        "code": "GF1002",
+        "label": "Old age"
+      },
+      {
+        "code": "GF1003",
+        "label": "Survivors"
+      },
+      {
+        "code": "GF1004",
+        "label": "Family and children"
+      },
+      {
+        "code": "GF1005",
+        "label": "Unemployment"
+      },
+      {
+        "code": "GF1006",
+        "label": "Housing"
+      },
+      {
+        "code": "GF1007",
+        "label": "Social exclusion n.e.c."
+      },
+      {
+        "code": "GF1008",
+        "label": "R&D Social protection"
+      },
+      {
+        "code": "GF1009",
+        "label": "Social protection n.e.c."
       }
     ],
     "geographies": [
@@ -528,6 +704,142 @@
         "cellsPerUnit": 66
       },
       {
+        "parentFunction": "GF04",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0401",
+            "label": "General economic, commercial and labour affairs"
+          },
+          {
+            "code": "GF0402",
+            "label": "Agriculture, forestry, fishing and hunting"
+          },
+          {
+            "code": "GF0403",
+            "label": "Fuel and energy"
+          },
+          {
+            "code": "GF0404",
+            "label": "Mining, manufacturing and construction"
+          },
+          {
+            "code": "GF0405",
+            "label": "Transport"
+          },
+          {
+            "code": "GF0406",
+            "label": "Communication"
+          },
+          {
+            "code": "GF0407",
+            "label": "Other industries"
+          },
+          {
+            "code": "GF0408",
+            "label": "R&D Economic affairs"
+          },
+          {
+            "code": "GF0409",
+            "label": "Economic affairs n.e.c."
+          }
+        ],
+        "cellsPerUnit": 99
+      },
+      {
+        "parentFunction": "GF05",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0501",
+            "label": "Waste management"
+          },
+          {
+            "code": "GF0502",
+            "label": "Waste water management"
+          },
+          {
+            "code": "GF0503",
+            "label": "Pollution abatement"
+          },
+          {
+            "code": "GF0504",
+            "label": "Protection of biodiversity and landscape"
+          },
+          {
+            "code": "GF0505",
+            "label": "R&D Environmental protection"
+          },
+          {
+            "code": "GF0506",
+            "label": "Environmental protection n.e.c."
+          }
+        ],
+        "cellsPerUnit": 66
+      },
+      {
+        "parentFunction": "GF06",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0601",
+            "label": "Housing development"
+          },
+          {
+            "code": "GF0602",
+            "label": "Community development"
+          },
+          {
+            "code": "GF0603",
+            "label": "Water supply"
+          },
+          {
+            "code": "GF0604",
+            "label": "Street lighting"
+          },
+          {
+            "code": "GF0605",
+            "label": "R&D Housing and community amenities"
+          },
+          {
+            "code": "GF0606",
+            "label": "Housing and community amenities n.e.c."
+          }
+        ],
+        "cellsPerUnit": 66
+      },
+      {
+        "parentFunction": "GF07",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0701",
+            "label": "Medical products, appliances and equipment"
+          },
+          {
+            "code": "GF0702",
+            "label": "Outpatient services"
+          },
+          {
+            "code": "GF0703",
+            "label": "Hospital services"
+          },
+          {
+            "code": "GF0704",
+            "label": "Public health services"
+          },
+          {
+            "code": "GF0705",
+            "label": "R&D Health"
+          },
+          {
+            "code": "GF0706",
+            "label": "Health n.e.c."
+          }
+        ],
+        "cellsPerUnit": 66
+      },
+      {
         "parentFunction": "GF08",
         "geo": "IT",
         "functions": [
@@ -557,12 +869,94 @@
           }
         ],
         "cellsPerUnit": 66
+      },
+      {
+        "parentFunction": "GF09",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF0901",
+            "label": "Pre-primary and primary education"
+          },
+          {
+            "code": "GF0902",
+            "label": "Secondary education"
+          },
+          {
+            "code": "GF0903",
+            "label": "Post-secondary non-tertiary education"
+          },
+          {
+            "code": "GF0904",
+            "label": "Tertiary education"
+          },
+          {
+            "code": "GF0905",
+            "label": "Education not definable by level"
+          },
+          {
+            "code": "GF0906",
+            "label": "Subsidiary services to education"
+          },
+          {
+            "code": "GF0907",
+            "label": "R&D Education"
+          },
+          {
+            "code": "GF0908",
+            "label": "Education n.e.c."
+          }
+        ],
+        "cellsPerUnit": 88
+      },
+      {
+        "parentFunction": "GF10",
+        "geo": "IT",
+        "functions": [
+          {
+            "code": "GF1001",
+            "label": "Sickness and disability"
+          },
+          {
+            "code": "GF1002",
+            "label": "Old age"
+          },
+          {
+            "code": "GF1003",
+            "label": "Survivors"
+          },
+          {
+            "code": "GF1004",
+            "label": "Family and children"
+          },
+          {
+            "code": "GF1005",
+            "label": "Unemployment"
+          },
+          {
+            "code": "GF1006",
+            "label": "Housing"
+          },
+          {
+            "code": "GF1007",
+            "label": "Social exclusion n.e.c."
+          },
+          {
+            "code": "GF1008",
+            "label": "R&D Social protection"
+          },
+          {
+            "code": "GF1009",
+            "label": "Social protection n.e.c."
+          }
+        ],
+        "cellsPerUnit": 99
       }
     ]
   },
   "coverage": {
     "observedAt": "2026-09-11",
-    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio comprende GF0101–GF0108 (88 celle), GF0201–GF0205 (55), GF0301–GF0306 (66) e GF0801–GF0806 (66) per ciascuna unità e deve riconciliare con il rispettivo parent. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
+    "note": "Copertura piena e pretesa dal contratto per il livello principale: 4114 celle su 4114 per entrambe le unità. In aggiunta, per l’Italia il dettaglio comprende GF0101–GF1009 (759 celle) per ciascuna unità e deve riconciliare con il rispettivo parent. Eventuali assenze di secondo livello fuori dall’Italia restano assenze della fonte e non vengono pubblicate come zero.",
     "excludedYears": {
       "2025": "Escluso: al 2026-09-10 la fonte pubblica il 2025 per il solo Lussemburgo (11 celle su 374). Il rilascio anticipato di un singolo Stato membro non è un confronto UE e non viene pubblicato."
     }
@@ -570,9 +964,9 @@
   "integrity": {
     "dataArtifact": {
       "path": "src/data/generated/eurostat-cofog-2014-2024.data.json",
-      "bytes": 439701,
-      "sha256": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8"
+      "bytes": 492002,
+      "sha256": "c2cf3151a230ec1d173968772230a66db3057a792da385f151c9cc62e6db02dd"
     },
-    "lockSha256": "693c51cd675263c084547ed411fa6ae3d7aa6c826b7616076a2e6230000e0a46"
+    "lockSha256": "28c612c32e3277d2e4d258962db56173b3806397d1210dddcd810196753d1376"
   }
 }

@@ -387,10 +387,10 @@ export async function queryPublicDataset(
         : jsonSafe({ ...shared, dataset: query.dataset, pensioners });
     }
     case "eurostat_cofog": {
-      const { queryEurostatCofog } = await import("@/lib/eurostat-cofog-snapshot");
+      const { queryEurostatCofogPublic } = await import("@/lib/eurostat-cofog-snapshot");
       return jsonSafe({
         dataset: query.dataset,
-        ...queryEurostatCofog({ geo: query.country, year: query.year, function: query.cofog }),
+        ...queryEurostatCofogPublic({ geo: query.country, year: query.year, function: query.cofog }),
       });
     }
     case "eurostat_conti_pa": {

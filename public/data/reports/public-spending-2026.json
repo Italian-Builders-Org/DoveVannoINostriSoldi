@@ -39,7 +39,7 @@
       "S01",
       "S02"
     ],
-    "sourceDataArtifactSha256Declared": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8",
+    "sourceDataArtifactSha256Declared": "c2cf3151a230ec1d173968772230a66db3057a792da385f151c9cc62e6db02dd",
     "provenance": "Valori arrotondati della superficie DVNS, sostenuta dallo snapshot Eurostat già in repository. Metadato letto, bytes del dataset completo non verificati qui.",
     "reconciliation": "Il totale ufficiale resta indipendente dalla somma delle divisioni. Qui i dieci valori esposti coincidono al livello di arrotondamento usato; non si corregge alcuna cella per forzare la somma."
   },
@@ -1268,7 +1268,7 @@
       "verificationChannel": "existing-project-snapshot",
       "originalBytesSha256": null,
       "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
-      "note": "Valori del report trascritti dalla superficie pubblica, arrotondati a 0,01 miliardi. Il controllo sui byte del dataset completo non è stato eseguito in questa sessione. Il metadato nel repository dichiara SHA-256 5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8 per il proprio artefatto. Verifica obbligatoria in repository prima del rilascio."
+      "note": "Valori del report trascritti dalla superficie pubblica, arrotondati a 0,01 miliardi. Il controllo sui byte del dataset completo non è stato eseguito in questa sessione. Il metadato nel repository dichiara SHA-256 c2cf3151a230ec1d173968772230a66db3057a792da385f151c9cc62e6db02dd per il proprio artefatto. Verifica obbligatoria in repository prima del rilascio."
     },
     {
       "id": "S02",

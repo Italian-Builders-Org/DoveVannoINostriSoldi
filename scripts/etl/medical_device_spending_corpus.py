@@ -108,7 +108,7 @@ def prepare(
                 "publicationDate": release["publicationDate"],
                 "acquisitionDate": release["acquisitionDate"],
                 "checkedAt": release["checkedAt"],
-                "updateFrequency": "annuale; revisioni possibili, acquisizione e promozione manuali",
+                "updateFrequency": "una tantum (risorsa annuale); acquisizione e promozione manuali",
                 "canonicalUrls": [release["landingUrl"], release["downloadUrl"]],
             }
         corpus.validate_spec(spec)

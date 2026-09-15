@@ -15,6 +15,7 @@
 /tests/fixtures/inps-assegno-unico/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # INPS integrazioni salariali CSV are published with CRLF; hashes pin those exact bytes.
 /tests/fixtures/inps-integrazioni-salariali/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tests/fixtures/inps-cig-fondi-solidarieta/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 
 *.gz binary
 *.ico binary

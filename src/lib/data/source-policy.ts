@@ -40,6 +40,8 @@ export type SourceId =
   | "inps-naspi"
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
+  | "inps-cig-fondi-solidarieta"
+  | "inl-vigilanza"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -664,6 +666,36 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-integrazioni-salariali", "domain:social-benefits", "domain:labour"],
+  },
+  "inps-cig-fondi-solidarieta": {
+    id: "inps-cig-fondi-solidarieta",
+    label: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Package CKAN cig-fondi-di-solidarieta-2023-2024. Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package. Ore autorizzate, non euro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
+  },
+  "inl-vigilanza": {
+    id: "inl-vigilanza",
+    label: "INL · vigilanza ispettiva 2025",
+    owner: "Ispettorato Nazionale del Lavoro",
+    sourceUrl: "https://www.ispettorato.gov.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Relazione annuale e rapporto vigilanza 2025 (PDF). Snapshot aggiornabile solo dopo nuova acquisizione PDF e validazione offline; licenza CC BY 3.0 IT.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inl-vigilanza", "domain:labour", "domain:enforcement"],
   },
   "mef-iva": {
     id: "mef-iva",

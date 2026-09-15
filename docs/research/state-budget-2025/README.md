@@ -1,4 +1,4 @@
-# Rapporto sulla spesa pubblica: revisione della PR #509
+# Rapporto sulla spesa pubblica: seguito dopo la PR #509
 
 La pagina pubblica e il PDF conservano `/report/bilancio-stato-2025`.
 Il contenuto di lettura ora vive in `src/content/reports/state-budget-reader.json`;

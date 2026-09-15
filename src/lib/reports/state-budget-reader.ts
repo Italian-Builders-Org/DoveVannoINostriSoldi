@@ -10,6 +10,30 @@ export type ReaderCase = {
   math: { calculationIds: string[]; explanation: string; rows: { label: string; numerator: string; denominator: string; result: string }[] } | null;
 };
 export type ReaderSource = { id: string; publisher: string; title: string; url: string; locator: string; access: string; period: string; publishedOn: string | null; checkedOn: string; originalBytesSha256: string | null };
+export type AuditAmounts = {
+  commitmentsCpCents: string; paymentsCompetenceCpCents: string; remainingCpCents: string;
+  paymentsResidualRsCents: string; paymentsCashCsCents: string; remainingRsCents: string; residualsEndCents: string;
+};
+export type AuditContext = { title: string; paragraphs: string[]; technical: string; sourceIds: string[] };
+export type ReaderAudit = {
+  version: number; sourceId: string; year: number; ministries: (AuditAmounts & {code: string; label: string})[];
+  totals: AuditAmounts;
+  history: {year: number; totalMillion: number; currentMillion: number; capitalMillion: number; newMillion: number}[];
+  upstream: {rowsReprocessed: number; aggregatesProcessed: number; declaredHashesVerified: boolean; snapshotSha256Declared: string};
+  funding: AuditContext; execution: AuditContext; historyIntro: AuditContext; inpsContext: AuditContext; foreign: AuditContext;
+  portfolios: {label: string; billion: string}[]; foreignRows: {label: string; million: string}[];
+  readerOutcome: string; exclusions: {title: string; reason: string}[];
+};
+export type SpendingReview = {
+  version: number; title: string; intro: string[]; scope: string; conclusion: string;
+  chronology: { period: string; actor: string; title: string; text: string; sourceIds: string[] }[];
+  stages: { label: string; text: string }[];
+  series: { id: string; title: string; unit: string; rows: { year: number; metric: string; status: string }[]; note: string; sourceIds: string[] }[];
+  result2024: { title: string; paragraphs: string[]; sourceIds: string[] };
+  tracker: { theme: string; proposal: string; status: string; result: string; measure: string; sourceIds: string[]; caseId: string | null }[];
+  documents: { id: string; period: string; title: string; sourceId: string; url: string; reading: string; use: string }[];
+  corrections: { claim: string; finding: string }[]; notReconstructed: string[];
+};
 export type ReaderReport = {
   schemaVersion: number; revision: string; title: string; summary: string; route: string; pdfPath: string;
   publishedOn: string; modifiedOn: string; basePr: number; baseCommit: string;
@@ -20,6 +44,9 @@ export type ReaderReport = {
   municipal: { title: string; paragraphs: string[]; charts: ReaderChart[]; sourceIds: string[] };
   method: string[]; glossary: { term: string; definition: string }[]; legacyEvidenceUrl: string;
   noNationalWasteTotal: boolean;
+  audit: ReaderAudit;
+  spendingReview: SpendingReview;
+  chapters: {id: string; title: string; intro: string; caseIds: string[]}[];
 };
 const DECIMAL = /^-?\d+(?:\.\d+)?$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -131,6 +158,8 @@ export function validateReader(report: ReaderReport): ReaderReport {
   }
   requiredSources(report.municipal.sourceIds);
   report.municipal.charts.forEach(checkChart);
+  validateReaderAudit(report);
+  validateSpendingReview(report);
   return report;
 }
 export function validateReaderSnapshot(report: ReaderReport, observations: readonly {geo: string; year: number; function: string; amountCents: number; shareOfGdpHundredths: number}[]): void {
@@ -142,4 +171,54 @@ export function validateReaderSnapshot(report: ReaderReport, observations: reado
   }
   const total = rows.find(row => row.function === 'TOTAL')!;
   if (String(total.shareOfGdpHundredths / 100) !== report.macro.gdpPercent) throw new Error('Quota PIL revisionata');
+}
+
+/** Reconcile the acquired aggregates, without claiming to process the 5,395 upstream rows. */
+export function validateReaderAudit(report: ReaderReport): void {
+  const a = report.audit;
+  const fields = ['commitmentsCpCents','paymentsCompetenceCpCents','remainingCpCents','paymentsResidualRsCents','paymentsCashCsCents','remainingRsCents','residualsEndCents'] as const;
+  const identities = [[fields[0],fields[1],fields[2]],[fields[4],fields[1],fields[3]],[fields[6],fields[2],fields[5]]] as const;
+  const integer = (v: string) => { if (!/^\d+$/.test(v)) throw new Error('Centesimi non validi'); return BigInt(v); };
+  if (!a || a.version !== 1 || a.year !== 2025 || a.ministries.length !== 15 || new Set(a.ministries.map(r => r.code)).size !== 15) throw new Error('Perimetro audit non valido');
+  if (a.upstream.rowsReprocessed !== 0 || a.upstream.aggregatesProcessed !== 15 || a.upstream.declaredHashesVerified !== false) throw new Error('Copertura non documentata');
+  for (const row of a.ministries) {
+    for (const key of fields) integer(row[key]);
+    for (const [total,left,right] of identities) if (integer(row[total]) !== integer(row[left]) + integer(row[right])) throw new Error('Identità ministeriale non riconciliata');
+    for (const key of fields.slice(0,3)) {
+      const metric = report.metrics[`min-${row.code}-${key.toLowerCase()}`];
+      if (calculateRounded({operation:'ratio', inputs:[row[key],'100'], roundDigits:2}) !== calculateRounded({operation:'ratio', inputs:[metric.value,'1'], roundDigits:2})) throw new Error('Metrica ministeriale scollegata');
+    }
+  }
+  for (const key of fields) if (a.ministries.reduce((sum,r) => sum + integer(r[key]),BigInt(0)) !== integer(a.totals[key])) throw new Error('Totali ministeriali non riconciliati');
+  if (a.history.length !== 10 || a.history.some((r,i) => r.year !== 2015+i)) throw new Error('Decennio incompleto');
+  for (const row of a.history) {
+    for (const key of ['totalMillion','currentMillion','capitalMillion','newMillion'] as const) if (!Number.isSafeInteger(row[key]) || row[key] < 0) throw new Error('Dato storico non valido');
+    if (Math.abs(row.currentMillion + row.capitalMillion - row.totalMillion) > 1) throw new Error('Scarto storico oltre la tolleranza');
+    if (String(row.totalMillion) !== report.metrics[`residual-${row.year}`].value) throw new Error('Grafico storico scollegato');
+  }
+  for (const key of ['funding','execution','historyIntro','inpsContext','foreign'] as const) {
+    if (!a[key].sourceIds.length || a[key].sourceIds.some(id=>!report.sources.some(s=>s.id===id))) throw new Error('Fonte contesto mancante');
+  }
+  for (const [rows,field,prefix] of [[a.portfolios,'billion','inps-port-'],[a.foreignRows,'million','aps-']] as const) {
+    rows.forEach((row,i)=> { const value = 'billion' in row ? row.billion : row.million; if (!DECIMAL.test(value) || value !== report.metrics[prefix+i].value) throw new Error('Metrica contesto scollegata: '+field); });
+  }
+  const chapterIds = report.chapters.flatMap(ch=>ch.caseIds);
+  if (JSON.stringify(chapterIds) !== JSON.stringify(report.cases.map(c=>c.id))) throw new Error('Indice incompleto o duplicato');
+}
+
+/** Keep archive entries, dated results and proposed savings separate. */
+export function validateSpendingReview(report: ReaderReport): void {
+  const sr = report.spendingReview;
+  if (!sr || sr.version !== 1 || sr.stages.length !== 4 || sr.series.length !== 2) throw new Error('Struttura spending review mancante');
+  const source = (id: string) => { if (!report.sources.some(s => s.id === id)) throw new Error('Fonte spending review mancante'); };
+  const ids = sr.documents.map(d => d.id);
+  if (new Set(ids).size !== ids.length) throw new Error('Documento spending review duplicato');
+  sr.documents.forEach(d => { source(d.sourceId); if (new URL(d.url).protocol !== 'https:' || !d.reading || !d.use) throw new Error('Documento spending review incompleto'); });
+  sr.chronology.forEach(c => c.sourceIds.forEach(source));
+  sr.result2024.sourceIds.forEach(source);
+  sr.tracker.forEach(t => { t.sourceIds.forEach(source); if (t.caseId && !report.cases.some(c => c.id === t.caseId)) throw new Error('Rimando alla scheda mancante'); });
+  sr.series.forEach(s => { s.sourceIds.forEach(source); s.rows.forEach(row => { readerValue(report,row.metric); if (!['proposta','riportato','previsione'].includes(row.status)) throw new Error('Natura del risparmio non dichiarata'); }); });
+  if (sr.series[0].rows.some(r => r.status !== 'proposta') || sr.series[1].rows.find(r => r.year === 2018)?.status !== 'previsione') throw new Error('Proposte o previsioni presentate come risultati');
+  if (readerValue(report,'sr-army-reconciliation') !== '0' || readerValue(report,'sr-rents-missed') !== '245000') throw new Error('Riconciliazione dei nuovi riscontri alterata');
+  if (readerValue(report,'sr-pg-reconciliation') !== report.metrics['sr-pg-total'].value) throw new Error('Piani gestionali non riconciliati');
 }

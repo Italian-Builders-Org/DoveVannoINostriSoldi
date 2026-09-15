@@ -269,6 +269,32 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["regione", "mese", "tipo intervento", "tabella"],
   },
   {
+    slug: "inps-cig-fondi-solidarieta",
+    name: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    area: "Ammortizzatori sociali · CIG Fondi di Solidarietà",
+    cadence: "Annuale; package aggiornato al 2026-01-17",
+    coverage:
+      "Italia per 20 regioni, dettaglio mensile 2023–2024; gestioni FIS e Altri fondi; rami Industria/Commercio/Credito/ex Enti Pubblici",
+    format: "CSV UTF-8 · snapshot JSON verificato",
+    url: "https://opendata.inps.it/opendata",
+    note: "Ore autorizzate, non euro e non lavoratori/domande/mensilità. Distinto da integrazioni salariali CIGO/CIGS. Licenza cc-by per package.",
+    joinKeys: ["regione", "mese", "gestione fondi", "ramo di attività"],
+  },
+  {
+    slug: "inl-vigilanza",
+    name: "INL · vigilanza ispettiva (ispezioni, esiti, recuperi)",
+    owner: "Ispettorato Nazionale del Lavoro",
+    area: "Vigilanza sul lavoro · controlli e irregolarità",
+    cadence: "Annuale; Relazione 2025 pubblicata il 2026-04-23",
+    coverage:
+      "Italia, DIL, regioni e province 2025; settori Agricoltura/Industria/Edilizia/Terziario/ND",
+    format: "PDF ufficiale · snapshot JSON verificato",
+    url: "https://www.ispettorato.gov.it/",
+    note: "Tasso di irregolarità su ispezioni mirate, non stima dell'economia. Recuperi distinti da tax gap MEF/VAT gap/NOE. Licenza CC BY 3.0 IT.",
+    joinKeys: ["territorio", "settore", "tabella"],
+  },
+  {
     slug: "mef-iva",
     name: "MEF · principali grandezze IVA",
     owner: "MEF — Dipartimento delle Finanze",

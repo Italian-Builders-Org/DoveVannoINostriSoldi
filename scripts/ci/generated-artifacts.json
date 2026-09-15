@@ -455,7 +455,9 @@
         "tests/etl/test_conto_annuale.py",
         "tests/etl/test_eurostat_inequality_corpus.py",
         "tests/etl/test_istat_economia_non_osservata.py",
-        "tests/etl/test_istat_economia_non_osservata_territoriale.py"
+        "tests/etl/test_istat_economia_non_osservata_territoriale.py",
+        "tests/etl/test_medical_device_spending_profile.py",
+        "tests/etl/test_medical_device_spending_model.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",
@@ -465,7 +467,8 @@
         "tests/pnrr-projects.test.mjs",
         "tests/conto-annuale.test.mjs",
         "tests/istat-economia-non-osservata.test.mjs",
-        "tests/istat-economia-non-osservata-territoriale.test.mjs"
+        "tests/istat-economia-non-osservata-territoriale.test.mjs",
+        "tests/medical-device-corpus.test.mjs"
       ],
       "generator": {
         "command": "python scripts/etl/integrated_curated_datasets.py build",

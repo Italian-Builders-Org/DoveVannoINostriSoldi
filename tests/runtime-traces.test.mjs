@@ -30,6 +30,8 @@ test("runtime package guard rejects accidental repository-wide and cross-domain 
   assert.throws(() => checkTrace(root, manifest), /traces unrelated files/);
   const other = fixture(t, ["src/data/generated/unrelated/large.json"]);
   assert.throws(() => checkTrace(other.root, other.manifest, [], ["src/data/generated/unrelated"]), /traces unrelated files/);
+  const prefixed = fixture(t, ["src/data/generated/integrated/rows/salute-spesa-dispositivi-2020.part-00000.jsonl.gz"]);
+  assert.throws(() => checkTrace(prefixed.root, prefixed.manifest, [], [], ["src/data/generated/integrated/rows/salute-spesa-dispositivi-"]), /traces unrelated files/);
 });
 
 test("runtime package guard fails on traced files missing from the deployment", (t) => {

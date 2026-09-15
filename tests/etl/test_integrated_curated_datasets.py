@@ -82,6 +82,41 @@ def source_spec(
 
 
 class IntegratedCuratedDatasetsTests(unittest.TestCase):
+    def test_empty_public_csv_closes_without_a_row_chunk(self):
+        spec = self.write_fixture(b"name|private_id|amount|source|note\n", rows=0)
+        self.build()
+        self.check()
+        entry, receipt, chunks = ETL.build_delimited_artifacts(self.source_root, spec["datasets"][0], {}, self.rows_dir)
+        self.assertEqual(entry["publicRows"], 0)
+        self.assertIsNone(receipt["rowsSha256"])
+        self.assertEqual(chunks, {})
+
+    def test_streamed_csv_matches_whole_builder_across_chunks(self):
+        payload = ("name|private_id|amount|source|note\n" +
+                   'Nome|RSSMRA80A01H501U|-0,10|https://example.org/doc|"due\nrighe RSSMRA80A01H501U"\n' * 1001).encode()
+        spec = self.write_fixture(payload, rows=1001, private_fields=["private_id"], source_fields=["source"])
+        item = spec["datasets"][0]
+        metadata = ETL.resolved_source_metadata(spec, item["id"])
+        entry, rows, receipt, _ = ETL.build_dataset(item, ETL.parse_dataset(self.source_root, item), metadata)
+        actual_entry, actual_receipt, artifacts = ETL.build_delimited_artifacts(self.source_root, item, metadata, self.rows_dir)
+        self.assertEqual(actual_entry, entry)
+        self.assertEqual(actual_receipt, receipt)
+        self.assertEqual(artifacts, {self.rows_dir / ETL.row_chunk_name(item["id"], i): ETL.canonical_gzip(chunk)
+                                   for i, chunk in enumerate(ETL.row_payload_chunks(item["id"], rows))})
+        seen = set()
+        counts = [0, 0]
+        for ordinal, chunk in enumerate(ETL.row_payload_chunks(item["id"], rows)):
+            batch_counts = ETL.validate_public_rows(item=item, rows_payload=chunk,
+                expected_rows=len(chunk.splitlines()), row_offset=ordinal * ETL.PUBLIC_ROW_CHUNK_ROWS, seen_ids=seen)
+            counts = [left + right for left, right in zip(counts, batch_counts, strict=True)]
+        self.assertEqual(tuple(counts), ETL.validate_public_rows(item=item, rows_payload=rows, expected_rows=1001))
+        self.assertEqual(len(seen), 1001)
+        with self.assertRaisesRegex(ETL.DatasetBuildError, "duplicato"):
+            ETL.validate_public_rows(item=item, rows_payload=rows, expected_rows=1001, seen_ids=seen)
+        for invalid in (1000, 1002):
+            with self.subTest(rows=invalid), self.assertRaises(ETL.DatasetBuildError):
+                ETL.build_delimited_artifacts(self.source_root, {**item, "expected": {**item["expected"], "rows": invalid}}, metadata, self.rows_dir)
+
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.temporary_root = Path(self.temporary.name)

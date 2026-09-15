@@ -159,12 +159,17 @@ def append(
         totals["derivedOnlyRows"] -= receipt["publication"]["derivedOnlyRows"]
         totals["sourceBytes"] -= receipt["source"]["bytes"]
     for item in selected:
-        parsed = corpus.parse_dataset(source_root, item)
-        entry, rows_payload, receipt, _private_rows = corpus.build_dataset(item, parsed, corpus.resolved_source_metadata(spec, item["id"]))
+        metadata = corpus.resolved_source_metadata(spec, item["id"])
+        if item["dataKind"] == "delimited" and not item.get("sources") and item["publication"] in {"rows", "source-index"}:
+            entry, receipt, chunks = corpus.build_delimited_artifacts(source_root, item, metadata, rows_dir)
+            artifacts.update(chunks)
+        else:
+            parsed = corpus.parse_dataset(source_root, item)
+            entry, rows_payload, receipt, _private_rows = corpus.build_dataset(item, parsed, metadata)
+            if rows_payload is not None:
+                for ordinal, chunk in enumerate(corpus.row_payload_chunks(item["id"], rows_payload)):
+                    artifacts[rows_dir / corpus.row_chunk_name(item["id"], ordinal)] = corpus.canonical_gzip(chunk)
         receipt_path = receipts_dir / f"{item['id']}.receipt.json"; artifacts[receipt_path] = corpus.canonical_json(receipt)
-        if rows_payload is not None:
-            for ordinal, chunk in enumerate(corpus.row_payload_chunks(item["id"], rows_payload)):
-                artifacts[rows_dir / corpus.row_chunk_name(item["id"], ordinal)] = corpus.canonical_gzip(chunk)
         new_entries.append(entry)
         totals["datasets"] += 1
         totals["sourceRows"] += receipt["source"]["rows"]

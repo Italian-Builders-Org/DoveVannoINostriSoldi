@@ -25,6 +25,7 @@ import zlib
 from contextlib import contextmanager
 from dataclasses import dataclass
 from importlib import metadata as importlib_metadata
+from itertools import batched
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable
 from urllib.parse import parse_qsl, unquote, urlsplit
@@ -2322,7 +2323,10 @@ def build_dataset(
     item: dict[str, Any],
     parsed: ParsedDataset,
     source_metadata: dict[str, Any],
+    *, row_offset: int = 0,
 ) -> tuple[dict[str, Any], bytes | None, dict[str, Any], list[dict[str, Any]]]:
+    if type(row_offset) is not int or row_offset < 0:
+        raise DatasetBuildError("offset righe non valido")
     dataset_id = item["id"]
     private_fields = set(item["privateFields"])
     source_fields = set(item["sourceFields"])
@@ -2331,8 +2335,8 @@ def build_dataset(
     private_rows: list[dict[str, Any]] = []
     source_rows = 0
     public_redactions = 0
-    for index, values in enumerate(parsed.rows, start=1):
-        source_id, source_file_row = parsed.row_origins[index - 1]
+    for index, values in enumerate(parsed.rows, start=row_offset + 1):
+        source_id, source_file_row = parsed.row_origins[index - row_offset - 1]
         canonical_cells = dict(zip(parsed.headers, values, strict=True))
         private_row_digest = sha256_bytes(canonical_json(canonical_cells))
         private_values = repeated_private_identifiers(canonical_cells, private_fields)
@@ -2450,6 +2454,59 @@ def build_dataset(
     if parsed.inspection is not None:
         catalog_entry["inspection"] = parsed.inspection
     return catalog_entry, rows_payload, receipt, private_rows
+
+
+def build_delimited_artifacts(
+    source_root: Path, item: dict[str, Any], source_metadata: dict[str, Any], rows_dir: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[Path, bytes]]:
+    """Same projection/receipts as build_dataset, retaining only one raw CSV batch.
+
+    Compressed output stays in memory for the append transaction's rollback.
+    This path is for one delimited source with public rows, not source sets.
+    """
+    if item["dataKind"] != "delimited" or item.get("sources") or item["publication"] not in {"rows", "source-index"}:
+        raise DatasetBuildError("streaming richiede una singola tabella pubblica")
+    expected = item["expected"]
+    headers = expected["headers"]
+    count = redactions = sourced = 0
+    digest = hashlib.sha256()
+    artifacts = {}
+    entry = receipt = None
+    with open_verified_pinned_source(source_root / item["relativePath"], expected["bytes"], expected["sha256"], item["id"]) as raw:
+        text = io.TextIOWrapper(raw, encoding=item.get("encoding", "utf-8-sig"), newline="")
+        try:
+            reader = csv.reader(text, delimiter=parse_delimiter(item["delimiter"], item["id"]))
+            if next(reader, None) != headers:
+                raise DatasetBuildError(f"schema sorgente divergente per {item['id']}")
+            for ordinal, batch in enumerate(batched(reader, PUBLIC_ROW_CHUNK_ROWS)):
+                if any(len(row) != len(headers) for row in batch):
+                    raise DatasetBuildError(f"righe malformed per {item['id']}")
+                parsed = ParsedDataset(headers, list(batch), expected["sha256"], expected["bytes"], [],
+                    [("source-0001", count + i) for i in range(1, len(batch) + 1)], False, len(batch), None)
+                entry, payload, receipt, _ = build_dataset(item, parsed, source_metadata, row_offset=count)
+                count += len(batch)
+                if count > expected["rows"]:
+                    raise DatasetBuildError(f"conteggio sorgente divergente per {item['id']}")
+                assert payload is not None
+                # Reuse the canonical chunk size and gzip checks, including oversized rows.
+                chunk, = row_payload_chunks(item["id"], payload)
+                artifacts[rows_dir / row_chunk_name(item["id"], ordinal)] = canonical_gzip(chunk)
+                digest.update(payload)
+                redactions += receipt["publication"]["redactions"]
+                sourced += receipt["publication"]["rowsWithPublicSource"]
+        finally:
+            text.detach()  # The pinned-source context owns and rechecks this fd.
+    if count != expected["rows"]:
+        raise DatasetBuildError(f"conteggio sorgente divergente per {item['id']}")
+    if entry is None:
+        parsed = ParsedDataset(headers, [], expected["sha256"], expected["bytes"], [], [], False, 0, None)
+        entry, _, receipt, _ = build_dataset(item, parsed, source_metadata)
+    receipt["source"]["rows"] = count
+    receipt["publication"].update(publicRows=count, redactions=redactions, rowsWithPublicSource=sourced)
+    receipt["rowsSha256"] = digest.hexdigest() if count else None
+    entry.update(rows=count, publicRows=count, rowsWithPublicSource=sourced,
+                 receiptSha256=sha256_bytes(canonical_json(receipt)))
+    return entry, receipt, artifacts
 
 
 def write_bytes(path: Path, payload: bytes) -> None:
@@ -2639,7 +2696,11 @@ def validate_public_rows(
     rows_payload: bytes,
     expected_rows: int,
     url_validator: Callable[[str], bool] = is_safe_public_url,
+    row_offset: int = 0,
+    seen_ids: set[str] | None = None,
 ) -> tuple[int, int]:
+    if type(row_offset) is not int or row_offset < 0:
+        raise DatasetBuildError("offset righe non valido")
     dataset_id = item["id"]
     if expected_rows == 0:
         if rows_payload:
@@ -2662,12 +2723,12 @@ def validate_public_rows(
     private_fields = set(item["privateFields"])
     rows_with_public_source = 0
     redaction_count = 0
-    seen_ids: set[str] = set()
+    seen_ids = set() if seen_ids is None else seen_ids
     allowed_redactions = {
         "personal-identifier", "internal-path", "internal-process-name",
         "private-value-copy", "credential", "unsafe-url",
     }
-    for source_row, line in enumerate(lines, start=1):
+    for source_row, line in enumerate(lines, start=row_offset + 1):
         try:
             row = json.loads(line)
         except json.JSONDecodeError as error:
@@ -2887,7 +2948,9 @@ def check_committed(
             chunk_count = (
                 expected_public_rows + PUBLIC_ROW_CHUNK_ROWS - 1
             ) // PUBLIC_ROW_CHUNK_ROWS
-            row_chunks: list[bytes] = []
+            rows_digest = hashlib.sha256()
+            rows_with_source = redactions = 0
+            seen_ids: set[str] = set()
             for ordinal in range(chunk_count):
                 rows_path = rows_dir / row_chunk_name(item["id"], ordinal)
                 label = f"{item['id']}:{ordinal}"
@@ -2909,16 +2972,16 @@ def check_committed(
                     raise DatasetBuildError(
                         f"gzip non deterministico per {item['id']}:{ordinal}"
                     )
-                row_chunks.append(chunk)
-            rows_payload = b"".join(row_chunks)
-            if sha256_bytes(rows_payload) != receipt.get("rowsSha256"):
+                rows_digest.update(chunk)
+                chunk_sources, chunk_redactions = validate_public_rows(
+                    item=item, rows_payload=chunk, expected_rows=expected_chunk_rows,
+                    url_validator=url_validator, row_offset=ordinal * PUBLIC_ROW_CHUNK_ROWS,
+                    seen_ids=seen_ids,
+                )
+                rows_with_source += chunk_sources
+                redactions += chunk_redactions
+            if (rows_digest.hexdigest() if expected_public_rows else None) != receipt.get("rowsSha256"):
                 raise DatasetBuildError(f"hash righe divergente per {item['id']}")
-            rows_with_source, redactions = validate_public_rows(
-                item=item,
-                rows_payload=rows_payload,
-                expected_rows=expected_public_rows,
-                url_validator=url_validator,
-            )
             if (
                 publication.get("rowsWithPublicSource") != rows_with_source
                 or publication.get("redactions") != redactions

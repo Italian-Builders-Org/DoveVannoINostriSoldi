@@ -990,6 +990,24 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   {
+    surface: "/dati",
+    title: "Spesa per dispositivi medici",
+    description: "Spesa rilevata 2020–2021, con rettifiche e perimetro della fonte; non incassi dei fabbricanti o prezzi unitari.",
+    datasets: [
+      { id: "salute-spesa-dispositivi-2020", label: "Spesa rilevata · 2020" },
+      { id: "salute-spesa-dispositivi-2021", label: "Spesa rilevata · 2021" },
+    ],
+  },
+  {
+    surface: "/dati",
+    title: "Anagrafica e classificazione dei dispositivi",
+    description: "Snapshot BD/RDM e CND distinti dalla spesa storica, senza riclassificazioni automatiche.",
+    datasets: [
+      { id: "salute-dispositivi-bdrdm", label: "Anagrafica BD/RDM · settembre 2026" },
+      { id: "salute-classificazione-cnd", label: "Classificazione CND · settembre 2026" },
+    ],
+  },
+  {
     surface: "/disuguaglianza",
     title: "Distribuzione dei redditi in Italia",
     description: "Gini e rapporto S80/S20, con anni dei redditi e della rilevazione distinti.",

@@ -1669,6 +1669,84 @@
       "trustModel": "Source-lock: le nove risposte SDMX-ML ufficiali dei package dfb_st_naspi_* (IODL 2.0 verificata per package) sono acquisite localmente e vincolate per URL, byte, SHA-256 e istante di preparazione SDMX; --check valida il bundle committato senza rete. Le distribuzioni CSV e JSON della stessa fonte sono scartate e il motivo e' nel lock. Copertura piena, celle soppresse distinte dallo zero e tre riconciliazioni ESATTE (regioni sulle ripartizioni, province sulle regioni, taglio per sesso contro taglio per eta') falliscono chiuse."
     },
     {
+      "id": "inps-assegno-unico-2022-2024",
+      "owner": "INPS Assegno Unico nuclei e figli 2022-2024",
+      "files": [
+        "src/data/generated/inps-assegno-unico-2022-2024.data.json",
+        "src/data/generated/inps-assegno-unico-2022-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_assegno_unico_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_assegno_unico_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-assegno-unico.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_assegno_unico_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-assegno-unico-2022-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui due CSV ufficiali CKAN (cc-by per package, non IODL 2.0). Importi in millesimi di euro senza arrotondamento. Perimetro AUU a domanda esclusi RdC. Chiavi uniche e conteggi tabelle fail-closed. Nuclei e figli restano tabelle distinte."
+    },
+    {
+      "id": "inps-integrazioni-salariali-2023",
+      "owner": "INPS integrazioni salariali lavoratori/domande/mensilita 2023",
+      "files": [
+        "src/data/generated/inps-integrazioni-salariali-2023.data.json",
+        "src/data/generated/inps-integrazioni-salariali-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_integrazioni_salariali_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-integrazioni-salariali.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-integrazioni-salariali-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui tre CSV ufficiali CKAN del report annuale Ammortizzatori Sociali 2023 (cc-by per package). Conteggi di lavoratori, domande e mensilita: nature distinte, nessun euro. Chiavi uniche e conteggi tabelle fail-closed. Copertura chiavi non forzata fra tabelle."
+    },
+    {
+      "id": "inps-cig-fondi-solidarieta-2023-2024",
+      "owner": "INPS CIG Fondi di Solidarieta ore autorizzate 2023-2024",
+      "files": [
+        "src/data/generated/inps-cig-fondi-solidarieta-2023-2024.data.json",
+        "src/data/generated/inps-cig-fondi-solidarieta-2023-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_cig_fondi_solidarieta_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-cig-fondi-solidarieta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sul CSV ufficiale CKAN cig-fondi-di-solidarieta-2023-2024 (cc-by per package). Ore autorizzate: nessun euro. Chiavi uniche e conteggi fail-closed. Distinto da integrazioni salariali lavoratori/domande/mensilita."
+    },
+    {
       "id": "mef-irpef-dettaglio-2017-2025",
       "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
       "files": [
@@ -1914,6 +1992,32 @@
       "sourceSpec": "scripts/etl/specs/eurostat-taxag-2014-2025.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock sulla risposta JSON-stat ufficiale gov_10a_taxag (URL, struttura SDMX, updated, byte, SHA-256). Pubblica 14 voci × sottosettori ESA; riconcilia D2_D5_D91=D2+D5+D91 e totale=tasse+D61. Celle assenti restano assenti. Importi in centesimi. CC BY 4.0."
+    },
+    {
+      "id": "eurostat-sha-health-2014-2025",
+      "owner": "Eurostat spesa sanitaria SHA hlth_sha11_hf 2014-2025",
+      "files": [
+        "src/data/generated/eurostat-sha-health-2014-2025.data.json",
+        "src/data/generated/eurostat-sha-health-2014-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_sha_health_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_sha_health_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-sha-health.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_sha_health_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-sha-health-2014-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sulla risposta JSON-stat ufficiale hlth_sha11_hf (URL, struttura SDMX, updated, byte, SHA-256). Pubblica 13 schemi SHA Italia 2014-2025; riconcilia TOT_HF=HF1+HF2+HF3+HF_UNK e le scomposizioni HF1/HF2. Il 2025 è flag p. Distinto da CE SSN e COFOG. CC BY 4.0."
     }
   ]
 }

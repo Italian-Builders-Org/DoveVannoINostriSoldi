@@ -7,14 +7,14 @@ import { PUBLIC_SITE_URL } from "@/lib/site";
 const canonical = `${PUBLIC_SITE_URL}${MONTHLY_REPORT_SERIES.routeBase}`;
 
 export const metadata: Metadata = {
-  title: MONTHLY_REPORT_SERIES.title,
-  description: "Report mensili sui dati pubblici italiani, scritti per cittadini curiosi con fonti, periodi, perimetri e limiti in chiaro.",
+  title: "Report",
+  description: "Analisi e report mensili sui dati pubblici italiani, con fonti e calcoli verificabili.",
   alternates: { canonical },
   openGraph: {
     type: "website",
     url: canonical,
-    title: MONTHLY_REPORT_SERIES.title,
-    description: "Una storia principale e rubriche stabili per capire i dati pubblici del mese.",
+    title: "Report",
+    description: "Analisi e report mensili sui dati pubblici italiani, con fonti e calcoli verificabili.",
     siteName: "DoveVannoINostriSoldi",
     locale: "it_IT",
   },

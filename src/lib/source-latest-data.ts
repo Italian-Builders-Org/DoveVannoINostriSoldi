@@ -5,6 +5,9 @@ import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
+import { inpsAssegnoUnicoData } from "@/lib/inps-assegno-unico-snapshot";
+import { inpsIntegrazioniSalarialiData } from "@/lib/inps-integrazioni-salariali-snapshot";
+import { inpsCigFondiSolidarietaData } from "@/lib/inps-cig-fondi-solidarieta-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
@@ -31,6 +34,7 @@ import { eurostatHicpData } from "@/lib/eurostat-hicp-snapshot";
 import { eurostatGdpData } from "@/lib/eurostat-gdp-snapshot";
 import { mefTaxGapNazionaleData } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { eurostatTaxagData } from "@/lib/eurostat-taxag-snapshot";
+import { eurostatShaHealthData } from "@/lib/eurostat-sha-health-snapshot";
 import { oecdTaxingWagesData } from "@/lib/oecd-taxing-wages-snapshot";
 import { getGovernmentScorecardSourceSummary } from "@/lib/government-scorecard-governments";
 
@@ -113,6 +117,18 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,
   },
+  "inps-assegno-unico": {
+    kind: "period",
+    label: `${inpsAssegnoUnicoData.period.from}-${inpsAssegnoUnicoData.period.to} (AUU a domanda, esclusi RdC)`,
+  },
+  "inps-integrazioni-salariali": {
+    kind: "period",
+    label: `${inpsIntegrazioniSalarialiData.period.from} (lavoratori/domande/mensilità; conteggi)`,
+  },
+  "inps-cig-fondi-solidarieta": {
+    kind: "period",
+    label: `${inpsCigFondiSolidarietaData.period.from}-${inpsCigFondiSolidarietaData.period.to} (ore autorizzate)`,
+  },
   "mef-irpef-dettaglio": {
     kind: "period",
     label: `${mefIrpefDettaglioData.taxPeriod.from}-${mefIrpefDettaglioData.taxPeriod.to} (anni di imposta)`,
@@ -132,6 +148,10 @@ const exhaustiveLatestDataBySlug = {
   "eurostat-taxag": {
     kind: "period",
     label: `${eurostatTaxagData.period.from}-${eurostatTaxagData.period.to}`,
+  },
+  "eurostat-sha-health": {
+    kind: "period",
+    label: `${eurostatShaHealthData.period.from}-${eurostatShaHealthData.period.to} (2025 provvisorio)`,
   },
   siope: {
     kind: "period",

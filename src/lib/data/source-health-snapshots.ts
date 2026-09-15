@@ -13,10 +13,20 @@ import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
+import { inpsAssegnoUnicoData, inpsAssegnoUnicoMetadata } from "@/lib/inps-assegno-unico-snapshot";
+import {
+  inpsIntegrazioniSalarialiData,
+  inpsIntegrazioniSalarialiMetadata,
+} from "@/lib/inps-integrazioni-salariali-snapshot";
+import {
+  inpsCigFondiSolidarietaData,
+  inpsCigFondiSolidarietaMetadata,
+} from "@/lib/inps-cig-fondi-solidarieta-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { eurostatTaxagData, eurostatTaxagMetadata } from "@/lib/eurostat-taxag-snapshot";
+import { eurostatShaHealthData, eurostatShaHealthMetadata } from "@/lib/eurostat-sha-health-snapshot";
 import { mefIrpefDettaglioData, mefIrpefDettaglioMetadata } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
@@ -371,6 +381,42 @@ function snapshotManagedInpsNaspi(): SourceHealth {
   };
 }
 
+function snapshotManagedInpsAssegnoUnico(): SourceHealth {
+  const artifact = inpsAssegnoUnicoMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-assegno-unico"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-assegno-unico", inpsAssegnoUnicoMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · Assegno Unico ${inpsAssegnoUnicoData.period.from}-${inpsAssegnoUnicoData.period.to} · ${inpsAssegnoUnicoData.coverage.observedRows.toLocaleString("it-IT")} righe provinciali (AUU a domanda, esclusi RdC) · importi in millesimi · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsAssegnoUnicoData.coverage.observedRows,
+  };
+}
+
+function snapshotManagedInpsIntegrazioniSalariali(): SourceHealth {
+  const artifact = inpsIntegrazioniSalarialiMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-integrazioni-salariali"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-integrazioni-salariali", inpsIntegrazioniSalarialiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · integrazioni salariali ${inpsIntegrazioniSalarialiData.period.from} · ${inpsIntegrazioniSalarialiData.coverage.observedRows.toLocaleString("it-IT")} righe (lavoratori/domande/mensilità) · conteggi, non euro · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsIntegrazioniSalarialiData.coverage.observedRows,
+  };
+}
+
+function snapshotManagedInpsCigFondiSolidarieta(): SourceHealth {
+  const artifact = inpsCigFondiSolidarietaMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-cig-fondi-solidarieta"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-cig-fondi-solidarieta", inpsCigFondiSolidarietaMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · CIG Fondi di Solidarietà ${inpsCigFondiSolidarietaData.period.from}-${inpsCigFondiSolidarietaData.period.to} · ${inpsCigFondiSolidarietaData.coverage.observedRows.toLocaleString("it-IT")} righe · ore autorizzate, non euro · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsCigFondiSolidarietaData.coverage.observedRows,
+  };
+}
+
 function snapshotManagedIstatEpea(): SourceHealth {
   const { source, edition, referencePeriod } = istatEpeaMetadata;
   return {
@@ -425,6 +471,17 @@ function snapshotManagedEurostatTaxag(): SourceHealth {
     latencyMs: null,
     detail: `Snapshot Eurostat gov_10a_taxag ${eurostatTaxagData.period.from}–${eurostatTaxagData.period.to}: ${eurostatTaxagData.coverage.publishedItems} voci, ${eurostatTaxagData.coverage.observedCells} celle osservate su ${eurostatTaxagData.coverage.totalCells}. Pubblicato ${eurostatTaxagMetadata.source.publicationDate}; acquisito ${eurostatTaxagMetadata.source.acquiredAt}; controllato ${eurostatTaxagMetadata.source.checkedAt}.`,
     recordCount: eurostatTaxagData.coverage.observedCells,
+  };
+}
+
+function snapshotManagedEurostatShaHealth(): SourceHealth {
+  return {
+    ...baseHealth("eurostat-sha-health"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-sha-health", eurostatShaHealthMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot Eurostat SHA hlth_sha11_hf ${eurostatShaHealthData.period.from}–${eurostatShaHealthData.period.to}: ${eurostatShaHealthData.coverage.publishedSchemes} schemi e ${eurostatShaHealthData.coverage.observedCells} celle (2025 provvisorio). Pubblicato ${eurostatShaHealthMetadata.source.publicationDate}; acquisito ${eurostatShaHealthMetadata.source.acquiredAt}; controllato ${eurostatShaHealthMetadata.source.checkedAt}.`,
+    recordCount: eurostatShaHealthData.coverage.observedCells,
   };
 }
 
@@ -581,11 +638,15 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "inps-naspi": snapshotManagedInpsNaspi,
+  "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
+  "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,
+  "inps-cig-fondi-solidarieta": snapshotManagedInpsCigFondiSolidarieta,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
   "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
   "eurostat-taxag": snapshotManagedEurostatTaxag,
+  "eurostat-sha-health": snapshotManagedEurostatShaHealth,
 };
 
 export function buildSourceHealthSnapshots() {

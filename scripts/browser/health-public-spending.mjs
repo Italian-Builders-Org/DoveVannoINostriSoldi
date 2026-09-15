@@ -62,6 +62,23 @@ export async function inspectHealthHistory(page) {
   assert.match(await page.$eval("#fonti-sanita-pa", (element) => element.innerText), /non vanno sommati/);
   assert.match(await page.$eval("#fonti-sanita-pa", (element) => element.innerText), /SHA-256/);
 
+  await page.waitForSelector('[data-testid="sha-health-panel"]');
+  assert.match(await page.$eval("#sha-health-title", (element) => element.textContent), /Eurostat SHA · 2014/);
+  const sha2014 = await page.evaluate(async () => {
+    const response = await fetch("/api/sanita/sha?anno=2014&schema=TOT_HF");
+    if (!response.ok) throw new Error(`SHA API: ${response.status}`);
+    return response.json();
+  });
+  assert.equal(sha2014.observations.length, 1);
+  const shaEuros = sha2014.observations[0].amountCents / 100;
+  const shaCompact = `${new Intl.NumberFormat("it-IT", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: "always",
+  }).format(shaEuros / 1_000_000_000)} mld €`;
+  assert.equal(await page.$eval('[data-testid="sha-TOT_HF"]', (element) => element.textContent), shaCompact);
+  assert.match(await page.$eval('[data-testid="sha-health-panel"]', (element) => element.innerText), /non si somm|Non sommare/i);
+
   for (const year of [2014, 2020, 2024]) {
     if (year !== 2014) {
       await page.select("#health-year", String(year));
@@ -79,6 +96,18 @@ export async function inspectHealthHistory(page) {
     assert.match(await page.$eval("#health-total-title", (element) => element.textContent), new RegExp(String(year)));
     assert.match(await page.$eval("#ssn-accounting-title", (element) => element.textContent), /2024/);
     assert.match(await page.$eval("#posti-letto", (element) => element.innerText), /1° gennaio 2023/);
+    assert.match(await page.$eval("#sha-health-title", (element) => element.textContent), new RegExp(`Eurostat SHA · ${year}`));
+    const shaYear = await page.evaluate(async (selectedYear) => {
+      const response = await fetch(`/api/sanita/sha?anno=${selectedYear}&schema=TOT_HF`);
+      if (!response.ok) throw new Error(`SHA API: ${response.status}`);
+      return response.json();
+    }, year);
+    const shaYearCompact = `${new Intl.NumberFormat("it-IT", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: "always",
+    }).format(shaYear.observations[0].amountCents / 100 / 1_000_000_000)} mld €`;
+    assert.equal(await page.$eval('[data-testid="sha-TOT_HF"]', (element) => element.textContent), shaYearCompact);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Sanità ${year}: overflow`);
   }
   await page.reload({ waitUntil: "networkidle0" });

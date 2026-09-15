@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 70
+- Artefatti nel registro: 74
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 53 (PR umana dopo revisione)
+- manuale: 57 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -104,6 +104,9 @@ La revisione e il merge restano umani.
 | `istat-bes-relazioni-2011-2024` | 2011-2024 | 2026-09-13 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_relazioni.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
+| `inps-assegno-unico-2022-2024` | 2022-2024 | 2026-09-14 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_assegno_unico_snapshot.py --check` |
+| `inps-integrazioni-salariali-2023` | 2023-2023 | 2026-09-15 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check` |
+| `inps-cig-fondi-solidarieta-2023-2024` | 2023-2024 | 2026-09-15 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check` |
 | `mef-irpef-dettaglio-2017-2025` | 2016-2024 (anni di imposta) | 2026-09-05 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes | nessuno | nessuno | manuale | `python3 scripts/etl/mef_irpef_dettaglio_snapshot.py --check` |
 | `istat-enterprise-turnover` | 2024 | 2026-08-26T00:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/istat_enterprise_turnover.py --check` |
 | `education-atlas` | 2022/23-2024/25 | 2026-08-27T00:00:00+02:00 | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Studenti | `17 6 * * 1` | `.github/workflows/education-atlas-refresh.yml` | PR automatica | `python3 scripts/etl/education_atlas_snapshot.py --check` |
@@ -113,6 +116,7 @@ La revisione e il merge restano umani.
 | `eu-vat-gap-italy` | 2019-2024 | 2026-09-13 | https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en | nessuno | nessuno | manuale | `python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check` |
 | `mef-tax-gap-nazionale` | 2018-2022 | 2026-09-13 | https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/ | nessuno | nessuno | manuale | `python3 scripts/etl/mef_tax_gap_nazionale_snapshot.py --check` |
 | `eurostat-taxag-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_taxag_snapshot.py --check` |
+| `eurostat-sha-health-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_sha_health_snapshot.py --check` |
 
 ## Prossimo passo
 

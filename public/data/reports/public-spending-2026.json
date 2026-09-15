@@ -1,0 +1,1687 @@
+{
+  "schemaVersion": 1,
+  "reportId": "public-spending-2026",
+  "slug": "spesa-pubblica-italiana-2026",
+  "title": "Spesa pubblica italiana: dove intervenire",
+  "subtitle": "Dieci funzioni di spesa, servizi locali e costi evitabili. Ampliamento del rapporto sul Bilancio dello Stato.",
+  "edition": "14 settembre 2026",
+  "referenceDate": "2026-09-14",
+  "status": "draft-for-editorial-review",
+  "repositoryBase": "f9bb915a731a8278cd895d648517eb56e9f053c5",
+  "predecessor": {
+    "pr": 506,
+    "href": "/report/bilancio-stato-2025",
+    "note": "La prima analisi rimane consultabile e non viene riscritta."
+  },
+  "pdfPath": "/report/spesa-pubblica-italiana-2026.pdf",
+  "jsonPath": "/data/reports/public-spending-2026.json",
+  "csvPath": "/data/reports/public-spending-2026-claims.csv",
+  "scope": {
+    "name": "Amministrazioni pubbliche italiane, settore S13",
+    "accounting": "Competenza economica SEC 2010",
+    "macroYear": 2024,
+    "sectorEvidencePeriods": "2023-2025; documenti disponibili al 14 settembre 2026",
+    "coverage": "Tutte le 10 divisioni COFOG inquadrate, con approfondimento trasversale sugli enti locali. Ricognizione documentale e ricalcoli, non audit completo delle transazioni.",
+    "transactionAuditCoverage": null,
+    "reviewerSignoff": null,
+    "notClaimed": [
+      "Certificazione di regolarità della spesa",
+      "Stima nazionale degli sprechi",
+      "Ispezione di ogni contratto o pagamento",
+      "Causalità tra spesa aggregata e indicatori di risultato"
+    ]
+  },
+  "macro": {
+    "totalBillionRounded": "1109.15",
+    "shareGdpRounded": "50.4",
+    "roundingUnit": "0.01 billion EUR",
+    "sourceIds": [
+      "S01",
+      "S02"
+    ],
+    "sourceDataArtifactSha256Declared": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8",
+    "provenance": "Valori arrotondati della superficie DVNS, sostenuta dallo snapshot Eurostat già in repository. Metadato letto, bytes del dataset completo non verificati qui.",
+    "reconciliation": "Il totale ufficiale resta indipendente dalla somma delle divisioni. Qui i dieci valori esposti coincidono al livello di arrotondamento usato; non si corregge alcuna cella per forzare la somma."
+  },
+  "executive": [
+    "La prima versione cercava soprattutto casi circoscritti. Questo ampliamento cambia scala: parte dall’intero perimetro delle PA e collega ciascuna funzione a problemi di servizio, controlli economici e interventi verificabili. Gli importi della mappa non sono importi sospetti.",
+    "Protezione sociale e servizi generali valgono insieme circa il 57,6% della spesa della mappa; con la sanità si arriva al 70,7%, usando i valori arrotondati. Una revisione che guardi soltanto a piccoli errori editoriali trascurerebbe la maggior parte del problema decisionale. Queste quote non indicano dove si concentri lo spreco.",
+    "Emergono livelli di evidenza diversi: un costo imposto da una sentenza sulla depurazione; una discordanza numerica nei comunicati dei musei; una concentrazione nazionale di acquisti vicino a una soglia; divari o insufficienze nell’accesso a cure, nidi, acqua e servizi. Non sono risultati interscambiabili.",
+    "La domanda sulle risorse disponibili richiede un passo ulteriore: quanto costa rimuovere la causa del problema e quale spesa futura si evita davvero? Questo lavoro non produce un totale di miliardi recuperabili. Produce una selezione motivata degli interventi da misurare e dei dati necessari per decidere.",
+    "Dove una funzione migliora o il problema non è quantificabile, il report lo dice. Non si assume che ogni settore debba contenere un illecito o uno spreco già provato. Un miglioramento può richiedere più risorse, una diversa organizzazione o una riallocazione, non necessariamente un taglio."
+  ],
+  "assessmentLabels": {
+    "documented": "Fatto documentato",
+    "calculated": "Ricalcolo o incoerenza verificabile",
+    "policy-risk": "Rischio di policy documentato"
+  },
+  "sections": [
+    {
+      "code": "GF01",
+      "title": "Servizi generali delle amministrazioni pubbliche",
+      "amountBillionRounded": "170.41",
+      "headline": "Non tutta la spesa generale è burocrazia tagliabile",
+      "assessment": "Revisione della composizione",
+      "factIds": [
+        "F01"
+      ],
+      "analysis": [
+        "La prima scelta analitica è separare interessi, relazioni esterne, funzioni generali e servizi amministrativi. Un taglio percentuale alla categoria intera non è un piano di efficienza: mescola obblighi finanziari e costi operativi. Il confronto con il bilancio di un ministero darebbe inoltre un perimetro diverso.",
+        "Per cercare sprechi operativi conviene isolare acquisti ripetuti, licenze non utilizzate, canoni immobiliari e servizi esterni sovrapposti. Qui non è stato ricostruito un inventario nazionale che dimostri quanti di questi costi siano evitabili. La priorità deriva dalla dimensione della funzione, non da una percentuale di spreco stimata.",
+        "La revisione dovrebbe proteggere le attività di controllo che rendono verificabile la spesa. Ridurre costi di audit o competenze tecniche può abbassare il conto immediato e aumentare errori, contenziosi e dipendenza dai fornitori."
+      ],
+      "actions": [
+        "Creare per ogni amministrazione un inventario dei contratti ricorrenti con scadenza, quantità acquistata, uso effettivo e penali di uscita; confrontare rinnovo, rinegoziazione e dismissione.",
+        "Incrociare incarichi esterni e funzioni interne soltanto dopo aver distinto progetto straordinario, competenza specialistica e attività ordinaria. Misurare il risultato acquistato, non giudicare la consulenza dal nome.",
+        "Negli immobili confrontare canone, superficie omogenea, manutenzione, uso e costo del trasferimento. Un edificio disponibile non sostituisce gratuitamente una sede in uso."
+      ],
+      "limitations": "Interessi sul debito, costo amministrativo e trasferimenti non sono intercambiabili. Nessun importo della funzione viene qualificato in blocco come spreco.",
+      "quantification": "Risparmio netto non stimabile qui. Per un rinnovo: costo evitato documentato meno migrazione, formazione e servizio sostitutivo. Separare riduzione di cassa da capacità di lavoro liberata.",
+      "owner": "Amministrazioni centrali, RGS, responsabili acquisti e immobili",
+      "kpi": "Costo per servizio effettivamente erogato; licenze attive/acquistate; canone e costi accessori per superficie utilizzata.",
+      "sourceIds": [
+        "S01",
+        "S03",
+        "S16",
+        "S19",
+        "S23",
+        "S24"
+      ]
+    },
+    {
+      "code": "GF02",
+      "title": "Difesa",
+      "amountBillionRounded": "28.30",
+      "headline": "Valutare i programmi sul ciclo di vita, non soltanto sull’acquisto",
+      "assessment": "Priorità di controllo; spreco non quantificato",
+      "factIds": [
+        "F02"
+      ],
+      "analysis": [
+        "La spesa annuale e gli impegni su molti anni rispondono a domande diverse. Un programma può apparire sostenibile al momento dell’ordine e richiedere poi risorse per manutenzione, addestramento e aggiornamenti. L’analisi utile lega costi iniziali, consegne e oneri futuri nello stesso dossier.",
+        "L’efficienza non si misura contando semplicemente i mezzi acquistati. Per una revisione economica servono specifiche comparabili, disponibilità del servizio e capacità richiesta, senza esporre informazioni operative riservate. La sola differenza di prezzo fra Paesi o piattaforme non dimostra spreco.",
+        "Non emerge in questa ricognizione un ammontare nazionale verificato di acquisti inutili. Il risultato è una lacuna precisa: manca nel lavoro svolto un quadro riconciliato per programma di costi a vita intera e revisioni dello stesso perimetro."
+      ],
+      "actions": [
+        "Pubblicare, per la parte non riservata di ciascun programma, baseline di costo, revisioni, consegne e costi di sostegno, distinguendo ampliamenti dello scopo da rincari a parità di prestazione.",
+        "Confrontare opzioni di standardizzazione e acquisto congiunto sul costo totale atteso, includendo dipendenze industriali, tempi e rischi. Il beneficio deve essere dimostrato per programma.",
+        "Prima di un nuovo acquisto, documentare quali alternative di manutenzione o aggiornamento sono state confrontate e perché siano state escluse."
+      ],
+      "limitations": "COFOG, definizione NATO, bilancio del Ministero e fondi su altri ministeri hanno confini diversi. La programmazione UPB citata è del 2025, non una verifica degli stanziamenti correnti.",
+      "quantification": "Non stimabile. Le differenze di preventivo non sono economie realizzate. Una stima richiede stesso perimetro tecnico, calendario, rischio e costi operativi.",
+      "owner": "Difesa, altre amministrazioni finanziatrici e organi di controllo",
+      "kpi": "Scostamento del costo totale a parità di scopo; puntualità delle consegne; costo del sostegno dichiarabile pubblicamente.",
+      "sourceIds": [
+        "S01",
+        "S14",
+        "S16"
+      ]
+    },
+    {
+      "code": "GF03",
+      "title": "Ordine pubblico e sicurezza",
+      "amountBillionRounded": "39.09",
+      "headline": "Più capacità effettiva, non soltanto nuovi posti annunciati",
+      "assessment": "Criticità di servizio documentata",
+      "factIds": [
+        "F03",
+        "F04",
+        "F05"
+      ],
+      "analysis": [
+        "Il sovraffollamento è un problema nazionale misurabile. La distinzione fra posti regolamentari e posti utilizzabili è decisiva: un programma edilizio non migliora il servizio finché gli spazi non sono disponibili e sostenuti da personale e manutenzione.",
+        "Per la spesa penitenziaria il confronto utile è fra recupero di posti non utilizzabili, nuova costruzione e costi di funzionamento. Non si può ricavare il costo per detenuto dividendo l’intera funzione GF03, che include anche polizia, giustizia e altri servizi, per la popolazione carceraria.",
+        "La giustizia civile mostra nel frattempo un miglioramento dell’indicatore di durata. Questo impedisce di presentare tutta la funzione come inefficiente. Resta da capire quali interventi abbiano prodotto benefici ripetibili nei singoli uffici, controllando composizione dei casi e arretrato."
+      ],
+      "actions": [
+        "Legare i programmi edilizi a posti realmente consegnati e utilizzabili, con costo complessivo, data e gestione finanziata; separare i nuovi posti dal recupero di quelli temporaneamente chiusi.",
+        "Confrontare gli uffici giudiziari per materia, complessità e carico, non per numero grezzo di pratiche; verificare quali colli di bottiglia amministrativi possano essere rimossi.",
+        "Per acquisti e servizi comuni del comparto usare benchmark omogenei e controllare ripetizioni e rinnovi, senza inferire qualità della sicurezza dal solo importo."
+      ],
+      "limitations": "Affollamento e tempi giudiziari non misurano da soli lo spreco. Non si fanno proposte automatiche su pene, processi o persone.",
+      "quantification": "Nessun risparmio aggregato stimato. Il beneficio da valutare è costo per posto utilizzabile o procedimento comparabile, con qualità e garanzie preservate.",
+      "owner": "Giustizia, DAP, amministrazioni del comparto e soggetti attuatori dei lavori",
+      "kpi": "Posti effettivamente utilizzabili; costo e ritardo per consegna; durata dei procedimenti per materia e coorte.",
+      "sourceIds": [
+        "S01",
+        "S05",
+        "S09",
+        "S20"
+      ]
+    },
+    {
+      "code": "GF04",
+      "title": "Affari economici",
+      "amountBillionRounded": "112.38",
+      "headline": "Chiedere agli incentivi un risultato aggiuntivo e ai trasporti un servizio",
+      "assessment": "Rischio di inefficienza; esiti da verificare",
+      "factIds": [
+        "F06",
+        "F23"
+      ],
+      "analysis": [
+        "Il costo di un incentivo non è automaticamente spreco. Lo diventa, nella parte evitabile, quando finanzia un comportamento che si sarebbe verificato ugualmente senza generare altri benefici sufficienti. La domanda corretta è dunque sull’investimento aggiuntivo, non sul volume totale delle domande accolte.",
+        "Per trasporti e infrastrutture il prodotto pubblico è il servizio disponibile: collegamenti, affidabilità e tempi. Comprare mezzi o completare un’opera non equivale a offrire un collegamento utile. Occorre collegare finanziamento, spese di esercizio e domanda osservata.",
+        "La ricognizione non dimostra un ammontare di incentivi indebitamente concessi o di mezzi inutilizzati. Individua due controlli economici prioritari: addizionalità del sostegno e trasformazione dell’investimento in servizio. Le due valutazioni richiedono dataset diversi e non vanno aggregate come un’unica anomalia."
+      ],
+      "actions": [
+        "Per ogni misura distinguere costo fiscale, investimento agevolato e investimento addizionale stimato con un disegno di valutazione pubblicato; prevedere una revisione delle misure con effetti deboli o non misurabili.",
+        "Collegare i contributi ai trasporti alle corse effettive, alla puntualità e all’accessibilità, separando obblighi di servizio pubblico e linee commerciali.",
+        "Incrociare CUP, CIG, cronoprogramma e attivazione del servizio. Se un bene acquistato non è operativo, cercare prima l’assenza di personale, connessioni, autorizzazioni o manutenzione."
+      ],
+      "limitations": "La valutazione UPB riguarda il DDL 2026, non gli effetti osservati della legge definitiva. La difficoltà di collegamento è un esito dichiarato dalle famiglie, non prova di mezzi inutilizzati.",
+      "quantification": "Da stimare con valutazione causale o confronto tecnico. Le risorse agevolate non sono per intero un risparmio ottenibile eliminando l’incentivo.",
+      "owner": "Amministrazioni titolari delle misure, MIT, Regioni ed enti affidanti",
+      "kpi": "Investimento addizionale per euro di costo; corse effettive/contrattuali; puntualità e accessibilità; tempo tra collaudo e servizio.",
+      "sourceIds": [
+        "S01",
+        "S05",
+        "S15",
+        "S20",
+        "S21",
+        "S22"
+      ]
+    },
+    {
+      "code": "GF05",
+      "title": "Protezione dell’ambiente",
+      "amountBillionRounded": "19.83",
+      "headline": "Le sanzioni per mancata depurazione sono un costo evitabile all’origine",
+      "assessment": "Costo da inadempimento documentato",
+      "factIds": [
+        "F07"
+      ],
+      "analysis": [
+        "Qui non serve attribuire una probabilità di frode: esiste una condanna. Si può parlare di spreco amministrativo nel senso di un onere che non compra il servizio mancante e che un adempimento tempestivo avrebbe evitato. La responsabilità individuale e l’ammontare effettivamente pagato sono domande ulteriori.",
+        "La priorità operativa è ridurre i ritardi che generano nuove penalità e completare infrastrutture funzionanti. La somma forfettaria già imposta non è un risparmio futuro. Le penalità, invece, dipendono dalla persistenza dell’inadempimento e dagli adeguamenti riconosciuti.",
+        "Il confronto economico non può limitarsi a sanzione contro costo del cantiere: vanno inclusi salute, qualità delle acque, esercizio e manutenzione. E occorre evitare di costruire l’impianto lasciando irrisolti rete, allacciamenti o gestione. La spesa ambientale generale non coincide con il costo della sola depurazione."
+      ],
+      "actions": [
+        "Per ciascuna procedura di infrazione pubblicare gli importi effettivi liquidati, il perimetro non conforme e la quota di penalità collegata agli adeguamenti, senza usare il massimo teorico come pagamento.",
+        "Associare agli interventi CUP, data di completamento prevista, stato reale, responsabile del blocco e costo residuo per entrare in esercizio.",
+        "Stabilire priorità di completamento sulla riduzione documentata delle penalità e sull’effetto ambientale, verificando anche che il gestore possa mantenere il servizio."
+      ],
+      "limitations": "Il dispositivo del 2025 non certifica l’importo dovuto o pagato al settembre 2026. Non sono stati acquisiti i conteggi semestrali aggiornati. Le sanzioni non si sommano automaticamente a GF05: la classificazione contabile va verificata.",
+      "quantification": "10 milioni: obbligo forfettario da sentenza, non risparmio recuperato. 13.687.500 euro: base semestrale riducibile, non costo semestrale corrente. Risparmio netto futuro non stimato.",
+      "owner": "Amministrazioni e gestori competenti, soggetti attuatori e struttura commissariale",
+      "kpi": "Abitanti equivalenti messi in conformità; penalità effettiva per semestre; impianti entrati in esercizio e costo residuo.",
+      "sourceIds": [
+        "S01",
+        "S12",
+        "S21",
+        "S22"
+      ]
+    },
+    {
+      "code": "GF06",
+      "title": "Abitazioni e assetto territoriale",
+      "amountBillionRounded": "16.97",
+      "headline": "Prima rendere utile il patrimonio e ridurre le perdite di rete",
+      "assessment": "Perdita di risorsa documentata; costo evitabile non misurato",
+      "factIds": [
+        "F08",
+        "F09",
+        "F10"
+      ],
+      "analysis": [
+        "Le perdite di distribuzione e le interruzioni mostrano un problema di servizio su una scala più ampia del singolo appalto. Il dato non autorizza però a stimare euro sprecati moltiplicando la percentuale per il prelievo nazionale o per la tariffa: cambierebbero denominatore e significato economico.",
+        "Per l’acqua la domanda è quali interventi riducano perdite e interruzioni al minor costo lungo la vita utile: misurazione, gestione della pressione, riparazione e sostituzione mirata, oppure nuova capacità dove necessaria. La quota economicamente recuperabile è inferiore alla perdita totale e va misurata per rete.",
+        "Sul patrimonio abitativo la media nazionale del sovraccarico è relativamente favorevole, ma non certifica l’efficacia degli alloggi pubblici. La verifica proposta riguarda quanti alloggi siano assegnabili, quanti vuoti per manutenzione e quanto costi riportarli in uso. Questo report non inventa un inventario nazionale degli alloggi inutilizzati."
+      ],
+      "actions": [
+        "Confrontare progetti idrici per metri cubi realmente recuperati, continuità del servizio, energia evitata e costo di manutenzione, non soltanto per chilometri di rete rifatti.",
+        "Per gli alloggi confrontare recupero e nuova costruzione includendo tempi di assegnazione, lavori e gestione; rendere verificabili unità realmente abitabili e occupate.",
+        "Tenere separati bonus edilizi, patrimonio pubblico e servizio idrico. La classificazione SEC dei crediti fiscali deve essere verificata per misura e anno, senza trattarli tutti come semplici minori entrate."
+      ],
+      "limitations": "Perdite: solo capoluoghi nel dato utilizzato, comprese possibili componenti apparenti. Il servizio idrico può coinvolgere soggetti fuori S13; non equivale interamente alla spesa GF06.",
+      "quantification": "Nessun importo stimato. Per una rete: costo marginale evitato su volume recuperabile, al netto dell’intervento. Per un alloggio: costo per unità abitabile consegnata, non valore patrimoniale nominale.",
+      "owner": "Enti di governo d’ambito, gestori, Regioni, Comuni ed enti per l’abitare",
+      "kpi": "Perdite e continuità; costo marginale per m³ recuperato; alloggi resi abitabili e giorni fino all’assegnazione.",
+      "sourceIds": [
+        "S01",
+        "S05",
+        "S08",
+        "S21",
+        "S22"
+      ]
+    },
+    {
+      "code": "GF07",
+      "title": "Sanità",
+      "amountBillionRounded": "146.08",
+      "headline": "La priorità è trasformare risorse e capacità in prestazioni accessibili",
+      "assessment": "Criticità di accesso documentata",
+      "factIds": [
+        "F11",
+        "F12",
+        "F13"
+      ],
+      "analysis": [
+        "Il dato sulla rinuncia cambia la domanda dell’audit: non basta verificare che gli acquisti siano regolari, occorre sapere se producano prestazioni in tempi utili. Il problema non si risolve assumendo che tutta la spesa aggiuntiva sia necessaria oppure che tutta sia sprecata.",
+        "Un percorso concreto consiste nel confrontare, per la stessa prestazione e con complessità compatibile, slot disponibili, ore di personale, macchinari funzionanti, prenotazioni e prestazioni effettuate. Capacità finanziata ma non utilizzabile potrebbe indicare spreco; qui resta un’ipotesi da verificare con dati delle aziende, non un fatto nazionale già misurato.",
+        "Vanno controllati anche prezzi e servizi acquistati all’esterno, ma solo a parità di quantità, copertura oraria e condizioni. La spesa aggregata per dispositivi o una classe di farmaci non fornisce da sola il prezzo del singolo bene. Un taglio indiscriminato potrebbe peggiorare proprio l’accesso che si vuole migliorare."
+      ],
+      "actions": [
+        "Scegliere un insieme di prestazioni con domanda arretrata e ricostruire capacità, cause di mancato utilizzo e percorso di prenotazione; valutare il costo della prestazione aggiuntiva effettivamente erogata.",
+        "Confrontare impiego di personale stabile, straordinario e acquisto esterno includendo vincoli e continuità del servizio. Il confronto deve partire dallo stesso bisogno assistenziale.",
+        "Misurare attese e rinunce prima e dopo l’intervento, insieme a appropriatezza e qualità. Ridurre la spesa non conta come miglioramento se aumenta la quota di pazienti esclusi."
+      ],
+      "limitations": "Il totale COFOG non coincide con finanziamento SSN, conti economici sanitari o spesa SHA. La rinuncia alle cure non quantifica la quota evitabile della spesa.",
+      "quantification": "Nessuna percentuale di spreco applicata ai 146,08 miliardi. Il confronto è sul costo incrementale per prestazione appropriata e accessibile, con verifica dell’esito.",
+      "owner": "Regioni, aziende sanitarie, amministrazioni titolari di investimenti e acquisti",
+      "kpi": "Attesa mediana e coda per prestazione; prestazioni erogate/capacità; rinunce; costo e qualità a parità di bisogno.",
+      "sourceIds": [
+        "S01",
+        "S04",
+        "S16",
+        "S19",
+        "S20"
+      ]
+    },
+    {
+      "code": "GF08",
+      "title": "Attività ricreative, cultura e culto",
+      "amountBillionRounded": "18.77",
+      "headline": "Un errore pubblicato va corretto, ma non sostituisce la valutazione della spesa",
+      "assessment": "Incoerenza editoriale ricalcolata",
+      "factIds": [
+        "F14",
+        "F15"
+      ],
+      "analysis": [
+        "La discordanza fra titolo e corpo del comunicato MiC è verificabile senza attribuire intenzioni. Anche la percentuale dichiarata non coincide con quella ricavata dagli importi. Sono errori della comunicazione numerica, non evidenza di denaro sottratto.",
+        "Il problema strutturale da affrontare è diverso: collegare sostegno pubblico, conservazione, apertura e fruizione. Una sede poco frequentata non è automaticamente inutile; può conservare patrimonio o offrire servizi non comparabili con un grande museo turistico. Il dato favorevole sulle visite va mantenuto nel quadro.",
+        "La funzione comprende anche ricreazione, sport e altre attività: non è corretto dividerne la spesa per le sole visite ai musei statali. Il confronto economico va fatto per istituzioni con funzioni compatibili e includendo attività non coperte dalla bigliettazione."
+      ],
+      "actions": [
+        "Generare comunicati e grafici da un registro unico validato, con controlli sulle percentuali e una rettifica visibile quando titolo e valori divergono.",
+        "Per istituzione rendere confrontabili contributi, manutenzione, ore di apertura effettiva e attività svolte; distinguere fondi ordinari e interventi straordinari.",
+        "Confrontare interventi sulla fruizione e sulla conservazione senza ridurre tutto al ricavo del biglietto. Verificare separatamente opere non utilizzate e contratti rinnovati senza prestazioni documentate."
+      ],
+      "limitations": "Il ricalcolo è un controllo del comunicato, non un audit dei registri di tutti i musei. La differenza fra 328 e 382 milioni non è una perdita finanziaria.",
+      "quantification": "Nessun risparmio monetario attribuito al refuso. Per gli interventi di servizio serve una valutazione di costo e risultato specifica, non un rapporto sull’intera funzione.",
+      "owner": "MiC, istituti culturali, enti finanziatori e responsabili della pubblicazione",
+      "kpi": "Coerenza fra registro e comunicazione; ore di apertura effettive; stato di conservazione; costo per attività comparabile.",
+      "sourceIds": [
+        "S01",
+        "S10",
+        "S11",
+        "S20"
+      ]
+    },
+    {
+      "code": "GF09",
+      "title": "Istruzione",
+      "amountBillionRounded": "89.18",
+      "headline": "Non basta finanziare edifici e posti: servono frequenza e apprendimento",
+      "assessment": "Divario territoriale e risultati documentati",
+      "factIds": [
+        "F16",
+        "F17",
+        "F18"
+      ],
+      "analysis": [
+        "La distanza nella disponibilità dei nidi rende debole un criterio di finanziamento che guardi solo alle domande presentate o agli edifici costruiti. Il servizio richiede anche personale, sostenibilità dei costi di esercizio, orari e accessibilità per le famiglie. Nuovi posti non operativi costituirebbero una pista di spreco, non ancora quantificata qui.",
+        "Nella scuola, andamento degli apprendimenti e riduzione dell’abbandono non raccontano la stessa cosa. Vanno letti insieme. Acquisti digitali, corsi o ristrutturazioni non sono una prova di miglioramento finché non si osserva come siano usati e quali bisogni affrontino.",
+        "I nidi sono qui trattati come tema educativo e comunale, non attribuiti automaticamente tutti a GF09. La loro classificazione contabile può toccare più funzioni: il report non somma il costo dei posti al totale dell’istruzione né attribuisce il divario a una singola amministrazione."
+      ],
+      "actions": [
+        "Per i progetti di nidi collegare CUP, collaudo, personale finanziato, apertura e bambini frequentanti; misurare i mesi fra completamento dell’opera e avvio del servizio.",
+        "Selezionare gli interventi scolastici in base al bisogno, verificando apprendimento e abbandono per coorti e contesto. Un confronto prima/dopo senza controllo del contesto non basta a dichiarare efficacia.",
+        "Verificare utilizzo effettivo di laboratori e dotazioni acquistate; per le università estendere lo stesso criterio a infrastrutture, studenti serviti e risultati coerenti con la missione, senza inventare un ranking generale."
+      ],
+      "limitations": "Posti autorizzati pubblici e privati non equivalgono ai posti finanziati dalla PA né agli iscritti. Il calo demografico modifica i rapporti di copertura.",
+      "quantification": "Non stimabile. Per un servizio nuovo: investimento e costo ricorrente per posto effettivamente frequentato; per un recupero: costo per risultato educativo addizionale, da valutare.",
+      "owner": "Comuni, Regioni, MIM, MUR, scuole e università secondo competenza",
+      "kpi": "Posti operativi e frequentanti; tempo collaudo-apertura; uso delle dotazioni; apprendimenti e abbandono contestualizzati.",
+      "sourceIds": [
+        "S01",
+        "S05",
+        "S06",
+        "S21",
+        "S22"
+      ]
+    },
+    {
+      "code": "GF10",
+      "title": "Protezione sociale",
+      "amountBillionRounded": "468.14",
+      "headline": "Rivedere la distribuzione dei benefici, non chiamare spreco la protezione",
+      "assessment": "Priorità redistributiva; spreco non dimostrato",
+      "factIds": [
+        "F19",
+        "F20"
+      ],
+      "analysis": [
+        "È la funzione più grande della mappa, ma il suo volume non misura l’inefficienza. Pensioni, sostegni al reddito e servizi rispondono a finalità e diritti diversi. Per valutare miglioramenti occorre distinguere le componenti e i gruppi serviti, non dividere tutto per il numero di persone in povertà.",
+        "Il divario di povertà per età indica una domanda distributiva: quali bisogni rimangono scoperti e quali misure riescono a raggiungerli? Non dimostra che la protezione degli anziani causi la povertà dei minori, né autorizza a proporre un taglio automatico alle pensioni.",
+        "La riduzione dell’indicatore di rischio sociale è una controevidenza importante rispetto alla tesi che nulla funzioni. Il possibile spreco va cercato in duplicazioni effettivamente indebite, costi amministrativi evitabili e misure con bassa efficacia, tenendo distinto il cumulo legittimo di prestazioni."
+      ],
+      "actions": [
+        "Per ciascuna misura pubblicare platea eleggibile, accesso effettivo, tempi e distribuzione dei benefici; stimare quanta mancata fruizione dipenda da barriere amministrative anziché da assenza di diritto.",
+        "Valutare alternative di sostegno alle famiglie e ai minori con microsimulazioni esplicite, preservando vincoli, diritti acquisiti e costi di transizione.",
+        "Analizzare i casi di pagamento incompatibile soltanto con identificativi e base giuridica appropriati, senza profilazione pubblica dei beneficiari o ricostruzione di dati oscurati."
+      ],
+      "limitations": "Povertà assoluta e rischio di povertà/esclusione sono misure diverse. Trasferimenti dal bilancio dello Stato agli enti previdenziali non vanno sommati nuovamente alle prestazioni nel totale S13.",
+      "quantification": "Non stimabile. Un trasferimento eliminato non è automaticamente un guadagno sociale: bisogna misurare chi perde il beneficio, chi lo sostituisce e l’effetto sul bisogno.",
+      "owner": "Amministrazioni titolari, enti previdenziali, Regioni e servizi sociali locali",
+      "kpi": "Accesso degli aventi diritto; tempi; povertà per gruppi; costi amministrativi per pratica; errori verificati e recuperi effettivi.",
+      "sourceIds": [
+        "S01",
+        "S05",
+        "S07",
+        "S16",
+        "S17"
+      ]
+    }
+  ],
+  "municipal": {
+    "title": "Comuni ed enti locali: un livello di governo, non un’undicesima funzione",
+    "factIds": [
+      "F16",
+      "F17",
+      "F21",
+      "F22"
+    ],
+    "sourceIds": [
+      "S06",
+      "S13",
+      "S17",
+      "S18",
+      "S19",
+      "S20",
+      "S21",
+      "S25"
+    ],
+    "analysis": [
+      "I Comuni spendono dentro più funzioni: amministrazione, sociale, istruzione, ambiente, mobilità, territorio. Aggiungere un totale comunale alla mappa nazionale conterebbe nuovamente una parte della stessa spesa. Qui la lettura comunale è trasversale.",
+      "Gli acquisti nella fascia segnalata da ANAC sono un’anomalia aggregata da approfondire, non un elenco di procedure illecite. Il passo utile è verificare ricorrenze, oggetto, tempi e prezzi per enti comparabili. Importi simili o un fornitore ricorrente possono avere spiegazioni legittime.",
+      "Il confronto fra Comuni deve considerare popolazione, funzioni effettive, geografia, domanda di servizio e perimetro contabile. Le differenze rispetto a una spesa standard non sono automaticamente risparmi recuperabili; i dati di cassa non identificano da soli i servizi realmente prodotti.",
+      "Il divario nei nidi rende invece evidente perché la valutazione debba includere la disponibilità dei servizi. Un Comune che spende poco perché non offre un servizio non è necessariamente più efficiente. Allo stesso modo, un servizio costoso ma necessario in un territorio disperso non è uno spreco per definizione."
+    ],
+    "actions": [
+      "Confrontare acquisti omogenei per prezzo unitario e condizioni; controllare affidamenti ripetuti vicini alla soglia all’interno dello stesso ente e fabbisogno, senza inferire frazionamento dal solo importo.",
+      "Costruire una scheda per servizio con costo riconciliato, unità erogate, utenti, attese e qualità. Partire da nidi, rifiuti, manutenzione e servizi amministrativi dove i dati sono collegabili.",
+      "Valutare acquisti associati e condivisione di competenze tecniche fra enti piccoli. Includere costi di coordinamento, transizione e perdita di flessibilità nel confronto.",
+      "Seguire opere e servizi dal pagamento all’uso, rendendo visibili lavori completati ma non ancora operativi e le ragioni documentate del ritardo."
+    ],
+    "limitations": "Nessun nuovo punteggio di onestà o graduatoria di Comuni spreconi. Questo report non ha eseguito un confronto riga per riga di tutti gli enti italiani.",
+    "quantification": "Risparmi da stimare per acquisto o servizio comparabile, deduplicando i contratti. Non applicare una percentuale al totale SIOPE o alla differenza con lo standard.",
+    "owner": "Comuni, unioni e centrali di committenza; gestori dei servizi; enti finanziatori",
+    "kpi": "Costo per unità di servizio effettiva; tempi e qualità; numero di comparabili; differenze di prezzo giustificate e non giustificate."
+  },
+  "facts": [
+    {
+      "id": "F01",
+      "kind": "documented",
+      "title": "Il quadro più recente non coincide con la scomposizione COFOG",
+      "text": "Nel rilascio Istat di marzo 2026, la spesa complessiva delle PA del 2025 è pari al 51,1% del PIL e cresce del 3,9% nominale; il disavanzo è al 3,1% del PIL. La scomposizione uniforme usata in questo report resta quella COFOG 2024.",
+      "referencePeriod": "2025",
+      "scope": "PA nazionali, conto economico SEC 2010",
+      "sourceIds": [
+        "S03"
+      ],
+      "metrics": [
+        {
+          "key": "expenditureGdp",
+          "value": "51.1",
+          "unit": "percent"
+        },
+        {
+          "key": "expenditureGrowth",
+          "value": "3.9",
+          "unit": "percent"
+        },
+        {
+          "key": "deficitGdp",
+          "value": "3.1",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Rilascio di marzo 2026: non sostituisce la scomposizione COFOG dell’esercizio precedente."
+    },
+    {
+      "id": "F02",
+      "kind": "documented",
+      "title": "Difesa: separare programmazione e spesa annuale",
+      "text": "L’UPB documentava nel giugno 2025 uno stanziamento di 35 miliardi per investimenti nella difesa sull’intero periodo 2025-2039, di cui circa 22,5 miliardi direttamente al Ministero della Difesa.",
+      "referencePeriod": "Programmazione esaminata nel 2025, orizzonte 2025-2039",
+      "scope": "Stanziamenti pluriennali, non pagamenti",
+      "sourceIds": [
+        "S14"
+      ],
+      "metrics": [
+        {
+          "key": "plan",
+          "value": "35",
+          "unit": "billion-euro-multiyear"
+        },
+        {
+          "key": "ministryPlan",
+          "value": "22.5",
+          "unit": "billion-euro-multiyear"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Non sommare questo piano alla spesa COFOG annuale né assumerlo come quadro vigente nel 2026."
+    },
+    {
+      "id": "F03",
+      "kind": "documented",
+      "title": "Carceri: pressione sulla capacità disponibile",
+      "text": "Alla fine del 2025, la tavola DAP riporta 63.499 detenuti presenti e 51.277 posti regolamentari. I posti regolamentari non equivalgono ai posti agibili.",
+      "referencePeriod": "2025-12-31",
+      "scope": "Istituti penitenziari per adulti, Italia",
+      "sourceIds": [
+        "S09"
+      ],
+      "metrics": [
+        {
+          "key": "detainees",
+          "value": "63499",
+          "unit": "people"
+        },
+        {
+          "key": "capacity",
+          "value": "51277",
+          "unit": "places"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "La misura non corregge la capacità per i posti temporaneamente inutilizzabili."
+    },
+    {
+      "id": "F04",
+      "kind": "calculated",
+      "title": "123,8 detenuti ogni cento posti regolamentari",
+      "text": "Il rapporto ricalcolato è 123,8%; le presenze oltre la capienza regolamentare sono 12.222. È un indicatore di pressione del servizio, non una misura monetaria di spreco.",
+      "referencePeriod": "2025-12-31",
+      "scope": "Capienza regolamentare, non effettiva",
+      "sourceIds": [
+        "S09"
+      ],
+      "metrics": [],
+      "calculationId": "C01",
+      "limitation": "Il rapporto rispetto ai soli posti agibili sarebbe diverso; non viene ricostruito qui."
+    },
+    {
+      "id": "F05",
+      "kind": "documented",
+      "title": "La giustizia civile mostra anche un miglioramento",
+      "text": "Istat indica per il 2025 una durata media dei procedimenti civili di 409 giorni, contro 446 nel 2024.",
+      "referencePeriod": "2024-2025",
+      "scope": "Indicatore nazionale SDGs",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "days2025",
+          "value": "409",
+          "unit": "days"
+        },
+        {
+          "key": "days2024",
+          "value": "446",
+          "unit": "days"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Non è una stima delle ore di lavoro risparmiate né dell’esito di ogni ufficio."
+    },
+    {
+      "id": "F06",
+      "kind": "policy-risk",
+      "title": "Incentivi: il rischio di pagare attività già convenienti",
+      "text": "Nell’esame del DDL 2026, l’UPB segnalava il rischio che gli sgravi basati sull’ammortamento favorissero imprese che avrebbero investito comunque. Evidenziava anche il ritardo del beneficio e il vincolo della capienza fiscale.",
+      "referencePeriod": "Valutazione ex ante del 6 novembre 2025",
+      "scope": "Disegno degli incentivi, non esiti individuali",
+      "sourceIds": [
+        "S15"
+      ],
+      "metrics": [],
+      "calculationId": null,
+      "limitation": "È un rischio di addizionalità documentato, non una quota di sussidi accertata come inutile."
+    },
+    {
+      "id": "F07",
+      "kind": "documented",
+      "title": "Depurazione: un costo da inadempimento, non un’ipotesi statistica",
+      "text": "La sentenza C-515/23 del 27 marzo 2025 condanna l’Italia a una somma forfettaria di 10 milioni di euro. Prevede inoltre una penalità base di 13.687.500 euro per semestre di ritardo, con riduzioni legate agli adeguamenti.",
+      "referencePeriod": "Sentenza 2025-03-27",
+      "scope": "Obbligo da sentenza; non pagamento di cassa verificato",
+      "sourceIds": [
+        "S12"
+      ],
+      "metrics": [
+        {
+          "key": "lumpSum",
+          "value": "10000000",
+          "unit": "euro-ordered"
+        },
+        {
+          "key": "semesterBase",
+          "value": "13687500",
+          "unit": "euro-per-semester-base"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Non sono verificati qui né il cumulato pagato né gli adeguamenti successivi; il valore base non è la penalità effettiva di ciascun semestre."
+    },
+    {
+      "id": "F08",
+      "kind": "calculated",
+      "title": "Perdite di distribuzione: 35,2% nei capoluoghi",
+      "text": "Dall’efficienza di distribuzione del 64,8% pubblicata da Istat per i capoluoghi nel 2024 deriva una quota del 35,2% non erogata rispetto all’immesso. È una perdita di risorsa da analizzare, non il 35,2% di tutta la spesa idrica italiana.",
+      "referencePeriod": "2024",
+      "scope": "Comuni capoluogo di provincia e città metropolitana",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "efficiency",
+          "value": "64.8",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": "C02",
+      "limitation": "Le perdite totali possono includere componenti reali e apparenti. Non tutte sono eliminabili e non sono monetizzabili alla tariffa al dettaglio."
+    },
+    {
+      "id": "F09",
+      "kind": "documented",
+      "title": "Il disservizio idrico non è limitato a una singola opera",
+      "text": "Nel 2024 i capoluoghi con misure di razionamento salgono da 14 a 17. Nel 2025, 2,7 milioni di famiglie dichiarano irregolarità nella distribuzione dell’acqua in casa, il 10,2% del totale.",
+      "referencePeriod": "2024-2025",
+      "scope": "Capoluoghi per il razionamento; famiglie italiane per l’indagine",
+      "sourceIds": [
+        "S08"
+      ],
+      "metrics": [
+        {
+          "key": "capitals2024",
+          "value": "17",
+          "unit": "municipalities"
+        },
+        {
+          "key": "capitals2023",
+          "value": "14",
+          "unit": "municipalities"
+        },
+        {
+          "key": "householdsMillions",
+          "value": "2.7",
+          "unit": "million-households"
+        },
+        {
+          "key": "irregularity",
+          "value": "10.2",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Razionamento nei capoluoghi e irregolarità dichiarate dalle famiglie hanno popolazioni di riferimento diverse."
+    },
+    {
+      "id": "F10",
+      "kind": "documented",
+      "title": "Abitazione: una media nazionale relativamente favorevole non esclude i divari",
+      "text": "Nel 2025 il sovraccarico del costo dell’abitazione riguarda il 5,0% dei residenti, rispetto al 7,7% nella media UE riportata da Istat.",
+      "referencePeriod": "2025",
+      "scope": "Indicatore sulle famiglie, non bilancio degli alloggi pubblici",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "italy",
+          "value": "5.0",
+          "unit": "percent"
+        },
+        {
+          "key": "eu",
+          "value": "7.7",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "La media nazionale non misura l’efficacia del patrimonio abitativo pubblico."
+    },
+    {
+      "id": "F11",
+      "kind": "documented",
+      "title": "Sanità: aumenta la rinuncia alle prestazioni",
+      "text": "Nel 2024 rinuncia ad accertamenti diagnostici o visite specialistiche il 9,9% delle persone, circa 5,8 milioni, rispetto al 7,6% nel 2023. Sono escluse le visite odontoiatriche.",
+      "referencePeriod": "2023-2024",
+      "scope": "Persone che dichiarano bisogno e rinuncia, indagine Istat",
+      "sourceIds": [
+        "S04"
+      ],
+      "metrics": [
+        {
+          "key": "rate2024",
+          "value": "9.9",
+          "unit": "percent"
+        },
+        {
+          "key": "rate2023",
+          "value": "7.6",
+          "unit": "percent"
+        },
+        {
+          "key": "peopleMillions",
+          "value": "5.8",
+          "unit": "million-people"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "La rinuncia non permette da sola di separare carenza di risorse, cattiva organizzazione e domanda clinica."
+    },
+    {
+      "id": "F12",
+      "kind": "documented",
+      "title": "Le liste d’attesa sono una componente importante del problema",
+      "text": "La rinuncia per attese troppo lunghe è indicata dal 6,8% della popolazione nel 2024; era il 4,5% nel 2023.",
+      "referencePeriod": "2023-2024",
+      "scope": "Popolazione, non percentuale dei soli rinuncianti",
+      "sourceIds": [
+        "S04"
+      ],
+      "metrics": [
+        {
+          "key": "waiting2024",
+          "value": "6.8",
+          "unit": "percent"
+        },
+        {
+          "key": "waiting2023",
+          "value": "4.5",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Non sommare motivazioni della rinuncia: possono sovrapporsi."
+    },
+    {
+      "id": "F13",
+      "kind": "calculated",
+      "title": "Rinuncia alle cure: +2,3 punti percentuali",
+      "text": "Il confronto 9,9% meno 7,6% restituisce un aumento di 2,3 punti percentuali. L’incremento relativo è circa il 30,3%, misura diversa dall’aumento in punti.",
+      "referencePeriod": "2023-2024",
+      "scope": "Stesso indicatore Istat di rinuncia",
+      "sourceIds": [
+        "S04"
+      ],
+      "metrics": [],
+      "calculationId": "C03",
+      "limitation": "Variazione della quota di popolazione, non della spesa sanitaria."
+    },
+    {
+      "id": "F14",
+      "kind": "calculated",
+      "title": "Musei: un’incoerenza nel comunicato ufficiale",
+      "text": "Il titolo del comunicato MiC del 10 maggio 2025 riporta 328 milioni di introiti, mentre il corpo indica 382.004.344 euro. Il comunicato del 17 novembre conferma circa 382 milioni lordi.",
+      "referencePeriod": "Dati 2024; comunicati 2025",
+      "scope": "Comunicazione statistica dei musei statali",
+      "sourceIds": [
+        "S10",
+        "S11"
+      ],
+      "metrics": [
+        {
+          "key": "headlineMillions",
+          "value": "328",
+          "unit": "million-euro-rounded"
+        },
+        {
+          "key": "gross2024",
+          "value": "382004344",
+          "unit": "euro-gross"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "È una discordanza di pubblicazione, non un ammanco di 54 milioni."
+    },
+    {
+      "id": "F15",
+      "kind": "calculated",
+      "title": "Musei: la crescita ricavata dagli importi è 21,7%",
+      "text": "Con 382.004.344 euro per il 2024 e 313.888.163 per il 2023, la crescita è circa il 21,7%, non il 23% dichiarato nello stesso comunicato.",
+      "referencePeriod": "2023-2024",
+      "scope": "Introiti riportati nel primo comunicato MiC",
+      "sourceIds": [
+        "S10"
+      ],
+      "metrics": [
+        {
+          "key": "gross2023",
+          "value": "313888163",
+          "unit": "euro-gross"
+        }
+      ],
+      "calculationId": "C04",
+      "limitation": "Il ricalcolo verifica la coerenza interna del comunicato; non certifica il registro contabile di ogni museo."
+    },
+    {
+      "id": "F16",
+      "kind": "documented",
+      "title": "Nidi: il problema principale è il divario territoriale",
+      "text": "Nel 2023/2024 i posti autorizzati sono 31,6 ogni cento bambini di 0-2 anni in Italia; 19,0 nel Sud e 40,4 nel Centro. La misura comprende offerta pubblica e privata.",
+      "referencePeriod": "2023/2024",
+      "scope": "Posti autorizzati per residenti 0-2 anni",
+      "sourceIds": [
+        "S06"
+      ],
+      "metrics": [
+        {
+          "key": "italy",
+          "value": "31.6",
+          "unit": "places-per-100-children"
+        },
+        {
+          "key": "south",
+          "value": "19.0",
+          "unit": "places-per-100-children"
+        },
+        {
+          "key": "centre",
+          "value": "40.4",
+          "unit": "places-per-100-children"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Disponibilità non è frequenza; il calo dei bambini contribuisce al miglioramento del rapporto."
+    },
+    {
+      "id": "F17",
+      "kind": "calculated",
+      "title": "Nidi: distanza Centro-Sud di 21,4 punti",
+      "text": "La differenza fra 40,4 e 19,0 posti ogni cento bambini è 21,4 punti. Il Sud resta 12,6 punti sotto la media nazionale.",
+      "referencePeriod": "2023/2024",
+      "scope": "Rapporto posti/bambini, non quota di spesa",
+      "sourceIds": [
+        "S06"
+      ],
+      "metrics": [],
+      "calculationId": "C05",
+      "limitation": "Differenza di offerta autorizzata, non di frequenza effettiva."
+    },
+    {
+      "id": "F18",
+      "kind": "documented",
+      "title": "Scuola: risultati non uniformi",
+      "text": "La sintesi SDGs segnala un peggioramento delle competenze di base in italiano e matematica nel 2024/2025, ma un miglioramento in inglese. L’abbandono precoce scende all’8,2% nel 2025.",
+      "referencePeriod": "2024/2025 e 2025",
+      "scope": "Indicatori nazionali di apprendimento e istruzione",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "dropout2025",
+          "value": "8.2",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Sono indicatori distinti; non dimostrano l’effetto di una singola misura o della spesa complessiva."
+    },
+    {
+      "id": "F19",
+      "kind": "documented",
+      "title": "Protezione sociale: bisogni molto diversi per età",
+      "text": "Nel 2024 la povertà assoluta interessa circa 5,7 milioni di persone, il 9,8% dei residenti. L’incidenza è il 13,8% tra i minori e il 6,4% tra gli over 65.",
+      "referencePeriod": "2024",
+      "scope": "Persone, indagine sulla povertà assoluta",
+      "sourceIds": [
+        "S07"
+      ],
+      "metrics": [
+        {
+          "key": "povertyAll",
+          "value": "9.8",
+          "unit": "percent"
+        },
+        {
+          "key": "povertyMinors",
+          "value": "13.8",
+          "unit": "percent"
+        },
+        {
+          "key": "povertyOlder",
+          "value": "6.4",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "L’indicatore è sostanzialmente stabile. Le differenze per età non dimostrano che le pensioni siano uno spreco."
+    },
+    {
+      "id": "F20",
+      "kind": "documented",
+      "title": "Esiste anche evidenza di miglioramento sociale",
+      "text": "La quota a rischio di povertà o esclusione sociale scende al 22,6% nel 2025 secondo Istat.",
+      "referencePeriod": "2025",
+      "scope": "AROPE, indicatore diverso dalla povertà assoluta",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "arope",
+          "value": "22.6",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Non confrontare direttamente il 22,6% con il 9,8%: definizioni e periodi non coincidono."
+    },
+    {
+      "id": "F21",
+      "kind": "documented",
+      "title": "Acquisti vicino alla soglia: un fenomeno su scala nazionale",
+      "text": "ANAC segnala 13.879 acquisizioni di servizi e forniture nella fascia 135.000-140.000 euro nel 2025, contro 1.549 nel 2021.",
+      "referencePeriod": "2021 e 2025",
+      "scope": "Fascia d’importo indicata dalla relazione ANAC",
+      "sourceIds": [
+        "S13"
+      ],
+      "metrics": [
+        {
+          "key": "band2025",
+          "value": "13879",
+          "unit": "procedures"
+        },
+        {
+          "key": "band2021",
+          "value": "1549",
+          "unit": "procedures"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Sono cambiati il quadro delle soglie e il sistema informativo: il confronto grezzo non identifica da solo la causa."
+    },
+    {
+      "id": "F22",
+      "kind": "calculated",
+      "title": "Quasi nove volte le acquisizioni nella fascia osservata",
+      "text": "13.879 diviso 1.549 equivale a circa 8,96 volte; l’aumento assoluto è di 12.330 acquisizioni. Non è un tasso di frode.",
+      "referencePeriod": "2021 e 2025",
+      "scope": "Confronto descrittivo dei due conteggi ANAC",
+      "sourceIds": [
+        "S13"
+      ],
+      "metrics": [],
+      "calculationId": "C06",
+      "limitation": "Non moltiplicare il numero di acquisizioni per la soglia e chiamare il risultato spreco."
+    },
+    {
+      "id": "F23",
+      "kind": "documented",
+      "title": "Trasporti locali: resta una difficoltà diffusa di accesso",
+      "text": "Nel 2025 il 34,0% delle famiglie dichiara difficoltà di collegamento con i mezzi pubblici. Il dato è in lieve miglioramento rispetto al 2024.",
+      "referencePeriod": "2025",
+      "scope": "Indagine sulle famiglie, non costo delle aziende di trasporto",
+      "sourceIds": [
+        "S05"
+      ],
+      "metrics": [
+        {
+          "key": "transportDifficulty",
+          "value": "34.0",
+          "unit": "percent"
+        }
+      ],
+      "calculationId": null,
+      "limitation": "Indicatore dichiarato dalle famiglie, non misura contabile né attribuzione di responsabilità."
+    }
+  ],
+  "calculations": [
+    {
+      "id": "C01",
+      "operation": "ratio-percent",
+      "inputs": [
+        "63499",
+        "51277"
+      ],
+      "result": "123.8352477719055326949704546",
+      "roundDigits": 1,
+      "display": "123,8%",
+      "sourceIds": [
+        "S09"
+      ],
+      "description": "Detenuti / posti regolamentari × 100; differenza separata: 63.499 - 51.277 = 12.222.",
+      "roundedResult": "123.8",
+      "inputRefs": [
+        [
+          "F03",
+          "detainees"
+        ],
+        [
+          "F03",
+          "capacity"
+        ]
+      ]
+    },
+    {
+      "id": "C02",
+      "operation": "difference",
+      "inputs": [
+        "100",
+        "64.8"
+      ],
+      "result": "35.2",
+      "roundDigits": 1,
+      "display": "35,2%",
+      "sourceIds": [
+        "S05"
+      ],
+      "description": "100 - efficienza di distribuzione. Solo il perimetro capoluoghi 2024.",
+      "roundedResult": "35.2",
+      "inputRefs": [
+        [
+          "constant",
+          "100"
+        ],
+        [
+          "F08",
+          "efficiency"
+        ]
+      ]
+    },
+    {
+      "id": "C03",
+      "operation": "difference",
+      "inputs": [
+        "9.9",
+        "7.6"
+      ],
+      "result": "2.3",
+      "roundDigits": 1,
+      "display": "+2,3 punti percentuali",
+      "sourceIds": [
+        "S04"
+      ],
+      "description": "Tasso 2024 meno tasso 2023; non +2,3% relativo.",
+      "roundedResult": "2.3",
+      "inputRefs": [
+        [
+          "F11",
+          "rate2024"
+        ],
+        [
+          "F11",
+          "rate2023"
+        ]
+      ]
+    },
+    {
+      "id": "C04",
+      "operation": "relative-change-percent",
+      "inputs": [
+        "382004344",
+        "313888163"
+      ],
+      "result": "21.70078041458352158376867500",
+      "roundDigits": 1,
+      "display": "+21,7%",
+      "sourceIds": [
+        "S10"
+      ],
+      "description": "(Introiti 2024 / introiti 2023 - 1) × 100. Importi nello stesso comunicato.",
+      "roundedResult": "21.7",
+      "inputRefs": [
+        [
+          "F14",
+          "gross2024"
+        ],
+        [
+          "F15",
+          "gross2023"
+        ]
+      ]
+    },
+    {
+      "id": "C05",
+      "operation": "difference",
+      "inputs": [
+        "40.4",
+        "19.0"
+      ],
+      "result": "21.4",
+      "roundDigits": 1,
+      "display": "21,4 punti",
+      "sourceIds": [
+        "S06"
+      ],
+      "description": "Copertura Centro meno copertura Sud. Offerta pubblica e privata; non frequenza.",
+      "roundedResult": "21.4",
+      "inputRefs": [
+        [
+          "F16",
+          "centre"
+        ],
+        [
+          "F16",
+          "south"
+        ]
+      ]
+    },
+    {
+      "id": "C06",
+      "operation": "ratio",
+      "inputs": [
+        "13879",
+        "1549"
+      ],
+      "result": "8.959974176888315041962556488",
+      "roundDigits": 2,
+      "display": "8,96 volte",
+      "sourceIds": [
+        "S13"
+      ],
+      "description": "Conteggio 2025 / conteggio 2021 nella fascia ANAC; non effetto causale di una riforma.",
+      "roundedResult": "8.96",
+      "inputRefs": [
+        [
+          "F21",
+          "band2025"
+        ],
+        [
+          "F21",
+          "band2021"
+        ]
+      ]
+    },
+    {
+      "id": "C07",
+      "operation": "ratio-percent",
+      "inputs": [
+        "638.55",
+        "1109.15"
+      ],
+      "result": "57.57111301447054050398954154",
+      "roundDigits": 1,
+      "display": "57,6%",
+      "sourceIds": [
+        "S01"
+      ],
+      "description": "(GF10 + GF01) / totale, usando i valori pubblicati arrotondati in miliardi.",
+      "roundedResult": "57.6",
+      "inputRefs": [
+        [
+          "sum",
+          "GF10",
+          "GF01"
+        ],
+        [
+          "macro",
+          "total"
+        ]
+      ]
+    },
+    {
+      "id": "C08",
+      "operation": "ratio-percent",
+      "inputs": [
+        "784.63",
+        "1109.15"
+      ],
+      "result": "70.74155885137267276743452193",
+      "roundDigits": 1,
+      "display": "70,7%",
+      "sourceIds": [
+        "S01"
+      ],
+      "description": "(GF10 + GF01 + GF07) / totale, su valori arrotondati.",
+      "roundedResult": "70.7",
+      "inputRefs": [
+        [
+          "sum",
+          "GF10",
+          "GF01",
+          "GF07"
+        ],
+        [
+          "macro",
+          "total"
+        ]
+      ]
+    },
+    {
+      "id": "C09",
+      "operation": "difference",
+      "inputs": [
+        "63499",
+        "51277"
+      ],
+      "result": "12222",
+      "roundDigits": 0,
+      "display": "12.222 persone",
+      "sourceIds": [
+        "S09"
+      ],
+      "description": "Presenze oltre la capienza regolamentare; non aumento annuale dei detenuti.",
+      "roundedResult": "12222",
+      "inputRefs": [
+        [
+          "F03",
+          "detainees"
+        ],
+        [
+          "F03",
+          "capacity"
+        ]
+      ]
+    },
+    {
+      "id": "C10",
+      "operation": "relative-change-percent",
+      "inputs": [
+        "9.9",
+        "7.6"
+      ],
+      "result": "30.26315789473684210526315790",
+      "roundDigits": 1,
+      "display": "+30,3%",
+      "sourceIds": [
+        "S04"
+      ],
+      "description": "Crescita relativa della quota di rinuncia. Distinta dai punti percentuali.",
+      "roundedResult": "30.3",
+      "inputRefs": [
+        [
+          "F11",
+          "rate2024"
+        ],
+        [
+          "F11",
+          "rate2023"
+        ]
+      ]
+    },
+    {
+      "id": "C11",
+      "operation": "difference",
+      "inputs": [
+        "31.6",
+        "19.0"
+      ],
+      "result": "12.6",
+      "roundDigits": 1,
+      "display": "12,6 punti",
+      "sourceIds": [
+        "S06"
+      ],
+      "description": "Copertura Italia meno copertura Sud.",
+      "roundedResult": "12.6",
+      "inputRefs": [
+        [
+          "F16",
+          "italy"
+        ],
+        [
+          "F16",
+          "south"
+        ]
+      ]
+    },
+    {
+      "id": "C12",
+      "operation": "difference",
+      "inputs": [
+        "13879",
+        "1549"
+      ],
+      "result": "12330",
+      "roundDigits": 0,
+      "display": "12.330 acquisizioni",
+      "sourceIds": [
+        "S13"
+      ],
+      "description": "Aumento assoluto dei due conteggi ANAC; quadro normativo e copertura diversi.",
+      "roundedResult": "12330",
+      "inputRefs": [
+        [
+          "F21",
+          "band2025"
+        ],
+        [
+          "F21",
+          "band2021"
+        ]
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S01",
+      "holder": "Eurostat; snapshot DVNS",
+      "title": "Spesa PA per funzione: gov_10a_exp, S13, TE",
+      "url": "https://www.dovevannoinostrisoldi.com/",
+      "publicationDate": "2026-07-21",
+      "referencePeriod": "2024",
+      "locator": "Composizione della spesa pubblica: dieci divisioni COFOG e totale.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "existing-project-snapshot",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Valori del report trascritti dalla superficie pubblica, arrotondati a 0,01 miliardi. Il controllo sui byte del dataset completo non è stato eseguito in questa sessione. Il metadato nel repository dichiara SHA-256 5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8 per il proprio artefatto. Verifica obbligatoria in repository prima del rilascio."
+    },
+    {
+      "id": "S02",
+      "holder": "Eurostat",
+      "title": "Dataset ufficiale e metodologia COFOG",
+      "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+      "publicationDate": null,
+      "referencePeriod": "2014-2024",
+      "locator": "Settore S13; aggregato TE; unità MIO_EUR e PC_GDP.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "repo-metadata",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "URL ufficiale dal source lock DVNS. Download API non riuscito qui; non è una nuova acquisizione indipendente. Il metadato esclude il 2025 per copertura internazionale insufficiente."
+    },
+    {
+      "id": "S03",
+      "holder": "Istat",
+      "title": "PIL e indebitamento delle AP, anni 2023-2025",
+      "url": "https://www.istat.it/wp-content/uploads/2026/03/PIL-E-INDEBITAMENTO-AP_Anni-2023-2025.pdf",
+      "publicationDate": "2026-03-02",
+      "referencePeriod": "2025",
+      "locator": "Pagina 8: dinamica e incidenza delle uscite; quadro iniziale: indebitamento e saldo primario.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-pdf-text-and-visual",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S04",
+      "holder": "Istat",
+      "title": "Audizione sul disegno di legge di bilancio 2026",
+      "url": "https://www.istat.it/wp-content/uploads/2025/11/Istat-Audizione-LDB-2026_6-novembre.pdf",
+      "publicationDate": "2025-11-07",
+      "referencePeriod": "2023-2024",
+      "locator": "Pagina 21: rinuncia alle prestazioni sanitarie. Audizione del 6 novembre.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-pdf-text-and-visual",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S05",
+      "holder": "Istat",
+      "title": "Rapporto SDGs 2026",
+      "url": "https://www.istat.it/produzione-editoriale/rapporto-sdgs-2026/",
+      "publicationDate": "2026-07-08",
+      "referencePeriod": "2024-2025",
+      "locator": "Sintesi per Goal 1, 4, 6, 11, 16. Periodi distinti per indicatore.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S06",
+      "holder": "Istat",
+      "title": "Offerta di nidi e servizi integrativi 2023/2024",
+      "url": "https://www.istat.it/comunicato-stampa/offerta-di-nidi-e-servizi-integrativi-per-la-prima-infanzia-anno-educativo-2023-2024/",
+      "publicationDate": "2026-02-03",
+      "referencePeriod": "2023/2024",
+      "locator": "Apertura e sezione sui divari territoriali; posti autorizzati, non frequenza.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S07",
+      "holder": "Istat",
+      "title": "La povertà in Italia, anno 2024",
+      "url": "https://www.istat.it/comunicato-stampa/la-poverta-in-italia-anno-2024/",
+      "publicationDate": "2025-10-14",
+      "referencePeriod": "2024",
+      "locator": "Povertà assoluta: persone, fasce di età e stabilità statistica.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S08",
+      "holder": "Istat",
+      "title": "Le statistiche sull’acqua, anni 2023-2025",
+      "url": "https://www.istat.it/wp-content/uploads/2026/03/GMA2026_Focus_DEF.pdf",
+      "publicationDate": "2026-03-20",
+      "referencePeriod": "2024-2025",
+      "locator": "Pagina 1, sintesi: razionamento nei capoluoghi e irregolarità del servizio.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-pdf-text-and-visual",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S09",
+      "holder": "Ministero della Giustizia, DAP",
+      "title": "Detenuti e capienza per istituto al 31 dicembre 2025",
+      "url": "https://www.giustizia.it/giustizia/en/mg_1_14_1.page?contentId=SST1486466",
+      "publicationDate": null,
+      "referencePeriod": "2025-12-31",
+      "locator": "Totale della tavola: capienza regolamentare e detenuti presenti.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-indexed-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Il valore è di fine anno. Capienza regolamentare distinta dai posti effettivamente disponibili; non è un conteggio dei posti agibili."
+    },
+    {
+      "id": "S10",
+      "holder": "Ministero della Cultura",
+      "title": "Comunicato sui musei statali del 10 maggio 2025",
+      "url": "https://cultura.gov.it/comunicato/27577",
+      "publicationDate": "2025-05-10",
+      "referencePeriod": "2023-2024",
+      "locator": "Titolo e primo paragrafo: introiti e confronto annuale.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S11",
+      "holder": "Ministero della Cultura",
+      "title": "Musei statali: risultati 2024, aggiornamento del 17 novembre",
+      "url": "https://cultura.gov.it/comunicato/28286",
+      "publicationDate": "2025-11-17",
+      "referencePeriod": "2024",
+      "locator": "Primo paragrafo: circa 382 milioni di introiti lordi e 60,8 milioni di visite.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S12",
+      "holder": "Corte di giustizia dell’Unione europea",
+      "title": "C-515/23: dispositivo della sentenza del 27 marzo 2025",
+      "url": "https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX%3A62023CA0515",
+      "publicationDate": "2025-06-02",
+      "referencePeriod": "Sentenza del 2025-03-27",
+      "locator": "GU C/2025/2826, dispositivo punti 2 e 3: somma forfettaria e penalità decrescente.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-indexed-official-judgment",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Dispositivo riscontrato nelle versioni ufficiali EUR-Lex indicizzate. La penalità effettiva è calcolata a semestre e ridotta per gli adeguamenti: nessuna stima qui del cumulato pagato o del residuo al settembre 2026."
+    },
+    {
+      "id": "S13",
+      "holder": "ANAC",
+      "title": "Relazione al Parlamento sull’attività 2025",
+      "url": "https://www.anticorruzione.it/-/cs.21.04.2026.relazione.anac",
+      "publicationDate": "2026-04-21",
+      "referencePeriod": "2021 e 2025",
+      "locator": "Sintesi: addensamento degli acquisti di servizi e forniture nella fascia 135.000-140.000 euro.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-indexed-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Il confronto è descrittivo: soglie, normativa e copertura variano nel tempo. Non è una stima causale di frazionamento né della quota di illeciti."
+    },
+    {
+      "id": "S14",
+      "holder": "Ufficio parlamentare di bilancio",
+      "title": "Rapporto sulla politica di bilancio 2025: approfondimento difesa",
+      "url": "https://www.upbilancio.it/it/presentato-il-rapporto-sulla-politica-di-bilancio-dellupb/",
+      "publicationDate": "2025-06-11",
+      "referencePeriod": "Programmazione 2025-2039",
+      "locator": "Passaggio sullo stanziamento pluriennale di 35 miliardi, di cui circa 22,5 al Ministero della Difesa.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-indexed-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Fotografia del quadro di programmazione esaminato nel 2025, non certificazione dello stanziamento vigente al settembre 2026 o di somme già pagate."
+    },
+    {
+      "id": "S15",
+      "holder": "Ufficio parlamentare di bilancio",
+      "title": "Audizione sul disegno di legge di bilancio 2026",
+      "url": "https://www.upbilancio.it/it/audizione-dellupb-sul-disegno-di-legge-di-bilancio-2026/",
+      "publicationDate": "2025-11-06",
+      "referencePeriod": "Valutazione del DDL 2026",
+      "locator": "Sezione incentivi: ritardo dello sgravio, capienza fiscale e rischio di finanziare investimenti già convenienti.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "web-indexed-document",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Analisi ex ante del disegno di legge, non misura ex post degli sprechi del 2026; le norme definitive vanno verificate separatamente."
+    },
+    {
+      "id": "S16",
+      "holder": "MEF-RGS",
+      "title": "OpenBDAP: bilancio dello Stato",
+      "url": "https://openbdap.rgs.mef.gov.it/IT/Bds/Analizza",
+      "publicationDate": null,
+      "referencePeriod": "Per esercizio e fase",
+      "locator": "Previsioni, assestamento, rendiconto, Note integrative.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": "Fonte di approfondimento, non prova autonoma delle criticità elencate nel report."
+    },
+    {
+      "id": "S17",
+      "holder": "Banca d’Italia / RGS",
+      "title": "SIOPE: incassi e pagamenti degli enti pubblici",
+      "url": "https://www.siope.it/",
+      "publicationDate": null,
+      "referencePeriod": "Per ente e periodo",
+      "locator": "Flussi di cassa e classificazione gestionale.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S18",
+      "holder": "OpenCivitas",
+      "title": "Open data: fabbisogni e servizi degli enti locali",
+      "url": "https://www.opencivitas.it/it/open-data",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "Spesa storica, standard e servizi: perimetri da rendere omogenei.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S19",
+      "holder": "Consip",
+      "title": "Catalogo open data degli acquisti",
+      "url": "https://dati.consip.it/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "Dataset e condizioni degli acquisti; verificare quantità e additività.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S20",
+      "holder": "ANAC",
+      "title": "Portale dati aperti BDNCP",
+      "url": "https://dati.anticorruzione.it/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "CIG, procedure, importi e aggiudicatari; copertura per anno.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S21",
+      "holder": "OpenCoesione",
+      "title": "Open data progetti, pagamenti e fasi",
+      "url": "https://opencoesione.gov.it/it/opendata/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "Identificativi di progetto, CUP quando disponibile, fasi e pagamenti.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S22",
+      "holder": "Presidenza del Consiglio, DIPE",
+      "title": "OpenCUP: accesso agli open data",
+      "url": "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "Anagrafe degli investimenti: il finanziamento non è un pagamento.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S23",
+      "holder": "Dipartimento della Funzione Pubblica",
+      "title": "Consulenti Pubblici",
+      "url": "https://consulentipubblici.dfp.gov.it/progetto",
+      "publicationDate": null,
+      "referencePeriod": "Secondo incarico e aggiornamento",
+      "locator": "Incarichi e compensi dichiarati; lordo e ammontare erogato distinti.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S24",
+      "holder": "MEF-RGS",
+      "title": "Conto annuale del personale",
+      "url": "https://contoannuale.rgs.mef.gov.it/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo l’esercizio",
+      "locator": "Personale e costo: comparto, unità e perimetro da validare.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S25",
+      "holder": "AgID",
+      "title": "IPA: catalogo dati delle amministrazioni",
+      "url": "https://indicepa.gov.it/ipa-dati/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo snapshot",
+      "locator": "Identità di enti e unità organizzative; codici e validità temporale.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    },
+    {
+      "id": "S26",
+      "holder": "Italia Domani",
+      "title": "Open data sul PNRR",
+      "url": "https://www.italiadomani.gov.it/",
+      "publicationDate": null,
+      "referencePeriod": "Secondo la release",
+      "locator": "Solo il perimetro pubblico: progetti, misure e relazioni ufficiali.",
+      "checkedAt": "2026-09-14",
+      "verificationChannel": "catalogue",
+      "originalBytesSha256": null,
+      "rights": "Verificare le condizioni della singola risorsa prima di ridistribuire gli originali.",
+      "note": ""
+    }
+  ],
+  "priorities": [
+    {
+      "title": "Eliminare i costi che non comprano un servizio",
+      "scope": "Depurazione e ritardi di attuazione",
+      "basis": "Sentenza e conteggi effettivi da riconciliare",
+      "action": "Verificare il residuo di non conformità e accelerare interventi capaci di ridurre penalità e danno ambientale.",
+      "tradeoff": "La messa a norma costa: il beneficio netto richiede costo residuo, gestione e adeguamenti riconosciuti.",
+      "sourceIds": [
+        "S12"
+      ]
+    },
+    {
+      "title": "Ridurre il prezzo a parità di prestazione",
+      "scope": "Acquisti trasversali, sanità, enti locali",
+      "basis": "Pattern ANAC; benchmark contrattuali da costruire",
+      "action": "Sottoporre a confronto prezzi, condizioni e ricorrenze nelle categorie più confrontabili.",
+      "tradeoff": "Prezzi diversi possono dipendere da qualità, durata, logistica o quantità; niente graduatorie prima della verifica.",
+      "sourceIds": [
+        "S13",
+        "S19",
+        "S20"
+      ]
+    },
+    {
+      "title": "Far funzionare ciò che è stato finanziato",
+      "scope": "Sanità, nidi, acqua, edilizia pubblica, infrastrutture",
+      "basis": "Accesso ai servizi e completamento delle opere",
+      "action": "Collegare acquisto e collaudo a personale, esercizio e utilizzo effettivo prima di finanziare nuova capacità equivalente.",
+      "tradeoff": "Una struttura completata ma non attiva non dimostra da sola che fosse inutile; occorre risolvere il blocco specifico.",
+      "sourceIds": [
+        "S04",
+        "S06",
+        "S08",
+        "S21",
+        "S22"
+      ]
+    },
+    {
+      "title": "Spostare il confronto dai volumi agli effetti",
+      "scope": "Protezione sociale, istruzione e incentivi",
+      "basis": "Bisogni distribuiti in modo diseguale; efficacia da valutare",
+      "action": "Rendere confrontabili accesso, risultati e costo addizionale, con attenzione a gruppi ancora esclusi.",
+      "tradeoff": "Il cambiamento dei risultati non prova causalità. Servono disegni di valutazione e verifica degli effetti distributivi.",
+      "sourceIds": [
+        "S05",
+        "S07",
+        "S15"
+      ]
+    }
+  ],
+  "methodology": [
+    "La classificazione COFOG ordina la finalità della spesa. Stato centrale, Regioni, Comuni ed enti previdenziali sono livelli o soggetti diversi: non si sommano nuovamente ai totali per funzione. Il totale S13 non è il totale di cassa del bilancio statale.",
+    "La mappa monetaria resta sul 2024, ultimo esercizio uniforme nello snapshot DVNS controllato tramite il suo metadato. Il quadro macro 2025 è riportato separatamente. Gli indicatori settoriali mantengono il proprio anno: il report non li trasforma in un unico dataset coevo.",
+    "Sono state consultate fonti primarie e metadati del repository, controllati i passaggi rilevanti e riprodotti i calcoli dichiarati. Per alcune pagine l’accesso diretto era indisponibile e si è usato il testo ufficiale indicizzato: il registro delle fonti lo distingue. I cataloghi elencano fonti per ulteriori verifiche, non acquisizioni complete già effettuate.",
+    "Il lavoro non è una run dell’agente #502 su tutti i record. La copertura delle transazioni non è misurata. L’analisi comprende tutte le divisioni, ma approfondisce solo i problemi sostenuti dalle evidenze elencate; non attesta l’assenza di altri problemi.",
+    "Un fatto documentato, una valutazione economica e una proposta di intervento restano distinti. Le proposte del report sono analisi originali, non raccomandazioni attribuite automaticamente ai titolari delle fonti. Le correlazioni fra costi e risultati non sono trasformate in cause.",
+    "La parola spreco è ammissibile quando ne è esplicitato il significato: costo evitabile all’origine, risorsa persa o spesa senza beneficio sufficiente da dimostrare. La qualificazione non implica una responsabilità penale o personale. Una somma ordinata da una sentenza non equivale a un pagamento accertato.",
+    "Per stimare risorse liberabili occorrono un controfattuale realistico, costi di attuazione, orizzonte temporale, diritti e vincoli, effetti sulla qualità e assenza di doppio conteggio. Risparmio di cassa, ore liberate, minori danni e migliori servizi non sono la stessa misura.",
+    "Il materiale pubblico non include profili di beneficiari né collegamenti basati su omonimie. Un progetto in più fonti non è una spesa duplicata: può essere lo stesso intervento osservato in fasi diverse.",
+    "Ogni nuova edizione deve conservare fonti, ricalcoli, modifiche e stato di revisione. La correzione di una fonte può cambiare un risultato senza trasformare retroattivamente l’analisi precedente in prova di irregolarità."
+  ],
+  "noSavingsTotal": true,
+  "releaseGate": "Bozza da sottoporre a revisione editoriale e contabile. Prima di pubblicare: verifica dello snapshot COFOG nel clone completo e controlli del repository. Nessuna PR è stata aperta da questa sessione."
+}

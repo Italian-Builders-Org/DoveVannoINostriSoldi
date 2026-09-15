@@ -148,7 +148,11 @@ test("llms discovery paths are indexable and resolve to public pages", async () 
 
 
 test("legacy paper entry redirects permanently and stays outside discovery", async () => {
-  assert.deepEqual(PUBLIC_REDIRECT_PATHS, ["/assistente/anteprima", "/paper"]);
+  assert.deepEqual(PUBLIC_REDIRECT_PATHS, [
+    "/assistente/anteprima",
+    "/paper",
+    "/report/spesa-pubblica-italiana-2026",
+  ]);
   for (const routePath of PUBLIC_REDIRECT_PATHS) {
     assert.equal(PUBLIC_INDEXABLE_PATHS.includes(routePath), false);
     assert.equal(PUBLIC_NOINDEX_PATHS.includes(routePath), false);
@@ -156,6 +160,11 @@ test("legacy paper entry redirects permanently and stays outside discovery", asy
   }
   const page = await readFile(path.join(appRoot, "paper", "page.tsx"), "utf8");
   assert.match(page, /permanentRedirect\("\/studi"\)/);
+  const legacyReport = await readFile(
+    path.join(appRoot, "report", "spesa-pubblica-italiana-2026", "page.tsx"),
+    "utf8",
+  );
+  assert.match(legacyReport, /permanentRedirect\('\/report\/bilancio-stato-2025'\)/);
 });
 
 test("assistant design preview redirects to the canonical chat", async () => {

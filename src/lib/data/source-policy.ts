@@ -28,6 +28,7 @@ export type SourceId =
   | "eurostat-gdp"
   | "oecd-taxing-wages"
   | "eurostat-cofog"
+  | "eurostat-gov-main"
   | "istat-cofog"
   | "istat-epea"
   | "istat-poverta"
@@ -490,6 +491,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:eurostat-cofog", "domain:public-spending"],
+  },
+  "eurostat-gov-main": {
+    id: "eurostat-gov-main",
+    label: "Eurostat · entrate e uscite delle Amministrazioni pubbliche",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti delle Amministrazioni pubbliche sono annuali e vengono rivisti: lo snapshot resta bloccato sui byte verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-gov-main", "domain:public-finance"],
   },
   "istat-cofog": {
     id: "istat-cofog",

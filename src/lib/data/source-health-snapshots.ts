@@ -12,6 +12,7 @@ import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
+import { eurostatGovMainData, eurostatGovMainMetadata } from "@/lib/eurostat-gov-main-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { inpsAssegnoUnicoData, inpsAssegnoUnicoMetadata } from "@/lib/inps-assegno-unico-snapshot";
 import {
@@ -359,6 +360,19 @@ function snapshotManagedEurostatCofog(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatGovMain(): SourceHealth {
+  const artifact = eurostatGovMainMetadata.integrity.dataArtifact;
+  const { flagged, observedCells } = eurostatGovMainData.coverage;
+  return {
+    ...baseHealth("eurostat-gov-main"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-gov-main", eurostatGovMainMetadata.coverage.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · entrate e uscite PA ${eurostatGovMainData.period.from}-${eurostatGovMainData.period.to} (${eurostatGovMainMetadata.source.datasetCode}) · ${eurostatGovMainData.items.length} voci, ${observedCells}/${observedCells} celle, ${flagged} flag · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: eurostatGovMainData.observations.length,
+  };
+}
+
 function snapshotManagedIstatCofog(): SourceHealth {
   const artifact = istatCofogMetadata.integrity.dataArtifact;
   const { observedCells } = istatCofogData.coverage;
@@ -645,6 +659,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "eurostat-gdp": snapshotManagedEurostatGdp,
   "oecd-taxing-wages": snapshotManagedOecdTaxingWages,
   "eurostat-cofog": snapshotManagedEurostatCofog,
+  "eurostat-gov-main": snapshotManagedEurostatGovMain,
   "istat-cofog": snapshotManagedIstatCofog,
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,

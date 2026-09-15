@@ -123,6 +123,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "oecd-taxing-wages": [],
   // Snapshot-only: le risposte JSON-stat sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
   "eurostat-cofog": [],
+  // Snapshot-only: le risposte JSON-stat di gov_10a_main sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "eurostat-gov-main": [],
 };
 
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 75
+- Artefatti nel registro: 76
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 58 (PR umana dopo revisione)
+- manuale: 59 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -94,6 +94,7 @@ La revisione e il merge restano umani.
 | `oecd-taxing-wages-2000-2025` | 2000-2025 (Italia AW100/AW67); 2015-2025 (confronto peer AW100) | 2026-09-11 | https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html | nessuno | nessuno | manuale | `python3 scripts/etl/oecd_taxing_wages_snapshot.py --check` |
 | `eurostat-gdp-2015-2026` | trimestrale Italia 2015-Q1/2026-Q2; annuale Italia 2015/2025; peer 2019-Q1/2026-Q2 | 2026-09-12 | https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_gdp_snapshot.py --check` |
 | `eurostat-cofog-2014-2024` | 2014-2024 | 2026-09-11 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_cofog_snapshot.py --check` |
+| `eurostat-gov-main-1995-2025` | 1995-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_gov_main_snapshot.py --check` |
 | `istat-cofog-1995-2023` | 1995-2023 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_cofog_snapshot.py --check` |
 | `istat-poverta-assoluta-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family assoluta --check` |
 | `istat-poverta-relativa-2014-2024` | 2014-2024 | 2026-09-05 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_snapshot.py --family relativa --check` |

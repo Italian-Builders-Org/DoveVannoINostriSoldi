@@ -1,0 +1,113 @@
+{
+  "coverage": {
+    "note": "Copertura piena e pretesa dal contratto: 744 celle per unità, 24 voci per 31 anni. Le altre 95 voci della risposta restano nei byte bloccati e non sono pubblicate in v1; quelle senza valori sono marcate dalla fonte con flag m (data cannot exist).",
+    "observedAt": "2026-09-14",
+    "publishedItemsNote": "TR, TE e B9 più le componenti delle identità SEC: entrate TR = P11_P12_P131 + D2REC + D39REC + D4REC + D5REC + D61REC + D7REC + D9REC; uscite TE = P2 + P5 + NP + D1PAY + D29PAY + D3PAY + D4PAY + D5PAY + D62PAY + D632PAY + D7PAY + D9PAY (D8PAY non è presente nel dataset); B9 = TR - TE. D41PAY è pubblicata come voce «di cui» di D4PAY: è la voce degli interessi usata da public-debt.json, necessaria all'invariante offline richiesto in #485."
+  },
+  "datasetId": "eurostat-gov-main",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 68205,
+      "path": "src/data/generated/eurostat-gov-main-1995-2025.data.json",
+      "sha256": "d776edbbbcadf573dcb0d6005294e6637039c74ee3b62b4c741574804d588d2a"
+    },
+    "sourceLockSha256": "59483c1ddb626573dbfb2760979c0f93be67084fadb5b3056627c82239d4a083"
+  },
+  "observedAt": "2026-09-14",
+  "period": {
+    "from": 1995,
+    "to": 2025
+  },
+  "publicDebtInvariant": {
+    "artifact": "src/data/generated/public-debt.json",
+    "items": [
+      "D41PAY",
+      "TE"
+    ],
+    "rule": "uguali al centesimo su ogni anno in comune: stessa voce Eurostat, non una seconda fonte"
+  },
+  "reconciliation": {
+    "balance": {
+      "maxGapAt": "1996",
+      "maxGapCents": 10000000,
+      "maxGapShareHundredths": 10
+    },
+    "expenditure": {
+      "maxGapAt": "1996",
+      "maxGapCents": 10000000,
+      "maxGapShareHundredths": 30
+    },
+    "note": "I totali pubblicati non sono ricostruiti: Eurostat arrotonda ogni cella a un decimale in modo indipendente, quindi le identità SEC tornano entro l'arrotondamento. Lo scarto è misurato e limitato, mai corretto.",
+    "revenue": {
+      "maxGapAt": "1995",
+      "maxGapCents": 10000000,
+      "maxGapShareHundredths": 20
+    },
+    "toleranceCents": 50000000,
+    "toleranceShareHundredths": 65
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Anno dalla dimensione time del dataset, mai dedotto dall'URL. I conti vengono rivisti.",
+      "referencePeriod": "1995-2025"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-14",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=PC_GDP&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025"
+      ],
+      "checkedAt": "2026-09-14",
+      "hashes": "SHA-256 per asset in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-07-21T11:00:00+0200"
+    },
+    "soldi": {
+      "nature": "entrate e uscite delle Amministrazioni pubbliche (S13) di competenza economica SEC 2010 — non sono incassi, pagamenti di cassa, stanziamenti o impegni",
+      "note": "Accanto all'importo, la quota di PIL in centesimi di punto. I totali sono quelli della fonte e riconciliano con le componenti entro il solo arrotondamento.",
+      "unit": "centesimi di euro"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-14",
+      "checkedAt": "2026-09-14",
+      "note": "Due risposte JSON-stat 2.0 scaricate il 2026-09-14 dagli URL canonici della Statistics API, senza filtro su na_item: il lock descrive la risposta intera e il contratto sceglie le voci pubblicate. Lock dichiarato e approvato in #485."
+    },
+    "assets": {
+      "mio-eur": {
+        "bytes": 58435,
+        "sha256": "0f6ed3bccd453917632a62252b80c52807b1b17827b6d91dd3f7058225673ffa",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "unit": "MIO_EUR",
+        "unitLabel": "Million euro",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025"
+      },
+      "pc-gdp": {
+        "bytes": 48839,
+        "sha256": "e5f62bfceb3d6497ed3b02793a103fdf713a15764fd3c837da6321f06c1cd802",
+        "sourceUpdated": "2026-07-21T11:00:00+0200",
+        "unit": "PC_GDP",
+        "unitLabel": "Percentage of gross domestic product (GDP)",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=PC_GDP&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025"
+      }
+    },
+    "datasetCode": "gov_10a_main",
+    "datasetLabel": "Government revenue, expenditure and main aggregates",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice verificata il 2026-09-03: «licensed under the Creative Commons Attribution 4.0 International licence… provided you acknowledge the source and indicate any changes». Licenza del portale Eurostat, non estesa ad altri titolari.",
+    "owner": "Eurostat (Commissione europea)",
+    "structure": {
+      "agencyId": "ESTAT",
+      "id": "GOV_10A_MAIN",
+      "version": "73.0"
+    },
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+  }
+}

@@ -53,6 +53,7 @@ const EXPECTED_SOURCE_IDS = [
   "eurostat-gdp",
   "oecd-taxing-wages",
   "eurostat-cofog",
+  "eurostat-gov-main",
   "istat-cofog",
   "istat-epea",
   "istat-poverta",

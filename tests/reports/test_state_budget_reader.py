@@ -16,8 +16,8 @@ builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
 REPORT=json.loads((ROOT/builder.CONTENT).read_text())
 class ReaderTests(unittest.TestCase):
     def test_valid(self): builder.validate(REPORT)
-    def test_25_decimal_calculations(self):
-        self.assertEqual(len(REPORT['calculations']),25)
+    def test_71_decimal_calculations(self):
+        self.assertEqual(len(REPORT['calculations']),71)
         for c in REPORT['calculations']:
             with self.subTest(id=c['id']):self.assertEqual(str(builder.number(REPORT,c['id'])),c['expected'])
     def test_changed_operand(self):
@@ -89,8 +89,8 @@ class ReaderTests(unittest.TestCase):
     def test_derivatives_identical(self):
         raw=(ROOT/builder.CONTENT).read_bytes()
         for name,expected in builder.derivatives(REPORT,raw).items():self.assertEqual((ROOT/name).read_bytes(),expected)
-    def test_csv_contains_exactly_17_cases(self):
-        rows=list(csv.DictReader(io.StringIO((ROOT/builder.CSV).read_text(encoding='utf-8-sig'))));self.assertEqual(len(rows),17)
+    def test_csv_contains_exactly_25_cases(self):
+        rows=list(csv.DictReader(io.StringIO((ROOT/builder.CSV).read_text(encoding='utf-8-sig'))));self.assertEqual(len(rows),25)
     def test_csv_spreadsheet_formula_escape(self):
         r=copy.deepcopy(REPORT);r['cases'][0]['title']='=1+1'
         out=builder.derivatives(r,json.dumps(r).encode())[builder.CSV].decode('utf-8-sig')

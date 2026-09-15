@@ -1,0 +1,412 @@
+{
+  "version": 1,
+  "sourceId": "rgs-ministries-2025",
+  "year": 2025,
+  "ministries": [
+    {
+      "code": "02",
+      "label": "Economia e finanze",
+      "commitmentsCpCents": "79490192742507",
+      "paymentsCompetenceCpCents": "76188290643046",
+      "remainingCpCents": "3301902099461",
+      "paymentsResidualRsCents": "2117139074764",
+      "paymentsCashCsCents": "78305429717810",
+      "remainingRsCents": "9562728483022",
+      "residualsEndCents": "12864630582483"
+    },
+    {
+      "code": "04",
+      "label": "Lavoro e politiche sociali",
+      "commitmentsCpCents": "17476811906638",
+      "paymentsCompetenceCpCents": "16937838761669",
+      "remainingCpCents": "538973144969",
+      "paymentsResidualRsCents": "301864201295",
+      "paymentsCashCsCents": "17239702962964",
+      "remainingRsCents": "966706666575",
+      "residualsEndCents": "1505679811544"
+    },
+    {
+      "code": "07",
+      "label": "Istruzione e merito",
+      "commitmentsCpCents": "5767427771393",
+      "paymentsCompetenceCpCents": "5641114432838",
+      "remainingCpCents": "126313338555",
+      "paymentsResidualRsCents": "121661744287",
+      "paymentsCashCsCents": "5762776177125",
+      "remainingRsCents": "306298946644",
+      "residualsEndCents": "432612285199"
+    },
+    {
+      "code": "12",
+      "label": "Difesa",
+      "commitmentsCpCents": "3424763548647",
+      "paymentsCompetenceCpCents": "3224916857734",
+      "remainingCpCents": "199846690913",
+      "paymentsResidualRsCents": "209106609941",
+      "paymentsCashCsCents": "3434023467675",
+      "remainingRsCents": "50416615195",
+      "residualsEndCents": "250263306108"
+    },
+    {
+      "code": "08",
+      "label": "Interno",
+      "commitmentsCpCents": "3383572872891",
+      "paymentsCompetenceCpCents": "2884098609201",
+      "remainingCpCents": "499474263690",
+      "paymentsResidualRsCents": "471456477269",
+      "paymentsCashCsCents": "3355555086470",
+      "remainingRsCents": "474699528405",
+      "residualsEndCents": "974173792095"
+    },
+    {
+      "code": "10",
+      "label": "Infrastrutture e trasporti",
+      "commitmentsCpCents": "1797073015110",
+      "paymentsCompetenceCpCents": "1097964364624",
+      "remainingCpCents": "699108650486",
+      "paymentsResidualRsCents": "557872367831",
+      "paymentsCashCsCents": "1655836732455",
+      "remainingRsCents": "1410007166368",
+      "residualsEndCents": "2109115816854"
+    },
+    {
+      "code": "03",
+      "label": "Imprese e made in Italy",
+      "commitmentsCpCents": "1545445585034",
+      "paymentsCompetenceCpCents": "1316345466975",
+      "remainingCpCents": "229100118059",
+      "paymentsResidualRsCents": "169569801020",
+      "paymentsCashCsCents": "1485915267995",
+      "remainingRsCents": "163907490679",
+      "residualsEndCents": "393007608738"
+    },
+    {
+      "code": "11",
+      "label": "Università e ricerca",
+      "commitmentsCpCents": "1417722370912",
+      "paymentsCompetenceCpCents": "1310608222781",
+      "remainingCpCents": "107114148131",
+      "paymentsResidualRsCents": "173074427690",
+      "paymentsCashCsCents": "1483682650471",
+      "remainingRsCents": "114003284447",
+      "residualsEndCents": "221117432578"
+    },
+    {
+      "code": "05",
+      "label": "Giustizia",
+      "commitmentsCpCents": "1151284171534",
+      "paymentsCompetenceCpCents": "1102132303291",
+      "remainingCpCents": "49151868243",
+      "paymentsResidualRsCents": "44672712858",
+      "paymentsCashCsCents": "1146805016149",
+      "remainingRsCents": "20578432597",
+      "residualsEndCents": "69730300840"
+    },
+    {
+      "code": "09",
+      "label": "Ambiente e sicurezza energetica",
+      "commitmentsCpCents": "431447673578",
+      "paymentsCompetenceCpCents": "310996103041",
+      "remainingCpCents": "120451570537",
+      "paymentsResidualRsCents": "92756362606",
+      "paymentsCashCsCents": "403752465647",
+      "remainingRsCents": "147254132048",
+      "residualsEndCents": "267705702585"
+    },
+    {
+      "code": "06",
+      "label": "Affari esteri",
+      "commitmentsCpCents": "358390551210",
+      "paymentsCompetenceCpCents": "346880858506",
+      "remainingCpCents": "11509692704",
+      "paymentsResidualRsCents": "21793915020",
+      "paymentsCashCsCents": "368674773526",
+      "remainingRsCents": "1947873841",
+      "residualsEndCents": "13457566545"
+    },
+    {
+      "code": "14",
+      "label": "Cultura",
+      "commitmentsCpCents": "302106565809",
+      "paymentsCompetenceCpCents": "241417853072",
+      "remainingCpCents": "60688712737",
+      "paymentsResidualRsCents": "62762233333",
+      "paymentsCashCsCents": "304180086405",
+      "remainingRsCents": "120899402544",
+      "residualsEndCents": "181588115281"
+    },
+    {
+      "code": "15",
+      "label": "Salute",
+      "commitmentsCpCents": "295590099216",
+      "paymentsCompetenceCpCents": "209618786569",
+      "remainingCpCents": "85971312647",
+      "paymentsResidualRsCents": "17490088251",
+      "paymentsCashCsCents": "227108874820",
+      "remainingRsCents": "147057283889",
+      "residualsEndCents": "233028596536"
+    },
+    {
+      "code": "13",
+      "label": "Agricoltura",
+      "commitmentsCpCents": "207505985323",
+      "paymentsCompetenceCpCents": "167529202629",
+      "remainingCpCents": "39976782694",
+      "paymentsResidualRsCents": "50574497544",
+      "paymentsCashCsCents": "218103700173",
+      "remainingRsCents": "104579601745",
+      "residualsEndCents": "144556384439"
+    },
+    {
+      "code": "16",
+      "label": "Turismo",
+      "commitmentsCpCents": "43488646498",
+      "paymentsCompetenceCpCents": "12531306961",
+      "remainingCpCents": "30957339537",
+      "paymentsResidualRsCents": "12467701738",
+      "paymentsCashCsCents": "24999008699",
+      "remainingRsCents": "28233778057",
+      "residualsEndCents": "59191117594"
+    }
+  ],
+  "totals": {
+    "commitmentsCpCents": "117092823506300",
+    "paymentsCompetenceCpCents": "110992283772937",
+    "remainingCpCents": "6100539733363",
+    "paymentsResidualRsCents": "4424262215447",
+    "paymentsCashCsCents": "115416545988384",
+    "remainingRsCents": "13619318686056",
+    "residualsEndCents": "19719858419419"
+  },
+  "history": [
+    {
+      "year": 2015,
+      "totalMillion": 109691,
+      "currentMillion": 73736,
+      "capitalMillion": 35955,
+      "newMillion": 63016
+    },
+    {
+      "year": 2016,
+      "totalMillion": 134074,
+      "currentMillion": 92317,
+      "capitalMillion": 41757,
+      "newMillion": 66179
+    },
+    {
+      "year": 2017,
+      "totalMillion": 137430,
+      "currentMillion": 87211,
+      "capitalMillion": 50219,
+      "newMillion": 69791
+    },
+    {
+      "year": 2018,
+      "totalMillion": 139855,
+      "currentMillion": 82319,
+      "capitalMillion": 57536,
+      "newMillion": 67885
+    },
+    {
+      "year": 2019,
+      "totalMillion": 113261,
+      "currentMillion": 45529,
+      "capitalMillion": 67733,
+      "newMillion": 36956
+    },
+    {
+      "year": 2020,
+      "totalMillion": 196202,
+      "currentMillion": 58960,
+      "capitalMillion": 137242,
+      "newMillion": 126448
+    },
+    {
+      "year": 2021,
+      "totalMillion": 188057,
+      "currentMillion": 47225,
+      "capitalMillion": 140832,
+      "newMillion": 58088
+    },
+    {
+      "year": 2022,
+      "totalMillion": 192602,
+      "currentMillion": 50464,
+      "capitalMillion": 142137,
+      "newMillion": 70748
+    },
+    {
+      "year": 2023,
+      "totalMillion": 196431,
+      "currentMillion": 49837,
+      "capitalMillion": 146594,
+      "newMillion": 55330
+    },
+    {
+      "year": 2024,
+      "totalMillion": 187959,
+      "currentMillion": 50105,
+      "capitalMillion": 137854,
+      "newMillion": 58711
+    }
+  ],
+  "upstream": {
+    "recordId": "2025_RND_SPE_ELB_CAP_001",
+    "rowsDeclared": 5395,
+    "rowsReprocessed": 0,
+    "aggregatesProcessed": 15,
+    "sourceCsvSha256Declared": "2887db4905d30445abc795083f2861f969173baf235a56917932c9fcc242e368",
+    "snapshotSha256Declared": "86280974963c227e66cfcebab6849b54fa1edfccf67de9e15ed076290cd86028",
+    "declaredHashesVerified": false,
+    "commit": "a51efcf3a8f8a3a0407e09f5fda8666fb089cfce"
+  },
+  "funding": {
+    "title": "Prima domanda: da dove arrivano i soldi?",
+    "paragraphs": [
+      "Nel 2025 lo Stato accerta 783,17 miliardi di entrate finali e registra 902,96 miliardi di spese finali. Accertare un’entrata significa riconoscere un credito: non equivale sempre ad averlo già incassato.",
+      "Le imposte sono 661,93 miliardi, l’84,52% delle entrate finali. Seguono 119,03 miliardi di entrate non tributarie e 2,21 miliardi da alienazioni, ammortamenti e riscossione di crediti.",
+      "Il saldo netto da finanziare pubblicato è 119,79 miliardi. È un saldo del bilancio statale, non il deficit europeo dell’insieme delle amministrazioni pubbliche. Il rimborso di 267,97 miliardi di prestiti resta separato dalle spese finali."
+    ],
+    "technical": "Competenza finanziaria, milioni di euro della fonte. La sottrazione dei totali arrotondati produce 119.787 milioni, contro 119.786 pubblicati: differenza compatibile con l’arrotondamento, non un milione scomparso.",
+    "sourceIds": [
+      "senato-rendiconto-2025"
+    ]
+  },
+  "execution": {
+    "title": "Seconda domanda: quanto è stato davvero pagato?",
+    "paragraphs": [
+      "Il rendiconto segue fasi diverse: prima lo stanziamento autorizza la spesa, poi l’impegno la registra e infine il pagamento trasferisce il denaro. Un contratto pluriennale può comparire in più esercizi: contarne ogni anno tutto il valore lo moltiplicherebbe artificialmente.",
+      "Abbiamo riconciliato i 15 aggregati ministeriali dello snapshot RGS presente nel progetto. Su 1.170,93 miliardi di impegni, compresi i rimborsi del debito, 1.109,92 sono pagati sulla competenza 2025; 61,01 restano da pagare. I pagamenti sui residui degli anni precedenti sono altri 44,24 miliardi.",
+      "Il Ministero del Turismo conserva il 71,19% dei propri impegni 2025; le Infrastrutture il 38,90%. Sono indicatori di esecuzione da leggere per programma, non una graduatoria di sprechi. Nel caso degli impianti di risalita, più avanti, il documento descrive anche fondi e risultati: lì il segnale ha un contenuto concreto."
+    ],
+    "technical": "Tutti gli importi ministeriali sono in centesimi. Controlli: CP = pagato CP + rimasto CP; CS = pagato CP + pagato RS; residui finali = rimasto CP + rimasto RS. Ogni somma dei 15 ministeri deve coincidere con il totale pubblicato. Salute non coincide con l’intero Servizio sanitario nazionale: parte del finanziamento transita dal MEF e dalle Regioni.",
+    "sourceIds": [
+      "rgs-ministries-2025"
+    ]
+  },
+  "historyIntro": {
+    "title": "Dieci anni, non un solo governo",
+    "paragraphs": [
+      "I residui delle spese finali passano da 109,69 miliardi nel 2015 a 187,96 nel 2024. Sono consistenze a fine anno, non dieci flussi da sommare.",
+      "Il confronto attraversa cambi di governo e di regole. Dal 2016 si allungano alcuni termini di conservazione; dal 2019 cambia l’imputazione degli impegni alla scadenza. La discontinuità del 2020 coincide anche con le misure straordinarie della pandemia.",
+      "Per attribuire un risultato servono almeno quattro date: decisione, contratto, scadenza e pagamento. Il governo in carica al pagamento può ereditare l’impegno, ma resta responsabile della gestione che gli compete."
+    ],
+    "technical": "La serie copre dieci osservazioni annuali dello stock, non un audit di tutti i contratti del decennio. Importi nominali, milioni di euro. Le componenti 2019 e 2022 differiscono dal totale di un milione per arrotondamento. Il grafico mantiene i totali pubblicati.",
+    "sourceIds": [
+      "camera-residui"
+    ]
+  },
+  "inpsContext": {
+    "title": "Pensioni: distinguere il diritto, il contributo e il credito inesigibile",
+    "paragraphs": [
+      "La spesa previdenziale non è uno spreco perché elevata. Il controllo utile cerca prestazioni senza diritto, contributi non riscossi e costi amministrativi evitabili. I due riscontri seguenti riguardano i crediti, non accuse ai pensionati.",
+      "Nel rendiconto INPS, il portafoglio ADER al 31 dicembre 2024 è 135,2 miliardi. Solo 18,1 sono classificati come potenziale recupero lordo. Altri 60 miliardi riguardano azioni già tentate senza riscossione.",
+      "Cancellare un credito già svalutato non crea da solo un nuovo buco. Il problema gestionale è capire come il credito nasce, quanto tempo passa prima del recupero e perché alcuni errori ritornano."
+    ],
+    "technical": "Classificazione ADER-INPS: stock di crediti, non entrate annuali o denaro disponibile. Il potenziale recupero è lordo e non è una previsione di incasso. Non sommare questo portafoglio alle eliminazioni o ai trasferimenti statali.",
+    "sourceIds": [
+      "inps-rendiconto",
+      "inps-chiarimenti"
+    ]
+  },
+  "foreign": {
+    "title": "E i soldi all’estero?",
+    "paragraphs": [
+      "Per rispondere non basta sommare il bilancio degli Esteri. L’aiuto pubblico allo sviluppo coinvolge diversi ministeri; lo stesso bilancio MAECI include ambasciate, servizi consolari e sostegno alle imprese italiane.",
+      "Nell’allegato iniziale al bilancio 2024, le risorse APS degli otto ministeri elencati dalla Camera sommano 6,31 miliardi. È uno stanziamento, non la misura dei soldi effettivamente inviati all’estero. La voce Interno, da sola, vale 1,54 miliardi: la destinazione geografica va verificata progetto per progetto.",
+      "Una variazione concreta riguarda il capitolo 3429 del MAECI: il contributo allo Strumento europeo per la pace passa da 89,94 milioni nel 2023 a 381,3 nel 2024. È una scelta di politica estera e un costo opportunità da discutere; la crescita non dimostra appropriazione indebita o inefficienza.",
+      "Per confrontare aiuti e manutenzione stradale servono pagamenti, risultati e somme legalmente riallocabili. Questo dossier non certifica che ogni euro stanziato per gli aiuti possa essere spostato subito sulle strade."
+    ],
+    "technical": "Stanziamenti iniziali APS 2024, non consuntivo OCSE-DAC. Il contributo EPF sul capitolo 3429 e il programma Cooperazione non sono sinonimi. Nessuna somma tra questa tabella, MAECI, INPS e totale PA.",
+    "sourceIds": [
+      "maeci-rendiconto"
+    ]
+  },
+  "foreignRows": [
+    {
+      "label": "Economia e finanze",
+      "million": "2568.34"
+    },
+    {
+      "label": "Interno",
+      "million": "1538.04"
+    },
+    {
+      "label": "Affari esteri",
+      "million": "1202.26"
+    },
+    {
+      "label": "Ambiente",
+      "million": "519.29"
+    },
+    {
+      "label": "Infrastrutture e trasporti",
+      "million": "452.71"
+    },
+    {
+      "label": "Università e ricerca",
+      "million": "17.89"
+    },
+    {
+      "label": "Salute",
+      "million": "14.74"
+    },
+    {
+      "label": "Imprese",
+      "million": "0.93"
+    }
+  ],
+  "portfolios": [
+    {
+      "label": "Falliti",
+      "billion": "13.7"
+    },
+    {
+      "label": "Deceduti e ditte cessate",
+      "billion": "16.5"
+    },
+    {
+      "label": "Nullatenenti",
+      "billion": "9.7"
+    },
+    {
+      "label": "Azioni tentate senza riscossione",
+      "billion": "60.0"
+    },
+    {
+      "label": "Rate non ancora scadute",
+      "billion": "8.9"
+    },
+    {
+      "label": "Carichi sospesi",
+      "billion": "8.3"
+    },
+    {
+      "label": "Potenziale recupero lordo",
+      "billion": "18.1"
+    }
+  ],
+  "readerOutcome": "Il denaro pubblico si perde anche senza una frode: in sanzioni evitabili, lavori da rifare, ritardi che rinviano un servizio e procedure che correggono gli stessi errori ogni anno. I casi con prova economica vanno affrontati per primi; le incongruenze nei documenti restano visibili, senza gonfiarne il significato.",
+  "exclusions": [
+    {
+      "title": "Somma dei residui = spreco",
+      "reason": "Scartata. Lo stock include fasi e scadenze diverse; non misura da solo ritardi colpevoli o denaro perduto."
+    },
+    {
+      "title": "Cassa superiore agli impegni 2025 = spesa fuori bilancio",
+      "reason": "Scartata quando la differenza è coperta dai pagamenti sui residui precedenti. Le tre identità sono verificate per ogni ministero."
+    },
+    {
+      "title": "Cancellazioni INPS = pensioni indebite",
+      "reason": "Scartata. Crediti contributivi e prestazioni pagate sono oggetti contabili diversi; i fondi svalutazione anticipano parte della perdita di valore."
+    },
+    {
+      "title": "Proposte Recovery Fund 2020 = pagamenti eseguiti",
+      "reason": "Non utilizzata come evidenza. L’allegato Radio Radio descrive una bozza di 557 progetti, non impegni, fatture o pagamenti."
+    },
+    {
+      "title": "Salari stagnanti = prova che un capitolo di bilancio è sprecato",
+      "reason": "Non utilizzata come evidenza. Il secondo articolo allegato presenta una tesi macroeconomica; non identifica un flusso di spesa né una stima causale verificabile qui."
+    }
+  ]
+}

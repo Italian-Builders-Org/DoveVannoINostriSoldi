@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-09-14-pr509-reader",
-  "title": "Spesa pubblica: costi evitabili, anomalie ed errori",
-  "summary": "Sanzioni pagate, ritardi, varianti contestate e numeri che non tornano. Il quadro della spesa pubblica e 17 riscontri spiegati con le loro fonti.",
+  "revision": "2026-09-15-spending-review",
+  "title": "Dove si inceppano i soldi pubblici",
+  "summary": "Entrate, pagamenti e risultati: un audit documentale del bilancio italiano, con dieci anni di dati e le spending review dal 1981. Mostriamo costi evitabili, risparmi mancati e correzioni che hanno funzionato.",
   "route": "/report/bilancio-stato-2025",
   "pdfPath": "/report/bilancio-stato-2025.pdf",
   "publishedOn": "2026-09-14",
-  "modifiedOn": "2026-09-14",
+  "modifiedOn": "2026-09-15",
   "basePr": 509,
-  "baseCommit": "b9e7d5c347bbd027bab4ed0111b84fd8015de3ba",
+  "baseCommit": "8b14d7da98c221fad64cadbc5a5e692bd8572768",
   "macro": {
     "year": 2024,
     "totalCents": "110915400000000",
@@ -17,14 +17,17 @@
     "snapshotSha256": "5773a73b156e93cb6b168842c837d20ffad657d1a70631f3f879013a085c88c8",
     "note": "Spesa di tutte le amministrazioni pubbliche, in competenza economica. Non è il solo bilancio dello Stato e non è un totale di bonifici."
   },
-  "lead": "Le fonti documentano sanzioni e indennizzi pagati, varianti ai lavori contestate, servizi non conformi ed errori nei dati. Il rapporto distingue questi problemi e spiega cosa comportano.",
+  "lead": "Ci sono soldi spesi per riparare un inadempimento, progetti che non producono i risultati previsti e crediti che restano nei conti finché vengono cancellati. Seguiamo questi tre percorsi: dalle risorse pubbliche al servizio, oppure al punto in cui il percorso si interrompe.",
   "kindLabels": {
     "costo": "Costo dell’inadempimento",
     "irregolarita": "Irregolarità documentata",
     "attuazione": "Risultato insufficiente",
     "possibile": "Possibile spreco",
     "anomalia": "Anomalia documentata",
-    "errore": "Errore documentale o di attribuzione"
+    "errore": "Errore documentale o di attribuzione",
+    "stima": "Inefficienza stimata",
+    "risparmio": "Risparmio documentato",
+    "mancato": "Risparmio non conseguito"
   },
   "sectors": [
     {
@@ -39,7 +42,9 @@
         "rti",
         "personale",
         "entrate",
-        "date"
+        "date",
+        "rottamazioni-incassi",
+        "energia-obiettivo-mancato"
       ],
       "sourceIds": [
         "cofog"
@@ -51,7 +56,9 @@
       "amountCents": "2830100000000",
       "note": "La funzione COFOG non coincide con il bilancio del Ministero né con il perimetro NATO.",
       "reading": "Non attribuiamo un risparmio alla difesa senza prove sul singolo programma. Il confronto utile è tra costo lungo la vita del mezzo, disponibilità e capacità ottenuta.",
-      "caseIds": [],
+      "caseIds": [
+        "esercito-acquisti-efficienti"
+      ],
       "sourceIds": [
         "cofog"
       ]
@@ -64,7 +71,8 @@
       "reading": "Indennizzi per processi troppo lunghi e obiettivi dell’edilizia penitenziaria collegano spesa e risultati concreti.",
       "caseIds": [
         "processi-lenti",
-        "carceri"
+        "carceri",
+        "affitti-risparmio-mancato"
       ],
       "sourceIds": [
         "cofog"
@@ -104,7 +112,9 @@
       "amountCents": "1697270000000",
       "note": "La funzione raccoglie interventi su abitazioni e servizi collettivi.",
       "reading": "Un edificio completato non è ancora un servizio utilizzato. Non ricaviamo sprechi o risparmi dal solo totale di questa funzione.",
-      "caseIds": [],
+      "caseIds": [
+        "bonus-edilizi"
+      ],
       "sourceIds": [
         "cofog"
       ]
@@ -156,7 +166,11 @@
       "amountCents": "46813500000000",
       "note": "Include pensioni e altre prestazioni sociali: non sono tutte pensioni.",
       "reading": "Non assumiamo che una prestazione sia inutile perché costosa. Servono copertura dei beneficiari, bisogno soddisfatto ed errori di erogazione documentati.",
-      "caseIds": [],
+      "caseIds": [
+        "inps-cessazioni",
+        "inps-registrazioni",
+        "assistenti-sociali"
+      ],
       "sourceIds": [
         "cofog"
       ]
@@ -486,6 +500,726 @@
       "unit": "centesimi per kg",
       "sourceId": "rifiuti-costi",
       "label": "Sud"
+    },
+    "min-02-commitmentscpcents": {
+      "value": "794901927425.07",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Economia e finanze: commitmentsCpCents"
+    },
+    "min-02-remainingcpcents": {
+      "value": "33019020994.61",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Economia e finanze: remainingCpCents"
+    },
+    "min-02-paymentscompetencecpcents": {
+      "value": "761882906430.46",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Economia e finanze: paymentsCompetenceCpCents"
+    },
+    "min-04-commitmentscpcents": {
+      "value": "174768119066.38",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Lavoro e politiche sociali: commitmentsCpCents"
+    },
+    "min-04-remainingcpcents": {
+      "value": "5389731449.69",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Lavoro e politiche sociali: remainingCpCents"
+    },
+    "min-04-paymentscompetencecpcents": {
+      "value": "169378387616.69",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Lavoro e politiche sociali: paymentsCompetenceCpCents"
+    },
+    "min-07-commitmentscpcents": {
+      "value": "57674277713.93",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Istruzione e merito: commitmentsCpCents"
+    },
+    "min-07-remainingcpcents": {
+      "value": "1263133385.55",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Istruzione e merito: remainingCpCents"
+    },
+    "min-07-paymentscompetencecpcents": {
+      "value": "56411144328.38",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Istruzione e merito: paymentsCompetenceCpCents"
+    },
+    "min-12-commitmentscpcents": {
+      "value": "34247635486.47",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Difesa: commitmentsCpCents"
+    },
+    "min-12-remainingcpcents": {
+      "value": "1998466909.13",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Difesa: remainingCpCents"
+    },
+    "min-12-paymentscompetencecpcents": {
+      "value": "32249168577.34",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Difesa: paymentsCompetenceCpCents"
+    },
+    "min-08-commitmentscpcents": {
+      "value": "33835728728.91",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Interno: commitmentsCpCents"
+    },
+    "min-08-remainingcpcents": {
+      "value": "4994742636.9",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Interno: remainingCpCents"
+    },
+    "min-08-paymentscompetencecpcents": {
+      "value": "28840986092.01",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Interno: paymentsCompetenceCpCents"
+    },
+    "min-10-commitmentscpcents": {
+      "value": "17970730151.1",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Infrastrutture e trasporti: commitmentsCpCents"
+    },
+    "min-10-remainingcpcents": {
+      "value": "6991086504.86",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Infrastrutture e trasporti: remainingCpCents"
+    },
+    "min-10-paymentscompetencecpcents": {
+      "value": "10979643646.24",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Infrastrutture e trasporti: paymentsCompetenceCpCents"
+    },
+    "min-03-commitmentscpcents": {
+      "value": "15454455850.34",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Imprese e made in Italy: commitmentsCpCents"
+    },
+    "min-03-remainingcpcents": {
+      "value": "2291001180.59",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Imprese e made in Italy: remainingCpCents"
+    },
+    "min-03-paymentscompetencecpcents": {
+      "value": "13163454669.75",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Imprese e made in Italy: paymentsCompetenceCpCents"
+    },
+    "min-11-commitmentscpcents": {
+      "value": "14177223709.12",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Università e ricerca: commitmentsCpCents"
+    },
+    "min-11-remainingcpcents": {
+      "value": "1071141481.31",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Università e ricerca: remainingCpCents"
+    },
+    "min-11-paymentscompetencecpcents": {
+      "value": "13106082227.81",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Università e ricerca: paymentsCompetenceCpCents"
+    },
+    "min-05-commitmentscpcents": {
+      "value": "11512841715.34",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Giustizia: commitmentsCpCents"
+    },
+    "min-05-remainingcpcents": {
+      "value": "491518682.43",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Giustizia: remainingCpCents"
+    },
+    "min-05-paymentscompetencecpcents": {
+      "value": "11021323032.91",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Giustizia: paymentsCompetenceCpCents"
+    },
+    "min-09-commitmentscpcents": {
+      "value": "4314476735.78",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Ambiente e sicurezza energetica: commitmentsCpCents"
+    },
+    "min-09-remainingcpcents": {
+      "value": "1204515705.37",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Ambiente e sicurezza energetica: remainingCpCents"
+    },
+    "min-09-paymentscompetencecpcents": {
+      "value": "3109961030.41",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Ambiente e sicurezza energetica: paymentsCompetenceCpCents"
+    },
+    "min-06-commitmentscpcents": {
+      "value": "3583905512.1",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Affari esteri: commitmentsCpCents"
+    },
+    "min-06-remainingcpcents": {
+      "value": "115096927.04",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Affari esteri: remainingCpCents"
+    },
+    "min-06-paymentscompetencecpcents": {
+      "value": "3468808585.06",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Affari esteri: paymentsCompetenceCpCents"
+    },
+    "min-14-commitmentscpcents": {
+      "value": "3021065658.09",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Cultura: commitmentsCpCents"
+    },
+    "min-14-remainingcpcents": {
+      "value": "606887127.37",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Cultura: remainingCpCents"
+    },
+    "min-14-paymentscompetencecpcents": {
+      "value": "2414178530.72",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Cultura: paymentsCompetenceCpCents"
+    },
+    "min-15-commitmentscpcents": {
+      "value": "2955900992.16",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Salute: commitmentsCpCents"
+    },
+    "min-15-remainingcpcents": {
+      "value": "859713126.47",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Salute: remainingCpCents"
+    },
+    "min-15-paymentscompetencecpcents": {
+      "value": "2096187865.69",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Salute: paymentsCompetenceCpCents"
+    },
+    "min-13-commitmentscpcents": {
+      "value": "2075059853.23",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Agricoltura: commitmentsCpCents"
+    },
+    "min-13-remainingcpcents": {
+      "value": "399767826.94",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Agricoltura: remainingCpCents"
+    },
+    "min-13-paymentscompetencecpcents": {
+      "value": "1675292026.29",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Agricoltura: paymentsCompetenceCpCents"
+    },
+    "min-16-commitmentscpcents": {
+      "value": "434886464.98",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Turismo: commitmentsCpCents"
+    },
+    "min-16-remainingcpcents": {
+      "value": "309573395.37",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Turismo: remainingCpCents"
+    },
+    "min-16-paymentscompetencecpcents": {
+      "value": "125313069.61",
+      "unit": "€",
+      "sourceId": "rgs-ministries-2025",
+      "label": "Turismo: paymentsCompetenceCpCents"
+    },
+    "state-tax": {
+      "value": "661930",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Entrate tributarie"
+    },
+    "state-other": {
+      "value": "119030",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Entrate extratributarie"
+    },
+    "state-assets": {
+      "value": "2213",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Alienazioni, ammortamenti e riscossione crediti"
+    },
+    "state-revenue": {
+      "value": "783173",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Entrate finali accertate"
+    },
+    "state-current": {
+      "value": "655859",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Spese correnti senza interessi"
+    },
+    "state-interest": {
+      "value": "95346",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Interessi"
+    },
+    "state-capital": {
+      "value": "151755",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Spese in conto capitale"
+    },
+    "state-final": {
+      "value": "902960",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Spese finali"
+    },
+    "state-repay": {
+      "value": "267969",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Rimborso prestiti"
+    },
+    "state-balance": {
+      "value": "119786",
+      "unit": "milioni €",
+      "sourceId": "senato-rendiconto-2025",
+      "label": "Saldo netto da finanziare, valore assoluto"
+    },
+    "residual-2015": {
+      "value": "109691",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2015"
+    },
+    "residual-2016": {
+      "value": "134074",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2016"
+    },
+    "residual-2017": {
+      "value": "137430",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2017"
+    },
+    "residual-2018": {
+      "value": "139855",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2018"
+    },
+    "residual-2019": {
+      "value": "113261",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2019"
+    },
+    "residual-2020": {
+      "value": "196202",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2020"
+    },
+    "residual-2021": {
+      "value": "188057",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2021"
+    },
+    "residual-2022": {
+      "value": "192602",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2022"
+    },
+    "residual-2023": {
+      "value": "196431",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2023"
+    },
+    "residual-2024": {
+      "value": "187959",
+      "unit": "milioni €",
+      "sourceId": "camera-residui",
+      "label": "Residui passivi finali 2024"
+    },
+    "inps-artigiani": {
+      "value": "213",
+      "unit": "milioni €",
+      "sourceId": "inps-riaccertamento",
+      "label": "Crediti cessazioni tardive: artigiani"
+    },
+    "inps-commercianti": {
+      "value": "565",
+      "unit": "milioni €",
+      "sourceId": "inps-riaccertamento",
+      "label": "Crediti cessazioni tardive: commercianti"
+    },
+    "inps-art-count": {
+      "value": "66387",
+      "unit": "proposte",
+      "sourceId": "inps-riaccertamento",
+      "label": "Proposte artigiani"
+    },
+    "inps-com-count": {
+      "value": "163288",
+      "unit": "proposte",
+      "sourceId": "inps-riaccertamento",
+      "label": "Proposte commercianti"
+    },
+    "inps-error-2024": {
+      "value": "97563541.04",
+      "unit": "€",
+      "sourceId": "inps-riaccertamento",
+      "label": "Errori e duplicazioni 2024"
+    },
+    "inps-error-2023": {
+      "value": "108216681.80",
+      "unit": "€",
+      "sourceId": "inps-riaccertamento",
+      "label": "Errori e duplicazioni 2023"
+    },
+    "inps-port-0": {
+      "value": "13.7",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Falliti"
+    },
+    "inps-port-1": {
+      "value": "16.5",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Deceduti e ditte cessate"
+    },
+    "inps-port-2": {
+      "value": "9.7",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Nullatenenti"
+    },
+    "inps-port-3": {
+      "value": "60.0",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Azioni tentate senza riscossione"
+    },
+    "inps-port-4": {
+      "value": "8.9",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Rate non ancora scadute"
+    },
+    "inps-port-5": {
+      "value": "8.3",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Carichi sospesi"
+    },
+    "inps-port-6": {
+      "value": "18.1",
+      "unit": "miliardi €",
+      "sourceId": "inps-rendiconto",
+      "label": "Potenziale recupero lordo"
+    },
+    "rott-old-due": {
+      "value": "58",
+      "unit": "miliardi €",
+      "sourceId": "cpi-rottamazioni",
+      "label": "Prime tre: dovuto"
+    },
+    "rott-old-paid": {
+      "value": "22",
+      "unit": "miliardi €",
+      "sourceId": "cpi-rottamazioni",
+      "label": "Prime tre: riscosso"
+    },
+    "rott-quater-due": {
+      "value": "23",
+      "unit": "miliardi €",
+      "sourceId": "cpi-rottamazioni",
+      "label": "Quater: dovuto entro 2024"
+    },
+    "rott-quater-paid": {
+      "value": "12",
+      "unit": "miliardi €",
+      "sourceId": "cpi-rottamazioni",
+      "label": "Quater: riscosso entro 2024"
+    },
+    "aps-0": {
+      "value": "2568.34",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Economia e finanze"
+    },
+    "aps-1": {
+      "value": "1538.04",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Interno"
+    },
+    "aps-2": {
+      "value": "1202.26",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Affari esteri"
+    },
+    "aps-3": {
+      "value": "519.29",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Ambiente"
+    },
+    "aps-4": {
+      "value": "452.71",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Infrastrutture e trasporti"
+    },
+    "aps-5": {
+      "value": "17.89",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Università e ricerca"
+    },
+    "aps-6": {
+      "value": "14.74",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Salute"
+    },
+    "aps-7": {
+      "value": "0.93",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Imprese"
+    },
+    "epf-2023": {
+      "value": "89.94",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Capitolo 3429, 2023"
+    },
+    "epf-2024": {
+      "value": "381.3",
+      "unit": "milioni €",
+      "sourceId": "maeci-rendiconto",
+      "label": "Capitolo 3429, 2024"
+    },
+    "bonus-additional": {
+      "value": "73",
+      "unit": "%",
+      "sourceId": "bdi-bonus",
+      "label": "Quota di investimenti aggiuntivi stimata"
+    },
+    "bonus-not-additional": {
+      "value": "27",
+      "unit": "%",
+      "sourceId": "bdi-bonus",
+      "label": "Quota di investimenti non aggiuntivi stimata"
+    },
+    "social-2021": {
+      "value": "48",
+      "unit": "milioni €",
+      "sourceId": "upb-sociali",
+      "label": "Contributi erogati nel 2021"
+    },
+    "social-2022": {
+      "value": "65",
+      "unit": "milioni €",
+      "sourceId": "upb-sociali",
+      "label": "Contributi erogati nel 2022"
+    },
+    "social-2023": {
+      "value": "81",
+      "unit": "milioni €",
+      "sourceId": "upb-sociali",
+      "label": "Contributi erogati nel 2023"
+    },
+    "sr-vvf-target": {
+      "value": "845000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio previsto affitti VVF"
+    },
+    "sr-vvf-missed": {
+      "value": "76000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio non conseguito affitti VVF"
+    },
+    "sr-ps-target": {
+      "value": "533000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio previsto affitti Pubblica Sicurezza"
+    },
+    "sr-ps-missed": {
+      "value": "169000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio non conseguito affitti Pubblica Sicurezza"
+    },
+    "sr-army-direct": {
+      "value": "1470031",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio approvvigionamenti diretti e misti"
+    },
+    "sr-army-catering": {
+      "value": "4407117",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio contratti di catering accentrati"
+    },
+    "sr-army-rations-extra": {
+      "value": "167814",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Maggiore costo razioni da combattimento"
+    },
+    "sr-army-target": {
+      "value": "4000000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Obiettivo risparmio vettovagliamento"
+    },
+    "sr-army-net-published": {
+      "value": "5709334",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Risparmio netto rendicontato"
+    },
+    "sr-remote-reinstatement": {
+      "value": "105655",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Reintegro misura riunioni da remoto"
+    },
+    "sr-remote-target": {
+      "value": "2000000",
+      "unit": "euro",
+      "sourceId": "rgs-review-2024",
+      "label": "Riduzione prevista riunioni da remoto"
+    },
+    "sr-pg-total": {
+      "value": "205",
+      "unit": "piani gestionali",
+      "sourceId": "rgs-review-2024",
+      "label": "Piani gestionali interessati nel 2024"
+    },
+    "sr-pg-dedicated": {
+      "value": "107",
+      "unit": "piani gestionali",
+      "sourceId": "rgs-review-2024",
+      "label": "Piani con sola finalità oggetto di revisione"
+    },
+    "sr-pg-composite": {
+      "value": "69",
+      "unit": "piani gestionali",
+      "sourceId": "rgs-review-2024",
+      "label": "Piani con più finalità"
+    },
+    "sr-pg-funds": {
+      "value": "29",
+      "unit": "piani gestionali",
+      "sourceId": "rgs-review-2024",
+      "label": "Fondi da ripartire"
+    },
+    "sr-cott-2014": {
+      "value": "7",
+      "unit": "miliardi di euro",
+      "sourceId": "cottarelli-2014",
+      "label": "Proposta lorda massima Cottarelli, 2014"
+    },
+    "sr-cott-2015": {
+      "value": "18",
+      "unit": "miliardi di euro",
+      "sourceId": "cottarelli-2014",
+      "label": "Proposta lorda massima Cottarelli, 2015"
+    },
+    "sr-cott-2016": {
+      "value": "34",
+      "unit": "miliardi di euro",
+      "sourceId": "cottarelli-2014",
+      "label": "Proposta lorda massima Cottarelli, 2016"
+    },
+    "sr-gut-2014": {
+      "value": "3.6",
+      "unit": "miliardi di euro",
+      "sourceId": "camera-review-2018",
+      "label": "Effetto annuo della revisione, prospettiva 2017, 2014"
+    },
+    "sr-gut-2015": {
+      "value": "18",
+      "unit": "miliardi di euro",
+      "sourceId": "camera-review-2018",
+      "label": "Effetto annuo della revisione, prospettiva 2017, 2015"
+    },
+    "sr-gut-2016": {
+      "value": "25",
+      "unit": "miliardi di euro",
+      "sourceId": "camera-review-2018",
+      "label": "Effetto annuo della revisione, prospettiva 2017, 2016"
+    },
+    "sr-gut-2017": {
+      "value": "29.9",
+      "unit": "miliardi di euro",
+      "sourceId": "camera-review-2018",
+      "label": "Effetto annuo della revisione, prospettiva 2017, 2017"
+    },
+    "sr-gut-2018": {
+      "value": "31.5",
+      "unit": "miliardi di euro",
+      "sourceId": "camera-review-2018",
+      "label": "Effetto annuo della revisione, prospettiva 2017, 2018"
     }
   },
   "calculations": [
@@ -794,6 +1528,572 @@
       "digits": 1,
       "label": "Differenziale del costo medio Sud-Nord",
       "unit": "%"
+    },
+    {
+      "id": "min-02-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-02-remainingcpcents",
+        "min-02-commitmentscpcents"
+      ],
+      "expected": "4.15",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Economia e finanze",
+      "unit": "%"
+    },
+    {
+      "id": "min-04-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-04-remainingcpcents",
+        "min-04-commitmentscpcents"
+      ],
+      "expected": "3.08",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Lavoro e politiche sociali",
+      "unit": "%"
+    },
+    {
+      "id": "min-07-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-07-remainingcpcents",
+        "min-07-commitmentscpcents"
+      ],
+      "expected": "2.19",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Istruzione e merito",
+      "unit": "%"
+    },
+    {
+      "id": "min-12-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-12-remainingcpcents",
+        "min-12-commitmentscpcents"
+      ],
+      "expected": "5.84",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Difesa",
+      "unit": "%"
+    },
+    {
+      "id": "min-08-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-08-remainingcpcents",
+        "min-08-commitmentscpcents"
+      ],
+      "expected": "14.76",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Interno",
+      "unit": "%"
+    },
+    {
+      "id": "min-10-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-10-remainingcpcents",
+        "min-10-commitmentscpcents"
+      ],
+      "expected": "38.90",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Infrastrutture e trasporti",
+      "unit": "%"
+    },
+    {
+      "id": "min-03-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-03-remainingcpcents",
+        "min-03-commitmentscpcents"
+      ],
+      "expected": "14.82",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Imprese e made in Italy",
+      "unit": "%"
+    },
+    {
+      "id": "min-11-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-11-remainingcpcents",
+        "min-11-commitmentscpcents"
+      ],
+      "expected": "7.56",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Università e ricerca",
+      "unit": "%"
+    },
+    {
+      "id": "min-05-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-05-remainingcpcents",
+        "min-05-commitmentscpcents"
+      ],
+      "expected": "4.27",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Giustizia",
+      "unit": "%"
+    },
+    {
+      "id": "min-09-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-09-remainingcpcents",
+        "min-09-commitmentscpcents"
+      ],
+      "expected": "27.92",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Ambiente e sicurezza energetica",
+      "unit": "%"
+    },
+    {
+      "id": "min-06-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-06-remainingcpcents",
+        "min-06-commitmentscpcents"
+      ],
+      "expected": "3.21",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Affari esteri",
+      "unit": "%"
+    },
+    {
+      "id": "min-14-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-14-remainingcpcents",
+        "min-14-commitmentscpcents"
+      ],
+      "expected": "20.09",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Cultura",
+      "unit": "%"
+    },
+    {
+      "id": "min-15-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-15-remainingcpcents",
+        "min-15-commitmentscpcents"
+      ],
+      "expected": "29.08",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Salute",
+      "unit": "%"
+    },
+    {
+      "id": "min-13-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-13-remainingcpcents",
+        "min-13-commitmentscpcents"
+      ],
+      "expected": "19.27",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Agricoltura",
+      "unit": "%"
+    },
+    {
+      "id": "min-16-remaining-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "min-16-remainingcpcents",
+        "min-16-commitmentscpcents"
+      ],
+      "expected": "71.18",
+      "digits": 2,
+      "label": "Residui nuovi / impegni: Turismo",
+      "unit": "%"
+    },
+    {
+      "id": "state-revenue-sum",
+      "operation": "sum",
+      "inputs": [
+        "state-tax",
+        "state-other",
+        "state-assets"
+      ],
+      "expected": "783173",
+      "digits": 0,
+      "label": "Somma delle entrate finali",
+      "unit": "milioni €"
+    },
+    {
+      "id": "state-spending-sum",
+      "operation": "sum",
+      "inputs": [
+        "state-current",
+        "state-interest",
+        "state-capital"
+      ],
+      "expected": "902960",
+      "digits": 0,
+      "label": "Somma delle spese finali",
+      "unit": "milioni €"
+    },
+    {
+      "id": "state-rounded-gap",
+      "operation": "difference",
+      "inputs": [
+        "state-final",
+        "state-revenue"
+      ],
+      "expected": "119787",
+      "digits": 0,
+      "label": "Differenza dei totali arrotondati",
+      "unit": "milioni €"
+    },
+    {
+      "id": "state-interest-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "state-interest",
+        "state-final"
+      ],
+      "expected": "10.56",
+      "digits": 2,
+      "label": "Interessi / spese finali",
+      "unit": "%"
+    },
+    {
+      "id": "state-tax-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "state-tax",
+        "state-revenue"
+      ],
+      "expected": "84.52",
+      "digits": 2,
+      "label": "Imposte / entrate finali",
+      "unit": "%"
+    },
+    {
+      "id": "residual-decade-change",
+      "operation": "relative-change-percent",
+      "inputs": [
+        "residual-2024",
+        "residual-2015"
+      ],
+      "expected": "71.35",
+      "digits": 2,
+      "label": "Variazione nominale dello stock 2015-2024",
+      "unit": "%"
+    },
+    {
+      "id": "inps-cessation-total",
+      "operation": "sum",
+      "inputs": [
+        "inps-artigiani",
+        "inps-commercianti"
+      ],
+      "expected": "778",
+      "digits": 0,
+      "label": "Crediti eliminati per cessazioni tardive",
+      "unit": "milioni €"
+    },
+    {
+      "id": "inps-cessation-count",
+      "operation": "sum",
+      "inputs": [
+        "inps-art-count",
+        "inps-com-count"
+      ],
+      "expected": "229675",
+      "digits": 0,
+      "label": "Proposte di eliminazione",
+      "unit": "proposte"
+    },
+    {
+      "id": "inps-error-reduction",
+      "operation": "reduction-percent",
+      "inputs": [
+        "inps-error-2023",
+        "inps-error-2024"
+      ],
+      "expected": "9.84",
+      "digits": 2,
+      "label": "Riduzione delle registrazioni erronee o duplicate",
+      "unit": "%"
+    },
+    {
+      "id": "inps-portfolio-total",
+      "operation": "sum",
+      "inputs": [
+        "inps-port-0",
+        "inps-port-1",
+        "inps-port-2",
+        "inps-port-3",
+        "inps-port-4",
+        "inps-port-5",
+        "inps-port-6"
+      ],
+      "expected": "135.2",
+      "digits": 1,
+      "label": "Ricostruzione del portafoglio ADER-INPS",
+      "unit": "miliardi €"
+    },
+    {
+      "id": "inps-recoverable-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "inps-port-6",
+        "inps-portfolio-total"
+      ],
+      "expected": "13.39",
+      "digits": 2,
+      "label": "Quota di potenziale recupero lordo",
+      "unit": "%"
+    },
+    {
+      "id": "rott-old-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "rott-old-paid",
+        "rott-old-due"
+      ],
+      "expected": "37.9",
+      "digits": 1,
+      "label": "Incassi / dovuto, numeri arrotondati dello studio",
+      "unit": "%"
+    },
+    {
+      "id": "rott-quater-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "rott-quater-paid",
+        "rott-quater-due"
+      ],
+      "expected": "52.2",
+      "digits": 1,
+      "label": "Incassi quater / dovuto, numeri arrotondati",
+      "unit": "%"
+    },
+    {
+      "id": "aps-total",
+      "operation": "sum",
+      "inputs": [
+        "aps-0",
+        "aps-1",
+        "aps-2",
+        "aps-3",
+        "aps-4",
+        "aps-5",
+        "aps-6",
+        "aps-7"
+      ],
+      "expected": "6314.20",
+      "digits": 2,
+      "label": "Somma stanziamenti APS degli otto ministeri",
+      "unit": "milioni €"
+    },
+    {
+      "id": "epf-increase",
+      "operation": "difference",
+      "inputs": [
+        "epf-2024",
+        "epf-2023"
+      ],
+      "expected": "291.36",
+      "digits": 2,
+      "label": "Incremento del capitolo 3429",
+      "unit": "milioni €"
+    },
+    {
+      "id": "sr-vvf-achieved",
+      "operation": "difference",
+      "inputs": [
+        "sr-vvf-target",
+        "sr-vvf-missed"
+      ],
+      "expected": "769000",
+      "digits": 0,
+      "label": "Risparmio conseguito per differenza, VVF",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-vvf-missed-percent",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-vvf-missed",
+        "sr-vvf-target"
+      ],
+      "expected": "9.0",
+      "digits": 1,
+      "label": "Quota del risparmio non conseguita, VVF",
+      "unit": "%"
+    },
+    {
+      "id": "sr-ps-achieved",
+      "operation": "difference",
+      "inputs": [
+        "sr-ps-target",
+        "sr-ps-missed"
+      ],
+      "expected": "364000",
+      "digits": 0,
+      "label": "Risparmio conseguito per differenza, PS",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-ps-missed-percent",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-ps-missed",
+        "sr-ps-target"
+      ],
+      "expected": "31.7",
+      "digits": 1,
+      "label": "Quota del risparmio non conseguita, PS",
+      "unit": "%"
+    },
+    {
+      "id": "sr-rents-target",
+      "operation": "sum",
+      "inputs": [
+        "sr-vvf-target",
+        "sr-ps-target"
+      ],
+      "expected": "1378000",
+      "digits": 0,
+      "label": "Obiettivo complessivo delle due misure sugli affitti",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-rents-missed",
+      "operation": "sum",
+      "inputs": [
+        "sr-vvf-missed",
+        "sr-ps-missed"
+      ],
+      "expected": "245000",
+      "digits": 0,
+      "label": "Risparmio complessivo non conseguito sugli affitti",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-rents-achieved",
+      "operation": "sum",
+      "inputs": [
+        "sr-vvf-achieved",
+        "sr-ps-achieved"
+      ],
+      "expected": "1133000",
+      "digits": 0,
+      "label": "Risparmio conseguito nelle due misure, per differenza",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-rents-missed-percent",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-rents-missed",
+        "sr-rents-target"
+      ],
+      "expected": "17.8",
+      "digits": 1,
+      "label": "Quota del risparmio complessivo mancata",
+      "unit": "%"
+    },
+    {
+      "id": "sr-army-gross",
+      "operation": "sum",
+      "inputs": [
+        "sr-army-direct",
+        "sr-army-catering"
+      ],
+      "expected": "5877148",
+      "digits": 0,
+      "label": "Minori costi prima delle razioni",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-army-net",
+      "operation": "difference",
+      "inputs": [
+        "sr-army-gross",
+        "sr-army-rations-extra"
+      ],
+      "expected": "5709334",
+      "digits": 0,
+      "label": "Risparmio netto del vettovagliamento",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-army-reconciliation",
+      "operation": "difference",
+      "inputs": [
+        "sr-army-net",
+        "sr-army-net-published"
+      ],
+      "expected": "0",
+      "digits": 0,
+      "label": "Scarto tra ricostruzione e risultato pubblicato",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-army-surplus",
+      "operation": "difference",
+      "inputs": [
+        "sr-army-net",
+        "sr-army-target"
+      ],
+      "expected": "1709334",
+      "digits": 0,
+      "label": "Risparmio oltre l’obiettivo",
+      "unit": "euro"
+    },
+    {
+      "id": "sr-army-surplus-percent",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-army-surplus",
+        "sr-army-target"
+      ],
+      "expected": "42.7",
+      "digits": 1,
+      "label": "Risparmio eccedente rispetto all’obiettivo",
+      "unit": "%"
+    },
+    {
+      "id": "sr-pg-reconciliation",
+      "operation": "sum",
+      "inputs": [
+        "sr-pg-dedicated",
+        "sr-pg-composite",
+        "sr-pg-funds"
+      ],
+      "expected": "205",
+      "digits": 0,
+      "label": "Ricostruzione del perimetro di monitoraggio",
+      "unit": "piani gestionali"
+    },
+    {
+      "id": "sr-pg-composite-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-pg-composite",
+        "sr-pg-total"
+      ],
+      "expected": "33.7",
+      "digits": 1,
+      "label": "Piani con più finalità sul totale monitorato",
+      "unit": "%"
+    },
+    {
+      "id": "sr-remote-reinstatement-share",
+      "operation": "ratio-percent",
+      "inputs": [
+        "sr-remote-reinstatement",
+        "sr-remote-target"
+      ],
+      "expected": "5.28",
+      "digits": 2,
+      "label": "Reintegro rispetto al taglio per riunioni da remoto",
+      "unit": "%"
     }
   ],
   "cases": [
@@ -883,6 +2183,64 @@
       "legacyId": null
     },
     {
+      "id": "depurazione",
+      "sector": "GF05",
+      "kind": "costo",
+      "title": "Depurazione: una condanna da 10 milioni, oltre alle penalità",
+      "number": "10 mln €",
+      "numberLabel": "Somma forfettaria imposta dalla sentenza",
+      "period": "Sentenza del 27 marzo 2025, causa C-515/23",
+      "lead": "Non adeguare gli impianti costa due volte: resta il problema ambientale e si aggiunge la sanzione.",
+      "paragraphs": [
+        "La Corte di giustizia dell’UE ha imposto all’Italia una somma forfettaria di 10 milioni di euro e una penalità semestrale di base di 13.687.500 euro, riducibile con la progressiva conformità.",
+        "La cifra semestrale non è una multa fissa da moltiplicare per ogni semestre trascorso. La sentenza e i pagamenti effettivi sono documenti diversi."
+      ],
+      "conclusion": "La condanna quantifica il costo dell’inadempimento; non certifica quanto sia già uscito dalla cassa dello Stato. Non calcoliamo un cumulato 2026 senza i relativi atti.",
+      "improve": "Dare priorità agli adeguamenti che eliminano le violazioni, collegando avanzamento tecnico e riduzione delle penalità.",
+      "sourceIds": [
+        "depurazione"
+      ],
+      "math": null,
+      "chart": null,
+      "legacyId": null
+    },
+    {
+      "id": "bonus-edilizi",
+      "sector": "GF06",
+      "kind": "stima",
+      "title": "Bonus edilizi: sovvenzionati anche lavori che sarebbero stati fatti",
+      "number": "circa 27%",
+      "numberLabel": "Quota non aggiuntiva stimata degli investimenti agevolati",
+      "period": "Superbonus e Bonus facciate, 2021-2023; studio del giugno 2024",
+      "lead": "Uno studio pubblicato dalla Banca d’Italia stima che circa il 27% dei lavori agevolati, oltre 45 miliardi, sarebbe stato realizzato anche senza questi incentivi.",
+      "paragraphs": [
+        "Per stimarlo, gli autori confrontano l’Italia con una combinazione di Paesi europei senza un programma equivalente. Il risultato riconosce un forte aumento dei lavori, ma individua una parte del sussidio che non era necessaria a farli partire.",
+        "Nello studio il moltiplicatore è tra 0,7 e 0,9: un euro di incentivo genera meno di un euro di PIL aggiuntivo negli scenari considerati. Le entrate fiscali aggiuntive non ripagano il costo."
+      ],
+      "conclusion": "È un’inefficienza economica stimata, non una frode accertata. I 45 miliardi sono investimenti non aggiuntivi, non un elenco di fatture false né un risparmio immediatamente recuperabile. Lo studio non valuta tutti i benefici ambientali.",
+      "improve": "Concentrare gli incentivi sui lavori che non partirebbero senza sostegno e confrontarne costo, risparmio energetico e benefici con alternative meno onerose.",
+      "sourceIds": [
+        "bdi-bonus"
+      ],
+      "legacyId": null,
+      "chart": {
+        "title": "Quanta attività è stata attivata dall’incentivo",
+        "unit": "%",
+        "rows": [
+          {
+            "label": "Investimenti aggiuntivi stimati",
+            "metric": "bonus-additional"
+          },
+          {
+            "label": "Investimenti che sarebbero avvenuti",
+            "metric": "bonus-not-additional"
+          }
+        ],
+        "note": "Stima controfattuale degli autori, non dati osservati su due gruppi di fatture. Percentuali approssimate."
+      },
+      "math": null
+    },
+    {
       "id": "ospedale-camerano",
       "sector": "GF07",
       "kind": "irregolarita",
@@ -927,55 +2285,35 @@
       "legacyId": null
     },
     {
-      "id": "depurazione",
-      "sector": "GF05",
-      "kind": "costo",
-      "title": "Depurazione: una condanna da 10 milioni, oltre alle penalità",
-      "number": "10 mln €",
-      "numberLabel": "Somma forfettaria imposta dalla sentenza",
-      "period": "Sentenza del 27 marzo 2025, causa C-515/23",
-      "lead": "Non adeguare gli impianti costa due volte: resta il problema ambientale e si aggiunge la sanzione.",
+      "id": "tolentino",
+      "sector": "GF04",
+      "kind": "possibile",
+      "title": "Tolentino: un progetto da rifare e due costi non riconciliati",
+      "number": "177,92 mln €",
+      "numberLabel": "Differenza tra quadri, non spreco misurato",
+      "period": "Progettazione 2007-2015; documenti e banca dati acquisiti nel 2026",
+      "lead": "Gli atti descrivono una progettazione superata dagli eventi e sostituita: una pista concreta di lavoro reso inutilizzabile.",
       "paragraphs": [
-        "La Corte di giustizia dell’UE ha imposto all’Italia una somma forfettaria di 10 milioni di euro e una penalità semestrale di base di 13.687.500 euro, riducibile con la progressiva conformità.",
-        "La cifra semestrale non è una multa fissa da moltiplicare per ogni semestre trascorso. La sentenza e i pagamenti effettivi sono documenti diversi."
+        "Dopo la scadenza del vincolo sul tracciato, nel 2009 un impianto fotovoltaico ne compromette il percorso. Seguono una revisione, il recesso del contraente nel 2012 e un nuovo studio di fattibilità nel 2015.",
+        "Per il progetto identificato dal CUP F71B16000830001, il quadro MIT/ANAS riporta 206,72 milioni e la riga MOP 384,64 milioni. Il CUP è il codice che consente di riconoscere lo stesso progetto nei diversi archivi."
       ],
-      "conclusion": "La condanna quantifica il costo dell’inadempimento; non certifica quanto sia già uscito dalla cassa dello Stato. Non calcoliamo un cumulato 2026 senza i relativi atti.",
-      "improve": "Dare priorità agli adeguamenti che eliminano le violazioni, collegando avanzamento tecnico e riduzione delle penalità.",
+      "conclusion": "Il rifacimento può aver generato costi evitabili. La differenza di 177,92 milioni, invece, resta un disallineamento tra quadri: non prova un esborso aggiuntivo né misura la progettazione perduta.",
+      "improve": "Proteggere tempestivamente il tracciato e mantenere un quadro economico versionato, con indicazione degli elaborati riutilizzati.",
       "sourceIds": [
-        "depurazione"
-      ],
-      "math": null,
-      "chart": null,
-      "legacyId": null
-    },
-    {
-      "id": "mense-ospedaliere",
-      "sector": "GF07",
-      "kind": "irregolarita",
-      "title": "Mense ospedaliere: non conformità in 238 strutture",
-      "number": "238 su 558",
-      "numberLabel": "Strutture non conformi tra quelle ispezionate",
-      "period": "Campagna NAS, 19 febbraio - 22 marzo 2026",
-      "lead": "I NAS, il reparto dei Carabinieri che tutela la salute, hanno rilevato problemi nel servizio effettivo, non soltanto nelle procedure di acquisto.",
-      "paragraphs": [
-        "Il Ministero della Salute riporta carenze igieniche, manutentive e nella gestione degli alimenti e delle diete speciali. Le 238 strutture non conformi rappresentano il 42,7% delle 558 controllate.",
-        "Il comunicato contiene anche un dettaglio che non quadra: 525 strutture della ristorazione più 31 dell’ambito sanitario fanno 556, due meno del totale dichiarato. Conserviamo il totale pubblicato e segnaliamo la differenza, senza correggerlo di nostra iniziativa."
-      ],
-      "conclusion": "Le non conformità sono documentate; non sono una percentuale di spesa sprecata. Il campione ispezionato non rappresenta automaticamente tutte le mense italiane e non distingue qui i soli contratti pubblici.",
-      "improve": "Affiancare ai controlli sulle gare la verifica dei pasti e delle condizioni di erogazione, con applicazione delle conseguenze previste dai contratti.",
-      "sourceIds": [
-        "nas-mense"
+        "tolentino-progetto",
+        "mit-allegato",
+        "mit-anas",
+        "mop"
       ],
       "math": {
         "calculationIds": [
-          "nas-rate",
-          "nas-detail"
+          "tolentino-gap"
         ],
-        "explanation": "La prima divisione descrive il campione controllato. La seconda operazione controlla la coerenza del comunicato: il dettaglio non ricostruisce il totale.",
+        "explanation": "Sottrarre due importi rivela un disallineamento. Per chiamarlo extracosto devono essere omogenei lavori inclusi, prezzi e data della versione: qui tale equivalenza non è dimostrata.",
         "rows": []
       },
       "chart": null,
-      "legacyId": null
+      "legacyId": "tolentino"
     },
     {
       "id": "impianti",
@@ -1063,35 +2401,33 @@
       "legacyId": "carceri"
     },
     {
-      "id": "tolentino",
-      "sector": "GF04",
-      "kind": "possibile",
-      "title": "Tolentino: un progetto da rifare e due costi non riconciliati",
-      "number": "177,92 mln €",
-      "numberLabel": "Differenza tra quadri, non spreco misurato",
-      "period": "Progettazione 2007-2015; documenti e banca dati acquisiti nel 2026",
-      "lead": "Gli atti descrivono una progettazione superata dagli eventi e sostituita: una pista concreta di lavoro reso inutilizzabile.",
+      "id": "mense-ospedaliere",
+      "sector": "GF07",
+      "kind": "irregolarita",
+      "title": "Mense ospedaliere: non conformità in 238 strutture",
+      "number": "238 su 558",
+      "numberLabel": "Strutture non conformi tra quelle ispezionate",
+      "period": "Campagna NAS, 19 febbraio - 22 marzo 2026",
+      "lead": "I NAS, il reparto dei Carabinieri che tutela la salute, hanno rilevato problemi nel servizio effettivo, non soltanto nelle procedure di acquisto.",
       "paragraphs": [
-        "Dopo la scadenza del vincolo sul tracciato, nel 2009 un impianto fotovoltaico ne compromette il percorso. Seguono una revisione, il recesso del contraente nel 2012 e un nuovo studio di fattibilità nel 2015.",
-        "Per il progetto identificato dal CUP F71B16000830001, il quadro MIT/ANAS riporta 206,72 milioni e la riga MOP 384,64 milioni. Il CUP è il codice che consente di riconoscere lo stesso progetto nei diversi archivi."
+        "Il Ministero della Salute riporta carenze igieniche, manutentive e nella gestione degli alimenti e delle diete speciali. Le 238 strutture non conformi rappresentano il 42,7% delle 558 controllate.",
+        "Il comunicato contiene anche un dettaglio che non quadra: 525 strutture della ristorazione più 31 dell’ambito sanitario fanno 556, due meno del totale dichiarato. Conserviamo il totale pubblicato e segnaliamo la differenza, senza correggerlo di nostra iniziativa."
       ],
-      "conclusion": "Il rifacimento può aver generato costi evitabili. La differenza di 177,92 milioni, invece, resta un disallineamento tra quadri: non prova un esborso aggiuntivo né misura la progettazione perduta.",
-      "improve": "Proteggere tempestivamente il tracciato e mantenere un quadro economico versionato, con indicazione degli elaborati riutilizzati.",
+      "conclusion": "Le non conformità sono documentate; non sono una percentuale di spesa sprecata. Il campione ispezionato non rappresenta automaticamente tutte le mense italiane e non distingue qui i soli contratti pubblici.",
+      "improve": "Affiancare ai controlli sulle gare la verifica dei pasti e delle condizioni di erogazione, con applicazione delle conseguenze previste dai contratti.",
       "sourceIds": [
-        "tolentino-progetto",
-        "mit-allegato",
-        "mit-anas",
-        "mop"
+        "nas-mense"
       ],
       "math": {
         "calculationIds": [
-          "tolentino-gap"
+          "nas-rate",
+          "nas-detail"
         ],
-        "explanation": "Sottrarre due importi rivela un disallineamento. Per chiamarlo extracosto devono essere omogenei lavori inclusi, prezzi e data della versione: qui tale equivalenza non è dimostrata.",
+        "explanation": "La prima divisione descrive il campione controllato. La seconda operazione controlla la coerenza del comunicato: il dettaglio non ricostruisce il totale.",
         "rows": []
       },
       "chart": null,
-      "legacyId": "tolentino"
+      "legacyId": null
     },
     {
       "id": "affidamenti",
@@ -1160,6 +2496,247 @@
         "note": "La dimensione della barra è il valore affidato, non un indicatore di spreco."
       },
       "legacyId": "affidamenti"
+    },
+    {
+      "id": "assistenti-sociali",
+      "sector": "GF10",
+      "kind": "attuazione",
+      "title": "Assistenza sociale: i fondi ci sono, le assunzioni non bastano",
+      "number": "1.126",
+      "numberLabel": "Assunzioni ancora necessarie per il livello essenziale nel 2023",
+      "period": "Fondi e personale 2020-2023; analisi UPB del marzo 2025",
+      "lead": "L’UPB rileva che nel 2023 mancavano 1.126 assistenti sociali per garantire un professionista ogni 5.000 abitanti. Il problema interessava 228 ambiti territoriali su 566.",
+      "paragraphs": [
+        "Il personale era cresciuto da 9.750 a 13.621 unità. Eppure le erogazioni del contributo del Fondo povertà erano soltanto 48 milioni nel 2021, 65 nel 2022 e 81 nel 2023, rispetto ai 180 milioni richiamati dall’UPB.",
+        "I due meccanismi di finanziamento hanno regole diverse. Chi parte sotto la soglia di personale può faticare ad accedere a parte del contributo; alcune stabilizzazioni restano escluse. La rendicontazione della spesa non impone sempre di colmare prima la carenza di assistenti."
+      ],
+      "conclusion": "È un difetto del meccanismo di attuazione: spendere nel sociale non garantisce di raggiungere il servizio minimo. Gli importi non erogati non sono un risparmio se le famiglie restano senza assistenza.",
+      "improve": "Collegare i due fondi a un percorso unico verso il livello essenziale, con priorità agli ambiti sottodotati e assunzioni stabili sostenibili nel tempo.",
+      "sourceIds": [
+        "upb-sociali"
+      ],
+      "legacyId": null,
+      "chart": {
+        "title": "Erogazioni del contributo per gli assistenti sociali",
+        "unit": "milioni €",
+        "rows": [
+          {
+            "label": "2021",
+            "metric": "social-2021"
+          },
+          {
+            "label": "2022",
+            "metric": "social-2022"
+          },
+          {
+            "label": "2023",
+            "metric": "social-2023"
+          }
+        ],
+        "note": "Flussi annuali distinti. Non sottraiamo la somma triennale da una dotazione annuale."
+      },
+      "math": null
+    },
+    {
+      "id": "affitti-risparmio-mancato",
+      "sector": "GF03",
+      "kind": "mancato",
+      "title": "Affitti: 245 mila euro di risparmi previsti non arrivano",
+      "number": "245.000 €",
+      "numberLabel": "Risparmio non conseguito in due misure",
+      "period": "Esercizio 2024 · Ministero dell’Interno",
+      "lead": "La Ragioneria documenta due obiettivi mancati, anche senza un aumento dei fondi nei relativi conti.",
+      "paragraphs": [
+        "Per gli affitti dei Vigili del Fuoco erano previsti 845 mila euro di risparmi: 76 mila non sono stati conseguiti. Per i locali della Pubblica Sicurezza l’obiettivo era 533 mila euro: ne mancano 169 mila. Sono due misure distinte del ciclo 2023-2025.",
+        "Insieme fanno 245 mila euro su un obiettivo di 1,378 milioni, cioè il 17,8%. La differenza mostra un risparmio atteso che non si è realizzato, non un pagamento illecito. Il rapporto RGS dichiara il risultato parziale pur in assenza di reintegri sui piani interessati."
+      ],
+      "conclusion": "Un taglio scritto in bilancio non basta a dimostrare che l’affitto sia costato meno. Qui il monitoraggio misura la distanza tra promessa e risultato: 9,0% per i Vigili del Fuoco e 31,7% per la Pubblica Sicurezza.",
+      "improve": "Legare il risultato a contratti identificabili, canoni prima e dopo, date di rilascio e costi del trasferimento. Un immobile lasciato tardi può erodere il risparmio previsto.",
+      "sourceIds": [
+        "rgs-review-2024"
+      ],
+      "legacyId": null,
+      "math": {
+        "calculationIds": [
+          "sr-rents-target",
+          "sr-rents-missed",
+          "sr-rents-achieved",
+          "sr-rents-missed-percent",
+          "sr-vvf-missed-percent",
+          "sr-ps-missed-percent"
+        ],
+        "explanation": "Sommiamo soltanto le due quote che la stessa fonte dichiara non conseguite nello stesso anno. Il totale non è esteso a tutti gli affitti dello Stato.",
+        "rows": []
+      },
+      "chart": {
+        "title": "Quota dell’obiettivo che non è stata raggiunta",
+        "unit": "%",
+        "rows": [
+          {
+            "label": "Vigili del Fuoco",
+            "metric": "sr-vvf-missed-percent"
+          },
+          {
+            "label": "Pubblica Sicurezza",
+            "metric": "sr-ps-missed-percent"
+          }
+        ],
+        "note": "Percentuale del risparmio programmato, non del canone totale. Scala 0-100%."
+      }
+    },
+    {
+      "id": "energia-obiettivo-mancato",
+      "sector": "GF01",
+      "kind": "mancato",
+      "title": "Energia: il taglio non regge alle esigenze di spesa",
+      "number": "Obiettivo mancato",
+      "numberLabel": "Esito esplicito del monitoraggio RGS",
+      "period": "Esercizio 2024 · Interno, capitolo 2562, piano gestionale 02",
+      "lead": "Il programma di efficientamento energetico non raggiunge il risparmio previsto. Il conto riceve poco più di 5 milioni di euro aggiuntivi.",
+      "paragraphs": [
+        "La misura ID10 del ciclo 2023-2025 avrebbe dovuto ridurre la spesa attraverso l’efficientamento degli edifici. La relazione RGS segnala maggiori esigenze, un reintegro e il mancato raggiungimento dell’obiettivo, nonostante gli interventi intrapresi.",
+        "Il piano gestionale finanzia più attività. I poco più di 5 milioni descrivono il rifinanziamento del conto: il paragrafo non li identifica come valore esatto del risparmio perso o costo degli interventi. Per questo non li aggiungiamo ai 245 mila euro degli affitti."
+      ],
+      "conclusion": "Il problema documentato è uno scarto tra il risparmio atteso e il risultato. Un saldo complessivo positivo della spending review può nasconderlo se altre misure compensano la perdita.",
+      "improve": "Rendicontare per edificio consumi fisici, prezzi dell’energia, investimento e risparmio netto. Separare l’effetto dei prezzi dall’efficienza degli interventi.",
+      "sourceIds": [
+        "rgs-review-2024"
+      ],
+      "legacyId": null,
+      "math": null,
+      "chart": null
+    },
+    {
+      "id": "esercito-acquisti-efficienti",
+      "sector": "GF02",
+      "kind": "risparmio",
+      "title": "Pasti dell’Esercito: 5,71 milioni di costi in meno",
+      "number": "5.709.334 €",
+      "numberLabel": "Risparmio netto rendicontato",
+      "period": "Esercizio 2024 · Difesa, misura ID1 del ciclo 2024-2026",
+      "lead": "Acquisti e contratti accentrati producono un risparmio superiore all’obiettivo di 4 milioni. Il conto include anche una voce aumentata.",
+      "paragraphs": [
+        "Il Ministero rendiconta 1.470.031 euro di risparmi negli acquisti diretti e misti e 4.407.117 euro sui contratti di catering. Le razioni da combattimento costano invece 167.814 euro in più: sottraendo questo aumento restano 5.709.334 euro.",
+        "Il risultato supera il target del 42,7%. La relazione RGS riporta anche un costo per persona servita inferiore e qualità pressoché invariata, secondo la valutazione dell’amministrazione. I dati di dettaglio sono negli archivi ministeriali, non nelle fatture rielaborate da DVNS."
+      ],
+      "conclusion": "Questo è un risultato di efficienza rendicontato, non soltanto un fondo tagliato. Dimostra che verificare gli sprechi richiede anche riconoscere dove un costo è già stato ridotto: non va proposto di risparmiare di nuovo la stessa somma.",
+      "improve": "Rendere pubblici volumi, costo per pasto e indicatori di qualità confrontabili, mantenendo nel conto le maggiori spese e i costi di transizione.",
+      "sourceIds": [
+        "rgs-review-2024"
+      ],
+      "legacyId": null,
+      "math": {
+        "calculationIds": [
+          "sr-army-gross",
+          "sr-army-net",
+          "sr-army-reconciliation",
+          "sr-army-surplus",
+          "sr-army-surplus-percent"
+        ],
+        "explanation": "La somma delle due riduzioni, meno il maggior costo delle razioni, coincide all’euro con il risultato pubblicato. L’aritmetica è verificata da DVNS; il risparmio e la qualità del servizio sono rendicontati dal Ministero.",
+        "rows": []
+      },
+      "chart": {
+        "title": "Risparmio previsto e risultato rendicontato",
+        "unit": "euro",
+        "rows": [
+          {
+            "label": "Obiettivo 2024",
+            "metric": "sr-army-target"
+          },
+          {
+            "label": "Risultato netto 2024",
+            "metric": "sr-army-net"
+          }
+        ],
+        "note": "Stesso anno e stessa misura. Non sono costi totali del servizio."
+      }
+    },
+    {
+      "id": "inps-cessazioni",
+      "sector": "GF10",
+      "kind": "anomalia",
+      "title": "INPS: 778 milioni eliminati per cessazioni comunicate in ritardo",
+      "number": "778 mln €",
+      "numberLabel": "Importi arrotondati dei crediti eliminati, non pensioni pagate",
+      "period": "Operazioni 2024; deliberazione del 15 aprile 2025",
+      "lead": "Il CIV dell’INPS collega 213 milioni per gli artigiani e 565 milioni per i commercianti al ritardo nella comunicazione della cessazione dell’attività.",
+      "paragraphs": [
+        "Le proposte sono 229.675. La stessa criticità era presente nel 2023: non è soltanto una singola posizione da correggere.",
+        "Il riscontro riguarda l’aggiornamento dei crediti e delle posizioni contributive. Non dimostra che 778 milioni siano stati versati a beneficiari senza diritto."
+      ],
+      "conclusion": "La ricorrenza segnala un problema amministrativo: le informazioni sull’attività non arrivano abbastanza presto a chi gestisce i contributi.",
+      "improve": "Allineare le comunicazioni di cessazione e misurare quante posizioni richiedono correzioni, dopo quanti giorni e con quale costo di lavorazione.",
+      "sourceIds": [
+        "inps-riaccertamento"
+      ],
+      "legacyId": null,
+      "chart": null,
+      "math": {
+        "calculationIds": [
+          "inps-cessation-total",
+          "inps-cessation-count"
+        ],
+        "explanation": "Sommiamo due categorie distinte dello stesso provvedimento. Gli euro sono arrotondati dalla fonte; il numero delle proposte è intero.",
+        "rows": []
+      }
+    },
+    {
+      "id": "inps-registrazioni",
+      "sector": "GF10",
+      "kind": "errore",
+      "title": "INPS: 97,56 milioni di registrazioni erronee o duplicate",
+      "number": "97,56 mln €",
+      "numberLabel": "Crediti eliminati con una causale esplicita di errore",
+      "period": "2024, confronto con il 2023",
+      "lead": "Il prospetto INPS indica 97.563.541,04 euro sotto la causale «erronea o duplicata registrazione». Nel 2023 erano 108.216.681,80 euro.",
+      "paragraphs": [
+        "La diminuzione è del 9,84%. È un miglioramento, ma la correzione resta consistente e ricorrente."
+      ],
+      "conclusion": "L’errore di registrazione è documentato. L’importo corretto nei conti non misura, da solo, un’uscita indebita o un risparmio di cassa.",
+      "improve": "Prevenire i doppioni prima della registrazione e pubblicare le cause degli errori che si ripetono.",
+      "sourceIds": [
+        "inps-riaccertamento"
+      ],
+      "legacyId": null,
+      "chart": {
+        "title": "Crediti eliminati per registrazioni errate",
+        "unit": "€",
+        "rows": [
+          {
+            "label": "2023",
+            "metric": "inps-error-2023"
+          },
+          {
+            "label": "2024",
+            "metric": "inps-error-2024"
+          }
+        ],
+        "note": "Stessa causale. Importi di crediti eliminati, non denaro materialmente speso."
+      },
+      "math": null
+    },
+    {
+      "id": "rottamazioni-incassi",
+      "sector": "GF01",
+      "kind": "attuazione",
+      "title": "Rottamazioni: la riduzione del debito non assicura il pagamento",
+      "number": "22 su 58 mld €",
+      "numberLabel": "Riscossi nelle prime tre rottamazioni, secondo lo studio OCPI",
+      "period": "Misure 2016, 2017 e 2018; risultati esaminati nel 2025",
+      "lead": "Le prime tre rottamazioni lasciavano circa 58 miliardi da pagare dopo gli sconti: lo studio dell’Osservatorio CPI ne riporta 22 riscossi.",
+      "paragraphs": [
+        "Per la quater, lo stesso studio riporta circa 12 miliardi riscossi su 23 dovuti entro il 2024. Il confronto esclude le rate future. Le cifre arrotondate non ricostruiscono esattamente le percentuali pubblicate dagli autori.",
+        "Il problema attraversa governi diversi. L’OCPI avverte che ripetere le sanatorie può creare aspettative di nuovi sconti: è la conclusione dello studio, non una stima causale prodotta da questa analisi."
+      ],
+      "conclusion": "La riscossione resta largamente incompleta anche dopo la riduzione del debito. Non possiamo sommare le edizioni per stimare una perdita: alcune posizioni possono rientrare in più misure.",
+      "improve": "Valutare ogni edizione su incassi aggiuntivi, rinunce, ricadute nei mancati pagamenti e costi di gestione, seguendo le stesse posizioni nel tempo.",
+      "sourceIds": [
+        "cpi-rottamazioni"
+      ],
+      "legacyId": null,
+      "chart": null,
+      "math": null
     },
     {
       "id": "rti",
@@ -1840,6 +3417,294 @@
       "locator": "Confronto relativo al profilo IPA m_lps: 59.279.167,72 euro su 186.277.425,17 euro; contratto CIG B654A948AF da 48.191.320 euro. È il perimetro del confronto DVNS, non tutto il mercato cloud.",
       "access": "Confronto ripreso dalle prove e dal manoscritto della PR #506. Il decreto prova l’identità del raggruppamento; i denominatori provengono dal confronto DVNS.",
       "originalBytesSha256": null
+    },
+    {
+      "id": "rgs-ministries-2025",
+      "publisher": "RGS / snapshot DVNS",
+      "title": "Rendiconto 2025: aggregati dei 15 ministeri",
+      "url": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/blob/a51efcf3a8f8a3a0407e09f5fda8666fb089cfce/src/data/generated/rgs-ministries-2025.data.json",
+      "locator": "Quindici record ministries e record totals. Importi interi in centesimi; CP, RS e CS separati. La metadata collega lo snapshot al dataset 2025_RND_SPE_ELB_CAP_001.",
+      "period": "2025",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "access": "Letto integralmente via connettore GitHub. Trascritti e riconciliati i 15 aggregati, non rielaborate le 5.395 righe originali. Hash upstream ereditato dalla metadata, non riverificato sui byte del CSV.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "senato-rendiconto-2025",
+      "publisher": "Servizi studi di Camera e Senato",
+      "title": "Rendiconto 2025 e assestamento 2026: quadro di competenza",
+      "url": "https://www.senato.it/show-doc?id=1513780&idoggetto=0&leg=19&part=dossier_dossier1&tipodoc=DOSSIER",
+      "locator": "Tabelle 17 e 18 e Tavola II. Colonna Consuntivo 2025; valori in milioni di euro, arrotondati dalla fonte. Entrate finali 783.173; spese finali 902.960; rimborso prestiti 267.969.",
+      "period": "2025",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "access": "Tabelle lette nel testo indicizzato della fonte istituzionale. La pagina diretta richiede JavaScript; PDF originale non acquisito. Nessun hash attribuito alla fonte.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "camera-residui",
+      "publisher": "Camera dei deputati",
+      "title": "Rendiconto 2024: residui passivi delle spese finali",
+      "url": "https://documenti.camera.it/leg19/dossier/testi/BI0179a.htm",
+      "locator": "Sezione 4, tabelle 21 e 22. Serie 2015-2024 selezionata dalla tavola 2013-2024. Spese finali al netto del rimborso prestiti; milioni di euro.",
+      "period": "2015-2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "access": "Tabelle e spiegazioni lette nella versione HTML integrale del dossier. Le differenze di un milione tra componenti e totale sono conservate come arrotondamenti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "inps-riaccertamento",
+      "publisher": "INPS, Consiglio di indirizzo e vigilanza",
+      "title": "Deliberazione 4/2025: riaccertamento dei residui",
+      "url": "https://www.inps.it/content/dam/inps-site/pdf/istituto/delibere-odg/2025/CIV2025_0004.pdf",
+      "locator": "PDF pp. 9 e 11: 66.387 proposte / 213 milioni artigiani; 163.288 / 565 milioni commercianti; causale ritardata comunicazione di cessazione. PDF p. 9: erronea o duplicata registrazione, 97.563.541,04 euro nel 2024 e 108.216.681,80 nel 2023.",
+      "period": "Operazioni 2024; residui esistenti al 31 dicembre 2023",
+      "publishedOn": "2025-04-15",
+      "checkedOn": "2026-09-15",
+      "access": "Testo del PDF ufficiale letto. Il servizio di rendering non ha restituito le immagini delle pagine; non dichiarata verifica visuale delle tabelle.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "inps-rendiconto",
+      "publisher": "INPS, Consiglio di indirizzo e vigilanza",
+      "title": "Deliberazione 10/2025: rendiconto generale 2024",
+      "url": "https://www.inps.it/content/dam/inps-site/pdf/istituto/delibere-odg/2025/CIV2025_0010.pdf",
+      "locator": "PDF p. 26: portafoglio ADER al 31 dicembre 2024, totale 135,2 miliardi, sette componenti; 18,1 miliardi di potenziale recupero lordo. PDF pp. 25-26: fondo svalutazione e crediti contributivi.",
+      "period": "2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "access": "Testo del PDF ufficiale letto; acquisita la classificazione a elenco, senza immagini o byte originali.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "inps-chiarimenti",
+      "publisher": "INPS",
+      "title": "Chiarimenti sul bilancio",
+      "url": "https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2025.04.inps-chiarimenti-sul-bilancio.html",
+      "locator": "Annullamenti di crediti degli anni 2000-2015 e corrispondente utilizzo dei fondi svalutazione. Distingue eliminazione nominale e nuovo effetto sul patrimonio.",
+      "period": "Chiarimenti 2025 su crediti pregressi",
+      "publishedOn": "2025-04-16",
+      "checkedOn": "2026-09-15",
+      "access": "Documento ufficiale consultato in testo. Estrazione numerica riprodotta nel rapporto; byte originali non acquisiti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "maeci-rendiconto",
+      "publisher": "Camera dei deputati",
+      "title": "Affari esteri: rendiconto 2024",
+      "url": "https://documenti.camera.it/leg19/dossier/testi/ES0281.htm",
+      "locator": "Tabelle 1-3; capitoli 3429 e 2185; elenco degli stanziamenti iniziali APS per otto ministeri. Il testo attribuisce tutta la riduzione dei residui al conto capitale, mentre la tabella espone -41,8 milioni correnti e -6,5 in conto capitale.",
+      "period": "2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "access": "Documento HTML letto, comprese tabelle e paragrafo di commento.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "cpi-rottamazioni",
+      "publisher": "Osservatorio Conti Pubblici Italiani, Università Cattolica",
+      "title": "Rottamazioni: un incentivo a non pagare le tasse?",
+      "url": "https://osservatoriocpi.unicatt.it/ocpi-pubblicazioni-rottamazioni-un-incentivo-a-non-pagare-le-tasse",
+      "locator": "Paragrafo Le rottamazioni: prime tre definizioni 2016-2018, 58 miliardi da riscuotere e 22 riscossi; quater, 23 miliardi dovuti entro il 2024 e 12 riscossi. Valori arrotondati dello studio, non una nuova estrazione ADER.",
+      "period": "Rottamazioni 2016-2022, incassi fino al 2024",
+      "publishedOn": "2025-10-28",
+      "checkedOn": "2026-09-15",
+      "access": "Ricerca originale dell’Osservatorio letta in HTML; conclusioni causali attribuite agli autori, non presentate come stima causale DVNS.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "bdi-bonus",
+      "publisher": "Accetturo, Olivieri e Renzi / Banca d’Italia",
+      "title": "QEF 860: Incentives for dwelling renovations",
+      "url": "https://www.bancaditalia.it/pubblicazioni/qef/2024-0860/QEF_860_24.pdf",
+      "locator": "Abstract; sezioni 3.4 e 4, PDF pp. 17-20. Addizionalità circa 73%; quota non addizionale 27%; oltre 45 miliardi di investimenti sussidiati. Moltiplicatore 0,7-0,9, intervallo di scenari, non di confidenza. Gli effetti ambientali non sono valutati.",
+      "period": "Superbonus e Bonus facciate, 2021-2023",
+      "publishedOn": "2024-06-17",
+      "checkedOn": "2026-09-15",
+      "access": "Testo del documento originale consultato; non acquisiti i byte PDF. Stime e conclusioni attribuite agli autori.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "upb-sociali",
+      "publisher": "Ufficio parlamentare di bilancio",
+      "title": "Flash 1/2025: potenziamento degli assistenti sociali",
+      "url": "https://www.upbilancio.it/wp-content/uploads/2025/03/Flash-1_2025-Assist.-sociali.pdf",
+      "locator": "PDF pp. 9-11: frammentazione dei fondi, soglie di accesso, erogazioni di 48, 65 e 81 milioni nel 2021-2023; carenze di personale rispetto al LEP.",
+      "period": "2020-2023",
+      "publishedOn": "2025-03-10",
+      "checkedOn": "2026-09-15",
+      "access": "Testo del documento originale consultato; non acquisiti i byte PDF. Stime e conclusioni attribuite agli autori.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ctsp-archivio",
+      "publisher": "Ragioneria generale dello Stato",
+      "title": "Archivio della Commissione tecnica per la spesa pubblica",
+      "url": "https://www.rgs.mef.gov.it/VERSIONE-I/ragioneria_generale/biblioteca_luca_pacioli/commissione_tecnica_per_la_spesa_pubblica/index.html",
+      "period": "1981-2003",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "locator": "Presentazione del fondo, inventario e raccolte di osservazioni e raccomandazioni.",
+      "access": "Catalogo istituzionale consultato; non lettura integrale dei circa 630 documenti descritti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "camera-review-2014",
+      "publisher": "Camera dei deputati",
+      "title": "Il programma per la spending review, dossier 115",
+      "url": "https://documenti.camera.it/leg17/dossier/Testi/BI0163.htm",
+      "period": "2007-2014",
+      "publishedOn": "2014-04-17",
+      "checkedOn": "2026-09-15",
+      "locator": "Sezioni «L’evoluzione normativa» e «Le analisi prodotte»; collegamenti ai lavori Giarda e Bondi.",
+      "access": "Testo HTML istituzionale consultato. I rinvii bibliografici non attestano la lettura integrale dei PDF collegati.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "ctfp-2008",
+      "publisher": "Commissione tecnica per la finanza pubblica",
+      "title": "Rapporto sulla revisione della spesa, documento 2008/1",
+      "url": "https://www.edscuola.it/archivio/handicap/rapporto_revisione_spesa_pubblica_08.pdf",
+      "period": "2007-2008",
+      "publishedOn": "2008-06-12",
+      "checkedOn": "2026-09-15",
+      "locator": "Rapporto del 12 giugno 2008; ministeri di Giustizia, Infrastrutture, Interno, Istruzione e Trasporti.",
+      "access": "Testo del rapporto originale reperito su copia ospitata da un soggetto terzo; non sono stati acquisiti i byte del PDF.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "giarda-2012",
+      "publisher": "Piero Giarda / Presidenza del Consiglio",
+      "title": "Elementi per una revisione della spesa pubblica",
+      "url": "https://www.camera.it/temiap/temi17/Revisione_spesa_Rapporto%20Giarda%208%20maggio%202012.pdf",
+      "period": "2012",
+      "publishedOn": "2012-05-08",
+      "checkedOn": "2026-09-15",
+      "locator": "Distinzione tra inefficienza produttiva e scelta delle attività; nozione di spesa aggredibile.",
+      "access": "Testo del documento originale e dossier della Camera consultati; nessuna certificazione di risparmi realizzati ricavata dalla base di spesa.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "cottarelli-2014",
+      "publisher": "Carlo Cottarelli",
+      "title": "Proposte per una revisione della spesa pubblica (2014-16)",
+      "url": "https://www.quotidiano.net/polopoly_fs/1.814693.1427871381!/menu/standard/file/cottarelli.pdf",
+      "period": "2014-2016",
+      "publishedOn": "2014-03-27",
+      "checkedOn": "2026-09-15",
+      "locator": "Premessa e quadro delle proposte: risparmi lordi massimi; temi settoriali.",
+      "access": "Testo originale consultato su copia di Quotidiano Nazionale. Importi trattati come proposte, non consuntivo né risparmi disponibili oggi. Byte non acquisiti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "gutgeld-2017",
+      "publisher": "Commissario straordinario Yoram Gutgeld / MEF",
+      "title": "Revisione della spesa: obiettivi, attività e risultati 2014-2016",
+      "url": "https://www.mef.gov.it/export/sites/MEF/inevidenza/documenti/Relazione_Commissario_20_Giugno_2017_.pdf",
+      "period": "2014-2018",
+      "publishedOn": "2017-06-20",
+      "checkedOn": "2026-09-15",
+      "locator": "Creazione di spazi di bilancio, efficientamento, acquisti e riallocazioni.",
+      "access": "Testo del PDF consultato tramite indice documentale; riscontri confrontati con il dossier della Camera sul DEF 2018. Nessun hash dei byte originali.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "camera-review-2018",
+      "publisher": "Camera dei deputati",
+      "title": "Documento di economia e finanza 2018: revisione della spesa",
+      "url": "https://documenti.camera.it/leg18/dossier/Testi/DFP002a.htm",
+      "period": "2014-2020",
+      "publishedOn": "2018-06-19",
+      "checkedOn": "2026-09-15",
+      "locator": "Sezione 3.1.1: serie 3,6 / 18 / 25 / 29,9 / 31,5 miliardi; natura delle riduzioni e integrazione nel ciclo di bilancio.",
+      "access": "Testo e tabella HTML consultati. La serie è presentata nella prospettiva dei documenti 2017, non come verifica indipendente dei pagamenti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "rgs-prassi-2022",
+      "publisher": "Ragioneria generale dello Stato",
+      "title": "Valutazione delle prassi di Salute e Giustizia e linee guida per la revisione della spesa",
+      "url": "https://www.rgs.mef.gov.it/VERSIONE-I/pubblicazioni/analisi_e_valutazione_della_spesa/la_revisione_della_spesa_del_bilancio_dello_stato/",
+      "period": "2018-2020; pubblicazioni 2022-2023",
+      "publishedOn": "2023-03-15",
+      "checkedOn": "2026-09-15",
+      "locator": "Pagina di pubblicazione: valutazione delle prassi dei due ministeri e linee guida, aggiornate il 15 marzo 2023.",
+      "access": "Pagina istituzionale consultata. I due documenti sono catalogati; i loro allegati analitici non sono rielaborati integralmente in questa estensione.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "rgs-review-2024",
+      "publisher": "Ministero dell’economia e delle finanze / RGS",
+      "title": "Attuazione della revisione della spesa nell’esercizio 2024, milestone M1C1-115",
+      "url": "https://www.mef.gov.it/export/sites/MEF/attuazione-misure-pnrr/documenti/Relazione-spending-review.pdf",
+      "period": "2024; cicli 2023-2025 e 2024-2026",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "locator": "Capitoli 2-4. In particolare §§3.2-3.6: 205 piani, affitti, energia, intercettazioni, reintegri e vettovagliamento.",
+      "access": "Testo integrale dei capitoli 1-4 consultato tramite Exa. Nuovi importi estratti dai paragrafi discorsivi, non da OCR o ricostruzioni delle tabelle. PDF originale non scaricato; verifica diretta delle fatture non effettuata.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "rgs-review-misure",
+      "publisher": "Ministero dell’economia e delle finanze / RGS",
+      "title": "Misure dei ministeri oggetto di monitoraggio nell’anno 2024",
+      "url": "https://www.mef.gov.it/export/sites/MEF/attuazione-misure-pnrr/documenti/Misure-dei-ministeri-oggetto-di-monitoraggio.pdf",
+      "period": "2024",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "locator": "Allegato 2 alla relazione M1C1-115, elenco per ministero e ciclo di spending review.",
+      "access": "Elenco consultato per identificare le misure; non sostituisce le schede ministeriali di risultato.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "demanio-2024",
+      "publisher": "Agenzia del Demanio",
+      "title": "Rapporto 2024: risultati sulle locazioni passive",
+      "url": "https://www.agenziademanio.it/it/notizia/Rapporto-2024-Partenariato-pubblico-privato-fulcro-nuova-visione",
+      "period": "2023",
+      "publishedOn": "2024-07-09",
+      "checkedOn": "2026-09-15",
+      "locator": "Comunicazione sul Rapporto 2024: 70 milioni annui di risparmio sulle locazioni; separare gli obiettivi futuri.",
+      "access": "Comunicazione istituzionale consultata. Risultato attribuito all’Agenzia; non ricondotto causalmente al solo piano Cottarelli.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "demanio-2025",
+      "publisher": "Agenzia del Demanio",
+      "title": "Presentazione del Rapporto annuale 2025",
+      "url": "https://www.agenziademanio.it/it/sala-stampa/notizie/notizia/LAgenzia-presenta-il-Rapporto-annuale-2025",
+      "period": "2024",
+      "publishedOn": "2025-09-22",
+      "checkedOn": "2026-09-15",
+      "locator": "Risultato 2024 su locazioni passive e costi di funzionamento: 120 milioni, perimetro più ampio del solo affitto.",
+      "access": "Comunicazione istituzionale consultata. Non costruita una serie omogenea sommando o confrontando il dato con i 70 milioni di soli affitti.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "mef-partecipate-2022",
+      "publisher": "Ministero dell’economia e delle finanze",
+      "title": "Rapporto sulle partecipazioni pubbliche al 31 dicembre 2022",
+      "url": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/censimento_partecipazioni_pubbliche/rapporti_annuali_partecipazioni/rapporti_dettaglio/Rapporto-2022/",
+      "period": "2022",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "locator": "Presentazione: capitolo III dedicato agli effetti del TUSP e alla razionalizzazione; correzione del PDF il 31 marzo 2025.",
+      "access": "Pagina di presentazione consultata; consistenze e risparmi non estratti dal rapporto. Non usata per confermare i conteggi di società riportati nei messaggi dei lettori.",
+      "originalBytesSha256": null
+    },
+    {
+      "id": "camera-ctsp",
+      "publisher": "Camera dei deputati",
+      "title": "Legge finanziaria 2007: commissioni tecniche per la spesa e la finanza pubblica",
+      "url": "https://documenti.camera.it/Leg15/Dossier/Testi/ID0007s2.htm",
+      "period": "1981-2007",
+      "publishedOn": null,
+      "checkedOn": "2026-09-15",
+      "locator": "Disposizioni sulla Commissione tecnica per la finanza pubblica e antecedente CTSP.",
+      "access": "Dossier istituzionale consultato per il quadro storico; nessuna stima autonoma del risparmio complessivo dal 1981.",
+      "originalBytesSha256": null
     }
   ],
   "municipal": {
@@ -1895,10 +3760,11 @@
     ]
   },
   "method": [
-    "Il quadro contabile copre dieci funzioni della spesa pubblica nel 2024. Le singole schede usano periodi diversi, riportati accanto ai numeri. Non è un controllo di ogni fattura o di ogni amministrazione.",
-    "Sanzioni pagate, somme imposte da una sentenza, valori contrattuali e differenze nei dati hanno significati diversi. Per questo non pubblichiamo un totale nazionale degli sprechi.",
-    "Le risultanze di ANAC, NAS e altre istituzioni sono attribuite a chi le ha prodotte. Le verifiche aritmetiche e le letture dei documenti sono nostre elaborazioni. Un risultato statistico non prova da solo spreco, frode o responsabilità individuale.",
-    "Le undici schede iniziali sono state riscritte mantenendo il collegamento alle prove congelate della prima analisi. Le nuove fonti online hanno date e modalità di consultazione nel registro tecnico. Questa elaborazione con assistenza AI non equivale a una revisione indipendente umana."
+    "Questa edizione riconcilia 15 aggregati ministeriali del rendiconto RGS 2025 e dieci osservazioni annuali dei residui 2015-2024. Le 5.395 righe a capitolo sono dichiarate dalla metadata dello snapshot: non sono state rielaborate in questa sessione. Non presentiamo questo lavoro come audit integrale di ogni spesa dello Stato.",
+    "Bilancio dello Stato, conti INPS, spesa delle amministrazioni pubbliche e stanziamenti APS restano perimetri separati. Impegni, pagamenti e residui non si sommano tra loro. I valori arrotondati della fonte mantengono una tolleranza esplicita.",
+    "Il rapporto distingue costi pagati, sanzioni imposte, irregolarità rilevate dalle autorità, risultati insufficienti ed errori nei documenti. I riscontri istituzionali sono attribuiti agli autori; riconciliazioni, calcoli e lettura comparata sono elaborazioni DVNS con assistenza AI.",
+    "Non stimiamo un totale nazionale degli sprechi e non attribuiamo automaticamente una spesa al governo in carica quando viene pagata. Ogni importo conserva periodo, fase contabile, fonte e significato. Il registro tecnico espone anche i limiti di accesso ai documenti originali.",
+    "L’archivio delle spending review distingue proposte, norme, monitoraggio e risultati. Le cifre storiche non sono sommate tra commissari o confrontate come tasso di attuazione se cambiano le misure. La sezione 2024 usa i paragrafi della relazione RGS, non una rielaborazione integrale dei suoi allegati contabili."
   ],
   "glossary": [
     {
@@ -1928,8 +3794,976 @@
     {
       "term": "Competenza economica",
       "definition": "Registra la spesa secondo il momento economico dell’operazione, che può essere diverso dal momento del pagamento."
+    },
+    {
+      "term": "Accertamento",
+      "definition": "Registrazione di un credito dello Stato: l’incasso può avvenire dopo."
+    },
+    {
+      "term": "Competenza (CP) e residui (RS)",
+      "definition": "CP segue le operazioni attribuite all’anno. RS segue quelle conservate dagli esercizi precedenti. La cassa somma i pagamenti di entrambe le gestioni."
+    },
+    {
+      "term": "Saldo netto da finanziare",
+      "definition": "Differenza tra entrate finali e spese finali del bilancio statale. Non coincide con l’indebitamento netto europeo delle amministrazioni pubbliche."
+    },
+    {
+      "term": "Svalutazione",
+      "definition": "Riduzione prudente del valore di un credito quando si prevede di non riuscire a riscuoterlo interamente."
+    },
+    {
+      "term": "APS",
+      "definition": "Aiuto pubblico allo sviluppo: classificazione della cooperazione, non sinonimo di tutto il bilancio degli Esteri o di denaro speso fuori dall’Italia."
+    },
+    {
+      "term": "Spending review",
+      "definition": "Revisione di priorità, processi e costi della spesa. Un taglio di fondi e un servizio uguale a costo minore sono risultati diversi."
+    },
+    {
+      "term": "Piano gestionale",
+      "definition": "Suddivisione di un capitolo di bilancio. Può finanziare più interventi: non coincide necessariamente con una misura o con un contratto."
+    },
+    {
+      "term": "Risparmio a regime",
+      "definition": "Effetto annuo atteso quando una misura è pienamente attuata. Non è il totale dei risparmi cumulati nel tempo."
+    },
+    {
+      "term": "Reintegro",
+      "definition": "Aumento delle risorse di un conto precedentemente ridotto. Va controllato se riguarda la stessa finalità e se è compensato altrove."
     }
   ],
   "legacyEvidenceUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/62c70b65716c1e5b2ce784950e081b6bd41d52ad/docs/research/state-budget-2025",
-  "noNationalWasteTotal": true
+  "noNationalWasteTotal": true,
+  "audit": {
+    "version": 1,
+    "sourceId": "rgs-ministries-2025",
+    "year": 2025,
+    "ministries": [
+      {
+        "code": "02",
+        "label": "Economia e finanze",
+        "commitmentsCpCents": "79490192742507",
+        "paymentsCompetenceCpCents": "76188290643046",
+        "remainingCpCents": "3301902099461",
+        "paymentsResidualRsCents": "2117139074764",
+        "paymentsCashCsCents": "78305429717810",
+        "remainingRsCents": "9562728483022",
+        "residualsEndCents": "12864630582483"
+      },
+      {
+        "code": "04",
+        "label": "Lavoro e politiche sociali",
+        "commitmentsCpCents": "17476811906638",
+        "paymentsCompetenceCpCents": "16937838761669",
+        "remainingCpCents": "538973144969",
+        "paymentsResidualRsCents": "301864201295",
+        "paymentsCashCsCents": "17239702962964",
+        "remainingRsCents": "966706666575",
+        "residualsEndCents": "1505679811544"
+      },
+      {
+        "code": "07",
+        "label": "Istruzione e merito",
+        "commitmentsCpCents": "5767427771393",
+        "paymentsCompetenceCpCents": "5641114432838",
+        "remainingCpCents": "126313338555",
+        "paymentsResidualRsCents": "121661744287",
+        "paymentsCashCsCents": "5762776177125",
+        "remainingRsCents": "306298946644",
+        "residualsEndCents": "432612285199"
+      },
+      {
+        "code": "12",
+        "label": "Difesa",
+        "commitmentsCpCents": "3424763548647",
+        "paymentsCompetenceCpCents": "3224916857734",
+        "remainingCpCents": "199846690913",
+        "paymentsResidualRsCents": "209106609941",
+        "paymentsCashCsCents": "3434023467675",
+        "remainingRsCents": "50416615195",
+        "residualsEndCents": "250263306108"
+      },
+      {
+        "code": "08",
+        "label": "Interno",
+        "commitmentsCpCents": "3383572872891",
+        "paymentsCompetenceCpCents": "2884098609201",
+        "remainingCpCents": "499474263690",
+        "paymentsResidualRsCents": "471456477269",
+        "paymentsCashCsCents": "3355555086470",
+        "remainingRsCents": "474699528405",
+        "residualsEndCents": "974173792095"
+      },
+      {
+        "code": "10",
+        "label": "Infrastrutture e trasporti",
+        "commitmentsCpCents": "1797073015110",
+        "paymentsCompetenceCpCents": "1097964364624",
+        "remainingCpCents": "699108650486",
+        "paymentsResidualRsCents": "557872367831",
+        "paymentsCashCsCents": "1655836732455",
+        "remainingRsCents": "1410007166368",
+        "residualsEndCents": "2109115816854"
+      },
+      {
+        "code": "03",
+        "label": "Imprese e made in Italy",
+        "commitmentsCpCents": "1545445585034",
+        "paymentsCompetenceCpCents": "1316345466975",
+        "remainingCpCents": "229100118059",
+        "paymentsResidualRsCents": "169569801020",
+        "paymentsCashCsCents": "1485915267995",
+        "remainingRsCents": "163907490679",
+        "residualsEndCents": "393007608738"
+      },
+      {
+        "code": "11",
+        "label": "Università e ricerca",
+        "commitmentsCpCents": "1417722370912",
+        "paymentsCompetenceCpCents": "1310608222781",
+        "remainingCpCents": "107114148131",
+        "paymentsResidualRsCents": "173074427690",
+        "paymentsCashCsCents": "1483682650471",
+        "remainingRsCents": "114003284447",
+        "residualsEndCents": "221117432578"
+      },
+      {
+        "code": "05",
+        "label": "Giustizia",
+        "commitmentsCpCents": "1151284171534",
+        "paymentsCompetenceCpCents": "1102132303291",
+        "remainingCpCents": "49151868243",
+        "paymentsResidualRsCents": "44672712858",
+        "paymentsCashCsCents": "1146805016149",
+        "remainingRsCents": "20578432597",
+        "residualsEndCents": "69730300840"
+      },
+      {
+        "code": "09",
+        "label": "Ambiente e sicurezza energetica",
+        "commitmentsCpCents": "431447673578",
+        "paymentsCompetenceCpCents": "310996103041",
+        "remainingCpCents": "120451570537",
+        "paymentsResidualRsCents": "92756362606",
+        "paymentsCashCsCents": "403752465647",
+        "remainingRsCents": "147254132048",
+        "residualsEndCents": "267705702585"
+      },
+      {
+        "code": "06",
+        "label": "Affari esteri",
+        "commitmentsCpCents": "358390551210",
+        "paymentsCompetenceCpCents": "346880858506",
+        "remainingCpCents": "11509692704",
+        "paymentsResidualRsCents": "21793915020",
+        "paymentsCashCsCents": "368674773526",
+        "remainingRsCents": "1947873841",
+        "residualsEndCents": "13457566545"
+      },
+      {
+        "code": "14",
+        "label": "Cultura",
+        "commitmentsCpCents": "302106565809",
+        "paymentsCompetenceCpCents": "241417853072",
+        "remainingCpCents": "60688712737",
+        "paymentsResidualRsCents": "62762233333",
+        "paymentsCashCsCents": "304180086405",
+        "remainingRsCents": "120899402544",
+        "residualsEndCents": "181588115281"
+      },
+      {
+        "code": "15",
+        "label": "Salute",
+        "commitmentsCpCents": "295590099216",
+        "paymentsCompetenceCpCents": "209618786569",
+        "remainingCpCents": "85971312647",
+        "paymentsResidualRsCents": "17490088251",
+        "paymentsCashCsCents": "227108874820",
+        "remainingRsCents": "147057283889",
+        "residualsEndCents": "233028596536"
+      },
+      {
+        "code": "13",
+        "label": "Agricoltura",
+        "commitmentsCpCents": "207505985323",
+        "paymentsCompetenceCpCents": "167529202629",
+        "remainingCpCents": "39976782694",
+        "paymentsResidualRsCents": "50574497544",
+        "paymentsCashCsCents": "218103700173",
+        "remainingRsCents": "104579601745",
+        "residualsEndCents": "144556384439"
+      },
+      {
+        "code": "16",
+        "label": "Turismo",
+        "commitmentsCpCents": "43488646498",
+        "paymentsCompetenceCpCents": "12531306961",
+        "remainingCpCents": "30957339537",
+        "paymentsResidualRsCents": "12467701738",
+        "paymentsCashCsCents": "24999008699",
+        "remainingRsCents": "28233778057",
+        "residualsEndCents": "59191117594"
+      }
+    ],
+    "totals": {
+      "commitmentsCpCents": "117092823506300",
+      "paymentsCompetenceCpCents": "110992283772937",
+      "remainingCpCents": "6100539733363",
+      "paymentsResidualRsCents": "4424262215447",
+      "paymentsCashCsCents": "115416545988384",
+      "remainingRsCents": "13619318686056",
+      "residualsEndCents": "19719858419419"
+    },
+    "history": [
+      {
+        "year": 2015,
+        "totalMillion": 109691,
+        "currentMillion": 73736,
+        "capitalMillion": 35955,
+        "newMillion": 63016
+      },
+      {
+        "year": 2016,
+        "totalMillion": 134074,
+        "currentMillion": 92317,
+        "capitalMillion": 41757,
+        "newMillion": 66179
+      },
+      {
+        "year": 2017,
+        "totalMillion": 137430,
+        "currentMillion": 87211,
+        "capitalMillion": 50219,
+        "newMillion": 69791
+      },
+      {
+        "year": 2018,
+        "totalMillion": 139855,
+        "currentMillion": 82319,
+        "capitalMillion": 57536,
+        "newMillion": 67885
+      },
+      {
+        "year": 2019,
+        "totalMillion": 113261,
+        "currentMillion": 45529,
+        "capitalMillion": 67733,
+        "newMillion": 36956
+      },
+      {
+        "year": 2020,
+        "totalMillion": 196202,
+        "currentMillion": 58960,
+        "capitalMillion": 137242,
+        "newMillion": 126448
+      },
+      {
+        "year": 2021,
+        "totalMillion": 188057,
+        "currentMillion": 47225,
+        "capitalMillion": 140832,
+        "newMillion": 58088
+      },
+      {
+        "year": 2022,
+        "totalMillion": 192602,
+        "currentMillion": 50464,
+        "capitalMillion": 142137,
+        "newMillion": 70748
+      },
+      {
+        "year": 2023,
+        "totalMillion": 196431,
+        "currentMillion": 49837,
+        "capitalMillion": 146594,
+        "newMillion": 55330
+      },
+      {
+        "year": 2024,
+        "totalMillion": 187959,
+        "currentMillion": 50105,
+        "capitalMillion": 137854,
+        "newMillion": 58711
+      }
+    ],
+    "upstream": {
+      "recordId": "2025_RND_SPE_ELB_CAP_001",
+      "rowsDeclared": 5395,
+      "rowsReprocessed": 0,
+      "aggregatesProcessed": 15,
+      "sourceCsvSha256Declared": "2887db4905d30445abc795083f2861f969173baf235a56917932c9fcc242e368",
+      "snapshotSha256Declared": "86280974963c227e66cfcebab6849b54fa1edfccf67de9e15ed076290cd86028",
+      "declaredHashesVerified": false,
+      "commit": "a51efcf3a8f8a3a0407e09f5fda8666fb089cfce"
+    },
+    "funding": {
+      "title": "Prima domanda: da dove arrivano i soldi?",
+      "paragraphs": [
+        "Nel 2025 lo Stato accerta 783,17 miliardi di entrate finali e registra 902,96 miliardi di spese finali. Accertare un’entrata significa riconoscere un credito: non equivale sempre ad averlo già incassato.",
+        "Le imposte sono 661,93 miliardi, l’84,52% delle entrate finali. Seguono 119,03 miliardi di entrate non tributarie e 2,21 miliardi da alienazioni, ammortamenti e riscossione di crediti.",
+        "Il saldo netto da finanziare pubblicato è 119,79 miliardi. È un saldo del bilancio statale, non il deficit europeo dell’insieme delle amministrazioni pubbliche. Il rimborso di 267,97 miliardi di prestiti resta separato dalle spese finali."
+      ],
+      "technical": "Competenza finanziaria, milioni di euro della fonte. La sottrazione dei totali arrotondati produce 119.787 milioni, contro 119.786 pubblicati: differenza compatibile con l’arrotondamento, non un milione scomparso.",
+      "sourceIds": [
+        "senato-rendiconto-2025"
+      ]
+    },
+    "execution": {
+      "title": "Seconda domanda: quanto è stato davvero pagato?",
+      "paragraphs": [
+        "Il rendiconto segue fasi diverse: prima lo stanziamento autorizza la spesa, poi l’impegno la registra e infine il pagamento trasferisce il denaro. Un contratto pluriennale può comparire in più esercizi: contarne ogni anno tutto il valore lo moltiplicherebbe artificialmente.",
+        "Abbiamo riconciliato i 15 aggregati ministeriali dello snapshot RGS presente nel progetto. Su 1.170,93 miliardi di impegni, compresi i rimborsi del debito, 1.109,92 sono pagati sulla competenza 2025; 61,01 restano da pagare. I pagamenti sui residui degli anni precedenti sono altri 44,24 miliardi.",
+        "Il Ministero del Turismo conserva il 71,19% dei propri impegni 2025; le Infrastrutture il 38,90%. Sono indicatori di esecuzione da leggere per programma, non una graduatoria di sprechi. Nel caso degli impianti di risalita, più avanti, il documento descrive anche fondi e risultati: lì il segnale ha un contenuto concreto."
+      ],
+      "technical": "Tutti gli importi ministeriali sono in centesimi. Controlli: CP = pagato CP + rimasto CP; CS = pagato CP + pagato RS; residui finali = rimasto CP + rimasto RS. Ogni somma dei 15 ministeri deve coincidere con il totale pubblicato. Salute non coincide con l’intero Servizio sanitario nazionale: parte del finanziamento transita dal MEF e dalle Regioni.",
+      "sourceIds": [
+        "rgs-ministries-2025"
+      ]
+    },
+    "historyIntro": {
+      "title": "Dieci anni, non un solo governo",
+      "paragraphs": [
+        "I residui delle spese finali passano da 109,69 miliardi nel 2015 a 187,96 nel 2024. Sono consistenze a fine anno, non dieci flussi da sommare.",
+        "Il confronto attraversa cambi di governo e di regole. Dal 2016 si allungano alcuni termini di conservazione; dal 2019 cambia l’imputazione degli impegni alla scadenza. La discontinuità del 2020 coincide anche con le misure straordinarie della pandemia.",
+        "Per attribuire un risultato servono almeno quattro date: decisione, contratto, scadenza e pagamento. Il governo in carica al pagamento può ereditare l’impegno, ma resta responsabile della gestione che gli compete."
+      ],
+      "technical": "La serie copre dieci osservazioni annuali dello stock, non un audit di tutti i contratti del decennio. Importi nominali, milioni di euro. Le componenti 2019 e 2022 differiscono dal totale di un milione per arrotondamento. Il grafico mantiene i totali pubblicati.",
+      "sourceIds": [
+        "camera-residui"
+      ]
+    },
+    "inpsContext": {
+      "title": "Pensioni: distinguere il diritto, il contributo e il credito inesigibile",
+      "paragraphs": [
+        "La spesa previdenziale non è uno spreco perché elevata. Il controllo utile cerca prestazioni senza diritto, contributi non riscossi e costi amministrativi evitabili. I due riscontri seguenti riguardano i crediti, non accuse ai pensionati.",
+        "Nel rendiconto INPS, il portafoglio ADER al 31 dicembre 2024 è 135,2 miliardi. Solo 18,1 sono classificati come potenziale recupero lordo. Altri 60 miliardi riguardano azioni già tentate senza riscossione.",
+        "Cancellare un credito già svalutato non crea da solo un nuovo buco. Il problema gestionale è capire come il credito nasce, quanto tempo passa prima del recupero e perché alcuni errori ritornano."
+      ],
+      "technical": "Classificazione ADER-INPS: stock di crediti, non entrate annuali o denaro disponibile. Il potenziale recupero è lordo e non è una previsione di incasso. Non sommare questo portafoglio alle eliminazioni o ai trasferimenti statali.",
+      "sourceIds": [
+        "inps-rendiconto",
+        "inps-chiarimenti"
+      ]
+    },
+    "foreign": {
+      "title": "E i soldi all’estero?",
+      "paragraphs": [
+        "Per rispondere non basta sommare il bilancio degli Esteri. L’aiuto pubblico allo sviluppo coinvolge diversi ministeri; lo stesso bilancio MAECI include ambasciate, servizi consolari e sostegno alle imprese italiane.",
+        "Nell’allegato iniziale al bilancio 2024, le risorse APS degli otto ministeri elencati dalla Camera sommano 6,31 miliardi. È uno stanziamento, non la misura dei soldi effettivamente inviati all’estero. La voce Interno, da sola, vale 1,54 miliardi: la destinazione geografica va verificata progetto per progetto.",
+        "Una variazione concreta riguarda il capitolo 3429 del MAECI: il contributo allo Strumento europeo per la pace passa da 89,94 milioni nel 2023 a 381,3 nel 2024. È una scelta di politica estera e un costo opportunità da discutere; la crescita non dimostra appropriazione indebita o inefficienza.",
+        "Per confrontare aiuti e manutenzione stradale servono pagamenti, risultati e somme legalmente riallocabili. Questo dossier non certifica che ogni euro stanziato per gli aiuti possa essere spostato subito sulle strade."
+      ],
+      "technical": "Stanziamenti iniziali APS 2024, non consuntivo OCSE-DAC. Il contributo EPF sul capitolo 3429 e il programma Cooperazione non sono sinonimi. Nessuna somma tra questa tabella, MAECI, INPS e totale PA.",
+      "sourceIds": [
+        "maeci-rendiconto"
+      ]
+    },
+    "foreignRows": [
+      {
+        "label": "Economia e finanze",
+        "million": "2568.34"
+      },
+      {
+        "label": "Interno",
+        "million": "1538.04"
+      },
+      {
+        "label": "Affari esteri",
+        "million": "1202.26"
+      },
+      {
+        "label": "Ambiente",
+        "million": "519.29"
+      },
+      {
+        "label": "Infrastrutture e trasporti",
+        "million": "452.71"
+      },
+      {
+        "label": "Università e ricerca",
+        "million": "17.89"
+      },
+      {
+        "label": "Salute",
+        "million": "14.74"
+      },
+      {
+        "label": "Imprese",
+        "million": "0.93"
+      }
+    ],
+    "portfolios": [
+      {
+        "label": "Falliti",
+        "billion": "13.7"
+      },
+      {
+        "label": "Deceduti e ditte cessate",
+        "billion": "16.5"
+      },
+      {
+        "label": "Nullatenenti",
+        "billion": "9.7"
+      },
+      {
+        "label": "Azioni tentate senza riscossione",
+        "billion": "60.0"
+      },
+      {
+        "label": "Rate non ancora scadute",
+        "billion": "8.9"
+      },
+      {
+        "label": "Carichi sospesi",
+        "billion": "8.3"
+      },
+      {
+        "label": "Potenziale recupero lordo",
+        "billion": "18.1"
+      }
+    ],
+    "readerOutcome": "Il denaro pubblico si perde anche senza una frode: in sanzioni evitabili, lavori da rifare, ritardi che rinviano un servizio e procedure che correggono gli stessi errori ogni anno. I casi con prova economica vanno affrontati per primi; le incongruenze nei documenti restano visibili, senza gonfiarne il significato.",
+    "exclusions": [
+      {
+        "title": "Somma dei residui = spreco",
+        "reason": "Scartata. Lo stock include fasi e scadenze diverse; non misura da solo ritardi colpevoli o denaro perduto."
+      },
+      {
+        "title": "Cassa superiore agli impegni 2025 = spesa fuori bilancio",
+        "reason": "Scartata quando la differenza è coperta dai pagamenti sui residui precedenti. Le tre identità sono verificate per ogni ministero."
+      },
+      {
+        "title": "Cancellazioni INPS = pensioni indebite",
+        "reason": "Scartata. Crediti contributivi e prestazioni pagate sono oggetti contabili diversi; i fondi svalutazione anticipano parte della perdita di valore."
+      },
+      {
+        "title": "Proposte Recovery Fund 2020 = pagamenti eseguiti",
+        "reason": "Non utilizzata come evidenza. L’allegato Radio Radio descrive una bozza di 557 progetti, non impegni, fatture o pagamenti."
+      },
+      {
+        "title": "Salari stagnanti = prova che un capitolo di bilancio è sprecato",
+        "reason": "Non utilizzata come evidenza. Il secondo articolo allegato presenta una tesi macroeconomica; non identifica un flusso di spesa né una stima causale verificabile qui."
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "id": "costi-evitabili",
+      "title": "Quando paghiamo senza ottenere un servizio",
+      "intro": "Il primo danno è diretto: fondi che servono a pagare sanzioni o indennizzi. La sanzione è il costo dell’inadempimento; versarla non ripara la discarica e non abbrevia un processo.",
+      "caseIds": [
+        "discariche",
+        "processi-lenti",
+        "depurazione"
+      ]
+    },
+    {
+      "id": "risultati-mancati",
+      "title": "Dai fondi al risultato: dove il percorso si ferma",
+      "intro": "Dopo i costi dell’inadempimento vengono i programmi che avanzano poco e gli appalti che cambiano strada. Qui servono insieme denaro, tempi e risultati: un importo elevato, da solo, non basta. Confrontiamo poi obiettivi di risparmio e risultati: due misure sugli affitti, un intervento energetico e un acquisto che ha funzionato.",
+      "caseIds": [
+        "bonus-edilizi",
+        "ospedale-camerano",
+        "tolentino",
+        "impianti",
+        "prepac",
+        "carceri",
+        "mense-ospedaliere",
+        "affidamenti",
+        "assistenti-sociali",
+        "affitti-risparmio-mancato",
+        "energia-obiettivo-mancato",
+        "esercito-acquisti-efficienti"
+      ]
+    },
+    {
+      "id": "crediti-e-riscossione",
+      "title": "I soldi attesi che non diventano incassi",
+      "intro": "Le entrate scritte nei conti non sono tutte spendibili. Recuperare un credito, aggiornarlo ed evitare registrazioni errate fa parte dello stesso controllo sulla qualità della gestione.",
+      "caseIds": [
+        "inps-cessazioni",
+        "inps-registrazioni",
+        "rottamazioni-incassi"
+      ]
+    },
+    {
+      "id": "dati-che-non-tornano",
+      "title": "Gli errori nei documenti, senza trasformarli in miliardi sprecati",
+      "intro": "Questi riscontri hanno peso diverso dai casi precedenti. Possono alterare la lettura dei risultati o attribuire una somma al soggetto sbagliato. Li conserviamo con le prove, ma non li contiamo come risparmi recuperabili.",
+      "caseIds": [
+        "rti",
+        "personale",
+        "percentuali",
+        "musei-incassi",
+        "entrate",
+        "date",
+        "archivi"
+      ]
+    }
+  ],
+  "spendingReview": {
+    "version": 1,
+    "title": "Spending review: che cosa era stato proposto, che cosa è successo",
+    "intro": [
+      "Non partiamo da zero. Commissioni e commissari hanno già studiato acquisti, immobili, personale, sanità e società pubbliche. Riprendere quei lavori serve a distinguere problemi ancora aperti, interventi realizzati e risparmi soltanto annunciati.",
+      "La domanda utile non è se un commissario avesse ragione in generale. È più concreta: quale misura proponeva, chi doveva attuarla, che cosa è stato fatto e quale risultato risulta dai documenti?"
+    ],
+    "scope": "Il nucleo documentale ricostruito parte dal 1981. Non è un archivio completo dei cinquant’anni precedenti né la lettura integrale di tutti i lavori dei commissari. I documenti soltanto censiti sono distinti da quelli analizzati.",
+    "chronology": [
+      {
+        "period": "1981-2003",
+        "actor": "Commissione tecnica per la spesa pubblica",
+        "title": "Analisi permanenti, non un commissario unico",
+        "text": "La CTSP produce studi e raccomandazioni settoriali. La RGS ne conserva un fondo documentale ampio: il lavoro tecnico esiste e può essere riesaminato. Il catalogo non fornisce una misura unica dei risparmi attuati.",
+        "sourceIds": [
+          "ctsp-archivio",
+          "camera-ctsp"
+        ]
+      },
+      {
+        "period": "2007-2008",
+        "actor": "Commissione tecnica per la finanza pubblica",
+        "title": "Da cinque ministeri a un metodo di revisione",
+        "text": "Il programma avvia una verifica sistematica di efficacia, efficienza ed economicità. Il rapporto 2008 approfondisce cinque ministeri; il perimetro non coincide con tutti i servizi pubblici.",
+        "sourceIds": [
+          "ctfp-2008",
+          "camera-review-2014"
+        ]
+      },
+      {
+        "period": "2012-2013",
+        "actor": "Giarda e Bondi",
+        "title": "Analisi e misure approvate sono documenti diversi",
+        "text": "Giarda analizza struttura e costi; Bondi lavora sui consumi intermedi con SIOPE, ISTAT e SOSE. Il decreto-legge 95/2012 introduce misure puntuali: la tesi «non fu fatto nulla» non descrive correttamente questa fase.",
+        "sourceIds": [
+          "giarda-2012",
+          "camera-review-2014"
+        ]
+      },
+      {
+        "period": "2013-2014",
+        "actor": "Carlo Cottarelli",
+        "title": "Una mappa di opzioni con risparmi potenziali",
+        "text": "Il piano del 27 marzo 2014 indica massimi lordi di 7, 18 e 34 miliardi per il 2014, 2015 e 2016. Per il 2014 il tempo disponibile limita l’attuazione. Non abbiamo una riconciliazione misura per misura che certifichi quanti miliardi di quel preciso piano siano stati realizzati.",
+        "sourceIds": [
+          "cottarelli-2014"
+        ]
+      },
+      {
+        "period": "2015-2017",
+        "actor": "Yoram Gutgeld",
+        "title": "Spazi di bilancio ed efficientamento",
+        "text": "La relazione del giugno 2017 riporta 29,9 miliardi di effetti annui sui capitoli ridotti nel 2017. Il lavoro sugli acquisti e la riallocazione delle risorse sono documentati separatamente. Questo non consente di dividere 29,9 per 34 per misurare l’attuazione di Cottarelli.",
+        "sourceIds": [
+          "gutgeld-2017",
+          "camera-review-2018"
+        ]
+      },
+      {
+        "period": "2016-2020",
+        "actor": "Revisione nel ciclo di bilancio",
+        "title": "Obiettivi dei ministeri e monitoraggio",
+        "text": "La legge 163/2016 integra il processo nella programmazione. Il ciclo 2018-2020 è poi oggetto di una valutazione RGS delle prassi di Salute e Giustizia: il seguito documentale non si esaurisce con i commissari.",
+        "sourceIds": [
+          "camera-review-2018",
+          "rgs-prassi-2022"
+        ]
+      },
+      {
+        "period": "2021-2025",
+        "actor": "Riforma PNRR e monitoraggio RGS",
+        "title": "Risultato complessivo, misura per misura",
+        "text": "La relazione sull’esercizio 2024 documenta il raggiungimento sostanziale dell’obiettivo finanziario complessivo. Nello stesso documento compaiono affitti con risparmi parziali, un intervento energetico che manca il target e acquisti che lo superano.",
+        "sourceIds": [
+          "rgs-review-2024"
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "label": "Proposta",
+        "text": "Una stima indica ciò che potrebbe essere risparmiato. Non è denaro recuperato."
+      },
+      {
+        "label": "Decisione",
+        "text": "Una norma o un atto riduce una dotazione o cambia un processo. Il risultato resta da misurare."
+      },
+      {
+        "label": "Attuazione",
+        "text": "Contratti, consumi, tempi e servizi mostrano che cosa è cambiato davvero."
+      },
+      {
+        "label": "Risultato",
+        "text": "Il costo netto viene confrontato con il servizio e con una base dichiarata. Si contano anche aumenti e costi di transizione."
+      }
+    ],
+    "series": [
+      {
+        "id": "cottarelli",
+        "title": "Cottarelli: massimi lordi proposti nel 2014",
+        "unit": "miliardi € · proposta, non consuntivo",
+        "rows": [
+          {
+            "year": 2014,
+            "metric": "sr-cott-2014",
+            "status": "proposta"
+          },
+          {
+            "year": 2015,
+            "metric": "sr-cott-2015",
+            "status": "proposta"
+          },
+          {
+            "year": 2016,
+            "metric": "sr-cott-2016",
+            "status": "proposta"
+          }
+        ],
+        "note": "Il 2014 è un massimo lordo prima dei vincoli di calendario. I 34 miliardi del 2016 non sono un credito da incassare oggi.",
+        "sourceIds": [
+          "cottarelli-2014"
+        ]
+      },
+      {
+        "id": "gutgeld",
+        "title": "Gutgeld: effetti annui riportati nel giugno 2017",
+        "unit": "miliardi € · capitoli eliminati o ridotti",
+        "rows": [
+          {
+            "year": 2014,
+            "metric": "sr-gut-2014",
+            "status": "riportato"
+          },
+          {
+            "year": 2015,
+            "metric": "sr-gut-2015",
+            "status": "riportato"
+          },
+          {
+            "year": 2016,
+            "metric": "sr-gut-2016",
+            "status": "riportato"
+          },
+          {
+            "year": 2017,
+            "metric": "sr-gut-2017",
+            "status": "riportato"
+          },
+          {
+            "year": 2018,
+            "metric": "sr-gut-2018",
+            "status": "previsione"
+          }
+        ],
+        "note": "Il 2018 era una previsione nella relazione del 2017. La serie non è un totale cumulato di cassa e non misura la percentuale attuata del piano Cottarelli.",
+        "sourceIds": [
+          "gutgeld-2017",
+          "camera-review-2018"
+        ]
+      }
+    ],
+    "result2024": {
+      "title": "La verifica più recente analizzata scende alle singole misure",
+      "paragraphs": [
+        "Per il 2024 la RGS esamina 205 piani gestionali: 107 dedicati alla spesa oggetto di revisione, 69 con più finalità e 29 fondi da ripartire. Un piano gestionale è una suddivisione del capitolo; non è un singolo contratto.",
+        "Il 33,7% dei piani ha più finalità: vedere che un conto aumenta non basta a capire se il taglio sia stato annullato. Occorre isolare la misura. La RGS dichiara raggiunto l’obiettivo finanziario aggregato e segnala obiettivi specifici mancati.",
+        "Le tre schede aggiunte al dossier mostrano il seguito concreto: 245 mila euro di risparmi mancati sugli affitti, un target energetico non raggiunto e 5,709 milioni di risparmi netti rendicontati negli acquisti dell’Esercito."
+      ],
+      "sourceIds": [
+        "rgs-review-2024"
+      ]
+    },
+    "tracker": [
+      {
+        "theme": "Acquisti pubblici",
+        "proposal": "Confrontare prezzi e concentrare gli acquisti, senza perdere qualità.",
+        "status": "Risultato settoriale documentato",
+        "result": "Esercito 2024: 5,709 milioni netti rendicontati, dopo aver sottratto la maggiore spesa per le razioni. Non una stima di taglio su tutti gli acquisti.",
+        "measure": "Prezzo, quantità, costo per utente, qualità e costo della centrale d’acquisto.",
+        "sourceIds": [
+          "cottarelli-2014",
+          "rgs-review-2024"
+        ],
+        "caseId": "esercito-acquisti-efficienti"
+      },
+      {
+        "theme": "Immobili e affitti",
+        "proposal": "Ridurre immobili inutilizzati e canoni, includendo trasferimenti e investimenti.",
+        "status": "Risultati e carenze coesistono",
+        "result": "Demanio riferisce risparmi; due misure Interno mancano invece 245 mila euro di target nel 2024. I perimetri non vanno sommati o messi in competizione.",
+        "measure": "Canoni effettivi, date di rilascio, spesa di adeguamento e risparmio netto pluriennale.",
+        "sourceIds": [
+          "cottarelli-2014",
+          "demanio-2024",
+          "demanio-2025",
+          "rgs-review-2024"
+        ],
+        "caseId": "affitti-risparmio-mancato"
+      },
+      {
+        "theme": "Energia degli edifici",
+        "proposal": "Spendere meno a parità di servizio energetico.",
+        "status": "Obiettivo mancato documentato",
+        "result": "La RGS segnala il mancato target della misura Interno ID10. Il reintegro poco sopra 5 milioni è un rifinanziamento, non la quantificazione dello spreco.",
+        "measure": "Consumi fisici e prezzi separati; investimento e risparmio per edificio.",
+        "sourceIds": [
+          "rgs-review-2024"
+        ],
+        "caseId": "energia-obiettivo-mancato"
+      },
+      {
+        "theme": "Intercettazioni e servizi giudiziari",
+        "proposal": "Applicare il nuovo listino alla base del risparmio.",
+        "status": "Attuazione e misurabilità insufficienti",
+        "result": "Per Giustizia ID1 la RGS riferisce attuazione incompleta del listino e informazioni insufficienti per attestare il mancato conseguimento dichiarato. Non assegniamo un importo perso.",
+        "measure": "Tariffe applicate, volumi e distinzione delle attività sul capitolo 1363/1.",
+        "sourceIds": [
+          "rgs-review-2024"
+        ],
+        "caseId": null
+      },
+      {
+        "theme": "Fondi e reintegri",
+        "proposal": "Evitare che un taglio riappaia su un altro conto.",
+        "status": "Compensazione esplicita",
+        "result": "Il reintegro di 7,4 milioni del fondo Interno è accompagnato da misure compensative di pari importo. Il solo aumento del capitolo non dimostra il fallimento dell’obiettivo complessivo.",
+        "measure": "Stesso ministero, ciclo, misura, copertura e variazione di competenza.",
+        "sourceIds": [
+          "rgs-review-2024"
+        ],
+        "caseId": null
+      },
+      {
+        "theme": "Cinema e incentivi",
+        "proposal": "Valutare prima quali strumenti finanziare.",
+        "status": "Riduzione di dotazioni, non efficienza provata",
+        "result": "Nel monitoraggio 2024 due destinazioni passano da 38 a 35 milioni e da 114 a 110 milioni. La fonte dimostra 7 milioni di minori dotazioni, non un costo per risultato più basso.",
+        "measure": "Beneficiari, opere distribuite, pubblico raggiunto e investimenti aggiuntivi.",
+        "sourceIds": [
+          "rgs-review-2024"
+        ],
+        "caseId": null
+      },
+      {
+        "theme": "Società partecipate",
+        "proposal": "Razionalizzare duplicazioni e attività senza utilità pubblica.",
+        "status": "Seguito documentale individuato",
+        "result": "Il rapporto MEF sulle partecipazioni 2022 dedica un capitolo agli effetti del TUSP. Non è stato ricostruito qui il passaggio da ogni proposta 2014 a ogni società soppressa o mantenuta.",
+        "measure": "Società distinte da partecipazioni; fusioni, liquidazioni e servizi trasferiti; costi netti.",
+        "sourceIds": [
+          "cottarelli-2014",
+          "mef-partecipate-2022"
+        ],
+        "caseId": null
+      },
+      {
+        "theme": "Trasferimenti e agevolazioni",
+        "proposal": "Finanziare ciò che produce risultati aggiuntivi.",
+        "status": "Valutazione economica, non semplice taglio",
+        "result": "Il dossier collega questo criterio allo studio sui bonus edilizi già analizzato. Una minore dotazione o la fine di una misura non dimostrano, da sole, l’efficienza della revisione.",
+        "measure": "Risultato con e senza intervento, beneficiari, costo pubblico e conseguenze distributive.",
+        "sourceIds": [
+          "cottarelli-2014"
+        ],
+        "caseId": "bonus-edilizi"
+      }
+    ],
+    "documents": [
+      {
+        "id": "ctsp-fondo",
+        "period": "1981-2003",
+        "title": "Il fondo CTSP e il suo inventario",
+        "sourceId": "ctsp-archivio",
+        "url": "https://www.rgs.mef.gov.it/VERSIONE-I/ragioneria_generale/biblioteca_luca_pacioli/commissione_tecnica_per_la_spesa_pubblica/index.html",
+        "reading": "Catalogo consultato",
+        "use": "Circa 630 documenti descritti dalla RGS. Il catalogo segnala lacune per gli anni 1984-1987: non prova che in quel periodo non sia stato prodotto alcun lavoro."
+      },
+      {
+        "id": "ctsp-1",
+        "period": "1982-1991",
+        "title": "Osservazioni e raccomandazioni",
+        "sourceId": "ctsp-archivio",
+        "url": "https://www.rgs.mef.gov.it/VERSIONE-I/ragioneria_generale/biblioteca_luca_pacioli/commissione_tecnica_per_la_spesa_pubblica/index.html",
+        "reading": "Volume censito nel catalogo",
+        "use": "Punto d’accesso alle raccomandazioni della commissione. Contenuto integrale non rianalizzato in questa edizione."
+      },
+      {
+        "id": "ctsp-2",
+        "period": "1992-1995",
+        "title": "Razionalizzazione e contenimento della spesa pubblica",
+        "sourceId": "ctsp-archivio",
+        "url": "https://www.rgs.mef.gov.it/VERSIONE-I/ragioneria_generale/biblioteca_luca_pacioli/commissione_tecnica_per_la_spesa_pubblica/index.html",
+        "reading": "Volume censito nel catalogo",
+        "use": "Punto d’accesso alle raccomandazioni della commissione. Contenuto integrale non rianalizzato in questa edizione."
+      },
+      {
+        "id": "ctsp-3",
+        "period": "1996-2000",
+        "title": "Riforma dell’azione pubblica: vincoli, mandato politico e obiettivi di efficienza",
+        "sourceId": "ctsp-archivio",
+        "url": "https://www.rgs.mef.gov.it/VERSIONE-I/ragioneria_generale/biblioteca_luca_pacioli/commissione_tecnica_per_la_spesa_pubblica/index.html",
+        "reading": "Volume censito nel catalogo",
+        "use": "Punto d’accesso alle raccomandazioni della commissione. Contenuto integrale non rianalizzato in questa edizione."
+      },
+      {
+        "id": "ctfp",
+        "period": "2008",
+        "title": "Rapporto sulla revisione della spesa di cinque ministeri",
+        "sourceId": "ctfp-2008",
+        "url": "https://www.edscuola.it/archivio/handicap/rapporto_revisione_spesa_pubblica_08.pdf",
+        "reading": "Testo originale su copia",
+        "use": "Esperimento settoriale: non è una verifica di tutta la pubblica amministrazione."
+      },
+      {
+        "id": "giarda",
+        "period": "2012",
+        "title": "Elementi per una revisione della spesa pubblica",
+        "sourceId": "giarda-2012",
+        "url": "https://www.camera.it/temiap/temi17/Revisione_spesa_Rapporto%20Giarda%208%20maggio%202012.pdf",
+        "reading": "Testo originale consultato",
+        "use": "Distingue spreco produttivo, costo dei servizi e scelte politiche. I 295 miliardi sono la base di spesa esaminabile, non il risparmio."
+      },
+      {
+        "id": "giarda-settori",
+        "period": "2013",
+        "title": "Analisi di alcuni settori di spesa pubblica",
+        "sourceId": "camera-review-2014",
+        "url": "https://www.camera.it/temiap/temi17/Giarda_rapporto_spending_marzo-2013.pdf",
+        "reading": "Descrizione istituzionale consultata",
+        "use": "Sicurezza, Prefetture, Province, trasferimenti alle imprese e investimenti. Documento di analisi, non piano di tagli già adottato."
+      },
+      {
+        "id": "bondi-siope",
+        "period": "2012",
+        "title": "Consumi intermedi di Regioni, Province, Comuni, Università ed enti di ricerca",
+        "sourceId": "camera-review-2014",
+        "url": "https://www.camera.it/temiap/temi17/Consumi%20intermedi%20regioni%20-%20Siope%202011.pdf",
+        "reading": "Originale collegato dal dossier Camera",
+        "use": "Scostamenti dalla mediana. Il confronto richiede servizi e condizioni omogenei."
+      },
+      {
+        "id": "bondi-istat",
+        "period": "2012",
+        "title": "ISTAT: nota tecnica sugli acquisti dei Comuni",
+        "sourceId": "camera-review-2014",
+        "url": "https://www.camera.it/temiap/temi17/ISTAT%20-%20Nota%20commissario%20-%20Allegato%202.pdf",
+        "reading": "Originale collegato dal dossier Camera",
+        "use": "Pagamenti 2011 e valori di confronto; non una somma nazionale di frodi."
+      },
+      {
+        "id": "bondi-sose",
+        "period": "2012",
+        "title": "SOSE: analisi dell’inefficienza nella spesa degli enti locali",
+        "sourceId": "camera-review-2014",
+        "url": "https://www.camera.it/temiap/temi17/Analisi%20inefficienza%20spesa%20enti.pdf",
+        "reading": "Originale collegato dal dossier Camera",
+        "use": "Sperimentazione econometrica. Stima relativa alla base di dati e al modello."
+      },
+      {
+        "id": "cott-piano",
+        "period": "2014",
+        "title": "Cottarelli: proposte 2014-2016",
+        "sourceId": "cottarelli-2014",
+        "url": "https://www.quotidiano.net/polopoly_fs/1.814693.1427871381!/menu/standard/file/cottarelli.pdf",
+        "reading": "Testo originale su copia",
+        "use": "Piano di interventi con risparmi lordi massimi e vincoli di attuazione; utile come mappa di temi, non come contabilità di somme oggi recuperabili."
+      },
+      {
+        "id": "gutgeld-relazione",
+        "period": "2017",
+        "title": "Gutgeld: obiettivi, attività e risultati",
+        "sourceId": "gutgeld-2017",
+        "url": "https://www.mef.gov.it/export/sites/MEF/inevidenza/documenti/Relazione_Commissario_20_Giugno_2017_.pdf",
+        "reading": "Testo originale consultato",
+        "use": "Distingue spazi di bilancio ed efficientamento. Gli effetti annui non sono incassi cumulati."
+      },
+      {
+        "id": "camera-def",
+        "period": "2018",
+        "title": "Camera: riepilogo delle misure e della procedura",
+        "sourceId": "camera-review-2018",
+        "url": "https://documenti.camera.it/leg18/dossier/Testi/DFP002a.htm",
+        "reading": "Dossier consultato",
+        "use": "Controllo incrociato della serie 2014-2018 e delle grandezze sugli acquisti."
+      },
+      {
+        "id": "prassi",
+        "period": "2022-2023",
+        "title": "RGS: valutazione delle prassi di Salute e Giustizia",
+        "sourceId": "rgs-prassi-2022",
+        "url": "https://www.rgs.mef.gov.it/VERSIONE-I/pubblicazioni/analisi_e_valutazione_della_spesa/la_revisione_della_spesa_del_bilancio_dello_stato/",
+        "reading": "Pagina di pubblicazione consultata",
+        "use": "Valuta la revisione 2018-2020; collegamento alla relazione e alle linee guida, non nuovo consuntivo calcolato da DVNS."
+      },
+      {
+        "id": "review-2024",
+        "period": "2024; relazione 2025",
+        "title": "RGS: risultati e criticità della spending review 2024",
+        "sourceId": "rgs-review-2024",
+        "url": "https://www.mef.gov.it/export/sites/MEF/attuazione-misure-pnrr/documenti/Relazione-spending-review.pdf",
+        "reading": "Capitoli 1-4 consultati",
+        "use": "Fonte dei tre nuovi riscontri: affitti, energia, acquisti dell’Esercito. Mostra obiettivi mancati anche con risultato aggregato raggiunto."
+      },
+      {
+        "id": "review-misure",
+        "period": "2024",
+        "title": "Elenco delle misure ministeriali monitorate",
+        "sourceId": "rgs-review-misure",
+        "url": "https://www.mef.gov.it/export/sites/MEF/attuazione-misure-pnrr/documenti/Misure-dei-ministeri-oggetto-di-monitoraggio.pdf",
+        "reading": "Elenco consultato",
+        "use": "Collega i temi agli identificativi di misura; l’ID va letto insieme al ministero e al ciclo."
+      },
+      {
+        "id": "demanio-2023",
+        "period": "2023; rapporto 2024",
+        "title": "Demanio: risparmi sulle locazioni",
+        "sourceId": "demanio-2024",
+        "url": "https://www.agenziademanio.it/it/notizia/Rapporto-2024-Partenariato-pubblico-privato-fulcro-nuova-visione",
+        "reading": "Comunicazione istituzionale consultata",
+        "use": "70 milioni annui dichiarati sulle locazioni. Distinguere risultati annuali, costi di investimento e obiettivi futuri."
+      },
+      {
+        "id": "demanio-2024",
+        "period": "2024; rapporto 2025",
+        "title": "Demanio: locazioni e funzionamento",
+        "sourceId": "demanio-2025",
+        "url": "https://www.agenziademanio.it/it/sala-stampa/notizie/notizia/LAgenzia-presenta-il-Rapporto-annuale-2025",
+        "reading": "Comunicazione istituzionale consultata",
+        "use": "120 milioni dichiarati su un perimetro più ampio: non una serie omogenea con i soli affitti del rapporto precedente."
+      },
+      {
+        "id": "partecipate",
+        "period": "2022; rapporto aggiornato 2025",
+        "title": "MEF: partecipazioni pubbliche e razionalizzazioni",
+        "sourceId": "mef-partecipate-2022",
+        "url": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/censimento_partecipazioni_pubbliche/rapporti_annuali_partecipazioni/rapporti_dettaglio/Rapporto-2022/",
+        "reading": "Catalogo consultato",
+        "use": "Il capitolo III è il punto di accesso al seguito delle razionalizzazioni. Non attribuiamo qui un tasso di attuazione al piano Cottarelli."
+      }
+    ],
+    "conclusion": "I rapporti non provano che tutto sia rimasto fermo, né che tutto sia stato risolto. Rendono verificabile una domanda precisa: perché una criticità già descritta produce ancora costi, oppure quale intervento l’ha ridotta?",
+    "corrections": [
+      {
+        "claim": "«34 miliardi proposti, 8-10 realizzati»",
+        "finding": "Non usiamo questa percentuale: manca una riconciliazione verificata tra le stesse misure, gli stessi anni e la stessa definizione di risparmio."
+      },
+      {
+        "claim": "«30 miliardi cumulati»",
+        "finding": "La relazione Gutgeld parla di effetti annui: i 29,9 miliardi riguardano il 2017. Non sono un unico salvadanaio da sommare a quelli di altri commissari."
+      },
+      {
+        "claim": "«Ogni legge di spesa dura per sempre»",
+        "finding": "Vanno distinti stanziamenti annuali, autorizzazioni permanenti, misure temporanee e impegni pluriennali. La durata si controlla nella norma e nel contratto, non si presume."
+      },
+      {
+        "claim": "«Nessun intervento è stato attuato»",
+        "finding": "I documenti registrano sia modifiche e risparmi sia obiettivi mancati. La crescita della spesa totale, da sola, non misura l’efficacia di una singola revisione."
+      }
+    ],
+    "notReconstructed": [
+      "Non è stato reperito in questa estensione un consuntivo separato e comparabile per Mario Canzio o Roberto Perotti. Non attribuiamo loro risparmi altrui.",
+      "Il mandato politico successivo dei commissari non prova motivi personali o scambi illeciti. Le accuse nei messaggi ricevuti non sono usate come fonti.",
+      "Non sono rielaborati tutti i rapporti dei gruppi Cottarelli: il piano generale è analizzato e le proposte sono collegate soltanto a esiti documentati su perimetri dichiarati."
+    ]
+  }
 }

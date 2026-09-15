@@ -10,26 +10,31 @@ test("MCP compatibility proxy is scoped to the exact public presentation path", 
   assert.deepEqual(config, { matcher: ["/mcp", "/enti/:path*", "/api/:path*"] });
 });
 
-test("entity proxy stops the observed ClaudeBot crawl before page rendering", async () => {
-  const blocked = await proxy(new NextRequest("https://example.test/enti/c_a783/appalti", {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; ClaudeBot/1.0; +claudebot@anthropic.com)",
-    },
-  }));
-  assert.equal(blocked.status, 403);
-  assert.equal(blocked.headers.get("cache-control"), "private, no-store");
-  assert.equal(blocked.headers.get("x-robots-tag"), "noindex, nofollow");
-
-  for (const userAgent of [
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
-    "Googlebot/2.1 (+http://www.google.com/bot.html)",
-    "Claude/1.0",
-  ]) {
-    const allowed = await proxy(new NextRequest("https://example.test/enti/c_a783/appalti", {
-      headers: { "User-Agent": userAgent },
-    }));
-    assert.equal(allowed.headers.get("x-middleware-next"), "1", userAgent);
+test("training crawlers share an entity allowance without blocking user-initiated fetches", (t) => {
+  let now = Date.now() + 60_000;
+  t.mock.method(Date, "now", () => now);
+  const request = (userAgent, path = "/enti/c_a783/appalti", ip = "192.0.2.20") =>
+    new NextRequest(`https://example.test${path}`, {
+      headers: { "user-agent": userAgent, "x-forwarded-for": ip },
+    });
+  const agents = ["ClaudeBot/1.0", "GPTBot/1.0", "CCBot/1.0", "Meta-ExternalAgent/1.0"];
+  for (let i = 0; i < 30; i++) {
+    assert.equal(proxy(request(agents[i % agents.length])).headers.get("x-middleware-next"), "1");
   }
+  for (const agent of agents) {
+    const response = proxy(request(agent, "/enti"));
+    assert.equal(response.status, 429);
+    assert.equal(response.headers.get("retry-after"), "60");
+    assert.equal(response.headers.get("cache-control"), "private, no-store");
+  }
+  for (const agent of ["Claude-User/1.0", "Claude-SearchBot/1.0", "Mozilla/5.0"]) {
+    assert.equal(proxy(request(agent)).headers.get("x-middleware-next"), "1", agent);
+  }
+  // One exhausted client cannot spend another client's or the API's allowance.
+  assert.equal(proxy(request("ClaudeBot/1.0", "/enti/c_h501", "192.0.2.21")).headers.get("x-middleware-next"), "1");
+  assert.equal(proxy(request("ClaudeBot/1.0", "/api/health")).headers.get("x-middleware-next"), "1");
+  now += 60_000;
+  assert.equal(proxy(request("ClaudeBot/1.0")).headers.get("x-middleware-next"), "1");
 });
 
 test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical endpoint", async () => {
@@ -54,7 +59,7 @@ test("API proxy continues ordinary requests", async () => {
 });
 
 test("API proxy preserves shared capacity after per-client rejection and resets its window", (t) => {
-  let now = Date.now() + 120_000;
+  let now = Date.now() + 240_000;
   t.mock.method(Date, "now", () => now);
   const requestFor = (ip) => new NextRequest("https://example.test/api/health", {
     headers: { "x-forwarded-for": ip },

@@ -1721,6 +1721,32 @@
       "trustModel": "Source lock sui tre CSV ufficiali CKAN del report annuale Ammortizzatori Sociali 2023 (cc-by per package). Conteggi di lavoratori, domande e mensilita: nature distinte, nessun euro. Chiavi uniche e conteggi tabelle fail-closed. Copertura chiavi non forzata fra tabelle."
     },
     {
+      "id": "inps-cig-fondi-solidarieta-2023-2024",
+      "owner": "INPS CIG Fondi di Solidarieta ore autorizzate 2023-2024",
+      "files": [
+        "src/data/generated/inps-cig-fondi-solidarieta-2023-2024.data.json",
+        "src/data/generated/inps-cig-fondi-solidarieta-2023-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_cig_fondi_solidarieta_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-cig-fondi-solidarieta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sul CSV ufficiale CKAN cig-fondi-di-solidarieta-2023-2024 (cc-by per package). Ore autorizzate: nessun euro. Chiavi uniche e conteggi fail-closed. Distinto da integrazioni salariali lavoratori/domande/mensilita."
+    },
+    {
       "id": "mef-irpef-dettaglio-2017-2025",
       "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
       "files": [

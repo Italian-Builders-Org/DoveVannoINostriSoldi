@@ -269,6 +269,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["regione", "mese", "tipo intervento", "tabella"],
   },
   {
+    slug: "inps-cig-fondi-solidarieta",
+    name: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    area: "Ammortizzatori sociali · CIG Fondi di Solidarietà",
+    cadence: "Annuale; package aggiornato al 2026-01-17",
+    coverage:
+      "Italia per 20 regioni, dettaglio mensile 2023–2024; gestioni FIS e Altri fondi; rami Industria/Commercio/Credito/ex Enti Pubblici",
+    format: "CSV UTF-8 · snapshot JSON verificato",
+    url: "https://opendata.inps.it/opendata",
+    note: "Ore autorizzate, non euro e non lavoratori/domande/mensilità. Distinto da integrazioni salariali CIGO/CIGS. Licenza cc-by per package.",
+    joinKeys: ["regione", "mese", "gestione fondi", "ramo di attività"],
+  },
+  {
     slug: "mef-iva",
     name: "MEF · principali grandezze IVA",
     owner: "MEF — Dipartimento delle Finanze",

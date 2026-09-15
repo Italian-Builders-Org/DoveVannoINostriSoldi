@@ -18,6 +18,10 @@ import {
   inpsIntegrazioniSalarialiData,
   inpsIntegrazioniSalarialiMetadata,
 } from "@/lib/inps-integrazioni-salariali-snapshot";
+import {
+  inpsCigFondiSolidarietaData,
+  inpsCigFondiSolidarietaMetadata,
+} from "@/lib/inps-cig-fondi-solidarieta-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
@@ -401,6 +405,18 @@ function snapshotManagedInpsIntegrazioniSalariali(): SourceHealth {
   };
 }
 
+function snapshotManagedInpsCigFondiSolidarieta(): SourceHealth {
+  const artifact = inpsCigFondiSolidarietaMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-cig-fondi-solidarieta"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-cig-fondi-solidarieta", inpsCigFondiSolidarietaMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · CIG Fondi di Solidarietà ${inpsCigFondiSolidarietaData.period.from}-${inpsCigFondiSolidarietaData.period.to} · ${inpsCigFondiSolidarietaData.coverage.observedRows.toLocaleString("it-IT")} righe · ore autorizzate, non euro · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsCigFondiSolidarietaData.coverage.observedRows,
+  };
+}
+
 function snapshotManagedIstatEpea(): SourceHealth {
   const { source, edition, referencePeriod } = istatEpeaMetadata;
   return {
@@ -624,6 +640,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,
+  "inps-cig-fondi-solidarieta": snapshotManagedInpsCigFondiSolidarieta,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,

@@ -465,6 +465,21 @@ export async function queryPublicDataset(
         }),
       });
     }
+    case "inps_cig_fondi_solidarieta": {
+      const { queryInpsCigFondiSolidarieta } = await import(
+        "@/lib/inps-cig-fondi-solidarieta-snapshot"
+      );
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsCigFondiSolidarieta({
+          year: query.year,
+          month: query.period,
+          region: query.region,
+          fundManagement: query.code,
+          sector: query.sector,
+        }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

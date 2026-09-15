@@ -72,6 +72,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "inps-assegno-unico": [],
   // Snapshot-only: i CSV integrazioni salariali sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   "inps-integrazioni-salariali": [],
+  // Snapshot-only: il CSV CIG Fondi di Solidarietà è acquisito e vincolato dall'ETL, mai scaricato a runtime.
+  "inps-cig-fondi-solidarieta": [],
   // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   "mef-irpef-dettaglio": [],
   // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.

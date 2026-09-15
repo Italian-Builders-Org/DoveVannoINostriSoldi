@@ -240,18 +240,35 @@ class MedicalDeviceProfileTests(TestCase):
         lock["integrity"]["lockSha256"] = etl.canonical_lock_sha256(lock)
         path = self.root / "fixture.source.json"
         path.write_text(json.dumps(lock), encoding="utf-8")
+        base, _ = candidate.corpus.load_spec(candidate.corpus.DEFAULT_SPEC)
+        base["datasets"] = [item for item in base["datasets"] if item["id"] not in candidate.DATASET_IDS]
+        for dataset_id in candidate.DATASET_IDS:
+            base["sourceMetadata"]["overrides"].pop(dataset_id, None)
+        (self.root / "base-corpus.source.json").write_text(json.dumps(base), encoding="utf-8")
         return spending, path
 
     def test_candidate_preserves_source_bytes_cells_and_existing_spec(self):
         spending, lock_path = self.candidate_inputs()
         output = self.root / "candidate"
-        candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path)
+        candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path, base_spec_path=self.root / "base-corpus.source.json")
+        self.assertGreater(len((output / "candidate.source.json").read_text(encoding="utf-8").splitlines()), 1)
         spec, datasets = candidate.corpus.load_spec(output / "candidate.source.json")
-        base, existing = candidate.corpus.load_spec(candidate.corpus.DEFAULT_SPEC)
-        self.assertEqual(datasets[:-2], existing)
+        base, existing = candidate.corpus.load_spec(self.root / "base-corpus.source.json")
+        self.assertEqual(datasets[:-4], existing)
+        registry_item, cnd_item = datasets[-2:]
+        with zipfile.ZipFile(self.registry) as zipped:
+            original = zipped.read(FIXTURE_REGISTRY_MEMBER)
+        self.assertEqual((output / registry_item["relativePath"]).read_bytes(), original.replace(b";\r\n", b"\r\n", 1))
+        self.assertEqual((output / cnd_item["relativePath"]).read_bytes(), self.cnd.read_bytes())
+        import medical_device_spending_model as model
+        lock = etl.load_spec(lock_path)
+        records = list(model.registry_records(etl._zip_rows(self.registry, FIXTURE_REGISTRY_MEMBER, "utf-8-sig", etl.REGISTRY_HEADERS, "test"),
+                       model.snapshot_metadata(lock["registry"], model.REGISTRY_DATASET)))
+        _, registry_rows, _, _ = candidate.corpus.build_dataset(registry_item, candidate.corpus.parse_dataset(output, registry_item), {})
+        self.assertEqual([r["source_record_id"] for r in records], [json.loads(r)["id"] for r in registry_rows.splitlines()])
         for dataset_id, metadata in base["sourceMetadata"]["overrides"].items():
             self.assertEqual(spec["sourceMetadata"]["overrides"][dataset_id], metadata)
-        for year, item in zip((2020, 2021), datasets[-2:], strict=True):
+        for year, item in zip((2020, 2021), datasets[-4:-2], strict=True):
             with zipfile.ZipFile(spending[year]) as archive:
                 self.assertEqual((output / item["relativePath"]).read_bytes(), archive.read(archive.namelist()[0]))
             parsed = candidate.corpus.parse_dataset(output, item)
@@ -272,9 +289,24 @@ class MedicalDeviceProfileTests(TestCase):
         self.spending.write_bytes(b"corrupted archive")
         output = self.root / "candidate"
         with self.assertRaisesRegex(etl.SourceError, "Byte spesa 2021"):
-            candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path)
+            candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path, base_spec_path=self.root / "base-corpus.source.json")
         self.assertFalse(output.exists())
         self.assertEqual(list(self.root.glob(".medical-device-candidate-*")), [])
+
+    def test_registry_normalization_never_discards_a_seventeenth_cell(self):
+        _, path = self.candidate_inputs()
+        lock = etl.load_spec(path)
+        with zipfile.ZipFile(self.registry) as zipped:
+            raw = zipped.read(FIXTURE_REGISTRY_MEMBER)
+        lines = raw.splitlines(keepends=True)
+        for suffix in (b";", b";dato"):
+            with self.subTest(suffix=suffix):
+                with zipfile.ZipFile(self.registry, "w") as zipped:
+                    zipped.writestr(FIXTURE_REGISTRY_MEMBER, lines[0] + lines[1].rstrip(b"\r\n") + suffix + b"\r\n" + b"".join(lines[2:]))
+                payload = self.registry.read_bytes()
+                lock["registry"]["archive"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+                with self.assertRaisesRegex(etl.SourceError, "non assente"):
+                    candidate.normalize_registry(self.registry, lock["registry"], self.root / "normalized.csv")
 
     def test_candidate_excludes_unapproved_years(self):
         with self.assertRaisesRegex(etl.SourceError, "soltanto le annualità pilota"):

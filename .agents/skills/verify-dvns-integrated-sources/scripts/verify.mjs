@@ -74,8 +74,8 @@ async function doctor() {
   const rgsText = await rgsResponse.text();
   assert.match(coverageText, /51\.303/);
   assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /14\.803\.968/);
-  assert.match(coverageText, /1\.821\.622/);
+  assert.match(coverageText, /18\.867\.374/);
+  assert.match(coverageText, /5\.885\.028/);
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -194,7 +194,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 93);
+  assert.equal(links.length, 101);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -395,7 +395,7 @@ async function driveHubs(page, directory) {
   assert.ok(await page.$(`a[href="${tedHref}"]`));
   links.add(tedHref);
   await screenshot(page, directory, "contesto-territoriale.png");
-  assert.equal(links.size, 93);
+  assert.equal(links.size, 101);
   return { actions, uniqueDatasetLinks: links.size };
 }
 

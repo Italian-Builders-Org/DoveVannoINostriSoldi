@@ -140,6 +140,8 @@ def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, object]:
     _require_iso_date(registry.get("acquisitionDate"), "acquisizione BD/RDM")
     _require_iso_date(classification.get("referenceDate"), "riferimento CND")
     _require_iso_date(classification.get("acquisitionDate"), "acquisizione CND")
+    _require_iso_date(registry.get("checkedAt"), "controllo BD/RDM")
+    _require_iso_date(classification.get("checkedAt"), "controllo CND")
     _require_archive_lock(registry.get("archive"), "BD/RDM")
     _require_expected_keys(registry.get("expected"), REGISTRY_EXPECTED_KEYS, "BD/RDM")
     if not isinstance(classification.get("bytes"), int) or classification["bytes"] <= 0 or not SHA256_RE.fullmatch(str(classification.get("sha256", ""))):

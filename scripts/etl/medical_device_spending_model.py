@@ -26,6 +26,7 @@ CND_DATASET = "salute-classificazione-cnd"
 # Do not reinterpret PARTITAIVA_VATNUMBER_MAND as the manufacturer's VAT number:
 # this acquired header differs from p_iva_fabbr_ass in the published dictionary.
 REGISTRY_PRIVATE_FIELDS = {"cod_fiscale", "PARTITAIVA_VATNUMBER_MAND"}
+REGISTRY_PUBLIC_HEADERS = source.REGISTRY_HEADERS[:-1]
 
 
 def snapshot_metadata(item: dict, dataset_id: str) -> dict:
@@ -91,7 +92,12 @@ def source_date(raw: str, *, conventional_end: bool = False) -> dict:
 def registry_records(rows: Iterable[dict], metadata: dict):
     seen = set()
     for ordinal, raw in enumerate(rows, 1):
-        row = public_source_row(raw, source.REGISTRY_HEADERS, metadata["dataset_id"], ordinal,
+        # The locked dump has 16 cells per row, but a trailing delimiter in its
+        # header declares a nonexistent 17th field. Do not drop an observed cell.
+        if set(raw) != set(source.REGISTRY_HEADERS) or raw[""] is not None:
+            raise source.SourceError("Colonna BD/RDM senza intestazione non assente")
+        raw = {field: raw[field] for field in REGISTRY_PUBLIC_HEADERS}
+        row = public_source_row(raw, REGISTRY_PUBLIC_HEADERS, metadata["dataset_id"], ordinal,
                                 REGISTRY_PRIVATE_FIELDS)
         cells = row["cells"]
         key = (cells["tipologia_dm"], cells["progressivo_dm_ass"])

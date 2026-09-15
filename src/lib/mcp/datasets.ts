@@ -461,7 +461,7 @@ export async function queryPublicDataset(
           year: query.year,
           month: query.period,
           region: query.region,
-          interventionType: query.interventionType,
+          interventionType: query.code,
         }),
       });
     }

@@ -60,7 +60,7 @@ test("HTTP and MCP agree on table, region, period and intervention filters", asy
     table: "lavoratori",
     region: "LOMBARDIA",
     period: "Gennaio",
-    interventionType: "CIGO",
+    code: "CIGO",
   });
   assert.equal(mcp.dataset, "inps_integrazioni_salariali");
   assert.deepEqual(mcp.observations, filtered.observations);

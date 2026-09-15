@@ -587,7 +587,7 @@ fonte + API + MCP, senza UI.
 - API: `/api/lavoro/integrazioni-salariali`, filtri `anno` / `tabella` /
   `mese` / `regione` / `tipo`.
 - MCP: `query_dataset` con `dataset: "inps_integrazioni_salariali"`;
-  il mese italiano va in `period`.
+  il mese italiano va in `period`, il tipo intervento in `code`.
 - Source lock: `scripts/etl/specs/inps-integrazioni-salariali-2023.source.json`.
 - Offline: `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check`.
 

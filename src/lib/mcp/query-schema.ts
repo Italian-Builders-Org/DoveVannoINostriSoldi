@@ -89,9 +89,6 @@ export const datasetQuerySchema = z.object({
   pathway: z.string().max(80)
     .describe("Codice o etichetta del percorso di studio del dataset istruzione.")
     .optional(),
-  interventionType: z.string().max(40)
-    .describe("Tipo di intervento degli ammortizzatori, per esempio CIGO, CIGS oppure FIS.")
-    .optional(),
   limit: z.number().int().min(1).max(100)
     .describe("Numero massimo di record da restituire, da 1 a 100, solo per dataset che supportano limit.")
     .optional(),

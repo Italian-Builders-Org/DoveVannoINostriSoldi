@@ -11,11 +11,14 @@ import hashlib
 import io
 import json
 import re
+import runpy
 from decimal import Decimal, ROUND_HALF_UP, localcontext
 from pathlib import Path
 from xml.sax.saxutils import escape
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
+AUDIT = runpy.run_path(str(ROOT / 'scripts/reports/audit_state_budget.py'))
 CONTENT = Path('src/content/reports/state-budget-reader.json')
 PDF = Path('public/report/bilancio-stato-2025.pdf')
 RECEIPT = Path('docs/research/state-budget-2025/pdf-receipt.json')
@@ -92,6 +95,22 @@ def validate(report: dict) -> None:
             raise ValueError('Unresolved case source')
         if not case['period'] or not case['conclusion']:
             raise ValueError('Case missing context')
+    sr = report['spendingReview']
+    if sr['version'] != 1 or len(sr['stages']) != 4 or len(sr['series']) != 2:
+        raise ValueError('Spending review incomplete')
+    document_ids = [d['id'] for d in sr['documents']]
+    if len(set(document_ids)) != len(document_ids): raise ValueError('Duplicate archive item')
+    for d in sr['documents']:
+        if d['sourceId'] not in sources or urlsplit(d['url']).scheme != 'https' or not d['reading']:
+            raise ValueError('Archive provenance incomplete')
+    for t in sr['tracker']:
+        if t['caseId'] and t['caseId'] not in {c['id'] for c in report['cases']}: raise ValueError('Tracker case missing')
+        if any(i not in sources for i in t['sourceIds']): raise ValueError('Tracker source missing')
+    if any(x['status'] != 'proposta' for x in sr['series'][0]['rows']): raise ValueError('Proposal relabelled')
+    if next(x for x in sr['series'][1]['rows'] if x['year'] == 2018)['status'] != 'previsione': raise ValueError('Forecast relabelled')
+    if number(report,'sr-army-reconciliation') != 0 or number(report,'sr-rents-missed') != 245000: raise ValueError('New findings inconsistent')
+    if number(report,'sr-pg-reconciliation') != number(report,'sr-pg-total'): raise ValueError('Plans inconsistent')
+    AUDIT['analyse'](report)
 
 
 def it(value, digits=2):
@@ -110,6 +129,38 @@ def formula(report, c):
     return f'{text} = {it(number(report,c["id"]),c["digits"])} {c["unit"]}'
 
 
+def spending_review_markdown(report: dict) -> list[str]:
+    sr = report['spendingReview']
+    lines = ['## '+sr['title'], '', *sr['intro'], '', sr['scope'], '']
+    for stage in sr['stages']: lines += ['**'+stage['label']+'.** '+stage['text'], '']
+    for era in sr['chronology']:
+        lines += ['### '+era['period']+' · '+era['actor'], era['title'], era['text'], 'Fonti: '+', '.join(era['sourceIds']), '']
+    for serie in sr['series']:
+        lines += ['### '+serie['title'], serie['unit']]
+        lines += [str(row['year'])+': '+str(number(report,row['metric']))+' ('+row['status']+')' for row in serie['rows']]
+        lines += [serie['note'], '']
+    lines += ['### '+sr['result2024']['title'], *sr['result2024']['paragraphs'], '']
+    for t in sr['tracker']:
+        lines += ['### '+t['theme'], '**Stato:** '+t['status'], '**Proposta:** '+t['proposal'], '**Seguito:** '+t['result'], '**Misura:** '+t['measure'], 'Fonti: '+', '.join(t['sourceIds']), '']
+    lines += ['### Documenti originali e percorsi di archivio', '']
+    for d in sr['documents']:
+        lines += [f'**{d["period"]}: [{d["title"]}]({d["url"]})**', d['reading']+'. '+d['use'], '']
+    lines += ['### Che cosa non possiamo concludere', '']
+    for c in sr['corrections']: lines += ['**'+c['claim']+'** '+c['finding'], '']
+    lines += [*sr['notReconstructed'], '', sr['conclusion'], '']
+    return lines
+
+
+def archive_csv(report: dict) -> bytes:
+    out = io.StringIO(newline='')
+    writer = csv.writer(out, lineterminator='\n')
+    writer.writerow(['id','periodo','titolo','fonte','url','lettura','utilita'])
+    for d in report['spendingReview']['documents']:
+        row = [d[k] for k in ['id','period','title','sourceId','url','reading','use']]
+        writer.writerow(["'"+v if v.startswith(('=','+','-','@','\t','\r')) else v for v in row])
+    return out.getvalue().encode('utf-8-sig')
+
+
 def derivatives(report: dict, raw: bytes) -> dict[Path, bytes]:
     out = io.StringIO(newline='')
     writer = csv.writer(out, lineterminator="\n")
@@ -119,6 +170,10 @@ def derivatives(report: dict, raw: bytes) -> dict[Path, bytes]:
         # Safe to open in spreadsheets, also after a future editorial update.
         writer.writerow(["'"+v if v.startswith(('=','+','-','@','\t','\r')) else v for v in row])
     lines = ['# '+report['title'],'',report['summary'],'',report['lead'],'']
+    for key in ('funding', 'execution', 'historyIntro', 'inpsContext', 'foreign'):
+        ctx = report['audit'][key]
+        lines += ['## '+ctx['title'], '', *sum(([p,''] for p in ctx['paragraphs']),[]), ctx['technical'], '', 'Fonti: '+', '.join(ctx['sourceIds']), '']
+    lines += spending_review_markdown(report)
     for c in report['cases']:
         lines += ['## '+c['title'], '', report['kindLabels'][c['kind']]+' · '+c['period'], '', c['lead'], '', *sum(([p,''] for p in c['paragraphs']),[]), '**Cosa dimostra.** '+c['conclusion'], '', '**Come migliorare.** '+c['improve'], '']
         if c['math']:
@@ -130,135 +185,241 @@ def derivatives(report: dict, raw: bytes) -> dict[Path, bytes]:
     lines += ['## Metodo','',*sum(([p,''] for p in report['method']),[]),'## Fonti','']
     for s in report['sources']:
         lines += [f'- [{s["publisher"]}: {s["title"]}]({s["url"]}). {s["locator"]}']
-    return {DATA:raw,CSV:out.getvalue().encode('utf-8-sig'),MD:('\n'.join(lines).rstrip()+'\n').encode()}
+    return {Path('docs/research/state-budget-2025/reader-source-register.json'):(json.dumps({'checkedOn':'2026-09-15','updatedOn':'2026-09-15','note':'Accesso dichiarato per ogni fonte. Gli hash dei documenti originali non acquisiti restano null; non sono hash di estratti o trascrizioni.','sources':report['sources']},ensure_ascii=False,indent=2)+'\n').encode(),Path('public/data/reports/spending-review-documents.csv'):archive_csv(report), Path('docs/research/state-budget-2025/SPENDING_REVIEW.md'):('\n'.join(spending_review_markdown(report)).rstrip()+'\n').encode(), DATA:raw,CSV:out.getvalue().encode('utf-8-sig'),MD:('\n'.join(lines).rstrip()+'\n').encode(), **AUDIT['derivatives'](report)}
 
 
 def make_pdf(report: dict, target: Path) -> dict:
+    """Flowing analytical report; vector charts, no full-page case templates."""
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, KeepTogether, Flowable
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, KeepTogether, Flowable, HRFlowable
     from reportlab.pdfgen.canvas import Canvas
-    ink=colors.HexColor('#182b3a'); teal=colors.HexColor('#176575'); red=colors.HexColor('#b42332')
-    paper=colors.HexColor('#f3f5f7'); muted=colors.HexColor('#536474'); line=colors.HexColor('#c5cfd8')
-    styles={
-      'body':ParagraphStyle('Body',fontName='Helvetica',fontSize=10.2,leading=15.2,textColor=ink,spaceAfter=7,allowWidows=0,allowOrphans=0),
-      'small':ParagraphStyle('Small',fontName='Helvetica',fontSize=8.2,leading=11.5,textColor=muted,spaceAfter=5),
-      'label':ParagraphStyle('Label',fontName='Helvetica-Bold',fontSize=8.2,leading=11,textColor=red,spaceAfter=8),
-      'title':ParagraphStyle('TitleReader',fontName='Helvetica-Bold',fontSize=32,leading=35.5,textColor=ink,spaceAfter=17),
-      'h1':ParagraphStyle('SectionReader',fontName='Helvetica-Bold',fontSize=23,leading=27,textColor=ink,spaceAfter=14,keepWithNext=True),
-      'h2':ParagraphStyle('CaseReader',fontName='Helvetica-Bold',fontSize=21,leading=25,textColor=ink,spaceAfter=11,keepWithNext=True),
-      'h3':ParagraphStyle('HeadingReader',fontName='Helvetica-Bold',fontSize=11.2,leading=15,textColor=ink,spaceBefore=9,spaceAfter=5,keepWithNext=True),
-      'lead':ParagraphStyle('LeadReader',fontName='Helvetica-Bold',fontSize=11.3,leading=16.5,textColor=ink,spaceAfter=11),
-      'number':ParagraphStyle('NumberReader',fontName='Helvetica-Bold',fontSize=23,leading=27,textColor=teal,spaceAfter=3),
-      'formula':ParagraphStyle('FormulaReader',fontName='Helvetica',fontSize=8.8,leading=13,textColor=ink,spaceAfter=5,wordWrap='LTR'),
+    ink, teal, red, paper, muted, line = [colors.HexColor(x) for x in ('#182b3a','#176575','#b42332','#f3f5f7','#536474','#c5cfd8')]
+    width = A4[0]-90
+    styles = {
+        'body': ParagraphStyle('Body', fontName='Helvetica',fontSize=9.7,leading=13.5,textColor=ink,spaceAfter=6,allowWidows=0,allowOrphans=0),
+        'small': ParagraphStyle('Small',fontName='Helvetica',fontSize=8,leading=10.8,textColor=muted,spaceAfter=5),
+        'source': ParagraphStyle('SourceNote',fontName='Helvetica',fontSize=8,leading=10,textColor=muted,spaceAfter=3),
+        'caption': ParagraphStyle('Caption',fontName='Helvetica',fontSize=8,leading=10.8,textColor=muted,spaceAfter=5,keepWithNext=True),
+        'label': ParagraphStyle('Label',fontName='Helvetica-Bold',fontSize=8,leading=11,textColor=red,spaceBefore=9,spaceAfter=6,keepWithNext=True),
+        'title': ParagraphStyle('TitleReader',fontName='Helvetica-Bold',fontSize=31,leading=34,textColor=ink,spaceAfter=13,keepWithNext=True),
+        'h1': ParagraphStyle('SectionReader',fontName='Helvetica-Bold',fontSize=19,leading=23,textColor=ink,spaceBefore=17,spaceAfter=9,keepWithNext=True),
+        'h2': ParagraphStyle('CaseReader',fontName='Helvetica-Bold',fontSize=16,leading=19.5,textColor=ink,spaceBefore=6,spaceAfter=7,keepWithNext=True),
+        'h3': ParagraphStyle('HeadingReader',fontName='Helvetica-Bold',fontSize=10.5,leading=14,textColor=ink,spaceBefore=7,spaceAfter=4,keepWithNext=True),
+        'lead': ParagraphStyle('LeadReader',fontName='Helvetica-Bold',fontSize=10,leading=14,textColor=ink,spaceAfter=7),
+        'number': ParagraphStyle('NumberReader',fontName='Helvetica-Bold',fontSize=20,leading=24,textColor=teal,spaceAfter=6),
+        'stat': ParagraphStyle('StatReader',fontName='Helvetica',fontSize=10,leading=13.5,textColor=teal,spaceAfter=7,keepWithNext=True),
+        'formula': ParagraphStyle('FormulaReader',fontName='Helvetica',fontSize=8.1,leading=11.5,textColor=ink,spaceAfter=5),
     }
     def p(text, style='body'): return Paragraph(escape(str(text)),styles[style])
-    def markup(text,style='body'): return Paragraph(text,styles[style])
+    def markup(text, style='body'): return Paragraph(text,styles[style])
     source_numbers={s['id']:i+1 for i,s in enumerate(report['sources'])}
-    def refs(ids):
-        return markup('Fonti: '+', '.join(f'<link href="#source-{s}">[{source_numbers[s]}]</link>' for s in ids)+'.','small')
+    def refs(ids): return markup('Fonti: '+', '.join(f'<link href="#source-{s}">[{source_numbers[s]}]</link>' for s in ids)+'.','small')
     logo=ROOT/'public/brand/icon-48.png'
-    # The exact branded image already tracked by DVNS; no newly generated mark.
-    if not logo.is_file(): raise ValueError('Missing DVNS brand asset: public/brand/icon-48.png')
-    logo_sha=hashlib.sha256(logo.read_bytes()).hexdigest()
+    if not logo.is_file(): raise ValueError('Missing original DVNS logo')
     class ReportCanvas(Canvas):
         def __init__(self,*args,**kwargs):
             kwargs['invariant']=1
             super().__init__(*args,**kwargs)
         def header(self,doc):
             self.saveState();w,h=A4
-            self.setFillColor(ink);self.setFont('Helvetica-Bold',8.6)
-            self.drawImage(str(logo),47,h-40,width=17,height=17,mask='auto')
-            self.drawString(71,h-32,'DoveVannoINostriSoldi')
-            self.setFont('Helvetica',8);self.setFillColor(muted);self.drawRightString(w-47,h-32,'Spesa pubblica | 14 settembre 2026')
-            self.setStrokeColor(line);self.line(47,38,w-47,38)
-            self.setFont('Helvetica',8);self.drawString(47,24,'Spesa pubblica | Settembre 2026')
-            self.drawRightString(w-47,24,str(doc.page));self.restoreState()
-    class BarChart(Flowable):
-        def __init__(self, chart, width):
-            super().__init__();self.chart=chart;self.width=width;self.height=28*len(chart['rows'])+8
-        def draw(self):
-            c=self.canv;vals=[float(number(report,row['metric'])) for row in self.chart['rows']];maximum=max(*vals,1)
-            for i,(row,v) in enumerate(zip(self.chart['rows'],vals)):
-                y=self.height-17-i*28
-                c.setFont('Helvetica',8.5);c.setFillColor(ink);c.drawString(0,y,row['label'])
-                c.setFont('Helvetica-Bold',8.5);c.drawRightString(self.width,y,it(str(v),0 if v.is_integer() else 2))
-                c.setFillColor(colors.HexColor('#dce7ec'));c.rect(0,y-11,self.width,5,fill=1,stroke=0)
-                c.setFillColor(teal);c.rect(0,y-11,self.width*v/maximum,5,fill=1,stroke=0)
-    class ReaderDocument(SimpleDocTemplate):
+            self.drawImage(str(logo),45,h-39,width=17,height=17,mask='auto')
+            self.setFont('Helvetica-Bold',8.5);self.setFillColor(ink);self.drawString(68,h-31,'DoveVannoINostriSoldi')
+            self.setFont('Helvetica',7.6);self.setFillColor(muted);self.drawRightString(w-45,h-31,'Bilancio, spesa e risultati | 15 settembre 2026')
+            self.setStrokeColor(line);self.line(45,36,w-45,36)
+            self.setFont('Helvetica',7.5);self.drawString(45,23,'Audit documentale | Italia | Edizione del 15 settembre 2026')
+            self.drawRightString(w-45,23,str(doc.page));self.restoreState()
+    class Document(SimpleDocTemplate):
         def afterFlowable(self, flowable):
-            if isinstance(flowable, Paragraph) and flowable.style.name in ('SectionReader', 'CaseReader'):
-                key = 'reading-' + str(getattr(self, '_reading_count', 0))
-                self._reading_count = getattr(self, '_reading_count', 0) + 1
-                self.canv.bookmarkPage(key)
-                self.canv.addOutlineEntry(flowable.getPlainText(), key, level=0)
-
-    doc=ReaderDocument(str(target),pagesize=A4,rightMargin=47,leftMargin=47,topMargin=62,bottomMargin=53,title=report['title'],author='DoveVannoINostriSoldi',subject='Rapporto documentale sulla spesa pubblica italiana',allowSplitting=True)
-    width=A4[0]-94
-    story=[]
-    def block(title,text):
-        box=Table([[p(title,'h3')],[p(text)]],colWidths=[width-2])
-        box.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),paper),('BOX',(0,0),(-1,-1),.6,line),('LEFTPADDING',(0,0),(-1,-1),12),('RIGHTPADDING',(0,0),(-1,-1),12),('TOPPADDING',(0,0),(-1,0),2),('BOTTOMPADDING',(0,-1),(-1,-1),7)]))
-        return box
-    # Cover: useful entry points, not an empty decorative page.
-    story += [Spacer(1,15),p('RAPPORTO · SETTEMBRE 2026','label'),p(report['title'],'title'),p(report['summary'],'lead'),p(report['lead']),Spacer(1,20)]
-    for c in report['cases'][:3]:
-        story += [p(c['number'],'number'),p(c['title'],'h3'),p(c['numberLabel']+'. '+c['period']+'.','small'),Spacer(1,13)]
-    story += [p('Questi importi e confronti hanno periodi e significati diversi. Non vanno sommati.','small'),Spacer(1,10),p('Percorso di lettura','h3'),p('Il quadro contabile, tutti i settori, 17 riscontri, i servizi comunali e le fonti. Ogni scheda separa il fatto dalla sua interpretazione.'),p('Il quadro nazionale usa il 2024, ultimo anno dello snapshot COFOG integrato. I riscontri includono atti e risultati successivi.','small'),PageBreak()]
-    # Exact macro overview, with bars and values from the same cents.
-    story += [p('01 · IL QUADRO COMPLETO','label'),p('Dove vanno 100 euro di spesa pubblica','h1'),p(it(Decimal(report['macro']['totalCents'])/Decimal('100000000000'))+' miliardi di euro','number'),p('Italia · '+str(report['macro']['year'])+' · '+it(report['macro']['gdpPercent'],1)+'% del PIL','small'),p(report['macro']['note']),Spacer(1,9)]
-    class ShareBar(Flowable):
-        def __init__(self, share):
-            super().__init__(); self.width=78; self.height=14; self.share=float(share)
+            if isinstance(flowable,Paragraph) and flowable.style.name in ('SectionReader','CaseReader'):
+                key='reading-'+str(getattr(self,'_count',0));self._count=getattr(self,'_count',0)+1
+                self.canv.bookmarkPage(key);self.canv.addOutlineEntry(flowable.getPlainText(),key,level=0)
+    class MiniBar(Flowable):
+        def __init__(self, share, bar_width=74):
+            super().__init__();self.width=bar_width;self.height=12;self.share=float(share)
         def draw(self):
-            self.canv.setFillColor(colors.HexColor('#dce7ec')); self.canv.rect(0,4,78,6,fill=1,stroke=0)
-            self.canv.setFillColor(teal); self.canv.rect(0,4,78*self.share/100,6,fill=1,stroke=0)
-    rows=[[p('Funzione','small'),p('Scala 0-100','small'),p('Miliardi €','small'),p('Su 100 €','small')]]
-    for s in sorted(report['sectors'],key=lambda x:int(x['amountCents']),reverse=True):
-        share=Decimal(s['amountCents'])/Decimal(report['macro']['totalCents'])*100
-        rows.append([p(s['label']),ShareBar(share),p(it(Decimal(s['amountCents'])/Decimal('100000000000'))),p(it(share)+' €')])
-    rows.append([p('Totale','lead'),ShareBar(100),p(it(Decimal(report['macro']['totalCents'])/Decimal('100000000000')),'lead'),p('100,00 €','lead')])
-    table=Table(rows,colWidths=[width*.41,width*.19,width*.22,width*.18],repeatRows=1,hAlign='LEFT')
-    table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),paper),('LINEBELOW',(0,0),(-1,-1),.4,line),('VALIGN',(0,0),(-1,-1),'TOP'),('TOPPADDING',(0,0),(-1,-1),8),('BOTTOMPADDING',(0,0),(-1,-1),5),('ALIGN',(1,0),(-1,-1),'RIGHT')]))
-    story += [table,Spacer(1,14),p('Ogni quota è la spesa della funzione divisa per il totale nazionale, moltiplicata per 100. Le quote sono arrotondate soltanto per la lettura.','small'),p('Stato, Regioni, Comuni ed enti previdenziali non sono totali da aggiungere a questo: fanno già parte del perimetro delle amministrazioni pubbliche.','small'),refs(['cofog']),PageBreak()]
-    for n in range(0,10,5):
-        story += [p('02 · TUTTI I SETTORI','label'),p('Spesa e risultati sono due domande diverse','h1')]
-        for s in report['sectors'][n:n+5]:
-            story += [p(s['label']+' · '+it(Decimal(s['amountCents'])/Decimal('100000000000'))+' mld €','h3'),p(s['note']),p(s['reading'],'small')]
-        story += [refs(['cofog']),PageBreak()]
-    for i,c in enumerate(report['cases'],1):
-        story += [markup(f'<a name="case-{c["id"]}"/>{i:02} · '+escape(report['kindLabels'][c['kind']].upper()),'label'),p(c['title'],'h2'),p(c['period'],'small'),p(c['number'],'number'),p(c['numberLabel'],'small'),Spacer(1,5),p(c['lead'],'lead')]
-        story += [p(text) for text in c['paragraphs']]
-        story += [block('Cosa dimostra',c['conclusion']),Spacer(1,7),p('Come migliorare','h3'),p(c['improve'])]
+            self.canv.setFillColor(colors.HexColor('#dce7ec'));self.canv.rect(0,3,self.width,6,fill=1,stroke=0)
+            self.canv.setFillColor(teal);self.canv.rect(0,3,self.width*self.share/100,6,fill=1,stroke=0)
+    class SeriesChart(Flowable):
+        def __init__(self, rows, chart_width=width, ceiling=None):
+            super().__init__();self.rows=rows;self.width=chart_width
+            self.layout=[]
+            for label,value in rows:
+                text=p(label,'small');_,height=text.wrap(chart_width-112,100)
+                self.layout.append((text,height+19,float(value)))
+            self.height=sum(h for _,h,_ in self.layout)+5
+            self.maximum=ceiling or max(1,max(float(v) for _,v in rows))
+        def draw(self):
+            c=self.canv;y=self.height
+            for text,h,value in self.layout:
+                text.drawOn(c,0,y-(h-19));c.setFont('Helvetica-Bold',8.5);c.setFillColor(ink)
+                c.drawRightString(self.width,y-9,it(str(value),0 if value.is_integer() else 2))
+                c.setFillColor(colors.HexColor('#dce7ec'));c.rect(0,y-h+7,self.width,5,fill=1,stroke=0)
+                c.setFillColor(teal);c.rect(0,y-h+7,self.width*value/self.maximum,5,fill=1,stroke=0)
+                y-=h
+    class HistoryChart(Flowable):
+        def __init__(self): super().__init__();self.width=width;self.height=195
+        def draw(self):
+            c=self.canv;left=33;right=width-8;bottom=31;top=175
+            x=lambda i:left+i*(right-left)/9
+            y=lambda v:bottom+v/220000*(top-bottom)
+            c.setFont('Helvetica',7.5)
+            for tick in (0,50,100,150,200):
+                c.setStrokeColor(line);c.setLineWidth(.4);c.line(left,y(tick*1000),right,y(tick*1000))
+                c.setFillColor(muted);c.drawRightString(left-7,y(tick*1000)-2,str(tick))
+            for field,colour,dash in [('totalMillion',teal,[]),('capitalMillion',ink,[5,2]),('currentMillion',muted,[1.5,2])]:
+                c.setStrokeColor(colour);c.setLineWidth(1.8);c.setDash(dash)
+                for i in range(9):c.line(x(i),y(report['audit']['history'][i][field]),x(i+1),y(report['audit']['history'][i+1][field]))
+            c.setDash([])
+            for i,row in enumerate(report['audit']['history']):
+                c.setFillColor(teal);c.circle(x(i),y(row['totalMillion']),2,fill=1,stroke=0)
+                c.setFillColor(muted);c.drawCentredString(x(i),bottom-14,str(row['year']))
+            for text,colour,xpos,dash in [('Totale',teal,35,[]),('Conto capitale',ink,152,[5,2]),('Spese correnti',muted,305,[1.5,2])]:
+                c.setStrokeColor(colour);c.setDash(dash);c.line(xpos,3,xpos+16,3);c.setFillColor(ink);c.drawString(xpos+22,0,text)
+            c.setDash([])
+    doc=Document(str(target),pagesize=A4,rightMargin=45,leftMargin=45,topMargin=56,bottomMargin=48,
+        title=report['title'],author='DoveVannoINostriSoldi',subject='Bilancio statale, dati storici e riscontri documentali',allowSplitting=True)
+    story=[]
+    def heading(title, label=None):
+        if label:story.append(p(label,'label'))
+        story.append(p(title,'h1'))
+    def context(key):
+        ctx=report['audit'][key]
+        story.extend(p(text) for text in ctx['paragraphs']);story.extend([p(ctx['technical'],'small'),refs(ctx['sourceIds'])])
+    def table(rows, widths, small=True):
+        cooked=[[cell if isinstance(cell,Flowable) else p(cell,'small' if small else 'body') for cell in row] for row in rows]
+        t=Table(cooked,colWidths=widths,repeatRows=1,hAlign='LEFT')
+        t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),paper),('LINEBELOW',(0,0),(-1,-1),.4,line),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),6),('RIGHTPADDING',(0,0),(-1,-1),6),('TOPPADDING',(0,0),(-1,-1),5),('BOTTOMPADDING',(0,0),(-1,-1),4)]))
+        return t
+    def chart(title,unit,rows,note,ceiling=None):
+        graph=SeriesChart(rows,ceiling=ceiling)
+        story.extend([p(title,'h3'),p(unit,'caption'),graph,p(note,'small')])
+    def source_case(c,index):
+        story.append(HRFlowable(width='100%',thickness=.6,color=line,spaceBefore=13,spaceAfter=3))
+        story.extend([markup(f'<a name="case-{c["id"]}"/>{index:02} · '+escape(report['kindLabels'][c['kind']].upper()),'label'),p(c['title'],'h2'),p(c['period'],'caption'),markup('<b>'+escape(c['number'])+'</b> · '+escape(c['numberLabel']),'stat'),p(c['lead'],'lead')])
+        story.extend(p(text) for text in c['paragraphs'])
+        story.extend([markup('<b>Il punto.</b> '+escape(c['conclusion'])),markup('<b>La correzione utile.</b> '+escape(c['improve']))])
         if c['math']:
-            story += [p('Il calcolo, in parole semplici','h3'),p(c['math']['explanation'])]
-            # The RTI explanation uses a real table before detailed calculations.
+            story.extend([p('Come leggere il calcolo','h3'),p(c['math']['explanation'])])
             if c['math']['rows']:
-                r=[[p('Confronto','small'),p('Importo associato','small'),p('Totale confrontato','small'),p('Quota','small')]]
+                rows=[['Confronto','Importo associato','Totale confrontato','Quota']]
                 for row in c['math']['rows']:
-                    r.append([p(row['label'],'small'),p(it(number(report,row['numerator']))+' €','small'),p(it(number(report,row['denominator']))+' €','small'),p(it(number(report,row['result']))+'%','small')])
-                t=Table(r,colWidths=[width*.29,width*.27,width*.29,width*.15]);t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),paper),('VALIGN',(0,0),(-1,-1),'TOP'),('LINEBELOW',(0,0),(-1,-1),.5,line),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),6)]));story.append(t)
+                    rows.append([row['label'],it(number(report,row['numerator']))+' €',it(number(report,row['denominator']))+' €',it(number(report,row['result']))+'%'])
+                story.append(table(rows,[width*.26,width*.27,width*.31,width*.16]))
             else:
-                for id in c['math']['calculationIds']:
-                    cl=next(x for x in report['calculations'] if x['id']==id)
-                    story.append(p(formula(report,cl),'formula'))
-        if c['chart'] and not (c['math'] and c['math']['rows']):
-            story += [p(c['chart']['title']+' · '+c['chart']['unit'],'h3'),BarChart(c['chart'],width),p(c['chart']['note'],'small')]
-        story += [refs(c['sourceIds']),PageBreak()]
-    story += [p('04 · I SERVIZI LOCALI','label'),p(report['municipal']['title'],'h1')]+[p(x) for x in report['municipal']['paragraphs']]
-    for chart in report['municipal']['charts']:
-        story += [p(chart['title']+' · '+chart['unit'],'h3'),BarChart(chart,width),p(chart['note'],'small')]
-    story += [refs(report['municipal']['sourceIds']),PageBreak(),p('05 · METODO E LESSICO','label'),p('Cosa abbiamo controllato','h1')]+[p(x) for x in report['method']]
-    for g in report['glossary']: story += [p(g['term'],'h3'),p(g['definition'],'small')]
-    story += [PageBreak(),p('FONTI','label'),p('Documenti e riferimenti','h1'),p('I titoli sono collegamenti alla fonte. Date e modalità di consultazione complete sono nel registro tecnico incluso nel pacchetto di revisione.','small')]
+                for key in c['math']['calculationIds']:
+                    calc=next(x for x in report['calculations'] if x['id']==key)
+                    story.append(p(formula(report,calc),'formula'))
+        if c['chart']:
+            ch=c['chart'];chart(ch['title'],ch['unit'],[(row['label'],number(report,row['metric'])) for row in ch['rows']],ch['note'],100 if ch['unit']=='%' else None)
+        story.append(refs(c['sourceIds']))
+    story.extend([p('DOSSIER CIVICO · SETTEMBRE 2026','label'),p(report['title'],'title'),p(report['summary'],'lead'),p(report['lead'])])
+    cards=[]
+    for key in ['discariche','bonus-edilizi','inps-registrazioni']:
+        c=next(x for x in report['cases'] if x['id']==key)
+        cards.append([p(c['number'],'number'),p(report['kindLabels'][c['kind']],'label'),p(c['numberLabel'],'small')])
+    tiles=Table([cards],colWidths=[width/3]*3)
+    tiles.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),paper),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),11),('RIGHTPADDING',(0,0),(-1,-1),11),('TOPPADDING',(0,0),(-1,-1),12),('BOTTOMPADDING',(0,0),(-1,-1),8)]))
+    story.extend([Spacer(1,7),tiles,p('Costi pagati, stime economiche e correzioni di crediti: periodi e grandezze diversi. Non si sommano.','small')])
+    heading('Leggere il bilancio senza contare due volte','01 · IL PERCORSO DEL DENARO')
+    context('funding')
+    rows=[['Bilancio dello Stato 2025','Miliardi €','Che cosa misura'],['Entrate finali accertate',it(number(report,'state-revenue')/1000),'Crediti riconosciuti nell’esercizio'],['Spese finali',it(number(report,'state-final')/1000),'Spese senza rimborso dei prestiti'],['Saldo netto da finanziare',it(number(report,'state-balance')/1000),'Saldo pubblicato di competenza'],['Rimborso di prestiti',it(number(report,'state-repay')/1000),'Restituzione di capitale, separata']]
+    story.extend([table(rows,[width*.43,width*.18,width*.39]),Spacer(1,8)])
+    chart('Da dove arrivano le entrate finali','Miliardi € · accertamenti 2025',[(label,number(report,key)/1000) for label,key in [('Imposte','state-tax'),('Entrate non tributarie','state-other'),('Alienazioni e riscossione di crediti','state-assets')]],'Il gettito fiscale pesa l’84,52%. Il credito accertato non coincide necessariamente con l’incasso.')
+    chart('Dove sono impegnate le spese finali','Miliardi € · competenza 2025',[(label,number(report,key)/1000) for label,key in [('Spese correnti senza interessi','state-current'),('Interessi sul debito','state-interest'),('Conto capitale','state-capital')]],'Totale 902,96 miliardi. I 267,97 miliardi di rimborso prestiti non sono inclusi.')
+    heading(report['audit']['execution']['title'],'02 · IMPEGNI E PAGAMENTI')
+    context('execution')
+    ranking=sorted(report['audit']['ministries'],key=lambda r:Decimal(r['remainingCpCents'])/Decimal(r['commitmentsCpCents']),reverse=True)
+    rows=[['Ministero','Quota non pagata','%','Rimasto CP, mld €']]
+    for r in ranking:
+        share=Decimal(r['remainingCpCents'])/Decimal(r['commitmentsCpCents'])*100
+        rows.append([r['label'],MiniBar(share),it(share),it(Decimal(r['remainingCpCents'])/Decimal('100000000000'))])
+    story.extend([p('Quota degli impegni 2025 rimasta da pagare','h3'),p('Barre sulla scala 0-100%. I valori monetari impediscono di confondere una quota elevata con una somma elevata.','small'),table(rows,[width*.39,width*.21,width*.12,width*.28]),p('Il 71,19% del Turismo e il 38,90% delle Infrastrutture sono segnali di esecuzione. Per parlare di ritardo occorre la scadenza; per parlare di spreco, il costo senza risultato.','small')])
+    heading(report['audit']['historyIntro']['title'],'03 · LA PROSPETTIVA STORICA')
+    context('historyIntro');story.extend([p('Residui delle spese finali, 2015-2024','h3'),p('Stock al 31 dicembre · miliardi di euro nominali · scala da zero','caption'),HistoryChart()])
+    rows=[['Anno','Totale','Correnti','Capitale','Nuova formazione']]
+    for r in report['audit']['history']:rows.append([str(r['year'])]+[it(r[k],0) for k in ('totalMillion','currentMillion','capitalMillion','newMillion')])
+    story.extend([Spacer(1,8),table(rows,[width*.12,width*.2,width*.2,width*.2,width*.28]),p('Tabella in milioni di euro. Nuova formazione è una componente dello stock, non un importo da aggiungere al totale.','small'),refs(['camera-residui'])])
+    sr=report['spendingReview']
+    heading(sr['title'],'DOSSIER · LA SPENDING REVIEW DAL 1981')
+    story.extend(p(text) for text in sr['intro'])
+    stages=[[p(st['label'],'h3'),p(st['text'],'small')] for st in sr['stages']]
+    stage_table=Table([stages],colWidths=[width/4]*4,hAlign='LEFT')
+    stage_table.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('BACKGROUND',(0,0),(-1,-1),paper),('LINEABOVE',(0,0),(-1,0),2,teal),('LEFTPADDING',(0,0),(-1,-1),8),('RIGHTPADDING',(0,0),(-1,-1),8),('BOTTOMPADDING',(0,0),(-1,-1),10)]))
+    story.extend([Spacer(1,8),stage_table,Spacer(1,8)])
+    for serie in sr['series']:
+        chart(serie['title'],serie['unit']+' · scala 0-40',[(str(row['year'])+(' (previsione)' if row['status']=='previsione' else ' (proposta)' if row['status']=='proposta' else ''),number(report,row['metric'])) for row in serie['rows']],serie['note'],40)
+        story.append(refs(serie['sourceIds']))
+    heading('I lavori che hanno lasciato una traccia documentale')
+    story.append(p(sr['scope'],'small'))
+    for era in sr['chronology']:
+        story.extend([p(era['period']+' · '+era['actor'],'h3'),p(era['title'],'lead'),p(era['text']),refs(era['sourceIds'])])
+    heading(sr['result2024']['title'])
+    story.extend(p(text) for text in sr['result2024']['paragraphs'])
+    chart('Come si compongono i 205 piani monitorati','Numero di piani · esercizio 2024',[(label,number(report,key)) for label,key in [('Solo finalità oggetto di revisione','sr-pg-dedicated'),('Più finalità nello stesso conto','sr-pg-composite'),('Fondi da ripartire','sr-pg-funds')]],'107 + 69 + 29 = 205. Sono piani del monitoraggio 2024, non le 5.395 righe a capitolo del rendiconto 2025: anno e livello contabile non coincidono.')
+    story.append(refs(sr['result2024']['sourceIds']))
+    heading('Otto temi: dalla proposta al seguito documentato')
+    for t in sr['tracker']:
+        story.extend([p(t['theme'],'h3'),p(t['status'],'caption'),markup('<b>Proposta.</b> '+escape(t['proposal'])),markup('<b>Seguito.</b> '+escape(t['result'])),markup('<b>Misura utile.</b> '+escape(t['measure'])),refs(t['sourceIds'])])
+    story.append(p(sr['conclusion'],'lead'))
+    heading('Che cosa non funziona, e perché','04 · I RISCONTRI')
+    for chapter in report['chapters'][:3]:
+        heading(chapter['title']);story.append(p(chapter['intro']))
+        if chapter['id']=='crediti-e-riscossione':
+            story.append(p(report['audit']['inpsContext']['title'],'h3'));context('inpsContext')
+            chart('Il portafoglio ADER-INPS a fine 2024','Miliardi € · stock di crediti',[(r['label'],Decimal(r['billion'])) for r in report['audit']['portfolios']],'Le categorie sommano 135,2 miliardi. I 18,1 di potenziale recupero sono lordi, non un incasso garantito.')
+        for key in chapter['caseIds']:
+            index=next(i for i,c in enumerate(report['cases'],1) if c['id']==key)
+            source_case(report['cases'][index-1],index)
+    heading(report['audit']['foreign']['title'],'05 · AIUTI E POLITICA ESTERA');context('foreign')
+    chart('Risorse per l’aiuto pubblico allo sviluppo','Milioni € · stanziamenti iniziali 2024',[(r['label'],Decimal(r['million'])) for r in report['audit']['foreignRows']],'Dotazioni di bilancio, non flussi interamente pagati all’estero. EPF e APS sono perimetri diversi.')
+    chapter=report['chapters'][3];heading(chapter['title'],'06 · LA QUALITÀ DEI DOCUMENTI');story.append(p(chapter['intro']))
+    for key in chapter['caseIds']:
+        index=next(i for i,c in enumerate(report['cases'],1) if c['id']==key);source_case(report['cases'][index-1],index)
+    heading('Correggere il meccanismo, non soltanto il numero');story.append(p(report['audit']['readerOutcome'],'lead'))
+    heading('Lo Stato non è tutta la pubblica amministrazione','CONTESTO · LE DIECI FUNZIONI')
+    story.extend([p(report['macro']['note']),p(it(Decimal(report['macro']['totalCents'])/Decimal('100000000000'))+' miliardi € · '+str(report['macro']['year']),'number')])
+    rows=[['Funzione','Miliardi €','Su 100 €','Scala 0-100']]
+    for s in sorted(report['sectors'],key=lambda s:int(s['amountCents']),reverse=True):
+        share=Decimal(s['amountCents'])/Decimal(report['macro']['totalCents'])*100
+        rows.append([s['label'],it(Decimal(s['amountCents'])/Decimal('100000000000')),it(share),MiniBar(share)])
+    story.extend([table(rows,[width*.44,width*.18,width*.16,width*.22]),refs(['cofog'])])
+    for s in report['sectors']:story.extend([p(s['label'],'h3'),p(s['note']),p(s['reading'],'small')])
+    heading(report['municipal']['title']);story.extend(p(text) for text in report['municipal']['paragraphs'])
+    for ch in report['municipal']['charts']:chart(ch['title'],ch['unit'],[(r['label'],number(report,r['metric'])) for r in ch['rows']],ch['note'],100 if ch['unit']=='%' else None)
+    story.append(refs(report['municipal']['sourceIds']))
+    heading('Perimetro, verifiche e ipotesi scartate','APPENDICE · METODO')
+    story.extend(p(text) for text in report['method'])
+    for item in report['audit']['exclusions']:story.extend([p(item['title'],'h3'),p(item['reason'],'small')])
+    story.extend([p('Copertura misurabile','h3'),p('15 aggregati ministeriali; 105 importi acquisiti; 45 identità contabili; 7 riconciliazioni di colonna; 10 osservazioni storiche con controllo delle componenti. Le identità passano; non dimostrano che ogni spesa sia efficiente.'),p('Il controllo automatico completo e le tabelle in centesimi sono nel JSON e nei CSV pubblici. Il comando con --require-upstream confronta le trascrizioni con il file RGS integrale della repository; il registro distingue questo passaggio dal controllo sui byte del CSV originario.','small')])
+    heading('Calcoli riproducibili')
+    story.append(p('Le formule seguenti completano quelle già presenti nei casi. Non aggregano costi di periodi o perimetri diversi.','small'))
+    shown={key for c in report['cases'] if c['math'] for key in c['math']['calculationIds']}
+    for c in report['calculations']:
+        if c['id'] not in shown:
+            story.append(KeepTogether([p(c['label'],'h3'),p(formula(report,c),'formula')]))
+    heading('Le parole del bilancio')
+    for g in report['glossary']:story.append(markup('<b>'+escape(g['term'])+'.</b> '+escape(g['definition']),'body'))
+    heading('Spending review: documenti originali e archivi','APPENDICE · BIBLIOTECA RAGIONATA')
+    story.append(p('I collegamenti distinguono testi letti, copie reperite e documenti individuati nei cataloghi. Una voce censita non è un rapporto integralmente rianalizzato.','small'))
+    for d in sr['documents']:
+        story.extend([markup('<b>'+escape(d['period'])+'</b> · <link href="'+escape(d['url'],{chr(34):'&quot;'})+'">'+escape(d['title'])+'</link>','h3'),p(d['reading'],'caption'),p(d['use'],'small')])
+    heading('Le conclusioni che non ricaviamo dai documenti')
+    for c in sr['corrections']:
+        story.extend([p(c['claim'],'h3'),p(c['finding'])])
+    for text in sr['notReconstructed']:story.append(p(text,'small'))
+    heading('Documenti e riferimenti','FONTI')
+    story.append(p('Ogni titolo apre la fonte. Periodi, modalità di lettura e limiti di accesso sono nel registro tecnico. Nessun hash del documento originale è inventato.','small'))
     for i,s in enumerate(report['sources'],1):
-        title=markup(f'<a name="source-{s["id"]}"/>[{i}] <link href="{escape(s["url"],{chr(34):"&quot;"})}"><b>{escape(s["publisher"])}</b>: {escape(s["title"])}</link>','small')
-        story.append(KeepTogether([title,p(s['locator'],'small'),Spacer(1,8)]))
-    story += [p('Prove della prima analisi','h3'),markup(f'<link href="{report["legacyEvidenceUrl"]}">Archivio congelato: input, estratti, ricevute e calcoli della PR #506.</link>','small')]
-    def page(canvas, document): canvas.header(document)
+        title=markup(f'<a name="source-{s["id"]}"/>[{i}] <link href="{escape(s["url"],{chr(34):"&quot;"})}"><b>{escape(s["publisher"])}</b>: {escape(s["title"])}</link>','source')
+        story.append(KeepTogether([title,p(s['locator'],'source'),Spacer(1,2)]))
+    story.extend([p('Prove della prima analisi','h3'),markup(f'<link href="{report["legacyEvidenceUrl"]}">Archivio congelato: input, estratti, ricevute e calcoli della prima analisi.</link>','small')])
+    def page(canvas, document):canvas.header(document)
     doc.build(story,onFirstPage=page,onLaterPages=page,canvasmaker=ReportCanvas)
-    return {'logoPath':'public/brand/icon-48.png','logoSha256':logo_sha,'font':'Helvetica (PDF); il sito usa i token tipografici del progetto','palette':{'ink':'#182b3a','teal':'#176575','accent':'#b42332','paper':'#f3f5f7'}}
+    return {'logoPath':'public/brand/icon-48.png','logoSha256':hashlib.sha256(logo.read_bytes()).hexdigest(),
+            'font':'Helvetica (PDF); token del progetto sul sito','layout':'continuous-flow; vector data charts; no forced case page breaks',
+            'palette':{'ink':'#182b3a','teal':'#176575','accent':'#b42332','paper':'#f3f5f7'}}
 
 
 def sha(raw): return hashlib.sha256(raw).hexdigest()

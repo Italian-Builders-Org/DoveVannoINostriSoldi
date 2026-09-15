@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "etl"))
 import medical_device_spending_profile as etl
 
+FIXTURE_REGISTRY_MEMBER = "registry-fixture.csv"
+
 
 def write_zip(path: Path, member: str, headers: list[str], rows: list[list[str]], encoding: str) -> None:
     import io
@@ -27,7 +29,7 @@ class MedicalDeviceProfileTests(TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(); self.root = Path(self.temp.name)
         self.spending = self.root / "spending.zip"; self.registry = self.root / "registry.zip"; self.cnd = self.root / "cnd.csv"
-        write_zip(self.registry, etl.REGISTRY_MEMBER, etl.REGISTRY_HEADERS, [
+        write_zip(self.registry, FIXTURE_REGISTRY_MEMBER, etl.REGISTRY_HEADERS, [
             ["1", "42", "2020-01-01", "", "", "S", "2020-01-01", "9999-12-31", "Fab A", "", "", "A", "Device A", "A01", "Aghi", ""],
             ["2", "42", "2020-01-01", "", "", "S", "2020-01-01", "9999-12-31", "Ass B", "", "", "B", "Kit B", "", "", ""],
         ], "utf-8")
@@ -44,7 +46,7 @@ class MedicalDeviceProfileTests(TestCase):
     def tearDown(self): self.temp.cleanup()
 
     def test_composite_join_preserves_unresolved_zero_negative_and_versions(self):
-        result = etl.profile(self.spending, self.registry, self.cnd)
+        result = etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
         self.assertEqual(result["registry"]["duplicateBareNumbersAcrossTypes"], 1)
         self.assertEqual(result["join"], {"matchedRows": 2, "unresolvedRows": 2, "missingKeyRows": 1, "invalidKeyRows": 0, "notFoundRows": 1, "ambiguousRows": 0, "matchedEuroExact": "1000.00", "unresolvedEuroExact": "1.00", "sourceCurrentCndDifferentRows": 2})
         self.assertEqual(result["spending"]["totalEuroExact"], "1001.00")
@@ -56,19 +58,19 @@ class MedicalDeviceProfileTests(TestCase):
 
     def test_duplicate_composite_registry_key_fails_closed(self):
         row = ["1", "42", "2020-01-01", "", "", "S", "2020-01-01", "9999-12-31", "Fab", "", "", "A", "Device", "A01", "Aghi", ""]
-        write_zip(self.registry, etl.REGISTRY_MEMBER, etl.REGISTRY_HEADERS, [row, row], "utf-8")
+        write_zip(self.registry, FIXTURE_REGISTRY_MEMBER, etl.REGISTRY_HEADERS, [row, row], "utf-8")
         with self.assertRaisesRegex(etl.SourceError, "duplicata"):
-            etl.profile(self.spending, self.registry, self.cnd)
+            etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
 
     def test_schema_and_money_drift_fail_closed(self):
         write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, [["2021", "10", "100", "ASL", "1", "42", "A01", "1.00"]], "ascii")
         with self.assertRaisesRegex(etl.SourceError, "Importo"):
-            etl.profile(self.spending, self.registry, self.cnd)
+            etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
 
     def test_empty_amount_is_not_observed_zero(self):
         write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, [["2021", "10", "100", "ASL", "1", "42", "A01", ""]], "ascii")
         with self.assertRaisesRegex(etl.SourceError, "Importo"):
-            etl.profile(self.spending, self.registry, self.cnd)
+            etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
 
     def test_extra_or_missing_row_cells_fail_closed(self):
         for row in (
@@ -78,7 +80,7 @@ class MedicalDeviceProfileTests(TestCase):
             with self.subTest(cells=len(row)):
                 write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, [row], "ascii")
                 with self.assertRaisesRegex(etl.SourceError, "Forma riga spesa"):
-                    etl.profile(self.spending, self.registry, self.cnd)
+                    etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
 
     def test_observed_money_lexicon_preserves_up_to_five_decimals(self):
         self.assertEqual([str(etl.parse_source_euros(value)) for value in ("468", "655,2", "1.248,00", "8024,92164", "-2,00")], ["468", "655.2", "1248.00", "8024.92164", "-2.00"])
@@ -88,7 +90,7 @@ class MedicalDeviceProfileTests(TestCase):
 
     def test_period_and_member_are_release_specific(self):
         with self.assertRaisesRegex(etl.SourceError, "Contenuto archivio"):
-            etl.profile(self.spending, self.registry, self.cnd, 2022)
+            etl.profile(self.spending, self.registry, self.cnd, 2022, registry_member=FIXTURE_REGISTRY_MEMBER)
 
     def test_release_specific_member_is_accepted_only_when_explicit(self):
         rows = [["2020", "10", "100", "ASL", "1", "42", "A01", "1,00"]]
@@ -99,8 +101,17 @@ class MedicalDeviceProfileTests(TestCase):
             self.cnd,
             2020,
             spending_member="Appendice 2020.csv",
+            registry_member=FIXTURE_REGISTRY_MEMBER,
         )
         self.assertEqual(result["spending"]["years"], {"2020": 1})
+
+    def test_registry_member_is_accepted_only_when_explicit(self):
+        member = "registry-fixture-renamed.csv"
+        write_zip(self.registry, member, etl.REGISTRY_HEADERS, [[
+            "1", "42", "2020-01-01", "", "", "S", "2020-01-01", "9999-12-31", "Fab A", "", "", "A", "Device A", "A01", "Aghi", "",
+        ]], "utf-8")
+        result = etl.profile(self.spending, self.registry, self.cnd, registry_member=member)
+        self.assertEqual(result["registry"]["rows"], 1)
 
     def test_same_health_company_code_in_different_regions_stays_distinct(self):
         rows = [
@@ -108,7 +119,7 @@ class MedicalDeviceProfileTests(TestCase):
             ["2021", "20", "100", "ASL Sud", "1", "42", "A01", "2,00"],
         ]
         write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, rows, "ascii")
-        result = etl.profile(self.spending, self.registry, self.cnd)
+        result = etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
         self.assertEqual(result["spending"]["rows"], 2)
         self.assertEqual(result["spending"]["repeatedBusinessGrains"], 0)
 
@@ -118,7 +129,7 @@ class MedicalDeviceProfileTests(TestCase):
             ["2021", "20", "100", "Nome esteso", "1", "42", "A01", "2,00"],
         ]
         write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, rows, "ascii")
-        result = etl.profile(self.spending, self.registry, self.cnd)
+        result = etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
         self.assertEqual(result["spending"]["rows"], 2)
         self.assertEqual(result["spending"]["totalEuroExact"], "3.00")
         self.assertEqual(result["spending"]["repeatedBusinessGrains"], 1)
@@ -129,7 +140,7 @@ class MedicalDeviceProfileTests(TestCase):
             ["2021", "20", "100", "ASL", "3", "42", "A01", "1,00"],
             ["2021", "20", "100", "ASL", "1", "42A", "A01", "2,00"],
         ], "ascii")
-        result = etl.profile(self.spending, self.registry, self.cnd)
+        result = etl.profile(self.spending, self.registry, self.cnd, registry_member=FIXTURE_REGISTRY_MEMBER)
         self.assertEqual(result["join"]["invalidKeyRows"], 2)
         self.assertEqual(result["join"]["missingKeyRows"], 0)
         self.assertEqual(result["join"]["notFoundRows"], 0)
@@ -144,6 +155,25 @@ class MedicalDeviceProfileTests(TestCase):
         self.assertTrue(all(spec["spendingReleases"][year]["siteTermsUrl"].endswith("/note-legali-2/") for year in ("2022", "2023")))
         self.assertTrue(all(spec["spendingReleases"][str(year)]["acquisitionStatus"] == "cataloged-not-acquired" for year in range(2012, 2020)))
         self.assertTrue(all("archive" not in spec["spendingReleases"][str(year)] for year in range(2012, 2020)))
+
+    def test_source_lock_requires_every_profile_field(self):
+        original = json.loads(etl.DEFAULT_SPEC.read_text(encoding="utf-8"))
+        for location in (("spendingReleases", "2021"), ("registry",), ("classification",)):
+            target = original
+            for part in location:
+                target = target[part]
+            for key in target["expected"]:
+                with self.subTest(location=location, key=key):
+                    changed = json.loads(json.dumps(original))
+                    target = changed
+                    for part in location:
+                        target = target[part]
+                    del target["expected"][key]
+                    changed["integrity"]["lockSha256"] = etl.canonical_lock_sha256(changed)
+                    path = self.root / f"missing-{'-'.join(location)}-{key}.json"
+                    path.write_text(json.dumps(changed), encoding="utf-8")
+                    with self.assertRaisesRegex(etl.SourceError, "Profilo atteso"):
+                        etl.load_spec(path)
 
     def test_source_lock_rejects_license_period_and_url_drift(self):
         original = json.loads(etl.DEFAULT_SPEC.read_text(encoding="utf-8"))

@@ -21,16 +21,51 @@ SPENDING_HEADERS = ["Anno", "CodRegCommit", "CodASL", "AziendaSanitaria", "CodTi
 REGISTRY_HEADERS = ["tipologia_dm", "progressivo_dm_ass", "data_prima_pubblicazione", "dm_riferimento", "gruppo_dm_simili", "iscrizione_repertorio", "data_inizio_validita", "data_fine_validita", "fabbricante_assemblatore", "cod_fiscale", "PARTITAIVA_VATNUMBER_MAND", "cod_catalogo_fabbr_ass", "denominazione_commerciale", "classificazione_cnd", "descrizione_cnd", "data_fine_commercio", ""]
 CND_HEADERS = ["codice_ramo_cnd", "descrizione_ramo_cnd", "livello_finale", "riferimento_civab", "data_inzio_validita", "data_fine_validita"]
 DEFAULT_SPEC = Path(__file__).with_name("specs") / "medical-device-spending-pilot.source.json"
-REGISTRY_MEMBER = "DISPO_RDM_1_20260914.csv"
 MAX_MEMBER_BYTES = 600 * 1024 * 1024
 MONEY_RE = re.compile(r"-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d{1,5})?")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 DEVICE_NUMBER_RE = re.compile(r"[0-9]+")
 OFFICIAL_HOSTS = {"www.salute.gov.it", "www.dati.salute.gov.it"}
+SPENDING_EXPECTED_KEYS = frozenset(
+    {
+        "rows",
+        "types",
+        "decimalScaleRows",
+        "zeroAmounts",
+        "negativeAmounts",
+        "totalEuroExact",
+        "matchedRows",
+        "unresolvedRows",
+        "missingKeyRows",
+        "invalidKeyRows",
+        "notFoundRows",
+        "ambiguousRows",
+        "unresolvedEuroExact",
+        "repeatedBusinessGrains",
+        "maxBusinessGrainOccurrences",
+    }
+)
+REGISTRY_EXPECTED_KEYS = frozenset(
+    {
+        "rows",
+        "types",
+        "duplicateCompositeKeys",
+        "duplicateBareNumbersAcrossTypes",
+        "sentinelValidTo",
+    }
+)
+CLASSIFICATION_EXPECTED_KEYS = frozenset(
+    {"rows", "distinctCodes", "codesWithMultipleVersions", "maxVersions"}
+)
 
 
 class SourceError(ValueError):
     """An acquired source violates its observed contract."""
+
+
+def _require_expected_keys(value: object, expected: frozenset[str], label: str) -> None:
+    if not isinstance(value, dict) or set(value) != expected:
+        raise SourceError(f"Profilo atteso {label} inatteso")
 
 
 def canonical_lock_sha256(spec: dict[str, object]) -> str:
@@ -90,8 +125,7 @@ def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, object]:
         if expected_acquisition == "acquired-profiled":
             _require_iso_date(release.get("acquisitionDate"), f"acquisizione spesa {year}")
             _require_archive_lock(release.get("archive"), f"spesa {year}")
-            if not isinstance(release.get("expected"), dict):
-                raise SourceError(f"Profilo atteso spesa {year} assente")
+            _require_expected_keys(release.get("expected"), SPENDING_EXPECTED_KEYS, f"spesa {year}")
         elif "acquisitionDate" in release or "archive" in release or "expected" in release:
             raise SourceError(f"Release non acquisita spesa {year} contiene ricevute")
     registry = spec.get("registry")
@@ -107,8 +141,10 @@ def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, object]:
     _require_iso_date(classification.get("referenceDate"), "riferimento CND")
     _require_iso_date(classification.get("acquisitionDate"), "acquisizione CND")
     _require_archive_lock(registry.get("archive"), "BD/RDM")
+    _require_expected_keys(registry.get("expected"), REGISTRY_EXPECTED_KEYS, "BD/RDM")
     if not isinstance(classification.get("bytes"), int) or classification["bytes"] <= 0 or not SHA256_RE.fullmatch(str(classification.get("sha256", ""))):
         raise SourceError("Integrità source lock CND inattesa")
+    _require_expected_keys(classification.get("expected"), CLASSIFICATION_EXPECTED_KEYS, "CND")
     integrity = spec.get("integrity")
     if not isinstance(integrity, dict) or integrity.get("algorithm") != "sha256":
         raise SourceError("Algoritmo source lock dispositivi inatteso")
@@ -245,13 +281,15 @@ def profile(
     registry_zip: Path,
     cnd_csv: Path,
     year: int = 2021,
+    *,
     spending_member: str | None = None,
+    registry_member: str,
 ) -> dict[str, object]:
     registry_keys: dict[tuple[str, str], str] = {}
     bare_types: dict[str, set[str]] = {}
     registry_types: Counter[str] = Counter()
     sentinel = 0
-    rows = _zip_rows(registry_zip, REGISTRY_MEMBER, "utf-8-sig", REGISTRY_HEADERS, "BD/RDM")
+    rows = _zip_rows(registry_zip, registry_member, "utf-8-sig", REGISTRY_HEADERS, "BD/RDM")
     try:
         for index, row in enumerate(rows, 1):
             _require_row_shape(row, REGISTRY_HEADERS, "BD/RDM", index, allow_missing_empty_header=True)
@@ -363,6 +401,7 @@ def main() -> int:
         args.cnd,
         args.year,
         spending_member=release["archive"]["member"],
+        registry_member=spec["registry"]["archive"]["member"],
     )
     verify_locked_profile(result, spec, args.year)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))

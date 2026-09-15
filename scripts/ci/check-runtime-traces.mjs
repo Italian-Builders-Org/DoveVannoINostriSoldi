@@ -93,6 +93,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["istat-pensions-2012-2022.meta.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["opencivitas-2017.json", ["api/spese/opencivitas-2017/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["inps-assegno-unico-2022-2024.data.json", ["fonti/page", "api/famiglia/assegno-unico/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
   ]) {
     for (const route of routes) {
       const manifest = `${route}.js.nft.json`;

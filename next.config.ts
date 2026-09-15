@@ -50,6 +50,7 @@ const pensionsRuntimeFiles = [
 ];
 const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
 const naspiRuntimeFiles = ["src/data/generated/inps-naspi-2018-2022.data.json"];
+const assegnoUnicoRuntimeFiles = ["src/data/generated/inps-assegno-unico-2022-2024.data.json"];
 
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
@@ -113,7 +114,8 @@ const nextConfig: NextConfig = {
     "/api/pnrr/asili": childcareRuntimeFiles,
     "/api/enti/*": childcareRuntimeFiles,
     "/api/lavoro/naspi": naspiRuntimeFiles,
-    "/fonti": [...naspiRuntimeFiles, ...pensionsRuntimeFiles],
+    "/api/famiglia/assegno-unico": assegnoUnicoRuntimeFiles,
+    "/fonti": [...naspiRuntimeFiles, ...assegnoUnicoRuntimeFiles, ...pensionsRuntimeFiles],
     "/spese/pensioni": pensionsRuntimeFiles,
     "/api/spese/pensioni": pensionsRuntimeFiles,
     "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
@@ -152,9 +154,9 @@ const nextConfig: NextConfig = {
     "/api/tributi/vat-gap": euVatGapItalyRuntimeFiles,
     "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
     "/api/territori/bes-relazioni": istatBesRelazioniRuntimeFiles,
-    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
-    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
-    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/api/assistant/chat": [...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...assegnoUnicoRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...assegnoUnicoRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
+    "/api/mcp": [...integratedSourceRuntimeFiles, ...operatorRuntimeFiles, ...istatBesLavoroRuntimeFiles, ...euVatGapItalyRuntimeFiles, ...istatBesRelazioniRuntimeFiles, ...childcareRuntimeFiles, ...naspiRuntimeFiles, ...assegnoUnicoRuntimeFiles, ...pensionsRuntimeFiles, ...openCivitas2017RuntimeFiles],
   },
 };
 

@@ -38,6 +38,7 @@ export type SourceId =
   | "istat-bes-lavoro"
   | "istat-bes-relazioni"
   | "inps-naspi"
+  | "inps-assegno-unico"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -632,6 +633,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-naspi", "domain:social-benefits"],
+  },
+  "inps-assegno-unico": {
+    id: "inps-assegno-unico",
+    label: "INPS · Assegno Unico (nuclei e figli)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Due package CKAN 2022-2024 (AUU a domanda, esclusi RdC). Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-assegno-unico", "domain:social-benefits", "domain:family"],
   },
   "mef-iva": {
     id: "mef-iva",

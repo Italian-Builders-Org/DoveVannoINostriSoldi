@@ -1669,6 +1669,32 @@
       "trustModel": "Source-lock: le nove risposte SDMX-ML ufficiali dei package dfb_st_naspi_* (IODL 2.0 verificata per package) sono acquisite localmente e vincolate per URL, byte, SHA-256 e istante di preparazione SDMX; --check valida il bundle committato senza rete. Le distribuzioni CSV e JSON della stessa fonte sono scartate e il motivo e' nel lock. Copertura piena, celle soppresse distinte dallo zero e tre riconciliazioni ESATTE (regioni sulle ripartizioni, province sulle regioni, taglio per sesso contro taglio per eta') falliscono chiuse."
     },
     {
+      "id": "inps-assegno-unico-2022-2024",
+      "owner": "INPS Assegno Unico nuclei e figli 2022-2024",
+      "files": [
+        "src/data/generated/inps-assegno-unico-2022-2024.data.json",
+        "src/data/generated/inps-assegno-unico-2022-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_assegno_unico_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_assegno_unico_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-assegno-unico.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_assegno_unico_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-assegno-unico-2022-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui due CSV ufficiali CKAN (cc-by per package, non IODL 2.0). Importi in millesimi di euro senza arrotondamento. Perimetro AUU a domanda esclusi RdC. Chiavi uniche e conteggi tabelle fail-closed. Nuclei e figli restano tabelle distinte."
+    },
+    {
       "id": "mef-irpef-dettaglio-2017-2025",
       "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
       "files": [

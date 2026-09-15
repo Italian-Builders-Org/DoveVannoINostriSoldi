@@ -63,6 +63,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-bes-lavoro",
   "istat-bes-relazioni",
   "inps-naspi",
+  "inps-assegno-unico",
   "mef-irpef-dettaglio",
   "mef-iva",
   "eu-vat-gap-italy",

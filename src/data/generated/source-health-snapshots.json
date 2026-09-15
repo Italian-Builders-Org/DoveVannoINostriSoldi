@@ -198,6 +198,12 @@
     "recordCount": 53362
   },
   {
+    "sourceId": "inps-assegno-unico",
+    "sourceTimestamp": "2026-09-14",
+    "detail": "Snapshot ETL attivo · Assegno Unico 2022-2024 · 4452 righe provinciali (AUU a domanda, esclusi RdC) · importi in millesimi · 1.202.030 byte.",
+    "recordCount": 4452
+  },
+  {
     "sourceId": "mef-iva",
     "sourceTimestamp": "2026-04-23",
     "detail": "Snapshot IVA dichiarazioni 2024–2025 (imposta 2023–2024): 4 tabelle e 93 righe per regione e attività, senza incrocio. Ultima pubblicazione 2026-04-23; acquisito 2026-09-11; controllato 2026-09-11.",

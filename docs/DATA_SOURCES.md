@@ -538,6 +538,34 @@ all’anno COFOG selezionato (2014–2024).
 - Source lock: `scripts/etl/specs/eurostat-sha-health-2014-2025.source.json`.
 - Offline: `python3 scripts/etl/eurostat_sha_health_snapshot.py --check`.
 
+### Assegno Unico · INPS open data (nuclei e figli)
+
+**Issue #261 (seconda fetta dopo NASpI).** Due package CKAN
+`assegno-unico-nuclei-2022-2024` e
+`assegno-unico-figli-con-disabilita-2022-2024`, aggiornati
+2026-01-17. Licenza **`cc-by` per package** (non IODL 2.0 della fetta
+NASpI). Acquisizione CSV 14 settembre 2026.
+
+Asset pinnati:
+
+- nuclei: 46 264 byte, SHA-256
+  `327d3b10fa83bc932a17d6e77c6105fbe3afe4ab0c59caf7aaa68320ab58740d`
+- figli: 440 364 byte, SHA-256
+  `b4277d427bb455ed23c6953aa89fd769c65fdea1fd79923e722f4dc7b7e5001f`
+
+Perimetro dichiarato dalla fonte: **AUU a domanda — esclusi beneficiari
+RdC**. 106 province × anni 2022–2024; 636 + 3 816 = 4 452 righe. Importi
+erogati in **millesimi di euro** (49 valori non esatti in centesimi non
+vengono arrotondati). Nuclei, figli e mesi restano nature distinte; in
+`nuclei` la colonna `numero_figli` resta con unità non documentata dalla
+fonte. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/famiglia/assegno-unico`, filtri `anno` / `tabella` /
+  `provincia` / `regione`.
+- MCP: `query_dataset` con `dataset: "inps_assegno_unico"`.
+- Source lock: `scripts/etl/specs/inps-assegno-unico-2022-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_assegno_unico_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

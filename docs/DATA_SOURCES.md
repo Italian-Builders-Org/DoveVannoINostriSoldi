@@ -566,6 +566,31 @@ fonte. Superficie fonte + API + MCP, senza UI.
 - Source lock: `scripts/etl/specs/inps-assegno-unico-2022-2024.source.json`.
 - Offline: `python3 scripts/etl/inps_assegno_unico_snapshot.py --check`.
 
+### Integrazioni salariali · INPS open data (lavoratori, domande, mensilità)
+
+**Issue #261 (terza fetta dopo NASpI e Assegno Unico).** Tre package CKAN
+del report annuale Ammortizzatori Sociali 2023:
+
+- `integrazioni-salariali-lavoratori-2023`
+- `integrazioni-salariali-domande-2023`
+- `integrazioni-salariali-mensilita-2023`
+
+Licenza **`cc-by` per package**. Acquisizione CSV 15 settembre 2026.
+Asset pinnati: 27 149 / 26 404 / 27 168 byte (SHA-256 nel source lock).
+
+Conteggi mensili per 20 regioni e sei tipi di intervento (`CIGD`, `CIGO`,
+`CIGS`, `FIS`, `FONDI_Centrali`, `FONDI_Territorio`). **Nessun importo**:
+lavoratori, domande e mensilità restano nature distinte e non si sommano.
+Copertura chiavi non identica fra tabelle (790 / 759 / 790). Superficie
+fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/integrazioni-salariali`, filtri `anno` / `tabella` /
+  `mese` / `regione` / `tipo`.
+- MCP: `query_dataset` con `dataset: "inps_integrazioni_salariali"`;
+  il mese italiano va in `period`.
+- Source lock: `scripts/etl/specs/inps-integrazioni-salariali-2023.source.json`.
+- Offline: `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

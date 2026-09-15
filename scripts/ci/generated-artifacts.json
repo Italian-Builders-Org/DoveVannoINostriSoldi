@@ -1695,6 +1695,32 @@
       "trustModel": "Source lock sui due CSV ufficiali CKAN (cc-by per package, non IODL 2.0). Importi in millesimi di euro senza arrotondamento. Perimetro AUU a domanda esclusi RdC. Chiavi uniche e conteggi tabelle fail-closed. Nuclei e figli restano tabelle distinte."
     },
     {
+      "id": "inps-integrazioni-salariali-2023",
+      "owner": "INPS integrazioni salariali lavoratori/domande/mensilita 2023",
+      "files": [
+        "src/data/generated/inps-integrazioni-salariali-2023.data.json",
+        "src/data/generated/inps-integrazioni-salariali-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_integrazioni_salariali_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-integrazioni-salariali.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-integrazioni-salariali-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui tre CSV ufficiali CKAN del report annuale Ammortizzatori Sociali 2023 (cc-by per package). Conteggi di lavoratori, domande e mensilita: nature distinte, nessun euro. Chiavi uniche e conteggi tabelle fail-closed. Copertura chiavi non forzata fra tabelle."
+    },
+    {
       "id": "mef-irpef-dettaglio-2017-2025",
       "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
       "files": [

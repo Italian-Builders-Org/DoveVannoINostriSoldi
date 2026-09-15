@@ -450,6 +450,21 @@ export async function queryPublicDataset(
         }),
       });
     }
+    case "inps_integrazioni_salariali": {
+      const { queryInpsIntegrazioniSalariali } = await import(
+        "@/lib/inps-integrazioni-salariali-snapshot"
+      );
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsIntegrazioniSalariali({
+          table: query.table,
+          year: query.year,
+          month: query.period,
+          region: query.region,
+          interventionType: query.interventionType,
+        }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

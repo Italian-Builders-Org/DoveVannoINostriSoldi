@@ -6,6 +6,7 @@ import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { inpsAssegnoUnicoData } from "@/lib/inps-assegno-unico-snapshot";
+import { inpsIntegrazioniSalarialiData } from "@/lib/inps-integrazioni-salariali-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
@@ -118,6 +119,10 @@ const exhaustiveLatestDataBySlug = {
   "inps-assegno-unico": {
     kind: "period",
     label: `${inpsAssegnoUnicoData.period.from}-${inpsAssegnoUnicoData.period.to} (AUU a domanda, esclusi RdC)`,
+  },
+  "inps-integrazioni-salariali": {
+    kind: "period",
+    label: `${inpsIntegrazioniSalarialiData.period.from} (lavoratori/domande/mensilità; conteggi)`,
   },
   "mef-irpef-dettaglio": {
     kind: "period",

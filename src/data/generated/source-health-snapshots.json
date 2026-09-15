@@ -204,6 +204,12 @@
     "recordCount": 4452
   },
   {
+    "sourceId": "inps-integrazioni-salariali",
+    "sourceTimestamp": "2026-09-15",
+    "detail": "Snapshot ETL attivo · integrazioni salariali 2023 · 2339 righe (lavoratori/domande/mensilità) · conteggi, non euro · 259.851 byte.",
+    "recordCount": 2339
+  },
+  {
     "sourceId": "mef-iva",
     "sourceTimestamp": "2026-04-23",
     "detail": "Snapshot IVA dichiarazioni 2024–2025 (imposta 2023–2024): 4 tabelle e 93 righe per regione e attività, senza incrocio. Ultima pubblicazione 2026-04-23; acquisito 2026-09-11; controllato 2026-09-11.",

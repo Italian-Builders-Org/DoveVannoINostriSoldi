@@ -14,6 +14,10 @@ import { consipOrdiniData, consipOrdiniMetadata } from "@/lib/consip-ordini-snap
 import { eurostatCofogData, eurostatCofogMetadata } from "@/lib/eurostat-cofog-snapshot";
 import { inpsNaspiData, inpsNaspiMetadata } from "@/lib/inps-naspi-snapshot";
 import { inpsAssegnoUnicoData, inpsAssegnoUnicoMetadata } from "@/lib/inps-assegno-unico-snapshot";
+import {
+  inpsIntegrazioniSalarialiData,
+  inpsIntegrazioniSalarialiMetadata,
+} from "@/lib/inps-integrazioni-salariali-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
@@ -385,6 +389,18 @@ function snapshotManagedInpsAssegnoUnico(): SourceHealth {
   };
 }
 
+function snapshotManagedInpsIntegrazioniSalariali(): SourceHealth {
+  const artifact = inpsIntegrazioniSalarialiMetadata.integrity.dataArtifact;
+  return {
+    ...baseHealth("inps-integrazioni-salariali"),
+    reachability: "not-probed",
+    freshness: freshnessFor("inps-integrazioni-salariali", inpsIntegrazioniSalarialiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · integrazioni salariali ${inpsIntegrazioniSalarialiData.period.from} · ${inpsIntegrazioniSalarialiData.coverage.observedRows.toLocaleString("it-IT")} righe (lavoratori/domande/mensilità) · conteggi, non euro · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: inpsIntegrazioniSalarialiData.coverage.observedRows,
+  };
+}
+
 function snapshotManagedIstatEpea(): SourceHealth {
   const { source, edition, referencePeriod } = istatEpeaMetadata;
   return {
@@ -607,6 +623,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
+  "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,

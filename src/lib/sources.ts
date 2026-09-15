@@ -256,6 +256,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["provincia", "anno", "tabella", "flag disabilità", "classe ISEE", "classe età"],
   },
   {
+    slug: "inps-integrazioni-salariali",
+    name: "INPS · integrazioni salariali (lavoratori, domande, mensilità)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    area: "Ammortizzatori sociali · integrazioni salariali",
+    cadence: "Annuale; package aggiornati al 2026-01-15",
+    coverage:
+      "Italia per 20 regioni, dettaglio mensile 2023; tipi CIGD/CIGO/CIGS/FIS/FONDI_Centrali/FONDI_Territorio",
+    format: "CSV UTF-8 · snapshot JSON verificato",
+    url: "https://opendata.inps.it/opendata",
+    note: "Conteggi di lavoratori, domande e mensilità: nature distinte, non euro. Non sommare a SIOPE, NASpI o bilanci. Licenza cc-by per package.",
+    joinKeys: ["regione", "mese", "tipo intervento", "tabella"],
+  },
+  {
     slug: "mef-iva",
     name: "MEF · principali grandezze IVA",
     owner: "MEF — Dipartimento delle Finanze",

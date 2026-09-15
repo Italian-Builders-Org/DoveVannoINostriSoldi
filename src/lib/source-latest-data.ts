@@ -8,6 +8,7 @@ import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { inpsAssegnoUnicoData } from "@/lib/inps-assegno-unico-snapshot";
 import { inpsIntegrazioniSalarialiData } from "@/lib/inps-integrazioni-salariali-snapshot";
 import { inpsCigFondiSolidarietaData } from "@/lib/inps-cig-fondi-solidarieta-snapshot";
+import { inlVigilanzaData } from "@/lib/inl-vigilanza-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
@@ -128,6 +129,10 @@ const exhaustiveLatestDataBySlug = {
   "inps-cig-fondi-solidarieta": {
     kind: "period",
     label: `${inpsCigFondiSolidarietaData.period.from}-${inpsCigFondiSolidarietaData.period.to} (ore autorizzate)`,
+  },
+  "inl-vigilanza": {
+    kind: "period",
+    label: `${inlVigilanzaData.period.from} (ispezioni/esiti/recuperi)`,
   },
   "mef-irpef-dettaglio": {
     kind: "period",

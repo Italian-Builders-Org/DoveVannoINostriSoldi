@@ -604,6 +604,19 @@ mensilità né euro. Superficie fonte + API + MCP, senza UI.
 - Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
 - Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
 
+### INL · Relazione annuale e rapporto vigilanza 2025
+
+Ispezioni e verifiche avviate, esiti con tasso di irregolarità e recuperi di
+contributi/premi dalla Relazione ufficiale INL. **Il tasso misura controlli
+mirati**, non la irregolarità dell’economia. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/vigilanza-inl`, filtri `anno` / `tabella` / `territorio` /
+  `settore`.
+- MCP: `query_dataset` con `dataset: "inl_vigilanza"`; `table` =
+  `inspectionsStarted` | `inspectionsOutcome` | `recovery`.
+- Source lock: `scripts/etl/specs/inl-vigilanza-2025.source.json`.
+- Offline: `python3 scripts/etl/inl_vigilanza_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

@@ -216,6 +216,12 @@
     "recordCount": 628
   },
   {
+    "sourceId": "inl-vigilanza",
+    "sourceTimestamp": "2026-09-15",
+    "detail": "Snapshot ETL attivo · vigilanza INL 2025 · 1576 righe · 131 territori · 255.424 byte.",
+    "recordCount": 1576
+  },
+  {
     "sourceId": "mef-iva",
     "sourceTimestamp": "2026-04-23",
     "detail": "Snapshot IVA dichiarazioni 2024–2025 (imposta 2023–2024): 4 tabelle e 93 righe per regione e attività, senza incrocio. Ultima pubblicazione 2026-04-23; acquisito 2026-09-11; controllato 2026-09-11.",

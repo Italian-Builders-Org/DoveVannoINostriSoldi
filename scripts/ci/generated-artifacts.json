@@ -1747,6 +1747,32 @@
       "trustModel": "Source lock sul CSV ufficiale CKAN cig-fondi-di-solidarieta-2023-2024 (cc-by per package). Ore autorizzate: nessun euro. Chiavi uniche e conteggi fail-closed. Distinto da integrazioni salariali lavoratori/domande/mensilita."
     },
     {
+      "id": "inl-vigilanza-2025",
+      "owner": "INL Relazione annuale e rapporto vigilanza 2025",
+      "files": [
+        "src/data/generated/inl-vigilanza-2025.data.json",
+        "src/data/generated/inl-vigilanza-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inl_vigilanza_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inl_vigilanza_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inl-vigilanza.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inl_vigilanza_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inl-vigilanza-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sul PDF ufficiale INL Relazione 2025 (CC BY 3.0 IT). Estrazione layer testuale senza OCR. Ispezioni/esiti (conteggi e tassi) distinti dai recuperi in euro. Chiavi e riconciliazioni fail-closed."
+    },
+    {
       "id": "mef-irpef-dettaglio-2017-2025",
       "owner": "MEF dettaglio IRPEF per regione, eta' e sesso 2017-2025",
       "files": [

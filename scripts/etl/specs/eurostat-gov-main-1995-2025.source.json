@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-gov-main",
+  "period": {
+    "from": 1995,
+    "to": 2025
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    "apiPath": "/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main",
+    "datasetCode": "gov_10a_main",
+    "datasetLabel": "Government revenue, expenditure and main aggregates",
+    "structure": {
+      "id": "GOV_10A_MAIN",
+      "agencyId": "ESTAT",
+      "version": "73.0"
+    },
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice verificata il 2026-09-03: «licensed under the Creative Commons Attribution 4.0 International licence… provided you acknowledge the source and indicate any changes». Licenza del portale Eurostat, non estesa ad altri titolari.",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "assets": {
+      "mio-eur": {
+        "unit": "MIO_EUR",
+        "unitLabel": "Million euro",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=MIO_EUR&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025",
+        "bytes": 58435,
+        "sha256": "0f6ed3bccd453917632a62252b80c52807b1b17827b6d91dd3f7058225673ffa",
+        "sourceUpdated": "2026-07-21T11:00:00+0200"
+      },
+      "pc-gdp": {
+        "unit": "PC_GDP",
+        "unitLabel": "Percentage of gross domestic product (GDP)",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?format=JSON&lang=EN&freq=A&unit=PC_GDP&sector=S13&geo=IT&sinceTimePeriod=1995&untilTimePeriod=2025",
+        "bytes": 48839,
+        "sha256": "e5f62bfceb3d6497ed3b02793a103fdf713a15764fd3c837da6321f06c1cd802",
+        "sourceUpdated": "2026-07-21T11:00:00+0200"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-14",
+      "checkedAt": "2026-09-14",
+      "note": "Due risposte JSON-stat 2.0 scaricate il 2026-09-14 dagli URL canonici della Statistics API, senza filtro su na_item: il lock descrive la risposta intera e il contratto sceglie le voci pubblicate. Lock dichiarato e approvato in #485."
+    }
+  },
+  "expected": {
+    "years": [
+      1995,
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "units": [
+      "MIO_EUR",
+      "PC_GDP"
+    ],
+    "freq": "A",
+    "sector": "S13",
+    "geo": "IT",
+    "naItemsInResponse": 119,
+    "totals": [
+      {
+        "code": "TR",
+        "label": "Total general government revenue",
+        "role": "total-revenue"
+      },
+      {
+        "code": "TE",
+        "label": "Total general government expenditure",
+        "role": "total-expenditure"
+      },
+      {
+        "code": "B9",
+        "label": "Net lending (+)/net borrowing (-)",
+        "role": "balance"
+      }
+    ],
+    "revenueComponents": [
+      {
+        "code": "P11_P12_P131",
+        "label": "Market output, output for own final use and payments for non-market output",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D2REC",
+        "label": "Taxes on production and imports, revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D39REC",
+        "label": "Other subsidies on production, revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D4REC",
+        "label": "Property income, revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D5REC",
+        "label": "Current taxes on income, wealth, etc., revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D61REC",
+        "label": "Net social contributions, revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D7REC",
+        "label": "Other current transfers, revenue",
+        "role": "revenue-component"
+      },
+      {
+        "code": "D9REC",
+        "label": "Capital transfers, revenue",
+        "role": "revenue-component"
+      }
+    ],
+    "expenditureComponents": [
+      {
+        "code": "P2",
+        "label": "Intermediate consumption",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "P5",
+        "label": "Gross capital formation",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "NP",
+        "label": "Acquisitions less disposals of non-financial non-produced assets",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D1PAY",
+        "label": "Compensation of employees, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D29PAY",
+        "label": "Other taxes on production, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D3PAY",
+        "label": "Subsidies, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D4PAY",
+        "label": "Property income, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D5PAY",
+        "label": "Current taxes on income, wealth, etc., expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D62PAY",
+        "label": "Social benefits other than social transfers in kind, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D632PAY",
+        "label": "Social transfers in kind, purchased market production, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D7PAY",
+        "label": "Other current transfers, expenditure",
+        "role": "expenditure-component"
+      },
+      {
+        "code": "D9PAY",
+        "label": "Capital transfers, expenditure",
+        "role": "expenditure-component"
+      }
+    ],
+    "cellsPerUnit": 744,
+    "sourceUpdated": "2026-07-21T11:00:00+0200",
+    "memoItems": [
+      {
+        "code": "D41PAY",
+        "label": "Interest, expenditure",
+        "role": "memo-of-D4PAY"
+      }
+    ]
+  },
+  "coverage": {
+    "observedAt": "2026-09-14",
+    "note": "Copertura piena e pretesa dal contratto: 744 celle per unità, 24 voci per 31 anni. Le altre 95 voci della risposta restano nei byte bloccati e non sono pubblicate in v1; quelle senza valori sono marcate dalla fonte con flag m (data cannot exist).",
+    "publishedItemsNote": "TR, TE e B9 più le componenti delle identità SEC: entrate TR = P11_P12_P131 + D2REC + D39REC + D4REC + D5REC + D61REC + D7REC + D9REC; uscite TE = P2 + P5 + NP + D1PAY + D29PAY + D3PAY + D4PAY + D5PAY + D62PAY + D632PAY + D7PAY + D9PAY (D8PAY non è presente nel dataset); B9 = TR - TE. D41PAY è pubblicata come voce «di cui» di D4PAY: è la voce degli interessi usata da public-debt.json, necessaria all'invariante offline richiesto in #485."
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-gov-main-1995-2025.data.json",
+      "bytes": 68205,
+      "sha256": "d776edbbbcadf573dcb0d6005294e6637039c74ee3b62b4c741574804d588d2a"
+    },
+    "lockSha256": "59483c1ddb626573dbfb2760979c0f93be67084fadb5b3056627c82239d4a083"
+  }
+}

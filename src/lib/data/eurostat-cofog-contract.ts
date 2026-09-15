@@ -13,8 +13,8 @@ import { z } from "zod";
  * - i flag della fonte viaggiano con l'osservazione. «b» segna una interruzione
  *   della serie storica: chi traccia una tendenza attraverso quel punto sta
  *   affermando qualcosa che la fonte non dice;
- * - il dettaglio italiano contiene le sottofunzioni ufficiali di GF01, GF02, GF03
- *   e GF08 per gli stessi 11 anni e deve riconciliare con il rispettivo parent.
+ * - il dettaglio italiano contiene le sottofunzioni ufficiali di tutte e dieci le
+ *   divisioni per gli stessi 11 anni e deve riconciliare con il rispettivo parent.
  *
  * Blocca inoltre identità inattesa, caveats assenti, provenienza non ufficiale,
  * licenza diversa da quella verificata, duplicati e importi non interi.
@@ -35,7 +35,13 @@ export const EUROSTAT_COFOG_DETAIL_CODES = {
   GF01: ["GF0101", "GF0102", "GF0103", "GF0104", "GF0105", "GF0106", "GF0107", "GF0108"],
   GF02: ["GF0201", "GF0202", "GF0203", "GF0204", "GF0205"],
   GF03: ["GF0301", "GF0302", "GF0303", "GF0304", "GF0305", "GF0306"],
+  GF04: ["GF0401", "GF0402", "GF0403", "GF0404", "GF0405", "GF0406", "GF0407", "GF0408", "GF0409"],
+  GF05: ["GF0501", "GF0502", "GF0503", "GF0504", "GF0505", "GF0506"],
+  GF06: ["GF0601", "GF0602", "GF0603", "GF0604", "GF0605", "GF0606"],
+  GF07: ["GF0701", "GF0702", "GF0703", "GF0704", "GF0705", "GF0706"],
   GF08: ["GF0801", "GF0802", "GF0803", "GF0804", "GF0805", "GF0806"],
+  GF09: ["GF0901", "GF0902", "GF0903", "GF0904", "GF0905", "GF0906", "GF0907", "GF0908"],
+  GF10: ["GF1001", "GF1002", "GF1003", "GF1004", "GF1005", "GF1006", "GF1007", "GF1008", "GF1009"],
 } as const;
 export type EurostatCofogDetailParent = keyof typeof EUROSTAT_COFOG_DETAIL_CODES;
 const ALL_DETAIL_CODES = Object.values(EUROSTAT_COFOG_DETAIL_CODES).flat();
@@ -84,8 +90,8 @@ const geographySchema = z
 const detailReconciliationSchema = z
   .object({
     note: z.string().min(1),
-    toleranceCents: z.literal(45_000_000),
-    toleranceShareHundredths: z.literal(45),
+    toleranceCents: z.literal(50_000_000),
+    toleranceShareHundredths: z.literal(50),
     maxGapCents: nonNegativeInt,
     maxGapShareHundredths: nonNegativeInt,
   })
@@ -145,7 +151,13 @@ export const eurostatCofogDataSchema = z
         GF01: detailBlockSchema("GF01", 8, 88),
         GF02: detailBlockSchema("GF02", 5, 55),
         GF03: detailBlockSchema("GF03", 6, 66),
+        GF04: detailBlockSchema("GF04", 9, 99),
+        GF05: detailBlockSchema("GF05", 6, 66),
+        GF06: detailBlockSchema("GF06", 6, 66),
+        GF07: detailBlockSchema("GF07", 6, 66),
         GF08: detailBlockSchema("GF08", 6, 66),
+        GF09: detailBlockSchema("GF09", 8, 88),
+        GF10: detailBlockSchema("GF10", 9, 99),
       })
       .strict(),
   })

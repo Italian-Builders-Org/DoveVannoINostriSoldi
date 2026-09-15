@@ -110,11 +110,24 @@ export const sourceCatalog: PublicSource[] = [
     area: "Spesa delle Amministrazioni pubbliche per funzione",
     cadence: "Annuale; rilascio verificato del 21 luglio 2026",
     coverage:
-      "UE27, area euro e 30 Stati, 2014–2024: totale e dieci divisioni; per l’Italia anche GF0101–GF0108, GF0201–GF0205, GF0301–GF0306 e GF0801–GF0806. Milioni di euro e quota di PIL",
+      "UE27, area euro e 30 Stati, 2014–2024: totale e dieci divisioni; per l’Italia anche le sottofunzioni di tutte e dieci le divisioni, da GF0101 a GF1009. Milioni di euro e quota di PIL",
     format: "Statistics API · JSON-stat · snapshot JSON verificato",
     url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
     note: "Competenza economica SEC 2010, non pagamenti di cassa: non è confrontabile con SIOPE né sommabile alle missioni del bilancio dello Stato. Il dettaglio di secondo livello è pubblicato solo per l’Italia, dove è completo; le assenze osservate altrove non diventano zero. GF0107 include interessi D.41 e FISIM P.2 e non coincide con la sola serie degli interessi.",
     joinKeys: ["geo", "anno", "funzione COFOG", "unità"],
+  },
+  {
+    slug: "eurostat-gov-main",
+    name: "Eurostat · entrate e uscite delle Amministrazioni pubbliche",
+    owner: "Eurostat (Commissione europea)",
+    area: "Entrate, uscite e saldo delle Amministrazioni pubbliche (SEC 2010)",
+    cadence: "Annuale; rilascio verificato del 21 luglio 2026",
+    coverage:
+      "Italia, settore S13, 1995–2025: entrate totali TR, uscite totali TE, saldo B9, le 8 componenti di entrata e le 12 di spesa delle identità SEC e gli interessi D41PAY. Milioni di euro e quota di PIL",
+    format: "Statistics API · JSON-stat · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    note: "Competenza economica SEC 2010, non incassi né pagamenti di cassa: non è confrontabile con i pagamenti SIOPE di /entrate né sommabile a CPT, OpenBDAP o COFOG. D41PAY è la stessa voce degli interessi usata su /debito, verificata uguale al centesimo: non è una seconda fonte.",
+    joinKeys: ["anno", "voce SEC (na_item)", "unità"],
   },
   {
     slug: "istat-cofog",

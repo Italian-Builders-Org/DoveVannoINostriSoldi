@@ -4,6 +4,7 @@ import { cptRegionalFiscalSnapshot } from "@/lib/cpt-regional-fiscal-snapshot";
 import { inpsCivilInvaliditySnapshot } from "@/lib/inps-invalidity-snapshot";
 import { consipOrdiniData } from "@/lib/consip-ordini-snapshot";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
+import { eurostatGovMainData } from "@/lib/eurostat-gov-main-snapshot";
 import { inpsNaspiData } from "@/lib/inps-naspi-snapshot";
 import { inpsAssegnoUnicoData } from "@/lib/inps-assegno-unico-snapshot";
 import { inpsIntegrazioniSalarialiData } from "@/lib/inps-integrazioni-salariali-snapshot";
@@ -77,6 +78,10 @@ const exhaustiveLatestDataBySlug = {
   "eurostat-cofog": {
     kind: "period",
     label: `${eurostatCofogData.period.from}-${eurostatCofogData.period.to}`,
+  },
+  "eurostat-gov-main": {
+    kind: "period",
+    label: `${eurostatGovMainData.period.from}-${eurostatGovMainData.period.to}`,
   },
   "istat-cofog": {
     kind: "period",

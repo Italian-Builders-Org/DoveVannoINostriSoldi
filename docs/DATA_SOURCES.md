@@ -857,14 +857,39 @@ risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
 integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
-### Eurostat COFOG · dettaglio italiano GF01, GF02, GF03 e GF08
+### Eurostat gov_10a_main · entrate e uscite delle Amministrazioni pubbliche
+
+Lo snapshot `eurostat-gov-main-1995-2025` (#485, figlia dell'epic #484) usa `gov_10a_main` per
+l'Italia, settore S13, dal 1995 al 2025, in milioni di euro e in quota di PIL. Il lock blocca le
+due risposte intere della Statistics API, senza filtro su `na_item`; il contratto pubblica i
+totali `TR`, `TE` e `B9`, le 8 componenti di entrata e le 12 di spesa delle identità SEC e gli
+interessi `D41PAY` come voce «di cui» di `D4PAY`.
+
+Le identità `TR = Σ entrate`, `TE = Σ uscite` e `B9 = TR − TE` sono verificate entro 0,5 milioni
+di euro e 0,65 punti di PIL; su 1995-2025 lo scarto osservato è 0,1 milioni e 0,3 punti. I totali
+restano quelli della fonte. `D41PAY` e `TE` devono coincidere al centesimo con `public-debt.json`
+sugli anni in comune: è la stessa voce usata su `/debito`, non una seconda fonte.
+
+Competenza economica SEC: non è confrontabile con i pagamenti SIOPE di `/entrate` né sommabile a
+CPT, OpenBDAP o COFOG. Superficie v1: API `/api/finanza-pubblica/conti-pa` e dataset MCP
+`eurostat_conti_pa`, nessuna pagina.
+
+### Eurostat COFOG · dettaglio italiano delle dieci divisioni
 
 Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.
-Dal rilascio acquisito e riverificato l'11 settembre 2026 conserva, oltre a totale e dieci
-divisioni per le geografie già pubblicate, le sottofunzioni ufficiali italiane di GF01
-(otto voci), GF02 (cinque), GF03 (sei) e GF08 (sei) dal 2014 al 2024. Le celle di dettaglio
-per unità sono obbligatorie e riconciliano con il rispettivo parent entro la sola tolleranza
-di arrotondamento; una cella assente ferma la pubblicazione.
+Oltre a totale e dieci divisioni per le geografie già pubblicate, conserva le sottofunzioni
+ufficiali italiane dal 2014 al 2024 di tutte le divisioni: GF01 (otto voci), GF02 (cinque),
+GF03 (sei), GF04 (nove), GF05 (sei), GF06 (sei), GF07 (sei), GF08 (sei), GF09 (otto) e
+GF10 (nove). GF01, GF02, GF03 e GF08 sono stati acquisiti l'11 settembre 2026, le altre
+sei divisioni il 14 settembre 2026 dallo stesso rilascio (`updated` 2026-07-21). Le celle di
+dettaglio per unità sono obbligatorie e riconciliano con il rispettivo parent entro la sola
+tolleranza di arrotondamento, 0,5 nell'unità della fonte: nove parti più il parent, arrotondati
+indipendentemente a un decimale. Una cella assente ferma la pubblicazione.
+
+`/api/spese/cofog` e il dataset MCP `eurostat_cofog` accettano nel filtro funzione anche un
+codice di secondo livello (per esempio `GF1002`, vecchiaia), solo per l'Italia. GF10 non è
+la sola spesa pensionistica, GF07 non si somma al Conto economico SSN e GF05 non si somma ai
+conti ambientali EPEA: sono classificazioni COFOG con perimetri propri.
 
 La pagina `/spese/servizi-generali` espone GF0101–GF0108 senza trasformare GF01 in «debito».
 In particolare GF0107, *Public debt transactions*, non coincide con la sola spesa per

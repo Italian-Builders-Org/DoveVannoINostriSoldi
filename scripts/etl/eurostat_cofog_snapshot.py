@@ -60,17 +60,23 @@ HUNDREDTHS_PER_POINT = 100
 TOLERANCE_CENTS = 6 * CENTS_PER_MILLION_EUR // 10
 TOLERANCE_SHARE = 6 * HUNDREDTHS_PER_POINT // 10
 # A level-II group plus its published parent are rounded independently. The
-# largest Italian partition we publish is GF01 (eight parts + parent = nine
-# figures), so 0.45 in the source unit covers every detail we keep.
-DETAIL_TOLERANCE_CENTS = 45 * CENTS_PER_MILLION_EUR // 100
-DETAIL_TOLERANCE_SHARE = 45 * HUNDREDTHS_PER_POINT // 100
+# largest Italian partitions we publish are GF04 and GF10 (nine parts + parent
+# = ten figures), so 0.50 in the source unit covers every detail we keep.
+DETAIL_TOLERANCE_CENTS = 50 * CENTS_PER_MILLION_EUR // 100
+DETAIL_TOLERANCE_SHARE = 50 * HUNDREDTHS_PER_POINT // 100
 
 # Official second-level inventories published for Italy in gov_10a_exp.
 DETAIL_PARENT_CODES = {
     "GF01": tuple(f"GF010{n}" for n in range(1, 9)),
     "GF02": tuple(f"GF020{n}" for n in range(1, 6)),
     "GF03": tuple(f"GF030{n}" for n in range(1, 7)),
+    "GF04": tuple(f"GF040{n}" for n in range(1, 10)),
+    "GF05": tuple(f"GF050{n}" for n in range(1, 7)),
+    "GF06": tuple(f"GF060{n}" for n in range(1, 7)),
+    "GF07": tuple(f"GF070{n}" for n in range(1, 7)),
     "GF08": tuple(f"GF080{n}" for n in range(1, 7)),
+    "GF09": tuple(f"GF090{n}" for n in range(1, 9)),
+    "GF10": tuple(f"GF100{n}" for n in range(1, 10)),
 }
 
 KNOWN_FLAGS = {"p": "provvisorio", "b": "interruzione della serie storica"}
@@ -88,10 +94,9 @@ CAVEATS = (
     "li contengono già.",
     "Il 2025 non è pubblicato: alla data di acquisizione la fonte lo espone per il solo "
     "Lussemburgo, e un singolo Stato membro non è un confronto europeo.",
-    "Per l’Italia lo snapshot conserva le sottofunzioni ufficiali di GF01, GF02, GF03 e "
-    "GF08. GF0107 «Public debt transactions» è una funzione COFOG: include gli interessi "
-    "D.41 e il consumo intermedio P.2 legato al FISIM secondo il manuale Eurostat, quindi "
-    "non coincide con la sola serie D.41.",
+    "Per l’Italia lo snapshot conserva le sottofunzioni ufficiali di GF01–GF10. GF0107 "
+    "include interessi D.41 e FISIM P.2, non la sola serie D.41; GF10 non è la sola spesa "
+    "pensionistica.",
 )
 
 

@@ -2,10 +2,31 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { eurostatCofogData, eurostatCofogMetadata, queryEurostatCofog, queryEurostatCofogDetail, queryEurostatCofogGf01Detail } = await import(
-  "../src/lib/eurostat-cofog-snapshot.ts"
+const {
+  eurostatCofogData,
+  eurostatCofogMetadata,
+  queryEurostatCofog,
+  queryEurostatCofogDetail,
+  queryEurostatCofogGf01Detail,
+  queryEurostatCofogPublic,
+} = await import("../src/lib/eurostat-cofog-snapshot.ts");
+const { EUROSTAT_COFOG_DETAIL_CODES, validateEurostatCofogBundle } = await import(
+  "../src/lib/data/eurostat-cofog-contract.ts"
 );
-const { validateEurostatCofogBundle } = await import("../src/lib/data/eurostat-cofog-contract.ts");
+const { EUROSTAT_COFOG_DETAIL_LABELS } = await import("../src/lib/eurostat-cofog-detail-labels.ts");
+
+const DETAIL_SIZES = [
+  ["GF01", 8],
+  ["GF02", 5],
+  ["GF03", 6],
+  ["GF04", 9],
+  ["GF05", 6],
+  ["GF06", 6],
+  ["GF07", 6],
+  ["GF08", 6],
+  ["GF09", 8],
+  ["GF10", 9],
+];
 
 const DIVISIONS = Array.from({ length: 10 }, (_, index) => `GF${String(index + 1).padStart(2, "0")}`);
 
@@ -122,13 +143,9 @@ test("il contratto boccia una provenienza non ufficiale", () => {
   assert.throws(() => validateEurostatCofogBundle(eurostatCofogData, broken));
 });
 
-test("il dettaglio italiano GF01/GF02/GF03/GF08 è completo e riconcilia con i parent", () => {
-  for (const [parent, expected] of [
-    ["GF01", 8],
-    ["GF02", 5],
-    ["GF03", 6],
-    ["GF08", 6],
-  ]) {
+test("il dettaglio italiano di tutte e dieci le divisioni è completo e riconcilia con i parent", () => {
+  assert.deepEqual(Object.keys(eurostatCofogData.details).sort(), DETAIL_SIZES.map(([parent]) => parent));
+  for (const [parent, expected] of DETAIL_SIZES) {
     const detail = eurostatCofogData.details[parent];
     assert.equal(detail.geo, "IT");
     assert.equal(detail.parentFunction, parent);
@@ -146,7 +163,7 @@ test("il dettaglio italiano GF01/GF02/GF03/GF08 è completo e riconcilia con i p
 });
 
 test("il contratto fallisce chiuso se un dettaglio italiano viene alterato", () => {
-  for (const parent of ["GF01", "GF02", "GF03", "GF08"]) {
+  for (const [parent] of DETAIL_SIZES) {
     const broken = structuredClone(eurostatCofogData);
     broken.details[parent].observations[0].amountCents += 100_000_000;
     assert.throws(
@@ -154,4 +171,33 @@ test("il contratto fallisce chiuso se un dettaglio italiano viene alterato", () 
       new RegExp(`${parent} non riconcilia`, "i"),
     );
   }
+});
+
+test("ogni sottofunzione pubblicata ha un'etichetta italiana", () => {
+  const codes = Object.values(EUROSTAT_COFOG_DETAIL_CODES).flat();
+  assert.equal(codes.length, 69);
+  assert.deepEqual(Object.keys(EUROSTAT_COFOG_DETAIL_LABELS).sort(), [...codes].sort());
+});
+
+test("la superficie pubblica serve una sottofunzione solo per l'Italia", () => {
+  const oldAge = queryEurostatCofogPublic({ function: "gf1002" });
+  assert.equal(oldAge.level, "subfunction");
+  assert.equal(oldAge.parentFunction, "GF10");
+  assert.equal(oldAge.observations.length, 11);
+  assert.ok(oldAge.observations.every((row) => row.geo === "IT" && row.function === "GF1002"));
+  assert.deepEqual(oldAge.functions.map((entry) => entry.code), ["GF1002"]);
+  assert.equal(oldAge.reconciliation, eurostatCofogData.details.GF10.reconciliation);
+
+  const hospitals2024 = queryEurostatCofogPublic({ geo: "it", year: 2024, function: "GF0703" });
+  assert.equal(hospitals2024.observations.length, 1);
+
+  assert.throws(() => queryEurostatCofogPublic({ geo: "FR", function: "GF1002" }), /solo per l’Italia/);
+  assert.throws(() => queryEurostatCofogPublic({ function: "GF1010" }), /Funzione COFOG non riconosciuta/);
+  assert.throws(() => queryEurostatCofogPublic({ function: "GF1002", year: 2025 }), /Anno fuori dal periodo/);
+
+  // Totale e divisioni restano la query di sempre, per ogni geografia.
+  assert.deepEqual(
+    queryEurostatCofogPublic({ geo: "FR", year: 2024, function: "GF10" }),
+    queryEurostatCofog({ geo: "FR", year: 2024, function: "GF10" }),
+  );
 });

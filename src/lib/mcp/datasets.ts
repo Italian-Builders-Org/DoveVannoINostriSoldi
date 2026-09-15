@@ -438,6 +438,48 @@ export async function queryPublicDataset(
         ...queryInpsNaspi({ table: query.table, measure: query.measure, year: query.year, territory: query.territory }),
       });
     }
+    case "inps_assegno_unico": {
+      const { queryInpsAssegnoUnico } = await import("@/lib/inps-assegno-unico-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsAssegnoUnico({
+          table: query.table,
+          year: query.year,
+          province: query.province,
+          region: query.region,
+        }),
+      });
+    }
+    case "inps_integrazioni_salariali": {
+      const { queryInpsIntegrazioniSalariali } = await import(
+        "@/lib/inps-integrazioni-salariali-snapshot"
+      );
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsIntegrazioniSalariali({
+          table: query.table,
+          year: query.year,
+          month: query.period,
+          region: query.region,
+          interventionType: query.code,
+        }),
+      });
+    }
+    case "inps_cig_fondi_solidarieta": {
+      const { queryInpsCigFondiSolidarieta } = await import(
+        "@/lib/inps-cig-fondi-solidarieta-snapshot"
+      );
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInpsCigFondiSolidarieta({
+          year: query.year,
+          month: query.period,
+          region: query.region,
+          fundManagement: query.code,
+          sector: query.sector,
+        }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

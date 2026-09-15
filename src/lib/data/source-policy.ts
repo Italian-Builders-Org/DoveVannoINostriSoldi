@@ -38,6 +38,9 @@ export type SourceId =
   | "istat-bes-lavoro"
   | "istat-bes-relazioni"
   | "inps-naspi"
+  | "inps-assegno-unico"
+  | "inps-integrazioni-salariali"
+  | "inps-cig-fondi-solidarieta"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -632,6 +635,51 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-naspi", "domain:social-benefits"],
+  },
+  "inps-assegno-unico": {
+    id: "inps-assegno-unico",
+    label: "INPS · Assegno Unico (nuclei e figli)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Due package CKAN 2022-2024 (AUU a domanda, esclusi RdC). Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-assegno-unico", "domain:social-benefits", "domain:family"],
+  },
+  "inps-integrazioni-salariali": {
+    id: "inps-integrazioni-salariali",
+    label: "INPS · integrazioni salariali (lavoratori, domande, mensilità)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Tre package CKAN del report annuale 2023 Ammortizzatori Sociali. Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package. Conteggi, non euro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-integrazioni-salariali", "domain:social-benefits", "domain:labour"],
+  },
+  "inps-cig-fondi-solidarieta": {
+    id: "inps-cig-fondi-solidarieta",
+    label: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Package CKAN cig-fondi-di-solidarieta-2023-2024. Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package. Ore autorizzate, non euro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
   },
   "mef-iva": {
     id: "mef-iva",

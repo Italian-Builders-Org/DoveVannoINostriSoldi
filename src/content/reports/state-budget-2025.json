@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "slug": "bilancio-stato-2025",
+  "date": "2026-09-14",
+  "title": "Bilancio dello Stato 2025: possibili sprechi, anomalie ed errori",
+  "summary": "Affidamenti separati allo stesso fornitore, progettazione da rifare, interventi in ritardo e conti incoerenti. Undici casi, con prove e verifiche ancora necessarie.",
+  "introduction": [
+    "Abbiamo controllato conti, obiettivi, acquisti, opere e consulenze, partendo dal Rendiconto 2025 dello Stato e confrontandolo con atti precedenti e successivi. Le verifiche estese sui file si accompagnano ad approfondimenti selettivi: non coprono ogni spesa dello Stato.",
+    "Emergono errori verificabili e piste di possibile spreco. Per Tolentino, gli atti descrivono una progettazione superata dagli eventi e poi rifatta. Per gli impianti di risalita, documentano fondi rinviati e un progetto revocato dopo anni senza avvio. Non abbiamo ancora una misura attendibile del costo evitabile: gli importi riportati non formano un totale degli sprechi."
+  ],
+  "cases": [
+    {
+      "id": "affidamenti",
+      "label": "Anomalia · possibile frammentazione",
+      "title": "Sei affidamenti allo stesso concessionario, nello stesso giorno",
+      "summary": "Il Ministero del Lavoro ha affidato a Sport Network sei acquisti pubblicitari separati, per 310.000 euro netti, nella stessa campagna.",
+      "paragraphs": [
+        "Le sei decisioni di acquisto (determine) sono del 23 settembre 2025; tutte le aggiudicazioni sono del 30 ottobre. Gli importi sono 70.000 euro per Corriere dello Sport, 60.000 per il Fatto Quotidiano, 60.000 per il Giornale, 40.000 per Libero, 30.000 per il Tempo e 50.000 per Tuttosport.",
+        "Stesso concessionario, stessa data e stessa campagna rendono concreta la domanda sulla separazione degli acquisti. Le diverse testate raggiungono pubblici diversi: è una possibile ragione della scelta dei canali, ma non dimostra che sei negoziazioni separate fossero più convenienti o che l’amministrazione avesse valutato insieme tutti gli spazi pubblicitari necessari.",
+        "Nella campagna compaiono inoltre cinque affidamenti da 139.000 euro ciascuno. L’importo è già previsto nelle determine: non è soltanto una coincidenza negli esiti. Tre aggiudicazioni sono del 2025 e due del 2026, per 695.000 euro complessivi. Questa ricorrenza merita verifica, ma da sola non dimostra un frazionamento vietato o prezzi eccessivi.",
+        "Per valutare un possibile spreco occorrono quantità acquistate, pubblico raggiunto, prezzi comparabili e condizioni ottenibili acquistando insieme gli spazi. Gli atti acquisiti non bastano a misurare un sovrapprezzo. I 310.000 euro sono valore degli affidamenti, non una somma dichiarata sprecata."
+      ],
+      "record": "Determine MLPS 383, 385, 386, 387, 388 e 394/2025; concessionario Sport Network, P.IVA 06357951000. CIG B89A063116, B89A1882E0, B89A2297BB, B89A5053CD, B89A3D69C0, B89A54BD8E.",
+      "calculation": "70.000 + 60.000 + 60.000 + 40.000 + 30.000 + 50.000 = 310.000 euro netti. Gli altri cinque affidamenti da 139.000 euro sommano 417.000 euro aggiudicati nel 2025 e 278.000 nel 2026.",
+      "nextStep": "Acquisire piano media, motivazione della separazione, ordini e rendiconti delle uscite; confrontare prezzi unitari e condizioni ottenibili con un acquisto coordinato.",
+      "sourceIds": [
+        "sport-corriere",
+        "sport-fatto",
+        "sport-giornale",
+        "sport-libero",
+        "sport-tempo",
+        "sport-tuttosport",
+        "ads-corriere",
+        "ads-sole",
+        "ads-subasio",
+        "ads-mediaset",
+        "adnkronos"
+      ]
+    },
+    {
+      "id": "tolentino",
+      "label": "Possibile spreco · importo da accertare",
+      "title": "Tolentino: progettazione da rifare e costi da riconciliare",
+      "summary": "Il progetto del 2007 fu rivisto, non arrivò alla conferenza di servizi e venne sostituito. È una pista concreta di lavoro progettuale reso inutilizzabile.",
+      "paragraphs": [
+        "La relazione progettuale depositata nel 2026 ricostruisce la sequenza: dopo la scadenza del vincolo che riservava i terreni all’opera pubblica, nel 2009 un parco fotovoltaico compromette il tracciato. La revisione del maggio 2010 non recepisce il nuovo assetto; nel 2012 il contraente generale recede. Nel 2015 un protocollo apre a un nuovo studio di fattibilità e a un diverso tracciato.",
+        "La sequenza può aver comportato costi di progettazione evitabili e rifacimenti. Per accertarli servono compensi liquidati, elaborati effettivamente riutilizzati e motivi del mancato rinnovo del vincolo. Il documento del proponente prova la ricostruzione dichiarata, non l’importo pagato per lavoro perduto.",
+        "C’è anche una divergenza monetaria: per il CUP F71B16000830001, il costo riportato dal Ministero delle Infrastrutture e dei Trasporti (MIT) e da ANAS è 206.718.750 euro; la banca dati Monitoraggio delle opere pubbliche (MOP) espone 384.642.946,39 euro come costo effettivo. La verifica della singola riga restituita dalla banca dati ha escluso un doppio conteggio in quella riga e ricostruito la differenza nelle tre componenti del quadro economico.",
+        "Resta da verificare se i due importi comprendano gli stessi lavori e a quali versioni del progetto si riferiscano. I 177.924.196,39 euro di differenza non sono una stima del lavoro perduto, né pagamenti 2025. Le date di esecuzione mancanti in MOP impediscono anche di trattare “effettivo” come costo finale di un’opera conclusa."
+      ],
+      "record": "CUP F71B16000830001, codice AN254. Relazione progettuale, pagine PDF 8-9; Allegato A CdP 2021-2025, pagina 292, aggiornamento della scheda 1 febbraio 2024. MOP: una riga restituita dal filtro CUP e codice locale.",
+      "calculation": "Lavori: 309.176.896,94 - 139.623.560,49; somme a disposizione: 30.145.283,09 - 44.126.439,51; oneri di investimento: 45.320.766,36 - 22.968.750,00. Somma delle differenze: 177.924.196,39 euro.",
+      "nextStep": "Acquisire pagamenti per i progetti 2007-2010 e quali parti siano state riutilizzate; confrontare ciascuna componente MOP all’ultimo quadro economico approvato.",
+      "sourceIds": [
+        "tolentino-progetto",
+        "mit-allegato",
+        "mit-anas",
+        "mop"
+      ]
+    },
+    {
+      "id": "impianti",
+      "label": "Possibile spreco · costi e opportunità da misurare",
+      "title": "Impianti di risalita: utilizzato per impegni il 3,05% dei fondi 2025",
+      "summary": "Su 80 milioni disponibili per il 2025, risultano impegnati 2,44 milioni; 77,56 milioni sono rinviati al 2026.",
+      "paragraphs": [
+        "L’obiettivo era almeno il 70%. La nota della Ragioneria generale dello Stato (RGS) indica 2.438.888,18 euro impegnati e 77.561.111,82 conservati per il 2026, con il rischio che non siano più utilizzabili se non impegnati entro la fine del 2026. Sei richieste di finanziamento, per 50.400.216,51 euro, non avevano fornito i documenti necessari al decreto. Quest’ultimo importo ha un perimetro diverso dagli 80 milioni annui e non va sommato al rinvio.",
+        "Considerando anche le dotazioni degli anni precedenti, nel 2025 il fondo ha impegnato 31,50 milioni e liquidato 25 milioni. Il 3,05% riguarda quindi l’utilizzo della sola competenza 2025, non tutta l’attività finanziaria dell’anno.",
+        "Un atto del 2026 documenta un progetto mai avviato nella stessa procedura: la revoca del finanziamento di 10 milioni a Lagazuoi S.p.A., progetto ID 16779, ammesso in graduatoria nel dicembre 2023. Il Ministero rileva la mancata presentazione del progetto esecutivo e delle autorizzazioni, nessuna fase avviata e l’impossibilità di rispettare il termine del 2026.",
+        "Il decreto precisa che i 10 milioni non erano stati impegnati né erogati: la revoca ha evitato l’esborso. Il possibile spreco riguarda invece istruttorie senza esito e ritardo nell’uso alternativo delle risorse. Per quantificarlo servono costi amministrativi, tempi delle verifiche e progetti alternativi finanziabili. Non è provato che Lagazuoi fosse una delle sei posizioni citate dalla RGS."
+      ],
+      "record": "Note integrative 2025, indicatore record 368 e azione record 292. Decreto di revoca Lagazuoi, ID 16779, pagine PDF 3-6, pubblicato nel 2026.",
+      "calculation": "2.438.888,18 / 80.000.000 × 100 = 3,05%. Rinvio: 80.000.000 - 2.438.888,18 = 77.561.111,82 euro, pari al 96,95%.",
+      "nextStep": "Ricostruire tempi e costi delle istruttorie, le sei posizioni senza documenti e la riallocazione dei fondi revocati.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "lagazuoi"
+      ]
+    },
+    {
+      "id": "prepac",
+      "label": "Inefficienza attuativa documentata",
+      "title": "Edifici pubblici: pochi lavori di risparmio energetico conclusi",
+      "summary": "Il rapporto ENEA-GSE del 2024 segnala interventi conclusi sul 7,8% della superficie ammessa nel 2014-2021 e collaudati sul 4,6%.",
+      "paragraphs": [
+        "PREPAC è il programma per migliorare l’efficienza energetica degli edifici della pubblica amministrazione centrale. Le percentuali del rapporto ENEA-GSE riguardano la superficie degli edifici: non indicano quanto denaro sia stato speso.",
+        "Lo stesso rapporto documenta ritardi nelle approvazioni, nelle convenzioni e nell’esecuzione. Per 11 dei 12 progetti collaudati tra il 2019 e il 2022 risultavano ancora somme da liquidare, dal 4% a circa il 50%. Sono criticità del periodo esaminato da ENEA, non percentuali di avanzamento aggiornate al 2025.",
+        "Nel Rendiconto 2025, la RGS espone invece un risultato dello 0,86% contro un target interno dello 0,85%. La descrizione richiama un obiettivo medio triennale del 3%, che è diverso dal target interno superato. La scheda non chiarisce a quale anno dei lavori e a quale superficie totale si riferisca per riprodurre il risultato e confrontarlo correttamente con il 3%.",
+        "I ritardi rinviano i benefici della riqualificazione e possono generare mancati risparmi energetici. È una pista economica da misurare per edificio, non una ragione per chiamare spreco l’intero finanziamento. L’approvazione amministrativa degli interventi non risolve la verifica sulla loro tempestiva realizzazione."
+      ],
+      "record": "Rapporto ENEA-GSE pubblicato il 28 marzo 2024, pagine PDF 6-8 e 21. RGS Indicatori 2025, record 983-984; previsione 2025, record 980.",
+      "calculation": "RGS: 0,86% - 0,85% = 0,01 punti percentuali sopra il target interno. Il confronto con il 3% richiede lo stesso periodo e denominatore. Il 7,8% e il 4,6% sono quote di superficie, non quote di spesa.",
+      "nextStep": "Per ciascun CUP, raccogliere date previste ed effettive, concessioni, pagamenti, collaudi e consumi; stimare i risparmi persi durante i ritardi.",
+      "sourceIds": [
+        "enea",
+        "indicatori"
+      ]
+    },
+    {
+      "id": "carceri",
+      "label": "Risultato insufficiente",
+      "title": "Edilizia penitenziaria: 723 posti sotto l’obiettivo",
+      "summary": "La capienza 2025 è 51.277 posti contro un obiettivo di almeno 52.000. Gli spazi comuni realizzati sono 4.800 m² contro 16.000.",
+      "paragraphs": [
+        "Le Note integrative motivano il ritardo sugli spazi comuni con la priorità data al recupero dei posti indisponibili. Il programma del Commissario, aggiornato al 5 agosto 2025, indicava circa 4.500 posti inutilizzabili e interventi di recupero ed ampliamento.",
+        "La priorità può spiegare parte dello scarto, ma non dimostra che i posti siano stati consegnati nei tempi o a costi congrui. Mancano il raccordo fra CUP, stati di avanzamento, pagamenti e posti effettivamente riaperti e una serie delle cause di inagibilità.",
+        "L’azione edilizia espone 181,19 milioni di impegni e 237,41 milioni di pagamenti. Sono risorse dell’intera azione: dividerle per i posti mancanti o per quelli recuperati produrrebbe un costo unitario privo di base."
+      ],
+      "record": "RGS Indicatori 2025, record 679-681; azione record 585. Programma degli interventi del Commissario per l’edilizia penitenziaria, aggiornato il 5 agosto 2025.",
+      "calculation": "52.000 - 51.277 = 723 posti. 4.800 / 16.000 = 30% dell’obiettivo sugli spazi comuni. Impegni CP dell’azione: 181.188.707,09 euro; pagamenti CS: 237.414.066,92 euro.",
+      "nextStep": "Collegare ogni intervento a costi, scadenze e posti consegnati; verificare cause e durata delle inagibilità e costi dei rinvii.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "carceri-programma"
+      ]
+    },
+    {
+      "id": "entrate",
+      "label": "Errore contabile",
+      "title": "Una previsione di entrata non quadra: 1.894 euro",
+      "summary": "Nel capitolo 3458, articolo 1, la previsione iniziale più la variazione supera di 1.894 euro la previsione definitiva pubblicata.",
+      "paragraphs": [
+        "Il CSV riporta zero euro iniziali, una variazione di 15.558.550 euro e una definitiva di 15.556.656 euro. La definizione RGS richiede che iniziale e variazione sommino alla definitiva. È l’unica violazione delle otto identità di base verificate su tutti i 2.068 articoli.",
+        "Due endpoint ufficiali hanno restituito lo stesso file. La discrepanza è dunque riproducibile nel dato pubblicato; non identifica un ammanco o un pagamento indebito. La causa va chiarita con il titolare del dato."
+      ],
+      "record": "Rendiconto entrate 2025, record CSV 1.404, capitolo 3458, articolo 1, Dipartimento del Tesoro.",
+      "calculation": "0 + 15.558.550 - 15.556.656 = 1.894 euro.",
+      "nextStep": "Verificare il valore nei sistemi contabili di origine e correggere o motivare il record pubblicato.",
+      "sourceIds": [
+        "entrate",
+        "schema-entrate"
+      ]
+    },
+    {
+      "id": "percentuali",
+      "label": "Errore nella descrizione",
+      "title": "Tre percentuali non descrivono la riduzione dei tempi",
+      "summary": "Nelle Note integrative dell’Istruzione, i tempi tabellari migliorano; tre riduzioni percentuali dichiarate non coincidono con il calcolo sui tempi previsti.",
+      "paragraphs": [
+        "Con 5 giorni contro un target di 13, la riduzione è 61,54%, non 38%. Con 11,69 giorni contro 30 è 61,03%, non 40%. Con 15 giorni contro 28 è 46,43%, non 53,5%. Le percentuali descritte si avvicinano invece alla quota di tempo rimasta.",
+        "La contraddizione riguarda il confronto descritto nelle note. Un denominatore diverso dovrebbe essere esplicitato. I dati non indicano un danno economico: l’errore rende meno affidabile la comunicazione dei risultati."
+      ],
+      "record": "Note integrative al Rendiconto 2025, Indicatori, record CSV 824, 825 e 828.",
+      "calculation": "Riduzione = (target - giorni effettivi) / target × 100. Quota residua = giorni effettivi / target × 100.",
+      "nextStep": "Chiarire la base di calcolo e correggere la descrizione preservando i tempi effettivamente rilevati.",
+      "sourceIds": [
+        "indicatori"
+      ]
+    },
+    {
+      "id": "personale",
+      "label": "Errore nel totale",
+      "title": "Personale MASE: le componenti sommano 935, il totale dice 922",
+      "summary": "Nella tabella del personale 2025 del Ministero dell’Ambiente e della Sicurezza Energetica (MASE), il totale è inferiore di 13 persone alla somma delle categorie.",
+      "paragraphs": [
+        "Nella Relazione sulla performance, la colonna 2025 riporta 3 capi dipartimento, 11 dirigenti di prima fascia, 43 di seconda fascia e 878 addetti delle aree. Il totale pubblicato è 922; la somma è 935.",
+        "La tabella precedente riporta 935, ma ha un’intestazione 2024 in contrasto con il testo che la presenta come situazione 2025. Può trattarsi di refusi o di un perimetro non esplicitato. Non si può scegliere silenziosamente un totale per calcolare consulenze per dipendente."
+      ],
+      "record": "Relazione MASE sulla performance 2025, D.M. 211 del 10 luglio 2026. Tabelle 5 e 7, pagine PDF 114-115; pagina stampata 113 per la tabella 7.",
+      "calculation": "3 + 11 + 43 + 878 = 935; 935 - 922 = 13 persone. La differenza nel numero di persone non permette di calcolare una somma di denaro persa.",
+      "nextStep": "Correggere anno e totale o esplicitare le esclusioni; identificare separatamente il personale assegnato alle funzioni confrontate con le consulenze.",
+      "sourceIds": [
+        "mase-performance"
+      ]
+    },
+    {
+      "id": "archivi",
+      "label": "Anomalia di rendicontazione",
+      "title": "Quattro risultati degli Archivi non sono confrontabili con le promesse iniziali",
+      "summary": "Quattro dei cinque indicatori 2025 sono dichiarati «non consuntivabili»: il documento non riporta un risultato confrontabile con l’obiettivo iniziale dopo una revisione degli obiettivi nel corso dell’anno.",
+      "paragraphs": [
+        "Le note dichiarano modifiche introdotte a luglio e non recepite tempestivamente nelle Note integrative. Descrivono attività sui nuovi indicatori, ma non permettono di ricostruire i risultati originariamente promessi.",
+        "Le tre azioni collegate sommano 55.741.725,76 euro di impegni. È il perimetro di spesa interessato dal problema di verifica, non una stima di spreco. La modifica del metro di misura merita un controllo anche se formalmente autorizzata.",
+        "Le Note al disegno di legge di bilancio 2026-2028 confermano i nuovi metodi. Non sostituiscono però la direttiva di luglio né forniscono i numeratori e denominatori necessari a ricostruire i risultati 2025."
+      ],
+      "record": "Ministero della Cultura, programma 021.009; Indicatori 2025, record 210-213; azioni 2, 3 e 4 conteggiate una volta.",
+      "calculation": "Somma degli impegni CP delle tre azioni distinte: 55.741.725,76 euro. Nessuna moltiplicazione per il numero degli indicatori.",
+      "nextStep": "Acquisire la direttiva di luglio e rendere confrontabili obiettivi iniziali, revisioni e risultati.",
+      "sourceIds": [
+        "indicatori",
+        "azioni",
+        "archivi-senato"
+      ]
+    },
+    {
+      "id": "rti",
+      "label": "Errore di attribuzione",
+      "title": "Un contratto da 48,19 milioni non appartiene a una sola impresa",
+      "summary": "Sul nostro sito, il profilo del Ministero del Lavoro presenta un contratto come assegnato a una sola impresa. L’atto ministeriale lo assegna invece a un gruppo di nove imprese.",
+      "paragraphs": [
+        "Il decreto 289 del 3 aprile 2025 identifica Accenture come capofila di un raggruppamento temporaneo di imprese (RTI). Mostrare una sola impresa non permette di attribuirle l’intero importo come ricavo esclusivo.",
+        "Escludendo quel solo contratto dal confronto mono-operatore, la quota attribuita nel confronto ad Accenture passa dal 31,82% all’8,03%. Il confronto mostra quanto quel contratto influisca sulla classifica; non ricostruisce la quota corretta di ciascuna impresa. Il codice DVNS classifica in base al numero di riferimenti operatore risolti: uno solo non esclude un RTI. Va ricostruita la relazione con le mandanti, senza inventare quote."
+      ],
+      "record": "CIG B654A948AF, aggiudicazione 15847262; decreto MLPS 289/2025, pagine PDF 9-10; profilo IPA m_lps.",
+      "calculation": "59.279.167,72 / 186.277.425,17 = 31,82%. Escluso il CIG: 11.087.847,72 / 138.086.105,17 = 8,03%.",
+      "nextStep": "Ricostruire le relazioni dell’aggiudicazione e sospendere l’interpretazione del valore come ricavo esclusivo. Non ripartirlo in quote inventate.",
+      "sourceIds": [
+        "cloud"
+      ]
+    },
+    {
+      "id": "date",
+      "label": "Anomalia temporale",
+      "title": "Un’aggiudicazione del 2026 compare nel 2025",
+      "summary": "Per un affidamento pubblicitario, il profilo indica 10 dicembre 2025; il decreto che dispone l’aggiudicazione è del 30 gennaio 2026.",
+      "paragraphs": [
+        "Il caso riguarda contenuti video tramite Adnkronos, per 139.000 euro netti. Il decreto 42/2026 dispone l’aggiudicazione dopo le verifiche; il contratto è stipulato il 19 febbraio e approvato il 23 febbraio 2026.",
+        "Il codice DVNS legge il campo ANAC data_aggiudicazione_definitiva. La divergenza non è quindi spiegata dalla semplice scelta del campo di pubblicazione. Restano da verificare il record originale e le rettifiche: fino ad allora, il contratto non va imputato al 2025 sulla sola data del profilo."
+      ],
+      "record": "CIG B9859A6F52; decreti MLPS 42 del 30 gennaio 2026 e 85 del 23 febbraio 2026.",
+      "calculation": "Confronto fra la data di aggiudicazione nella copia dei dati usata dal sito (campo awardedAt) e le date degli atti, senza confondere il valore del contratto con un pagamento già effettuato.",
+      "nextStep": "Risalire al campo originale ANAC e alle eventuali rettifiche; adeguare la semantica della data mostrata.",
+      "sourceIds": [
+        "adnkronos"
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "area": "Conti dello Stato",
+      "checked": "5.395 capitoli 2025; 26.226 piani di gestione 2024-2025; 2.068 articoli di entrata 2025. Previsione, assestamento e 19 rilasci mensili.",
+      "limit": "Le righe aggregano operazioni: non contengono tutte le fatture o i beneficiari."
+    },
+    {
+      "area": "Obiettivi e risultati",
+      "checked": "1.039 indicatori 2025 di 15 amministrazioni, con fonti 2023-2024 e previsioni 2025.",
+      "limit": "483 confronti numerici automatici; 67 sotto soglia. Revisione documentale selettiva, non esaustiva."
+    },
+    {
+      "area": "Acquisti",
+      "checked": "146 CIG e 133 aggiudicazioni del profilo del Ministero del Lavoro; aggregati Consip 2024-2025. Secondo passaggio su 32 schede della campagna DL Coesione e 78 PDF aggiuntivi.",
+      "limit": "Un profilo ministeriale, con contratti pluriennali. Importi aggiudicati, non pagamenti annui."
+    },
+    {
+      "area": "Opere",
+      "checked": "10.033 record MOP, corrispondenti a 9.698 CUP; tre opere approfondite.",
+      "limit": "Sottoinsieme selezionato per costo. Quadri pluriennali, senza raccordo ai pagamenti del Rendiconto 2025."
+    },
+    {
+      "area": "Consulenze e lavoro parasubordinato",
+      "checked": "268 piani di gestione nelle due categorie RGS, su 15 amministrazioni e due anni.",
+      "limit": "Il totale non copre tutte le consulenze della PA. Gli aggregati non identificano singoli incarichi."
+    }
+  ],
+  "method": [
+    "Per ogni caso conserviamo identificativi, pagine o record e hash delle acquisizioni. I calcoli monetari usano centesimi interi o aritmetica decimale; arrotondiamo solo per la lettura. Le fonti amministrative attestano quanto pubblicato, non certificano da sole la qualità del servizio.",
+    "Errore indica una contraddizione verificata rispetto a una regola o a un atto. Anomalia indica una divergenza concreta da spiegare. Possibile spreco richiede indizi di costo evitabile, prestazione inutile o risultato insufficiente rispetto a risorse pertinenti; non richiede una sentenza. Spreco quantificato richiede anche una base verificabile per l’importo evitabile.",
+    "Una pista aperta non è smentita. Le spiegazioni alternative vengono controllate, senza presumere che la loro semplice possibilità risolva il caso. Gli importi di capitoli, contratti e progetti non vengono sommati in un totale degli sprechi.",
+    "L’analisi è stata svolta internamente con Codex e script riproducibili. I contributi sono stati sottoposti a un secondo passaggio e consolidati; questo non equivale a una revisione indipendente umana. Le risultanze di atti già pubblici sono attribuite ai rispettivi autori."
+  ],
+  "controls": [
+    {
+      "text": "Spesa: 347.831 verifiche delle uguaglianze previste fra le voci contabili e 113.295 confronti fra capitoli e piani di gestione senza differenze. Questo risultato riguarda la coerenza dei file, non l’utilità delle spese.",
+      "sourceIds": [
+        "pg2025",
+        "pg2024"
+      ]
+    },
+    {
+      "text": "Cinema, capitolo MEF 7765: dei 2,633 miliardi pagati nel 2025, 636,948 milioni sono residui pregressi. L’assestamento spiega gran parte della competenza aggiunta; 256,633 milioni di variazioni ulteriori restano da raccordare agli atti. La scomposizione non valuta l’efficacia dei crediti fiscali.",
+      "sourceIds": [
+        "pg2025",
+        "pas"
+      ]
+    },
+    {
+      "text": "Consulenze e lavoro parasubordinato: i pagamenti complessivi crescono da 50,575 a 62,995 milioni. I pagamenti in competenza calano di 8,027 milioni e quelli sui residui crescono di 20,448 milioni. Il totale non dimostra un aumento equivalente dei nuovi incarichi.",
+      "sourceIds": [
+        "pg2025",
+        "pg2024"
+      ]
+    },
+    {
+      "text": "Passante di Mestre: la data di fine registrata in MOP del 2014 comprende attività successive all’apertura dell’asse nel 2009. Interpretare tutto l’intervallo come mancata apertura produrrebbe un falso ritardo.",
+      "sourceIds": [
+        "mop",
+        "mestre-silos"
+      ]
+    },
+    {
+      "text": "Consulenze PNRR MASE: incarichi esterni e uffici interni lavorano sulla verifica che i progetti non arrechino danni significativi all’ambiente (DNSH) e sulla comunicazione. Gli atti prevedono anche collaborazione e formazione congiunta. L’ambito comune non prova una prestazione duplicata; gli indicatori dell’ufficio non certificano l’utilità di ogni incarico. Restano da collegare contratti, prodotti accettati e liquidazioni.",
+      "sourceIds": [
+        "mase-esperti",
+        "mase-allegati",
+        "mase-performance"
+      ]
+    },
+    {
+      "text": "Mestre: la documentazione distingue aumento contrattuale e opere poi stralciate. Resta da verificare la destinazione delle somme rese disponibili dallo stralcio di Roncoduro, senza presumere che siano state pagate per lavori non eseguiti.",
+      "sourceIds": [
+        "mestre-camera",
+        "mestre"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "entrate",
+      "publisher": "RGS",
+      "title": "Rendiconto 2025, entrate per articolo",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-entrate-articolo",
+      "locator": "Record 1.404; pubblicazione aggiornata il 14 luglio 2026."
+    },
+    {
+      "id": "schema-entrate",
+      "publisher": "RGS",
+      "title": "Tracciato delle entrate",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5506_Rendiconto%20Pubblicato%20Elaborabile%20Entrate.pdf",
+      "locator": "Pagina 6: previsione definitiva."
+    },
+    {
+      "id": "indicatori",
+      "publisher": "RGS",
+      "title": "Note integrative 2025, indicatori",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-note-integrative-al-rendiconto-indicatori",
+      "locator": "Record indicati in ciascuna scheda; osservazione 14 luglio 2026."
+    },
+    {
+      "id": "azioni",
+      "publisher": "RGS",
+      "title": "Note integrative 2025, azioni",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-note-integrative-al-rendiconto-azioni",
+      "locator": "Impegni e pagamenti per azione; osservazione 14 luglio 2026."
+    },
+    {
+      "id": "cloud",
+      "publisher": "Ministero del Lavoro",
+      "title": "Ordine definitivo del contratto cloud",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_267_566_1.html",
+      "locator": "Decreto 289 del 3 aprile 2025, pagine PDF 9-10."
+    },
+    {
+      "id": "adnkronos",
+      "publisher": "Ministero del Lavoro",
+      "title": "Affidamento contenuti video",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_449_566_1.html",
+      "locator": "Decreto 42/2026, pagine PDF 1 e 3-4; decreto 85/2026, pagine 3-4."
+    },
+    {
+      "id": "mit-anas",
+      "publisher": "MIT",
+      "title": "Aggiornamento 2025 del Contratto di programma ANAS",
+      "url": "https://mit.gov.it/nfsmitgov/files/media/documentazione/2025-10/Articolato_AllegatiAggiornamento2025CdP2021-2025-signed.pdf",
+      "locator": "Pagine PDF 132 e 234; CUP F71B16000830001."
+    },
+    {
+      "id": "pg2025",
+      "publisher": "RGS",
+      "title": "Rendiconto 2025, piani di gestione",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2025-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione",
+      "locator": "13.160 record; aggiornamento 14 luglio 2026."
+    },
+    {
+      "id": "pg2024",
+      "publisher": "RGS",
+      "title": "Rendiconto 2024, piani di gestione",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/2024-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione",
+      "locator": "13.066 record; aggiornamento 14 luglio 2025."
+    },
+    {
+      "id": "mestre",
+      "publisher": "CIPE",
+      "title": "Delibera 24/2008 sul Passante di Mestre",
+      "url": "https://www.gazzettaufficiale.it/eli/id/2008/07/07/08A04763/sg",
+      "locator": "Punti 3 e 4: composizione dei costi e finanziamento."
+    },
+    {
+      "id": "pas",
+      "publisher": "RGS",
+      "title": "Assestamento approvato 2025",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/catalog/2025_PAS",
+      "locator": "Piani di gestione; MEF 02/7765/1."
+    },
+    {
+      "id": "tolentino-progetto",
+      "publisher": "ANAS, deposito VIA presso MASE",
+      "title": "Tolentino-San Severino: relazione progettuale",
+      "url": "https://va.mite.gov.it/File/Documento/1393467",
+      "locator": "Pagine PDF 8-9: iter e revisioni del progetto; documento acquisito il 14 settembre 2026."
+    },
+    {
+      "id": "mit-allegato",
+      "publisher": "MIT",
+      "title": "CdP ANAS 2021-2025, Allegato A",
+      "url": "https://www.mit.gov.it/nfsmitgov/files/media/normativa/2024-12/CdP_2021-2025_Allegato_A_-_Elenco_Interventi_CdP_21-25-signed.pdf",
+      "locator": "Pagina PDF 292: componenti del costo per il CUP F71B16000830001."
+    },
+    {
+      "id": "enea",
+      "publisher": "ENEA e GSE",
+      "title": "Rapporto sul PREPAC",
+      "url": "https://www.efficienzaenergetica.enea.it/component/jdownloads/?Itemid=101&catid=9&id=650&task=download.send",
+      "locator": "Pubblicato il 28 marzo 2024; pagine PDF 6-8 e 21."
+    },
+    {
+      "id": "lagazuoi",
+      "publisher": "Ministero del Turismo",
+      "title": "Revoca Lagazuoi S.p.A., ID 16779",
+      "url": "https://www.ministeroturismo.gov.it/wp-content/uploads/2026/06/DDG-revoca-Lagazuoi-SpA.pdf",
+      "locator": "Pagine PDF 3-6: mancato avvio, revoca e assenza di impegni ed erogazioni; atto del 2026."
+    },
+    {
+      "id": "carceri-programma",
+      "publisher": "Ministero della Giustizia",
+      "title": "Programma di edilizia penitenziaria",
+      "url": "https://www.giustizia.it/giustizia/page/it/csc_programma_interventi",
+      "locator": "Aggiornato il 5 agosto 2025; linee di intervento e posti inutilizzabili."
+    },
+    {
+      "id": "mase-performance",
+      "publisher": "MASE",
+      "title": "Relazione sulla performance 2025",
+      "url": "https://www.mase.gov.it/portale/documents/d/guest/m_amte-mase-udcm_decreti_ministro_r_-0000211-10-07-2026-pdf",
+      "locator": "D.M. 211 del 10 luglio 2026, pagine PDF 114-115, tabelle 5 e 7."
+    },
+    {
+      "id": "archivi-senato",
+      "publisher": "Senato della Repubblica",
+      "title": "Bilancio 2026-2028, Tabella 14, Cultura",
+      "url": "https://www.senato.it/service/PDF/PDFServer/BGT/01477094.pdf",
+      "locator": "A.S. 1689, comunicato il 22 ottobre 2025; pagine PDF 43-45: nuovi indicatori degli Archivi."
+    },
+    {
+      "id": "sport-corriere",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Corriere dello Sport",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_406_566_1.html",
+      "locator": "CIG B89A063116; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "sport-fatto",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Fatto Quotidiano",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_405_566_1.html",
+      "locator": "CIG B89A1882E0; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "sport-giornale",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Giornale",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_403_566_1.html",
+      "locator": "CIG B89A2297BB; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "sport-libero",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Libero",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_407_566_1.html",
+      "locator": "CIG B89A5053CD; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "sport-tempo",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Tempo",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_404_566_1.html",
+      "locator": "CIG B89A3D69C0; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "sport-tuttosport",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Tuttosport",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_408_566_1.html",
+      "locator": "CIG B89A54BD8E; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "ads-corriere",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Corriere della Sera",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_402_566_1.html",
+      "locator": "CIG B899EF63E0; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "ads-sole",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Sole 24 Ore",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_399_566_1.html",
+      "locator": "CIG B89A390FFA; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "ads-subasio",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Radio Subasio",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_392_566_1.html",
+      "locator": "CIG B8DDC0B402; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "ads-mediaset",
+      "publisher": "Ministero del Lavoro",
+      "title": "Campagna DL Coesione: Mediaset TV e CTV",
+      "url": "https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_451_566_1.html",
+      "locator": "CIG B985E8760A; determine e decreti di aggiudicazione allegati alla scheda."
+    },
+    {
+      "id": "mestre-camera",
+      "publisher": "Camera dei deputati",
+      "title": "Passante di Mestre, quadro contrattuale",
+      "url": "https://leg16.camera.it/temiap/temi16/pis10_030.pdf",
+      "locator": "Camera dei deputati, 2010, pagina PDF 12."
+    },
+    {
+      "id": "mestre-silos",
+      "publisher": "Camera dei deputati",
+      "title": "Passante di Mestre, scheda SILOS",
+      "url": "https://silos.infrastrutturestrategiche.it/Home/Scheda/681",
+      "locator": "Stralcio di Roncoduro, quinta variante ANAS del 24 novembre 2014."
+    },
+    {
+      "id": "mase-allegati",
+      "publisher": "MASE",
+      "title": "Allegati alla performance 2025",
+      "url": "https://www.mase.gov.it/portale/documents/d/guest/allegati-relazione-performance-2025-zip",
+      "locator": "Allegati 6 e 10, obiettivi COGESPRO e Unità PNRR."
+    },
+    {
+      "id": "mase-esperti",
+      "publisher": "MASE",
+      "title": "Incarichi esperti Dipartimento PNRR",
+      "url": "https://www.mase.gov.it/portale/documents/d/guest/2025_11_24_tabella_esperti_dipnrr-ods",
+      "locator": "Tabella aggiornata al 24 novembre 2025; righe 21 e 26. Nessun dato individuale ripubblicato nel rapporto."
+    },
+    {
+      "id": "mop",
+      "publisher": "RGS",
+      "title": "Progetti opere pubbliche MOP, totale",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale",
+      "locator": "Rilascio del 4 settembre 2026; CUP F71B16000830001. Ricevuta della verifica OData del 14 settembre nel pacchetto delle prove."
+    }
+  ],
+  "evidenceUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/62c70b65716c1e5b2ce784950e081b6bd41d52ad/docs/research/state-budget-2025",
+  "readingGuide": [
+    "Il Rendiconto descrive le entrate e le spese registrate dallo Stato a fine anno. Qui esaminiamo undici casi: per ciascuno spieghiamo che cosa risulta dai documenti, come abbiamo fatto il confronto e che cosa manca per arrivare a una conclusione.",
+    "Un importo disponibile in bilancio non è necessariamente già speso. Gli impegni sono obblighi di spesa registrati; i pagamenti sono denaro effettivamente versato. La competenza (CP) riguarda gli obblighi attribuiti all’anno; la cassa (CS) riguarda i pagamenti dell’anno, anche per obblighi precedenti. Questi ultimi sono indicati come pagamenti sui residui.",
+    "Una differenza fra due tabelle può essere un errore nei dati, senza essere denaro perso. Un ritardo può avere un costo, ma per misurarlo servono documenti aggiuntivi. Per questo non sommiamo gli importi dei casi in un totale degli sprechi.",
+    "Nei riferimenti alle fonti, CUP è il codice che identifica un progetto pubblico e CIG quello che identifica una procedura di acquisto. Un record è una riga del file consultato. Le sigle e i numeri sono riportati per permettere di ritrovare gli stessi documenti e ripetere i calcoli."
+  ]
+}

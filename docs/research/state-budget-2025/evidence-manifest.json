@@ -1,0 +1,2675 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "outputs/audit/accounting/calculations.json",
+      "sha256": "4b3fdae2dabc30cc180ed0b79b4ccdb9d76f97ccc44c1a420020c5b3f5a2ea3b",
+      "bytes": 4296161
+    },
+    {
+      "path": "outputs/audit/accounting/chapter-context-sources.json",
+      "sha256": "06adb0b0febbee4095242b4f87e86b65db1135deb13ad90af8664dd0365f8abd",
+      "bytes": 9603
+    },
+    {
+      "path": "outputs/audit/accounting/chapter-context.md",
+      "sha256": "86a3cc90de4fdd215559997515f5737562773d03fe868e7cef377e662caab797",
+      "bytes": 8765
+    },
+    {
+      "path": "outputs/audit/accounting/checklist.md",
+      "sha256": "d4fe13ac08c1a6727565139d21313e3853ff737ebf0dd0059702abff57528fdc",
+      "bytes": 1922
+    },
+    {
+      "path": "outputs/audit/accounting/coverage.json",
+      "sha256": "c3a32439997d132d1340070215fb979a712a2b21247e8b683e413ff1c111a95a",
+      "bytes": 15400
+    },
+    {
+      "path": "outputs/audit/accounting/findings.json",
+      "sha256": "ee95062d2a34899dda19d9f11fcebb9892800b45ab0478d4764ff30c721cd032",
+      "bytes": 43462
+    },
+    {
+      "path": "outputs/audit/accounting/handoff.md",
+      "sha256": "95fcbc0f0fd04fb913ff2f27070b759a5e5362c0a6417c9382b5c8519ad08f64",
+      "bytes": 2694
+    },
+    {
+      "path": "outputs/audit/accounting/monthly.json",
+      "sha256": "554b87663f58c535a9f9edef0593317ee3f53845522d5acea1364d002244948f",
+      "bytes": 12391
+    },
+    {
+      "path": "outputs/audit/accounting/monthly.py",
+      "sha256": "9205e2a1779a02e3f447eec0a91913a8b29d572358ccbdb3a77bdd0c714fe75f",
+      "bytes": 2572
+    },
+    {
+      "path": "outputs/audit/accounting/phases.json",
+      "sha256": "2e9f86a27f8eef1fa93c78e45d9d084e1d98f6b9942f47c54b977a89b68ecd00",
+      "bytes": 23840
+    },
+    {
+      "path": "outputs/audit/accounting/phases.py",
+      "sha256": "c765bc815967e2da24f5135a3925bfcc5d8d56ac03e8523a3129c7f5c1cc5d69",
+      "bytes": 4781
+    },
+    {
+      "path": "outputs/audit/accounting/report.md",
+      "sha256": "e24425efe7ec321aa96688e4750cd060f696e956a3834a67bfc93675b46f6a73",
+      "bytes": 15570
+    },
+    {
+      "path": "outputs/audit/accounting/reproduce.py",
+      "sha256": "dd352eb1ab27dae4dc1b32a10c34ad1fb597068c6f3a5ef9db32f4b888934a43",
+      "bytes": 6897
+    },
+    {
+      "path": "outputs/audit/accounting/source-documents.json",
+      "sha256": "bdf8631584b70d1973377b07198084f798f356bef4e3a82861aa33b5862b1502",
+      "bytes": 19085
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2024-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione.html",
+      "sha256": "67e7ae7c7fec315026e151f9e19c308a1e0ff116195f5cc2fc6214854cf0c07f",
+      "bytes": 47901
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-legge-di-bilancio-pubblicata-elaborabile-spese-piano-di-gestione.download-page.html",
+      "sha256": "adca8b284d8ab44522ba359c409f43b58831f86c93843af7ae14a2dc0ac076da",
+      "bytes": 10938
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-legge-di-bilancio-pubblicata-elaborabile-spese-piano-di-gestione.html",
+      "sha256": "f3bda07364c9ec7e5c049455e22d810ec6eea250ecb0355042f0957afd04c55b",
+      "bytes": 48062
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-provvedimento-di-assestamento-approvato-elaborabile-spese-piano-di-gestione.download-page.html",
+      "sha256": "97f634b57f729ec092f768e116009ec18add4ae3d3b443be8742b36644fac2cb",
+      "bytes": 10938
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-provvedimento-di-assestamento-approvato-elaborabile-spese-piano-di-gestione.html",
+      "sha256": "6d61c9ce6529e21ab78aeeede0c32883cd14ad3b024f201011365133788aa7a9",
+      "bytes": 48295
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-entrate-articolo.download-page.html",
+      "sha256": "fb45822252f647a300f4880e42ae1a28d71b3b4fba8ba7cd9c47ae469df8d15d",
+      "bytes": 10938
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-entrate-articolo.html",
+      "sha256": "e7521c9f2639615ce41a230a9fa63064d69aae0548470b1cc2f6c236b91f24ce",
+      "bytes": 47788
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-entrate-articolo.pdf",
+      "sha256": "04b0874ce47802bd981b750c521c407bebc14a255417e692a69bb78f78e9453c",
+      "bytes": 570967
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione.html",
+      "sha256": "8c04e1f657ab4893a62a2cf1df7a59e81e681be0bd33d73ed38078442e7a874f",
+      "bytes": 47899
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_LBF_SPE_ELB_CAPPG_001.catalog.json",
+      "sha256": "4ac171e73d964ea205eec668f813daf677b4acc589bffacf4cedfad156c08296",
+      "bytes": 6350
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_LBF_SPE_ELB_CAPPG_001.csv.gz",
+      "sha256": "29f3c64045310fae1f5bf0650037f7374921255f61f112b98cdf419c7ff1b5d5",
+      "bytes": 1407934
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_PAS_SPE_ELB_CAPPG_001.catalog.json",
+      "sha256": "bc7fb926fdd0739c20f5fa1a2cc2785c7f69bac4a940c022c620f08ecb11c2f8",
+      "bytes": 6463
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_PAS_SPE_ELB_CAPPG_001.csv.gz",
+      "sha256": "ee795efef98c48cf0bbe615382dac69e21f0b9a9f808b678013ec0e3e19241e7",
+      "bytes": 1092769
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_RND_ENT_ELB_CAPAR_001.catalog.json",
+      "sha256": "13639800178b4effd2fc0a4dc7c7b89fed2cadd417e6181af17ec443f2f498ab",
+      "bytes": 6215
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025_RND_ENT_ELB_CAPAR_001.csv.gz",
+      "sha256": "7843528a47a517739aeb0a7aa169b5c4574cab347572d22b9a1a3ef2a5666d88",
+      "bytes": 217414
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M01_MISS_001.catalog.json",
+      "sha256": "a041d12da7cb86b9c69462571025c27991a663894ac86d3ea399f193c76507ba",
+      "bytes": 64522
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M02_MISS_001.catalog.json",
+      "sha256": "016e456d36eb004c53d05ff19bb5b405546d63e136c3cf4b474a342ea33daf1d",
+      "bytes": 70997
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M03_MISS_001.catalog.json",
+      "sha256": "1515351ee16051c5fb4cf8c463a4495b1b89a92283688d7179122132f5ae8b5a",
+      "bytes": 71215
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M04_MISS_001.catalog.json",
+      "sha256": "9ca1a94c2d2e0a5d36a7f82179e8f2b86b76be19cd2373dd8343555d00bef117",
+      "bytes": 71323
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M05_MISS_001.catalog.json",
+      "sha256": "eac4a66d028dc985d95867f7620d2ee7b892f7ac7d26dab5af2bbfdd05b5d635",
+      "bytes": 71230
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M06_MISS_001.catalog.json",
+      "sha256": "57cd190abe52ba584d1a0e670b30c7bb7d882ed63f4242d9645c7ff741958d84",
+      "bytes": 71145
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M07_MISS_001.catalog.json",
+      "sha256": "65d926f5e08a961ad9e8d0b72ef550a69ac38a37dcf6e17844146660500ec1b4",
+      "bytes": 72011
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M08_MISS_001.catalog.json",
+      "sha256": "de39bfdcd811ba8e4c807b9b50fdbde4a1440de015d62a058dffa1740f7583cd",
+      "bytes": 64443
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M09_MISS_001.catalog.json",
+      "sha256": "bbc9847b930a2a39ff45cb0668d174e9f93baa5d6f749163bce14951e69a863a",
+      "bytes": 64533
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M10_MISS_001.catalog.json",
+      "sha256": "7516701ca15d6b6460d84dc19626ebf67dafddd8e56fc0801cce870fb101dd45",
+      "bytes": 64857
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M11_MISS_001.catalog.json",
+      "sha256": "edaaef5fc2ec6a04c92d25d3007773256247ec8137ec83432ca118f7096eb1a2",
+      "bytes": 63089
+    },
+    {
+      "path": "outputs/audit/accounting/sources/PBS_SPE_M12_MISS_001.catalog.json",
+      "sha256": "7cc3674a035dd1750377c10f71e7c82add46e45d78ff4dd67d0dbe62b77e44fc",
+      "bytes": 64835
+    },
+    {
+      "path": "outputs/audit/accounting/sources/additional-receipts.json",
+      "sha256": "2e2aca9775ba86b72af7bcefe397cdfef205dd16c4effe0f6e80f3fcd4c0cefd",
+      "bytes": 1588
+    },
+    {
+      "path": "outputs/audit/accounting/sources/assestamento-schema.txt",
+      "sha256": "cd039c570b1516858d2b816db2b88d2227822c000ec0ddbf06ad01dbb5f34bf7",
+      "bytes": 23009
+    },
+    {
+      "path": "outputs/audit/accounting/sources/entrate-schema.txt",
+      "sha256": "a8ad599586f34de1154662830fd74ab6834b9e23ba44f712696cbc3f5bfb3106",
+      "bytes": 19950
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-01.csv.gz",
+      "sha256": "09340e9abf19a54aa3fb5d99242e219bbe799dbf9b3d12d0bf489c179a3431ea",
+      "bytes": 2028
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-02.csv.gz",
+      "sha256": "169a4389371ce88384304c02030b08c66c172cd97ec06a27913122827c611086",
+      "bytes": 2319
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-03.csv.gz",
+      "sha256": "127da3c0bb68584b69d53a20b6aa3af1fed69441a2da71ab0f39dfcd6e503a4b",
+      "bytes": 2415
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-04.csv.gz",
+      "sha256": "01a240425868862ecd557fba4027777fcd6ea19cdf05935d82107f87614be6d0",
+      "bytes": 2463
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-05.csv.gz",
+      "sha256": "11da94d9db75212eaa430fc47aec51274a0c889c6d6489e6f520da3e32b83b9b",
+      "bytes": 2498
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-06.csv.gz",
+      "sha256": "d40a3cec6506d802a15845dbfb6318330f93e64519692b01250e6cac8c52f2ac",
+      "bytes": 2508
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-07.csv.gz",
+      "sha256": "6d4a9bc574f2f8d56bf37f322daf0e44e9d226c61e1df8849a0467b42dbf61f1",
+      "bytes": 2532
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-08.csv.gz",
+      "sha256": "db2ff1ea8372bdfb8466f7ed2998b1703a5eb1097de5dcb8dd51544f2ecdb3d6",
+      "bytes": 2533
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-09.csv.gz",
+      "sha256": "0bdfeb0602508d91986c0e41033789aa512b8ff3fd656eca668c734732342bb5",
+      "bytes": 2541
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-10.csv.gz",
+      "sha256": "4ee1dc55bb6185fc66f11c06cd8de5a8a4ef514c281896bb6fad61b2fa2ad4ae",
+      "bytes": 2550
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-11.csv.gz",
+      "sha256": "d2f4389a0c303182cf63a0bc717c8b79c3cdca68f7d805a278b70738775ae7a4",
+      "bytes": 2565
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2025-12.csv.gz",
+      "sha256": "684138ca77be203c4827fd37ca50846de3ae3da04eccc96dc8f8c606f895a175",
+      "bytes": 2594
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-01.csv.gz",
+      "sha256": "4d7875ec6ce19d4812f57471ff7ce5900e7d425025e31099fbb27b5c072f58fe",
+      "bytes": 2037
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-02.csv.gz",
+      "sha256": "463883492f68d7fbd9d051f723ec560a00204ccc47ea3334294ea1040d3becbf",
+      "bytes": 2339
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-03.csv.gz",
+      "sha256": "5234952eadceb281733b2e0801a4ff715a37802e1a449d6b24b5576ea6515e45",
+      "bytes": 2428
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-04.csv.gz",
+      "sha256": "f5d044938a70ae365a99258e31efa46345b300989cdd7c9aaf46dd84c57979c9",
+      "bytes": 2475
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-05.csv.gz",
+      "sha256": "a975a6a74a5cc5e605360834abc55d7a7a7c17b568ee310c10ec2ecb1ae9e143",
+      "bytes": 2488
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-06.csv.gz",
+      "sha256": "b99b49d201b312680cde70741a64f08e63710b6a9d5eb7c54383ca41efaeee5c",
+      "bytes": 2511
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-2026-07.csv.gz",
+      "sha256": "24116e80ab4fe6a3b486229713be9c045f7613a75a7761fae9972142e9a6c513",
+      "bytes": 2527
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-receipts.json",
+      "sha256": "9dcc051a844e4646d036269097b66296fd3a77e529ca8ce1057725fdd8b1d243",
+      "bytes": 10053
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-schema.receipt.json",
+      "sha256": "cffd30674d5baeaa004abd33a97898bc57c7c77f4829f957841110c48857945e",
+      "bytes": 239
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-schema.txt",
+      "sha256": "cad4a0d4a1b6d7bb612c680da6aecf306f3329666d25e9117e0ae85b21747f8c",
+      "bytes": 13911
+    },
+    {
+      "path": "outputs/audit/accounting/sources/rendiconto-2024-pg.csv.gz",
+      "sha256": "a7688890b6dfb8e92c95c3641cf64104f28c4b5018133045c03338ecfba60cbe",
+      "bytes": 1386327
+    },
+    {
+      "path": "outputs/audit/accounting/sources/rendiconto-2025-capitoli.csv.gz",
+      "sha256": "4193082b1bd888067d037a810157c31a2fcfb56d16ec4ba50960bffcfc695b55",
+      "bytes": 564758
+    },
+    {
+      "path": "outputs/audit/accounting/sources/rendiconto-2025-pg.csv.gz",
+      "sha256": "a69387d2e887125f22bf4e9421857de21c993e44b62a1f9892daa20b5a3b8dd4",
+      "bytes": 1372397
+    },
+    {
+      "path": "outputs/audit/accounting/sources/rendiconto-schema.txt",
+      "sha256": "21de32b70a5760d4cb52fafef0fa1e19863c8caabba232747c532463c1766bc3",
+      "bytes": 27130
+    },
+    {
+      "path": "outputs/audit/accounting/sources/revenue-alternate.receipt.json",
+      "sha256": "efe8bc4aeaa47cffd08231f5357d3cac6347f32649a5835910e6e2523e9bfddf",
+      "bytes": 266
+    },
+    {
+      "path": "outputs/audit/accounting/sources.json",
+      "sha256": "a6e713edb397704e96c26a50cebf2ed7fa346c2efa1c534a23b0ec55d4dc93b3",
+      "bytes": 32894
+    },
+    {
+      "path": "outputs/audit/accounting/test_reproduce.py",
+      "sha256": "4fa28f92e3b120c77e6f46b4277e4bdd21f9d6393c898a1dab0db7360cddd233",
+      "bytes": 3441
+    },
+    {
+      "path": "outputs/audit/accounting/verification.json",
+      "sha256": "e94e0b1dc6dbcac47dfcabd01b1b64fa3bfa607ef8d0f950e04e0779cd05829e",
+      "bytes": 919
+    },
+    {
+      "path": "outputs/audit/outcome/access-attempts.json",
+      "sha256": "2362c25a73b784c02deaed303774f255377ff157b164caab53850a34b0dc473a",
+      "bytes": 878
+    },
+    {
+      "path": "outputs/audit/outcome/acquire.py",
+      "sha256": "9beacc7f3ad3bb4cab237098f78b461742fb0709144d76f2aaace5d4b776ec70",
+      "bytes": 2648
+    },
+    {
+      "path": "outputs/audit/outcome/analyze.py",
+      "sha256": "11ec1f51f914318b0409a668c9854d63184be6f2d0069c4562489b436b813cdf",
+      "bytes": 10021
+    },
+    {
+      "path": "outputs/audit/outcome/calculations.json",
+      "sha256": "265b3f08dc2deae4c8660a1d255dd51c5524cfbe1f7cba631497cf3e4960e16f",
+      "bytes": 1138
+    },
+    {
+      "path": "outputs/audit/outcome/case-specs.json",
+      "sha256": "2b9070ca2dc1e16226aedd103fab57c7499a709ec13009c2847d108973fe50e5",
+      "bytes": 11151
+    },
+    {
+      "path": "outputs/audit/outcome/checklist.md",
+      "sha256": "86f355005abf04a4068a25185794321c49182c3ebbd559f322defde786f72799",
+      "bytes": 2283
+    },
+    {
+      "path": "outputs/audit/outcome/coverage.json",
+      "sha256": "6209073ccd089a3f17d2a6a57840128314108834acd12c02eeb533b9534cebb6",
+      "bytes": 1491
+    },
+    {
+      "path": "outputs/audit/outcome/extract_pg.py",
+      "sha256": "08faf8d80bc4224af30f191eac485d5038b459ceda404ff7ad9ae1021e2303b8",
+      "bytes": 1232
+    },
+    {
+      "path": "outputs/audit/outcome/findings.json",
+      "sha256": "aca82bcc1542fee272e2ac14cefc45f5429af22030542205a2487eb7cedd8a27",
+      "bytes": 348646
+    },
+    {
+      "path": "outputs/audit/outcome/pg-evidence.json",
+      "sha256": "6ca94d9768c421210b38d6070f42b68805b32e655ea28694e777f9e21676eb63",
+      "bytes": 1906279
+    },
+    {
+      "path": "outputs/audit/outcome/reconciliation.json",
+      "sha256": "570244e51c0ec8e236b7a1de7ffa2f3b959550fc805311189242488860d7b169",
+      "bytes": 16654
+    },
+    {
+      "path": "outputs/audit/outcome/report.md",
+      "sha256": "4feb3ce28efdc46b266321bf976221a7cd80c506f7005681184582ea9cb2e37e",
+      "bytes": 15146
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-azioni.csv",
+      "sha256": "82fca1b12bd0c1a1174a0429063dafeed9fdbc24c20e0c1477ff8e174bb92f92",
+      "bytes": 1130036
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-azioni.html",
+      "sha256": "fa9bb58757f9ab35ddaaacaaca21c5f55dbc0812714f3cd39c499cdd026b608b",
+      "bytes": 47249
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-indicatori.csv",
+      "sha256": "663888922416dd57d04cf1e33e1d97db2896ee56f24a3a548af58d57f290dfbd",
+      "bytes": 1329481
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-indicatori.html",
+      "sha256": "f414550f630abbdf13ca362cedd51747e40d2a7588e404184d3ae4eac2bbfa26",
+      "bytes": 47318
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-obiettivi.csv",
+      "sha256": "d08bdd60cbbc6f38d33e12bd1ed9e4dc8d7cbfea9f29a4b00f441970cbf13198",
+      "bytes": 661831
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2023-al-rendiconto-obiettivi.html",
+      "sha256": "7612428a6d04269dbdd18817cef1839feb60a8f98a580cd72e46329599fee95d",
+      "bytes": 47333
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-azioni.csv",
+      "sha256": "4aa12384f33264be3fae03848a2f1f8650b9a49f93bfaa22d13d65ae43627cfa",
+      "bytes": 1169447
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-azioni.html",
+      "sha256": "405901045f9b2dcd43ae2e51244d788986ab4cc37921e282a0a55895ee91a169",
+      "bytes": 47245
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-indicatori.csv",
+      "sha256": "c23ac52bc025bd5efbdc54e4f2814b5b3571685a122db0242c54bde40138c26d",
+      "bytes": 1363250
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-indicatori.html",
+      "sha256": "b51c0fb2d538b65000a161831f88904fb0d700ad43ef66d6f96f69a9d7d928b6",
+      "bytes": 47313
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-obiettivi.csv",
+      "sha256": "6559b3a9fbf02ce148fc7ee19753b57d80f5790572f51dee896972af25ca390f",
+      "bytes": 661436
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2024-al-rendiconto-obiettivi.html",
+      "sha256": "40ee68ba99f64f9f6589257a67aa61808cb77107cb14230719bcc1f80eebe944",
+      "bytes": 47328
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-azioni.csv",
+      "sha256": "140c98f18f62f68c928baa41fb6c81377d44bf536a9784855d9090db0b610b59",
+      "bytes": 1247781
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-azioni.html",
+      "sha256": "6f1765dfbb65e9f7d367aadb89eae7254de74fc703e2a8f44476160e99c471ca",
+      "bytes": 47247
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-indicatori.csv",
+      "sha256": "9bfd934f489d21a7e8a439b492a5dadef79ce120f5f0e4f0c561d1a7238d3999",
+      "bytes": 1381740
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-indicatori.html",
+      "sha256": "d3b2ceeac17f8bb19a7b33decebdc5c9d5af19f7c6597f53b18a32e365a5167e",
+      "bytes": 47277
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-obiettivi.csv",
+      "sha256": "8ba393c494293fb115146adad79d917dc9d75ec3fbd7ec4af5cad7cfecf9d447",
+      "bytes": 675360
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-al-rendiconto-obiettivi.html",
+      "sha256": "b0c54508f31669e6aa4476b8ab169f6fc1ef2dd3c4689ed4232a729bf2377bd8",
+      "bytes": 47324
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-azioni.csv",
+      "sha256": "600973226e7e7397fea087de22d21b5ad9bf93f986a15df728ede85b3be852b0",
+      "bytes": 1172239
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-azioni.html",
+      "sha256": "f56c7e0ae7a995623608a2fc76f5f72fcd6a7be5817bd0e03729492a618d726a",
+      "bytes": 47350
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-indicatori.csv",
+      "sha256": "4fdcd871b60e30d4085d44eecd5f9b5636e76a14613eff4894dc8959f0940f01",
+      "bytes": 1325274
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-indicatori.html",
+      "sha256": "deb409bf367672528f465cd3590ccf0caaf044e638ab5283d73708240e37943e",
+      "bytes": 47404
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-obiettivi.csv",
+      "sha256": "7e31ba0a7d3ae25e387173187152effb9b0b2f7a808d84814d3aabdecfcded73",
+      "bytes": 649737
+    },
+    {
+      "path": "outputs/audit/outcome/sources/2025-alla-legge-di-bilancio-obiettivi.html",
+      "sha256": "f6dea93a98c619ed41b4a4c86164a08a3ad6db31dc665f930db920df8e5f45f3",
+      "bytes": 47449
+    },
+    {
+      "path": "outputs/audit/outcome/sources.json",
+      "sha256": "272104fb939233eeeed26cdf1a99686ff90484e6f23948b90e31b3021383f0cd",
+      "bytes": 22707
+    },
+    {
+      "path": "outputs/audit/outcome/test_analysis.py",
+      "sha256": "a1235397fe437fe0b3cd1aa6635c513c7244e7e817d2de1f64db3138ebae84a7",
+      "bytes": 2694
+    },
+    {
+      "path": "outputs/audit/personale/acquire_metadata.py",
+      "sha256": "5dbcca080259cdee430f65c3701cbc2fc452b7f9a63e4011338e627d7a9fd020",
+      "bytes": 951
+    },
+    {
+      "path": "outputs/audit/personale/acquire_second_pass.py",
+      "sha256": "ed10dffb921b88a25fc0400a04a6c2a66fc6fc0952b37f8b86b5af0da103caf4",
+      "bytes": 940
+    },
+    {
+      "path": "outputs/audit/personale/analyze.py",
+      "sha256": "f087e75c746baedfd7aac300f2a6577ca0f27bc2d04b97d7f06645b308791f97",
+      "bytes": 5771
+    },
+    {
+      "path": "outputs/audit/personale/build_report.py",
+      "sha256": "a259b4645f7c179def279d07c9b337b8277dceb5e96eedde2cb1a25d4427d290",
+      "bytes": 20256
+    },
+    {
+      "path": "outputs/audit/personale/calculations.json",
+      "sha256": "96e70998009b773d1858d0e2862e94e553c97128f1af14b5728b80a29bada837",
+      "bytes": 539065
+    },
+    {
+      "path": "outputs/audit/personale/checklist.md",
+      "sha256": "e3ef7b9cdc41f1fc6aae427ec96cfb17ec04b83c963ca21cdb91912310b4f8f9",
+      "bytes": 1537
+    },
+    {
+      "path": "outputs/audit/personale/evidence/consulenti-glossary.html",
+      "sha256": "d0524d1e2d722eb5948aefbbb71ccaa588f1ecb89644fc8a77fa3101519204e8",
+      "bytes": 10838
+    },
+    {
+      "path": "outputs/audit/personale/evidence/pg2024-landing.html",
+      "sha256": "c6882fe2d2142dc1d0d94d1edfff0f5f7ecd2eada16cbe2b6521c6a627c3cb8e",
+      "bytes": 47901
+    },
+    {
+      "path": "outputs/audit/personale/evidence/pg2025-landing.html",
+      "sha256": "c992bed8ab4ddcce9e7a43dc55f875fdc44b7925de15dafd6dde288dbf5efe9c",
+      "bytes": 47899
+    },
+    {
+      "path": "outputs/audit/personale/evidence/receipts.json",
+      "sha256": "20820526e74e341edca7d7a1b38371bc4371eeca6b8bd3707f404dabb474728d",
+      "bytes": 1026
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/avviso-2023.txt",
+      "sha256": "328de9959899c3f6dba557fc6b425d13319064500fd9517edd58c28513a2d764",
+      "bytes": 117790
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/camera-1752.html",
+      "sha256": "fede1b675876e7903671f5a665360adab030a0d3163e949e672de2426b8a53f6",
+      "bytes": 1893041
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/camera-2807-rt.txt",
+      "sha256": "fc2ac171a8fd4b53902f87650fafb328d55ba13802c1010d2ba7e64c4c22577a",
+      "bytes": 1098582
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/commissione-33-2023.txt",
+      "sha256": "49b1c2f6828ba3a98727e02cf1725ecc602dc74c73ea8c4b0c6153add1dd53d6",
+      "bytes": 18001
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/derived-receipts.json",
+      "sha256": "9501f5b49246a4d027e2384fbf473bec44680c1a0c807ebf3819b910c464d54b",
+      "bytes": 715
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/dm-203-2023.txt",
+      "sha256": "5270b1c52b440f8fa5aa8045e3e560ab192983a841f1e0b6abd65c37aed4cdad",
+      "bytes": 29080
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-avviso.html",
+      "sha256": "520e4b795e0c8d7d8ebbc53e7eaed05fceb6bec21683ddbb126f20fd96fa7944",
+      "bytes": 122314
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-bandi.html",
+      "sha256": "cd2bce7f181e55c4a9656c1537d850cdff1c5322fc14c6506c0e6784e04b338a",
+      "bytes": 137515
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-consulenti.html",
+      "sha256": "51af1bd2e71880ef873557e63314b0270b6efec27629e21eb4f78c16dcd6e9a0",
+      "bytes": 132691
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-performance-2025.html",
+      "sha256": "9dc800e2766219ed7d1e95447a7299ebbb9320eaab268a3790d8346882194498",
+      "bytes": 115786
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-performance.html",
+      "sha256": "85ce20e0a59a3515f1c4d4a1f41bfa659080f76d0ba32a1fce8b4be3295128c0",
+      "bytes": 114764
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-pnrr-consulenti.html",
+      "sha256": "a06f51c30b7c56f9627bd2c6c403bd68b6a3539f680575357d0dd4a5bd583052",
+      "bytes": 115424
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-portale.html",
+      "sha256": "005a086fb05f095ebe2480bc96f2a7dda35f19ba6b65f2247dd462db5d671864",
+      "bytes": 192787
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/mase-relazioni.html",
+      "sha256": "750aa92007f31e939affd76ff9ef652bce09bc41c87605892729ae70ace16ce1",
+      "bytes": 117560
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/objectives-2025-direzioni.txt",
+      "sha256": "5615495a8e5ac2d0ebc80788f90488ec50c96379efa9abaca817415fa575e73d",
+      "bytes": 28748
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/objectives-2025-divisioni.txt",
+      "sha256": "72473a9e189b438163d63a1369efef7a9f3f5af1d4a96f0023e848d299b9e05f",
+      "bytes": 64637
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/performance-2024.txt",
+      "sha256": "7183a9714b467c30925a7eab0d7d609e01eb722e70257ff177fbbd8a643fc837",
+      "bytes": 406634
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/performance-2025-adozione.txt",
+      "sha256": "8b24c7728d059966a536cd1bcc54a02cf2c387a73378f4b9792c3f07956ff13a",
+      "bytes": 605447
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/receipts.json",
+      "sha256": "85b33b1e0c9ed69a9903534c40fbd56561a925e836c8cc60fc97e5a710d9457c",
+      "bytes": 11832
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/uffici-2024.html",
+      "sha256": "7ab6322f8a8629574b4ea2a656fa9f7b18304ea189094dc20672782f7d1b7079",
+      "bytes": 121676
+    },
+    {
+      "path": "outputs/audit/personale/findings.json",
+      "sha256": "b604b6a989359c15dd7d3e59a6faa1afdce06eccc8ede8f5892b28d006ae09ee",
+      "bytes": 30649
+    },
+    {
+      "path": "outputs/audit/personale/report.md",
+      "sha256": "807bb878aa4e0f431f2f6a17ea591e5d9603a14d51aaf6458df0123777c40cb9",
+      "bytes": 28602
+    },
+    {
+      "path": "outputs/audit/personale/second-pass-acquisition-manifest.json",
+      "sha256": "213b674dd7d0a8d5a10dd997b9fde0853a9f9c352c9499508f47f5d75402aad2",
+      "bytes": 2799
+    },
+    {
+      "path": "outputs/audit/personale/second-pass-calculations.json",
+      "sha256": "1b6eb34e5d9b780ed55dbd60a77a1d4c0fb0b7358a606de987be1f02f0b27873",
+      "bytes": 20887
+    },
+    {
+      "path": "outputs/audit/personale/second-pass-findings.json",
+      "sha256": "27aaea35bd2a824c80052281c42d04edf4263905ec89021a8ab381d37a5f800f",
+      "bytes": 22723
+    },
+    {
+      "path": "outputs/audit/personale/second-pass-source-metadata.json",
+      "sha256": "73f6a27efe193f4af28edbd0a3b4d4ce7568eb315ee468108ffb616493ad938b",
+      "bytes": 1604
+    },
+    {
+      "path": "outputs/audit/personale/second-pass.md",
+      "sha256": "44e7233aa64e534d51efc91ab30bc485906004e75366fab45c3b2fac63b356b8",
+      "bytes": 10137
+    },
+    {
+      "path": "outputs/audit/personale/second_pass_calculations.py",
+      "sha256": "45e00a23ed6e2da0c9e89f7d698a1c2975b9fe37607c2e71c49b98098f8e879a",
+      "bytes": 3366
+    },
+    {
+      "path": "outputs/audit/personale/sources.json",
+      "sha256": "dff622e08560696d9bc964584fe97c15872ea83f45ef70a0ffe627c50a945e15",
+      "bytes": 36601
+    },
+    {
+      "path": "outputs/audit/personale/test_personale.py",
+      "sha256": "def04ad41cb4196d629e77f711d97ecc0cbec09245a87a04fed8a15ba62bb2d2",
+      "bytes": 2482
+    },
+    {
+      "path": "outputs/audit/personale/test_second_pass.py",
+      "sha256": "80c6221840d054a2fc85294936a3c59f58dc7fb7915ac58c7bfa429fc69f39df",
+      "bytes": 2146
+    },
+    {
+      "path": "outputs/audit/procurement/acquire_second.py",
+      "sha256": "42941da49a30ddc750f6c84b8d418266d6307bea867a08d85bfbb8f5ee65d19d",
+      "bytes": 1597
+    },
+    {
+      "path": "outputs/audit/procurement/build_findings.py",
+      "sha256": "aa66dbd4df212f36e2bfbde8ae283a0b338c6815b61b14c085e46834ba92b489",
+      "bytes": 14891
+    },
+    {
+      "path": "outputs/audit/procurement/bundle-manifest.json",
+      "sha256": "8f6e42a11b5f07a8d0eed517d324c92b5a42c8b05ca2a978be8ec93dd7fa5539",
+      "bytes": 41545
+    },
+    {
+      "path": "outputs/audit/procurement/calculate.py",
+      "sha256": "f83737423c990dd061255387f2b5ddd5060f02925c99d0990fd1e72c5927f70b",
+      "bytes": 10749
+    },
+    {
+      "path": "outputs/audit/procurement/calculations.json",
+      "sha256": "8aa8daabfe132cbb783353173528329f311b813e37233ee6d4b4a5907384763f",
+      "bytes": 38293
+    },
+    {
+      "path": "outputs/audit/procurement/campaign-attachments.json",
+      "sha256": "9b9cbf80942413723e25833bc7a6804dd734cfb52b62544ab6cad2377d6f7508",
+      "bytes": 36897
+    },
+    {
+      "path": "outputs/audit/procurement/campaign-links.json",
+      "sha256": "46177d9c3ff5a396d5e248f3d1dc28ab72eae078dd23a278f3bc2217a3f685b8",
+      "bytes": 14159
+    },
+    {
+      "path": "outputs/audit/procurement/checklist.md",
+      "sha256": "ef9689becf5dbc007881c72519192a81fb3b436551080b7c59f304bbe849de3c",
+      "bytes": 2405
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-1.txt",
+      "sha256": "2601394f801f0768719435d48e2d19278ac67daef9c4c25cec96f266df5a6dae",
+      "bytes": 11280
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-2.txt",
+      "sha256": "e2bb8a0325f68d495fcc19310371380b46ab4dc02d4c4ce45c186df7a3e0f412",
+      "bytes": 3117
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-3.txt",
+      "sha256": "21f7e44853c85b7071f65bbdc06302e6aa48ab508ab019e5eb5e4c73fcc6a15b",
+      "bytes": 5117
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-4.txt",
+      "sha256": "cdd2d8f84f8b6ec0191c7169d4f1182eec4f6861201dec710f64efc5d12d4c5b",
+      "bytes": 12207
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-5.txt",
+      "sha256": "ddd16f1faa6ad9b42bc0747f42d349af1b834964500d64764f8d07c92a3db0ac",
+      "bytes": 11737
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos.html",
+      "sha256": "ee0be4cb4bb0ffdf4b348c0ad48d6379aca766cb2963287181f966aadd5e417e",
+      "bytes": 82676
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-1.txt",
+      "sha256": "71d50f7ccb168cbbea1ee9044ca9038cc0000fd3d46a4af3b7a1c17d330ba32f",
+      "bytes": 11560
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-2.txt",
+      "sha256": "00e36ad8c85acaac4d3f1b58e8267d02be6a44163d25fef7da79ab3fea7cf696",
+      "bytes": 11149
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-3.txt",
+      "sha256": "39c8170fe8e03c9e6741022a974bb881868949c34ff7fb2bff148169a3910f2e",
+      "bytes": 11278
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere.html",
+      "sha256": "efa937aa696d84a622348df763febb1c953554affe55623dffdf7323d6f5eb64",
+      "bytes": 79322
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-sole-1.txt",
+      "sha256": "3e3a85b81c73611e94348174dce96df5742a86bc2cd87ea08eb33e9697685147",
+      "bytes": 11452
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-sole-2.txt",
+      "sha256": "61a75ed7276e472ebe913373a01d50f06fe3488b9a4f9c60e53e03c567bdaa05",
+      "bytes": 11113
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-sole.html",
+      "sha256": "18e6b3e318315ebb0a1f3cb504064f2a4595d97f737e421705eb0fcef62427eb",
+      "bytes": 78622
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/background-vexa.html",
+      "sha256": "7be22c16d11904e058570dd8835fa6d67b783465d2d511e5584e8b60471b5f09",
+      "bytes": 79288
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/background-vista.html",
+      "sha256": "51a678b015ffed557029950e7930028f21d2b2e365135d1c77933b8873702439",
+      "bytes": 80260
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/cloud-extension.txt",
+      "sha256": "eef739fb6ab140bc5b11e60a307e93fdd23da2b81ae9465a47ff6d1371a815b9",
+      "bytes": 50844
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/cloud-order.pdf",
+      "sha256": "2af1d7905e72d36a72b9aec59166f3def29b412c57af6b5edf0d76116b43d28c",
+      "bytes": 407479
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/cloud-order.txt",
+      "sha256": "457c80e3e2dbc2ee9cd93ccf712ad6988570018feaa1d8e0dce82b6ae851a385",
+      "bytes": 48624
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-addendum.txt",
+      "sha256": "9508c44ad9013a93c823843a4f0fad6d101792885eea2b228202e62d3db6a55c",
+      "bytes": 32801
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-observations.txt",
+      "sha256": "0d68d1372bef396a052ad93464eaa8103f65e203b8ffea9f766ad2ca99dd5f97",
+      "bytes": 4061
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-registration.txt",
+      "sha256": "167db864f9df6b3a4d110336e25a5a4dd1afb09474bd1eaf401f0932d0fac5e7",
+      "bytes": 2058
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-response.txt",
+      "sha256": "3208106fa7b9fb429fd0e0ddacb23e617b344a58cff3b30ad09e667518dfc1fb",
+      "bytes": 6504
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/mlps-cloud.html",
+      "sha256": "5dfce10f7554f00af473f13601ed46dd1e1645123b9314834619993ea748016b",
+      "bytes": 82801
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/mlps-invitalia.html",
+      "sha256": "509a39ffbabf9b9f18d447ae32fac94664a0ce68196e2aa659ee1c4adc7ae37f",
+      "bytes": 81607
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/receipts.json",
+      "sha256": "7b219c5488dbfdc6c2bd53a1fa79d5352628af492dfee0ff33fa8f90e4baaa92",
+      "bytes": 9364
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B899EF63E0.html",
+      "sha256": "efa937aa696d84a622348df763febb1c953554affe55623dffdf7323d6f5eb64",
+      "bytes": 79322
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-1.txt",
+      "sha256": "4af331b3ef554a0cb6a5ddad7bea834f51717aa561379a9c28c2b04c92196d8b",
+      "bytes": 11291
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-2.txt",
+      "sha256": "2819ffeb12b92eb9c0a728ffc961faf194d0b60d52f6cfb524c9d4faf8b6b3dd",
+      "bytes": 11640
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-3.txt",
+      "sha256": "08f5d6642bb045e2a8a048a461d25e2b393a1e8090decb24cfda6842ecb42aea",
+      "bytes": 11576
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116.html",
+      "sha256": "122083cc1de2ae593c14dcf4e0ba0fec7dfc4cc308b6d88e9759adb8952a41d7",
+      "bytes": 79342
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-1.txt",
+      "sha256": "3fe531b3c0e3218fb24daa7886a0e0e4fb2cc5852a0aa14e72a7b9458307752f",
+      "bytes": 11284
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-2.txt",
+      "sha256": "153dcb7a81834b59c202410805c10e0467da8f44b3dd783487415c4fcfcc47e6",
+      "bytes": 11623
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-3.txt",
+      "sha256": "c98edb0031a031ad6e7b08c115c22c12c33c51d860e5a34d1b3f63a5f2b13f04",
+      "bytes": 11565
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0.html",
+      "sha256": "9e86a514168ae7dca2e07463506c23bd6c9dd0f6ba933a6b5c98ddbb4716d428",
+      "bytes": 79318
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-1.txt",
+      "sha256": "3ccbc9a14d2ab84e91ee81eb411a866c32aac7ae67ca7f33898c786ebfb6b1af",
+      "bytes": 11275
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-2.txt",
+      "sha256": "15bbd845d0a217be74680e1d05e9fd6bb969e1aec7e45bf66afc4dcd538e4382",
+      "bytes": 11315
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-3.txt",
+      "sha256": "7e703e63c9dbedf66edf9c0792261afdd80837aa60603e83de15ebfbccbdf191",
+      "bytes": 11575
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB.html",
+      "sha256": "8c99d80a57a4440050aa5ac78f54818aea8414496a5b44ab1f2a3d57c039b582",
+      "bytes": 79286
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-1.txt",
+      "sha256": "b085066183c425628a3df5d53a8fc8457b2e4812d0ce0dc81e8e24332d2b3723",
+      "bytes": 11254
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-2.txt",
+      "sha256": "e4c803f1952f29dd5af1f505e4734099cb2346d9b74d371c9039b59642286c03",
+      "bytes": 11122
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-3.txt",
+      "sha256": "6e20d5227b186ce68ceea21edcbaf8de5dcf850ec4787850451b66304dc706c4",
+      "bytes": 11512
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-4.txt",
+      "sha256": "ef6cbd2161eaea7943ce8693b9824d23d1793ffb1c0fca05b600d3899b44c977",
+      "bytes": 1
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-5.txt",
+      "sha256": "86c39f486d26cf3e46358904639646c849c5aa3a4dcfd71af7f92a4654906cdb",
+      "bytes": 2226
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-6.txt",
+      "sha256": "c7cb64367e6d8e01ea50b0007d536469f5db72800d9c66cbc3aa2fa6e9da6619",
+      "bytes": 5641
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69.html",
+      "sha256": "5575e10c7d793f1fba13ba51f003fa85f7e0e9abccee89c570347785f1809208",
+      "bytes": 80775
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A390FFA.html",
+      "sha256": "18e6b3e318315ebb0a1f3cb504064f2a4595d97f737e421705eb0fcef62427eb",
+      "bytes": 78622
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-1.txt",
+      "sha256": "397f27f892dbfea971db4145baab6ea5c64da40ea20e73e5d66c0eeb94c9af64",
+      "bytes": 11272
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-2.txt",
+      "sha256": "575e7ae192b2be0b914b76ccb560c5bfdbfc29ee39ff50123e1e7ce735e9d70a",
+      "bytes": 11547
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-3.txt",
+      "sha256": "a698e87860a6cb8f382d0ef48117c1ce11be130ce325d79aa20d55e556ef4c32",
+      "bytes": 11562
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-4.txt",
+      "sha256": "e2e61b1cfa9ebc9c82783cc1292721d11a36db602612c7bd9e9e0b76d24ba74c",
+      "bytes": 2490
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-5.txt",
+      "sha256": "c294e4643de73a9df8296d4f9bf3a4f96ee2509f5e30bbd58ad596db2a11f497",
+      "bytes": 2996
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-6.txt",
+      "sha256": "f1f71b2e67f1657c52da043cfd81cc1ea45aabb93d38e57b48db7268b073ae8b",
+      "bytes": 5682
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0.html",
+      "sha256": "37d30323ca2628b6344bcec9600360ad0fe6d2581bffe8300c43e26bef14114b",
+      "bytes": 80855
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-1.txt",
+      "sha256": "50ffd1445f1f0d802e8750a59ab64617fb976866a4716c2485f6a7164a84d287",
+      "bytes": 11706
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-2.txt",
+      "sha256": "ab938eab16b82ce3407760c60e244c1065dc9688ce9062050e6c2063c909b5d8",
+      "bytes": 11678
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-3.txt",
+      "sha256": "db2ed04a941e04b49f825dd4669213e19c7dc4fa1f32bf39b91f4fd5c3fbf769",
+      "bytes": 11288
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-4.txt",
+      "sha256": "cc0f14ab6c1591433a5e52a273c4140317ec9836f6e71fd138bb9e5cd5bce6d1",
+      "bytes": 3649
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-5.txt",
+      "sha256": "24c9bf2bb1f7951779d59eb65c3e3972dd5ec6a5db81e7d3498c52c34fd10a69",
+      "bytes": 11890
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-6.txt",
+      "sha256": "cd160a75f9a4fd1c95d0a0b0fde2b5d138ac7f4821368f918e847188f7ee24f3",
+      "bytes": 2510
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442.html",
+      "sha256": "3abadad92a2a06662a40bd79a482138c4f0d2cab5fce2c9a76adfffd1a35fa98",
+      "bytes": 80865
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-1.txt",
+      "sha256": "94659d67b071418728c67caa6c48aff58756d89175d56ce51f4dc143ee1dc948",
+      "bytes": 11280
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-2.txt",
+      "sha256": "ca56dc488f77bdd557df222fb20606d7497b98ad0d66e9de127e489ebf20d231",
+      "bytes": 11551
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-3.txt",
+      "sha256": "03609411560c924d16bdf24fbe3b6bb239d61fd2a5c68bd31781a235388bae73",
+      "bytes": 11570
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD.html",
+      "sha256": "9dab4f78df7b60bebc79f9afd6e56c0c14b1bdd734b7ab117f4c5112dc43cfea",
+      "bytes": 79266
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-1.txt",
+      "sha256": "65572d7b0a02aec67ac78eb35ff0701b40cc9a823825bab71aae0b03e022bc04",
+      "bytes": 11551
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-2.txt",
+      "sha256": "263640dc0bfcef4306d5c7a909fc00138e94945bdbce3b61404613e6fac985ff",
+      "bytes": 11577
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-3.txt",
+      "sha256": "7e23a6aaa6e8906601572de5601dafe4707020b222f2e52835f750dafb222195",
+      "bytes": 11270
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-4.txt",
+      "sha256": "81130834a06ebfac41b8bf2c97c137017de1b243d3c7e04302b0adac9fba8cf9",
+      "bytes": 2494
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-5.txt",
+      "sha256": "7655805ea1b15ad422abf4bda4e11816d3b347e10864e22432363246b35bfcdc",
+      "bytes": 5659
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-6.txt",
+      "sha256": "f8a8179a911eb21a695f9219a0b7c5ca2a691c505cc5e20d6a82d0abb4be0d06",
+      "bytes": 2977
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E.html",
+      "sha256": "837b00d8f5dd6a0343ee9a8e520a47a02754b6ab5b2818057a0f2bda8b7ce2b3",
+      "bytes": 80763
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-1.txt",
+      "sha256": "9119d3b2032770a14d9a3b698830faafa9b4546923934c192d3c21b32e8d860b",
+      "bytes": 11545
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-2.txt",
+      "sha256": "d08ab5e7997e99a5cc61073368027ca19059e0e0aef0682f0d549ef64da02f1f",
+      "bytes": 11135
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-3.txt",
+      "sha256": "0937773c92b91e9922d62f3a1ae6dde28eb5da9809443b07cfecfcb82490c180",
+      "bytes": 11256
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E.html",
+      "sha256": "c6d6afdbbfd076ca2f1cf19d7df1918db7fdd6afc22c1901fa1a8d18e7913eac",
+      "bytes": 79191
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-1.txt",
+      "sha256": "8be9b5f15643f79ae6690596daf49dd4674ed7ac056b8284e17edbc535ff0816",
+      "bytes": 11358
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-2.txt",
+      "sha256": "375fe13c5bbcbf02ba0d87a991fd33863f424c0545b8146e0c7ab9ee92a33c8e",
+      "bytes": 11591
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-3.txt",
+      "sha256": "ef6cbd2161eaea7943ce8693b9824d23d1793ffb1c0fca05b600d3899b44c977",
+      "bytes": 1
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-4.txt",
+      "sha256": "f2913f5bafa0068a410aac887e7e60ecede0f831bc824ed4e5888182b75d3444",
+      "bytes": 5975
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-5.txt",
+      "sha256": "3944e92967d4493114467d6c129ae2aba518ebd815a66594aabca568bc48d70c",
+      "bytes": 2229
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-6.txt",
+      "sha256": "77d430073e89cd17ae9ca5da69f3bdfec1ce3365d3609a1802704568c3075820",
+      "bytes": 11179
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A.html",
+      "sha256": "5dc47d1d9c60d2185180cbe86712efb388b61c01be789f0a8d40fa520063128d",
+      "bytes": 81002
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-1.txt",
+      "sha256": "c74b14fbbdf30dd66944af1cbd1f22d10643a0540e0e60b662571ea70b40b8f0",
+      "bytes": 12371
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-2.txt",
+      "sha256": "74501817227f7ec5ec2fc02451a49751c5d41264b0655cbe22eccf9d90928e51",
+      "bytes": 11955
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-3.txt",
+      "sha256": "69ce6b4c006255fa12c8e493318bf5d5b5c878dbcf73215a66532199851ef8de",
+      "bytes": 11546
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339.html",
+      "sha256": "2af20d08c68c8d16e203d72d08b69bae70018cdb23d5fc60522be90e026bb48f",
+      "bytes": 79318
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-1.txt",
+      "sha256": "8b5e9322ebc7250469c6127bcb51632f265f5acf79a550ea4181622b85ea81fd",
+      "bytes": 11912
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-2.txt",
+      "sha256": "c9f2033118cb597302a7455ad254903a5001edf72c38ce816561dc05a25493c6",
+      "bytes": 11867
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-3.txt",
+      "sha256": "1a34e908430e3487173ca685aeb2c39884951b258b47ce963d490256a0599877",
+      "bytes": 11477
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0.html",
+      "sha256": "74552bea3c2fb8c267dce7b9cc081c8cd8c8207baa356004cd82646a46fe6847",
+      "bytes": 79358
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-1.txt",
+      "sha256": "4d9d57da93ef66af3c66021f351db6d4d9bbf1b89530e72652dfed44f47981e6",
+      "bytes": 11955
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-2.txt",
+      "sha256": "b9693a482954ab1dd88b21cfb73d6e23406f1a47a7c228f7afc4183436f977eb",
+      "bytes": 12046
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-3.txt",
+      "sha256": "98792e10076c888532b7908cca646adc0e44ce69cf3e610adf806a7fb208b306",
+      "bytes": 11575
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03.html",
+      "sha256": "27f721a6354de13524b6c2a51c21f1b9e0dddb16c94a2165154c429d701fab14",
+      "bytes": 79328
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-1.txt",
+      "sha256": "cc09a7acc65559900b6471ea4c2e848c2aa9ec43f84a2cc8197877d334ee4d37",
+      "bytes": 11924
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-2.txt",
+      "sha256": "353ef948d1648e204eed706de4f1f6b3d4cb447ca4a9caaef83caff5ccc821d3",
+      "bytes": 12198
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-3.txt",
+      "sha256": "13c234e70158874be75fdd56b0b43b07254c535385b013f3dbf6beb102cfa40c",
+      "bytes": 11511
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402.html",
+      "sha256": "0fa5afccd43951ac104004f650e83c81fa4b1dbbb2a741c3f0e12112be448336",
+      "bytes": 79336
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-1.txt",
+      "sha256": "e5ff053b908c0b93ab7305968951cfc3549974fef28d0116959825f62113382a",
+      "bytes": 11360
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-2.txt",
+      "sha256": "cff43df84313d3af3233cdf54a9b6bf0c08282e6b69384257389f9f841344c49",
+      "bytes": 11575
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-3.txt",
+      "sha256": "2cff3279d56a954d626fefc39c0eaba970f7b5603db0eb1c022362cac940346e",
+      "bytes": 11110
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C.html",
+      "sha256": "4b9f8411a2cc2b4cc611752a6aef9dbb5e6d5ad1a790070fd96789ba3683bebf",
+      "bytes": 79216
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9859A6F52-7.txt",
+      "sha256": "c1c6c9821e15270a9ba83ad9b048df2aa057066fc1569b9bca71fefe1e90d834",
+      "bytes": 5324
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9859A6F52.html",
+      "sha256": "ee0be4cb4bb0ffdf4b348c0ad48d6379aca766cb2963287181f966aadd5e417e",
+      "bytes": 82676
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-1.txt",
+      "sha256": "ec6ac4c673d9cf76914776602f0908c400649a81fbce1141ad7e4744145818e3",
+      "bytes": 11100
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-2.txt",
+      "sha256": "fc81b95337a258f0d671e9cc00edb6ba512279b117b4b11cfc06a636cfb3a0bd",
+      "bytes": 11671
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-3.txt",
+      "sha256": "2ade3a0cff857d0d511e697b0223bdc77c6c1b4de40908a421411f54afa1d794",
+      "bytes": 11300
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-4.txt",
+      "sha256": "1094d736e2ff2e4c4b1c95bf168e400592c0643e51a5cfbf12a2627ab9034cc7",
+      "bytes": 2642
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-5.txt",
+      "sha256": "a380e3e6ef90382ec2495325f0ac07513457fb4bbcf9899d91cccfed33bd556e",
+      "bytes": 5022
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303.html",
+      "sha256": "51a678b015ffed557029950e7930028f21d2b2e365135d1c77933b8873702439",
+      "bytes": 80260
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-1.txt",
+      "sha256": "05d4d0e8ec12e75863e9e5a1fb96a196fe9d24adb0f7d69cc9035e4b20baf119",
+      "bytes": 11048
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-10.txt",
+      "sha256": "c5dd6615e8f04304f22a50c1c93aa8e771573016b9c52aa2176ced6a6e4550d7",
+      "bytes": 2594
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-11.txt",
+      "sha256": "07341cceeb5b400e1fb92e2b54f1c7857d7b6d4bb5749bcc23706777a768192c",
+      "bytes": 5050
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-2.txt",
+      "sha256": "05d4d0e8ec12e75863e9e5a1fb96a196fe9d24adb0f7d69cc9035e4b20baf119",
+      "bytes": 11048
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-3.txt",
+      "sha256": "8f3b6354d54ef733bc046d5f6d35a6126fc1ce2e31298499c2439de5be8a505c",
+      "bytes": 11649
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-4.txt",
+      "sha256": "ca68bc572d6a6db974762f4fcf66c44737850f99853ff1f9b72e4d30a8e4eb5f",
+      "bytes": 12103
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-7.txt",
+      "sha256": "4f8f44aa11f6e9592a989aa2f1e4af5d3e3ed91207c1a092892d4a31057a7a02",
+      "bytes": 7355
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-8.txt",
+      "sha256": "6f21acd97b4041793554b52bbbf964c1cf1115197f512ea0aa1138c1751363ef",
+      "bytes": 5124
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-9.txt",
+      "sha256": "a3c50e038c3f1b07c5489b4f1fadc87e70258c4f6a8f0328c68477b0c3b8f3dd",
+      "bytes": 5605
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A.html",
+      "sha256": "cd86ad0ce435f24b18496d09f6552a0c0de1084fa10a11915c7b6889dab9935f",
+      "bytes": 83167
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-1.txt",
+      "sha256": "535df42cbb44b86ae35f55e31c40681c9a271275737ce0b08f375889e150175d",
+      "bytes": 11226
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-2.txt",
+      "sha256": "a16a01c948ab57326bd2338a437b0346ac53d2b6c74907134293788dcd62714d",
+      "bytes": 13466
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-3.txt",
+      "sha256": "4cb6ebb2f2fa1d412961ee994e34a1c5939431c139a807ecf27b36a187d41f8b",
+      "bytes": 11555
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652.html",
+      "sha256": "171f081101b7f3931d64a888f373d0199d3359e0220aed2118e643c1c640ddc0",
+      "bytes": 79222
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB06CBCFCF.html",
+      "sha256": "f9d2001e11739c48315fe1dd98ff5731662f96d62c839c67f6c0971911d71583",
+      "bytes": 82036
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB1175F02E.html",
+      "sha256": "49923c5e6c7b622761b449cad81028a705fa7b1d591cd235c83630079a200bf0",
+      "bytes": 81472
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB13D229A1.html",
+      "sha256": "e4b7f76711a10f5e1e23908ff9ef186a1e5e1e90203b7b2d940e14daaf731018",
+      "bytes": 80605
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB8B6FF856.html",
+      "sha256": "b4ade137a504057b64264bf283b5f619dc62253a63f33f9bc31109fab2041702",
+      "bytes": 81557
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB8B973E92.html",
+      "sha256": "53861d7f50f8761a05ed009d7e1088d84359cdf4a3761c57e1337158af365ffe",
+      "bytes": 81539
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB95D7133A.html",
+      "sha256": "ee0eaaaead9f0d07fab6f92910f7da513d60fb45241dbbcf7186d57ce29f8fb0",
+      "bytes": 81623
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB95E4522D.html",
+      "sha256": "6afd40371d08e5fcfc0aa40dbec019fde04b4649a01676d9c062983df7946f4b",
+      "bytes": 81596
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BB9B198512.html",
+      "sha256": "b794632ae97f2ae1e5f2b7a0a001725de039c086fb24691702615c7da6f21253",
+      "bytes": 82144
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BBAF075773.html",
+      "sha256": "ab66a4b9ccccc1c0543852719aa658bba254c2f41f2989b747a3e9cae4bc19e5",
+      "bytes": 81523
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BBBA2DE202.html",
+      "sha256": "28f093a0751839e1ab1493c1373357a9a2a21d8c7875b3d107dad5a5ea034df4",
+      "bytes": 81568
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/BC21B0CB03.html",
+      "sha256": "8da7a400e78c8afe1d3bfc88107bab5d63d16916f048a9cdc4b1f4fa6ad72f3b",
+      "bytes": 81466
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/campaign-list.html",
+      "sha256": "6e7e1a4e79d7de904aaaabec90dc86f9d88003939ee375207ed7e28b158a946b",
+      "bytes": 419562
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/failures.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/receipts.json",
+      "sha256": "086055b6f02e4aa327dae7cc1c781e7ce3dfc1dc560a9c412b233c31dc1114a3",
+      "bytes": 65691
+    },
+    {
+      "path": "outputs/audit/procurement/findings.json",
+      "sha256": "e449890ee0d99ed7b334fbb96a47249f8640a2f7816d67fa17c3d59fec0af8a7",
+      "bytes": 238832
+    },
+    {
+      "path": "outputs/audit/procurement/report.md",
+      "sha256": "aad71ce9a14111dc175a1b1aea1da8847fcb36985dbae7e38b8303f9b85b1346",
+      "bytes": 19444
+    },
+    {
+      "path": "outputs/audit/procurement/second-access-log.json",
+      "sha256": "c981538abbff394b3acec021c5767871df87000a9598397e2da1f690974d07a9",
+      "bytes": 889
+    },
+    {
+      "path": "outputs/audit/procurement/second-calculations.json",
+      "sha256": "6be607bbdf3f71e373fb002c162f61cc42204ea22380c37f171bfeb60183e019",
+      "bytes": 157998
+    },
+    {
+      "path": "outputs/audit/procurement/second-pass.md",
+      "sha256": "617d7b8c6c5efba96dc118681345f4967d04637e34809928544dd63986f9c194",
+      "bytes": 8985
+    },
+    {
+      "path": "outputs/audit/procurement/second_calculate.py",
+      "sha256": "f5044be9fb0e26e42ab873fde31f171e437be05599b8a7ff59196d9a3ba2c57a",
+      "bytes": 4713
+    },
+    {
+      "path": "outputs/audit/procurement/sources.json",
+      "sha256": "97f3f965fa4eb1a162a0dbd97118401ce929971a6163488ad61979134b59e285",
+      "bytes": 113952
+    },
+    {
+      "path": "outputs/audit/procurement/test_calculate.py",
+      "sha256": "87f00e9e7a6b580e6123ef0a40bb6c24d642902fc7a0af10aee39d88f43dd7eb",
+      "bytes": 3599
+    },
+    {
+      "path": "outputs/audit/procurement/test_second.py",
+      "sha256": "a5291e5d9c49ae7740f8d699e4c5b64dce0eaa0aff20dc315dde5e05ec55c505",
+      "bytes": 2527
+    },
+    {
+      "path": "outputs/audit/procurement/verification.json",
+      "sha256": "91cc3f437c4a69bb8c48609e80b453c748d75a747d497a327f5b146e8e8a1c8b",
+      "bytes": 1591
+    },
+    {
+      "path": "outputs/audit/works/acquire.py",
+      "sha256": "8d7b1494910709b12bb395b111189e79d04b315520bce07f275dc17dad6d8d50",
+      "bytes": 2429
+    },
+    {
+      "path": "outputs/audit/works/acquisition.json",
+      "sha256": "896d565c49e00123a5510d591a284fa3e3d817be34e57243511831a4f86ac983",
+      "bytes": 4793
+    },
+    {
+      "path": "outputs/audit/works/analyze.py",
+      "sha256": "a0b9a7c5f411e851955ee1afc6d7c5d813a0c453d46fdf906801edf502af9ea0",
+      "bytes": 8866
+    },
+    {
+      "path": "outputs/audit/works/background.json",
+      "sha256": "9ead2596eacb33baeca689b3954be052b201fadd4089f58176d60ffbc4598e61",
+      "bytes": 8917
+    },
+    {
+      "path": "outputs/audit/works/build_findings.py",
+      "sha256": "8e986048ffe4017fdf86d6962e5806289fc3a12afd4aa6f356e2c9e0fa0717e0",
+      "bytes": 12370
+    },
+    {
+      "path": "outputs/audit/works/calculations.json",
+      "sha256": "b74d745331fddef69b03a8623be1db6043b9c11022078cf85ca46ec6f6fc9b60",
+      "bytes": 1270
+    },
+    {
+      "path": "outputs/audit/works/checklist.md",
+      "sha256": "c35043d7ce609d0190f24bd81a58dae709da2e52abb6f04776ded4fb3b6e5618",
+      "bytes": 1607
+    },
+    {
+      "path": "outputs/audit/works/coverage.json",
+      "sha256": "799195dcf81eac364533f19e06ea0da9c2c6b7ed55fde59eb8a0e50f632c11f7",
+      "bytes": 20079
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-mestre-2008-full.html",
+      "sha256": "0e9c5dbb31fd19acc9e98d4a2de67294e7e898c7bc674446212c680a844454c9",
+      "bytes": 16882
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-mestre-2008.html",
+      "sha256": "b829de62f01bd1e3b630cc4a49a3008e2e44948f5201f3094fab7021076766a0",
+      "bytes": 17312
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-mestre-2008.txt",
+      "sha256": "1fa3055cc863d35f2fda6ad709f8a060142dd8036b9a4d5c9a68756431d36603",
+      "bytes": 677
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-mestre-2016.html",
+      "sha256": "92a85be7d6f1f6adf2e7ed05137dd87f6d26728672b011fc661479ccce75b51b",
+      "bytes": 11218
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-mestre-2016.txt",
+      "sha256": "5cde0cac5c79060822bc7de845d756b3bfe0dc8c76fc5f406989052013fc7658",
+      "bytes": 2014
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-rfi-2025.html",
+      "sha256": "4b7550a6650322e01dba0d358b4a779fb229ac93ecac4a72241caeaa68f5836c",
+      "bytes": 12377
+    },
+    {
+      "path": "outputs/audit/works/evidence/gu-rfi-2025.txt",
+      "sha256": "834ea8bbeb07e9a01c2b4de02e05acdf0060bf5b4f58ba59afb50847e3d66f3d",
+      "bytes": 3675
+    },
+    {
+      "path": "outputs/audit/works/evidence/mit-cdp-2025.txt",
+      "sha256": "918159ab4b17edf948992a58ba536df5b4364ae4bcdc295102f2614339e9d8f3",
+      "bytes": 2407353
+    },
+    {
+      "path": "outputs/audit/works/evidence/mit-crono-2024.txt",
+      "sha256": "31578a8e2c94fd6d1f5074c21ccf7251b5ac99f81320c089bcd9810d31e90964",
+      "bytes": 135796
+    },
+    {
+      "path": "outputs/audit/works/evidence/opencup-rfi.html",
+      "sha256": "a16a4bba18b0716625e6860364399f21c4d5eb65606e47fa299e6e8afbcb4312",
+      "bytes": 137226
+    },
+    {
+      "path": "outputs/audit/works/evidence/opencup-rfi.txt",
+      "sha256": "5fd7106770619a1c6dcc8dcb4e027b6854ad84b98087d1492aef708b20edc38a",
+      "bytes": 4934
+    },
+    {
+      "path": "outputs/audit/works/evidence/silos-mestre.html",
+      "sha256": "3db252c8abb52a4ab5e1f818daf4fc18937056a7518996505e005454a8891593",
+      "bytes": 82785
+    },
+    {
+      "path": "outputs/audit/works/evidence/silos-mestre.txt",
+      "sha256": "7b31e411229e124b1489f8b2125ff92822753c4747b7fba883ce2add338da137",
+      "bytes": 30905
+    },
+    {
+      "path": "outputs/audit/works/evidence-manifest.json",
+      "sha256": "5667d85c5ea2a0d09b7910216eeee6cb8739cc3763798db1aa704dfce88d99a9",
+      "bytes": 2737
+    },
+    {
+      "path": "outputs/audit/works/fetch_second.py",
+      "sha256": "c7ea87aa6c641e9b029534a42e61ffeebb1afb72e1b30daa0e3dbc64b0f58f3b",
+      "bytes": 1376
+    },
+    {
+      "path": "outputs/audit/works/findings.json",
+      "sha256": "bcfd9e9e2c775b4d523c243470096ad20635f7bf9ef6e3db3a3b6d093138a36b",
+      "bytes": 21770
+    },
+    {
+      "path": "outputs/audit/works/pnrr-coverage.json",
+      "sha256": "c9d8150b72f6e3d4d766b47407ba93e31c940ad8514a2cdf9336e77265c48fcc",
+      "bytes": 9683
+    },
+    {
+      "path": "outputs/audit/works/pnrr-coverage.md",
+      "sha256": "d26b0bf82c0f15161e119d8aa59f76148a04e9e76762df518d38cd008fa05eca",
+      "bytes": 10103
+    },
+    {
+      "path": "outputs/audit/works/pnrr_coverage.py",
+      "sha256": "b368f7bf435ee22689e2aa2b4623dc7f50688e5e68a278cca378e29e3bee276a",
+      "bytes": 5760
+    },
+    {
+      "path": "outputs/audit/works/report.md",
+      "sha256": "c9a9c53526589523e2b50b525e8f32b55fb801eef83948d41759b221f97b4473",
+      "bytes": 14497
+    },
+    {
+      "path": "outputs/audit/works/second-acquisition.jsonl",
+      "sha256": "522b64c5865cb017ee51899c31b4176f9869026faa9cfc3504e924853be9b550",
+      "bytes": 3352
+    },
+    {
+      "path": "outputs/audit/works/second-calculations.json",
+      "sha256": "9edbc2e063579216884ecc3b4757ede2e288923c8bf3ab7c78408cc302e23461",
+      "bytes": 1368
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/camera-mestre-2010.txt",
+      "sha256": "1d41b709b9fe382481d5fe317a6b9ec0f7701be36f4ac66a1c93d573e8cb9816",
+      "bytes": 36690
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-computo.html",
+      "sha256": "4735e8dd18903270940e8928b4330abf52e903f6ccbaae434707885b87e5e873",
+      "bytes": 24792
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-economico.html",
+      "sha256": "205e92c29967e6c32bba8199b22e4b3c8bb314b2d37707d32b9bc115dd8aa589",
+      "bytes": 24798
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-generale.html",
+      "sha256": "8c90315cca5a37832743a28dfa95043ceff7f59c9c4c716e5afad589ad536e7e",
+      "bytes": 36904
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-relazione.txt",
+      "sha256": "0abe12fa720db3106c3505516e84663266dc830aeb5d5bc7ff1c7bc80d285d3d",
+      "bytes": 333772
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-tolentino.html",
+      "sha256": "2ef3806b85d9b78d8c9a0f3017df095e258ee180a43144c2b9e099e588495056",
+      "bytes": 37252
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mit-allegato-a.txt",
+      "sha256": "5262e2a13c82f9806e7046f7c4d8aa604c8f801ad088d6acdfed6507b703d117",
+      "bytes": 2251589
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mop-columns.json",
+      "sha256": "83bdd5948fe2ab76dbc29c7f5754865e0867e635a8555c28d5598297dd8d368c",
+      "bytes": 211209
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mop-query-url.txt",
+      "sha256": "0a1d752ae01a36b81b898f0b3da68027236018b67f8f26d8bdf34cd318fa093a",
+      "bytes": 194
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mop-tolentino.json",
+      "sha256": "59ac7101dc6375494978442566362d3ca5078c19f1c4161d02fe279693d93fe4",
+      "bytes": 2504
+    },
+    {
+      "path": "outputs/audit/works/second-pass.md",
+      "sha256": "58a09043e4d96f0dd0a3ef68d1e5f674c7dde9541f77c41c647e67cd3d1c7ad3",
+      "bytes": 5407
+    },
+    {
+      "path": "outputs/audit/works/second-sources.json",
+      "sha256": "9702a9aa13ee8af179de50156893fe1193dbb8f59daf3101c51f535d1708fd3c",
+      "bytes": 3706
+    },
+    {
+      "path": "outputs/audit/works/second_pass.py",
+      "sha256": "865fd312b11761790bfb2d0ef42523a69f5df349e093a643ec2ad44c06c49e4c",
+      "bytes": 2438
+    },
+    {
+      "path": "outputs/audit/works/selected-records.json",
+      "sha256": "fb533e1bd6f8543f9bc5907ffe5ea5673cd57d2408871bc860bd44bfac3125d2",
+      "bytes": 3976
+    },
+    {
+      "path": "outputs/audit/works/sources.json",
+      "sha256": "c3a5e47dedc7c82e23a340be744e22b2f8956543224dcc25eb998bba405fcbbd",
+      "bytes": 14479
+    },
+    {
+      "path": "outputs/audit/works/test_audit.py",
+      "sha256": "2f8e6c3297d113529c8458bdcd2234fd0f6d5ee9daa24054265132d6bd7241ec",
+      "bytes": 4077
+    },
+    {
+      "path": "outputs/audit-extracts/archivi-metodi.pdf",
+      "sha256": "1cde5c5cc143d82e2bb5343b5bd1b3ed7d2ff92440e63fc0b90c90c6be4a3d0f",
+      "bytes": 5089434
+    },
+    {
+      "path": "outputs/audit-extracts/manifest.json",
+      "sha256": "cb5796cb1a7e265e4b6cc072a8b0c01589a25c895f7379914701fafa291a5fa8",
+      "bytes": 1457
+    },
+    {
+      "path": "outputs/audit-extracts/personale-mase.pdf",
+      "sha256": "b1a89d9d803f33b8ed449a2a9a96fa817a90165b18e38d6dd17b2391fb8b5e8e",
+      "bytes": 4341056
+    },
+    {
+      "path": "outputs/audit-extracts/tolentino-aggiornamento.pdf",
+      "sha256": "dced57041e3c2423a3a778cf4f4b9e7bb4880b3502e77384d0ee5d0f87873329",
+      "bytes": 319559
+    },
+    {
+      "path": "outputs/audit-extracts/tolentino-progettazione.pdf",
+      "sha256": "c393c542d3c9c665ec03e34300907f853807b4e8c9ac32dcda8571248c0bf654",
+      "bytes": 776434
+    },
+    {
+      "path": "outputs/audit-extracts/tolentino-quadro-mit.pdf",
+      "sha256": "581aa0146e2d1c8338d10b0be03848ddc9af3776de9662c49c73b8a453a76964",
+      "bytes": 193872
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/analyze_missed_targets.py",
+      "sha256": "565b3ede6c5b6e51104332cb5773d75665620a280c1b25c14b016ee3226acfc3",
+      "bytes": 5264
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/build_second_pass_evidence.py",
+      "sha256": "ed363311628e7a994eebe83f84673141941f61bee92be663169f36db5594f9cc",
+      "bytes": 11139
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/calculate_second_pass.py",
+      "sha256": "e4d75654029e5791d641da34fd57c9fbab1ec78d37512b87398e2ce1c63fa09d",
+      "bytes": 5752
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/calculations.json",
+      "sha256": "688032114c8620e5330444dcc2a4f5d5dbcf321029cb839253a9306d158afc24",
+      "bytes": 2867
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/evidence.json",
+      "sha256": "4519135478eb387786392875d14943eb63f5c10f793aa8df8c7ef667ffe2d221",
+      "bytes": 4540
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/missed-targets-ranked.json",
+      "sha256": "42360851b36a371c5a54c1f68eb26ebc4f8d29725c66bf6a6f229858e7bdd6eb",
+      "bytes": 262284
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/second-pass.md",
+      "sha256": "2c0b8f2a758b7f3d099f72afc45d914ffa5611104587b089e84a66289a8747ee",
+      "bytes": 12446
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/enea-prepac-2024.pdf",
+      "sha256": "0b2d02c87231b89669dc1dea5f0ce8f233ed8d002257ae2152c96b2261b5e7a0",
+      "bytes": 1636198
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/enea-prepac-2024.txt",
+      "sha256": "7f282e0cca319aa877e00cdbca8e621b45e8c2de50cf72c5c69e97c96a161dc1",
+      "bytes": 104384
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/giustizia-detenuti-capienza-2025.html",
+      "sha256": "0093c11c70192c166078316fc111573a157c832573f14c102d18de91145bfc82",
+      "bytes": 69005
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/giustizia-programma-edilizia-penitenziaria.html",
+      "sha256": "c87465489469903feaf42733ed56d8612a353c51c9c2296d20314e5ac9f495b6",
+      "bytes": 38809
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mase-prepac-2021-decreto.txt",
+      "sha256": "f7c3c07236921d57c9ca9161a678ab8977593b3b19483953e6b85743e0ec65f9",
+      "bytes": 23412
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mitur-fondo-impianti.html",
+      "sha256": "0eca680f4e958c9869aeddac627f731a3f3553e5c75f0d631a411fe75c7680c7",
+      "bytes": 118393
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mitur-impianti-2023-concessione.txt",
+      "sha256": "bb9d46801f5e22234b45dba246b65304c91f5b7996e43711e1f49efd402ff92d",
+      "bytes": 20341
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mitur-impianti-revoca-lagazuoi-2026.pdf",
+      "sha256": "09a3642838522300318204c2d62fcefe03737d4008084b34b6c105ab8ba82b9d",
+      "bytes": 646863
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mitur-impianti-revoca-lagazuoi-2026.txt",
+      "sha256": "0397f444cd9776ca1c94b6ac92fb38d18eb144fe2daea71e4f7e4096471447b4",
+      "bytes": 20501
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/senato-cultura-indicatori-archivi.txt",
+      "sha256": "c3fb311f3fb4ebeb9181c0e96c7fb576426fa67484ab02b62d25a14b73e7011c",
+      "bytes": 5227887
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/senato-note-integrative-dlb-2026-2028-cultura.txt",
+      "sha256": "c3fb311f3fb4ebeb9181c0e96c7fb576426fa67484ab02b62d25a14b73e7011c",
+      "bytes": 5227887
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources.json",
+      "sha256": "f1bc91fdcc9e9331190798f0169385d25b9c72a5f18f53d1a3b322084aa29ead",
+      "bytes": 7020
+    }
+  ],
+  "omittedSources": [
+    {
+      "path": "outputs/audit/works/.gitignore",
+      "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b",
+      "bytes": 13,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-1.pdf",
+      "sha256": "f2c97d7c8c7a60d2f65d894646f6293743bb8d23ba6af02c00977c0e27b02243",
+      "bytes": 183000,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-2.pdf",
+      "sha256": "4589ce9cda5ac68a8ff5b490fbf590afb09fbd4e84d13b49f242f307f4e12588",
+      "bytes": 183313,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-corriere-3.pdf",
+      "sha256": "e811592359d882dfafd2ee6533a3919f62e84591c8ac484ddaf8e15424e70c0b",
+      "bytes": 182677,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/cloud-extension.pdf",
+      "sha256": "65a9fa559439b576128a0185cd28b7acd4d299b6c288125b6d227cae2298b41b",
+      "bytes": 447418,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-addendum.pdf",
+      "sha256": "73152b6f4b1f1d661325ead64d18accda547bacf8ad2566687d66f9093165cf4",
+      "bytes": 454435,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-response.pdf",
+      "sha256": "e4962b4a21076074c37a6276bc244102d7aace0ae55294987b4c357fb469cab3",
+      "bytes": 319467,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-registration.pdf",
+      "sha256": "122b0a4c37eca6edb1fdbf43f8a0642531175d5695e1ca72b049378d6b7f1e10",
+      "bytes": 634110,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-3.pdf",
+      "sha256": "be5666ec6c99c86255aa96cb7e2a240ccd60c8c0d7572ed1247c7017861937ae",
+      "bytes": 176170,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-2.pdf",
+      "sha256": "39c54db416e49365b96ae92ace731b7bab140718d04a9b4d787e351aa85dd360",
+      "bytes": 159127,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-1.pdf",
+      "sha256": "a99a3ac82a207e7e65c4c6756f52a7ae1835bd25700869bdb48468d8aa3ad4b1",
+      "bytes": 150018,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-5.pdf",
+      "sha256": "94252fa6bf4901dc7b8a34dc2bc38ce3cc7f751a43eb23aa3fe21ebf65af2ce6",
+      "bytes": 148880,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/invitalia-observations.pdf",
+      "sha256": "1268d7eeac1a1a776d99e526f3013f9e2a564b478d5dee9c3cc3cae4798b7c57",
+      "bytes": 256136,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-adnkronos-4.pdf",
+      "sha256": "5d920df9169972aa5c4341f64d895dccd8a227c25e84e8cf1c4d50789c41b482",
+      "bytes": 149501,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-sole-1.pdf",
+      "sha256": "24945fabefcaf2fb30c0f0feea03c177796ff2a64eea2af9e1f1b6a38d597de1",
+      "bytes": 183569,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence/ads-sole-2.pdf",
+      "sha256": "044b4c1fabbfe5169c8332eea4a24cbe7745ef23b824f1a39d7430ba60109f19",
+      "bytes": 183764,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-2.pdf",
+      "sha256": "abb0624427866e553475f3532c85efcbe1f2bfdd9109a3e6216fcfe0a48e3b91",
+      "bytes": 151014,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-1.pdf",
+      "sha256": "d5af400094dada6c94223b7ac77e370c1d05d0c1bec333d393978ad1f0619784",
+      "bytes": 121690,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-1.pdf",
+      "sha256": "c6642b251c551b6ee25c8d625e5f21c0ff77abb6b7b0b9c5a920a43fe4ec3057",
+      "bytes": 162417,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-1.pdf",
+      "sha256": "cb30eb408dedc5374644441397e9c6d8dc79eb9c2cc0fbf54e5ff8faab8e9d4b",
+      "bytes": 149918,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-2.pdf",
+      "sha256": "a730cc9f818a8f3cfe7910a2911727e9069882fa21367ce22b5f0509f2531560",
+      "bytes": 192094,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-3.pdf",
+      "sha256": "4dd8e8de8cd7d0f8c1f7aa7d1e92ca42572fedd20cb6883d1abd5fe77ad4a700",
+      "bytes": 135078,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-3.pdf",
+      "sha256": "1068bb051851d15e69691b69a7fb38a678019a80b6d28de4fe69388ea884cab4",
+      "bytes": 150609,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDB65B03-1.pdf",
+      "sha256": "aab169086c2ca35b5bdbf890499f92053bf5b3492bb1e93c0840ab30d8ba4690",
+      "bytes": 190568,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-2.pdf",
+      "sha256": "0002bac0bda6ee15a01253d7c3ebaea5c51e31b4bb7799fecb2ac9a8f2e8dbbd",
+      "bytes": 151178,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-2.pdf",
+      "sha256": "bc66ccf9e07cbc1e6d02beb2ae67b1b2273c43ba23cf60724dcf183511745d44",
+      "bytes": 150766,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-2.pdf",
+      "sha256": "03eaecf77d1727185607b413fb171785852089b2603d8c0336ea1d71150fb642",
+      "bytes": 151579,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-1.pdf",
+      "sha256": "e45c958b2d8459bddc4146e0a34e4ce76afc3052424e4b7c2adf3c32d15a7384",
+      "bytes": 151424,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9860CD652-3.pdf",
+      "sha256": "6fe65485191c43cbf9c4d49831f288805f85fdee7f3bf5e393abf4f55c41e5d2",
+      "bytes": 148687,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2297BB-3.pdf",
+      "sha256": "5b87cc3f21a0792871c97f51a6ef1f6102ae170193f0606c616488ee8a33a888",
+      "bytes": 191977,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A1882E0-3.pdf",
+      "sha256": "6ce7e0166e95f9b457b39eb4d0b32efa0cd104e49f79e261de62676ae79758ac",
+      "bytes": 191819,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-4.pdf",
+      "sha256": "7354b646fe6b4e120d25260e1285ae3c3d40fa7ff40455e89cc791ce744210a2",
+      "bytes": 213769,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-5.pdf",
+      "sha256": "52f06312e165fb8d56c8d6755c7767b292d3cf3c9f8cfddb545619c2092fc72d",
+      "bytes": 198620,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B9859A6F52-7.pdf",
+      "sha256": "dfd5aafa52aa96d21abba59e2868d839b83e6aa35952c015fdec84ac74cbbd96",
+      "bytes": 19182,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A4B8442-6.pdf",
+      "sha256": "e7d6e7e36568aca1f3b6452f5f172545bb512611465555a12409e449ada1947f",
+      "bytes": 332306,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-1.pdf",
+      "sha256": "4c365173923755913c1df922848399ff64bae66b5913c8a09e7e619337f46fec",
+      "bytes": 153878,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-3.pdf",
+      "sha256": "df0c011dfc232090c03794e93fbbf89625f774c489105673fa5d7a4fddf3fdc0",
+      "bytes": 150220,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-3.pdf",
+      "sha256": "ffba8d6d05e8bb8b075ed7fe08d8f4200b2a8bac0ab8e5f9c465eeaa7615f20e",
+      "bytes": 191712,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-1.pdf",
+      "sha256": "c172d26e5e318ef69e8147a9a7a375386f4bcef9d8fcd1d94a2ae687b289a327",
+      "bytes": 162494,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-2.pdf",
+      "sha256": "3fb8c3c683b87cada474911d9a7abe8ecc16c953514d720acfce0e94f5c4db75",
+      "bytes": 151141,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-2.pdf",
+      "sha256": "063bde5cba2964f36444c23b74bffb75cce6e60e8a4fd9d00920682561992a27",
+      "bytes": 150788,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-2.pdf",
+      "sha256": "92251fc01eeaa6c7fa3915b5819e89f2a1c0f0f5373a83b0224cb8b63913b18c",
+      "bytes": 214787,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-2.pdf",
+      "sha256": "f22335a525f3e81c11124be04f7431189f42e428ace9ecbcba7b3e7de41814a8",
+      "bytes": 153472,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B905C81A6C-3.pdf",
+      "sha256": "8f4c2c4e06a68940bb9bfcc3cd9711b522e17c16a5d5bf64f6bda1716488ab96",
+      "bytes": 150452,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDA5F2D0-1.pdf",
+      "sha256": "e6763ce6ecc2b1fb22d69dad3c25688b15b422a709d1fe40c623b1960d9a4967",
+      "bytes": 190525,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A063116-1.pdf",
+      "sha256": "48f037e01735f0439ae0682a890040725b9abaf334ebaf6c5e4a69738742cead",
+      "bytes": 182874,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DD9B1339-3.pdf",
+      "sha256": "de9ed9b96cc6fd2c0a074f64e76d8084933db185d46b48696ae7f953b9edde52",
+      "bytes": 150368,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-8.pdf",
+      "sha256": "8281f0b45d0833088792e4e8d67c3e3b87a2a39ff99549c7ba1ecd114496e165",
+      "bytes": 19118,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-9.pdf",
+      "sha256": "f307d63e9bdcc4b7a537f2f76b4664463fa65fdc8168bb580ed9aadf78b25ab3",
+      "bytes": 76464,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-2.pdf",
+      "sha256": "c0d5e45411e1762435f52ab2a4e7e5f2eb0c2eb6f3a4213edcaa45dd895dc4cd",
+      "bytes": 150361,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-6.pdf",
+      "sha256": "3e2fd9940340aacf980ebbe543ed2fa293db72600f91cbfb7ebfccfb12f9df4b",
+      "bytes": 175876,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-4.pdf",
+      "sha256": "2ffaa8e86766c7fb2512c61e59c0abf1198b67096fcfd11bc426133b2e8de922",
+      "bytes": 149325,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-3.pdf",
+      "sha256": "e7a17f0a3372766adbcd247dd24fa37bfb41a9127353f8440d34a563c99ec64b",
+      "bytes": 155349,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89E731F1E-1.pdf",
+      "sha256": "614d0242ce4aded1d119fe1b882f13d687bcd41f0504c7747666abe84a54d2f5",
+      "bytes": 151075,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-5.pdf",
+      "sha256": "eb2818d83de367240ba2d1bb81bc674a5cf84d6ab92ba7a14a34e403d54d155f",
+      "bytes": 545032,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-7.pdf",
+      "sha256": "bc700384bcb45a69e50086d429b384829e67083721054394e07cf06b7a5b0a7a",
+      "bytes": 233384,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-4.pdf",
+      "sha256": "2023c042672d25127cb141ea02bdfcdc0e07c739538ecd69c6e775643c8345b1",
+      "bytes": 329632,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-2.pdf",
+      "sha256": "b7ddd31470b7e68dd3511e366f677d18f61b726eb6bae62d93c8b162903c9f4c",
+      "bytes": 149675,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-3.pdf",
+      "sha256": "817ca5c99390e0fe748bf95232849839e913a1837ec8070b7d50af8a7a6edc4e",
+      "bytes": 148749,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-1.pdf",
+      "sha256": "88169d0a8046c97b048f5e9a5fb22d6042cc398c5beb7aecd00e6c1478f908fb",
+      "bytes": 121641,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-3.pdf",
+      "sha256": "a2cf950e1c5dd62fb262be2783072f75747c96315f09576f4a44f297615ce498",
+      "bytes": 191742,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-1.pdf",
+      "sha256": "bb17cfe0543deef558f26de090d299a75592c423b9de44329b5b24484d03d4c7",
+      "bytes": 152243,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A3D69C0-2.pdf",
+      "sha256": "e7a696c30377eec2755e67a3dc5b340b55df98b1f8baabe8dc5160835a8628f6",
+      "bytes": 151112,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-4.pdf",
+      "sha256": "663217a6bb226bdcae8e22cff2792b5f3a5a67881a4d9ce18d9c76f942ea4b79",
+      "bytes": 259933,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-2.pdf",
+      "sha256": "517d2dacc01a9fc78dbedf3914176860e1720e480308406f3f96814680191609",
+      "bytes": 151231,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-2.pdf",
+      "sha256": "834ca7f46f1c3bd0f828dacc52b4243b1f5202ed80f2f3a74ff0933f013a9203",
+      "bytes": 151039,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-1.pdf",
+      "sha256": "a3ae5f1709d07226e80eb8bfe63dd1a74352208c38bde4943235a66d703f539c",
+      "bytes": 151142,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-3.pdf",
+      "sha256": "46a741efaed5d3ab39f35cee72352ea490c60ad33cee2dd5e166576c8ef33f7a",
+      "bytes": 252561,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-3.pdf",
+      "sha256": "95f22c7a40c45b814f53af0caad08dadebf4fcba21063f464e8bf4d203e17441",
+      "bytes": 150179,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-1.pdf",
+      "sha256": "798caf26a21fdaa31a26d66ac924968e54328f186d0e7237538bea023ae65d19",
+      "bytes": 152281,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-5.pdf",
+      "sha256": "05ec24f47f86038196115a025a3ddbef390c2ddbf0cfc0a5244b6b8b426baab5",
+      "bytes": 541758,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-10.pdf",
+      "sha256": "488b9526a74f503bb2a21e5b24730c7b450ffce9bcabda95613b64e779663df6",
+      "bytes": 156405,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-3.pdf",
+      "sha256": "db2ca66fea4df652fbab6edfbccd05634e355787cd8521ac2d8adcc3801192ab",
+      "bytes": 148304,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8DDC0B402-1.pdf",
+      "sha256": "85ba5a359808d56c1a8f17b02454b7c509c4b7642effc0cceb81dea962735676",
+      "bytes": 190610,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-1.pdf",
+      "sha256": "466d030e9bafdc22fa292407300e08baa192124591fd3d04320538273988740a",
+      "bytes": 141828,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-2.pdf",
+      "sha256": "fabf81f408124c81e58b516b4897a4b92bcc04e48b1efc83f5e2e31b666ed71a",
+      "bytes": 191834,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-3.pdf",
+      "sha256": "b60e307c5eee7ad8e0055ba18b45578b2e2978d650ebda85a070feb54c07e4f8",
+      "bytes": 135480,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-2.pdf",
+      "sha256": "afcb4f942813ac03aa87372a2b6f8d618c151576f54249bedc319b5d4dd45112",
+      "bytes": 148778,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-6.pdf",
+      "sha256": "1573468ce784d213909c8cf0fa7e59420387c62b9df7292983a98dd2dfc06f04",
+      "bytes": 174063,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985E8760A-11.pdf",
+      "sha256": "222a1b430205e38ed46e1428b74d95b5df6384e5aab808ac162cb073b45e5be5",
+      "bytes": 119970,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-2.pdf",
+      "sha256": "f48243a66e03646186b217fb09d8e6314f1d89308a0b2c49d3a5b8257ad3fb8f",
+      "bytes": 150381,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-4.pdf",
+      "sha256": "7193e3d08c9a91646a3cb42445d41202747228ce22157eec1bb83e6544f52981",
+      "bytes": 176005,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-2.pdf",
+      "sha256": "e0c64db78df78c8a069f6a2f8f38f6ad40b35c4f5d60bb196cdc78d35c891b1d",
+      "bytes": 151250,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-6.pdf",
+      "sha256": "1022bc097aa6dffcd5308f73fc35b1023724685a40660f8dc18f958c458262ca",
+      "bytes": 544959,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-3.pdf",
+      "sha256": "7c8c6597adea20e30ec22a13488af84fbbacd8b08ccda2bc5bc16d1658069974",
+      "bytes": 191711,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-5.pdf",
+      "sha256": "27d30e109ba4237d14868fe173e298d0294455f0ea2de3da9da2cd7b5b81e2e9",
+      "bytes": 542263,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-3.pdf",
+      "sha256": "f538e826baf1c3fe378ff649800d869bc646e777e32c0fafc58f6173bb7d86f1",
+      "bytes": 150997,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-5.pdf",
+      "sha256": "a65222307ce3690a6934738ae669fe6cfcc80d90798daa784d88a7e9b5b4b6a6",
+      "bytes": 160600,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A2CBD69-1.pdf",
+      "sha256": "3fb666f390ea405f13c65d2abf3bdc3aae1e9ef557a7324f365907c4326dba68",
+      "bytes": 141873,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A5053CD-1.pdf",
+      "sha256": "85e20de44395860a1a08d302a009088587c9cd9a49b5f1439772504b55cb55fa",
+      "bytes": 121697,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-4.pdf",
+      "sha256": "67865ae51cec5851c8f64c15a8f8bf532a5ba72e817f3536b6584ae9d7770dbc",
+      "bytes": 329818,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B89A54BD8E-5.pdf",
+      "sha256": "7019bed7f09ee98f4e759b1bdf6c75acdb8556776029eb4b99419d9a8a6e4bd1",
+      "bytes": 175628,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B8A5051F9A-6.pdf",
+      "sha256": "6e6ea9425baecf34dc57c8a05b42940335288516400a0a8fddcc2dbbbbf496a7",
+      "bytes": 150514,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/procurement/evidence-second/B985CB2303-4.pdf",
+      "sha256": "bfce5bf6fd166c25e754b45d4134e9e37d12cf6f9f544d1699fe586bc58ae918",
+      "bytes": 156592,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/works/evidence/mit-crono-2024.pdf",
+      "sha256": "9f0e548947d5405db579c7087e4fe0b53d5664795055957eba6edbfe5a4b6e76",
+      "bytes": 715395,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/works/evidence/mit-cdp-2025.pdf",
+      "sha256": "641a8b50fc38ad130fa197cec078b6384935bf0979a047a285414566eda054f6",
+      "bytes": 7846087,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mase-relazione.pdf",
+      "sha256": "daaaa69b4bc086bb235d8acc9e6bbdef3981c13a6d92c7931856fdcdecd15fa2",
+      "bytes": 36461007,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/mit-allegato-a.pdf",
+      "sha256": "c0a927053dc6006b3de3cd19c0acd0df4cc69da3016395e877cd6c8cb3b14eec",
+      "bytes": 21893335,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/works/second-evidence/camera-mestre-2010.pdf",
+      "sha256": "d94941afb27c609a3b16b36df69bd3be04bb9e69c0f8317b984ec00cb005c1f3",
+      "bytes": 298534,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/avviso-2023.pdf",
+      "sha256": "4301feddd3956b143baedc0c33e839265164a282e4b1ad79c39c70899c25b79d",
+      "bytes": 350549,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/performance-2025.zip",
+      "sha256": "fcc112473d1155b28db65f4889874f03d7c1baf9169ddee9692760f0cda498b0",
+      "bytes": 3320337,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/objectives-2025-divisioni.pdf",
+      "sha256": "8433cdb49f7807811f64b10a81c4f6c7d7fad75019766e1078685a4a22953b6e",
+      "bytes": 208042,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/incarichi-2025.ods",
+      "sha256": "b877f35f5dd5e64f73552467befe4271d5649887695ead04444c652b711bd2d4",
+      "bytes": 6641,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/incarichi-2024.ods",
+      "sha256": "9682bbe2f5e689225acfe764387718a1cf2e6b55582ddeae07bdc53e14c58932",
+      "bytes": 8111,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/commissione-33-2023.pdf",
+      "sha256": "6a02ce09283cbb08e71127ab9afb778378510cd479580d9204545bb5467cd962",
+      "bytes": 313573,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/pnrr-incarichi-2024.ods",
+      "sha256": "c8e8d7f34882ce83b6d5a49303a29691cff004d9a8a944805028c063bfacf25f",
+      "bytes": 9366,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/pnrr-incarichi-2025.ods",
+      "sha256": "4b74d360265cc7f743ea7df5a0d7b6061bc70123386f2c9d5e7ca67164adb4be",
+      "bytes": 7890,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/dm-203-2023.pdf",
+      "sha256": "4dc5425e61a4e61c53af96b69bc6c3c275c0677e616adb362c700bb9a77e05cc",
+      "bytes": 494469,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/camera-2807-rt.pdf",
+      "sha256": "3b60f458d973e1077bfa25fc11bdfca4e4cab1469db2e3aab4f0e0231b426c78",
+      "bytes": 12261064,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/objectives-2025-direzioni.pdf",
+      "sha256": "f1155986aa5ba96ab220d4e0d8d8b768455631188d4388ad60bf143ea487c1d7",
+      "bytes": 150756,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/performance-2024.pdf",
+      "sha256": "18b5dbc4b11a8109e262f62bfdc05655edcc15d9a48dd0f2c70d5ca085625e23",
+      "bytes": 4793323,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/personale/evidence/second-pass/performance-2025-adozione.pdf",
+      "sha256": "ab483fd7c6c2deabcf1c78c67356baf23db3295fbf5f1f2d9b008a83e886cfa5",
+      "bytes": 6001270,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/context-sources/camera-AP0200-assestamento-2025.pdf",
+      "sha256": "6d454da6bca3e23ad79f67e11f1160ee46619c56c58a7a77f08fd015c9a3c4ee",
+      "bytes": 784288,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/context-sources/camera-CU0165-rendiconto-assestamento-MIM.pdf",
+      "sha256": "9067b41cef83853f31fc7205f7e87979c269245b877dcae26cc2993476ce0bf2",
+      "bytes": 314070,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/context-sources/camera-D25090b-INAIL-istruzione.pdf",
+      "sha256": "d04e097d42f38f8d24acbaaad90d3329dd7e1a3947c61cc5b31a68350bc17ee7",
+      "bytes": 1360045,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/context-sources/camera-ID0011vol3-bilancio-2025.pdf",
+      "sha256": "ff09b597be45fcd7b5f590c31c42c8b6bac8aaa9a74f6baa6ee1d8b02f3206fc",
+      "bytes": 3932510,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-provvedimento-di-assestamento-approvato-elaborabile-spese-piano-di-gestione.pdf",
+      "sha256": "0376060affe26310d6bcd4924952abdeef50d1934f1d7903c2a763d5302d12f6",
+      "bytes": 717174,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-legge-di-bilancio-pubblicata-elaborabile-spese-piano-di-gestione.download",
+      "sha256": "571fa82b6953c6c1281edcb1bb8b4395b698b4d23d8d7a07fcb7f54b47fb6739",
+      "bytes": 1096,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-provvedimento-di-assestamento-approvato-elaborabile-spese-piano-di-gestione.download",
+      "sha256": "3dc87aef4739bcf60016c6e2e09f4283b15a25cbe8850299ddf4bce0c0199111",
+      "bytes": 1096,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione.pdf",
+      "sha256": "a0d57b1038b32066503bae4618eeeb84e32c85fc4c9c0e9f7fcd157e9714e974",
+      "bytes": 647075,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-rendiconto-pubblicato-elaborabile-entrate-articolo.download",
+      "sha256": "7a8577e2784bba3f4c454a18aa504e768192076de42ce0b2e5b123415093f477",
+      "bytes": 1096,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2025-legge-di-bilancio-pubblicata-elaborabile-spese-piano-di-gestione.pdf",
+      "sha256": "70896647eca48b974530def8b889be838ce9f380083cf67030d35e5f267ed8cf",
+      "bytes": 688724,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/monthly-schema.pdf",
+      "sha256": "2b9ba5d9b8bb4e8fab7751b4625fd231c9c39dd46f299e2fcf75a02332f62a5d",
+      "bytes": 675208,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit/accounting/sources/2024-rendiconto-pubblicato-elaborabile-spese-piano-di-gestione.pdf",
+      "sha256": "a0d57b1038b32066503bae4618eeeb84e32c85fc4c9c0e9f7fcd157e9714e974",
+      "bytes": 647075,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mase-prepac-2021-decreto.pdf",
+      "sha256": "d828c6a48179d2ebe190590c1dc6c2484768631808c7a97f4c466e26f1fd89a8",
+      "bytes": 406016,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/senato-note-integrative-dlb-2026-2028-cultura.pdf",
+      "sha256": "3590cca12d6802c45693d849d129d653d100c007e9563419c14afc909a1381a6",
+      "bytes": 12074249,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/mitur-impianti-2023-concessione.pdf",
+      "sha256": "960cc3a4d102b1d5e4f90f58b4340574bd31728ba7937457cabb73f12cf5b30d",
+      "bytes": 412379,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    },
+    {
+      "path": "outputs/audit-second-pass/outcomes/sources/senato-cultura-indicatori-archivi.pdf",
+      "sha256": "3590cca12d6802c45693d849d129d653d100c007e9563419c14afc909a1381a6",
+      "bytes": 12074249,
+      "reason": "Originale voluminoso o tabella nominativa: riacquisire tramite la ricevuta del dominio."
+    }
+  ]
+}

@@ -211,7 +211,9 @@ async function inspectDatasetLayout(browser, width) {
 
       const query = "Comune".repeat(30);
       await page.locator("#dataset-query").fill(query);
-      await page.locator('main form button[type="submit"]').click();
+      // Submit from the field: auto-scrolling a pointer target can put it under the sticky header.
+      await page.focus("#dataset-query");
+      await page.keyboard.press("Enter");
       await page.waitForFunction((expected) => {
         const tags = document.querySelectorAll('[aria-labelledby="dataset-rows-title"] span');
         return new URL(location.href).searchParams.get("q") === expected &&

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdirSync } from "node:fs";
+import { inspectStateBudgetReader } from "./state-budget-reader.mjs";
+import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -13,6 +14,7 @@ import {
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const baseUrl = defaultBaseUrl();
 const reviewDirectory = path.join(root, ".impeccable", "review");
+const budgetReport = JSON.parse(readFileSync(path.join(root, "src/content/reports/state-budget-2025.json"), "utf8"));
 
 assert.ok(["http:", "https:"].includes(baseUrl.protocol), "DVNS_BASE_URL non valido");
 mkdirSync(reviewDirectory, { recursive: true });
@@ -72,7 +74,7 @@ async function inspectReport(page, width) {
   assert.deepEqual(state.rowCounts, [16, 20], `${label}: righe grafici e tabelle divergenti`);
   assert.equal(state.captions.length, 2, `${label}: caption delle tabelle assenti`);
   assert.ok(state.captions.every(Boolean), `${label}: caption vuota`);
-  assert.deepEqual(state.currentLinks, ["Report mensili"], `${label}: navigazione attiva errata`);
+  assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
   assert.equal(
     state.canonical,
     "https://www.dovevannoinostrisoldi.com/report/2026-08",
@@ -126,18 +128,48 @@ async function inspectArchive(page, width) {
       .map((link) => link.textContent?.trim()),
   }));
   assert.equal(state.h1Count, 1, `${label}: serve un solo h1`);
-  assert.equal(state.h1, "Il mese dei soldi pubblici", `${label}: titolo inatteso`);
+  assert.equal(state.h1, "Report", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
   assert.ok(state.issueLinks.includes("/report/2026-08"), `${label}: edizione assente`);
-  assert.deepEqual(state.currentLinks, ["Report mensili"], `${label}: navigazione attiva errata`);
+  assert.ok(state.issueLinks.includes(`/report/${budgetReport.slug}`), `${label}: analisi del bilancio assente`);
+  assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
+}
+
+async function inspectStateBudget(page, width) {
+  await inspectStateBudgetReader(page, width);
+  await page.screenshot({ path: path.join(reviewDirectory,
+    `state-budget-${process.env.DVNS_COLOR_SCHEME ?? "light"}-${width}.png`), fullPage: true });
 }
 
 await waitForServer(baseUrl);
 const missingResponse = await fetch(new URL("/report/2026-09", baseUrl));
 assert.equal(missingResponse.status, 404, "Un mese sconosciuto deve restituire 404");
+const pdfResponse = await fetch(new URL(`/report/${budgetReport.slug}.pdf`, baseUrl));
+assert.equal(pdfResponse.status, 200, "PDF del bilancio non disponibile");
+assert.match(pdfResponse.headers.get("content-type") ?? "", /^application\/pdf(?:;|$)/i);
+assert.deepEqual(Buffer.from(await pdfResponse.arrayBuffer()),
+  readFileSync(path.join(root, `public/report/${budgetReport.slug}.pdf`)), "Il PDF servito diverge da quello revisionato");
 
+const compatibility = await fetch(new URL("/report/spesa-pubblica-italiana-2026", baseUrl), { redirect: "manual" });
+assert.equal(compatibility.status, 308, "The previous entry must redirect, not publish another edition");
+assert.equal(new URL(compatibility.headers.get("location"), baseUrl).pathname, "/report/bilancio-stato-2025");
 const browser = await launchBrowser();
 try {
+  const previousScheme = process.env.DVNS_COLOR_SCHEME;
+  for (const scheme of ["light", "dark"]) {
+    process.env.DVNS_COLOR_SCHEME = scheme;
+    for (const width of [320, 390, 768, 1280]) {
+      await runScenario(browser, {
+        label: `Bilancio dello Stato ${scheme} ${width}px`,
+        pathname: `/report/${budgetReport.slug}`,
+        width,
+        suite: "monthly-report",
+        validate: (page) => inspectStateBudget(page, width),
+      });
+    }
+  }
+  if (previousScheme === undefined) delete process.env.DVNS_COLOR_SCHEME;
+  else process.env.DVNS_COLOR_SCHEME = previousScheme;
   for (const width of [390, 768, 1280]) {
     await runScenario(browser, {
       label: `Archivio report ${width}px`,

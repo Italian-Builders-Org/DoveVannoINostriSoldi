@@ -1,0 +1,5 @@
+# Optional offline-PDF authoring environment, separate from site/ETL runtime.
+# Exact versions used for this package. Version pins, not a wheel-hash lockfile.
+reportlab==4.4.9
+pillow==12.3.0
+charset-normalizer==3.4.7

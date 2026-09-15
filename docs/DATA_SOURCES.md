@@ -538,6 +538,72 @@ all’anno COFOG selezionato (2014–2024).
 - Source lock: `scripts/etl/specs/eurostat-sha-health-2014-2025.source.json`.
 - Offline: `python3 scripts/etl/eurostat_sha_health_snapshot.py --check`.
 
+### Assegno Unico · INPS open data (nuclei e figli)
+
+**Issue #261 (seconda fetta dopo NASpI).** Due package CKAN
+`assegno-unico-nuclei-2022-2024` e
+`assegno-unico-figli-con-disabilita-2022-2024`, aggiornati
+2026-01-17. Licenza **`cc-by` per package** (non IODL 2.0 della fetta
+NASpI). Acquisizione CSV 14 settembre 2026.
+
+Asset pinnati:
+
+- nuclei: 46 264 byte, SHA-256
+  `327d3b10fa83bc932a17d6e77c6105fbe3afe4ab0c59caf7aaa68320ab58740d`
+- figli: 440 364 byte, SHA-256
+  `b4277d427bb455ed23c6953aa89fd769c65fdea1fd79923e722f4dc7b7e5001f`
+
+Perimetro dichiarato dalla fonte: **AUU a domanda — esclusi beneficiari
+RdC**. 106 province × anni 2022–2024; 636 + 3 816 = 4 452 righe. Importi
+erogati in **millesimi di euro** (49 valori non esatti in centesimi non
+vengono arrotondati). Nuclei, figli e mesi restano nature distinte; in
+`nuclei` la colonna `numero_figli` resta con unità non documentata dalla
+fonte. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/famiglia/assegno-unico`, filtri `anno` / `tabella` /
+  `provincia` / `regione`.
+- MCP: `query_dataset` con `dataset: "inps_assegno_unico"`.
+- Source lock: `scripts/etl/specs/inps-assegno-unico-2022-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_assegno_unico_snapshot.py --check`.
+
+### Integrazioni salariali · INPS open data (lavoratori, domande, mensilità)
+
+**Issue #261 (terza fetta dopo NASpI e Assegno Unico).** Tre package CKAN
+del report annuale Ammortizzatori Sociali 2023:
+
+- `integrazioni-salariali-lavoratori-2023`
+- `integrazioni-salariali-domande-2023`
+- `integrazioni-salariali-mensilita-2023`
+
+Licenza **`cc-by` per package**. Acquisizione CSV 15 settembre 2026.
+Asset pinnati: 27 149 / 26 404 / 27 168 byte (SHA-256 nel source lock).
+
+Conteggi mensili per 20 regioni e sei tipi di intervento (`CIGD`, `CIGO`,
+`CIGS`, `FIS`, `FONDI_Centrali`, `FONDI_Territorio`). **Nessun importo**:
+lavoratori, domande e mensilità restano nature distinte e non si sommano.
+Copertura chiavi non identica fra tabelle (790 / 759 / 790). Superficie
+fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/integrazioni-salariali`, filtri `anno` / `tabella` /
+  `mese` / `regione` / `tipo`.
+- MCP: `query_dataset` con `dataset: "inps_integrazioni_salariali"`;
+  il mese italiano va in `period`, il tipo intervento in `code`.
+- Source lock: `scripts/etl/specs/inps-integrazioni-salariali-2023.source.json`.
+- Offline: `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check`.
+
+### INPS · CIG Fondi di Solidarietà 2023–2024
+
+Ore autorizzate mensili per 20 regioni, gestioni `FIS` / `Altri fondi` e quattro
+rami di attività. **Nessun importo**: le ore non sono lavoratori, domande,
+mensilità né euro. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/cig-fondi-solidarieta`, filtri `anno` / `mese` / `regione` /
+  `gestione` / `ramo`.
+- MCP: `query_dataset` con `dataset: "inps_cig_fondi_solidarieta"`;
+  il mese italiano va in `period`, la gestione fondi in `code`, il ramo in `sector`.
+- Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

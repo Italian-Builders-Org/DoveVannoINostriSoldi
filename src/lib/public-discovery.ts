@@ -65,6 +65,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/pnrr",
   "/pnrr/incarichi",
   "/report",
+  "/report/bilancio-stato-2025",
   ...PUBLISHED_MONTHLY_REPORT_PATHS,
   "/privacy",
   "/regioni",
@@ -124,7 +125,7 @@ export const PUBLIC_NOINDEX_PATHS = [
 ] as const satisfies readonly PublicPath[];
 
 /** Legacy entry points redirect to canonical pages and stay out of the sitemap. */
-export const PUBLIC_REDIRECT_PATHS = ["/assistente/anteprima", "/paper"] as const satisfies readonly PublicPath[];
+export const PUBLIC_REDIRECT_PATHS = ["/assistente/anteprima", "/paper", "/report/spesa-pubblica-italiana-2026"] as const satisfies readonly PublicPath[];
 
 /** Pages that the concise llms.txt overview must always expose. */
 export const LLMS_DISCOVERY_PATHS = [

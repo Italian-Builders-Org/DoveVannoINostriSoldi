@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "cutoff": "2026-09-15",
+  "mode": "source-prose-extraction",
+  "sourceId": "rgs-review-2024",
+  "sourceUrl": "https://www.mef.gov.it/export/sites/MEF/attuazione-misure-pnrr/documenti/Relazione-spending-review.pdf",
+  "originalPdfBytesAcquired": false,
+  "originalPdfSha256": null,
+  "statements": [
+    {
+      "id": "sr-affitti",
+      "locator": "§3.4, due misure Interno su piani compositi non reintegrati",
+      "fields": {
+        "vvfTargetEuro": "845000",
+        "vvfNotAchievedEuro": "76000",
+        "psTargetEuro": "533000",
+        "psNotAchievedEuro": "169000"
+      },
+      "keys": [
+        "Interno / 2023-2025 / ID8 / 1901 / 09",
+        "Interno / 2023-2025 / ID16 / 2624 / 16 e 2615 / 01"
+      ]
+    },
+    {
+      "id": "sr-energia",
+      "locator": "§3.4, Ministero dell’Interno, punto d",
+      "outcome": "obiettivo non raggiunto",
+      "reinstatement": "poco più di 5 milioni",
+      "missedSavingEuro": null,
+      "keys": [
+        "Interno / 2023-2025 / ID10 / 2562 / 02"
+      ]
+    },
+    {
+      "id": "sr-esercito",
+      "locator": "§3.6, seconda modalità di rendicontazione",
+      "fields": {
+        "directEuro": "1470031",
+        "cateringEuro": "4407117",
+        "extraRationsEuro": "167814",
+        "netEuro": "5709334",
+        "targetEuro": "4000000"
+      },
+      "keys": [
+        "Difesa / 2024-2026 / ID1"
+      ]
+    },
+    {
+      "id": "sr-scope",
+      "locator": "§3.2, classificazione dei piani",
+      "fields": {
+        "total": 205,
+        "dedicated": 107,
+        "composite": 69,
+        "funds": 29
+      }
+    },
+    {
+      "id": "sr-aggregate",
+      "locator": "§3.3 e capitolo 4",
+      "outcome": "obiettivo finanziario 2024 sostanzialmente raggiunto in aggregato; non tutte le misure conseguono il target"
+    }
+  ]
+}

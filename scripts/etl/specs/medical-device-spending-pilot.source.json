@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "medical-device-spending-pilot",
+  "holder": "Ministero della Salute",
+  "scope": "Spesa rilevata per dispositivi medici 2022-2023, anagrafica BD/RDM e CND usate per il join esplorativo",
+  "spendingReleases": {
+    "2022": {
+      "landingUrl": "https://www.salute.gov.it/new/it/pubblicazione/rapporto-sulla-spesa-rilevata-dalle-strutture-sanitarie-pubbliche-del-ssn-13/",
+      "downloadUrl": "https://www.salute.gov.it/new/sites/default/files/2026-04/Appendice%20rapporto%202022.zip",
+      "referencePeriod": "2022",
+      "publicationDate": "2026-04-03",
+      "acquisitionDate": "2026-09-15",
+      "licenseStatus": "not-declared",
+      "siteTermsUrl": "https://www.salute.gov.it/new/it/altro/note-legali-2/",
+      "archive": {"bytes": 9351972, "sha256": "9c7d2cd336b1ecf19ef47bf8e4d5b438a69e9c833c421e1baed67b623bb737b3", "member": "Appendice rapporto 2022.csv", "memberBytes": 63574960, "memberSha256": "356ebeefff1f1c8a689439ce85029453c5fc7daf8a1cd6d653e9b7ecd3a07d00", "memberModifiedAt": "2025-04-30T08:49:04Z"},
+      "expected": {"rows": 962739, "types": {"1": 955579, "2": 7160}, "decimalScaleRows": {"0": 183080, "1": 189492, "2": 296365, "3": 83945, "4": 83269, "5": 126588}, "zeroAmounts": 38004, "negativeAmounts": 1440, "totalEuroExact": "6181255348.97234", "matchedRows": 962738, "unresolvedRows": 1, "missingKeyRows": 0, "invalidKeyRows": 0, "notFoundRows": 1, "ambiguousRows": 0, "unresolvedEuroExact": "2959.11", "repeatedBusinessGrains": 43465, "maxBusinessGrainOccurrences": 2}
+    },
+    "2023": {
+      "landingUrl": "https://www.salute.gov.it/new/it/pubblicazione/rapporto-sulla-spesa-rilevata-dalle-strutture-sanitarie-pubbliche-del-ssn-12/",
+      "downloadUrl": "https://www.salute.gov.it/new/sites/default/files/2026-04/Appendice%20rapporto%202023.zip",
+      "referencePeriod": "2023",
+      "publicationDate": "2026-04-03",
+      "acquisitionDate": "2026-09-15",
+      "licenseStatus": "not-declared",
+      "siteTermsUrl": "https://www.salute.gov.it/new/it/altro/note-legali-2/",
+      "archive": {"bytes": 9761955, "sha256": "2a769d7e1c6307229df9408d42bb7d5bda89e31bf17116258b52856b2f7772a4", "member": "Appendice rapporto 2023.csv", "memberBytes": 67827944, "memberSha256": "7bddda0277ff4d84ff46589d90d7d426b7f8b204b6d37807aaf369defb8e6372", "memberModifiedAt": "2025-04-30T10:04:32Z"},
+      "expected": {"rows": 1012319, "types": {"1": 1004014, "2": 8305}, "decimalScaleRows": {"0": 190321, "1": 198730, "2": 332198, "3": 80731, "4": 82286, "5": 128053}, "zeroAmounts": 43143, "negativeAmounts": 1387, "totalEuroExact": "6609170265.38368", "matchedRows": 1012318, "unresolvedRows": 1, "missingKeyRows": 0, "invalidKeyRows": 0, "notFoundRows": 1, "ambiguousRows": 0, "unresolvedEuroExact": "603.9", "repeatedBusinessGrains": 0, "maxBusinessGrainOccurrences": 1}
+    }
+  },
+  "registry": {
+    "landingUrl": "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici/",
+    "downloadUrl": "https://www.dati.salute.gov.it/sites/default/files/opendata/DISPO_RDM_1_20260914_csv.zip",
+    "referenceDate": "2026-09-14",
+    "acquisitionDate": "2026-09-14",
+    "licenseStatus": "IODL-2.0",
+    "archive": {"bytes": 56899141, "sha256": "8f0f2c82300ad67a22db5d56b390dc976f47d793c28146f53f6d82f6bf88c73f", "member": "DISPO_RDM_1_20260914.csv", "memberBytes": 521253275, "memberSha256": "0fca6e0e0cd0277f01775c0046db093876900cae8611bb8376c4defc95135c47"},
+    "expected": {"rows": 2416708, "types": {"1": 2373841, "2": 42867}, "duplicateCompositeKeys": 0, "duplicateBareNumbersAcrossTypes": 39509, "sentinelValidTo": 2414958}
+  },
+  "classification": {
+    "landingUrl": "https://www.dati.salute.gov.it/it/dataset/classificazione-nazionale-dei-dispositivi-medici-cnd/",
+    "downloadUrl": "https://www.dati.salute.gov.it/sites/default/files/opendata/DISPO_RDM_74_20260901.csv",
+    "referenceDate": "2026-09-01",
+    "acquisitionDate": "2026-09-14",
+    "licenseStatus": "IODL-2.0",
+    "bytes": 932261,
+    "sha256": "0e5217c4b9ba8244b32e56d73002a8e705777a36f259f7e6788241bf5194e09a",
+    "expected": {"rows": 11115, "distinctCodes": 8798, "codesWithMultipleVersions": 2142, "maxVersions": 4}
+  },
+  "schemas": {
+    "spendingHeaders": ["Anno", "CodRegCommit", "CodASL", "AziendaSanitaria", "CodTipoDM", "NumRep", "CodiceCND", "CostoAcq"],
+    "registryHeaders": ["tipologia_dm", "progressivo_dm_ass", "data_prima_pubblicazione", "dm_riferimento", "gruppo_dm_simili", "iscrizione_repertorio", "data_inizio_validita", "data_fine_validita", "fabbricante_assemblatore", "cod_fiscale", "PARTITAIVA_VATNUMBER_MAND", "cod_catalogo_fabbr_ass", "denominazione_commerciale", "classificazione_cnd", "descrizione_cnd", "data_fine_commercio", ""],
+    "classificationHeaders": ["codice_ramo_cnd", "descrizione_ramo_cnd", "livello_finale", "riferimento_civab", "data_inzio_validita", "data_fine_validita"]
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "lockSha256": "abfb79246a8c0a04ca51326d8798d1261f657b98962936855d68d287ed2c9460"
+  }
+}

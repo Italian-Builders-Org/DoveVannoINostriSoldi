@@ -480,6 +480,18 @@ export async function queryPublicDataset(
         }),
       });
     }
+    case "inl_vigilanza": {
+      const { queryInlVigilanza } = await import("@/lib/inl-vigilanza-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryInlVigilanza({
+          year: query.year,
+          table: query.table,
+          territory: query.territory,
+          sector: query.sector,
+        }),
+      });
+    }
     case "istat_cofog": {
       const { queryIstatCofog } = await import("@/lib/istat-cofog-snapshot");
       return jsonSafe({

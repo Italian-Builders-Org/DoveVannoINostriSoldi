@@ -57,6 +57,9 @@ const integrazioniSalarialiRuntimeFiles = [
 const cigFondiSolidarietaRuntimeFiles = [
   "src/data/generated/inps-cig-fondi-solidarieta-2023-2024.data.json",
 ];
+const inlVigilanzaRuntimeFiles = [
+  "src/data/generated/inl-vigilanza-2025.data.json",
+];
 
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
@@ -123,11 +126,13 @@ const nextConfig: NextConfig = {
     "/api/famiglia/assegno-unico": assegnoUnicoRuntimeFiles,
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
     "/api/lavoro/cig-fondi-solidarieta": cigFondiSolidarietaRuntimeFiles,
+    "/api/lavoro/vigilanza-inl": inlVigilanzaRuntimeFiles,
     "/fonti": [
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
+      ...inlVigilanzaRuntimeFiles,
       ...pensionsRuntimeFiles,
     ],
     "/spese/pensioni": pensionsRuntimeFiles,
@@ -178,6 +183,7 @@ const nextConfig: NextConfig = {
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
+      ...inlVigilanzaRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
@@ -192,6 +198,7 @@ const nextConfig: NextConfig = {
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
+      ...inlVigilanzaRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
@@ -206,6 +213,7 @@ const nextConfig: NextConfig = {
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
+      ...inlVigilanzaRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],

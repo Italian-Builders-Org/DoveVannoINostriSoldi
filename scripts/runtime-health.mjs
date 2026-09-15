@@ -66,6 +66,7 @@ const EXPECTED_SOURCE_IDS = [
   "inps-assegno-unico",
   "inps-integrazioni-salariali",
   "inps-cig-fondi-solidarieta",
+  "inl-vigilanza",
   "mef-irpef-dettaglio",
   "mef-iva",
   "eu-vat-gap-italy",

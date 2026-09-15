@@ -41,6 +41,7 @@ export type SourceId =
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
   | "inps-cig-fondi-solidarieta"
+  | "inl-vigilanza"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -680,6 +681,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
+  },
+  "inl-vigilanza": {
+    id: "inl-vigilanza",
+    label: "INL · vigilanza ispettiva 2025",
+    owner: "Ispettorato Nazionale del Lavoro",
+    sourceUrl: "https://www.ispettorato.gov.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Relazione annuale e rapporto vigilanza 2025 (PDF). Snapshot aggiornabile solo dopo nuova acquisizione PDF e validazione offline; licenza CC BY 3.0 IT.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inl-vigilanza", "domain:labour", "domain:enforcement"],
   },
   "mef-iva": {
     id: "mef-iva",

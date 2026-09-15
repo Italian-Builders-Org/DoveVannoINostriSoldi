@@ -3,11 +3,11 @@
   "reportId": "public-spending-2026",
   "referenceDate": "2026-09-14",
   "canonicalPath": "src/content/reports/public-spending-2026.json",
-  "canonicalSha256": "ebe3f1737b6c83dbbadef209158b198bd428a414ffbe77c954f573ad9605ab17",
+  "canonicalSha256": "9a1d3b1d339180d7258dbe191be8601958bbfbf8f2407f9eb7003e484352f874",
   "note": "Hash dei derivati prodotti localmente; non hash dei byte delle fonti esterne. PDF riproducibile nello stesso ambiente ReportLab/font.",
   "artifacts": {
     "public/data/reports/public-spending-2026.json": {
-      "sha256": "ebe3f1737b6c83dbbadef209158b198bd428a414ffbe77c954f573ad9605ab17",
+      "sha256": "9a1d3b1d339180d7258dbe191be8601958bbfbf8f2407f9eb7003e484352f874",
       "bytes": 80663
     },
     "public/data/reports/public-spending-2026-claims.csv": {
@@ -15,7 +15,7 @@
       "bytes": 9217
     },
     "docs/reports/SPESA_PUBBLICA_ITALIANA_2026.md": {
-      "sha256": "4a637843a6ff6fcc469baf4a4eab3697561c7fa23d5d736f576e74a66c4cb649",
+      "sha256": "4ff9b1e45fdf83eb3e2ab7346fd0b8150964c1b929bb0f0f31d312c2f9e58882",
       "bytes": 56278
     },
     "public/report/spesa-pubblica-italiana-2026.pdf": {

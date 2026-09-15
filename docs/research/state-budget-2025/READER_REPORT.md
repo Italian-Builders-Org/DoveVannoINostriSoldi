@@ -1,8 +1,70 @@
-# Spesa pubblica: costi evitabili, anomalie ed errori
+# Dove si inceppano i soldi pubblici
 
-Sanzioni pagate, ritardi, varianti contestate e numeri che non tornano. Il quadro della spesa pubblica e 17 riscontri spiegati con le loro fonti.
+Entrate, spese e risultati: il bilancio dello Stato 2025, dieci anni di residui e i costi documentati di ritardi, errori e servizi che non funzionano.
 
-Le fonti documentano sanzioni e indennizzi pagati, varianti ai lavori contestate, servizi non conformi ed errori nei dati. Il rapporto distingue questi problemi e spiega cosa comportano.
+Ci sono soldi spesi per riparare un inadempimento, progetti che non producono i risultati previsti e crediti che restano nei conti finché vengono cancellati. Seguiamo questi tre percorsi: dalle risorse pubbliche al servizio, oppure al punto in cui il percorso si interrompe.
+
+## Prima domanda: da dove arrivano i soldi?
+
+Nel 2025 lo Stato accerta 783,17 miliardi di entrate finali e registra 902,96 miliardi di spese finali. Accertare un’entrata significa riconoscere un credito: non equivale sempre ad averlo già incassato.
+
+Le imposte sono 661,93 miliardi, l’84,52% delle entrate finali. Seguono 119,03 miliardi di entrate non tributarie e 2,21 miliardi da alienazioni, ammortamenti e riscossione di crediti.
+
+Il saldo netto da finanziare pubblicato è 119,79 miliardi. È un saldo del bilancio statale, non il deficit europeo dell’insieme delle amministrazioni pubbliche. Il rimborso di 267,97 miliardi di prestiti resta separato dalle spese finali.
+
+Competenza finanziaria, milioni di euro della fonte. La sottrazione dei totali arrotondati produce 119.787 milioni, contro 119.786 pubblicati: differenza compatibile con l’arrotondamento, non un milione scomparso.
+
+Fonti: senato-rendiconto-2025
+
+## Seconda domanda: quanto è stato davvero pagato?
+
+Il rendiconto segue fasi diverse: prima lo stanziamento autorizza la spesa, poi l’impegno la registra e infine il pagamento trasferisce il denaro. Un contratto pluriennale può comparire in più esercizi: contarne ogni anno tutto il valore lo moltiplicherebbe artificialmente.
+
+Abbiamo riconciliato i 15 aggregati ministeriali dello snapshot RGS presente nel progetto. Su 1.170,93 miliardi di impegni, compresi i rimborsi del debito, 1.109,92 sono pagati sulla competenza 2025; 61,01 restano da pagare. I pagamenti sui residui degli anni precedenti sono altri 44,24 miliardi.
+
+Il Ministero del Turismo conserva il 71,19% dei propri impegni 2025; le Infrastrutture il 38,90%. Sono indicatori di esecuzione da leggere per programma, non una graduatoria di sprechi. Nel caso degli impianti di risalita, più avanti, il documento descrive anche fondi e risultati: lì il segnale ha un contenuto concreto.
+
+Tutti gli importi ministeriali sono in centesimi. Controlli: CP = pagato CP + rimasto CP; CS = pagato CP + pagato RS; residui finali = rimasto CP + rimasto RS. Ogni somma dei 15 ministeri deve coincidere con il totale pubblicato. Salute non coincide con l’intero Servizio sanitario nazionale: parte del finanziamento transita dal MEF e dalle Regioni.
+
+Fonti: rgs-ministries-2025
+
+## Dieci anni, non un solo governo
+
+I residui delle spese finali passano da 109,69 miliardi nel 2015 a 187,96 nel 2024. Sono consistenze a fine anno, non dieci flussi da sommare.
+
+Il confronto attraversa cambi di governo e di regole. Dal 2016 si allungano alcuni termini di conservazione; dal 2019 cambia l’imputazione degli impegni alla scadenza. La discontinuità del 2020 coincide anche con le misure straordinarie della pandemia.
+
+Per attribuire un risultato servono almeno quattro date: decisione, contratto, scadenza e pagamento. Il governo in carica al pagamento può ereditare l’impegno, ma resta responsabile della gestione che gli compete.
+
+La serie copre dieci osservazioni annuali dello stock, non un audit di tutti i contratti del decennio. Importi nominali, milioni di euro. Le componenti 2019 e 2022 differiscono dal totale di un milione per arrotondamento. Il grafico mantiene i totali pubblicati.
+
+Fonti: camera-residui
+
+## Pensioni: distinguere il diritto, il contributo e il credito inesigibile
+
+La spesa previdenziale non è uno spreco perché elevata. Il controllo utile cerca prestazioni senza diritto, contributi non riscossi e costi amministrativi evitabili. I due riscontri seguenti riguardano i crediti, non accuse ai pensionati.
+
+Nel rendiconto INPS, il portafoglio ADER al 31 dicembre 2024 è 135,2 miliardi. Solo 18,1 sono classificati come potenziale recupero lordo. Altri 60 miliardi riguardano azioni già tentate senza riscossione.
+
+Cancellare un credito già svalutato non crea da solo un nuovo buco. Il problema gestionale è capire come il credito nasce, quanto tempo passa prima del recupero e perché alcuni errori ritornano.
+
+Classificazione ADER-INPS: stock di crediti, non entrate annuali o denaro disponibile. Il potenziale recupero è lordo e non è una previsione di incasso. Non sommare questo portafoglio alle eliminazioni o ai trasferimenti statali.
+
+Fonti: inps-rendiconto, inps-chiarimenti
+
+## E i soldi all’estero?
+
+Per rispondere non basta sommare il bilancio degli Esteri. L’aiuto pubblico allo sviluppo coinvolge diversi ministeri; lo stesso bilancio MAECI include ambasciate, servizi consolari e sostegno alle imprese italiane.
+
+Nell’allegato iniziale al bilancio 2024, le risorse APS degli otto ministeri elencati dalla Camera sommano 6,31 miliardi. È uno stanziamento, non la misura dei soldi effettivamente inviati all’estero. La voce Interno, da sola, vale 1,54 miliardi: la destinazione geografica va verificata progetto per progetto.
+
+Una variazione concreta riguarda il capitolo 3429 del MAECI: il contributo allo Strumento europeo per la pace passa da 89,94 milioni nel 2023 a 381,3 nel 2024. È una scelta di politica estera e un costo opportunità da discutere; la crescita non dimostra appropriazione indebita o inefficienza.
+
+Per confrontare aiuti e manutenzione stradale servono pagamenti, risultati e somme legalmente riallocabili. Questo dossier non certifica che ogni euro stanziato per gli aiuti possa essere spostato subito sulle strade.
+
+Stanziamenti iniziali APS 2024, non consuntivo OCSE-DAC. Il contributo EPF sul capitolo 3429 e il programma Cooperazione non sono sinonimi. Nessuna somma tra questa tabella, MAECI, INPS e totale PA.
+
+Fonti: maeci-rendiconto
 
 ## Discariche: circa 270 milioni pagati in sanzioni
 
@@ -44,6 +106,38 @@ Totale dei due canali di pagamento: 121,3 + 86,1 = 207,4 mln €
 
 Fonti: pinto
 
+## Depurazione: una condanna da 10 milioni, oltre alle penalità
+
+Costo dell’inadempimento · Sentenza del 27 marzo 2025, causa C-515/23
+
+Non adeguare gli impianti costa due volte: resta il problema ambientale e si aggiunge la sanzione.
+
+La Corte di giustizia dell’UE ha imposto all’Italia una somma forfettaria di 10 milioni di euro e una penalità semestrale di base di 13.687.500 euro, riducibile con la progressiva conformità.
+
+La cifra semestrale non è una multa fissa da moltiplicare per ogni semestre trascorso. La sentenza e i pagamenti effettivi sono documenti diversi.
+
+**Cosa dimostra.** La condanna quantifica il costo dell’inadempimento; non certifica quanto sia già uscito dalla cassa dello Stato. Non calcoliamo un cumulato 2026 senza i relativi atti.
+
+**Come migliorare.** Dare priorità agli adeguamenti che eliminano le violazioni, collegando avanzamento tecnico e riduzione delle penalità.
+
+Fonti: depurazione
+
+## Bonus edilizi: sovvenzionati anche lavori che sarebbero stati fatti
+
+Inefficienza stimata · Superbonus e Bonus facciate, 2021-2023; studio del giugno 2024
+
+Uno studio pubblicato dalla Banca d’Italia stima che circa il 27% dei lavori agevolati, oltre 45 miliardi, sarebbe stato realizzato anche senza questi incentivi.
+
+Per stimarlo, gli autori confrontano l’Italia con una combinazione di Paesi europei senza un programma equivalente. Il risultato riconosce un forte aumento dei lavori, ma individua una parte del sussidio che non era necessaria a farli partire.
+
+Nello studio il moltiplicatore è tra 0,7 e 0,9: un euro di incentivo genera meno di un euro di PIL aggiuntivo negli scenari considerati. Le entrate fiscali aggiuntive non ripagano il costo.
+
+**Cosa dimostra.** È un’inefficienza economica stimata, non una frode accertata. I 45 miliardi sono investimenti non aggiuntivi, non un elenco di fatture false né un risparmio immediatamente recuperabile. Lo studio non valuta tutti i benefici ambientali.
+
+**Come migliorare.** Concentrare gli incentivi sui lavori che non partirebbero senza sostegno e confrontarne costo, risparmio energetico e benefici con alternative meno onerose.
+
+Fonti: bdi-bonus
+
 ## Camerano: varianti contestate e tempi più che triplicati
 
 Irregolarità documentata · Rilievi ANAC del 15 ottobre 2025
@@ -66,43 +160,25 @@ Durata rideterminata rispetto a quella iniziale: 3.045 / 870 = 3,50 volte
 
 Fonti: anac-camerano, regione-camerano
 
-## Depurazione: una condanna da 10 milioni, oltre alle penalità
+## Tolentino: un progetto da rifare e due costi non riconciliati
 
-Costo dell’inadempimento · Sentenza del 27 marzo 2025, causa C-515/23
+Possibile spreco · Progettazione 2007-2015; documenti e banca dati acquisiti nel 2026
 
-Non adeguare gli impianti costa due volte: resta il problema ambientale e si aggiunge la sanzione.
+Gli atti descrivono una progettazione superata dagli eventi e sostituita: una pista concreta di lavoro reso inutilizzabile.
 
-La Corte di giustizia dell’UE ha imposto all’Italia una somma forfettaria di 10 milioni di euro e una penalità semestrale di base di 13.687.500 euro, riducibile con la progressiva conformità.
+Dopo la scadenza del vincolo sul tracciato, nel 2009 un impianto fotovoltaico ne compromette il percorso. Seguono una revisione, il recesso del contraente nel 2012 e un nuovo studio di fattibilità nel 2015.
 
-La cifra semestrale non è una multa fissa da moltiplicare per ogni semestre trascorso. La sentenza e i pagamenti effettivi sono documenti diversi.
+Per il progetto identificato dal CUP F71B16000830001, il quadro MIT/ANAS riporta 206,72 milioni e la riga MOP 384,64 milioni. Il CUP è il codice che consente di riconoscere lo stesso progetto nei diversi archivi.
 
-**Cosa dimostra.** La condanna quantifica il costo dell’inadempimento; non certifica quanto sia già uscito dalla cassa dello Stato. Non calcoliamo un cumulato 2026 senza i relativi atti.
+**Cosa dimostra.** Il rifacimento può aver generato costi evitabili. La differenza di 177,92 milioni, invece, resta un disallineamento tra quadri: non prova un esborso aggiuntivo né misura la progettazione perduta.
 
-**Come migliorare.** Dare priorità agli adeguamenti che eliminano le violazioni, collegando avanzamento tecnico e riduzione delle penalità.
+**Come migliorare.** Proteggere tempestivamente il tracciato e mantenere un quadro economico versionato, con indicazione degli elaborati riutilizzati.
 
-Fonti: depurazione
+Sottrarre due importi rivela un disallineamento. Per chiamarlo extracosto devono essere omogenei lavori inclusi, prezzi e data della versione: qui tale equivalenza non è dimostrata.
 
-## Mense ospedaliere: non conformità in 238 strutture
+Differenza tra i due quadri pubblicati: 384.642.946,39 - 206.718.750 = 177.924.196,39 €
 
-Irregolarità documentata · Campagna NAS, 19 febbraio - 22 marzo 2026
-
-I NAS, il reparto dei Carabinieri che tutela la salute, hanno rilevato problemi nel servizio effettivo, non soltanto nelle procedure di acquisto.
-
-Il Ministero della Salute riporta carenze igieniche, manutentive e nella gestione degli alimenti e delle diete speciali. Le 238 strutture non conformi rappresentano il 42,7% delle 558 controllate.
-
-Il comunicato contiene anche un dettaglio che non quadra: 525 strutture della ristorazione più 31 dell’ambito sanitario fanno 556, due meno del totale dichiarato. Conserviamo il totale pubblicato e segnaliamo la differenza, senza correggerlo di nostra iniziativa.
-
-**Cosa dimostra.** Le non conformità sono documentate; non sono una percentuale di spesa sprecata. Il campione ispezionato non rappresenta automaticamente tutte le mense italiane e non distingue qui i soli contratti pubblici.
-
-**Come migliorare.** Affiancare ai controlli sulle gare la verifica dei pasti e delle condizioni di erogazione, con applicazione delle conseguenze previste dai contratti.
-
-La prima divisione descrive il campione controllato. La seconda operazione controlla la coerenza del comunicato: il dettaglio non ricostruisce il totale.
-
-Non conformità tra le strutture controllate: 238 / 558 × 100 = 42,7 %
-
-Somma delle due categorie pubblicate: 525 + 31 = 556 strutture
-
-Fonti: nas-mense
+Fonti: tolentino-progetto, mit-allegato, mit-anas, mop
 
 ## Impianti di risalita: impegnato solo il 3,05% dei fondi 2025
 
@@ -164,25 +240,27 @@ Spazi comuni realizzati rispetto all’obiettivo: 4.800 / 16.000 × 100 = 30 %
 
 Fonti: indicatori, azioni, carceri-programma
 
-## Tolentino: un progetto da rifare e due costi non riconciliati
+## Mense ospedaliere: non conformità in 238 strutture
 
-Possibile spreco · Progettazione 2007-2015; documenti e banca dati acquisiti nel 2026
+Irregolarità documentata · Campagna NAS, 19 febbraio - 22 marzo 2026
 
-Gli atti descrivono una progettazione superata dagli eventi e sostituita: una pista concreta di lavoro reso inutilizzabile.
+I NAS, il reparto dei Carabinieri che tutela la salute, hanno rilevato problemi nel servizio effettivo, non soltanto nelle procedure di acquisto.
 
-Dopo la scadenza del vincolo sul tracciato, nel 2009 un impianto fotovoltaico ne compromette il percorso. Seguono una revisione, il recesso del contraente nel 2012 e un nuovo studio di fattibilità nel 2015.
+Il Ministero della Salute riporta carenze igieniche, manutentive e nella gestione degli alimenti e delle diete speciali. Le 238 strutture non conformi rappresentano il 42,7% delle 558 controllate.
 
-Per il progetto identificato dal CUP F71B16000830001, il quadro MIT/ANAS riporta 206,72 milioni e la riga MOP 384,64 milioni. Il CUP è il codice che consente di riconoscere lo stesso progetto nei diversi archivi.
+Il comunicato contiene anche un dettaglio che non quadra: 525 strutture della ristorazione più 31 dell’ambito sanitario fanno 556, due meno del totale dichiarato. Conserviamo il totale pubblicato e segnaliamo la differenza, senza correggerlo di nostra iniziativa.
 
-**Cosa dimostra.** Il rifacimento può aver generato costi evitabili. La differenza di 177,92 milioni, invece, resta un disallineamento tra quadri: non prova un esborso aggiuntivo né misura la progettazione perduta.
+**Cosa dimostra.** Le non conformità sono documentate; non sono una percentuale di spesa sprecata. Il campione ispezionato non rappresenta automaticamente tutte le mense italiane e non distingue qui i soli contratti pubblici.
 
-**Come migliorare.** Proteggere tempestivamente il tracciato e mantenere un quadro economico versionato, con indicazione degli elaborati riutilizzati.
+**Come migliorare.** Affiancare ai controlli sulle gare la verifica dei pasti e delle condizioni di erogazione, con applicazione delle conseguenze previste dai contratti.
 
-Sottrarre due importi rivela un disallineamento. Per chiamarlo extracosto devono essere omogenei lavori inclusi, prezzi e data della versione: qui tale equivalenza non è dimostrata.
+La prima divisione descrive il campione controllato. La seconda operazione controlla la coerenza del comunicato: il dettaglio non ricostruisce il totale.
 
-Differenza tra i due quadri pubblicati: 384.642.946,39 - 206.718.750 = 177.924.196,39 €
+Non conformità tra le strutture controllate: 238 / 558 × 100 = 42,7 %
 
-Fonti: tolentino-progetto, mit-allegato, mit-anas, mop
+Somma delle due categorie pubblicate: 525 + 31 = 556 strutture
+
+Fonti: nas-mense
 
 ## Pubblicità: sei affidamenti allo stesso concessionario
 
@@ -203,6 +281,74 @@ Sommiamo sei acquisti distinti una sola volta. Il CIG, indicato nelle fonti, è 
 Valore dei sei affidamenti: 70.000 + 60.000 + 60.000 + 40.000 + 30.000 + 50.000 = 310.000 € netti
 
 Fonti: sport-corriere, sport-fatto, sport-giornale, sport-libero, sport-tempo, sport-tuttosport, ads-corriere, ads-sole, ads-subasio, ads-mediaset, adnkronos
+
+## Assistenza sociale: i fondi ci sono, le assunzioni non bastano
+
+Risultato insufficiente · Fondi e personale 2020-2023; analisi UPB del marzo 2025
+
+L’UPB rileva che nel 2023 mancavano 1.126 assistenti sociali per garantire un professionista ogni 5.000 abitanti. Il problema interessava 228 ambiti territoriali su 566.
+
+Il personale era cresciuto da 9.750 a 13.621 unità. Eppure le erogazioni del contributo del Fondo povertà erano soltanto 48 milioni nel 2021, 65 nel 2022 e 81 nel 2023, rispetto ai 180 milioni richiamati dall’UPB.
+
+I due meccanismi di finanziamento hanno regole diverse. Chi parte sotto la soglia di personale può faticare ad accedere a parte del contributo; alcune stabilizzazioni restano escluse. La rendicontazione della spesa non impone sempre di colmare prima la carenza di assistenti.
+
+**Cosa dimostra.** È un difetto del meccanismo di attuazione: spendere nel sociale non garantisce di raggiungere il servizio minimo. Gli importi non erogati non sono un risparmio se le famiglie restano senza assistenza.
+
+**Come migliorare.** Collegare i due fondi a un percorso unico verso il livello essenziale, con priorità agli ambiti sottodotati e assunzioni stabili sostenibili nel tempo.
+
+Fonti: upb-sociali
+
+## INPS: 778 milioni eliminati per cessazioni comunicate in ritardo
+
+Anomalia documentata · Operazioni 2024; deliberazione del 15 aprile 2025
+
+Il CIV dell’INPS collega 213 milioni per gli artigiani e 565 milioni per i commercianti al ritardo nella comunicazione della cessazione dell’attività.
+
+Le proposte sono 229.675. La stessa criticità era presente nel 2023: non è soltanto una singola posizione da correggere.
+
+Il riscontro riguarda l’aggiornamento dei crediti e delle posizioni contributive. Non dimostra che 778 milioni siano stati versati a beneficiari senza diritto.
+
+**Cosa dimostra.** La ricorrenza segnala un problema amministrativo: le informazioni sull’attività non arrivano abbastanza presto a chi gestisce i contributi.
+
+**Come migliorare.** Allineare le comunicazioni di cessazione e misurare quante posizioni richiedono correzioni, dopo quanti giorni e con quale costo di lavorazione.
+
+Sommiamo due categorie distinte dello stesso provvedimento. Gli euro sono arrotondati dalla fonte; il numero delle proposte è intero.
+
+Crediti eliminati per cessazioni tardive: 213 + 565 = 778 milioni €
+
+Proposte di eliminazione: 66.387 + 163.288 = 229.675 proposte
+
+Fonti: inps-riaccertamento
+
+## INPS: 97,56 milioni di registrazioni erronee o duplicate
+
+Errore documentale o di attribuzione · 2024, confronto con il 2023
+
+Il prospetto INPS indica 97.563.541,04 euro sotto la causale «erronea o duplicata registrazione». Nel 2023 erano 108.216.681,80 euro.
+
+La diminuzione è del 9,84%. È un miglioramento, ma la correzione resta consistente e ricorrente.
+
+**Cosa dimostra.** L’errore di registrazione è documentato. L’importo corretto nei conti non misura, da solo, un’uscita indebita o un risparmio di cassa.
+
+**Come migliorare.** Prevenire i doppioni prima della registrazione e pubblicare le cause degli errori che si ripetono.
+
+Fonti: inps-riaccertamento
+
+## Rottamazioni: la riduzione del debito non assicura il pagamento
+
+Risultato insufficiente · Misure 2016, 2017 e 2018; risultati esaminati nel 2025
+
+Le prime tre rottamazioni lasciavano circa 58 miliardi da pagare dopo gli sconti: lo studio dell’Osservatorio CPI ne riporta 22 riscossi.
+
+Per la quater, lo stesso studio riporta circa 12 miliardi riscossi su 23 dovuti entro il 2024. Il confronto esclude le rate future. Le cifre arrotondate non ricostruiscono esattamente le percentuali pubblicate dagli autori.
+
+Il problema attraversa governi diversi. L’OCPI avverte che ripetere le sanatorie può creare aspettative di nuovi sconti: è la conclusione dello studio, non una stima causale prodotta da questa analisi.
+
+**Cosa dimostra.** La riscossione resta largamente incompleta anche dopo la riduzione del debito. Non possiamo sommare le edizioni per stimare una perdita: alcune posizioni possono rientrare in più misure.
+
+**Come migliorare.** Valutare ogni edizione su incassi aggiuntivi, rinunce, ricadute nei mancati pagamenti e costi di gestione, seguendo le stesse posizioni nel tempo.
+
+Fonti: cpi-rottamazioni
 
 ## Il contratto cloud è di nove imprese, non di una sola
 
@@ -350,13 +496,13 @@ Fonti: indicatori, azioni, archivi-senato
 
 ## Metodo
 
-Il quadro contabile copre dieci funzioni della spesa pubblica nel 2024. Le singole schede usano periodi diversi, riportati accanto ai numeri. Non è un controllo di ogni fattura o di ogni amministrazione.
+Questa edizione riconcilia 15 aggregati ministeriali del rendiconto RGS 2025 e dieci osservazioni annuali dei residui 2015-2024. Le 5.395 righe a capitolo sono dichiarate dalla metadata dello snapshot: non sono state rielaborate in questa sessione. Non presentiamo questo lavoro come audit integrale di ogni spesa dello Stato.
 
-Sanzioni pagate, somme imposte da una sentenza, valori contrattuali e differenze nei dati hanno significati diversi. Per questo non pubblichiamo un totale nazionale degli sprechi.
+Bilancio dello Stato, conti INPS, spesa delle amministrazioni pubbliche e stanziamenti APS restano perimetri separati. Impegni, pagamenti e residui non si sommano tra loro. I valori arrotondati della fonte mantengono una tolleranza esplicita.
 
-Le risultanze di ANAC, NAS e altre istituzioni sono attribuite a chi le ha prodotte. Le verifiche aritmetiche e le letture dei documenti sono nostre elaborazioni. Un risultato statistico non prova da solo spreco, frode o responsabilità individuale.
+Il rapporto distingue costi pagati, sanzioni imposte, irregolarità rilevate dalle autorità, risultati insufficienti ed errori nei documenti. I riscontri istituzionali sono attribuiti agli autori; riconciliazioni, calcoli e lettura comparata sono elaborazioni DVNS con assistenza AI.
 
-Le undici schede iniziali sono state riscritte mantenendo il collegamento alle prove congelate della prima analisi. Le nuove fonti online hanno date e modalità di consultazione nel registro tecnico. Questa elaborazione con assistenza AI non equivale a una revisione indipendente umana.
+Non stimiamo un totale nazionale degli sprechi e non attribuiamo automaticamente una spesa al governo in carica quando viene pagata. Ogni importo conserva periodo, fase contabile, fonte e significato. Il registro tecnico espone anche i limiti di accesso ai documenti originali.
 
 ## Fonti
 
@@ -398,3 +544,13 @@ Le undici schede iniziali sono state riscritte mantenendo il collegamento alle p
 - [Ministero del Lavoro: Campagna DL Coesione: Mediaset TV e CTV](https://trasparenza.lavoro.gov.it/archivio105_procedure-dal-01012024_0_451_566_1.html). CIG B985E8760A; determine e decreti di aggiudicazione allegati alla scheda.
 - [RGS: Progetti opere pubbliche MOP, totale](https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale). Rilascio del 4 settembre 2026; CUP F71B16000830001. Ricevuta della verifica OData del 14 settembre nel pacchetto delle prove.
 - [DoveVannoINostriSoldi: Prove congelate del confronto sul contratto cloud](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/62c70b65716c1e5b2ce784950e081b6bd41d52ad/docs/research/state-budget-2025). Confronto relativo al profilo IPA m_lps: 59.279.167,72 euro su 186.277.425,17 euro; contratto CIG B654A948AF da 48.191.320 euro. È il perimetro del confronto DVNS, non tutto il mercato cloud.
+- [RGS / snapshot DVNS: Rendiconto 2025: aggregati dei 15 ministeri](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/blob/a51efcf3a8f8a3a0407e09f5fda8666fb089cfce/src/data/generated/rgs-ministries-2025.data.json). Quindici record ministries e record totals. Importi interi in centesimi; CP, RS e CS separati. La metadata collega lo snapshot al dataset 2025_RND_SPE_ELB_CAP_001.
+- [Servizi studi di Camera e Senato: Rendiconto 2025 e assestamento 2026: quadro di competenza](https://www.senato.it/show-doc?id=1513780&idoggetto=0&leg=19&part=dossier_dossier1&tipodoc=DOSSIER). Tabelle 17 e 18 e Tavola II. Colonna Consuntivo 2025; valori in milioni di euro, arrotondati dalla fonte. Entrate finali 783.173; spese finali 902.960; rimborso prestiti 267.969.
+- [Camera dei deputati: Rendiconto 2024: residui passivi delle spese finali](https://documenti.camera.it/leg19/dossier/testi/BI0179a.htm). Sezione 4, tabelle 21 e 22. Serie 2015-2024 selezionata dalla tavola 2013-2024. Spese finali al netto del rimborso prestiti; milioni di euro.
+- [INPS, Consiglio di indirizzo e vigilanza: Deliberazione 4/2025: riaccertamento dei residui](https://www.inps.it/content/dam/inps-site/pdf/istituto/delibere-odg/2025/CIV2025_0004.pdf). PDF pp. 9 e 11: 66.387 proposte / 213 milioni artigiani; 163.288 / 565 milioni commercianti; causale ritardata comunicazione di cessazione. PDF p. 9: erronea o duplicata registrazione, 97.563.541,04 euro nel 2024 e 108.216.681,80 nel 2023.
+- [INPS, Consiglio di indirizzo e vigilanza: Deliberazione 10/2025: rendiconto generale 2024](https://www.inps.it/content/dam/inps-site/pdf/istituto/delibere-odg/2025/CIV2025_0010.pdf). PDF p. 26: portafoglio ADER al 31 dicembre 2024, totale 135,2 miliardi, sette componenti; 18,1 miliardi di potenziale recupero lordo. PDF pp. 25-26: fondo svalutazione e crediti contributivi.
+- [INPS: Chiarimenti sul bilancio](https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2025.04.inps-chiarimenti-sul-bilancio.html). Annullamenti di crediti degli anni 2000-2015 e corrispondente utilizzo dei fondi svalutazione. Distingue eliminazione nominale e nuovo effetto sul patrimonio.
+- [Camera dei deputati: Affari esteri: rendiconto 2024](https://documenti.camera.it/leg19/dossier/testi/ES0281.htm). Tabelle 1-3; capitoli 3429 e 2185; elenco degli stanziamenti iniziali APS per otto ministeri. Il testo attribuisce tutta la riduzione dei residui al conto capitale, mentre la tabella espone -41,8 milioni correnti e -6,5 in conto capitale.
+- [Osservatorio Conti Pubblici Italiani, Università Cattolica: Rottamazioni: un incentivo a non pagare le tasse?](https://osservatoriocpi.unicatt.it/ocpi-pubblicazioni-rottamazioni-un-incentivo-a-non-pagare-le-tasse). Paragrafo Le rottamazioni: prime tre definizioni 2016-2018, 58 miliardi da riscuotere e 22 riscossi; quater, 23 miliardi dovuti entro il 2024 e 12 riscossi. Valori arrotondati dello studio, non una nuova estrazione ADER.
+- [Accetturo, Olivieri e Renzi / Banca d’Italia: QEF 860: Incentives for dwelling renovations](https://www.bancaditalia.it/pubblicazioni/qef/2024-0860/QEF_860_24.pdf). Abstract; sezioni 3.4 e 4, PDF pp. 17-20. Addizionalità circa 73%; quota non addizionale 27%; oltre 45 miliardi di investimenti sussidiati. Moltiplicatore 0,7-0,9, intervallo di scenari, non di confidenza. Gli effetti ambientali non sono valutati.
+- [Ufficio parlamentare di bilancio: Flash 1/2025: potenziamento degli assistenti sociali](https://www.upbilancio.it/wp-content/uploads/2025/03/Flash-1_2025-Assist.-sociali.pdf). PDF pp. 9-11: frammentazione dei fondi, soglie di accesso, erogazioni di 48, 65 e 81 milioni nel 2021-2023; carenze di personale rispetto al LEP.

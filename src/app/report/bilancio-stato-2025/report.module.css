@@ -52,10 +52,10 @@
 .caseHeader h3 { font-size: clamp(1.5rem,3vw,2rem); line-height: 1.2; letter-spacing: -.025em; max-width: 40ch; margin: .6rem 0; }
 .caseLayout { display: grid; grid-template-columns: minmax(0,2fr) minmax(0,1fr); gap: 2.3rem; margin-top: 1.4rem; }
 .lead { font-size: 1.08rem; font-weight: 600; }
-.caseNumbers { align-self: start; background: var(--color-raised); border-left: 3px solid var(--chart-data-primary); padding: 1.3rem; }
+.caseNumbers { align-self: start; background: var(--color-raised); border: 1px solid var(--color-neutral-300); padding: 1.3rem; }
 .caseNumbers p { font-size: .9rem; }
 .caseNumbers .stat { font-size: clamp(1.7rem,2.6vw,2.3rem); line-height: 1.12; font-weight: 600; letter-spacing: -.025em; font-variant-numeric: tabular-nums; margin-top: 0; }
-.conclusion { border-left: 3px solid var(--color-neutral-400); padding-left: 1rem; margin-block: 1.6rem 1.1rem; }
+.conclusion { border-top: 1px solid var(--color-neutral-400); padding-top: 1rem; margin-block: 1.6rem 1.1rem; }
 .conclusion h4, .mathIntro h4 { font-size: .87rem; margin: 0; }
 .conclusion p { margin-top: .4rem; }
 .improvement { font-size: .94rem; }

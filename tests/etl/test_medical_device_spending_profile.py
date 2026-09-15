@@ -51,6 +51,7 @@ class MedicalDeviceProfileTests(TestCase):
         self.assertEqual(result["spending"]["zeroAmounts"], 1)
         self.assertEqual(result["spending"]["negativeAmounts"], 1)
         self.assertEqual(result["spending"]["repeatedBusinessGrains"], 0)
+        self.assertEqual(result["registry"]["sentinelValidTo"], 2)
         self.assertEqual(result["cnd"]["codesWithMultipleVersions"], 1)
 
     def test_duplicate_composite_registry_key_fails_closed(self):
@@ -61,6 +62,11 @@ class MedicalDeviceProfileTests(TestCase):
 
     def test_schema_and_money_drift_fail_closed(self):
         write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, [["2021", "10", "100", "ASL", "1", "42", "A01", "1.00"]], "ascii")
+        with self.assertRaisesRegex(etl.SourceError, "Importo"):
+            etl.profile(self.spending, self.registry, self.cnd)
+
+    def test_empty_amount_is_not_observed_zero(self):
+        write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, [["2021", "10", "100", "ASL", "1", "42", "A01", ""]], "ascii")
         with self.assertRaisesRegex(etl.SourceError, "Importo"):
             etl.profile(self.spending, self.registry, self.cnd)
 
@@ -83,6 +89,28 @@ class MedicalDeviceProfileTests(TestCase):
     def test_period_and_member_are_release_specific(self):
         with self.assertRaisesRegex(etl.SourceError, "Contenuto archivio"):
             etl.profile(self.spending, self.registry, self.cnd, 2022)
+
+    def test_release_specific_member_is_accepted_only_when_explicit(self):
+        rows = [["2020", "10", "100", "ASL", "1", "42", "A01", "1,00"]]
+        write_zip(self.spending, "Appendice 2020.csv", etl.SPENDING_HEADERS, rows, "ascii")
+        result = etl.profile(
+            self.spending,
+            self.registry,
+            self.cnd,
+            2020,
+            spending_member="Appendice 2020.csv",
+        )
+        self.assertEqual(result["spending"]["years"], {"2020": 1})
+
+    def test_same_health_company_code_in_different_regions_stays_distinct(self):
+        rows = [
+            ["2021", "10", "100", "ASL Nord", "1", "42", "A01", "1,00"],
+            ["2021", "20", "100", "ASL Sud", "1", "42", "A01", "2,00"],
+        ]
+        write_zip(self.spending, "Appendice rapporto 2021.csv", etl.SPENDING_HEADERS, rows, "ascii")
+        result = etl.profile(self.spending, self.registry, self.cnd)
+        self.assertEqual(result["spending"]["rows"], 2)
+        self.assertEqual(result["spending"]["repeatedBusinessGrains"], 0)
 
     def test_repeated_business_grain_is_reported_without_deduplication(self):
         rows = [
@@ -110,9 +138,12 @@ class MedicalDeviceProfileTests(TestCase):
     def test_committed_source_lock_is_self_consistent(self):
         spec = etl.load_spec()
         self.assertEqual(spec["integrity"]["lockSha256"], etl.canonical_lock_sha256(spec))
-        self.assertEqual(set(spec["spendingReleases"]), {"2022", "2023"})
-        self.assertTrue(all(item["licenseStatus"] == "not-declared" for item in spec["spendingReleases"].values()))
-        self.assertTrue(all(item["siteTermsUrl"].endswith("/note-legali-2/") for item in spec["spendingReleases"].values()))
+        self.assertEqual(set(spec["spendingReleases"]), {str(year) for year in range(2012, 2024)})
+        self.assertTrue(all(spec["spendingReleases"][str(year)]["licenseStatus"] == "IODL-2.0" for year in range(2012, 2022)))
+        self.assertTrue(all(spec["spendingReleases"][year]["licenseStatus"] == "not-declared" for year in ("2022", "2023")))
+        self.assertTrue(all(spec["spendingReleases"][year]["siteTermsUrl"].endswith("/note-legali-2/") for year in ("2022", "2023")))
+        self.assertTrue(all(spec["spendingReleases"][str(year)]["acquisitionStatus"] == "cataloged-not-acquired" for year in range(2012, 2020)))
+        self.assertTrue(all("archive" not in spec["spendingReleases"][str(year)] for year in range(2012, 2020)))
 
     def test_source_lock_rejects_license_period_and_url_drift(self):
         original = json.loads(etl.DEFAULT_SPEC.read_text(encoding="utf-8"))
@@ -120,6 +151,7 @@ class MedicalDeviceProfileTests(TestCase):
             ("licenseStatus", "CC-BY-4.0", "Licenza"),
             ("referencePeriod", "2021", "Periodo"),
             ("downloadUrl", "https://example.test/file.zip", "URL ufficiale"),
+            ("publicationDisposition", "publish", "Selezione release"),
         ):
             with self.subTest(field=field):
                 changed = json.loads(json.dumps(original))

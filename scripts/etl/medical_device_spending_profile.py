@@ -50,17 +50,50 @@ def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, object]:
     if spec.get("schemas") != {"spendingHeaders": SPENDING_HEADERS, "registryHeaders": REGISTRY_HEADERS, "classificationHeaders": CND_HEADERS}:
         raise SourceError("Schemi source lock dispositivi divergenti")
     releases = spec.get("spendingReleases")
-    if not isinstance(releases, dict) or set(releases) != {"2022", "2023"}:
+    inventory_years = {str(year) for year in range(2012, 2024)}
+    if not isinstance(releases, dict) or set(releases) != inventory_years:
         raise SourceError("Release pilota dispositivi inattese")
+    release_ids: set[str] = set()
     for year, release in releases.items():
         if not isinstance(release, dict) or release.get("referencePeriod") != year:
             raise SourceError(f"Periodo source lock spesa {year} inatteso")
-        if release.get("licenseStatus") != "not-declared" or not release.get("siteTermsUrl"):
+        expected_license = "IODL-2.0" if year <= "2021" else "not-declared"
+        if year <= "2019":
+            expected_disposition = "inventory-only"
+            expected_acquisition = "cataloged-not-acquired"
+        elif year <= "2021":
+            expected_disposition = "pilot-candidate"
+            expected_acquisition = "acquired-profiled"
+        else:
+            expected_disposition = "blocked-license"
+            expected_acquisition = "acquired-profiled"
+        if release.get("licenseStatus") != expected_license:
             raise SourceError(f"Licenza source lock spesa {year} inattesa")
-        _require_official_urls(release, ("landingUrl", "downloadUrl", "siteTermsUrl"), f"spesa {year}")
+        release_id = release.get("releaseId")
+        if (
+            not isinstance(release_id, str)
+            or not release_id
+            or release_id in release_ids
+            or release.get("publicationDisposition") != expected_disposition
+            or release.get("acquisitionStatus") != expected_acquisition
+        ):
+            raise SourceError(f"Selezione release spesa {year} inattesa")
+        release_ids.add(release_id)
+        url_fields = ("landingUrl", "downloadUrl")
+        if expected_license == "not-declared":
+            if not release.get("siteTermsUrl"):
+                raise SourceError(f"Contesto licenza source lock spesa {year} assente")
+            url_fields += ("siteTermsUrl",)
+        _require_official_urls(release, url_fields, f"spesa {year}")
         _require_iso_date(release.get("publicationDate"), f"pubblicazione spesa {year}")
-        _require_iso_date(release.get("acquisitionDate"), f"acquisizione spesa {year}")
-        _require_archive_lock(release.get("archive"), f"spesa {year}")
+        _require_iso_date(release.get("checkedAt"), f"controllo spesa {year}")
+        if expected_acquisition == "acquired-profiled":
+            _require_iso_date(release.get("acquisitionDate"), f"acquisizione spesa {year}")
+            _require_archive_lock(release.get("archive"), f"spesa {year}")
+            if not isinstance(release.get("expected"), dict):
+                raise SourceError(f"Profilo atteso spesa {year} assente")
+        elif "acquisitionDate" in release or "archive" in release or "expected" in release:
+            raise SourceError(f"Release non acquisita spesa {year} contiene ricevute")
     registry = spec.get("registry")
     classification = spec.get("classification")
     if not isinstance(registry, dict) or registry.get("licenseStatus") != "IODL-2.0":
@@ -207,7 +240,13 @@ def parse_source_euros(raw: str) -> Decimal:
         raise SourceError("Importo non decimale") from error
 
 
-def profile(spending_zip: Path, registry_zip: Path, cnd_csv: Path, year: int = 2021) -> dict[str, object]:
+def profile(
+    spending_zip: Path,
+    registry_zip: Path,
+    cnd_csv: Path,
+    year: int = 2021,
+    spending_member: str | None = None,
+) -> dict[str, object]:
     registry_keys: dict[tuple[str, str], str] = {}
     bare_types: dict[str, set[str]] = {}
     registry_types: Counter[str] = Counter()
@@ -235,7 +274,13 @@ def profile(spending_zip: Path, registry_zip: Path, cnd_csv: Path, year: int = 2
     scales: Counter[int] = Counter()
     grains: Counter[tuple[str, str, str, str, str]] = Counter()
     matched = unresolved = missing_key = invalid_key = not_found = zero = negative = cnd_different = 0
-    spending_rows = _zip_rows(spending_zip, f"Appendice rapporto {year}.csv", "ascii", SPENDING_HEADERS, "spesa")
+    spending_rows = _zip_rows(
+        spending_zip,
+        spending_member or f"Appendice rapporto {year}.csv",
+        "ascii",
+        SPENDING_HEADERS,
+        "spesa",
+    )
     try:
         for index, row in enumerate(spending_rows, 1):
             _require_row_shape(row, SPENDING_HEADERS, "spesa", index)
@@ -299,20 +344,26 @@ def profile(spending_zip: Path, registry_zip: Path, cnd_csv: Path, year: int = 2
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spending", type=Path, required=True)
-    parser.add_argument("--year", type=int, choices=(2021, 2022, 2023), required=True)
+    parser.add_argument("--year", type=int, choices=(2020, 2021, 2022, 2023), required=True)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--cnd", type=Path, required=True)
     args = parser.parse_args()
     spec = load_spec()
     release = spec["spendingReleases"].get(str(args.year))
-    if not isinstance(release, dict):
+    if not isinstance(release, dict) or release.get("acquisitionStatus") != "acquired-profiled":
         raise SourceError(f"Annualità {args.year} fuori dal pilota bloccato")
     _verify_file(args.spending, release["archive"], f"spesa {args.year}")
     _verify_file(args.registry, spec["registry"]["archive"], "BD/RDM")
     _verify_file(args.cnd, spec["classification"], "CND")
     _verify_zip_member(args.spending, release["archive"], f"spesa {args.year}")
     _verify_zip_member(args.registry, spec["registry"]["archive"], "BD/RDM")
-    result = profile(args.spending, args.registry, args.cnd, args.year)
+    result = profile(
+        args.spending,
+        args.registry,
+        args.cnd,
+        args.year,
+        spending_member=release["archive"]["member"],
+    )
     verify_locked_profile(result, spec, args.year)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0

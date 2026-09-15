@@ -5,7 +5,7 @@ import {readerValue,validateReader,validateReaderSnapshot,readerShare,readerCalc
 const report=JSON.parse(await readFile(new URL('../src/content/reports/state-budget-reader.json',import.meta.url),'utf8'));
 const clone=()=>structuredClone(report);
 const cells=[['GF01',17041400000000,770],['GF02',2830100000000,130],['GF03',3909400000000,180],['GF04',11238080000000,510],['GF05',1982800000000,90],['GF06',1697270000000,80],['GF07',14607500000000,660],['GF08',1877360000000,90],['GF09',8917990000000,400],['GF10',46813500000000,2130],['TOTAL',110915400000000,5040]].map(([fn,amountCents,shareOfGdpHundredths])=>({geo:'IT',year:2024,function:fn,amountCents,shareOfGdpHundredths}));
-test('canonical reader: 17 cases, ten functions, preserved original case identities',()=>{assert.equal(validateReader(report),report);assert.equal(report.cases.length,17);});
+test('canonical reader: 25 cases, ten functions, preserved original case identities',()=>{assert.equal(validateReader(report),report);assert.equal(report.cases.length,25);});
 for(const c of report.calculations)test(`independent exact calculation: ${c.id}`,()=>assert.equal(readerValue(report,c.id),c.expected));
 for(const [label,mutate] of [
  ['missing source',r=>{r.cases[0].sourceIds=['missing'];}],
@@ -58,3 +58,37 @@ test('court order is not recategorised as paid cash',()=>assert.match(report.cas
 test('COFOG share has a published common denominator',()=>assert.equal(readerShare('46813500000000','110915400000000'),'42.21'));
 test('human-readable formula has input values and units',()=>assert.equal(readerCalculationText(report,report.calculations.find(c=>c.id==='pinto-total')),'121,3 + 86,1 = 207,4 mln €'));
 test('no reader homework, generated reports remain separate from the internal research register',()=>{const text=report.cases.flatMap(c=>[c.lead,...c.paragraphs,c.conclusion,c.improve]).join(' ');assert.doesNotMatch(text,/Da verificare\.|acquisire|scarica i dati e/i);});
+
+for (const [label, mutate] of [
+ ['one cent in ministry',r=>{r.audit.ministries[0].remainingRsCents=String(BigInt(r.audit.ministries[0].remainingRsCents)+BigInt(1));}],
+ ['wrong ministry total',r=>{r.audit.totals.paymentsCashCsCents='1';}],
+ ['missing ministry',r=>{r.audit.ministries.pop();}],
+ ['duplicate ministry',r=>{r.audit.ministries[0].code=r.audit.ministries[1].code;}],
+ ['negative ministry amount',r=>{r.audit.ministries[0].paymentsResidualRsCents='-1';}],
+ ['missing historical year',r=>{r.audit.history.pop();}],
+ ['historical rounding beyond tolerance',r=>{r.audit.history[0].currentMillion++;r.audit.history[0].currentMillion++;}],
+ ['invented inspected chapter rows',r=>{r.audit.upstream.rowsReprocessed=5395;}],
+ ['declared hash presented as verified',r=>{r.audit.upstream.declaredHashesVerified=true;}],
+ ['wrong portfolio chart',r=>{r.audit.portfolios[0].billion='1';}],
+ ['wrong foreign aid chart',r=>{r.audit.foreignRows[0].million='1';}],
+ ['missing chapter case',r=>{r.chapters[0].caseIds.pop();}],
+]) test(`acquired aggregate audit rejects ${label}`,()=>{const r=clone();mutate(r);assert.throws(()=>validateReader(r));});
+
+
+test('spending review: proposal and forecast remain explicit',()=>{
+ const r=structuredClone(report);r.spendingReview.series[0].rows[0].status='riportato';assert.throws(()=>validateReader(r));
+ const q=structuredClone(report);q.spendingReview.series[1].rows.find(x=>x.year===2018).status='riportato';assert.throws(()=>validateReader(q));
+});
+test('spending review: plans and military saving reconcile exactly',()=>{
+ assert.equal(readerValue(report,'sr-pg-reconciliation'),'205');
+ assert.equal(readerValue(report,'sr-rents-missed'),'245000');
+ assert.equal(readerValue(report,'sr-army-net'),'5709334');
+ assert.equal(readerValue(report,'sr-army-reconciliation'),'0');
+});
+test('spending review: archive references and case links must resolve',()=>{
+ const r=structuredClone(report);r.spendingReview.documents[0].sourceId='not-present';assert.throws(()=>validateReader(r));
+ const q=structuredClone(report);q.spendingReview.tracker[0].caseId='not-present';assert.throws(()=>validateReader(q));
+});
+test('energy reintegration is not assigned an invented waste amount',()=>{
+ const c=report.cases.find(x=>x.id==='energia-obiettivo-mancato');assert.equal(c.math,null);assert.equal(c.number,'Obiettivo mancato');
+});

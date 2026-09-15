@@ -591,6 +591,19 @@ fonte + API + MCP, senza UI.
 - Source lock: `scripts/etl/specs/inps-integrazioni-salariali-2023.source.json`.
 - Offline: `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check`.
 
+### INPS · CIG Fondi di Solidarietà 2023–2024
+
+Ore autorizzate mensili per 20 regioni, gestioni `FIS` / `Altri fondi` e quattro
+rami di attività. **Nessun importo**: le ore non sono lavoratori, domande,
+mensilità né euro. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/cig-fondi-solidarieta`, filtri `anno` / `mese` / `regione` /
+  `gestione` / `ramo`.
+- MCP: `query_dataset` con `dataset: "inps_cig_fondi_solidarieta"`;
+  il mese italiano va in `period`, la gestione fondi in `code`, il ramo in `sector`.
+- Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
+
 ### Dati sui pagamenti art. 4-bis
 Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
 

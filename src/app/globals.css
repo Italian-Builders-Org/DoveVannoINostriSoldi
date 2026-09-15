@@ -398,6 +398,7 @@ body:has(.mobile-navigation:modal) { overflow: hidden; }
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle { min-height: 36px; padding-block: 7px; }
   .desktop-sidebar .sidebar-group { padding-block: 12px 5px; }
   .desktop-sidebar .nav-submenu a { min-height: 32px; padding-block: 5px; }
+  .desktop-sidebar[data-collapsed="false"] .sidebar-collapse > svg { transform: translateX(-2.5px); }
   html[data-sidebar="rail"] .desktop-sidebar[data-collapsed="true"] .nav-item > a { min-height: 44px; }
   html[data-sidebar="rail"] .desktop-sidebar[data-collapsed="true"] .sidebar-toolbar { padding-inline: 12px; }
   html[data-sidebar="rail"] .desktop-sidebar[data-collapsed="true"] .sidebar-callout { padding-inline: 11px; }

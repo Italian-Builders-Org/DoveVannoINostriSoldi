@@ -39,20 +39,56 @@ distinti e pubblicare ogni branch solo dopo la verifica sulla base aggiornata.
 
 ## Crawl ad alta cardinalità
 
-`robots.txt` distingue ClaudeBot, usato per il crawling di addestramento, dai
-client di ricerca e dalle richieste avviate dagli utenti. Le schede operatori
-sono escluse dal crawl di ClaudeBot; il catalogo rimane accessibile.
+Configurazione verificata nel dashboard Vercel il 14 settembre 2026:
 
-Il progetto Vercel applica inoltre la regola `claudebot-operator-crawl`:
+| Regola | Ambito | Richieste per IP / 60 secondi |
+| --- | --- | --- |
+| `training-bot-operator-cap` | `/appalti/operatori`, ClaudeBot/GPTBot/CCBot/Meta-ExternalAgent | 30 |
+| `search-bot-operator-cap` | catalogo e schede operatori, Claude-SearchBot | 30 |
+| `operator-crawl-cap` | catalogo, filtri e schede `/appalti/operatori` con qualsiasi User-Agent | 120 |
+| `enti-crawl-cap` | `/enti` e sottopagine, qualsiasi User-Agent | 30 |
 
-- Request Path **Starts with** `/appalti/operatori/`;
-- **AND** User Agent **Contains** `ClaudeBot`;
-- azione **Deny**, senza blocco persistente dell'indirizzo IP.
+La regola per Claude-SearchBot è stata aggiunta dopo aver osservato circa 20.000
+richieste del crawler di ricerca contro 6.200 di ClaudeBot sugli operatori nelle
+ultime 12 ore in produzione. I conteggi arrotondati non sono stime di risparmio.
 
-La regola opera prima dell'esecuzione della pagina. Non attivare un blocco
-generale dei client non-browser: API e MCP sono accessi previsti dal prodotto.
-Per annullare questa singola protezione, disattivare la regola e pubblicare la
-modifica nel firewall, poi aggiornare la direttiva corrispondente in robots.
+Le regole restituiscono 429 senza ban persistenti, prima dell'esecuzione della
+pagina. Sono attive anche `mcp-post-cap` e `costly-api-cap`. Claude-User e
+Claude-SearchBot non corrispondono al filtro dei crawler di training: il primo
+resta sui limiti generali, il secondo ha una quota dedicata per l’indicizzazione.
+Il limite per IP impedisce che cambiare User-Agent
+azzerri la quota, ma non costituisce un tetto globale per bot distribuiti.
+Vercel conta separatamente le regioni. Sul piano Pro il filtro può usare lo
+User-Agent, mentre usarlo come chiave di conteggio richiede Enterprise: non
+serve cambiare piano per le regole sopra.
+
+Il proxy conserva un limite locale di emergenza: crawler di training sugli
+enti e API hanno contatori separati, rispettivamente 30 e 120 richieste/minuto
+per IP e 600/minuto per istanza. Gli agenti user/search non corrispondono al
+filtro locale dei crawler; il firewall applica comunque il limite generale.
+Le risposte 429 sono `private, no-store` con `Retry-After: 60`.
+Non sostituisce il firewall distribuito. Non applicare un 403 fisso a ClaudeBot:
+lo scraping entro i limiti è ammesso. `robots.txt` resta un'indicazione ai client
+collaborativi; le schede enti sono ancora escluse dalla scansione annunciata.
+
+Il catalogo operatori e le viste nazionali usano indici/aggregati locali già
+validati. Lo storico conserva al massimo otto riepiloghi, entro 16 MiB, e legge
+solo i blocchi necessari alla pagina (massimo 25 aggiudicazioni). Questa è cache
+dei dati, non cache HTTP dell'intera pagina: i dettagli con filtri sono ancora
+renderizzati su richiesta. Non impostare indiscriminatamente `s-maxage` sulle
+pagine App Router: HTML, RSC, parametri e stati di errore devono mantenere le
+proprie varianti. Le API pubbliche cacheabili hanno policy esplicite; chat,
+chiavi, quota, localizzazione ed errori non devono finire in cache condivisa.
+
+Prima di aggiungere cache di pagina o viste materializzate, misurare la quota
+di richieste ripetute allo stesso URL rispetto alla scansione di URL distinti:
+una cache non evita il primo rendering di centinaia di migliaia di schede.
+Per i menu, il prefetch parte su mouse/focus; mostrare molti link non deve
+avviare il caricamento di tutte le destinazioni.
+
+Non attivare un blocco generale dei client non-browser: API e MCP sono accessi
+previsti dal prodotto. Le regole si gestiscono nel firewall senza un deploy;
+ricontrollare il dashboard prima di modificarle, perché non sono versionate qui.
 
 ## Verifica dei risparmi
 
@@ -64,4 +100,5 @@ stessa tabella senza omettere la verifica dei valori di ogni riga.
 
 Riferimenti: [build Vercel](https://vercel.com/docs/builds/managing-builds),
 [Observability Plus](https://vercel.com/docs/observability/observability-plus),
-[crawler Anthropic](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler).
+[rate limiting Vercel](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting),
+[crawler Anthropic](https://privacy.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler).

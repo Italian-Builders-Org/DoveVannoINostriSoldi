@@ -12,6 +12,7 @@ from unittest import TestCase
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "etl"))
 import medical_device_spending_profile as etl
+import medical_device_spending_corpus as candidate
 
 FIXTURE_REGISTRY_MEMBER = "registry-fixture.csv"
 
@@ -205,3 +206,76 @@ class MedicalDeviceProfileTests(TestCase):
         expected["memberSha256"] = "0" * 64
         with self.assertRaisesRegex(etl.SourceError, "Byte membro"):
             etl._verify_zip_member(self.spending, expected, "fixture")
+
+    def candidate_inputs(self):
+        lock = etl.load_spec()
+        with zipfile.ZipFile(self.spending) as archive:
+            import io
+            rows = list(csv.reader(io.StringIO(archive.read("Appendice rapporto 2021.csv").decode("ascii")), delimiter=";"))[1:]
+        previous = self.root / "spending-2020.zip"
+        previous_rows = [["2020", *row[1:]] for row in rows]
+        write_zip(previous, "Appendice 2020.csv", etl.SPENDING_HEADERS, [*previous_rows, previous_rows[0]], "ascii")
+        spending = {2020: previous, 2021: self.spending}
+        for path, expected in [
+            (self.registry, lock["registry"]["archive"]),
+            (previous, lock["spendingReleases"]["2020"]["archive"]),
+            (self.spending, lock["spendingReleases"]["2021"]["archive"]),
+        ]:
+            payload = path.read_bytes()
+            with zipfile.ZipFile(path) as archive:
+                member = archive.namelist()[0]
+                raw = archive.read(member)
+            expected.update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest(),
+                            member=member, memberBytes=len(raw), memberSha256=hashlib.sha256(raw).hexdigest())
+        payload = self.cnd.read_bytes()
+        lock["classification"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+        for year, path in spending.items():
+            release = lock["spendingReleases"][str(year)]
+            result = etl.profile(path, self.registry, self.cnd, year,
+                                 spending_member=release["archive"]["member"], registry_member=FIXTURE_REGISTRY_MEMBER)
+            observed = {**result["spending"], **result["join"]}
+            release["expected"] = {key: observed[key] for key in release["expected"]}
+            lock["registry"]["expected"] = result["registry"]
+            lock["classification"]["expected"] = result["cnd"]
+        lock["integrity"]["lockSha256"] = etl.canonical_lock_sha256(lock)
+        path = self.root / "fixture.source.json"
+        path.write_text(json.dumps(lock), encoding="utf-8")
+        return spending, path
+
+    def test_candidate_preserves_source_bytes_cells_and_existing_spec(self):
+        spending, lock_path = self.candidate_inputs()
+        output = self.root / "candidate"
+        candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path)
+        spec, datasets = candidate.corpus.load_spec(output / "candidate.source.json")
+        base, existing = candidate.corpus.load_spec(candidate.corpus.DEFAULT_SPEC)
+        self.assertEqual(datasets[:-2], existing)
+        for dataset_id, metadata in base["sourceMetadata"]["overrides"].items():
+            self.assertEqual(spec["sourceMetadata"]["overrides"][dataset_id], metadata)
+        for year, item in zip((2020, 2021), datasets[-2:], strict=True):
+            with zipfile.ZipFile(spending[year]) as archive:
+                self.assertEqual((output / item["relativePath"]).read_bytes(), archive.read(archive.namelist()[0]))
+            parsed = candidate.corpus.parse_dataset(output, item)
+            _, payload, receipt, _ = candidate.corpus.build_dataset(
+                item, parsed, candidate.corpus.resolved_source_metadata(spec, item["id"]),
+            )
+            rows = [json.loads(line) for line in payload.splitlines()]
+            self.assertEqual([list(row["cells"][header] for header in etl.SPENDING_HEADERS) for row in rows], parsed.rows)
+            self.assertEqual([row["cells"]["CostoAcq"] for row in rows[:4]], ["1.000,00", "0,00", "-2,00", "3,00"])
+            self.assertEqual(receipt["publication"]["publicRows"], 5 if year == 2020 else 4)
+            self.assertEqual(len({row["id"] for row in rows}), len(rows))
+            self.assertTrue(all(row["cells"]["Anno"] == str(year) for row in rows))
+        with self.assertRaisesRegex(etl.SourceError, "esiste già"):
+            candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path)
+
+    def test_candidate_does_not_leave_partial_output_on_second_year_failure(self):
+        spending, lock_path = self.candidate_inputs()
+        self.spending.write_bytes(b"corrupted archive")
+        output = self.root / "candidate"
+        with self.assertRaisesRegex(etl.SourceError, "Byte spesa 2021"):
+            candidate.prepare(spending, self.registry, self.cnd, output, lock_path=lock_path)
+        self.assertFalse(output.exists())
+        self.assertEqual(list(self.root.glob(".medical-device-candidate-*")), [])
+
+    def test_candidate_excludes_unapproved_years(self):
+        with self.assertRaisesRegex(etl.SourceError, "soltanto le annualità pilota"):
+            candidate.prepare({2021: self.spending, 2022: self.spending}, self.registry, self.cnd, self.root / "candidate")

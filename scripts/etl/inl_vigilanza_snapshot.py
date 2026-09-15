@@ -150,15 +150,13 @@ def parse_outcome_page(text: str, page: int) -> dict[str, Any]:
             if rate_tenths != 0:
                 raise SnapshotError(f"p.{page} {territory} {sector}: tasso non zero con definite=0")
         else:
-            expected = round(1000 * irregular / defined)
-            # Source prints one decimal; allow exact match on tenths from printed value only.
             printed = rate_tenths
-            recomputed = int(round((1000 * irregular / defined)))
+            recomputed = 1000 * irregular / defined
             # Accept the published one-decimal rate; verify it matches irregular/defined within 0.05pp.
-            if abs(1000 * irregular / defined - printed) > 0.51:
+            if abs(recomputed - printed) > 0.51:
                 raise SnapshotError(
                     f"p.{page} {territory} {sector}: tasso {printed} incoerente "
-                    f"(recalc {recomputed})"
+                    f"(recalc {recomputed:.1f})"
                 )
         observations.append(
             {
@@ -182,14 +180,7 @@ def parse_outcome_page(text: str, page: int) -> dict[str, Any]:
 
 def parse_recovery_page(text: str) -> list[dict[str, Any]]:
     """National recovery amounts by vigilance scope from page 4."""
-    pattern = re.compile(
-        r"(Vigilanza Lavoro|Vigilanza Previdenziale|Vigilanza Assicurativa|Totale)"
-        r"\s+([\d.]+)\s+([\d.]+)\s+(\d+)%\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)"
-    )
-    # Text layer may break across lines; normalize spaces.
-    compact = re.sub(r"[ \t]+", " ", text)
-    compact = compact.replace("\n", " ")
-    # Prefer the explicit block near the known totals.
+    # Values pinned to the published page-4 table (Italian thousand separators).
     expected = {
         "Vigilanza Lavoro": (97349, 69952, 72, 128790, 18397, 260503711),
         "Vigilanza Previdenziale": (8311, 6872, 83, 168012, 2471, 917457584),
@@ -199,16 +190,12 @@ def parse_recovery_page(text: str) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for scope, values in expected.items():
         defined, irregular, rate, workers, undeclared, recovery = values
-        # Confirm tokens appear in the page text.
-        if f"{defined:,}".replace(",", ".") not in text and str(defined) not in text.replace(".", ""):
-            # Italian thousands use dots
-            token = f"{defined:,}".replace(",", ".")
-            if token not in text:
-                # soft: still require recovery token
-                pass
         recovery_token = f"{recovery:,}".replace(",", ".")
         if recovery_token not in text:
             raise SnapshotError(f"p.4: recupero {scope} assente ({recovery_token})")
+        defined_token = f"{defined:,}".replace(",", ".")
+        if defined_token not in text:
+            raise SnapshotError(f"p.4: ispezioni definite {scope} assenti ({defined_token})")
         rows.append(
             {
                 "table": "recovery",

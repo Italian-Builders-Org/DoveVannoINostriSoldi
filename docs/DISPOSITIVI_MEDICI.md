@@ -1,7 +1,8 @@
-# Dispositivi medici — corpus del pilota 2020–2021
+# Dispositivi medici: corpus e viste del pilota 2020 e 2021
 
-Implementazione locale della fase corpus della issue #370. Non include ancora
-la ricerca dedicata, la scheda dispositivo o le aggregazioni per fabbricante.
+Questo documento descrive il corpus e le viste derivate della issue #370. La
+fase successiva aggiungerà la pagina sanitaria, l'API dedicata e gli strumenti
+MCP. Le fonti conservano gli identificativi del catalogo condiviso.
 
 | Tabella | Periodo/snapshot | Righe |
 | --- | --- | ---: |
@@ -13,7 +14,7 @@ la ricerca dedicata, la scheda dispositivo o le aggregazioni per fabbricante.
 Titolare: Ministero della Salute. IODL 2.0 verificata per ciascuna risorsa.
 URL ufficiali, SHA-256 dei file e membri ZIP, byte, schema, date e conteggi sono
 in `scripts/etl/specs/medical-device-spending-pilot.source.json`. Le appendici
-2022–2023 restano fuori dal pilota, con licenza `not-declared`; non si estende
+2022 e 2023 restano fuori dal pilota, con licenza `not-declared`; non si estende
 la licenza delle schede Open Data ad altri allegati.
 
 La spesa è quella rilevata per acquisti nel perimetro pubblicato, non un totale
@@ -84,6 +85,73 @@ Le tabelle usano `/dati/<id>`, `/api/dati/<id>` e MCP `spesa_pa_dettaglio` con
 sono nei metadati condivisi del corpus; non viene aggiunto un fetch live
 all'anagrafica durante una richiesta. La verticale sanitaria è una fase distinta.
 
+## Ricerca, dettaglio e aggregazioni
+
+`medical_device_spending_index.py` deriva le viste soltanto dalle partizioni
+pubbliche già verificate. Il controllo offline rilegge gli hash registrati nella
+prova di release, riconcilia le ricevute e ricostruisce ogni byte dell'indice.
+Lo script usa SQLite in una directory temporanea durante la generazione e lo
+elimina alla fine. Il prodotto non usa né distribuisce quel database.
+
+Le 1.634.723 righe di spesa coinvolgono 194.079 chiavi composte distinte. Di
+queste, 194.078 trovano la registrazione BD/RDM e una resta non risolta. Il dato
+non contraddice le sette righe non risolte: quelle righe condividono la stessa
+chiave assente. L'anagrafica completa da 2.416.708 righe rimane nel corpus; la
+ricerca dedicata indicizza soltanto i dispositivi presenti nella spesa pilota.
+
+`medical-device-spending.ts` espone tre letture lato server:
+
+- ricerca per numero e tipologia, denominazione, catalogo,
+  fabbricante/assemblatore e CND;
+- dettaglio paginato dei fatti per dispositivo, anno, Regione e azienda;
+- aggregazioni paginate per territorio, CND e fabbricante/assemblatore.
+
+Il solo numero non sostituisce mai la chiave composta. Quando lo stesso numero
+compare nelle tipologie 1 e 2, il risultato segnala che la tipologia va scelta.
+Il codice azienda è accettato soltanto insieme ad anno e Regione. I cursori sono
+legati ai filtri e al source lock; un cursore di un'altra ricerca viene rifiutato.
+Ogni fatto conserva dataset e numero di riga del corpus. La lettura di dettaglio
+usa questi riferimenti per tornare alla tabella condivisa senza duplicare il CSV.
+
+Le 446 viste di aggregazione coprono due annualità nazionali, 42 coppie
+anno/Regione e 402 terne anno/Regione/azienda. Ogni vista riporta righe e spesa
+totali, abbinate e non risolte, oltre al numero di zeri e rettifiche negative.
+Il denominatore comprende tutte le righe osservate nel perimetro. Non usiamo la
+copertura del join come misura della copertura nazionale del flusso.
+
+Le aggregazioni per fabbricante o assemblatore si riferiscono allo snapshot
+BD/RDM del 14 settembre 2026. Non descrivono il beneficiario del pagamento, un
+incasso, un fatturato o un ruolo storico. Il gruppo senza anagrafica rimane
+visibile invece di essere attribuito per somiglianza.
+
+Per rigenerare o controllare le viste, senza rete:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_index.py
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_index.py --check
+```
+
+La ricerca usa un file compresso condiviso. Il processo conserva in memoria il
+buffer verificato e lo legge una riga alla volta. Non crea un oggetto per ognuna
+delle 194.079 chiavi. Dettagli e aggregazioni sono blocchi gzip indipendenti. Una
+scheda legge uno dei 256 blocchi di dettaglio. Una vista aggregata legge soltanto
+il perimetro richiesto. Il manifest registra hash, byte compressi e byte estratti
+di ciascun blocco. Il limite pubblico è di 100 risultati per pagina e ogni
+lettura controlla il segnale di annullamento. Durante le scansioni, il processo
+cede il controllo a Node ogni 4.096 righe per ricevere gli annullamenti.
+Il dettaglio di un'aggregazione
+esamina al massimo 100.000 fatti per chiamata, poi restituisce un cursore che
+riprende dal fatto successivo.
+
+L'indice occupa 88.336.009 byte. La prima ricerca legge 18.450.784 byte
+compressi e conserva un buffer verificato da 62.037.079 byte; un blocco di
+dettaglio non supera 258.426 byte compressi e un blocco di aggregazione non
+supera 213.203 byte. In una prova locale a processo freddo, la ricerca ha
+richiesto 192 ms; una seconda ricerca 73 ms, l'aggregazione 11 ms e il dettaglio
+meno di 1 ms. Il picco RSS osservato è stato 276.455.424 byte, sceso a
+224.133.120 byte dopo la raccolta della memoria inutilizzata. Sono misure
+indicative della macchina di sviluppo, non soglie prestazionali del prodotto.
+
 Il delta supera le soglie di rivalutazione ADR-001. L'ADR-005 conserva gli
 shard pubblici in Git, sul precedente tecnico dell'ADR-004 ma con una decisione
 limitata alla #370. Nessuna pubblicazione esterna è implicita nei comandi.
@@ -98,3 +166,8 @@ e dettaglio dataset, relativa API, pagina/API MCP e le due API dell'assistente.
 Le trace del dettaglio, della relativa API e dell'API MCP misurano rispettivamente
 575.483.523, 574.458.028 e 878.004.773 byte. Sono misure dei manifest Next, non
 di un deploy del provider: prima del merge resta necessaria una preview riuscita.
+
+L'indice derivato aggiunge ricerca, dettagli e aggregazioni senza modificare i
+4.064 chunk. Le sue dimensioni e i limiti di lettura sono registrati nel
+manifest `src/data/generated/medical-device-spending-index/meta.json` e
+verificati dal registro degli artifact generati.

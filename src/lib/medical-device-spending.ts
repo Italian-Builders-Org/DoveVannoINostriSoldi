@@ -27,6 +27,23 @@ const MAX_CURSOR = 512;
 const MAX_QUERY = 120;
 const CACHE_BLOCKS = 8;
 
+const MEDICAL_REGION_NAMES: Readonly<Record<string, string>> = {
+  "10": "Piemonte", "20": "Valle d’Aosta", "30": "Lombardia",
+  "41": "P.A. Bolzano", "42": "P.A. Trento", "50": "Veneto",
+  "60": "Friuli-Venezia Giulia", "70": "Liguria", "80": "Emilia-Romagna",
+  "90": "Toscana", "100": "Umbria", "110": "Marche", "120": "Lazio",
+  "130": "Abruzzo", "140": "Molise", "150": "Campania", "160": "Puglia",
+  "170": "Basilicata", "180": "Calabria", "190": "Sicilia", "200": "Sardegna",
+};
+
+export function medicalDeviceRegionName(code: string): string {
+  return MEDICAL_REGION_NAMES[code] ?? `Codice ${code}`;
+}
+
+export function medicalDeviceRegionLabel(code: string): string {
+  return MEDICAL_REGION_NAMES[code] ? `${medicalDeviceRegionName(code)} · ${code}` : medicalDeviceRegionName(code);
+}
+
 export class MedicalDeviceQueryError extends Error {
   constructor(message: string) {
     super(message);
@@ -112,6 +129,17 @@ export type MedicalDeviceAggregate = Readonly<{
   zeroRows: number;
   matchedRows: number;
   unresolvedRows: number;
+}>;
+
+export type MedicalDeviceFilterOptions = Readonly<{
+  registrySnapshotDate: string;
+  years: readonly Readonly<{
+    year: number;
+    regions: readonly Readonly<{
+      code: string;
+      companies: readonly Readonly<{ code: string; names: readonly string[] }> [];
+    }>[];
+  }>[];
 }>;
 
 type ScopePayload = Readonly<{
@@ -347,10 +375,22 @@ function filterHash(value: object): string {
 }
 
 function totalSpending(hit: SearchCandidate): bigint {
-  return Object.values(hit.years).reduce((sum, item) => {
-    const [whole, fraction] = item.spending.split(".");
-    return sum + BigInt(whole) * BigInt(100) + BigInt(whole.startsWith("-") ? `-${fraction}` : fraction);
-  }, BigInt(0));
+  return Object.values(hit.years).reduce((sum, item) => sum + moneyCents(item.spending), BigInt(0));
+}
+
+function moneyCents(value: string): bigint {
+  const [whole, fraction] = value.split(".");
+  return BigInt(whole) * BigInt(100) + BigInt(whole.startsWith("-") ? `-${fraction}` : fraction);
+}
+
+function euroFromCents(value: bigint): string {
+  const sign = value < BigInt(0) ? "-" : "";
+  const magnitude = value < BigInt(0) ? -value : value;
+  return `${sign}${magnitude / BigInt(100)}.${String(magnitude % BigInt(100)).padStart(2, "0")}`;
+}
+
+function catalogHref(datasetId: string, number: string): string {
+  return `/dati/${datasetId}?${new URLSearchParams({ q: number, limit: "100" })}`;
 }
 
 function pageStart(cursor: unknown, hash: string, meta: Meta): number {
@@ -392,13 +432,13 @@ export async function searchMedicalDevices(input: Readonly<{
   const folded = normalized(query);
   if (!query) throw new MedicalDeviceQueryError("q è obbligatorio per la ricerca dei dispositivi.");
   if (folded.length < (DEVICE_NUMBER.test(folded) ? 1 : 2)) throw new MedicalDeviceQueryError("q è troppo breve.");
-  const type = optionalString(input.type, "type", /^[12]$/) as "1" | "2" | null;
-  const yearText = optionalString(input.year, "year", /^20\d{2}$/);
+  const type = optionalString(input.type, "tipo", /^[12]$/) as "1" | "2" | null;
+  const yearText = optionalString(input.year, "anno", /^20\d{2}$/);
   const year = yearText === null ? null : Number(yearText);
-  const region = optionalString(input.region, "region", /^\d+$/);
-  const company = optionalString(input.company, "company", /^\d+$/);
-  if (region !== null && year === null) throw new MedicalDeviceQueryError("region richiede year.");
-  if (company !== null && region === null) throw new MedicalDeviceQueryError("company richiede year e region.");
+  const region = optionalString(input.region, "regione", /^\d+$/);
+  const company = optionalString(input.company, "azienda", /^\d+$/);
+  if (region !== null && year === null) throw new MedicalDeviceQueryError("regione richiede anno.");
+  if (company !== null && region === null) throw new MedicalDeviceQueryError("azienda richiede anno e regione.");
   const selectedScope = year !== null && region !== null ? scope(meta, year, region, company) : null;
   const selectedScopeIds = selectedScope === null ? null : company !== null
     ? new Set([meta.aggregates.scopes.indexOf(selectedScope)])
@@ -408,7 +448,6 @@ export async function searchMedicalDevices(input: Readonly<{
   const raw = loadSearchBytes();
   let position = 0;
   let scanned = 0;
-  // ponytail: scan at most MAX_RECORDS; add a term index if measured latency exceeds the request budget.
   while (position < raw.length) {
     const end = raw.indexOf(0x0a, position);
     if (end < 0) throw new Error("Indice ricerca senza terminatore finale");
@@ -463,6 +502,89 @@ export async function searchMedicalDevices(input: Readonly<{
       moneyNature: "spesa rilevata per dispositivi associati all’anagrafica BD/RDM; non incassi, prezzi unitari o fatturato" } } as const;
 }
 
+export function listMedicalDeviceFilters(): MedicalDeviceFilterOptions {
+  const meta = loadMeta();
+  const years = meta.aggregates.scopes
+    .filter((item) => item.region === null && item.company === null)
+    .map((item) => ({
+      year: item.year,
+      regions: meta.aggregates.scopes
+        .filter((region) => region.year === item.year && region.region !== null && region.company === null)
+        .map((region) => ({
+          code: region.region!,
+          companies: meta.aggregates.scopes
+            .filter((company) => company.year === item.year && company.region === region.region && company.company !== null)
+            .map((company) => ({ code: company.company!, names: company.companyNames ?? [] })),
+        })),
+    }));
+  return { registrySnapshotDate: meta.registrySnapshotDate, years };
+}
+
+export async function getMedicalDeviceProfile(input: Readonly<{
+  type: unknown;
+  number: unknown;
+  signal?: AbortSignal;
+}>) {
+  const meta = loadMeta();
+  const type = optionalString(input.type, "tipo", /^[12]$/) as "1" | "2" | null;
+  const number = optionalString(input.number, "numero", DEVICE_NUMBER);
+  if (type === null || number === null) throw new MedicalDeviceQueryError("tipo e numero sono obbligatori.");
+  const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
+  assertSignal(input.signal);
+  const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
+  if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nella spesa pilota.");
+  const years = new Map<number, {
+    rows: number;
+    spendingCents: bigint;
+    negativeRows: number;
+    zeroRows: number;
+    regions: Map<string, { rows: number; spendingCents: bigint; companies: Map<string, { names: Set<string>; rows: number; spendingCents: bigint }> }>;
+  }>();
+  for (const fact of device.facts) {
+    const cents = moneyCents(fact.spending);
+    const annual = years.get(fact.year) ?? {
+      rows: 0, spendingCents: BigInt(0), negativeRows: 0, zeroRows: 0, regions: new Map(),
+    };
+    annual.rows += 1;
+    annual.spendingCents += cents;
+    annual.negativeRows += Number(cents < BigInt(0));
+    annual.zeroRows += Number(cents === BigInt(0));
+    const region = annual.regions.get(fact.region) ?? { rows: 0, spendingCents: BigInt(0), companies: new Map() };
+    region.rows += 1;
+    region.spendingCents += cents;
+    const company = region.companies.get(fact.company) ?? { names: new Set<string>(), rows: 0, spendingCents: BigInt(0) };
+    company.names.add(fact.companyName);
+    company.rows += 1;
+    company.spendingCents += cents;
+    region.companies.set(fact.company, company);
+    annual.regions.set(fact.region, region);
+    years.set(fact.year, annual);
+  }
+  const deviceSummary = {
+    schemaVersion: device.schemaVersion, ref: device.ref, type: device.type, number: device.number,
+    registryRecordId: device.registryRecordId, name: device.name, catalog: device.catalog,
+    manufacturer: device.manufacturer, role: device.role, classification: device.classification,
+    classificationLabel: device.classificationLabel,
+  } as const;
+  return {
+    device: deviceSummary,
+    registrySnapshotDate: meta.registrySnapshotDate,
+    sourceSpecSha256: meta.sourceSpecSha256,
+    facts: device.facts.length,
+    years: [...years.entries()].sort(([left], [right]) => right - left).map(([year, annual]) => ({
+      year, rows: annual.rows, spending: euroFromCents(annual.spendingCents),
+      negativeRows: annual.negativeRows, zeroRows: annual.zeroRows,
+      regions: [...annual.regions.entries()].map(([code, region]) => ({
+        code, rows: region.rows, spending: euroFromCents(region.spendingCents),
+        companies: [...region.companies.entries()].map(([companyCode, company]) => ({
+          code: companyCode, names: [...company.names].sort(), rows: company.rows,
+          spending: euroFromCents(company.spendingCents),
+        })).sort((left, right) => left.code.localeCompare(right.code)),
+      })).sort((left, right) => left.code.localeCompare(right.code)),
+    })),
+  } as const;
+}
+
 function validateAggregate(value: unknown): MedicalDeviceAggregate {
   const row = record(value, "aggregate");
   return { code: text(row.code, "aggregate.code", 100, true), label: text(row.label, "aggregate.label", 1000, true),
@@ -510,13 +632,13 @@ export async function aggregateMedicalDeviceSpending(input: Readonly<{
   limit?: unknown; cursor?: unknown; signal?: AbortSignal;
 }>) {
   const meta = loadMeta();
-  const yearText = optionalString(input.year, "year", /^20\d{2}$/);
-  if (yearText === null) throw new MedicalDeviceQueryError("year è obbligatorio.");
-  const region = optionalString(input.region, "region", /^\d+$/);
-  const company = optionalString(input.company, "company", /^\d+$/);
-  if (company !== null && region === null) throw new MedicalDeviceQueryError("company richiede region.");
-  const dimension = optionalString(input.dimension, "dimension") ?? "territory";
-  if (!["territory", "classification", "manufacturer"].includes(dimension)) throw new MedicalDeviceQueryError("dimension non valida.");
+  const yearText = optionalString(input.year, "anno", /^20\d{2}$/);
+  if (yearText === null) throw new MedicalDeviceQueryError("anno è obbligatorio.");
+  const region = optionalString(input.region, "regione", /^\d+$/);
+  const company = optionalString(input.company, "azienda", /^\d+$/);
+  if (company !== null && region === null) throw new MedicalDeviceQueryError("azienda richiede regione.");
+  const dimension = optionalString(input.dimension, "dimensione") ?? "territory";
+  if (!["territory", "classification", "manufacturer"].includes(dimension)) throw new MedicalDeviceQueryError("dimensione non valida.");
   const selected = scope(meta, Number(yearText), region, company);
   assertSignal(input.signal);
   const payload = loadAggregate(meta, selected);
@@ -542,17 +664,17 @@ export async function listMedicalDeviceAggregateFacts(input: Readonly<{
   limit?: unknown; cursor?: unknown; signal?: AbortSignal;
 }>) {
   const meta = loadMeta();
-  const yearText = optionalString(input.year, "year", /^20\d{2}$/);
-  if (yearText === null) throw new MedicalDeviceQueryError("year è obbligatorio.");
-  const region = optionalString(input.region, "region", /^\d+$/);
-  const company = optionalString(input.company, "company", /^\d+$/);
-  if (company !== null && region === null) throw new MedicalDeviceQueryError("company richiede region.");
-  const dimension = optionalString(input.dimension, "dimension");
+  const yearText = optionalString(input.year, "anno", /^20\d{2}$/);
+  if (yearText === null) throw new MedicalDeviceQueryError("anno è obbligatorio.");
+  const region = optionalString(input.region, "regione", /^\d+$/);
+  const company = optionalString(input.company, "azienda", /^\d+$/);
+  if (company !== null && region === null) throw new MedicalDeviceQueryError("azienda richiede regione.");
+  const dimension = optionalString(input.dimension, "dimensione");
   if (dimension === null || !["territory", "classification", "manufacturer"].includes(dimension)) {
-    throw new MedicalDeviceQueryError("dimension non valida.");
+    throw new MedicalDeviceQueryError("dimensione non valida.");
   }
-  const value = input.value === null || input.value === undefined ? null : optionalString(input.value, "value", undefined, 1000);
-  const role = input.role === null || input.role === undefined ? null : optionalString(input.role, "role", /^(fabbricante|assemblatore)$/);
+  const value = input.value === null || input.value === undefined ? null : optionalString(input.value, "valore", undefined, 1000);
+  const role = input.role === null || input.role === undefined ? null : optionalString(input.role, "ruolo", /^(fabbricante|assemblatore)$/);
   const selected = scope(meta, Number(yearText), region, company);
   assertSignal(input.signal);
   const aggregate = loadAggregate(meta, selected);
@@ -594,7 +716,7 @@ export async function listMedicalDeviceAggregateFacts(input: Readonly<{
           : (device.manufacturer || null) === value && device.role === role;
         if (inScope && inGroup) {
           rows.push({ ...fact, device: { ref: device.ref, type: device.type, number: device.number, name: device.name },
-            catalog: { datasetId: fact.datasetId, sourceRow: fact.sourceRow, href: `/dati/${fact.datasetId}` } });
+            catalog: { datasetId: fact.datasetId, sourceRow: fact.sourceRow, href: catalogHref(fact.datasetId, device.number) } });
           if (rows.length === size) {
             exhausted = ordinal >= meta.coverage.facts;
             break outer;
@@ -650,15 +772,15 @@ export async function listMedicalDeviceFacts(input: Readonly<{
   limit?: unknown; cursor?: unknown; signal?: AbortSignal;
 }>) {
   const meta = loadMeta();
-  const type = optionalString(input.type, "type", /^[12]$/) as "1" | "2" | null;
-  const number = optionalString(input.number, "number", DEVICE_NUMBER);
-  if (type === null || number === null) throw new MedicalDeviceQueryError("type e number sono obbligatori.");
-  const yearText = optionalString(input.year, "year", /^20\d{2}$/);
+  const type = optionalString(input.type, "tipo", /^[12]$/) as "1" | "2" | null;
+  const number = optionalString(input.number, "numero", DEVICE_NUMBER);
+  if (type === null || number === null) throw new MedicalDeviceQueryError("tipo e numero sono obbligatori.");
+  const yearText = optionalString(input.year, "anno", /^20\d{2}$/);
   const year = yearText === null ? null : Number(yearText);
-  const region = optionalString(input.region, "region", /^\d+$/);
-  const company = optionalString(input.company, "company", /^\d+$/);
-  if (region !== null && year === null) throw new MedicalDeviceQueryError("region richiede year.");
-  if (company !== null && region === null) throw new MedicalDeviceQueryError("company richiede region.");
+  const region = optionalString(input.region, "regione", /^\d+$/);
+  const company = optionalString(input.company, "azienda", /^\d+$/);
+  if (region !== null && year === null) throw new MedicalDeviceQueryError("regione richiede anno.");
+  if (company !== null && region === null) throw new MedicalDeviceQueryError("azienda richiede regione.");
   const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
   assertSignal(input.signal);
   const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
@@ -671,7 +793,7 @@ export async function listMedicalDeviceFacts(input: Readonly<{
   if (start > facts.length) throw new MedicalDeviceQueryError("cursor oltre i risultati disponibili.");
   const size = limit(input.limit);
   const rows = facts.slice(start, start + size).map((fact) => ({ ...fact,
-    catalog: { datasetId: fact.datasetId, sourceRow: fact.sourceRow, href: `/dati/${fact.datasetId}` } }));
+    catalog: { datasetId: fact.datasetId, sourceRow: fact.sourceRow, href: catalogHref(fact.datasetId, number) } }));
   const deviceSummary = {
     schemaVersion: device.schemaVersion,
     ref: device.ref,

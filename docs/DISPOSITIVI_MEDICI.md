@@ -1,8 +1,8 @@
 # Dispositivi medici: corpus e viste del pilota 2020 e 2021
 
-Questo documento descrive il corpus e le viste derivate della issue #370. La
-fase successiva aggiungerà la pagina sanitaria, l'API dedicata e gli strumenti
-MCP. Le fonti conservano gli identificativi del catalogo condiviso.
+Questo documento descrive il corpus e le viste pubbliche della issue #370. La
+pagina sanitaria, l'API e il dataset MCP usano la stessa libreria lato server.
+Le fonti conservano gli identificativi del catalogo condiviso.
 
 | Tabella | Periodo/snapshot | Righe |
 | --- | --- | ---: |
@@ -17,9 +17,9 @@ in `scripts/etl/specs/medical-device-spending-pilot.source.json`. Le appendici
 2022 e 2023 restano fuori dal pilota, con licenza `not-declared`; non si estende
 la licenza delle schede Open Data ad altri allegati.
 
-La spesa è quella rilevata per acquisti nel perimetro pubblicato, non un totale
-automaticamente completo del SSN, un pagamento al fabbricante o un prezzo
-unitario. Originali monetari italiani e rettifiche restano stringhe; il modello
+La fonte riporta la spesa per acquisti nel perimetro pubblicato. Non riporta la
+spesa completa del SSN, pagamenti al fabbricante o prezzi unitari. Originali
+monetari italiani e rettifiche restano stringhe; il modello
 usa `parse_source_euros` e `monetary.add_decimals` senza float. Totali osservati:
 2020 **5.054.732.845,13 euro**, 2021 **5.785.471.036,54 euro**. Non sommare CE,
 SIOPE, aggiudicazioni o release sovrapposte dello stesso anno.
@@ -83,7 +83,7 @@ non viene introdotto un database o un nuovo backend di storage.
 Le tabelle usano `/dati/<id>`, `/api/dati/<id>` e MCP `spesa_pa_dettaglio` con
 `code=<id>`, tutti attraverso `integrated-public-view.ts`. Le date/frequenze
 sono nei metadati condivisi del corpus; non viene aggiunto un fetch live
-all'anagrafica durante una richiesta. La verticale sanitaria è una fase distinta.
+all'anagrafica durante una richiesta.
 
 ## Ricerca, dettaglio e aggregazioni
 
@@ -99,12 +99,14 @@ non contraddice le sette righe non risolte: quelle righe condividono la stessa
 chiave assente. L'anagrafica completa da 2.416.708 righe rimane nel corpus; la
 ricerca dedicata indicizza soltanto i dispositivi presenti nella spesa pilota.
 
-`medical-device-spending.ts` espone tre letture lato server:
+`medical-device-spending.ts` espone le letture lato server:
 
 - ricerca per numero e tipologia, denominazione, catalogo,
   fabbricante/assemblatore e CND;
 - dettaglio paginato dei fatti per dispositivo, anno, Regione e azienda;
-- aggregazioni paginate per territorio, CND e fabbricante/assemblatore.
+- scheda del dispositivo con totali annuali e distribuzione per Regione e azienda;
+- aggregazioni paginate per territorio, CND e fabbricante/assemblatore;
+- righe da cui deriva ciascun aggregato, con limite e cursore.
 
 Il solo numero non sostituisce mai la chiave composta. Quando lo stesso numero
 compare nelle tipologie 1 e 2, il risultato segnala che la tipologia va scelta.
@@ -142,6 +144,38 @@ cede il controllo a Node ogni 4.096 righe per ricevere gli annullamenti.
 Il dettaglio di un'aggregazione
 esamina al massimo 100.000 fatti per chiamata, poi restituisce un cursore che
 riprende dal fatto successivo.
+
+## Pagina, API e MCP
+
+La pagina `/spese/sanita/dispositivi` parte dall'hub Sanità. Cerca per numero di
+repertorio, denominazione, catalogo, fabbricante o assemblatore e CND. I filtri
+per Regione e azienda richiedono un anno. La pagina mostra anche gli aggregati
+per territorio, classificazione e fabbricante o assemblatore. Il gruppo non
+collegato alla BD/RDM resta visibile.
+
+La scheda `/spese/sanita/dispositivi/<tipo>/<numero>` usa sempre la chiave
+composta. Mostra l'anagrafica acquisita, i totali 2020 e 2021, la
+distribuzione per Regione e azienda e fino a 50 righe alla volta. Ogni riga
+torna al dataset del corpus che la contiene.
+
+L'endpoint `/api/spese/sanita/dispositivi` accetta queste viste:
+
+| `vista` | Parametri principali | Risposta |
+| --- | --- | --- |
+| `filtri` | nessuno | anni, Regioni e aziende disponibili |
+| `ricerca` | `q`, `tipo`, `anno`, `regione`, `azienda` | dispositivi trovati |
+| `aggregati` | `anno`, `dimensione`, filtri territoriali | totali riconciliati |
+| `dispositivo` | `tipo`, `numero`, filtri territoriali | scheda e righe di spesa |
+| `righe` | `anno`, `dimensione`, `valore`, `ruolo` | righe dell'aggregato |
+
+`limit` non può superare 100. `cursor` è opaco e vale soltanto per i filtri che
+lo hanno generato. Parametri sconosciuti o ripetuti vengono rifiutati.
+
+Il dataset MCP `salute_dispositivi_medici` usa le stesse funzioni della pagina e
+dell'API.
+`view` accetta `search`, `aggregate`, `device`, `facts` e `filters`;
+`deviceType` e `deviceNumber` formano l'identità del dispositivo. In MCP,
+`code` indica l'azienda sanitaria e `query` contiene il testo di ricerca.
 
 L'indice occupa 88.336.009 byte. La prima ricerca legge 18.450.784 byte
 compressi e conserva un buffer verificato da 62.037.079 byte; un blocco di

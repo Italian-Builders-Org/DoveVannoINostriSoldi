@@ -5,6 +5,8 @@ import "./helpers/register-ts-alias.mjs";
 const {
   MedicalDeviceQueryError,
   aggregateMedicalDeviceSpending,
+  getMedicalDeviceProfile,
+  listMedicalDeviceFilters,
   listMedicalDeviceAggregateFacts,
   listMedicalDeviceFacts,
   searchMedicalDevices,
@@ -65,7 +67,7 @@ test("medical-device aggregates reconcile coverage and paginate without gaps", a
   });
   assert.equal(underlying.matched, first.rows[0].rows);
   assert.equal(underlying.rows.length, 1);
-  assert.match(underlying.rows[0].catalog.href, /^\/dati\/salute-spesa-dispositivi-2020$/);
+  assert.match(underlying.rows[0].catalog.href, /^\/dati\/salute-spesa-dispositivi-2020\?q=\d+&limit=100$/);
   assert.ok(underlying.pagination.nextCursor);
   const nextUnderlying = await listMedicalDeviceAggregateFacts({
     year: "2020",
@@ -87,6 +89,18 @@ test("medical-device aggregates reconcile coverage and paginate without gaps", a
     aggregateMedicalDeviceSpending({ year: "2020", region: "10", company: "10203", dimension: "other" }),
     MedicalDeviceQueryError,
   );
+});
+
+test("medical-device profile and filter options use the same indexed facts", async () => {
+  const filters = listMedicalDeviceFilters();
+  assert.deepEqual(filters.years.map((item) => item.year), [2020, 2021]);
+  assert.equal(filters.registrySnapshotDate, "2026-09-14");
+  assert.ok(filters.years.every((item) => item.regions.length > 0));
+
+  const profile = await getMedicalDeviceProfile({ type: "1", number: "1175175" });
+  assert.equal(profile.device.catalog, "PRPR0005");
+  assert.equal(profile.facts, profile.years.reduce((sum, year) => sum + year.rows, 0));
+  assert.ok(profile.years.every((year) => year.regions.length > 0));
 });
 
 test("medical-device facts use source-bound cursors and honor cancellation", async () => {

@@ -89,6 +89,24 @@ export const datasetQuerySchema = z.object({
   pathway: z.string().max(80)
     .describe("Codice o etichetta del percorso di studio del dataset istruzione.")
     .optional(),
+  view: z.enum(["search", "aggregate", "device", "facts", "filters"])
+    .describe("Vista del dataset dispositivi medici: ricerca, aggregati, scheda, righe della fonte o filtri disponibili.")
+    .optional(),
+  deviceType: z.enum(["1", "2"])
+    .describe("Tipo del dispositivo nel repertorio: 1 per dispositivo medico o IVD, 2 per sistema procedurale o kit.")
+    .optional(),
+  deviceNumber: z.string().regex(/^\d+$/).max(40)
+    .describe("Numero di repertorio del dispositivo, da usare insieme a deviceType.")
+    .optional(),
+  dimension: z.enum(["territory", "classification", "manufacturer"])
+    .describe("Dimensione degli aggregati dei dispositivi: territorio, classificazione CND oppure fabbricante o assemblatore.")
+    .optional(),
+  value: z.string().max(1000)
+    .describe("Valore esatto dell'aggregato da aprire con view=facts.")
+    .optional(),
+  role: z.enum(["fabbricante", "assemblatore"])
+    .describe("Ruolo BD/RDM richiesto quando dimension=manufacturer e view=facts.")
+    .optional(),
   limit: z.number().int().min(1).max(100)
     .describe("Numero massimo di record da restituire, da 1 a 100, solo per dataset che supportano limit.")
     .optional(),

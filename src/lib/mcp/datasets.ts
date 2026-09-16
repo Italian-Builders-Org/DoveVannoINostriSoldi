@@ -91,6 +91,71 @@ export async function queryPublicDataset(
         offset: query.offset, cursor: query.cursor, signal: options.signal,
       }));
     }
+    case "salute_dispositivi_medici": {
+      const {
+        aggregateMedicalDeviceSpending,
+        getMedicalDeviceProfile,
+        listMedicalDeviceAggregateFacts,
+        listMedicalDeviceFacts,
+        listMedicalDeviceFilters,
+        searchMedicalDevices,
+      } = await import("@/lib/medical-device-spending");
+      const view = query.view ?? "search";
+      if (view === "filters") return jsonSafe(listMedicalDeviceFilters());
+      if (view === "search") {
+        return jsonSafe(await searchMedicalDevices({
+          q: query.query,
+          type: query.deviceType,
+          year: query.year === undefined ? undefined : String(query.year),
+          region: query.region,
+          company: query.code,
+          limit: query.limit,
+          cursor: query.cursor,
+          signal: options.signal,
+        }));
+      }
+      if (view === "aggregate") {
+        return jsonSafe(await aggregateMedicalDeviceSpending({
+          year: query.year === undefined ? undefined : String(query.year),
+          region: query.region,
+          company: query.code,
+          dimension: query.dimension,
+          limit: query.limit,
+          cursor: query.cursor,
+          signal: options.signal,
+        }));
+      }
+      if (view === "device") {
+        return jsonSafe({
+          profile: await getMedicalDeviceProfile({
+            type: query.deviceType,
+            number: query.deviceNumber,
+            signal: options.signal,
+          }),
+          facts: await listMedicalDeviceFacts({
+            type: query.deviceType,
+            number: query.deviceNumber,
+            year: query.year === undefined ? undefined : String(query.year),
+            region: query.region,
+            company: query.code,
+            limit: query.limit,
+            cursor: query.cursor,
+            signal: options.signal,
+          }),
+        });
+      }
+      return jsonSafe(await listMedicalDeviceAggregateFacts({
+        year: query.year === undefined ? undefined : String(query.year),
+        region: query.region,
+        company: query.code,
+        dimension: query.dimension,
+        value: query.value,
+        role: query.role,
+        limit: query.limit,
+        cursor: query.cursor,
+        signal: options.signal,
+      }));
+    }
     case "siope_inventario_enti":
     case "siope_asl":
     case "siope_province":

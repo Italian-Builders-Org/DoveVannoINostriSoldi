@@ -59,6 +59,17 @@ class MedicalDeviceModelTests(TestCase):
         self.assertIsNone(facts[0]["extraction_date"])
         self.assertNotEqual(facts[0]["anno"], facts[0]["anagrafica_date"][:4])
 
+    def test_historical_fact_keeps_source_region_and_zero_padded_codes(self):
+        _, lock, meta, _, registry = self.inputs()
+        raw = dict(zip(source.SPENDING_HEADERS_2018_2019, [
+            "2018", "010", "PIEMONTE", "010203", "TO3", "A01", "1", "42", "1,00",
+        ], strict=True))
+        fact = model.spending_fact(raw, 1, lock["spendingReleases"]["2018"], meta, registry)
+        self.assertEqual(fact["denominazione_regione"], "PIEMONTE")
+        self.assertEqual(fact["codice_regione"], "010")
+        self.assertEqual(fact["codice_azienda_sanitaria"], "010203")
+        self.assertEqual(fact["source"]["cells"], raw)
+
     def test_repeated_facts_are_not_deduplicated_and_ids_match_corpus(self):
         facts, _, raw, release, _, _ = self.facts(2020)
         self.assertEqual(len(facts), 5)

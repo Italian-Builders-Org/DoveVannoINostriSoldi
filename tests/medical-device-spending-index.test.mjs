@@ -9,8 +9,17 @@ const {
   listMedicalDeviceFilters,
   listMedicalDeviceAggregateFacts,
   listMedicalDeviceFacts,
+  medicalDeviceRegionLabel,
+  medicalDeviceRegionName,
   searchMedicalDevices,
 } = await import("../src/lib/medical-device-spending.ts");
+
+test("medical-device region labels preserve historical codes while resolving their names", () => {
+  assert.equal(medicalDeviceRegionName("010"), "Piemonte");
+  assert.equal(medicalDeviceRegionLabel("010"), "Piemonte · 010");
+  assert.equal(medicalDeviceRegionLabel("10"), "Piemonte · 10");
+  assert.equal(medicalDeviceRegionLabel("999"), "Codice 999");
+});
 
 test("medical-device search keeps the composite key and supports combined territorial filters", async () => {
   const ambiguous = await searchMedicalDevices({ q: "122392", limit: 10 });
@@ -18,8 +27,8 @@ test("medical-device search keeps the composite key and supports combined territ
   assert.deepEqual(new Set(ambiguous.hits.filter(hit => hit.number === "122392").map(hit => hit.type)), new Set(["1", "2"]));
 
   const byCatalog = await searchMedicalDevices({ q: "PRPR0005", type: "1", limit: 5 });
-  assert.equal(byCatalog.hits[0].number, "1175175");
-  assert.equal(byCatalog.hits[0].catalog, "PRPR0005");
+  assert.ok(byCatalog.hits.length > 0);
+  assert.ok(byCatalog.hits.every(hit => hit.catalog === "PRPR0005"));
   assert.equal("facts" in byCatalog.hits[0], false);
   const byManufacturer = await searchMedicalDevices({ q: "MICROPORT ORTHOPEDICS", type: "1" });
   assert.ok(byManufacturer.matched > 0);
@@ -93,7 +102,7 @@ test("medical-device aggregates reconcile coverage and paginate without gaps", a
 
 test("medical-device profile and filter options use the same indexed facts", async () => {
   const filters = listMedicalDeviceFilters();
-  assert.deepEqual(filters.years.map((item) => item.year), [2020, 2021]);
+  assert.deepEqual(filters.years.map((item) => item.year), [2018, 2019, 2020, 2021]);
   assert.equal(filters.registrySnapshotDate, "2026-09-14");
   assert.ok(filters.years.every((item) => item.regions.length > 0));
 

@@ -9,6 +9,8 @@ const { isInsightCapable } = await import("../src/lib/integrated-dataset-insight
 
 test("medical-device tables retain scope, privacy and canonical selector/API/MCP identities", async () => {
   for (const [id, rows, period] of [
+    ["salute-spesa-dispositivi-2018", 718808, "2018"],
+    ["salute-spesa-dispositivi-2019", 768233, "2019"],
     ["salute-spesa-dispositivi-2020", 787845, "2020"],
     ["salute-spesa-dispositivi-2021", 846878, "2021"],
     ["salute-dispositivi-bdrdm", 2416708, "2026-09-14"],

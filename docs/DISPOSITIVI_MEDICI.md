@@ -1,4 +1,4 @@
-# Dispositivi medici: corpus e viste del pilota 2020 e 2021
+# Dispositivi medici: corpus e viste 2018–2021
 
 Questo documento descrive il corpus e le viste pubbliche della issue #370. La
 pagina sanitaria, l'API e il dataset MCP usano la stessa libreria lato server.
@@ -6,6 +6,8 @@ Le fonti conservano gli identificativi del catalogo condiviso.
 
 | Tabella | Periodo/snapshot | Righe |
 | --- | --- | ---: |
+| `salute-spesa-dispositivi-2018` | 2018 | 718.808 |
+| `salute-spesa-dispositivi-2019` | 2019 | 768.233 |
 | `salute-spesa-dispositivi-2020` | 2020 | 787.845 |
 | `salute-spesa-dispositivi-2021` | 2021 | 846.878 |
 | `salute-dispositivi-bdrdm` | 14 settembre 2026 | 2.416.708 |
@@ -14,13 +16,14 @@ Le fonti conservano gli identificativi del catalogo condiviso.
 Titolare: Ministero della Salute. IODL 2.0 verificata per ciascuna risorsa.
 URL ufficiali, SHA-256 dei file e membri ZIP, byte, schema, date e conteggi sono
 in `scripts/etl/specs/medical-device-spending-pilot.source.json`. Le appendici
-2022 e 2023 restano fuori dal pilota, con licenza `not-declared`; non si estende
+2022 e 2023 restano fuori dal corpus, con licenza `not-declared`; non si estende
 la licenza delle schede Open Data ad altri allegati.
 
 La fonte riporta la spesa per acquisti nel perimetro pubblicato. Non riporta la
 spesa completa del SSN, pagamenti al fabbricante o prezzi unitari. Originali
 monetari italiani e rettifiche restano stringhe; il modello
 usa `parse_source_euros` e `monetary.add_decimals` senza float. Totali osservati:
+2018 **4.761.199.569,23 euro**, 2019 **5.029.122.308,87 euro**,
 2020 **5.054.732.845,13 euro**, 2021 **5.785.471.036,54 euro**. Non sommare CE,
 SIOPE, aggiudicazioni o release sovrapposte dello stesso anno.
 
@@ -32,7 +35,12 @@ La data `9999/12/31` è convenzionale, non una scadenza commerciale reale.
 
 ## Trasformazione e privacy
 
-Le due spese e CND conservano tutti i byte CSV. Il CSV BD/RDM ha un separatore
+Le quattro spese e CND conservano tutti i byte CSV. I file 2018 e 2019 hanno
+una colonna `RegioneCommit` in più rispetto al 2020 e al 2021. Codici come
+`010` e `010203` restano stringhe nel lessico della fonte e non vengono
+normalizzati nei valori `10` e `10203` usati dalle annualità successive.
+
+Il CSV BD/RDM ha un separatore
 finale nell'header che dichiara un diciassettesimo campo senza nome; tutte le
 2.416.708 righe ne hanno sedici. La normalizzazione elimina **solo quel byte**
 dell'header, lasciando inalterato il resto del file. Una riga con diciassette
@@ -53,26 +61,44 @@ pretendono di ricostruire identificativi oscurati.
 
 ## Riproduzione
 
-Prima dell'append, nella checkout priva dei quattro dataset:
+Il pilota 2020–2021 e le due tabelle di raccordo si preparano con:
 
 ```sh
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_corpus.py \
   --spending-2020 /percorso/spesa-2020.zip --spending-2021 /percorso/spesa-2021.zip \
-  --registry /percorso/bdrdm.zip --cnd /percorso/cnd.csv --output-dir /percorso/candidato-nuovo
+  --registry /percorso/bdrdm.zip --cnd /percorso/cnd.csv \
+  --base-spec /percorso/spec-corpus-prima-del-pilota.json \
+  --output-dir /percorso/candidato-pilota
 ```
 
 Il preparatore verifica input e profili, genera la spec candidata e non cambia
-artifact del prodotto. La funzione condivisa `siope_nonmunicipal_corpus.append`
-aggiunge le quattro tabelle; usare `corpus_release_proof_path` e il callback
+artifact del prodotto. L'estensione storica parte dal corpus che contiene già
+il pilota:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_corpus.py \
+  --historical --spending-2018 /percorso/spesa-2018.zip \
+  --spending-2019 /percorso/spesa-2019.zip --registry /percorso/bdrdm.zip \
+  --cnd /percorso/cnd.csv --base-spec /percorso/spec-corpus-con-pilota.json \
+  --output-dir /percorso/candidato-storico
+```
+
+La funzione condivisa `siope_nonmunicipal_corpus.append`
+aggiunge le tabelle selezionate; usare `corpus_release_proof_path` e il callback
 `siope_nonmunicipal.build_committed_view_proof` nella stessa transazione per
 sigillare la prova globale e riallineare il riferimento SIOPE. Gli altri
 dataset, le identità delle fonti e gli elementi del vecchio archivio non cambiano.
 
 Dopo l'append, confrontare ogni riga, chunk, ricevuta e voce di catalogo con i
-CSV preparati e vincolati dagli hash della spec:
+CSV preparati e vincolati dagli hash della spec. Il controllo del pilota usa la
+directory candidata con le quattro tabelle; quello storico usa la directory con
+i due CSV annuali:
 
 ```sh
-DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_corpus.py --check --input-dir /percorso/candidato-nuovo
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_corpus.py \
+  --check --check-scope pilot --input-dir /percorso/candidato-pilota
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medical_device_spending_corpus.py \
+  --check --check-scope historical --input-dir /percorso/candidato-storico
 ```
 
 L'append legge un CSV a blocchi di mille righe usando la stessa proiezione del
@@ -93,11 +119,11 @@ prova di release, riconcilia le ricevute e ricostruisce ogni byte dell'indice.
 Lo script usa SQLite in una directory temporanea durante la generazione e lo
 elimina alla fine. Il prodotto non usa né distribuisce quel database.
 
-Le 1.634.723 righe di spesa coinvolgono 194.079 chiavi composte distinte. Di
-queste, 194.078 trovano la registrazione BD/RDM e una resta non risolta. Il dato
-non contraddice le sette righe non risolte: quelle righe condividono la stessa
-chiave assente. L'anagrafica completa da 2.416.708 righe rimane nel corpus; la
-ricerca dedicata indicizza soltanto i dispositivi presenti nella spesa pilota.
+Le 3.121.764 righe di spesa coinvolgono 237.660 chiavi composte distinte. Di
+queste, 237.659 trovano la registrazione BD/RDM e una resta non risolta. Le 20
+righe non risolte nelle quattro annualità condividono quella chiave assente.
+L'anagrafica completa da 2.416.708 righe rimane nel corpus; la ricerca dedicata
+indicizza soltanto i dispositivi presenti nella spesa pubblicata.
 
 `medical-device-spending.ts` espone le letture lato server:
 
@@ -115,8 +141,8 @@ legati ai filtri e al source lock; un cursore di un'altra ricerca viene rifiutat
 Ogni fatto conserva dataset e numero di riga del corpus. La lettura di dettaglio
 usa questi riferimenti per tornare alla tabella condivisa senza duplicare il CSV.
 
-Le 446 viste di aggregazione coprono due annualità nazionali, 42 coppie
-anno/Regione e 402 terne anno/Regione/azienda. Ogni vista riporta righe e spesa
+Le 894 viste di aggregazione coprono quattro annualità nazionali, 84 coppie
+anno/Regione e 806 terne anno/Regione/azienda. Ogni vista riporta righe e spesa
 totali, abbinate e non risolte, oltre al numero di zeri e rettifiche negative.
 Il denominatore comprende tutte le righe osservate nel perimetro. Non usiamo la
 copertura del join come misura della copertura nazionale del flusso.
@@ -135,7 +161,7 @@ DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/medica
 
 La ricerca usa un file compresso condiviso. Il processo conserva in memoria il
 buffer verificato e lo legge una riga alla volta. Non crea un oggetto per ognuna
-delle 194.079 chiavi. Dettagli e aggregazioni sono blocchi gzip indipendenti. Una
+delle 237.660 chiavi. Dettagli e aggregazioni sono blocchi gzip indipendenti. Una
 scheda legge uno dei 256 blocchi di dettaglio. Una vista aggregata legge soltanto
 il perimetro richiesto. Il manifest registra hash, byte compressi e byte estratti
 di ciascun blocco. Il limite pubblico è di 100 risultati per pagina e ogni
@@ -154,7 +180,7 @@ per territorio, classificazione e fabbricante o assemblatore. Il gruppo non
 collegato alla BD/RDM resta visibile.
 
 La scheda `/spese/sanita/dispositivi/<tipo>/<numero>` usa sempre la chiave
-composta. Mostra l'anagrafica acquisita, i totali 2020 e 2021, la
+composta. Mostra l'anagrafica acquisita, i totali 2018–2021, la
 distribuzione per Regione e azienda e fino a 50 righe alla volta. Ogni riga
 torna al dataset del corpus che la contiene.
 
@@ -177,31 +203,21 @@ dell'API.
 `deviceType` e `deviceNumber` formano l'identità del dispositivo. In MCP,
 `code` indica l'azienda sanitaria e `query` contiene il testo di ricerca.
 
-L'indice occupa 88.336.009 byte. La prima ricerca legge 18.450.784 byte
-compressi e conserva un buffer verificato da 62.037.079 byte; un blocco di
-dettaglio non supera 258.426 byte compressi e un blocco di aggregazione non
-supera 213.203 byte. In una prova locale a processo freddo, la ricerca ha
-richiesto 192 ms; una seconda ricerca 73 ms, l'aggregazione 11 ms e il dettaglio
-meno di 1 ms. Il picco RSS osservato è stato 276.455.424 byte, sceso a
-224.133.120 byte dopo la raccolta della memoria inutilizzata. Sono misure
-indicative della macchina di sviluppo, non soglie prestazionali del prodotto.
+L'indice occupa 144.263.125 byte. La ricerca legge 26.846.865 byte compressi e
+conserva un buffer verificato da 89.111.641 byte; un blocco di dettaglio non
+supera 428.974 byte compressi e un blocco di aggregazione non supera 213.203
+byte. Sono misure del manifest generato, non soglie prestazionali del prodotto.
 
 Il delta supera le soglie di rivalutazione ADR-001. L'ADR-005 conserva gli
 shard pubblici in Git, sul precedente tecnico dell'ADR-004 ma con una decisione
 limitata alla #370. Nessuna pubblicazione esterna è implicita nei comandi.
 
-Misura del candidato completo: 4.064 chunk per 344.033.179 byte gzip;
-chunk compresso massimo 120.476 byte. La verifica globale a blocchi usa
-346.368 KiB di picco RSS e richiede 419,90 secondi su questa macchina; non è
-un benchmark comparativo a macchina libera. I 97 dataset precedenti rimangono
-identici, compresi 1.970 artifact di ricevute e righe e l'archivio storico.
-La build locale passa. I 4.064 shard compaiono soltanto in sette trace: catalogo
-e dettaglio dataset, relativa API, pagina/API MCP e le due API dell'assistente.
-Le trace del dettaglio, della relativa API e dell'API MCP misurano rispettivamente
-575.483.523, 574.458.028 e 878.004.773 byte. Sono misure dei manifest Next, non
-di un deploy del provider: prima del merge resta necessaria una preview riuscita.
+Misura del corpus dispositivi completo: 5.552 chunk per 451.408.266 byte gzip;
+chunk compresso massimo 120.476 byte. I due anni storici aggiungono 1.488 chunk
+per 107.375.087 byte. La preview del commit candidato resta necessaria prima del
+merge: la build locale non dimostra da sola che il provider accetti il pacchetto.
 
 L'indice derivato aggiunge ricerca, dettagli e aggregazioni senza modificare i
-4.064 chunk. Le sue dimensioni e i limiti di lettura sono registrati nel
+5.552 chunk. Le sue dimensioni e i limiti di lettura sono registrati nel
 manifest `src/data/generated/medical-device-spending-index/meta.json` e
 verificati dal registro degli artifact generati.

@@ -991,8 +991,17 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
 export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   {
     surface: "/dati",
-    title: "Spesa per dispositivi medici",
-    description: "Spesa rilevata 2020–2021, con rettifiche e perimetro della fonte; non incassi dei fabbricanti o prezzi unitari.",
+    title: "Spesa storica per dispositivi medici",
+    description: "Spesa rilevata nel 2018 e 2019, con rettifiche e perimetro della fonte; non incassi dei fabbricanti o prezzi unitari.",
+    datasets: [
+      { id: "salute-spesa-dispositivi-2018", label: "Spesa rilevata · 2018" },
+      { id: "salute-spesa-dispositivi-2019", label: "Spesa rilevata · 2019" },
+    ],
+  },
+  {
+    surface: "/dati",
+    title: "Spesa recente per dispositivi medici",
+    description: "Spesa rilevata nel 2020 e 2021, con rettifiche e perimetro della fonte; non incassi dei fabbricanti o prezzi unitari.",
     datasets: [
       { id: "salute-spesa-dispositivi-2020", label: "Spesa rilevata · 2020" },
       { id: "salute-spesa-dispositivi-2021", label: "Spesa rilevata · 2021" },

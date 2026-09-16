@@ -516,9 +516,19 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   {
     id: "salute_dispositivi_medici",
     title: "Spesa rilevata per dispositivi medici",
-    summary: "Cerca i dispositivi BD/RDM presenti nei dati di spesa 2020 e 2021. Restituisce anche aggregati per territorio, CND e fabbricante o assemblatore.",
+    summary: "Cerca i dispositivi BD/RDM presenti nei dati di spesa dal 2018 al 2021. Restituisce anche aggregati per territorio, CND e fabbricante o assemblatore.",
     sourceIds: [],
     customSources: [
+      {
+        id: "salute-spesa-dispositivi-2018", name: "Dispositivi medici · spesa per azienda sanitaria · 2018",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2018-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2018", rows: 718808,
+      },
+      {
+        id: "salute-spesa-dispositivi-2019", name: "Dispositivi medici · spesa per azienda sanitaria · 2019",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2019", rows: 768233,
+      },
       {
         id: "salute-spesa-dispositivi-2020", name: "Dispositivi medici · spesa per azienda sanitaria · 2020",
         owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2020-spesa-rilevata-azienda-sanitaria/",

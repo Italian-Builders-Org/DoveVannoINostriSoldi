@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "datasetId": "medical-device-spending-pilot",
   "holder": "Ministero della Salute",
-  "scope": "Spesa rilevata per dispositivi medici 2020-2023, con pilota pubblicabile 2020-2021 e appendici 2022-2023 bloccate per licenza non dichiarata; anagrafica BD/RDM e CND usate per il join",
+  "scope": "Spesa rilevata per dispositivi medici 2018-2023, con annualità pubblicabili 2018-2021 e appendici 2022-2023 bloccate per licenza non dichiarata; anagrafica BD/RDM e CND usate per il join",
   "spendingReleases": {
     "2012": {
       "releaseId": "open-data-spesa-2012",
@@ -84,29 +84,35 @@
     },
     "2018": {
       "releaseId": "open-data-spesa-2018",
-      "publicationDisposition": "inventory-only",
-      "acquisitionStatus": "cataloged-not-acquired",
+      "publicationDisposition": "historical-candidate",
+      "acquisitionStatus": "acquired-profiled",
       "landingUrl": "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2018-spesa-rilevata-azienda-sanitaria/",
       "downloadUrl": "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_100_0_upFile.zip",
       "downloadFormat": "ZIP/CSV",
       "referencePeriod": "2018",
       "publicationDate": "2020-12-28",
       "publicationDateKind": "catalog-upload",
-      "checkedAt": "2026-09-15",
-      "licenseStatus": "IODL-2.0"
+      "acquisitionDate": "2026-09-16",
+      "checkedAt": "2026-09-16",
+      "licenseStatus": "IODL-2.0",
+      "archive": {"bytes": 7052935, "sha256": "ee4ba6f7c8e3ac44c3f33ee27f9dc059490211140797b9d5dbf1282ac9a238cb", "member": "OpenDataCostiDM2018.csv", "memberBytes": 57424173, "memberSha256": "a8d1c5f1354fff946f4709a16ad2aa76a403a3806dc5bbc782f1dd1869700477", "memberModifiedAtZipLocal": "2020-12-12T13:12:52"},
+      "expected": {"rows": 718808, "types": {"1": 714797, "2": 4011}, "decimalScaleRows": {"2": 718808}, "zeroAmounts": 19113, "negativeAmounts": 592, "totalEuroExact": "4761199569.23", "matchedRows": 718801, "unresolvedRows": 7, "missingKeyRows": 0, "invalidKeyRows": 0, "notFoundRows": 7, "ambiguousRows": 0, "unresolvedEuroExact": "9337.88", "repeatedBusinessGrains": 0, "maxBusinessGrainOccurrences": 1}
     },
     "2019": {
       "releaseId": "open-data-spesa-2019",
-      "publicationDisposition": "inventory-only",
-      "acquisitionStatus": "cataloged-not-acquired",
+      "publicationDisposition": "historical-candidate",
+      "acquisitionStatus": "acquired-profiled",
       "landingUrl": "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
       "downloadUrl": "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_101_0_upFile.zip",
       "downloadFormat": "ZIP/CSV",
       "referencePeriod": "2019",
       "publicationDate": "2020-12-28",
       "publicationDateKind": "catalog-upload",
-      "checkedAt": "2026-09-15",
-      "licenseStatus": "IODL-2.0"
+      "acquisitionDate": "2026-09-16",
+      "checkedAt": "2026-09-16",
+      "licenseStatus": "IODL-2.0",
+      "archive": {"bytes": 7327781, "sha256": "a29244c5071c8d7e7fbd06233473ade0759b699b7f4f6756c9d67efb90a07c5e", "member": "OpenDataCostiDM2019.csv", "memberBytes": 58691910, "memberSha256": "c12a915e2ef13e05e4914eb63dcc67a9b9132683c4084f8656036d949c2912b0", "memberModifiedAtZipLocal": "2020-12-12T13:59:58"},
+      "expected": {"rows": 768233, "types": {"1": 763399, "2": 4834}, "decimalScaleRows": {"0": 54907, "1": 77367, "2": 635959}, "zeroAmounts": 22165, "negativeAmounts": 982, "totalEuroExact": "5029122308.87", "matchedRows": 768227, "unresolvedRows": 6, "missingKeyRows": 0, "invalidKeyRows": 0, "notFoundRows": 6, "ambiguousRows": 0, "unresolvedEuroExact": "10266.23", "repeatedBusinessGrains": 0, "maxBusinessGrainOccurrences": 1}
     },
     "2020": {
       "releaseId": "open-data-spesa-2020",
@@ -196,11 +202,12 @@
   },
   "schemas": {
     "spendingHeaders": ["Anno", "CodRegCommit", "CodASL", "AziendaSanitaria", "CodTipoDM", "NumRep", "CodiceCND", "CostoAcq"],
+    "spendingHeaders2018To2019": ["Anno", "CodRegCommit", "RegioneCommit", "CodASL", "AziendaSanitaria", "CodiceCND", "CodTipoDM", "NumRep", "CostoAcq"],
     "registryHeaders": ["tipologia_dm", "progressivo_dm_ass", "data_prima_pubblicazione", "dm_riferimento", "gruppo_dm_simili", "iscrizione_repertorio", "data_inizio_validita", "data_fine_validita", "fabbricante_assemblatore", "cod_fiscale", "PARTITAIVA_VATNUMBER_MAND", "cod_catalogo_fabbr_ass", "denominazione_commerciale", "classificazione_cnd", "descrizione_cnd", "data_fine_commercio", ""],
     "classificationHeaders": ["codice_ramo_cnd", "descrizione_ramo_cnd", "livello_finale", "riferimento_civab", "data_inzio_validita", "data_fine_validita"]
   },
   "integrity": {
     "algorithm": "sha256",
-    "lockSha256": "b800cbb4fd42876cda82210099581b9bc9394fed9cb5af09e34d8e409f595121"
+    "lockSha256": "a70b8e9435e9a4e657c414b2d19a8ffd54efa1442e8027c381a50ae054bb6123"
   }
 }

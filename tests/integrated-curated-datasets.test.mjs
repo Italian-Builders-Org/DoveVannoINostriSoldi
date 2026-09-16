@@ -113,6 +113,8 @@ const mandatoryDatasetIds = [
   "salute-posti-letto-2023",
   "salute-classificazione-cnd",
   "salute-dispositivi-bdrdm",
+  "salute-spesa-dispositivi-2018",
+  "salute-spesa-dispositivi-2019",
   "salute-spesa-dispositivi-2020",
   "salute-spesa-dispositivi-2021",
   "segnalazioni",
@@ -133,7 +135,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 101,
+  datasets: 103,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -159,6 +161,8 @@ const expectedReferencePeriods = {
   "salute-posti-letto-2023": "2023-01-01",
   "salute-classificazione-cnd": "2026-09-01",
   "salute-dispositivi-bdrdm": "2026-09-14",
+  "salute-spesa-dispositivi-2018": "2018",
+  "salute-spesa-dispositivi-2019": "2019",
   "salute-spesa-dispositivi-2020": "2020",
   "salute-spesa-dispositivi-2021": "2021",
   "affidamenti-diretti": "2024-2026",

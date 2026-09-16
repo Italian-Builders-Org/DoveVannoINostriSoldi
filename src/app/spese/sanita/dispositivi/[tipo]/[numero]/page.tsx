@@ -79,7 +79,7 @@ export default async function MedicalDevicePage({ params, searchParams }: {
       <header className="page-intro">
         <p className="eyebrow">Dispositivi medici · tipo {device.type}</p>
         <h1>{device.name ?? `Dispositivo ${device.number}`}</h1>
-        <p>Numero di repertorio {device.number}. La scheda collega l’anagrafica corrente alle righe di spesa pubblicate per il 2020 e il 2021.</p>
+        <p>Numero di repertorio {device.number}. La scheda collega l’anagrafica corrente alle righe di spesa pubblicate dal 2018 al 2021.</p>
         <p className={styles.links}><Link href="/spese/sanita/dispositivi">← Torna alla ricerca</Link><a href={`/api/spese/sanita/dispositivi?vista=dispositivo&tipo=${device.type}&numero=${device.number}`}>Scheda in JSON</a></p>
       </header>
 
@@ -93,7 +93,7 @@ export default async function MedicalDevicePage({ params, searchParams }: {
           <dt>ID anagrafica</dt><dd>{device.registryRecordId ?? "Non disponibile"}</dd>
           <dt>Anagrafica aggiornata al</dt><dd>{profile.registrySnapshotDate.split("-").reverse().join("/")}</dd>
         </dl>
-        <p className={styles.note}>Questa anagrafica è successiva agli anni di spesa. Non prova quale ruolo avesse il fabbricante o assemblatore nel 2020 o nel 2021.</p>
+        <p className={styles.note}>Questa anagrafica è successiva agli anni di spesa. Non prova quale ruolo avesse il fabbricante o assemblatore dal 2018 al 2021.</p>
       </section>
 
       <section className="panel" aria-labelledby="spesa-title">

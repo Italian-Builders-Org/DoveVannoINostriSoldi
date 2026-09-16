@@ -19,7 +19,12 @@ SPENDING_FIELDS = {
     "tipo_dispositivo": "CodTipoDM", "numero_repertorio": "NumRep",
     "codice_classificazione_fonte": "CodiceCND", "spesa_originale": "CostoAcq",
 }
-PILOT_RELEASES = {2020: "open-data-spesa-2020", 2021: "open-data-spesa-2021"}
+PUBLISHABLE_RELEASES = {
+    2018: ("open-data-spesa-2018", "historical-candidate"),
+    2019: ("open-data-spesa-2019", "historical-candidate"),
+    2020: ("open-data-spesa-2020", "pilot-candidate"),
+    2021: ("open-data-spesa-2021", "pilot-candidate"),
+}
 REGISTRY_DATASET = "salute-dispositivi-bdrdm"
 CND_DATASET = "salute-classificazione-cnd"
 # Both fiscal fields are protected, including occurrences copied into free text.
@@ -155,12 +160,12 @@ def spending_fact(raw: dict, ordinal: int, release: dict, metadata: dict,
     Null money is rejected by the observed pilot contract, not converted to zero.
     """
     year = int(release["referencePeriod"])
-    if (PILOT_RELEASES.get(year) != release["releaseId"]
-            or release["publicationDisposition"] != "pilot-candidate"
+    expected_release = PUBLISHABLE_RELEASES.get(year)
+    if (expected_release != (release["releaseId"], release["publicationDisposition"])
             or release["licenseStatus"] != "IODL-2.0"):
-        raise source.SourceError("Release fuori dal pilota selezionato")
+        raise source.SourceError("Release fuori dal perimetro pubblicabile selezionato")
     dataset_id = f"salute-spesa-dispositivi-{year}"
-    row = public_source_row(raw, source.SPENDING_HEADERS, dataset_id, ordinal)
+    row = public_source_row(raw, source.spending_headers(year), dataset_id, ordinal)
     cells = row["cells"]
     if cells["Anno"] != str(year):
         raise source.SourceError("Periodo del fatto divergente")
@@ -176,7 +181,7 @@ def spending_fact(raw: dict, ordinal: int, release: dict, metadata: dict,
         **{alias: cells[header] for alias, header in SPENDING_FIELDS.items()},
         "source_dataset_id": dataset_id, "source_release_id": release["releaseId"],
         "source_record_id": row["id"], "source": row,
-        "denominazione_regione": None,  # absent in the pilot; no inferred crosswalk
+        "denominazione_regione": cells.get("RegioneCommit"),
         "azienda_key": (cells["Anno"], cells["CodRegCommit"], cells["CodASL"]),
         "spesa_normalizzata": format(amount, "f"), "unita": "EUR",
         "natura": "spesa rilevata per acquisto di dispositivi medici",

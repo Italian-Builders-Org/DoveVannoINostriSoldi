@@ -16,7 +16,7 @@ async function inspectMedicalDevices(page) {
   const text = await page.$eval("main", (main) => main.innerText);
   assert.match(text, /PROFEMUR PRESERVE/);
   assert.match(text, /Aggregati della spesa rilevata/i);
-  assert.match(text, /Non collegate alla BD\/RDM/i);
+  assert.match(text, /Non sono prezzi unitari né pagamenti al fabbricante/i);
   assert.ok(await page.$('main a[href="/spese/sanita/dispositivi/1/1175175"]'));
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
 

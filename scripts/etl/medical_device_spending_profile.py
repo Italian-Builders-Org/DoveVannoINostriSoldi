@@ -18,6 +18,10 @@ from monetary import add_decimals
 
 
 SPENDING_HEADERS = ["Anno", "CodRegCommit", "CodASL", "AziendaSanitaria", "CodTipoDM", "NumRep", "CodiceCND", "CostoAcq"]
+SPENDING_HEADERS_2018_2019 = [
+    "Anno", "CodRegCommit", "RegioneCommit", "CodASL", "AziendaSanitaria",
+    "CodiceCND", "CodTipoDM", "NumRep", "CostoAcq",
+]
 REGISTRY_HEADERS = ["tipologia_dm", "progressivo_dm_ass", "data_prima_pubblicazione", "dm_riferimento", "gruppo_dm_simili", "iscrizione_repertorio", "data_inizio_validita", "data_fine_validita", "fabbricante_assemblatore", "cod_fiscale", "PARTITAIVA_VATNUMBER_MAND", "cod_catalogo_fabbr_ass", "denominazione_commerciale", "classificazione_cnd", "descrizione_cnd", "data_fine_commercio", ""]
 CND_HEADERS = ["codice_ramo_cnd", "descrizione_ramo_cnd", "livello_finale", "riferimento_civab", "data_inzio_validita", "data_fine_validita"]
 DEFAULT_SPEC = Path(__file__).with_name("specs") / "medical-device-spending-pilot.source.json"
@@ -82,20 +86,28 @@ def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, object]:
         raise SourceError("Source lock dispositivi illeggibile") from error
     if spec.get("schemaVersion") != 1 or spec.get("datasetId") != "medical-device-spending-pilot":
         raise SourceError("Identità source lock dispositivi inattesa")
-    if spec.get("schemas") != {"spendingHeaders": SPENDING_HEADERS, "registryHeaders": REGISTRY_HEADERS, "classificationHeaders": CND_HEADERS}:
+    if spec.get("schemas") != {
+        "spendingHeaders": SPENDING_HEADERS,
+        "spendingHeaders2018To2019": SPENDING_HEADERS_2018_2019,
+        "registryHeaders": REGISTRY_HEADERS,
+        "classificationHeaders": CND_HEADERS,
+    }:
         raise SourceError("Schemi source lock dispositivi divergenti")
     releases = spec.get("spendingReleases")
     inventory_years = {str(year) for year in range(2012, 2024)}
     if not isinstance(releases, dict) or set(releases) != inventory_years:
-        raise SourceError("Release pilota dispositivi inattese")
+        raise SourceError("Release dispositivi inattese")
     release_ids: set[str] = set()
     for year, release in releases.items():
         if not isinstance(release, dict) or release.get("referencePeriod") != year:
             raise SourceError(f"Periodo source lock spesa {year} inatteso")
         expected_license = "IODL-2.0" if year <= "2021" else "not-declared"
-        if year <= "2019":
+        if year <= "2017":
             expected_disposition = "inventory-only"
             expected_acquisition = "cataloged-not-acquired"
+        elif year <= "2019":
+            expected_disposition = "historical-candidate"
+            expected_acquisition = "acquired-profiled"
         elif year <= "2021":
             expected_disposition = "pilot-candidate"
             expected_acquisition = "acquired-profiled"
@@ -218,7 +230,7 @@ def _verify_zip_member(path: Path, expected: dict[str, object], label: str) -> N
 def verify_locked_profile(result: dict[str, object], spec: dict[str, object], year: int) -> None:
     release = spec["spendingReleases"].get(str(year))
     if not isinstance(release, dict):
-        raise SourceError(f"Annualità {year} fuori dal pilota bloccato")
+        raise SourceError(f"Annualità {year} fuori dal perimetro bloccato")
     expected = release["expected"]
     observed = {**result["spending"], **result["join"]}
     if any(observed.get(key) != value for key, value in expected.items()):
@@ -251,6 +263,14 @@ def _zip_rows(path: Path, member: str, encoding: str, headers: list[str], label:
 def _require_headers(reader, expected: list[str], label: str) -> None:
     if reader.fieldnames != expected:
         raise SourceError(f"Header {label} divergente")
+
+
+def spending_headers(year: int) -> list[str]:
+    if year in {2018, 2019}:
+        return SPENDING_HEADERS_2018_2019
+    if year in {2020, 2021, 2022, 2023}:
+        return SPENDING_HEADERS
+    raise SourceError(f"Schema spesa {year} non supportato")
 
 
 def _require_row_shape(
@@ -314,16 +334,17 @@ def profile(
     scales: Counter[int] = Counter()
     grains: Counter[tuple[str, str, str, str, str]] = Counter()
     matched = unresolved = missing_key = invalid_key = not_found = zero = negative = cnd_different = 0
+    spending_headers_for_year = spending_headers(year)
     spending_rows = _zip_rows(
         spending_zip,
         spending_member or f"Appendice rapporto {year}.csv",
         "ascii",
-        SPENDING_HEADERS,
+        spending_headers_for_year,
         "spesa",
     )
     try:
         for index, row in enumerate(spending_rows, 1):
-            _require_row_shape(row, SPENDING_HEADERS, "spesa", index)
+            _require_row_shape(row, spending_headers_for_year, "spesa", index)
             device_type, number = row["CodTipoDM"], row["NumRep"]
             if row["Anno"] != str(year):
                 raise SourceError(f"Periodo spesa divergente alla riga {index}")
@@ -384,14 +405,14 @@ def profile(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spending", type=Path, required=True)
-    parser.add_argument("--year", type=int, choices=(2020, 2021, 2022, 2023), required=True)
+    parser.add_argument("--year", type=int, choices=(2018, 2019, 2020, 2021, 2022, 2023), required=True)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--cnd", type=Path, required=True)
     args = parser.parse_args()
     spec = load_spec()
     release = spec["spendingReleases"].get(str(args.year))
     if not isinstance(release, dict) or release.get("acquisitionStatus") != "acquired-profiled":
-        raise SourceError(f"Annualità {args.year} fuori dal pilota bloccato")
+        raise SourceError(f"Annualità {args.year} fuori dal perimetro acquisito")
     _verify_file(args.spending, release["archive"], f"spesa {args.year}")
     _verify_file(args.registry, spec["registry"]["archive"], "BD/RDM")
     _verify_file(args.cnd, spec["classification"], "CND")

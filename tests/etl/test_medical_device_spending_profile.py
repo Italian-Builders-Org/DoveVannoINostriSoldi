@@ -106,6 +106,28 @@ class MedicalDeviceProfileTests(TestCase):
         )
         self.assertEqual(result["spending"]["years"], {"2020": 1})
 
+    def test_2018_2019_schema_preserves_region_and_lexical_codes(self):
+        member = "OpenDataCostiDM2018.csv"
+        write_zip(self.spending, member, etl.SPENDING_HEADERS_2018_2019, [[
+            "2018", "010", "PIEMONTE", "010203", "TO3", "A01010101", "1", "42", "1.000,00",
+        ]], "ascii")
+        result = etl.profile(
+            self.spending,
+            self.registry,
+            self.cnd,
+            2018,
+            spending_member=member,
+            registry_member=FIXTURE_REGISTRY_MEMBER,
+        )
+        self.assertEqual(result["spending"]["years"], {"2018": 1})
+        self.assertEqual(result["spending"]["totalEuroExact"], "1000.00")
+        rows = list(etl._zip_rows(
+            self.spending, member, "ascii", etl.spending_headers(2018), "test",
+        ))
+        self.assertEqual(rows[0]["CodRegCommit"], "010")
+        self.assertEqual(rows[0]["CodASL"], "010203")
+        self.assertEqual(rows[0]["RegioneCommit"], "PIEMONTE")
+
     def test_registry_member_is_accepted_only_when_explicit(self):
         member = "registry-fixture-renamed.csv"
         write_zip(self.registry, member, etl.REGISTRY_HEADERS, [[
@@ -154,8 +176,10 @@ class MedicalDeviceProfileTests(TestCase):
         self.assertTrue(all(spec["spendingReleases"][str(year)]["licenseStatus"] == "IODL-2.0" for year in range(2012, 2022)))
         self.assertTrue(all(spec["spendingReleases"][year]["licenseStatus"] == "not-declared" for year in ("2022", "2023")))
         self.assertTrue(all(spec["spendingReleases"][year]["siteTermsUrl"].endswith("/note-legali-2/") for year in ("2022", "2023")))
-        self.assertTrue(all(spec["spendingReleases"][str(year)]["acquisitionStatus"] == "cataloged-not-acquired" for year in range(2012, 2020)))
-        self.assertTrue(all("archive" not in spec["spendingReleases"][str(year)] for year in range(2012, 2020)))
+        self.assertTrue(all(spec["spendingReleases"][str(year)]["acquisitionStatus"] == "cataloged-not-acquired" for year in range(2012, 2018)))
+        self.assertTrue(all(spec["spendingReleases"][str(year)]["acquisitionStatus"] == "acquired-profiled" for year in range(2018, 2024)))
+        self.assertTrue(all("archive" not in spec["spendingReleases"][str(year)] for year in range(2012, 2018)))
+        self.assertEqual(spec["schemas"]["spendingHeaders2018To2019"], etl.SPENDING_HEADERS_2018_2019)
 
     def test_source_lock_requires_every_profile_field(self):
         original = json.loads(etl.DEFAULT_SPEC.read_text(encoding="utf-8"))
@@ -247,6 +271,57 @@ class MedicalDeviceProfileTests(TestCase):
         (self.root / "base-corpus.source.json").write_text(json.dumps(base), encoding="utf-8")
         return spending, path
 
+    def historical_candidate_inputs(self):
+        lock = etl.load_spec()
+        archives = {}
+        rows_by_year = {
+            2018: [
+                ["2018", "010", "PIEMONTE", "010203", "TO3", "A01010101", "1", "42", "1.000,00"],
+                ["2018", "020", "VALLE D'AOSTA", "020100", "USL", "A01010102", "1", "99", "-2,00"],
+            ],
+            2019: [
+                ["2019", "10", "PIEMONTE", "10203", "TO3", "A01010101", "1", "42", "3"],
+                ["2019", "20", "VALLE D'AOSTA", "20100", "USL", "A01010102", "1", "99", "0,0"],
+            ],
+        }
+        for year, rows in rows_by_year.items():
+            path = self.root / f"spending-{year}.zip"
+            member = f"OpenDataCostiDM{year}.csv"
+            write_zip(path, member, etl.SPENDING_HEADERS_2018_2019, rows, "ascii")
+            archives[year] = path
+            payload = path.read_bytes()
+            with zipfile.ZipFile(path) as zipped:
+                raw = zipped.read(member)
+            lock["spendingReleases"][str(year)]["archive"].update(
+                bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest(), member=member,
+                memberBytes=len(raw), memberSha256=hashlib.sha256(raw).hexdigest(),
+            )
+        registry_payload = self.registry.read_bytes()
+        with zipfile.ZipFile(self.registry) as zipped:
+            registry_raw = zipped.read(FIXTURE_REGISTRY_MEMBER)
+        lock["registry"]["archive"].update(
+            bytes=len(registry_payload), sha256=hashlib.sha256(registry_payload).hexdigest(),
+            member=FIXTURE_REGISTRY_MEMBER, memberBytes=len(registry_raw),
+            memberSha256=hashlib.sha256(registry_raw).hexdigest(),
+        )
+        cnd_payload = self.cnd.read_bytes()
+        lock["classification"].update(bytes=len(cnd_payload), sha256=hashlib.sha256(cnd_payload).hexdigest())
+        for year, path in archives.items():
+            result = etl.profile(
+                path, self.registry, self.cnd, year,
+                spending_member=lock["spendingReleases"][str(year)]["archive"]["member"],
+                registry_member=FIXTURE_REGISTRY_MEMBER,
+            )
+            observed = {**result["spending"], **result["join"]}
+            expected = lock["spendingReleases"][str(year)]["expected"]
+            lock["spendingReleases"][str(year)]["expected"] = {key: observed[key] for key in expected}
+            lock["registry"]["expected"] = result["registry"]
+            lock["classification"]["expected"] = result["cnd"]
+        lock["integrity"]["lockSha256"] = etl.canonical_lock_sha256(lock)
+        lock_path = self.root / "historical-fixture.source.json"
+        lock_path.write_text(json.dumps(lock), encoding="utf-8")
+        return archives, lock_path
+
     def test_candidate_preserves_source_bytes_cells_and_existing_spec(self):
         spending, lock_path = self.candidate_inputs()
         output = self.root / "candidate"
@@ -311,3 +386,47 @@ class MedicalDeviceProfileTests(TestCase):
     def test_candidate_excludes_unapproved_years(self):
         with self.assertRaisesRegex(etl.SourceError, "soltanto le annualità pilota"):
             candidate.prepare({2021: self.spending, 2022: self.spending}, self.registry, self.cnd, self.root / "candidate")
+
+    def test_historical_candidate_preserves_original_bytes_and_lexical_codes(self):
+        spending, lock_path = self.historical_candidate_inputs()
+        output = self.root / "historical-candidate"
+        base, _ = candidate.corpus.load_spec(candidate.corpus.DEFAULT_SPEC)
+        base["datasets"] = [
+            item for item in base["datasets"] if item["id"] not in candidate.HISTORICAL_DATASET_IDS
+        ]
+        for dataset_id in candidate.HISTORICAL_DATASET_IDS:
+            base["sourceMetadata"]["overrides"].pop(dataset_id, None)
+        base_path = self.root / "pre-history-corpus.source.json"
+        base_path.write_text(json.dumps(base), encoding="utf-8")
+        candidate.prepare_historical(
+            spending, self.registry, self.cnd, output,
+            lock_path=lock_path, base_spec_path=base_path,
+        )
+        spec, datasets = candidate.corpus.load_spec(output / "candidate.source.json")
+        historical = datasets[-2:]
+        self.assertEqual([item["id"] for item in historical], [
+            "salute-spesa-dispositivi-2018", "salute-spesa-dispositivi-2019",
+        ])
+        for year, item in zip(candidate.HISTORICAL_YEARS, historical, strict=True):
+            with zipfile.ZipFile(spending[year]) as zipped:
+                self.assertEqual((output / item["relativePath"]).read_bytes(), zipped.read(zipped.namelist()[0]))
+            parsed = candidate.corpus.parse_dataset(output, item)
+            self.assertEqual(parsed.headers, etl.SPENDING_HEADERS_2018_2019)
+            self.assertEqual(parsed.rows[0][0], str(year))
+            self.assertEqual(parsed.rows[0][2], "PIEMONTE")
+        self.assertEqual(candidate.corpus.resolved_source_metadata(
+            spec, "salute-spesa-dispositivi-2018",
+        )["referencePeriod"], "2018")
+        self.assertEqual(candidate.corpus.parse_dataset(output, historical[0]).rows[0][1:4], [
+            "010", "PIEMONTE", "010203",
+        ])
+        self.assertEqual(candidate.corpus.parse_dataset(output, historical[1]).rows[0][1:4], [
+            "10", "PIEMONTE", "10203",
+        ])
+
+    def test_historical_candidate_requires_exactly_2018_and_2019(self):
+        with self.assertRaisesRegex(etl.SourceError, "soltanto le annualità 2018 e 2019"):
+            candidate.prepare_historical(
+                {2018: self.spending, 2020: self.spending}, self.registry, self.cnd,
+                self.root / "historical-candidate",
+            )

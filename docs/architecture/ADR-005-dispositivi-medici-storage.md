@@ -2,17 +2,16 @@
 
 - **Stato:** decisione per la #370; efficace al merge dopo i gate e la preview.
 - **Data:** 15 settembre 2026.
-- **Ambito:** pilota 2020 e 2021 della spesa rilevata e anagrafiche di raccordo.
+- **Ambito:** spesa rilevata 2018–2021 e anagrafiche di raccordo.
 
 ## Misure
 
-Le quattro fonti selezionate contengono 4.062.546 righe e 630.919.303 byte
+Le sei fonti selezionate contengono 5.549.587 righe e 747.035.386 byte
 di CSV verificati fuori da Git. La proiezione pubblica conserva tutte le righe
-in 4.064 shard gzip per 344.033.179 byte complessivi; il file più grande misura
-120.476 byte. Le radici generate del checkout candidato misurano
-1.851.511.340 byte.
+in 5.552 shard gzip per 451.408.266 byte complessivi; il file più grande misura
+120.476 byte.
 
-I due dataset monetari coprono il 2020 e il 2021. BD/RDM e CND sono snapshot
+I quattro dataset monetari coprono il periodo 2018–2021. BD/RDM e CND sono snapshot
 correnti di raccordo, non anagrafiche storiche degli anni di spesa. I CSV
 ufficiali originali e la mappa dei campi fiscali rimangono locali; nel
 repository entrano la proiezione minimizzata, i source lock, le ricevute e le
@@ -39,8 +38,8 @@ non costituiscono una seconda fonte. La generazione usa SQLite in una directory
 temporanea per ordinare e aggregare le righe; nessun database viene distribuito
 o interrogato a runtime. La ricerca usa un file condiviso, mentre dettagli e
 aggregazioni sono divisi in blocchi con hash e limiti di lettura indipendenti.
-Le viste aggiungono 88.336.009 byte: il totale dei dati del corpus e delle viste
-specifiche della #370 è 432.369.188 byte.
+Le viste aggiungono 144.263.125 byte: il totale dei dati del corpus e delle viste
+specifiche della #370 è 595.671.391 byte.
 
 Ogni futuro aggiornamento richiede nuove misure di crescita, tempi CI e
 pacchetti runtime. Un rifiuto del provider blocca il merge; non autorizza a

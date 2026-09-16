@@ -2,7 +2,7 @@
 """Build verified search and aggregate views for medical-device spending.
 
 The committed integrated corpus is the only input. A temporary SQLite database
-keeps the 1.6 million spending facts off the Python heap; it is never shipped or
+keeps the spending facts off the Python heap; it is never shipped or
 used at runtime. Public artifacts contain only derived views and source-row
 references bound to the corpus receipts and release proof.
 """
@@ -30,7 +30,7 @@ ROWS = ROOT / "src/data/generated/integrated/rows"
 PROOF = ROOT / "data/source-ledger/dataset-proof.json"
 RECEIPTS = ROOT / "data/source-ledger/datasets"
 SOURCE_SPEC = ROOT / "scripts/etl/specs/medical-device-spending-pilot.source.json"
-SPENDING = ("salute-spesa-dispositivi-2020", "salute-spesa-dispositivi-2021")
+SPENDING = tuple(f"salute-spesa-dispositivi-{year}" for year in range(2018, 2022))
 REGISTRY = "salute-dispositivi-bdrdm"
 DATASETS = (*SPENDING, REGISTRY)
 DETAIL_PREFIXES = 256
@@ -205,7 +205,7 @@ def join_registry(connection: sqlite3.Connection, proof: dict) -> int:
 
 
 def verify_join(connection: sqlite3.Connection, spec: dict) -> None:
-    for year in (2020, 2021):
+    for year in sorted(int(dataset.rsplit("-", 1)[1]) for dataset in SPENDING):
         matched_rows, unresolved_rows, unresolved_cents = connection.execute(
             """SELECT sum(d.registry_record_id IS NOT NULL),sum(d.registry_record_id IS NULL),
                sum(CASE WHEN d.registry_record_id IS NULL THEN f.cents ELSE 0 END)

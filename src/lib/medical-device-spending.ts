@@ -37,11 +37,13 @@ const MEDICAL_REGION_NAMES: Readonly<Record<string, string>> = {
 };
 
 export function medicalDeviceRegionName(code: string): string {
-  return MEDICAL_REGION_NAMES[code] ?? `Codice ${code}`;
+  const lookupCode = code.replace(/^0+(?=\d)/, "");
+  return MEDICAL_REGION_NAMES[lookupCode] ?? `Codice ${code}`;
 }
 
 export function medicalDeviceRegionLabel(code: string): string {
-  return MEDICAL_REGION_NAMES[code] ? `${medicalDeviceRegionName(code)} · ${code}` : medicalDeviceRegionName(code);
+  const name = medicalDeviceRegionName(code);
+  return name === `Codice ${code}` ? name : `${name} · ${code}`;
 }
 
 export class MedicalDeviceQueryError extends Error {
@@ -415,7 +417,7 @@ function nextCursor(next: number, total: number, hash: string, meta: Meta): stri
 function scope(meta: Meta, year: number, region: string | null, company: string | null): Scope {
   const key = [year, region, company].filter((value) => value !== null).join(":");
   const found = meta.aggregates.scopes.find((candidate) => candidate.key === key);
-  if (!found) throw new MedicalDeviceQueryError("Il territorio richiesto non è presente nel pilota.");
+  if (!found) throw new MedicalDeviceQueryError("Il territorio richiesto non è presente nei dati pubblicati.");
   return found;
 }
 
@@ -532,7 +534,7 @@ export async function getMedicalDeviceProfile(input: Readonly<{
   const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
   assertSignal(input.signal);
   const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
-  if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nella spesa pilota.");
+  if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nei dati di spesa pubblicati.");
   const years = new Map<number, {
     rows: number;
     spendingCents: bigint;
@@ -784,7 +786,7 @@ export async function listMedicalDeviceFacts(input: Readonly<{
   const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
   assertSignal(input.signal);
   const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
-  if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nella spesa pilota.");
+  if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nei dati di spesa pubblicati.");
   const facts = device.facts.filter((fact) => (year === null || fact.year === year)
     && (region === null || fact.region === region) && (company === null || fact.company === company));
   const filter = { company, number, region, type, year };

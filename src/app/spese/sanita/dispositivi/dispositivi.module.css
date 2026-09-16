@@ -62,6 +62,7 @@
 }
 
 .result {
+  min-width: 0;
   padding: var(--space-4);
   border: 1px solid var(--color-neutral-200);
 }
@@ -150,5 +151,10 @@
   .definitionList dt {
     padding-bottom: 0;
     border-bottom: 0;
+  }
+
+  .result .money {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }

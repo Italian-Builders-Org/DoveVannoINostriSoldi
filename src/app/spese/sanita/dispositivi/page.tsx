@@ -12,7 +12,7 @@ import styles from "./dispositivi.module.css";
 
 export const metadata: Metadata = {
   title: "Spesa per dispositivi medici",
-  description: "Ricerca i dispositivi presenti nella spesa sanitaria pubblica 2020-2021 e consulta gli aggregati per territorio, classificazione CND e fabbricante o assemblatore.",
+  description: "Ricerca i dispositivi presenti nella spesa sanitaria pubblica 2018-2021 e consulta gli aggregati per territorio, classificazione CND e fabbricante o assemblatore.",
   alternates: { canonical: "/spese/sanita/dispositivi" },
 };
 
@@ -90,7 +90,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
       <header className="page-intro">
         <p className="eyebrow">Sanità · Ministero della Salute</p>
         <h1>Spesa per dispositivi medici</h1>
-        <p>Ricerca i dispositivi presenti nei dati di spesa 2020 e 2021. I risultati collegano il numero di repertorio alla BD/RDM e alla classificazione CND.</p>
+        <p>Ricerca i dispositivi presenti nei dati di spesa dal 2018 al 2021. I risultati collegano il numero di repertorio alla BD/RDM e alla classificazione CND.</p>
         <p className={styles.links}>
           <Link href="/spese/sanita">← Torna alla sanità</Link>
           <a href="#aggregati">Vai agli aggregati ↓</a>
@@ -181,7 +181,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
 
       <section className="panel" aria-labelledby="limiti-title">
         <h2 className="panel-title" id="limiti-title">Copertura e limiti</h2>
-        <p>I dati disponibili coprono il 2020 e il 2021. La BD/RDM è aggiornata al {filters.registrySnapshotDate.split("-").reverse().join("/")}; il fabbricante o assemblatore indicato non prova quale ruolo avesse nell’anno della spesa.</p>
+        <p>I dati disponibili coprono gli anni dal 2018 al 2021. La BD/RDM è aggiornata al {filters.registrySnapshotDate.split("-").reverse().join("/")}; il fabbricante o assemblatore indicato non prova quale ruolo avesse nell’anno della spesa.</p>
         <p>La fonte misura la spesa sostenuta dalle aziende sanitarie nel perimetro pubblicato. Non sommare questi importi al Conto Economico SSN, a SIOPE, a prezzi unitari, fatturato o ricavi.</p>
         <p className={styles.links}><Link href="/fonti">Consulta il registro delle fonti</Link><Link href="/dati/salute-spesa-dispositivi-2021">Apri le righe 2021 nel catalogo</Link></p>
       </section>

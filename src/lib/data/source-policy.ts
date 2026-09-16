@@ -41,6 +41,7 @@ export type SourceId =
   | "istat-bes-politica"
   | "istat-bes-sicurezza"
   | "istat-bes-paesaggio"
+  | "istat-bes-servizi"
   | "inps-naspi"
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
@@ -682,6 +683,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-bes-paesaggio", "domain:landscape-heritage"],
+  },
+  "istat-bes-servizi": {
+    id: "istat-bes-servizi",
+    label: "ISTAT · BES dei territori, Qualità dei servizi",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-servizi", "domain:service-quality"],
   },
   "inps-naspi": {
     id: "inps-naspi",

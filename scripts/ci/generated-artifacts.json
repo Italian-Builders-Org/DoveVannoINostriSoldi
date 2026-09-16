@@ -1726,6 +1726,32 @@
       "trustModel": "Lock dedicato BES_09: CSV e struttura ufficiali vincolati. Tre indicatori, 3.760 osservazioni, 139 territori. Solo SEX=T. Scale factor 100 (centesimi). Flag n/g → null. Indicatori non sommabili. Licenza not-declared."
     },
     {
+      "id": "istat-bes-servizi-2004-2024",
+      "owner": "ISTAT BesT BES_12 Qualità dei servizi, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-servizi-2004-2024.data.json",
+        "src/data/generated/istat-bes-servizi-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_servizi.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_servizi.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-servizi.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_servizi.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-servizi-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_12: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Otto indicatori, 15.858 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. UNIT_MEAS e NOTE_* presenti nel CSV. 76 celle n/g restano null; zero osservato e riga assente restano distinti. Scale factor 10 (decimi). Indicatori non sommabili; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

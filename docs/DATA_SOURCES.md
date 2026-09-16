@@ -1014,3 +1014,10 @@ Dominio BES_09, edizione 2025: tre indicatori, 3.760 osservazioni e 139
 territori (111 province). Solo `SEX=T`; 3 celle `n`/`g`; valori in centesimi.
 Fonte `istat-bes-paesaggio`, API/MCP paginati, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_BES_PAESAGGIO.md).
+
+### ISTAT BES dei territori — Qualità dei servizi
+
+Dominio BES_12, edizione 2025: otto indicatori, 15.858 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 76 celle `n`/`g`; valori in decimi.
+Fonte `istat-bes-servizi`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_SERVIZI.md).

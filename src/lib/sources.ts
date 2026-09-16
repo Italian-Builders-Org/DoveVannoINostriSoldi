@@ -279,6 +279,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-servizi",
+    name: "ISTAT · BES dei territori, Qualità dei servizi",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Otto indicatori BES_12; 15.858 osservazioni e 139 territori, di cui 111 province. Periodi propri fra 2004 e 2024; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Percentuali, densità per abitanti, medie per utente e posti-km con unità proprie: non sono spesa e non si sommano. Solo SEX=T; flag n/g restano null. Valori in decimi. Nessuna imputazione comunale o classifica. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

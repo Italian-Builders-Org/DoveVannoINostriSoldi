@@ -1,2 +1,0 @@
-# Solo build offline del PDF; --check usa la libreria standard.
-reportlab==4.4.9

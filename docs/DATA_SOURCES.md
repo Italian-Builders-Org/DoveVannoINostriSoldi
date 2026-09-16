@@ -999,3 +999,11 @@ territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
 ufficiale; 2.115 celle senza valore restano null senza flag inventato. Fonte
 `istat-bes-politica`, API/MCP paginati, nessuna UI in questa tranche.
 [Lock, definizioni e limiti](research/ISTAT_BES_POLITICA.md).
+
+### ISTAT BES dei territori — Sicurezza
+
+Dominio BES_07, edizione 2025: sei indicatori, 14.481 osservazioni e 139
+territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 1 cella ignota `g`, nessuna imputazione. Fonte
+`istat-bes-sicurezza`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_SICUREZZA.md).

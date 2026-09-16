@@ -64,6 +64,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-bes-lavoro",
   "istat-bes-relazioni",
   "istat-bes-politica",
+  "istat-bes-sicurezza",
   "inps-naspi",
   "inps-assegno-unico",
   "inps-integrazioni-salariali",

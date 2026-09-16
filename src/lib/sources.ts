@@ -255,6 +255,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-sicurezza",
+    name: "ISTAT · BES dei territori, Sicurezza",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Sei indicatori BES_07; 14.481 osservazioni e 139 territori, di cui 111 province. Periodi propri fra 2004 e 2023; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Tassi di delitti per 100.000 abitanti e mortalità stradale percentuale con denominatori propri: non sono spesa COFOG GF03 e non si sommano. Solo SEX=T; il flag g resta null. Nessuna imputazione comunale, classifica o correlazione SIOPE. Compositi, padri esterni e geografia variabile sono dichiarati. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

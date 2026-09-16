@@ -857,6 +857,22 @@ risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
 integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
+### Eurostat Dissemination API · epic #484 (chiuso)
+
+Backlog di coordinamento sulle aggregazioni Eurostat via Statistics API
+(JSON-stat 2.0). **Tutte le figlie sono pubblicate su `main`:**
+
+| Figlia | Snapshot / MCP | Stato |
+| --- | --- | --- |
+| #485 | `eurostat-gov-main` → `eurostat_conti_pa` | chiusa |
+| #486 | `eurostat-taxag` → `eurostat_taxag` | chiusa |
+| #487 | `eurostat-cofog` (sottofunzioni GF04–GF10 IT) | chiusa |
+| #488 | `eurostat-sha-health` → `eurostat_sha_health` | chiusa |
+
+Vincoli dell’epic rispettati: URL ufficiali + hash, `soldi`/`periodo`/`provenance`
+distinti, competenza SEC ≠ cassa SIOPE, superficie fonte + API + MCP (UI solo dove
+la figlia lo richiede). Regressione: `tests/eurostat-dissemination-epic.test.mjs`.
+
 ### Eurostat gov_10a_main · entrate e uscite delle Amministrazioni pubbliche
 
 Lo snapshot `eurostat-gov-main-1995-2025` (#485, figlia dell'epic #484) usa `gov_10a_main` per

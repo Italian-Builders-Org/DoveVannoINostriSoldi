@@ -267,6 +267,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-paesaggio",
+    name: "ISTAT · BES dei territori, Paesaggio e patrimonio culturale",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Tre indicatori BES_09; 3.760 osservazioni e 139 territori, di cui 111 province. Periodi propri fra 2004 e 2023; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Densità museale, agriturismi e verde storico con unità territoriali proprie: non sono spesa e non si sommano. Solo SEX=T; flag n/g restano null. Valori in centesimi. Nessuna imputazione comunale o classifica. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -127,6 +127,10 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: "2004–2023; periodo distinto per indicatore",
   },
+  "istat-bes-paesaggio": {
+    kind: "period",
+    label: "2004–2023; periodo distinto per indicatore",
+  },
   "inps-naspi": {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,

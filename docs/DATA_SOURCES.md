@@ -1007,3 +1007,10 @@ territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
 ufficiale; 1 cella ignota `g`, nessuna imputazione. Fonte
 `istat-bes-sicurezza`, API/MCP paginati, nessuna UI in questa tranche.
 [Lock, definizioni e limiti](research/ISTAT_BES_SICUREZZA.md).
+
+### ISTAT BES dei territori — Paesaggio e patrimonio culturale
+
+Dominio BES_09, edizione 2025: tre indicatori, 3.760 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 3 celle `n`/`g`; valori in centesimi.
+Fonte `istat-bes-paesaggio`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_PAESAGGIO.md).

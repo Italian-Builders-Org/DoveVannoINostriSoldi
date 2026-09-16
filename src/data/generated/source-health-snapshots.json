@@ -210,6 +210,12 @@
     "recordCount": 14481
   },
   {
+    "sourceId": "istat-bes-paesaggio",
+    "sourceTimestamp": "2025-07-01",
+    "detail": "Tre indicatori BES_09 Paesaggio e patrimonio culturale, edizione 2025; 3.760 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 3 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    "recordCount": 3760
+  },
+  {
     "sourceId": "inps-naspi",
     "sourceTimestamp": "2026-09-04",
     "detail": "Snapshot ETL attivo · NASpI beneficiari e trattamenti 2018-2022 · 9 tabelle SDMX, 53.362 osservazioni di cui 601 soppresse per privacy · riconciliazioni esatte · 7.312.525 byte.",

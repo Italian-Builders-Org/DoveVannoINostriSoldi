@@ -44,6 +44,7 @@ import { istatBesLavoroData, istatBesLavoroMetadata } from "@/lib/istat-bes-lavo
 import { istatBesRelazioniData, istatBesRelazioniMetadata } from "@/lib/istat-bes-relazioni-snapshot";
 import { istatBesPoliticaData, istatBesPoliticaMetadata } from "@/lib/istat-bes-politica-snapshot";
 import { istatBesSicurezzaData, istatBesSicurezzaMetadata } from "@/lib/istat-bes-sicurezza-snapshot";
+import { istatBesPaesaggioData, istatBesPaesaggioMetadata } from "@/lib/istat-bes-paesaggio-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -643,6 +644,18 @@ function snapshotManagedIstatBesSicurezza(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesPaesaggio(): SourceHealth {
+  const { source } = istatBesPaesaggioMetadata;
+  return {
+    ...baseHealth("istat-bes-paesaggio"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-paesaggio", source.publicationDate),
+    latencyMs: null,
+    detail: "Tre indicatori BES_09 Paesaggio e patrimonio culturale, edizione 2025; 3.760 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 3 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesPaesaggioData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -697,6 +710,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "istat-bes-politica": snapshotManagedIstatBesPolitica,
   "istat-bes-sicurezza": snapshotManagedIstatBesSicurezza,
+  "istat-bes-paesaggio": snapshotManagedIstatBesPaesaggio,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,

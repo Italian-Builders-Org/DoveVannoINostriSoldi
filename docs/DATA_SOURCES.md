@@ -991,3 +991,11 @@ territori (107 province), con periodi e unità propri. Solo `SEX=T` nel payload
 ufficiale; 8 celle non significative `n`, nessuna imputazione. Fonte
 `istat-bes-relazioni`, API/MCP paginati, nessuna UI in questa tranche.
 [Lock, definizioni e limiti](research/ISTAT_BES_RELAZIONI.md).
+
+### ISTAT BES dei territori — Politica e istituzioni
+
+Dominio BES_06, edizione 2025: sette indicatori, 15.818 osservazioni e 139
+territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 2.115 celle senza valore restano null senza flag inventato. Fonte
+`istat-bes-politica`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_POLITICA.md).

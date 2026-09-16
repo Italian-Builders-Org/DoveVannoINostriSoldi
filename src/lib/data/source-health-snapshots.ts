@@ -42,6 +42,7 @@ import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salu
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
 import { istatBesLavoroData, istatBesLavoroMetadata } from "@/lib/istat-bes-lavoro-snapshot";
 import { istatBesRelazioniData, istatBesRelazioniMetadata } from "@/lib/istat-bes-relazioni-snapshot";
+import { istatBesPoliticaData, istatBesPoliticaMetadata } from "@/lib/istat-bes-politica-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -617,6 +618,18 @@ function snapshotManagedIstatBesRelazioni(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesPolitica(): SourceHealth {
+  const { source } = istatBesPoliticaMetadata;
+  return {
+    ...baseHealth("istat-bes-politica"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-politica", source.publicationDate),
+    latencyMs: null,
+    detail: "Sette indicatori BES_06 Politica e istituzioni, edizione 2025; 15.818 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2024; 2.115 celle senza valore. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesPoliticaData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -669,6 +682,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
   "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
+  "istat-bes-politica": snapshotManagedIstatBesPolitica,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,

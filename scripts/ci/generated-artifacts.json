@@ -1648,6 +1648,32 @@
       "trustModel": "Lock dedicato BES_05: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Due indicatori, 1.330 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. 8 celle n restano null; zero osservato e riga assente restano distinti. Percentuale e organizzazioni per 10.000 abitanti conservano unità e denominatori propri; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
     },
     {
+      "id": "istat-bes-politica-2004-2024",
+      "owner": "ISTAT BesT BES_06 Politica e istituzioni, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-politica-2004-2024.data.json",
+        "src/data/generated/istat-bes-politica-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_politica.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_politica.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-politica.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_politica.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-politica-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_06: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Sette indicatori, 15.818 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. UNIT_MEAS e NOTE_* vuoti nel CSV: unità e descrizioni restano nel lock dalla structure. 2.115 celle OBS_VALUE vuote restano null senza flag inventato; zero osservato e riga assente restano distinti. Indicatori non sommabili; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

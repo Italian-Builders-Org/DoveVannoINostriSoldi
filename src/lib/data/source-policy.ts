@@ -38,6 +38,7 @@ export type SourceId =
   | "istat-bes-istruzione"
   | "istat-bes-lavoro"
   | "istat-bes-relazioni"
+  | "istat-bes-politica"
   | "inps-naspi"
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
@@ -637,6 +638,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-bes-relazioni", "domain:social-relationships"],
+  },
+  "istat-bes-politica": {
+    id: "istat-bes-politica",
+    label: "ISTAT · BES dei territori, Politica e istituzioni",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-politica", "domain:politics-institutions"],
   },
   "inps-naspi": {
     id: "inps-naspi",

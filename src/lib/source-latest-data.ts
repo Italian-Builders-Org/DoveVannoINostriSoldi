@@ -119,6 +119,18 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: "2011–2024; periodo distinto per indicatore",
   },
+  "istat-bes-politica": {
+    kind: "period",
+    label: "2004–2024; periodo distinto per indicatore",
+  },
+  "istat-bes-sicurezza": {
+    kind: "period",
+    label: "2004–2023; periodo distinto per indicatore",
+  },
+  "istat-bes-paesaggio": {
+    kind: "period",
+    label: "2004–2023; periodo distinto per indicatore",
+  },
   "inps-naspi": {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,

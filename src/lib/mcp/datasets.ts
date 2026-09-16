@@ -636,6 +636,33 @@ export async function queryPublicDataset(
           sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }
+    case "istat_bes_politica": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesPolitica } = await import("@/lib/istat-bes-politica-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesPolitica({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_sicurezza": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesSicurezza } = await import("@/lib/istat-bes-sicurezza-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesSicurezza({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_paesaggio": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesPaesaggio } = await import("@/lib/istat-bes-paesaggio-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesPaesaggio({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
     case "consip_ordini": {
       const { queryConsipOrdini } = await import("@/lib/consip-ordini-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryConsipOrdini({ year: query.year, channel: query.channel }) });

@@ -857,6 +857,22 @@ risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
 integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 
 
+### Eurostat Dissemination API · epic #484 (chiuso)
+
+Backlog di coordinamento sulle aggregazioni Eurostat via Statistics API
+(JSON-stat 2.0). **Tutte le figlie sono pubblicate su `main`:**
+
+| Figlia | Snapshot / MCP | Stato |
+| --- | --- | --- |
+| #485 | `eurostat-gov-main` → `eurostat_conti_pa` | chiusa |
+| #486 | `eurostat-taxag` → `eurostat_taxag` | chiusa |
+| #487 | `eurostat-cofog` (sottofunzioni GF04–GF10 IT) | chiusa |
+| #488 | `eurostat-sha-health` → `eurostat_sha_health` | chiusa |
+
+Vincoli dell’epic rispettati: URL ufficiali + hash, `soldi`/`periodo`/`provenance`
+distinti, competenza SEC ≠ cassa SIOPE, superficie fonte + API + MCP (UI solo dove
+la figlia lo richiede). Regressione: `tests/eurostat-dissemination-epic.test.mjs`.
+
 ### Eurostat gov_10a_main · entrate e uscite delle Amministrazioni pubbliche
 
 Lo snapshot `eurostat-gov-main-1995-2025` (#485, figlia dell'epic #484) usa `gov_10a_main` per
@@ -975,3 +991,26 @@ territori (107 province), con periodi e unità propri. Solo `SEX=T` nel payload
 ufficiale; 8 celle non significative `n`, nessuna imputazione. Fonte
 `istat-bes-relazioni`, API/MCP paginati, nessuna UI in questa tranche.
 [Lock, definizioni e limiti](research/ISTAT_BES_RELAZIONI.md).
+
+### ISTAT BES dei territori — Politica e istituzioni
+
+Dominio BES_06, edizione 2025: sette indicatori, 15.818 osservazioni e 139
+territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 2.115 celle senza valore restano null senza flag inventato. Fonte
+`istat-bes-politica`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_POLITICA.md).
+
+### ISTAT BES dei territori — Sicurezza
+
+Dominio BES_07, edizione 2025: sei indicatori, 14.481 osservazioni e 139
+territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 1 cella ignota `g`, nessuna imputazione. Fonte
+`istat-bes-sicurezza`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_SICUREZZA.md).
+
+### ISTAT BES dei territori — Paesaggio e patrimonio culturale
+
+Dominio BES_09, edizione 2025: tre indicatori, 3.760 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 3 celle `n`/`g`; valori in centesimi.
+Fonte `istat-bes-paesaggio`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_PAESAGGIO.md).

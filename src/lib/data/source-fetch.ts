@@ -76,6 +76,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "inps-cig-fondi-solidarieta": [],
   // Snapshot-only: il PDF INL è acquisito e vincolato dall'ETL, mai scaricato a runtime.
   "inl-vigilanza": [],
+  // Snapshot-only: i quattro CSV annuali AIFA sono acquisiti e vincolati dall'ETL.
+  "aifa-spesa-consumi": [],
   // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   "mef-irpef-dettaglio": [],
   // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.

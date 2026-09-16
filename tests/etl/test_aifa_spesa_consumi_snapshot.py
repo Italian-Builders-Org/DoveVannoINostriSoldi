@@ -9,6 +9,7 @@ parsed as well.
 from __future__ import annotations
 
 import io
+import json
 import os
 import tempfile
 import unittest
@@ -47,6 +48,33 @@ def release(extra: list[str] | None = None, *, skip: tuple[int, str] | None = No
             lines.append(record(month, region))
     lines.extend(extra or [])
     return ("\r\n".join(lines) + "\r\n").encode("cp1252")
+
+
+class CommittedArtifactsTests(unittest.TestCase):
+    """Gli artefatti committati devono restare coerenti con lock e meta, senza rete."""
+
+    def test_check_passes_on_committed_pair(self):
+        aifa.check(aifa.DEFAULT_SPEC, aifa.DEFAULT_DATA, aifa.DEFAULT_META)
+
+    def test_published_rows_and_totals_are_declared(self):
+        data = json.loads(aifa.DEFAULT_DATA.read_text(encoding="utf-8"))
+        spec = aifa.load_spec()
+        self.assertEqual(len(data["observations"]), spec["expected"]["publishedRows"])
+        self.assertEqual(data["granularity"], "annual-region-class-atc2")
+        years = [entry["year"] for entry in data["reconciliation"]["byYear"]]
+        self.assertEqual(years, spec["expected"]["years"])
+        # I due canali restano separati: se fossero stati fusi i totali coinciderebbero.
+        for entry in data["reconciliation"]["byYear"]:
+            self.assertNotEqual(entry["traceabilitySpendCents"], entry["convenzionataSpendCents"])
+
+    def test_tampered_artifact_fails_check(self):
+        data = json.loads(aifa.DEFAULT_DATA.read_text(encoding="utf-8"))
+        data["observations"][0]["convenzionataSpendCents"] = 1
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "data.json"
+            path.write_bytes(aifa.canonical_bytes(data) + b"\n")
+            with self.assertRaises(aifa.SnapshotError):
+                aifa.check(aifa.DEFAULT_SPEC, path, aifa.DEFAULT_META)
 
 
 class ParseReleaseTests(unittest.TestCase):

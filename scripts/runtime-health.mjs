@@ -68,6 +68,7 @@ const EXPECTED_SOURCE_IDS = [
   "inps-integrazioni-salariali",
   "inps-cig-fondi-solidarieta",
   "inl-vigilanza",
+  "aifa-spesa-consumi",
   "mef-irpef-dettaglio",
   "mef-iva",
   "eu-vat-gap-italy",

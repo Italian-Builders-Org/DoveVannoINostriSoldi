@@ -222,6 +222,12 @@
     "recordCount": 628
   },
   {
+    "sourceId": "aifa-spesa-consumi",
+    "sourceTimestamp": "2026-09-16",
+    "detail": "Snapshot ETL attivo · spesa e consumo farmaci 2022-2025 · 21.208 righe aggregate su 21 territori · tracciabilità e convenzionata distinte · 4.053.016 byte.",
+    "recordCount": 21208
+  },
+  {
     "sourceId": "inl-vigilanza",
     "sourceTimestamp": "2026-09-15",
     "detail": "Snapshot ETL attivo · vigilanza INL 2025 · 1576 righe · 131 territori · 255.424 byte.",

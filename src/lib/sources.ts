@@ -295,6 +295,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["regione", "mese", "gestione fondi", "ramo di attività"],
   },
   {
+    slug: "aifa-spesa-consumi",
+    name: "AIFA · spesa e consumo farmaci per ATC",
+    owner: "AIFA — Agenzia Italiana del Farmaco",
+    area: "Spesa farmaceutica · tracciabilità e convenzionata",
+    cadence: "Annuale; rilascio aggiornato al 6 agosto 2026",
+    coverage:
+      "Italia per 21 territori, 2022–2025: spesa e confezioni per classe di rimborsabilità e ATC di II livello, sui due canali tracciabilità e convenzionata",
+    format: "CSV separato da barra verticale · snapshot JSON verificato",
+    url: "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti",
+    note: "Tracciabilità (sell-in alle strutture pubbliche, lordo IVA) e convenzionata (farmacie, prezzo al pubblico) sono canali distinti e non si sommano. Importi al lordo dei payback: non è la spesa netta del SSN e non si somma al Conto economico SSN, a SIOPE sanità o a COFOG GF07. Licenza CC BY 4.0 dichiarata sul catalogo Open Data, non sulla scheda del dataset.",
+    joinKeys: ["anno", "codice regione ISTAT", "classe", "ATC II livello"],
+  },
+  {
     slug: "inl-vigilanza",
     name: "INL · vigilanza ispettiva (ispezioni, esiti, recuperi)",
     owner: "Ispettorato Nazionale del Lavoro",

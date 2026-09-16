@@ -60,6 +60,9 @@ const cigFondiSolidarietaRuntimeFiles = [
 const inlVigilanzaRuntimeFiles = [
   "src/data/generated/inl-vigilanza-2025.data.json",
 ];
+const aifaSpesaConsumiRuntimeFiles = [
+  "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
+];
 
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
@@ -127,12 +130,14 @@ const nextConfig: NextConfig = {
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
     "/api/lavoro/cig-fondi-solidarieta": cigFondiSolidarietaRuntimeFiles,
     "/api/lavoro/vigilanza-inl": inlVigilanzaRuntimeFiles,
+    "/api/spese/sanita/farmaci": aifaSpesaConsumiRuntimeFiles,
     "/fonti": [
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
     ],
     "/spese/pensioni": pensionsRuntimeFiles,
@@ -184,6 +189,7 @@ const nextConfig: NextConfig = {
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
@@ -199,6 +205,7 @@ const nextConfig: NextConfig = {
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
@@ -214,6 +221,7 @@ const nextConfig: NextConfig = {
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],

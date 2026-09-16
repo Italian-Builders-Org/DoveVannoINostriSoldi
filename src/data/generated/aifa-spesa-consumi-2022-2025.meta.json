@@ -1,0 +1,107 @@
+{
+  "coverage": {
+    "excludedYears": {
+      "2016": "Escluso: chiavi duplicate (1290 gruppi) e confezioni non intere; serve una regola di somma documentata.",
+      "2017": "Escluso: 22 gruppi di chiavi duplicate.",
+      "2018": "Escluso: canale assente scritto come 0 invece che come cella vuota, mese senza zero iniziale, nomi regione troncati.",
+      "2019": "Escluso: nomi regione troncati e mese senza zero iniziale.",
+      "2020": "Escluso: mese senza zero iniziale.",
+      "2021": "Escluso: canale assente scritto come 0 invece che come cella vuota."
+    },
+    "note": "Ogni rilascio ha 21 territori × 12 mesi con spesa positiva su entrambi i canali. Lo snapshot pubblica l'aggregato annuale per regione, classe di rimborsabilità e ATC di II livello: 21208 righe sui quattro anni. Il dettaglio mensile e di IV livello resta nella fonte e non viene ricostruito.",
+    "observedAt": "2026-09-16"
+  },
+  "datasetId": "aifa-spesa-consumi",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 4053016,
+      "path": "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
+      "sha256": "c160ad13756d3948ea1f42bec4bef7a0f3fec34d1825c1edc6d5cbae653e1a1b"
+    },
+    "sourceLockSha256": "10cecf1cd84b8382fd9590d2cf75ec38f7f5fc26a1aa52e2e4d00843c3f383a4"
+  },
+  "observedAt": "2026-09-16",
+  "period": {
+    "from": 2022,
+    "to": 2025
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Anno di erogazione dichiarato dalla fonte, dettaglio mensile aggregato ad anno. Il rilascio 2025 può essere rivisto nelle edizioni successive.",
+      "referencePeriod": "2022-2025"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-15",
+      "canonicalUrls": [
+        "https://www.aifa.gov.it/documents/20142/847578/dati2022_07.02.2024.csv",
+        "https://www.aifa.gov.it/documents/20142/847578/dati2023_15.01.2025.csv",
+        "https://www.aifa.gov.it/documents/20142/847578/dati2024_04.12.2025.csv",
+        "https://www.aifa.gov.it/documents/20142/847578/dati_2025_260514.zip",
+        "https://www.aifa.gov.it/open-data",
+        "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti"
+      ],
+      "checkedAt": "2026-09-16",
+      "hashes": "SHA-256 per rilascio in source.assets; artefatto in integrity.dataArtifact",
+      "holder": "AIFA — Agenzia Italiana del Farmaco",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-08-06"
+    },
+    "soldi": {
+      "nature": "spesa lorda per farmaci su due canali distinti: sell-in alle strutture pubbliche (tracciabilità, lordo IVA) e spesa in farmacia a prezzo al pubblico (convenzionata). Non è spesa netta del SSN e non è cassa.",
+      "note": "Gli importi sono al lordo dei payback. Accanto alla spesa, il numero di confezioni resta una misura separata: non è consumo in dosi (DDD).",
+      "unit": "centesimi di euro"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-15",
+      "checkedAt": "2026-09-16",
+      "note": "Quattro rilasci annuali scaricati dagli URL canonici. Il 2025 è pubblicato come zip: sono vincolati sia l'archivio sia il CSV contenuto. I CSV grezzi (circa 30 MB l'uno) non sono committati, come per i bundle Eurostat: la ricostruzione byte per byte è coperta dal test con DVNS_AIFA_INPUT_DIR."
+    },
+    "assets": {
+      "2022": {
+        "bytes": 30855148,
+        "filename": "dati2022_07.02.2024.csv",
+        "sha256": "c3c2b7b84f3646e8c040e4c29dddf14134fe0ec301f678d2d069310201c4f38d",
+        "url": "https://www.aifa.gov.it/documents/20142/847578/dati2022_07.02.2024.csv",
+        "year": 2022
+      },
+      "2023": {
+        "bytes": 31310755,
+        "filename": "dati2023_15.01.2025.csv",
+        "sha256": "2b6838c80e2d83d1ac48225fe104260954dadf55457604481a999741a2b32c98",
+        "url": "https://www.aifa.gov.it/documents/20142/847578/dati2023_15.01.2025.csv",
+        "year": 2023
+      },
+      "2024": {
+        "bytes": 31895365,
+        "filename": "dati2024_04.12.2025.csv",
+        "sha256": "a7ccd6b30a10fdec78d4ad53d3da1b24c0d87130de54adba309462f220f059eb",
+        "url": "https://www.aifa.gov.it/documents/20142/847578/dati2024_04.12.2025.csv",
+        "year": 2024
+      },
+      "2025": {
+        "bytes": 4682257,
+        "filename": "dati_2025_260514.zip",
+        "member": "dati_2025_260514.csv",
+        "memberBytes": 31904892,
+        "memberSha256": "abdc5bbb09a486b01808ed9a0de115bff27cb10554f37dcba9a88da598573911",
+        "sha256": "c107987d78ab663d6dae9f73307d80cb71dc66c1ab69069e44d9cc8b6f52c4b5",
+        "url": "https://www.aifa.gov.it/documents/20142/847578/dati_2025_260514.zip",
+        "year": 2025
+      }
+    },
+    "catalogUrl": "https://www.aifa.gov.it/open-data",
+    "landingUrl": "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "La scheda del dataset non riporta una licenza. La pagina Open Data di AIFA, verificata il 2026-09-15, dichiara «La licenza di distribuzione dei dati utilizzata da AIFA la CC-BY (attribuzione) nella versione 4.0 … con l'obbligo di citare la fonte». È quindi una licenza di catalogo, non della singola risorsa.",
+    "manualNote": "«Open data: manuale operativo — Descrizione del tracciato record e delle fonti dati» (AIFA, 2019). Il nome del file pubblicato è fuorviante e il contenuto descrive le fonti del 2016-2017: il tracciato resta valido, le fonti per gli anni successivi non sono documentate.",
+    "manualUrl": "https://www.aifa.gov.it/documents/20142/847578/Cover-Letter-Europass-20181126-Porcaro-IT.pdf/01683eec-c9ed-6dad-bf62-58084ea9070a",
+    "owner": "AIFA — Agenzia Italiana del Farmaco",
+    "sourceUpdated": "2026-08-06",
+    "termsUrl": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}

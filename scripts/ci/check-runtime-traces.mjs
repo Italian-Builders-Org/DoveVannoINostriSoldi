@@ -97,6 +97,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["inps-integrazioni-salariali-2023.data.json", ["fonti/page", "api/lavoro/integrazioni-salariali/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-cig-fondi-solidarieta-2023-2024.data.json", ["fonti/page", "api/lavoro/cig-fondi-solidarieta/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inl-vigilanza-2025.data.json", ["fonti/page", "api/lavoro/vigilanza-inl/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["aifa-spesa-consumi-2022-2025.data.json", ["fonti/page", "api/spese/sanita/farmaci/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
   ]) {
     for (const route of routes) {
       const manifest = `${route}.js.nft.json`;

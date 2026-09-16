@@ -469,6 +469,18 @@ export async function queryPublicDataset(
         }),
       });
     }
+    case "aifa_farmaci_spesa": {
+      const { queryAifaSpesaConsumi } = await import("@/lib/aifa-spesa-consumi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryAifaSpesaConsumi({
+          year: query.year,
+          regionCode: query.region,
+          class: query.band,
+          atc2: query.code,
+        }),
+      });
+    }
     case "inps_cig_fondi_solidarieta": {
       const { queryInpsCigFondiSolidarieta } = await import(
         "@/lib/inps-cig-fondi-solidarieta-snapshot"

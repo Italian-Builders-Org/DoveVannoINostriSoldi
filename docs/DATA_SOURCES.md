@@ -604,6 +604,34 @@ mensilità né euro. Superficie fonte + API + MCP, senza UI.
 - Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
 - Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
 
+### AIFA · spesa e consumo farmaci per ATC 2022–2025
+
+Quattro rilasci annuali del flusso «spesa e consumo» (il 2025 dentro uno zip, con
+anche il CSV interno vincolato per byte e SHA-256). Lo snapshot pubblica
+l'aggregato annuale per regione, classe di rimborsabilità e ATC di II livello:
+21.208 righe su 21 territori. Il dettaglio mensile e di IV livello resta nella
+fonte e non viene ricostruito.
+
+I due canali restano separati e **non si sommano**: la tracciabilità è il sell-in
+alle strutture sanitarie pubbliche (inclusa distribuzione diretta e per conto, al
+lordo dell'IVA), la convenzionata è la spesa lorda in farmacia a prezzo al
+pubblico. Gli importi sono al lordo dei payback, quindi non sono la spesa netta
+del Servizio sanitario nazionale e non si sommano al Conto economico SSN, a
+SIOPE sanità o alla funzione COFOG GF07. Una cella vuota significa canale assente
+e resta distinta da zero; i valori negativi esistono solo sulla tracciabilità
+(resi e note di credito) e sono conservati. Le confezioni non sono dosi (DDD).
+
+Scarto noto: per il 2024 la convenzionata del rilascio open data supera di circa
+297 milioni di euro (+3,1%) il dato che il Rapporto OsMed 2024 ricava dalle
+Distinte Contabili Riepilogative; la causa non è documentata dalla fonte. Per la
+tracciabilità 2024 i due valori coincidono (18.068 contro 18.065 milioni della
+Tabella 1.1.2). Gli anni 2016–2021 restano esclusi: chiavi duplicate, confezioni
+non intere, zeri al posto delle celle vuote e nomi di regione troncati.
+
+La licenza CC BY 4.0 è dichiarata sulla pagina Open Data di AIFA, non sulla
+scheda del dataset: è registrata come licenza di catalogo. Superficie fonte + API
+(`/api/spese/sanita/farmaci`) + MCP (`aifa_farmaci_spesa`), senza UI.
+
 ### INL · Relazione annuale e rapporto vigilanza 2025
 
 Ispezioni e verifiche avviate, esiti con tasso di irregolarità e recuperi di

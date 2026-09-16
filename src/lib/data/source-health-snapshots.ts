@@ -27,6 +27,10 @@ import {
   inlVigilanzaData,
   inlVigilanzaMetadata,
 } from "@/lib/inl-vigilanza-snapshot";
+import {
+  aifaSpesaConsumiData,
+  aifaSpesaConsumiMetadata,
+} from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
@@ -436,6 +440,19 @@ function snapshotManagedInlVigilanza(): SourceHealth {
   };
 }
 
+function snapshotManagedAifaSpesaConsumi(): SourceHealth {
+  const artifact = aifaSpesaConsumiMetadata.integrity.dataArtifact;
+  const { publishedRows, regions } = aifaSpesaConsumiData.coverage;
+  return {
+    ...baseHealth("aifa-spesa-consumi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("aifa-spesa-consumi", aifaSpesaConsumiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · spesa e consumo farmaci ${aifaSpesaConsumiData.period.from}-${aifaSpesaConsumiData.period.to} · ${publishedRows.toLocaleString("it-IT")} righe aggregate su ${regions} territori · tracciabilità e convenzionata distinte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: publishedRows,
+  };
+}
+
 function snapshotManagedInpsCigFondiSolidarieta(): SourceHealth {
   const artifact = inpsCigFondiSolidarietaMetadata.integrity.dataArtifact;
   return {
@@ -674,6 +691,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,
   "inps-cig-fondi-solidarieta": snapshotManagedInpsCigFondiSolidarieta,
   "inl-vigilanza": snapshotManagedInlVigilanza,
+  "aifa-spesa-consumi": snapshotManagedAifaSpesaConsumi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,

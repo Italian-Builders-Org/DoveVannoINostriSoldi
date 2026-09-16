@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AIFA spesa e consumo per ATC: lettura fail-closed dei rilasci annuali (issue #371).
+"""AIFA spesa e consumo per ATC: snapshot vincolato agli hash (issue #371).
 
 AIFA pubblica un CSV per anno (il 2025 dentro uno zip) con spesa e confezioni per
 mese, regione, classe di rimborsabilità e ATC IV livello, su due canali distinti:
@@ -8,7 +8,11 @@ convenzionata (farmacie, prezzo al pubblico lordo). I due canali non si sommano.
 
 Questo modulo vincola i byte al lock, legge il tracciato così com'è pubblicato e
 aggrega senza perdere centesimi. Runtime e CI non chiamano AIFA: i CSV grezzi
-(circa 30 MB l'uno) restano fuori dal repository, come per COFOG.
+(circa 30 MB l'uno) restano fuori dal repository, come per i bundle Eurostat.
+
+Lo snapshot pubblica l'aggregato annuale per regione, classe e ATC di II livello.
+Il dettaglio mensile e di IV livello resta nella fonte: qui verrebbe un artefatto
+di decine di MB senza che il prodotto lo usi.
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ import argparse
 import csv
 import hashlib
 import io
+import json
 import re
 import sys
 import zipfile
@@ -24,8 +29,14 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_SPEC = ROOT / "scripts/etl/specs/aifa-spesa-consumi-2022-2025.source.json"
+DEFAULT_DATA = ROOT / "src/data/generated/aifa-spesa-consumi-2022-2025.data.json"
+DEFAULT_META = ROOT / "src/data/generated/aifa-spesa-consumi-2022-2025.meta.json"
+
 DATASET_ID = "aifa-spesa-consumi"
 OFFICIAL_PREFIX = "https://www.aifa.gov.it/"
+DATA_ARTIFACT_PATH = "src/data/generated/aifa-spesa-consumi-2022-2025.data.json"
 
 HEADER = (
     "anno", "mese", "codreg", "regione", "classe",
@@ -46,10 +57,23 @@ MONTHS = tuple(range(1, 13))
 # vuoto e «N» restano classi esplicite: scartarle toglierebbe spesa reale dal totale.
 CLASS_ALIASES = {"C-BIS": "C-bis"}
 KNOWN_CLASSES = frozenset({"A", "C", "H", "C-bis", "Cnn", "N", ""})
+CLASS_LABELS = {
+    "A": "Classe A (rimborsata dal SSN)",
+    "C": "Classe C (a carico del cittadino)",
+    "C-bis": "Classe C-bis (senza obbligo di ricetta)",
+    "Cnn": "Classe Cnn (non negoziata)",
+    "H": "Classe H (uso ospedaliero)",
+    "N": "Classe non attribuita dalla fonte",
+    "": "Classe assente nel rilascio",
+}
 
 CHANNELS = {
     "traceability": ("numero_confezioni_traccia", "spesa_flusso_tracciabilita"),
     "convenzionata": ("numero_confezioni_convenzionata", "spesa_convenzionata"),
+}
+CHANNEL_LABELS = {
+    "traceability": "Tracciabilità: acquisti delle strutture sanitarie pubbliche, inclusa distribuzione diretta e per conto, sell-in al lordo dell'IVA.",
+    "convenzionata": "Convenzionata: farmacie aperte al pubblico, spesa lorda a prezzo al pubblico, inclusi ticket e sconti.",
 }
 # Solo la tracciabilità ammette negativi (resi e note di credito nel flusso di sell-in).
 SIGNED_CHANNELS = frozenset({"traceability"})
@@ -59,6 +83,22 @@ GRANULARITIES = {
     "annual-region-class-atc4": ("year", "regionCode", "class", "atc4"),
     "monthly-region-class-atc2": ("year", "month", "regionCode", "class", "atc2"),
 }
+PUBLISHED_GRANULARITY = "annual-region-class-atc2"
+
+CAVEATS = (
+    "Tracciabilità e convenzionata sono due canali distinti e non vanno sommati: il primo è il sell-in "
+    "alle strutture pubbliche al lordo dell'IVA, il secondo è la spesa lorda in farmacia a prezzo al pubblico.",
+    "Gli importi sono al lordo dei payback: non sono la spesa netta a carico del Servizio sanitario nazionale.",
+    "Non sommabile al Conto economico del SSN, a SIOPE sanità o alla funzione COFOG GF07: perimetri e nature diversi.",
+    "Una cella vuota significa canale assente per quella combinazione, e resta distinta da uno zero osservato.",
+    "La tracciabilità contiene importi e confezioni negativi (resi e note di credito): sono conservati, non azzerati.",
+    "Lo snapshot pubblica l'aggregato annuale per regione, classe e ATC di II livello: il dettaglio mensile e di "
+    "IV livello resta nella fonte e non viene ricostruito.",
+    "Nel 2024 la convenzionata del rilascio open data supera di circa 297 milioni di euro (+3,1%) il dato che il "
+    "Rapporto OsMed 2024 ricava dalle Distinte Contabili Riepilogative; la causa non è documentata dalla fonte.",
+    "Il rilascio 2025 può essere rivisto: la fonte non lo marca come provvisorio ma aggiorna i file nel tempo.",
+    "Numero di confezioni non è consumo in dosi (DDD) e la spesa per confezione non è un prezzo.",
+)
 
 _MONEY = re.compile(r"^(-?)(\d+)(?:\.(\d{1,2}))?$")
 _INTEGER = re.compile(r"^-?\d+$")
@@ -70,6 +110,29 @@ class SnapshotError(ValueError):
 
 def digest(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def canonical_bytes(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def load_spec(path: Path = DEFAULT_SPEC) -> dict[str, Any]:
+    spec = json.loads(path.read_text(encoding="utf-8"))
+    if spec.get("datasetId") != DATASET_ID:
+        raise SnapshotError("source lock: datasetId inatteso")
+    if spec["source"].get("licenseId") != "CC-BY-4.0":
+        raise SnapshotError("source lock: licenza attesa CC-BY-4.0")
+    for field in ("landingUrl", "catalogUrl", "manualUrl"):
+        if not str(spec["source"].get(field, "")).startswith(OFFICIAL_PREFIX):
+            raise SnapshotError(f"source lock: {field} non ufficiale AIFA")
+    for year, asset in spec["source"]["assets"].items():
+        if not str(asset.get("url", "")).startswith(OFFICIAL_PREFIX):
+            raise SnapshotError(f"source lock: URL non ufficiale per {year}")
+        if len(str(asset.get("sha256", ""))) != 64:
+            raise SnapshotError(f"source lock: sha256 non valido per {year}")
+    if spec.get("granularity") != PUBLISHED_GRANULARITY:
+        raise SnapshotError("source lock: granularità pubblicata inattesa")
+    return spec
 
 
 def read_release(
@@ -197,6 +260,7 @@ def parse_release(payload: bytes, year: int) -> list[dict[str, Any]]:
             "class": normalized_class,
             "atc1": atc[1],
             "atc2": atc[2],
+            "atc2Label": cell["descrizione_atc2"].strip(),
             "atc3": atc[3],
             "atc4": atc[4],
             "atc4Label": cell["descrizione_atc4"].strip(),
@@ -210,13 +274,13 @@ def parse_release(payload: bytes, year: int) -> list[dict[str, Any]]:
 
 def check_coverage(rows: Iterable[dict[str, Any]], year: int) -> None:
     """Every region × month must carry positive spend on both channels."""
-    positive: dict[str, set[tuple[str, int]]] = {channel: set() for channel in CHANNELS}
     totals: dict[tuple[str, str, int], int] = defaultdict(int)
     for row in rows:
         for channel in CHANNELS:
             spend = row["measures"][channel]["spendCents"]
             if spend is not None:
                 totals[(channel, row["regionCode"], row["month"])] += spend
+    positive: dict[str, set[tuple[str, int]]] = {channel: set() for channel in CHANNELS}
     for (channel, region, month), cents in totals.items():
         if cents > 0:
             positive[channel].add((region, month))
@@ -224,7 +288,9 @@ def check_coverage(rows: Iterable[dict[str, Any]], year: int) -> None:
     for channel, cells in positive.items():
         missing = sorted(expected - cells)
         if missing:
-            raise SnapshotError(f"{year}: {channel} senza spesa positiva in {len(missing)} celle regione×mese (prime: {missing[:3]})")
+            raise SnapshotError(
+                f"{year}: {channel} senza spesa positiva in {len(missing)} celle regione×mese (prime: {missing[:3]})"
+            )
 
 
 def release_totals(rows: Iterable[dict[str, Any]]) -> dict[str, dict[str, int]]:
@@ -286,36 +352,303 @@ def reconcile(rows: list[dict[str, Any]], aggregated: list[dict[str, Any]]) -> N
         raise SnapshotError("l'aggregato non conserva tutte le righe di origine")
 
 
+def load_releases(spec: dict[str, Any], input_dir: Path) -> dict[int, list[dict[str, Any]]]:
+    releases: dict[int, list[dict[str, Any]]] = {}
+    for key, asset in sorted(spec["source"]["assets"].items()):
+        year = int(asset["year"])
+        path = input_dir / asset["filename"]
+        if not path.is_file():
+            raise SnapshotError(f"rilascio mancante: {path}")
+        payload = read_release(
+            path,
+            expected_bytes=asset["bytes"],
+            expected_sha256=asset["sha256"],
+            member=asset.get("member"),
+            member_bytes=asset.get("memberBytes"),
+            member_sha256=asset.get("memberSha256"),
+        )
+        rows = parse_release(payload, year)
+        check_coverage(rows, year)
+        expected_rows = spec["expected"]["sourceRows"].get(key)
+        if expected_rows is not None and len(rows) != expected_rows:
+            raise SnapshotError(f"{year}: {len(rows)} righe, attese {expected_rows}")
+        releases[year] = rows
+    if sorted(releases) != list(spec["expected"]["years"]):
+        raise SnapshotError("anni del lock diversi dai rilasci letti")
+    return releases
+
+
+def build_data(spec: dict[str, Any], releases: dict[int, list[dict[str, Any]]]) -> dict[str, Any]:
+    observations: list[dict[str, Any]] = []
+    by_year: list[dict[str, Any]] = []
+    regions: dict[str, str] = {}
+    atc2: dict[str, str] = {}
+    for year in sorted(releases):
+        rows = releases[year]
+        for row in rows:
+            regions.setdefault(row["regionCode"], row["regionLabel"])
+            if row["atc2"]:
+                atc2.setdefault(row["atc2"], row["atc2Label"])
+        for group in aggregate(rows, PUBLISHED_GRANULARITY):
+            observations.append({
+                "year": group["year"],
+                "regionCode": group["regionCode"],
+                "class": group["class"],
+                "atc2": group["atc2"],
+                "sourceRows": group["sourceRows"],
+                "traceabilityPacks": group["measures"]["traceability"]["packs"],
+                "traceabilitySpendCents": group["measures"]["traceability"]["spendCents"],
+                "convenzionataPacks": group["measures"]["convenzionata"]["packs"],
+                "convenzionataSpendCents": group["measures"]["convenzionata"]["spendCents"],
+            })
+        totals = release_totals(rows)
+        by_year.append({
+            "year": year,
+            "sourceRows": len(rows),
+            "traceabilityPacks": totals["traceability"]["packs"],
+            "traceabilitySpendCents": totals["traceability"]["spendCents"],
+            "convenzionataPacks": totals["convenzionata"]["packs"],
+            "convenzionataSpendCents": totals["convenzionata"]["spendCents"],
+        })
+
+    published = spec["expected"]["publishedRows"]
+    if len(observations) != published:
+        raise SnapshotError(f"attese {published} righe pubblicate, prodotte {len(observations)}")
+    keys = {(row["year"], row["regionCode"], row["class"], row["atc2"]) for row in observations}
+    if len(keys) != len(observations):
+        raise SnapshotError("chiavi anno×regione×classe×ATC II non uniche")
+
+    return {
+        "schemaVersion": 1,
+        "datasetId": DATASET_ID,
+        "period": dict(spec["period"]),
+        "granularity": PUBLISHED_GRANULARITY,
+        "units": {
+            "spendCents": "centesimi di euro (la fonte pubblica euro con due decimali)",
+            "packs": "numero di confezioni",
+            "money": "spesa lorda, al lordo dei payback; la tracciabilità è al lordo dell'IVA",
+        },
+        "channels": [
+            {"id": channel, "label": CHANNEL_LABELS[channel], "signed": channel in SIGNED_CHANNELS}
+            for channel in sorted(CHANNELS)
+        ],
+        "regions": [{"code": code, "label": regions[code]} for code in sorted(regions)],
+        "classes": [{"code": code, "label": CLASS_LABELS[code]} for code in sorted(KNOWN_CLASSES)],
+        "atc2": [{"code": code, "label": atc2[code]} for code in sorted(atc2)],
+        "coverage": {
+            "years": list(spec["expected"]["years"]),
+            "regions": len(regions),
+            "months": 12,
+            "publishedRows": len(observations),
+            "sourceRows": {str(year): len(releases[year]) for year in sorted(releases)},
+            "note": spec["coverage"]["note"],
+        },
+        "reconciliation": {
+            "note": (
+                "I totali per anno e canale sono ricalcolati dalle righe del rilascio e devono coincidere al "
+                "centesimo con la somma dell'aggregato pubblicato."
+            ),
+            "byYear": by_year,
+        },
+        "caveats": list(CAVEATS),
+        "observations": observations,
+    }
+
+
+def build_meta(spec: dict[str, Any], data: dict[str, Any]) -> dict[str, Any]:
+    data_bytes = canonical_bytes(data)
+    lock_body = {**spec, "integrity": {**spec["integrity"], "lockSha256": ""}}
+    lock_digest = digest(canonical_bytes(lock_body))
+    source = spec["source"]
+    return {
+        "schemaVersion": 1,
+        "datasetId": DATASET_ID,
+        "period": dict(spec["period"]),
+        "observedAt": spec["coverage"]["observedAt"],
+        "source": {
+            "owner": source["owner"],
+            "landingUrl": source["landingUrl"],
+            "catalogUrl": source["catalogUrl"],
+            "licenseId": source["licenseId"],
+            "licenseNote": source["licenseNote"],
+            "termsUrl": source["termsUrl"],
+            "manualUrl": source["manualUrl"],
+            "manualNote": source["manualNote"],
+            "sourceUpdated": source["sourceUpdated"],
+            "acquisition": dict(source["acquisition"]),
+            "assets": {key: dict(asset) for key, asset in source["assets"].items()},
+        },
+        "coverage": dict(spec["coverage"]),
+        # I TRE ASSI SEMANTICI OBBLIGATORI (docs/DATA_IMPORT_STANDARD.md).
+        "semantics": {
+            "soldi": {
+                "unit": "centesimi di euro",
+                "nature": (
+                    "spesa lorda per farmaci su due canali distinti: sell-in alle strutture pubbliche "
+                    "(tracciabilità, lordo IVA) e spesa in farmacia a prezzo al pubblico (convenzionata). "
+                    "Non è spesa netta del SSN e non è cassa."
+                ),
+                "note": (
+                    "Gli importi sono al lordo dei payback. Accanto alla spesa, il numero di confezioni resta "
+                    "una misura separata: non è consumo in dosi (DDD)."
+                ),
+            },
+            "periodo": {
+                "referencePeriod": f"{spec['period']['from']}-{spec['period']['to']}",
+                "note": (
+                    "Anno di erogazione dichiarato dalla fonte, dettaglio mensile aggregato ad anno. "
+                    "Il rilascio 2025 può essere rivisto nelle edizioni successive."
+                ),
+            },
+            "provenance": {
+                "holder": source["owner"],
+                "canonicalUrls": sorted(
+                    {source["landingUrl"], source["catalogUrl"], *(asset["url"] for asset in source["assets"].values())}
+                ),
+                "publicationDate": source["sourceUpdated"],
+                "acquisitionDate": source["acquisition"]["acquiredAt"],
+                "checkedAt": source["acquisition"]["checkedAt"],
+                "license": source["licenseId"],
+                "hashes": "SHA-256 per rilascio in source.assets; artefatto in integrity.dataArtifact",
+            },
+        },
+        "integrity": {
+            "algorithm": "sha256",
+            "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+            "dataArtifact": {
+                "path": DATA_ARTIFACT_PATH,
+                "bytes": len(data_bytes),
+                "sha256": digest(data_bytes),
+            },
+            "sourceLockSha256": lock_digest,
+        },
+    }
+
+
+def write_data_artifact(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Nessun newline finale: i byte scritti qui sono esattamente quelli di cui lock e
+    # meta dichiarano dimensione e SHA-256, come per gli altri artefatti generati.
+    # newline="\n": su Windows write_text tradurrebbe in CRLF e gli artefatti non
+    # sarebbero più identici byte per byte a quelli costruiti su Linux.
+    path.write_text(canonical_bytes(value).decode("utf-8"), encoding="utf-8", newline="\n")
+
+
+def write_meta(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Il meta è documentazione di provenienza da leggere in review: indentato, come
+    # negli altri ETL del repo. Nessun hash dipende dalla sua formattazione.
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
+
+
+def build(spec: dict[str, Any], input_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    releases = load_releases(spec, input_dir)
+    data = build_data(spec, releases)
+    return data, build_meta(spec, data)
+
+
+def check(spec_path: Path, data_path: Path, meta_path: Path) -> None:
+    """Offline: valida gli artefatti committati senza rileggere i CSV della fonte."""
+    spec = load_spec(spec_path)
+    lock_body = {**spec, "integrity": {**spec["integrity"], "lockSha256": ""}}
+    if digest(canonical_bytes(lock_body)) != spec["integrity"]["lockSha256"]:
+        raise SnapshotError("lockSha256 non corrisponde al contenuto del lock")
+    data_bytes = data_path.read_bytes()
+    data = json.loads(data_bytes.decode("utf-8"))
+    metadata = json.loads(meta_path.read_text(encoding="utf-8"))
+    canonical = canonical_bytes(data)
+    artifact = metadata["integrity"]["dataArtifact"]
+    # Prima i byte come stanno su disco: sono quelli che finiscono nel commit e che
+    # la provenienza dichiara. Confrontare solo la forma canonica ricostruita
+    # lascerebbe passare un file che differisce per spaziatura o newline finale.
+    if artifact["bytes"] != len(data_bytes) or artifact["sha256"] != digest(data_bytes):
+        raise SnapshotError("data artifact: i byte su disco divergono da quanto dichiarato nel meta")
+    if data_bytes != canonical:
+        raise SnapshotError("data artifact: il file su disco non è nella forma canonica")
+    if artifact["sha256"] != digest(canonical) or artifact["bytes"] != len(canonical):
+        raise SnapshotError("meta: hash o dimensione del data artifact divergenti")
+    if artifact["sha256"] != spec["integrity"]["dataArtifact"]["sha256"]:
+        raise SnapshotError("lock: hash del data artifact divergente dal meta")
+    if metadata["integrity"]["sourceLockSha256"] != spec["integrity"]["lockSha256"]:
+        raise SnapshotError("meta: sourceLockSha256 divergente dal lock")
+    if data["granularity"] != PUBLISHED_GRANULARITY or data["datasetId"] != DATASET_ID:
+        raise SnapshotError("data artifact: identità o granularità inattese")
+    if len(data["observations"]) != spec["expected"]["publishedRows"]:
+        raise SnapshotError("data artifact: righe pubblicate divergenti dal lock")
+    keys = {(row["year"], row["regionCode"], row["class"], row["atc2"]) for row in data["observations"]}
+    if len(keys) != len(data["observations"]):
+        raise SnapshotError("data artifact: chiavi non uniche")
+    totals = {entry["year"]: entry for entry in data["reconciliation"]["byYear"]}
+    sums: dict[int, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for row in data["observations"]:
+        for field in ("traceabilityPacks", "traceabilitySpendCents", "convenzionataPacks", "convenzionataSpendCents"):
+            if row[field] is not None:
+                sums[row["year"]][field] += row[field]
+    for year, entry in totals.items():
+        for field in ("traceabilityPacks", "traceabilitySpendCents", "convenzionataPacks", "convenzionataSpendCents"):
+            if sums[year][field] != entry[field]:
+                raise SnapshotError(f"{year}: {field} dell'aggregato non riconcilia con i totali dichiarati")
+
+
+def write(spec_path: Path, data_path: Path, meta_path: Path, input_dir: Path) -> dict[str, Any]:
+    spec = load_spec(spec_path)
+    data, meta = build(spec, input_dir)
+    spec["integrity"] = {
+        "algorithm": "sha256",
+        "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+        "dataArtifact": dict(meta["integrity"]["dataArtifact"]),
+        "lockSha256": "",
+    }
+    lock_digest = digest(canonical_bytes({**spec, "integrity": {**spec["integrity"], "lockSha256": ""}}))
+    spec["integrity"]["lockSha256"] = lock_digest
+    meta["integrity"]["sourceLockSha256"] = lock_digest
+    spec_path.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    write_data_artifact(data_path, data)
+    write_meta(meta_path, meta)
+    return data
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", type=Path, required=True, help="CSV o zip di un rilascio annuale")
-    parser.add_argument("--year", type=int, required=True)
-    parser.add_argument("--bytes", type=int, required=True)
-    parser.add_argument("--sha256", required=True)
-    parser.add_argument("--member")
-    parser.add_argument("--member-bytes", type=int)
-    parser.add_argument("--member-sha256")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--check", action="store_true", help="valida gli artefatti committati senza rete")
+    mode.add_argument("--write", action="store_true", help="ricostruisce artefatti e integrity dal lock")
+    mode.add_argument("--profile", type=Path, help="profila un singolo rilascio (diagnostica)")
+    parser.add_argument("--spec", type=Path, default=DEFAULT_SPEC)
+    parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
+    parser.add_argument("--meta", type=Path, default=DEFAULT_META)
+    parser.add_argument("--input-dir", type=Path, help="cartella con i rilasci annuali vincolati")
+    parser.add_argument("--year", type=int)
     args = parser.parse_args()
+
     try:
-        payload = read_release(
-            args.profile,
-            expected_bytes=args.bytes,
-            expected_sha256=args.sha256,
-            member=args.member,
-            member_bytes=args.member_bytes,
-            member_sha256=args.member_sha256,
-        )
-        rows = parse_release(payload, args.year)
-        check_coverage(rows, args.year)
-        totals = release_totals(rows)
-        for granularity in GRANULARITIES:
-            groups = aggregate(rows, granularity)
-            print(f"{args.year} {granularity}: {len(groups)} gruppi")
-        for channel, total in totals.items():
-            print(f"{args.year} {channel}: {total['spendCents']} centesimi, {total['packs']} confezioni, {total['observedRows']} righe")
+        if args.check:
+            check(args.spec, args.data, args.meta)
+            print("aifa-spesa-consumi: lock, data e meta coerenti")
+            return 0
+        if args.profile:
+            spec = load_spec(args.spec)
+            asset = next(a for a in spec["source"]["assets"].values() if int(a["year"]) == args.year)
+            payload = read_release(
+                args.profile,
+                expected_bytes=asset["bytes"], expected_sha256=asset["sha256"],
+                member=asset.get("member"), member_bytes=asset.get("memberBytes"),
+                member_sha256=asset.get("memberSha256"),
+            )
+            rows = parse_release(payload, args.year)
+            check_coverage(rows, args.year)
+            for channel, total in release_totals(rows).items():
+                print(f"{args.year} {channel}: {total['spendCents']} centesimi, {total['packs']} confezioni, {total['observedRows']} righe")
+            return 0
+        if not args.input_dir:
+            raise SnapshotError("serve --input-dir con i rilasci vincolati, oppure --check")
+        data = write(args.spec, args.data, args.meta, args.input_dir)
+        print(f"aifa-spesa-consumi: scritti gli artefatti ({len(data['observations'])} righe pubblicate)")
         return 0
     except SnapshotError as error:
-        print(f"{DATASET_ID}: {error}", file=sys.stderr)
+        print(f"aifa-spesa-consumi: {error}", file=sys.stderr)
         return 1
 
 

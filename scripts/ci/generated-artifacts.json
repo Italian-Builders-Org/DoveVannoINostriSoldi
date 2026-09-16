@@ -2071,6 +2071,33 @@
       "sourceSpec": "scripts/etl/specs/eurostat-sha-health-2014-2025.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock sulla risposta JSON-stat ufficiale hlth_sha11_hf (URL, struttura SDMX, updated, byte, SHA-256). Pubblica 13 schemi SHA Italia 2014-2025; riconcilia TOT_HF=HF1+HF2+HF3+HF_UNK e le scomposizioni HF1/HF2. Il 2025 è flag p. Distinto da CE SSN e COFOG. CC BY 4.0."
+    },
+    {
+      "id": "aifa-spesa-consumi-2022-2025",
+      "owner": "AIFA spesa e consumo farmaci per ATC 2022-2025",
+      "files": [
+        "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
+        "src/data/generated/aifa-spesa-consumi-2022-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/aifa_spesa_consumi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_aifa_spesa_consumi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/aifa-spesa-consumi.test.mjs",
+        "tests/aifa-spesa-consumi-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/aifa_spesa_consumi_snapshot.py --write --input-dir <cartella con i quattro rilasci annuali>",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/aifa-spesa-consumi-2022-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui quattro rilasci annuali AIFA (URL, byte, SHA-256; per il 2025 anche il CSV dentro lo zip). Il tracciato a 17 colonne, i 21 territori × 12 mesi, la chiave mese×regione×classe×ATC IV e la gerarchia ATC sono pretesi in modo fail-closed. Pubblica l'aggregato annuale regione×classe×ATC II (21208 righe) riconciliato al centesimo con i totali del rilascio. Tracciabilità e convenzionata restano canali distinti, il canale assente resta null e i negativi solo sulla tracciabilità. Licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA."
     }
   ]
 }

@@ -43,6 +43,7 @@ export type SourceId =
   | "inps-integrazioni-salariali"
   | "inps-cig-fondi-solidarieta"
   | "inl-vigilanza"
+  | "aifa-spesa-consumi"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -697,6 +698,22 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
+  },
+  "aifa-spesa-consumi": {
+    id: "aifa-spesa-consumi",
+    label: "AIFA · spesa e consumo farmaci per ATC",
+    owner: "AIFA — Agenzia Italiana del Farmaco",
+    sourceUrl:
+      "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti",
+    cadence: "annuale",
+    cadenceNote:
+      "Quattro rilasci annuali 2022-2025 (il 2025 in zip). Snapshot aggiornabile solo dopo nuova acquisizione dei CSV e validazione offline; licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA. Tracciabilità e convenzionata restano canali distinti.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:aifa-spesa-consumi", "domain:health", "domain:pharmaceuticals"],
   },
   "inl-vigilanza": {
     id: "inl-vigilanza",

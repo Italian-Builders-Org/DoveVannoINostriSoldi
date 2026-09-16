@@ -291,6 +291,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-ambiente",
+    name: "ISTAT · BES dei territori, Ambiente",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Undici indicatori BES_10; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi propri fra 2004 e 2023; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Concentrazioni, percentuali, m²/abitante e kg/abitante con unità proprie: non sono spesa e non si sommano. Solo SEX=T; flag g resta null. Valori in centesimi. Per 10AMB018P UNIT_MEAS e note restano vuoti come nel payload. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

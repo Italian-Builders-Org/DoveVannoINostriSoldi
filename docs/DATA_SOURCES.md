@@ -1021,3 +1021,10 @@ Dominio BES_12, edizione 2025: otto indicatori, 15.858 osservazioni e 139
 territori (111 province). Solo `SEX=T`; 76 celle `n`/`g`; valori in decimi.
 Fonte `istat-bes-servizi`, API/MCP paginati, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_BES_SERVIZI.md).
+
+### ISTAT BES dei territori — Ambiente
+
+Dominio BES_10, edizione 2025: undici indicatori, 13.423 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 412 celle `g`; valori in centesimi.
+Fonte `istat-bes-ambiente`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_AMBIENTE.md).

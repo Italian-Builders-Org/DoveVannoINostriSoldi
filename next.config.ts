@@ -59,6 +59,10 @@ const istatBesServiziRuntimeFiles = [
   "src/data/generated/istat-bes-servizi-2004-2024.data.json",
 ];
 
+const istatBesAmbienteRuntimeFiles = [
+  "src/data/generated/istat-bes-ambiente-2004-2023.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
@@ -193,6 +197,7 @@ const nextConfig: NextConfig = {
     "/api/territori/bes-sicurezza": istatBesSicurezzaRuntimeFiles,
     "/api/territori/bes-paesaggio": istatBesPaesaggioRuntimeFiles,
     "/api/territori/bes-servizi": istatBesServiziRuntimeFiles,
+    "/api/territori/bes-ambiente": istatBesAmbienteRuntimeFiles,
     "/api/assistant/chat": [
       ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
@@ -202,6 +207,7 @@ const nextConfig: NextConfig = {
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
       ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -221,6 +227,7 @@ const nextConfig: NextConfig = {
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
       ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -240,6 +247,7 @@ const nextConfig: NextConfig = {
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
       ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,

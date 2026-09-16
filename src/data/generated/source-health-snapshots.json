@@ -222,6 +222,12 @@
     "recordCount": 15858
   },
   {
+    "sourceId": "istat-bes-ambiente",
+    "sourceTimestamp": "2025-07-01",
+    "detail": "Undici indicatori BES_10 Ambiente, edizione 2025; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 412 celle ignote. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    "recordCount": 13423
+  },
+  {
     "sourceId": "inps-naspi",
     "sourceTimestamp": "2026-09-04",
     "detail": "Snapshot ETL attivo · NASpI beneficiari e trattamenti 2018-2022 · 9 tabelle SDMX, 53.362 osservazioni di cui 601 soppresse per privacy · riconciliazioni esatte · 7.312.525 byte.",

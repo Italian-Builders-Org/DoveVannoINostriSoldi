@@ -46,6 +46,7 @@ import { istatBesPoliticaData, istatBesPoliticaMetadata } from "@/lib/istat-bes-
 import { istatBesSicurezzaData, istatBesSicurezzaMetadata } from "@/lib/istat-bes-sicurezza-snapshot";
 import { istatBesPaesaggioData, istatBesPaesaggioMetadata } from "@/lib/istat-bes-paesaggio-snapshot";
 import { istatBesServiziData, istatBesServiziMetadata } from "@/lib/istat-bes-servizi-snapshot";
+import { istatBesAmbienteData, istatBesAmbienteMetadata } from "@/lib/istat-bes-ambiente-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -669,6 +670,18 @@ function snapshotManagedIstatBesServizi(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesAmbiente(): SourceHealth {
+  const { source } = istatBesAmbienteMetadata;
+  return {
+    ...baseHealth("istat-bes-ambiente"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-ambiente", source.publicationDate),
+    latencyMs: null,
+    detail: "Undici indicatori BES_10 Ambiente, edizione 2025; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 412 celle ignote. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesAmbienteData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -725,6 +738,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-sicurezza": snapshotManagedIstatBesSicurezza,
   "istat-bes-paesaggio": snapshotManagedIstatBesPaesaggio,
   "istat-bes-servizi": snapshotManagedIstatBesServizi,
+  "istat-bes-ambiente": snapshotManagedIstatBesAmbiente,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,

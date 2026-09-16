@@ -1752,6 +1752,32 @@
       "trustModel": "Lock dedicato BES_12: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Otto indicatori, 15.858 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. UNIT_MEAS e NOTE_* presenti nel CSV. 76 celle n/g restano null; zero osservato e riga assente restano distinti. Scale factor 10 (decimi). Indicatori non sommabili; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
     },
     {
+      "id": "istat-bes-ambiente-2004-2023",
+      "owner": "ISTAT BesT BES_10 Ambiente, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-ambiente-2004-2023.data.json",
+        "src/data/generated/istat-bes-ambiente-2004-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_ambiente.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_ambiente.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-ambiente.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_ambiente.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-ambiente-2004-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_10: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Undici indicatori, 13.423 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Per 10AMB018P UNIT_MEAS e NOTE_* restano vuoti come nel payload. 412 celle g restano null. Scale factor 100 (centesimi). Indicatori non sommabili. Licenza not-declared."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

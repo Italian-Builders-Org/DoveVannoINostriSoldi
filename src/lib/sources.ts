@@ -243,6 +243,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-politica",
+    name: "ISTAT · BES dei territori, Politica e istituzioni",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Sette indicatori BES_06; 15.818 osservazioni e 139 territori, di cui 111 province. Periodi propri fra 2004 e 2024; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Partecipazione elettorale, rappresentanza, capacità di riscossione e affollamento carcerario con unità e periodi propri: non sono spesa e non si sommano. Solo SEX=T; celle OBS_VALUE vuote restano null senza flag inventato. UNIT_MEAS e note tabellari vuoti: unità e descrizioni restano nel lock dalla structure. Nessuna imputazione comunale, classifica o correlazione SIOPE. Compositi, padri esterni e geografia variabile sono dichiarati. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

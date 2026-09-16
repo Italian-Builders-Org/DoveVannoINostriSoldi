@@ -43,6 +43,10 @@ const istatBesRelazioniRuntimeFiles = [
   "src/data/generated/istat-bes-relazioni-2011-2024.data.json",
 ];
 
+const istatBesPoliticaRuntimeFiles = [
+  "src/data/generated/istat-bes-politica-2004-2024.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
@@ -178,11 +182,13 @@ const nextConfig: NextConfig = {
     "/api/tributi/vat-gap": euVatGapItalyRuntimeFiles,
     "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
     "/api/territori/bes-relazioni": istatBesRelazioniRuntimeFiles,
+    "/api/territori/bes-politica": istatBesPoliticaRuntimeFiles,
     "/api/assistant/chat": [
       ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
       ...euVatGapItalyRuntimeFiles,
       ...istatBesRelazioniRuntimeFiles,
+      ...istatBesPoliticaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -199,6 +205,7 @@ const nextConfig: NextConfig = {
       ...istatBesLavoroRuntimeFiles,
       ...euVatGapItalyRuntimeFiles,
       ...istatBesRelazioniRuntimeFiles,
+      ...istatBesPoliticaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -215,6 +222,7 @@ const nextConfig: NextConfig = {
       ...istatBesLavoroRuntimeFiles,
       ...euVatGapItalyRuntimeFiles,
       ...istatBesRelazioniRuntimeFiles,
+      ...istatBesPoliticaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,

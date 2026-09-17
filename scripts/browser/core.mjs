@@ -434,6 +434,7 @@ async function assertSpendingComposition(page, label, width) {
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
       hasMetadata: /Quote sul totale dei pagamenti SIOPE.*Fonte acquisita/s.test(root.textContent ?? ""),
       compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      hasMunicipalityRanking: Boolean(municipalityHeading),
       // Prefer visual order: independent desktop rails may put the ranking
       // earlier in the DOM while the map still appears first on screen.
       mapBeforeMunicipalities: Boolean(
@@ -447,7 +448,9 @@ async function assertSpendingComposition(page, label, width) {
   assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
   assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
   assert.equal(state.compositionBeforeMap, true, `${label}: composizione prima della mappa nel DOM`);
-  assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
+  if (state.hasMunicipalityRanking) {
+    assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
+  }
   assert.notEqual(state.visualDisplay, "none", `${label}: composizione visibile anche su mobile`);
   assert.ok(state.visualHeight >= 250, `${label}: geometria composizione non riservata`);
 

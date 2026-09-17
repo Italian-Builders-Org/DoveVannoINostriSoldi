@@ -70,7 +70,7 @@ test("period selector can compress long year series behind Altri", async () => {
   assert.match(css, /\.years \{[\s\S]*?overflow: visible;/);
 });
 
-test("home page leads with Italy charts then keeps the municipal map", async () => {
+test("home page is a navigation hub with reduced national charts and map", async () => {
   const [page, css, charts, chartCss] = await Promise.all([
     readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
@@ -78,34 +78,32 @@ test("home page leads with Italy charts then keeps the municipal map", async () 
     readFile(new URL("../src/components/home-italy-charts.module.css", import.meta.url), "utf8"),
   ]);
   assert.match(page, /buildHomeItalyFunnel/);
+  assert.match(page, /HomeItalyTrendChart/);
   assert.match(page, /HomeItalyCompositionChart/);
-  assert.match(page, /Spesa pubblica totale/);
-  assert.match(page, /Bilancio dello Stato/);
-  assert.doesNotMatch(page, /Di cui bilancio dello Stato/);
-  assert.match(page, /Dove va, in grandi voci/);
-  assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /ItalyRegionsMap/);
   assert.match(page, /SpendingComposition/);
-  assert.match(page, /recentLimit=\{4\}/);
+  assert.match(page, /monthList/);
+  assert.match(page, /Spesa pubblica totale/);
+  assert.match(page, /Dove va, in grandi voci/);
+  assert.match(page, /Pagamenti effettuati dai Comuni/);
+  assert.match(page, /Mese per mese/);
   assert.match(page, /snapshot fino al/);
+  assert.match(page, /PRIMARY_DESTINATIONS/);
+  assert.match(page, /href: "\/imprese"/);
+  assert.match(page, /href: "\/territori"/);
+  assert.match(page, /href: "\/spese"/);
+  assert.match(page, /action="\/cerca"/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Perimetri diversi/);
+  assert.doesNotMatch(page, /Parti da qui/);
+  assert.doesNotMatch(page, /numeri restano sotto mano/);
+  assert.doesNotMatch(page, /Dove andare subito/);
+  assert.doesNotMatch(page, /Altre porte frequenti/);
+  assert.match(css, /\.hub \{/);
+  assert.match(css, /\.primaryGrid \{/);
   assert.match(css, /\.italyBand \{/);
-  assert.match(css, /\.italySummary \{/);
-  assert.match(css, /\.italySplit \{/);
-  assert.match(css, /grid-area: italy;/);
-  assert.match(css, /\.leftRail \{/);
-  assert.match(css, /\.rightRail \{/);
-  assert.match(css, /align-content: start;/);
-  assert.match(css, /align-items: start;/);
-  assert.match(css, /"leftRail rightRail"/);
-  assert.match(page, /styles\.leftRail/);
-  assert.match(page, /styles\.rightRail/);
-  assert.match(page, /styles\.municipalLower/);
-  assert.match(page, /styles\.monthsPanel[\s\S]*styles\.rankPanel/);
-  assert.match(page, /styles\.rankPanel[\s\S]*styles\.cohesionPanel/);
-  assert.match(page, /styles\.regionsPanel/);
   assert.match(css, /\.mapStage/);
+  assert.match(css, /\.monthList/);
   assert.match(chartCss, /--chart-data-primary/);
   assert.doesNotMatch(charts, /HomeShareStrip|SpendingBarChart|chartColor/);
   assert.doesNotMatch(page, /striscia/);

@@ -14,6 +14,6 @@ export const SOCIAL_LINKS = [
   { id: "threads", label: "Threads", href: "https://www.threads.com/@dovevannoinostrisoldi" },
   { id: "facebook", label: "Facebook", href: "https://www.facebook.com/profile.php?id=61593922084084" },
   { id: "instagram", label: "Instagram", href: "https://www.instagram.com/dovevannoinostrisoldi/" },
-  { id: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@dovevannoinostrisoldi" },
+  { id: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@dvn_soldi" },
   { id: "x", label: "X", href: "https://x.com/DVNSoldi" },
 ] as const;

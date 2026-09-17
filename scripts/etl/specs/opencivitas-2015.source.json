@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2015,
+  "family": "FC20TOT",
+  "releaseVersion": 2,
+  "releaseVersionReason": "Nuova fornitura derivante dall'aggiornamento della spesa storica",
+  "publishedAt": "2019-05-23",
+  "modifiedAt": "2019-05-23",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2015-comuni-servizi-totali-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Dipartimento delle Finanze",
+  "publisher": "SOSE",
+  "csvEncoding": "cp1252",
+  "csvDecimalSeparator": ".",
+  "indicatorSheet": "Indicatori_FC20TOT_2015",
+  "indicatorDefinitions": 25,
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/Ind_FC20TOT_2_csv.zip",
+      "bytes": 4609719,
+      "sha256": "9dffeca1c95eaaabb7387a22d9157086eff85b141aa4620f2439c7dbe355b23c"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2015_2_xlsx.zip",
+      "bytes": 312672,
+      "sha256": "e7115b7de20b55c6d07d1e1e01f95ca1c70c6931944570714244ad9e54e3d0a1"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/Metadati_Ind_FC20TOT_2_xlsx.zip",
+      "bytes": 8454,
+      "sha256": "eef1ea5855f7f3e6f7b814ca1d3dbb0c8d4331fe503eb7297e7888c46eeb68ad"
+    }
+  },
+  "csvHeaders": ["USERNAME", "Indicatore/Determinante", "Valore", "Anomalia", "Privacy"],
+  "municipalities": 6664,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 409,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 340,
+    "LAZIO": 378,
+    "LIGURIA": 235,
+    "LOMBARDIA": 1530,
+    "MARCHE": 236,
+    "MOLISE": 136,
+    "PIEMONTE": 1206,
+    "PUGLIA": 258,
+    "TOSCANA": 279,
+    "UMBRIA": 92,
+    "VENETO": 579
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001", "ZZ999ARE002", "ZZ999ARE003", "ZZ999ARE004",
+    "ZZ999FAS001", "ZZ999FAS002", "ZZ999FAS003", "ZZ999FAS004", "ZZ999FAS005",
+    "ZZ999FAS006", "ZZ999FAS007", "ZZ999FAS008", "ZZ999FAS009", "ZZ999FAS010",
+    "ZZ999ITA001", "ZZ999REG001", "ZZ999REG003", "ZZ999REG005", "ZZ999REG007",
+    "ZZ999REG008", "ZZ999REG009", "ZZ999REG010", "ZZ999REG011", "ZZ999REG012",
+    "ZZ999REG013", "ZZ999REG014", "ZZ999REG015", "ZZ999REG016", "ZZ999REG017",
+    "ZZ999REG018"
+  ],
+  "nationalTotals": {
+    "historicalSpendingCents": 3354416621018,
+    "standardSpendingCents": 3354416620759,
+    "roundingToleranceCents": 1000,
+    "note": "Nel rilascio 2015 il fabbisogno standard è riproporzionato sul totale nazionale della spesa storica: sui valori pubblicati le due somme distano 0,52 € e, dopo l'arrotondamento al centesimo di ogni Comune, 2,59 € su 33,5 miliardi. La differenza aggregata è nulla per costruzione, non è un risultato: non va letta né confrontata con gli anni in cui la fonte non riproporziona (dal 2017 al 2021 lo standard supera la storica di circa il 2%)."
+  }
+}

@@ -625,6 +625,20 @@ const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", 
 assert.equal(modernData.level, "region");
 assert.equal(modernData.pagination.returned, 20);
 
+const fc20ApiResponse = await fetch(new URL("/api/spese/opencivitas-2015?codice=058091&anno=2015", baseUrl));
+assert.equal(fc20ApiResponse.status, 200);
+const fc20ApiData = JSON.parse(await responseText(fc20ApiResponse, "FC20 API"));
+const fc20McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc20-2015", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2015", code: "058091", year: 2015 } },
+});
+const fc20McpData = successfulMcpToolResult(fc20McpResult, "opencivitas_fabbisogni_2015").data;
+assert.deepEqual(fc20McpData, fc20ApiData);
+assert.equal(fc20ApiData.referenceYear, 2015);
+assert.equal(fc20ApiData.family, "FC20TOT");
+assert.equal(fc20ApiData.coverage.municipalities, 6664);
+assert.equal(fc20ApiData.data[0].historicalSpendingCents, 318080551380);
+
 const fc40ApiResponse = await fetch(new URL("/api/spese/opencivitas-2017?codice=058091&anno=2017", baseUrl));
 assert.equal(fc40ApiResponse.status, 200);
 const fc40ApiData = JSON.parse(await responseText(fc40ApiResponse, "FC40 API"));

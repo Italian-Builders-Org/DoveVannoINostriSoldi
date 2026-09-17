@@ -164,16 +164,21 @@ def load_entities(payload: bytes) -> dict[str, dict[str, str]]:
     return entities
 
 
-def decimal_value(value: str, field: str, *, required: bool = True) -> Decimal | None:
+def decimal_value(value: str, field: str, *, required: bool = True, decimal_separator: str = ",") -> Decimal | None:
+    # Il separatore è dichiarato dal rilascio, mai indovinato: i CSV 2015 e 2016 usano
+    # il punto, dal 2017 la fonte usa la virgola. Nessun fallback fra i due.
+    if decimal_separator not in {",", "."}:
+        raise StructuralError(f"{field}: separatore decimale dichiarato non valido")
     cleaned = value.strip()
     if not cleaned:
         if required:
             raise StructuralError(f"{field}: valore numerico mancante")
         return None
-    if not re.fullmatch(r"-?\d+(?:,\d+)?", cleaned):
-        raise StructuralError(f"{field}: formato numerico italiano inatteso")
+    pattern = r"-?\d+(?:,\d+)?" if decimal_separator == "," else r"-?\d+(?:\.\d+)?"
+    if not re.fullmatch(pattern, cleaned):
+        raise StructuralError(f"{field}: formato numerico inatteso per separatore {decimal_separator!r}")
     try:
-        parsed = Decimal(cleaned.replace(",", "."))
+        parsed = Decimal(cleaned.replace(",", ".") if decimal_separator == "," else cleaned)
     except InvalidOperation as error:
         raise StructuralError(f"{field}: numero non valido") from error
     if not parsed.is_finite():
@@ -195,9 +200,11 @@ def basis_points(value: Decimal, field: str) -> int:
     return result
 
 
-def load_raw_data(payload: bytes) -> dict[str, dict[str, dict[str, str]]]:
+def load_raw_data(payload: bytes, *, encoding: str = "utf-8-sig") -> dict[str, dict[str, dict[str, str]]]:
+    # Anche la codifica è dichiarata dal rilascio: i CSV 2015 e 2016 sono cp1252,
+    # dal 2017 UTF-8. Nessun tentativo automatico fra le due.
     raw_csv = read_outer_file(payload, ".csv")
-    reader = csv.DictReader(io.TextIOWrapper(io.BytesIO(raw_csv), encoding="utf-8-sig", newline=""), delimiter=";")
+    reader = csv.DictReader(io.TextIOWrapper(io.BytesIO(raw_csv), encoding=encoding, newline=""), delimiter=";")
     required = {"USERNAME", "Indicatore/Determinante", "Valore", "Anomalia", "Privacy"}
     if reader.fieldnames is None or not required.issubset(reader.fieldnames):
         raise StructuralError(f"Dati OpenCivitas: colonne mancanti {sorted(required - set(reader.fieldnames or []))}")
@@ -213,7 +220,8 @@ def load_raw_data(payload: bytes) -> dict[str, dict[str, dict[str, str]]]:
     return selected
 
 
-def clean_metric(rows: dict[str, dict[str, str]], code: str, warnings: list[str], *, required: bool = True) -> Decimal | None:
+def clean_metric(rows: dict[str, dict[str, str]], code: str, warnings: list[str], *, required: bool = True,
+                 decimal_separator: str = ",") -> Decimal | None:
     if code not in rows:
         if required:
             raise StructuralError(f"Indicatore {code} mancante")
@@ -223,15 +231,18 @@ def clean_metric(rows: dict[str, dict[str, str]], code: str, warnings: list[str]
     if flags:
         warnings.append(f"{code}: {', '.join(flags)}")
         return None
-    return decimal_value(row["value"], code, required=required)
+    return decimal_value(row["value"], code, required=required, decimal_separator=decimal_separator)
 
 
-def normalize_municipality(username: str, entity: dict, rows: dict) -> dict:
+def normalize_municipality(username: str, entity: dict, rows: dict, *, decimal_separator: str = ",") -> dict:
     warnings: list[str] = []
-    historical = clean_metric(rows, "SPESA_STORICA", warnings)
-    standard = clean_metric(rows, "FST_RIPROPORZIONATO_BI", warnings)
-    historical_pc = clean_metric(rows, "SPESA_STORICA_PROAB", warnings)
-    standard_pc = clean_metric(rows, "FST_RIPROPORZIONATO_BI_PROAB", warnings)
+    def metric(code: str, *, required: bool = True) -> Decimal | None:
+        return clean_metric(rows, code, warnings, required=required, decimal_separator=decimal_separator)
+
+    historical = metric("SPESA_STORICA")
+    standard = metric("FST_RIPROPORZIONATO_BI")
+    historical_pc = metric("SPESA_STORICA_PROAB")
+    standard_pc = metric("FST_RIPROPORZIONATO_BI_PROAB")
     if None in (historical, standard, historical_pc, standard_pc):
         raise StructuralError(f"{username}: valori monetari principali non disponibili")
     assert historical is not None and standard is not None and historical_pc is not None and standard_pc is not None
@@ -252,9 +263,9 @@ def normalize_municipality(username: str, entity: dict, rows: dict) -> dict:
     difference_pc_cents = historical_pc_cents - standard_pc_cents
     calculated_difference_bp = basis_points((historical - standard) / standard * 100, "differenza percentuale")
 
-    output_difference = clean_metric(rows, "DIFF_OUT_PERC_TOT", warnings, required=False)
-    spending_level = clean_metric(rows, "POSIZIONE_SPESA_PERC_TOT", warnings, required=False)
-    service_level = clean_metric(rows, "POSIZIONE_OUTPUT_PERC_TOT", warnings, required=False)
+    output_difference = metric("DIFF_OUT_PERC_TOT", required=False)
+    spending_level = metric("POSIZIONE_SPESA_PERC_TOT", required=False)
+    service_level = metric("POSIZIONE_OUTPUT_PERC_TOT", required=False)
     for value, field in ((spending_level, "livello spesa"), (service_level, "livello servizi")):
         if value is not None and (value != value.to_integral_value() or not 0 <= value <= 10):
             raise StructuralError(f"{username}: {field} fuori intervallo")

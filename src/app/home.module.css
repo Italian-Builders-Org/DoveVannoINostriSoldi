@@ -325,6 +325,61 @@
   margin-top: auto;
 }
 
+.monthsPanel {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.monthList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.monthList li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 3.5rem;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  font-size: 12.5px;
+}
+
+.monthList li > span {
+  color: var(--color-neutral-700);
+}
+
+.monthList li > i {
+  display: block;
+  height: 10px;
+  background: var(--chart-data-track);
+}
+
+.monthList li > i > b {
+  display: block;
+  height: 100%;
+  background: var(--chart-data-primary);
+}
+
+.monthList li > b {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthList .running {
+  background: var(--color-neutral-500);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
 .mapPanel {
   display: flex;
   flex-direction: column;

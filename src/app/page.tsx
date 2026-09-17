@@ -31,6 +31,7 @@ import {
   availableSiopeYears,
   completedMonths,
   getSiopeMunicipalSnapshot,
+  partialMonth,
 } from "@/lib/siope-snapshot";
 import styles from "./home.module.css";
 
@@ -167,6 +168,8 @@ export default async function HomePage({
   const netPayments = siope.totalPaid - passThrough;
   const settledMonths = completedMonths(siope);
   const lastCompleted = settledMonths[settledMonths.length - 1] ?? null;
+  const runningMonth = partialMonth(siope);
+  const maxFlow = Math.max(...siope.monthly.map((point) => point.flow), 0);
   const anomalySignals = getHomeAnomalySignals();
 
   return (
@@ -359,6 +362,41 @@ export default async function HomePage({
             </Link>
           </section>
         </div>
+
+        <section className={`panel ${styles.monthsPanel}`}>
+          <div className={styles.panelHead}>
+            <h3 className="panel-title">Mese per mese</h3>
+            <span className={styles.headNote}>miliardi di €</span>
+            <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
+              Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
+              Il mese in corso è grigio perché può ancora cambiare.
+            </InfoTooltip>
+          </div>
+          <ul className={styles.monthList}>
+            {siope.monthly.map((point) => {
+              const running = point.month === runningMonth;
+              return (
+                <li key={point.month}>
+                  <span>{point.label}</span>
+                  <i aria-hidden="true">
+                    <b
+                      className={running ? styles.running : undefined}
+                      style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
+                    />
+                  </i>
+                  <b className="num-tabular">{billions(point.flow)}</b>
+                </li>
+              );
+            })}
+          </ul>
+          {runningMonth === null ? (
+            <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
+          ) : (
+            <p className={styles.note}>
+              {siope.latestMonthLabel} è parziale: il dato può cambiare.
+            </p>
+          )}
+        </section>
       </section>
 
       <section className={`panel ${styles.mapPanel}`} aria-labelledby="regional-map-panel-title">

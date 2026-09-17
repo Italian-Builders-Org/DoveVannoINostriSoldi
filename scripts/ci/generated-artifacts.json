@@ -2332,6 +2332,62 @@
       "sourceSpec": "scripts/etl/specs/aifa-spesa-consumi-2022-2025.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock sui quattro rilasci annuali AIFA (URL, byte, SHA-256; per il 2025 anche il CSV dentro lo zip). Il tracciato a 17 colonne, i 21 territori × 12 mesi, la chiave mese×regione×classe×ATC IV e la gerarchia ATC sono pretesi in modo fail-closed. Pubblica l'aggregato annuale regione×classe×ATC II (21208 righe) riconciliato al centesimo con i totali del rilascio. Tracciabilità e convenzionata restano canali distinti, il canale assente resta null e i negativi solo sulla tracciabilità. Licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA."
+    },
+    {
+      "id": "politici-camera-xix",
+      "owner": "Camera dei deputati — deputati e gruppi parlamentari XIX legislatura",
+      "files": [
+        "src/data/generated/politici-camera-xix.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/politici_camera_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_politici_camera_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-camera-contract.test.mjs",
+        "tests/politici-news-route.test.mjs",
+        "tests/politici-photo-route.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/politici_camera_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/politici-camera-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Snapshot SPARQL ufficiale dati.camera.it (OCD) pinnato per byte/SHA-256 della risposta. Include solo deputati con adesione aperta, espone capienza e vacanze senza reinserire ex membri. --check offline riconcilia coverage, memberCount e URI; --write richiede rete."
+    },
+    {
+      "id": "politici-senato-xix",
+      "owner": "Senato della Repubblica — senatori in carica e gruppi XIX legislatura",
+      "files": [
+        "src/data/generated/politici-senato-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/politici_senato_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_politici_senato_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-news-route.test.mjs",
+        "tests/politici-photo-route.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/politici_senato_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/politici-senato-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Tre export JSON ufficiali dati.senato.it pinnati separatamente per byte/SHA-256: anagrafica della legislatura, roster in carica alla data e composizione gruppi alla stessa data. L'import deduplica soltanto cariche multiple della medesima URI, blocca identità o gruppi ambigui e riconcilia tutti i senatori correnti, inclusi quelli a vita."
     }
   ]
 }

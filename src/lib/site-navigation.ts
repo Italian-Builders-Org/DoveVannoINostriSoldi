@@ -134,10 +134,11 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/istituzioni",
     label: "Istituzioni",
     icon: "institutions",
-    aliases: ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
+    aliases: ["/parlamento", "/politici", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
+      { href: "/politici", label: "Grafo politici" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
       { href: "/ministeri", label: "Ministeri" },
@@ -294,6 +295,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Istituzioni",
     links: [
       { href: "/istituzioni", label: "Panoramica" },
+      { href: "/politici", label: "Grafo politici" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },

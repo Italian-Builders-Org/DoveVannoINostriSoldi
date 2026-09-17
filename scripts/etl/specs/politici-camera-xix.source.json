@@ -1,0 +1,44 @@
+{
+  "datasetId": "politici-camera-xix",
+  "title": "Camera dei deputati — deputati e gruppi parlamentari XIX legislatura",
+  "landingUrl": "https://dati.camera.it/",
+  "period": {
+    "legislature": "repubblica_19",
+    "label": "XIX Legislatura",
+    "startDate": "2022-10-13"
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://dati.camera.it/",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "committedResponse": {
+      "bytes": 281334,
+      "sha256": "328c32bc6648551a351af1718bd212c8641c2bb94da8e96a6e25a4d2adcd3f46"
+    }
+  },
+  "coverageFloor": {
+    "deputies": 390,
+    "groups": 5
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo appartenenze formali e schede ufficiali Camera."
+    },
+    "periodo": {
+      "kind": "legislature",
+      "id": "repubblica_19"
+    },
+    "provenance": {
+      "kind": "official-sparql",
+      "endpoint": "https://dati.camera.it/sparql"
+    }
+  },
+  "caveats": [
+    "Solo Camera XIX; il Senato è acquisito e validato in un artefatto distinto prima della vista Parlamento.",
+    "L'emiciclo include soltanto adesioni aperte: ex deputati e adesioni concluse non occupano seggi."
+  ]
+}

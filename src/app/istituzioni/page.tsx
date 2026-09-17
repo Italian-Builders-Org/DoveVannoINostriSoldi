@@ -5,7 +5,7 @@ import styles from "./istituzioni.module.css";
 export const metadata: Metadata = {
   title: "Istituzioni pubbliche",
   description:
-    "Cinque percorsi separati per Parlamento, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
+    "Percorsi separati per Parlamento, grafo politici, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
 };
 
 const dossiers = [
@@ -15,6 +15,13 @@ const dossiers = [
     period: "Camera: dati 2025 · documenti 2024 per Camera e Senato",
     description:
       "Bilanci e documenti di Camera e Senato, con la copertura disponibile per ciascuna istituzione.",
+  },
+  {
+    href: "/politici",
+    title: "Grafo politici",
+    period: "Camera · XIX legislatura · open data ufficiali",
+    description:
+      "Deputati e gruppi parlamentari collegati in un grafo consultabile, solo da dati.camera.it.",
   },
   {
     href: "/palazzo-chigi",

@@ -165,6 +165,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/pnrr/incarichi": ["incarichi pnrr", "indire"],
   "/istituzioni": ["istituzioni", "enti istituzionali"],
   "/parlamento": ["camera", "senato", "assemblee"],
+  "/politici": ["politici", "deputati", "gruppi parlamentari", "grafo politici", "camera xix"],
   "/palazzo-chigi": ["presidenza del consiglio", "pcm", "governo"],
   "/ministeri": ["ministeri", "amministrazioni"],
   "/regioni": ["regioni", "province autonome"],

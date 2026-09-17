@@ -235,6 +235,7 @@ const nextConfig: NextConfig = {
       ...inlVigilanzaRuntimeFiles,
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/mcp": [
@@ -258,6 +259,7 @@ const nextConfig: NextConfig = {
       ...inlVigilanzaRuntimeFiles,
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/api/mcp": [
@@ -281,6 +283,7 @@ const nextConfig: NextConfig = {
       ...inlVigilanzaRuntimeFiles,
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
   },
